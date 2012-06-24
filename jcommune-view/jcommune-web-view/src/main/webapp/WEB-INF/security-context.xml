@@ -69,7 +69,7 @@
 
         <security:intercept-url pattern="/poll/**" access="hasAnyRole('ROLE_ADMIN,ROLE_USER')"/>
 
-        <security:intercept-url pattern="/pages/*/edit" access="hasAnyRole('ROLE_ADMIN')"/>
+        <security:intercept-url pattern="/pages/*/edit" access="hasRole('ROLE_ADMIN')"/>
 
         <security:intercept-url pattern="*" access="permitAll"/>
 

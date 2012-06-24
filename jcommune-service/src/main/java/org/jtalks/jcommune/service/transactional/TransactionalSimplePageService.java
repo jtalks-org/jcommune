@@ -14,12 +14,16 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.common.model.dao.GroupDao;
+import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.GeneralPermission;
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.SimplePageDao;
 import org.jtalks.jcommune.model.entity.SimplePage;
 import org.jtalks.jcommune.service.SimplePageService;
 import org.jtalks.jcommune.service.dto.SimplePageInfoContainer;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,6 +40,8 @@ import javax.persistence.EntityExistsException;
 public class TransactionalSimplePageService extends AbstractTransactionalEntityService<SimplePage, SimplePageDao> implements SimplePageService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    private GroupDao groupDao;
+    private SecurityService securityService;
 
     /**
      *  Create an instance of Simple Page entity based service
@@ -43,14 +49,17 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
      *  @param simplePageDao - data access object which should be create or get simplePage object from database
      */
 
-    public TransactionalSimplePageService(SimplePageDao simplePageDao) {
+    public TransactionalSimplePageService(SimplePageDao simplePageDao,
+                                          GroupDao groupDao,
+                                          SecurityService securityService) {
         super(simplePageDao);
+        this.groupDao = groupDao;
     }
 
     /**
      * {@inheritDoc}
      */
-    @PreAuthorize("hasPermission(#simplePageInfoContainer.id, 'org.jtalks.jcommune.model.entity.SimplePage', 'GeneralPermission.WRITE')")
+   // @PreAuthorize("hasPermission(#simplePageInfoContainer.id, 'org.jtalks.jcommune.model.entity.SimplePage', 'GeneralPermission.WRITE')")
     @Override
     public void updatePage(SimplePageInfoContainer simplePageInfoContainer) throws NotFoundException {
 
@@ -87,7 +96,7 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
     /**
      * {@inheritDoc}
      */
-    @PreAuthorize("hasPermission(#simplePage.id, 'org.jtalks.jcommune.model.entity.SimplePage', 'GeneralPermission.WRITE')")
+    //@PreAuthorize("hasPermission(#simplePage.id, 'org.jtalks.jcommune.model.entity.SimplePage', 'GeneralPermission.WRITE')")
     @Override
     public SimplePage createPage(SimplePage simplePage) throws EntityExistsException {
 
@@ -98,6 +107,11 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
         }
 
         this.getDao().update(simplePage);
+
+        Group group = groupDao.get(AdministrationGroup.ADMIN.getId());
+        securityService.createAclBuilder().grant(GeneralPermission.WRITE).
+                to(group).on(simplePage).flush();
+
         logger.info("SimplePage registered: {}", simplePage.getName());
         return simplePage;
     }

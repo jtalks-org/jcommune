@@ -51,13 +51,13 @@
         </div>
     </div>
 
-    <sec:authorize access="hasRole('ROLE_ADMIN')">
+    <sec:accesscontrollist hasPermission="3" domainObject="${simplePage}">
         <div>
             <a class="button" href="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}/edit">
                 <spring:message code="label.edit"/>
             </a>
         </div>
-    </sec:authorize>
+    </sec:accesscontrollist>
 </div>
 
 <div class="footer_buffer">

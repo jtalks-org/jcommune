@@ -167,6 +167,8 @@
     <bean id="simplePageService"
           class="org.jtalks.jcommune.service.transactional.TransactionalSimplePageService">
         <constructor-arg ref="simplePageDao"/>
+        <constructor-arg ref="groupDao"/>
+        <constructor-arg ref="securityService"/>
     </bean>
 
     <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">

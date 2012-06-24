@@ -76,10 +76,11 @@ public class SimplePageController {
     @RequestMapping(value = "/pages/{pagePathName}", method = RequestMethod.GET)
     public ModelAndView showPage(@PathVariable(PAGE_PATH_NAME) String pagePathName) throws NotFoundException {
         SimplePage page = simplePageService.getPageByPathName(pagePathName);
-
+        
         SimplePageDto pageDto = new SimplePageDto(page);
         return new ModelAndView("simplePage")
-                .addObject(PAGE_DTO, pageDto);
+                .addObject(PAGE_DTO, pageDto)
+                .addObject("simplePage", page);
     }
 
 
@@ -122,6 +123,7 @@ public class SimplePageController {
         }
         SimplePageInfoContainer simplePageInfoContainer = simplePageDto.getSimplePageInfoContainer();
         simplePageService.updatePage(simplePageInfoContainer);
+
         return new ModelAndView("redirect:/pages/" + pagePathName);
     }
 
