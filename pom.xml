@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.jtalks.jcommune</groupId>
@@ -36,12 +37,17 @@
             <dependency>
                 <groupId>org.jtalks.common</groupId>
                 <artifactId>jtalks-common-model</artifactId>
-                <version>0.17</version>
+                <version>0.19</version>
             </dependency>
             <dependency>
                 <groupId>org.jtalks.common</groupId>
                 <artifactId>jtalks-common-service</artifactId>
-                <version>0.18</version>
+                <version>0.19</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jtalks.common</groupId>
+                <artifactId>jtalks-common-security</artifactId>
+                <version>0.19</version>
             </dependency>
             <!-- Hibernate -->
             <dependency>
@@ -381,7 +387,7 @@
                 <version>1.0</version>
             </dependency>
             <!-- Captcha -->
-             <dependency>
+            <dependency>
                 <groupId>com.google.code</groupId>
                 <artifactId>kaptcha</artifactId>
                 <version>2.3.2</version>

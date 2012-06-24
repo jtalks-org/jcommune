@@ -32,7 +32,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
  *
  * @author Evgeniy Naumenko
  */
-@PreAuthorize("hasRole('ROLE_USER')")
+@PreAuthorize("isAuthenticated()")
 public class TransactionalSubscriptionService implements SubscriptionService {
 
     private SecurityService securityService;

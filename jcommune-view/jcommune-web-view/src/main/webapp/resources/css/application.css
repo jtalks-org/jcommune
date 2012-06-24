@@ -131,7 +131,7 @@ ul.lang-menu li img {
 }
 
 #topics-table {
-	table-layout: fixed;
+    table-layout: fixed;
     word-wrap: break-word;
 }
 
@@ -141,7 +141,7 @@ ul.lang-menu li img {
 }
 
 #topics-table th {
-	vertical-align: middle;
+    vertical-align: middle;
 }
 
 #topics-table .status-col {
@@ -313,22 +313,21 @@ ul.lang-menu li img {
     font: 11px verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
 }
 
-.cursor-pointer{
+.cursor-pointer {
     cursor: pointer !important;
 }
 
-.right-aligned{
+.right-aligned {
     float: right;
 }
 
-.left-aligned{
+.left-aligned {
     float: left;
 }
 
-.cleared{
-    clear:both;
+.cleared {
+    clear: both;
 }
-
 
 @media (max-width: 480px) {
     .upper-pagination {
