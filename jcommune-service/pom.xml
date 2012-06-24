@@ -100,7 +100,6 @@
         <dependency>
             <groupId>org.jtalks.common</groupId>
             <artifactId>jtalks-common-security</artifactId>
-            <version>0.19-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
