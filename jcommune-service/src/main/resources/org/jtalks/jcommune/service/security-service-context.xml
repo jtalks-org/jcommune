@@ -46,7 +46,7 @@
     <!-- Evaluates hasPermission expression -->
     <bean id="aclGroupPermissionEvaluator" class="org.jtalks.jcommune.service.security.AclGroupPermissionEvaluator">
         <!-- Link to actual ACL Service -->
-        <constructor-arg name="aclManager" ref="aclGroupManager"/>
+        <constructor-arg name="aclManager" ref="aclManager"/>
         <constructor-arg name="aclUtil" ref="aclUtils"/>
         <constructor-arg name="groupDao" ref="groupDao"/>
         <constructor-arg name="sidFactory" ref="jtalksSidFactory"/>
@@ -54,10 +54,6 @@
     <bean id="aclUtils" class="org.jtalks.common.security.acl.AclUtil">
         <constructor-arg name="mutableAclService" ref="aclService"/>
         <property name="objectIdentityGenerator" ref="typeConvertingObjectIdentityGenerator"/>
-    </bean>
-    <bean id="aclGroupManager" class="org.jtalks.common.security.acl.AclManager">
-        <constructor-arg name="mutableAclService" ref="aclService"/>
-        <property name="aclUtil" ref="aclUtils"/>
     </bean>
     <bean id="typeConvertingObjectIdentityGenerator" class="org.jtalks.common.security.acl.TypeConvertingObjectIdentityGenerator">
            <property name="additionalConversionRules">
@@ -138,7 +134,8 @@
           class="org.jtalks.jcommune.service.security.SecurityContextHolderFacade"/>
 
     <bean id="aclManager" class="org.jtalks.common.security.acl.AclManager">
-        <constructor-arg ref="aclService"/>
+        <constructor-arg name="mutableAclService" ref="aclService"/>
+        <property name="aclUtil" ref="aclUtils"/>
     </bean>
 
     <bean name="sidRetrievalStrategyImpl" class="org.jtalks.jcommune.service.security.SidRetrievalStrategyImpl">
