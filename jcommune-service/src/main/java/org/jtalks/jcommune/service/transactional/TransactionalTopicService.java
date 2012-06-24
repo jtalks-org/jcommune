@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
-import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.BranchDao;
@@ -29,7 +28,6 @@ import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
-import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -54,7 +52,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     private SecurityService securityService;
     private BranchService branchService;
     private BranchDao branchDao;
-    private GroupDao groupDao;
     private NotificationService notificationService;
     private SubscriptionService subscriptionService;
 
@@ -62,20 +59,18 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * Create an instance of User entity based service
      *
      * @param dao                 data access object, which should be able do all CRUD operations with topic entity
-     * @param groupDao            this dao returns user group for permission granting
      * @param securityService     {@link SecurityService} for retrieving current user
      * @param branchService       {@link org.jtalks.jcommune.service.BranchService} instance to be injected
      * @param branchDao           used for checking branch existence
      * @param notificationService to send email nofications on topic updates to subscribed users
      * @param subscriptionService for subscribing user on topic if notification enabled
      */
-    public TransactionalTopicService(TopicDao dao, GroupDao groupDao, SecurityService securityService,
+    public TransactionalTopicService(TopicDao dao, SecurityService securityService,
                                      BranchService branchService, BranchDao branchDao,
                                      NotificationService notificationService,
                                      SubscriptionService subscriptionService) {
         super(dao);
         this.securityService = securityService;
-        this.groupDao = groupDao;
         this.branchService = branchService;
         this.branchDao = branchDao;
         this.notificationService = notificationService;
@@ -128,11 +123,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         securityService.createAclBuilder().grant(GeneralPermission.WRITE)
                 .to(securityService.getCurrentUser())
                 .on(first).flush();
-        if (topic.getPoll() != null) {
-            securityService.createAclBuilder().grant(GeneralPermission.WRITE)
-                    .to(groupDao.get(AdministrationGroup.USER.getId()))
-                    .on(topic.getPoll()).flush();
-        }
 
         notificationService.branchChanged(branch);
 
