@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
@@ -49,6 +50,8 @@ public class TransactionalPollServiceTest {
     @Mock
     private ChildRepository<Poll> pollDao;
     @Mock
+    private GroupDao groupDao;
+    @Mock
     private SecurityService securityService;
     @Mock
     private CompoundAclBuilder<User> aclBuilder;
@@ -59,7 +62,7 @@ public class TransactionalPollServiceTest {
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
-        pollService = new TransactionalPollService(pollDao, pollOptionDao,
+        pollService = new TransactionalPollService(pollDao, groupDao, pollOptionDao,
                 securityService, temporaryAuthorityManager);
         aclBuilder = mockAclBuilder();
         Mockito.when(aclBuilder.on(Mockito.any(Poll.class))).thenReturn(aclBuilder);

@@ -19,6 +19,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <head>
     <title><spring:message code="label.new_pm"/></title>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
@@ -37,7 +38,8 @@
     <hr/>
     <div class="row">
         <div class="span2">
-            <a href="${pageContext.request.contextPath}/pm/new" class="btn btn-primary btn-small pm_buttons">
+            <sec:authentication property="principal.id" var="userId"/>
+            <a href="${pageContext.request.contextPath}/pm/new?userId=${userId}" class="btn btn-primary btn-small pm_buttons">
                 <spring:message code="label.new_pm"/></a>
             <jsp:include page="../../template/pmFolders.jsp"/>
         </div>

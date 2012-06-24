@@ -13,10 +13,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-function quote(postId) {
+function quote(postId, branchId) {
     // we need a synchronous POST here so we're creating a form. Found no better way to do it(
     var form = document.createElement("form");
-    form.setAttribute("action", $root + "/posts/" + postId + "/quote");
+    form.setAttribute("action", $root + "/posts/" + postId + "/quote?branchId=" + branchId);
     form.setAttribute("method", "POST");
     var field = document.createElement("input");
     field.setAttribute("type", "hidden");

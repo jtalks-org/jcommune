@@ -246,6 +246,7 @@ public class TopicController {
 
         return new ModelAndView("editTopic")
                 .addObject("topicDto", topicDto)
+                .addObject("topic", topic)
                 .addObject(BRANCH_ID, branchId)
                 .addObject(TOPIC_ID, topicId)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));

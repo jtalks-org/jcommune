@@ -133,6 +133,8 @@ public class TransactionalPrivateMessageService
         pm.setStatus(PrivateMessageStatus.DRAFT);
         this.getDao().saveOrUpdate(pm);
 
+        securityService.createAclBuilder().grant(GeneralPermission.READ).to(securityService.getCurrentUser()).
+                on(pm).flush();
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(securityService.getCurrentUser()).
                 on(pm).flush();
 
