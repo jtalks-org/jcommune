@@ -64,7 +64,7 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
     /**
      * {@inheritDoc}
      */
-    @PreAuthorize("hasPermission(#branchId, 'org.jtalks.jcommune.model.entity.Branch', 'BranchPermission.CREATE_POSTS')")
+    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.CREATE_POSTS')")
     @Override
     public Poll vote(Long pollId, List<Long> selectedOptionIds, long branchId) {
         Poll poll = getDao().get(pollId);
