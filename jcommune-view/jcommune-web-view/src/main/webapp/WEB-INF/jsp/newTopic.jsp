@@ -25,6 +25,8 @@
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/datepicker/js/jquery-ui-1.8.21.custom.min.js"
             type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/datepicker/development-bundle/ui/i18n/jquery.ui.datepicker-ru.js"
+            type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/datepicker.js"
@@ -34,10 +36,6 @@
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/leaveConfirm.js"></script>
 
-    <%--todo need to set proper localization
-        <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-ui-i18n.min.js"
-                type="text/javascript"></script>
-    --%>
     <link rel="stylesheet"
           href="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/datepicker/development-bundle/themes/smoothness/jquery.ui.datepicker.css"
           type="text/css" media="all"/>
