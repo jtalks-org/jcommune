@@ -46,6 +46,7 @@ public class PermissionExpressionHandler implements WebSecurityExpressionHandler
         ((PermissionExpressionRoot)root).setPermissionEvaluator(permissionEvaluator);
         root.setTrustResolver(trustResolver);
         root.setRoleHierarchy(roleHierarchy);
+        ((PermissionExpressionRoot) root).setFilterInvocation(fi);
         ctx.setRootObject(root);
 
         return ctx;

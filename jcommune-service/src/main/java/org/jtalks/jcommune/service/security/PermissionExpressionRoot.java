@@ -17,11 +17,17 @@ package org.jtalks.jcommune.service.security;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.FilterInvocation;
 
 import javax.transaction.NotSupportedException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PermissionExpressionRoot extends SecurityExpressionRoot {
     private PermissionEvaluator permissionEvaluator;
+    private FilterInvocation filterInvocation;
 
     PermissionExpressionRoot(Authentication a) {
         super(a);
@@ -31,24 +37,17 @@ public class PermissionExpressionRoot extends SecurityExpressionRoot {
         this.permissionEvaluator = permissionEvaluator;
     }
 
-    public final boolean hasAnyRole(String roles) {
-        String[] rolesList = roles.split(",");
-        for (String role : rolesList) {
-            AdministrationGroup administrationGroup = AdministrationGroup.getAdministrationGroupByName(role);
-            if (administrationGroup == AdministrationGroup.ANONYMOUS) {
-                return super.hasAnyRole(rolesList);
-            } else if (permissionEvaluator.hasPermission(authentication, administrationGroup.getId(), null)) {
-                return true;
-            }
+    public final boolean hasPermission(String targetIdName, String targetType, String permission)
+            throws MalformedURLException {
+        URL url = new URL(filterInvocation.getFullRequestUrl());
+        String[] params = url.getQuery().split("&");
+        Map<String, String> map = new HashMap<String, String>();
+        for (String param : params) {
+            String name = param.split("=")[0];
+            String value = param.split("=")[1];
+            map.put(name, value);
         }
-        return false;
-    }
-
-    public final boolean hasAnyRole(String targetId, String targetType, String permission) {
-        return permissionEvaluator.hasPermission(authentication, targetId, targetType, permission);
-    }
-
-    public final boolean hasAnyRole(long targetId, String targetType, String permission) {
+        String targetId = map.get(targetIdName);
         return permissionEvaluator.hasPermission(authentication, targetId, targetType, permission);
     }
 
@@ -57,5 +56,9 @@ public class PermissionExpressionRoot extends SecurityExpressionRoot {
         throw new NotSupportedException("This method is not supported. " +
                 "Please use hasAnyRole(String targetId, String targetType, String permission) " +
                 "or hasAnyRole(String roles)");
+    }
+
+    public void setFilterInvocation(FilterInvocation filterInvocation) {
+        this.filterInvocation = filterInvocation;
     }
 }
