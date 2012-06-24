@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
+import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.SecurityService;
@@ -84,6 +85,8 @@ public class TransactionalTopicServiceTest {
     @Mock
     private TopicDao topicDao;
     @Mock
+    private GroupDao groupDao;
+    @Mock
     private BranchDao branchDao;
     @Mock
     private NotificationService notificationService;
@@ -96,7 +99,7 @@ public class TransactionalTopicServiceTest {
     public void setUp() throws Exception {
         initMocks(this);
         aclBuilder = mockAclBuilder();
-        topicService = new TransactionalTopicService(topicDao, securityService,
+        topicService = new TransactionalTopicService(topicDao, groupDao, securityService,
                 branchService, branchDao, notificationService, subscriptionService);
         user = new JCUser(USERNAME, "email@mail.com", "password");
     }

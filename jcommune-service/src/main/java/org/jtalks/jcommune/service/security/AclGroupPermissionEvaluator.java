@@ -77,7 +77,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
     public boolean hasPermission(Authentication authentication, Serializable targetId,
                                  String targetType, Object permission) {
         boolean result = false;
-        Long id = (targetId instanceof String ? Long.getLong((String) targetId) : (Long) targetId);
+        Long id = (targetId instanceof String ? Long.parseLong((String) targetId) : (Long) targetId);
 
         ObjectIdentity objectIdentity = aclUtil.createIdentity(id, targetType);
         Permission jtalksPermission = getPermission(permission);

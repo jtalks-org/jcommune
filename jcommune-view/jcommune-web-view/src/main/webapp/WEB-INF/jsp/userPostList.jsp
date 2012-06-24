@@ -24,11 +24,6 @@
     <title><spring:message code="label.postListOfUser"/> <c:out value="${user.username}"/></title>
 </head>
 <body>
-<c:set var="authenticated" value="${false}"/>
-<sec:authorize access="hasAnyRole('ROLE_USER,ROLE_ADMIN')">
-    <c:set var="authenticated" value="${true}"/>
-</sec:authorize>
-
 <jsp:include page="../template/topLine.jsp"/>
 <div class="container">
     <div class="row-fluid upper-pagination forum-pagination-container">
@@ -162,13 +157,12 @@
         </div>
     </div>
     <!-- END OF Pagination -->
-    
-    <c:if test="${authenticated==true}">
+    <sec:authorize access="isAuthenticated()">
         <a href="${pageContext.request.contextPath}/users/${user.id}" class="back-btn">
             <i class="icon-arrow-left"></i>
             <spring:message code="label.back"/>
         </a>
-    </c:if>
+    </sec:authorize>
         
 </div>
 </body>

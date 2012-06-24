@@ -31,6 +31,7 @@
 </head>
 <body>
     <sec:authentication property="principal.username" var="auth" scope="request"/>
+    <sec:authentication property="principal.id" var="userId"/>
     <jsp:include page="../template/topLine.jsp"/>
 
     <div class="container">
@@ -51,7 +52,7 @@
                     <c:if test="${user.username != auth}">
                         <div class="user-profile-buttons-send">
                             <a class="btn btn-mini btn-info" 
-                                href="${pageContext.request.contextPath}/pm/new/${user.id}" >
+                                href="${pageContext.request.contextPath}/pm/new/${user.id}?userId=${userId}" >
                                 <spring:message code="label.pm.send"/>
                             </a>
                         </div>

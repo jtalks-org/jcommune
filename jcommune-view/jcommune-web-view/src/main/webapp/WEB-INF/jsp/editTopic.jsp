@@ -31,82 +31,82 @@
             type="text/javascript"></script>
 </head>
 <body>
-    <jsp:include page="../template/topLine.jsp"/>
-    
-    <div class="container">
-        
-        <h2><c:out value="${topicDto.topicName}"/></h2>
-        
-        <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-        
-        <form:form name="editForm"
-                   action="${pageContext.request.contextPath}/topics/${topicId}/edit?branchId=${branchId}"
-                   method="POST" modelAttribute="topicDto" class='well anti-multipost'>
-            <form:hidden path="id"/>
-            
-            <div class='control-group'>
-                <label for='subject' class='control-label'><spring:message code="label.topic.title"/></label>
-                <form:input path="topicName" id="subject" type="text" name="subject" size="45"
-                            maxlength="255" tabindex="1"
-                            class="post confirm-unsaved" placeholder='<spring:message code="label.topic.topic_title"/>'/>
-                <br/>
-                
-                <form:errors path="topicName" id="subject" type="text" name="subject" size="45"
-                            maxlength="255" tabindex="1"
-                            class="post" cssClass="error"/>
-            </div>
-                    
-                <sec:authorize access="hasRole('ROLE_ADMIN')">
-                    <div class='control-group'>
-                        <form:checkbox path="sticked" value="true" class="confirm-unsaved form-check-radio-box"/>
-                        <label for='sticked' class='string optional'>
-                            <spring:message code="label.sticked"/>
-                        </label>
-                        
-                        <form:errors path="sticked"/>
-                    </div>
-                    <div class='control-group'>
-                        <form:label path="topicWeight" class='control-label'>
-                            <spring:message code="label.weight"/>
-                        </form:label>
-                        <form:input path="topicWeight" size="1" class="confirm-unsaved"/>
-                    
-                        <form:errors path="topicWeight"/>
-                    </div>
-                    <div class='control-group'>
-                        <form:checkbox path="announcement" value="true" class="confirm-unsaved form-check-radio-box" />
-                        <label for='announcement' class='string optional'><spring:message code="label.announcement"/></label>
-                        
-                        <form:errors path="announcement"/>
-                    </div>
-                </sec:authorize>
-           
-            <jtalks:bbeditor labelForAction="label.save"
-                             postText="${topicDto.bodyText}"
-                             bodyParameterName="bodyText"
-                             back="${pageContext.request.contextPath}/topics/${topicId}"/>
-            <div class="control-group">
-                <br/>
-                <c:choose>
-                    <c:when test="${topicDto.notifyOnAnswers}">
-                        <form:checkbox id="notify" path="notifyOnAnswers" name="notify" checked="checked"
-                                       style="margin-right: 10px;"/><spring:message
-                            code="label.answer.notify_message"/>
-                    </c:when>
-                    <c:otherwise>
-                        <form:checkbox id="notify" path="notifyOnAnswers" name="notify"
-                                       style="margin-right: 10px;"/><spring:message
-                            code="label.answer.notify_message"/>
-                    </c:otherwise>
-                </c:choose>
-            </div>
+<jsp:include page="../template/topLine.jsp"/>
 
-        </form:form>
-        
-        <a href="${pageContext.request.contextPath}/topics/${topicId}" class='back-btn'>
-            <i class="icon-arrow-left"></i>
-            <spring:message code="label.back"/>
-        </a>
-    </div>
+<div class="container">
+
+    <h2><c:out value="${topicDto.topicName}"/></h2>
+
+    <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
+
+    <form:form name="editForm"
+               action="${pageContext.request.contextPath}/topics/${topicId}/edit?branchId=${branchId}"
+               method="POST" modelAttribute="topicDto" class='well anti-multipost'>
+        <form:hidden path="id"/>
+
+        <div class='control-group'>
+            <label for='subject' class='control-label'><spring:message code="label.topic.title"/></label>
+            <form:input path="topicName" id="subject" type="text" name="subject" size="45"
+                        maxlength="255" tabindex="1"
+                        class="post confirm-unsaved" placeholder='<spring:message code="label.topic.topic_title"/>'/>
+            <br/>
+
+            <form:errors path="topicName" id="subject" type="text" name="subject" size="45"
+                         maxlength="255" tabindex="1"
+                         class="post" cssClass="error"/>
+        </div>
+
+        <sec:accesscontrollist hasPermission="16" domainObject="${topic.branch}">
+            <div class='control-group'>
+                <form:checkbox path="sticked" value="true" class="confirm-unsaved form-check-radio-box"/>
+                <label for='sticked' class='string optional'>
+                    <spring:message code="label.sticked"/>
+                </label>
+
+                <form:errors path="sticked"/>
+            </div>
+            <div class='control-group'>
+                <form:label path="topicWeight" class='control-label'>
+                    <spring:message code="label.weight"/>
+                </form:label>
+                <form:input path="topicWeight" size="1" class="confirm-unsaved"/>
+
+                <form:errors path="topicWeight"/>
+            </div>
+            <div class='control-group'>
+                <form:checkbox path="announcement" value="true" class="confirm-unsaved form-check-radio-box"/>
+                <label for='announcement' class='string optional'><spring:message code="label.announcement"/></label>
+
+                <form:errors path="announcement"/>
+            </div>
+        </sec:accesscontrollist>
+
+        <jtalks:bbeditor labelForAction="label.save"
+                         postText="${topicDto.bodyText}"
+                         bodyParameterName="bodyText"
+                         back="${pageContext.request.contextPath}/topics/${topicId}"/>
+        <div class="control-group">
+            <br/>
+            <c:choose>
+                <c:when test="${topicDto.notifyOnAnswers}">
+                    <form:checkbox id="notify" path="notifyOnAnswers" name="notify" checked="checked"
+                                   style="margin-right: 10px;"/><spring:message
+                        code="label.answer.notify_message"/>
+                </c:when>
+                <c:otherwise>
+                    <form:checkbox id="notify" path="notifyOnAnswers" name="notify"
+                                   style="margin-right: 10px;"/><spring:message
+                        code="label.answer.notify_message"/>
+                </c:otherwise>
+            </c:choose>
+        </div>
+
+    </form:form>
+
+    <a href="${pageContext.request.contextPath}/topics/${topicId}" class='back-btn'>
+        <i class="icon-arrow-left"></i>
+        <spring:message code="label.back"/>
+    </a>
+</div>
 </body>
 </html>

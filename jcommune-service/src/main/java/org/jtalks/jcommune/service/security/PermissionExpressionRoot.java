@@ -37,15 +37,20 @@ public class PermissionExpressionRoot extends SecurityExpressionRoot {
         this.permissionEvaluator = permissionEvaluator;
     }
 
-    public final boolean hasPermission(String targetIdName, String targetType, String permission)
-            throws MalformedURLException {
-        URL url = new URL(filterInvocation.getFullRequestUrl());
+    public final boolean hasPermission(String targetIdName, String targetType, String permission) {
+        URL url;
+        try {
+            url = new URL(filterInvocation.getFullRequestUrl());
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException("Filter URL is invalid.", e);
+        }
         String[] params = url.getQuery().split("&");
         Map<String, String> map = new HashMap<String, String>();
         for (String param : params) {
-            String name = param.split("=")[0];
-            String value = param.split("=")[1];
-            map.put(name, value);
+            String[] par = param.split("=");
+            if (par.length == 2) {
+                map.put(par[0], par[1]);
+            }
         }
         String targetId = map.get(targetIdName);
         return permissionEvaluator.hasPermission(authentication, targetId, targetType, permission);

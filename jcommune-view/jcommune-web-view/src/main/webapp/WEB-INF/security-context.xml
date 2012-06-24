@@ -50,30 +50,31 @@
         <security:intercept-url pattern="/posts/*" method="DELETE" access="hasPermission('branchId','BRANCH','BranchPermission.DELETE_OWN_POSTS')
         or hasPermission('branchId','BRANCH','BranchPermission.DELETE_OTHERS_POSTS')"/>
 
-        <security:intercept-url pattern="/users/new" method="GET" access="permitAll"/>
-        <security:intercept-url pattern="/user" method="GET" access="isAuthenticated"/>
-        <security:intercept-url pattern="/users/**" access="isAuthenticated"/>
-        <security:intercept-url pattern="/user/activate/**" access="permitAll"/>
+        <security:intercept-url pattern="/users/new" method="GET" access="permitAll()"/>
+        <security:intercept-url pattern="/user" method="GET" access="isAuthenticated()"/>
+        <security:intercept-url pattern="/users/**" access="isAuthenticated()"/>
+        <security:intercept-url pattern="/user/activate/**" access="permitAll()"/>
 
-        <security:intercept-url pattern="/pm/**" access="isAuthenticated"/>
+        <security:intercept-url pattern="/pm/**" access="isAuthenticated()"/>
         <security:intercept-url pattern="/pm/new/**" access="hasPermission('userId','USER','ProfilePermission.SEND_PRIVATE_MESSAGES')"/>
-        <security:intercept-url pattern="/inbox" access="isAuthenticated"/>
-        <security:intercept-url pattern="/inbox/**" access="isAuthenticated"/>
-        <security:intercept-url pattern="/outbox" access="isAuthenticated"/>
+        <security:intercept-url pattern="/inbox" access="isAuthenticated()"/>
+        <security:intercept-url pattern="/inbox/**" access="isAuthenticated()"/>
+        <security:intercept-url pattern="/outbox" access="isAuthenticated()"/>
         <security:intercept-url pattern="/reply/**" access="hasPermission('userId','USER','ProfilePermission.SEND_PRIVATE_MESSAGES')"/>
-        <security:intercept-url pattern="/quote/**" access="hasPermission('branchId','BRANCH','BranchPermission.CREATE_POSTS')"/>
-        <security:intercept-url pattern="/drafts" access="isAuthenticated"/>
+        <security:intercept-url pattern="/quote/*" access="hasPermission('userId','USER','ProfilePermission.SEND_PRIVATE_MESSAGES')"/>
+        <security:intercept-url pattern="/quote" access="hasPermission('branchId','BRANCH','BranchPermission.CREATE_POSTS')"/>
+        <security:intercept-url pattern="/drafts" access="isAuthenticated()"/>
         <security:intercept-url pattern="/answer" access="hasPermission('branchId','BRANCH','BranchPermission.CREATE_POSTS')"/>
 
-        <security:intercept-url pattern="/topics/*/subscribe" access="isAuthenticated"/>
-        <security:intercept-url pattern="/topics/*/unsubscribe" access="isAuthenticated"/>
+        <security:intercept-url pattern="/topics/*/subscribe" access="isAuthenticated()"/>
+        <security:intercept-url pattern="/topics/*/unsubscribe" access="isAuthenticated()"/>
         <security:intercept-url pattern="/topics/json/**" access="hasPermission('branchId','BRANCH','GeneralPermission.ADMIN')"/>
-        <security:intercept-url pattern="/branches/*/subscribe" access="isAuthenticated"/>
-        <security:intercept-url pattern="/branches/*/unsubscribe" access="isAuthenticated"/>
+        <security:intercept-url pattern="/branches/*/subscribe" access="isAuthenticated()"/>
+        <security:intercept-url pattern="/branches/*/unsubscribe" access="isAuthenticated()"/>
 
-        <security:intercept-url pattern="/poll/**" access="hasPermission('pollId','POLL','TopicPermission.POLL')"/>
+        <security:intercept-url pattern="/poll/**" access="hasPermission('pollId','POLL','GeneralPermission.WRITE')"/>
 
-        <security:intercept-url pattern="*" access="permitAll"/>
+        <security:intercept-url pattern="*" access="permitAll()"/>
 
         <security:form-login login-page="/login" login-processing-url="/j_spring_security_check"
                              authentication-failure-url="/login?login_error=1" default-target-url="/"
