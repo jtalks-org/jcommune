@@ -45,7 +45,7 @@
     <!-- Topics table -->
     <table id="topics-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
         <c:choose>
-	       <c:when test="${!(empty list)}">
+	       <c:when test="${!(empty searchResultPage.content)}">
 	           <thead>
 		            <tr>
 		                <th class="status-col"></th>
@@ -57,7 +57,7 @@
 		            </tr>
 		        </thead>
 		        <tbody>
-                    <c:forEach var="topic" items="${list}" varStatus="i">
+                    <c:forEach var="topic" items="${searchResultPage.content}" varStatus="i">
                         <tr>
                             <td class="status-col"><img class="status-img" 
                                 src="${pageContext.request.contextPath}/resources/images/closed.png" 

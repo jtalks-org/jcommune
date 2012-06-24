@@ -25,9 +25,9 @@ import org.springframework.data.domain.Page;
 
 /**
  * Class for custom tag jtalks:pagination
- * todo: refactor it
  *
  * @author Andrey Kluev
+ * @author Anuar Nurmakanov
  */
 public class Paginator extends BodyTagSupport {
     private static final long serialVersionUID = 1L;
@@ -40,22 +40,6 @@ public class Paginator extends BodyTagSupport {
     private Page<?> page;
     private boolean pagingEnabled;
     
-    /**
-     * @param uri uri
-     */
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int doStartTag() {
-        pageContext.setAttribute("list", page.getContent());
-        return EVAL_BODY_INCLUDE;
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -94,6 +78,13 @@ public class Paginator extends BodyTagSupport {
             }
         }
         return buffer.toString();
+    }
+    
+    /**
+     * @param uri uri
+     */
+    public void setUri(String uri) {
+        this.uri = uri;
     }
     
     /**

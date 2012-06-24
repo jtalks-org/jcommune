@@ -31,7 +31,7 @@ import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
+import org.jtalks.jcommune.service.nontransactional.PaginationService;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.SectionDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
@@ -52,16 +52,20 @@ public class SectionControllerTest {
     private BreadcrumbBuilder breadcrumbBuilder;
     private ForumStatisticsProvider statisticsProvider;
     private LocationService locationServiceImpl;
+    private PaginationService paginationService;
 
     @BeforeMethod
     public void init() {
         sectionService = mock(SectionService.class);
-        SecurityService securityService = mock(SecurityService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
         statisticsProvider = mock(ForumStatisticsProvider.class);
         locationServiceImpl = mock(LocationService.class);
-        controller = new SectionController(securityService, sectionService,
-                statisticsProvider, locationServiceImpl);
+        paginationService = mock(PaginationService.class);
+        controller = new SectionController( 
+                sectionService,
+                statisticsProvider,
+                locationServiceImpl,
+                paginationService);
     }
 
     @Test

@@ -66,7 +66,7 @@
     <div class='post'>  
     <table class="table table-striped table-bordered table-condensed">     
         <c:choose>
-            <c:when test="${!(empty list)}">
+            <c:when test="${!(empty postsPage.content)}">
                 <thead>
                     <tr>
                         <th><spring:message code="label.info"/></th>
@@ -74,7 +74,7 @@
                     </tr>
                 </thead> 
                 <tbody>
-                    <c:forEach var="post" items="${list}" varStatus="i">
+                    <c:forEach var="post" items="${postsPage.content}" varStatus="i">
                     <tr class='post-content-tr'>
                         <td class='userinfo'>
                             <spring:message code='label.branch.header.branches'/>
