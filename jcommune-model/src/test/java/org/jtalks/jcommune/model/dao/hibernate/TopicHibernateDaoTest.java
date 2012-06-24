@@ -238,4 +238,37 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         
         assertEquals(actualCount, expectedCount, "Count of topics in the branch is wrong");
     }
+    
+    @Test
+    public void testGetTopicsWithEnabledPaging() {
+        boolean pagingEnabled = true;
+        int totalSize = 50;
+        int pageCount = 2;
+        int pageSize = totalSize/pageCount;
+        JcommunePageable pageRequest = new JcommunePageRequest(1, pageSize);
+        List<Topic> topicList = ObjectsFactory.createAndSaveTopicList(totalSize);
+        Branch branch = topicList.get(0).getBranch();
+        
+        Page<Topic> topicsPage = dao.getTopics(branch, pageRequest, pagingEnabled);
+        
+        assertEquals(topicsPage.getContent().size(), pageSize, "Incorrect count of topics in one page.");
+        assertEquals(topicsPage.getTotalElements(), totalSize, "Incorrect total count.");
+        assertEquals(topicsPage.getTotalPages(), pageCount, "Incorrect count of pages.");
+        
+    }
+    
+    @Test
+    public void testGetTopicsWithDisabledPaging() {
+        boolean pagingEnabled = false;
+        int size = 50;
+        JcommunePageable pageRequest = new JcommunePageRequest(1, size/2);
+        List<Topic> topicList = ObjectsFactory.createAndSaveTopicList(size);
+        Branch branch = topicList.get(0).getBranch();
+        
+        Page<Topic> topicsPage = dao.getTopics(branch, pageRequest, pagingEnabled);
+        
+        assertEquals(topicsPage.getContent().size(), size, 
+                "Paging is disabled, so it should retrieve all topics in the branch.");
+        assertEquals(topicsPage.getTotalElements(), size, "Incorrect total count.");
+    }
 }

@@ -17,24 +17,38 @@ package org.jtalks.jcommune.service.nontransactional;
 import org.jtalks.jcommune.model.entity.JCUser;
 
 /**
+ * This service provides functionality, that is needed for pagination.
+ * For the most part, it needed to get the size of a user's page. 
+ * After we have add a fake user for anonymous users, this service
+ * will not be needed.
  * 
  * @author Anuar Nurmakanov
- *
  */
 public class PaginationService {
     private SecurityService securityService;
     
+    /**
+     * Constructs an instance with required fields.
+     * 
+     * @param securityService security service, it needed for information
+     *                        about current user
+     */
     public PaginationService(SecurityService securityService) {
         this.securityService = securityService;
     }
 
+    /**
+     * Returns page size applicable for the current user.
+     * 
+     * @return page size applicable for the current user
+     */
     public int getPageSizeForCurrentUser() {
         JCUser currentUser = securityService.getCurrentUser();
-        return (currentUser == null) ? JCUser.DEFAULT_PAGE_SIZE : currentUser.getPageSize();
+        return getPageSizeFor(currentUser);
     }
     
     /**
-     * Returns page size applicable for the current user. If for some reasons
+     * Returns page size applicable for the user. If for some reasons
      * this implementation is unable to determaine this parameter the default
      * value will be used.
      *

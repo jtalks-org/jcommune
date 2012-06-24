@@ -120,7 +120,7 @@
         <div class="span12">
             <div class="pagination pull-right forum-pagination">
                 <ul>
-                    <jtalks:pagination uri="" page="${searchResultPage}" pagingEnabled="${pagingEnabled}" />
+                    <jtalks:pagination uri="${uri}" page="${searchResultPage}" pagingEnabled="${pagingEnabled}" />
                 </ul>
             </div>
         </div>

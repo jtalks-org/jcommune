@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.model.dao.search.hibernate;
 
+import static org.testng.Assert.assertEquals;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -90,6 +92,34 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
 		fullTextSession.purgeAll(Topic.class);
 		fullTextSession.flushToIndexes();
 	}
+	 
+	/*===== Paging testing =====*/
+	
+	@Test
+	public void testSearchPaging() {
+        int totalSize = 50;
+        int pageCount = 2;
+        int pageSize = totalSize/pageCount;
+        String searchText = "JCommune";
+        JcommunePageable pageRequest = new JcommunePageRequest(1, pageSize);
+        List<Topic> topicList = ObjectsFactory.createAndSaveTopicList(totalSize);
+        for(Topic topic: topicList) {
+            topic.setTitle(searchText);
+        }
+        
+        saveAndFlushIndexes(topicList);
+        configureMocks(searchText, searchText);
+        
+        Page<Topic> searchResultPage = topicSearchDao.searchByTitleAndContent(
+                searchText, pageRequest);
+        
+        assertEquals(searchResultPage.getContent().size(), pageSize, "Incorrect count of topics in one page.");
+        assertEquals(searchResultPage.getTotalElements(), totalSize, "Incorrect total count.");
+        assertEquals(searchResultPage.getTotalPages(), pageCount, "Incorrect count of pages.");
+        
+	}
+	
+	/*===== Testing of different variations of the search. =====*/
 	
 	@Test
 	public void testSearchWithFullyDirtySearchText() {
