@@ -17,9 +17,9 @@ package org.jtalks.jcommune.model.dto;
 import org.springframework.data.domain.PageRequest;
 
 /**
+ * The implementation of {@link JcommunePageable}.
  * 
  * @author Anuar Nurmakanov
- *
  */
 public class JcommunePageRequest extends PageRequest implements JcommunePageable {
     private static final long serialVersionUID = -9054794147449741044L;
@@ -38,7 +38,7 @@ public class JcommunePageRequest extends PageRequest implements JcommunePageable
      * {@inheritDoc}
      */
     @Override
-    public int getNumberOfFirstItem() {
+    public int getIndexOfFirstItem() {
         return(getPageNumber() - 1) * getPageSize();
     }
 }

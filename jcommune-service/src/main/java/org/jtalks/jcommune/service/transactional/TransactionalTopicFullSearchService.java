@@ -41,7 +41,11 @@ public class TransactionalTopicFullSearchService implements TopicFullSearchServi
     private PaginationService paginationService;
     
     /**
+     * Constructs an instance with required fields.
+     * 
      * @param topicSearchDao for full-text search operations
+     * @param paginationService this service provides functionality,
+     *        that is needed for pagination
      */
     public TransactionalTopicFullSearchService(
             TopicSearchDao topicSearchDao,

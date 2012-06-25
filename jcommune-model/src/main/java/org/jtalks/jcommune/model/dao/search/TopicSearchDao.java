@@ -32,7 +32,9 @@ public interface TopicSearchDao {
      * his content(the list of posts).
      * 
      * @param searchText the search text
-     * @param pageRequest TODO
+     * @param pageRequest contains information for pagination: page number, page size
+     * @return object that contains search results for one page(note, that one page
+     *         may contain all search results) and information for pagination
      */
     Page<Topic> searchByTitleAndContent(String searchText, JcommunePageable pageRequest);
 

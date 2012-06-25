@@ -30,7 +30,6 @@ import org.springframework.data.domain.Page;
  */
 public interface PostService extends EntityService<Post> {
 
-
     /**
      * Update current post with given content, add the modification date.
      *
@@ -51,11 +50,14 @@ public interface PostService extends EntityService<Post> {
     void deletePost(long postId) throws NotFoundException;
 
     /**
-     * List posts of user
+     * Get user's posts.
      *
      * @param userCreated user created post
-     * @param pagingEnabled TODO
-     * @return post list
+     * @param page page number, for which we will find posts
+     * @param pagingEnabled if true, then it returns posts for one page, otherwise it
+     *        return all posts, that were created by user
+     * @return object that contains posts for one page(note, that one page may contain
+     *         all posts, that were created by user) and information for pagination
      */
     Page<Post> getPostsOfUser(JCUser userCreated, int page, boolean pagingEnabled);
 
@@ -69,11 +71,14 @@ public interface PostService extends EntityService<Post> {
     int calculatePageForPost(Post post);
     
     /**
+     * Get all posts in the topic of forum.
      * 
-     * @param topic
-     * @param page
-     * @param pagingEnabled
-     * @return
+     * @param topic for this topic we will find posts
+     * @param page page number, for which we will find posts
+     * @param pagingEnabled if true, then it returns posts for one page, otherwise it
+     *        return all posts in the topic
+     * @return object that contains posts for one page(note, that one page may contain
+     *         all posts) and information for pagination
      */
     Page<Post> getPosts(Topic topic, int page, boolean pagingEnabled);
 

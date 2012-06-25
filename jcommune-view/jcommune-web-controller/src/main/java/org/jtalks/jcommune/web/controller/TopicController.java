@@ -93,6 +93,7 @@ public class TopicController {
 
     /**
      * @param topicService        the object which provides actions on {@link Topic} entity
+     * @param postService         the object which provides actions on {@link Post} entity
      * @param branchService       the object which provides actions on  {@link Branch} entity
      * @param lastReadPostService to perform post-related actions
      * @param locationService     to track user location on forum (what page he is viewing now)

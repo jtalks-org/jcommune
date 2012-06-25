@@ -454,4 +454,22 @@ public class TransactionalTopicServiceTest {
 
         topicService.moveTopic(TOPIC_ID, BRANCH_ID);
     }
+    
+    @Test
+    public void testGetTopics() {
+        int pageSize = 50;
+        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        Page<Topic> expectedPage = new PageImpl<Topic>(Collections.<Topic> emptyList());
+        
+        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
+        when(topicDao.getTopics(
+                Matchers.any(Branch.class), Matchers.any(JcommunePageable.class), Matchers.anyBoolean()))
+            .thenReturn(expectedPage);
+        
+        Page<Topic> actualPage = topicService.getTopics(branch, pageSize, true);
+        
+        assertEquals(actualPage, expectedPage, "Service returned incorrect data for one page of topics");
+        verify(topicDao).getTopics(
+                Matchers.any(Branch.class), Matchers.any(JcommunePageable.class), Matchers.anyBoolean());
+    }
 }

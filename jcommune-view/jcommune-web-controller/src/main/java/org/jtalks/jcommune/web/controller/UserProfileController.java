@@ -85,6 +85,7 @@ public class UserProfileController {
      * @param breadcrumbBuilder the object which provides actions on {@link BreadcrumbBuilder} entity
      * @param imageUtils        {@link ImageUtils} used
      * @param postService       {@link PostService} used
+     * @param paginationService {@link PaginationService} used 
      */
     @Autowired
     public UserProfileController(UserService userService,

@@ -20,6 +20,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.jtalks.jcommune.model.dao.PostDao;
@@ -246,5 +247,23 @@ public class TransactionalPostServiceTest {
         topic.addPost(new Post(null, null));
 
         assertEquals(postService.calculatePageForPost(post), 1);
+    }
+    
+    @Test
+    public void testGetPosts() {
+        int pageSize = 50;
+        Topic topic = new Topic(user, "");
+        Page<Post> expectedPage = new PageImpl<Post>(Collections.<Post> emptyList());
+        
+        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
+        when(postDao.getPosts(
+                Matchers.any(Topic.class), Matchers.any(JcommunePageable.class), Matchers.anyBoolean()))
+            .thenReturn(expectedPage);
+        
+        Page<Post> actualPage = postService.getPosts(topic, pageSize, true);
+        
+        assertEquals(actualPage, expectedPage, "Service returned incorrect data for one page of posts");
+        verify(postDao).getPosts(
+                Matchers.any(Topic.class), Matchers.any(JcommunePageable.class), Matchers.anyBoolean());
     }
 }

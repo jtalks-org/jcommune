@@ -17,10 +17,17 @@ package org.jtalks.jcommune.model.dto;
 import org.springframework.data.domain.Pageable;
 
 /**
+ * Interface that needed for pagination in Jcommune.
+ * It contains additional help methods for calculation of
+ * pagination.
  * 
  * @author Anuar Nurmakanov
- *
  */
 public interface JcommunePageable extends Pageable {
-    int getNumberOfFirstItem();
+    /**
+     * Get an index for first element in the page.
+     * 
+     * @return an index for first element in the page
+     */
+    int getIndexOfFirstItem();
 }

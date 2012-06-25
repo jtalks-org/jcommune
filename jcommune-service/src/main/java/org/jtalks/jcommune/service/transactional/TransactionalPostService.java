@@ -57,6 +57,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * @param securityService     service for authorization
      * @param notificationService to send email updates for subscribed users
      * @param lastReadPostService to modify last read post information when topic structure is changed
+     * @param paginationService   this service provides functionality, that is needed for pagination
      */
     public TransactionalPostService(
             PostDao dao,

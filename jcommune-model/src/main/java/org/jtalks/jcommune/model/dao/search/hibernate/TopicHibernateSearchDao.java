@@ -83,6 +83,7 @@ public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
      * 
      * @param fullTextSession the Hibernate Search session
      * @param searchText the search text
+     * @param pageRequest contains information for pagination: page number, page size
      * @return the search query
      */
     private FullTextQuery createSearchQuery(
@@ -103,7 +104,7 @@ public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
                 matching(searchText).
                 createQuery();
         FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery);
-        query.setFirstResult(pageRequest.getNumberOfFirstItem());
+        query.setFirstResult(pageRequest.getIndexOfFirstItem());
         query.setMaxResults(pageRequest.getPageSize());
         return query;
     }

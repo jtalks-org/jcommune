@@ -24,7 +24,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import org.springframework.data.domain.Page;
 
 /**
- * Class for custom tag jtalks:pagination
+ * Class for custom tag jtalks:pagination. 
  *
  * @author Andrey Kluev
  * @author Anuar Nurmakanov
@@ -81,6 +81,8 @@ public class Paginator extends BodyTagSupport {
     }
     
     /**
+     * Set uri to handle pagination.
+     * 
      * @param uri uri
      */
     public void setUri(String uri) {
@@ -88,22 +90,26 @@ public class Paginator extends BodyTagSupport {
     }
     
     /**
+     * Set object that contains data for one page and information for pagination.
      * 
-     * @param page
+     * @param page object that contains data for one page and information for pagination
      */
     public void setPage(Page<?> page) {
         this.page = page;
     }
     
     /**
+     * Enable or disable pagination.
      * 
-     * @param pagingEnabled
+     * @param pagingEnabled if true pagination is enabled, otherwise it is disabled
      */
     public void setPagingEnabled(boolean pagingEnabled) {
         this.pagingEnabled = pagingEnabled;
     }
 
     /**
+     * Get number link of paging.
+     * 
      * @return numberLink number link of paging
      */
     public int getNumberLink() {
@@ -111,6 +117,8 @@ public class Paginator extends BodyTagSupport {
     }
 
     /**
+     * Set number link of paging.
+     * 
      * @param numberLink number link of paging
      */
     public void setNumberLink(int numberLink) {

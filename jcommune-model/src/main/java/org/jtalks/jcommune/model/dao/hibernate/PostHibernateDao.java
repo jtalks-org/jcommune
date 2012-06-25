@@ -40,6 +40,7 @@ import org.springframework.data.domain.PageImpl;
  * @author Anuar Nurmakanov
  */
 public class PostHibernateDao extends AbstractHibernateChildRepository<Post> implements PostDao {
+    private static final String TOPIC_PARAMETER_NAME = "topic";
 
     /**
      * {@inheritDoc}
@@ -53,7 +54,7 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
                 .getNamedQuery("getPostsOfUser")
                 .setParameter("userCreated", author);
         if (pagingEnabled) {
-            query.setFirstResult(pageRequest.getNumberOfFirstItem());
+            query.setFirstResult(pageRequest.getIndexOfFirstItem());
             query.setMaxResults(pageRequest.getPageSize());
         }
         @SuppressWarnings("unchecked")
@@ -88,13 +89,13 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
     public Page<Post> getPosts(Topic topic, JcommunePageable pageRequest, boolean pagingEnabled) {
         Number totalCount = (Number) getSession()
                 .getNamedQuery("getCountPostsInTopic")
-                .setParameter("topic", topic)
+                .setParameter(TOPIC_PARAMETER_NAME, topic)
                 .uniqueResult();
         Query query = getSession()
                 .getNamedQuery("getPostsInTopic")
-                .setParameter("topic", topic);
+                .setParameter(TOPIC_PARAMETER_NAME, topic);
         if (pagingEnabled) {
-            query.setFirstResult(pageRequest.getNumberOfFirstItem());
+            query.setFirstResult(pageRequest.getIndexOfFirstItem());
             query.setMaxResults(pageRequest.getPageSize());
         }
         //TODO LIST_INDEX?

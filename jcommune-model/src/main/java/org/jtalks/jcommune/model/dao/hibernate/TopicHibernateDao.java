@@ -57,7 +57,7 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
         List<Topic> recentTopics = (List<Topic>) getSession()
                 .getNamedQuery("getResentTopics")
                 .setParameter("maxModDate", timeStamp)
-                .setFirstResult(pageRequest.getNumberOfFirstItem())
+                .setFirstResult(pageRequest.getIndexOfFirstItem())
                 .setMaxResults(pageRequest.getPageSize())
                 .list();
         return new PageImpl<Topic>(recentTopics, pageRequest, totalCount.intValue());
@@ -75,7 +75,7 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
         @SuppressWarnings("unchecked")
         List<Topic> unansweredTopics = (List<Topic>) getSession()
                 .getNamedQuery("getUnansweredTopics")
-                .setFirstResult(pageRequest.getNumberOfFirstItem())
+                .setFirstResult(pageRequest.getIndexOfFirstItem())
                 .setMaxResults(pageRequest.getPageSize())
                 .list();
         return new PageImpl<Topic>(unansweredTopics, pageRequest, totalCount.intValue());
@@ -113,7 +113,7 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
         Query query = getSession().getNamedQuery("getTopicsInBranch")
                 .setParameter("branch", branch);
         if (pagingEnabled) {
-            query = query.setFirstResult(pageRequest.getNumberOfFirstItem())
+            query = query.setFirstResult(pageRequest.getIndexOfFirstItem())
                     .setMaxResults(pageRequest.getPageSize());
         }
         @SuppressWarnings("unchecked")

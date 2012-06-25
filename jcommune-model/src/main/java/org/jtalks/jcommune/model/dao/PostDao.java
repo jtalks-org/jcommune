@@ -36,9 +36,14 @@ import org.springframework.data.domain.Page;
 public interface PostDao extends ChildRepository<Post> {
 
     /**
+     * Get all the posts that were created  by user.
+     * 
      * @param author user to select posts for
-     * @param pagingEnabled TODO
-     * @return post list of user
+     * @param pageRequest contains information for pagination: page number, page size
+     * @param pagingEnabled if true, then it returns posts for one page, otherwise it
+     *        return all posts, that were created by user
+     * @return object that contains posts for one page(note, that one page may contain
+     *         all posts, that were created by user) and information for pagination
      */
     Page<Post> getUserPosts(JCUser author, JcommunePageable pageRequest, boolean pagingEnabled);
 
@@ -51,11 +56,14 @@ public interface PostDao extends ChildRepository<Post> {
     Post getLastPostInTopic(Topic topic);
     
     /**
+     * Get all posts in the topic of forum.
      * 
-     * @param topic
-     * @param pageRequest
-     * @param pagingEnabled
-     * @return
+     * @param topic for this topic we will find posts
+     * @param pageRequest contains information for pagination: page number, page size
+     * @param pagingEnabled if true, then it returns posts for one page, otherwise it
+     *        return all posts in the topic 
+     * @return object that contains posts for one page(note, that one page may contain
+     *         all posts) and information for pagination
      */
     Page<Post> getPosts(Topic topic, JcommunePageable pageRequest, boolean pagingEnabled);
 }

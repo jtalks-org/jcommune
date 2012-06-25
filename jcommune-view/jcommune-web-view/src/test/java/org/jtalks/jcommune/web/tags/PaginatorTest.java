@@ -21,8 +21,6 @@ import static org.testng.Assert.assertEquals;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.servlet.jsp.JspException;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -53,19 +51,6 @@ public class PaginatorTest {
         when(context.getServletContext()).thenReturn(servletContext);
 
         list = Arrays.asList((Object)1, 2, 3, 4, 5, 6);
-    }
-
-    @Test
-    public void testAddListInPageContext() throws JspException {
-        Pageable pageable = new PageRequest(1, list.size());
-        Page<Object> page = new PageImpl<Object>(list, pageable, list.size());
-        paginator.setPage(page);
-
-        paginator.doStartTag();
-
-        assertEquals(pageContext.getAttribute("list"), list);
-
-        paginator.doEndTag();
     }
 
     @Test

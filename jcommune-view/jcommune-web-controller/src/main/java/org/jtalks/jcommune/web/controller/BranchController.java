@@ -113,7 +113,7 @@ public class BranchController {
         return new ModelAndView("topicList")
                 .addObject("viewList", locationService.getUsersViewing(branch))
                 .addObject("branch", branch)
-                .addObject("pagingEnabled", pagingEnabled)
+                .addObject(PAGING_ENABLED, pagingEnabled)
                 .addObject("topicsPage", topicsPage)
                 .addObject("breadcrumbList", breadcrumbs)
                 .addObject("subscribed", branch.getSubscribers().contains(currentUser));
@@ -133,7 +133,7 @@ public class BranchController {
 
         return new ModelAndView("recent")
                 .addObject("topicsPage", topicsPage)
-                .addObject("pagingEnabled", true);
+                .addObject(PAGING_ENABLED, true);
     }
 
     /**
@@ -149,7 +149,7 @@ public class BranchController {
         lastReadPostService.fillLastReadPostForTopics(topicsPage.getContent());
         return new ModelAndView("unansweredTopics")
                 .addObject("topicsPage", topicsPage)
-                .addObject("pagingEnabled", true);
+                .addObject(PAGING_ENABLED, true);
     }
 
     /**

@@ -63,6 +63,7 @@ public class SectionController {
      * @param locationService      autowired object from Spring Context
      * @param forumStaticsProvider autowired object from Spring Context which provides methods for getting
      *                             forum statistic information
+     * @param paginationService    this service provides functionality, that is needed for pagination
      */
     @Autowired
     public SectionController(SectionService sectionService,

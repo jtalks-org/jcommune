@@ -39,6 +39,8 @@ public interface TopicDao extends ChildRepository<Topic> {
      * Get all topics past last 24 hour.
      *
      * @param lastLogin user's last login date and time
+     * @param pageRequest contains information for pagination: page number, page size
+     * @return object that contains topics for one page and information for pagination
      */
     Page<Topic> getTopicsUpdatedSince(DateTime lastLogin, JcommunePageable pageRequest);
 
@@ -46,7 +48,9 @@ public interface TopicDao extends ChildRepository<Topic> {
     /**
      * Get unanswered topics(topics which has only 1 post added during topic creation).
      *
-     * @return list of topics
+     * @param pageRequest contains information for pagination: page number, page size
+     * @return object that contains unanswered topics for one page and information
+     *         for pagination
      */
     Page<Topic> getUnansweredTopics(JcommunePageable pageRequest);
     
@@ -59,10 +63,14 @@ public interface TopicDao extends ChildRepository<Topic> {
     Topic getLastUpdatedTopicInBranch(Branch branch);
     
     /**
+     * Get topics in the branch.
      * 
-     * @param pageable
-     * @param pagingEnabled
-     * @return
+     * @param branch for this branch we will find topics
+     * @param pageRequest contains information for pagination: page number, page size
+     * @param pagingEnabled if true, then it returns topics for one page, otherwise it
+     *        return all topics in the branch 
+     * @return object that contains topics for one page(note, that one page may contain
+     *         all topics) and information for pagination
      */
     Page<Topic> getTopics(Branch branch, JcommunePageable pageRequest,  boolean pagingEnabled);
     

@@ -117,11 +117,14 @@ public interface TopicService extends EntityService<Topic> {
     void moveTopic(Long topicId, Long branchId) throws NotFoundException;
     
     /**
+     * Get topics in the branch.
      * 
-     * @param branch
-     * @param page
-     * @param pagingEnabled
-     * @return
+     * @param branch for this branch we will find topics
+     * @param page page number, for which we will find topics
+     * @param pagingEnabled if true, then it returns topics for one page, otherwise it
+     *        return all topics in the branch 
+     * @return object that contains topics for one page(note, that one page may contain
+     *         all topics) and information for pagination
      */
     Page<Topic> getTopics(Branch branch, int page, boolean pagingEnabled);
 }
