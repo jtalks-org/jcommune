@@ -35,7 +35,7 @@
     
     <div class="container">
         
-        <h2><c:out value="${topicDto.topicName}"/></h2>
+        <h2><c:out value="${topicDto.topic.title}"/></h2>
         
         <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
         
@@ -46,38 +46,38 @@
             
             <div class='control-group'>
                 <label for='subject' class='control-label'><spring:message code="label.topic.title"/></label>
-                <form:input path="topicName" id="subject" type="text" name="subject" size="45"
+                <form:input path="topic.title" id="subject" type="text" name="subject" size="45"
                             maxlength="255" tabindex="1"
                             class="post confirm-unsaved" placeholder='<spring:message code="label.topic.topic_title"/>'/>
                 <br/>
                 
-                <form:errors path="topicName" id="subject" type="text" name="subject" size="45"
+                <form:errors path="topic.title" id="subject" type="text" name="subject" size="45"
                             maxlength="255" tabindex="1"
                             class="post" cssClass="error"/>
             </div>
                     
                 <sec:authorize access="hasRole('ROLE_ADMIN')">
                     <div class='control-group'>
-                        <form:checkbox path="sticked" value="true" class="confirm-unsaved form-check-radio-box"/>
+                        <form:checkbox path="topic.sticked" value="true" class="confirm-unsaved form-check-radio-box"/>
                         <label for='sticked' class='string optional'>
                             <spring:message code="label.sticked"/>
                         </label>
                         
-                        <form:errors path="sticked"/>
+                        <form:errors path="topic.sticked"/>
                     </div>
                     <div class='control-group'>
-                        <form:label path="topicWeight" class='control-label'>
+                        <form:label path="topic.topicWeight" class='control-label'>
                             <spring:message code="label.weight"/>
                         </form:label>
-                        <form:input path="topicWeight" size="1" class="confirm-unsaved"/>
+                        <form:input path="topic.topicWeight" size="1" class="confirm-unsaved"/>
                     
-                        <form:errors path="topicWeight"/>
+                        <form:errors path="topic.topicWeight"/>
                     </div>
                     <div class='control-group'>
-                        <form:checkbox path="announcement" value="true" class="confirm-unsaved form-check-radio-box" />
+                        <form:checkbox path="topic.announcement" value="true" class="confirm-unsaved form-check-radio-box" />
                         <label for='announcement' class='string optional'><spring:message code="label.announcement"/></label>
                         
-                        <form:errors path="announcement"/>
+                        <form:errors path="topic.announcement"/>
                     </div>
                 </sec:authorize>
            

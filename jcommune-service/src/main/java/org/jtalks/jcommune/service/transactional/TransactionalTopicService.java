@@ -106,8 +106,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @Override
     @PreAuthorize("hasPermission(#branchId, 'org.jtalks.jcommune.model.entity.Branch', " +
             "'BranchPermission.CREATE_TOPICS')")
-    public Topic createTopic(String topicName, String bodyText, long branchId
-            , boolean notifyOnAnswers) throws NotFoundException {
+    public Topic createTopic(String topicName, String bodyText, long branchId,
+                             boolean notifyOnAnswers) throws NotFoundException {
         JCUser currentUser = (JCUser) securityService.getCurrentUser();
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);

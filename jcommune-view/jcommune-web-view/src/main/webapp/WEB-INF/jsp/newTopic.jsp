@@ -55,10 +55,10 @@
             <div class='control-group'>
                 <div class='controls'>
                 <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>
-                <form:input path="topicName" id="subject" type="text" name="subject" size="45"
+                <form:input path="topic.title" id="subject" type="text" name="subject" size="45"
                                     maxlength="255" tabindex="1"
                                     class="span11" placeholder="${topicTitlePlaceholder}"/>
-                <form:errors path="topicName" id="subject" type="text" name="subject" size="45"
+                <form:errors path="topic.title" id="subject" type="text" name="subject" size="45"
                                      maxlength="255" tabindex="1"
                                      class="post" cssClass="help-inline"/>
                 </div>
@@ -79,7 +79,7 @@
             <jtalks:newPoll titleNameValue="pollTitle"
                             pollOptionsNameValue="pollItems"
                             multipleName="multiple"
-                            multipleValue="${topicDto.multiple}"
+                            multipleValue="${topicDto.topic.poll.multipleAnswer}"
                             endingDateNameValue="endingDate"/>
         </form:form>
         

@@ -280,7 +280,7 @@ public class TopicControllerTest {
         assertViewName(mav, "editTopic");
 
         TopicDto dto = assertAndReturnModelAttributeOfType(mav, "topicDto", TopicDto.class);
-        assertEquals(dto.getId(), TOPIC_ID);
+        assertEquals(dto.getTopic().getId(), TOPIC_ID);
 
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         assertEquals(branchId, BRANCH_ID);
@@ -334,9 +334,11 @@ public class TopicControllerTest {
 
     private TopicDto getDto() {
         TopicDto dto = new TopicDto();
+        Topic topic = new Topic();
+        topic.setTitle(TOPIC_THEME);
         dto.setId(TOPIC_ID);
         dto.setBodyText(TOPIC_CONTENT);
-        dto.setTopicName(TOPIC_THEME);
+        dto.setTopic(topic);
         return dto;
     }
 }

@@ -22,9 +22,10 @@ import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
+import org.jtalks.jcommune.model.validation.annotations.BbCodeAwareSize;
 import org.jtalks.jcommune.web.validation.annotations.ValidPoll;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,22 +38,47 @@ import java.util.List;
  */
 @ValidPoll(pollTitle = "pollTitle", pollItems = "pollItems", endingDate = "endingDate")
 public class TopicDto {
-    public final static String LINE_SEPARATOR = System.getProperty("line.separator");
-
-
-    @NotBlank
-    @Size(min = Topic.MIN_NAME_SIZE, max = Topic.MAX_NAME_SIZE)
-    private String topicName;
+    @Valid
+    private Topic topic;
+    private boolean notifyOnAnswers;
 
     @NotBlank
     @BbCodeAwareSize(min = Post.MIN_LENGTH, max = Post.MAX_LENGTH)
     private String bodyText;
 
-    private int topicWeight;
+    /**
+     * Plain object for topic creation
+     */
+    public TopicDto() {
+    }
 
-    private boolean sticked;
-    private boolean announcement;
-    private boolean notifyOnAnswers;
+    /**
+     * Create dto from {@link Topic}
+     *
+     * @param topic topic for conversion
+     */
+    public TopicDto(Topic topic) {
+        this.topic = topic;
+    }
+
+    public Topic getTopic() {
+        return topic;
+    }
+
+    public void setTopic(Topic topic) {
+        this.topic = topic;
+    }
+
+    public Poll getPoll() {
+        return poll;
+    }
+
+    public void setPoll(Poll poll) {
+        this.poll = poll;
+    }
+
+
+    public final static String LINE_SEPARATOR = System.getProperty("line.separator");
 
     private long id;
 
@@ -69,27 +95,6 @@ public class TopicDto {
 
 
     /**
-     * Plain object for topic creation
-     */
-    public TopicDto() {
-    }
-
-    /**
-     * Create dto from {@link Topic}
-     *
-     * @param topic topic for conversion
-     */
-    public TopicDto(Topic topic) {
-        topicName = topic.getTitle();
-        bodyText = topic.getFirstPost().getPostContent();
-        id = topic.getId();
-        topicWeight = topic.getTopicWeight();
-        sticked = topic.isSticked();
-        announcement = topic.isAnnouncement();
-        poll = topic.getPoll();
-    }
-
-    /**
      * @return topic id
      */
     public long getId() {
@@ -103,90 +108,6 @@ public class TopicDto {
      */
     public void setId(long id) {
         this.id = id;
-    }
-
-    /**
-     * Get topic title.
-     *
-     * @return topic title
-     */
-    public String getTopicName() {
-        return topicName;
-    }
-
-    /**
-     * Set topic title.
-     *
-     * @param topicName name of topic
-     */
-    public void setTopicName(String topicName) {
-        this.topicName = topicName;
-    }
-
-    /**
-     * Get first post content.
-     *
-     * @return first post content
-     */
-    public String getBodyText() {
-        return bodyText;
-    }
-
-    /**
-     * Set first post content.
-     *
-     * @param bodyText content of first post in topic
-     */
-    public void setBodyText(String bodyText) {
-        this.bodyText = bodyText;
-    }
-
-    /**
-     * @return priority of sticked topic
-     */
-    public int getTopicWeight() {
-        return this.topicWeight;
-    }
-
-    /**
-     * Set priority for a sticked topic.
-     *
-     * @param topicWeight priority(weight) of sticked topic
-     */
-    public void setTopicWeight(int topicWeight) {
-        this.topicWeight = topicWeight;
-    }
-
-    /**
-     * @return stickedness flag of topic
-     */
-    public boolean isSticked() {
-        return this.sticked;
-    }
-
-    /**
-     * Set flag of stickedness.
-     *
-     * @param sticked flag of stickedness
-     */
-    public void setSticked(boolean sticked) {
-        this.sticked = sticked;
-    }
-
-    /**
-     * @return announcement flag of topic
-     */
-    public boolean isAnnouncement() {
-        return this.announcement;
-    }
-
-    /**
-     * Set flag of announcement for a topic
-     *
-     * @param announcement flag of announcement
-     */
-    public void setAnnouncement(boolean announcement) {
-        this.announcement = announcement;
     }
 
     public String getPollTitle() {
@@ -235,6 +156,24 @@ public class TopicDto {
      */
     public void setNotifyOnAnswers(boolean notifyOnAnswers) {
         this.notifyOnAnswers = notifyOnAnswers;
+    }
+
+    /**
+     * Get first post content.
+     *
+     * @return first post content
+     */
+    public String getBodyText() {
+        return bodyText;
+    }
+
+    /**
+     * Set first post content.
+     *
+     * @param bodyText content of first post in topic
+     */
+    public void setBodyText(String bodyText) {
+        this.bodyText = bodyText;
     }
 
     public Poll preparePollFromTopicDto() {

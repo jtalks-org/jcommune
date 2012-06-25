@@ -12,11 +12,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.validation.validators;
+package org.jtalks.jcommune.model.validation.validators;
 
-import org.jtalks.jcommune.service.nontransactional.BBCodeService;
-import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.jtalks.jcommune.model.validation.annotations.BbCodeAwareSize;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -29,18 +27,8 @@ import javax.validation.ConstraintValidatorContext;
  */
 public class BbCodeAwareSizeValidator implements ConstraintValidator<BbCodeAwareSize, String> {
 
-    private BBCodeService service;
-
     private int min;
     private int max;
-
-    /**
-     * @param service service to remove BB-codes out of a string
-     */
-    @Autowired
-    public BbCodeAwareSizeValidator(BBCodeService service) {
-        this.service = service;
-    }
 
     /**
      * {@inheritDoc}
@@ -59,7 +47,18 @@ public class BbCodeAwareSizeValidator implements ConstraintValidator<BbCodeAware
         if (value == null) {
             return false;
         }
-        int plainTextLength = service.removeBBCodes(value).trim().length();
+        int plainTextLength = removeBBCodes(value).trim().length();
         return (plainTextLength >= min) && (plainTextLength <= max);
+    }
+
+    /**
+     * Removes all BB codes from the text given, simply cutting
+     * out all [...]-style tags found
+     *
+     * @param source text to cleanup
+     * @return plain text without BB tags
+     */
+    private String removeBBCodes(String source) {
+        return source.replaceAll("\\[.*?\\]", "");
     }
 }

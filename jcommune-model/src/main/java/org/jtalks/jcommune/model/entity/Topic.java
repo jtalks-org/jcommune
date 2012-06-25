@@ -30,9 +30,12 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Parameter;
 import org.hibernate.search.annotations.TokenFilterDef;
 import org.hibernate.search.annotations.TokenizerDef;
+import org.hibernate.validator.constraints.NotBlank;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
+import org.jtalks.jcommune.model.validation.annotations.BbCodeAwareSize;
 
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -124,6 +127,8 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     private DateTime creationDate;
     private DateTime modificationDate;
     private JCUser topicStarter;
+    @NotBlank
+    @Size(min = Topic.MIN_NAME_SIZE, max = Topic.MAX_NAME_SIZE)
     private String title;
     private int topicWeight;
     private boolean sticked;
@@ -155,9 +160,9 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
 
 
     /**
-     * Used only by hibernate.
+     * Creates the Topic instance.
      */
-    protected Topic() {
+    public Topic() {
     }
 
     /**

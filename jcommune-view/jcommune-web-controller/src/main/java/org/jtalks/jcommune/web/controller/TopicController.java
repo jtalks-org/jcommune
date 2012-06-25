@@ -128,7 +128,7 @@ public class TopicController {
     public ModelAndView showNewTopicPage(@RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
         Branch branch = branchService.get(branchId);
         return new ModelAndView("newTopic")
-                .addObject("topicDto", new TopicDto())
+                .addObject("topicDto", new TopicDto(new Topic()))
                 .addObject("branchId", branchId)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch));
     }
@@ -154,7 +154,7 @@ public class TopicController {
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branch));
         }
 
-        Topic createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(),
+        Topic createdTopic = topicService.createTopic(topicDto.getTopic().getTitle(), topicDto.getBodyText(),
                 branchId,topicDto.isNotifyOnAnswers());
 
         if (topicDto.hasPoll()) {
@@ -197,7 +197,6 @@ public class TopicController {
                                               required = false) Boolean pagingEnabled) throws NotFoundException {
 
         Topic topic = topicService.get(topicId);
-
         Poll poll = topic.getPoll();
         List<PollItem> pollOptions = topic.isHasPoll() ? poll.getPollItems() : null;
 
@@ -271,9 +270,9 @@ public class TopicController {
                     .addObject(BRANCH_ID, branchId)
                     .addObject(TOPIC_ID, topicId);
         }
-
-        topicService.updateTopic(topicDto.getId(), topicDto.getTopicName(), topicDto.getBodyText(),
-                topicDto.getTopicWeight(), topicDto.isSticked(), topicDto.isAnnouncement(),topicDto.isNotifyOnAnswers());
+        Topic topic = topicDto.getTopic();
+        topicService.updateTopic(topicDto.getId(), topic.getTitle(), topicDto.getBodyText(),
+                topic.getTopicWeight(), topic.isSticked(), topic.isAnnouncement(),topicDto.isNotifyOnAnswers());
 
         return new ModelAndView("redirect:/topics/" + topicId);
     }
