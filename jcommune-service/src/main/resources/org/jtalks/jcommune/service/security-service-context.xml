@@ -53,6 +53,7 @@
     </bean>
     <bean id="aclUtils" class="org.jtalks.common.security.acl.AclUtil">
         <constructor-arg name="mutableAclService" ref="aclService"/>
+        <property name="objectIdentityGenerator" ref="typeConvertingObjectIdentityGenerator"/>
     </bean>
 
     <bean id="typeConvertingObjectIdentityGenerator" class="org.jtalks.common.security.acl.TypeConvertingObjectIdentityGenerator">
@@ -140,6 +141,11 @@
 
     <bean name="sidRetrievalStrategyImpl" class="org.jtalks.jcommune.service.security.SidRetrievalStrategyImpl">
         <constructor-arg ref="jtalksSidFactory"/>
+    </bean>
+
+    <bean id="objectIdentityRetrievalStrategyImpl"
+          class="org.jtalks.jcommune.service.security.ObjectIdentityRetrievalStrategyImpl">
+        <constructor-arg name="aclUtil" ref="aclUtils"/>
     </bean>
 
     <!-- Password encoding -->
