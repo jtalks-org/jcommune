@@ -118,7 +118,7 @@ public class TransactionalPrivateMessageServiceTest {
         verify(userDataCache).incrementNewMessageCountFor(USERNAME);
         verify(mailService).sendReceivedPrivateMessageNotification(JC_USER, pm);
         verify(pmDao).saveOrUpdate(pm);
-        verify(aclBuilder,times(2)).grant(GeneralPermission.READ);
+        verify(aclBuilder, times(2)).grant(GeneralPermission.READ);
     }
 
     @Test
@@ -142,7 +142,8 @@ public class TransactionalPrivateMessageServiceTest {
         assertEquals(pm.getId(), PM_ID);
         verify(pmDao).saveOrUpdate(pm);
         verify(aclBuilder).grant(GeneralPermission.WRITE);
-        verify(aclBuilder).on(pm);
+        verify(aclBuilder).grant(GeneralPermission.READ);
+        verify(aclBuilder, times(2)).on(pm);
     }
 
     @Test
@@ -155,7 +156,8 @@ public class TransactionalPrivateMessageServiceTest {
         assertEquals(pm.getId(), PM_ID);
         verify(pmDao).saveOrUpdate(pm);
         verify(aclBuilder).grant(GeneralPermission.WRITE);
-        verify(aclBuilder).on(pm);
+        verify(aclBuilder).grant(GeneralPermission.READ);
+        verify(aclBuilder, times(2)).on(pm);
     }
 
     @Test

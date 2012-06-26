@@ -14,8 +14,6 @@
  */
 package org.jtalks.jcommune.web.validation.validators;
 
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang.NumberUtils;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.IntRange;

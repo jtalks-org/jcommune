@@ -32,7 +32,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
  *
  * @author Evgeniy Naumenko
  */
-@PreAuthorize("hasRole('ROLE_USER')")
+@PreAuthorize("isAuthenticated()")
 public class TransactionalSubscriptionService implements SubscriptionService {
 
     private SecurityService securityService;
@@ -56,7 +56,7 @@ public class TransactionalSubscriptionService implements SubscriptionService {
     @Override
     public void toggleTopicSubscription(Topic topic) {
         JCUser current = (JCUser) securityService.getCurrentUser();
-        if (topic.getSubscribers().contains(current)) {
+        if (topic.userSubscribed(current)) {
             topic.getSubscribers().remove(current);
         } else {
             topic.getSubscribers().add(current);

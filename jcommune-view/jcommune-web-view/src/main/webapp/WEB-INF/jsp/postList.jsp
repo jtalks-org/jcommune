@@ -80,18 +80,18 @@
     <div class="span3">
         <sec:accesscontrollist hasPermission="12" domainObject="${topic.branch}">
             <a id="new-topic-btn" class="btn btn-primary"
-               href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}"
+               href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}&branchId=${topic.branch.id}"
                title="<spring:message code='label.tips.create_new_post'/>">
                 <spring:message code="label.answer"/>
             </a>
         </sec:accesscontrollist>
-        <sec:authorize access="hasAnyRole('ROLE_ADMIN')">
+        <sec:accesscontrollist hasPermission="16" domainObject="${topic.branch}">
                 <span class="topicId" id="${topic.id}">
                 <a name="move_topic" href="#" class="btn" title="<spring:message code='label.tips.move_topic'/>">
                     <spring:message code="label.topic.move"/>
                 </a>
                 </span>
-        </sec:authorize>
+        </sec:accesscontrollist>
         &nbsp; <%-- For proper pagination layout without buttons--%>
     </div>
 
@@ -176,7 +176,7 @@
                                     <sec:accesscontrollist hasPermission="7,13" domainObject="${topic.branch}">
                                         <%-- url to delete & edit post --%>
                                         <c:set var="delete_url"
-                                               value="${pageContext.request.contextPath}/posts/${post.id}"/>
+                                               value="${pageContext.request.contextPath}/posts/${post.id}?branchId=${topic.branch.id}"/>
                                         <c:set var="edit_url"
                                                value="${pageContext.request.contextPath}/posts/${post.id}/edit?topicId=${topic.id}"/>
 
@@ -226,7 +226,7 @@
                                     <i class="icon-link"></i>
                                 </a>
                                 <sec:accesscontrollist hasPermission="12" domainObject="${topic.branch}">
-                                    <a class="btn btn-mini" href='javascript:quote(${post.id});'
+                                    <a class="btn btn-mini" href='javascript:quote(${post.id},${topic.branch.id});'
                                        title="<spring:message code='label.tips.quote_post'/>">
                                         <i class="icon-quote"></i><spring:message code="label.quotation"/>
                                     </a>
@@ -279,7 +279,7 @@
                                 <sec:authentication property="principal.id" var="userId"/>
                                 <c:if test='${userId != post.userCreated.id}'>
                                     <div>
-                                        <a href="${pageContext.request.contextPath}/pm/new/${post.userCreated.id}"
+                                        <a href="${pageContext.request.contextPath}/pm/new/${post.userCreated.id}?userId=${userId}"
                                            title='<spring:message code="label.pm.send"/>'>
                                             <img src="${pageContext.request.contextPath}/resources/images/message-icon.png"/>
                                         </a>
@@ -318,7 +318,7 @@
     <div class="span3">
         <sec:accesscontrollist hasPermission="12" domainObject="${topic.branch}">
             <a id="new-topic-btn" class="btn btn-primary"
-               href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}"
+               href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}&branchId=${topic.branch.id}"
                title="<spring:message code='label.tips.create_new_post'/>">
                 <spring:message code="label.answer"/>
             </a>

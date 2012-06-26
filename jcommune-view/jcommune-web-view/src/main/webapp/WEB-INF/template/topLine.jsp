@@ -38,7 +38,7 @@
                 </form>
                 <ul class="nav pull-right">
                 <!-- Not logged in block -->
-                <sec:authorize access="hasRole('ROLE_ANONYMOUS')">
+                <sec:authorize access="isAnonymous()">
                     <li>
                         <a id="signup" href="${pageContext.request.contextPath}/user/new">
                             <fmt:message key="label.signup"/>
@@ -55,7 +55,7 @@
                 <!-- END OF Not logged in block -->
 
                 <!-- Logged in block -->
-                <sec:authorize access="hasAnyRole('ROLE_ADMIN,ROLE_USER')">
+                <sec:authorize access="isAuthenticated()">
                     <li>
                         <a href="${pageContext.request.contextPath}/user">
                             <fmt:message key="label.profile"/>

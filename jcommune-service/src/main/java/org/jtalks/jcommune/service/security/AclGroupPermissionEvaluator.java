@@ -38,8 +38,7 @@ import java.util.List;
  * org.springframework.security.access.prepost.PreAuthorize}. In order to be able to use it, you need to specify the id
  * of object identity, the class of object identity and one of implementation of {@link
  * org.jtalks.common.model.permissions.JtalksPermission}. So it should look precisely like this:<br/> <code>
- * \@PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic',
- * 'GeneralPermission.WRITE')")</code>
+ * \@PreAuthorize("hasPermission(#topicId, 'TOPIC', 'GeneralPermission.WRITE')")</code>
  *
  * @author Elena Lepaeva
  * @author stanislav bashkirtsev
@@ -78,7 +77,9 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
     public boolean hasPermission(Authentication authentication, Serializable targetId,
                                  String targetType, Object permission) {
         boolean result = false;
-        ObjectIdentity objectIdentity = aclUtil.createIdentity(targetId, targetType);
+        Long id = (targetId instanceof String ? Long.parseLong((String) targetId) : (Long) targetId);
+
+        ObjectIdentity objectIdentity = aclUtil.createIdentity(id, targetType);
         Permission jtalksPermission = getPermission(permission);
         Sid sid = sidFactory.createPrincipal(authentication);
 

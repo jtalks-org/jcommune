@@ -21,7 +21,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <head>
     <title><spring:message code="h.new_topic"/></title>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-ui.min.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/datepicker/js/jquery-1.7.2.min.js"
+            type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/datepicker/js/jquery-ui-1.8.21.custom.min.js"
+            type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/datepicker/development-bundle/ui/i18n/jquery.ui.datepicker-ru.js"
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
             type="text/javascript"></script>
@@ -32,60 +36,63 @@
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/leaveConfirm.js"></script>
 
-    <%--todo need to set proper localization
-        <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-ui-i18n.min.js"
-                type="text/javascript"></script>
-    --%>
+    <link rel="stylesheet"
+          href="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/datepicker/development-bundle/themes/smoothness/jquery.ui.datepicker.css"
+          type="text/css" media="all"/>
     <link rel="stylesheet"
           href="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/styles/jquery-ui.css"
           type="text/css" media="all"/>
+    <link rel="stylesheet"
+          href="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/datepicker/css/smoothness/jquery-ui-1.8.21.custom.css"
+          type="text/css" media="all"/>
+
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/bbeditorEffects.js"
             type="text/javascript"></script>
 </head>
 <body>
-    <jsp:include page="../template/topLine.jsp"/>
+<jsp:include page="../template/topLine.jsp"/>
 
-    <div class="container">
-        <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
+<div class="container">
+    <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
 
-        <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-            
-        <form:form action="${pageContext.request.contextPath}/topics/new?branchId=${branchId}"
-                   method="POST" modelAttribute="topicDto" class="well anti-multipost">
-            <div class='control-group'>
-                <div class='controls'>
+    <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
+
+    <form:form action="${pageContext.request.contextPath}/topics/new?branchId=${branchId}"
+               method="POST" modelAttribute="topicDto" class="well anti-multipost">
+        <div class='control-group'>
+            <div class='controls'>
                 <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>
                 <form:input path="topic.title" id="subject" type="text" name="subject" size="45"
-                                    maxlength="255" tabindex="1"
-                                    class="span11" placeholder="${topicTitlePlaceholder}"/>
+                            maxlength="255" tabindex="1"
+                            class="span11" placeholder="${topicTitlePlaceholder}"/>
                 <form:errors path="topic.title" id="subject" type="text" name="subject" size="45"
-                                     maxlength="255" tabindex="1"
-                                     class="post" cssClass="help-inline"/>
-                </div>
+                             maxlength="255" tabindex="1"
+                             class="post" cssClass="help-inline"/>
             </div>
+        </div>
 
-            <jtalks:bbeditor labelForAction="label.addtopic"
-                             postText="${topicDto.bodyText}"
-                             bodyParameterName="bodyText"
-                             back="${pageContext.request.contextPath}/branches/${branchId}"/>
-            <div class="control-group">
-                <br/>
-                <form:checkbox id="notify" path="notifyOnAnswers" name="notify" checked="checked" value="${notifyOnAnswers}"
-                               style="margin-right: 10px;"/><spring:message
-                    code="label.answer.notify_message"/>
-            </div>
+        <jtalks:bbeditor labelForAction="label.addtopic"
+                         postText="${topicDto.bodyText}"
+                         bodyParameterName="bodyText"
+                         back="${pageContext.request.contextPath}/branches/${branchId}"/>
+        <div class="control-group">
             <br/>
-            <br/>
-            <jtalks:newPoll titleNameValue="pollTitle"
-                            pollOptionsNameValue="pollItems"
-                            multipleName="multiple"
-                            multipleValue="${topicDto.topic.poll.multipleAnswer}"
-                            endingDateNameValue="endingDate"/>
-        </form:form>
-        
-        <a href="${pageContext.request.contextPath}/branches/${branchId}" class='back-btn'>
-            <i class="icon-arrow-left"></i>
-            <spring:message code="label.back"/>
-        </a>
-    </div>
+            <form:checkbox id="notify" path="notifyOnAnswers" name="notify" checked="checked" value="${notifyOnAnswers}"
+                           style="margin-right: 10px;"/><spring:message
+                code="label.answer.notify_message"/>
+        </div>
+        <br/>
+        <br/>
+        <jtalks:newPoll titleNameValue="pollTitle"
+                        pollOptionsNameValue="pollItems"
+                        multipleName="multiple"
+                        multipleValue="${topicDto.multiple}"
+                        endingDateNameValue="endingDate"/>
+    </form:form>
+
+    <a href="${pageContext.request.contextPath}/branches/${branchId}" class='back-btn'>
+        <i class="icon-arrow-left"></i>
+        <spring:message code="label.back"/>
+    </a>
+</div>
 </body>

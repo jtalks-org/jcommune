@@ -144,7 +144,7 @@ function rebuildBranchesList(branches, eliminatedBranchId) {
 function getBranchItemHtml(branches, eliminatedBranchId) {
     var template = '';
     $.each(branches, function (i, branch) {
-        if (eliminatedBranchId != branch.id){
+        if (eliminatedBranchId != branch.id) {
             template += '<option value="' + branch.id + '">' + branch.name + '</option>';
         }
     });
@@ -159,7 +159,7 @@ function getBranchItemHtml(branches, eliminatedBranchId) {
  */
 function moveTopic(topicId, targetBranchId) {
     $.ajax({
-        url:baseUrl + '/topics/json/' + topicId,
+        url:baseUrl + '/topics/json/' + topicId + '?branchId=' + targetBranchId,
         type:"POST",
         data:{"branchId":targetBranchId},
         success:function () {
@@ -172,8 +172,8 @@ function moveTopic(topicId, targetBranchId) {
 /**
  * Disables Move button in "Move topic" modal window
  */
-function disableMoveButton(){
-   $("#jqi_state0_buttonMove").attr('disabled', 'disabled');
-   $("#jqi_state0_buttonMove").css({'color':'grey'}); 
+function disableMoveButton() {
+    $("#jqi_state0_buttonMove").attr('disabled', 'disabled');
+    $("#jqi_state0_buttonMove").css({'color':'grey'});
 }
 

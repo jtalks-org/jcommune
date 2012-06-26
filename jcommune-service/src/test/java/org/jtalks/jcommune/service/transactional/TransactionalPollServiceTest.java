@@ -16,11 +16,14 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollItem;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.security.TemporaryAuthorityManager;
 import org.mockito.Mock;
@@ -41,12 +44,13 @@ import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 public class TransactionalPollServiceTest {
     private static final int VOTES_COUNT = 4;
     private static final Long POLL_ID = 1L;
-    private static final Long BRANCH_ID = 1L;
     private PollService pollService;
     @Mock
     private ChildRepository<PollItem> pollOptionDao;
     @Mock
     private ChildRepository<Poll> pollDao;
+    @Mock
+    private GroupDao groupDao;
     @Mock
     private SecurityService securityService;
     @Mock
@@ -58,7 +62,7 @@ public class TransactionalPollServiceTest {
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
-        pollService = new TransactionalPollService(pollDao, pollOptionDao,
+        pollService = new TransactionalPollService(pollDao, groupDao, pollOptionDao,
                 securityService, temporaryAuthorityManager);
         aclBuilder = mockAclBuilder();
         Mockito.when(aclBuilder.on(Mockito.any(Poll.class))).thenReturn(aclBuilder);
@@ -72,7 +76,7 @@ public class TransactionalPollServiceTest {
 
         Mockito.when(pollDao.get(POLL_ID)).thenReturn(poll);
 
-        Poll resultPoll = pollService.vote(POLL_ID, pollOptionIds, BRANCH_ID);
+        Poll resultPoll = pollService.vote(POLL_ID, pollOptionIds);
         PollItem resultPollOption = resultPoll.getPollItems().get(0);
 
         Assert.assertEquals(resultPollOption.getVotesCount(), VOTES_COUNT + 1,
@@ -87,7 +91,7 @@ public class TransactionalPollServiceTest {
 
         Mockito.when(pollDao.get(POLL_ID)).thenReturn(poll);
 
-        Poll resultPoll = pollService.vote(POLL_ID, pollOptionIds, BRANCH_ID);
+        Poll resultPoll = pollService.vote(POLL_ID, pollOptionIds);
         PollItem resultPollOption = resultPoll.getPollItems().get(0);
 
         Assert.assertEquals(resultPollOption.getVotesCount(), VOTES_COUNT,
@@ -101,7 +105,7 @@ public class TransactionalPollServiceTest {
 
         Mockito.when(pollDao.get(Mockito.anyLong())).thenReturn(poll);
 
-        Poll resultPoll = pollService.vote(POLL_ID, pollOptionIds, BRANCH_ID);
+        Poll resultPoll = pollService.vote(POLL_ID, pollOptionIds);
 
         for (PollItem option : resultPoll.getPollItems()) {
             Assert.assertEquals(option.getVotesCount(), VOTES_COUNT + 1,
@@ -117,7 +121,7 @@ public class TransactionalPollServiceTest {
 
         Mockito.when(pollDao.get(Mockito.anyLong())).thenReturn(poll);
 
-        Poll resultPoll = pollService.vote(POLL_ID, pollOptionIds, BRANCH_ID);
+        Poll resultPoll = pollService.vote(POLL_ID, pollOptionIds);
 
         for (PollItem option : resultPoll.getPollItems()) {
             Assert.assertEquals(option.getVotesCount(), VOTES_COUNT,
@@ -134,7 +138,7 @@ public class TransactionalPollServiceTest {
 
         Mockito.when(pollDao.get(Mockito.anyLong())).thenReturn(poll);
 
-        Poll resultPoll = pollService.vote(POLL_ID, incorrectPollOptionIds, BRANCH_ID);
+        Poll resultPoll = pollService.vote(POLL_ID, incorrectPollOptionIds);
 
         for (PollItem option : resultPoll.getPollItems()) {
             Assert.assertEquals(option.getVotesCount(), VOTES_COUNT,
@@ -153,6 +157,10 @@ public class TransactionalPollServiceTest {
             option.setVotesCount(initialVoteCount);
             poll.addPollOptions(option);
         }
+        Branch branch = new Branch("name", "description");
+        Topic topic = new Topic(null, "title");
+        branch.addTopic(topic);
+        poll.setTopic(topic);
         return poll;
     }
 }
