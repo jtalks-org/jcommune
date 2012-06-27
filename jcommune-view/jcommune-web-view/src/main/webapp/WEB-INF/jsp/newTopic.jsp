@@ -21,9 +21,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <head>
     <title><spring:message code="h.new_topic"/></title>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/datepicker/js/jquery-1.7.2.min.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/datepicker/js/jquery-ui-1.8.21.custom.min.js"
+        <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-ui.min.js"
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/datepicker/development-bundle/ui/i18n/jquery.ui.datepicker-ru.js"
             type="text/javascript"></script>
