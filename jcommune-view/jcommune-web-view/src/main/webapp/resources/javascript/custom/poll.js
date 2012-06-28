@@ -135,7 +135,7 @@ function applyPollResult(poll) {
  */
 function addSingleVote(pollOptionId, pollId) {
     $.ajax({
-        url:$root + '/poll/' + pollId + '/single?pollId=' + pollId,
+        url:$root + '/poll/' + pollId + '/single',
         type:"POST",
         data:{"pollOptionId":pollOptionId},
         success:function (poll) {
@@ -153,7 +153,7 @@ function addSingleVote(pollOptionId, pollId) {
  */
 function addMultipleVote(pollDto, pollId) {
     $.ajax({
-        url:$root + "/poll/" + pollId + '/multiple?pollId=' + pollId,
+        url:$root + "/poll/" + pollId + '/multiple',
         type:"POST",
         contentType:"application/json",
         data:JSON.stringify(pollDto),

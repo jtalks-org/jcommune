@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Serves web requests for operations with poll({@link Poll}).
@@ -52,14 +53,13 @@ public class PollController {
      * This method is needed for "single type" polls.
      *
      * @param pollId       id of poll
-     * @param branchId     id of branch
      * @param pollOptionId id of option of poll
      * @return data transfer object, that contains data about poll
      */
     @RequestMapping(value = "/poll/{pollId}/single", method = RequestMethod.POST)
     @ResponseBody
-    public PollDto addSingleVote(@PathVariable Long pollId, @RequestParam Long branchId, @RequestParam Long pollOptionId) {
-        Poll poll = pollService.vote(pollId, Arrays.asList(pollOptionId), branchId);
+    public PollDto addSingleVote(@PathVariable Long pollId, @RequestParam Long pollOptionId) {
+        Poll poll = pollService.vote(pollId, Collections.singletonList(pollOptionId));
         return new PollDto(poll);
     }
 
@@ -68,15 +68,14 @@ public class PollController {
      * This method needed for "multiple type" polls.
      *
      * @param pollId   id of poll
-     * @param branchId id of branch
      * @param pollDto  data transfer object, that contains
      *                 identifiers of selected options.
      * @return data transfer object, that contains data about poll
      */
     @RequestMapping(value = "/poll/{pollId}/multiple", method = RequestMethod.POST)
     @ResponseBody
-    public PollDto addMultipleVote(@PathVariable Long pollId, @RequestParam Long branchId, @RequestBody PollDto pollDto) {
-        Poll poll = pollService.vote(pollId, pollDto.getPollOptionIds(), branchId);
+    public PollDto addMultipleVote(@PathVariable Long pollId, @RequestBody PollDto pollDto) {
+        Poll poll = pollService.vote(pollId, pollDto.getPollOptionIds());
         return new PollDto(poll);
     }
 }

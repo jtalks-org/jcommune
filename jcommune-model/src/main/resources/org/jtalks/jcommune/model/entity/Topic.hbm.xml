@@ -50,7 +50,7 @@
 
         <one-to-one name="poll" class="org.jtalks.jcommune.model.entity.Poll" cascade="delete"/>
 
-        <set name="subscribers" table="TOPIC_SUBSCRIPTIONS" cascade="all">
+        <set name="subscribers" table="TOPIC_SUBSCRIPTIONS">
             <key column="TOPIC_ID"/>
             <many-to-many column="USER_ID" class="org.jtalks.jcommune.model.entity.JCUser"/>
         </set>

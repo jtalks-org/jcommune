@@ -55,20 +55,20 @@
         <constructor-arg name="mutableAclService" ref="aclService"/>
         <property name="objectIdentityGenerator" ref="typeConvertingObjectIdentityGenerator"/>
     </bean>
-    <bean id="typeConvertingObjectIdentityGenerator"
-          class="org.jtalks.common.security.acl.TypeConvertingObjectIdentityGenerator">
-        <property name="additionalConversionRules">
-            <map>
-                <entry key="org.jtalks.jcommune.model.entity.Branch" value="BRANCH"/>
-                <entry key="org.jtalks.jcommune.model.entity.JCUser" value="USER"/>
-                <entry key="org.jtalks.jcommune.model.entity.Poll" value="POLL"/>
-                <entry key="org.jtalks.jcommune.model.entity.Post" value="POST"/>
-                <entry key="org.jtalks.jcommune.model.entity.PrivateMessage" value="PRIVATE_MESSAGE"/>
-                <entry key="org.jtalks.jcommune.model.entity.Topic" value="TOPIC"/>
-                <entry key="org.jtalks.common.model.entity.Section" value="SECTION"/>
-                <entry key="org.jtalks.common.model.entity.Component" value="COMPONENT"/>
-            </map>
-        </property>
+
+    <bean id="typeConvertingObjectIdentityGenerator" class="org.jtalks.common.security.acl.TypeConvertingObjectIdentityGenerator">
+           <property name="additionalConversionRules">
+               <map>
+                   <entry key="org.jtalks.jcommune.model.entity.Branch" value="BRANCH"/>
+                   <entry key="org.jtalks.jcommune.model.entity.JCUser" value="USER"/>
+                   <entry key="org.jtalks.jcommune.model.entity.Poll" value="POLL"/>
+                   <entry key="org.jtalks.jcommune.model.entity.Post" value="POST"/>
+                   <entry key="org.jtalks.jcommune.model.entity.PrivateMessage" value="PRIVATE_MESSAGE"/>
+                   <entry key="org.jtalks.jcommune.model.entity.Topic" value="TOPIC"/>
+                   <entry key="org.jtalks.common.model.entity.Section" value="SECTION"/>
+                   <entry key="org.jtalks.common.model.entity.Component" value="COMPONENT"/>
+               </map>
+           </property>
     </bean>
 
     <!-- Retrieves, modifies and strores access control lists -->
@@ -95,8 +95,7 @@
     </bean>
 
     <!-- ACL permission factory -->
-    <bean name="jtalksPermissionFactory" class="org.jtalks.common.security.acl.JtalksPermissionFactory"
-          init-method="init"/>
+    <bean name="jtalksPermissionFactory" class="org.jtalks.common.security.acl.JtalksPermissionFactory" init-method="init"/>
 
     <!-- Caching support for ACLs -->
     <bean id="aclCache" class="org.springframework.security.acls.domain.EhCacheBasedAclCache">

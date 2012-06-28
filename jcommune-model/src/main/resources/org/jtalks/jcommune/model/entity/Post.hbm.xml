@@ -34,7 +34,7 @@
 
         <many-to-one name="userCreated" column="USER_CREATED" class="org.jtalks.jcommune.model.entity.JCUser"
                      fetch="join"
-                     foreign-key="FK_USER" lazy="false" not-null="true"/>
+                     foreign-key="FK_USER" lazy="false" not-null="true" cascade="save-update"/>
         <many-to-one name="topic" column="TOPIC_ID" not-null="false"/>
     </class>
     <query name="getAllPostsInTopic">
