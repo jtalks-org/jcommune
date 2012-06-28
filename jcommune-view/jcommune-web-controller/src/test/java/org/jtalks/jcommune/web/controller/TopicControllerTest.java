@@ -14,15 +14,11 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.LastReadPostService;
-import org.jtalks.jcommune.service.PollService;
-import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
@@ -58,13 +54,9 @@ import static org.testng.Assert.assertEquals;
 public class TopicControllerTest {
     public long BRANCH_ID = 1L;
     private long TOPIC_ID = 1L;
-    private int TOPIC_WEIGHT = 0;
 
     private String TOPIC_CONTENT = "content here";
     private String TOPIC_THEME = "Topic theme";
-
-    private boolean STICKED = false;
-    private boolean ANNOUNCEMENT = false;
 
     private JCUser user;
     private Branch branch;
@@ -74,7 +66,7 @@ public class TopicControllerTest {
     @Mock
     private BranchService branchService;
     @Mock
-    private SecurityService securityService;
+    private UserService userService;
     @Mock
     private BreadcrumbBuilder breadcrumbBuilder;
     @Mock
@@ -94,7 +86,7 @@ public class TopicControllerTest {
     public void initEnvironment() {
         initMocks(this);
         controller = new TopicController(topicService, branchService, lastReadPostService,
-                securityService, breadcrumbBuilder, locationService, registry, pollService);
+                userService, breadcrumbBuilder, locationService, registry, pollService);
     }
 
     @BeforeMethod
@@ -266,7 +258,7 @@ public class TopicControllerTest {
         //set expectations
         when(topicService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
-        when(securityService.getCurrentUser()).thenReturn(user);
+        when(userService.getCurrentUser()).thenReturn(user);
     }
 
     private void editTopicVerification(Topic topic) throws NotFoundException {
@@ -300,7 +292,7 @@ public class TopicControllerTest {
         ModelAndView mav = controller.editTopic(dto, bindingResult, BRANCH_ID, TOPIC_ID);
 
         //check expectations
-        verify(topicService).updateTopic(TOPIC_ID, TOPIC_THEME, TOPIC_CONTENT, TOPIC_WEIGHT, STICKED, ANNOUNCEMENT, false);
+        verify(topicService).updateTopic(TOPIC_ID, TOPIC_THEME, TOPIC_CONTENT, 0, false, false, false);
 
         //check result
         assertViewName(mav, "redirect:/topics/" + TOPIC_ID);

@@ -14,12 +14,12 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.UserContactsDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
 import org.jtalks.jcommune.service.UserContactsService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
@@ -51,16 +51,16 @@ public class TransactionalUserContactsServiceTest {
     private UserContactsDao userContactsDao;
 
     @Mock
-    private SecurityService securityService;
+    private UserService userService;
     
     private JCUser user;
     
     @BeforeMethod
     public void setUp() {
         initMocks(this);
-        userContactsService = new TransactionalUserContactsService(userContactsDao, securityService);
+        userContactsService = new TransactionalUserContactsService(userContactsDao, userService);
         user = new JCUser(USERNAME, EMAIL, PASSWORD);
-        when(securityService.getCurrentUser()).thenReturn(user);
+        when(userService.getCurrentUser()).thenReturn(user);
     }
 
     @Test

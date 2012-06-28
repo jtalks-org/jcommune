@@ -14,17 +14,13 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.LastReadPostService;
-import org.jtalks.jcommune.service.PollService;
-import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.TopicDto;
@@ -69,7 +65,7 @@ public class TopicController {
     private TopicService topicService;
     private BranchService branchService;
     private LastReadPostService lastReadPostService;
-    private SecurityService securityService;
+    private UserService userService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private LocationService locationService;
     private SessionRegistry sessionRegistry;
@@ -94,7 +90,7 @@ public class TopicController {
      * @param lastReadPostService to perform post-related actions
      * @param locationService     to track user location on forum (what page he is viewing now)
      * @param sessionRegistry     to obtain list of users currently online
-     * @param securityService     to determine the current user logged in
+     * @param userService     to determine the current user logged in
      * @param breadcrumbBuilder   to create Breadcrumbs for pages
      * @param pollService         to create a poll and vote in a poll
      */
@@ -102,7 +98,7 @@ public class TopicController {
     public TopicController(TopicService topicService,
                            BranchService branchService,
                            LastReadPostService lastReadPostService,
-                           SecurityService securityService,
+                           UserService userService,
                            BreadcrumbBuilder breadcrumbBuilder,
                            LocationService locationService,
                            SessionRegistry sessionRegistry,
@@ -110,7 +106,7 @@ public class TopicController {
         this.topicService = topicService;
         this.branchService = branchService;
         this.lastReadPostService = lastReadPostService;
-        this.securityService = securityService;
+        this.userService = userService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.locationService = locationService;
         this.sessionRegistry = sessionRegistry;
@@ -202,7 +198,7 @@ public class TopicController {
         List<PollItem> pollOptions = topic.isHasPoll() ? poll.getPollItems() : null;
 
         Branch branch = topic.getBranch();
-        JCUser currentUser = (JCUser) securityService.getCurrentUser();
+        JCUser currentUser = userService.getCurrentUser();
         List<Post> posts = topic.getPosts();
         Pagination pag = new Pagination(page, currentUser, posts.size(), pagingEnabled);
         Integer lastReadPostIndex = lastReadPostService.getLastReadPostForTopic(topic);
@@ -239,7 +235,7 @@ public class TopicController {
                                       @PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
         Topic topic = topicService.get(topicId);
         TopicDto topicDto = new TopicDto(topic);
-        JCUser currentUser = (JCUser) securityService.getCurrentUser();
+        JCUser currentUser = userService.getCurrentUser();
         if (topic.userSubscribed(currentUser)) {
             topicDto.setNotifyOnAnswers(true);
         }

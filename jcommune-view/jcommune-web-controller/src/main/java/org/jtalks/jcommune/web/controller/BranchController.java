@@ -15,13 +15,13 @@
 
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.BranchDto;
@@ -54,32 +54,31 @@ public class BranchController {
     private BranchService branchService;
     private TopicService topicService;
     private LastReadPostService lastReadPostService;
-    private SecurityService securityService;
+    private UserService userService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private LocationService locationService;
 
     /**
      * Constructor creates MVC controller with specified BranchService
      *
-     * @param branchService     autowired object from Spring Context
-     * @param topicService      autowired object from Spring Context
-     * @param lastReadPostService       service to retrieve unread posts information
-     * @param securityService   autowired object from Spring Context
-     * @param locationService   autowired object from Spring Context
-     * @param breadcrumbBuilder the object which provides actions on
-     *                          {@link BreadcrumbBuilder} entity
+     * @param branchService       for branch-related service actions
+     * @param topicService        for topic-related service actions
+     * @param lastReadPostService service to retrieve unread posts information
+     * @param userService         to get user currently logged in
+     * @param locationService     to fetch user forum page location info
+     * @param breadcrumbBuilder   for creating breadcrumbs
      */
     @Autowired
     public BranchController(BranchService branchService,
                             TopicService topicService,
                             LastReadPostService lastReadPostService,
-                            SecurityService securityService,
+                            UserService userService,
                             BreadcrumbBuilder breadcrumbBuilder,
                             LocationService locationService) {
         this.branchService = branchService;
         this.topicService = topicService;
         this.lastReadPostService = lastReadPostService;
-        this.securityService = securityService;
+        this.userService = userService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.locationService = locationService;
     }
@@ -104,7 +103,7 @@ public class BranchController {
         Branch branch = branchService.get(branchId);
         List<Topic> topics = lastReadPostService.fillLastReadPostForTopics(branch.getTopics());
 
-        JCUser currentUser = (JCUser) securityService.getCurrentUser();
+        JCUser currentUser = userService.getCurrentUser();
 
         Pagination pag = new Pagination(page, currentUser, topics.size(), pagingEnabled);
         List<Breadcrumb> breadcrumbs = breadcrumbBuilder.getForumBreadcrumb(branch);
@@ -121,13 +120,13 @@ public class BranchController {
     /**
      * Displays topics updated during last 24 hours.
      *
-     * @param page    page
+     * @param page page
      * @return {@code ModelAndView} with topics list and vars for pagination
      */
     @RequestMapping("/topics/recent")
     public ModelAndView recentTopicsPage(
             @RequestParam(value = PAGE, defaultValue = "1", required = false) Integer page) {
-        JCUser currentUser = (JCUser) securityService.getCurrentUser();
+        JCUser currentUser = userService.getCurrentUser();
         List<Topic> topics = topicService.getRecentTopics();
         topics = lastReadPostService.fillLastReadPostForTopics(topics);
         Pagination pagination = new Pagination(page, currentUser, topics.size(), true);
@@ -146,7 +145,7 @@ public class BranchController {
     @RequestMapping("/topics/unanswered")
     public ModelAndView unansweredTopicsPage(@RequestParam(value = PAGE, defaultValue = "1", required = false)
                                              Integer page) {
-        JCUser currentUser = (JCUser) securityService.getCurrentUser();
+        JCUser currentUser = userService.getCurrentUser();
         List<Topic> topics = topicService.getUnansweredTopics();
         topics = lastReadPostService.fillLastReadPostForTopics(topics);
         Pagination pagination = new Pagination(page, currentUser, topics.size(), true);

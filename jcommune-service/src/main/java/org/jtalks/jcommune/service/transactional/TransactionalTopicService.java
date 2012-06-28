@@ -26,6 +26,7 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.slf4j.Logger;
@@ -54,27 +55,30 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     private BranchDao branchDao;
     private NotificationService notificationService;
     private SubscriptionService subscriptionService;
+    private UserService userService;
 
     /**
      * Create an instance of User entity based service
      *
      * @param dao                 data access object, which should be able do all CRUD operations with topic entity
-     * @param securityService     {@link SecurityService} for retrieving current user
+     * @param securityService     {@link org.jtalks.common.security.SecurityService} for retrieving current user
      * @param branchService       {@link org.jtalks.jcommune.service.BranchService} instance to be injected
      * @param branchDao           used for checking branch existence
      * @param notificationService to send email nofications on topic updates to subscribed users
      * @param subscriptionService for subscribing user on topic if notification enabled
+     * @param userService         to get current logged in user
      */
     public TransactionalTopicService(TopicDao dao, SecurityService securityService,
                                      BranchService branchService, BranchDao branchDao,
                                      NotificationService notificationService,
-                                     SubscriptionService subscriptionService) {
+                                     SubscriptionService subscriptionService, UserService userService) {
         super(dao);
         this.securityService = securityService;
         this.branchService = branchService;
         this.branchDao = branchDao;
         this.notificationService = notificationService;
         this.subscriptionService = subscriptionService;
+        this.userService = userService;
     }
 
     /**
@@ -83,7 +87,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @Override
     @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.CREATE_POSTS')")
     public Post replyToTopic(long topicId, String answerBody, long branchId) throws NotFoundException {
-        JCUser currentUser = (JCUser) securityService.getCurrentUser();
+        JCUser currentUser = userService.getCurrentUser();
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);
         Topic topic = get(topicId);
@@ -91,8 +95,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         topic.addPost(answer);
         this.getDao().update(topic);
 
-        securityService.createAclBuilder().grant(GeneralPermission.WRITE).
-                to(securityService.getCurrentUser()).on(answer).flush();
+        securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(currentUser).on(answer).flush();
         notificationService.topicChanged(topic);
         logger.debug("New post in topic. Topic id={}, Post id={}, Post author={}",
                 new Object[]{topicId, answer.getId(), currentUser.getUsername()});
@@ -107,7 +110,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.CREATE_TOPICS')")
     public Topic createTopic(String topicName, String bodyText, long branchId
             , boolean notifyOnAnswers) throws NotFoundException {
-        JCUser currentUser = (JCUser) securityService.getCurrentUser();
+        JCUser currentUser = userService.getCurrentUser();
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);
         Branch branch = branchService.get(branchId);
@@ -117,12 +120,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         branch.addTopic(topic);
         branchDao.update(branch);
 
-        securityService.createAclBuilder().grant(GeneralPermission.WRITE)
-                .to(securityService.getCurrentUser())
-                .on(topic).flush();
-        securityService.createAclBuilder().grant(GeneralPermission.WRITE)
-                .to(securityService.getCurrentUser())
-                .on(first).flush();
+        JCUser user =userService.getCurrentUser();
+        securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(topic).flush();
+        securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(first).flush();
 
         notificationService.branchChanged(branch);
 
@@ -182,7 +182,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         topic.updateModificationDate();
         this.getDao().update(topic);
         notificationService.topicChanged(topic);
-        JCUser currentUser = (JCUser) securityService.getCurrentUser();
+        JCUser currentUser = userService.getCurrentUser();
         subscribeOnTopicIfNotificationsEnabled(notifyOnAnswers, topic, currentUser);
 
         logger.debug("Topic id={} updated", topic.getId());

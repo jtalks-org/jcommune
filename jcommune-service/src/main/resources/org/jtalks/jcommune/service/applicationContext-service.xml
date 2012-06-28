@@ -62,7 +62,7 @@
 
     <bean id="locationService" class="org.jtalks.jcommune.service.nontransactional.LocationService">
         <constructor-arg name="sessionRegistry" ref="sessionRegistry"/>
-        <constructor-arg name="securityService" ref="securityService"/>
+        <constructor-arg name="userService" ref="userService"/>
     </bean>
 
     <bean id="userService" class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
@@ -78,7 +78,7 @@
     <bean id="userContactsService"
           class="org.jtalks.jcommune.service.transactional.TransactionalUserContactsService">
         <constructor-arg ref="userContactsDao"/>
-        <constructor-arg ref="securityService"/>
+        <constructor-arg ref="userService"/>
     </bean>
 
     <bean id="postService"
@@ -88,6 +88,7 @@
         <constructor-arg ref="securityService"/>
         <constructor-arg ref="notificationService"/>
         <constructor-arg ref="lastReadPostService"/>
+        <constructor-arg ref="userService"/>
     </bean>
 
     <bean id="topicSearchService"
@@ -126,6 +127,7 @@
         <constructor-arg ref="topicBranchDao"/>
         <constructor-arg ref="notificationService"/>
         <constructor-arg ref="subscriptionService"/>
+        <constructor-arg ref="userService"/>
     </bean>
 
     <bean id="pollService"
@@ -135,11 +137,12 @@
         <constructor-arg ref="pollOptionDao"/>
         <constructor-arg ref="securityService"/>
         <constructor-arg ref="temporaryAuthorityManager"/>
+        <constructor-arg ref="userService"/>
     </bean>
 
     <bean id="subscriptionService"
           class="org.jtalks.jcommune.service.transactional.TransactionalSubscriptionService">
-        <constructor-arg ref="securityService"/>
+        <constructor-arg ref="userService"/>
         <constructor-arg ref="topicBranchDao"/>
         <constructor-arg ref="topicDao"/>
     </bean>
@@ -161,7 +164,7 @@
     </bean>
 
     <bean id="lastReadPostService" class="org.jtalks.jcommune.service.transactional.TransactionalLastReadPostService">
-        <constructor-arg ref="securityService"/>
+        <constructor-arg ref="userService"/>
         <constructor-arg ref="lastReadPostHibernateDao"/>
     </bean>
 

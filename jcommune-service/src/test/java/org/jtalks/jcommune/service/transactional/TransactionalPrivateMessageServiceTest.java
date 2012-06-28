@@ -82,36 +82,30 @@ public class TransactionalPrivateMessageServiceTest {
         aclBuilder = mockAclBuilder();
         pmService = new TransactionalPrivateMessageService(pmDao, securityService, userService, userDataCache,
                 mailService);
+        when(userService.getCurrentUser()).thenReturn(user);
     }
 
     @Test
     public void testGetInboxForCurrentUser() {
-
         when(pmDao.getAllForUser(user)).thenReturn(new ArrayList<PrivateMessage>());
-        when(securityService.getCurrentUser()).thenReturn(user);
 
         pmService.getInboxForCurrentUser();
-
-        verify(pmDao).getAllForUser(user);
-        verify(securityService).getCurrentUser();
     }
 
     @Test
     public void testGetOutboxForCurrentUser() {
         when(pmDao.getAllFromUser(user)).thenReturn(new ArrayList<PrivateMessage>());
-        when(securityService.getCurrentUser()).thenReturn(user);
 
         pmService.getOutboxForCurrentUser();
 
         verify(pmDao).getAllFromUser(user);
-        verify(securityService).getCurrentUser();
     }
 
     @Test
     public void testSendMessage() throws NotFoundException {
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
-        PrivateMessage pm = pmService.sendMessage("body", "title", JC_USER, (JCUser) securityService.getCurrentUser());
+        PrivateMessage pm = pmService.sendMessage("body", "title", JC_USER, user);
 
         assertFalse(pm.isRead());
         assertEquals(pm.getStatus(), PrivateMessageStatus.SENT);
@@ -124,20 +118,17 @@ public class TransactionalPrivateMessageServiceTest {
     @Test
     public void testGetDraftsFromCurrentUser() {
         when(pmDao.getDraftsFromUser(user)).thenReturn(new ArrayList<PrivateMessage>());
-        when(securityService.getCurrentUser()).thenReturn(user);
 
         pmService.getDraftsFromCurrentUser();
 
         verify(pmDao).getDraftsFromUser(user);
-        verify(securityService).getCurrentUser();
     }
 
     @Test
     public void testSaveDraft() throws NotFoundException {
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
-        PrivateMessage pm = pmService.saveDraft(PM_ID, "body", "title",
-                JC_USER, (JCUser) securityService.getCurrentUser());
+        PrivateMessage pm = pmService.saveDraft(PM_ID, "body", "title", JC_USER, user);
 
         assertEquals(pm.getId(), PM_ID);
         verify(pmDao).saveOrUpdate(pm);
@@ -150,8 +141,7 @@ public class TransactionalPrivateMessageServiceTest {
     public void testSaveDraftRecipientUserNull() throws NotFoundException {
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
-        PrivateMessage pm = pmService.saveDraft(PM_ID, "body", "title", null,
-                (JCUser) securityService.getCurrentUser());
+        PrivateMessage pm = pmService.saveDraft(PM_ID, "body", "title", null,  user);
 
         assertEquals(pm.getId(), PM_ID);
         verify(pmDao).saveOrUpdate(pm);
@@ -202,7 +192,7 @@ public class TransactionalPrivateMessageServiceTest {
     public void testSendDraft() throws NotFoundException {
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
-        PrivateMessage pm = pmService.sendDraft(1L, "body", "title", JC_USER, (JCUser) securityService.getCurrentUser());
+        PrivateMessage pm = pmService.sendDraft(1L, "body", "title", JC_USER, user);
 
         assertFalse(pm.isRead());
         assertEquals(pm.getStatus(), PrivateMessageStatus.SENT);
@@ -218,7 +208,6 @@ public class TransactionalPrivateMessageServiceTest {
         PrivateMessage expected = new PrivateMessage(user, user, "title", "body");
         when(pmDao.get(PM_ID)).thenReturn(expected);
         when(pmDao.isExist(PM_ID)).thenReturn(true);
-        when(securityService.getCurrentUser()).thenReturn(user);
 
         PrivateMessage pm = pmService.get(PM_ID);
 
@@ -240,12 +229,10 @@ public class TransactionalPrivateMessageServiceTest {
         PrivateMessage message = new PrivateMessage(user, user, null, null);
         message.setStatus(PrivateMessageStatus.DELETED_FROM_OUTBOX);
 
-        when(securityService.getCurrentUser()).thenReturn(user);
         when(pmDao.get(PM_ID)).thenReturn(message);
         when(pmDao.isExist(PM_ID)).thenReturn(true);
-        when(securityService.getCurrentUser()).thenReturn(user);
 
-        PrivateMessage resultedPm = pmService.get(PM_ID);
+        pmService.get(PM_ID);
 
         verify(pmDao).get(PM_ID);
     }
@@ -255,12 +242,10 @@ public class TransactionalPrivateMessageServiceTest {
         PrivateMessage message = new PrivateMessage(user, user, null, null);
         message.setStatus(PrivateMessageStatus.DELETED_FROM_INBOX);
 
-        when(securityService.getCurrentUser()).thenReturn(user);
         when(pmDao.get(PM_ID)).thenReturn(message);
         when(pmDao.isExist(PM_ID)).thenReturn(true);
-        when(securityService.getCurrentUser()).thenReturn(user);
 
-        PrivateMessage resultedPm = pmService.get(PM_ID);
+        pmService.get(PM_ID);
 
         verify(pmDao).get(PM_ID);
     }
@@ -272,7 +257,6 @@ public class TransactionalPrivateMessageServiceTest {
         expected.setRead(true);
         when(pmDao.get(PM_ID)).thenReturn(expected);
         when(pmDao.isExist(PM_ID)).thenReturn(true);
-        when(securityService.getCurrentUser()).thenReturn(user);
 
         PrivateMessage pm = pmService.get(PM_ID);
 
@@ -285,7 +269,6 @@ public class TransactionalPrivateMessageServiceTest {
         PrivateMessage message = new PrivateMessage(user, user, "title", "body");
         message.setStatus(PrivateMessageStatus.DRAFT);
 
-        when(securityService.getCurrentUser()).thenReturn(user);
         when(pmDao.get(PM_ID)).thenReturn(message);
         when(pmDao.isExist(PM_ID)).thenReturn(true);
 
@@ -302,9 +285,9 @@ public class TransactionalPrivateMessageServiceTest {
         PrivateMessage message = new PrivateMessage(user, user, "title", "body");
         JCUser currentUser = new JCUser(USERNAME, "email", "password");
 
-        when(securityService.getCurrentUser()).thenReturn(currentUser);
         when(pmDao.get(PM_ID)).thenReturn(message);
         when(pmDao.isExist(PM_ID)).thenReturn(true);
+        when(userService.getCurrentUser()).thenReturn(currentUser);
 
         PrivateMessage resultMessage = pmService.get(PM_ID);
 
@@ -319,7 +302,6 @@ public class TransactionalPrivateMessageServiceTest {
         PrivateMessage message = new PrivateMessage(null, null, null, null);
         message.setStatus(PrivateMessageStatus.DRAFT);
 
-        when(securityService.getCurrentUser()).thenReturn(user);
         when(pmDao.get(1L)).thenReturn(message);
         when(pmDao.get(2L)).thenReturn(message);
         when(pmDao.isExist(1L)).thenReturn(true);
@@ -349,7 +331,7 @@ public class TransactionalPrivateMessageServiceTest {
         PrivateMessage message3 = new PrivateMessage(user, otherUser, null, null);
         message3.setStatus(PrivateMessageStatus.DELETED_FROM_OUTBOX);
 
-        when(securityService.getCurrentUser()).thenReturn(user);
+
         when(pmDao.get(1L)).thenReturn(message1);
         when(pmDao.get(2L)).thenReturn(message2);
         when(pmDao.get(3L)).thenReturn(message3);
@@ -383,7 +365,6 @@ public class TransactionalPrivateMessageServiceTest {
         PrivateMessage message3 = new PrivateMessage(otherUser, user, null, null);
         message3.setStatus(PrivateMessageStatus.DELETED_FROM_INBOX);
 
-        when(securityService.getCurrentUser()).thenReturn(user);
         when(pmDao.get(1L)).thenReturn(message1);
         when(pmDao.get(2L)).thenReturn(message2);
         when(pmDao.get(3L)).thenReturn(message3);
@@ -404,22 +385,20 @@ public class TransactionalPrivateMessageServiceTest {
         verify(pmDao, times(1)).delete(any(PrivateMessage.class));
     }
 
-    @Test
-    public void testDeleteNotFound() {
+    @Test(expectedExceptions = NotFoundException.class)
+    public void testDeleteNotFound() throws NotFoundException {
         PrivateMessage message1 = new PrivateMessage(user, user, null, null);
         message1.setStatus(PrivateMessageStatus.DRAFT);
 
         PrivateMessage message2 = new PrivateMessage(user, user, null, null);
         message2.setStatus(PrivateMessageStatus.DRAFT);
 
-        when(securityService.getCurrentUser()).thenReturn(user);
         when(pmDao.get(1L)).thenReturn(message1);
         when(pmDao.get(2L)).thenReturn(message2);
         when(pmDao.isExist(1L)).thenReturn(true);
         when(pmDao.isExist(2L)).thenReturn(true);
 
-        String result = null;
-        result = pmService.delete(Arrays.asList(1L, 1234L, 2L));
+        String result = pmService.delete(Arrays.asList(1L, 1234L, 2L));
         assertEquals(result, DRAFTS);
         verify(pmDao, times(2)).delete(any(PrivateMessage.class));
     }
@@ -429,10 +408,9 @@ public class TransactionalPrivateMessageServiceTest {
         PrivateMessage message1 = new PrivateMessage(user, user, null, null);
         message1.setStatus(PrivateMessageStatus.DELETED_FROM_OUTBOX);
 
-        when(securityService.getCurrentUser()).thenReturn(user);
+        when(userService.getCurrentUser()).thenReturn(user);
         when(pmDao.get(PM_ID)).thenReturn(message1);
         when(pmDao.isExist(PM_ID)).thenReturn(true);
-        when(securityService.getCurrentUser()).thenReturn(user);
 
         boolean expectedPermision = pmService.hasCurrentUserAccessToPM(PM_ID);
 
@@ -445,10 +423,9 @@ public class TransactionalPrivateMessageServiceTest {
         PrivateMessage message1 = new PrivateMessage(user, user, null, null);
         message1.setStatus(PrivateMessageStatus.DELETED_FROM_INBOX);
 
-        when(securityService.getCurrentUser()).thenReturn(user);
+        when(userService.getCurrentUser()).thenReturn(user);
         when(pmDao.get(PM_ID)).thenReturn(message1);
         when(pmDao.isExist(PM_ID)).thenReturn(true);
-        when(securityService.getCurrentUser()).thenReturn(user);
 
         //todo boolean expectedPermision = pmService.hasCurrentUserAccessToPM(PM_ID);
 
@@ -464,12 +441,10 @@ public class TransactionalPrivateMessageServiceTest {
         PrivateMessage message2 = new PrivateMessage(user, user, null, null);
         message2.setStatus(PrivateMessageStatus.SENT);
 
-        when(securityService.getCurrentUser()).thenReturn(user);
         when(pmDao.get(1L)).thenReturn(message1);
         when(pmDao.isExist(1L)).thenReturn(true);
         when(pmDao.get(2L)).thenReturn(message1);
         when(pmDao.isExist(2L)).thenReturn(true);
-        when(securityService.getCurrentUser()).thenReturn(user);
 
         //todo  boolean expectedPermisionForDraftPm = pmService.hasCurrentUserAccessToPM(1L);
         //todo   boolean expectedPermisionForSentPm = pmService.hasCurrentUserAccessToPM(2L);

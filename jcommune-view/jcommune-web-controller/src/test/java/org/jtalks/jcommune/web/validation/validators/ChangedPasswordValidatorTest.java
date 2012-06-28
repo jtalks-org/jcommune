@@ -15,8 +15,8 @@
 package org.jtalks.jcommune.web.validation.validators;
 
 
-import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.mockito.Mock;
@@ -37,7 +37,7 @@ import javax.validation.ConstraintValidatorContext.ConstraintViolationBuilder.No
  */
 public class ChangedPasswordValidatorTest {
 	@Mock
-	private SecurityService securityService;
+	private UserService userService;
 	@Mock
 	private EncryptionService encryptionService;
 	@Mock
@@ -54,9 +54,9 @@ public class ChangedPasswordValidatorTest {
 	@BeforeMethod
 	public void init() {
 		MockitoAnnotations.initMocks(this);
-		Mockito.when(securityService.getCurrentUser()).thenReturn(
-				new JCUser("username", "email", userCurrentPassword));
-		validator = new ChangedPasswordValidator(securityService, encryptionService);
+		Mockito.when(userService.getCurrentUser()).thenReturn(
+                new JCUser("username", "email", userCurrentPassword));
+		validator = new ChangedPasswordValidator(userService, encryptionService);
 		//
 		editUserProfileDto.setCurrentUserPassword(userCurrentPassword);
 		editUserProfileDto.setNewUserPassword(userNewPassword);

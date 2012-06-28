@@ -28,6 +28,7 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.mockito.Matchers;
@@ -87,6 +88,8 @@ public class TransactionalTopicServiceTest {
     private NotificationService notificationService;
     @Mock
     private SubscriptionService subscriptionService;
+    @Mock
+    private UserService userService;
 
     private CompoundAclBuilder<User> aclBuilder;
 
@@ -95,7 +98,7 @@ public class TransactionalTopicServiceTest {
         initMocks(this);
         aclBuilder = mockAclBuilder();
         topicService = new TransactionalTopicService(topicDao, securityService,
-                branchService, branchDao, notificationService, subscriptionService);
+                branchService, branchDao, notificationService, subscriptionService, userService);
         user = new JCUser(USERNAME, "email@mail.com", "password");
     }
 
@@ -125,7 +128,7 @@ public class TransactionalTopicServiceTest {
     @Test
     public void testReplyToTopic() throws NotFoundException {
         Topic answeredTopic = new Topic(user, "title");
-        when(securityService.getCurrentUser()).thenReturn(user);
+        when(userService.getCurrentUser()).thenReturn(user);
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(answeredTopic);
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
@@ -167,7 +170,7 @@ public class TransactionalTopicServiceTest {
     }
 
     private void createTopicStubs(Branch branch) throws NotFoundException {
-        when(securityService.getCurrentUser()).thenReturn(user);
+        when(userService.getCurrentUser()).thenReturn(user);
         when(branchService.get(BRANCH_ID)).thenReturn(branch);
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
     }
@@ -319,7 +322,7 @@ public class TransactionalTopicServiceTest {
     }
 
     private void updateTopicStubs(Topic topic) {
-        when(securityService.getCurrentUser()).thenReturn(user);
+        when(userService.getCurrentUser()).thenReturn(user);
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(topic);
     }

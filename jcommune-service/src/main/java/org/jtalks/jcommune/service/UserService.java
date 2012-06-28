@@ -45,7 +45,13 @@ public interface UserService extends EntityService<JCUser> {
      */
     JCUser registerUser(JCUser user);
 
-
+    /**
+     * Gets user currently logged in.
+     *
+     * @return logged in user or null, if user hasn't yet log in
+     */
+    JCUser getCurrentUser();
+    
     /**
      * Updates user last login time to current time.
      *
@@ -66,6 +72,8 @@ public interface UserService extends EntityService<JCUser> {
      * Performs the following:
      * 1. Alters the password for this user to the random string
      * 2. Sends an e-mail with new password to this address to notify user
+     *
+     * If mailing fails password won't be changed.
      *
      * @param email address to identify user
      * @throws MailingFailedException if mailing failed

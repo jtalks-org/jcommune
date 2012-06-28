@@ -20,9 +20,9 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.jtalks.common.model.entity.Section;
-import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.SectionService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.SectionDto;
@@ -53,7 +53,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class SectionController {
 
-    private SecurityService securityService;
+    private UserService userService;
     private SectionService sectionService;
     private ForumStatisticsProvider forumStaticsProvider;
     private LocationService locationService;
@@ -61,18 +61,18 @@ public class SectionController {
     /**
      * Constructor creates MVC controller with specified SectionService
      *
-     * @param securityService      autowired object from Spring Context
+     * @param userService          to get user currently logged in
      * @param sectionService       autowired object from Spring Context
      * @param locationService      autowired object from Spring Context
      * @param forumStaticsProvider autowired object from Spring Context which provides methods for getting
      *                             forum statistic information
      */
     @Autowired
-    public SectionController(SecurityService securityService,
+    public SectionController(UserService userService,
                              SectionService sectionService,
                              ForumStatisticsProvider forumStaticsProvider,
                              LocationService locationService) {
-        this.securityService = securityService;
+        this.userService = userService;
         this.sectionService = sectionService;
         this.forumStaticsProvider = forumStaticsProvider;
         this.locationService = locationService;
@@ -100,7 +100,7 @@ public class SectionController {
         List<Section> sections = sectionService.getAll();
         sectionService.prepareSectionsForView(sections);
         return new ModelAndView("sectionList")
-                .addObject("pageSize", Pagination.getPageSizeFor((JCUser) securityService.getCurrentUser()))
+                .addObject("pageSize", Pagination.getPageSizeFor(userService.getCurrentUser()))
                 .addObject("sectionList", sections)
                 .addObject("messagesCount", forumStaticsProvider.getPostsOnForumCount())
                 .addObject("registeredUsersCount", forumStaticsProvider.getUsersCount())
@@ -137,7 +137,7 @@ public class SectionController {
     public ModelAndView branchList(@PathVariable("sectionId") long sectionId) throws NotFoundException {
         Section section = sectionService.get(sectionId);
         sectionService.prepareSectionsForView(Arrays.asList(section));
-        JCUser currentUser = (JCUser) securityService.getCurrentUser();
+        JCUser currentUser = userService.getCurrentUser();
 
         return new ModelAndView("branchList")
                 .addObject("viewList", locationService.getUsersViewing(section))

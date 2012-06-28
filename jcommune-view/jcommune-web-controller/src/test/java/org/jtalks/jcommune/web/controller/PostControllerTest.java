@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
@@ -22,6 +21,7 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
@@ -75,14 +75,13 @@ public class PostControllerTest {
     @Mock
     private LastReadPostService lastReadPostService;
     @Mock
-    private SecurityService securityService;
+    private UserService userService;
 
     public static final long POST_ID = 1;
     public static final long TOPIC_ID = 1L;
     private static final Long BRANCH_ID = 1L;
     public static final long PAGE = 1L;
     private final String POST_CONTENT = "postContent";
-    private Topic topic;
     private Post post;
     private JCUser user = new JCUser("username", "email@mail.com", "password");
 
@@ -96,7 +95,7 @@ public class PostControllerTest {
         branch.setId(BRANCH_ID);
 
 
-        topic = mock(Topic.class);
+        Topic topic = mock(Topic.class);
         when(topic.getBranch()).thenReturn(branch);
         when(topic.getId()).thenReturn(TOPIC_ID);
         when(topic.getTitle()).thenReturn("title");
@@ -119,7 +118,7 @@ public class PostControllerTest {
 
         controller = new PostController(
                 postService, breadcrumbBuilder, topicService, bbCodeService,
-                lastReadPostService, securityService);
+                lastReadPostService, userService);
     }
 
     @Test
@@ -285,7 +284,7 @@ public class PostControllerTest {
         String postText = "[code]123[/code]";
         String html = "<code>123</code>";
         when(bbCodeService.convertBbToHtml(anyString())).thenReturn(html);
-        when(securityService.getCurrentUser()).thenReturn(user);
+        when(userService.getCurrentUser()).thenReturn(user);
 
         String result = controller.preview(postText).getBody();
 

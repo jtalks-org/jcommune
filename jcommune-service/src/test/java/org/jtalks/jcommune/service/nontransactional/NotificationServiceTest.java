@@ -16,12 +16,12 @@ package org.jtalks.jcommune.service.nontransactional;
 
 
 import org.jtalks.common.model.entity.Property;
-import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.PropertyDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.JcommuneProperty;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -45,7 +45,7 @@ public class NotificationServiceTest {
     @Mock
     private MailService mailService;
     @Mock
-    private SecurityService securityService;
+    private UserService userService;
     @Mock
     private PropertyDao propertyDao;
     private JcommuneProperty notificationsEnabledProperty = SENDING_NOTIFICATIONS_ENABLED;
@@ -64,7 +64,7 @@ public class NotificationServiceTest {
         notificationsEnabledProperty.setPropertyDao(propertyDao);
         notificationsEnabledProperty.setName(PROPERTY_NAME);
         service = new NotificationService(
-                securityService,
+                userService,
                 mailService,
                 notificationsEnabledProperty);
         topic = new Topic(user1, "title");
@@ -119,7 +119,7 @@ public class NotificationServiceTest {
     @Test
     public void testTopicChangedSelfSubscribed() throws MailingFailedException {
         prepareEnabledProperty();
-        when(securityService.getCurrentUser()).thenReturn(user1);
+        when(userService.getCurrentUser()).thenReturn(user1);
         topic.getSubscribers().add(user1);
         topic.getSubscribers().add(user2);
 
@@ -132,7 +132,7 @@ public class NotificationServiceTest {
     @Test
     public void testBranchChangedSelfSubscribed() throws MailingFailedException {
         prepareEnabledProperty();
-        when(securityService.getCurrentUser()).thenReturn(user1);
+        when(userService.getCurrentUser()).thenReturn(user1);
         branch.getSubscribers().add(user1);
         branch.getSubscribers().add(user2);
 
@@ -161,7 +161,7 @@ public class NotificationServiceTest {
     @Test
     public void testTopicMovedWithBranchSubscribers() {
         prepareEnabledProperty();
-        when(securityService.getCurrentUser()).thenReturn(user1);
+        when(userService.getCurrentUser()).thenReturn(user1);
         branch.getSubscribers().add(user1);
         branch.getSubscribers().add(user2);
         branch.getSubscribers().add(user3);
@@ -175,7 +175,7 @@ public class NotificationServiceTest {
     @Test
     public void testTopicMovedTopicStarterIsNotASubscriber() {
         prepareEnabledProperty();
-        when(securityService.getCurrentUser()).thenReturn(user1);
+        when(userService.getCurrentUser()).thenReturn(user1);
         branch.getSubscribers().add(user2);
         branch.getSubscribers().add(user3);
 
@@ -188,7 +188,7 @@ public class NotificationServiceTest {
     @Test
     public void testTopicMovedWithDisabledNotifications() {
         prepareDisabledProperty();
-        when(securityService.getCurrentUser()).thenReturn(user1);
+        when(userService.getCurrentUser()).thenReturn(user1);
         branch.getSubscribers().add(user2);
 
         service.topicMoved(topic, TOPIC_ID);
