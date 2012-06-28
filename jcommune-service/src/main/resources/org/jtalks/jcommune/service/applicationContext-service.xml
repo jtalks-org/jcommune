@@ -131,6 +131,7 @@
     <bean id="pollService"
           class="org.jtalks.jcommune.service.transactional.TransactionalPollService">
         <constructor-arg ref="pollDao"/>
+        <constructor-arg ref="groupDao"/>
         <constructor-arg ref="pollOptionDao"/>
         <constructor-arg ref="securityService"/>
         <constructor-arg ref="temporaryAuthorityManager"/>

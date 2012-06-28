@@ -14,21 +14,14 @@
  */
 
 /**
- * This script provides jQuery datepicker functionality
- * Depend on jquery-ui-i18n.min.js, jquery-ui.min.js, jquery-ui.css files
- * TODO need to code proper locale selecting
+ * This script provides jQuery datepicker functionality.
  */
 
 $(function () {
     $('#datepicker').datepicker({
         dateFormat:'dd-mm-yy',
-        showOn:'button',
-        buttonImage:'../resources/images/calendar.gif',
-        buttonImageOnly:true,
         numberOfMonths:2,
         minDate:'1d',
         firstDay:1
     });
-
-
 });

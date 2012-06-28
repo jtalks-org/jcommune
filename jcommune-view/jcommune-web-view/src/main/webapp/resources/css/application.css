@@ -131,7 +131,7 @@ ul.lang-menu li img {
 }
 
 #topics-table {
-	table-layout: fixed;
+    table-layout: fixed;
     word-wrap: break-word;
 }
 
@@ -141,7 +141,7 @@ ul.lang-menu li img {
 }
 
 #topics-table th {
-	vertical-align: middle;
+    vertical-align: middle;
 }
 
 #topics-table .status-col {
@@ -311,6 +311,22 @@ ul.lang-menu li img {
 
 .post table .userinfo div {
     font: 11px verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+}
+
+.cursor-pointer {
+    cursor: pointer !important;
+}
+
+.right-aligned {
+    float: right;
+}
+
+.left-aligned {
+    float: left;
+}
+
+.cleared {
+    clear: both;
 }
 
 @media (max-width: 480px) {

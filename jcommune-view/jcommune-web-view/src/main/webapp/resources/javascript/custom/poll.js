@@ -108,18 +108,18 @@ function applyPollResult(poll) {
         $(this).attr("disabled", "disabled");
         $(this).hide();
     });
-    
+
     //build charts
     for (var i = 0; i < poll.pollOptions.length; i++) {
         var pollOption = poll.pollOptions[i];
         var pollOptionId = pollOption.id;
         var pollPercentage = pollOption.votesCount / poll.totalVotesCount * 100;
         var roundedPollPercentage = (Math.round(pollPercentage * 100) / 100).toFixed(2);
-        $("#pollAnswer" + pollOptionId + " .chart" ).css("width", roundedPollPercentage + "%");
-		if (pollOption.votesCount > 0) {
-			$("#pollAnswer" + pollOptionId + " .chart" ).text(pollOption.votesCount + " - " + roundedPollPercentage + "%");
-		}
-		$("#pollAnswer" + pollOptionId).show();
+        $("#pollAnswer" + pollOptionId + " .chart").css("width", roundedPollPercentage + "%");
+        if (pollOption.votesCount > 0) {
+            $("#pollAnswer" + pollOptionId + " .chart").text(pollOption.votesCount + " - " + roundedPollPercentage + "%");
+        }
+        $("#pollAnswer" + pollOptionId).show();
     }
     //disable and hide vote button
     $("#pollAjaxLoader").hide(); //hide the ajax loader again
@@ -135,7 +135,7 @@ function applyPollResult(poll) {
  */
 function addSingleVote(pollOptionId, pollId) {
     $.ajax({
-        url:$root + '/poll/' + pollId + '/single',
+        url:$root + '/poll/' + pollId + '/single?pollId=' + pollId,
         type:"POST",
         data:{"pollOptionId":pollOptionId},
         success:function (poll) {
@@ -153,7 +153,7 @@ function addSingleVote(pollOptionId, pollId) {
  */
 function addMultipleVote(pollDto, pollId) {
     $.ajax({
-        url:$root + "/poll/" + pollId + '/multiple',
+        url:$root + "/poll/" + pollId + '/multiple?pollId=' + pollId,
         type:"POST",
         contentType:"application/json",
         data:JSON.stringify(pollDto),
