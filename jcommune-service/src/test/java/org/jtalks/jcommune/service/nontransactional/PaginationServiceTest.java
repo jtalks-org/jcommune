@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.service.UserService;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -30,18 +31,18 @@ import org.testng.annotations.Test;
  */
 public class PaginationServiceTest {
     @Mock
-    private SecurityService securityService;
+    private UserService userService;
     private PaginationService paginationService;
     
     @BeforeTest
     public void init() {
         MockitoAnnotations.initMocks(this);
-        paginationService = new PaginationService(securityService);
+        paginationService = new PaginationService(userService);
     }
     
     @Test(dataProvider = "getPageSizeForUserParameters")
     public void getPageSizeForCurrentUser(JCUser user, int expectedPageSize) {
-        Mockito.when(securityService.getCurrentUser()).thenReturn(user);
+        Mockito.when(userService.getCurrentUser()).thenReturn(user);
         
         int actualPageSize = paginationService.getPageSizeForCurrentUser();
         

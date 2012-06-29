@@ -39,6 +39,9 @@
     <bean id="userDao"
           class="org.jtalks.jcommune.model.dao.hibernate.UserHibernateDao"
           parent="abstractHibernateDao"/>
+    <bean id="groupDao"
+          class="org.jtalks.common.model.dao.hibernate.GroupHibernateDao"
+          parent="abstractHibernateDao"/>
     <bean id="topicDao"
           class="org.jtalks.jcommune.model.dao.hibernate.TopicHibernateDao"
           parent="abstractHibernateDao"/>
@@ -116,6 +119,7 @@
         <property name="mappingResources">
             <list>
                 <value>/org/jtalks/jcommune/model/entity/JCUser.hbm.xml</value>
+                <value>/org/jtalks/jcommune/model/entity/Group.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/Post.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/Topic.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/Branch.hbm.xml</value>

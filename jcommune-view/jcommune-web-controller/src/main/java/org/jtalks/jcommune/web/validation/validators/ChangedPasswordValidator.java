@@ -14,8 +14,9 @@
  */
 package org.jtalks.jcommune.web.validation.validators;
 
+import org.jtalks.common.security.SecurityService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.validation.annotations.ChangedPassword;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,16 +34,16 @@ public class ChangedPasswordValidator implements ConstraintValidator<ChangedPass
 
     private String message;
 
-    private SecurityService securityService;
+    private UserService userService;
     private EncryptionService encryptionService;
 
     /**
-     * @param securityService to obtain current user logged in
+     * @param userService to obtain current user logged in
      * @param encryptionService to encrypt passwords
      */
     @Autowired
-    public ChangedPasswordValidator(SecurityService securityService, EncryptionService encryptionService) {
-        this.securityService = securityService;
+    public ChangedPasswordValidator(UserService userService, EncryptionService encryptionService) {
+        this.userService = userService;
         this.encryptionService = encryptionService;
     }
 
@@ -62,7 +63,7 @@ public class ChangedPasswordValidator implements ConstraintValidator<ChangedPass
         boolean result = dto.getNewUserPassword() == null;
         //we must compare the hashes, so we encrypt the entered value
         String enteredCurrentPassword = encryptionService.encryptPassword(dto.getCurrentUserPassword());
-        result |= securityService.getCurrentUser().getPassword().equals(enteredCurrentPassword);
+        result |= userService.getCurrentUser().getPassword().equals(enteredCurrentPassword);
         if (!result) {
             // add validation error to the field
             context.buildConstraintViolationWithTemplate(message)

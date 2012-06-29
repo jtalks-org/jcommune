@@ -19,6 +19,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <head>
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/privateMessages.js"></script>
@@ -32,14 +33,13 @@
     <hr/>
     <div class="row">
         <div class="span2">
-            <a href="${pageContext.request.contextPath}/pm/new" class="btn btn-primary btn-small pm_buttons">
+            <sec:authentication property="principal.id" var="userId"/>
+            <a href="${pageContext.request.contextPath}/pm/new?userId=${userId}" class="btn btn-primary btn-small pm_buttons">
                 <spring:message code="label.new_pm"/></a>
 
             <jsp:include page="../../template/pmFolders.jsp"/>
 
         </div>
-        <!-- /span2 -->
-
         <div class="span9">
             <div class="pm_buttons">
                 <span class="del">
@@ -100,11 +100,7 @@
                 </tbody>
             </table>
         </div>
-        <!-- /span9 -->
     </div>
-    <!-- /row -->
 </div>
-<!-- /container -->
-
 <div class="footer_buffer"></div>
 </body>

@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.LastReadPostDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -21,12 +22,10 @@ import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.LastReadPostService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
+import org.jtalks.jcommune.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
-
-import static org.jtalks.jcommune.service.security.SecurityConstants.*;
 
 /**
  * Performs last read posts management to track topic updates
@@ -36,15 +35,15 @@ import static org.jtalks.jcommune.service.security.SecurityConstants.*;
  */
 public class TransactionalLastReadPostService implements LastReadPostService {
 
-    private SecurityService securityService;
+    private UserService userService;
     private LastReadPostDao lastReadPostDao;
 
     /**
-     * @param securityService to figure out the current user logged in
+     * @param userService to figure out the current user logged in
      * @param lastReadPostDao to save/read last read post information from a database
      */
-    public TransactionalLastReadPostService(SecurityService securityService, LastReadPostDao lastReadPostDao) {
-        this.securityService = securityService;
+    public TransactionalLastReadPostService(UserService userService, LastReadPostDao lastReadPostDao) {
+        this.userService = userService;
         this.lastReadPostDao = lastReadPostDao;
     }
 
@@ -53,7 +52,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      */
     @Override
     public List<Topic> fillLastReadPostForTopics(List<Topic> topics) {
-        JCUser current = securityService.getCurrentUser();
+        JCUser current = userService.getCurrentUser();
         if (current != null) {
             for (Topic topic : topics) {
                 // todo: find more efficient solution not to perform queries in loop
@@ -71,7 +70,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      */
     @Override
     public Integer getLastReadPostForTopic(Topic topic) {
-        JCUser current = securityService.getCurrentUser();
+        JCUser current = userService.getCurrentUser();
         LastReadPost post = lastReadPostDao.getLastReadPost(current, topic);
         return (post == null) ? null : post.getPostIndex();
     }
@@ -81,7 +80,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      */
     @Override
     public void markTopicPageAsRead(Topic topic, int pageNum, boolean pagingEnabled) {
-        JCUser current = securityService.getCurrentUser();
+        JCUser current = userService.getCurrentUser();
         if (current != null) { // topics are always unread for anonymous users
             int postIndex = this.calculatePostIndex(current, topic, pageNum, pagingEnabled);
             saveLastReadPost(current, topic, postIndex);
@@ -93,7 +92,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      */
     @Override
     public void markTopicAsRead(Topic topic) {
-        JCUser current = securityService.getCurrentUser();
+        JCUser current = userService.getCurrentUser();
         if (current != null) { // topics are always unread for anonymous users
             saveLastReadPost(current, topic, topic.getPostCount() - 1);
         }
@@ -103,9 +102,9 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
+    @PreAuthorize("hasPermission(#branch.id, 'BRANCH', 'BranchPermission.VIEW_TOPICS')")
     public void markAllTopicsAsRead(Branch branch) {
-        JCUser user = securityService.getCurrentUser();
+        JCUser user = userService.getCurrentUser();
         for (Topic topic : branch.getTopics()) {
             this.saveLastReadPost(user, topic, topic.getPostCount() - 1);
 
@@ -122,7 +121,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      * @param pagingEnabled if paging is enabled on page. If so, last post index in topic is returned
      * @return new last post index, counting from 0
      */
-    @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
+    @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.VIEW_TOPICS')")
     private int calculatePostIndex(JCUser user, Topic topic, int pageNum, boolean pagingEnabled) {
         if (pagingEnabled) {  // last post on the page given
             int maxPostIndex = user.getPageSize() * pageNum - 1;
@@ -140,7 +139,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      * @param topic     topic to store info for
      * @param postIndex actual post index, starting from 0
      */
-    @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
+    @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.VIEW_TOPICS')")
     private void saveLastReadPost(JCUser user, Topic topic, int postIndex) {
         LastReadPost post = lastReadPostDao.getLastReadPost(user, topic);
         if (post == null) {
@@ -155,7 +154,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
+    @PreAuthorize("hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.VIEW_TOPICS')")
     public void updateLastReadPostsWhenPostIsDeleted(Post post) {
         List<LastReadPost> lastReadPosts = lastReadPostDao.listLastReadPostsForTopic(post.getTopic());
         for (LastReadPost lastReadPost : lastReadPosts) {

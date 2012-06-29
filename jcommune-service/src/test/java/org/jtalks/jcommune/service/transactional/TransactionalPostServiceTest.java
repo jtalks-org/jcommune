@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dto.JcommunePageable;
@@ -34,7 +35,6 @@ import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.service.nontransactional.PaginationService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.springframework.data.domain.Page;
@@ -42,7 +42,6 @@ import org.springframework.data.domain.PageImpl;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
 
 /**
  * This test cover {@code TransactionalPostService} logic validation.
@@ -55,6 +54,7 @@ import org.testng.annotations.Test;
 public class TransactionalPostServiceTest {
 
     private final long POST_ID = 9L;
+    private static final Long BRANCH_ID = 1L;
     private static final String USERNAME = "username";
     private static final String EMAIL = "username@mail.com";
     private static final String PASSWORD = "password";
@@ -71,7 +71,7 @@ public class TransactionalPostServiceTest {
     private LastReadPostService lastReadPostService;
     @Mock 
     private PaginationService paginationService;
-    
+
     private PostService postService;
 
     private JCUser user;
@@ -79,6 +79,7 @@ public class TransactionalPostServiceTest {
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
+        user = new JCUser(USERNAME, EMAIL, PASSWORD);
         postService = new TransactionalPostService(
                 postDao,
                 topicDao,
@@ -86,8 +87,6 @@ public class TransactionalPostServiceTest {
                 notificationService,
                 lastReadPostService,
                 paginationService);
-        user = new JCUser(USERNAME, EMAIL, PASSWORD);
-        when(securityService.getCurrentUser()).thenReturn(user);
     }
 
     @Test
@@ -130,7 +129,6 @@ public class TransactionalPostServiceTest {
         verify(postDao).update(post);
     }
 
-
     @Test
     public void testDeletePost() throws NotFoundException {
         Topic topic = new Topic(user, "title");
@@ -144,7 +142,7 @@ public class TransactionalPostServiceTest {
         when(postDao.isExist(POST_ID)).thenReturn(true);
         when(postDao.get(POST_ID)).thenReturn(postForDelete);
 
-        postService.deletePost(POST_ID);
+        postService.deletePost(POST_ID, BRANCH_ID);
 
         assertEquals(user.getPostCount(), 1);
         verify(postDao).get(POST_ID);
@@ -157,7 +155,7 @@ public class TransactionalPostServiceTest {
     public void testDeleteNonExistentPost() throws NotFoundException {
         when(postDao.isExist(POST_ID)).thenReturn(false);
 
-        postService.deletePost(POST_ID);
+        postService.deletePost(POST_ID, BRANCH_ID);
     }
 
     @Test
@@ -183,9 +181,10 @@ public class TransactionalPostServiceTest {
 
     @Test
     public void testLastPostInTopicPageCalculation() {
-        user.setPageSize(2);
-        Topic topic = new Topic(user, "");
-        Post post = new Post(user, "");
+        int pageSize = 2;
+        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
+        Topic topic = new Topic(null, "");
+        Post post = new Post(null, "");
         topic.addPost(new Post(null, null));
         topic.addPost(new Post(null, null));
         topic.addPost(post);
@@ -195,9 +194,10 @@ public class TransactionalPostServiceTest {
 
     @Test
     public void testFirstPostInTopicPageCalculation() {
-        user.setPageSize(2);
-        Topic topic = new Topic(user, "");
-        Post post = new Post(user, "");
+        int pageSize = 2;
+        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
+        Topic topic = new Topic(null, "");
+        Post post = new Post(null, "");
         topic.addPost(post);
 
         assertEquals(postService.calculatePageForPost(post), 1);
@@ -205,7 +205,7 @@ public class TransactionalPostServiceTest {
 
     @Test
     public void testFirstPostInTopicPageCalculationWithNoUser() {
-        when(securityService.getCurrentUser()).thenReturn(null);
+        when(paginationService.getPageSizeForCurrentUser()).thenReturn(JCUser.DEFAULT_PAGE_SIZE);
         Topic topic = new Topic(user, "");
         Post post = new Post(user, "");
         topic.addPost(post);
@@ -215,7 +215,8 @@ public class TransactionalPostServiceTest {
 
     @Test
     public void testLastPostOnFirstPagePageCalculation() {
-        user.setPageSize(2);
+        int pageSize = 2;
+        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
         Topic topic = new Topic(user, "");
         Post post = new Post(user, "");
         topic.addPost(new Post(null, null));
@@ -226,9 +227,10 @@ public class TransactionalPostServiceTest {
 
     @Test
     public void testLastPostOnPagePageCalculation() {
-        user.setPageSize(2);
-        Topic topic = new Topic(user, "");
-        Post post = new Post(user, "");
+        int pageSize = 2;
+        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
+        Topic topic = new Topic(null, "");
+        Post post = new Post(null, "");
         topic.addPost(new Post(null, null));
         topic.addPost(new Post(null, null));
         topic.addPost(new Post(null, null));
@@ -239,9 +241,10 @@ public class TransactionalPostServiceTest {
 
     @Test
     public void testPostInCenterOfTopicPageCalculation() {
-        user.setPageSize(2);
-        Topic topic = new Topic(user, "");
-        Post post = new Post(user, "");
+        int pageSize = 2;
+        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
+        Topic topic = new Topic(null, "");
+        Post post = new Post(null, "");
         topic.addPost(new Post(null, null));
         topic.addPost(post);
         topic.addPost(new Post(null, null));

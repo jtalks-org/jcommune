@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.web.validation;
 
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.web.validation.validators.NotMeValidator;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
@@ -32,7 +32,7 @@ import static org.testng.Assert.assertTrue;
 public class NotMeValidatorTest {
 
     @Mock
-    private SecurityService service;
+    private UserService service;
 
     private NotMeValidator validator;
 

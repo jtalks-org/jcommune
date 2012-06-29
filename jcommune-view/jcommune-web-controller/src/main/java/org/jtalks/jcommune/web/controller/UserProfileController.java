@@ -25,7 +25,6 @@ import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.jtalks.jcommune.service.nontransactional.PaginationService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +58,6 @@ public class UserProfileController {
     public static final String BREADCRUMB_LIST = "breadcrumbList";
 
 
-    private SecurityService securityService;
     private UserService userService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private ImageUtils imageUtils;
@@ -81,7 +79,6 @@ public class UserProfileController {
 
     /**
      * @param userService       {@link UserService} to be injected
-     * @param securityService   {@link SecurityService} used for accessing to current logged in user
      * @param breadcrumbBuilder the object which provides actions on {@link BreadcrumbBuilder} entity
      * @param imageUtils        {@link ImageUtils} used
      * @param postService       {@link PostService} used
@@ -89,13 +86,11 @@ public class UserProfileController {
      */
     @Autowired
     public UserProfileController(UserService userService,
-                                 SecurityService securityService,
                                  BreadcrumbBuilder breadcrumbBuilder,
                                  ImageUtils imageUtils,
                                  PostService postService,
                                  PaginationService paginationService) {
         this.userService = userService;
-        this.securityService = securityService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.imageUtils = imageUtils;
         this.postService = postService;
@@ -125,7 +120,7 @@ public class UserProfileController {
      */
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public ModelAndView showProfilePage() {
-        JCUser user = securityService.getCurrentUser();
+        JCUser user = userService.getCurrentUser();
         return getUserProfileModelAndView(user);
     }
 
@@ -137,7 +132,7 @@ public class UserProfileController {
      */
     @RequestMapping(value = "/users/edit", method = RequestMethod.GET)
     public ModelAndView editProfilePage() throws NotFoundException {
-        JCUser user = securityService.getCurrentUser();
+        JCUser user = userService.getCurrentUser();
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
         byte[] avatar = user.getAvatar();
         editedUser.setAvatar(imageUtils.prepareHtmlImgSrc(avatar));

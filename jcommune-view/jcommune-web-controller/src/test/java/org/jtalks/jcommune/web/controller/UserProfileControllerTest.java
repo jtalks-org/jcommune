@@ -41,7 +41,6 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.jtalks.jcommune.service.nontransactional.PaginationService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
@@ -65,7 +64,6 @@ import org.testng.annotations.Test;
  */
 public class UserProfileControllerTest {
     private UserService userService;
-    private SecurityService securityService;
     private UserProfileController profileController;
 
     private final String USER_NAME = "username";
@@ -91,14 +89,12 @@ public class UserProfileControllerTest {
     @BeforeMethod
     public void setUp() throws IOException {
         userService = mock(UserService.class);
-        securityService = mock(SecurityService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
         imageUtils = mock(ImageUtils.class);
         postService = mock(PostService.class);
         paginationService = mock(PaginationService.class);
         profileController = new UserProfileController(
                 userService,
-                securityService,
                 breadcrumbBuilder,
                 imageUtils,
                 postService,
@@ -123,7 +119,7 @@ public class UserProfileControllerTest {
     @Test
     public void testShowShortcut() throws NotFoundException {
         JCUser user = new JCUser(USER_NAME, EMAIL, PASSWORD);
-        when(securityService.getCurrentUser()).thenReturn(user);
+        when(userService.getCurrentUser()).thenReturn(user);
 
         ModelAndView mav = profileController.showProfilePage();
 
@@ -135,13 +131,10 @@ public class UserProfileControllerTest {
     public void testEditProfilePage() throws NotFoundException, IOException {
         JCUser user = getUser();
         //set expectations
-        when(securityService.getCurrentUser()).thenReturn(user);
+        when(userService.getCurrentUser()).thenReturn(user);
 
         //invoke the object under test
         ModelAndView mav = profileController.editProfilePage();
-
-        //check expectations
-        verify(securityService).getCurrentUser();
 
         //check result
         assertViewName(mav, "editProfile");
@@ -177,7 +170,7 @@ public class UserProfileControllerTest {
     @Test
     public void testEditProfileValidationFail() throws Exception {
         JCUser user = getUser();
-        when(securityService.getCurrentUser()).thenReturn(user);
+        when(userService.getCurrentUser()).thenReturn(user);
 
         EditUserProfileDto dto = getEditUserProfileDto();
         BindingResult bindingResult = mock(BindingResult.class);
@@ -209,11 +202,10 @@ public class UserProfileControllerTest {
         //set expectations
         when(userService.getByUsername("username")).thenReturn(user);
         when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
-        when(securityService.getCurrentUser()).thenReturn(user);
         when(postService.getPostsOfUser(Matchers.<JCUser> any(), Matchers.anyInt(), Matchers.anyBoolean()))
             .thenReturn(postsPage);
+        when(userService.getCurrentUser()).thenReturn(user);
         when(post.getTopic()).thenReturn(topic);
-
 
         //invoke the object under test
         ModelAndView mav = profileController.showUserPostList(user.getId(), 1, true);

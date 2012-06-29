@@ -26,6 +26,7 @@ import org.jtalks.jcommune.service.nontransactional.PaginationService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
+
 /**
  * The implementation of TopicFullSearchService, that provides possibility
  * to search for topics. Searches for data in the index that have been indexed

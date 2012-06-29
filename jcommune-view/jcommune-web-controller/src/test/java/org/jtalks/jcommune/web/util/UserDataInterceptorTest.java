@@ -16,7 +16,7 @@ package org.jtalks.jcommune.web.util;
 
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.PrivateMessageService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.web.interceptors.UserDataInterceptor;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -45,13 +45,13 @@ public class UserDataInterceptorTest {
     private HttpServletRequest request;
     private HttpServletResponse response;
     private PrivateMessageService service;
-    private SecurityService securityService;
+    private UserService userService;
 
     @BeforeMethod
     public void setUp() throws Exception {
         service = mock(PrivateMessageService.class);
-        securityService = mock(SecurityService.class);
-        interceptor = new UserDataInterceptor(service, securityService);
+        userService = mock(UserService.class);
+        interceptor = new UserDataInterceptor(service, userService);
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
     }
@@ -60,7 +60,7 @@ public class UserDataInterceptorTest {
     public void testUserDataIsSetAfterController() throws Exception {
         JCUser user = getUser();
         when(service.currentUserNewPmCount()).thenReturn(USER_NEW_PM_COUNT);
-        when(securityService.getCurrentUser()).thenReturn(user);
+        when(userService.getCurrentUser()).thenReturn(user);
 
         interceptor.postHandle(request, response, null, new ModelAndView("view"));
 
@@ -71,7 +71,7 @@ public class UserDataInterceptorTest {
     @Test
     public void testPostHandleWithoutCurrentUser() throws Exception {
         when(service.currentUserNewPmCount()).thenReturn(0);
-        when(securityService.getCurrentUser()).thenReturn(null);
+        when(userService.getCurrentUser()).thenReturn(null);
 
         interceptor.postHandle(request, response, null, new ModelAndView("view"));
 
@@ -100,7 +100,7 @@ public class UserDataInterceptorTest {
     private void verifyNotApplied() {
     	assertEquals(request.getAttribute("newPmCount"), null);
     	verify(service, never()).currentUserNewPmCount();
-        verify(securityService, never()).getCurrentUser();
+        verify(userService, never()).getCurrentUser();
     }
 
     private JCUser getUser() {

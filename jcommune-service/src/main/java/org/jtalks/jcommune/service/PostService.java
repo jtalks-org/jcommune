@@ -44,10 +44,11 @@ public interface PostService extends EntityService<Post> {
      * Delete post  by id.
      *
      * @param postId post id
+     * @param branchId branch id
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic or post not found
      */
-    void deletePost(long postId) throws NotFoundException;
+    void deletePost(long postId, long branchId) throws NotFoundException;
 
     /**
      * Get user's posts.

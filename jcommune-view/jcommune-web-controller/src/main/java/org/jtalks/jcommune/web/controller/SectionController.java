@@ -59,10 +59,9 @@ public class SectionController {
     /**
      * Constructor creates MVC controller with specified SectionService
      *
-     * @param sectionService       autowired object from Spring Context
-     * @param locationService      autowired object from Spring Context
-     * @param forumStaticsProvider autowired object from Spring Context which provides methods for getting
-     *                             forum statistic information
+     * @param sectionService       for all operations with sections
+     * @param locationService      for tracking user's location on the forum
+     * @param forumStaticsProvider for getting forum statistic information
      * @param paginationService    this service provides functionality, that is needed for pagination
      */
     @Autowired
@@ -135,7 +134,6 @@ public class SectionController {
     public ModelAndView branchList(@PathVariable("sectionId") long sectionId) throws NotFoundException {
         Section section = sectionService.get(sectionId);
         sectionService.prepareSectionsForView(Arrays.asList(section));
-
         return new ModelAndView("branchList")
                 .addObject("viewList", locationService.getUsersViewing(section))
                 .addObject("section", section)

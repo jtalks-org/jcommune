@@ -14,24 +14,14 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.matches;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
+import org.jtalks.common.model.dao.GroupDao;
+import org.jtalks.common.model.entity.Group;
+import org.jtalks.common.model.entity.User;
+import org.jtalks.common.model.permissions.ProfilePermission;
+import org.jtalks.common.security.SecurityService;
+import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
@@ -43,12 +33,21 @@ import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
+import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.*;
 
 /**
  * @author Kirill Afonin
@@ -79,6 +78,8 @@ public class TransactionalUserServiceTest {
     @Mock
     private UserDao userDao;
     @Mock
+    private GroupDao groupDao;
+    @Mock
     private SecurityService securityService;
     @Mock
     private MailService mailService;
@@ -88,14 +89,19 @@ public class TransactionalUserServiceTest {
     private Base64Wrapper base64Wrapper;
     @Mock
     private EncryptionService encryptionService;
+    @Mock
+    private CompoundAclBuilder<User> aclBuilder;
 
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
         when(encryptionService.encryptPassword(PASSWORD))
-            .thenReturn(PASSWORD_MD5_HASH);
+                .thenReturn(PASSWORD_MD5_HASH);
+        aclBuilder = mockAclBuilder();
+        when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
         userService = new TransactionalUserService(
                 userDao,
+                groupDao,
                 securityService,
                 mailService,
                 base64Wrapper,
@@ -126,6 +132,8 @@ public class TransactionalUserServiceTest {
     public void testRegisterUser() throws Exception {
         JCUser user = getUser(USERNAME);
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
+        Group group = new Group();
+        when(groupDao.get(AdministrationGroup.USER.getId())).thenReturn(group);
 
         JCUser registeredUser = userService.registerUser(user);
         DateTime now = new DateTime();
@@ -136,23 +144,26 @@ public class TransactionalUserServiceTest {
         assertTrue(new Interval(registeredUser.getRegistrationDate(), now)
                 .toDuration().getMillis() <= MAX_REGISTRATION_TIMEOUT);
         verify(userDao).saveOrUpdate(user);
+        verify(groupDao).update(group);
+        verify(aclBuilder).grant(ProfilePermission.EDIT_PROFILE);
+        verify(aclBuilder).grant(ProfilePermission.SEND_PRIVATE_MESSAGES);
     }
 
 
     @Test
     public void testEditUserProfile() throws Exception {
         JCUser user = getUser(USERNAME);
-        when(securityService.getCurrentUser()).thenReturn(user);
+        when(securityService.getCurrentUserUsername()).thenReturn("");
+        when(userDao.getByUsername(anyString())).thenReturn(user);
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
         when(encryptionService.encryptPassword(NEW_PASSWORD))
-            .thenReturn(NEW_PASSWORD_MD5_HASH);
+                .thenReturn(NEW_PASSWORD_MD5_HASH);
 
         String newAvatar = new String(new byte[12]);
 
         JCUser editedUser = userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
                 PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, LOCATION));
 
-        verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
         assertUserUpdated(editedUser);
         assertEquals(editedUser.getLanguage(), LANGUAGE, "language was not changed");
@@ -161,9 +172,10 @@ public class TransactionalUserServiceTest {
     @Test
     public void testEditUserProfileNewPasswordNull() {
         JCUser user = getUser(USERNAME);
-        when(securityService.getCurrentUser()).thenReturn(user);
+        when(securityService.getCurrentUserUsername()).thenReturn("");
+        when(userDao.getByUsername(anyString())).thenReturn(user);
         when(encryptionService.encryptPassword(null)).thenReturn(null);
-        
+
         String newAvatar = new String(new byte[12]);
         String newPassword = null;
         UserInfoContainer userInfo = new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
@@ -175,7 +187,8 @@ public class TransactionalUserServiceTest {
     @Test
     public void testEditUserProfileSameEmail() throws Exception {
         JCUser user = getUser(USERNAME);
-        when(securityService.getCurrentUser()).thenReturn(user);
+        when(securityService.getCurrentUserUsername()).thenReturn("");
+        when(userDao.getByUsername(anyString())).thenReturn(user);
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
 
         String newAvatar = new String(new byte[0]);
@@ -183,7 +196,6 @@ public class TransactionalUserServiceTest {
         JCUser editedUser = userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
                 PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, LOCATION));
 
-        verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
         assertEquals(editedUser.getEmail(), EMAIL, "Email was changed");
     }
@@ -261,7 +273,6 @@ public class TransactionalUserServiceTest {
         userService.activateAccount(user.getUuid());
 
         assertTrue(user.isEnabled());
-        verify(userDao).getByUuid(user.getUuid());
     }
 
     @Test(expectedExceptions = NotFoundException.class)
@@ -290,6 +301,24 @@ public class TransactionalUserServiceTest {
         verify(userDao).delete(user2);
         verify(userDao).delete(user3);
         verify(userDao, never()).delete(user1);
+    }
+
+    @Test
+    public void testGetCurrentUser(){
+        JCUser expected = getUser(USERNAME);
+        when(securityService.getCurrentUserUsername()).thenReturn(USERNAME);
+        when(userDao.getByUsername(USERNAME)).thenReturn(expected);
+
+        JCUser actual = userService.getCurrentUser();
+
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    public void testGetCurrentUserForAnonymous(){
+        when(securityService.getCurrentUserUsername()).thenReturn(null);
+        
+        assertNull(userService.getCurrentUser());
     }
 
     /**

@@ -62,7 +62,7 @@
                 <c:forEach var="topic" items="${list}">
                     <tr>
                         <td class="status-col"><c:set var="hasNewPosts" value="false"/>
-                            <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                            <sec:authorize access="isAuthenticated()">
                                 <c:if test="${topic.hasUpdates}">
                                     <c:set var="hasNewPosts" value="true"/>
                                 </c:if>

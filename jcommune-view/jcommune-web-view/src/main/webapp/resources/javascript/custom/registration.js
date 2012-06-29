@@ -17,7 +17,7 @@
  * This script handles registration popup
  * todo: split and refine it
  */
-//handling click on menu link Sign Up 
+//handling click on menu link Sign Up
 $(function () {
     var firstView;
     $("#signup").on('click', function (e) {
@@ -64,14 +64,12 @@ $(function () {
                     firstView = false;
                     $.prompt(content,
                         {buttons:{OK:true}, focus:0, submit:signupPopup});
-                    var url = $root + "/captcha/image?param=" + $.now();
-                    //this parameter forces browser to reload image every time
-                    $("#captcha_img").removeAttr("src").attr("src", url).attr("src", url);
+                    refreshCaptcha();
                     refreshCaptchaOnClick();
                     document.getElementById("captcha").setAttribute("value", "");
 
-                } else if ($(data).find("span.error_errorpage").html() != null){
-                	$.prompt($labelRegistrationFailture);
+                } else if ($(data).find("span.error_errorpage").html() != null) {
+                    $.prompt($labelRegistrationFailture);
                 } else {
                     $.prompt($labelRegistrationSuccess);
                 }
@@ -82,8 +80,12 @@ $(function () {
 
 function refreshCaptchaOnClick() {
     $("#captcha_refresh").on('click', function (e) {
-        var url = $root + "/captcha/image?param=" + $.now();
-        //this parameter forces browser to reload image every time
-        $("#captcha_img").removeAttr("src").attr("src", url).attr("src", url);
+        refreshCaptcha();
     });
+}
+
+function refreshCaptcha() {
+    var url = $root + "/captcha/image?param=" + $.now();
+    //this parameter forces browser to reload image every time
+    $("#captcha_img").removeAttr("src").attr("src", url).attr("src", url);
 }

@@ -61,12 +61,13 @@
     </bean>
 
     <bean id="locationService" class="org.jtalks.jcommune.service.nontransactional.LocationService">
-        <constructor-arg ref="sessionRegistry"/>
-        <constructor-arg ref="securityService"/>
+        <constructor-arg name="sessionRegistry" ref="sessionRegistry"/>
+        <constructor-arg name="userService" ref="userService"/>
     </bean>
 
     <bean id="userService" class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
         <constructor-arg ref="userDao"/>
+        <constructor-arg ref="groupDao"/>
         <constructor-arg ref="securityService"/>
         <constructor-arg ref="mailService"/>
         <constructor-arg ref="base64Wrapper"/>
@@ -77,7 +78,7 @@
     <bean id="userContactsService"
           class="org.jtalks.jcommune.service.transactional.TransactionalUserContactsService">
         <constructor-arg ref="userContactsDao"/>
-        <constructor-arg ref="securityService"/>
+        <constructor-arg ref="userService"/>
     </bean>
 
     <bean id="postService"
@@ -128,19 +129,22 @@
         <constructor-arg ref="notificationService"/>
         <constructor-arg ref="subscriptionService"/>
         <constructor-arg ref="paginationService"/>
+        <constructor-arg ref="userService"/>
     </bean>
 
     <bean id="pollService"
           class="org.jtalks.jcommune.service.transactional.TransactionalPollService">
         <constructor-arg ref="pollDao"/>
+        <constructor-arg ref="groupDao"/>
         <constructor-arg ref="pollOptionDao"/>
         <constructor-arg ref="securityService"/>
         <constructor-arg ref="temporaryAuthorityManager"/>
+        <constructor-arg ref="userService"/>
     </bean>
 
     <bean id="subscriptionService"
           class="org.jtalks.jcommune.service.transactional.TransactionalSubscriptionService">
-        <constructor-arg ref="securityService"/>
+        <constructor-arg ref="userService"/>
         <constructor-arg ref="topicBranchDao"/>
         <constructor-arg ref="topicDao"/>
     </bean>
@@ -151,12 +155,11 @@
     </bean>
 
     <bean id="paginationService" class="org.jtalks.jcommune.service.nontransactional.PaginationService">
-        <constructor-arg ref="securityService"/>
+        <constructor-arg ref="userService"/>
     </bean>
     <bean id="securityService"
-          class="org.jtalks.jcommune.service.nontransactional.SecurityService">
-        <constructor-arg ref="userDao"/>
-        <constructor-arg ref="securityContextFacade"/>
+          class="org.jtalks.common.security.SecurityService">
+        <constructor-arg name="userDao" ref="userDao"/>
         <constructor-arg ref="aclManager"/>
     </bean>
 
@@ -166,7 +169,7 @@
     </bean>
 
     <bean id="lastReadPostService" class="org.jtalks.jcommune.service.transactional.TransactionalLastReadPostService">
-        <constructor-arg ref="securityService"/>
+        <constructor-arg ref="userService"/>
         <constructor-arg ref="lastReadPostHibernateDao"/>
     </bean>
 

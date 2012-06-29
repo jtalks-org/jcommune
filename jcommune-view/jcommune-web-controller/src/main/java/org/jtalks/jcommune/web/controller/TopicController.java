@@ -29,9 +29,9 @@ import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +72,7 @@ public class TopicController {
     private PostService postService;
     private BranchService branchService;
     private LastReadPostService lastReadPostService;
-    private SecurityService securityService;
+    private UserService userService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private LocationService locationService;
     private SessionRegistry sessionRegistry;
@@ -98,7 +98,7 @@ public class TopicController {
      * @param lastReadPostService to perform post-related actions
      * @param locationService     to track user location on forum (what page he is viewing now)
      * @param sessionRegistry     to obtain list of users currently online
-     * @param securityService     to determine the current user logged in
+     * @param userService     to determine the current user logged in
      * @param breadcrumbBuilder   to create Breadcrumbs for pages
      * @param pollService         to create a poll and vote in a poll
      */
@@ -107,7 +107,7 @@ public class TopicController {
                            PostService postService,
                            BranchService branchService,
                            LastReadPostService lastReadPostService,
-                           SecurityService securityService,
+                           UserService userService,
                            BreadcrumbBuilder breadcrumbBuilder,
                            LocationService locationService,
                            SessionRegistry sessionRegistry,
@@ -116,7 +116,7 @@ public class TopicController {
         this.postService = postService;
         this.branchService = branchService;
         this.lastReadPostService = lastReadPostService;
-        this.securityService = securityService;
+        this.userService = userService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.locationService = locationService;
         this.sessionRegistry = sessionRegistry;
@@ -160,8 +160,8 @@ public class TopicController {
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branch));
         }
 
-        Topic createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(), branchId,
-                topicDto.isNotifyOnAnswers());
+        Topic createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(),
+                branchId,topicDto.isNotifyOnAnswers());
 
         if (topicDto.hasPoll()) {
             Poll poll = topicDto.preparePollFromTopicDto();
@@ -183,7 +183,7 @@ public class TopicController {
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.DELETE)
     public ModelAndView deleteTopic(@PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
         Topic topic = topicService.get(topicId);
-        topicService.deleteTopic(topicId);
+        topicService.deleteTopic(topicId, topic.getBranch().getId());
         return new ModelAndView("redirect:/branches/" + topic.getBranch().getId());
     }
 
@@ -208,7 +208,8 @@ public class TopicController {
         List<PollItem> pollOptions = topic.isHasPoll() ? poll.getPollItems() : null;
 
         Branch branch = topic.getBranch();
-        JCUser currentUser = securityService.getCurrentUser();
+        JCUser currentUser = userService.getCurrentUser();
+
         Integer lastReadPostIndex = lastReadPostService.getLastReadPostForTopic(topic);
         lastReadPostService.markTopicPageAsRead(topic, page, pagingEnabled);
         //todo: optimize this binding
@@ -242,13 +243,14 @@ public class TopicController {
                                       @PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
         Topic topic = topicService.get(topicId);
         TopicDto topicDto = new TopicDto(topic);
-        JCUser currentUser = securityService.getCurrentUser();
+        JCUser currentUser = userService.getCurrentUser();
         if (topic.userSubscribed(currentUser)) {
             topicDto.setNotifyOnAnswers(true);
         }
 
         return new ModelAndView("editTopic")
                 .addObject("topicDto", topicDto)
+                .addObject("topic", topic)
                 .addObject(BRANCH_ID, branchId)
                 .addObject(TOPIC_ID, topicId)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
@@ -276,8 +278,7 @@ public class TopicController {
         }
 
         topicService.updateTopic(topicDto.getId(), topicDto.getTopicName(), topicDto.getBodyText(),
-                topicDto.getTopicWeight(), topicDto.isSticked(), topicDto.isAnnouncement(),
-                topicDto.isNotifyOnAnswers());
+                topicDto.getTopicWeight(), topicDto.isSticked(), topicDto.isAnnouncement(),topicDto.isNotifyOnAnswers());
 
         return new ModelAndView("redirect:/topics/" + topicId);
     }

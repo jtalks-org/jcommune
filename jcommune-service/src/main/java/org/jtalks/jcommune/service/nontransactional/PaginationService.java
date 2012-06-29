@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.service.UserService;
 
 /**
  * This service provides functionality, that is needed for pagination.
@@ -25,16 +26,16 @@ import org.jtalks.jcommune.model.entity.JCUser;
  * @author Anuar Nurmakanov
  */
 public class PaginationService {
-    private SecurityService securityService;
+    private UserService userService;
     
     /**
      * Constructs an instance with required fields.
      * 
-     * @param securityService security service, it needed for information
-     *                        about current user
+     * @param userService it needed for information
+     *                    about current user
      */
-    public PaginationService(SecurityService securityService) {
-        this.securityService = securityService;
+    public PaginationService(UserService userService) {
+        this.userService = userService;
     }
 
     /**
@@ -43,7 +44,7 @@ public class PaginationService {
      * @return page size applicable for the current user
      */
     public int getPageSizeForCurrentUser() {
-        JCUser currentUser = securityService.getCurrentUser();
+        JCUser currentUser = userService.getCurrentUser();
         return getPageSizeFor(currentUser);
     }
     

@@ -19,7 +19,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <head>
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/privateMessages.js"></script>
@@ -34,7 +34,8 @@
     <hr/>
     <div class="row">
         <div class="span2">
-            <a href="${pageContext.request.contextPath}/pm/new" class="btn btn-primary btn-small pm_buttons">
+            <sec:authentication property="principal.id" var="userId"/>
+            <a href="${pageContext.request.contextPath}/pm/new?userId=${userId}" class="btn btn-primary btn-small pm_buttons">
                 <spring:message code="label.new_pm"/></a>
             <jsp:include page="../../template/pmFolders.jsp"/>
         </div>
@@ -42,12 +43,12 @@
         <div class="span9">
             <div class="pm_buttons">
                 <c:if test="${pm.replyAllowed && (pm.userTo eq user)}">
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/reply/${pm.id}">
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/reply/${pm.id}?userId=${userId}">
                         <i class="icon-share-alt icon-white"></i>
                         <spring:message code="label.reply"/>
                     </a>
 
-                    <a class="btn" href="${pageContext.request.contextPath}/quote/${pm.id}">
+                    <a class="btn" href="${pageContext.request.contextPath}/quote/${pm.id}?userId=${userId}">   <%--todo--%>
                         <i class="icon-quote"></i>
                         <spring:message code="label.quote"/>
                     </a>

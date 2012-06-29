@@ -23,9 +23,9 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
@@ -54,7 +54,7 @@ public class BranchController {
     private BranchService branchService;
     private TopicService topicService;
     private LastReadPostService lastReadPostService;
-    private SecurityService securityService;
+    private UserService userService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private LocationService locationService;
     
@@ -62,26 +62,24 @@ public class BranchController {
     /**
      * Constructor creates MVC controller with specified BranchService
      *
-     * @param branchService     autowired object from Spring Context
-     * @param topicService      autowired object from Spring Context
-     * @param lastReadPostService       service to retrieve unread posts information
-     * @param securityService   autowired object from Spring Context
-     * @param locationService   autowired object from Spring Context
-     * @param breadcrumbBuilder the object which provides actions on
-     *                          {@link BreadcrumbBuilder} entity
-     * 
+     * @param branchService       for branch-related service actions
+     * @param topicService        for topic-related service actions
+     * @param lastReadPostService service to retrieve unread posts information
+     * @param userService         to get user currently logged in
+     * @param locationService     to fetch user forum page location info
+     * @param breadcrumbBuilder   for creating breadcrumbs
      */
     @Autowired
     public BranchController(BranchService branchService,
                             TopicService topicService,
                             LastReadPostService lastReadPostService,
-                            SecurityService securityService,
+                            UserService userService,
                             BreadcrumbBuilder breadcrumbBuilder,
                             LocationService locationService) {
         this.branchService = branchService;
         this.topicService = topicService;
         this.lastReadPostService = lastReadPostService;
-        this.securityService = securityService;
+        this.userService = userService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.locationService = locationService;
     }
@@ -107,7 +105,7 @@ public class BranchController {
         Page<Topic> topicsPage = topicService.getTopics(branch, page, pagingEnabled);
         lastReadPostService.fillLastReadPostForTopics(topicsPage.getContent());
 
-        JCUser currentUser = securityService.getCurrentUser();
+        JCUser currentUser = userService.getCurrentUser();
         List<Breadcrumb> breadcrumbs = breadcrumbBuilder.getForumBreadcrumb(branch);
 
         return new ModelAndView("topicList")
@@ -122,7 +120,7 @@ public class BranchController {
     /**
      * Displays topics updated during last 24 hours.
      *
-     * @param page    page
+     * @param page page
      * @return {@code ModelAndView} with topics list and vars for pagination
      */
     @RequestMapping("/topics/recent")

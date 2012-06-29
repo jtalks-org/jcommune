@@ -14,11 +14,9 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import static org.jtalks.jcommune.service.security.SecurityConstants.HAS_ADMIN_ROLE;
-import static org.jtalks.jcommune.service.security.SecurityConstants.HAS_USER_OR_ADMIN_ROLE;
-import static org.jtalks.jcommune.service.security.SecurityConstants.ROLE_ADMIN;
-
 import org.joda.time.DateTime;
+import org.jtalks.common.model.permissions.GeneralPermission;
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dto.JcommunePageRequest;
@@ -30,10 +28,10 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.service.nontransactional.PaginationService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -60,23 +58,26 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     private NotificationService notificationService;
     private SubscriptionService subscriptionService;
     private PaginationService paginationService;
+    private UserService userService;
 
     /**
      * Create an instance of User entity based service
      *
      * @param dao                 data access object, which should be able do all CRUD operations with topic entity
-     * @param securityService     {@link SecurityService} for retrieving current user
+     * @param securityService     {@link org.jtalks.common.security.SecurityService} for retrieving current user
      * @param branchService       {@link org.jtalks.jcommune.service.BranchService} instance to be injected
      * @param branchDao           used for checking branch existence
      * @param notificationService to send email nofications on topic updates to subscribed users
      * @param subscriptionService for subscribing user on topic if notification enabled
      * @param paginationService auxiliary services for pagination
+     * @param userService         to get current logged in user
      */
     public TransactionalTopicService(TopicDao dao, SecurityService securityService,
                                      BranchService branchService, BranchDao branchDao,
                                      NotificationService notificationService,
                                      SubscriptionService subscriptionService,
-                                     PaginationService paginationService) {
+                                     PaginationService paginationService,
+                                     UserService userService) {
         super(dao);
         this.securityService = securityService;
         this.branchService = branchService;
@@ -84,15 +85,16 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         this.notificationService = notificationService;
         this.subscriptionService = subscriptionService;
         this.paginationService = paginationService;
+        this.userService = userService;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
-    public Post replyToTopic(long topicId, String answerBody) throws NotFoundException {
-        JCUser currentUser = securityService.getCurrentUser();
+    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.CREATE_POSTS')")
+    public Post replyToTopic(long topicId, String answerBody, long branchId) throws NotFoundException {
+        JCUser currentUser = userService.getCurrentUser();
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);
         Topic topic = get(topicId);
@@ -100,7 +102,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         topic.addPost(answer);
         this.getDao().update(topic);
 
-        securityService.grantToCurrentUser().role(ROLE_ADMIN).admin().on(answer);
+        securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(currentUser).on(answer).flush();
         notificationService.topicChanged(topic);
         logger.debug("New post in topic. Topic id={}, Post id={}, Post author={}",
                 new Object[]{topicId, answer.getId(), currentUser.getUsername()});
@@ -112,10 +114,10 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
-    public Topic createTopic(String topicName, String bodyText, long branchId, boolean notifyOnAnswers)
-            throws NotFoundException {
-        JCUser currentUser = securityService.getCurrentUser();
+    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.CREATE_TOPICS')")
+    public Topic createTopic(String topicName, String bodyText, long branchId
+            , boolean notifyOnAnswers) throws NotFoundException {
+        JCUser currentUser = userService.getCurrentUser();
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);
         Branch branch = branchService.get(branchId);
@@ -125,8 +127,10 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         branch.addTopic(topic);
         branchDao.update(branch);
 
-        securityService.grantToCurrentUser().role(ROLE_ADMIN).admin().on(topic)
-                .user(currentUser.getUsername()).role(ROLE_ADMIN).admin().on(first);
+        JCUser user =userService.getCurrentUser();
+        securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(topic).flush();
+        securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(first).flush();
+
         notificationService.branchChanged(branch);
 
         subscribeOnTopicIfNotificationsEnabled(notifyOnAnswers, topic, currentUser);
@@ -163,7 +167,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', admin)")
+    @PreAuthorize("hasPermission(#topicId, 'TOPIC', 'GeneralPermission.WRITE')")
     public void updateTopic(long topicId, String topicName, String bodyText)
             throws NotFoundException {
         updateTopic(topicId, topicName, bodyText, 0, false, false, false);
@@ -173,7 +177,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', admin)")
+    @PreAuthorize("hasPermission(#topicId, 'TOPIC', 'GeneralPermission.WRITE')")
     public void updateTopic(long topicId, String topicName, String bodyText, int topicWeight,
                             boolean sticked, boolean announcement, boolean notifyOnAnswers) throws NotFoundException {
         Topic topic = get(topicId);
@@ -187,7 +191,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         topic.updateModificationDate();
         this.getDao().update(topic);
         notificationService.topicChanged(topic);
-        JCUser currentUser = securityService.getCurrentUser();
+        JCUser currentUser = userService.getCurrentUser();
         subscribeOnTopicIfNotificationsEnabled(notifyOnAnswers, topic, currentUser);
 
         logger.debug("Topic id={} updated", topic.getId());
@@ -202,7 +206,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      */
     private void subscribeOnTopicIfNotificationsEnabled(boolean notifyOnAnswers, Topic topic, JCUser currentUser) {
         boolean subscribed = topic.userSubscribed(currentUser);
-        if (notifyOnAnswers && !subscribed || !notifyOnAnswers && subscribed) {
+        if (notifyOnAnswers ^ subscribed) {
             subscriptionService.toggleTopicSubscription(topic);
         }
     }
@@ -212,9 +216,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', admin) or " +
-            "hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', delete)")
-    public Branch deleteTopic(long topicId) throws NotFoundException {
+    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.DELETE_TOPICS')")
+    public Branch deleteTopic(long topicId, long branchId) throws NotFoundException {
         Topic topic = get(topicId);
 
         for (Post post : topic.getPosts()) {
@@ -237,7 +240,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize(HAS_ADMIN_ROLE)
+    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.MOVE_TOPICS')")
     public void moveTopic(Long topicId, Long branchId) throws NotFoundException {
         Topic topic = get(topicId);
         Branch targetBranch = branchService.get(branchId);

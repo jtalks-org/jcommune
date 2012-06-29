@@ -32,4 +32,3 @@
             <spring:message code="label.drafts"/></a></li>
     </ul>
 </div>
-<!-- /well -->

@@ -16,7 +16,8 @@ package org.jtalks.jcommune.web.validation.validators;
 
 import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.dao.UserDao;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.web.validation.annotations.ChangedEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -31,16 +32,16 @@ import javax.validation.ConstraintValidatorContext;
  */
 public class ChangedEmailValidator implements ConstraintValidator<ChangedEmail, String> {
 
-    private SecurityService securityService;
+    private UserService userService;
     private UserDao userDao;
 
     /**
-     * @param securityService to obtain current user logged in
+     * @param userService to obtain current user logged in
      * @param userDao to check if desired email is already registered
      */
     @Autowired
-    public ChangedEmailValidator(SecurityService securityService, UserDao userDao) {
-        this.securityService = securityService;
+    public ChangedEmailValidator(UserService userService, UserDao userDao) {
+        this.userService = userService;
         this.userDao = userDao;
     }
 
@@ -61,7 +62,7 @@ public class ChangedEmailValidator implements ConstraintValidator<ChangedEmail, 
             // null emails checks are out of scope, pls use separate annotation for that
             return true;
         }
-        User user = securityService.getCurrentUser();
+        JCUser user = userService.getCurrentUser();
         if (user.getEmail().equals(value)) {
             return true; // no changes in an email, that's ok
         } else {

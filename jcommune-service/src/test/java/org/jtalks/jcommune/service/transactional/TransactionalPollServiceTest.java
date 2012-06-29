@@ -16,11 +16,16 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.dao.GroupDao;
+import org.jtalks.common.model.entity.User;
+import org.jtalks.common.security.SecurityService;
+import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollItem;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.PollService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
-import org.jtalks.jcommune.service.security.AclBuilder;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.security.TemporaryAuthorityManager;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -31,6 +36,8 @@ import org.testng.annotations.Test;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 
 /**
  * @author Anuar Nurmakanov
@@ -44,23 +51,24 @@ public class TransactionalPollServiceTest {
     @Mock
     private ChildRepository<Poll> pollDao;
     @Mock
+    private GroupDao groupDao;
+    @Mock
     private SecurityService securityService;
     @Mock
-    private AclBuilder aclBuilder;
+    private CompoundAclBuilder<User> aclBuilder;
     @Mock
     private TemporaryAuthorityManager temporaryAuthorityManager;
-
+    @Mock
+    private UserService userService;
 
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
-        pollService = new TransactionalPollService(pollDao, pollOptionDao,
-                securityService, temporaryAuthorityManager);
-
-        Mockito.when(aclBuilder.write()).thenReturn(aclBuilder);
+        pollService = new TransactionalPollService(pollDao, groupDao, pollOptionDao,
+                securityService, temporaryAuthorityManager, userService);
+        aclBuilder = mockAclBuilder();
         Mockito.when(aclBuilder.on(Mockito.any(Poll.class))).thenReturn(aclBuilder);
-        Mockito.when(securityService.grantToCurrentUser()).thenReturn(aclBuilder);
-
+        Mockito.when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
     }
 
     @Test
@@ -151,6 +159,10 @@ public class TransactionalPollServiceTest {
             option.setVotesCount(initialVoteCount);
             poll.addPollOptions(option);
         }
+        Branch branch = new Branch("name", "description");
+        Topic topic = new Topic(null, "title");
+        branch.addTopic(topic);
+        poll.setTopic(topic);
         return poll;
     }
 }

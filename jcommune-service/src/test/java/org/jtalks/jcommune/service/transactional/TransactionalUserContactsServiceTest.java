@@ -15,28 +15,29 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.jcommune.model.dao.UserContactsDao;
-import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
 import org.jtalks.jcommune.service.UserContactsService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Michael Gamov
  */
 public class TransactionalUserContactsServiceTest {
-    
+
     private static final String TYPENAME = "New type";
     private static final String ICON = "/some/icon/path";
     private static final String CONTACT = "Some contact";
@@ -50,16 +51,16 @@ public class TransactionalUserContactsServiceTest {
     private UserContactsDao userContactsDao;
 
     @Mock
-    private SecurityService securityService;
+    private UserService userService;
     
     private JCUser user;
     
     @BeforeMethod
     public void setUp() {
         initMocks(this);
-        userContactsService = new TransactionalUserContactsService(userContactsDao, securityService);
+        userContactsService = new TransactionalUserContactsService(userContactsDao, userService);
         user = new JCUser(USERNAME, EMAIL, PASSWORD);
-        when(securityService.getCurrentUser()).thenReturn(user);
+        when(userService.getCurrentUser()).thenReturn(user);
     }
 
     @Test
@@ -116,5 +117,4 @@ public class TransactionalUserContactsServiceTest {
         userContactType.setIcon(ICON);
         return userContactType;
     }
-   
 }

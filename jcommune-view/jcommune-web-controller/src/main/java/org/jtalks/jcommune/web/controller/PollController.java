@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Serves web requests for operations with poll({@link Poll}).
@@ -58,7 +59,7 @@ public class PollController {
     @RequestMapping(value = "/poll/{pollId}/single", method = RequestMethod.POST)
     @ResponseBody
     public PollDto addSingleVote(@PathVariable Long pollId, @RequestParam Long pollOptionId) {
-        Poll poll = pollService.vote(pollId, Arrays.asList(pollOptionId));
+        Poll poll = pollService.vote(pollId, Collections.singletonList(pollOptionId));
         return new PollDto(poll);
     }
 
@@ -66,9 +67,9 @@ public class PollController {
      * Adds a multiple votes.
      * This method needed for "multiple type" polls.
      *
-     * @param pollId  id of poll
-     * @param pollDto data transfer object, that contains
-     *                identifiers of selected options.
+     * @param pollId   id of poll
+     * @param pollDto  data transfer object, that contains
+     *                 identifiers of selected options.
      * @return data transfer object, that contains data about poll
      */
     @RequestMapping(value = "/poll/{pollId}/multiple", method = RequestMethod.POST)

@@ -16,6 +16,7 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicFullSearchService;
+import org.jtalks.jcommune.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
 
 /**
  * The controller for the full-text search topics.
@@ -54,15 +56,17 @@ public class TopicSearchController {
     public static final String PAGING_ENABLED = "pagingEnabled";
     
     private static final String SEARCH_RESULT_VIEW_NAME = "searchResult";
+
     private TopicFullSearchService topicSearchService;
+
     
     /**
      * Constructor for controller instantiating, dependencies injected via autowiring.
      * 
-     * @param topicSearchService {@link TopicFullSearchService} instance to be injected
+     * @param topicSearchService {@link TopicFullSearchService} to perform actual search
      */
     @Autowired
-    public TopicSearchController(TopicFullSearchService topicSearchService) {
+    public TopicSearchController(TopicFullSearchService topicSearchService, UserService userService) {
         this.topicSearchService = topicSearchService;
     }
     

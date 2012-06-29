@@ -29,7 +29,8 @@ import java.util.Collection;
  * @author Evgeniy Naumenko
  * @author Kirill Afonin
  */
-public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser> implements UserDao {
+public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser>
+        implements UserDao {
 
     /**
      * {@inheritDoc}

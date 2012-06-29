@@ -17,8 +17,10 @@ package org.jtalks.jcommune.web.controller;
 import java.util.Collections;
 import java.util.Map;
 
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicFullSearchService;
+import org.jtalks.jcommune.service.UserService;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -38,12 +40,14 @@ public class TopicSearchControllerTest {
 	private static final int START_PAGE = 1;
 	@Mock
 	private TopicFullSearchService topicFullSearchService;
+	@Mock
+	private UserService userService;
 	private TopicSearchController topicSearchController;
 
 	@BeforeMethod
 	public void init() {
 		MockitoAnnotations.initMocks(this);
-		topicSearchController = new TopicSearchController(topicFullSearchService);
+		topicSearchController = new TopicSearchController(topicFullSearchService, userService);
 	}
 
 	@Test
@@ -55,10 +59,12 @@ public class TopicSearchControllerTest {
 	
 	@Test
 	public void testInitSearch() {
+	    JCUser user = new JCUser("username", "email", "password");
 		Page<Topic> searchResultPage = new PageImpl<Topic>(Collections.<Topic> emptyList());
 		
 		Mockito.when(topicFullSearchService.searchByTitleAndContent(DEFAULT_SEARCH_TEXT, START_PAGE))
 				.thenReturn(searchResultPage);
+		Mockito.when(userService.getCurrentUser()).thenReturn(user);
 		
 		ModelAndView modelAndView = topicSearchController.initSearch(DEFAULT_SEARCH_TEXT);
 		Map<String, Object> model = modelAndView.getModel();
@@ -72,11 +78,13 @@ public class TopicSearchControllerTest {
 
     @Test
 	public void testContinueSearch() {
+        JCUser user = new JCUser("username", "email", "password");
         Page<Topic> searchResultPage = new PageImpl<Topic>(Collections.<Topic> emptyList());
 		int page = 2;
 		
 		Mockito.when(topicFullSearchService.searchByTitleAndContent(DEFAULT_SEARCH_TEXT, page))
 				.thenReturn(searchResultPage);
+        Mockito.when(userService.getCurrentUser()).thenReturn(user);
 		
 		ModelAndView modelAndView = topicSearchController.continueSearch(DEFAULT_SEARCH_TEXT, page);
 		Map<String, Object> model = modelAndView.getModel();

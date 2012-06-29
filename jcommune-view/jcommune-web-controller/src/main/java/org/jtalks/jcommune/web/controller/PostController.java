@@ -14,8 +14,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import javax.validation.Valid;
-
 import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
@@ -23,9 +21,9 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.PostDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +40,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.validation.Valid;
 
 
 /**
@@ -68,7 +68,7 @@ public class PostController {
     private BreadcrumbBuilder breadcrumbBuilder;
     private TopicService topicService;
     private BBCodeService bbCodeService;
-    private SecurityService securityService;
+    private UserService userService;
 
     /**
      * This method turns the trim binder on. Trim binder
@@ -84,23 +84,23 @@ public class PostController {
     }
 
     /**
-     * @param postService       {@link PostService} instance to be injected
-     * @param breadcrumbBuilder the object which provides actions on {@link BreadcrumbBuilder} entity
-     * @param topicService      {@link TopicService} to be injected
-     * @param bbCodeService     to create valid quotes
+     * @param postService         {@link PostService} instance to be injected
+     * @param breadcrumbBuilder   the object which provides actions on {@link BreadcrumbBuilder} entity
+     * @param topicService        {@link TopicService} to be injected
+     * @param bbCodeService       to create valid quotes
      * @param lastReadPostService not to track user posts as updates for himself
-     * @param securityService to get the current user information
+     * @param userService     to get the current user information
      */
     @Autowired
     public PostController(PostService postService, BreadcrumbBuilder breadcrumbBuilder,
                           TopicService topicService, BBCodeService bbCodeService,
-                          LastReadPostService lastReadPostService, SecurityService securityService) {
+                          LastReadPostService lastReadPostService, UserService userService) {
         this.postService = postService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.topicService = topicService;
         this.bbCodeService = bbCodeService;
         this.lastReadPostService = lastReadPostService;
-        this.securityService = securityService;
+        this.userService = userService;
     }
 
     /**
@@ -113,7 +113,7 @@ public class PostController {
     @RequestMapping(method = RequestMethod.DELETE, value = "/posts/{postId}")
     public String delete(@PathVariable(POST_ID) Long postId) throws NotFoundException {
         Post post = postService.get(postId);
-        postService.deletePost(postId);
+        postService.deletePost(postId, post.getTopic().getBranch().getId());
         return "redirect:/topics/" + post.getTopic().getId();
     }
 
@@ -221,8 +221,9 @@ public class PostController {
             mav.addObject(POST_DTO, postDto);
             return mav;
         }
-        Post newbie = topicService.replyToTopic(postDto.getTopicId(), postDto.getBodyText());
-        lastReadPostService.markTopicAsRead(newbie.getTopic());
+        Topic topic = topicService.get(postDto.getTopicId());
+        Post newbie = topicService.replyToTopic(postDto.getTopicId(), postDto.getBodyText(), topic.getBranch().getId());
+        lastReadPostService.markTopicAsRead(topic);
         return new ModelAndView(this.redirectToPageWithPost(newbie.getId()));
     }
 
@@ -256,7 +257,7 @@ public class PostController {
      */
     @RequestMapping(method = RequestMethod.POST, value = "/posts/bbToHtml")
     public ResponseEntity<String> preview(@RequestParam(POST_BB_CONTENT) String bbContent) {
-        JCUser user = securityService.getCurrentUser();
+        JCUser user = userService.getCurrentUser();
         String post = bbCodeService.convertBbToHtml(bbContent);
         post += user.getRenderedSignature();
         return new ResponseEntity<String>(post, HttpStatus.OK);

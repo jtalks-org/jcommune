@@ -19,7 +19,7 @@ import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
+import org.jtalks.jcommune.service.UserService;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -36,7 +36,7 @@ import static org.testng.Assert.assertTrue;
 public class TransactionalSubscriptionServiceTest {
 
     @Mock
-    private SecurityService securityService;
+    private UserService userService;
     @Mock
     private BranchDao branchDao;
     @Mock
@@ -51,15 +51,14 @@ public class TransactionalSubscriptionServiceTest {
     @BeforeMethod
     public void setUp() {
         initMocks(this);
-        service = new TransactionalSubscriptionService(securityService, branchDao, topicDao);
+        service = new TransactionalSubscriptionService(userService, branchDao, topicDao);
         branch = new Branch("name", "description");
         topic = new Topic(user, "title");
+        when(userService.getCurrentUser()).thenReturn(user);
     }
 
     @Test
     public void testTopicSubscription() {
-        when(securityService.getCurrentUser()).thenReturn(user);
-
         service.toggleTopicSubscription(topic);
 
         assertTrue(topic.getSubscribers().contains(user));
@@ -68,8 +67,6 @@ public class TransactionalSubscriptionServiceTest {
 
     @Test
     public void testBranchSubscription() {
-        when(securityService.getCurrentUser()).thenReturn(user);
-
         service.toggleBranchSubscription(branch);
 
         assertTrue(branch.getSubscribers().contains(user));
@@ -77,7 +74,6 @@ public class TransactionalSubscriptionServiceTest {
 
     @Test
     public void testTopicUnsubscription() {
-        when(securityService.getCurrentUser()).thenReturn(user);
         topic.getSubscribers().add(user);
 
         service.toggleTopicSubscription(topic);
@@ -88,7 +84,6 @@ public class TransactionalSubscriptionServiceTest {
 
     @Test
     public void testBranchUnsubscription() {
-        when(securityService.getCurrentUser()).thenReturn(user);
         branch.getSubscribers().add(user);
 
         service.toggleBranchSubscription(branch);

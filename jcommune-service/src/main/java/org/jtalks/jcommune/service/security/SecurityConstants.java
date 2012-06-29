@@ -34,11 +34,6 @@ public final class SecurityConstants {
      */
     public static final String ROLE_USER = "ROLE_USER";
 
-    public static final String HAS_USER_OR_ADMIN_ROLE =
-            "hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')";
-
-    public static final String HAS_ADMIN_ROLE = "hasAnyRole('" + SecurityConstants.ROLE_ADMIN + "')";
-
     /**
      * You can't create instance of this class.
      */

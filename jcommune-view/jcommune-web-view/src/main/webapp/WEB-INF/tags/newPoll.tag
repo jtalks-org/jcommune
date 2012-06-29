@@ -24,10 +24,10 @@
 <%@ attribute name="multipleValue" required="true" rtexprvalue="true" type="java.lang.String" %>
 <%@ attribute name="endingDateNameValue" required="true" rtexprvalue="true" type="java.lang.String" %>
 
-<div class='well' >
+<div class='well'>
     <div id="editPoll">
         <legend><spring:message code="label.poll.header"/></legend>
-        
+
         <div class='control-group'>
             <spring:message code='label.poll.title' var='pollTitlePlaceholder'/>
             <form:input path="${titleNameValue}" id="${titleNameValue}" type="text" name="${titleNameValue}"
@@ -35,32 +35,31 @@
             <br>
             <form:errors path="${titleNameValue}" cssClass="help-inline"/>
         </div>
-        
+
         <div class='control-group'>
             <spring:message code='label.poll.options.title' var='optionsPlaceholder'/>
             <form:textarea path="${pollOptionsNameValue}" rows="8" class="post" placeholder="${optionsPlaceholder}"/>
             <br>
             <form:errors path="${pollOptionsNameValue}" cssClass="help-inline"/>
         </div>
-        
-        <div class='control-group'>                       
-            <form:checkbox path="${multipleName}" id="multipleChecker"  value="${multipleValue}"/>
+
+        <div class='control-group left-aligned'>
+            <form:checkbox path="${multipleName}" id="multipleChecker" value="${multipleValue}"/>
             <spring:message code="label.poll.multiple.title"/>
         </div>
-        
-        <div class='control-group'>
-            <label class='control-label'>
-                <spring:message code="label.poll.date"/>
-            </label>
-            
-            <form:input path="${endingDateNameValue}" id="datepicker" type="text" readonly="true"/>
+
+        <div class="control-group right-aligned">
+            <spring:message code="label.poll.date"/>
+            <spring:message code='label.poll.date.set' var='datePlaceholder'/>
+            <form:input path="${endingDateNameValue}" id="datepicker" type="text" readonly="true"
+                        placeholder="${datePlaceholder}" class="cursor-pointer"/>
+            &nbsp;<i class="icon-trash cursor-pointer" id="deleteEndingDate"></i>
             <br>
             <form:errors path="${endingDateNameValue}" cssClass="help-inline"/>
         </div>
+        <%--Make parent div include floated divs explicitly, or they'll be shown out of parent container--%>
+        <div class="cleared"></div>
     </div>
     <div id="previewPoll">
-
     </div>
-
-
 </div>

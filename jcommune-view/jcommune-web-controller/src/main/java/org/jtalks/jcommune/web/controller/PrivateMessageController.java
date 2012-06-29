@@ -14,13 +14,13 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -53,7 +53,6 @@ public class PrivateMessageController {
     public static final String PM_IDENTIFIERS = "pmIdentifiers";
     private PrivateMessageService pmService;
     private BBCodeService bbCodeService;
-    private SecurityService securityService;
     private UserService userService;
 
     //constants are moved here when occurs 4 or more times, as project PMD rule states
@@ -77,14 +76,13 @@ public class PrivateMessageController {
     /**
      * @param pmService       for PrivateMessage-related operation
      * @param bbCodeService   for qutes creation
-     * @param securityService to get current user
+     * @param userService to get current user
      */
     @Autowired
     public PrivateMessageController(PrivateMessageService pmService, BBCodeService bbCodeService,
-                                    SecurityService securityService, UserService userService) {
+                                     UserService userService) {
         this.pmService = pmService;
         this.bbCodeService = bbCodeService;
-        this.securityService = securityService;
         this.userService = userService;
     }
 
@@ -189,10 +187,13 @@ public class PrivateMessageController {
         if (result.hasErrors()) {
             return PM_FORM;
         }
+        JCUser userFrom = userService.getCurrentUser();
+        JCUser userTo =  userService.getByUsername(pmDto.getRecipient());
+        // todo: we can easily get current user in service
         if (pmDto.getId() > 0) {
-            pmService.sendDraft(pmDto.getId(), pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
+            pmService.sendDraft(pmDto.getId(), pmDto.getTitle(), pmDto.getBody(), userTo, userFrom);
         } else {
-            pmService.sendMessage(pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
+            pmService.sendMessage(pmDto.getTitle(), pmDto.getBody(), userTo, userFrom);
         }
         return "redirect:/outbox";
     }
@@ -206,10 +207,10 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/pm/{pmId}", method = RequestMethod.GET)
     public ModelAndView showPmPage(@PathVariable(PM_ID) Long id) throws NotFoundException {
-           PrivateMessage pm = pmService.get(id);
-           return new ModelAndView("pm/showPm")
+        PrivateMessage pm = pmService.get(id);
+        return new ModelAndView("pm/showPm")
                 .addObject("pm", pm)
-                .addObject("user", securityService.getCurrentUser());
+                .addObject("user", userService.getCurrentUser());
     }
 
     /**
@@ -239,7 +240,10 @@ public class PrivateMessageController {
     @RequestMapping(value = "/pm/save", method = {RequestMethod.POST, RequestMethod.GET})
     public String saveDraft(@ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
         try {
-            pmService.saveDraft(pmDto.getId(), pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
+            // todo: we can easily get current user in service
+            JCUser userFrom = userService.getCurrentUser();
+            JCUser userTo =  userService.getByUsername(pmDto.getRecipient());
+            pmService.saveDraft(pmDto.getId(), pmDto.getTitle(), pmDto.getBody(), userTo, userFrom );
             return "redirect:/drafts";
         } catch (NotFoundException e) {
             result.rejectValue("recipient", "validation.wrong_recipient");
@@ -252,9 +256,10 @@ public class PrivateMessageController {
      *
      * @param ids Comma-separated identifiers of the private messages for deletion
      * @return redirect to folder from what request is come
+     * @throws NotFoundException if message hasn't been found
      */
     @RequestMapping(value = "/pm", method = {RequestMethod.DELETE})
-    public String deleteMessages(@RequestParam(PM_IDENTIFIERS) List<Long> ids) {
+    public String deleteMessages(@RequestParam(PM_IDENTIFIERS) List<Long> ids) throws NotFoundException {
         String url = pmService.delete(ids);
         return "redirect:/" + url;
     }
