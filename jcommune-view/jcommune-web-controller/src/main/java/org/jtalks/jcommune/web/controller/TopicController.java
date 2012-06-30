@@ -155,7 +155,7 @@ public class TopicController {
         }
 
         Topic createdTopic = topicService.createTopic(topicDto.getTopic().getTitle(), topicDto.getBodyText(),
-                branchId,topicDto.isNotifyOnAnswers());
+                branchId, topicDto.isNotifyOnAnswers());
 
         if (topicDto.hasPoll()) {
             Poll poll = topicDto.preparePollFromTopicDto();
@@ -272,8 +272,7 @@ public class TopicController {
                     .addObject(TOPIC_ID, topicId);
         }
         Topic topic = topicDto.getTopic();
-        topicService.updateTopic(topicDto.getId(), topic.getTitle(), topicDto.getBodyText(),
-                topic.getTopicWeight(), topic.isSticked(), topic.isAnnouncement(),topicDto.isNotifyOnAnswers());
+        topicService.updateTopic(topicDto.getId(), topic, topicDto.getBodyText(), topicDto.isNotifyOnAnswers());
 
         return new ModelAndView("redirect:/topics/" + topicId);
     }

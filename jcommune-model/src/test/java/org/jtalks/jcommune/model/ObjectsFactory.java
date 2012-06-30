@@ -14,37 +14,24 @@
  */
 package org.jtalks.jcommune.model;
 
-import org.hibernate.Session;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.LastReadPost;
-import org.jtalks.jcommune.model.entity.Poll;
-import org.jtalks.jcommune.model.entity.PollItem;
-import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author Kirill Afonin
  * @author Alexandre Teterin
  * @author Max Malakhov
+ * @author Eugeny Batov
  */
-//TODO: split this class on 2: objects factory and persisted objects factory
 public final class ObjectsFactory {
+
     private ObjectsFactory() {
     }
-
-    public static void setSession(Session session) {
-        ObjectsFactory.session = session;
-    }
-
-    private static Session session;
 
     public static JCUser getDefaultUser() {
         return getUser("username", "username@mail.com");
@@ -55,21 +42,6 @@ public final class ObjectsFactory {
         newUser.setFirstName("first name");
         newUser.setLastName("last name");
         return newUser;
-    }
-
-    public static Post getDefaultPost() {
-        return new Post(persist(getDefaultUser()), "post content");
-    }
-
-    public static Topic getDefaultTopic() {
-        JCUser user = persist(getDefaultUser());
-        Branch branch = getDefaultBranch();
-        Topic newTopic = new Topic(user, "topic title");
-        Post post = new Post(user, "post content");
-        newTopic.addPost(post);
-        branch.addTopic(newTopic);
-        persist(branch);
-        return newTopic;
     }
 
     public static Branch getDefaultBranch() {
@@ -84,16 +56,10 @@ public final class ObjectsFactory {
         return newSection;
     }
 
-    /**
-     * Create the PrivateMessage with filled required fields.
-     *
-     * @return ready to save instance
-     */
-    public static PrivateMessage getDefaultPrivateMessage() {
-        JCUser userTo = persist(getUser("UserTo", "mail2@mail.com"));
-        JCUser userFrom = persist(getUser("UserFrom", "mail1@mail.com"));
-        return new PrivateMessage(userTo, userFrom,
-                "Message title", "Private message body");
+    public static Topic getDefaultTopic() {
+        Topic topic = new Topic(getDefaultUser(), "title");
+        topic.setId(1);
+        return topic;
     }
 
     public static PrivateMessage getPrivateMessage(JCUser userTo, JCUser userFrom) {
@@ -118,45 +84,4 @@ public final class ObjectsFactory {
         return contact;
     }
 
-    private static <T> T persist(T entity) {
-        session.save(entity);
-        return entity;
-    }
-
-    public static List<Post> createAndSavePostList(int size) {
-        List<Post> posts = new ArrayList<Post>();
-        Topic topic = ObjectsFactory.getDefaultTopic();
-        JCUser author = topic.getTopicStarter();
-        for (int i = 0; i < size - 1; i++) {
-            Post newPost = new Post(author, "content " + i);
-            topic.addPost(newPost);
-            posts.add(newPost);
-            session.save(newPost);
-        }
-        session.save(topic);
-        return posts;
-    }
-
-    public static LastReadPost getDefaultLastReadPost() {
-        Topic topic = getDefaultTopic();
-        JCUser user = topic.getTopicStarter();
-        return new LastReadPost(user, topic, 0);
-    }
-
-    public static Poll createDefaultVoting() {
-        Topic topic = getDefaultTopic();
-        Poll voting = new Poll("New voting");
-        topic.setPoll(voting);
-        voting.setTopic(topic);
-        persist(topic);
-        return voting;
-    }
-
-    public static PollItem createDefaultVotingOption() {
-        Poll voting = createDefaultVoting();
-        persist(voting);
-        PollItem option = new PollItem("First voting option");
-        voting.addPollOptions(option);
-        return option;
-    }
 }

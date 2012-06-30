@@ -321,8 +321,7 @@ public class TopicControllerTest {
         assertEquals(branchId, BRANCH_ID);
         assertEquals(topicId, TOPIC_ID);
 
-        verify(topicService, never()).updateTopic(anyLong(), anyString(), anyString(),
-                anyInt(), anyBoolean(), anyBoolean(), anyBoolean());
+        verify(topicService, never()).updateTopic(anyLong(), (Topic)anyObject(), anyString(), anyBoolean());
     }
 
     @Test

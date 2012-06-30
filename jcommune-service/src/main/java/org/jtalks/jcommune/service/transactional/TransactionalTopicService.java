@@ -159,9 +159,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      */
     @Override
     @PreAuthorize("hasPermission(#topicId, 'TOPIC', 'GeneralPermission.WRITE')")
-    public void updateTopic(long topicId, String topicName, String bodyText)
+    public void updateTopic(long topicId, Topic topic, String bodyText)
             throws NotFoundException {
-        updateTopic(topicId, topicName, bodyText, 0, false, false, false);
+        updateTopic(topicId, topic, bodyText, false);
     }
 
     /**
@@ -169,13 +169,12 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      */
     @Override
     @PreAuthorize("hasPermission(#topicId, 'TOPIC', 'GeneralPermission.WRITE')")
-    public void updateTopic(long topicId, String topicName, String bodyText, int topicWeight,
-                            boolean sticked, boolean announcement, boolean notifyOnAnswers) throws NotFoundException {
+    public void updateTopic(long topicId, Topic updatedTopic, String bodyText, boolean notifyOnAnswers) throws NotFoundException {
         Topic topic = get(topicId);
-        topic.setTitle(topicName);
-        topic.setTopicWeight(topicWeight);
-        topic.setSticked(sticked);
-        topic.setAnnouncement(announcement);
+        topic.setTitle(updatedTopic.getTitle());
+        topic.setTopicWeight(updatedTopic.getTopicWeight());
+        topic.setSticked(updatedTopic.isSticked());
+        topic.setAnnouncement(updatedTopic.isAnnouncement());
         Post post = topic.getFirstPost();
         post.setPostContent(bodyText);
         post.updateModificationDate();

@@ -18,6 +18,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.ObjectsFactory;
+import org.jtalks.jcommune.model.PersistedObjectFactory;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
@@ -63,7 +64,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
     @BeforeMethod
     public void setUp() throws Exception {
         session = sessionFactory.getCurrentSession();
-        ObjectsFactory.setSession(session);
+        PersistedObjectFactory.setSession(session);
     }
 
     @Test
@@ -209,7 +210,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
      * Create new PrivateMessage with filled fields and save it.
      */
     private PrivateMessage getSavedPm() throws HibernateException {
-        PrivateMessage pm = ObjectsFactory.getDefaultPrivateMessage();
+        PrivateMessage pm = PersistedObjectFactory.getDefaultPrivateMessage();
         session.saveOrUpdate(pm);
         return pm;
     }
