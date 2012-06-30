@@ -18,7 +18,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.ObjectsFactory;
-import org.jtalks.jcommune.model.PersistedObjectFactory;
+import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
@@ -54,14 +54,14 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     @BeforeMethod
     public void setUp() {
         session = sessionFactory.getCurrentSession();
-        PersistedObjectFactory.setSession(session);
+        PersistedObjectsFactory.setSession(session);
     }
 
     /*===== Common methods =====*/
 
     @Test
     public void testGet() {
-        Post post = PersistedObjectFactory.getDefaultPost();
+        Post post = PersistedObjectsFactory.getDefaultPost();
         session.save(post);
 
         Post result = dao.get(post.getId());
@@ -80,7 +80,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     @Test
     public void testUpdate() {
         String newContent = "new content";
-        Post post = PersistedObjectFactory.getDefaultPost();
+        Post post = PersistedObjectsFactory.getDefaultPost();
         session.save(post);
         post.setPostContent(newContent);
 
@@ -93,7 +93,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
     @Test(expectedExceptions = Exception.class)
     public void testUpdateNotNullViolation() {
-        Post post = PersistedObjectFactory.getDefaultPost();
+        Post post = PersistedObjectsFactory.getDefaultPost();
         session.save(post);
         post.setPostContent(null);
 
@@ -129,7 +129,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     @Test
     public void testGetLastPostInTopic() {
         int size = 2;
-        List<Post> posts = PersistedObjectFactory.createAndSavePostList(size);
+        List<Post> posts = PersistedObjectsFactory.createAndSavePostList(size);
         Topic topic = posts.get(0).getTopic();
         Post expectedLastPost = topic.getPosts().get(size - 1);
         ReflectionTestUtils.setField(
@@ -147,7 +147,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     
     @Test 
     public void testGetLastPostInEmptyTopic() {
-        Topic topic = PersistedObjectFactory.getDefaultTopic();
+        Topic topic = PersistedObjectsFactory.getDefaultTopic();
         topic.removePost(topic.getFirstPost());
         
         session.save(topic);

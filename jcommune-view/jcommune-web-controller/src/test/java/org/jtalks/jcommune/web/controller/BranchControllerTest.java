@@ -15,13 +15,13 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.joda.time.DateTime;
-import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.BranchDto;
@@ -66,7 +66,7 @@ public class BranchControllerTest {
     @Mock
     private LastReadPostService lastReadPostService;
     @Mock
-    private SecurityService securityService;
+    private UserService userService;
 
     private BranchController controller;
 
@@ -76,7 +76,7 @@ public class BranchControllerTest {
     public void init() {
         initMocks(this);
         controller = new BranchController(branchService, topicService, lastReadPostService,
-                securityService, breadcrumbBuilder, locationServiceImpl);
+                userService, breadcrumbBuilder, locationServiceImpl);
     }
 
     @Test
@@ -160,7 +160,7 @@ public class BranchControllerTest {
     @Test
     public void testViewList() throws NotFoundException {
         JCUser user = new JCUser("", "", "");
-        Map map = new HashMap<JCUser, String>();
+        Map<JCUser, String> map = new HashMap<JCUser, String>();
         map.put(user, "");
         long branchId = 1L;
         int page = 2;
@@ -214,7 +214,7 @@ public class BranchControllerTest {
 
     @Test
     public void testMarkAllTopicsAsRead() throws NotFoundException {
-        Long id = Long.valueOf(1);
+        Long id = 1L;
         String result = controller.markAllTopicsAsRead(id);
         assertEquals(result, "redirect:/branches/" + String.valueOf(id));
     }

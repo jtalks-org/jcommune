@@ -33,15 +33,15 @@ import java.util.List;
  * @author Max Malakhov
  * @author Eugeny Batov
  */
-public final class PersistedObjectFactory {
+public final class PersistedObjectsFactory {
 
     private static Session session;
 
-    private PersistedObjectFactory() {
+    private PersistedObjectsFactory() {
     }
 
     public static void setSession(Session session) {
-        PersistedObjectFactory.session = session;
+        PersistedObjectsFactory.session = session;
     }
 
     public static Post getDefaultPost() {
@@ -73,7 +73,7 @@ public final class PersistedObjectFactory {
 
     public static List<Post> createAndSavePostList(int size) {
         List<Post> posts = new ArrayList<Post>();
-        Topic topic = PersistedObjectFactory.getDefaultTopic();
+        Topic topic = PersistedObjectsFactory.getDefaultTopic();
         JCUser author = topic.getTopicStarter();
         for (int i = 0; i < size - 1; i++) {
             Post newPost = new Post(author, "content " + i);

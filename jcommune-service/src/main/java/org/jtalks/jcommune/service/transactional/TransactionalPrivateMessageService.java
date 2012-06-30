@@ -74,7 +74,7 @@ public class TransactionalPrivateMessageService
      */
     @Override
     public List<PrivateMessage> getInboxForCurrentUser() {
-        JCUser currentUser = (JCUser) securityService.getCurrentUser();
+        JCUser currentUser = userService.getCurrentUser();
         return this.getDao().getAllForUser(currentUser);
     }
 
@@ -83,7 +83,7 @@ public class TransactionalPrivateMessageService
      */
     @Override
     public List<PrivateMessage> getOutboxForCurrentUser() {
-        JCUser currentUser = (JCUser) securityService.getCurrentUser();
+        JCUser currentUser = userService.getCurrentUser();
         return this.getDao().getAllFromUser(currentUser);
     }
 
@@ -118,7 +118,7 @@ public class TransactionalPrivateMessageService
      */
     @Override
     public List<PrivateMessage> getDraftsFromCurrentUser() {
-        JCUser currentUser = (JCUser) securityService.getCurrentUser();
+        JCUser currentUser = userService.getCurrentUser();
         return this.getDao().getDraftsFromUser(currentUser);
     }
 
@@ -133,10 +133,9 @@ public class TransactionalPrivateMessageService
         pm.setStatus(PrivateMessageStatus.DRAFT);
         this.getDao().saveOrUpdate(pm);
 
-        securityService.createAclBuilder().grant(GeneralPermission.READ).to(securityService.getCurrentUser()).
-                on(pm).flush();
-        securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(securityService.getCurrentUser()).
-                on(pm).flush();
+        JCUser user = userService.getCurrentUser();
+        securityService.createAclBuilder().grant(GeneralPermission.READ).to(user).on(pm).flush();
+        securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(pm).flush();
 
         logger.debug("Updated private message draft. Message id={}", pm.getId());
 
@@ -200,7 +199,7 @@ public class TransactionalPrivateMessageService
         PrivateMessage pm = super.get(id);
         if (!hasCurrentUserAccessToPM(pm)) {
             throw new NotFoundException(String.format("current user has no right to read pm %s with id %d",
-                    securityService.getCurrentUser(), id));
+                    userService.getCurrentUser(), id));
         }
         if (this.ifMessageShouldBeMarkedAsRead(pm)) {
             pm.setRead(true);
@@ -221,7 +220,7 @@ public class TransactionalPrivateMessageService
      * @return if message should be marked as read
      */
     private boolean ifMessageShouldBeMarkedAsRead(PrivateMessage pm) {
-        return securityService.getCurrentUser().equals(pm.getUserTo())
+        return userService.getCurrentUser().equals(pm.getUserTo())
                 && !pm.isRead()
                 && !pm.getStatus().equals(PrivateMessageStatus.DRAFT);
     }
@@ -230,19 +229,13 @@ public class TransactionalPrivateMessageService
      * {@inheritDoc}
      */
     @Override
-    public String delete(List<Long> ids) {
-        JCUser currentUser = (JCUser) securityService.getCurrentUser();
+    public String delete(List<Long> ids) throws NotFoundException {
+        JCUser currentUser = userService.getCurrentUser();
 
         String result = "inbox";
         for (Long id : ids) {
 
-            PrivateMessage message;
-            try {
-                message = get(id);
-            } catch (NotFoundException e) {
-                logger.warn("Message #" + id + " not found", e);
-                continue;
-            }
+            PrivateMessage message = this.get(id);
 
             switch (message.getStatus()) {
                 case DRAFT:
@@ -272,7 +265,7 @@ public class TransactionalPrivateMessageService
     }
 
     private boolean hasCurrentUserAccessToPM(PrivateMessage privateMessage) throws NotFoundException {
-        JCUser currentUser = (JCUser) securityService.getCurrentUser();
+        JCUser currentUser = userService.getCurrentUser();
         PrivateMessageStatus messageStatus = privateMessage.getStatus();
 
         if (currentUser.equals(privateMessage.getUserFrom()) &&
@@ -280,12 +273,9 @@ public class TransactionalPrivateMessageService
             return false;
         }
 
-        if (currentUser.equals(privateMessage.getUserTo()) &&
-                (messageStatus.equals(PrivateMessageStatus.DELETED_FROM_INBOX))) {
-            return false;
-        }
+        return !(currentUser.equals(privateMessage.getUserTo()) &&
+                (messageStatus.equals(PrivateMessageStatus.DELETED_FROM_INBOX)));
 
-        return true;
     }
 
 }

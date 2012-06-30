@@ -14,10 +14,10 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicFullSearchService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -54,19 +54,20 @@ public class TopicSearchController {
      */
     public static final String SEARCH_TEXT_ATTRIBUTE_NAME = "searchText";
     private static final String SEARCH_RESULT_VIEW_NAME = "searchResult";
+
     private TopicFullSearchService topicSearchService;
-    private SecurityService securityService;
+    private UserService userService;
     
     /**
      * Constructor for controller instantiating, dependencies injected via autowiring.
      * 
-     * @param topicSearchService {@link TopicFullSearchService} instance to be injected
-     * @param securityService {@link SecurityService} instance to be injected
+     * @param topicSearchService {@link TopicFullSearchService} to perform actual search
+     * @param userService {@link UserService} to fetch user currently logged in
      */
     @Autowired
-    public TopicSearchController(TopicFullSearchService topicSearchService, SecurityService securityService) {
+    public TopicSearchController(TopicFullSearchService topicSearchService, UserService userService) {
         this.topicSearchService = topicSearchService;
-        this.securityService = securityService;
+        this.userService = userService;
     }
     
     /**
@@ -110,14 +111,13 @@ public class TopicSearchController {
      * @return result of the search
      */
     private ModelAndView search(String searchText, int page) {
-        JCUser currentUser = (JCUser) securityService.getCurrentUser();
+        JCUser currentUser = userService.getCurrentUser();
         List<Topic> topics = topicSearchService.searchByTitleAndContent(searchText);
-        String uri = searchText;
         Pagination pagination = new Pagination(page, currentUser, topics.size(), true);
         return new ModelAndView(SEARCH_RESULT_VIEW_NAME).
                 addObject(TOPICS_ATTRIBUTE_NAME, topics).
                 addObject(PAGINATION_ATTRIBUTE_NAME, pagination).
-                addObject(URI_ATTRIBUTE_NAME, uri).
+                addObject(URI_ATTRIBUTE_NAME, searchText).
                 addObject(SEARCH_TEXT_ATTRIBUTE_NAME, searchText);
     }
 }

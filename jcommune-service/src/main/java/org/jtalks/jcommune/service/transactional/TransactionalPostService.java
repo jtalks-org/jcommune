@@ -22,6 +22,7 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.slf4j.Logger;
@@ -43,6 +44,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     private SecurityService securityService;
     private NotificationService notificationService;
     private LastReadPostService lastReadPostService;
+    private UserService userService;
 
     /**
      * Create an instance of Post entity based service
@@ -52,14 +54,16 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * @param securityService     service for authorization
      * @param notificationService to send email updates for subscribed users
      * @param lastReadPostService to modify last read post information when topic structure is changed
+     * @param userService         to get current user logged in
      */
     public TransactionalPostService(PostDao dao, TopicDao topicDao, SecurityService securityService,
-                                    NotificationService notificationService, LastReadPostService lastReadPostService) {
+                                    NotificationService notificationService, LastReadPostService lastReadPostService, UserService userService) {
         super(dao);
         this.topicDao = topicDao;
         this.securityService = securityService;
         this.notificationService = notificationService;
         this.lastReadPostService = lastReadPostService;
+        this.userService = userService;
     }
 
     /**
@@ -114,7 +118,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     @Override
     public int calculatePageForPost(Post post) {
         Topic topic = post.getTopic();
-        JCUser user = (JCUser) securityService.getCurrentUser();
+        JCUser user = userService.getCurrentUser();
         int index = topic.getPosts().indexOf(post) + 1;
         int pageSize = (user == null) ? JCUser.DEFAULT_PAGE_SIZE : user.getPageSize();
         int pageNum = index / pageSize;

@@ -16,8 +16,8 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.common.model.entity.Entity;
-import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.service.UserService;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Component;
 
@@ -34,16 +34,16 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 public class LocationService {
-    private SecurityService securityService;
+    private UserService userService;
     private SessionRegistry sessionRegistry;
     private Map<JCUser, String> registerUserMap = new ConcurrentHashMap<JCUser, String>();
 
     /**
-     * @param securityService to figure out the current user
+     * @param userService to figure out the current user
      * @param sessionRegistry session registry to get all the users logged in
      */
-    public LocationService(SecurityService securityService, SessionRegistry sessionRegistry) {
-        this.securityService = securityService;
+    public LocationService(UserService userService, SessionRegistry sessionRegistry) {
+        this.userService = userService;
         this.sessionRegistry = sessionRegistry;
     }
 
@@ -58,7 +58,7 @@ public class LocationService {
      */
     public List<JCUser> getUsersViewing(Entity entity) {
         List<JCUser> viewList = new ArrayList<JCUser>();
-        JCUser currentUser = (JCUser) securityService.getCurrentUser();
+        JCUser currentUser = userService.getCurrentUser();
         /**
          * This condition does not allow Anonymous add to the map of active users.
          */
@@ -86,19 +86,8 @@ public class LocationService {
          * As for anonymous security service will return null.
          * Attempt to pass null as a key will result in NPE
          */
-        if (securityService.getCurrentUser() != null) {
-            registerUserMap.remove(securityService.getCurrentUser());
+        if (userService.getCurrentUser() != null) {
+            registerUserMap.remove(userService.getCurrentUser());
         }
-    }
-
-    /**
-     * The need for testing.
-     * //todo: rewrite tests to eliminate it
-     *
-     * @param registerUserMap storage that contains forum location
-     * for the current user
-     */
-    void setRegisterUserMap(Map<JCUser, String> registerUserMap) {
-        this.registerUserMap = registerUserMap;
     }
 }

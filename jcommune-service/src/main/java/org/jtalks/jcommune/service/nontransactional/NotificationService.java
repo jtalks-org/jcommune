@@ -19,6 +19,7 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.JcommuneProperty;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.UserService;
 
 import java.util.Set;
 
@@ -36,20 +37,20 @@ import java.util.Set;
  */
 public class NotificationService {
 
-    private SecurityService securityService;
+    private UserService userService;
     private MailService mailService;
     private JcommuneProperty notificationsEnabledProperty;
 
     /**
-     * @param securityService to determine the update author
+     * @param userService to determine the update author
      * @param mailService     to perform actual email notifications
      * @param notificationsEnabledProperty lets us know whether we can send notifications
      */
     public NotificationService(
-            SecurityService securityService,
+            UserService userService,
             MailService mailService,
             JcommuneProperty notificationsEnabledProperty) {
-        this.securityService = securityService;
+        this.userService = userService;
         this.mailService = mailService;
         this.notificationsEnabledProperty = notificationsEnabledProperty;
     }
@@ -62,7 +63,7 @@ public class NotificationService {
      */
     public void topicChanged(Topic topic) {
         if (notificationsEnabledProperty.booleanValue()) {
-            JCUser current = (JCUser) securityService.getCurrentUser();
+            JCUser current = userService.getCurrentUser();
             Set<JCUser> subscribers = topic.getSubscribers();
             subscribers.remove(current);
             for (JCUser user : subscribers) {
@@ -80,7 +81,7 @@ public class NotificationService {
      */
     public void branchChanged(Branch branch) {
         if (notificationsEnabledProperty.booleanValue()) {
-            JCUser current = (JCUser) securityService.getCurrentUser();
+            JCUser current = userService.getCurrentUser();
             Set<JCUser> subscribers = branch.getSubscribers();
             subscribers.remove(current);
             for (JCUser user : subscribers) {
@@ -99,7 +100,7 @@ public class NotificationService {
      */
     public void topicMoved(Topic topic, long topicId) {
         if (notificationsEnabledProperty.booleanValue()) {
-            JCUser currentUser = (JCUser) securityService.getCurrentUser();
+            JCUser currentUser = userService.getCurrentUser();
             JCUser topicStarter = topic.getTopicStarter();
             Set<JCUser> subscribers = topic.getBranch().getSubscribers();
             // temp transient collection modification to ease the iteration

@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.validation.validators;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.service.UserService;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -33,7 +34,7 @@ import javax.validation.ConstraintValidatorContext;
  */
 public class ChangedEmailValidatorTest {
 	@Mock
-	private SecurityService securityService;
+	private UserService userService;
 	@Mock
 	private UserDao userDao;
 	@Mock
@@ -45,10 +46,8 @@ public class ChangedEmailValidatorTest {
 	@BeforeMethod
 	public void init() {
 		MockitoAnnotations.initMocks(this);
-		//
-		Mockito.when(securityService.getCurrentUser()).thenReturn(user);
-		//
-		validator = new ChangedEmailValidator(securityService, userDao);
+		Mockito.when(userService.getCurrentUser()).thenReturn(user);
+		validator = new ChangedEmailValidator(userService, userDao);
 	}
 
 	@Test

@@ -162,25 +162,20 @@
 
                             <c:choose>
                                 <c:when test="${pag.page == 1 && i.index == 0}">
-                                    <sec:accesscontrollist hasPermission="10" domainObject="${topic.branch}">
                                         <%-- first post - urls to delete & edit topic --%>
                                         <c:set var="delete_url"
                                                value="${pageContext.request.contextPath}/topics/${topic.id}"/>
                                         <c:set var="edit_url"
                                                value="${pageContext.request.contextPath}/topics/${topic.id}/edit?branchId=${branchId}"/>
 
-                                    </sec:accesscontrollist>
                                     <c:set var="confirm_message" value="label.deleteTopicConfirmation"/>
                                 </c:when>
                                 <c:otherwise>
-                                    <sec:accesscontrollist hasPermission="7,13" domainObject="${topic.branch}">
                                         <%-- url to delete & edit post --%>
                                         <c:set var="delete_url"
                                                value="${pageContext.request.contextPath}/posts/${post.id}?branchId=${topic.branch.id}"/>
                                         <c:set var="edit_url"
                                                value="${pageContext.request.contextPath}/posts/${post.id}/edit?topicId=${topic.id}"/>
-
-                                    </sec:accesscontrollist>
                                     <c:set var="confirm_message" value="label.deletePostConfirmation"/>
                                 </c:otherwise>
                             </c:choose>

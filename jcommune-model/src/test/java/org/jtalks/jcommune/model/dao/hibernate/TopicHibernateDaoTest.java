@@ -18,7 +18,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.ObjectsFactory;
-import org.jtalks.jcommune.model.PersistedObjectFactory;
+import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,14 +54,14 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     @BeforeMethod
     public void setUp() throws Exception {
         session = sessionFactory.getCurrentSession();
-        PersistedObjectFactory.setSession(session);
+        PersistedObjectsFactory.setSession(session);
     }
 
     /*===== Common methods =====*/
 
     @Test
     public void testGet() {
-        Topic topic = PersistedObjectFactory.getDefaultTopic();
+        Topic topic = PersistedObjectsFactory.getDefaultTopic();
         session.save(topic);
 
         Topic result = dao.get(topic.getId());
@@ -81,7 +81,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     @Test
     public void testUpdate() {
         String newTitle = "new title";
-        Topic topic = PersistedObjectFactory.getDefaultTopic();
+        Topic topic = PersistedObjectsFactory.getDefaultTopic();
         session.save(topic);
         topic.setTitle(newTitle);
 
@@ -153,7 +153,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
     @Test
     public void testGetLastUpdatedTopicInBranch() {
-        Topic firstTopic = PersistedObjectFactory.getDefaultTopic();
+        Topic firstTopic = PersistedObjectsFactory.getDefaultTopic();
         Branch branch = firstTopic.getBranch();
         Topic secondTopic = new Topic(firstTopic.getTopicStarter(), "Second topic");
         branch.addTopic(secondTopic);
@@ -182,7 +182,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
     @Test
     public void testDeleteWithPoll() {
-        Poll poll = PersistedObjectFactory.createDefaultVoting();
+        Poll poll = PersistedObjectsFactory.createDefaultVoting();
         Topic topic = poll.getTopic();
         Branch branch = topic.getBranch();
         branch.deleteTopic(topic);

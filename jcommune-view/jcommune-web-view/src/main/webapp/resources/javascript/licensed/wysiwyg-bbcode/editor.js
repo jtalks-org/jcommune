@@ -193,7 +193,7 @@ function closeTag2(text) {
 
         var tagName = regexpForOpenBBtagResult[1];
 
-        var regTwoTags = '([^\\[\\]]*)(\\[(' + tagName + ')(=[^\\[\\]]*)?\\])(.*)(\\[\/(' + tagName + ')\\])([^\\[\\]]*)(.*)';
+        var regTwoTags = '([^\\[\\]]*)(\\[(' + tagName + ')(=[^\\[\\]]*)?\\])(.*?)(\\[\/(' + tagName + ')\\])([^\\[\\]]*)(.*)';
 
         var domRegExp = new RegExp(regTwoTags, 'ig');
         /**

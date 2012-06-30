@@ -22,6 +22,7 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.mockito.Mock;
@@ -64,6 +65,8 @@ public class TransactionalPostServiceTest {
     private TopicDao topicDao;
     @Mock
     private LastReadPostService lastReadPostService;
+    @Mock
+    private UserService userService;
 
     private PostService postService;
 
@@ -73,9 +76,9 @@ public class TransactionalPostServiceTest {
     public void setUp() throws Exception {
         initMocks(this);
         postService = new TransactionalPostService(
-                postDao, topicDao, securityService, notificationService, lastReadPostService);
+                postDao, topicDao, securityService, notificationService, lastReadPostService, userService);
         user = new JCUser(USERNAME, EMAIL, PASSWORD);
-        when(securityService.getCurrentUser()).thenReturn(user);
+        when(userService.getCurrentUser()).thenReturn(user);
     }
 
     @Test
@@ -192,7 +195,7 @@ public class TransactionalPostServiceTest {
 
     @Test
     public void testFirstPostInTopicPageCalculationWithNoUser() {
-        when(securityService.getCurrentUser()).thenReturn(null);
+        when(userService.getCurrentUser()).thenReturn(null);
         Topic topic = new Topic(user, "");
         Post post = new Post(user, "");
         topic.addPost(post);

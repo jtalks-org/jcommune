@@ -14,13 +14,13 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.SubscriptionService;
+import org.jtalks.jcommune.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
@@ -35,17 +35,17 @@ import org.springframework.security.access.prepost.PreAuthorize;
 @PreAuthorize("isAuthenticated()")
 public class TransactionalSubscriptionService implements SubscriptionService {
 
-    private SecurityService securityService;
+    private UserService userService;
     private BranchDao branchDao;
     private TopicDao topicDao;
 
     /**
-     * @param securityService to determine the current user requested the operation
+     * @param userService to determine the current user requested the operation
      * @param branchDao       for branch subscription updates
      * @param topicDao        for topic subscription updates
      */
-    public TransactionalSubscriptionService(SecurityService securityService, BranchDao branchDao, TopicDao topicDao) {
-        this.securityService = securityService;
+    public TransactionalSubscriptionService(UserService userService, BranchDao branchDao, TopicDao topicDao) {
+        this.userService = userService;
         this.branchDao = branchDao;
         this.topicDao = topicDao;
     }
@@ -55,7 +55,7 @@ public class TransactionalSubscriptionService implements SubscriptionService {
      */
     @Override
     public void toggleTopicSubscription(Topic topic) {
-        JCUser current = (JCUser) securityService.getCurrentUser();
+        JCUser current = userService.getCurrentUser();
         if (topic.userSubscribed(current)) {
             topic.getSubscribers().remove(current);
         } else {
@@ -69,7 +69,7 @@ public class TransactionalSubscriptionService implements SubscriptionService {
      */
     @Override
     public void toggleBranchSubscription(Branch branch) {
-        JCUser current = (JCUser) securityService.getCurrentUser();
+        JCUser current = userService.getCurrentUser();
         if (branch.getSubscribers().contains(current)) {
             branch.getSubscribers().remove(current);
         } else {

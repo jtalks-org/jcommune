@@ -153,7 +153,8 @@ public class TransactionalUserServiceTest {
     @Test
     public void testEditUserProfile() throws Exception {
         JCUser user = getUser(USERNAME);
-        when(securityService.getCurrentUser()).thenReturn(user);
+        when(securityService.getCurrentUserUsername()).thenReturn("");
+        when(userDao.getByUsername(anyString())).thenReturn(user);
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
         when(encryptionService.encryptPassword(NEW_PASSWORD))
                 .thenReturn(NEW_PASSWORD_MD5_HASH);
@@ -163,7 +164,6 @@ public class TransactionalUserServiceTest {
         JCUser editedUser = userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
                 PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, LOCATION));
 
-        verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
         assertUserUpdated(editedUser);
         assertEquals(editedUser.getLanguage(), LANGUAGE, "language was not changed");
@@ -172,7 +172,8 @@ public class TransactionalUserServiceTest {
     @Test
     public void testEditUserProfileNewPasswordNull() {
         JCUser user = getUser(USERNAME);
-        when(securityService.getCurrentUser()).thenReturn(user);
+        when(securityService.getCurrentUserUsername()).thenReturn("");
+        when(userDao.getByUsername(anyString())).thenReturn(user);
         when(encryptionService.encryptPassword(null)).thenReturn(null);
 
         String newAvatar = new String(new byte[12]);
@@ -186,7 +187,8 @@ public class TransactionalUserServiceTest {
     @Test
     public void testEditUserProfileSameEmail() throws Exception {
         JCUser user = getUser(USERNAME);
-        when(securityService.getCurrentUser()).thenReturn(user);
+        when(securityService.getCurrentUserUsername()).thenReturn("");
+        when(userDao.getByUsername(anyString())).thenReturn(user);
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
 
         String newAvatar = new String(new byte[0]);
@@ -194,7 +196,6 @@ public class TransactionalUserServiceTest {
         JCUser editedUser = userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
                 PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, LOCATION));
 
-        verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
         assertEquals(editedUser.getEmail(), EMAIL, "Email was changed");
     }
@@ -300,6 +301,24 @@ public class TransactionalUserServiceTest {
         verify(userDao).delete(user2);
         verify(userDao).delete(user3);
         verify(userDao, never()).delete(user1);
+    }
+
+    @Test
+    public void testGetCurrentUser(){
+        JCUser expected = getUser(USERNAME);
+        when(securityService.getCurrentUserUsername()).thenReturn(USERNAME);
+        when(userDao.getByUsername(USERNAME)).thenReturn(expected);
+
+        JCUser actual = userService.getCurrentUser();
+
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    public void testGetCurrentUserForAnonymous(){
+        when(securityService.getCurrentUserUsername()).thenReturn(null);
+        
+        assertNull(userService.getCurrentUser());
     }
 
     /**

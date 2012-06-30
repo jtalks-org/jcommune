@@ -17,8 +17,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.common.model.dao.ChildRepository;
-import org.jtalks.jcommune.model.ObjectsFactory;
-import org.jtalks.jcommune.model.PersistedObjectFactory;
+import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -45,14 +44,14 @@ public class PollHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     @BeforeMethod
     public void setUp() {
         session = sessionFactory.getCurrentSession();
-        PersistedObjectFactory.setSession(session);
+        PersistedObjectsFactory.setSession(session);
     }
 
     /*===== Common methods =====*/
 
     @Test
     public void testGet() {
-        Poll expectedPoll = PersistedObjectFactory.createDefaultVoting();
+        Poll expectedPoll = PersistedObjectsFactory.createDefaultVoting();
         session.save(expectedPoll);
 
         Poll resultPoll = pollDao.get(expectedPoll.getId());
@@ -71,7 +70,7 @@ public class PollHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     @Test
     public void testUpdate() {
         String newTitle = "Changed title";
-        Poll poll = PersistedObjectFactory.createDefaultVoting();
+        Poll poll = PersistedObjectsFactory.createDefaultVoting();
         session.save(poll);
 
         poll.setTitle(newTitle);

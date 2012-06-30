@@ -30,6 +30,7 @@ import javax.servlet.http.HttpSession;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.service.SectionService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
@@ -68,7 +69,7 @@ public class SectionControllerTest {
     @BeforeMethod
     public void init() {
         sectionService = mock(SectionService.class);
-        SecurityService securityService = mock(SecurityService.class);
+        UserService securityService = mock(UserService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
         statisticsProvider = mock(ForumStatisticsProvider.class);
         locationServiceImpl = mock(LocationService.class);

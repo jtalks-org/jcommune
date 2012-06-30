@@ -69,6 +69,10 @@ public class TopicDto {
         this.topic = topic;
     }
 
+    public String getTopicTitle(){
+        return topic.getTitle();
+    }
+
     public Poll getPoll() {
         return poll;
     }

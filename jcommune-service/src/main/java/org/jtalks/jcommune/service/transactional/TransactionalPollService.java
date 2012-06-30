@@ -22,6 +22,7 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.service.PollService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.jtalks.jcommune.service.security.TemporaryAuthorityManager;
@@ -41,31 +42,34 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
     private ChildRepository<PollItem> pollOptionDao;
     private GroupDao groupDao;
     private SecurityService securityService;
+    private UserService userService;
     private TemporaryAuthorityManager temporaryAuthorityManager;
 
     /**
      * Create an instance of service for operations with a poll.
      *
      * @param pollDao                   data access object, which should be able do
-     *                                  all CRUD operations with {@link Poll}.
+     *                                  all CRUD operations with {@link org.jtalks.jcommune.model.entity.Poll}.
      * @param groupDao                  this dao returns user group for permission granting
      * @param pollOptionDao             data access object, which should be able do
-     *                                  all CRUD operations with {@link org.jtalks.jcommune.model.entity.PollItem}.
+ *                                  all CRUD operations with {@link org.jtalks.jcommune.model.entity.PollItem}.
      * @param securityService           the service for security operations
      * @param temporaryAuthorityManager the  manager of temporary authorities, that
-     *                                  allows to execute an operation with the
-     *                                  needed authority
+*                                  allows to execute an operation with the
+     * @param userService          to fetch the user currently logged in
      */
     public TransactionalPollService(ChildRepository<Poll> pollDao,
                                     GroupDao groupDao,
                                     ChildRepository<PollItem> pollOptionDao,
                                     SecurityService securityService,
-                                    TemporaryAuthorityManager temporaryAuthorityManager) {
+                                    TemporaryAuthorityManager temporaryAuthorityManager,
+                                    UserService userService) {
         super(pollDao);
         this.pollOptionDao = pollOptionDao;
         this.groupDao = groupDao;
         this.securityService = securityService;
         this.temporaryAuthorityManager = temporaryAuthorityManager;
+        this.userService = userService;
     }
     
     /**
@@ -123,7 +127,7 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
                     @Override
                     public void doOperation() {
                         securityService.createAclBuilder().
-                                restrict(GeneralPermission.WRITE).to(securityService.getCurrentUser()).on(poll).flush();
+                                restrict(GeneralPermission.WRITE).to(userService.getCurrentUser()).on(poll).flush();
                     }
                 },
                 SecurityConstants.ROLE_ADMIN);

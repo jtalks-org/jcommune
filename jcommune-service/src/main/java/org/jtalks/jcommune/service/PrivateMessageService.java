@@ -105,6 +105,7 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
      *
      * @param ids Identifiers of messages for deletion
      * @return URL for redirection
+     * @throws NotFoundException if one or more messages specified are missing
      */
-    String delete(List<Long> ids);
+    String delete(List<Long> ids) throws NotFoundException;
 }
