@@ -146,48 +146,41 @@
 <jsp:include page="../template/pollRow.jsp"/>
  
 <div>
-   <!-- List of posts. -->
-   <c:forEach var="post" items="${postsPage.content}" varStatus="i">
-       <!-- Post -->
-       <div class="post">
-           <table class="table table-striped table-bordered table-condensed">
-               <tr>
-                   <td class="post-date">
-                       <i class="icon-calendar"></i>
-                       <jtalks:format value="${post.creationDate}"/>
-                   </td>
-                   <td class="top-buttons">
-                       &nbsp;
-                       <div class="btn-toolbar post-btn-toolbar">
- 
-                           <c:choose>
-                               <c:when test="${pag.page == 1 && i.index == 0}">
-                                   <sec:accesscontrollist hasPermission="10" domainObject="${topic.branch}">
-                                       <%-- first post - urls to delete & edit topic --%>
-                                       <c:set var="delete_url"
+    <!-- List of posts. -->
+    <c:forEach var="post" items="${postsPage.content}" varStatus="i">
+        <!-- Post -->
+        <div class="post">
+            <table class="table table-striped table-bordered table-condensed">
+                <tr>
+                    <td class="post-date">
+                        <i class="icon-calendar"></i>
+                        <jtalks:format value="${post.creationDate}"/>
+                    </td>
+                    <td class="top-buttons">
+                        &nbsp;
+                        <div class="btn-toolbar post-btn-toolbar">
+
+                            <c:choose>
+                                <c:when test="${pag.page == 1 && i.index == 0}">
+                                        <%-- first post - urls to delete & edit topic --%>
+                                        <c:set var="delete_url"
                                                value="${pageContext.request.contextPath}/topics/${topic.id}"/>
                                        <c:set var="edit_url"
                                                value="${pageContext.request.contextPath}/topics/${topic.id}/edit?branchId=${branchId}"/>
- 
-                                   </sec:accesscontrollist>
-                                   <c:set var="confirm_message" value="label.deleteTopicConfirmation"/>
-                               </c:when>
-                               <c:otherwise>
-                                   <sec:accesscontrollist hasPermission="7,13" domainObject="${topic.branch}">
-                                       <%-- url to delete & edit post --%>
-                                       <c:set var="delete_url"
+                                    <c:set var="confirm_message" value="label.deleteTopicConfirmation"/>
+                                </c:when>
+                                <c:otherwise>
+                                        <%-- url to delete & edit post --%>
+                                        <c:set var="delete_url"
                                                value="${pageContext.request.contextPath}/posts/${post.id}?branchId=${topic.branch.id}"/>
                                        <c:set var="edit_url"
                                                value="${pageContext.request.contextPath}/posts/${post.id}/edit?topicId=${topic.id}"/>
- 
-                                   </sec:accesscontrollist>
-                                   <c:set var="confirm_message" value="label.deletePostConfirmation"/>
-                               </c:otherwise>
-                           </c:choose>
- 
-                           <div class="btn-group">
-                               <sec:accesscontrollist hasPermission="4" domainObject="${post}">
-                                   <a id="edit_button" href="${edit_url}" rel="${branchId}"
+                                    <c:set var="confirm_message" value="label.deletePostConfirmation"/>
+                                </c:otherwise>
+                            </c:choose>
+                            <div class="btn-group">
+                                <sec:accesscontrollist hasPermission="4" domainObject="${post}">
+                                    <a id="edit_button" href="${edit_url}" rel="${branchId}"
                                        class="btn btn-mini" title="<spring:message code='label.tips.edit_post'/>">
                                        <i class="icon-edit"></i>
                                        <spring:message code="label.edit"/>
