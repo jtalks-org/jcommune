@@ -34,7 +34,6 @@ import org.hibernate.search.util.HibernateSearchResourceLoader;
  *
  */
 public class StopWordsFilter implements SearchRequestFilter {
-    private static final String SPACE_STRING = " ";
     private List<String> stopWordsFiles;
     private boolean ignoreCase;
     
@@ -52,10 +51,11 @@ public class StopWordsFilter implements SearchRequestFilter {
      */
     @Override
     public String filter(String searchText) {
+        String result = searchText;
         for (String stopWordsFile : stopWordsFiles) {
-            searchText = filter(searchText, stopWordsFile);
+            result = filter(searchText, stopWordsFile);
         }
-        return searchText;
+        return result;
     }
     
     /**
@@ -94,7 +94,7 @@ public class StopWordsFilter implements SearchRequestFilter {
             searchText = searchText.toLowerCase();
         }
         return new ArrayList<String>(
-                Arrays.asList(searchText.split(SPACE_STRING))
+                Arrays.asList(searchText.split("\\s"))
         );
     }
     
@@ -105,6 +105,6 @@ public class StopWordsFilter implements SearchRequestFilter {
      * @return the single string from list of terms
      */
     private String joinSearchTerms(List<String> searchTerms) {
-        return StringUtils.join(searchTerms, SPACE_STRING);
+        return StringUtils.join(searchTerms, " ");
     }
 }

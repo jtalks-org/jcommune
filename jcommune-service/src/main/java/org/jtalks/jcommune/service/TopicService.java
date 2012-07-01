@@ -57,7 +57,8 @@ public interface TopicService extends EntityService<Topic> {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
      */
-    Topic createTopic(String topicName, String bodyText, long branchId, boolean notifyOnAnswers) throws NotFoundException;
+    Topic createTopic(String topicName, String bodyText, long branchId, boolean notifyOnAnswers)
+    throws NotFoundException;
 
     /**
      * @return list of {@code Topic}  objectsupdated since last 24 hours.

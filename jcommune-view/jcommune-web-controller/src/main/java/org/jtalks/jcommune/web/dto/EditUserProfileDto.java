@@ -18,6 +18,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.common.model.entity.User;
+import org.jtalks.common.validation.annotations.Email;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
@@ -39,11 +40,7 @@ import javax.validation.constraints.Size;
 public class EditUserProfileDto {
     @NotBlank(message = "{validation.email.notblank}")
 
-    @Pattern(regexp = "^[a-zA-Z0-9_'+*/^&=?~{}\\-](\\.?[a-zA-Z0-9_'+*/^&=?~{}\\-])" +
-            "*\\@((\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}(\\:\\d{1,3})?)|(((([a-zA-Z0-9][a-zA-Z0-9\\-]" +
-            "+[a-zA-Z0-9])|([a-zA-Z0-9]{1,2}))[\\.]{1})+([a-zA-Z]{2,6})))$",
-            message = "{validation.email.wrong.format}")
-
+    @Email(message = "{validation.email.wrong.format}")
     @ChangedEmail
     private String email;
     private String firstName;
