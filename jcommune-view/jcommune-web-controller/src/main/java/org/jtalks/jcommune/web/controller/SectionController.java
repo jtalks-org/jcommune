@@ -20,14 +20,12 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.jtalks.common.model.entity.Section;
-import org.jtalks.common.security.SecurityService;
-import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
+import org.jtalks.jcommune.service.nontransactional.PaginationService;
 import org.jtalks.jcommune.web.dto.SectionDto;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
-import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,29 +51,28 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class SectionController {
 
-    private SecurityService securityService;
     private SectionService sectionService;
     private ForumStatisticsProvider forumStaticsProvider;
     private LocationService locationService;
+    private PaginationService paginationService;
 
     /**
      * Constructor creates MVC controller with specified SectionService
      *
-     * @param securityService      autowired object from Spring Context
-     * @param sectionService       autowired object from Spring Context
-     * @param locationService      autowired object from Spring Context
-     * @param forumStaticsProvider autowired object from Spring Context which provides methods for getting
-     *                             forum statistic information
+     * @param sectionService       for all operations with sections
+     * @param locationService      for tracking user's location on the forum
+     * @param forumStaticsProvider for getting forum statistic information
+     * @param paginationService    this service provides functionality, that is needed for pagination
      */
     @Autowired
-    public SectionController(SecurityService securityService,
-                             SectionService sectionService,
+    public SectionController(SectionService sectionService,
                              ForumStatisticsProvider forumStaticsProvider,
-                             LocationService locationService) {
-        this.securityService = securityService;
+                             LocationService locationService,
+                             PaginationService paginationService) {
         this.sectionService = sectionService;
         this.forumStaticsProvider = forumStaticsProvider;
         this.locationService = locationService;
+        this.paginationService = paginationService;
     }
 
 
@@ -100,7 +97,7 @@ public class SectionController {
         List<Section> sections = sectionService.getAll();
         sectionService.prepareSectionsForView(sections);
         return new ModelAndView("sectionList")
-                .addObject("pageSize", Pagination.getPageSizeFor((JCUser) securityService.getCurrentUser()))
+                .addObject("pageSize", paginationService.getPageSizeForCurrentUser())
                 .addObject("sectionList", sections)
                 .addObject("messagesCount", forumStaticsProvider.getPostsOnForumCount())
                 .addObject("registeredUsersCount", forumStaticsProvider.getUsersCount())
@@ -137,11 +134,9 @@ public class SectionController {
     public ModelAndView branchList(@PathVariable("sectionId") long sectionId) throws NotFoundException {
         Section section = sectionService.get(sectionId);
         sectionService.prepareSectionsForView(Arrays.asList(section));
-        JCUser currentUser = (JCUser) securityService.getCurrentUser();
-
         return new ModelAndView("branchList")
                 .addObject("viewList", locationService.getUsersViewing(section))
                 .addObject("section", section)
-                .addObject("pageSize", Pagination.getPageSizeFor(currentUser));
+                .addObject("pageSize", paginationService.getPageSizeForCurrentUser());
     }
 }

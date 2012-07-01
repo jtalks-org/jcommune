@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
@@ -64,8 +63,6 @@ public class PrivateMessageControllerTest {
     @Mock
     private BBCodeService bbCodeService;
     @Mock
-    private SecurityService securityService;
-    @Mock
     private UserService userService;
 
     private static final String USERNAME = "username";
@@ -74,7 +71,7 @@ public class PrivateMessageControllerTest {
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
-        controller = new PrivateMessageController(pmService, bbCodeService, securityService, userService);
+        controller = new PrivateMessageController(pmService, bbCodeService, userService);
     }
 
     @Test
@@ -156,7 +153,7 @@ public class PrivateMessageControllerTest {
     @Test
     public void sendMessage() throws NotFoundException {
         when(userService.getByUsername(USERNAME)).thenReturn(JC_USER);
-        when(securityService.getCurrentUser()).thenReturn(JC_USER);
+        when(userService.getCurrentUser()).thenReturn(JC_USER);
         PrivateMessageDto dto = getPrivateMessageDto();
         dto.setRecipient(USERNAME);
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
@@ -170,7 +167,7 @@ public class PrivateMessageControllerTest {
     @Test
     public void sendDraftMessage() throws NotFoundException {
         when(userService.getByUsername(USERNAME)).thenReturn(JC_USER);
-        when(securityService.getCurrentUser()).thenReturn(JC_USER);
+        when(userService.getCurrentUser()).thenReturn(JC_USER);
         PrivateMessageDto dto = getPrivateMessageDto();
         dto.setRecipient(USERNAME);
         dto.setId(4);
@@ -258,8 +255,6 @@ public class PrivateMessageControllerTest {
 
     @Test(expectedExceptions = NotFoundException.class)
     public void cannotBeShowedPm() throws NotFoundException {
-        PrivateMessage pm = getPrivateMessage();
-
         //set expectations
         when(pmService.get(PM_ID)).thenThrow(new NotFoundException());
         //invoke the object under test
@@ -301,7 +296,7 @@ public class PrivateMessageControllerTest {
     @Test
     public void saveDraft() throws NotFoundException {
         when(userService.getByUsername(USERNAME)).thenReturn(JC_USER);
-        when(securityService.getCurrentUser()).thenReturn(JC_USER);
+        when(userService.getCurrentUser()).thenReturn(JC_USER);
         PrivateMessageDto dto = getPrivateMessageDto();
         dto.setRecipient(USERNAME);
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");

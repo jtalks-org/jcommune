@@ -17,6 +17,8 @@ package org.jtalks.jcommune.service.nontransactional;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.UserService;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.security.core.session.SessionRegistry;
 import org.testng.annotations.BeforeMethod;
@@ -28,6 +30,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 /**
  * @author Andrey Kluev
@@ -35,7 +38,9 @@ import static org.mockito.Mockito.*;
 public class LocationServiceTest {
     private Topic topic;
     private LocationService locationService;
-    private SecurityService securityService;
+    @Mock
+    private UserService userService;
+    @Mock
     private SessionRegistry sessionRegistry;
     private JCUser user;
     List<Object> list;
@@ -44,9 +49,8 @@ public class LocationServiceTest {
 
     @BeforeMethod
     protected void setUp() {
-        securityService = mock(SecurityService.class);
-        sessionRegistry = mock(SessionRegistry.class);
-        locationService = new LocationService(securityService, sessionRegistry);
+        initMocks(this);
+        locationService = new LocationService(userService, sessionRegistry);
         user = new JCUser("", "", "");
         topic = new Topic(user, "");
         topic.setUuid("uuid");
@@ -56,7 +60,7 @@ public class LocationServiceTest {
 
     @Test
     public void testUsersViewing() {
-        when(securityService.getCurrentUser()).thenReturn(user);
+        when(userService.getCurrentUser()).thenReturn(user);
         list.add(user);
         map.put(user, "");
         when(sessionRegistry.getAllPrincipals()).thenReturn(list);
@@ -68,7 +72,7 @@ public class LocationServiceTest {
 
     @Test
     public void testUserNotOnline() {
-        when(securityService.getCurrentUser()).thenReturn(user);
+        when(userService.getCurrentUser()).thenReturn(user);
         JCUser user1 = new JCUser("", "", "");
         list.add(user1);
         when(sessionRegistry.getAllPrincipals()).thenReturn(list);
@@ -86,8 +90,8 @@ public class LocationServiceTest {
 
     @Test
     public void testClearUserLocation() {
-        when(securityService.getCurrentUser()).thenReturn(user);
-        when(securityService.getCurrentUser()).thenReturn(user);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.getCurrentUser()).thenReturn(user);
 
         locationService.clearUserLocation();
     }

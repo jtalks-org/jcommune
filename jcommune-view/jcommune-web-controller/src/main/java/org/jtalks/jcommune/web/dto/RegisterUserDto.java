@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.web.dto;
 
-import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.validation.annotations.Email;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -22,7 +21,6 @@ import org.jtalks.jcommune.web.validation.annotations.Captcha;
 import org.jtalks.jcommune.web.validation.annotations.Matches;
 import org.jtalks.jcommune.web.validation.annotations.Unique;
 
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 /**
@@ -39,10 +37,7 @@ public class RegisterUserDto {
     @Unique(entity = JCUser.class, field = "username", message = "{validation.duplicateuser}")
     private String username;
 
-    @Pattern(regexp = "^[a-zA-Z0-9_'+*/^&=?~{}\\-](\\.?[a-zA-Z0-9_'+*/^&=?~{}\\-])" +
-            "*\\@((\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}(\\:\\d{1,3})?)|(((([a-zA-Z0-9][a-zA-Z0-9\\-]" +
-            "+[a-zA-Z0-9])|([a-zA-Z0-9]{1,2}))[\\.]{1})+([a-zA-Z]{2,6})))$",
-            message = "{validation.email.wrong.format}")
+    @Email(message = "{validation.email.wrong.format}")
     @Unique(entity = JCUser.class, field = "email", message = "{validation.duplicateemail}")
     private String email;
 
@@ -126,10 +121,16 @@ public class RegisterUserDto {
         this.passwordConfirm = passwordConfirm;
     }
 
+    /**
+     * @return Captcha value entered by user on a registration form
+     */
     public String getCaptcha() {
         return captcha;
     }
 
+    /**
+     * @param captcha captcha string from user input during registration
+     */
     public void setCaptcha(String captcha) {
         this.captcha = captcha;
     }

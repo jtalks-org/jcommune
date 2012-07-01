@@ -12,21 +12,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao.hibernate;
-
-import org.jtalks.common.model.dao.ChildRepository;
-import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
-import org.jtalks.jcommune.model.entity.PollItem;
-
 /**
- * The implementation of the {@link PollOptionDao} based on Hibernate. The class is responsible
- * for loading {@link org.jtalks.jcommune.model.entity.PollItem} objects from database and update them.
- * This implementation doesn't contain any additional methods, because methods of
- * {@link ChildRepository} covers all needed functionality.
- *
- * @author Anuar Nurmakanov
- * @see ChildRepository
- * @see org.jtalks.jcommune.model.entity.PollItem
+ * Contains common data transfer objects, that are used in
+ * all modules of project.
  */
-public class PollOptionHibernateDao extends AbstractHibernateChildRepository<PollItem> {
-}
+package org.jtalks.jcommune.model.dto;

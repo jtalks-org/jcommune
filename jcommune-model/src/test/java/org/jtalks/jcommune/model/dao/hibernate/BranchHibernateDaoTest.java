@@ -201,21 +201,6 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     }
     
     @Test
-    public void testGetCountTopicsInBranch() {
-        //this topic is persisted
-        Topic topic = ObjectsFactory.getDefaultTopic();
-        JCUser user = topic.getTopicStarter();
-        Branch branch = topic.getBranch();
-        branch.addTopic(new Topic(user, "Second topic"));
-        session.save(branch);
-        int expectedCount = branch.getTopics().size();
-        
-        int actualCount = dao.getCountTopicsInBranch(branch);
-        
-        assertEquals(actualCount, expectedCount, "Count of topics in the branch is wrong");
-    }
-    
-    @Test
     public void testGetCountPostsInBranch() {
         //topic with one post
         Topic topic = ObjectsFactory.getDefaultTopic();

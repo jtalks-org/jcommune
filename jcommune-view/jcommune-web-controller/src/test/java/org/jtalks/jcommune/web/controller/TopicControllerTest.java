@@ -14,7 +14,27 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.common.security.SecurityService;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.testng.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
@@ -22,15 +42,18 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PollService;
+import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
-import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.mockito.Mock;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
@@ -38,17 +61,6 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
-import static org.testng.Assert.assertEquals;
 
 /**
  * @author Teterin Alexandre
@@ -58,13 +70,9 @@ import static org.testng.Assert.assertEquals;
 public class TopicControllerTest {
     public long BRANCH_ID = 1L;
     private long TOPIC_ID = 1L;
-    private int TOPIC_WEIGHT = 0;
 
     private String TOPIC_CONTENT = "content here";
     private String TOPIC_THEME = "Topic theme";
-
-    private boolean STICKED = false;
-    private boolean ANNOUNCEMENT = false;
 
     private JCUser user;
     private Branch branch;
@@ -72,13 +80,13 @@ public class TopicControllerTest {
     @Mock
     private TopicService topicService;
     @Mock
+    private PostService postService;
+    @Mock
     private BranchService branchService;
     @Mock
-    private SecurityService securityService;
+    private UserService userService;
     @Mock
     private BreadcrumbBuilder breadcrumbBuilder;
-    @Mock
-    private ForumStatisticsProvider forumStatisticsProvider;
     @Mock
     private LocationService locationService;
     @Mock
@@ -93,8 +101,16 @@ public class TopicControllerTest {
     @BeforeMethod
     public void initEnvironment() {
         initMocks(this);
-        controller = new TopicController(topicService, branchService, lastReadPostService,
-                securityService, breadcrumbBuilder, locationService, registry, pollService);
+        controller = new TopicController(
+                topicService,
+                postService,
+                branchService,
+                lastReadPostService,
+                userService,
+                breadcrumbBuilder,
+                locationService,
+                registry,
+                pollService);
     }
 
     @BeforeMethod
@@ -129,10 +145,12 @@ public class TopicControllerTest {
         boolean pagingEnabled = true;
         Topic topic = new Topic(null, null);
         branch.addTopic(topic);
+        Page<Post> postsPage = new PageImpl<Post>(Collections.<Post> emptyList());
 
         //set expectations
         when(topicService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
+        when(postService.getPosts(topic, page, pagingEnabled)).thenReturn(postsPage);
 
         //invoke the object under test
         ModelAndView mav = controller.showTopicPage(TOPIC_ID, page, pagingEnabled);
@@ -145,7 +163,7 @@ public class TopicControllerTest {
 
         //check result
         assertViewName(mav, "postList");
-        assertModelAttributeAvailable(mav, "posts");
+        assertAndReturnModelAttributeOfType(mav, "postsPage", Page.class);
 
         Topic actualTopic = assertAndReturnModelAttributeOfType(mav, "topic", Topic.class);
         assertEquals(actualTopic, topic);
@@ -155,9 +173,6 @@ public class TopicControllerTest {
 
         Long actualBranchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         assertEquals((long) actualBranchId, TOPIC_ID);
-
-        Integer actualPage = assertAndReturnModelAttributeOfType(mav, "page", Integer.class);
-        assertEquals((int) actualPage, page);
 
         assertModelAttributeAvailable(mav, "breadcrumbList");
     }
@@ -266,7 +281,7 @@ public class TopicControllerTest {
         //set expectations
         when(topicService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
-        when(securityService.getCurrentUser()).thenReturn(user);
+        when(userService.getCurrentUser()).thenReturn(user);
     }
 
     private void editTopicVerification(Topic topic) throws NotFoundException {
@@ -300,7 +315,7 @@ public class TopicControllerTest {
         ModelAndView mav = controller.editTopic(dto, bindingResult, BRANCH_ID, TOPIC_ID);
 
         //check expectations
-        verify(topicService).updateTopic(TOPIC_ID, TOPIC_THEME, TOPIC_CONTENT, TOPIC_WEIGHT, STICKED, ANNOUNCEMENT, false);
+        verify(topicService).updateTopic(TOPIC_ID, TOPIC_THEME, TOPIC_CONTENT, 0, false, false, false);
 
         //check result
         assertViewName(mav, "redirect:/topics/" + TOPIC_ID);

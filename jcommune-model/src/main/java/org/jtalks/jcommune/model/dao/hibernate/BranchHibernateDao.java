@@ -56,18 +56,6 @@ public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch>
                 .list();
         return branches;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getCountTopicsInBranch(Branch branch) {
-        Number count = (Number) getSession()
-                .getNamedQuery("getCountTopicsInBranch")
-                .setParameter("branch", branch)
-                .uniqueResult();
-        return count.intValue();
-    }
     
     /**
      * {@inheritDoc}

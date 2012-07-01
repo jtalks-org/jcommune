@@ -50,13 +50,14 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         implements UserService {
 
     private GroupDao groupDao;
-    private final Logger logger = LoggerFactory.getLogger(getClass());
     private SecurityService securityService;
     private MailService mailService;
     private Base64Wrapper base64Wrapper;
     private AvatarService avatarService;
     //Important, use for every password creation.
     private EncryptionService encryptionService;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalUserService.class);
 
     /**
      * Create an instance of User entity based service
@@ -67,7 +68,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * @param mailService     to send e-mails
      * @param base64Wrapper   for avatar image-related operations
      * @param avatarService   some more avatar operations)
-     * @param passwordEncoder
+     * @param encryptionService encodes user password before store
      */
     public TransactionalUserService(UserDao dao, GroupDao groupDao,
                                     SecurityService securityService,
@@ -92,7 +93,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         JCUser user = this.getDao().getByUsername(username);
         if (user == null) {
             String msg = "JCUser " + username + " not found.";
-            logger.info(msg);
+            LOGGER.info(msg);
             throw new NotFoundException(msg);
         }
         return user;
@@ -112,13 +113,28 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         user.setAvatar(avatarService.getDefaultAvatar());
         this.getDao().saveOrUpdate(user);
         mailService.sendAccountActivationMail(user);
-        logger.info("JCUser registered: {}", user.getUsername());
+        LOGGER.info("JCUser registered: {}", user.getUsername());
         securityService.createAclBuilder().grant(ProfilePermission.EDIT_PROFILE).to(user).on(user).flush();
         securityService.createAclBuilder().grant(ProfilePermission.SEND_PRIVATE_MESSAGES).to(user).on(user).flush();
         Group group = groupDao.get(AdministrationGroup.USER.getId());
         group.getUsers().add(user);
         groupDao.update(group);
         return user;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JCUser getCurrentUser() {
+        String name = securityService.getCurrentUserUsername();
+        if (name == null) {
+            // todo: NullObject pattern should be used here
+            return null;
+        } else {
+            return this.getDao().getByUsername(name);
+        }
+
     }
 
     /**
@@ -136,7 +152,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     @Override
     public JCUser editUserProfile(UserInfoContainer info) {
 
-        JCUser currentUser = (JCUser) securityService.getCurrentUser();
+        JCUser currentUser = this.getCurrentUser();
         byte[] decodedAvatar = base64Wrapper.decodeB64Bytes(info.getB64EncodedAvatar());
 
         String newPassword = info.getNewPassword();
@@ -156,7 +172,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         currentUser.setLocation(info.getLocation());
 
         this.getDao().saveOrUpdate(currentUser);
-        logger.info("Updated user profile. Username: {}", currentUser.getUsername());
+        LOGGER.info("Updated user profile. Username: {}", currentUser.getUsername());
         return currentUser;
     }
 
@@ -173,7 +189,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         user.setPassword(encryptedRandomPassword);
         this.getDao().update(user);
 
-        logger.info("New random password was set for user {}", user.getUsername());
+        LOGGER.info("New random password was set for user {}", user.getUsername());
     }
 
     /**
