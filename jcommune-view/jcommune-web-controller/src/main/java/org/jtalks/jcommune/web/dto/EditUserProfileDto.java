@@ -16,7 +16,6 @@ package org.jtalks.jcommune.web.dto;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.validation.annotations.Email;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -38,7 +37,6 @@ import javax.validation.constraints.Size;
 @Matches(field = "newUserPassword", verifyField = "newUserPasswordConfirm", message = "{password_not_matches}")
 @ChangedPassword
 public class EditUserProfileDto {
-    @NotBlank(message = "{validation.email.notblank}")
 
     @Email(message = "{validation.email.wrong.format}")
     @ChangedEmail
