@@ -25,7 +25,6 @@ import org.jtalks.jcommune.web.validation.annotations.ChangedEmail;
 import org.jtalks.jcommune.web.validation.annotations.ChangedPassword;
 import org.jtalks.jcommune.web.validation.annotations.Matches;
 
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 /**
