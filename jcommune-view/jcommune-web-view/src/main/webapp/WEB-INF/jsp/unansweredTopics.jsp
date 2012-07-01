@@ -37,7 +37,7 @@
         <div class="span9">
             <div class="pagination pull-right forum-pagination">
                 <ul>
-                    <jtalks:pagination uri="" pagination="${pagination}" list="${topics}"/>
+                    <jtalks:pagination uri="" page="${topicsPage}" pagingEnabled="${pagingEnabled}"/>
                 </ul>
             </div>
         </div>
@@ -46,7 +46,7 @@
     <!-- Topics table -->
     <table id="topics-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
        <c:choose>
-           <c:when test="${!(empty topics)}">
+           <c:when test="${!(empty topicsPage.content)}">
 		        <thead>
 		            <tr>
 		                <th class="status-col"></th>
@@ -58,7 +58,7 @@
 		            </tr>
 		        </thead>
 		        <tbody>
-                    <c:forEach var="item" items="${list}">
+                    <c:forEach var="item" items="${topicsPage.content}">
                         <tr>
                             <td class="status-col">
                                 <c:set var="hasNewPosts" value="false"/>
@@ -155,7 +155,7 @@
         <div class="span12">
             <div class="pagination pull-right forum-pagination-container">
                 <ul>
-                    <jtalks:pagination uri="" pagination="${pagination}" list="${topics}" />
+                    <jtalks:pagination uri="" page="${topicsPage}" pagingEnabled="${pagingEnabled}"/>
                 </ul>
             </div>
         </div>

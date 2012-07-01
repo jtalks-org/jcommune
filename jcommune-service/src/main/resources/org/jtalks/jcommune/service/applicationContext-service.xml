@@ -88,12 +88,13 @@
         <constructor-arg ref="securityService"/>
         <constructor-arg ref="notificationService"/>
         <constructor-arg ref="lastReadPostService"/>
-        <constructor-arg ref="userService"/>
+        <constructor-arg ref="paginationService"/>
     </bean>
 
     <bean id="topicSearchService"
           class="org.jtalks.jcommune.service.transactional.TransactionalTopicFullSearchService">
         <constructor-arg ref="topicSearchDao"/>
+        <constructor-arg ref="paginationService"/>
     </bean>
 
     <bean id="topicBranchService"
@@ -127,6 +128,7 @@
         <constructor-arg ref="topicBranchDao"/>
         <constructor-arg ref="notificationService"/>
         <constructor-arg ref="subscriptionService"/>
+        <constructor-arg ref="paginationService"/>
         <constructor-arg ref="userService"/>
     </bean>
 
@@ -152,6 +154,9 @@
         <constructor-arg ref="securityContextFacade"/>
     </bean>
 
+    <bean id="paginationService" class="org.jtalks.jcommune.service.nontransactional.PaginationService">
+        <constructor-arg ref="userService"/>
+    </bean>
     <bean id="securityService"
           class="org.jtalks.common.security.SecurityService">
         <constructor-arg name="userDao" ref="userDao"/>

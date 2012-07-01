@@ -25,13 +25,13 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Anuar_Nurmakanov
  */
-public enum JcommuneProperty {
+public enum JCommuneProperty {
     /**
      * The property to check the enabling of email notifications to subscribers of topics or branches.
      */
     SENDING_NOTIFICATIONS_ENABLED;
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(JcommuneProperty.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JCommuneProperty.class);
     //fields
     private String name;
     private String defaultValue;

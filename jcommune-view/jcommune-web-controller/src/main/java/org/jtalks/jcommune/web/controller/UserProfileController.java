@@ -14,29 +14,33 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.common.security.SecurityService;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
+import org.jtalks.jcommune.service.nontransactional.PaginationService;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
-import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.util.List;
 
 /**
  * Controller for User related actions: registration, user profile operations and so on.
@@ -58,6 +62,7 @@ public class UserProfileController {
     private BreadcrumbBuilder breadcrumbBuilder;
     private ImageUtils imageUtils;
     private PostService postService;
+    private PaginationService paginationService;
 
     /**
      * This method turns the trim binder on. Trim binder
@@ -77,16 +82,19 @@ public class UserProfileController {
      * @param breadcrumbBuilder the object which provides actions on {@link BreadcrumbBuilder} entity
      * @param imageUtils        {@link ImageUtils} used
      * @param postService       {@link PostService} used
+     * @param paginationService {@link PaginationService} used 
      */
     @Autowired
     public UserProfileController(UserService userService,
                                  BreadcrumbBuilder breadcrumbBuilder,
                                  ImageUtils imageUtils,
-                                 PostService postService) {
+                                 PostService postService,
+                                 PaginationService paginationService) {
         this.userService = userService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.imageUtils = imageUtils;
         this.postService = postService;
+        this.paginationService = paginationService;
     }
 
     /**
@@ -179,12 +187,11 @@ public class UserProfileController {
                                          ) Boolean pagingEnabled
     ) throws NotFoundException {
         JCUser user = userService.get(id);
-        List<Post> posts = postService.getPostsOfUser(user);
-        Pagination pag = new Pagination(page, user, posts.size(), pagingEnabled);
+        Page<Post> postsPage = postService.getPostsOfUser(user, page, pagingEnabled);
         return new ModelAndView("userPostList")
                 .addObject("user", user)
-                .addObject("pag", pag)
-                .addObject("posts", posts)
+                .addObject("postsPage", postsPage)
+                .addObject("pagingEnabled", pagingEnabled)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
     }
 
@@ -200,6 +207,6 @@ public class UserProfileController {
                 .addObject("user", user)
                 // bind separately to get localized value
                 .addObject("language", user.getLanguage())
-                .addObject("pageSize", Pagination.getPageSizeFor(user)); 
+                .addObject("pageSize", paginationService.getPageSizeFor(user));
     }
 }

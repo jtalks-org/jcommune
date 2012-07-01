@@ -18,8 +18,7 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 /**
  * This interface should have methods which give us more abilities in manipulating Topic persistent entity.
@@ -61,16 +60,22 @@ public interface TopicService extends EntityService<Topic> {
     throws NotFoundException;
 
     /**
-     * @return list of {@code Topic}  objectsupdated since last 24 hours.
+     * Get topics that have been updated in the last 24 hours.
+     * 
+     * @param page page page number, for which we will find topics
+     * @return object that contains topics(that have been updated in the last 24 hours)
+     *         for one page and information for pagination 
      */
-    List<Topic> getRecentTopics();
+    Page<Topic> getRecentTopics(int page);
 
     /**
      * Get unanswered topics(topics which has only 1 post added during topic creation).
-     *
-     * @return list of {@code Topic} objects without answers
+     * 
+     * @param page page number, for which we will find topics
+     * @return object that contains unanswered topics for one page and information for
+     *         pagination
      */
-    List<Topic> getUnansweredTopics();
+    Page<Topic> getUnansweredTopics(int page);
 
     /**
      * Update current topic with given title and body.
@@ -116,4 +121,16 @@ public interface TopicService extends EntityService<Topic> {
      * @throws NotFoundException when topic or branch with given id not found
      */
     void moveTopic(Long topicId, Long branchId) throws NotFoundException;
+    
+    /**
+     * Get topics in the branch.
+     * 
+     * @param branch for this branch we will find topics
+     * @param page page number, for which we will find topics
+     * @param pagingEnabled if true, then it returns topics for one page, otherwise it
+     *        return all topics in the branch 
+     * @return object that contains topics for one page(note, that one page may contain
+     *         all topics) and information for pagination
+     */
+    Page<Topic> getTopics(Branch branch, int page, boolean pagingEnabled);
 }

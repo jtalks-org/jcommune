@@ -12,31 +12,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service;
-
-import org.jtalks.jcommune.model.entity.Topic;
-import org.springframework.data.domain.Page;
-
 /**
- * This service provides full-text search topics.
- * 
- * @author Anuar Nurmakanov
- *
+ * Contains common data transfer objects, that are used in
+ * all modules of project.
  */
-public interface TopicFullSearchService {
-    /**
-     * Search by topics, title and content of which corresponds to the text of search.
-     * 
-     * @param phrase phrase
-     * @param page TODO
-     * @return list of topics
-     */
-    Page<Topic> searchByTitleAndContent(String phrase, int page);
-    
-    /**
-     * Indexing topics from the database.
-     * This functionality is required either when data exists in the database,
-     * but the index doesn't contain this data or the index is re-created.
-     */
-    void rebuildIndex();
-}
+package org.jtalks.jcommune.model.dto;
