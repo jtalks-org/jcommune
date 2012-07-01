@@ -59,16 +59,20 @@ public interface TopicService extends EntityService<Topic> {
     Topic createTopic(String topicName, String bodyText, long branchId, boolean notifyOnAnswers) throws NotFoundException;
 
     /**
-     * @param page TODO
-     * @return list of {@code Topic}  objectsupdated since last 24 hours.
+     * Get topics that have been updated in the last 24 hours.
+     * 
+     * @param page page page number, for which we will find topics
+     * @return object that contains topics(that have been updated in the last 24 hours)
+     *         for one page and information for pagination 
      */
     Page<Topic> getRecentTopics(int page);
 
     /**
      * Get unanswered topics(topics which has only 1 post added during topic creation).
-     * @param page TODO
-     *
-     * @return list of {@code Topic} objects without answers
+     * 
+     * @param page page number, for which we will find topics
+     * @return object that contains unanswered topics for one page and information for
+     *         pagination
      */
     Page<Topic> getUnansweredTopics(int page);
 

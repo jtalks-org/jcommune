@@ -26,7 +26,7 @@ import java.util.List;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.dto.JcommunePageable;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -165,7 +165,7 @@ public class TransactionalPostServiceTest {
         boolean pagingEnabled = true;
         List<Post> posts = Arrays.asList(new Post(user, ""));
         Page<Post> expectedPostsPage = new PageImpl<Post>(posts);
-        when(postDao.getUserPosts(Matchers.<JCUser> any(), Matchers.<JcommunePageable>any(), Matchers.anyBoolean()))
+        when(postDao.getUserPosts(Matchers.<JCUser> any(), Matchers.<JCommunePageRequest>any()))
             .thenReturn(expectedPostsPage);
         when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
 
@@ -174,8 +174,7 @@ public class TransactionalPostServiceTest {
         assertEquals(actualPostsPage, expectedPostsPage);
         verify(postDao).getUserPosts(
                 Matchers.<JCUser> any(),
-                Matchers.<JcommunePageable> any(),
-                Matchers.anyBoolean()
+                Matchers.<JCommunePageRequest> any()
                 );
     }
 
@@ -260,13 +259,13 @@ public class TransactionalPostServiceTest {
         
         when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
         when(postDao.getPosts(
-                Matchers.any(Topic.class), Matchers.any(JcommunePageable.class), Matchers.anyBoolean()))
+                Matchers.any(Topic.class), Matchers.any(JCommunePageRequest.class)))
             .thenReturn(expectedPage);
         
         Page<Post> actualPage = postService.getPosts(topic, pageSize, true);
         
         assertEquals(actualPage, expectedPage, "Service returned incorrect data for one page of posts");
         verify(postDao).getPosts(
-                Matchers.any(Topic.class), Matchers.any(JcommunePageable.class), Matchers.anyBoolean());
+                Matchers.any(Topic.class), Matchers.any(JCommunePageRequest.class));
     }
 }

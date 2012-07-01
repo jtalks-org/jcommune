@@ -23,7 +23,7 @@ import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.jtalks.jcommune.model.dao.search.TopicSearchDao;
-import org.jtalks.jcommune.model.dto.JcommunePageable;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.search.SearchRequestFilter;
@@ -65,7 +65,7 @@ public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
      */
     @SuppressWarnings("unchecked")
     @Override
-    public Page<Topic> searchByTitleAndContent(String searchText, JcommunePageable pageRequest) {
+    public Page<Topic> searchByTitleAndContent(String searchText, JCommunePageRequest pageRequest) {
         List<Topic> topics = Collections.emptyList();
         int resultSize = 0;
         //TODO The latest versions of the library filtering is not needed.
@@ -89,7 +89,7 @@ public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
     private FullTextQuery createSearchQuery(
             FullTextSession fullTextSession,
             String searchText,
-            JcommunePageable pageRequest) {
+            JCommunePageRequest pageRequest) {
         QueryBuilder queryBuilder = fullTextSession.
                 getSearchFactory().
                 buildQueryBuilder().

@@ -27,7 +27,7 @@ import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
 import org.jtalks.common.model.entity.Branch;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.dto.JcommunePageable;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -48,7 +48,7 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      * {@inheritDoc}
      */
     @Override
-    public Page<Topic> getTopicsUpdatedSince(DateTime timeStamp, JcommunePageable pageRequest) {
+    public Page<Topic> getTopicsUpdatedSince(DateTime timeStamp, JCommunePageRequest pageRequest) {
         Number totalCount = (Number)getSession()
                 .getNamedQuery("getCountResentTopics")
                 .setParameter("maxModDate", timeStamp)
@@ -68,7 +68,7 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      * {@inheritDoc}
      */
     @Override
-    public Page<Topic> getUnansweredTopics(JcommunePageable pageRequest) {
+    public Page<Topic> getUnansweredTopics(JCommunePageRequest pageRequest) {
         Number totalCount = (Number) getSession()
                 .getNamedQuery("getCountUnansweredTopics")
                 .uniqueResult();
@@ -108,11 +108,11 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      * {@inheritDoc}
      */
     @Override
-    public Page<Topic> getTopics(Branch branch, JcommunePageable pageRequest, boolean pagingEnabled) {
-        int totalCount = getCountTopicsInBranch(branch);
+    public Page<Topic> getTopics(Branch branch, JCommunePageRequest pageRequest) {
+        int totalCount = countTopics(branch);
         Query query = getSession().getNamedQuery("getTopicsInBranch")
                 .setParameter("branch", branch);
-        if (pagingEnabled) {
+        if (pageRequest.isPagingEnabled()) {
             query = query.setFirstResult(pageRequest.getIndexOfFirstItem())
                     .setMaxResults(pageRequest.getPageSize());
         }
@@ -125,7 +125,7 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      * {@inheritDoc}
      */
     @Override
-    public int getCountTopicsInBranch(Branch branch) {
+    public int countTopics(Branch branch) {
         Number count = (Number) getSession()
                 .getNamedQuery("getCountTopicsInBranch")
                 .setParameter("branch", branch)

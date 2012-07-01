@@ -17,8 +17,7 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.dto.JcommunePageRequest;
-import org.jtalks.jcommune.model.dto.JcommunePageable;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -117,9 +116,9 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      */
     @Override
     public Page<Post> getPostsOfUser(JCUser userCreated, int page, boolean pagingEnabled) {
-        JcommunePageable pageRequest = new JcommunePageRequest(
-                page, paginationService.getPageSizeForCurrentUser());
-        return this.getDao().getUserPosts(userCreated, pageRequest, pagingEnabled);
+        JCommunePageRequest pageRequest = new JCommunePageRequest(
+                page, paginationService.getPageSizeForCurrentUser(), pagingEnabled);
+        return this.getDao().getUserPosts(userCreated, pageRequest);
     }
 
     /**
@@ -143,8 +142,8 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      */
     @Override
     public Page<Post> getPosts(Topic topic, int page, boolean pagingEnabled) {
-        JcommunePageable pageRequest = new JcommunePageRequest(
-                page, paginationService.getPageSizeForCurrentUser());
-        return getDao().getPosts(topic, pageRequest, pagingEnabled);
+        JCommunePageRequest pageRequest = new JCommunePageRequest(
+                page, paginationService.getPageSizeForCurrentUser(), pagingEnabled);
+        return getDao().getPosts(topic, pageRequest);
     }
 }

@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.common.model.dao.ChildRepository;
-import org.jtalks.jcommune.model.dto.JcommunePageable;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -40,12 +40,10 @@ public interface PostDao extends ChildRepository<Post> {
      * 
      * @param author user to select posts for
      * @param pageRequest contains information for pagination: page number, page size
-     * @param pagingEnabled if true, then it returns posts for one page, otherwise it
-     *        return all posts, that were created by user
      * @return object that contains posts for one page(note, that one page may contain
      *         all posts, that were created by user) and information for pagination
      */
-    Page<Post> getUserPosts(JCUser author, JcommunePageable pageRequest, boolean pagingEnabled);
+    Page<Post> getUserPosts(JCUser author, JCommunePageRequest pageRequest);
 
     /**
      * Find the latest post in the forum topic.
@@ -60,10 +58,8 @@ public interface PostDao extends ChildRepository<Post> {
      * 
      * @param topic for this topic we will find posts
      * @param pageRequest contains information for pagination: page number, page size
-     * @param pagingEnabled if true, then it returns posts for one page, otherwise it
-     *        return all posts in the topic 
      * @return object that contains posts for one page(note, that one page may contain
      *         all posts) and information for pagination
      */
-    Page<Post> getPosts(Topic topic, JcommunePageable pageRequest, boolean pagingEnabled);
+    Page<Post> getPosts(Topic topic, JCommunePageRequest pageRequest);
 }

@@ -19,8 +19,7 @@ import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.dto.JcommunePageRequest;
-import org.jtalks.jcommune.model.dto.JcommunePageable;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
@@ -148,7 +147,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      */
     @Override
     public Page<Topic> getRecentTopics(int page) {
-        JcommunePageable pageRequest = new JcommunePageRequest(page, paginationService.getPageSizeForCurrentUser());
+        JCommunePageRequest pageRequest = JCommunePageRequest.
+                createWithPagingEnabled(page, paginationService.getPageSizeForCurrentUser());
         DateTime date24HoursAgo = new DateTime().minusDays(1);
         return this.getDao().getTopicsUpdatedSince(date24HoursAgo, pageRequest);
     }
@@ -158,7 +158,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      */
     @Override
     public Page<Topic> getUnansweredTopics(int page) {
-        JcommunePageable pageRequest = new JcommunePageRequest(page, paginationService.getPageSizeForCurrentUser());
+        JCommunePageRequest pageRequest = JCommunePageRequest.
+                createWithPagingEnabled(page, paginationService.getPageSizeForCurrentUser());
         return this.getDao().getUnansweredTopics(pageRequest);
     }
 
@@ -268,7 +269,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      */
     @Override
     public Page<Topic> getTopics(Branch branch, int page, boolean pagingEnabled) {
-        JcommunePageable pageRequest = new JcommunePageRequest(page, paginationService.getPageSizeForCurrentUser());
-        return getDao().getTopics(branch, pageRequest, pagingEnabled);
+        JCommunePageRequest pageRequest = new JCommunePageRequest(
+                page, paginationService.getPageSizeForCurrentUser(), pagingEnabled);
+        return getDao().getTopics(branch, pageRequest);
     }
 }

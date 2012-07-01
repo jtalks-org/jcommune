@@ -26,8 +26,7 @@ import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.dto.JcommunePageRequest;
-import org.jtalks.jcommune.model.dto.JcommunePageable;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Poll;
@@ -127,7 +126,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     public void testGetTopicsUpdatedSince() {
         int size = 5;
         createAndSaveTopicList(size);
-        JcommunePageable pageRequest = new JcommunePageRequest(1, size);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, size);
         DateTime lastLogin = new DateTime().minusDays(1);
 
         Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest);
@@ -141,7 +140,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         int pageSize = 5;
         int lastPage = listSize / pageSize;
         createAndSaveTopicList(listSize);
-        JcommunePageable pageRequest = new JcommunePageRequest(lastPage, pageSize);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(lastPage, pageSize);
         DateTime lastLogin = new DateTime().minusDays(1);
 
         Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest);
@@ -154,7 +153,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     @Test
     public void testGetUnansweredTopics() {
         createAndSaveTopicsWithUnansweredTopics();
-        JcommunePageable pageRequest = new JcommunePageRequest(1, 2);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, 2);
         Page<Topic> result = dao.getUnansweredTopics(pageRequest);
         assertEquals(result.getContent().size(), 2);
     }
@@ -162,7 +161,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     @Test
     public void testGetUnansweredTopicsWithPaging() {
         createAndSaveTopicsWithUnansweredTopics();
-        JcommunePageable pageRequest = new JcommunePageRequest(2, 1);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(2, 1);
         Page<Topic> result = dao.getUnansweredTopics(pageRequest);
         assertEquals(result.getContent().size(), 1);
     }
@@ -234,22 +233,21 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         session.save(branch);
         int expectedCount = branch.getTopics().size();
         
-        int actualCount = dao.getCountTopicsInBranch(branch);
+        int actualCount = dao.countTopics(branch);
         
         assertEquals(actualCount, expectedCount, "Count of topics in the branch is wrong");
     }
     
     @Test
     public void testGetTopicsWithEnabledPaging() {
-        boolean pagingEnabled = true;
         int totalSize = 50;
         int pageCount = 2;
         int pageSize = totalSize/pageCount;
-        JcommunePageable pageRequest = new JcommunePageRequest(1, pageSize);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, pageSize);
         List<Topic> topicList = ObjectsFactory.createAndSaveTopicList(totalSize);
         Branch branch = topicList.get(0).getBranch();
         
-        Page<Topic> topicsPage = dao.getTopics(branch, pageRequest, pagingEnabled);
+        Page<Topic> topicsPage = dao.getTopics(branch, pageRequest);
         
         assertEquals(topicsPage.getContent().size(), pageSize, "Incorrect count of topics in one page.");
         assertEquals(topicsPage.getTotalElements(), totalSize, "Incorrect total count.");
@@ -259,13 +257,12 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     
     @Test
     public void testGetTopicsWithDisabledPaging() {
-        boolean pagingEnabled = false;
         int size = 50;
-        JcommunePageable pageRequest = new JcommunePageRequest(1, size/2);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingDisabled(1, size/2);
         List<Topic> topicList = ObjectsFactory.createAndSaveTopicList(size);
         Branch branch = topicList.get(0).getBranch();
         
-        Page<Topic> topicsPage = dao.getTopics(branch, pageRequest, pagingEnabled);
+        Page<Topic> topicsPage = dao.getTopics(branch, pageRequest);
         
         assertEquals(topicsPage.getContent().size(), size, 
                 "Paging is disabled, so it should retrieve all topics in the branch.");

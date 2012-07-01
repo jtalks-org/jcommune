@@ -16,7 +16,7 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.dao.search.TopicSearchDao;
-import org.jtalks.jcommune.model.dto.JcommunePageable;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.nontransactional.PaginationService;
 import org.mockito.Matchers;
@@ -56,7 +56,7 @@ public class TransactionalTopicFullSearchServiceTest {
 		topicSearchService.searchByTitleAndContent(phrase, PAGE);
 		
 		Mockito.verify(topicSearchDao).searchByTitleAndContent(
-		        Matchers.anyString(), Matchers.<JcommunePageable> any());
+		        Matchers.anyString(), Matchers.<JCommunePageRequest> any());
 	}
 	
 	@Test(dataProvider = "parameterSearchPostsWithEmptySearchPhrase")

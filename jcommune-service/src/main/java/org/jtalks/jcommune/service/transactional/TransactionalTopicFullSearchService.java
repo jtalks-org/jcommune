@@ -18,8 +18,7 @@ import java.util.Collections;
 
 import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.dao.search.TopicSearchDao;
-import org.jtalks.jcommune.model.dto.JcommunePageRequest;
-import org.jtalks.jcommune.model.dto.JcommunePageable;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicFullSearchService;
 import org.jtalks.jcommune.service.nontransactional.PaginationService;
@@ -62,7 +61,7 @@ public class TransactionalTopicFullSearchService implements TopicFullSearchServi
     public Page<Topic> searchByTitleAndContent(String phrase, int page) {
         if (!StringUtils.isEmpty(phrase)) {
             int pageSize = paginationService.getPageSizeForCurrentUser();
-            JcommunePageable pageRequest = new JcommunePageRequest(page, pageSize);
+            JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(page, pageSize);
             // hibernate search refuses to process long string throwing error
             String normalizedPhrase = StringUtils.left(phrase, 50);
             return topicSearchDao.searchByTitleAndContent(normalizedPhrase, pageRequest);

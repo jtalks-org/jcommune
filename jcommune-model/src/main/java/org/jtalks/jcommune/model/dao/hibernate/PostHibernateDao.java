@@ -23,7 +23,7 @@ import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
 import org.jtalks.jcommune.model.dao.PostDao;
-import org.jtalks.jcommune.model.dto.JcommunePageable;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -45,7 +45,7 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
     /**
      * {@inheritDoc}
      */
-    public Page<Post> getUserPosts(JCUser author, JcommunePageable pageRequest, boolean pagingEnabled) {
+    public Page<Post> getUserPosts(JCUser author, JCommunePageRequest pageRequest) {
         Number totalCount = (Number) getSession()
                 .getNamedQuery("getCountPostsOfUser")
                 .setParameter("userCreated", author)
@@ -53,7 +53,7 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
         Query query = getSession()
                 .getNamedQuery("getPostsOfUser")
                 .setParameter("userCreated", author);
-        if (pagingEnabled) {
+        if (pageRequest.isPagingEnabled()) {
             query.setFirstResult(pageRequest.getIndexOfFirstItem());
             query.setMaxResults(pageRequest.getPageSize());
         }
@@ -86,7 +86,7 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
      * {@inheritDoc}
      */
     @Override
-    public Page<Post> getPosts(Topic topic, JcommunePageable pageRequest, boolean pagingEnabled) {
+    public Page<Post> getPosts(Topic topic, JCommunePageRequest pageRequest) {
         Number totalCount = (Number) getSession()
                 .getNamedQuery("getCountPostsInTopic")
                 .setParameter(TOPIC_PARAMETER_NAME, topic)
@@ -94,7 +94,7 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
         Query query = getSession()
                 .getNamedQuery("getPostsInTopic")
                 .setParameter(TOPIC_PARAMETER_NAME, topic);
-        if (pagingEnabled) {
+        if (pageRequest.isPagingEnabled()) {
             query.setFirstResult(pageRequest.getIndexOfFirstItem());
             query.setMaxResults(pageRequest.getPageSize());
         }

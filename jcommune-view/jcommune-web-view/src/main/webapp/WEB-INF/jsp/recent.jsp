@@ -46,7 +46,7 @@
     <!-- Topics table -->
     <table id="topics-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">     
         <c:choose>
-            <c:when test="${!(empty list)}">
+            <c:when test="${!(empty topicsPage.content)}">
                 
                 <thead>
 			        <tr>
@@ -59,7 +59,7 @@
 			        </tr>
 			    </thead> 
 			    <tbody>
-                <c:forEach var="topic" items="${list}">
+                <c:forEach var="topic" items="${topicsPage.content}">
                     <tr>
                         <td class="status-col"><c:set var="hasNewPosts" value="false"/>
                             <sec:authorize access="isAuthenticated()">

@@ -17,7 +17,7 @@ package org.jtalks.jcommune.model.dao;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.common.model.entity.Branch;
-import org.jtalks.jcommune.model.dto.JcommunePageable;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.data.domain.Page;
 
@@ -42,7 +42,7 @@ public interface TopicDao extends ChildRepository<Topic> {
      * @param pageRequest contains information for pagination: page number, page size
      * @return object that contains topics for one page and information for pagination
      */
-    Page<Topic> getTopicsUpdatedSince(DateTime lastLogin, JcommunePageable pageRequest);
+    Page<Topic> getTopicsUpdatedSince(DateTime lastLogin, JCommunePageRequest pageRequest);
 
 
     /**
@@ -52,7 +52,7 @@ public interface TopicDao extends ChildRepository<Topic> {
      * @return object that contains unanswered topics for one page and information
      *         for pagination
      */
-    Page<Topic> getUnansweredTopics(JcommunePageable pageRequest);
+    Page<Topic> getUnansweredTopics(JCommunePageRequest pageRequest);
     
     /**
      * Find the last updated topic in the branch.
@@ -67,12 +67,10 @@ public interface TopicDao extends ChildRepository<Topic> {
      * 
      * @param branch for this branch we will find topics
      * @param pageRequest contains information for pagination: page number, page size
-     * @param pagingEnabled if true, then it returns topics for one page, otherwise it
-     *        return all topics in the branch 
      * @return object that contains topics for one page(note, that one page may contain
      *         all topics) and information for pagination
      */
-    Page<Topic> getTopics(Branch branch, JcommunePageable pageRequest,  boolean pagingEnabled);
+    Page<Topic> getTopics(Branch branch, JCommunePageRequest pageRequest);
     
     /**
      * Get count of topics in the branch.
@@ -80,5 +78,5 @@ public interface TopicDao extends ChildRepository<Topic> {
      * @param branch the branch
      * @return count of topics in the branch
      */
-    int getCountTopicsInBranch(Branch branch);
+    int countTopics(Branch branch);
 }

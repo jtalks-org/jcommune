@@ -16,7 +16,7 @@ package org.jtalks.jcommune.model.entity;
 
 import org.jtalks.common.model.entity.Property;
 import org.jtalks.jcommune.model.dao.PropertyDao;
-import org.jtalks.jcommune.model.entity.JcommuneProperty;
+import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -30,10 +30,10 @@ import org.testng.annotations.Test;
  * @author Anuar Nurmakanov
  *
  */
-public class JcommunePropertyTest {
+public class JCommunePropertyTest {
     @Mock
     private PropertyDao propertyDao;
-    private JcommuneProperty jcommuneProperty = JcommuneProperty.SENDING_NOTIFICATIONS_ENABLED;
+    private JCommuneProperty jcommuneProperty = JCommuneProperty.SENDING_NOTIFICATIONS_ENABLED;
     
     @BeforeTest
     public void init() {

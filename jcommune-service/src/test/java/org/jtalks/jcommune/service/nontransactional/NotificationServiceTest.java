@@ -19,7 +19,7 @@ import org.jtalks.common.model.entity.Property;
 import org.jtalks.jcommune.model.dao.PropertyDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.JcommuneProperty;
+import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
@@ -28,7 +28,7 @@ import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.jtalks.jcommune.model.entity.JcommuneProperty.SENDING_NOTIFICATIONS_ENABLED;
+import static org.jtalks.jcommune.model.entity.JCommuneProperty.SENDING_NOTIFICATIONS_ENABLED;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -48,7 +48,7 @@ public class NotificationServiceTest {
     private UserService userService;
     @Mock
     private PropertyDao propertyDao;
-    private JcommuneProperty notificationsEnabledProperty = SENDING_NOTIFICATIONS_ENABLED;
+    private JCommuneProperty notificationsEnabledProperty = SENDING_NOTIFICATIONS_ENABLED;
     private NotificationService service;
     private final long TOPIC_ID = 1;
 

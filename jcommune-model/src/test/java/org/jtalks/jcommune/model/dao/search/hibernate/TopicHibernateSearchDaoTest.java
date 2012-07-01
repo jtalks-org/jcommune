@@ -25,8 +25,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.jtalks.jcommune.model.ObjectsFactory;
-import org.jtalks.jcommune.model.dto.JcommunePageRequest;
-import org.jtalks.jcommune.model.dto.JcommunePageable;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.search.SearchRequestFilter;
 import org.mockito.Mock;
@@ -53,7 +52,7 @@ import org.testng.annotations.Test;
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
 public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpringContextTests {
-	private static final JcommunePageable DEFAULT_PAGE_REQUEST = new JcommunePageRequest(1, 50);
+	private static final JCommunePageRequest DEFAULT_PAGE_REQUEST = JCommunePageRequest.createWithPagingEnabled(1, 50);
     @Autowired
 	private SessionFactory sessionFactory;
 	@Autowired
@@ -101,7 +100,7 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
         int pageCount = 2;
         int pageSize = totalSize/pageCount;
         String searchText = "JCommune";
-        JcommunePageable pageRequest = new JcommunePageRequest(1, pageSize);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, pageSize);
         List<Topic> topicList = ObjectsFactory.createAndSaveTopicList(totalSize);
         for(Topic topic: topicList) {
             topic.setTitle(searchText);

@@ -34,7 +34,7 @@ import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.dto.JcommunePageable;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
@@ -215,7 +215,7 @@ public class TransactionalTopicServiceTest {
         int pageSize = 20;
         List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
         Page<Topic> expectedPage = new PageImpl<Topic>(expectedList);
-        when(topicDao.getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JcommunePageable>any()))
+        when(topicDao.getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JCommunePageRequest> any()))
             .thenReturn(expectedPage);
         when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
 
@@ -223,7 +223,7 @@ public class TransactionalTopicServiceTest {
 
         assertNotNull(actualPage);
         assertEquals(expectedPage, actualPage);
-        verify(topicDao).getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JcommunePageable>any());
+        verify(topicDao).getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JCommunePageRequest> any());
     }
 
     @Test
@@ -232,7 +232,7 @@ public class TransactionalTopicServiceTest {
         int pageSize = 20;
         List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
         Page<Topic> expectedPage = new PageImpl<Topic>(expectedList);
-        when(topicDao.getUnansweredTopics(Matchers.<JcommunePageable> any()))
+        when(topicDao.getUnansweredTopics(Matchers.<JCommunePageRequest> any()))
             .thenReturn(expectedPage);
         when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
 
@@ -445,13 +445,13 @@ public class TransactionalTopicServiceTest {
         
         when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
         when(topicDao.getTopics(
-                Matchers.any(Branch.class), Matchers.any(JcommunePageable.class), Matchers.anyBoolean()))
+                Matchers.any(Branch.class), Matchers.any(JCommunePageRequest.class)))
             .thenReturn(expectedPage);
         
         Page<Topic> actualPage = topicService.getTopics(branch, pageSize, true);
         
         assertEquals(actualPage, expectedPage, "Service returned incorrect data for one page of topics");
         verify(topicDao).getTopics(
-                Matchers.any(Branch.class), Matchers.any(JcommunePageable.class), Matchers.anyBoolean());
+                Matchers.any(Branch.class), Matchers.any(JCommunePageRequest.class));
     }
 }
