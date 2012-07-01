@@ -49,14 +49,14 @@
                     <c:when test="${subscribed}">
                         <a id="subscription" class="button top_button"
                             href="${pageContext.request.contextPath}/branches/${branch.id}/unsubscribe"
-                            title="<spring:message code="label.unsubscribe"/>">
+                            title="<spring:message code="label.unsubscribe.tooltip"/>">
                             <spring:message code="label.unsubscribe"/>
                         </a>
                     </c:when>
                     <c:otherwise>
                         <a id="subscription" class="button top_button"
                             href="${pageContext.request.contextPath}/branches/${branch.id}/subscribe"
-                            title='<spring:message code="label.subscribe"/>'>
+                            title='<spring:message code="label.subscribe.tooltip"/>'>
                             <spring:message code="label.subscribe"/>
                         </a>
                     </c:otherwise>
