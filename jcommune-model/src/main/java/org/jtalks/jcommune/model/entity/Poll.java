@@ -44,7 +44,7 @@ public class Poll extends Entity {
     /**
      * Used only by Hibernate.
      */
-    protected Poll() {
+    public Poll() {
     }
 
     /**

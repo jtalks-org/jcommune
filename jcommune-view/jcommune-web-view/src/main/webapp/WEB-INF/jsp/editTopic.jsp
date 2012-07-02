@@ -82,7 +82,7 @@
         </sec:accesscontrollist>
 
         <jtalks:bbeditor labelForAction="label.save"
-                         postText="${topicDto.bodyText}"
+                         postText="${topicDto.topic.bodyText}"
                          bodyParameterName="bodyText"
                          back="${pageContext.request.contextPath}/topics/${topicId}"/>
         <div class="control-group">

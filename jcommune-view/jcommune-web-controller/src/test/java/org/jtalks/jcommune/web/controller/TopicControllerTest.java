@@ -327,7 +327,7 @@ public class TopicControllerTest {
         TopicDto dto = new TopicDto();
         Topic topic = new Topic();
         topic.setTitle(TOPIC_THEME);
-        dto.setId(TOPIC_ID);
+        topic.setId(TOPIC_ID);
         dto.setBodyText(TOPIC_CONTENT);
         dto.setTopic(topic);
         return dto;

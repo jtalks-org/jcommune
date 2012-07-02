@@ -127,8 +127,10 @@ public class TopicController {
     @RequestMapping(value = "/topics/new", method = RequestMethod.GET)
     public ModelAndView showNewTopicPage(@RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
         Branch branch = branchService.get(branchId);
+        Topic topicDto = new Topic();
+        topicDto.setPoll(new Poll());
         return new ModelAndView("newTopic")
-                .addObject("topicDto", new TopicDto(new Topic()))
+                .addObject("topicDto", new TopicDto(topicDto))
                 .addObject("branchId", branchId)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch));
     }
@@ -270,7 +272,7 @@ public class TopicController {
                     .addObject(BRANCH_ID, branchId)
                     .addObject(TOPIC_ID, topicId);
         }
-        topicService.updateTopic(topicDto.getId(), topicDto.getTopic(), topicDto.getBodyText(),
+        topicService.updateTopic(topicId, topicDto.getTopic(), topicDto.getBodyText(),
                 topicDto.isNotifyOnAnswers());
 
         return new ModelAndView("redirect:/topics/" + topicId);

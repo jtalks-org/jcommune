@@ -33,7 +33,6 @@ import org.hibernate.search.annotations.TokenizerDef;
 import org.hibernate.validator.constraints.NotBlank;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
-import org.jtalks.jcommune.model.validation.annotations.BbCodeAwareSize;
 
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
@@ -274,6 +273,15 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     public void setTitle(String newTitle) {
         this.title = newTitle;
     }
+
+    /**
+     * @return content of the first post of the topic
+     */
+    public String getBodyText() {
+        Post firstPost = getFirstPost();
+        return firstPost.getPostContent();
+    }
+
 
     /**
      * Get the list of the posts.

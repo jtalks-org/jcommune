@@ -38,13 +38,15 @@ import java.util.List;
  */
 @ValidPoll(pollTitle = "pollTitle", pollItems = "pollItems", endingDate = "endingDate")
 public class TopicDto {
+
     @Valid
     private Topic topic;
-    private boolean notifyOnAnswers;
 
     @NotBlank
     @BbCodeAwareSize(min = Post.MIN_LENGTH, max = Post.MAX_LENGTH)
     private String bodyText;
+
+    private boolean notifyOnAnswers;
 
     /**
      * Plain object for topic creation
@@ -69,7 +71,41 @@ public class TopicDto {
         this.topic = topic;
     }
 
-    public String getTopicTitle(){
+    /**
+     * Get first post content.
+     *
+     * @return first post content
+     */
+    public String getBodyText() {
+        return bodyText;
+    }
+
+    /**
+     * Set first post content.
+     *
+     * @param bodyText content of first post in topic
+     */
+    public void setBodyText(String bodyText) {
+        this.bodyText = bodyText;
+    }
+
+    /**
+     * @return flag that indicates notification state(enabled or disabled)
+     */
+    public boolean isNotifyOnAnswers() {
+        return notifyOnAnswers;
+    }
+
+    /**
+     * Set flag that indicates notification state(enabled or disabled).
+     *
+     * @param notifyOnAnswers flag of notifications state
+     */
+    public void setNotifyOnAnswers(boolean notifyOnAnswers) {
+        this.notifyOnAnswers = notifyOnAnswers;
+    }
+
+    public String getTopicTitle() {
         return topic.getTitle();
     }
 
@@ -81,10 +117,7 @@ public class TopicDto {
         this.poll = poll;
     }
 
-
     public final static String LINE_SEPARATOR = System.getProperty("line.separator");
-
-    private long id;
 
     @Size(min = Poll.MIN_TITLE_LENGTH, max = Poll.MAX_TITLE_LENGTH)
     private String pollTitle;
@@ -97,22 +130,6 @@ public class TopicDto {
 
     private Poll poll;
 
-
-    /**
-     * @return topic id
-     */
-    public long getId() {
-        return id;
-    }
-
-    /**
-     * Set topic id.
-     *
-     * @param id id
-     */
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getPollTitle() {
         return pollTitle;
@@ -146,39 +163,6 @@ public class TopicDto {
         this.endingDate = endingDate;
     }
 
-    /**
-     * @return flag that indicates notification state(enabled or disabled)
-     */
-    public boolean isNotifyOnAnswers() {
-        return notifyOnAnswers;
-    }
-
-    /**
-     * Set flag that indicates notification state(enabled or disabled).
-     *
-     * @param notifyOnAnswers flag of notifications state
-     */
-    public void setNotifyOnAnswers(boolean notifyOnAnswers) {
-        this.notifyOnAnswers = notifyOnAnswers;
-    }
-
-    /**
-     * Get first post content.
-     *
-     * @return first post content
-     */
-    public String getBodyText() {
-        return bodyText;
-    }
-
-    /**
-     * Set first post content.
-     *
-     * @param bodyText content of first post in topic
-     */
-    public void setBodyText(String bodyText) {
-        this.bodyText = bodyText;
-    }
 
     public Poll preparePollFromTopicDto() {
         Poll poll = new Poll(pollTitle);

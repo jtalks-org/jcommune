@@ -34,7 +34,8 @@ import java.util.List;
  * @author Eugeny Batov
  */
 public final class PersistedObjectsFactory {
-
+    //todo: refactor this class without using static
+    //bcz static will affect our tests if we will want run it in some threads
     private static Session session;
 
     private PersistedObjectsFactory() {
