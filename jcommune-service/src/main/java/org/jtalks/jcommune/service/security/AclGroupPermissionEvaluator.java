@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.service.security;
 
 import org.jtalks.common.model.dao.GroupDao;
-import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.model.permissions.ProfilePermission;
@@ -62,12 +61,8 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
      * {@inheritDoc}
      */
     @Override
-    public boolean hasPermission(Authentication authentication, Object groupId, Object permission) {
-        if (authentication.getPrincipal() instanceof String) {
-            return false;
-        }
-        Group group = groupDao.get((Long) groupId);
-        return group.getUsers().contains(authentication.getPrincipal());
+    public boolean hasPermission(Authentication authentication, Object targetId, Object permission) {
+        throw new IllegalArgumentException("Method with current arguments is not supported.");
     }
 
     /**
