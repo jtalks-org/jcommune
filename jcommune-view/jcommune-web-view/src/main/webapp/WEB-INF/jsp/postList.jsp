@@ -161,7 +161,7 @@
                         <div class="btn-toolbar post-btn-toolbar">
 
                             <c:choose>
-                                <c:when test="${pag.page == 1 && i.index == 0}">
+                                <c:when test="${postsPage.number == 1 && i.index == 0}">
                                         <%-- first post - urls to delete & edit topic --%>
                                         <c:set var="delete_url"
                                                value="${pageContext.request.contextPath}/topics/${topic.id}"/>
