@@ -102,7 +102,6 @@
     </mvc:interceptors>
 
     <!-- simple pages -->
-    <mvc:view-controller path="/login" view-name="login"/>
     <mvc:view-controller path="/errors/redirect/404" view-name="redirect:/errors/404"/>
     <mvc:view-controller path="/errors/404" view-name="/errors/404"/>
     <!-- static resources -->

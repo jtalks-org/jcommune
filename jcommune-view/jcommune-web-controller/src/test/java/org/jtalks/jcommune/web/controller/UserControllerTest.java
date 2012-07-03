@@ -142,6 +142,26 @@ public class UserControllerTest {
 
         assertEquals("errors/activationExpired", viewName);
     }
+    
+    @Test
+    public void testLoginUserLogged() {
+        when(userService.getCurrentUser()).thenReturn(new JCUser("username", null, null));
+        
+        String result = userController.loginPage();
+        
+        assertEquals(result, "redirect:/");
+        verify(userService).getCurrentUser();
+    }
+    
+    @Test
+    public void testLoginUserNotLogged() {
+        when(userService.getCurrentUser()).thenReturn(null);
+        
+        String result = userController.loginPage();
+        
+        assertEquals(result, UserController.LOGIN);
+        verify(userService).getCurrentUser();
+    }
 
     private void assertNullFields(RegisterUserDto dto) {
         assertNull(dto.getEmail());
