@@ -25,7 +25,7 @@ $(document).ready(function () {
 
     var data_changed = false;
     var message = $labelLeavePageConfirmation;
-    var mark_class = ".confirm-unsaved";
+    var mark_class = ".script-confirm-unsaved";
     var allowed_transitions = "input[type=submit]";
 
     $(window).bind('beforeunload', function () {
