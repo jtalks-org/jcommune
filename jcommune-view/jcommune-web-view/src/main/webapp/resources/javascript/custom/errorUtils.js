@@ -15,6 +15,9 @@
 
 var ErrorUtils = {};
 
+/** Pattern for a row with error message */
+ErrorUtils.patternForErrorRow = '<span class="help-inline">${message}</span>';
+
 /** Add necessary classes to page elements to highlight errors for current design */
 ErrorUtils.fixErrorHighlighting = function() {
 	$('.help-inline').closest('div.control-group').addClass('error');
@@ -25,10 +28,7 @@ ErrorUtils.fixErrorHighlighting = function() {
  * 		(e.g. $('#inputId'))
  */
 ErrorUtils.addErrorStyles = function(inputOrSelector) {
-	var input = inputOrSelector;
-	if (typeof(inputOrSelector) == "string") {
-		input = $(inputOrSelector);
-	}
+	var input = ErrorUtils.getInput(inputOrSelector);
 	input.closest('div.control-group').addClass('error');
 }
 
@@ -37,13 +37,40 @@ ErrorUtils.addErrorStyles = function(inputOrSelector) {
  * 		or input itself (e.g. $('#inputId'))
  */
 ErrorUtils.removeErrorStyles = function(inputOrSelector) {
+	var input = ErrorUtils.getInput(inputOrSelector)
+	input.closest('div.control-group').removeClass('error');
+} 
+
+/** Adds error message for specified input and highlights all control group
+ * @param  inputOrSelector - either selector of input to disable error highlighting
+ * 		or input itself (e.g. $('#inputId'))
+ * @param message - error message to be displayed
+ */
+ErrorUtils.addErrorMessage = function(inputOrSelector, message) {
+	var input = ErrorUtils.getInput(inputOrSelector)	
+	var insertedRow = input.parent().append(ErrorUtils.getErrorRow(message));
+	ErrorUtils.addErrorStyles(insertedRow);
+}
+
+/** Returns actual error row with given message based on pattern for errors
+ * @param - error message to be displayed
+ */
+ErrorUtils.getErrorRow = function(message) {
+	var row = ErrorUtils.patternForErrorRow.replace("${message}", message); 
+	return row;
+}
+
+/** Returns jquery input (like $('#inputId'))
+ * @param  inputOrSelector - either selector (e.g. #inputId) or input itself 
+ * 		(e.g. $('#inputId'))
+ */
+ErrorUtils.getInput = function(inputOrSelector) {
 	var input = inputOrSelector;
 	if (typeof(inputOrSelector) == "string") {
 		input = $(inputOrSelector);
 	}
-	input.closest('div.control-group').removeClass('error');
-} 
-
+	return input;
+}
 
 /**
  * Make our design compatible with form:errors tag.
