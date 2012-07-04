@@ -48,8 +48,19 @@ ErrorUtils.removeErrorStyles = function(inputOrSelector) {
  */
 ErrorUtils.addErrorMessage = function(inputOrSelector, message) {
 	var input = ErrorUtils.getInput(inputOrSelector)	
-	var insertedRow = input.parent().append(ErrorUtils.getErrorRow(message));
+	var insertedRow = input.closest('div.controls').append(ErrorUtils.getErrorRow(message));
 	ErrorUtils.addErrorStyles(insertedRow);
+}
+
+/** Removes error message for specified input and removes highlighting of all 
+ * control group
+ * @param  inputOrSelector - either selector of input to disable error highlighting
+ * 		or input itself (e.g. $('#inputId'))
+ */
+ErrorUtils.removeErrorMessage = function(inputOrSelector) {
+	var input = ErrorUtils.getInput(inputOrSelector)	
+	input.closest('div.controls').find('span.help-inline').remove();
+	ErrorUtils.removeErrorStyles(input);
 }
 
 /** Returns actual error row with given message based on pattern for errors

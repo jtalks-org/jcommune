@@ -137,12 +137,12 @@ $(document).ready(function () {
 	$('body').on('keyup', '#contact', function() {
 		var value = $(this).val();
 		if (value.length > 0 && !value.match(new RegExp(AddContact.selectedContactType.validationPattern))) {
-			$('#contact-error-status').text($labelValidationUsercontactNotMatch);
-			ErrorUtils.addErrorStyles('#contact');
-			AddContact.isValueValid = false;
+			if (AddContact.isValueValid) {
+				ErrorUtils.addErrorMessage('#contact', $labelValidationUsercontactNotMatch);
+				AddContact.isValueValid = false;
+			}
 		} else {
-			$('#contact-error-status').text('');
-			ErrorUtils.removeErrorStyles('#contact');
+			ErrorUtils.removeErrorMessage('#contact');
 			AddContact.isValueValid = true;
 		}
 	});
@@ -186,9 +186,8 @@ $(document).ready(function () {
 			str += '	<label for="contact_type" class="control-label">' + $labelContactValue + '</label>';
             str += '	<div class="controls">';
             str += '		<input type="text" name="contact" id="contact" placeholder="' + AddContact.selectedContactType.mask + '" />';
-			str += '		<span class="reg_info">' + $labelContactValueInfo + '</span>';
-            str += '		<span for="contact" id="contact-error-status" class="help-inline"/>';
             str += '	</div>';
+			str += '	<span class="reg_info">' + $labelContactValueInfo + '</span>';
             str += '</div>'
 			str += '</ul>';
 
@@ -222,8 +221,7 @@ $(document).ready(function () {
                             		result = true;
                             },
 							error : function(data) {
-								$('#contact-error-status').text($labelValidationUsercontactNotMatch);
-								ErrorUtils.addErrorStyles('#contact');
+								ErrorUtils.addErrorMessage('#contact', $labelValidationUsercontactNotMatch);
                         		AddContact.isValueValid = false;
 							}
                         });
