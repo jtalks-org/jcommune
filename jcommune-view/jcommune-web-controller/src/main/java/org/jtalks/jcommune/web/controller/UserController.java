@@ -152,7 +152,7 @@ public class UserController {
     public String loginPage()
     {
         JCUser currentUser = userService.getCurrentUser();
-        if (currentUser == null) {
+        if (currentUser.isAnonymous()) {
             return LOGIN;
         } else {
             return "redirect:/";

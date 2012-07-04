@@ -57,6 +57,6 @@ public class PaginationService {
      * @return page size for the current user or default if there is no user
      */
     public int getPageSizeFor(JCUser user) {
-        return (user == null) ? JCUser.DEFAULT_PAGE_SIZE : user.getPageSize();
+        return user.getPageSize();
     }
 }

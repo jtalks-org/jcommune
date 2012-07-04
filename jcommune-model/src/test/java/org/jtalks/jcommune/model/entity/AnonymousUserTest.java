@@ -14,54 +14,33 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import org.joda.time.DateTime;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static junit.framework.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertEquals;
 
 /**
- * @author Kirill Afonin
+ * @author Vyacheslav Mishcheryakov
  */
-public class JCUserTest {
+public class AnonymousUserTest {
 
-    JCUser user;
+    AnonymousUser user;
 
     @BeforeMethod
     public void setUp(){
-        user = new JCUser("username", "email@mail.com", "pass");
+        user = new AnonymousUser();
     }
 
     @Test
-    public void testSpringSecurityDefaults() {
-        assertTrue(user.isAccountNonExpired());
-        assertTrue(user.isAccountNonLocked());
-        assertTrue(user.isCredentialsNonExpired());
-        assertFalse(user.isEnabled());
-    }
-
-    @Test
-    public void testUserDefaultAuthority() {
-        GrantedAuthority expectedAuthority = new GrantedAuthorityImpl("ROLE_USER");
-        assertTrue(user.getAuthorities().contains(expectedAuthority));
-    }
-
-    @Test
-    public void testUpdateLastLogin() throws InterruptedException {
-        DateTime current = new DateTime();
-        Thread.sleep(25);
-
-        user.updateLastLoginTime();
-
-        assertTrue(user.getLastLogin().isAfter(current));
+    public void testDefaults() {
+        assertEquals(user.getPageSize(), JCUser.DEFAULT_PAGE_SIZE);
+        assertEquals(user.getLanguage(), Language.ENGLISH);
     }
     
     @Test
     public void testIsAnonymous() {
-        assertFalse(user.isAnonymous());
+        assertTrue(user.isAnonymous());
     }
 
 }

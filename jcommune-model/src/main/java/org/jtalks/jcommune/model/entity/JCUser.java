@@ -241,4 +241,11 @@ public class JCUser extends User {
     public void setGroups(List<Group> groups) {
         this.groups = groups;
     }
+    
+    /**
+     * @return whether this user is anonymous
+     */
+    public boolean isAnonymous() {
+        return false;
+    }
 }
