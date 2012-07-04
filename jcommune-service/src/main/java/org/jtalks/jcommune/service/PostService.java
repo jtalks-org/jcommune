@@ -14,20 +14,21 @@
  */
 package org.jtalks.jcommune.service;
 
+
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 /**
  * This interface should have methods which give us more abilities in manipulating Post persistent entity.
  *
  * @author Osadchuck Eugeny
  * @author Kirill Afonin
+ * @author Anuar Nurmakanov
  */
 public interface PostService extends EntityService<Post> {
-
 
     /**
      * Update current post with given content, add the modification date.
@@ -50,12 +51,16 @@ public interface PostService extends EntityService<Post> {
     void deletePost(long postId, long branchId) throws NotFoundException;
 
     /**
-     * List posts of user
+     * Get user's posts.
      *
      * @param userCreated user created post
-     * @return post list
+     * @param page page number, for which we will find posts
+     * @param pagingEnabled if true, then it returns posts for one page, otherwise it
+     *        return all posts, that were created by user
+     * @return object that contains posts for one page(note, that one page may contain
+     *         all posts, that were created by user) and information for pagination
      */
-    List<Post> getPostsOfUser(JCUser userCreated);
+    Page<Post> getPostsOfUser(JCUser userCreated, int page, boolean pagingEnabled);
 
     /**
      * Calculates page number for post based on the current user
@@ -65,5 +70,17 @@ public interface PostService extends EntityService<Post> {
      * @return number of the page where the post will actually be
      */
     int calculatePageForPost(Post post);
+    
+    /**
+     * Get all posts in the topic of forum.
+     * 
+     * @param topic for this topic we will find posts
+     * @param page page number, for which we will find posts
+     * @param pagingEnabled if true, then it returns posts for one page, otherwise it
+     *        return all posts in the topic
+     * @return object that contains posts for one page(note, that one page may contain
+     *         all posts) and information for pagination
+     */
+    Page<Post> getPosts(Topic topic, int page, boolean pagingEnabled);
 
 }

@@ -14,20 +14,29 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.*;
+import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.LastReadPostService;
+import org.jtalks.jcommune.service.PollService;
+import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
-import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -39,9 +48,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.validation.Valid;
-import java.util.List;
 
 /**
  * Serves topic management web requests
@@ -63,6 +69,7 @@ public class TopicController {
     private static final String PAGING_ENABLED = "pagingEnabled";
 
     private TopicService topicService;
+    private PostService postService;
     private BranchService branchService;
     private LastReadPostService lastReadPostService;
     private UserService userService;
@@ -86,6 +93,7 @@ public class TopicController {
 
     /**
      * @param topicService        the object which provides actions on {@link Topic} entity
+     * @param postService         the object which provides actions on {@link Post} entity
      * @param branchService       the object which provides actions on  {@link Branch} entity
      * @param lastReadPostService to perform post-related actions
      * @param locationService     to track user location on forum (what page he is viewing now)
@@ -96,6 +104,7 @@ public class TopicController {
      */
     @Autowired
     public TopicController(TopicService topicService,
+                           PostService postService,
                            BranchService branchService,
                            LastReadPostService lastReadPostService,
                            UserService userService,
@@ -104,6 +113,7 @@ public class TopicController {
                            SessionRegistry sessionRegistry,
                            PollService pollService) {
         this.topicService = topicService;
+        this.postService = postService;
         this.branchService = branchService;
         this.lastReadPostService = lastReadPostService;
         this.userService = userService;
@@ -193,24 +203,21 @@ public class TopicController {
                                               required = false) Boolean pagingEnabled) throws NotFoundException {
 
         Topic topic = topicService.get(topicId);
-
+        Page<Post> postsPage = postService.getPosts(topic, page, pagingEnabled);
         Poll poll = topic.getPoll();
         List<PollItem> pollOptions = topic.isHasPoll() ? poll.getPollItems() : null;
 
         Branch branch = topic.getBranch();
         JCUser currentUser = userService.getCurrentUser();
-        List<Post> posts = topic.getPosts();
-        Pagination pag = new Pagination(page, currentUser, posts.size(), pagingEnabled);
+
         Integer lastReadPostIndex = lastReadPostService.getLastReadPostForTopic(topic);
         lastReadPostService.markTopicPageAsRead(topic, page, pagingEnabled);
         //todo: optimize this binding
         return new ModelAndView("postList")
                 .addObject("viewList", locationService.getUsersViewing(topic))
                 .addObject("usersOnline", sessionRegistry.getAllPrincipals())
-                .addObject("posts", posts)
+                .addObject("postsPage", postsPage)
                 .addObject("topic", topic)
-                .addObject("pag", pag)
-                .addObject("page", pag.getPage())
                 .addObject("nextTopic", branch.getNextTopic(topic))
                 .addObject("previousTopic", branch.getPreviousTopic(topic))
                 .addObject(BRANCH_ID, branch.getId())
@@ -219,7 +226,8 @@ public class TopicController {
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic))
                 .addObject("lastReadPost", lastReadPostIndex)
                 .addObject("poll", poll)
-                .addObject("pollOptions", pollOptions);
+                .addObject("pollOptions", pollOptions)
+                .addObject("pagingEnabled", pagingEnabled);
     }
 
     /**
@@ -270,7 +278,8 @@ public class TopicController {
         }
 
         topicService.updateTopic(topicDto.getId(), topicDto.getTopicName(), topicDto.getBodyText(),
-                topicDto.getTopicWeight(), topicDto.isSticked(), topicDto.isAnnouncement(),topicDto.isNotifyOnAnswers());
+                topicDto.getTopicWeight(), topicDto.isSticked(),
+                topicDto.isAnnouncement(),topicDto.isNotifyOnAnswers());
 
         return new ModelAndView("redirect:/topics/" + topicId);
     }

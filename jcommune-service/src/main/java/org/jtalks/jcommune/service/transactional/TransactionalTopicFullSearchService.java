@@ -14,13 +14,17 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import java.util.Collections;
+
 import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.dao.search.TopicSearchDao;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicFullSearchService;
+import org.jtalks.jcommune.service.nontransactional.PaginationService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
-import java.util.Collections;
-import java.util.List;
 
 /**
  * The implementation of TopicFullSearchService, that provides possibility
@@ -34,26 +38,35 @@ import java.util.List;
  */
 public class TransactionalTopicFullSearchService implements TopicFullSearchService {
     private TopicSearchDao topicSearchDao;
+    private PaginationService paginationService;
     
     /**
+     * Constructs an instance with required fields.
+     * 
      * @param topicSearchDao for full-text search operations
+     * @param paginationService this service provides functionality,
+     *        that is needed for pagination
      */
-    public TransactionalTopicFullSearchService(TopicSearchDao topicSearchDao) {
+    public TransactionalTopicFullSearchService(
+            TopicSearchDao topicSearchDao,
+            PaginationService paginationService) {
         this.topicSearchDao = topicSearchDao;
+        this.paginationService = paginationService;
     }
     
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<Topic> searchByTitleAndContent(String phrase) {
+    public Page<Topic> searchByTitleAndContent(String phrase, int page) {
         if (!StringUtils.isEmpty(phrase)) {
+            int pageSize = paginationService.getPageSizeForCurrentUser();
+            JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(page, pageSize);
             // hibernate search refuses to process long string throwing error
             String normalizedPhrase = StringUtils.left(phrase, 50);
-            return topicSearchDao.searchByTitleAndContent(normalizedPhrase);
-        } else {
-            return Collections.emptyList();
-        }
+            return topicSearchDao.searchByTitleAndContent(normalizedPhrase, pageRequest);
+        } 
+        return new PageImpl<Topic>(Collections.<Topic> emptyList());
     }
     
     /**

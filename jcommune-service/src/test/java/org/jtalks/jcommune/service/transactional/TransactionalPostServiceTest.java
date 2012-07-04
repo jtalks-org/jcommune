@@ -14,30 +14,34 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
-import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
+import org.jtalks.jcommune.service.nontransactional.PaginationService;
+import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.AssertJUnit.assertEquals;
 
 /**
  * This test cover {@code TransactionalPostService} logic validation.
@@ -65,8 +69,8 @@ public class TransactionalPostServiceTest {
     private TopicDao topicDao;
     @Mock
     private LastReadPostService lastReadPostService;
-    @Mock
-    private UserService userService;
+    @Mock 
+    private PaginationService paginationService;
 
     private PostService postService;
 
@@ -75,10 +79,14 @@ public class TransactionalPostServiceTest {
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
-        postService = new TransactionalPostService(
-                postDao, topicDao, securityService, notificationService, lastReadPostService, userService);
         user = new JCUser(USERNAME, EMAIL, PASSWORD);
-        when(userService.getCurrentUser()).thenReturn(user);
+        postService = new TransactionalPostService(
+                postDao,
+                topicDao,
+                securityService,
+                notificationService,
+                lastReadPostService,
+                paginationService);
     }
 
     @Test
@@ -121,7 +129,6 @@ public class TransactionalPostServiceTest {
         verify(postDao).update(post);
     }
 
-
     @Test
     public void testDeletePost() throws NotFoundException {
         Topic topic = new Topic(user, "title");
@@ -152,30 +159,31 @@ public class TransactionalPostServiceTest {
     }
 
     @Test
-    public void testNullPostsOfUser() {
-        List<Post> posts = new ArrayList<Post>();
-        when(postDao.getUserPosts(user)).thenReturn(posts);
-
-        assertEquals(postService.getPostsOfUser(user), new ArrayList<Post>());
-
-        verify(postDao).getUserPosts(user);
-    }
-
-    @Test
     public void testPostsOfUser() {
+        int page = 1;
+        int pageSize = 50;
+        boolean pagingEnabled = true;
         List<Post> posts = Arrays.asList(new Post(user, ""));
-        when(postDao.getUserPosts(user)).thenReturn(posts);
+        Page<Post> expectedPostsPage = new PageImpl<Post>(posts);
+        when(postDao.getUserPosts(Matchers.<JCUser> any(), Matchers.<JCommunePageRequest>any()))
+            .thenReturn(expectedPostsPage);
+        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
 
-        assertEquals(postService.getPostsOfUser(user), posts);
-
-        verify(postDao).getUserPosts(user);
+        Page<Post> actualPostsPage = postService.getPostsOfUser(user, page, pagingEnabled);
+        
+        assertEquals(actualPostsPage, expectedPostsPage);
+        verify(postDao).getUserPosts(
+                Matchers.<JCUser> any(),
+                Matchers.<JCommunePageRequest> any()
+                );
     }
 
     @Test
     public void testLastPostInTopicPageCalculation() {
-        user.setPageSize(2);
-        Topic topic = new Topic(user, "");
-        Post post = new Post(user, "");
+        int pageSize = 2;
+        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
+        Topic topic = new Topic(null, "");
+        Post post = new Post(null, "");
         topic.addPost(new Post(null, null));
         topic.addPost(new Post(null, null));
         topic.addPost(post);
@@ -185,9 +193,10 @@ public class TransactionalPostServiceTest {
 
     @Test
     public void testFirstPostInTopicPageCalculation() {
-        user.setPageSize(2);
-        Topic topic = new Topic(user, "");
-        Post post = new Post(user, "");
+        int pageSize = 2;
+        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
+        Topic topic = new Topic(null, "");
+        Post post = new Post(null, "");
         topic.addPost(post);
 
         assertEquals(postService.calculatePageForPost(post), 1);
@@ -195,7 +204,7 @@ public class TransactionalPostServiceTest {
 
     @Test
     public void testFirstPostInTopicPageCalculationWithNoUser() {
-        when(userService.getCurrentUser()).thenReturn(null);
+        when(paginationService.getPageSizeForCurrentUser()).thenReturn(JCUser.DEFAULT_PAGE_SIZE);
         Topic topic = new Topic(user, "");
         Post post = new Post(user, "");
         topic.addPost(post);
@@ -205,7 +214,8 @@ public class TransactionalPostServiceTest {
 
     @Test
     public void testLastPostOnFirstPagePageCalculation() {
-        user.setPageSize(2);
+        int pageSize = 2;
+        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
         Topic topic = new Topic(user, "");
         Post post = new Post(user, "");
         topic.addPost(new Post(null, null));
@@ -216,9 +226,10 @@ public class TransactionalPostServiceTest {
 
     @Test
     public void testLastPostOnPagePageCalculation() {
-        user.setPageSize(2);
-        Topic topic = new Topic(user, "");
-        Post post = new Post(user, "");
+        int pageSize = 2;
+        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
+        Topic topic = new Topic(null, "");
+        Post post = new Post(null, "");
         topic.addPost(new Post(null, null));
         topic.addPost(new Post(null, null));
         topic.addPost(new Post(null, null));
@@ -229,13 +240,32 @@ public class TransactionalPostServiceTest {
 
     @Test
     public void testPostInCenterOfTopicPageCalculation() {
-        user.setPageSize(2);
-        Topic topic = new Topic(user, "");
-        Post post = new Post(user, "");
+        int pageSize = 2;
+        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
+        Topic topic = new Topic(null, "");
+        Post post = new Post(null, "");
         topic.addPost(new Post(null, null));
         topic.addPost(post);
         topic.addPost(new Post(null, null));
 
         assertEquals(postService.calculatePageForPost(post), 1);
+    }
+    
+    @Test
+    public void testGetPosts() {
+        int pageSize = 50;
+        Topic topic = new Topic(user, "");
+        Page<Post> expectedPage = new PageImpl<Post>(Collections.<Post> emptyList());
+        
+        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
+        when(postDao.getPosts(
+                Matchers.any(Topic.class), Matchers.any(JCommunePageRequest.class)))
+            .thenReturn(expectedPage);
+        
+        Page<Post> actualPage = postService.getPosts(topic, pageSize, true);
+        
+        assertEquals(actualPage, expectedPage, "Service returned incorrect data for one page of posts");
+        verify(postDao).getPosts(
+                Matchers.any(Topic.class), Matchers.any(JCommunePageRequest.class));
     }
 }

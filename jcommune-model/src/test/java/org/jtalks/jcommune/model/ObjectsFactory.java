@@ -136,6 +136,17 @@ public final class ObjectsFactory {
         session.save(topic);
         return posts;
     }
+    
+    public static List<Topic> createAndSaveTopicList(int size) {
+        Branch branch = getDefaultBranch();
+        JCUser user = persist(getDefaultUser());
+        for (int i = 0; i < size; i++) {
+            Topic topic = new Topic(user, "title" + i);
+            branch.addTopic(topic);
+        }
+        persist(branch);
+        return branch.getTopics();
+    }
 
     public static LastReadPost getDefaultLastReadPost() {
         Topic topic = getDefaultTopic();

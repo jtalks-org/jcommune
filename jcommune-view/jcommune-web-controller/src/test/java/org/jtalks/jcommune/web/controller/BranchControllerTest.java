@@ -14,9 +14,19 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.joda.time.DateTime;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.testng.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.LastReadPostService;
@@ -28,22 +38,14 @@ import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
-import org.jtalks.jcommune.web.util.Pagination;
 import org.mockito.Mock;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.springframework.test.web.ModelAndViewAssert.*;
-import static org.testng.Assert.assertEquals;
 
 
 /**
@@ -70,27 +72,30 @@ public class BranchControllerTest {
 
     private BranchController controller;
 
-    private static final DateTime now = new DateTime();
-
     @BeforeMethod
     public void init() {
         initMocks(this);
-        controller = new BranchController(branchService, topicService, lastReadPostService,
-                userService, breadcrumbBuilder, locationServiceImpl);
+        controller = new BranchController(
+                branchService,
+                topicService,
+                lastReadPostService,
+                userService,
+                breadcrumbBuilder,
+                locationServiceImpl);
     }
 
     @Test
     public void showPage() throws NotFoundException {
-        JCUser user = new JCUser("", "", "");
-        Map map = new HashMap<JCUser, String>();
-        map.put(user, "");
         long branchId = 1L;
         int page = 2;
         boolean pagingEnabled = true;
         Branch branch = new Branch("name", "description");
         branch.setId(branchId);
+        Pageable pageRequest = new PageRequest(page, 5);
+        Page<Topic> topicsPage = new PageImpl<Topic>(Collections.<Topic> emptyList(), pageRequest, 0);
         //set expectations
         when(branchService.get(branchId)).thenReturn(branch);
+        when(topicService.getTopics(branch, page, pagingEnabled)).thenReturn(topicsPage);
         when(breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)))
                 .thenReturn(new ArrayList<Breadcrumb>());
         when(forumStatisticsProvider.getOnlineRegisteredUsers()).thenReturn(new ArrayList<Object>());
@@ -103,68 +108,61 @@ public class BranchControllerTest {
 
         //check result
         assertViewName(mav, "topicList");
-        assertAndReturnModelAttributeOfType(mav, "topics", List.class);
 
         Branch actualBranch = assertAndReturnModelAttributeOfType(mav, "branch", Branch.class);
         assertEquals(actualBranch.getId(), branchId);
 
-        Pagination pagination = assertAndReturnModelAttributeOfType(mav, "pagination", Pagination.class);
-        assertEquals(pagination.getPage().intValue(), page);
+        @SuppressWarnings("unchecked")
+        Page<Topic> actualTopicsPage = 
+            (Page<Topic>) assertAndReturnModelAttributeOfType(mav, "topicsPage", Page.class);
+        assertEquals(actualTopicsPage, topicsPage);
+        
         assertModelAttributeAvailable(mav, "breadcrumbList");
-
     }
 
     @Test
     public void recentTopicsPage() throws NotFoundException {
-        int page = 2;
+        int page = 1;
+        Page<Topic> topicsPage = new PageImpl<Topic>(new ArrayList<Topic>());
         //set expectations
-        when(topicService.getRecentTopics()).thenReturn(new ArrayList<Topic>());
+        when(topicService.getRecentTopics(page)).thenReturn(topicsPage);
 
         //invoke the object under test
         ModelAndView mav = controller.recentTopicsPage(page);
 
         //check expectations
-        verify(topicService).getRecentTopics();
+        verify(topicService).getRecentTopics(page);
 
         //check result
         assertViewName(mav, "recent");
-        assertAndReturnModelAttributeOfType(mav, "topics", List.class);
-
-        Pagination pagination = assertAndReturnModelAttributeOfType(mav, "pagination", Pagination.class);
-        assertEquals(pagination.getMaxPages(), 1);
-        assertEquals(pagination.getPage().intValue(), page);
-
+        assertAndReturnModelAttributeOfType(mav, "topicsPage", Page.class);
     }
 
     @Test
     public void unansweredTopicsPage() {
         int page = 1;
+        Page<Topic> topicsPage = new PageImpl<Topic>(new ArrayList<Topic>());
         //set expectations
-        when(topicService.getUnansweredTopics()).thenReturn(new ArrayList<Topic>());
+        when(topicService.getUnansweredTopics(page)).thenReturn(topicsPage);
 
         //invoke the object under test
         ModelAndView mav = controller.unansweredTopicsPage(page);
 
         //check expectations
-        verify(topicService).getUnansweredTopics();
+        verify(topicService).getUnansweredTopics(page);
 
         //check result
         assertViewName(mav, "unansweredTopics");
-        assertAndReturnModelAttributeOfType(mav, "topics", List.class);
-
-        Pagination pagination = assertAndReturnModelAttributeOfType(mav, "pagination", Pagination.class);
-        assertEquals(pagination.getMaxPages(), 1);
-        assertEquals(pagination.getPage().intValue(), page);
+        assertAndReturnModelAttributeOfType(mav, "topicsPage", Page.class);
     }
 
     @Test
     public void testViewList() throws NotFoundException {
-        JCUser user = new JCUser("", "", "");
-        Map<JCUser, String> map = new HashMap<JCUser, String>();
-        map.put(user, "");
         long branchId = 1L;
         int page = 2;
         boolean pagingEnabled = true;
+        Pageable pageRequest = new PageRequest(page, 5);
+        Page<Topic> topicsPage = new PageImpl<Topic>(Collections.<Topic> emptyList(), pageRequest, 0);
         Branch branch = new Branch("name", "description");
         branch.setId(branchId);
         //set expectations
@@ -172,6 +170,7 @@ public class BranchControllerTest {
         when(breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)))
                 .thenReturn(new ArrayList<Breadcrumb>());
         when(forumStatisticsProvider.getOnlineRegisteredUsers()).thenReturn(new ArrayList<Object>());
+        when(topicService.getTopics(branch, page, pagingEnabled)).thenReturn(topicsPage);
 
         ModelAndView mav = controller.showPage(branchId, page, pagingEnabled);
 

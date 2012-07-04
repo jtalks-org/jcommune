@@ -14,15 +14,24 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
+
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.PostDao;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -30,11 +39,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.testng.Assert.*;
 
 /**
  * @author Kirill Afonin
@@ -102,27 +106,45 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     /* PostDao specific methods */
 
     @Test
-    public void testPostOfUser() {
-        JCUser user = ObjectsFactory.getDefaultUser();
-        Post post = new Post(user, "first");
-        List<Post> posts = new ArrayList<Post>();
-        posts.add(post);
-        session.save(user);
-        session.save(post);
+    public void testPostOfUserWithEnabledPaging() {
+        int totalSize = 50;
+        int pageCount = 2;
+        int pageSize = totalSize/pageCount;
+        
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, pageSize);
+        List<Post> posts = ObjectsFactory.createAndSavePostList(totalSize);
+        JCUser author = posts.get(0).getUserCreated();
 
-        List<Post> postsTwo = dao.getUserPosts(user);
+        Page<Post> postsPage = dao.getUserPosts(author, pageRequest);
 
-        assertEquals(postsTwo, posts);
+        assertEquals(postsPage.getContent().size(), pageSize, "Incorrect count of posts in one page.");
+        assertEquals(postsPage.getTotalElements(), totalSize, "Incorrect total count.");
+        assertEquals(postsPage.getTotalPages(), pageCount, "Incorrect count of pages.");
     }
 
     @Test
+    public void testPostsOfUserWithDisabledPaging() {
+        int size = 50;
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingDisabled(1, size/2);
+        List<Post> posts = ObjectsFactory.createAndSavePostList(size);
+        JCUser author = posts.get(0).getUserCreated();
+        
+        Page<Post> postsPage = dao.getUserPosts(author, pageRequest);
+        
+        assertEquals(postsPage.getContent().size(), size, 
+                "Paging is disabled, so it should retrieve all posts in the topic.");
+        assertEquals(postsPage.getTotalElements(), size, "Incorrect total count.");
+    }
+    
+    @Test
     public void testNullPostOfUser() {
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, 50);
         JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
 
-        List<Post> posts = dao.getUserPosts(user);
+        Page<Post> postsPage = dao.getUserPosts(user, pageRequest);
 
-        assertEquals(posts, new ArrayList<Post>());
+        assertFalse(postsPage.hasContent());
     }
     
     @Test
@@ -152,5 +174,35 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         session.save(topic);
         
         assertNull(dao.getLastPostInTopic(topic), "The topic is empty, so the topic should not be found");
+    }
+    
+    @Test
+    public void testGetPostsWithEnabledPaging() {
+        int totalSize = 50;
+        int pageCount = 2;
+        int pageSize = totalSize/pageCount;
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, pageSize);
+        List<Post> posts = ObjectsFactory.createAndSavePostList(totalSize);
+        Topic topic = posts.get(0).getTopic();
+        
+        Page<Post> postsPage = dao.getPosts(topic, pageRequest);
+        
+        assertEquals(postsPage.getContent().size(), pageSize, "Incorrect count of posts in one page.");
+        assertEquals(postsPage.getTotalElements(), totalSize, "Incorrect total count.");
+        assertEquals(postsPage.getTotalPages(), pageCount, "Incorrect count of pages.");
+    }
+    
+    @Test
+    public void testGetPostsWithDisabledPaging() {
+        int size = 50;
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingDisabled(1, size/2);
+        List<Post> posts = ObjectsFactory.createAndSavePostList(size);
+        Topic topic = posts.get(0).getTopic();
+        
+        Page<Post> postsPage = dao.getPosts(topic, pageRequest);
+        
+        assertEquals(postsPage.getContent().size(), size, 
+                "Paging is disabled, so it should retrieve all posts in the topic.");
+        assertEquals(postsPage.getTotalElements(), size, "Incorrect total count.");
     }
 }

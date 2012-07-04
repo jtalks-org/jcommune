@@ -71,9 +71,10 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
      * @param recipient user of receiver
      * @param userFrom  user of sender
      * @return saved message
-     * @throws NotFoundException if the receiver not exists
+     * @throws NotFoundException if the receiver does not exist
      */
-    PrivateMessage saveDraft(long id, String title, String body, JCUser recipient, JCUser userFrom) throws NotFoundException;
+    PrivateMessage saveDraft(long id, String title, String body, JCUser recipient, JCUser userFrom)
+    throws NotFoundException;
 
     /**
      * Get count of new messages for current user.
@@ -92,9 +93,10 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
      * @param recipient user of receiver
      * @param userFrom  user of sender
      * @return saved message
-     * @throws NotFoundException if the receiver not exists
+     * @throws NotFoundException if the receiver does not exist
      */
-    PrivateMessage sendDraft(long id, String title, String body, JCUser recipient, JCUser userFrom) throws NotFoundException;
+    PrivateMessage sendDraft(long id, String title, String body, JCUser recipient, JCUser userFrom)
+    throws NotFoundException;
 
     /**
      * Delete or change status of messages by id.

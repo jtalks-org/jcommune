@@ -15,11 +15,12 @@
 package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
 
 /**
  * Interface allows to make basic CRUD operations with the
@@ -35,10 +36,14 @@ import java.util.List;
 public interface PostDao extends ChildRepository<Post> {
 
     /**
+     * Get all the posts that were created  by user.
+     * 
      * @param author user to select posts for
-     * @return post list of user
+     * @param pageRequest contains information for pagination: page number, page size
+     * @return object that contains posts for one page(note, that one page may contain
+     *         all posts, that were created by user) and information for pagination
      */
-    List<Post> getUserPosts(JCUser author);
+    Page<Post> getUserPosts(JCUser author, JCommunePageRequest pageRequest);
 
     /**
      * Find the latest post in the forum topic.
@@ -47,4 +52,14 @@ public interface PostDao extends ChildRepository<Post> {
      * @return the latest post in the forum topic
      */
     Post getLastPostInTopic(Topic topic);
+    
+    /**
+     * Get all posts in the topic of forum.
+     * 
+     * @param topic for this topic we will find posts
+     * @param pageRequest contains information for pagination: page number, page size
+     * @return object that contains posts for one page(note, that one page may contain
+     *         all posts) and information for pagination
+     */
+    Page<Post> getPosts(Topic topic, JCommunePageRequest pageRequest);
 }

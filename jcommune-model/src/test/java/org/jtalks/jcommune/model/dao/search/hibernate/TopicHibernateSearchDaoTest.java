@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.model.dao.search.hibernate;
 
+import static org.testng.Assert.assertEquals;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,12 +25,14 @@ import org.hibernate.SessionFactory;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.jtalks.jcommune.model.ObjectsFactory;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.search.SearchRequestFilter;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -48,7 +52,8 @@ import org.testng.annotations.Test;
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
 public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpringContextTests {
-	@Autowired
+	private static final JCommunePageRequest DEFAULT_PAGE_REQUEST = JCommunePageRequest.createWithPagingEnabled(1, 50);
+    @Autowired
 	private SessionFactory sessionFactory;
 	@Autowired
 	private TopicHibernateSearchDao topicSearchDao;
@@ -86,14 +91,43 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
 		fullTextSession.purgeAll(Topic.class);
 		fullTextSession.flushToIndexes();
 	}
+	 
+	/*===== Paging testing =====*/
+	
+	@Test
+	public void testSearchPaging() {
+        int totalSize = 50;
+        int pageCount = 2;
+        int pageSize = totalSize/pageCount;
+        String searchText = "JCommune";
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, pageSize);
+        List<Topic> topicList = ObjectsFactory.createAndSaveTopicList(totalSize);
+        for(Topic topic: topicList) {
+            topic.setTitle(searchText);
+        }
+        
+        saveAndFlushIndexes(topicList);
+        configureMocks(searchText, searchText);
+        
+        Page<Topic> searchResultPage = topicSearchDao.searchByTitleAndContent(
+                searchText, pageRequest);
+        
+        assertEquals(searchResultPage.getContent().size(), pageSize, "Incorrect count of topics in one page.");
+        assertEquals(searchResultPage.getTotalElements(), totalSize, "Incorrect total count.");
+        assertEquals(searchResultPage.getTotalPages(), pageCount, "Incorrect count of pages.");
+        
+	}
+	
+	/*===== Testing of different variations of the search. =====*/
 	
 	@Test
 	public void testSearchWithFullyDirtySearchText() {
 		configureMocks(StringUtils.EMPTY, StringUtils.EMPTY);
 		
-		List<Topic> searchResults = topicSearchDao.searchByTitleAndContent(StringUtils.EMPTY);
+		Page<Topic> searchResultPage = topicSearchDao.searchByTitleAndContent(
+		        StringUtils.EMPTY, DEFAULT_PAGE_REQUEST);
 		
-		Assert.assertTrue(searchResults.size() == 0, "Search result must be empty.");
+		Assert.assertTrue(!searchResultPage.hasContent(), "Search result must be empty.");
 	}
 	
 	@Test(dataProvider = "parameterFullPhraseSearch")
@@ -104,11 +138,11 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
 		saveAndFlushIndexes(Arrays.asList(expectedTopic));
 		configureMocks(content, content);
 		
-		List<Topic> searchResult = topicSearchDao.searchByTitleAndContent(content);
+		Page<Topic> searchResultPage = topicSearchDao.searchByTitleAndContent(
+		        content, DEFAULT_PAGE_REQUEST);
 		
-		Assert.assertTrue(searchResult != null, "Search result must not be null.");
-		Assert.assertTrue(searchResult.size() != 0, "Search result must not be empty.");
-		for (Topic topic : searchResult) {
+		Assert.assertTrue(searchResultPage.hasContent(), "Search result must not be empty.");
+		for (Topic topic : searchResultPage.getContent()) {
 			Assert.assertEquals(expectedTopic.getTitle(), topic.getTitle(), 
 					"Content from the index should be the same as in the database.");
 		}
@@ -122,11 +156,11 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
 	    saveAndFlushIndexes(Arrays.asList(expectedTopic));
         configureMocks(content, content);
 	    
-	    List<Topic> searchResult = topicSearchDao.searchByTitleAndContent(content);
+	    Page<Topic> searchResultPage = topicSearchDao.searchByTitleAndContent(
+	            content, DEFAULT_PAGE_REQUEST);
         
-        Assert.assertTrue(searchResult != null, "Search result must not be null.");
-        Assert.assertTrue(searchResult.size() != 0, "Search result must not be empty.");
-        for (Topic topic : searchResult) {
+        Assert.assertTrue(searchResultPage.hasContent(), "Search result must not be empty.");
+        for (Topic topic : searchResultPage.getContent()) {
             Assert.assertEquals(expectedTopic.getTitle(), topic.getTitle(), 
                     "Content from the index should be the same as in the database.");
         }
@@ -156,10 +190,10 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
 		for (String piece: Arrays.asList(firstPiece, secondPiece)) {
 			configureMocks(piece, piece);
 			
-			List<Topic> searchResults = topicSearchDao.searchByTitleAndContent(piece);
+			Page<Topic> searchResultPage = topicSearchDao.searchByTitleAndContent(
+			        piece, DEFAULT_PAGE_REQUEST);
 			
-			Assert.assertTrue(searchResults != null, "Search result must not be null.");
-			Assert.assertTrue(searchResults.size() != 0, "Search result must not be empty.");
+			Assert.assertTrue(searchResultPage.hasContent(), "Search result must not be empty.");
 		}
 	}
 	
@@ -179,10 +213,10 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
 		saveAndFlushIndexes(Arrays.asList(expectedTopic));
 		configureMocks(incorrect, incorrect);
 		
-		List<Topic> searchResults = topicSearchDao.searchByTitleAndContent(incorrect);
+		Page<Topic> searchResultPage = topicSearchDao.searchByTitleAndContent(
+		        incorrect, DEFAULT_PAGE_REQUEST);
 		
-		Assert.assertTrue(searchResults != null, "Search result must not be null.");
-		Assert.assertTrue(searchResults.size() == 0, "Search result must be empty.");
+		Assert.assertTrue(!searchResultPage.hasContent(), "Search result must be empty.");
 	}
 	
     private <E> void saveAndFlushIndexes(List<E> entityList) {
@@ -208,8 +242,9 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
 		saveAndFlushIndexes(Arrays.asList(expectedTopic));
 		configureMocks(wordWithSameRoot, wordWithSameRoot);
 		
-		List<Topic> searchResults = topicSearchDao.searchByTitleAndContent(wordWithSameRoot);
-		Assert.assertTrue(searchResults.size() != 0, "Search result must not be empty.");
+		Page<Topic> searchResultPage = topicSearchDao.searchByTitleAndContent(
+		        wordWithSameRoot, DEFAULT_PAGE_REQUEST);
+		Assert.assertTrue(searchResultPage.hasContent(), "Search result must not be empty.");
 	}
 	
 	@DataProvider(name = "parameterSearchByRoot")
@@ -232,8 +267,9 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
         saveAndFlushIndexes(Arrays.asList(expectedTopic));
         configureMocks(bbCode, bbCode);
         
-        List<Topic> searchResults = topicSearchDao.searchByTitleAndContent(bbCode);
-        Assert.assertTrue(searchResults.size() == 0, "Search result must be empty.");
+        Page<Topic> searchResultPage = topicSearchDao.searchByTitleAndContent(
+                bbCode, DEFAULT_PAGE_REQUEST);
+        Assert.assertTrue(!searchResultPage.hasContent(), "Search result must be empty.");
 	}
 	
 	@DataProvider(name = "parameterSearchByBbCodes")
@@ -252,8 +288,9 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
         saveAndFlushIndexes(Arrays.asList(expectedTopic));
         configureMocks(bbCodeContent, bbCodeContent);
         
-        List<Topic> searchResults = topicSearchDao.searchByTitleAndContent(bbCodeContent);
-        Assert.assertTrue(searchResults.size() != 0, "Search result must not be empty.");
+        Page<Topic> searchResultPage = topicSearchDao.searchByTitleAndContent(
+                bbCodeContent, DEFAULT_PAGE_REQUEST);
+        Assert.assertTrue(searchResultPage.hasContent(), "Search result must not be empty.");
 	}
 	
 	@DataProvider(name = "parameterSearchByBbCodesContent")

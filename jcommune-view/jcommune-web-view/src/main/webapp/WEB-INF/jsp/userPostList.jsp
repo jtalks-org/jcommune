@@ -34,10 +34,10 @@
         <div class="span9">
             <div class="pagination pull-right forum-pagination">
                 <ul>
-                    <jtalks:pagination uri="${topicId}" pagination="${pag}" numberLink="3" list="${posts}"/>
+                    <jtalks:pagination uri="${topicId}" page="${postsPage}" numberLink="3" pagingEnabled="${pagingEnabled}"/>
                  
-                    <c:if test="${pag.maxPages>1}">
-                        <c:if test="${pag.pagingEnabled == true}">
+                    <c:if test="${postsPage.totalPages>1}">
+                        <c:if test="${pagingEnabled == true}">
                             <li>
                                 <a href="?pagingEnabled=false">
                                     <spring:message code="label.showAll"/>
@@ -45,7 +45,7 @@
                             </li>
                         </c:if>
                     </c:if>
-                    <c:if test="${pag.pagingEnabled == false}">
+                    <c:if test="${pagingEnabled == false}">
                         <li>
                             <a href="?pagingEnabled=true">
                                 <spring:message code="label.showPages"/>
@@ -61,7 +61,7 @@
     <div class='post'>  
     <table class="table table-striped table-bordered table-condensed">     
         <c:choose>
-            <c:when test="${!(empty posts)}">
+            <c:when test="${!(empty postsPage.content)}">
                 <thead>
                     <tr>
                         <th><spring:message code="label.info"/></th>
@@ -69,7 +69,7 @@
                     </tr>
                 </thead> 
                 <tbody>
-                    <c:forEach var="post" items="${list}" varStatus="i">
+                    <c:forEach var="post" items="${postsPage.content}" varStatus="i">
                     <tr class='post-content-tr'>
                         <td class='userinfo'>
                             <spring:message code='label.branch.header.branches'/>
@@ -134,10 +134,10 @@
         <div class="span12">
             <div class="pagination pull-right forum-pagination">
                 <ul>
-                    <jtalks:pagination uri="${topicId}" pagination="${pag}" numberLink="3" list="${posts}"/>
+                    <jtalks:pagination uri="${topicId}" page="${postsPage}" numberLink="3" pagingEnabled="${pagingEnabled}"/>
                  
-                    <c:if test="${pag.maxPages>1}">
-                        <c:if test="${pag.pagingEnabled == true}">
+                    <c:if test="${postsPage.totalPages>1}">
+                        <c:if test="${pagingEnabled == true}">
                             <li>
                                 <a href="?pagingEnabled=false">
                                     <spring:message code="label.showAll"/>
@@ -145,7 +145,7 @@
                             </li>
                         </c:if>
                     </c:if>
-                    <c:if test="${pag.pagingEnabled == false}">
+                    <c:if test="${pagingEnabled == false}">
                         <li>
                             <a href="?pagingEnabled=true">
                                 <spring:message code="label.showPages"/>

@@ -48,7 +48,7 @@
             <label for='subject' class='control-label'><spring:message code="label.topic.title"/></label>
             <form:input path="topicName" id="subject" type="text" name="subject" size="45"
                         maxlength="255" tabindex="1"
-                        class="post confirm-unsaved" placeholder='<spring:message code="label.topic.topic_title"/>'/>
+                        class="post script-confirm-unsaved" placeholder='<spring:message code="label.topic.topic_title"/>'/>
             <br/>
 
             <form:errors path="topicName" id="subject" type="text" name="subject" size="45"
@@ -58,7 +58,7 @@
 
         <sec:accesscontrollist hasPermission="16" domainObject="${topic.branch}">
             <div class='control-group'>
-                <form:checkbox path="sticked" value="true" class="confirm-unsaved form-check-radio-box"/>
+                <form:checkbox path="sticked" value="true" class="script-confirm-unsaved form-check-radio-box"/>
                 <label for='sticked' class='string optional'>
                     <spring:message code="label.sticked"/>
                 </label>
@@ -69,13 +69,15 @@
                 <form:label path="topicWeight" class='control-label'>
                     <spring:message code="label.weight"/>
                 </form:label>
-                <form:input path="topicWeight" size="1" class="confirm-unsaved"/>
+                <form:input path="topicWeight" size="1" class="script-confirm-unsaved"/>
 
                 <form:errors path="topicWeight"/>
             </div>
             <div class='control-group'>
-                <form:checkbox path="announcement" value="true" class="confirm-unsaved form-check-radio-box"/>
-                <label for='announcement' class='string optional'><spring:message code="label.announcement"/></label>
+                <form:checkbox path="announcement" value="true" class="script-confirm-unsaved form-check-radio-box"/>
+                <label for='announcement' class='string optional'>
+                    <spring:message code="label.announcement"/>
+                </label>
 
                 <form:errors path="announcement"/>
             </div>

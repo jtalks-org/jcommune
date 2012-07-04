@@ -18,15 +18,17 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.jtalks.jcommune.model.dao.search.TopicSearchDao;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.search.SearchRequestFilter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 /**
  * Hibernate Search DAO implementation for operations with a {@link Topic}.
  * 
@@ -35,10 +37,6 @@ import org.jtalks.jcommune.model.search.SearchRequestFilter;
  */
 public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
         implements TopicSearchDao {
-    /**
-     * The number of records by default.
-     */
-    public static final int DEFAULT_MAX_RECORD = 100;
     /**
      * List of filters.
      */
@@ -67,15 +65,17 @@ public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
      */
     @SuppressWarnings("unchecked")
     @Override
-    public List<Topic> searchByTitleAndContent(String searchText) {
+    public Page<Topic> searchByTitleAndContent(String searchText, JCommunePageRequest pageRequest) {
+        List<Topic> topics = Collections.emptyList();
+        int resultSize = 0;
         //TODO The latest versions of the library filtering is not needed.
         String filteredSearchText = applyFilters(searchText, filters).trim();
         if (!StringUtils.isEmpty(filteredSearchText)) {
-            Query query = createSearchQuery(getFullTextSession(), filteredSearchText);
-            return query.list();
-        } else {
-            return Collections.emptyList();
-        }
+            FullTextQuery query = createSearchQuery(getFullTextSession(), filteredSearchText, pageRequest);
+            topics = query.list();
+            resultSize = query.getResultSize();
+        } 
+        return new PageImpl<Topic>(topics, pageRequest, resultSize);
     }
     
     /**
@@ -83,10 +83,13 @@ public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
      * 
      * @param fullTextSession the Hibernate Search session
      * @param searchText the search text
+     * @param pageRequest contains information for pagination: page number, page size
      * @return the search query
      */
-    private Query createSearchQuery(FullTextSession fullTextSession,
-            String searchText) {
+    private FullTextQuery createSearchQuery(
+            FullTextSession fullTextSession,
+            String searchText,
+            JCommunePageRequest pageRequest) {
         QueryBuilder queryBuilder = fullTextSession.
                 getSearchFactory().
                 buildQueryBuilder().
@@ -101,7 +104,8 @@ public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
                 matching(searchText).
                 createQuery();
         FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery);
-        query.setMaxResults(DEFAULT_MAX_RECORD);
+        query.setFirstResult(pageRequest.getIndexOfFirstItem());
+        query.setMaxResults(pageRequest.getPageSize());
         return query;
     }
     
@@ -124,7 +128,6 @@ public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
      */
     @Override
     public void rebuildIndex() {
-        //TODO We need a testing of performance.
         getFullTextSession().createIndexer(Topic.class).start();
     }
 }

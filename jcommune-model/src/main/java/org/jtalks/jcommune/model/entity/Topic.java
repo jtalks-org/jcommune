@@ -128,14 +128,14 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     private int topicWeight;
     private boolean sticked;
     private boolean announcement;
-    private List<Post> posts = new ArrayList<Post>();
     private Branch branch;
     private int views;
     private Poll poll;
+    private List<Post> posts = new ArrayList<Post>();
     private Set<JCUser> subscribers = new HashSet<JCUser>();
 
     // transient, makes sense for current user only if set explicitly
-    private Integer lastReadPostIndex;
+    private transient Integer lastReadPostIndex;
 
     public static final int MIN_NAME_SIZE = 5;
     public static final int MAX_NAME_SIZE = 120;
