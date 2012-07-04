@@ -20,14 +20,13 @@ import org.jtalks.jcommune.model.entity.PollItem;
 
 /**
  * The implementation of the {@link PollOptionDao} based on Hibernate. The class is responsible
- * for loading {@link org.jtalks.jcommune.model.entity.PollItem} objects from database and update them. This implementation
- * doesn't contain any additional methods, because methods of {@link ChildRepository} cover all
- * needed functionality.
+ * for loading {@link org.jtalks.jcommune.model.entity.PollItem} objects from database and update them.
+ * This implementation doesn't contain any additional methods, because methods of
+ * {@link ChildRepository} covers all needed functionality.
  *
  * @author Anuar Nurmakanov
  * @see ChildRepository
  * @see org.jtalks.jcommune.model.entity.PollItem
  */
-public class PollOptionHibernateDao extends AbstractHibernateChildRepository<PollItem>
-        implements ChildRepository<PollItem> {
+public class PollOptionHibernateDao extends AbstractHibernateChildRepository<PollItem> {
 }

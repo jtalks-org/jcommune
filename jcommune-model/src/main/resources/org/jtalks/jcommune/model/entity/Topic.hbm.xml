@@ -56,4 +56,31 @@
         </set>
 
     </class>
+    
+    <query name="getCountTopicsInBranch">
+        <![CDATA[SELECT COUNT(topic) FROM Topic topic WHERE topic.branch = :branch]]>
+    </query>
+    
+    <query name="getTopicsInBranch">
+        <![CDATA[SELECT topic FROM Topic topic WHERE topic.branch = :branch 
+                 ORDER BY sticked DESC, topicWeight DESC, modificationDate DESC]]>
+    </query>
+    
+    <query name="getCountResentTopics">
+        <![CDATA[SELECT COUNT(topic) FROM Topic topic WHERE modificationDate > :maxModDate]]>
+    </query>
+    
+    <query name="getResentTopics">
+        <![CDATA[FROM Topic WHERE modificationDate > :maxModDate
+                 ORDER BY modificationDate DESC]]>
+    </query>
+    
+    <query name="getCountUnansweredTopics">
+        <![CDATA[SELECT COUNT(t) FROM Topic t WHERE t.posts.size=1]]>
+    </query>
+    
+    <query name="getUnansweredTopics">
+        <![CDATA[FROM Topic t WHERE t.posts.size=1 
+                ORDER BY modificationDate DESC]]>
+    </query>
 </hibernate-mapping>

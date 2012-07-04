@@ -14,12 +14,12 @@
  */
 package org.jtalks.jcommune.model.dao;
 
-import java.util.List;
-
 import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.common.model.entity.Branch;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.springframework.data.domain.Page;
 
 /**
  * DAO for the {@link Topic} objects.
@@ -39,17 +39,20 @@ public interface TopicDao extends ChildRepository<Topic> {
      * Get all topics past last 24 hour.
      *
      * @param lastLogin user's last login date and time
-     * @return list of topics
+     * @param pageRequest contains information for pagination: page number, page size
+     * @return object that contains topics for one page and information for pagination
      */
-    List<Topic> getTopicsUpdatedSince(DateTime lastLogin);
+    Page<Topic> getTopicsUpdatedSince(DateTime lastLogin, JCommunePageRequest pageRequest);
 
 
     /**
      * Get unanswered topics(topics which has only 1 post added during topic creation).
      *
-     * @return list of topics
+     * @param pageRequest contains information for pagination: page number, page size
+     * @return object that contains unanswered topics for one page and information
+     *         for pagination
      */
-    List<Topic> getUnansweredTopics();
+    Page<Topic> getUnansweredTopics(JCommunePageRequest pageRequest);
     
     /**
      * Find the last updated topic in the branch.
@@ -58,4 +61,22 @@ public interface TopicDao extends ChildRepository<Topic> {
      * @return the last updated topic in the branch
      */
     Topic getLastUpdatedTopicInBranch(Branch branch);
+    
+    /**
+     * Get topics in the branch.
+     * 
+     * @param branch for this branch we will find topics
+     * @param pageRequest contains information for pagination: page number, page size
+     * @return object that contains topics for one page(note, that one page may contain
+     *         all topics) and information for pagination
+     */
+    Page<Topic> getTopics(Branch branch, JCommunePageRequest pageRequest);
+    
+    /**
+     * Get count of topics in the branch.
+     * 
+     * @param branch the branch
+     * @return count of topics in the branch
+     */
+    int countTopics(Branch branch);
 }

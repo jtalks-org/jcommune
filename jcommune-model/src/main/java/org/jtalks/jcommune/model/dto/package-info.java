@@ -12,21 +12,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service.security;
-
 /**
- * Contains constants specific to security.
- *
- * @author Kirill Afonin
+ * Contains common data transfer objects, that are used in
+ * all modules of project.
  */
-public final class SecurityConstants {
-    /**
-     * Role name of administrators.
-     */
-    public static final String ROLE_ADMIN = "ROLE_ADMIN";
-    /**
-     * You can't create instance of this class.
-     */
-    private SecurityConstants() {
-    }
-}
+package org.jtalks.jcommune.model.dto;

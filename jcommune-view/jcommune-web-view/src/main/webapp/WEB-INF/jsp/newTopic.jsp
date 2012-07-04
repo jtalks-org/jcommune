@@ -81,11 +81,11 @@
         </div>
         <br/>
         <br/>
-        <jtalks:newPoll titleNameValue="pollTitle"
-                        pollOptionsNameValue="pollItems"
-                        multipleName="multiple"
+        <jtalks:newPoll titleNameValue="topic.poll.title"
+                        pollOptionsNameValue="topic.poll.pollItemsValue"
+                        multipleName="topic.poll.multipleAnswer"
                         multipleValue="${topicDto.poll.multipleAnswer}"
-                        endingDateNameValue="endingDate"/>
+                        endingDateNameValue="topic.poll.endingDate"/>
     </form:form>
 
     <a href="${pageContext.request.contextPath}/branches/${branchId}" class='back-btn'>

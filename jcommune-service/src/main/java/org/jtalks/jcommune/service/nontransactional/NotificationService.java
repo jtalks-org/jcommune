@@ -14,10 +14,8 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
-import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.JcommuneProperty;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.UserService;
 
@@ -39,7 +37,7 @@ public class NotificationService {
 
     private UserService userService;
     private MailService mailService;
-    private JcommuneProperty notificationsEnabledProperty;
+    private JCommuneProperty notificationsEnabledProperty;
 
     /**
      * @param userService to determine the update author
@@ -49,7 +47,7 @@ public class NotificationService {
     public NotificationService(
             UserService userService,
             MailService mailService,
-            JcommuneProperty notificationsEnabledProperty) {
+            JCommuneProperty notificationsEnabledProperty) {
         this.userService = userService;
         this.mailService = mailService;
         this.notificationsEnabledProperty = notificationsEnabledProperty;

@@ -19,7 +19,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     
-    <bean id="sendingNotificationsProperty" class="org.jtalks.jcommune.model.entity.JcommuneProperty"
+    <bean id="sendingNotificationsProperty" class="org.jtalks.jcommune.model.entity.JCommuneProperty"
           factory-method="valueOf">
         <constructor-arg type="java.lang.String" value="SENDING_NOTIFICATIONS_ENABLED"/>
         <property name="propertyDao" ref="propertyDao"/>

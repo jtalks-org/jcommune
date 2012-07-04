@@ -15,9 +15,13 @@
 
 package org.jtalks.jcommune.model.entity;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
+import org.jtalks.jcommune.model.validation.annotations.ValidPoll;
+import org.jtalks.jcommune.model.validation.validators.PollValidator;
 
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,10 +33,14 @@ import java.util.List;
  *
  * @author Anuar Nurmakanov
  */
+@ValidPoll(pollTitle = "title", pollItems = "pollItemsValue", endingDate = "endingDate")
 public class Poll extends Entity {
+
+    @Size(min = Poll.MIN_TITLE_LENGTH, max = Poll.MAX_TITLE_LENGTH)
     private String title;
     private boolean multipleAnswer;
     private DateTime endingDate;
+    private String pollItemsValue;
     private List<PollItem> pollItems = new ArrayList<PollItem>();
     private Topic topic;
 
@@ -114,6 +122,15 @@ public class Poll extends Entity {
         this.endingDate = endingDate;
     }
 
+    public String getPollItemsValue() {
+        return pollItemsValue;
+    }
+
+    public void setPollItemsValue(String pollItemsValue) {
+        this.pollItemsValue = pollItemsValue;
+        setPollItems(PollValidator.parseItems(pollItemsValue));
+    }
+
     /**
      * Get the list of poll options.
      *
@@ -128,7 +145,7 @@ public class Poll extends Entity {
      *
      * @param pollItems the list of poll options
      */
-    protected void setPollItems(List<PollItem> pollItems) {
+    public void setPollItems(List<PollItem> pollItems) {
         this.pollItems = pollItems;
     }
 
@@ -194,4 +211,9 @@ public class Poll extends Entity {
     public boolean isActive() {
         return endingDate == null || endingDate.isAfterNow();
     }
+
+    public boolean hasPoll() {
+        return StringUtils.isNotBlank(title) && StringUtils.isNotBlank(pollItemsValue);
+    }
+
 }

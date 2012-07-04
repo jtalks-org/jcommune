@@ -17,6 +17,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.classic.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
@@ -26,7 +27,10 @@ import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
 import org.jtalks.common.model.entity.Branch;
 import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 /**
  * Hibernate DAO implementation from the {@link Topic}.
@@ -35,6 +39,7 @@ import org.jtalks.jcommune.model.entity.Topic;
  * @author Kirill Afonin
  * @author Vitaliy Kravchenko
  * @author Eugeny Batov
+ * @author Anuar Nurmakanov
  */
 public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> implements TopicDao {
 
@@ -43,11 +48,19 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      * {@inheritDoc}
      */
     @Override
-    public List<Topic> getTopicsUpdatedSince(DateTime timeStamp) {
-        return (List<Topic>) getSession().createQuery("FROM Topic WHERE modificationDate > :maxModDate " +
-                "ORDER BY modificationDate DESC")
+    public Page<Topic> getTopicsUpdatedSince(DateTime timeStamp, JCommunePageRequest pageRequest) {
+        Number totalCount = (Number)getSession()
+                .getNamedQuery("getCountResentTopics")
                 .setParameter("maxModDate", timeStamp)
+                .uniqueResult();
+        @SuppressWarnings("unchecked")
+        List<Topic> recentTopics = (List<Topic>) getSession()
+                .getNamedQuery("getResentTopics")
+                .setParameter("maxModDate", timeStamp)
+                .setFirstResult(pageRequest.getIndexOfFirstItem())
+                .setMaxResults(pageRequest.getPageSize())
                 .list();
+        return new PageImpl<Topic>(recentTopics, pageRequest, totalCount.intValue());
     }
 
 
@@ -55,10 +68,17 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      * {@inheritDoc}
      */
     @Override
-    public List<Topic> getUnansweredTopics() {
-        return (List<Topic>) getSession().createQuery("FROM Topic t WHERE t.posts.size=1 " +
-                "ORDER BY modificationDate DESC")
+    public Page<Topic> getUnansweredTopics(JCommunePageRequest pageRequest) {
+        Number totalCount = (Number) getSession()
+                .getNamedQuery("getCountUnansweredTopics")
+                .uniqueResult();
+        @SuppressWarnings("unchecked")
+        List<Topic> unansweredTopics = (List<Topic>) getSession()
+                .getNamedQuery("getUnansweredTopics")
+                .setFirstResult(pageRequest.getIndexOfFirstItem())
+                .setMaxResults(pageRequest.getPageSize())
                 .list();
+        return new PageImpl<Topic>(unansweredTopics, pageRequest, totalCount.intValue());
     }
 
     /**
@@ -81,5 +101,35 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
                 .add(Property.forName(modificationDateProperty).eq(topicMaxModificationDateCriteria))
                 .list();
         return topics.isEmpty() ? null : topics.get(0);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<Topic> getTopics(Branch branch, JCommunePageRequest pageRequest) {
+        int totalCount = countTopics(branch);
+        Query query = getSession().getNamedQuery("getTopicsInBranch")
+                .setParameter("branch", branch);
+        if (pageRequest.isPagingEnabled()) {
+            query = query.setFirstResult(pageRequest.getIndexOfFirstItem())
+                    .setMaxResults(pageRequest.getPageSize());
+        }
+        @SuppressWarnings("unchecked")
+        List<Topic> topics = (List<Topic>) query.list();
+        return new PageImpl<Topic>(topics, pageRequest, totalCount);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int countTopics(Branch branch) {
+        Number count = (Number) getSession()
+                .getNamedQuery("getCountTopicsInBranch")
+                .setParameter("branch", branch)
+                .uniqueResult();
+        return count.intValue();
     }
 }

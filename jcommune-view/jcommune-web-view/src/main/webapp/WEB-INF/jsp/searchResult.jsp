@@ -36,7 +36,7 @@
         <div class="span9">
             <div class="pagination pull-right forum-pagination">
                 <ul>
-                    <jtalks:pagination uri="${uri}" pagination="${pagination}" list="${topics}"/>
+                    <jtalks:pagination uri="${uri}" page="${searchResultPage}" pagingEnabled="${pagingEnabled}"/>
                 </ul>
             </div>
         </div>
@@ -45,7 +45,7 @@
     <!-- Topics table -->
     <table id="topics-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
         <c:choose>
-	       <c:when test="${!(empty topics)}">
+	       <c:when test="${!(empty searchResultPage.content)}">
 	           <thead>
 		            <tr>
 		                <th class="status-col"></th>
@@ -57,7 +57,7 @@
 		            </tr>
 		        </thead>
 		        <tbody>
-                    <c:forEach var="topic" items="${list}" varStatus="i">
+                    <c:forEach var="topic" items="${searchResultPage.content}" varStatus="i">
                         <tr>
                             <td class="status-col"><img class="status-img" 
                                 src="${pageContext.request.contextPath}/resources/images/closed.png" 
@@ -120,7 +120,7 @@
         <div class="span12">
             <div class="pagination pull-right forum-pagination">
                 <ul>
-                    <jtalks:pagination uri="" pagination="${pagination}" list="${topics}" />
+                    <jtalks:pagination uri="${uri}" page="${searchResultPage}" pagingEnabled="${pagingEnabled}" />
                 </ul>
             </div>
         </div>

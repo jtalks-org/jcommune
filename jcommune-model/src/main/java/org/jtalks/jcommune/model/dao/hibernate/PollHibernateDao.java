@@ -27,6 +27,5 @@ import org.jtalks.jcommune.model.entity.Poll;
  * @see ChildRepository
  * @see Poll
  */
-public class PollHibernateDao extends AbstractHibernateChildRepository<Poll>
-        implements ChildRepository<Poll> {
+public class PollHibernateDao extends AbstractHibernateChildRepository<Poll> {
 }

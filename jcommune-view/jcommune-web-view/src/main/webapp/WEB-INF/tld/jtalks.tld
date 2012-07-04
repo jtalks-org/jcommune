@@ -26,36 +26,6 @@
     <uri>http://www.jtalks.org/tags</uri>
 
     <tag>
-        <name>pagination</name>
-        <tag-class>org.jtalks.jcommune.web.tags.Paginator</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <name>uri</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <name>numberLink</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.Integer</type>
-        </attribute>
-        <attribute>
-            <name>pagination</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>org.jtalks.jcommune.web.util.Pagination</type>
-        </attribute>
-        <attribute>
-            <name>list</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.util.List</type>
-        </attribute>
-    </tag>
-
-    <tag>
         <name>ifContains</name>
         <tag-class>org.jtalks.jcommune.web.tags.ContainsSupport</tag-class>
         <body-content>empty</body-content>
@@ -161,6 +131,11 @@
     <tag-file>
         <name>newPoll</name>
         <path>/WEB-INF/tags/newPoll.tag</path>
+    </tag-file>
+    
+    <tag-file>
+        <name>pagination</name>
+        <path>/WEB-INF/tags/pagination.tag</path>
     </tag-file>
 
 </taglib>

@@ -35,7 +35,7 @@ import java.util.List;
  */
 public final class PersistedObjectsFactory {
     //todo: refactor this class without using static
-    //bcz static will affect our tests if we will want run it in some threads
+    //because static will affect our tests if we will want run it in some threads
     private static Session session;
 
     private PersistedObjectsFactory() {
@@ -72,6 +72,18 @@ public final class PersistedObjectsFactory {
                 "Message title", "Private message body");
     }
 
+    public static List<Topic> createAndSaveTopicList(int size) {
+        Branch branch = ObjectsFactory.getDefaultBranch();
+        JCUser user = persist(ObjectsFactory.getDefaultUser());
+        for (int i = 0; i < size; i++) {
+            Topic topic = new Topic(user, "title" + i);
+            branch.addTopic(topic);
+        }
+        persist(branch);
+        return branch.getTopics();
+    }
+
+
     public static List<Post> createAndSavePostList(int size) {
         List<Post> posts = new ArrayList<Post>();
         Topic topic = PersistedObjectsFactory.getDefaultTopic();
@@ -95,6 +107,7 @@ public final class PersistedObjectsFactory {
     public static Poll createDefaultVoting() {
         Topic topic = getDefaultTopic();
         Poll voting = new Poll("New voting");
+        voting.setPollItemsValue("item1\nitem2\nitem3\n");
         topic.setPoll(voting);
         voting.setTopic(topic);
         persist(topic);

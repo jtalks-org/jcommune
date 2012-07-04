@@ -16,33 +16,17 @@ package org.jtalks.jcommune.service.security;
 
 
 public enum AdministrationGroup {
-    ADMIN("ROLE_ADMIN", 13L),
-    USER("ROLE_USER", 11L),
-    BANNED_USER("ROLE_BANNED_USER", 12L),
-    ANONYMOUS("ROLE_ANONYMOUS", 0L);
+    ADMIN(13L),
+    USER( 11L),
+    BANNED_USER(12L);
 
-    private String name;
     private Long id;
 
-    private AdministrationGroup(String name, Long id) {
-        this.name = name;
+    private AdministrationGroup( Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public Long getId() {
         return id;
-    }
-
-    public static AdministrationGroup getAdministrationGroupByName(String name) {
-        for (AdministrationGroup administrationGroup : values()) {
-            if (administrationGroup.getName().equals(name)) {
-                return administrationGroup;
-            }
-        }
-        throw new IllegalArgumentException("AdministrationGroup with name=" + name + " is not exist.");
     }
 }

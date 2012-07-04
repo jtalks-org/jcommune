@@ -50,4 +50,9 @@ $labelPollVote = '<spring:message code="label.poll.vote"/>';
 
 $labelSelectedColor = '<spring:message code="label.selected.color"/>';
 
-$localeCode = '<spring:message code="locale.code"/>'; 
+$localeCode = '<spring:message code="locale.code"/>';
+
+$labelSubscribe = '<spring:message code="label.subscribe"/>';
+$labelSubscribeTooltip = '<spring:message code="label.subscribe.tooltip"/>';
+$labelUnsubscribe = '<spring:message code="label.unsubscribe"/>';
+$labelUnsubscribeTooltip = '<spring:message code="label.unsubscribe.tooltip"/>';

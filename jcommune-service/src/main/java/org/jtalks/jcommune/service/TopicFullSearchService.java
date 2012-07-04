@@ -14,9 +14,8 @@
  */
 package org.jtalks.jcommune.service;
 
-import java.util.List;
-
 import org.jtalks.jcommune.model.entity.Topic;
+import org.springframework.data.domain.Page;
 
 /**
  * This service provides full-text search topics.
@@ -29,9 +28,10 @@ public interface TopicFullSearchService {
      * Search by topics, title and content of which corresponds to the text of search.
      * 
      * @param phrase phrase
+     * @param page TODO
      * @return list of topics
      */
-    List<Topic> searchByTitleAndContent(String phrase);
+    Page<Topic> searchByTitleAndContent(String phrase, int page);
     
     /**
      * Indexing topics from the database.

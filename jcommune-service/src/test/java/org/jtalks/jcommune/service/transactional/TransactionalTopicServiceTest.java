@@ -14,6 +14,19 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.model.permissions.GeneralPermission;
@@ -21,6 +34,7 @@ import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
@@ -31,23 +45,13 @@ import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
+import org.jtalks.jcommune.service.nontransactional.PaginationService;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
 
 /**
  * This test cover {@code TransactionalTopicService} logic validation.
@@ -91,6 +95,8 @@ public class TransactionalTopicServiceTest {
     @Mock
     private SubscriptionService subscriptionService;
     @Mock
+    private PaginationService paginationService;
+    @Mock
     private UserService userService;
 
     private CompoundAclBuilder<User> aclBuilder;
@@ -99,9 +105,18 @@ public class TransactionalTopicServiceTest {
     public void setUp() throws Exception {
         initMocks(this);
         aclBuilder = mockAclBuilder();
-        topicService = new TransactionalTopicService(topicDao, securityService,
-                branchService, branchDao, notificationService, subscriptionService, userService);
+        topicService = new TransactionalTopicService(
+                topicDao,
+                securityService,
+                branchService,
+                branchDao,
+                notificationService,
+                subscriptionService,
+                paginationService,
+                userService);
+        
         user = new JCUser(USERNAME, "email@mail.com", "password");
+        
     }
 
     @Test
@@ -196,24 +211,34 @@ public class TransactionalTopicServiceTest {
 
     @Test
     public void testGetAllTopicsPastLastDay() throws NotFoundException {
+        int pageNumber = 1;
+        int pageSize = 20;
         List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
-        when(topicDao.getTopicsUpdatedSince(Matchers.<DateTime>any())).thenReturn(expectedList);
+        Page<Topic> expectedPage = new PageImpl<Topic>(expectedList);
+        when(topicDao.getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JCommunePageRequest> any()))
+            .thenReturn(expectedPage);
+        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
 
-        List<Topic> topics = topicService.getRecentTopics();
+        Page<Topic> actualPage = topicService.getRecentTopics(pageNumber);
 
-        assertNotNull(topics);
-        assertEquals(topics.size(), 2);
-        verify(topicDao).getTopicsUpdatedSince(Matchers.<DateTime>any());
+        assertNotNull(actualPage);
+        assertEquals(expectedPage, actualPage);
+        verify(topicDao).getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JCommunePageRequest> any());
     }
 
     @Test
     public void testGetUnansweredTopics() {
+        int pageNumber = 1;
+        int pageSize = 20;
         List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
-        when(topicDao.getUnansweredTopics()).thenReturn(expectedList);
+        Page<Topic> expectedPage = new PageImpl<Topic>(expectedList);
+        when(topicDao.getUnansweredTopics(Matchers.<JCommunePageRequest> any()))
+            .thenReturn(expectedPage);
+        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
 
-        List<Topic> topics = topicService.getUnansweredTopics();
-        assertNotNull(topics);
-        assertEquals(topics.size(), 2);
+        Page<Topic> actualPage = topicService.getUnansweredTopics(pageNumber);
+        assertNotNull(actualPage);
+        assertEquals(actualPage, expectedPage);
     }
 
 
@@ -386,6 +411,24 @@ public class TransactionalTopicServiceTest {
         when(branchDao.isExist(BRANCH_ID)).thenReturn(false);
 
         topicService.moveTopic(TOPIC_ID, BRANCH_ID);
+    }
+    
+    @Test
+    public void testGetTopics() {
+        int pageSize = 50;
+        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        Page<Topic> expectedPage = new PageImpl<Topic>(Collections.<Topic> emptyList());
+        
+        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
+        when(topicDao.getTopics(
+                Matchers.any(Branch.class), Matchers.any(JCommunePageRequest.class)))
+            .thenReturn(expectedPage);
+        
+        Page<Topic> actualPage = topicService.getTopics(branch, pageSize, true);
+        
+        assertEquals(actualPage, expectedPage, "Service returned incorrect data for one page of topics");
+        verify(topicDao).getTopics(
+                Matchers.any(Branch.class), Matchers.any(JCommunePageRequest.class));
     }
 
     private Topic createTopic() {

@@ -16,15 +16,19 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
 import org.jtalks.jcommune.model.dao.PostDao;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 /**
  * The implementation of PostDao based on Hibernate.
@@ -36,14 +40,26 @@ import org.jtalks.jcommune.model.entity.Topic;
  * @author Anuar Nurmakanov
  */
 public class PostHibernateDao extends AbstractHibernateChildRepository<Post> implements PostDao {
+    private static final String TOPIC_PARAMETER_NAME = "topic";
 
     /**
      * {@inheritDoc}
      */
-    public List<Post> getUserPosts(JCUser author) {
-        return (List<Post>) getSession().createQuery("FROM Post p WHERE p.userCreated = ? ORDER BY creationDate DESC")
-                .setParameter(0, author)
-                .list();
+    public Page<Post> getUserPosts(JCUser author, JCommunePageRequest pageRequest) {
+        Number totalCount = (Number) getSession()
+                .getNamedQuery("getCountPostsOfUser")
+                .setParameter("userCreated", author)
+                .uniqueResult();
+        Query query = getSession()
+                .getNamedQuery("getPostsOfUser")
+                .setParameter("userCreated", author);
+        if (pageRequest.isPagingEnabled()) {
+            query.setFirstResult(pageRequest.getIndexOfFirstItem());
+            query.setMaxResults(pageRequest.getPageSize());
+        }
+        @SuppressWarnings("unchecked")
+        List<Post> posts = (List<Post>) query.list();
+        return new PageImpl<Post>(posts, pageRequest, totalCount.intValue());
     }
     
     /**
@@ -64,5 +80,27 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
                 .list();
         //if the result contains more than one message, then we return the first
         return posts.isEmpty()? null: posts.get(0);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<Post> getPosts(Topic topic, JCommunePageRequest pageRequest) {
+        Number totalCount = (Number) getSession()
+                .getNamedQuery("getCountPostsInTopic")
+                .setParameter(TOPIC_PARAMETER_NAME, topic)
+                .uniqueResult();
+        Query query = getSession()
+                .getNamedQuery("getPostsInTopic")
+                .setParameter(TOPIC_PARAMETER_NAME, topic);
+        if (pageRequest.isPagingEnabled()) {
+            query.setFirstResult(pageRequest.getIndexOfFirstItem());
+            query.setMaxResults(pageRequest.getPageSize());
+        }
+        //TODO LIST_INDEX?
+        @SuppressWarnings("unchecked")
+        List<Post> posts = (List<Post> ) query.list();
+        return new PageImpl<Post>(posts, pageRequest, totalCount.intValue());
     }
 }
