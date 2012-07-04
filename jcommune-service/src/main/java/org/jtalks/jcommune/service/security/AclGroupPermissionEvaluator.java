@@ -70,6 +70,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
         return group.getUsers().contains(authentication.getPrincipal());
     }
 
+    //TODO In runtime authentication object contains clear user password. May be potential security issues.
     /**
      * {@inheritDoc}
      */
