@@ -25,7 +25,7 @@ import static org.testng.Assert.assertEquals;
  */
 public class AnonymousUserTest {
 
-    AnonymousUser user;
+    private AnonymousUser user;
 
     @BeforeMethod
     public void setUp(){
@@ -43,4 +43,38 @@ public class AnonymousUserTest {
         assertTrue(user.isAnonymous());
     }
 
+    @Test(expectedExceptions=UnsupportedOperationException.class)
+    public void testGetPassword() {
+        user.getPassword();
+    }
+    
+    @Test(expectedExceptions=UnsupportedOperationException.class)
+    public void testGetEmail() {
+        user.getEmail();
+    }
+    
+    @Test(expectedExceptions=UnsupportedOperationException.class)
+    public void testGetAuthorities() {
+        user.getAuthorities();
+    }
+    
+    @Test(expectedExceptions=UnsupportedOperationException.class)
+    public void testGetGroups() {
+        user.getGroups();
+    }
+    
+    @Test(expectedExceptions=UnsupportedOperationException.class)
+    public void testGetId() {
+        user.getId();
+    }
+    
+    @Test(expectedExceptions=UnsupportedOperationException.class)
+    public void testGetUsername() {
+        user.getUsername();
+    }
+    
+    @Test(expectedExceptions=UnsupportedOperationException.class)
+    public void testGetEncodedUsername() {
+        user.getEncodedUsername();
+    }
 }

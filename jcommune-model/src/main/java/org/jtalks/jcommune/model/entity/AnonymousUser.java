@@ -14,6 +14,12 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import java.util.Collection;
+import java.util.List;
+
+import org.jtalks.common.model.entity.Group;
+import org.springframework.security.core.GrantedAuthority;
+
 /**
  * Represents null user, e.i. anonymous user.
  *
@@ -22,11 +28,48 @@ package org.jtalks.jcommune.model.entity;
 public class AnonymousUser extends JCUser {
     
     private static final long serialVersionUID = 1L;
+    
+    public static final String USERNAME_ANONYMOUS = "";
 
     public AnonymousUser() {
-        super("", null, null);
+        super(USERNAME_ANONYMOUS, null, null);
         this.setPageSize(JCUser.DEFAULT_PAGE_SIZE);
         this.setLanguage(Language.ENGLISH);
+    }
+
+    @Override
+    public Collection<GrantedAuthority> getAuthorities() {
+        throw new UnsupportedOperationException("This operation is not supported");
+    }
+    
+    @Override
+    public String getEmail() {
+        throw new UnsupportedOperationException("This operation is not supported");
+    }
+    
+    @Override
+    public String getEncodedUsername() {
+        throw new UnsupportedOperationException("This operation is not supported");
+    }
+    
+    @Override
+    public List<Group> getGroups() {
+        throw new UnsupportedOperationException("This operation is not supported");
+    }
+    
+    @Override
+    public long getId() {
+        throw new UnsupportedOperationException("This operation is not supported");
+    }
+    
+    @Override
+    public String getPassword() {
+        throw new UnsupportedOperationException("This operation is not supported");
+    }
+    
+    @Override
+    public String getUsername() {
+        throw new UnsupportedOperationException("This operation is not supported");
     }
     
     @Override
