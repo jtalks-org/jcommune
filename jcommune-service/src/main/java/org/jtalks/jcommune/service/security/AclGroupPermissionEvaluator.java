@@ -67,6 +67,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
         throw new IllegalArgumentException("Method with current arguments is not supported.");
     }
 
+    //TODO In runtime authentication object contains clear user password. May be potential security issues.
     /**
      * {@inheritDoc}
      */
