@@ -68,7 +68,6 @@ public class UserDataInterceptor extends HandlerInterceptorAdapter {
             JCUser user = userService.getCurrentUser();
 
             request.setAttribute("encodedUsername", (user.isAnonymous()) ? null : user.getEncodedUsername());
-            request.setAttribute("user", user);
         }
     }
 }

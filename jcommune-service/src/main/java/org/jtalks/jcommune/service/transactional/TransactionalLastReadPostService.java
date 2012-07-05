@@ -71,8 +71,12 @@ public class TransactionalLastReadPostService implements LastReadPostService {
     @Override
     public Integer getLastReadPostForTopic(Topic topic) {
         JCUser current = userService.getCurrentUser();
-        LastReadPost post = lastReadPostDao.getLastReadPost(current, topic);
-        return (post == null) ? null : post.getPostIndex();
+        if (current.isAnonymous()) {
+            return null;
+        } else {
+            LastReadPost post = lastReadPostDao.getLastReadPost(current, topic);
+            return (post == null) ? null : post.getPostIndex();
+        }
     }
 
     /**

@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.mockito.Mock;
@@ -49,13 +50,6 @@ public class PaginationServiceTest {
         Assert.assertEquals(actualPageSize, expectedPageSize, "Invalid page size for the user.");
     }
     
-    @Test(dataProvider = "getPageSizeForUserParameters")
-    public void getPageSizeForUser(JCUser user, int expectedPageSize) {
-        int actualPageSize = paginationService.getPageSizeFor(user);
-        
-        Assert.assertEquals(actualPageSize, expectedPageSize, "Invalid page size for the user.");
-    }
-    
     @DataProvider(name = "getPageSizeForUserParameters")
     public Object[][] getPageSizeForUserParameters() {
         int pageSize = JCUser.DEFAULT_PAGE_SIZE + 1;
@@ -63,7 +57,7 @@ public class PaginationServiceTest {
         user.setPageSize(pageSize);
         
         return new Object[][] {
-                {null, JCUser.DEFAULT_PAGE_SIZE},
+                {new AnonymousUser(), JCUser.DEFAULT_PAGE_SIZE},
                 {user, pageSize}
         };
     }

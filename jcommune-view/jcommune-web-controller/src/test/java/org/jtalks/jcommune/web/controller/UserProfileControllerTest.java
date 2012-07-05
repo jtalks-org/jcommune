@@ -40,7 +40,6 @@ import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
-import org.jtalks.jcommune.service.nontransactional.PaginationService;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
@@ -79,7 +78,6 @@ public class UserProfileControllerTest {
     private BreadcrumbBuilder breadcrumbBuilder;
     private ImageUtils imageUtils;
     private PostService postService;
-    private PaginationService paginationService;
 
     @BeforeClass
     public void mockAvatar() throws IOException {
@@ -92,13 +90,11 @@ public class UserProfileControllerTest {
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
         imageUtils = mock(ImageUtils.class);
         postService = mock(PostService.class);
-        paginationService = mock(PaginationService.class);
         profileController = new UserProfileController(
                 userService,
                 breadcrumbBuilder,
                 imageUtils,
-                postService,
-                paginationService);
+                postService);
     }
 
     @Test

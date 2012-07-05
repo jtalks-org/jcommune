@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
@@ -155,7 +156,7 @@ public class UserControllerTest {
     
     @Test
     public void testLoginUserNotLogged() {
-        when(userService.getCurrentUser()).thenReturn(null);
+        when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
         
         String result = userController.loginPage();
         

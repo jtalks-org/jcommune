@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.util;
 
+import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.UserService;
@@ -71,7 +72,7 @@ public class UserDataInterceptorTest {
     @Test
     public void testPostHandleWithoutCurrentUser() throws Exception {
         when(service.currentUserNewPmCount()).thenReturn(0);
-        when(userService.getCurrentUser()).thenReturn(null);
+        when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
 
         interceptor.postHandle(request, response, null, new ModelAndView("view"));
 

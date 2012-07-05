@@ -23,6 +23,7 @@ import org.jtalks.common.model.permissions.ProfilePermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.service.UserService;
@@ -318,7 +319,9 @@ public class TransactionalUserServiceTest {
     public void testGetCurrentUserForAnonymous(){
         when(securityService.getCurrentUserUsername()).thenReturn(null);
         
-        assertNull(userService.getCurrentUser());
+        JCUser user = userService.getCurrentUser();
+        assertNotNull(user);
+        assertTrue(user instanceof AnonymousUser);
     }
 
     /**
