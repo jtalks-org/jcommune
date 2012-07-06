@@ -26,5 +26,13 @@
         <property name="name" value="jcommune.sending_notifications_enabled"/>
         <property name="defaultValue" value="true"/>
     </bean>
+    
+    <bean id="sessionTimeoutProperty" class="org.jtalks.jcommune.model.entity.JCommuneProperty"
+          factory-method="valueOf">
+        <constructor-arg type="java.lang.String" value="SESSION_TIMEOUT"/>
+        <property name="propertyDao" ref="propertyDao"/>
+        <property name="name" value="jcommune.session_timeout"/>
+        <property name="defaultValue" value="24"/>
+    </bean>
 
 </beans>
