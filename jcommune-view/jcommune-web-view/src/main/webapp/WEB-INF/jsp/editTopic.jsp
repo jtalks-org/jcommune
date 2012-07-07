@@ -42,13 +42,13 @@
     <form:form name="editForm"
                action="${pageContext.request.contextPath}/topics/${topicId}/edit?branchId=${branchId}"
                method="POST" modelAttribute="topicDto" class='well anti-multipost'>
-        <form:hidden path="id"/>
+        <form:hidden path="topic.id"/>
 
         <div class='control-group'>
             <label for='subject' class='control-label'><spring:message code="label.topic.title"/></label>
             <form:input path="topic.title" id="subject" type="text" name="subject" size="45"
                         maxlength="255" tabindex="1"
-                        class="post confirm-unsaved" placeholder='<spring:message code="label.topic.topic_title"/>'/>
+                        class="post script-confirm-unsaved" placeholder='<spring:message code="label.topic.topic_title"/>'/>
             <br/>
 
             <form:errors path="topic.title" id="subject" type="text" name="subject" size="45"
@@ -74,8 +74,10 @@
                 <form:errors path="topic.topicWeight"/>
             </div>
             <div class='control-group'>
-                <form:checkbox path="announcement" value="true" class="confirm-unsaved form-check-radio-box"/>
-                <label for='announcement' class='string optional'><spring:message code="label.announcement"/></label>
+                <form:checkbox path="announcement" value="true" class="script-confirm-unsaved form-check-radio-box"/>
+                <label for='announcement' class='string optional'>
+                    <spring:message code="label.announcement"/>
+                </label>
 
                 <form:errors path="announcement"/>
             </div>

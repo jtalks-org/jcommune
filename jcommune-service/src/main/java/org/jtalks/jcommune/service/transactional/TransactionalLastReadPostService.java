@@ -53,7 +53,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
     @Override
     public List<Topic> fillLastReadPostForTopics(List<Topic> topics) {
         JCUser current = userService.getCurrentUser();
-        if (current != null) {
+        if (!current.isAnonymous()) {
             for (Topic topic : topics) {
                 // todo: find more efficient solution not to perform queries in loop
                 LastReadPost post = lastReadPostDao.getLastReadPost(current, topic);
@@ -71,8 +71,12 @@ public class TransactionalLastReadPostService implements LastReadPostService {
     @Override
     public Integer getLastReadPostForTopic(Topic topic) {
         JCUser current = userService.getCurrentUser();
-        LastReadPost post = lastReadPostDao.getLastReadPost(current, topic);
-        return (post == null) ? null : post.getPostIndex();
+        if (current.isAnonymous()) {
+            return null;
+        } else {
+            LastReadPost post = lastReadPostDao.getLastReadPost(current, topic);
+            return (post == null) ? null : post.getPostIndex();
+        }
     }
 
     /**
@@ -81,7 +85,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
     @Override
     public void markTopicPageAsRead(Topic topic, int pageNum, boolean pagingEnabled) {
         JCUser current = userService.getCurrentUser();
-        if (current != null) { // topics are always unread for anonymous users
+        if (!current.isAnonymous()) { // topics are always unread for anonymous users
             int postIndex = this.calculatePostIndex(current, topic, pageNum, pagingEnabled);
             saveLastReadPost(current, topic, postIndex);
         }
@@ -93,7 +97,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
     @Override
     public void markTopicAsRead(Topic topic) {
         JCUser current = userService.getCurrentUser();
-        if (current != null) { // topics are always unread for anonymous users
+        if (!current.isAnonymous()) { // topics are always unread for anonymous users
             saveLastReadPost(current, topic, topic.getPostCount() - 1);
         }
     }

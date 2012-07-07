@@ -155,7 +155,7 @@
                 <pre id="htmlContent"></pre>
                         <spring:message code="placeholder.editor.content" var="placeholderEditorContent"/>
                 <textarea id="tbMsg" name="${bodyParameterName}" style="width:100%;height: 350px"
-                          placeholder="${placeholderEditorContent}"><c:out
+                          placeholder="${placeholderEditorContent}" class="script-confirm-unsaved"><c:out
                         value="${postText}"/></textarea>
             </span>
     <br>

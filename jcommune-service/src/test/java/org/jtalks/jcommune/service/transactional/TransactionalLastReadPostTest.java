@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.hibernate.TransientObjectException;
 import org.jtalks.jcommune.model.dao.LastReadPostDao;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.UserService;
@@ -71,7 +72,9 @@ public class TransactionalLastReadPostTest {
     }
 
     @Test
-    public void testFillLastReadPostsForTopicsAnonymous() {
+    public void testFillLastReadPostsForTopicsAnonymous() {        
+        when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
+        
         lastReadPostService.fillLastReadPostForTopics(new ArrayList<Topic>());
 
         verify(lastReadPostDao, never()).getLastReadPost(Matchers.<JCUser>any(), Matchers.<Topic>any());
@@ -91,6 +94,8 @@ public class TransactionalLastReadPostTest {
 
     @Test
     public void testMarkTopicPageAsReadAnonymous() {
+        when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
+        
         Topic topic = this.createTestTopic();
 
         lastReadPostService.markTopicPageAsRead(topic, 1, true);
@@ -168,6 +173,8 @@ public class TransactionalLastReadPostTest {
 
     @Test
     public void testMarkTopicAsReadAnonymous() {
+        when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
+        
         Topic topic = this.createTestTopic();
 
         lastReadPostService.markTopicAsRead(topic);
@@ -191,6 +198,17 @@ public class TransactionalLastReadPostTest {
         Topic topic = this.createTestTopic();
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(null);
+
+        assertNull(lastReadPostService.getLastReadPostForTopic(topic));
+    }
+    
+    @Test
+    public void testGetLastReadPostInTopicForAnonymous() {
+        Topic topic = this.createTestTopic();
+        JCUser anonymous = new AnonymousUser();
+        when(userService.getCurrentUser()).thenReturn(anonymous);
+        when(lastReadPostDao.getLastReadPost(anonymous, topic))
+            .thenThrow(new TransientObjectException("Object refrence to unsaved object"));
 
         assertNull(lastReadPostService.getLastReadPostForTopic(topic));
     }

@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.dto;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.Post;
@@ -55,10 +56,18 @@ public class TopicDto {
         this.topic = topic;
     }
 
+    /**
+     * @return topic that used as dto between controllers and services
+     */
     public Topic getTopic() {
         return topic;
     }
 
+    /**
+     * Set topic in dto. Used in tests.
+     *
+     * @param topic topic
+     */
     public void setTopic(Topic topic) {
         this.topic = topic;
     }
@@ -111,8 +120,24 @@ public class TopicDto {
         return topic.getPoll();
     }
 
+    /**
+     * Set poll in topic.
+     *
+     * @param poll poll
+     */
     public void setPoll(Poll poll) {
         topic.setPoll(poll);
+    }
+
+    /**
+     * Check that topic contents poll.
+     *
+     * @return <tt>true</tt>  if topic contents the poll
+     *         <tt>false</tt>  otherwise
+     */
+    public boolean hasPoll() {
+        Poll poll = topic.getPoll();
+        return StringUtils.isNotBlank(poll.getTitle()) && StringUtils.isNotBlank(poll.getPollItemsValue());
     }
 
 }

@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
@@ -141,6 +142,26 @@ public class UserControllerTest {
         String viewName = userController.activateAccount(USER_NAME);
 
         assertEquals("errors/activationExpired", viewName);
+    }
+    
+    @Test
+    public void testLoginUserLogged() {
+        when(userService.getCurrentUser()).thenReturn(new JCUser("username", null, null));
+        
+        String result = userController.loginPage();
+        
+        assertEquals(result, "redirect:/");
+        verify(userService).getCurrentUser();
+    }
+    
+    @Test
+    public void testLoginUserNotLogged() {
+        when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
+        
+        String result = userController.loginPage();
+        
+        assertEquals(result, UserController.LOGIN);
+        verify(userService).getCurrentUser();
     }
 
     private void assertNullFields(RegisterUserDto dto) {

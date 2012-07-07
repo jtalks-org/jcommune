@@ -65,6 +65,7 @@
                    <entry key="org.jtalks.jcommune.model.entity.Topic" value="TOPIC"/>
                    <entry key="org.jtalks.common.model.entity.Section" value="SECTION"/>
                    <entry key="org.jtalks.common.model.entity.Component" value="COMPONENT"/>
+                   <entry key="org.jtalks.common.model.entity.Group" value="GROUP"/>
                </map>
            </property>
     </bean>

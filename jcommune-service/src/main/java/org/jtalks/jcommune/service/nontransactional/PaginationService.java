@@ -45,18 +45,7 @@ public class PaginationService {
      */
     public int getPageSizeForCurrentUser() {
         JCUser currentUser = userService.getCurrentUser();
-        return getPageSizeFor(currentUser);
+        return currentUser.getPageSize();
     }
     
-    /**
-     * Returns page size applicable for the user. If for some reasons
-     * this implementation is unable to determaine this parameter the default
-     * value will be used.
-     *
-     * @param user current user representation, may be null
-     * @return page size for the current user or default if there is no user
-     */
-    public int getPageSizeFor(JCUser user) {
-        return (user == null) ? JCUser.DEFAULT_PAGE_SIZE : user.getPageSize();
-    }
 }

@@ -53,7 +53,7 @@
             <div class='control-group'>
                 <div class='controls'>
 	                <spring:message code="label.pm.recipient" var="placeholderRecipient"/>
-	                <form:input class="span3" path="recipient"
+	                <form:input class="span3 script-confirm-unsaved" path="recipient"
 	                            placeholder="${placeholderRecipient}"/>
 	                <br/>
 	                <form:errors path="recipient" cssClass="help-inline"/>
@@ -63,7 +63,7 @@
             <div class='control-group'>
                 <div class='controls'>
 	                <spring:message code="label.pm.title" var="placeholderTitle"/>
-	                <form:input class="span8 confirm-unsaved" path="title"
+	                <form:input class="span8 script-confirm-unsaved" path="title"
 	                            placeholder="${placeholderTitle}"/>
 	                <br/>
 	                <form:errors path="title" cssClass="help-inline"/>

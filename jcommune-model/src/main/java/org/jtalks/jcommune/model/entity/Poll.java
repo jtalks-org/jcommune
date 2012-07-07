@@ -98,7 +98,7 @@ public class Poll extends Entity {
      * or "multiple answer type".
      *
      * @param multipleAnswer <tt>false</tt> if the poll is "single answer type",
-     *                     <tt>true</tt> if the poll is "multiple answer type"
+     *                       <tt>true</tt> if the poll is "multiple answer type"
      */
     public void setMultipleAnswer(boolean multipleAnswer) {
         this.multipleAnswer = multipleAnswer;
@@ -122,10 +122,19 @@ public class Poll extends Entity {
         this.endingDate = endingDate;
     }
 
+    /**
+     * @return poll options in string representation.
+     */
     public String getPollItemsValue() {
         return pollItemsValue;
     }
 
+    /**
+     * Set string representation of poll options.
+     * Parse this string and fill poll items list.
+     *
+     * @param pollItemsValue poll options in string representation
+     */
     public void setPollItemsValue(String pollItemsValue) {
         this.pollItemsValue = pollItemsValue;
         setPollItems(PollValidator.parseItems(pollItemsValue));
@@ -210,10 +219,6 @@ public class Poll extends Entity {
      */
     public boolean isActive() {
         return endingDate == null || endingDate.isAfterNow();
-    }
-
-    public boolean hasPoll() {
-        return StringUtils.isNotBlank(title) && StringUtils.isNotBlank(pollItemsValue);
     }
 
 }

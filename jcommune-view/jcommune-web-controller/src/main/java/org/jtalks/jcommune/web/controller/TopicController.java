@@ -164,7 +164,7 @@ public class TopicController {
         Topic createdTopic = topicService.createTopic(topicDto.getTopicTitle(), topicDto.getBodyText(),
                 branchId, topicDto.isNotifyOnAnswers());
 
-        if (topicDto.getPoll().hasPoll()) {
+        if (topicDto.hasPoll()) {
             Poll poll = topicDto.getPoll();
             poll.setTopic(createdTopic);
             pollService.createPoll(poll);

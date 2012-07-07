@@ -25,6 +25,7 @@ import org.jtalks.common.security.acl.AclUtil;
 import org.jtalks.common.security.acl.ExtendedMutableAcl;
 import org.jtalks.common.security.acl.GroupAce;
 import org.jtalks.common.security.acl.sids.JtalksSidFactory;
+import org.jtalks.common.security.acl.sids.UserGroupSid;
 import org.jtalks.common.security.acl.sids.UserSid;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.mockito.Mock;
@@ -32,6 +33,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.model.AccessControlEntry;
+import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.Sid;
 import org.springframework.security.core.Authentication;
 import org.testng.Assert;
@@ -59,14 +61,16 @@ public class AclGroupPermissionEvaluatorTest {
     Authentication authentication;
 
     private AclGroupPermissionEvaluator evaluator;
+    private UserGroupSid groupSid;
     private UserSid userSid;
     private ObjectIdentityImpl objectIdentity;
     private User user;
+    private Group group;
 
     private Long targetId = 1L;
-    private String targetIdString = "1";
     private String targetType = "BRANCH";
     private String permission = "GeneralPermission.WRITE";
+    private GeneralPermission generalPermission = GeneralPermission.WRITE;
 
     @BeforeMethod
     public void init() {
@@ -77,14 +81,21 @@ public class AclGroupPermissionEvaluatorTest {
         user = new JCUser("username", "email", "password");
         user.setId(1);
         userSid = new UserSid(user);
+        groupSid = new UserGroupSid(targetId);
+        group = Mockito.mock(Group.class);
+        List<User> users = new ArrayList<User>();
+        users.add(user);
+        Mockito.when(group.getUsers()).thenReturn(users);
+        Mockito.when(group.getId()).thenReturn(targetId);
         Mockito.when(sidFactory.createPrincipal(authentication)).thenReturn(userSid);
+        Mockito.when(sidFactory.create(group)).thenReturn(groupSid);
         Mockito.when(authentication.getPrincipal()).thenReturn(user);
     }
 
     @Test
     public void testHasPermissionForUserSidSuccessTest() throws Exception {
         List<AccessControlEntry> aces = new ArrayList<AccessControlEntry>();
-        aces.add(createAccessControlEntry(GeneralPermission.WRITE, true, userSid));
+        aces.add(createAccessControlEntry(generalPermission, true, userSid));
         aces.add(createAccessControlEntry(ProfilePermission.EDIT_PROFILE, true, userSid));
         aces.add(createAccessControlEntry(BranchPermission.CLOSE_TOPICS, true, userSid));
         Mockito.when(aclUtil.getAclFor(objectIdentity)).thenReturn(mutableAcl);
@@ -92,45 +103,79 @@ public class AclGroupPermissionEvaluatorTest {
 
         List<GroupAce> controlEntries = new ArrayList<GroupAce>();
         Mockito.when(aclManager.getGroupPermissionsOn(objectIdentity)).thenReturn(controlEntries);
-        Assert.assertTrue(evaluator.hasPermission(authentication, targetId, targetType, "GeneralPermission.WRITE"));
+        String targetIdString = "1";
+        Assert.assertTrue(evaluator.hasPermission(authentication, targetIdString, targetType, permission));
+        Assert.assertTrue(evaluator.hasPermission(authentication, targetId, targetType, permission));
         Assert.assertTrue(evaluator.hasPermission(authentication, targetId, targetType, "ProfilePermission.EDIT_PROFILE"));
         Assert.assertTrue(evaluator.hasPermission(authentication, targetId, targetType, "BranchPermission.CLOSE_TOPICS"));
+        Assert.assertFalse(evaluator.hasPermission(authentication, targetId, targetType, "GeneralPermission.READ"));
+    }
+
+    @Test
+    public void testHasPermissionForPermissionOnGroupSuccessTest() throws Exception {
+        setEnvForPermissionOnGroupTests(true);
+        Assert.assertTrue(evaluator.hasPermission(authentication, targetId, targetType, permission));
+        Assert.assertFalse(evaluator.hasPermission(authentication, targetId, targetType, "GeneralPermission.READ"));
+    }
+
+    @Test
+    public void testHasPermissionForPermissionOnGroupNotSuccessTest() throws Exception {
+        setEnvForPermissionOnGroupTests(false);
+        Assert.assertFalse(evaluator.hasPermission(authentication, targetId, targetType, permission));
+    }
+
+    private void setEnvForPermissionOnGroupTests(boolean isGranted) {
+        ObjectIdentity groupIdentity = new ObjectIdentityImpl("GROUP", targetId);
+        Mockito.when(aclUtil.createIdentity(targetId, "GROUP")).thenReturn(groupIdentity);
+
+        List<AccessControlEntry> aces = new ArrayList<AccessControlEntry>();
+        aces.add(createAccessControlEntry(generalPermission, isGranted, groupSid));
+
+        Mockito.when(mutableAcl.getEntries()).thenReturn(aces);
+
+        Mockito.when(aclUtil.getAclFor(objectIdentity)).thenReturn(mutableAcl);
+        Mockito.when(aclUtil.getAclFor(groupIdentity)).thenReturn(mutableAcl);
+
+        List<GroupAce> controlEntries = new ArrayList<GroupAce>();
+        Mockito.when(aclManager.getGroupPermissionsOn(groupIdentity)).thenReturn(controlEntries);
+
+        List<Group> groups = new ArrayList<Group>();
+        groups.add(group);
+        ((JCUser) user).setGroups(groups);
     }
 
     @Test
     public void testHasPermissionForGroupSidSuccessTest() throws Exception {
+        setEnvForGroupSidTests(true);
+        Assert.assertTrue(evaluator.hasPermission(authentication, targetId, targetType, permission));
+    }
+
+    @Test
+    public void testHasPermissionForGroupSidNotSuccessTest() throws Exception {
+        setEnvForGroupSidTests(false);
+        Assert.assertFalse(evaluator.hasPermission(authentication, targetId, targetType, permission));
+    }
+
+    private void setEnvForGroupSidTests(boolean isGranted) {
         List<AccessControlEntry> aces = new ArrayList<AccessControlEntry>();
         Mockito.when(aclUtil.getAclFor(objectIdentity)).thenReturn(mutableAcl);
         Mockito.when(mutableAcl.getEntries()).thenReturn(aces);
 
         List<GroupAce> controlEntries = new ArrayList<GroupAce>();
-        controlEntries.add(createGroupAce(true));
+        controlEntries.add(createGroupAce(isGranted));
         Mockito.when(aclManager.getGroupPermissionsOn(objectIdentity)).thenReturn(controlEntries);
-        Assert.assertTrue(evaluator.hasPermission(authentication, targetId, targetType, "GeneralPermission.WRITE"));
     }
 
     @Test
     public void testHasPermissionForUserSidNotSuccessTest() throws Exception {
         List<AccessControlEntry> aces = new ArrayList<AccessControlEntry>();
-        aces.add(createAccessControlEntry(GeneralPermission.WRITE, false, userSid));
+        aces.add(createAccessControlEntry(generalPermission, false, userSid));
         Mockito.when(aclUtil.getAclFor(objectIdentity)).thenReturn(mutableAcl);
         Mockito.when(mutableAcl.getEntries()).thenReturn(aces);
 
         List<GroupAce> controlEntries = new ArrayList<GroupAce>();
         Mockito.when(aclManager.getGroupPermissionsOn(objectIdentity)).thenReturn(controlEntries);
         Assert.assertFalse(evaluator.hasPermission(authentication, targetId, targetType, permission));
-    }
-
-    @Test
-    public void testHasPermissionForGroupSidNotSuccessTest() throws Exception {
-        List<AccessControlEntry> aces = new ArrayList<AccessControlEntry>();
-        Mockito.when(aclUtil.getAclFor(objectIdentity)).thenReturn(mutableAcl);
-        Mockito.when(mutableAcl.getEntries()).thenReturn(aces);
-
-        List<GroupAce> controlEntries = new ArrayList<GroupAce>();
-        controlEntries.add(createGroupAce(false));
-        Mockito.when(aclManager.getGroupPermissionsOn(objectIdentity)).thenReturn(controlEntries);
-        Assert.assertFalse(evaluator.hasPermission(authentication, targetId, targetType, "GeneralPermission.WRITE"));
     }
 
     @Test
@@ -160,6 +205,11 @@ public class AclGroupPermissionEvaluatorTest {
         evaluator.hasPermission(authentication, targetId, permission);
     }
 
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testHasPermissionForInvalidIdTest() throws Exception {
+        evaluator.hasPermission(authentication, new Byte("1"), targetType, permission);
+    }
+
     private AccessControlEntry createAccessControlEntry(JtalksPermission permission, boolean isGranted, Sid sid) {
         AccessControlEntry accessControlEntry = Mockito.mock(AccessControlEntry.class);
         Mockito.when(accessControlEntry.getSid()).thenReturn(sid);
@@ -168,7 +218,7 @@ public class AclGroupPermissionEvaluatorTest {
         return accessControlEntry;
     }
 
-    private GroupAce createGroupAce( boolean isGranted) {
+    private GroupAce createGroupAce(boolean isGranted) {
         GroupAce groupAce = Mockito.mock(GroupAce.class);
         Group group = Mockito.mock(Group.class);
         List<User> users = new ArrayList<User>();

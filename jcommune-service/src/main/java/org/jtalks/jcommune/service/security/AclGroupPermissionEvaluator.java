@@ -15,12 +15,14 @@
 package org.jtalks.jcommune.service.security;
 
 import org.jtalks.common.model.dao.GroupDao;
+import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.model.permissions.ProfilePermission;
 import org.jtalks.common.security.acl.AclUtil;
 import org.jtalks.common.security.acl.GroupAce;
 import org.jtalks.common.security.acl.sids.JtalksSidFactory;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.ObjectIdentity;
@@ -65,6 +67,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
         throw new IllegalArgumentException("Method with current arguments is not supported.");
     }
 
+    //TODO In runtime authentication object contains clear user password. May be potential security issues.
     /**
      * {@inheritDoc}
      */
@@ -72,7 +75,14 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
     public boolean hasPermission(Authentication authentication, Serializable targetId,
                                  String targetType, Object permission) {
         boolean result = false;
-        Long id = (targetId instanceof String ? Long.parseLong((String) targetId) : (Long) targetId);
+        Long id;
+        if (targetId instanceof String) {
+            id = Long.parseLong((String) targetId);
+        } else if (targetId instanceof Long) {
+            id = (Long) targetId;
+        } else {
+            throw new IllegalArgumentException("Type of targetId parameter is invalid. Type is " + targetId.getClass());
+        }
 
         ObjectIdentity objectIdentity = aclUtil.createIdentity(id, targetType);
         Permission jtalksPermission = getPermission(permission);
@@ -87,6 +97,18 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
         } else if (isAllowed(sid, aces, jtalksPermission) ||
                 isAllowedForGroup(controlEntries, authentication)) {
             return true;
+        }
+
+        List<Group> groups = ((JCUser) authentication.getPrincipal()).getGroups();
+        for (Group group : groups) {
+            ObjectIdentity groupIdentity = aclUtil.createIdentity(group.getId(), "GROUP");
+            Sid groupSid = sidFactory.create(group);
+            List<AccessControlEntry> groupAces = aclUtil.getAclFor(groupIdentity).getEntries();
+            if (isRestricted(groupSid, groupAces, jtalksPermission)) {
+                return false;
+            } else if (isAllowed(groupSid, groupAces, jtalksPermission)) {
+                return true;
+            }
         }
         return result;
     }

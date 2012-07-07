@@ -25,6 +25,7 @@ import org.jtalks.jcommune.web.validation.annotations.ChangedEmail;
 import org.jtalks.jcommune.web.validation.annotations.ChangedPassword;
 import org.jtalks.jcommune.web.validation.annotations.Matches;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -37,6 +38,7 @@ import javax.validation.constraints.Size;
 @ChangedPassword
 public class EditUserProfileDto {
 
+    @NotNull
     @Email(message = "{validation.email.wrong.format}")
     @ChangedEmail
     private String email;

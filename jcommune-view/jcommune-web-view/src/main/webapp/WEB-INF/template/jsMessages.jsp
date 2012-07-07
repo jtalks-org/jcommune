@@ -56,3 +56,5 @@ $labelSubscribe = '<spring:message code="label.subscribe"/>';
 $labelSubscribeTooltip = '<spring:message code="label.subscribe.tooltip"/>';
 $labelUnsubscribe = '<spring:message code="label.unsubscribe"/>';
 $labelUnsubscribeTooltip = '<spring:message code="label.unsubscribe.tooltip"/>';
+
+$labelErrorsNotEmpty = '<spring:message code="label.errors.not_empty"/>';

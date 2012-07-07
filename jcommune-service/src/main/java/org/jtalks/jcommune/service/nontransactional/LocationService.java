@@ -62,7 +62,7 @@ public class LocationService {
         /**
          * This condition does not allow Anonymous add to the map of active users.
          */
-        if (currentUser != null) {
+        if (!currentUser.isAnonymous()) {
             registerUserMap.put(currentUser, entity.getUuid());
         }
 
@@ -82,11 +82,7 @@ public class LocationService {
      * topic/branch viewer's list until explicitly added
      */
     public void clearUserLocation() {
-        /**
-         * As for anonymous security service will return null.
-         * Attempt to pass null as a key will result in NPE
-         */
-        if (userService.getCurrentUser() != null) {
+        if (!userService.getCurrentUser().isAnonymous()) {
             registerUserMap.remove(userService.getCurrentUser());
         }
     }

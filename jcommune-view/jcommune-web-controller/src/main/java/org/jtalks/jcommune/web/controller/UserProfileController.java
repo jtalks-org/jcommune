@@ -62,7 +62,6 @@ public class UserProfileController {
     private BreadcrumbBuilder breadcrumbBuilder;
     private ImageUtils imageUtils;
     private PostService postService;
-    private PaginationService paginationService;
 
     /**
      * This method turns the trim binder on. Trim binder
@@ -88,13 +87,11 @@ public class UserProfileController {
     public UserProfileController(UserService userService,
                                  BreadcrumbBuilder breadcrumbBuilder,
                                  ImageUtils imageUtils,
-                                 PostService postService,
-                                 PaginationService paginationService) {
+                                 PostService postService) {
         this.userService = userService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.imageUtils = imageUtils;
         this.postService = postService;
-        this.paginationService = paginationService;
     }
 
     /**
@@ -207,6 +204,6 @@ public class UserProfileController {
                 .addObject("user", user)
                 // bind separately to get localized value
                 .addObject("language", user.getLanguage())
-                .addObject("pageSize", paginationService.getPageSizeFor(user));
+                .addObject("pageSize", user.getPageSize());
     }
 }

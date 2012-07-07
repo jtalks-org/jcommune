@@ -23,6 +23,7 @@ import org.jtalks.common.model.permissions.ProfilePermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
@@ -129,8 +130,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     public JCUser getCurrentUser() {
         String name = securityService.getCurrentUserUsername();
         if (name == null) {
-            // todo: NullObject pattern should be used here
-            return null;
+            return new AnonymousUser();
         } else {
             return this.getDao().getByUsername(name);
         }
