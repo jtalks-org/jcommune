@@ -102,14 +102,15 @@
                 <strong><spring:message code="label.section.now_browsing"/></strong> 
             </c:if>
             <c:forEach var="innerUser" items="${viewList}">
+                <%--todo
                 <c:choose>
-                    <c:when test="${innerUser.role=='ROLE_ADMIN'}">
+                   <c:when test="${innerUser.role=='ROLE_ADMIN'}">
                         <c:set var='labelClass' value='label label-important'/>
-                    </c:when>
-                    <c:otherwise>
+                    </c:when>--%>
+                   <%-- <c:otherwise>--%>
                         <c:set var='labelClass' value=''/>
-                    </c:otherwise>
-                </c:choose>
+                    <%--</c:otherwise>
+                </c:choose>  --%>
                 <a href="${pageContext.request.contextPath}/users/${innerUser.encodedUsername}" 
                     title="<spring:message code='label.tips.view_profile'/>"
                     class='${labelClass}'>

@@ -24,8 +24,6 @@ import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.security.AdministrationGroup;
-import org.jtalks.jcommune.service.security.SecurityConstants;
-import org.jtalks.jcommune.service.security.TemporaryAuthorityManager;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
@@ -43,7 +41,6 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
     private GroupDao groupDao;
     private SecurityService securityService;
     private UserService userService;
-    private TemporaryAuthorityManager temporaryAuthorityManager;
 
     /**
      * Create an instance of service for operations with a poll.
@@ -52,26 +49,22 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
      *                                  all CRUD operations with {@link org.jtalks.jcommune.model.entity.Poll}.
      * @param groupDao                  this dao returns user group for permission granting
      * @param pollOptionDao             data access object, which should be able do
- *                                  all CRUD operations with {@link org.jtalks.jcommune.model.entity.PollItem}.
+     *                                  all CRUD operations with {@link org.jtalks.jcommune.model.entity.PollItem}.
      * @param securityService           the service for security operations
-     * @param temporaryAuthorityManager the  manager of temporary authorities, that
-*                                  allows to execute an operation with the
-     * @param userService          to fetch the user currently logged in
+     * @param userService               to fetch the user currently logged in
      */
     public TransactionalPollService(ChildRepository<Poll> pollDao,
                                     GroupDao groupDao,
                                     ChildRepository<PollItem> pollOptionDao,
                                     SecurityService securityService,
-                                    TemporaryAuthorityManager temporaryAuthorityManager,
                                     UserService userService) {
         super(pollDao);
         this.pollOptionDao = pollOptionDao;
         this.groupDao = groupDao;
         this.securityService = securityService;
-        this.temporaryAuthorityManager = temporaryAuthorityManager;
         this.userService = userService;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -84,10 +77,10 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
 
     /**
      * Performs actual voting with permission check
-     * 
-     * @param poll poll we're voting in
+     *
+     * @param poll              poll we're voting in
      * @param selectedOptionIds voting options, selected by user
-     * @param branchId used for annotation permission check only
+     * @param branchId          used for annotation permission check only
      * @return poll updated with new votes
      */
     @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.CREATE_POSTS')")
@@ -121,15 +114,7 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
      * @param poll a poll, in which the user will no longer be able to participate
      */
     private void prohibitRevote(final Poll poll) {
-          //TODO It should be changed after the transition to the new security.
-        temporaryAuthorityManager.runWithTemporaryAuthority(
-                new TemporaryAuthorityManager.SecurityOperation() {
-                    @Override
-                    public void doOperation() {
-                        securityService.createAclBuilder().
-                                restrict(GeneralPermission.WRITE).to(userService.getCurrentUser()).on(poll).flush();
-                    }
-                },
-                SecurityConstants.ROLE_ADMIN);
+        securityService.createAclBuilder().restrict(GeneralPermission.WRITE).
+                to(userService.getCurrentUser()).on(poll).flush();
     }
 }
