@@ -24,17 +24,16 @@
     <title><spring:message code="label.section.jtalks_forum"/></title>
 </head>
 <body>
-    <jsp:include page="../template/topLine.jsp"/>
 
     <div class="container">
-        <!-- Section header -->
+        <%-- Section header --%>
         <div id="branch-header">
             <h2><c:out value="${section.name}"/></h2>
             <span class="inline-block"></span>
         </div>
-        <!-- END OF Branch header -->
+        <%-- END OF Branch header --%>
         
-        <!-- Branches table -->
+        <%-- Branches table --%>
         <table id="topics-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
         <c:choose>
             <c:when test="${!(empty section.branches)}">
@@ -96,7 +95,7 @@
         </c:choose>
         </table>
         
-        <!-- Users -->
+        <%-- Users --%>
         <div id="users-stats" class="well forum-user-stats-container">
             <c:if test="${!(empty viewList)}">
                 <strong><spring:message code="label.section.now_browsing"/></strong> 
@@ -117,7 +116,7 @@
                 </a>
             </c:forEach>
         </div>
-        <!-- END OF Users -->
+        <%-- END OF Users --%>
     </div>
 </body>
 

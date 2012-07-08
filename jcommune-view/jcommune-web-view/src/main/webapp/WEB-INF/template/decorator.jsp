@@ -34,12 +34,12 @@
     <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0"/>
     <meta http-equiv="Expires" content="-1"/>
     <meta charset="UTF-8">
-    
-    <!-- support of HTML5 elements for IE6-8 -->
-    <!--[if lt IE 9]>
-      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    
+
+    <%-- support of HTML5 elements for IE6-8 --%>
+    <%--[if lt IE 9] --%>
+    <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <%--[endif]--%>
+
     <link rel="stylesheet" type="text/css" media="screen, projection"
           href="${pageContext.request.contextPath}/resources/css/screen.css"/>
     <link rel="stylesheet" type="text/css" media="screen, projection"
@@ -75,10 +75,12 @@
             type='text/javascript'></script>
     <script src='${pageContext.request.contextPath}/resources/javascript/custom/forumEffects.js'
             type='text/javascript'></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/prettify/prettify.js" 
-           type='text/javascript'></script>          
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/prettify/prettify.js"
+            type='text/javascript'></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/topline.js"
-            type="text/javascript"></script> 
+            type="text/javascript"></script>
+    <jsp:include page="../template/topLine.jsp"/>
+
     <decorator:head/>
     <title><decorator:title/></title>
 </head>
@@ -86,16 +88,16 @@
 <decorator:body/>
 <div class="container">
     <footer>
-        Powered by JCommune ${project.version}<br />
-        &copy; 2012 <a href="http://jtalks.org">jtalks.org</a><br />
+        Powered by JCommune ${project.version}<br/>
+        &copy; 2012 <a href="www.jtalks.org">jtalks.org</a><br/>
         Design with <a href="http://twitter.github.com/bootstrap">Twitter Bootstrap</a>
     </footer>
 </div>
 </body>
 <script type="text/javascript">
-jQuery(document).ready(function() {
-    //Code highlight
-    prettyPrint();
-});
+    jQuery(document).ready(function () {
+        //Code highlight
+        prettyPrint();
+    });
 </script>
 </html>
