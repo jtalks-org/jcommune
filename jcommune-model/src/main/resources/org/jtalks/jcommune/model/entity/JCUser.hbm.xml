@@ -32,7 +32,6 @@
         <property column="ENCODED_USERNAME" name="encodedUsername" not-null="true"/>
         <property column="EMAIL" name="email" unique="true" not-null="true"/>
         <property column="PASSWORD" name="password" not-null="true"/>
-        <property column="ROLE" name="role"/>
         <property column="LAST_LOGIN" name="lastLogin"
                   type="org.joda.time.contrib.hibernate.PersistentDateTime" not-null="false"/>
         <property name="avatar" lazy="true">
@@ -61,7 +60,7 @@
                 <one-to-many class="org.jtalks.jcommune.model.entity.UserContact"/>
             </set>
 
-            <bag name="groups" table="GROUP_USER_REF" inverse="true" lazy="false" fetch="select">
+            <bag name="groups" table="GROUP_USER_REF" lazy="false" fetch="select">
                 <cache usage="nonstrict-read-write"/>
                 <key column="USER_ID" not-null="true"/>
                 <many-to-many class="org.jtalks.common.model.entity.Group">

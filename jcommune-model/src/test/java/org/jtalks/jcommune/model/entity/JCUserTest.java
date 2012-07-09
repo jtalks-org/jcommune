@@ -58,5 +58,10 @@ public class JCUserTest {
 
         assertTrue(user.getLastLogin().isAfter(current));
     }
+    
+    @Test
+    public void testIsAnonymous() {
+        assertFalse(user.isAnonymous());
+    }
 
 }

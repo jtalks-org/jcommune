@@ -25,15 +25,27 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * JCommune implementation of {@link SidRetrievalStrategy} that creates a {@link Sid}
+ * for the principal by {@link JtalksSidFactory}. Created sids may be
+ * {@link org.jtalks.common.security.acl.sids.UserSid} or {@link org.jtalks.common.security.acl.sids.UserGroupSid} type.
+ *
+ * @author Elena Lepaeva
+ */
 public class SidRetrievalStrategyImpl implements SidRetrievalStrategy {
     private JtalksSidFactory sidFactory;
 
+    /**
+     * @param sidFactory factory to work with principals
+     */
     public SidRetrievalStrategyImpl(@Nonnull JtalksSidFactory sidFactory) {
         this.sidFactory = sidFactory;
     }
 
-    //~ Methods ========================================================================================================
-
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<Sid> getSids(Authentication authentication) {
         List<Sid> sids = new ArrayList<Sid>();
         sids.add(sidFactory.createPrincipal(authentication));
@@ -45,9 +57,5 @@ public class SidRetrievalStrategyImpl implements SidRetrievalStrategy {
             }
         }
         return sids;
-    }
-
-    public void setSidFactory(JtalksSidFactory sidFactory) {
-        this.sidFactory = sidFactory;
     }
 }

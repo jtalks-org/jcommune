@@ -21,50 +21,35 @@ import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * Manages the topic/branch subscription by email.
- * Serves AJAX subscription/unsubscription requests, so locale-dependent
- * messages are resolved here and passed to the client.
+ * Serves AJAX subscription/unsubscription requests
  *
  * @author Evgeniy Naumenko
  */
 @Controller
 public class SubscriptionController {
 
-    private static final String CAPTION = "caption";
-    private static final String TOOLTIP = "tooltip";
-    private static final String SUFFIX = "urlSuffix";
-
     private TopicService topicService;
     private BranchService branchService;
     private SubscriptionService subscriptionService;
-    private MessageSource messageSource;
 
     /**
      * @param topicService        topic service to load topics from DB
      * @param branchService       branch service to load branches from DB
      * @param subscriptionService to manage actual updates subscription info
-     * @param messageSource       to resolve locale-dependent messages
      */
     @Autowired
     public SubscriptionController(TopicService topicService,
                                   BranchService branchService,
-                                  SubscriptionService subscriptionService,
-                                  MessageSource messageSource) {
+                                  SubscriptionService subscriptionService) {
         this.topicService = topicService;
         this.branchService = branchService;
         this.subscriptionService = subscriptionService;
-        this.messageSource = messageSource;
     }
 
     /**
@@ -72,40 +57,24 @@ public class SubscriptionController {
      * This includes post creation, removal and updates
      *
      * @param id identifies topic to subscribe to
-     * @param locale  current user locale settings to resolve messages
-     * @return info to alter "subscribe" button to the "unsubscribe" one
      * @throws NotFoundException if no object is found for id given
      */
     @RequestMapping("topics/{id}/subscribe")
-    @ResponseBody
-    public Map<String, String> subscribeToTopic(@PathVariable Long id, Locale locale) throws NotFoundException {
+    public void subscribeToTopic(@PathVariable Long id) throws NotFoundException {
         Topic topic = topicService.get(id);
         subscriptionService.toggleTopicSubscription(topic);
-        Map<String, String> model = new HashMap<String, String>();
-        model.put(CAPTION, messageSource.getMessage("label.unsubscribe", null, locale));
-        model.put(TOOLTIP, messageSource.getMessage("label.unsubscribe", null, locale));
-        model.put(SUFFIX, "/topics/" + id + "/unsubscribe");
-        return model;
     }
 
     /**
      * Deactivates branch updates subscription for the current user
      *
      * @param id identifies topic to unsubscribe from
-     * @param locale  current user locale settings to resolve messages
-     * @return info to alter "unsubscribe" button to the "subscribe" one
      * @throws NotFoundException if no object is found for id given
      */
     @RequestMapping("topics/{id}/unsubscribe")
-    @ResponseBody
-    public Map<String, String> unsubscribeFromTopic(@PathVariable Long id, Locale locale) throws NotFoundException {
+    public void unsubscribeFromTopic(@PathVariable Long id) throws NotFoundException {
         Topic topic = topicService.get(id);
         subscriptionService.toggleTopicSubscription(topic);
-        Map<String, String> model = new HashMap<String, String>();
-        model.put(CAPTION, messageSource.getMessage("label.subscribe", null, locale));
-        model.put(TOOLTIP, messageSource.getMessage("label.subscribe", null, locale));
-        model.put(SUFFIX, "/topics/" + id + "/subscribe");
-        return model;
     }
 
     /**
@@ -113,39 +82,23 @@ public class SubscriptionController {
      * This includes topic creation, removal and all topic updates
      *
      * @param id identifies branch to subscribe to
-     * @param locale   current user locale settings to resolve messages
-     * @return info to alter "subscribe" button to the "unsubscribe" one
      * @throws NotFoundException if no object is found for id given
      */
     @RequestMapping("branches/{id}/subscribe")
-    @ResponseBody
-    public Map<String, String> subscribeToBranch(@PathVariable Long id, Locale locale) throws NotFoundException {
+    public void subscribeToBranch(@PathVariable Long id) throws NotFoundException {
         Branch branch = branchService.get(id);
         subscriptionService.toggleBranchSubscription(branch);
-        Map<String, String> model = new HashMap<String, String>();
-        model.put(CAPTION, messageSource.getMessage("label.unsubscribe", null, locale));
-        model.put(TOOLTIP, messageSource.getMessage("label.unsubscribe", null, locale));
-        model.put(SUFFIX, "/branches/" + id + "/unsubscribe");
-        return model;
     }
 
     /**
      * Deactivates branch updates subscription for the current user
      *
      * @param id identifies branch to unsubscribe from
-     * @param locale   current user locale settings to resolve messages
-     * @return info to alter "unsubscribe" button to the "subscribe" one
      * @throws NotFoundException if no object is found for id given
      */
     @RequestMapping("branches/{id}/unsubscribe")
-    @ResponseBody
-    public Map<String, String> unsubscribeFromBranch(@PathVariable Long id, Locale locale) throws NotFoundException {
+    public void unsubscribeFromBranch(@PathVariable Long id) throws NotFoundException {
         Branch branch = branchService.get(id);
         subscriptionService.toggleBranchSubscription(branch);
-        Map<String, String> model = new HashMap<String, String>();
-        model.put(CAPTION, messageSource.getMessage("label.subscribe", null, locale));
-        model.put(TOOLTIP, messageSource.getMessage("label.subscribe", null, locale));
-        model.put(SUFFIX, "/branches/" + id + "/subscribe");
-        return model;
     }
 }

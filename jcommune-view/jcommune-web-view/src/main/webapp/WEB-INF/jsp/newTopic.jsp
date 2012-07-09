@@ -62,7 +62,7 @@
                 <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>
                 <form:input path="topicName" id="subject" type="text" name="subject" size="45"
                             maxlength="255" tabindex="1"
-                            class="span11" placeholder="${topicTitlePlaceholder}"/>
+                            class="span11 script-confirm-unsaved" placeholder="${topicTitlePlaceholder}"/>
                 <form:errors path="topicName" id="subject" type="text" name="subject" size="45"
                              maxlength="255" tabindex="1"
                              class="post" cssClass="help-inline"/>
@@ -76,7 +76,7 @@
         <div class="control-group">
             <br/>
             <form:checkbox id="notify" path="notifyOnAnswers" name="notify" checked="checked" value="${notifyOnAnswers}"
-                           style="margin-right: 10px;"/><spring:message
+                           style="margin-right: 10px;" class="script-confirm-unsaved"/><spring:message
                 code="label.answer.notify_message"/>
         </div>
         <br/>

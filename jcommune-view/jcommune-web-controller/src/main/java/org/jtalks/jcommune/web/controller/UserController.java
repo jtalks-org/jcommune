@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -44,6 +45,8 @@ import javax.validation.Valid;
 public class UserController {
 
     public static final String REGISTRATION = "registration";
+    
+    public static final String LOGIN = "login";
 
     private UserService userService;
 
@@ -136,6 +139,23 @@ public class UserController {
             return "redirect:/login";
         } catch (NotFoundException e) {
             return "errors/activationExpired";
+        }
+    }
+    
+    /**
+     * Shows login page. Also checks if user is already logged in. 
+     * If so he is redirected to main page.
+     * 
+     * @return login view name or redirect to main page
+     */
+    @RequestMapping(value="/login", method=RequestMethod.GET)
+    public String loginPage()
+    {
+        JCUser currentUser = userService.getCurrentUser();
+        if (currentUser.isAnonymous()) {
+            return LOGIN;
+        } else {
+            return "redirect:/";
         }
     }
 }

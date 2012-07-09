@@ -49,14 +49,14 @@
                     <c:when test="${subscribed}">
                         <a id="subscription" class="button top_button"
                             href="${pageContext.request.contextPath}/branches/${branch.id}/unsubscribe"
-                            title="<spring:message code="label.unsubscribe"/>">
+                            title="<spring:message code="label.unsubscribe.tooltip"/>">
                             <spring:message code="label.unsubscribe"/>
                         </a>
                     </c:when>
                     <c:otherwise>
                         <a id="subscription" class="button top_button"
                             href="${pageContext.request.contextPath}/branches/${branch.id}/subscribe"
-                            title='<spring:message code="label.subscribe"/>'>
+                            title='<spring:message code="label.subscribe.tooltip"/>'>
                             <spring:message code="label.subscribe"/>
                         </a>
                     </c:otherwise>
@@ -270,14 +270,15 @@
        <strong><spring:message code="label.branch.now_browsing"/></strong>
    </c:if>
    <c:forEach var="innerUser" items="${viewList}">
+       <%--todo
        <c:choose>
-           <c:when test="${innerUser.role=='ROLE_ADMIN'}">
-               <c:set var='labelClass' value='label label-important'/>
-           </c:when>
-           <c:otherwise>
-               <c:set var='labelClass' value=''/>
-           </c:otherwise>
-       </c:choose>
+<c:when test="${innerUser.role=='ROLE_ADMIN'}">
+           <c:set var='labelClass' value='label label-important'/>
+       </c:when>--%>
+           <%-- <c:otherwise>--%>
+           <c:set var='labelClass' value=''/>
+           <%--</c:otherwise>
+       </c:choose>    --%>
        <a href="${pageContext.request.contextPath}/users/${innerUser.id}"
            title="<spring:message code='label.tips.view_profile'/>"
            class='${labelClass}'>

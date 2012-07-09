@@ -36,12 +36,9 @@
     <!-- Configure SpEL expressions handler for security annotations -->
     <bean id="securityExpressionHandler"
           class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
-        <!-- Set role hierarchy to use -->
-        <property name="roleHierarchy" ref="roleHierarchy"/>
         <!-- Enable SpEL hasPermission expression evaluation -->
         <property name="permissionEvaluator" ref="aclGroupPermissionEvaluator"/>
     </bean>
-
 
     <!-- Evaluates hasPermission expression -->
     <bean id="aclGroupPermissionEvaluator" class="org.jtalks.jcommune.service.security.AclGroupPermissionEvaluator">
@@ -68,7 +65,7 @@
                    <entry key="org.jtalks.jcommune.model.entity.SimplePage" value="SIMPLE_PAGE"/>
                    <entry key="org.jtalks.common.model.entity.Section" value="SECTION"/>
                    <entry key="org.jtalks.common.model.entity.Component" value="COMPONENT"/>
-
+                   <entry key="org.jtalks.common.model.entity.Group" value="GROUP"/>
                </map>
            </property>
     </bean>
@@ -82,6 +79,7 @@
         <property name="sidIdentityQuery" value="SELECT @@IDENTITY"/>
         <property name="sidFactory" ref="jtalksSidFactory"/>
     </bean>
+
     <bean id="jtalksSidFactory" class="org.jtalks.common.security.acl.sids.JtalksSidFactory"/>
 
     <!-- Responsible for efficient retrieval of ACLs from database -->
@@ -111,27 +109,7 @@
     </bean>
 
     <!-- Authorization for ACLs administration setup -->
-    <bean id="aclAuthorizationStrategy" class="org.springframework.security.acls.domain.AclAuthorizationStrategyImpl">
-        <constructor-arg>
-            <list>
-                <bean class="org.springframework.security.core.authority.GrantedAuthorityImpl">
-                    <constructor-arg value="ROLE_ADMIN"/>
-                </bean>
-            </list>
-        </constructor-arg>
-        <property name="sidFactory" ref="jtalksSidFactory"/>
-    </bean>
-
-
-    <!-- http://static.springsource.org/spring-security/site/docs/3.0.x/apidocs/org/springframework/security/access/hierarchicalroles/RoleHierarchyImpl.html -->
-    <bean id="roleHierarchy" class="org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl">
-        <property name="hierarchy">
-            <value>
-                ROLE_ADMIN > ROLE_USER
-                ROLE_USER > ROLE_ANONYMOUS
-            </value>
-        </property>
-    </bean>
+    <bean id="aclAuthorizationStrategy" class="org.jtalks.jcommune.service.security.AclAuthorizationStrategyImpl"/>
 
     <bean id="securityContextFacade"
           class="org.jtalks.jcommune.service.security.SecurityContextHolderFacade"/>
@@ -141,14 +119,15 @@
         <property name="aclUtil" ref="aclUtils"/>
     </bean>
 
-    <bean name="sidRetrievalStrategyImpl" class="org.jtalks.jcommune.service.security.SidRetrievalStrategyImpl">
+    <!--For Spring security custom tags-->
+    <bean name="sidRetrievalStrategy" class="org.jtalks.jcommune.service.security.SidRetrievalStrategyImpl">
         <constructor-arg ref="jtalksSidFactory"/>
     </bean>
-
     <bean id="objectIdentityRetrievalStrategyImpl"
           class="org.jtalks.jcommune.service.security.ObjectIdentityRetrievalStrategyImpl">
         <constructor-arg name="aclUtil" ref="aclUtils"/>
     </bean>
+    <!--For Spring security custom tags-->
 
     <!-- Password encoding -->
     <bean id="encryptionService" class="org.jtalks.jcommune.service.nontransactional.EncryptionService">

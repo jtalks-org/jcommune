@@ -38,7 +38,7 @@
             <div class="control-group">
                     <form:label path="username" class='control-label'> <spring:message code="label.username"/></form:label>
                     <div class="controls">
-                            <form:input path="username" class="reg_input" type="text"/></br>
+                            <form:input path="username" class="reg_input" type="text"/><br/>
                         <form:errors path="username" cssClass="help-inline"/>
                     </div>
                     <span class="reg_info"><spring:message code="label.tip.username"/></span>
@@ -46,7 +46,7 @@
             <div class="control-group">
                     <form:label path="email" class='control-label'><spring:message code="label.email"/></form:label>
                     <div class="controls">
-                            <form:input path="email" class="reg_input" type="text"/></br>
+                            <form:input path="email" class="reg_input" type="text"/><br/>
                         <form:errors path="email" cssClass="help-inline"/>
                     </div>
                     <span class="reg_info"><spring:message code="label.tip.email"/></span>
@@ -55,7 +55,7 @@
                     <form:label path="password" class='control-label'><spring:message code="label.password"/></form:label>
 
                     <div class="controls">
-                            <form:input path="password" class="reg_input" type="password"/></br>
+                            <form:input path="password" class="reg_input" type="password"/><br/>
                         <form:errors path="password" cssClass="help-inline"/>
                     </div>
                     <span class="reg_info"><spring:message code="label.tip.password"/></span>
@@ -64,7 +64,7 @@
                     <form:label path="passwordConfirm" class='control-label'><spring:message code="label.confirmation"/></form:label>
 
                     <div class="controls">
-                            <form:input path="passwordConfirm" class="reg_input" type="password"/></br>
+                            <form:input path="passwordConfirm" class="reg_input" type="password"/><br/>
                         <form:errors path="passwordConfirm" cssClass="help-inline"/>
                     </div>
                     <span class="reg_info"><spring:message code="label.tip.confirmation"/></span>

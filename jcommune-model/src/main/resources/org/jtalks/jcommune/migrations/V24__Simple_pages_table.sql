@@ -7,4 +7,5 @@ CREATE TABLE `SIMPLE_PAGES` (
   PRIMARY KEY (`PAGE_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-INSERT INTO `jtalks`.`simple_pages` (`PAGE_ID`, `UUID`, `NAME`, `PATH_NAME`, `CONTENT`) VALUES (1, 'qwe', 'F.A.Q.', 'faq', 'empty');
+
+

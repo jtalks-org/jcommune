@@ -12,21 +12,30 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-/*
+
 package org.jtalks.jcommune.service.transactional;
 
 
+import org.jtalks.common.model.dao.GroupDao;
+import org.jtalks.common.model.entity.User;
+import org.jtalks.common.security.SecurityService;
+import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
 import org.jtalks.jcommune.model.dao.SimplePageDao;
 import org.jtalks.jcommune.service.SimplePageService;
 import org.jtalks.jcommune.model.entity.SimplePage;
 import org.jtalks.jcommune.service.dto.SimplePageInfoContainer;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.security.AdministrationGroup;
+import org.jtalks.common.model.entity.Group;
+import org.jtalks.common.model.permissions.GeneralPermission;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.persistence.EntityExistsException;
 
+import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -45,12 +54,23 @@ public class TransactionalSimplePageServiceTest {
     @Mock
     private SimplePageDao dao;
 
+    @Mock
+    private GroupDao groupDao;
+
+    @Mock
+    private SecurityService securityService;
+
+
     private SimplePageService simplePageService;
+
+    private CompoundAclBuilder aclBuilder;
 
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
-        simplePageService = new TransactionalSimplePageService(dao);
+        aclBuilder = mockAclBuilder();
+        when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
+        simplePageService = new TransactionalSimplePageService(dao, groupDao, securityService);
     }
 
     @Test
@@ -92,15 +112,18 @@ public class TransactionalSimplePageServiceTest {
         SimplePage simplePage = new SimplePage(NAME, CONTENT, PATH_NAME);
 
         when(dao.isExist(PATH_NAME)).thenReturn(false);
+        Group group = new Group();
+        when(groupDao.get(AdministrationGroup.ADMIN.getId())).thenReturn(group);
 
-        SimplePage actualSimpePage = simplePageService.createPage(simplePage);
+        SimplePage actualSimplePage = simplePageService.createPage(simplePage);
 
-        assertEquals(actualSimpePage.getName(), NAME);
-        assertEquals(actualSimpePage.getContent(), CONTENT);
-        assertEquals(actualSimpePage.getPathName(), PATH_NAME);
+        assertEquals(actualSimplePage.getName(), NAME);
+        assertEquals(actualSimplePage.getContent(), CONTENT);
+        assertEquals(actualSimplePage.getPathName(), PATH_NAME);
 
         verify(dao).isExist(PATH_NAME);
         verify(dao).update(simplePage);
+        verify(aclBuilder).grant(GeneralPermission.WRITE);
     }
 
     @Test(expectedExceptions = {NotFoundException.class})
@@ -134,4 +157,3 @@ public class TransactionalSimplePageServiceTest {
     }
    
 }
-  */

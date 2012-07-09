@@ -30,7 +30,6 @@ import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
-import org.jtalks.jcommune.service.nontransactional.PaginationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -56,7 +55,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     private BranchDao branchDao;
     private NotificationService notificationService;
     private SubscriptionService subscriptionService;
-    private PaginationService paginationService;
     private UserService userService;
 
     /**
@@ -75,7 +73,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
                                      BranchService branchService, BranchDao branchDao,
                                      NotificationService notificationService,
                                      SubscriptionService subscriptionService,
-                                     PaginationService paginationService,
                                      UserService userService) {
         super(dao);
         this.securityService = securityService;
@@ -83,7 +80,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         this.branchDao = branchDao;
         this.notificationService = notificationService;
         this.subscriptionService = subscriptionService;
-        this.paginationService = paginationService;
         this.userService = userService;
     }
 
@@ -148,7 +144,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @Override
     public Page<Topic> getRecentTopics(int page) {
         JCommunePageRequest pageRequest = JCommunePageRequest.
-                createWithPagingEnabled(page, paginationService.getPageSizeForCurrentUser());
+                createWithPagingEnabled(page, userService.getCurrentUser().getPageSize());
         DateTime date24HoursAgo = new DateTime().minusDays(1);
         return this.getDao().getTopicsUpdatedSince(date24HoursAgo, pageRequest);
     }
@@ -159,7 +155,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @Override
     public Page<Topic> getUnansweredTopics(int page) {
         JCommunePageRequest pageRequest = JCommunePageRequest.
-                createWithPagingEnabled(page, paginationService.getPageSizeForCurrentUser());
+                createWithPagingEnabled(page, userService.getCurrentUser().getPageSize());
         return this.getDao().getUnansweredTopics(pageRequest);
     }
 
@@ -270,7 +266,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @Override
     public Page<Topic> getTopics(Branch branch, int page, boolean pagingEnabled) {
         JCommunePageRequest pageRequest = new JCommunePageRequest(
-                page, paginationService.getPageSizeForCurrentUser(), pagingEnabled);
+                page, userService.getCurrentUser().getPageSize(), pagingEnabled);
         return getDao().getTopics(branch, pageRequest);
     }
 }

@@ -32,9 +32,9 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
-import org.jtalks.jcommune.service.nontransactional.PaginationService;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.springframework.data.domain.Page;
@@ -70,23 +70,29 @@ public class TransactionalPostServiceTest {
     @Mock
     private LastReadPostService lastReadPostService;
     @Mock 
-    private PaginationService paginationService;
+    private UserService userService;
 
     private PostService postService;
 
     private JCUser user;
+    
+    private JCUser currentUser; 
 
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
         user = new JCUser(USERNAME, EMAIL, PASSWORD);
+        
+        currentUser = new JCUser("current", null, null);
+        when(userService.getCurrentUser()).thenReturn(currentUser);
+        
         postService = new TransactionalPostService(
                 postDao,
                 topicDao,
                 securityService,
                 notificationService,
                 lastReadPostService,
-                paginationService);
+                userService);
     }
 
     @Test
@@ -167,7 +173,8 @@ public class TransactionalPostServiceTest {
         Page<Post> expectedPostsPage = new PageImpl<Post>(posts);
         when(postDao.getUserPosts(Matchers.<JCUser> any(), Matchers.<JCommunePageRequest>any()))
             .thenReturn(expectedPostsPage);
-        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
+        
+        currentUser.setPageSize(pageSize);
 
         Page<Post> actualPostsPage = postService.getPostsOfUser(user, page, pagingEnabled);
         
@@ -181,7 +188,8 @@ public class TransactionalPostServiceTest {
     @Test
     public void testLastPostInTopicPageCalculation() {
         int pageSize = 2;
-        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
+        currentUser.setPageSize(pageSize);
+        
         Topic topic = new Topic(null, "");
         Post post = new Post(null, "");
         topic.addPost(new Post(null, null));
@@ -194,7 +202,7 @@ public class TransactionalPostServiceTest {
     @Test
     public void testFirstPostInTopicPageCalculation() {
         int pageSize = 2;
-        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
+        currentUser.setPageSize(pageSize);
         Topic topic = new Topic(null, "");
         Post post = new Post(null, "");
         topic.addPost(post);
@@ -204,7 +212,8 @@ public class TransactionalPostServiceTest {
 
     @Test
     public void testFirstPostInTopicPageCalculationWithNoUser() {
-        when(paginationService.getPageSizeForCurrentUser()).thenReturn(JCUser.DEFAULT_PAGE_SIZE);
+        currentUser.setPageSize(JCUser.DEFAULT_PAGE_SIZE);
+        
         Topic topic = new Topic(user, "");
         Post post = new Post(user, "");
         topic.addPost(post);
@@ -215,7 +224,8 @@ public class TransactionalPostServiceTest {
     @Test
     public void testLastPostOnFirstPagePageCalculation() {
         int pageSize = 2;
-        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
+        currentUser.setPageSize(pageSize);
+        
         Topic topic = new Topic(user, "");
         Post post = new Post(user, "");
         topic.addPost(new Post(null, null));
@@ -227,7 +237,8 @@ public class TransactionalPostServiceTest {
     @Test
     public void testLastPostOnPagePageCalculation() {
         int pageSize = 2;
-        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
+        currentUser.setPageSize(pageSize);
+        
         Topic topic = new Topic(null, "");
         Post post = new Post(null, "");
         topic.addPost(new Post(null, null));
@@ -241,7 +252,8 @@ public class TransactionalPostServiceTest {
     @Test
     public void testPostInCenterOfTopicPageCalculation() {
         int pageSize = 2;
-        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
+        currentUser.setPageSize(pageSize);
+        
         Topic topic = new Topic(null, "");
         Post post = new Post(null, "");
         topic.addPost(new Post(null, null));
@@ -257,7 +269,8 @@ public class TransactionalPostServiceTest {
         Topic topic = new Topic(user, "");
         Page<Post> expectedPage = new PageImpl<Post>(Collections.<Post> emptyList());
         
-        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
+        currentUser.setPageSize(pageSize);
+        
         when(postDao.getPosts(
                 Matchers.any(Topic.class), Matchers.any(JCommunePageRequest.class)))
             .thenReturn(expectedPage);

@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.validation;
 
+import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.web.validation.validators.NotMeValidator;
@@ -54,7 +55,7 @@ public class NotMeValidatorTest {
 
     @Test
     public void testIsValidForAnonymous() throws Exception {
-        when(service.getCurrentUser()).thenReturn(null);
+        when(service.getCurrentUser()).thenReturn(new AnonymousUser());
 
         assertTrue(validator.isValid(username, null));
     }

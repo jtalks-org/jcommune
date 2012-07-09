@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.UserService;
 import org.mockito.Mock;
@@ -84,6 +85,7 @@ public class LocationServiceTest {
     @Test
     public void testCurrentUserIsAnonymous() {
         when(sessionRegistry.getAllPrincipals()).thenReturn(list);
+        when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
 
         locationService.getUsersViewing(topic);
     }
@@ -98,6 +100,8 @@ public class LocationServiceTest {
     
     @Test
     public void testClearUserLocationForAnonymous() {
+        when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
+        
     	locationService.clearUserLocation();
     	@SuppressWarnings("unchecked")
 		Map<JCUser, String> registerUserMap = mock(Map.class);

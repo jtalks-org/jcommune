@@ -241,4 +241,14 @@ public class JCUser extends User {
     public void setGroups(List<Group> groups) {
         this.groups = groups;
     }
+    
+    /**
+     * Returns whether current user is logged in or not. Vast majority of user 
+     * properties is available for logged in users only, anonymous user object 
+     * holds only default settings
+     * @return whether this user is anonymous
+     */
+    public boolean isAnonymous() {
+        return false;
+    }
 }

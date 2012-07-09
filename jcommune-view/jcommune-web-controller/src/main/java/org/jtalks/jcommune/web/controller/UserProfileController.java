@@ -24,7 +24,6 @@ import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
-import org.jtalks.jcommune.service.nontransactional.PaginationService;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +61,6 @@ public class UserProfileController {
     private BreadcrumbBuilder breadcrumbBuilder;
     private ImageUtils imageUtils;
     private PostService postService;
-    private PaginationService paginationService;
 
     /**
      * This method turns the trim binder on. Trim binder
@@ -82,19 +80,16 @@ public class UserProfileController {
      * @param breadcrumbBuilder the object which provides actions on {@link BreadcrumbBuilder} entity
      * @param imageUtils        {@link ImageUtils} used
      * @param postService       {@link PostService} used
-     * @param paginationService {@link PaginationService} used 
      */
     @Autowired
     public UserProfileController(UserService userService,
                                  BreadcrumbBuilder breadcrumbBuilder,
                                  ImageUtils imageUtils,
-                                 PostService postService,
-                                 PaginationService paginationService) {
+                                 PostService postService) {
         this.userService = userService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.imageUtils = imageUtils;
         this.postService = postService;
-        this.paginationService = paginationService;
     }
 
     /**
@@ -206,7 +201,6 @@ public class UserProfileController {
         return new ModelAndView("userDetails")
                 .addObject("user", user)
                 // bind separately to get localized value
-                .addObject("language", user.getLanguage())
-                .addObject("pageSize", paginationService.getPageSizeFor(user));
+                .addObject("language", user.getLanguage());
     }
 }

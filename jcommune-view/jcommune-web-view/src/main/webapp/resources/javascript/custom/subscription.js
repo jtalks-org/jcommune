@@ -20,15 +20,26 @@
  * This script also alters the "subscription" control to "unsubscription"
  * one and vice versa
  */
-$(document).ready(function() {
+$(document).ready(function () {
     $('a#subscription').click(function () {
         var link = $(this)[0];
-        $.getJSON(link.href, function (controlInfo) {
-            link.textContent = controlInfo.caption;
-            link.setAttribute('data-original-title', controlInfo.tooltip);
-            link.href = $root + controlInfo.urlSuffix;
-        });
+        $.ajax({
+            url:link.href,
+            type:"GET",
+            async:false,
+            success:function (data) {
+                if (link.href.indexOf("unsubscribe") == -1) {
+                    // subscribe operation success
+                    link.textContent = $labelUnsubscribe;
+                    link.setAttribute('data-original-title', $labelUnsubscribeTooltip);
+                    link.href = link.href.replace("subscribe", "unsubscribe");
+                } else {
+                    // unsubscribe operation success
+                    link.textContent = $labelSubscribe;
+                    link.setAttribute('data-original-title', $labelSubscribeTooltip);
+                    link.href = link.href.replace("unsubscribe", "subscribe");
+                }
+            }});
         return false;
-
     })
-})
+});

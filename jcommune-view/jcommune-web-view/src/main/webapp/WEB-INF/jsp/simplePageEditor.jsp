@@ -32,7 +32,7 @@
 
     <div id="answer">
         <form:form action="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}/edit"
-                   method="POST" modelAttribute="simplePageDto" onsubmit="doCheck();return true;">
+                   method="POST" modelAttribute="simplePageDto" class='well anti-multipost'>
 
             <h2>
                 <spring:message code="label.edit"/>

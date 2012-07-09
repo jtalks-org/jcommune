@@ -60,7 +60,7 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
     /**
      * {@inheritDoc}
      */
-   // @PreAuthorize("hasPermission(#simplePageInfoContainer.getId(), 'SIMPLE_PAGE', 'GeneralPermission.WRITE')")
+    @PreAuthorize("hasPermission(#simplePageInfoContainer.getId(), 'SIMPLE_PAGE', 'GeneralPermission.WRITE')")
     @Override
     public void updatePage(SimplePageInfoContainer simplePageInfoContainer) throws NotFoundException {
 
@@ -111,8 +111,7 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
         this.getDao().update(simplePage);
 
         Group group = groupDao.get(AdministrationGroup.ADMIN.getId());
-        securityService.createAclBuilder().grant(GeneralPermission.WRITE).
-                to(group).on(simplePage).flush();
+        securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(group).on(simplePage).flush();
 
         logger.info("SimplePage registered: {}", simplePage.getName());
         return simplePage;
