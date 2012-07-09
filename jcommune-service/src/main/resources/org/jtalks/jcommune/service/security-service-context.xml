@@ -40,7 +40,6 @@
         <property name="permissionEvaluator" ref="aclGroupPermissionEvaluator"/>
     </bean>
 
-
     <!-- Evaluates hasPermission expression -->
     <bean id="aclGroupPermissionEvaluator" class="org.jtalks.jcommune.service.security.AclGroupPermissionEvaluator">
         <!-- Link to actual ACL Service -->
@@ -109,17 +108,7 @@
     </bean>
 
     <!-- Authorization for ACLs administration setup -->
-    <bean id="aclAuthorizationStrategy" class="org.springframework.security.acls.domain.AclAuthorizationStrategyImpl">
-        <constructor-arg>
-            <list>
-                <bean class="org.springframework.security.core.authority.GrantedAuthorityImpl">
-                    <constructor-arg value="ROLE_ADMIN"/>
-                </bean>
-            </list>
-        </constructor-arg>
-        <property name="sidFactory" ref="jtalksSidFactory"/>
-        <property name="sidRetrievalStrategy" ref="sidRetrievalStrategy"/>
-    </bean>
+    <bean id="aclAuthorizationStrategy" class="org.jtalks.jcommune.service.security.AclAuthorizationStrategyImpl"/>
 
     <bean id="securityContextFacade"
           class="org.jtalks.jcommune.service.security.SecurityContextHolderFacade"/>
