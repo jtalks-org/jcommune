@@ -111,7 +111,7 @@
                         <c:set var='labelClass' value=''/>
                     <%--</c:otherwise>
                 </c:choose>  --%>
-                <a href="${pageContext.request.contextPath}/users/${innerUser.encodedUsername}" 
+                <a href="${pageContext.request.contextPath}/users/${innerUser.id}" 
                     title="<spring:message code='label.tips.view_profile'/>"
                     class='${labelClass}'>
                     <c:out value="${innerUser.username}"/>
