@@ -241,14 +241,16 @@ public class PrivateMessageController {
     public String saveDraft(@ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
         try {
             if (pmDto.getBody() == null && pmDto.getTitle() == null && pmDto.getRecipient() == null) {
-                result.rejectValue("title", "validation.draft.need.at.least.one.field");
-                result.rejectValue("body", "validation.draft.need.at.least.one.field");
-                result.rejectValue("recipient", "validation.draft.need.at.least.one.field");
                 return PM_FORM;
             } else {
                 // todo: we can easily get current user in service
                 JCUser userFrom = userService.getCurrentUser();
-                JCUser userTo =  userService.getByUsername(pmDto.getRecipient());
+                JCUser userTo;
+                if (pmDto.getRecipient() != null) {
+                    userTo = userService.getByUsername(pmDto.getRecipient());
+                } else {
+                    userTo = null;
+                }
                 pmService.saveDraft(pmDto.getId(), pmDto.getTitle(), pmDto.getBody(), userTo, userFrom );
                 return "redirect:/drafts";
             }
