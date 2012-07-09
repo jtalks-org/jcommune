@@ -29,7 +29,6 @@
 <body>
 <div class="container">
     <jsp:include page="../template/topLine.jsp"/>
-    <jsp:include page="../template/logo.jsp"/>
 
     <div id="branch-header">
         <h3>
@@ -51,7 +50,7 @@
         </div>
     </div>
 
-    <sec:accesscontrollist hasPermission="3" domainObject="${simplePage}">
+    <sec:accesscontrollist hasPermission="4" domainObject="${simplePage}">
         <div>
             <a class="button" href="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}/edit">
                 <spring:message code="label.edit"/>

@@ -54,12 +54,13 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
                                           SecurityService securityService) {
         super(simplePageDao);
         this.groupDao = groupDao;
+        this.securityService = securityService;
     }
 
     /**
      * {@inheritDoc}
      */
-   // @PreAuthorize("hasPermission(#simplePageInfoContainer.id, 'org.jtalks.jcommune.model.entity.SimplePage', 'GeneralPermission.WRITE')")
+   // @PreAuthorize("hasPermission(#simplePageInfoContainer.getId(), 'SIMPLE_PAGE', 'GeneralPermission.WRITE')")
     @Override
     public void updatePage(SimplePageInfoContainer simplePageInfoContainer) throws NotFoundException {
 
@@ -96,7 +97,7 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
     /**
      * {@inheritDoc}
      */
-    //@PreAuthorize("hasPermission(#simplePage.id, 'org.jtalks.jcommune.model.entity.SimplePage', 'GeneralPermission.WRITE')")
+    @PreAuthorize("hasPermission(#simplePage.getId(), 'SIMPLE_PAGE', 'GeneralPermission.WRITE')")
     @Override
     public SimplePage createPage(SimplePage simplePage) throws EntityExistsException {
 
@@ -105,6 +106,7 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
             logger.info(msg);
             throw new EntityExistsException(msg);
         }
+
 
         this.getDao().update(simplePage);
 
