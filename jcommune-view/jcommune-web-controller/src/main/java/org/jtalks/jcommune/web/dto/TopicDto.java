@@ -107,13 +107,6 @@ public class TopicDto {
     }
 
     /**
-     * @return title of topic
-     */
-    public String getTopicTitle() {
-        return topic.getTitle();
-    }
-
-    /**
      * @return poll in topic
      */
     public Poll getPoll() {

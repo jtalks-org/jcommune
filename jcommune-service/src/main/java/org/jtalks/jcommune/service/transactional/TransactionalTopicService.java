@@ -66,7 +66,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * @param branchDao           used for checking branch existence
      * @param notificationService to send email nofications on topic updates to subscribed users
      * @param subscriptionService for subscribing user on topic if notification enabled
-     * @param paginationService   auxiliary services for pagination
      * @param userService         to get current logged in user
      */
     public TransactionalTopicService(TopicDao dao, SecurityService securityService,
@@ -110,8 +109,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      */
     @Override
     @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.CREATE_TOPICS')")
-    public Topic createTopic(String topicName, String bodyText, long branchId
-            , boolean notifyOnAnswers) throws NotFoundException {
+    public Topic createTopic(String topicName, String bodyText, long branchId,
+                             boolean notifyOnAnswers) throws NotFoundException {
         JCUser currentUser = userService.getCurrentUser();
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);
@@ -164,20 +163,20 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicId, 'TOPIC', 'GeneralPermission.WRITE')")
-    public void updateTopic(long topicId, Topic topicDto, String bodyText)
+    @PreAuthorize("hasPermission(#topicDto.id, 'TOPIC', 'GeneralPermission.WRITE')")
+    public void updateTopic(Topic topicDto, String bodyText)
             throws NotFoundException {
-        updateTopic(topicId, topicDto, bodyText, false);
+        updateTopic(topicDto, bodyText, false);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicId, 'TOPIC', 'GeneralPermission.WRITE')")
-    public void updateTopic(long topicId, Topic topicDto, String bodyText, boolean notifyOnAnswers)
+    @PreAuthorize("hasPermission(#topicDto.id, 'TOPIC', 'GeneralPermission.WRITE')")
+    public void updateTopic(Topic topicDto, String bodyText, boolean notifyOnAnswers)
             throws NotFoundException {
-        Topic topic = get(topicId);
+        Topic topic = get(topicDto.getId());
         topic.setTitle(topicDto.getTitle());
         topic.setTopicWeight(topicDto.getTopicWeight());
         topic.setSticked(topicDto.isSticked());

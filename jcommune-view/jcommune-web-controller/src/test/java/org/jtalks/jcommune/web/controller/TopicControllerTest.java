@@ -314,9 +314,10 @@ public class TopicControllerTest {
 
         //invoke the object under test
         ModelAndView mav = controller.editTopic(dto, bindingResult, BRANCH_ID, TOPIC_ID);
-
+        Topic topic = dto.getTopic();
+        topic.setId(TOPIC_ID);
         //check expectations
-        verify(topicService).updateTopic(TOPIC_ID, dto.getTopic(), TOPIC_CONTENT, false);
+        verify(topicService).updateTopic(topic, TOPIC_CONTENT, false);
 
         //check result
         assertViewName(mav, "redirect:/topics/" + TOPIC_ID);
@@ -337,7 +338,7 @@ public class TopicControllerTest {
         assertEquals(branchId, BRANCH_ID);
         assertEquals(topicId, TOPIC_ID);
 
-        verify(topicService, never()).updateTopic(anyLong(), (Topic)anyObject(), anyString(), anyBoolean());
+        verify(topicService, never()).updateTopic((Topic)anyObject(), anyString(), anyBoolean());
     }
 
     @Test

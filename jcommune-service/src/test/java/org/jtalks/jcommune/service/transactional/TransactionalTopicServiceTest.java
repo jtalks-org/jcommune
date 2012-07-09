@@ -279,7 +279,8 @@ public class TransactionalTopicServiceTest {
 
         updateTopicStubs(topic);
         Topic newTopic = createNewTopic();
-        topicService.updateTopic(TOPIC_ID, newTopic, NEW_POST_CONTENT, true);
+        newTopic.setId(topic.getId());
+        topicService.updateTopic(newTopic, NEW_POST_CONTENT, true);
 
 
         updateTopicVerifications(topic);
@@ -294,7 +295,8 @@ public class TransactionalTopicServiceTest {
         subscribeUserOnTopic(user, topic);
         updateTopicStubs(topic);
         Topic newTopic = createNewTopic();
-        topicService.updateTopic(TOPIC_ID, newTopic, NEW_POST_CONTENT, false);
+        newTopic.setId(topic.getId());
+        topicService.updateTopic(newTopic, NEW_POST_CONTENT, false);
 
         updateTopicVerifications(topic);
     }
@@ -307,7 +309,8 @@ public class TransactionalTopicServiceTest {
         subscribeUserOnTopic(user, topic);
         updateTopicStubs(topic);
         Topic newTopic = createNewTopic();
-        topicService.updateTopic(TOPIC_ID, newTopic, NEW_POST_CONTENT, false);
+        newTopic.setId(topic.getId());
+        topicService.updateTopic(newTopic, NEW_POST_CONTENT, false);
 
         updateTopicVerifications(topic);
         verify(subscriptionService).toggleTopicSubscription(topic);
@@ -321,7 +324,8 @@ public class TransactionalTopicServiceTest {
 
         updateTopicStubs(topic);
         Topic newTopic = createNewTopic();
-        topicService.updateTopic(TOPIC_ID, newTopic, NEW_POST_CONTENT, false);
+        newTopic.setId(topic.getId());
+        topicService.updateTopic(newTopic, NEW_POST_CONTENT, false);
 
         updateTopicVerifications(topic);
     }
@@ -354,7 +358,8 @@ public class TransactionalTopicServiceTest {
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(topic);
         Topic newTopic = createNewTopic();
-        topicService.updateTopic(TOPIC_ID, newTopic, NEW_POST_CONTENT);
+        newTopic.setId(topic.getId());
+        topicService.updateTopic(newTopic, NEW_POST_CONTENT);
 
         assertEquals(topic.getTitle(), NEW_TOPIC_TITLE);
         assertEquals(post.getPostContent(), NEW_POST_CONTENT);
@@ -377,7 +382,7 @@ public class TransactionalTopicServiceTest {
         topic.setAnnouncement(false);
         when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
 
-        topicService.updateTopic(TOPIC_ID, topic, newBody, false);
+        topicService.updateTopic(topic, newBody, false);
     }
 
     @Test

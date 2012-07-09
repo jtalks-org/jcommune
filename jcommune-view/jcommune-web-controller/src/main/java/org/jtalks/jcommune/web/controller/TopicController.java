@@ -161,7 +161,7 @@ public class TopicController {
                     .addObject(BRANCH_ID, branchId)
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branch));
         }
-        Topic createdTopic = topicService.createTopic(topicDto.getTopicTitle(), topicDto.getBodyText(),
+        Topic createdTopic = topicService.createTopic(topicDto.getTopic().getTitle(), topicDto.getBodyText(),
                 branchId, topicDto.isNotifyOnAnswers());
 
         if (topicDto.hasPoll()) {
@@ -277,7 +277,9 @@ public class TopicController {
                     .addObject(BRANCH_ID, branchId)
                     .addObject(TOPIC_ID, topicId);
         }
-        topicService.updateTopic(topicId, topicDto.getTopic(), topicDto.getBodyText(),
+        Topic topic = topicDto.getTopic();
+        topic.setId(topicId);
+        topicService.updateTopic(topicDto.getTopic(), topicDto.getBodyText(),
                 topicDto.isNotifyOnAnswers());
 
         return new ModelAndView("redirect:/topics/" + topicId);
