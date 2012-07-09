@@ -74,6 +74,27 @@ public class JCommunePropertyTest {
     }
     
     @Test
+    public void testIntValue() {
+        Property property = null;
+        Mockito.when(propertyDao.getByName(Mockito.anyString())).thenReturn(property);
+        jcommuneProperty.setPropertyDao(propertyDao);
+        jcommuneProperty.setDefaultValue("1");
+        
+        int actualValue = jcommuneProperty.intValue();
+        Assert.assertEquals(actualValue, 1, "Returned an invalid property value.");
+    }
+    
+    @Test(expectedExceptions=NumberFormatException.class)
+    public void testIntValueWrong() {
+        Property property = null;
+        Mockito.when(propertyDao.getByName(Mockito.anyString())).thenReturn(property);
+        jcommuneProperty.setPropertyDao(propertyDao);
+        jcommuneProperty.setDefaultValue("");
+        
+        jcommuneProperty.intValue();
+    }
+    
+    @Test
     public void testGetValueWithNotFoundedProperty() {
         Property property = null;
         Mockito.when(propertyDao.getByName(Mockito.anyString())).thenReturn(property);

@@ -45,7 +45,6 @@ import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
-import org.jtalks.jcommune.service.nontransactional.PaginationService;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.springframework.data.domain.Page;
@@ -95,8 +94,6 @@ public class TransactionalTopicServiceTest {
     @Mock
     private SubscriptionService subscriptionService;
     @Mock
-    private PaginationService paginationService;
-    @Mock
     private UserService userService;
 
     private CompoundAclBuilder<User> aclBuilder;
@@ -112,7 +109,6 @@ public class TransactionalTopicServiceTest {
                 branchDao,
                 notificationService,
                 subscriptionService,
-                paginationService,
                 userService);
         
         user = new JCUser(USERNAME, "email@mail.com", "password");
@@ -217,7 +213,10 @@ public class TransactionalTopicServiceTest {
         Page<Topic> expectedPage = new PageImpl<Topic>(expectedList);
         when(topicDao.getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JCommunePageRequest> any()))
             .thenReturn(expectedPage);
-        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
+        
+        JCUser currentUser = new JCUser("current", null, null);
+        currentUser.setPageSize(pageSize);
+        when(userService.getCurrentUser()).thenReturn(currentUser);
 
         Page<Topic> actualPage = topicService.getRecentTopics(pageNumber);
 
@@ -234,7 +233,9 @@ public class TransactionalTopicServiceTest {
         Page<Topic> expectedPage = new PageImpl<Topic>(expectedList);
         when(topicDao.getUnansweredTopics(Matchers.<JCommunePageRequest> any()))
             .thenReturn(expectedPage);
-        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
+        JCUser currentUser = new JCUser("current", null, null);
+        currentUser.setPageSize(pageSize);
+        when(userService.getCurrentUser()).thenReturn(currentUser);
 
         Page<Topic> actualPage = topicService.getUnansweredTopics(pageNumber);
         assertNotNull(actualPage);
@@ -419,7 +420,9 @@ public class TransactionalTopicServiceTest {
         Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
         Page<Topic> expectedPage = new PageImpl<Topic>(Collections.<Topic> emptyList());
         
-        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
+        JCUser currentUser = new JCUser("current", null, null);
+        currentUser.setPageSize(pageSize);
+        when(userService.getCurrentUser()).thenReturn(currentUser);
         when(topicDao.getTopics(
                 Matchers.any(Branch.class), Matchers.any(JCommunePageRequest.class)))
             .thenReturn(expectedPage);

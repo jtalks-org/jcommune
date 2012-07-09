@@ -29,7 +29,12 @@ public enum JCommuneProperty {
     /**
      * The property to check the enabling of email notifications to subscribers of topics or branches.
      */
-    SENDING_NOTIFICATIONS_ENABLED;
+    SENDING_NOTIFICATIONS_ENABLED,
+    
+    /**
+     * Property for session timeout for logged users.
+     */
+    SESSION_TIMEOUT;
     
     private static final Logger LOGGER = LoggerFactory.getLogger(JCommuneProperty.class);
     //fields
@@ -63,7 +68,18 @@ public enum JCommuneProperty {
      * @return a boolean value of the property
      */
     public boolean booleanValue() {
-       return Boolean.valueOf(getValue()); 
+        return Boolean.valueOf(getValue()); 
+    }
+    
+    /**
+     * Converts a value of the property to int and returns it.
+     * Keep in mind, if the property isn't integer {@link NumberFormatException}
+     * will be thrown
+     * 
+     * @return a boolean value of the property
+     */
+    public int intValue() {
+        return Integer.valueOf(getValue());
     }
     
     /**

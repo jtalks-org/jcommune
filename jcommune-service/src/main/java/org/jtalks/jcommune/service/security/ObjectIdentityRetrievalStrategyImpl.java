@@ -21,16 +21,27 @@ import org.springframework.security.acls.model.ObjectIdentityRetrievalStrategy;
 
 import javax.annotation.Nonnull;
 
-
+/**
+ * This implementation of {@link ObjectIdentityRetrievalStrategy}
+ * is used by Spring security custom tags.
+ *
+ * @author Elena Lepaeva
+ */
 public class ObjectIdentityRetrievalStrategyImpl implements ObjectIdentityRetrievalStrategy {
     private final AclUtil aclUtil;
 
+    /**
+     * @param aclUtil utilities to work with Spring ACL
+     */
+    public ObjectIdentityRetrievalStrategyImpl(@Nonnull AclUtil aclUtil) {
+        this.aclUtil = aclUtil;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ObjectIdentity getObjectIdentity(Object domainObject) {
         return aclUtil.createIdentityFor((Entity) domainObject);
-    }
-
-    public ObjectIdentityRetrievalStrategyImpl(@Nonnull AclUtil aclUtil) {
-        this.aclUtil = aclUtil;
     }
 }

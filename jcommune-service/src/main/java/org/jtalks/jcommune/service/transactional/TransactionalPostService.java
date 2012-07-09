@@ -23,9 +23,9 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
-import org.jtalks.jcommune.service.nontransactional.PaginationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -46,7 +46,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     private SecurityService securityService;
     private NotificationService notificationService;
     private LastReadPostService lastReadPostService;
-    private PaginationService paginationService;
+    private UserService userService;
 
     /**
      * Create an instance of Post entity based service
@@ -56,7 +56,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * @param securityService     service for authorization
      * @param notificationService to send email updates for subscribed users
      * @param lastReadPostService to modify last read post information when topic structure is changed
-     * @param paginationService   this service provides functionality, that is needed for pagination
+     * @param userService   to get current user
      */
     public TransactionalPostService(
             PostDao dao,
@@ -64,13 +64,13 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
             SecurityService securityService,
             NotificationService notificationService,
             LastReadPostService lastReadPostService,
-            PaginationService paginationService) {
+            UserService userService) {
         super(dao);
         this.topicDao = topicDao;
         this.securityService = securityService;
         this.notificationService = notificationService;
         this.lastReadPostService = lastReadPostService;
-        this.paginationService = paginationService;
+        this.userService = userService;
     }
 
     /**
@@ -117,7 +117,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     @Override
     public Page<Post> getPostsOfUser(JCUser userCreated, int page, boolean pagingEnabled) {
         JCommunePageRequest pageRequest = new JCommunePageRequest(
-                page, paginationService.getPageSizeForCurrentUser(), pagingEnabled);
+                page, userService.getCurrentUser().getPageSize(), pagingEnabled);
         return this.getDao().getUserPosts(userCreated, pageRequest);
     }
 
@@ -128,7 +128,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     public int calculatePageForPost(Post post) {
         Topic topic = post.getTopic();
         int index = topic.getPosts().indexOf(post) + 1;
-        int pageSize = paginationService.getPageSizeForCurrentUser();
+        int pageSize = userService.getCurrentUser().getPageSize();
         int pageNum = index / pageSize;
         if (index % pageSize == 0) {
             return pageNum;
@@ -143,7 +143,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     @Override
     public Page<Post> getPosts(Topic topic, int page, boolean pagingEnabled) {
         JCommunePageRequest pageRequest = new JCommunePageRequest(
-                page, paginationService.getPageSizeForCurrentUser(), pagingEnabled);
+                page, userService.getCurrentUser().getPageSize(), pagingEnabled);
         return getDao().getPosts(topic, pageRequest);
     }
 }

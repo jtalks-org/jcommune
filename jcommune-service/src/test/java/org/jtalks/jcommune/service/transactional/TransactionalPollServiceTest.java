@@ -18,15 +18,12 @@ import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.User;
+import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.Poll;
-import org.jtalks.jcommune.model.entity.PollItem;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.security.TemporaryAuthorityManager;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -57,18 +54,20 @@ public class TransactionalPollServiceTest {
     @Mock
     private CompoundAclBuilder<User> aclBuilder;
     @Mock
-    private TemporaryAuthorityManager temporaryAuthorityManager;
-    @Mock
     private UserService userService;
+    private JCUser jcUser;
 
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
         pollService = new TransactionalPollService(pollDao, groupDao, pollOptionDao,
-                securityService, temporaryAuthorityManager, userService);
+                securityService, userService);
         aclBuilder = mockAclBuilder();
+        Mockito.when(aclBuilder.restrict(Mockito.any(JtalksPermission.class))).thenReturn(aclBuilder);
         Mockito.when(aclBuilder.on(Mockito.any(Poll.class))).thenReturn(aclBuilder);
         Mockito.when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
+        jcUser = new JCUser("name", "email", "password");
+        Mockito.when(userService.getCurrentUser()).thenReturn(jcUser);
     }
 
     @Test

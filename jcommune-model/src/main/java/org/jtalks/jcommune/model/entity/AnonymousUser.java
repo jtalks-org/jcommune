@@ -29,47 +29,52 @@ public class AnonymousUser extends JCUser {
     
     private static final long serialVersionUID = 1L;
     
-    public static final String USERNAME_ANONYMOUS = "";
-
     public AnonymousUser() {
-        super(USERNAME_ANONYMOUS, null, null);
-        this.setPageSize(JCUser.DEFAULT_PAGE_SIZE);
-        this.setLanguage(Language.ENGLISH);
+        super();
+        setPageSize(JCUser.DEFAULT_PAGE_SIZE);
+        setLanguage(Language.ENGLISH);
     }
 
     @Override
     public Collection<GrantedAuthority> getAuthorities() {
-        throw new UnsupportedOperationException("This operation is not supported");
+        throw new UnsupportedOperationException(
+                "Authorities are not defined for anonymous user");
     }
     
     @Override
     public String getEmail() {
-        throw new UnsupportedOperationException("This operation is not supported");
+        throw new UnsupportedOperationException(
+                "Mail is not defined for anonymous user");
     }
     
     @Override
     public String getEncodedUsername() {
-        throw new UnsupportedOperationException("This operation is not supported");
+        throw new UnsupportedOperationException(
+                "Encoded username is not defined for anonymous user");
     }
     
     @Override
     public List<Group> getGroups() {
-        throw new UnsupportedOperationException("This operation is not supported");
+        throw new UnsupportedOperationException(
+                "Groups are not defined for anonymous user");
     }
     
     @Override
     public long getId() {
-        throw new UnsupportedOperationException("This operation is not supported");
+        throw new UnsupportedOperationException(
+                "ID is not defined for anonymous userd");
     }
     
     @Override
     public String getPassword() {
-        throw new UnsupportedOperationException("This operation is not supported");
+        throw new UnsupportedOperationException(
+                "Passowrd is not defined for anonymous user");
     }
     
     @Override
     public String getUsername() {
-        throw new UnsupportedOperationException("This operation is not supported");
+        throw new UnsupportedOperationException(
+                "Username is not defined for anonymous user");
     }
     
     @Override
