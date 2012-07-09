@@ -17,8 +17,9 @@ package org.jtalks.jcommune.service.transactional;
 import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.dao.search.TopicSearchDao;
 import org.jtalks.jcommune.model.dto.JCommunePageRequest;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.nontransactional.PaginationService;
+import org.jtalks.jcommune.service.UserService;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -39,14 +40,17 @@ public class TransactionalTopicFullSearchServiceTest {
 	@Mock
 	private TopicSearchDao topicSearchDao;
 	@Mock
-	private PaginationService paginationService;
+	private UserService userService;
 	private TransactionalTopicFullSearchService topicSearchService;
 	
 	@BeforeMethod
 	public void init() {
 		MockitoAnnotations.initMocks(this);
-		topicSearchService = new TransactionalTopicFullSearchService(topicSearchDao, paginationService);
-		Mockito.when(paginationService.getPageSizeForCurrentUser()).thenReturn(50);
+		topicSearchService = new TransactionalTopicFullSearchService(topicSearchDao, userService);
+		
+		JCUser currentUser = new JCUser("current", null, null);
+		currentUser.setPageSize(50);
+		Mockito.when(userService.getCurrentUser()).thenReturn(currentUser);
 	}
 	
 	@Test
