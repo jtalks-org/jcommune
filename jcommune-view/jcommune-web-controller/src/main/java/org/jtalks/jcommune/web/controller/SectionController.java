@@ -21,7 +21,6 @@ import javax.servlet.http.HttpSession;
 
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.service.SectionService;
-import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.SectionDto;
@@ -54,7 +53,6 @@ public class SectionController {
     private SectionService sectionService;
     private ForumStatisticsProvider forumStaticsProvider;
     private LocationService locationService;
-    private UserService userService;
 
     /**
      * Constructor creates MVC controller with specified SectionService
@@ -67,12 +65,10 @@ public class SectionController {
     @Autowired
     public SectionController(SectionService sectionService,
                              ForumStatisticsProvider forumStaticsProvider,
-                             LocationService locationService,
-                             UserService userService) {
+                             LocationService locationService) {
         this.sectionService = sectionService;
         this.forumStaticsProvider = forumStaticsProvider;
         this.locationService = locationService;
-        this.userService = userService;
     }
 
 
@@ -97,7 +93,6 @@ public class SectionController {
         List<Section> sections = sectionService.getAll();
         sectionService.prepareSectionsForView(sections);
         return new ModelAndView("sectionList")
-                .addObject("pageSize", userService.getCurrentUser().getPageSize())
                 .addObject("sectionList", sections)
                 .addObject("messagesCount", forumStaticsProvider.getPostsOnForumCount())
                 .addObject("registeredUsersCount", forumStaticsProvider.getUsersCount())
@@ -136,7 +131,6 @@ public class SectionController {
         sectionService.prepareSectionsForView(Arrays.asList(section));
         return new ModelAndView("branchList")
                 .addObject("viewList", locationService.getUsersViewing(section))
-                .addObject("section", section)
-                .addObject("pageSize", userService.getCurrentUser().getPageSize());
+                .addObject("section", section);
     }
 }

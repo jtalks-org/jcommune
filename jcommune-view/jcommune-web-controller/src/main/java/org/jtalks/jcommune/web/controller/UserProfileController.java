@@ -201,7 +201,6 @@ public class UserProfileController {
         return new ModelAndView("userDetails")
                 .addObject("user", user)
                 // bind separately to get localized value
-                .addObject("language", user.getLanguage())
-                .addObject("pageSize", user.getPageSize());
+                .addObject("language", user.getLanguage());
     }
 }

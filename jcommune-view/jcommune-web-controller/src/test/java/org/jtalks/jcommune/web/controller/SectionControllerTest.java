@@ -28,9 +28,7 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.jtalks.common.model.entity.Section;
-import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.service.SectionService;
-import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
@@ -53,7 +51,6 @@ public class SectionControllerTest {
     private BreadcrumbBuilder breadcrumbBuilder;
     private ForumStatisticsProvider statisticsProvider;
     private LocationService locationServiceImpl;
-    private UserService userService;
 
     @BeforeMethod
     public void init() {
@@ -61,14 +58,11 @@ public class SectionControllerTest {
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
         statisticsProvider = mock(ForumStatisticsProvider.class);
         locationServiceImpl = mock(LocationService.class);
-        userService = mock(UserService.class);
         
-        when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
         controller = new SectionController( 
                 sectionService,
                 statisticsProvider,
-                locationServiceImpl,
-                userService);
+                locationServiceImpl);
     }
 
     @Test
@@ -88,7 +82,6 @@ public class SectionControllerTest {
 
         //check result
         assertViewName(mav, "sectionList");
-        assertModelAttributeAvailable(mav, "pageSize");
         assertModelAttributeAvailable(mav, "sectionList");
         assertModelAttributeAvailable(mav, "messagesCount");
         assertModelAttributeAvailable(mav, "registeredUsersCount");
