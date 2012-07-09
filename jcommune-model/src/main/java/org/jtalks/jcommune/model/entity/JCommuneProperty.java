@@ -68,7 +68,7 @@ public enum JCommuneProperty {
      * @return a boolean value of the property
      */
     public boolean booleanValue() {
-       return Boolean.valueOf(getValue()); 
+        return Boolean.valueOf(getValue()); 
     }
     
     /**
