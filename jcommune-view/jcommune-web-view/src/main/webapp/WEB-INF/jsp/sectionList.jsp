@@ -49,7 +49,7 @@
             </a>
         </div>
     </div>
-    <hr style="margin: 0px;"/>
+    <hr class="forum-pagination" />
       
     <%-- Topics table --%>
     <c:forEach var="section" items="${sectionList}">
@@ -119,18 +119,19 @@
         <c:if test="${!(empty usersRegistered)}">
             <strong><spring:message code="label.onlineUsersInfo.registeredUsers"/></strong>
             <c:forEach items="${usersRegistered}" var="user">
+                <%--todo
                 <c:choose>
                     <c:when test="${user.role=='ROLE_ADMIN'}">
                         <a href="${pageContext.request.contextPath}/users/${user.id}"
                                 title="<spring:message code='label.tips.view_profile'/>"
                                 class="label label-important"><c:out value="${user.username}"/></a>
-                    </c:when>
-                    <c:otherwise>
+                    </c:when>--%>
+                    <%--<c:otherwise>--%>
                         <a href="${pageContext.request.contextPath}/users/${user.id}"
                                 title="<spring:message code='label.tips.view_profile'/>">
                                 <c:out value="${user.username}"/></a>
-                    </c:otherwise>
-                 </c:choose>
+                    <%--</c:otherwise>
+                 </c:choose>       --%>
             </c:forEach>
         </c:if>
     </div>

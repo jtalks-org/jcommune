@@ -304,7 +304,7 @@
                 <tr>
                     <td>
                     </td>
-                    <td style="border-left: 0px;">
+                    <td class="left-border">
                     </td>
                 </tr>
             </table>

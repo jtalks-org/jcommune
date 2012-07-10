@@ -21,7 +21,7 @@ import org.jtalks.jcommune.model.dao.search.TopicSearchDao;
 import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicFullSearchService;
-import org.jtalks.jcommune.service.nontransactional.PaginationService;
+import org.jtalks.jcommune.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
@@ -38,20 +38,19 @@ import org.springframework.data.domain.PageImpl;
  */
 public class TransactionalTopicFullSearchService implements TopicFullSearchService {
     private TopicSearchDao topicSearchDao;
-    private PaginationService paginationService;
+    private UserService userService;
     
     /**
      * Constructs an instance with required fields.
      * 
      * @param topicSearchDao for full-text search operations
-     * @param paginationService this service provides functionality,
-     *        that is needed for pagination
+     * @param userService to get current user
      */
     public TransactionalTopicFullSearchService(
             TopicSearchDao topicSearchDao,
-            PaginationService paginationService) {
+            UserService userService) {
         this.topicSearchDao = topicSearchDao;
-        this.paginationService = paginationService;
+        this.userService = userService;
     }
     
     /**
@@ -60,7 +59,7 @@ public class TransactionalTopicFullSearchService implements TopicFullSearchServi
     @Override
     public Page<Topic> searchByTitleAndContent(String phrase, int page) {
         if (!StringUtils.isEmpty(phrase)) {
-            int pageSize = paginationService.getPageSizeForCurrentUser();
+            int pageSize = userService.getCurrentUser().getPageSize();
             JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(page, pageSize);
             // hibernate search refuses to process long string throwing error
             String normalizedPhrase = StringUtils.left(phrase, 50);

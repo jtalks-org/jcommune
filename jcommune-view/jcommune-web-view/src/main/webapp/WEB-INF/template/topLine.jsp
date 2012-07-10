@@ -71,7 +71,7 @@
                                     </fmt:message>
                                     ">
                                     (
-                                    <i class="icon-envelope icon-white" style="vertical-align:middle;"></i>
+                                    <i class="icon-envelope icon-white rss-icon" ></i>
                                     <span class='test-pm-count'>${newPmCount}</span>
                                     )
                                 </span>

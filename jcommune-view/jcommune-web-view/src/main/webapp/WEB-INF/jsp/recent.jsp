@@ -84,7 +84,7 @@
                         </td>
                         <td>
                             <c:if test="${topic.hasPoll}">
-                                <a style="color: red;"
+                                <a class="red-style"
                                        href="${pageContext.request.contextPath}/topics/${topic.id}">
                                         [POLL]</a>
                             </c:if>

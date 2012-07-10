@@ -63,7 +63,7 @@
              </span>
         </sec:authorize>
     </div>
-    <span style="display: inline-block; "></span>
+    <span class="inline-block"></span>
 </div>
 <%-- END OF Branch header --%>
 
@@ -163,7 +163,7 @@
                             </c:when>
                         </c:choose>
                         <c:if test="${topic.hasPoll}">
-                            <a style="color: red;"
+                            <a class="red-style"
                                href="${pageContext.request.contextPath}/topics/${topic.id}">
                                 [POLL]</a>
                         </c:if>

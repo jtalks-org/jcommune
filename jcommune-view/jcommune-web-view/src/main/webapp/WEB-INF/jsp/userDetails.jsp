@@ -131,7 +131,7 @@
                                     </label>
                                     <div class="controls">
                                         <label class="input-xlarge box-label test-pagesize">
-                                            <c:out value='${pageSize}'/>
+                                            <c:out value='${user.pageSize}'/>
                                         </label>
                                     </div>
                                 </div>

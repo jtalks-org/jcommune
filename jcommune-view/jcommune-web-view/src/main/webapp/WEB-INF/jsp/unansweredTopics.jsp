@@ -96,7 +96,7 @@
                                 </c:when>
                             </c:choose>
                             <c:if test="${item.hasPoll}">
-                                <a style="color: red;"
+                                <a class="red-style"
                                        href="${pageContext.request.contextPath}/topics/${item.id}">
                                         [POLL]</a>
                             </c:if>

@@ -88,13 +88,13 @@
         <constructor-arg ref="securityService"/>
         <constructor-arg ref="notificationService"/>
         <constructor-arg ref="lastReadPostService"/>
-        <constructor-arg ref="paginationService"/>
+        <constructor-arg ref="userService"/>
     </bean>
 
     <bean id="topicSearchService"
           class="org.jtalks.jcommune.service.transactional.TransactionalTopicFullSearchService">
         <constructor-arg ref="topicSearchDao"/>
-        <constructor-arg ref="paginationService"/>
+        <constructor-arg ref="userService"/>
     </bean>
 
     <bean id="topicBranchService"
@@ -128,7 +128,6 @@
         <constructor-arg ref="topicBranchDao"/>
         <constructor-arg ref="notificationService"/>
         <constructor-arg ref="subscriptionService"/>
-        <constructor-arg ref="paginationService"/>
         <constructor-arg ref="userService"/>
     </bean>
 
@@ -138,7 +137,6 @@
         <constructor-arg ref="groupDao"/>
         <constructor-arg ref="pollOptionDao"/>
         <constructor-arg ref="securityService"/>
-        <constructor-arg ref="temporaryAuthorityManager"/>
         <constructor-arg ref="userService"/>
     </bean>
 
@@ -149,14 +147,6 @@
         <constructor-arg ref="topicDao"/>
     </bean>
 
-    <!-- TODO The temporary functionality. It will be removed after the introduction of the new security.  -->
-    <bean id="temporaryAuthorityManager" class="org.jtalks.jcommune.service.security.TemporaryAuthorityManager">
-        <constructor-arg ref="securityContextFacade"/>
-    </bean>
-
-    <bean id="paginationService" class="org.jtalks.jcommune.service.nontransactional.PaginationService">
-        <constructor-arg ref="userService"/>
-    </bean>
     <bean id="securityService"
           class="org.jtalks.common.security.SecurityService">
         <constructor-arg name="userDao" ref="userDao"/>
