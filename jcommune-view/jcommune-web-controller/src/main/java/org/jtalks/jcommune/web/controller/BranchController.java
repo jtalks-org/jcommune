@@ -38,6 +38,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.project;
+
 /**
  * @author Vitaliy kravchenko
  * @author Kirill Afonin
@@ -192,16 +195,15 @@ public class BranchController {
     }
 
     /**
-     * Converts branch list in branch dto array.
+     * Converts branch list into branch dto array.
      *
      * @param branches branch list
      * @return branch dto array
      */
     private BranchDto[] convertBranchesListToBranchDtoArray(List<Branch> branches) {
-        BranchDto[] branchDtoArray = new BranchDto[branches.size()];
-        for (int i = 0; i < branchDtoArray.length; i++) {
-            branchDtoArray[i] = new BranchDto(branches.get(i));
-        }
-        return branchDtoArray;
+        List<BranchDto> dtos = project(branches, BranchDto.class,
+                on(Branch.class).getId(),
+                on(Branch.class).getName());
+        return dtos.toArray(new BranchDto[dtos.size()]);
     }
 }

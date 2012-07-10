@@ -24,7 +24,6 @@ import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
-import org.jtalks.jcommune.service.nontransactional.PaginationService;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +80,6 @@ public class UserProfileController {
      * @param breadcrumbBuilder the object which provides actions on {@link BreadcrumbBuilder} entity
      * @param imageUtils        {@link ImageUtils} used
      * @param postService       {@link PostService} used
-     * @param paginationService {@link PaginationService} used 
      */
     @Autowired
     public UserProfileController(UserService userService,
@@ -203,7 +201,6 @@ public class UserProfileController {
         return new ModelAndView("userDetails")
                 .addObject("user", user)
                 // bind separately to get localized value
-                .addObject("language", user.getLanguage())
-                .addObject("pageSize", user.getPageSize());
+                .addObject("language", user.getLanguage());
     }
 }

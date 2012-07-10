@@ -118,7 +118,7 @@ public class UserContactType extends Entity {
      * @return value of contact ready to display in HTML page
      */
     public String getDisplayValue(String value) {
-        return displayPattern.replaceAll(UserContactType.CONTACT_MASK_PLACEHOLDER, value);
+        return displayPattern.replaceAll(CONTACT_MASK_PLACEHOLDER, value);
     }
     
     

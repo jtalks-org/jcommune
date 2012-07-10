@@ -19,6 +19,7 @@ import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.model.permissions.ProfilePermission;
+import org.jtalks.common.security.acl.AclManager;
 import org.jtalks.common.security.acl.AclUtil;
 import org.jtalks.common.security.acl.GroupAce;
 import org.jtalks.common.security.acl.sids.JtalksSidFactory;
@@ -45,11 +46,17 @@ import java.util.List;
  * @author stanislav bashkirtsev
  */
 public class AclGroupPermissionEvaluator implements PermissionEvaluator {
-    private final org.jtalks.common.security.acl.AclManager aclManager;
+    private final AclManager aclManager;
     private final AclUtil aclUtil;
     private final GroupDao groupDao;
     private final JtalksSidFactory sidFactory;
 
+    /**
+     * @param aclManager for getting permissions on object indentity
+     * @param aclUtil    utilities to work with Spring ACL
+     * @param groupDao   dao for user group getting
+     * @param sidFactory factory to work with principals
+     */
     public AclGroupPermissionEvaluator(@Nonnull org.jtalks.common.security.acl.AclManager aclManager,
                                        @Nonnull AclUtil aclUtil, @Nonnull GroupDao groupDao,
                                        @Nonnull JtalksSidFactory sidFactory) {
@@ -68,6 +75,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
     }
 
     //TODO In runtime authentication object contains clear user password. May be potential security issues.
+
     /**
      * {@inheritDoc}
      */

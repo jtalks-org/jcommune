@@ -14,7 +14,13 @@
  */
 package org.jtalks.jcommune.web.listeners;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionEvent;
+
+import org.jtalks.jcommune.model.entity.JCommuneProperty;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -24,9 +30,37 @@ import java.util.concurrent.TimeUnit;
  */
 public class HttpSessionStatisticListenerImpl implements HttpSessionStatisticListener {
 
-    //todo: make timeout configurable from poulpe
-    public static final int SESSION_TIMEOUT = (int) TimeUnit.SECONDS.convert(24, TimeUnit.HOURS);
+    private static final String SESSION_TIMEOUT_PROPERTY_NAME = "sessionTimeoutProperty";
+    
     private static volatile long totalActiveSessions;
+    
+    /** 
+     * We need to inject bean but this listener is not in Spring context.
+     * So we will get required beans directly from the Spring context 
+     */
+    private WebApplicationContext webApplicationContext;
+    
+    /**
+     * Returns Spring context. If context already was set it is returned. If
+     * context is null it is set using Spring utility class and servletContext.
+     * @param servletContext - servlet context used to get current Spring 
+     *      web application context
+     * @return Spring context
+     */
+    private WebApplicationContext getWebApplicationContext(ServletContext servletContext) {
+        if (webApplicationContext == null) {
+            webApplicationContext = WebApplicationContextUtils
+                .getRequiredWebApplicationContext(servletContext);
+        }
+        return webApplicationContext;
+    }
+
+    /**
+     * @param webApplicationContext the webApplicationContext to set
+     */
+    public void setWebApplicationContext(WebApplicationContext webApplicationContext) {
+        this.webApplicationContext = webApplicationContext;
+    }
 
     /**
      * @return active sessions count
@@ -40,7 +74,13 @@ public class HttpSessionStatisticListenerImpl implements HttpSessionStatisticLis
      */
     @Override
     public synchronized void sessionCreated(HttpSessionEvent se) {
-        se.getSession().setMaxInactiveInterval(SESSION_TIMEOUT);
+        JCommuneProperty sessionTimeoutProperty = (JCommuneProperty) getSpringBean(
+                SESSION_TIMEOUT_PROPERTY_NAME,
+                se.getSession().getServletContext());
+        
+        int timeoutInSeconds = (int) TimeUnit.SECONDS.convert(
+                sessionTimeoutProperty.intValue(), TimeUnit.HOURS);
+        se.getSession().setMaxInactiveInterval(timeoutInSeconds);
         totalActiveSessions++;
     }
 
@@ -58,5 +98,17 @@ public class HttpSessionStatisticListenerImpl implements HttpSessionStatisticLis
         if (totalActiveSessions > 0) {
             totalActiveSessions--;
         }
+    }
+    
+    /**
+     * Returns Spring manager bean from Spring context.
+     * @param name - name of bean
+     * @param servletContext - servlet context used to get current Spring 
+     *      web application context
+     * @return Spring managed bean with specified name or null if it was not 
+     *      found
+     */
+    private Object getSpringBean(String name, ServletContext servletContext) {
+        return getWebApplicationContext(servletContext).getBean(name);
     }
 }

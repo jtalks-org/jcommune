@@ -243,6 +243,9 @@ public class JCUser extends User {
     }
     
     /**
+     * Returns whether current user is logged in or not. Vast majority of user 
+     * properties is available for logged in users only, anonymous user object 
+     * holds only default settings
      * @return whether this user is anonymous
      */
     public boolean isAnonymous() {

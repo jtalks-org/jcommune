@@ -23,7 +23,6 @@ import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
-import org.jtalks.jcommune.service.nontransactional.PaginationService;
 import org.jtalks.jcommune.web.dto.SectionDto;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +32,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.project;
 
 /**
  * Displays to user page contains section list with related branch lists
@@ -54,7 +56,6 @@ public class SectionController {
     private SectionService sectionService;
     private ForumStatisticsProvider forumStaticsProvider;
     private LocationService locationService;
-    private PaginationService paginationService;
 
     /**
      * Constructor creates MVC controller with specified SectionService
@@ -62,17 +63,14 @@ public class SectionController {
      * @param sectionService       for all operations with sections
      * @param locationService      for tracking user's location on the forum
      * @param forumStaticsProvider for getting forum statistic information
-     * @param paginationService    this service provides functionality, that is needed for pagination
      */
     @Autowired
     public SectionController(SectionService sectionService,
                              ForumStatisticsProvider forumStaticsProvider,
-                             LocationService locationService,
-                             PaginationService paginationService) {
+                             LocationService locationService) {
         this.sectionService = sectionService;
         this.forumStaticsProvider = forumStaticsProvider;
         this.locationService = locationService;
-        this.paginationService = paginationService;
     }
 
 
@@ -97,7 +95,6 @@ public class SectionController {
         List<Section> sections = sectionService.getAll();
         sectionService.prepareSectionsForView(sections);
         return new ModelAndView("sectionList")
-                .addObject("pageSize", paginationService.getPageSizeForCurrentUser())
                 .addObject("sectionList", sections)
                 .addObject("messagesCount", forumStaticsProvider.getPostsOnForumCount())
                 .addObject("registeredUsersCount", forumStaticsProvider.getUsersCount())
@@ -116,11 +113,10 @@ public class SectionController {
     @ResponseBody
     public SectionDto[] sectionList() {
         List<Section> sections = sectionService.getAll();
-        SectionDto[] sectionDtoArray = new SectionDto[sections.size()];
-        for (int i = 0; i < sectionDtoArray.length; i++) {
-            sectionDtoArray[i] = new SectionDto(sections.get(i));
-        }
-        return sectionDtoArray;
+        List<SectionDto> dtos = project(sections, SectionDto.class,
+                on(Section.class).getId(),
+                on(Section.class).getName());
+        return dtos.toArray(new SectionDto[dtos.size()]);
     }
 
     /**
@@ -136,7 +132,6 @@ public class SectionController {
         sectionService.prepareSectionsForView(Arrays.asList(section));
         return new ModelAndView("branchList")
                 .addObject("viewList", locationService.getUsersViewing(section))
-                .addObject("section", section)
-                .addObject("pageSize", paginationService.getPageSizeForCurrentUser());
+                .addObject("section", section);
     }
 }

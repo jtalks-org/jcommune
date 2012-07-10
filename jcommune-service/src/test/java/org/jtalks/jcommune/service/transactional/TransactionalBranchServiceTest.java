@@ -166,4 +166,24 @@ public class TransactionalBranchServiceTest {
         verify(topicDao).getLastUpdatedTopicInBranch(commonBranch);
         verify(postDao, Mockito.never()).getLastPostInTopic(nullTopic);
     }
+    
+    @Test
+    public void testGetBranch() throws NotFoundException {
+        Branch expectedBranch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        when(branchDao.isExist(BRANCH_ID)).thenReturn(true);
+        when(branchDao.get(BRANCH_ID)).thenReturn(expectedBranch);
+
+        Branch actualBranch = branchService.get(BRANCH_ID);
+
+        assertEquals(actualBranch, expectedBranch, "Branches aren't equal");
+        verify(branchDao).isExist(BRANCH_ID);
+        verify(branchDao).get(BRANCH_ID);
+    }
+
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void testGetBranchWithIncorrectId() throws NotFoundException {
+        when(branchDao.isExist(BRANCH_ID)).thenReturn(false);
+
+        branchService.get(BRANCH_ID);
+    }
 }

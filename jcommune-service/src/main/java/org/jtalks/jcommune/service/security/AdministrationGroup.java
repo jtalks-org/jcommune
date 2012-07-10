@@ -14,15 +14,28 @@
  */
 package org.jtalks.jcommune.service.security;
 
-
+/**
+ * Elements contains IDs predefined user groups. More information see in V21__Add_predefined_groups.sql migration.
+ *
+ * @author Elena Lepaeva
+ */
 public enum AdministrationGroup {
+    /**
+     * Administrators
+     */
     ADMIN(13L),
-    USER( 11L),
+    /**
+     * Registered users
+     */
+    USER(11L),
+    /**
+     * Banned users
+     */
     BANNED_USER(12L);
 
     private Long id;
 
-    private AdministrationGroup( Long id) {
+    private AdministrationGroup(Long id) {
         this.id = id;
     }
 
