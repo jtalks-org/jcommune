@@ -59,7 +59,6 @@ public class ClearInterceptor extends HandlerInterceptorAdapter {
             locationService.clearUserLocation();
         } catch (Exception e) {
             // failure here should not cause all the web processing chain to be broken
-            // todo: find a better solution
             LOGGER.error("Failed to clear current user's location", e);
         }
         return true;

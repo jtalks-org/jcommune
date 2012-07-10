@@ -28,13 +28,12 @@ public class BranchDto {
     private String name;
 
     /**
-     * Creates dto for branch.
-     *
-     * @param branch branch for conversion
+     * @param id unique branch identifier
+     * @param name branch display name
      */
-    public BranchDto(Branch branch) {
-        this.id = branch.getId();
-        this.name = branch.getName();
+    public BranchDto(long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     /**

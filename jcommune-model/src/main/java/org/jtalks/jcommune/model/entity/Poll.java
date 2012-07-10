@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static ch.lambdaj.Lambda.*;
+
 /**
  * Represents the poll of the topic. Contains the list of related {@link PollItem}.
  * Poll may be either "single type" or "multiple type" also topic may have an end date.
@@ -166,10 +168,8 @@ public class Poll extends Entity {
      * @param options the list of poll options to this poll
      */
     public void addPollOptions(List<PollItem> options) {
-        for (PollItem option : options) {
-            option.setPoll(this);
-            this.pollItems.add(option);
-        }
+        pollItems.addAll(options);
+        forEach(options).setPoll(this);
     }
 
     /**
@@ -178,11 +178,7 @@ public class Poll extends Entity {
      * @return the total count of votes in the poll
      */
     public int getTotalVotesCount() {
-        int totalVotesCount = 0;
-        for (PollItem option : pollItems) {
-            totalVotesCount += option.getVotesCount();
-        }
-        return totalVotesCount;
+        return sumFrom(pollItems, PollItem.class).getVotesCount();
     }
 
     /**

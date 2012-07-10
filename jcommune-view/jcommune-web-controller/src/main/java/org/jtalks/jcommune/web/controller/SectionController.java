@@ -33,6 +33,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.project;
+
 /**
  * Displays to user page contains section list with related branch lists
  * and page contains branch list from the chosen section.
@@ -60,7 +63,6 @@ public class SectionController {
      * @param sectionService       for all operations with sections
      * @param locationService      for tracking user's location on the forum
      * @param forumStaticsProvider for getting forum statistic information
-     * @param userService    for getting current user (page size)
      */
     @Autowired
     public SectionController(SectionService sectionService,
@@ -111,11 +113,10 @@ public class SectionController {
     @ResponseBody
     public SectionDto[] sectionList() {
         List<Section> sections = sectionService.getAll();
-        SectionDto[] sectionDtoArray = new SectionDto[sections.size()];
-        for (int i = 0; i < sectionDtoArray.length; i++) {
-            sectionDtoArray[i] = new SectionDto(sections.get(i));
-        }
-        return sectionDtoArray;
+        List<SectionDto> dtos = project(sections, SectionDto.class,
+                on(Section.class).getId(),
+                on(Section.class).getName());
+        return dtos.toArray(new SectionDto[dtos.size()]);
     }
 
     /**

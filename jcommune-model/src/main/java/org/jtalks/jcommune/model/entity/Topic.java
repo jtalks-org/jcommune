@@ -262,18 +262,14 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     }
 
     /**
-     * Sets the topic title.
-     *
-     * @param newTitle the title to set
+     * @param newTitle new title for this topic
      */
     public void setTitle(String newTitle) {
         this.title = newTitle;
     }
 
     /**
-     * Get the list of the posts.
-     *
-     * @return the list of posts
+     * @return the list of posts in the topic, always not null and not empty
      */
     @IndexedEmbedded(prefix = TOPIC_POSTS_PREFIX)
     public List<Post> getPosts() {
@@ -281,17 +277,13 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     }
 
     /**
-     * Set the list of posts
-     *
-     * @param posts the posts to set
+     * @param posts the posts to set as topic contents, must not be empty or null
      */
     protected void setPosts(List<Post> posts) {
         this.posts = posts;
     }
 
     /**
-     * Get branch that contains topic
-     *
      * @return branch that contains the topic
      */
     public Branch getBranch() {
@@ -299,27 +291,21 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     }
 
     /**
-     * Set branch that contains topic
-     *
-     * @param branch branch that contains the topic
+     * @param branch branch to be set as topics branch
      */
     void setBranch(Branch branch) {
         this.branch = branch;
     }
 
     /**
-     * Get the topic first post.
-     *
-     * @return the firstPost
+     * @return the firstPost in the topic, topics are guaranteed to have at least the first post
      */
     public Post getFirstPost() {
         return posts.get(0);
     }
 
     /**
-     * Get the topic last post.
-     *
-     * @return last post
+     * @return last post in the topic, topics are guaranteed to have at least the first post
      */
     public Post getLastPost() {
         return posts.get(posts.size() - 1);
