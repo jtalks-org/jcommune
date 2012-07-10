@@ -37,7 +37,7 @@
                         value='<c:out value="${searchText}"/>'/>
                 </form>
                 <ul class="nav pull-right">
-                <%-- Not logged in block --%>
+                <!-- Not logged in block -->
                 <sec:authorize access="isAnonymous()">
                     <li>
                         <a id="signup" href="${pageContext.request.contextPath}/user/new">
@@ -52,9 +52,9 @@
                         </a>
                     </li>
                 </sec:authorize>
-                <%-- END OF Not logged in block --%>
+                <!-- END OF Not logged in block -->
 
-                <%-- Logged in block --%>
+                <!-- Logged in block -->
                 <sec:authorize access="isAuthenticated()">
                     <li>
                         <a href="${pageContext.request.contextPath}/user">
@@ -71,7 +71,7 @@
                                     </fmt:message>
                                     ">
                                     (
-                                    <i class="icon-envelope icon-white rss-icon" ></i>
+                                    <i class="icon-envelope icon-white" style="vertical-align:middle;"></i>
                                     <span class='test-pm-count'>${newPmCount}</span>
                                     )
                                 </span>
@@ -91,9 +91,9 @@
                         </div>
                     </li>
                 </sec:authorize>
-                <%-- END OF Logged in block --%>
+                <!-- END OF Logged in block -->
 
-                    <%-- Language chooser --%>
+                    <!-- Language chooser -->
                     <li class="dropdown">
                         <div id="lang-selector-toggle" class="dropdown-toggle language-selector-container" data-toggle="dropdown" 
                             title="<fmt:message key='label.click_language'/>">
@@ -129,7 +129,7 @@
                             </li>
                         </ul>
                     </li>
-                    <%-- END OF Language chooser --%>
+                    <!-- END OF Language chooser -->
 
                 </ul>
             </div>

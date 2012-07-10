@@ -37,6 +37,7 @@
           href="${pageContext.request.contextPath}/resources/css/profile.css"/>
 </head>
 <body>
+    <jsp:include page="../template/topLine.jsp"/>
 
     <div class="container">
         <div id="editUserDetails" class="userprofile user-profile-container">

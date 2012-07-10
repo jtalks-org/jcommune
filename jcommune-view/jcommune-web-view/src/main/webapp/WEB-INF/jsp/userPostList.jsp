@@ -24,6 +24,7 @@
     <title><spring:message code="label.postListOfUser"/> <c:out value="${user.username}"/></title>
 </head>
 <body>
+<jsp:include page="../template/topLine.jsp"/>
 <div class="container">
     <div class="row-fluid upper-pagination forum-pagination-container">
         <div class="span3">
@@ -56,7 +57,7 @@
         </div>
     </div>
                  
-    <%-- Topics table --%>
+    <!-- Topics table -->
     <div class='post'>  
     <table class="table table-striped table-bordered table-condensed">     
         <c:choose>
@@ -128,7 +129,7 @@
     </table>
     </div>
     
-    <%-- Pagination --%>
+    <!-- Pagination -->
     <div class="row-fluid upper-pagination forum-pagination-container">
         <div class="span12">
             <div class="pagination pull-right forum-pagination">
@@ -155,7 +156,7 @@
             </div>
         </div>
     </div>
-    <%-- END OF Pagination --%>
+    <!-- END OF Pagination -->
     <sec:authorize access="isAuthenticated()">
         <a href="${pageContext.request.contextPath}/users/${user.id}" class="back-btn">
             <i class="icon-arrow-left"></i>

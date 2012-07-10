@@ -25,6 +25,7 @@
     <title><spring:message code="label.recent"/></title>
 </head>
 <body>
+    <jsp:include page="../template/topLine.jsp"/>
 
     <div class="container">
         <div class="row-fluid upper-pagination forum-pagination-container">
@@ -42,7 +43,7 @@
         </div>
         
         
-    <%-- Topics table --%>
+    <!-- Topics table -->
     <table id="topics-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">     
         <c:choose>
             <c:when test="${!(empty topicsPage.content)}">
@@ -84,7 +85,7 @@
                         </td>
                         <td>
                             <c:if test="${topic.hasPoll}">
-                                <a class="red-style"
+                                <a style="color: red;"
                                        href="${pageContext.request.contextPath}/topics/${topic.id}">
                                         [POLL]</a>
                             </c:if>

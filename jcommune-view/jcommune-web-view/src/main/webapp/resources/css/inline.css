@@ -260,26 +260,3 @@ input.form-check-radio-box[type="radio"]
 .pm_message_userTo_link {
     margin-top: 10px;
 }
-
-.right-margin {
-    margin-right: 10px;
-}
-
-.left-border {
-    border-left: 0px;
-}
-
-.red-style {
-    color: red;
-}
-
-.poll {
-    padding: 5px;
-    margin: 5px 0;
-}
-
-.poll-row {
-    float: none;
-    margin: 0 auto;
-}
-

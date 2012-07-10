@@ -26,7 +26,9 @@
 </head>
 <body>
 
-<div class="container">
+<jsp:include page="../template/topLine.jsp"/>
+
+<div class="container">     
         
     <div class="row forum-sections-header">
         <a href="${pageContext.request.contextPath}/">
@@ -49,9 +51,9 @@
             </a>
         </div>
     </div>
-    <hr class="forum-pagination" />
+    <hr style="margin: 0px;"/>
       
-    <%-- Topics table --%>
+    <!-- Topics table -->
     <c:forEach var="section" items="${sectionList}">
         <h3>
             <a href="${pageContext.request.contextPath}/sections/${section.id}">
@@ -102,7 +104,7 @@
             </tbody>
         </table>    
     </c:forEach>        
-    <%-- END OF Topics table --%>
+    <!-- END OF Topics table -->
     
     <div class="well forum-sections-stats-container">
         <strong><spring:message code="label.onlineUsersInfo.messagesCount"/> </strong><span class="test-messages"><c:out value="${messagesCount}"/></span>
@@ -110,7 +112,7 @@
         <strong><spring:message code="label.onlineUsersInfo.registeredUsers.count"/> </strong><span class="test-registered-users"><c:out value="${registeredUsersCount}"/></span>
     </div>
     
-    <%-- Users --%>
+    <!-- Users -->
     <div id="users-stats" class="well forum-sections-userstats-container">
         <strong><spring:message code="label.onlineUsersInfo.visitors"/> </strong><span class='test-visitors-total'><c:out value="${visitors}"/></span>, 
         <spring:message code="label.onlineUsersInfo.visitors.registered"/> <span class='test-visitors-registered'><c:out value="${visitorsRegistered}"/></span>, 
@@ -135,6 +137,6 @@
             </c:forEach>
         </c:if>
     </div>
-    <%-- END OF Users --%>
+    <!-- END OF Users -->
 </div>
 </body>

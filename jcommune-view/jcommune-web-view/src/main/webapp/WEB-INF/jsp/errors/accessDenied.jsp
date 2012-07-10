@@ -20,6 +20,7 @@
     <title><spring:message code="label.accessDenied.title"/></title>
 </head>
 <body>
+    <jsp:include page="../../template/topLine.jsp"/>
     <div class="container">
         <div class="text_errorpage">
             <h1><span class="error_errorpage"><spring:message code="label.accessDenied.title"/></span></h1>
