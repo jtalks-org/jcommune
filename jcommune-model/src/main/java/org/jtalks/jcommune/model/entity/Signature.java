@@ -16,13 +16,15 @@ package org.jtalks.jcommune.model.entity;
 
 import org.springframework.web.util.HtmlUtils;
 
+import java.io.Serializable;
+
 /**
  * Represents user signature and encapsulates it's rendering.
  * This class is transient, actual signature representation is
  *
  * @author Evgeniy Naumenko
  */
-public class Signature {
+public class Signature implements Serializable {
 
     public static final String RENDERING_TEMPLATE = "<hr/><span class='signature'>%s</span>";
     private String content;

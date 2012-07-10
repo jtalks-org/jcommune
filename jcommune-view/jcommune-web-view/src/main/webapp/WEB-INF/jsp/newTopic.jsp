@@ -48,7 +48,6 @@
             type="text/javascript"></script>
 </head>
 <body>
-<jsp:include page="../template/topLine.jsp"/>
 
 <div class="container">
     <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
@@ -76,7 +75,7 @@
         <div class="control-group">
             <br/>
             <form:checkbox id="notify" path="notifyOnAnswers" name="notify" checked="checked" value="${notifyOnAnswers}"
-                           style="margin-right: 10px;" class="script-confirm-unsaved"/><spring:message
+                            class="script-confirm-unsaved right-margin"/><spring:message
                 code="label.answer.notify_message"/>
         </div>
         <br/>
