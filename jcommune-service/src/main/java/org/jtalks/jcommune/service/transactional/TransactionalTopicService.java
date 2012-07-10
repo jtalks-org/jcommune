@@ -164,19 +164,21 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicId, 'TOPIC', 'GeneralPermission.WRITE')")
-    public void updateTopic(long topicId, String topicName, String bodyText)
+    @PreAuthorize("hasPermission(#topicId, 'TOPIC', 'GeneralPermission.WRITE') or " +
+    		"hasPermission(#branchId, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS")
+    public void updateTopic(long topicId, long branchId, String topicName, String bodyText)
             throws NotFoundException {
-        updateTopic(topicId, topicName, bodyText, 0, false, false, false);
+        updateTopic(topicId, branchId, topicName, bodyText, 0, false, false, false);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicId, 'TOPIC', 'GeneralPermission.WRITE')")
-    public void updateTopic(long topicId, String topicName, String bodyText, int topicWeight,
-                            boolean sticked, boolean announcement, boolean notifyOnAnswers) throws NotFoundException {
+    @PreAuthorize("hasPermission(#topicId, 'TOPIC', 'GeneralPermission.WRITE') or " +
+    		"hasPermission(#branchId, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
+    public void updateTopic(long topicId, long branchId, String topicName, String bodyText,
+                            int topicWeight, boolean sticked, boolean announcement, boolean notifyOnAnswers) throws NotFoundException {
         Topic topic = get(topicId);
         topic.setTitle(topicName);
         topic.setTopicWeight(topicWeight);

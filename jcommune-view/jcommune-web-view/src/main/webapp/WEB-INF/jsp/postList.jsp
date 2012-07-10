@@ -179,7 +179,16 @@
                                 </c:otherwise>
                             </c:choose>
                             <div class="btn-group">
-                                <sec:accesscontrollist hasPermission="4" domainObject="${post}">
+                               <%--  An ability to edit posts for author of this posts --%>
+                               <sec:accesscontrollist hasPermission="4" domainObject="${post}">
+                                    <a id="edit_button" href="${edit_url}" rel="${branchId}"
+                                       class="btn btn-mini" title="<spring:message code='label.tips.edit_post'/>">
+                                       <i class="icon-edit"></i>
+                                       <spring:message code="label.edit"/>
+                                   </a>
+                               </sec:accesscontrollist>
+                               <%--  An ability to edit posts for administrators and branch moderators --%>
+                               <sec:accesscontrollist hasPermission="17" domainObject="${topic.branch}">
                                     <a id="edit_button" href="${edit_url}" rel="${branchId}"
                                        class="btn btn-mini" title="<spring:message code='label.tips.edit_post'/>">
                                        <i class="icon-edit"></i>
