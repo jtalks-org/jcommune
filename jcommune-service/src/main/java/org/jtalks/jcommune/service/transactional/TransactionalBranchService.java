@@ -25,7 +25,6 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  * The implementation of BranchService
@@ -107,14 +106,5 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
                 jcommuneBranch.setLastPostInLastUpdatedTopic(lastPost);
             }
         }
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @PreAuthorize("hasPermission(#id, 'BRANCH', 'BranchPermission.VIEW_TOPICS')")
-    public Branch get(Long id) throws NotFoundException {
-        return super.get(id);
     }
 }
