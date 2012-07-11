@@ -35,11 +35,10 @@
             type="text/javascript"></script>
 </head>
 <body>
-<jsp:include page="../template/topLine.jsp"/>
- 
+
 <c:set var="authenticated" value="${false}"/>
 <div class="container">
-<!-- Topic header -->
+<%-- Topic header --%>
 <div id="branch-header">
    <h3>
        <c:out value="${topic.title}"/>
@@ -71,11 +70,11 @@
    </div>
    <span class='inline-block'></span>
 </div>
-<!-- END OF Topic header -->
+<%-- END OF Topic header --%>
  
 <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
  
-<!-- Upper pagination -->
+<%-- Upper pagination --%>
 <div class="row-fluid upper-pagination forum-pagination-container">
    <div class="span3">
        <sec:accesscontrollist hasPermission="12" domainObject="${topic.branch}">
@@ -95,7 +94,7 @@
        &nbsp; <%-- For proper pagination layout without buttons--%>
    </div>
  
-   <!-- Pagination -->
+   <%-- Pagination --%>
    <div class="span9">
        <div class="pagination pull-right forum-pagination">
            <ul>
@@ -137,18 +136,18 @@
            </ul>
        </div>
    </div>
-   <!-- END OF Pagination -->
+   <%-- END OF Pagination --%>
  
 </div>
-<!-- END OF Upper pagination -->
+<%-- END OF Upper pagination --%>
  
-<!-- Include poll row. -->
+<%-- Include poll row. --%>
 <jsp:include page="../template/pollRow.jsp"/>
  
 <div>
-    <!-- List of posts. -->
+    <%-- List of posts. --%>
     <c:forEach var="post" items="${postsPage.content}" varStatus="i">
-        <!-- Post -->
+        <%-- Post --%>
         <div class="post">
             <table class="table table-striped table-bordered table-condensed">
                 <tr>
@@ -298,12 +297,12 @@
                <tr>
                    <td>
                    </td>
-                   <td style="border-left: 0px;">
+                   <td class="left-border">
                    </td>
                </tr>
            </table>
        </div>
-       <!-- END OF Post -->
+       <%-- END OF Post --%>
    </c:forEach>
 </div>
  
@@ -326,7 +325,7 @@
        &nbsp; <%-- For proper pagination layout without buttons--%>
    </div>
  
-   <!-- Pagination -->
+   <%-- Pagination --%>
    <div class="span9">
        <div class="pagination pull-right forum-pagination">
            <ul>
@@ -351,10 +350,10 @@
            </ul>
        </div>
    </div>
-   <!-- END OF Pagination -->
+   <%-- END OF Pagination --%>
 </div>
  
-<!-- Users -->
+<%-- Users --%>
 <div id="users-stats" class="well forum-user-stats-container">
    <strong><spring:message code="label.topic.moderators"/></strong>
    <a href="#" title="<spring:message code='label.tips.view_profile'/>">andreyko</a>
@@ -381,7 +380,7 @@
        </a>
    </c:forEach>
 </div>
-<!-- END OF Users -->
+<%-- END OF Users --%>
  
 <%--Fake form to delete posts and topics.
 Without it we're likely to get lots of problems simulating HTTP DELETE via JS in a Spring fashion  --%>

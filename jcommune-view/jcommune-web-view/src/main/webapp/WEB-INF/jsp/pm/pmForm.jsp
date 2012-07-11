@@ -31,7 +31,6 @@
 </head>
 <body>
 
-<jsp:include page="../../template/topLine.jsp"/>
 
 <div class="container">
     <h2><spring:message code="label.pm_title"/></h2>
