@@ -80,7 +80,7 @@
 	                            <br />
 	                            <div class="forum-sections-moderators-container">
 	                                <span><spring:message code="label.section.moderators"/></span> 
-	                                <a href="#">Vurn</a>
+	                                <jtalks:moderators moderators="${branch.moderatorsGroup.users}"/>
 	                            </div> 
 	                        </td>
 	                        <td class="topics-posts">
