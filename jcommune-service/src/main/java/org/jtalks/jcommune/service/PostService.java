@@ -34,11 +34,12 @@ public interface PostService extends EntityService<Post> {
      * Update current post with given content, add the modification date.
      *
      * @param postId      post id
+     * @param branchId    branch id, it's needed for the checking permissions
      * @param postContent content of post
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when post not found
      */
-    void updatePost(long postId, String postContent) throws NotFoundException;
+    void updatePost(long postId, long branchId, String postContent) throws NotFoundException;
 
     /**
      * Delete post  by id.

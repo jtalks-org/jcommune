@@ -159,7 +159,8 @@ public class PostController {
                     .addObject(TOPIC_ID, topicId)
                     .addObject(POST_ID, postId);
         }
-        postService.updatePost(postDto.getId(), postDto.getBodyText());
+        Topic topic = topicService.get(postDto.getTopicId());
+        postService.updatePost(postDto.getId(), topic.getBranch().getId(), postDto.getBodyText());
         return new ModelAndView("redirect:/posts/" + postId);
     }
 
