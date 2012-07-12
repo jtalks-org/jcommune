@@ -40,6 +40,11 @@
                 <!-- Not logged in block -->
                 <sec:authorize access="isAnonymous()">
                     <li>
+                        <a href="${pageContext.request.contextPath}/pages/for_newbies">
+                            <fmt:message key="label.newbies"/>
+                        </a>
+                    </li>
+                    <li>
                         <a id="signup" href="${pageContext.request.contextPath}/user/new">
                             <fmt:message key="label.signup"/>
                         </a>
@@ -78,10 +83,7 @@
                             </c:if>
                         </a>
                     </li>
-                    <li>
-                        <a href="${pageContext.request.contextPath}/pages/faq">
-                            <fmt:message key="label.newbies"/>
-                        </a>
+
                     <li class="divider-vertical"></li>
                     <li>
                         <div>

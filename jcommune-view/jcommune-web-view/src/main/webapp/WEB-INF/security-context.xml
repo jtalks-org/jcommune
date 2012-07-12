@@ -54,10 +54,10 @@
         <security:intercept-url pattern="/branches/*/subscribe" access="isAuthenticated()"/>
         <security:intercept-url pattern="/branches/*/unsubscribe" access="isAuthenticated()"/>
 
+        <security:intercept-url pattern="/pages/*/edit" access="isAuthenticated()"/>
+
         <security:intercept-url pattern="/poll/**" access="isAuthenticated()"/>
 
-      <!--  <security:intercept-url pattern="/pages/*/edit" access="hasPermission(#simplePage.id, 'SIMPLE_PAGE', 'GeneralPermission.WRITE')"/>
-          -->
         <security:intercept-url pattern="*" access="permitAll()"/>
 
         <security:form-login login-page="/login" login-processing-url="/j_spring_security_check"
