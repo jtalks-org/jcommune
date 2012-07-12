@@ -66,10 +66,12 @@ public class HttpSessionStatisticListenerTest {
         when(context.getBean(Mockito.anyString())).thenReturn(sessionTimeoutProperty);
         
         session = new MockHttpSession();
+        session.getServletContext().setAttribute(
+                WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, 
+                context);
         event = new HttpSessionEvent(session);
         
         listener = new HttpSessionStatisticListenerImpl();
-        listener.setWebApplicationContext(context);
     }
 
     @Test
