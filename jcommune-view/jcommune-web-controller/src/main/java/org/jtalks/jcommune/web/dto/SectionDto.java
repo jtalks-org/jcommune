@@ -20,6 +20,8 @@ import org.jtalks.common.model.entity.Section;
  * Dto for transferring sections to client side.
  * Dto does not contains branches in section, just id and name.
  *
+ * todo: it duplicates Branch dto, mb we need some more generic here
+ *
  * @author Eugeny Batov
  */
 public class SectionDto {
@@ -28,13 +30,12 @@ public class SectionDto {
     private String name;
 
     /**
-     * Creates dto for section.
-     *
-     * @param section section for conversion
+     * @param id unique section identifier
+     * @param name section display name
      */
-    public SectionDto(Section section) {
-        this.id = section.getId();
-        this.name = section.getName();
+    public SectionDto(long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     /**

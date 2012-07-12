@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import ch.lambdaj.Lambda;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -45,7 +47,8 @@ public class Branch extends org.jtalks.common.model.entity.Branch
     /**
      * Creates the Branch instance with required fields.
      *
-     * @param name branch name
+     * @param name unique branch name
+     * @param description branch description
      */
     public Branch(String name, String description) {
         super(name, description);
@@ -165,17 +168,16 @@ public class Branch extends org.jtalks.common.model.entity.Branch
     }
 
     /**
-     * Returns a sum of all topic's post count for that branch
+     * Returns a sum of all topic's post count for that branch.
+     *
+     * Value is computed only for the first time (if not set explicitly before),
+     * so it may not take into account the posts added later
      *
      * @return sum of post count for all the topics in this branch
      */
     public int getPostCount() {
         if (postsCount == null) {
-            int count = 0;
-            for (Topic topic : topics) {
-                count += topic.getPostCount();
-            }
-            return count;
+            postsCount = Lambda.sumFrom(topics, Topic.class).getPostCount();
         }
         return postsCount;
     }

@@ -16,7 +16,6 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicFullSearchService;
-import org.jtalks.jcommune.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -45,10 +44,6 @@ public class TopicSearchController {
      */
     public static final String SEARCH_RESULT_ATTRIBUTE_NAME = "searchResultPage";
     /**
-     * The name attribute for the pagination.
-     */
-    public static final String PAGINATION_ATTRIBUTE_NAME = "pagination";
-    /**
      * The name attribute for the search text.
      */
     public static final String SEARCH_TEXT_ATTRIBUTE_NAME = "searchText";
@@ -66,7 +61,7 @@ public class TopicSearchController {
      * @param topicSearchService {@link TopicFullSearchService} to perform actual search
      */
     @Autowired
-    public TopicSearchController(TopicFullSearchService topicSearchService, UserService userService) {
+    public TopicSearchController(TopicFullSearchService topicSearchService) {
         this.topicSearchService = topicSearchService;
     }
     
@@ -112,10 +107,9 @@ public class TopicSearchController {
      */
     private ModelAndView search(String searchText, int page) {
         Page<Topic> searchResultPage = topicSearchService.searchByTitleAndContent(searchText, page);
-        String uri = searchText;
         return new ModelAndView(SEARCH_RESULT_VIEW_NAME).
                 addObject(SEARCH_RESULT_ATTRIBUTE_NAME, searchResultPage).
-                addObject(URI_ATTRIBUTE_NAME, uri).
+                addObject(URI_ATTRIBUTE_NAME, searchText).
                 addObject(SEARCH_TEXT_ATTRIBUTE_NAME, searchText).
                 addObject(PAGING_ENABLED, true);
     }

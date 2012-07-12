@@ -27,15 +27,14 @@
 </head>
 <body>
 
-<jsp:include page="../../template/topLine.jsp"/>
-
 <div class="container">
     <h2><spring:message code="label.pm_title"/></h2>
     <hr/>
     <div class="row">
         <div class="span2">
             <sec:authentication property="principal.id" var="userId"/>
-            <a href="${pageContext.request.contextPath}/pm/new?userId=${userId}" class="btn btn-primary btn-small pm_buttons">
+            <a href="${pageContext.request.contextPath}/pm/new?userId=${userId}"
+               class="btn btn-primary btn-small pm_buttons">
                 <spring:message code="label.new_pm"/></a>
             <jsp:include page="../../template/pmFolders.jsp"/>
         </div>
@@ -43,12 +42,14 @@
         <div class="span9">
             <div class="pm_buttons">
                 <c:if test="${pm.replyAllowed && (pm.userTo eq user)}">
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/reply/${pm.id}?userId=${userId}">
+                    <a class="btn btn-primary"
+                       href="${pageContext.request.contextPath}/reply/${pm.id}?userId=${userId}">
                         <i class="icon-share-alt icon-white"></i>
                         <spring:message code="label.reply"/>
                     </a>
 
-                    <a class="btn" href="${pageContext.request.contextPath}/quote/${pm.id}?userId=${userId}">   <%--todo--%>
+                    <a class="btn"
+                       href="${pageContext.request.contextPath}/quote/${pm.id}?userId=${userId}">   <%--todo--%>
                         <i class="icon-quote"></i>
                         <spring:message code="label.quote"/>
                     </a>

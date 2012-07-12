@@ -31,7 +31,6 @@
             type="text/javascript"></script>
 </head>
 <body>
-<jsp:include page="../template/topLine.jsp"/>
 
 <div class="container">
 
@@ -92,12 +91,12 @@
             <c:choose>
                 <c:when test="${topicDto.notifyOnAnswers}">
                     <form:checkbox id="notify" path="notifyOnAnswers" name="notify" checked="checked"
-                                   style="margin-right: 10px;"/><spring:message
+                                   class="right-margin"/><spring:message
                         code="label.answer.notify_message"/>
                 </c:when>
                 <c:otherwise>
                     <form:checkbox id="notify" path="notifyOnAnswers" name="notify"
-                                   style="margin-right: 10px;"/><spring:message
+                                   class="right-margin"/><spring:message
                         code="label.answer.notify_message"/>
                 </c:otherwise>
             </c:choose>

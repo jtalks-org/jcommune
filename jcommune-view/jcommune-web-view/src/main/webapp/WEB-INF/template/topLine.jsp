@@ -37,7 +37,7 @@
                         value='<c:out value="${searchText}"/>'/>
                 </form>
                 <ul class="nav pull-right">
-                <!-- Not logged in block -->
+                <%-- Not logged in block --%>
                 <sec:authorize access="isAnonymous()">
                     <li>
                         <a id="signup" href="${pageContext.request.contextPath}/user/new">
@@ -52,9 +52,9 @@
                         </a>
                     </li>
                 </sec:authorize>
-                <!-- END OF Not logged in block -->
+                <%-- END OF Not logged in block --%>
 
-                <!-- Logged in block -->
+                <%-- Logged in block --%>
                 <sec:authorize access="isAuthenticated()">
                     <li>
                         <a href="${pageContext.request.contextPath}/user">
@@ -91,9 +91,9 @@
                         </div>
                     </li>
                 </sec:authorize>
-                <!-- END OF Logged in block -->
+                <%-- END OF Logged in block --%>
 
-                    <!-- Language chooser -->
+                    <%-- Language chooser --%>
                     <li class="dropdown">
                         <div id="lang-selector-toggle" class="dropdown-toggle language-selector-container" data-toggle="dropdown" 
                             title="<fmt:message key='label.click_language'/>">
@@ -121,15 +121,16 @@
                                     <fmt:message key='label.ukrainian'/>
                                 </a>
                             </li>
-                            <li id='lang-es'>
-                                <a href="#"  onclick="window.location = getLanguageLink('es')">
-                                    <img src="${pageContext.request.contextPath}/resources/images/flags/es.png" /> 
-                                    <fmt:message key='label.spanish'/>
-                                </a>
-                            </li>
+                            <%-- Spanish is disabled since we are not able make full translation --%>
+<!--                             <li id='lang-es'> -->
+<!--                                 <a href="#"  onclick="window.location = getLanguageLink('es')"> -->
+<%--                                     <img src="${pageContext.request.contextPath}/resources/images/flags/es.png" />  --%>
+<%--                                     <fmt:message key='label.spanish'/> --%>
+<!--                                 </a> -->
+<!--                             </li> -->
                         </ul>
                     </li>
-                    <!-- END OF Language chooser -->
+                    <%-- END OF Language chooser --%>
 
                 </ul>
             </div>
