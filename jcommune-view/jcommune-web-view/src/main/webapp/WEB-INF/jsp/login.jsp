@@ -23,9 +23,8 @@
     <title><spring:message code="label.signin"/></title>
 </head>
 <body>
-    <jsp:include page="../template/topLine.jsp"/>
 
-<!-- Container -->
+<%-- Container --%>
 <div class="container form-login-related">
     <form action='<c:url value="/j_spring_security_check"/>' method="POST" name="form" id="form" class="form-vertical">
         <fieldset>

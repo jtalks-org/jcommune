@@ -34,34 +34,6 @@ public class HttpSessionStatisticListenerImpl implements HttpSessionStatisticLis
     
     private static volatile long totalActiveSessions;
     
-    /** 
-     * We need to inject bean but this listener is not in Spring context.
-     * So we will get required beans directly from the Spring context 
-     */
-    private WebApplicationContext webApplicationContext;
-    
-    /**
-     * Returns Spring context. If context already was set it is returned. If
-     * context is null it is set using Spring utility class and servletContext.
-     * @param servletContext - servlet context used to get current Spring 
-     *      web application context
-     * @return Spring context
-     */
-    private WebApplicationContext getWebApplicationContext(ServletContext servletContext) {
-        if (webApplicationContext == null) {
-            webApplicationContext = WebApplicationContextUtils
-                .getRequiredWebApplicationContext(servletContext);
-        }
-        return webApplicationContext;
-    }
-
-    /**
-     * @param webApplicationContext the webApplicationContext to set
-     */
-    public void setWebApplicationContext(WebApplicationContext webApplicationContext) {
-        this.webApplicationContext = webApplicationContext;
-    }
-
     /**
      * @return active sessions count
      */
@@ -109,6 +81,8 @@ public class HttpSessionStatisticListenerImpl implements HttpSessionStatisticLis
      *      found
      */
     private Object getSpringBean(String name, ServletContext servletContext) {
-        return getWebApplicationContext(servletContext).getBean(name);
+        WebApplicationContext ctx = WebApplicationContextUtils
+            .getRequiredWebApplicationContext(servletContext);
+        return ctx.getBean(name);
     }
 }

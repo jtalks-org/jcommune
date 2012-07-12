@@ -30,8 +30,6 @@
             type="text/javascript"></script>
 </head>
 <body>
-   <jsp:include page="../template/topLine.jsp"/>
-
     <div class="container">
         <h2><a class="heading" href="${pageContext.request.contextPath}/topics/${topic.id}"><c:out value="${topic.title}"/></a></h2>
                
