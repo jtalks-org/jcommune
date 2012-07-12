@@ -27,10 +27,9 @@
             type="text/javascript"></script>
 </head>
 <body>
-<jsp:include page="../template/topLine.jsp"/>
- 
+
 <div class="container">
-<!-- Branch header -->
+<%-- Branch header --%>
 <div id="branch-header">
    <h2><c:out value="${branch.name}"/></h2>
  
@@ -64,13 +63,13 @@
             </span>
        </sec:authorize>
    </div>
-   <span style="display: inline-block; "></span>
+   <span class="inline-block"></span>
 </div>
-<!-- END OF Branch header -->
+<%-- END OF Branch header --%>
  
 <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
  
-<!-- Upper pagination -->
+<%-- Upper pagination --%>
 <div class="row-fluid upper-pagination forum-pagination-container">
  
    <div class="span2">
@@ -108,9 +107,9 @@
    </div>
  
 </div>
-<!-- END OF Upper pagination -->
+<%-- END OF Upper pagination --%>
  
-<!-- Topics table -->
+<%-- Topics table --%>
 <table id="topics-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
    <c:choose>
        <c:when test="${!(empty topicsPage.content)}">
@@ -127,7 +126,7 @@
            </thead>
            <tbody>
            <c:forEach var="topic" items="${topicsPage.content}">
-               <!-- Topic row -->
+               <%-- Topic row --%>
                <tr>
                    <td class="status-col">
  
@@ -164,7 +163,7 @@
                            </c:when>
                        </c:choose>
                        <c:if test="${topic.hasPoll}">
-                           <a style="color: red;"
+                           <a class="red-style"
                                href="${pageContext.request.contextPath}/topics/${topic.id}">
                                [POLL]</a>
                        </c:if>
@@ -216,9 +215,9 @@
        </c:otherwise>
    </c:choose>
 </table>
-<!-- END OF Topics table -->
+<%-- END OF Topics table --%>
  
-<!-- Bottom pagination -->
+<%-- Bottom pagination --%>
 <div class="row-fluid upper-pagination forum-pagination-container">
  
    <div class="span2">
@@ -256,10 +255,10 @@
    </div>
  
 </div>
-<!-- END OF Bottom pagination -->
+<%-- END OF Bottom pagination --%>
  
  
-<!-- Users -->
+<%-- Users --%>
 <div id="users-stats" class="well forum-user-stats-container">
    <strong><spring:message code="label.topic.moderators"/></strong>
    <a href="#" title="<spring:message code='label.tips.view_profile'/>">andreyko</a>
@@ -286,7 +285,7 @@
        </a>
    </c:forEach>
 </div>
-<!-- END OF Users -->
+<%-- END OF Users --%>
  
 </div>
 </body>

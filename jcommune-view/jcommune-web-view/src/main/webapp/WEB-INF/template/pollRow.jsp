@@ -24,8 +24,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <c:if test="${poll != null}">
-    <div class="row well" style="padding: 5px; margin: 5px 0;">
-        <div class="span4" style="float: none; margin: 0 auto;">
+    <div class="row well poll">
+        <div class="span4  poll-row">
             <jtalks:poll isVoteButtonEnabled="true" pollItems="${pollOptions}" poll="${poll}"/>
         </div>
     </div>

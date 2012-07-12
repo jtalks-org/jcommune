@@ -27,8 +27,7 @@
 </head>
 
 <body>
-    <jsp:include page="../template/topLine.jsp"/>
- 
+
 <div class="container form-login-related">
     <form:form id="form" name="form" action='${pageContext.request.contextPath}/user/new'
             modelAttribute="newUser" method="POST" class='form-vertical'>

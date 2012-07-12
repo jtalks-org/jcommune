@@ -67,7 +67,7 @@
                     </div>
                 </c:forEach>
 
-                <!-- Poll button. Available when poll is active and user not voted and is button not disabled. -->
+                <%-- Poll button. Available when poll is active and user not voted and is button not disabled. --%>
                 <c:if test="${isVoteButtonEnabled}">
                     <input type="submit" name="pollSubmit" id="pollSubmit"
                            class="btn btn-primary"

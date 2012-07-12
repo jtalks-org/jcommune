@@ -32,7 +32,6 @@
 <body>
     <sec:authentication property="principal.username" var="auth" scope="request"/>
     <sec:authentication property="principal.id" var="userId"/>
-    <jsp:include page="../template/topLine.jsp"/>
 
     <div class="container">
         <div id="userdetails" class="userprofile user-profile-container">
