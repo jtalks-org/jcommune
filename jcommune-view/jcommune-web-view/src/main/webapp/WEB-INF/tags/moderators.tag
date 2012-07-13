@@ -19,9 +19,16 @@
 <%@ attribute name="moderators" required="true" type="java.util.List" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<c:forEach var="moderator" items="${moderators}" varStatus="i">
-	<a href="${pageContext.request.contextPath}/users/${moderator.id}"
-	   title="<spring:message code='label.tips.view_profile'/>">
-		<c:out value="${moderator.username}"/>
-	</a>
-</c:forEach>
+<c:choose>
+	<c:when test="${!(empty moderators)}">
+		<c:forEach var="moderator" items="${moderators}" varStatus="i">
+			<a href="${pageContext.request.contextPath}/users/${moderator.id}"
+			   title="<spring:message code='label.tips.view_profile'/>">
+				<c:out value="${moderator.username}"/>
+			</a>
+		</c:forEach>
+	</c:when>
+	<c:otherwise>
+		<spring:message code='label.branch.moderators.empty'/>
+	</c:otherwise>
+</c:choose>
