@@ -134,6 +134,7 @@ public class BranchController {
 
         return new ModelAndView("recent")
                 .addObject("topicsPage", topicsPage)
+                .addObject("topics", topicsPage.getContent())  // for rssViewer
                 .addObject(PAGING_ENABLED, true);
     }
 
