@@ -21,10 +21,18 @@ $(document).ready(function () {
 
     //remove avatar handler
     $('#removeAvatar').click(function () {
-        $.getJSON($root + "/defaultAvatar", function (responseJSON) {
-            document.getElementById('avatarPreview').setAttribute('src', responseJSON.srcPrefix
-                + responseJSON.srcImage);
-            document.getElementById('avatar').setAttribute('value', responseJSON.srcImage);
+    	$.prompt($labelDeleteAvatarConfirmation,
+    	    {buttons:{ Ok:true, Cancel:false },
+            persistent:false,
+            submit:function (confirmed) {
+               	if (confirmed) {
+               		$.getJSON($root + "/defaultAvatar", function (responseJSON) {
+               			document.getElementById('avatarPreview').setAttribute('src', 
+               					responseJSON.srcPrefix + responseJSON.srcImage);
+                        document.getElementById('avatar').setAttribute('value', responseJSON.srcImage);
+                    });
+                }
+            }
         });
     });
 
