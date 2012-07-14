@@ -18,7 +18,7 @@ package org.jtalks.jcommune.model.entity;
  * Private message status.
  *
  * If the message has been deleted from both Inbox and Outbox folders,
- * or has been deleted from Drafts no stus should be set - message
+ * or has been deleted from Drafts no status should be set - message
  * is simply to be removed from a database
  *
  * @author Kirill Afonin
@@ -38,7 +38,7 @@ public enum PrivateMessageStatus {
      */
     SENT,
     /**
-     * Recepient deleted this message from inbox folder
+     * Recipient deleted this message from inbox folder
      */
     DELETED_FROM_INBOX,
     /**

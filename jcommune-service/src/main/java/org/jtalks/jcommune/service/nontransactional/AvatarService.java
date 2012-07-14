@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import org.apache.commons.lang.Validate;
 import org.apache.tika.Tika;
 import org.jtalks.jcommune.service.exceptions.ImageFormatException;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
@@ -70,15 +71,11 @@ public class AvatarService {
      * @throws ImageProcessException common avatar processing error
      */
     public String convertBytesToBase64String(byte[] bytes) throws ImageProcessException {
-        if (bytes == null) {
-            throw new IllegalArgumentException();
-        }
-
+        Validate.notNull(bytes, "Incoming byte array cannot be null");
         BufferedImage image = imageUtils.convertByteArrayToImage(bytes);
-        if (image == null) {
+        if (image == null) { // something went wrong during conversion
             throw new ImageProcessException();
         }
-
         byte[] outputAvatar = imageUtils.preprocessImage(image);
         return base64Wrapper.encodeB64Bytes(outputAvatar);
     }
@@ -86,14 +83,11 @@ public class AvatarService {
     /**
      * Validate file format
      *
-     * @param file for validation
+     * @param file for validation, cannot be null
      * @throws ImageFormatException invalid format avatar processing error
      */
     public void validateAvatarFormat(MultipartFile file) throws ImageFormatException {
-        if (file == null) {
-            throw new IllegalArgumentException();
-        }
-
+        Validate.notNull(file, "file argument array cannot be null");
         if (!VALID_IMAGE_TYPES.contains(file.getContentType())) {
             throw new ImageFormatException();
         }
@@ -106,9 +100,7 @@ public class AvatarService {
      * @throws ImageFormatException invalid format avatar processing error
      */
     public void validateAvatarFormat(byte[] bytes) throws ImageFormatException {
-        if (bytes == null) {
-            throw new IllegalArgumentException();
-        }
+        Validate.notNull(bytes, "Incoming byte array cannot be null");
         Tika tika = new Tika();
         InputStream input = new ByteArrayInputStream(bytes);
         try {
@@ -128,10 +120,7 @@ public class AvatarService {
      * @throws ImageSizeException invalid size avatar processing error
      */
     public void validateAvatarSize(byte[] bytes) throws ImageSizeException {
-        if (bytes == null) {
-            throw new IllegalArgumentException();
-        }
-
+        Validate.notNull(bytes, "Incoming byte array cannot be null");
         if (bytes.length > MAX_SIZE) {
             throw new ImageSizeException();
         }
@@ -144,10 +133,10 @@ public class AvatarService {
      */
     public byte[] getDefaultAvatar() {
         byte[] result = new byte[0];
+        InputStream stream = AvatarService.class.getClassLoader().getResourceAsStream(defaultAvatarPath);
         try {
-            InputStream stream = AvatarService.class.getClassLoader().getResourceAsStream(defaultAvatarPath);
             result = new byte[stream.available()];
-            stream.read(result);
+            Validate.isTrue(stream.read(result) > 0);
         } catch (IOException e) {
             LOGGER.error("Failed to load default avatar", e);
         }

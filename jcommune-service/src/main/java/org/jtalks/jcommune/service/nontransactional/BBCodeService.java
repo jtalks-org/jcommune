@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import org.apache.commons.lang.Validate;
 import org.jtalks.jcommune.model.entity.JCUser;
 import ru.perm.kefir.bbcode.BBProcessorFactory;
 import ru.perm.kefir.bbcode.TextProcessor;
@@ -33,17 +34,16 @@ public class BBCodeService {
     private TextProcessor processor = BBProcessorFactory.getInstance().create();
 
     /**
-     * Qoutes text given as a valid BB-coded quote.
-     * Sucha  quotes are rendered automatically in posts or forum messages
+     * Quotes text given as a valid BB-coded quote.
+     * Such a quotes are rendered automatically in posts or forum messages
      *
      * @param source text to quote, not null
      * @param author text author, not null
      * @return well formed BB qoute
      */
     public String quote(String source, JCUser author) {
-        if (source == null || author == null) {
-            throw new IllegalArgumentException("Author and source cannot be null");
-        }
+        Validate.notNull(source, "Source cannot be null");
+        Validate.notNull(author, "Author cannot be null");
         return String.format(QUOTE_PATEERN, author.getUsername(), source);
     }
 

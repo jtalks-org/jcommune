@@ -57,12 +57,6 @@ public class ImageUtilsTest {
                 originalImageByteArray);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void testConvertImageToByteArrayForNullData() throws ImageProcessException {
-        //invoke object under test
-        imageUtils.convertImageToByteArray(null);
-    }
-
     @Test(dataProvider = "validDataForImageToByteArrayTest")
     public void testConvertImageToByteArrayForValidData(Image image, byte[] expected) throws ImageProcessException {
         byte[] actual = imageUtils.convertImageToByteArray(image);
