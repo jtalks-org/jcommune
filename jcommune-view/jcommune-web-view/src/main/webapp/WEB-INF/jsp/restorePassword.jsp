@@ -22,8 +22,6 @@
 <head>
     <title><spring:message code="label.restorePassword.header"/></title>
 </head>
-    <jsp:include page="../template/topLine.jsp"/>
-    
     <div class="container form-login-related">
         <form:form id="form" name="form" modelAttribute="dto"
                    action='${pageContext.request.contextPath}/password/restore' method="POST"
