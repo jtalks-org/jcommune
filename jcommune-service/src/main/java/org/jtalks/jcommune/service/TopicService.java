@@ -81,19 +81,17 @@ public interface TopicService extends EntityService<Topic> {
      * Update current topic with given title and body.
      *
      * @param topicId   topic id
-     * @param branchId  branch id, it's needed for the checking permissions
      * @param topicName name of topic
      * @param bodyText  body of topic
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic not found
      */
-    void updateTopic(long topicId, long branchId, String topicName, String bodyText) throws NotFoundException;
+    void updateTopic(long topicId, String topicName, String bodyText) throws NotFoundException;
 
     /**
      * Update current topic with given title and body.
      *
      * @param topicId      topic id
-     * @param branchId     branch id, it's needed for the checking permissions
      * @param topicName    name of topic
      * @param bodyText     body of topic
      * @param topicWeight  priority for sticked topic
@@ -102,7 +100,7 @@ public interface TopicService extends EntityService<Topic> {
      * @param notifyOnAnswers user notification on answers flag
      * @throws NotFoundException when topic not found
      */
-    void updateTopic(long topicId, long branchId, String topicName, String bodyText,
+    void updateTopic(long topicId, String topicName, String bodyText,
                      int topicWeight, boolean sticked, boolean announcement, boolean notifyOnAnswers) throws NotFoundException;
 
     /**

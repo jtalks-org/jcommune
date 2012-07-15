@@ -164,22 +164,36 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicId, 'TOPIC', 'GeneralPermission.WRITE') or " +
-    		"hasPermission(#branchId, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS")
-    public void updateTopic(long topicId, long branchId, String topicName, String bodyText)
+    public void updateTopic(long topicId, String topicName, String bodyText)
             throws NotFoundException {
-        updateTopic(topicId, branchId, topicName, bodyText, 0, false, false, false);
+        updateTopic(topicId, topicName, bodyText, 0, false, false, false);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicId, 'TOPIC', 'GeneralPermission.WRITE') or " +
-    		"hasPermission(#branchId, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
-    public void updateTopic(long topicId, long branchId, String topicName, String bodyText,
+    public void updateTopic(long topicId, String topicName, String bodyText,
                             int topicWeight, boolean sticked, boolean announcement, boolean notifyOnAnswers) throws NotFoundException {
         Topic topic = get(topicId);
+        updateTopic(topic, topicName, bodyText, topicWeight, sticked, announcement, notifyOnAnswers);
+    }
+    
+    /**
+     * Performs update an instance of the topic with security checking.
+     * 
+     * @param topic        an instance of topic that will be updated
+     * @param topicName    name of topic
+     * @param bodyText     body of topic
+     * @param topicWeight  priority for sticked topic
+     * @param sticked      flag for sticking a topic
+     * @param announcement flag, which set topic as announcement
+     * @param notifyOnAnswers user notification on answers flag
+     */
+    @PreAuthorize("hasPermission(#topic.id, 'TOPIC', 'GeneralPermission.WRITE') or " +
+            "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
+    private void updateTopic(Topic topic, String topicName, String bodyText,
+            int topicWeight, boolean sticked, boolean announcement, boolean notifyOnAnswers) {
         topic.setTitle(topicName);
         topic.setTopicWeight(topicWeight);
         topic.setSticked(sticked);

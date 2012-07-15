@@ -277,7 +277,7 @@ public class TopicController {
                     .addObject(TOPIC_ID, topicId);
         }
 
-        topicService.updateTopic(topicDto.getId(), branchId, topicDto.getTopicName(),
+        topicService.updateTopic(topicDto.getId(), topicDto.getTopicName(),
                 topicDto.getBodyText(), topicDto.getTopicWeight(),
                 topicDto.isSticked(),topicDto.isAnnouncement(), topicDto.isNotifyOnAnswers());
 
