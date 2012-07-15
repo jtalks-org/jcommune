@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import org.apache.commons.lang.Validate;
 import org.apache.solr.analysis.LowerCaseFilterFactory;
 import org.apache.solr.analysis.SnowballPorterFilterFactory;
 import org.apache.solr.analysis.StandardFilterFactory;
@@ -172,9 +173,6 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
         this.title = title;
         this.creationDate = new DateTime();
         this.modificationDate = new DateTime();
-        this.topicWeight = 0;
-        this.sticked = false;
-        this.announcement = false;
     }
 
     /**
@@ -426,9 +424,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      *              (0 means first post is the last read one)
      */
     public void setLastReadPostIndex(int index) {
-        if (index >= posts.size()) {
-            throw new IllegalArgumentException("Last read post index is bigger than post count in the topic");
-        }
+        Validate.isTrue(index < posts.size(), "Last read post index is bigger than post count in the topic");
         lastReadPostIndex = index;
     }
 
@@ -440,11 +436,8 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      * @return returns first unread post id for the current user
      */
     public Long getFirstUnreadPostId() {
-        if (lastReadPostIndex == null) {
-            return posts.get(0).getId();
-        } else {
-            return posts.get(lastReadPostIndex + 1).getId();
-        }
+        int index = (lastReadPostIndex == null) ? 0 : lastReadPostIndex + 1;
+        return posts.get(index).getId();
     }
 
     /**

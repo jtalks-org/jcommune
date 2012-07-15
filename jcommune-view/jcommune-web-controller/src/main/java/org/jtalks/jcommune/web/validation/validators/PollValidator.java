@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.validation.validators;
 
+import ch.lambdaj.Lambda;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.IntRange;
@@ -190,9 +191,9 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
      */
     private void getValidatedFields(Object value) {
         BeanWrapper wrapper = new BeanWrapperImpl(value);
-        pollTitleValue = ObjectUtils.defaultIfNull(wrapper.getPropertyValue(pollTitleName),"").toString();
-        pollItemsValue = ObjectUtils.defaultIfNull(wrapper.getPropertyValue(pollItemsName),"").toString();
-        endingDateValue = ObjectUtils.defaultIfNull(wrapper.getPropertyValue(endingDateName),"").toString();
+        pollTitleValue = ObjectUtils.defaultIfNull(wrapper.getPropertyValue(pollTitleName), "").toString();
+        pollItemsValue = ObjectUtils.defaultIfNull(wrapper.getPropertyValue(pollItemsName), "").toString();
+        endingDateValue = ObjectUtils.defaultIfNull(wrapper.getPropertyValue(endingDateName), "").toString();
 
         if (StringUtils.isNotBlank(pollItemsValue)) {
             items = TopicDto.parseItems(pollItemsValue);

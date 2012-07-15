@@ -53,7 +53,7 @@ public class StopWordsFilter implements SearchRequestFilter {
     public String filter(String searchText) {
         String result = searchText;
         for (String stopWordsFile : stopWordsFiles) {
-            result = filter(searchText, stopWordsFile);
+            result = filter(result, stopWordsFile);
         }
         return result;
     }
