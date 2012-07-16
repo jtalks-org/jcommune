@@ -246,6 +246,7 @@ public class TransactionalTopicServiceTest {
     @Test
     public void testDeleteTopic() throws NotFoundException {
         Topic topic = new Topic(user, "title");
+        topic.setId(TOPIC_ID);
         Post firstPost = new Post(user, ANSWER_BODY);
         topic.addPost(firstPost);
         user.setPostCount(1);
@@ -254,7 +255,7 @@ public class TransactionalTopicServiceTest {
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(topic);
 
-        Branch branchFromWhichTopicDeleted = topicService.deleteTopic(TOPIC_ID, BRANCH_ID);
+        Branch branchFromWhichTopicDeleted = topicService.deleteTopic(TOPIC_ID);
 
         assertEquals(branchFromWhichTopicDeleted, branch);
         assertEquals(branch.getTopicCount(), 0);
@@ -268,7 +269,7 @@ public class TransactionalTopicServiceTest {
     public void testDeleteNonExistentTopic() throws NotFoundException {
         when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
 
-        topicService.deleteTopic(TOPIC_ID, BRANCH_ID);
+        topicService.deleteTopic(TOPIC_ID);
     }
 
     @Test

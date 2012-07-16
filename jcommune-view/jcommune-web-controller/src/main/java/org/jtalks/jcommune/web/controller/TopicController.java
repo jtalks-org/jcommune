@@ -183,7 +183,7 @@ public class TopicController {
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.DELETE)
     public ModelAndView deleteTopic(@PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
         Topic topic = topicService.get(topicId);
-        topicService.deleteTopic(topicId, topic.getBranch().getId());
+        topicService.deleteTopic(topicId);
         return new ModelAndView("redirect:/branches/" + topic.getBranch().getId());
     }
 

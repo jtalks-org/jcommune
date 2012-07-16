@@ -224,15 +224,26 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         }
     }
 
-
     /**
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.DELETE_TOPICS')")
-    public Branch deleteTopic(long topicId, long branchId) throws NotFoundException {
+    public Branch deleteTopic(long topicId) throws NotFoundException {
         Topic topic = get(topicId);
-
+        long branchId = topic.getBranch().getId();
+        return deleteTopic(topic, branchId);
+    }
+    
+    
+    /**
+     * Performs actual topic deleting with permission check
+     *
+     * @param topic             topic to delete
+     * @param branchId          used for annotation permission check only
+     * @return branch without deleted topic
+     */
+    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.DELETE_TOPICS')")
+    private Branch deleteTopic(Topic topic, long branchId) throws NotFoundException {
         for (Post post : topic.getPosts()) {
             JCUser user = post.getUserCreated();
             user.setPostCount(user.getPostCount() - 1);
@@ -242,10 +253,10 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         branch.deleteTopic(topic);
         branchDao.update(branch);
 
-        securityService.deleteFromAcl(Topic.class, topicId);
+        securityService.deleteFromAcl(Topic.class, topic.getId());
         notificationService.branchChanged(branch);
 
-        logger.info("Deleted topic \"{}\". Topic id: {}", topic.getTitle(), topicId);
+        logger.info("Deleted topic \"{}\". Topic id: {}", topic.getTitle(), topic.getId());
         return branch;
     }
 
