@@ -18,18 +18,18 @@ import org.springframework.web.util.HtmlUtils;
 
 /**
  * Represents user signature and encapsulates it's rendering.
- * This class is transient, actual signature representation is
+ * This class is transient, used for rendering purposes only
  *
  * @author Evgeniy Naumenko
  */
 public class Signature {
 
     public static final String RENDERING_TEMPLATE = "<hr/><span class='signature'>%s</span>";
-    private String content;
     private static final String HYPERLINK_REGEX =
             "([^\\s]*)(https?|ftp|file)(://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|])";
     private static final String HYPERLINK_TEMPLATE = "<a href=\"" + "$2$3" + "\">" + "$1$2$3" + "</a>";
 
+    private String content;
 
     /**
      * Creates new immutable instance.
@@ -64,8 +64,7 @@ public class Signature {
         } else {
             String escaped = HtmlUtils.htmlEscape(content);
             content = escaped.replaceAll(HYPERLINK_REGEX, HYPERLINK_TEMPLATE);
-
+            return String.format(RENDERING_TEMPLATE, content);
         }
-        return String.format(RENDERING_TEMPLATE, content);
     }
 }

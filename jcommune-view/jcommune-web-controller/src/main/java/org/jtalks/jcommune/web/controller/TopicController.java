@@ -173,7 +173,7 @@ public class TopicController {
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.DELETE)
     public ModelAndView deleteTopic(@PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
         Topic topic = topicService.get(topicId);
-        topicService.deleteTopic(topicId, topic.getBranch().getId());
+        topicService.deleteTopic(topicId);
         return new ModelAndView("redirect:/branches/" + topic.getBranch().getId());
     }
 
@@ -268,7 +268,7 @@ public class TopicController {
         }
         Topic topic = topicDto.getTopic();
         topic.setId(topicId);
-        topicService.updateTopic(topicDto.getTopic(), topicDto.getBodyText(),
+        topicService.updateTopic(topic, topicDto.getBodyText(),
                 topicDto.isNotifyOnAnswers());
 
         return new ModelAndView("redirect:/topics/" + topicId);

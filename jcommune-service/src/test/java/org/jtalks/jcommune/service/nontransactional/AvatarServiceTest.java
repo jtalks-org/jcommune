@@ -99,18 +99,6 @@ public class AvatarServiceTest {
         assertTrue(avatar.length > 0);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void inputDataForProcessConvertAvatarToBase64StringIsNull() throws Exception {
-        //invoke object under test
-        avatarService.convertBytesToBase64String(null);
-    }
-
-
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void inputDataForProcessConvertAvatarToBase64StringIsInvalid() throws Exception {
-        //invoke object under test
-        avatarService.convertBytesToBase64String(null);
-    }
 
     @Test(expectedExceptions = ImageFormatException.class, dataProvider = "invalidFormatValues")
     public void inputDataForValidateAvatarFormatIsInvalid(MultipartFile file) throws Exception {
@@ -136,18 +124,6 @@ public class AvatarServiceTest {
         avatarService.validateAvatarFormat(bytes);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void inputDataForValidateAvatarFormatIsNullForOperaIE() throws Exception {
-        //invoke object under test
-        avatarService.validateAvatarFormat((MultipartFile) null);
-    }
-
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void inputDataForValidateAvatarFormatIsNullForChromeFF() throws Exception {
-        //invoke object under test
-        avatarService.validateAvatarFormat((byte[]) null);
-    }
-
     @Test(expectedExceptions = ImageSizeException.class)
     public void inputDataForValidateAvatarSizeIsInvalid() throws Exception {
         byte[] bytes = new byte[AvatarService.MAX_SIZE * 2];
@@ -155,11 +131,6 @@ public class AvatarServiceTest {
         avatarService.validateAvatarSize(bytes);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void inputDataForValidateAvatarSizeIsNull() throws Exception {
-        //invoke object under test
-        avatarService.validateAvatarSize(null);
-    }
     
     @Test
     public void inputDataForValidateAvatarSizeIsValid() {

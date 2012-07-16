@@ -135,7 +135,7 @@ public class TopicControllerTest {
         ModelAndView actualMav = controller.deleteTopic(TOPIC_ID);
 
         assertViewName(actualMav, "redirect:/branches/" + BRANCH_ID);
-        verify(topicService).deleteTopic(TOPIC_ID, BRANCH_ID);
+        verify(topicService).deleteTopic(TOPIC_ID);
     }
 
     @Test

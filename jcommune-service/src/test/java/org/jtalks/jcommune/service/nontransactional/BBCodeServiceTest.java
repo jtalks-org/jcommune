@@ -42,14 +42,11 @@ public class BBCodeServiceTest {
         assertEquals(result, "[quote=\"name\"]source[/quote]");
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class, dataProvider = "illegalQuoteArgumentProvider")
-    public void testQuoteNullSource(String source, JCUser author) {
-        service.quote(source, author);
-    }
+    public void testRemoveBBCodes(){
+        String incoming = "[bb] lol [code] [/omg]";
+        String expected = " lol  ";
 
-    @DataProvider
-    public Object[][] illegalQuoteArgumentProvider() {
-        return new Object[][]{{null, null}, {null, USER}, {SOURCE, null}};
+        assertEquals(service.removeBBCodes(incoming), expected);
     }
 
     @Test(dataProvider = "validBBCodes")

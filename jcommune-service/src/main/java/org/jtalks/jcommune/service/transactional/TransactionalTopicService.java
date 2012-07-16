@@ -175,20 +175,19 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     /**
      * {@inheritDoc}
      */
-    @Override
-    @PreAuthorize("hasPermission(#topicDto.id, 'TOPIC', 'GeneralPermission.WRITE')")
-    public void updateTopic(Topic topicDto, String bodyText)
-            throws NotFoundException {
+    @Override    
+    public void updateTopic(Topic topicDto, String bodyText) throws NotFoundException {
         updateTopic(topicDto, bodyText, false);
     }
+
 
     /**
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicDto.id, 'TOPIC', 'GeneralPermission.WRITE')")
-    public void updateTopic(Topic topicDto, String bodyText, boolean notifyOnAnswers)
-            throws NotFoundException {
+    @PreAuthorize("hasPermission(#topicDto.id, 'TOPIC', 'GeneralPermission.WRITE') or " +
+            "hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
+    public void updateTopic(Topic topicDto, String bodyText, boolean notifyOnAnswers) throws NotFoundException {
         Topic topic = get(topicDto.getId());
         topic.setTitle(topicDto.getTitle());
         topic.setTopicWeight(topicDto.getTopicWeight());
@@ -220,15 +219,26 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         }
     }
 
-
     /**
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.DELETE_TOPICS')")
-    public Branch deleteTopic(long topicId, long branchId) throws NotFoundException {
+    public Branch deleteTopic(long topicId) throws NotFoundException {
         Topic topic = get(topicId);
-
+        long branchId = topic.getBranch().getId();
+        return deleteTopic(topic, branchId);
+    }
+    
+    
+    /**
+     * Performs actual topic deleting with permission check
+     *
+     * @param topic             topic to delete
+     * @param branchId          used for annotation permission check only
+     * @return branch without deleted topic
+     */
+    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.DELETE_TOPICS')")
+    private Branch deleteTopic(Topic topic, long branchId) throws NotFoundException {
         for (Post post : topic.getPosts()) {
             JCUser user = post.getUserCreated();
             user.setPostCount(user.getPostCount() - 1);
@@ -238,10 +248,10 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         branch.deleteTopic(topic);
         branchDao.update(branch);
 
-        securityService.deleteFromAcl(Topic.class, topicId);
+        securityService.deleteFromAcl(Topic.class, topic.getId());
         notificationService.branchChanged(branch);
 
-        logger.info("Deleted topic \"{}\". Topic id: {}", topic.getTitle(), topicId);
+        logger.info("Deleted topic \"{}\". Topic id: {}", topic.getTitle(), topic.getId());
         return branch;
     }
 

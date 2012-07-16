@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.security;
 
+import org.apache.commons.lang.Validate;
 import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
@@ -74,25 +75,26 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
     @Override
     @Deprecated
     public boolean hasPermission(Authentication authentication, Object targetId, Object permission) {
-        throw new IllegalArgumentException("Method with current arguments is not supported.");
+        throw new UnsupportedOperationException("Current implementation does not support this method");
     }
 
-    //TODO In runtime authentication object contains clear user password. May be potential security issues.
-
     /**
+     * TODO In runtime authentication object contains clear user password (not the hashed one).
+     * May be potential security issue.
+     * <p/>
      * {@inheritDoc}
      */
     @Override
     public boolean hasPermission(Authentication authentication, Serializable targetId,
                                  String targetType, Object permission) {
         boolean result = false;
-        Long id;
+        Long id = 0L;
+
+        Validate.isTrue(targetId instanceof String || targetId instanceof Long);
         if (targetId instanceof String) {
             id = Long.parseLong((String) targetId);
         } else if (targetId instanceof Long) {
             id = (Long) targetId;
-        } else {
-            throw new IllegalArgumentException("Type of targetId parameter is invalid. Type is " + targetId.getClass());
         }
 
         ObjectIdentity objectIdentity = aclUtil.createIdentity(id, targetType);

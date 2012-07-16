@@ -178,36 +178,50 @@
                                 </c:otherwise>
                             </c:choose>
                             <div class="btn-group">
-                                <sec:accesscontrollist hasPermission="4" domainObject="${post}">
-                                    <a id="edit_button" href="${edit_url}" rel="${branchId}"
+                               <%--Edit post button start --%>
+                               <c:set var="isEditButtonAvailable" value="false"/>
+                               <%--  An ability to edit posts for author of this posts --%>
+                               <sec:accesscontrollist hasPermission="4" domainObject="${post}">
+                               		<c:set var="isEditButtonAvailable" value="true"/>
+                               </sec:accesscontrollist>
+                               <%--  An ability to edit posts for administrators and branch moderators --%>
+                               <sec:accesscontrollist hasPermission="17" domainObject="${topic.branch}">
+                               		<c:set var="isEditButtonAvailable" value="true"/>
+                               </sec:accesscontrollist>
+                               <c:if test="${isEditButtonAvailable}">
+                               	    <a id="edit_button" href="${edit_url}" rel="${branchId}"
                                        class="btn btn-mini" title="<spring:message code='label.tips.edit_post'/>">
                                        <i class="icon-edit"></i>
                                        <spring:message code="label.edit"/>
-                                   </a>
-                               </sec:accesscontrollist>
+                                    </a>
+                               </c:if>
+                               <%--Edit post button end --%>
+                               <%--Delete post button start --%>
                                <sec:authorize access="isAuthenticated()">
+                               	   <c:set var="isDeleteButtonAvailable" value="false"/>
                                    <sec:authentication property="principal.id" var="userId"/>
+                                   <%--The ability of users to remove their own posts--%>
                                    <c:if test='${userId == post.userCreated.id}'>
                                        <sec:accesscontrollist hasPermission="7" domainObject="${topic.branch}">
-                                           <a href="${delete_url}" class="btn btn-mini btn-danger delete"
-                                               title="<spring:message code='label.tips.remove_post'/>"
-                                               rel="<spring:message code='${confirm_message}'/>">
-                                               <i class="icon-remove icon-white"></i>
-                                               <spring:message code="label.delete"/>
-                                           </a>
+                                       	   <c:set var="isDeleteButtonAvailable" value="true"/>
                                        </sec:accesscontrollist>
                                    </c:if>
+                                   <%--The ability of users to remove posts of the other users(for moderators and admins)--%>
                                    <c:if test='${userId != post.userCreated.id}'>
                                        <sec:accesscontrollist hasPermission="13" domainObject="${topic.branch}">
-                                           <a href="${delete_url}" class="btn btn-mini btn-danger delete"
-                                               title="<spring:message code='label.tips.remove_post'/>"
-                                               rel="<spring:message code='${confirm_message}'/>">
-                                               <i class="icon-remove icon-white"></i>
-                                               <spring:message code="label.delete"/>
-                                           </a>
+                                       	   <c:set var="isDeleteButtonAvailable" value="true"/>
                                        </sec:accesscontrollist>
                                    </c:if>
+                                   <c:if test="${isDeleteButtonAvailable}">
+                                   		<a href="${delete_url}" class="btn btn-mini btn-danger delete"
+                                            title="<spring:message code='label.tips.remove_post'/>"
+                                            rel="<spring:message code='${confirm_message}'/>">
+                                            <i class="icon-remove icon-white"></i>
+                                            <spring:message code="label.delete"/>
+                                        </a>
+                                   </c:if>
                                </sec:authorize>
+                               <%--Delete post button end --%>
                            </div>
  
  

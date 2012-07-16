@@ -33,7 +33,7 @@ import static org.testng.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 /**
- * Test for {@link HttpSessionStatisticListenerImpl}.
+ * Test for {@link HttpSessionStatisticListener}.
  *
  * @author Elena Lepaeva
  */
@@ -44,7 +44,7 @@ public class HttpSessionStatisticListenerTest {
     private static final Property oneHourTimeout = new Property(
             PROPERTY_NAME, String.valueOf(SESSION_TIMEOUT));
     
-    private HttpSessionStatisticListenerImpl listener;
+    private HttpSessionStatisticListener listener;
     private HttpSessionEvent event;
     private MockHttpSession session;
     
@@ -71,7 +71,7 @@ public class HttpSessionStatisticListenerTest {
                 context);
         event = new HttpSessionEvent(session);
         
-        listener = new HttpSessionStatisticListenerImpl();
+        listener = new HttpSessionStatisticListener();
     }
 
     @Test

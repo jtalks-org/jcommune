@@ -58,3 +58,6 @@ $labelUnsubscribe = '<spring:message code="label.unsubscribe"/>';
 $labelUnsubscribeTooltip = '<spring:message code="label.unsubscribe.tooltip"/>';
 
 $labelErrorsNotEmpty = '<spring:message code="label.errors.not_empty"/>';
+$labelDeleteAvatarConfirmation = '<spring:message code="label.deleteAvatarConfirmation"/>';
+$labelImageWrongFormatJs = '<spring:message code="image.wrong.format.js"/>';
+$labelImageWrongSizeJs = '<spring:message code="image.wrong.size.js"/>';

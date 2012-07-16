@@ -101,11 +101,10 @@ public interface TopicService extends EntityService<Topic> {
      * Delete topic by id.
      *
      * @param topicId  topic id
-     * @param branchId branch Id
      * @return branch from which topic deleted
      * @throws NotFoundException when topic not found
      */
-    Branch deleteTopic(long topicId, long branchId) throws NotFoundException;
+    Branch deleteTopic(long topicId) throws NotFoundException;
 
     /**
      * Moves topic to another branch.

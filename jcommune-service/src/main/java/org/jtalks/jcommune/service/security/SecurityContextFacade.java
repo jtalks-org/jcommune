@@ -15,23 +15,28 @@
 package org.jtalks.jcommune.service.security;
 
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
- * Replacement for SecurityContextHolder singleton.
- * {@code SecurityContext} contains security information associated with the
- * current thread of execution.
+ * Wraps static security context holder into a Spring bean for the sake of IoC
  *
  * @author Kirill Afonin
  */
-public interface SecurityContextFacade {
+public class SecurityContextFacade {
 
     /**
-     * @return {@code SecurityContext}
+     * @return {@code SecurityContext} from {@code SecurityContextHolder}
      */
-    SecurityContext getContext();
+    public SecurityContext getContext() {
+        return SecurityContextHolder.getContext();
+    }
 
     /**
+     * Set {@code SecurityContext} to  {@code SecurityContextHolder}
+     *
      * @param securityContext {@code SecurityContext} to set.
      */
-    void setContext(SecurityContext securityContext);
+    public void setContext(SecurityContext securityContext) {
+        SecurityContextHolder.setContext(securityContext);
+    }
 }

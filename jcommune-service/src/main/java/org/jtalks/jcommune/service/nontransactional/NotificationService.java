@@ -27,9 +27,9 @@ import java.util.Set;
  * If the update author is subscribed he won't get the notification message.
  * This service also assumes, that topic update as a enclosing branch update as well.
  * <p/>
- * Errors occured while sending emails are suppressed (logged only) as updates
+ * Errors occurred while sending emails are suppressed (logged only) as updates
  * notifications are themselves a kind of a side effect, so they should not prevent
- * the whole operation from beeing completed.
+ * the whole operation from being completed.
  *
  * @author Evgeniy Naumenko
  * @author Vitaliy Kravchenko
@@ -55,8 +55,8 @@ public class NotificationService {
     }
 
     /**
-     * Notifices subscribers that the ceertain topic has been changed by email.
-     * Call of this method will alos trigger enclosing branch update event.
+     * Notifies subscribers that the certain topic has been changed by email.
+     * Call of this method will also trigger enclosing branch update event.
      *
      * @param topic topic changed
      */
@@ -74,7 +74,7 @@ public class NotificationService {
     /**
      * Notifies subscribers about branch updates by email.
      * If mailing failed thi implementation simply continues
-     * with other sunscribers.
+     * with other subscribers.
      *
      * @param branch branch changed
      */

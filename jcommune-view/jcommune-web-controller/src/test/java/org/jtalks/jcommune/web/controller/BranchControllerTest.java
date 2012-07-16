@@ -136,6 +136,7 @@ public class BranchControllerTest {
         //check result
         assertViewName(mav, "recent");
         assertAndReturnModelAttributeOfType(mav, "topicsPage", Page.class);
+        assertAndReturnModelAttributeOfType(mav, "topics", List.class);
     }
 
     @Test

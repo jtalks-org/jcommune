@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.validation.validators;
 
+import ch.lambdaj.Lambda;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.IntRange;
@@ -224,6 +225,9 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
      */
     public static List<PollItem> parseItems(String pollItems) {
         List<PollItem> result = new ArrayList<PollItem>();
+        if(pollItems == null){
+            return result;
+        }
         String[] items = StringUtils.split(pollItems, LINE_SEPARATOR);
         for (String item : items) {
             //If user entered empty lines these lines are ignoring from validation.
