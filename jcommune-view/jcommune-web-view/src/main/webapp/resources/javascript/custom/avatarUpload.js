@@ -76,7 +76,11 @@ $(document).ready(function () {
             }
 
         },
-        debug:false
+        debug:false,
+		messages: {
+			typeError: $labelImageWrongFormatJs,
+			sizeError: $labelImageWrongSizeJs
+		}
     });
 
 });
