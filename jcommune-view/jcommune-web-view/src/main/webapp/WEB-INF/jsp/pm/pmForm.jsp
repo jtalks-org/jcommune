@@ -27,6 +27,8 @@
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/privateMessages.js"></script>
     <script language="javascript"
+            src="${pageContext.request.contextPath}/resources/javascript/custom/updateSaveButtonStateOnPmForm.js"></script>
+    <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/leaveConfirm.js"></script>
 </head>
 <body>
@@ -74,7 +76,7 @@
                                  bodyParameterName="body"
                                  back="${pageContext.request.contextPath}/inbox"/>
 
-                <input id="save_pm" type="submit" class="btn" name="save_pm" value="<spring:message code="label.save"/>"
+                <input id="savePM" type="submit" class="btn" name="save_pm" value="<spring:message code="label.save"/>"
                        onclick="document.editForm.action='${pageContext.request.contextPath}/pm/save';return true;"/>
 
             </form:form>
