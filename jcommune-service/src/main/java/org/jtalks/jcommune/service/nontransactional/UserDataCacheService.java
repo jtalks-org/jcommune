@@ -68,8 +68,7 @@ public class UserDataCacheService {
         Element cacheElementForUser = userDataCache.get(username);
         if (cacheElementForUser != null) {
             int count = (Integer) cacheElementForUser.getValue();
-            count++;
-            userDataCache.put(new Element(username, count));
+            userDataCache.put(new Element(username, ++count));
         }
     }
 
@@ -82,8 +81,7 @@ public class UserDataCacheService {
         Element cacheElementForUser = userDataCache.get(username);
         if (cacheElementForUser != null) {
             int count = (Integer) cacheElementForUser.getValue();
-            count--;
-            userDataCache.put(new Element(username, count));
+            userDataCache.put(new Element(username, --count));
         }
     }
 }

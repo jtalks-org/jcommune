@@ -15,8 +15,6 @@
 
 package org.jtalks.jcommune.web.controller;
 
-import java.util.List;
-
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -37,6 +35,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 
 import static ch.lambdaj.Lambda.on;
 import static ch.lambdaj.Lambda.project;
@@ -134,6 +134,7 @@ public class BranchController {
 
         return new ModelAndView("recent")
                 .addObject("topicsPage", topicsPage)
+                .addObject("topics", topicsPage.getContent())  // for rssViewer
                 .addObject(PAGING_ENABLED, true);
     }
 

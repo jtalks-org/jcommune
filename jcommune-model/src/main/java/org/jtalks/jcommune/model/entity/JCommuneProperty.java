@@ -22,7 +22,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Provides access to the JCommune property, which is stored in the database.
- * 
+ * Each enum value is wired as a separate bean to inject individual
+ * properties into other beans.
+ *
  * @author Anuar_Nurmakanov
  */
 public enum JCommuneProperty {
@@ -37,7 +39,7 @@ public enum JCommuneProperty {
     SESSION_TIMEOUT;
     
     private static final Logger LOGGER = LoggerFactory.getLogger(JCommuneProperty.class);
-    //fields
+
     private String name;
     private String defaultValue;
     private PropertyDao propertyDao;
@@ -56,7 +58,7 @@ public enum JCommuneProperty {
         if (property != null) {
             return property.getValue();
         } else {
-            LOGGER.warn(name + " property was not found.");
+            LOGGER.warn("{} property was not found, using default value {}", name, defaultValue);
             return defaultValue;
         }
     }
@@ -83,8 +85,6 @@ public enum JCommuneProperty {
     }
     
     /**
-     * Sets the name of the property.
-     * 
      * @param name the name of the property
      */
     public void setName(String name) {
@@ -92,9 +92,7 @@ public enum JCommuneProperty {
     }
 
     /**
-     * Sets default value for this property.
-     * 
-     * @param defaultValue default value
+     * @param defaultValue default value for current property
      */
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;

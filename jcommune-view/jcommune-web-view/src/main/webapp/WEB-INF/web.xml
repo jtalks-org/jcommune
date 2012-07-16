@@ -111,7 +111,7 @@
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
     <listener>
-        <listener-class>org.jtalks.jcommune.web.listeners.HttpSessionStatisticListenerImpl</listener-class>
+        <listener-class>org.jtalks.jcommune.web.listeners.HttpSessionStatisticListener</listener-class>
     </listener>
     <listener>
         <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>

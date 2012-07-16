@@ -164,7 +164,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicId, 'TOPIC', 'GeneralPermission.WRITE')")
     public void updateTopic(long topicId, String topicName, String bodyText)
             throws NotFoundException {
         updateTopic(topicId, topicName, bodyText, 0, false, false, false);
@@ -174,10 +173,27 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicId, 'TOPIC', 'GeneralPermission.WRITE')")
-    public void updateTopic(long topicId, String topicName, String bodyText, int topicWeight,
-                            boolean sticked, boolean announcement, boolean notifyOnAnswers) throws NotFoundException {
+    public void updateTopic(long topicId, String topicName, String bodyText,
+                            int topicWeight, boolean sticked, boolean announcement, boolean notifyOnAnswers) throws NotFoundException {
         Topic topic = get(topicId);
+        updateTopic(topic, topicName, bodyText, topicWeight, sticked, announcement, notifyOnAnswers);
+    }
+    
+    /**
+     * Performs update an instance of the topic with security checking.
+     * 
+     * @param topic        an instance of topic that will be updated
+     * @param topicName    name of topic
+     * @param bodyText     body of topic
+     * @param topicWeight  priority for sticked topic
+     * @param sticked      flag for sticking a topic
+     * @param announcement flag, which set topic as announcement
+     * @param notifyOnAnswers user notification on answers flag
+     */
+    @PreAuthorize("hasPermission(#topic.id, 'TOPIC', 'GeneralPermission.WRITE') or " +
+            "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
+    private void updateTopic(Topic topic, String topicName, String bodyText,
+            int topicWeight, boolean sticked, boolean announcement, boolean notifyOnAnswers) {
         topic.setTitle(topicName);
         topic.setTopicWeight(topicWeight);
         topic.setSticked(sticked);
@@ -208,15 +224,26 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         }
     }
 
-
     /**
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.DELETE_TOPICS')")
-    public Branch deleteTopic(long topicId, long branchId) throws NotFoundException {
+    public Branch deleteTopic(long topicId) throws NotFoundException {
         Topic topic = get(topicId);
-
+        long branchId = topic.getBranch().getId();
+        return deleteTopic(topic, branchId);
+    }
+    
+    
+    /**
+     * Performs actual topic deleting with permission check
+     *
+     * @param topic             topic to delete
+     * @param branchId          used for annotation permission check only
+     * @return branch without deleted topic
+     */
+    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.DELETE_TOPICS')")
+    private Branch deleteTopic(Topic topic, long branchId) throws NotFoundException {
         for (Post post : topic.getPosts()) {
             JCUser user = post.getUserCreated();
             user.setPostCount(user.getPostCount() - 1);
@@ -226,10 +253,10 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         branch.deleteTopic(topic);
         branchDao.update(branch);
 
-        securityService.deleteFromAcl(Topic.class, topicId);
+        securityService.deleteFromAcl(Topic.class, topic.getId());
         notificationService.branchChanged(branch);
 
-        logger.info("Deleted topic \"{}\". Topic id: {}", topic.getTitle(), topicId);
+        logger.info("Deleted topic \"{}\". Topic id: {}", topic.getTitle(), topic.getId());
         return branch;
     }
 

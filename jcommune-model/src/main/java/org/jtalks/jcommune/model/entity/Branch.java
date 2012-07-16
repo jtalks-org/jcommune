@@ -15,6 +15,8 @@
 package org.jtalks.jcommune.model.entity;
 
 import ch.lambdaj.Lambda;
+import org.apache.commons.lang.Validate;
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,7 +39,7 @@ public class Branch extends org.jtalks.common.model.entity.Branch
     private Integer topicsCount;
     private Integer postsCount;
     private Post lastPostInLastUpdatedTopic;
-    
+
     /**
      * For Hibernate use only
      */
@@ -47,7 +49,7 @@ public class Branch extends org.jtalks.common.model.entity.Branch
     /**
      * Creates the Branch instance with required fields.
      *
-     * @param name unique branch name
+     * @param name        unique branch name
      * @param description branch description
      */
     public Branch(String name, String description) {
@@ -97,11 +99,8 @@ public class Branch extends org.jtalks.common.model.entity.Branch
      */
     private int getTopicIndexInList(Topic topic) {
         int index = topics.indexOf(topic);
-        if (index == -1) {
-            throw new IllegalArgumentException("There is no such topic in the branch");
-        } else {
-            return index;
-        }
+        Validate.isTrue(index != -1, "There is no such topic in the branch");
+        return index;
     }
 
 
@@ -117,7 +116,9 @@ public class Branch extends org.jtalks.common.model.entity.Branch
         }
         int lastTopicIndex = 0;
         for (int i = 1; i < this.getTopicCount(); i++) {
-            if (topics.get(i).getModificationDate().isAfter(topics.get(lastTopicIndex).getModificationDate())) {
+            DateTime currentTopicDate = topics.get(i).getModificationDate();
+            DateTime latestTopicDate = topics.get(lastTopicIndex).getModificationDate();
+            if (currentTopicDate.isAfter(latestTopicDate)) {
                 lastTopicIndex = i;
             }
         }
@@ -169,7 +170,7 @@ public class Branch extends org.jtalks.common.model.entity.Branch
 
     /**
      * Returns a sum of all topic's post count for that branch.
-     *
+     * <p/>
      * Value is computed only for the first time (if not set explicitly before),
      * so it may not take into account the posts added later
      *
@@ -195,10 +196,10 @@ public class Branch extends org.jtalks.common.model.entity.Branch
     public void setSubscribers(Set<JCUser> subscribers) {
         this.subscribers = subscribers;
     }
-    
+
     /**
      * Set count of topics in this branch.
-     * 
+     *
      * @param topicsCount count of posts in this branch
      */
     public void setTopicsCount(Integer topicsCount) {
@@ -207,18 +208,18 @@ public class Branch extends org.jtalks.common.model.entity.Branch
 
     /**
      * Set count of posts in this branch.
-     * 
+     *
      * @param postsCount count of posts in this branch
      */
     public void setPostsCount(Integer postsCount) {
         this.postsCount = postsCount;
     }
-    
+
     /**
      * Returns the last post of the last updated topic.
      * Note, that field is transient, so we must define
      * it by ourselves.
-     * 
+     *
      * @return the last post of the last updated topic
      */
     public Post getLastPostInLastUpdatedTopic() {
@@ -227,7 +228,7 @@ public class Branch extends org.jtalks.common.model.entity.Branch
 
     /**
      * Sets the last post of the last updated topic.
-     * 
+     *
      * @param lastPostInLastUpdatedTopic the last post of the last updated topic
      */
     public void setLastPostInLastUpdatedTopic(Post lastPostInLastUpdatedTopic) {

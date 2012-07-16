@@ -14,19 +14,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.model.permissions.GeneralPermission;
@@ -51,6 +38,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 /**
  * This test cover {@code TransactionalTopicService} logic validation.
@@ -246,6 +246,7 @@ public class TransactionalTopicServiceTest {
     @Test
     public void testDeleteTopic() throws NotFoundException {
         Topic topic = new Topic(user, "title");
+        topic.setId(TOPIC_ID);
         Post firstPost = new Post(user, ANSWER_BODY);
         topic.addPost(firstPost);
         user.setPostCount(1);
@@ -254,7 +255,7 @@ public class TransactionalTopicServiceTest {
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(topic);
 
-        Branch branchFromWhichTopicDeleted = topicService.deleteTopic(TOPIC_ID, BRANCH_ID);
+        Branch branchFromWhichTopicDeleted = topicService.deleteTopic(TOPIC_ID);
 
         assertEquals(branchFromWhichTopicDeleted, branch);
         assertEquals(branch.getTopicCount(), 0);
@@ -268,7 +269,7 @@ public class TransactionalTopicServiceTest {
     public void testDeleteNonExistentTopic() throws NotFoundException {
         when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
 
-        topicService.deleteTopic(TOPIC_ID, BRANCH_ID);
+        topicService.deleteTopic(TOPIC_ID);
     }
 
     @Test
@@ -279,8 +280,8 @@ public class TransactionalTopicServiceTest {
 
         updateTopicStubs(topic);
 
-        topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_WEIGHT, NEW_STICKED,
-                NEW_ANNOUNCEMENT, true);
+        topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_WEIGHT,
+                NEW_STICKED, NEW_ANNOUNCEMENT, true);
 
 
         updateTopicVerifications(topic);
@@ -295,8 +296,8 @@ public class TransactionalTopicServiceTest {
         subscribeUserOnTopic(user, topic);
         updateTopicStubs(topic);
 
-        topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_WEIGHT, NEW_STICKED,
-                NEW_ANNOUNCEMENT, false);
+        topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_WEIGHT,
+                NEW_STICKED, NEW_ANNOUNCEMENT, false);
 
         updateTopicVerifications(topic);
     }
@@ -309,8 +310,8 @@ public class TransactionalTopicServiceTest {
         subscribeUserOnTopic(user, topic);
         updateTopicStubs(topic);
 
-        topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_WEIGHT, NEW_STICKED,
-                NEW_ANNOUNCEMENT, false);
+        topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_WEIGHT,
+                NEW_STICKED, NEW_ANNOUNCEMENT, false);
 
         updateTopicVerifications(topic);
         verify(subscriptionService).toggleTopicSubscription(topic);
@@ -324,8 +325,8 @@ public class TransactionalTopicServiceTest {
 
         updateTopicStubs(topic);
 
-        topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_WEIGHT, NEW_STICKED,
-                NEW_ANNOUNCEMENT, false);
+        topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_WEIGHT,
+                NEW_STICKED, NEW_ANNOUNCEMENT, false);
 
         updateTopicVerifications(topic);
     }

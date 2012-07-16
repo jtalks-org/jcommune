@@ -1,4 +1,3 @@
-
 /** Here are placed styles that were inline (the highest priority) */
 @CHARSET "UTF-8";
 
@@ -11,24 +10,23 @@
 }
 
 .forum-user-stats-container {
-    min-height: 10px; 
+    min-height: 10px;
     padding: 5px;
 }
 
 .forum-sections-userstats-container {
-    min-height: 10px; 
-    padding: 5px; 
+    min-height: 10px;
+    padding: 5px;
     margin: 0px;
 }
 
 .inline-block {
-     display: inline-block;
+    display: inline-block;
 }
 
-input.form-check-radio-box[type="checkbox"], 
-input.form-check-radio-box[type="radio"] 
-{
-    float: left; 
+input.form-check-radio-box[type="checkbox"],
+input.form-check-radio-box[type="radio"] {
+    float: left;
     margin-right: 10px;
 }
 
@@ -37,8 +35,8 @@ input.form-check-radio-box[type="radio"]
 }
 
 .forum-pagination-container {
-     line-height: 36px; 
-     margin-bottom:10px;
+    line-height: 36px;
+    margin-bottom: 10px;
 }
 
 .forum-pagination {
@@ -46,8 +44,8 @@ input.form-check-radio-box[type="radio"]
 }
 
 .post-btn-toolbar {
-    display:inline-block; 
-    margin:0px; 
+    display: inline-block;
+    margin: 0px;
     line-height: 9px;
 }
 
@@ -60,9 +58,9 @@ input.form-check-radio-box[type="radio"]
 }
 
 .post-userinfo-avatal {
-    width:105px; 
+    width: 105px;
     height: 105px;
-    margin-top:3px;
+    margin-top: 3px;
 }
 
 .table .post-content-td {
@@ -70,7 +68,7 @@ input.form-check-radio-box[type="radio"]
 }
 
 .forum-sections-header {
-    margin:0;
+    margin: 0;
 }
 
 .logo-text {
@@ -78,60 +76,60 @@ input.form-check-radio-box[type="radio"]
 }
 
 .forum-sections-header-actions {
-    display:inline-block; 
-    vertical-align:middle; 
+    display: inline-block;
+    vertical-align: middle;
     text-align: right;
 }
 
 .forum-sections-recent-unanswered {
-    font-weight: bold;  
-    padding-left: 2px; 
+    font-weight: bold;
+    padding-left: 2px;
     color: rgb(85, 85, 85)
 }
 
 .rss-icon {
-    vertical-align:middle;
+    vertical-align: middle;
 }
 
 .forum-sections-branch-description-container {
-    font-style: italic; 
-    font-size: 12px; 
+    font-style: italic;
+    font-size: 12px;
 }
 
 .forum-sections-moderators-container {
-    style="font-size: 11px
+    font-size: 11px
 }
 
 .forum-sections-stats-container {
-    min-height: 10px; 
-    padding: 5px; 
-    margin: 0px; 
+    min-height: 10px;
+    padding: 5px;
+    margin: 0px;
     margin-bottom: 5px;
 }
 
 /** BBeditor styles */
 .bb_quote_title {
-    font-size: 11px; 
-    font-style:italic;
+    font-size: 11px;
+    font-style: italic;
 }
 
 .bb_quote_container {
-    margin: 5px 10px 5px 5px; 
+    margin: 5px 10px 5px 5px;
 }
 
 .bb_quote_content {
-    background-color: rgb(242,243,239); 
-    border: 1px solid rgb(205,206,198); 
+    background-color: rgb(242, 243, 239);
+    border: 1px solid rgb(205, 206, 198);
     padding: 0 4px 0 4px;
 }
 
 .language-selector-container {
-    padding:0px; 
+    padding: 0px;
     margin: 6px 2px 0px 15px;
 }
 
 .user-posts-date-title {
-    float:left;
+    float: left;
 }
 
 .user-posts-buttons {
@@ -139,60 +137,60 @@ input.form-check-radio-box[type="radio"]
 }
 
 .user-profile-container {
-	max-width: 480px; 
-	margin: 0 auto; 
-	position: relative;
+    max-width: 480px;
+    margin: 0 auto;
+    position: relative;
 }
 
 .user-profile-header {
-	line-height:100px;
+    line-height: 100px;
 }
 
 .user-profile-username {
-	vertical-align: middle; 
-	line-height:100px;
+    vertical-align: middle;
+    line-height: 100px;
 }
 
 .user-profile-top-buttons {
-	padding-top: 4px;
+    padding-top: 4px;
 }
 
 .user-profile-buttons-send {
-	width: 100px; 
-	display:inline-block;
-	text-align: center;
+    width: 100px;
+    display: inline-block;
+    text-align: center;
 }
 
 .user-profile-buttons-avatar {
-    width: 150px; 
-    display:inline-block;
+    width: 150px;
+    display: inline-block;
     text-align: left;
 }
 
 .user-profile-buttons-posts {
-	margin-left: 5px;
+    margin-left: 5px;
 }
 
 .user-profile-hr {
-	margin: 6px 0 6px 0;
+    margin: 6px 0 6px 0;
 }
 
 .user-profile-labels-postcount {
-	margin-top: -3px;
+    margin-top: -3px;
 }
 
 .user-profile-buttons-form-actions {
-	padding-left: 160px;
+    padding-left: 160px;
 }
 
 .user-profile-contacts-container {
-	max-width: 480px; 
-	margin: 5px auto; 
-	position: relative;
+    max-width: 480px;
+    margin: 5px auto;
+    position: relative;
 }
 
 .user-profile-buttons-addcontact {
-	margin-top: 10px;
+    margin-top: 10px;
 }
 
 /** PM inline styles **/
@@ -259,4 +257,26 @@ input.form-check-radio-box[type="radio"]
 
 .pm_message_userTo_link {
     margin-top: 10px;
+}
+
+.right-margin {
+    margin-right: 10px;
+}
+
+.left-border {
+    border-left: 0px;
+}
+
+.red-style {
+    color: red;
+}
+
+.poll {
+    padding: 5px;
+    margin: 5px 0;
+}
+
+.poll-row {
+    float: none;
+    margin: 0 auto;
 }
