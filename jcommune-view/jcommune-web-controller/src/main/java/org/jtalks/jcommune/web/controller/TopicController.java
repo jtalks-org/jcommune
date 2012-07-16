@@ -14,10 +14,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import java.util.List;
-
-import javax.validation.Valid;
-
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Poll;
@@ -26,7 +22,6 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.LastReadPostService;
-import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.UserService;
@@ -48,6 +43,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Serves topic management web requests
@@ -76,7 +74,6 @@ public class TopicController {
     private BreadcrumbBuilder breadcrumbBuilder;
     private LocationService locationService;
     private SessionRegistry sessionRegistry;
-    private PollService pollService;
 
     /**
      * This method turns the trim binder on. Trim binder
@@ -100,7 +97,6 @@ public class TopicController {
      * @param sessionRegistry     to obtain list of users currently online
      * @param userService         to determine the current user logged in
      * @param breadcrumbBuilder   to create Breadcrumbs for pages
-     * @param pollService         to create a poll and vote in a poll
      */
     @Autowired
     public TopicController(TopicService topicService,
@@ -110,8 +106,7 @@ public class TopicController {
                            UserService userService,
                            BreadcrumbBuilder breadcrumbBuilder,
                            LocationService locationService,
-                           SessionRegistry sessionRegistry,
-                           PollService pollService) {
+                           SessionRegistry sessionRegistry) {
         this.topicService = topicService;
         this.postService = postService;
         this.branchService = branchService;
@@ -120,7 +115,6 @@ public class TopicController {
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.locationService = locationService;
         this.sessionRegistry = sessionRegistry;
-        this.pollService = pollService;
     }
 
     /**
@@ -161,14 +155,9 @@ public class TopicController {
                     .addObject(BRANCH_ID, branchId)
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branch));
         }
-        Topic createdTopic = topicService.createTopic(topicDto.getTopic().getTitle(), topicDto.getBodyText(),
-                branchId, topicDto.isNotifyOnAnswers());
-
-        if (topicDto.hasPoll()) {
-            Poll poll = topicDto.getPoll();
-            poll.setTopic(createdTopic);
-            pollService.createPoll(poll);
-        }
+        Topic topic = topicDto.getTopic();
+        topic.setBranch(branch);
+        Topic createdTopic = topicService.createTopic(topic, topicDto.getBodyText(), topicDto.isNotifyOnAnswers());
 
         lastReadPostService.markTopicAsRead(createdTopic);
         return new ModelAndView("redirect:/topics/" + createdTopic.getId());

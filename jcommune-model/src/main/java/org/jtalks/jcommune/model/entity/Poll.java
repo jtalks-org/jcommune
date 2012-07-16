@@ -26,7 +26,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static ch.lambdaj.Lambda.*;
+import static ch.lambdaj.Lambda.forEach;
+import static ch.lambdaj.Lambda.sumFrom;
 
 /**
  * Represents the poll of the topic. Contains the list of related {@link PollItem}.
@@ -215,6 +216,17 @@ public class Poll extends Entity {
      */
     public boolean isActive() {
         return endingDate == null || endingDate.isAfterNow();
+    }
+
+    /**
+     * Determines a existence the poll in the topic.
+     *
+     * @return <tt>true</tt>  if the poll exists
+     *         <tt>false</tt>  if the poll doesn't exist
+     */
+    public boolean isHasPoll() {
+        return StringUtils.isNotBlank(getTitle()) &&
+                StringUtils.isNotBlank(getPollItemsValue());
     }
 
 }

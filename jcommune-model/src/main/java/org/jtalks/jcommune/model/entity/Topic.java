@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.solr.analysis.LowerCaseFilterFactory;
 import org.apache.solr.analysis.SnowballPorterFilterFactory;
 import org.apache.solr.analysis.StandardFilterFactory;
@@ -307,7 +308,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     /**
      * @param branch branch to be set as topics branch
      */
-    void setBranch(Branch branch) {
+    public void setBranch(Branch branch) {
         this.branch = branch;
     }
 

@@ -22,9 +22,11 @@ import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.UserService;
@@ -56,6 +58,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     private NotificationService notificationService;
     private SubscriptionService subscriptionService;
     private UserService userService;
+    private PollService pollService;
 
     /**
      * Create an instance of User entity based service
@@ -67,12 +70,14 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * @param notificationService to send email nofications on topic updates to subscribed users
      * @param subscriptionService for subscribing user on topic if notification enabled
      * @param userService         to get current logged in user
+     * @param pollService         to create a poll and vote in a poll
      */
     public TransactionalTopicService(TopicDao dao, SecurityService securityService,
                                      BranchService branchService, BranchDao branchDao,
                                      NotificationService notificationService,
                                      SubscriptionService subscriptionService,
-                                     UserService userService) {
+                                     UserService userService,
+                                     PollService pollService) {
         super(dao);
         this.securityService = securityService;
         this.branchService = branchService;
@@ -80,6 +85,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         this.notificationService = notificationService;
         this.subscriptionService = subscriptionService;
         this.userService = userService;
+        this.pollService = pollService;
     }
 
     /**
@@ -108,16 +114,17 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.CREATE_TOPICS')")
-    public Topic createTopic(String topicName, String bodyText, long branchId,
+    @PreAuthorize("hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_TOPICS')")
+    public Topic createTopic(Topic topicDto, String bodyText,
                              boolean notifyOnAnswers) throws NotFoundException {
         JCUser currentUser = userService.getCurrentUser();
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);
-        Branch branch = branchService.get(branchId);
-        Topic topic = new Topic(currentUser, topicName);
+        Topic topic = new Topic(currentUser, topicDto.getTitle());
         Post first = new Post(currentUser, bodyText);
         topic.addPost(first);
+        Branch branch = topicDto.getBranch();
+
         branch.addTopic(topic);
         branchDao.update(branch);
 
@@ -129,9 +136,15 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
 
         subscribeOnTopicIfNotificationsEnabled(notifyOnAnswers, topic, currentUser);
 
+        Poll poll = topicDto.getPoll();
+        if (poll!=null && poll.isHasPoll()) {
+            poll.setTopic(topic);
+            pollService.createPoll(poll);
+        }
+
         logger.debug("Created new topic id={}, branch id={}, author={}",
-                new Object[]{topic.getId(), branchId, currentUser.getUsername()});
-        logger.info("Created new topic: \"{}\". Author: {}", topicName, currentUser.getUsername());
+                new Object[]{topic.getId(), branch.getId(), currentUser.getUsername()});
+        logger.info("Created new topic: \"{}\". Author: {}", topicDto.getTitle(), currentUser.getUsername());
 
         return topic;
     }

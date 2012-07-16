@@ -14,19 +14,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.model.permissions.GeneralPermission;
@@ -40,6 +27,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.UserService;
@@ -51,6 +39,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 /**
  * This test cover {@code TransactionalTopicService} logic validation.
@@ -95,6 +96,8 @@ public class TransactionalTopicServiceTest {
     private SubscriptionService subscriptionService;
     @Mock
     private UserService userService;
+    @Mock
+    private PollService pollService;
 
     private CompoundAclBuilder<User> aclBuilder;
 
@@ -109,10 +112,11 @@ public class TransactionalTopicServiceTest {
                 branchDao,
                 notificationService,
                 subscriptionService,
-                userService);
-        
+                userService,
+                pollService);
+
         user = new JCUser(USERNAME, "email@mail.com", "password");
-        
+
     }
 
     @Test
@@ -160,10 +164,11 @@ public class TransactionalTopicServiceTest {
 
     @Test
     public void testCreateTopicWithSubscription() throws NotFoundException {
-        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
-        createTopicStubs(branch);
+        Branch branch = createBranch();
 
-        Topic createdTopic = topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, BRANCH_ID, false);
+        createTopicStubs(branch);
+        Topic dto = createTopic();
+        Topic createdTopic = topicService.createTopic(dto, ANSWER_BODY, false);
         Post createdPost = createdTopic.getFirstPost();
 
         createTopicAssertions(branch, createdTopic, createdPost);
@@ -172,10 +177,10 @@ public class TransactionalTopicServiceTest {
 
     @Test
     public void testCreateTopicWithoutSubscription() throws NotFoundException {
-        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        Branch branch = createBranch();
         createTopicStubs(branch);
-
-        Topic createdTopic = topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, BRANCH_ID, false);
+        Topic dto = createTopic();
+        Topic createdTopic = topicService.createTopic(dto, ANSWER_BODY, false);
         Post createdPost = createdTopic.getFirstPost();
 
         createTopicAssertions(branch, createdTopic, createdPost);
@@ -211,9 +216,9 @@ public class TransactionalTopicServiceTest {
         int pageSize = 20;
         List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
         Page<Topic> expectedPage = new PageImpl<Topic>(expectedList);
-        when(topicDao.getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JCommunePageRequest> any()))
-            .thenReturn(expectedPage);
-        
+        when(topicDao.getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JCommunePageRequest>any()))
+                .thenReturn(expectedPage);
+
         JCUser currentUser = new JCUser("current", null, null);
         currentUser.setPageSize(pageSize);
         when(userService.getCurrentUser()).thenReturn(currentUser);
@@ -222,7 +227,7 @@ public class TransactionalTopicServiceTest {
 
         assertNotNull(actualPage);
         assertEquals(expectedPage, actualPage);
-        verify(topicDao).getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JCommunePageRequest> any());
+        verify(topicDao).getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JCommunePageRequest>any());
     }
 
     @Test
@@ -231,8 +236,8 @@ public class TransactionalTopicServiceTest {
         int pageSize = 20;
         List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
         Page<Topic> expectedPage = new PageImpl<Topic>(expectedList);
-        when(topicDao.getUnansweredTopics(Matchers.<JCommunePageRequest> any()))
-            .thenReturn(expectedPage);
+        when(topicDao.getUnansweredTopics(Matchers.<JCommunePageRequest>any()))
+                .thenReturn(expectedPage);
         JCUser currentUser = new JCUser("current", null, null);
         currentUser.setPageSize(pageSize);
         when(userService.getCurrentUser()).thenReturn(currentUser);
@@ -249,7 +254,7 @@ public class TransactionalTopicServiceTest {
         Post firstPost = new Post(user, ANSWER_BODY);
         topic.addPost(firstPost);
         user.setPostCount(1);
-        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        Branch branch = createBranch();
         branch.addTopic(topic);
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(topic);
@@ -331,8 +336,6 @@ public class TransactionalTopicServiceTest {
     }
 
 
-
-
     private void updateTopicStubs(Topic topic) {
         when(userService.getCurrentUser()).thenReturn(user);
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
@@ -390,7 +393,7 @@ public class TransactionalTopicServiceTest {
         Topic topic = new Topic(user, "title");
         Post firstPost = new Post(user, ANSWER_BODY);
         topic.addPost(firstPost);
-        Branch currentBranch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        Branch currentBranch = createBranch();
         currentBranch.addTopic(topic);
         Branch targetBranch = new Branch("target branch", "target branch description");
 
@@ -418,30 +421,39 @@ public class TransactionalTopicServiceTest {
 
         topicService.moveTopic(TOPIC_ID, BRANCH_ID);
     }
-    
+
     @Test
     public void testGetTopics() {
         int pageSize = 50;
-        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
-        Page<Topic> expectedPage = new PageImpl<Topic>(Collections.<Topic> emptyList());
-        
+        Branch branch = createBranch();
+        Page<Topic> expectedPage = new PageImpl<Topic>(Collections.<Topic>emptyList());
+
         JCUser currentUser = new JCUser("current", null, null);
         currentUser.setPageSize(pageSize);
         when(userService.getCurrentUser()).thenReturn(currentUser);
         when(topicDao.getTopics(
                 Matchers.any(Branch.class), Matchers.any(JCommunePageRequest.class)))
-            .thenReturn(expectedPage);
-        
+                .thenReturn(expectedPage);
+
         Page<Topic> actualPage = topicService.getTopics(branch, pageSize, true);
-        
+
         assertEquals(actualPage, expectedPage, "Service returned incorrect data for one page of topics");
         verify(topicDao).getTopics(
                 Matchers.any(Branch.class), Matchers.any(JCommunePageRequest.class));
     }
 
+    private Branch createBranch() {
+        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        branch.setId(BRANCH_ID);
+        branch.setUuid("uuid");
+        return branch;
+    }
+
     private Topic createTopic() {
-        Topic topic = new Topic(user, "title");
+        Topic topic = new Topic(user, TOPIC_TITLE);
         topic.setId(TOPIC_ID);
+        Branch branch = createBranch();
+        topic.setBranch(branch);
         return topic;
     }
 

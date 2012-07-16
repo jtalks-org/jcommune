@@ -14,27 +14,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
-import static org.testng.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Poll;
@@ -42,7 +21,6 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.LastReadPostService;
-import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.UserService;
@@ -63,15 +41,38 @@ import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.testng.Assert.assertEquals;
+
 /**
  * @author Teterin Alexandre
  * @author Kirill Afonin
  * @author Max Malakhov
+ * @author Eugeny Batov
  */
 public class TopicControllerTest {
     public long BRANCH_ID = 1L;
     private long TOPIC_ID = 1L;
-
+    private final String BRANCH_NAME = "branch name";
+    private final String BRANCH_DESCRIPTION = "branch description";
     private String TOPIC_CONTENT = "content here";
     private String TOPIC_THEME = "Topic theme";
 
@@ -94,8 +95,6 @@ public class TopicControllerTest {
     private SessionRegistry registry;
     @Mock
     private LastReadPostService lastReadPostService;
-    @Mock
-    private PollService pollService;
 
     private TopicController controller;
 
@@ -110,8 +109,7 @@ public class TopicControllerTest {
                 userService,
                 breadcrumbBuilder,
                 locationService,
-                registry,
-                pollService);
+                registry);
     }
 
     @BeforeMethod
@@ -146,7 +144,7 @@ public class TopicControllerTest {
         boolean pagingEnabled = true;
         Topic topic = new Topic(null, null);
         branch.addTopic(topic);
-        Page<Post> postsPage = new PageImpl<Post>(Collections.<Post> emptyList());
+        Page<Post> postsPage = new PageImpl<Post>(Collections.<Post>emptyList());
 
         //set expectations
         when(topicService.get(TOPIC_ID)).thenReturn(topic);
@@ -180,19 +178,20 @@ public class TopicControllerTest {
 
     @Test
     public void testCreateValidationPass() throws Exception {
-        Topic topic = new Topic(user, "title");
-        topic.setId(TOPIC_ID);
+        Branch branch = createBranch();
+        Topic topic = createTopic();
         TopicDto dto = getDto();
         BindingResult result = mock(BindingResult.class);
 
         //set expectations
-        when(topicService.createTopic(TOPIC_THEME, TOPIC_CONTENT, BRANCH_ID, false)).thenReturn(topic);
+        when(branchService.get(BRANCH_ID)).thenReturn(branch);
+        when(topicService.createTopic(topic, TOPIC_CONTENT, false)).thenReturn(topic);
 
         //invoke the object under test
         ModelAndView mav = controller.createTopic(dto, result, BRANCH_ID);
 
         //check expectations
-        verify(topicService).createTopic(TOPIC_THEME, TOPIC_CONTENT, BRANCH_ID, false);
+        verify(topicService).createTopic(topic, TOPIC_CONTENT, false);
 
         //check result
         assertViewName(mav, "redirect:/topics/1");
@@ -338,7 +337,7 @@ public class TopicControllerTest {
         assertEquals(branchId, BRANCH_ID);
         assertEquals(topicId, TOPIC_ID);
 
-        verify(topicService, never()).updateTopic((Topic)anyObject(), anyString(), anyBoolean());
+        verify(topicService, never()).updateTopic((Topic) anyObject(), anyString(), anyBoolean());
     }
 
     @Test
@@ -348,11 +347,24 @@ public class TopicControllerTest {
         verify(topicService).moveTopic(TOPIC_ID, BRANCH_ID);
     }
 
+    private Branch createBranch() {
+        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        branch.setId(BRANCH_ID);
+        return branch;
+    }
+
+    private Topic createTopic() {
+        Branch branch = createBranch();
+        Topic topic = new Topic(user, TOPIC_THEME);
+        topic.setId(TOPIC_ID);
+        topic.setUuid("uuid");
+        topic.setBranch(branch);
+        return topic;
+    }
+
     private TopicDto getDto() {
         TopicDto dto = new TopicDto();
-        Topic topic = new Topic();
-        topic.setTitle(TOPIC_THEME);
-        topic.setId(TOPIC_ID);
+        Topic topic = createTopic();
         dto.setBodyText(TOPIC_CONTENT);
         Poll poll = new Poll();
         poll.setPollItemsValue("123");

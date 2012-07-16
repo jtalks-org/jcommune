@@ -48,15 +48,14 @@ public interface TopicService extends EntityService<Topic> {
      * Add new topic with given title and body.
      * Author is current user.
      *
-     * @param topicName       name of topic
+     * @param topic
      * @param bodyText        body of topic
-     * @param branchId        branch containing topic
      * @param notifyOnAnswers user notification on answers flag
      * @return created topic
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
      */
-    Topic createTopic(String topicName, String bodyText, long branchId, boolean notifyOnAnswers)
+    Topic createTopic(Topic topic, String bodyText, boolean notifyOnAnswers)
             throws NotFoundException;
 
     /**
