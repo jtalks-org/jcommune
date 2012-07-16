@@ -65,15 +65,14 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
     /**
      * Save message as draft. If message exist it will be updated.
      *
-     * @param id        message id
-     * @param title     the title of the message
-     * @param body      the body of the message
-     * @param recipient user of receiver
-     * @param userFrom  user of sender
-     * @return saved message
-     * @throws NotFoundException if the receiver does not exist
+     * @param id        message id.
+     * @param recipient addressee.
+     * @param title     the title of the message.
+     * @param body      the body of the message.
+     * @param userFrom sender.
+     * @throws NotFoundException if the receiver does not exist.
      */
-    PrivateMessage saveDraft(long id, String title, String body, JCUser recipient, JCUser userFrom)
+    void saveDraft(long id, String recipient, String title, String body, JCUser userFrom)
     throws NotFoundException;
 
     /**
@@ -106,7 +105,7 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
      * or DRAFT will be removed.
      *
      * @param ids Identifiers of messages for deletion
-     * @return URL for redirection
+     * @return URL for redirection.
      * @throws NotFoundException if one or more messages specified are missing
      */
     String delete(List<Long> ids) throws NotFoundException;

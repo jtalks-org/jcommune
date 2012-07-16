@@ -239,26 +239,15 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/pm/save", method = {RequestMethod.POST, RequestMethod.GET})
     public String saveDraft(@ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
+        JCUser userFrom = userService.getCurrentUser();
         try {
-            if (pmDto.getBody() == null && pmDto.getTitle() == null && pmDto.getRecipient() == null) {
-                return PM_FORM;
-            } else {
-                // todo: we can easily get current user in service
-                JCUser userFrom = userService.getCurrentUser();
-                JCUser userTo;
-                if (pmDto.getRecipient() != null) {
-                    userTo = userService.getByUsername(pmDto.getRecipient());
-                } else {
-                    userTo = null;
-                }
-                pmService.saveDraft(pmDto.getId(), pmDto.getTitle(), pmDto.getBody(), userTo, userFrom );
-                return "redirect:/drafts";
-            }
+            pmService.saveDraft(pmDto.getId(), pmDto.getRecipient(), pmDto.getTitle(), pmDto.getBody(), userFrom);
 
         } catch (NotFoundException e) {
             result.rejectValue("recipient", "validation.wrong_recipient");
-            return PM_FORM;
         }
+
+        return "redirect:/drafts";
     }
 
     /**

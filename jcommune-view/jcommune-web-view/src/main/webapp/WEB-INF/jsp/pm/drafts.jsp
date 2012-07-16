@@ -84,12 +84,18 @@
                                                 <c:out value="${pm.userTo.username}"/>
                                             </a>
                                         </c:when>
-                                        <c:otherwise><c:out value=""/></c:otherwise>
+                                        <c:otherwise><spring:message code="label.not.specified"/></c:otherwise>
                                     </c:choose>
                                 </td>
                                 <td>
-                                    <a href="${pageContext.request.contextPath}/pm/${pm.id}">
-                                        <c:out value="${pm.title}"/></a>
+                                    <c:choose>
+                                        <c:when test="${pm.title != null}">
+                                            <a href="${pageContext.request.contextPath}/pm/${pm.id}">
+                                                <c:out value="${pm.title}"/>
+                                            </a>
+                                        </c:when>
+                                        <c:otherwise><spring:message code="label.not.specified"/></c:otherwise>
+                                    </c:choose>
                                 </td>
                                 <td>
                                     <jtalks:format value="${pm.creationDate}"/>
