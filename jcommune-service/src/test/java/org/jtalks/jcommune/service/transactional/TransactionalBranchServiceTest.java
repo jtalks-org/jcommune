@@ -14,17 +14,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
@@ -38,6 +27,17 @@ import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 
 /**
  * This test class is intended to test all topic-related forum branch facilities
@@ -165,25 +165,5 @@ public class TransactionalBranchServiceTest {
         assertNull(lastPostInLastUpdatedTopic, "There should be null, because the branch is empty");
         verify(topicDao).getLastUpdatedTopicInBranch(commonBranch);
         verify(postDao, Mockito.never()).getLastPostInTopic(nullTopic);
-    }
-    
-    @Test
-    public void testGetBranch() throws NotFoundException {
-        Branch expectedBranch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
-        when(branchDao.isExist(BRANCH_ID)).thenReturn(true);
-        when(branchDao.get(BRANCH_ID)).thenReturn(expectedBranch);
-
-        Branch actualBranch = branchService.get(BRANCH_ID);
-
-        assertEquals(actualBranch, expectedBranch, "Branches aren't equal");
-        verify(branchDao).isExist(BRANCH_ID);
-        verify(branchDao).get(BRANCH_ID);
-    }
-
-    @Test(expectedExceptions = {NotFoundException.class})
-    public void testGetBranchWithIncorrectId() throws NotFoundException {
-        when(branchDao.isExist(BRANCH_ID)).thenReturn(false);
-
-        branchService.get(BRANCH_ID);
     }
 }

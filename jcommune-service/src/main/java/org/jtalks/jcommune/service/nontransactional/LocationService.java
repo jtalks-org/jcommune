@@ -39,7 +39,7 @@ public class LocationService {
     private Map<JCUser, String> registerUserMap = new ConcurrentHashMap<JCUser, String>();
 
     /**
-     * @param userService to figure out the current user
+     * @param userService     to figure out the current user
      * @param sessionRegistry session registry to get all the users logged in
      */
     public LocationService(UserService userService, SessionRegistry sessionRegistry) {
@@ -68,7 +68,6 @@ public class LocationService {
 
         for (Object o : sessionRegistry.getAllPrincipals()) {
             JCUser user = (JCUser) o;
-
             if (entity.getUuid().equals(registerUserMap.get(user))) {
                 viewList.add(user);
             }
@@ -82,8 +81,6 @@ public class LocationService {
      * topic/branch viewer's list until explicitly added
      */
     public void clearUserLocation() {
-        if (!userService.getCurrentUser().isAnonymous()) {
-            registerUserMap.remove(userService.getCurrentUser());
-        }
+        registerUserMap.remove(userService.getCurrentUser());
     }
 }

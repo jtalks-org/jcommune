@@ -25,7 +25,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.BufferedInputStream;
@@ -55,12 +55,6 @@ public class ImageUtilsTest {
         imageUtils = new ImageUtils(base64);
         MultipartFile multipartFile = new MockMultipartFile("test_avatar.png", "test_avatar.png", "image/png",
                 originalImageByteArray);
-    }
-
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void testConvertImageToByteArrayForNullData() throws ImageProcessException {
-        //invoke object under test
-        imageUtils.convertImageToByteArray(null);
     }
 
     @Test(dataProvider = "validDataForImageToByteArrayTest")

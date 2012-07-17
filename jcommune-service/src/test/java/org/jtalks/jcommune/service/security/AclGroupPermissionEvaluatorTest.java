@@ -200,14 +200,9 @@ public class AclGroupPermissionEvaluatorTest {
         Assert.assertFalse(evaluator.hasPermission(authentication, targetId, targetType, "123"));
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expectedExceptions = UnsupportedOperationException.class)
     public void testHasPermission() throws Exception {
         evaluator.hasPermission(authentication, targetId, permission);
-    }
-
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void testHasPermissionForInvalidIdTest() throws Exception {
-        evaluator.hasPermission(authentication, new Byte("1"), targetType, permission);
     }
 
     private AccessControlEntry createAccessControlEntry(JtalksPermission permission, boolean isGranted, Sid sid) {

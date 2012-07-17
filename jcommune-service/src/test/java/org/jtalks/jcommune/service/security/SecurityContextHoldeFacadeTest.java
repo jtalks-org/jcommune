@@ -23,7 +23,7 @@ import static org.testng.Assert.assertTrue;
 public class SecurityContextHoldeFacadeTest {
     @Test
     public void testSetGet() {
-        SecurityContextFacade facade = new SecurityContextHolderFacade();
+        SecurityContextFacade facade = new SecurityContextFacade();
         SecurityContext context = mock(SecurityContext.class);
 
         facade.setContext(context);

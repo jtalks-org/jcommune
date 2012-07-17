@@ -190,9 +190,9 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
      */
     private void getValidatedFields(Object value) {
         BeanWrapper wrapper = new BeanWrapperImpl(value);
-        pollTitleValue = ObjectUtils.defaultIfNull(wrapper.getPropertyValue(pollTitleName),"").toString();
-        pollItemsValue = ObjectUtils.defaultIfNull(wrapper.getPropertyValue(pollItemsName),"").toString();
-        endingDateValue = ObjectUtils.defaultIfNull(wrapper.getPropertyValue(endingDateName),"").toString();
+        pollTitleValue = ObjectUtils.defaultIfNull(wrapper.getPropertyValue(pollTitleName), "").toString();
+        pollItemsValue = ObjectUtils.defaultIfNull(wrapper.getPropertyValue(pollItemsName), "").toString();
+        endingDateValue = ObjectUtils.defaultIfNull(wrapper.getPropertyValue(endingDateName), "").toString();
 
         if (StringUtils.isNotBlank(pollItemsValue)) {
             items = TopicDto.parseItems(pollItemsValue);

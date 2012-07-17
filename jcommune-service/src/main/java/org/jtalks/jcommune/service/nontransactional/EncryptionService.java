@@ -42,8 +42,6 @@ public class EncryptionService {
      * @return encrypted password
      */
     public String encryptPassword(String password) {
-        return passwordEncoder.encodePassword(
-            password,
-            null); //We do not use salt because it is not used phpbb
+        return passwordEncoder.encodePassword(password, null); //We do not use salt because it is not used phpbb
     }
 }

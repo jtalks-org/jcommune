@@ -14,8 +14,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import java.util.List;
-
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
@@ -25,7 +23,8 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.List;
 
 /**
  * The implementation of BranchService
@@ -107,14 +106,5 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
                 jcommuneBranch.setLastPostInLastUpdatedTopic(lastPost);
             }
         }
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @PreAuthorize("hasPermission(#id, 'BRANCH', 'BranchPermission.VIEW_TOPICS')")
-    public Branch get(Long id) throws NotFoundException {
-        return super.get(id);
     }
 }

@@ -14,10 +14,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import java.util.List;
-
-import javax.validation.Valid;
-
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Poll;
@@ -48,6 +44,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Serves topic management web requests
@@ -183,7 +182,7 @@ public class TopicController {
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.DELETE)
     public ModelAndView deleteTopic(@PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
         Topic topic = topicService.get(topicId);
-        topicService.deleteTopic(topicId, topic.getBranch().getId());
+        topicService.deleteTopic(topicId);
         return new ModelAndView("redirect:/branches/" + topic.getBranch().getId());
     }
 
@@ -277,9 +276,9 @@ public class TopicController {
                     .addObject(TOPIC_ID, topicId);
         }
 
-        topicService.updateTopic(topicDto.getId(), topicDto.getTopicName(), topicDto.getBodyText(),
-                topicDto.getTopicWeight(), topicDto.isSticked(),
-                topicDto.isAnnouncement(),topicDto.isNotifyOnAnswers());
+        topicService.updateTopic(topicDto.getId(), topicDto.getTopicName(),
+                topicDto.getBodyText(), topicDto.getTopicWeight(),
+                topicDto.isSticked(),topicDto.isAnnouncement(), topicDto.isNotifyOnAnswers());
 
         return new ModelAndView("redirect:/topics/" + topicId);
     }

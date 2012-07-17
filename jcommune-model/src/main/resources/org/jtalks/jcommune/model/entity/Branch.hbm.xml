@@ -35,6 +35,9 @@
         <property column="UUID" name="uuid" unique="true" not-null="true"/>
         <property name="name" column="NAME" not-null="true"/>
         <property name="description" column="DESCRIPTION"/>
+        
+        <many-to-one name="moderatorsGroup" column="MODERATORS_GROUP_ID" class="org.jtalks.common.model.entity.Group"
+                     not-null="false"/>
 
         <many-to-one name="section" column="SECTION_ID" class="org.jtalks.common.model.entity.Section"
                      not-null="false"/>

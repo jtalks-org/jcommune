@@ -100,18 +100,17 @@ public interface TopicService extends EntityService<Topic> {
      * @param notifyOnAnswers user notification on answers flag
      * @throws NotFoundException when topic not found
      */
-    void updateTopic(long topicId, String topicName, String bodyText, int topicWeight,
-                     boolean sticked, boolean announcement, boolean notifyOnAnswers) throws NotFoundException;
+    void updateTopic(long topicId, String topicName, String bodyText,
+                     int topicWeight, boolean sticked, boolean announcement, boolean notifyOnAnswers) throws NotFoundException;
 
     /**
      * Delete topic by id.
      *
      * @param topicId  topic id
-     * @param branchId branch Id
      * @return branch from which topic deleted
      * @throws NotFoundException when topic not found
      */
-    Branch deleteTopic(long topicId, long branchId) throws NotFoundException;
+    Branch deleteTopic(long topicId) throws NotFoundException;
 
     /**
      * Moves topic to another branch.
