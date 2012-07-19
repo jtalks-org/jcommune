@@ -66,7 +66,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * @param branchDao           used for checking branch existence
      * @param notificationService to send email nofications on topic updates to subscribed users
      * @param subscriptionService for subscribing user on topic if notification enabled
-     * @param paginationService auxiliary services for pagination
      * @param userService         to get current logged in user
      */
     public TransactionalTopicService(TopicDao dao, SecurityService securityService,
@@ -122,7 +121,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         branch.addTopic(topic);
         branchDao.update(branch);
 
-        JCUser user =userService.getCurrentUser();
+        JCUser user = userService.getCurrentUser();
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(topic).flush();
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(first).flush();
 
@@ -166,36 +165,34 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @Override
     public void updateTopic(long topicId, String topicName, String bodyText)
             throws NotFoundException {
-        updateTopic(topicId, topicName, bodyText, 0, false, false, false);
+        updateTopic(topicId, topicName, bodyText, false, false, false);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void updateTopic(long topicId, String topicName, String bodyText,
-                            int topicWeight, boolean sticked, boolean announcement, boolean notifyOnAnswers) throws NotFoundException {
+    public void updateTopic(long topicId, String topicName, String bodyText, boolean sticked,
+                            boolean announcement, boolean notifyOnAnswers) throws NotFoundException {
         Topic topic = get(topicId);
-        updateTopic(topic, topicName, bodyText, topicWeight, sticked, announcement, notifyOnAnswers);
+        updateTopic(topic, topicName, bodyText, sticked, announcement, notifyOnAnswers);
     }
-    
+
     /**
      * Performs update an instance of the topic with security checking.
-     * 
-     * @param topic        an instance of topic that will be updated
-     * @param topicName    name of topic
-     * @param bodyText     body of topic
-     * @param topicWeight  priority for sticked topic
-     * @param sticked      flag for sticking a topic
-     * @param announcement flag, which set topic as announcement
+     *
+     * @param topic           an instance of topic that will be updated
+     * @param topicName       name of topic
+     * @param bodyText        body of topic
+     * @param sticked         flag for sticking a topic
+     * @param announcement    flag, which set topic as announcement
      * @param notifyOnAnswers user notification on answers flag
      */
     @PreAuthorize("hasPermission(#topic.id, 'TOPIC', 'GeneralPermission.WRITE') or " +
             "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
-    private void updateTopic(Topic topic, String topicName, String bodyText,
-            int topicWeight, boolean sticked, boolean announcement, boolean notifyOnAnswers) {
+    private void updateTopic(Topic topic, String topicName, String bodyText, boolean sticked,
+                             boolean announcement, boolean notifyOnAnswers) {
         topic.setTitle(topicName);
-        topic.setTopicWeight(topicWeight);
         topic.setSticked(sticked);
         topic.setAnnouncement(announcement);
         Post post = topic.getFirstPost();
@@ -233,13 +230,13 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         long branchId = topic.getBranch().getId();
         return deleteTopic(topic, branchId);
     }
-    
-    
+
+
     /**
      * Performs actual topic deleting with permission check
      *
-     * @param topic             topic to delete
-     * @param branchId          used for annotation permission check only
+     * @param topic    topic to delete
+     * @param branchId used for annotation permission check only
      * @return branch without deleted topic
      */
     @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.DELETE_TOPICS')")

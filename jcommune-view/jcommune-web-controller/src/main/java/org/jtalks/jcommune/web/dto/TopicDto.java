@@ -48,8 +48,6 @@ public class TopicDto {
     @BbCodeAwareSize(min = Post.MIN_LENGTH, max = Post.MAX_LENGTH)
     private String bodyText;
 
-    private int topicWeight;
-
     private boolean sticked;
     private boolean announcement;
     private boolean notifyOnAnswers;
@@ -83,7 +81,6 @@ public class TopicDto {
         topicName = topic.getTitle();
         bodyText = topic.getFirstPost().getPostContent();
         id = topic.getId();
-        topicWeight = topic.getTopicWeight();
         sticked = topic.isSticked();
         announcement = topic.isAnnouncement();
         poll = topic.getPoll();
@@ -139,22 +136,6 @@ public class TopicDto {
      */
     public void setBodyText(String bodyText) {
         this.bodyText = bodyText;
-    }
-
-    /**
-     * @return priority of sticked topic
-     */
-    public int getTopicWeight() {
-        return this.topicWeight;
-    }
-
-    /**
-     * Set priority for a sticked topic.
-     *
-     * @param topicWeight priority(weight) of sticked topic
-     */
-    public void setTopicWeight(int topicWeight) {
-        this.topicWeight = topicWeight;
     }
 
     /**

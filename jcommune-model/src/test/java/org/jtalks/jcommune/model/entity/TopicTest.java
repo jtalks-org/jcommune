@@ -80,24 +80,6 @@ public class TopicTest {
     }
 
     @Test
-    public void testSetStickedResetWeight() {
-        topic.setTopicWeight(10);
-
-        topic.setSticked(false);
-
-        assertEquals(topic.getTopicWeight(), 0);
-    }
-
-    @Test
-    public void testSetStickedNotResetWeight() {
-        topic.setTopicWeight(10);
-
-        topic.setSticked(true);
-
-        assertEquals(topic.getTopicWeight(), 10);
-    }
-
-    @Test
     public void testHasUpdatesDefault() {
         assertTrue(topic.isHasUpdates());
     }

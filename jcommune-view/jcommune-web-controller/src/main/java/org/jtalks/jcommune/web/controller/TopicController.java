@@ -14,10 +14,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import java.util.List;
-
-import javax.validation.Valid;
-
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Poll;
@@ -48,6 +44,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Serves topic management web requests
@@ -98,7 +97,7 @@ public class TopicController {
      * @param lastReadPostService to perform post-related actions
      * @param locationService     to track user location on forum (what page he is viewing now)
      * @param sessionRegistry     to obtain list of users currently online
-     * @param userService     to determine the current user logged in
+     * @param userService         to determine the current user logged in
      * @param breadcrumbBuilder   to create Breadcrumbs for pages
      * @param pollService         to create a poll and vote in a poll
      */
@@ -161,7 +160,7 @@ public class TopicController {
         }
 
         Topic createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(),
-                branchId,topicDto.isNotifyOnAnswers());
+                branchId, topicDto.isNotifyOnAnswers());
 
         if (topicDto.hasPoll()) {
             Poll poll = topicDto.preparePollFromTopicDto();
@@ -282,8 +281,7 @@ public class TopicController {
         }
 
         topicService.updateTopic(topicDto.getId(), topicDto.getTopicName(),
-                topicDto.getBodyText(), topicDto.getTopicWeight(),
-                topicDto.isSticked(),topicDto.isAnnouncement(), topicDto.isNotifyOnAnswers());
+                topicDto.getBodyText(), topicDto.isSticked(), topicDto.isAnnouncement(), topicDto.isNotifyOnAnswers());
 
         return new ModelAndView("redirect:/topics/" + topicId);
     }

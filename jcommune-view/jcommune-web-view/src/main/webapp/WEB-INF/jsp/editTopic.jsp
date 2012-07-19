@@ -65,14 +65,6 @@
                 <form:errors path="sticked"/>
             </div>
             <div class='control-group'>
-                <form:label path="topicWeight" class='control-label'>
-                    <spring:message code="label.weight"/>
-                </form:label>
-                <form:input path="topicWeight" size="1" class="script-confirm-unsaved"/>
-
-                <form:errors path="topicWeight"/>
-            </div>
-            <div class='control-group'>
                 <form:checkbox path="announcement" value="true" class="script-confirm-unsaved form-check-radio-box"/>
                 <label for='announcement' class='string optional'>
                     <spring:message code="label.announcement"/>
