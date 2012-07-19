@@ -28,7 +28,6 @@
 </head>
 <body>
 <div class="container">
-    <jsp:include page="../template/topLine.jsp"/>
 
     <div id="answer">
         <form:form action="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}/edit"

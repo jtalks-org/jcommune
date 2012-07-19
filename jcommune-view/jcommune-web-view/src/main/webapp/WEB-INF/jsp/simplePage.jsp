@@ -28,7 +28,6 @@
 </head>
 <body>
 <div class="container">
-    <jsp:include page="../template/topLine.jsp"/>
 
     <div id="branch-header">
         <h3>
