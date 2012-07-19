@@ -44,7 +44,7 @@ public class EditUserProfileDto {
     private String email;
     private String firstName;
     private String lastName;
-    @Size(max = JCUser.MAX_LAST_NAME_SIZE, message = "{validation.signature.length}")
+    @Size(max = JCUser.MAX_SIGNATURE_SIZE, message = "{validation.signature.length}")
     private String signature;
     private String currentUserPassword;
     @Size(min = User.PASSWORD_MIN_LENGTH, max = User.PASSWORD_MAX_LENGTH)
