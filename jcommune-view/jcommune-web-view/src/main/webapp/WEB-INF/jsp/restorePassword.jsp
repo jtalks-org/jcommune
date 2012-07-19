@@ -37,8 +37,8 @@
 	                        <spring:message code="label.email"/>
 	                </label>
 	                <div class='controls'>
-	                    <form:input path="userEmail" type="text" size="20"/>
-	                    <form:errors path="userEmail" cssClass="help-inline"/>
+	                    <form:input path="email" type="text" size="20"/>
+	                    <form:errors path="email" cssClass="help-inline"/>
 	                    <c:if test="${not empty message}">
 	                        <br/>
 	                        <spring:message code="${message}"/>

@@ -35,7 +35,6 @@
                     <input id="searchText" name="searchText" type="text" class="search-query dropdown-toggle" 
                         placeholder='<fmt:message key="label.search"/>' maxlength="50"
                         value='<c:out value="${searchText}"/>'/>
-                    <span id='searchClear' class='btn btn-inverse search-clear' style='display:none;'>X</span>   
                 </form>
                 <ul class="nav pull-right">
                 <%-- Not logged in block --%>

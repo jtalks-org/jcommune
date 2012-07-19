@@ -49,7 +49,7 @@
                     </a>
 
                     <a class="btn"
-                       href="${pageContext.request.contextPath}/quote/${pm.id}?userId=${userId}">   <%--todo--%>
+                       href="${pageContext.request.contextPath}/quote/${pm.id}?userId=${userId}">
                         <i class="icon-quote"></i>
                         <spring:message code="label.quote"/>
                     </a>

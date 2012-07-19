@@ -86,7 +86,7 @@ public class UserController {
             return mav;
         }
         try {
-            userService.restorePassword(dto.getUserEmail());
+            userService.restorePassword(dto.getEmail());
             mav.addObject("message", "label.restorePassword.completed");
         } catch (MailingFailedException e) {
             result.addError(new FieldError("dto", "email", "email.failed"));

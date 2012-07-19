@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import java.util.List;
+
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
@@ -23,8 +25,6 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-
-import java.util.List;
 
 /**
  * The implementation of BranchService

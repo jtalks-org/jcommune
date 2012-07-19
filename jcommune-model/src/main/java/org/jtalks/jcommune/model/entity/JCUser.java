@@ -43,7 +43,7 @@ public class JCUser extends User {
     private DateTime registrationDate;
     private boolean enabled;
 
-    public static final int MAX_SIGNATURE_SIZE = 255;
+    public static final int MAX_LAST_NAME_SIZE = 255;
     public static final int MAX_LOCATION_SIZE = 30;
 
     public static final int DEFAULT_PAGE_SIZE = 50;
