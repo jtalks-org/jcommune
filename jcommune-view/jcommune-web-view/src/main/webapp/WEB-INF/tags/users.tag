@@ -39,9 +39,7 @@
             </c:forEach>
             <a href="${pageContext.request.contextPath}/users/${user.id}"
                class="${labelClass}"
-               title="<spring:message code='label.tips.view_profile'/>">
-                <c:out value="${user.username}"/>
-            </a>&nbsp;
+               title="<spring:message code='label.tips.view_profile'/>"><c:out value="${user.username}"/></a>&thinsp;
         </c:forEach>
     </c:when>
     <c:otherwise>
