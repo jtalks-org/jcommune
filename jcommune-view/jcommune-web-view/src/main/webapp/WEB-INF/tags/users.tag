@@ -41,7 +41,7 @@
                class="${labelClass}"
                title="<spring:message code='label.tips.view_profile'/>">
                 <c:out value="${user.username}"/>
-            </a>
+            </a>&nbsp;
         </c:forEach>
     </c:when>
     <c:otherwise>
