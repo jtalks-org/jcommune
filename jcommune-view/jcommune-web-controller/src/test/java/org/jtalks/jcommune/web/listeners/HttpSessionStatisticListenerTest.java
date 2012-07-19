@@ -14,26 +14,25 @@
  */
 package org.jtalks.jcommune.web.listeners;
 
-import java.util.concurrent.TimeUnit;
-
+import org.jtalks.common.model.entity.Property;
+import org.jtalks.jcommune.model.dao.PropertyDao;
+import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.web.context.WebApplicationContext;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.jtalks.common.model.entity.Property;
-import org.jtalks.jcommune.model.dao.PropertyDao;
-import org.jtalks.jcommune.model.entity.JCommuneProperty;
 
 import javax.servlet.http.HttpSessionEvent;
+import java.util.concurrent.TimeUnit;
 
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
-import static org.mockito.Mockito.when;
 
 /**
- * Test for {@link HttpSessionStatisticListenerImpl}.
+ * Test for {@link HttpSessionStatisticListener}.
  *
  * @author Elena Lepaeva
  */
@@ -44,7 +43,7 @@ public class HttpSessionStatisticListenerTest {
     private static final Property oneHourTimeout = new Property(
             PROPERTY_NAME, String.valueOf(SESSION_TIMEOUT));
     
-    private HttpSessionStatisticListenerImpl listener;
+    private HttpSessionStatisticListener listener;
     private HttpSessionEvent event;
     private MockHttpSession session;
     
@@ -66,10 +65,12 @@ public class HttpSessionStatisticListenerTest {
         when(context.getBean(Mockito.anyString())).thenReturn(sessionTimeoutProperty);
         
         session = new MockHttpSession();
+        session.getServletContext().setAttribute(
+                WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, 
+                context);
         event = new HttpSessionEvent(session);
         
-        listener = new HttpSessionStatisticListenerImpl();
-        listener.setWebApplicationContext(context);
+        listener = new HttpSessionStatisticListener();
     }
 
     @Test

@@ -25,20 +25,21 @@ import org.jtalks.jcommune.web.validation.annotations.Exists;
  */
 public class RestorePasswordDto {
 
+    /** This name is used to avoid collision with 'email' field at signup popup */
     @Exists(entity = JCUser.class, field = "email", message = "{email.unknown}")
-    private String email;
+    private String userEmail;
 
     /**
      * @return email set on the web page
      */
-    public String getEmail() {
-        return email;
+    public String getUserEmail() {
+        return userEmail;
     }
 
     /**
      * @param email email set on the web page
      */
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUserEmail(String email) {
+        this.userEmail = email;
     }
 }

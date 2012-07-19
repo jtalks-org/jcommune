@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import org.apache.commons.lang.Validate;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.springframework.stereotype.Component;
 
@@ -67,16 +68,12 @@ public class ImageUtils {
     /**
      * Converts image to byte array.
      *
-     * @param image input image
+     * @param image input image, not null
      * @return byte array obtained from image
      * @throws ImageProcessException if an I/O error occurs
      */
     public byte[] convertImageToByteArray(Image image) throws ImageProcessException {
-
-        if (image == null) {
-            throw new IllegalArgumentException();
-        }
-
+        Validate.notNull(image, "Incoming image cannot be null");
         byte[] result;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
@@ -256,14 +253,13 @@ public class ImageUtils {
      * @return <code>true</code> of <code>false</code>, according to the result
      */
     private boolean hasAlpha(Image image) {
+        PixelGrabber pg = new PixelGrabber(image, 0, 0, 1, 1, false);
         try {
-            PixelGrabber pg = new PixelGrabber(image, 0, 0, 1, 1, false);
             pg.grabPixels();
-
-            return pg.getColorModel().hasAlpha();
         } catch (InterruptedException e) {
             return false;
         }
+        return pg.getColorModel().hasAlpha();
     }
 
 

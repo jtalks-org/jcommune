@@ -15,7 +15,8 @@
 package org.jtalks.jcommune.service.security;
 
 /**
- * Elements contains IDs predefined user groups. More information see in V21__Add_predefined_groups.sql migration.
+ * Elements contains IDs predefined user groups.
+ * More information see in V21__Add_predefined_groups.sql migration.
  *
  * @author Elena Lepaeva
  */
@@ -35,10 +36,16 @@ public enum AdministrationGroup {
 
     private Long id;
 
+    /**
+     * @param id group database identifier, hardcoded in initial SQL migrations
+     */
     private AdministrationGroup(Long id) {
         this.id = id;
     }
 
+    /**
+     * @return group database identifier, hardcoded in initial SQL migrations
+     */
     public Long getId() {
         return id;
     }

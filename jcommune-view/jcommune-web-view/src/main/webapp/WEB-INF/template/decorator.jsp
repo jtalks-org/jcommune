@@ -35,10 +35,10 @@
     <meta http-equiv="Expires" content="-1"/>
     <meta charset="UTF-8">
     
-    <!-- support of HTML5 elements for IE6-8 -->
-    <!--[if lt IE 9]>
+    <%-- support of HTML5 elements for IE6-8 --%>
+    <%--[if lt IE 9]>
       <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <![endif]--%>
     
     <link rel="stylesheet" type="text/css" media="screen, projection"
           href="${pageContext.request.contextPath}/resources/css/screen.css"/>
@@ -78,11 +78,15 @@
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/prettify/prettify.js" 
            type='text/javascript'></script>          
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/topline.js"
-            type="text/javascript"></script> 
+            type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/search.js"
+            type="text/javascript"></script>  
     <decorator:head/>
     <title><decorator:title/></title>
 </head>
 <body>
+<jsp:include page="../template/topLine.jsp"/>
+
 <decorator:body/>
 <div class="container">
     <footer>

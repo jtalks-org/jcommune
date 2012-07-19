@@ -14,19 +14,21 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
-<%--
-    Represents a row in a table of the forum, that contains a poll.
-    The left side of a row contains information about the author of the poll.
-    The right side of a row contains the poll of topic.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ tag language="java" pageEncoding="UTF-8" %>
+<%@ tag body-content="empty" %>
+<%@ attribute name="moderators" required="true" type="java.util.List" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
-<%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
-<c:if test="${poll != null}">
-    <div class="row well poll">
-        <div class="span4  poll-row">
-            <jtalks:poll isVoteButtonEnabled="true" pollItems="${pollOptions}" poll="${poll}"/>
-        </div>
-    </div>
-</c:if>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<c:choose>
+	<c:when test="${!(empty moderators)}">
+		<c:forEach var="moderator" items="${moderators}" varStatus="i">
+			<a href="${pageContext.request.contextPath}/users/${moderator.id}"
+			   title="<spring:message code='label.tips.view_profile'/>">
+				<c:out value="${moderator.username}"/>
+			</a>
+		</c:forEach>
+	</c:when>
+	<c:otherwise>
+		<spring:message code='label.branch.moderators.empty'/>
+	</c:otherwise>
+</c:choose>

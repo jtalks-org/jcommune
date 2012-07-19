@@ -27,6 +27,7 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.UserDataCacheService;
 import org.mockito.Mock;
+import org.springframework.security.access.AccessDeniedException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -128,26 +129,12 @@ public class TransactionalPrivateMessageServiceTest {
     public void testSaveDraft() throws NotFoundException {
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
-        PrivateMessage pm = pmService.saveDraft(PM_ID, "body", "title", JC_USER, user);
+        pmService.saveDraft(PM_ID, USERNAME, "title", "body", JC_USER);
 
-        assertEquals(pm.getId(), PM_ID);
-        verify(pmDao).saveOrUpdate(pm);
+        verify(pmDao).saveOrUpdate(any(PrivateMessage.class));
         verify(aclBuilder).grant(GeneralPermission.WRITE);
         verify(aclBuilder).grant(GeneralPermission.READ);
-        verify(aclBuilder, times(2)).on(pm);
-    }
-
-    @Test
-    public void testSaveDraftRecipientUserNull() throws NotFoundException {
-        when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
-
-        PrivateMessage pm = pmService.saveDraft(PM_ID, "body", "title", null,  user);
-
-        assertEquals(pm.getId(), PM_ID);
-        verify(pmDao).saveOrUpdate(pm);
-        verify(aclBuilder).grant(GeneralPermission.WRITE);
-        verify(aclBuilder).grant(GeneralPermission.READ);
-        verify(aclBuilder, times(2)).on(pm);
+        verify(aclBuilder, times(2)).on(any(PrivateMessage.class));
     }
 
     @Test
@@ -224,7 +211,7 @@ public class TransactionalPrivateMessageServiceTest {
         PrivateMessage pm = pmService.get(PM_ID);
     }
 
-    @Test(expectedExceptions = NotFoundException.class)
+    @Test(expectedExceptions = AccessDeniedException.class)
     public void testGetNotFoundIfUserHasNoAccessToDeletedPmFromOutBox() throws NotFoundException {
         PrivateMessage message = new PrivateMessage(user, user, null, null);
         message.setStatus(PrivateMessageStatus.DELETED_FROM_OUTBOX);
@@ -237,7 +224,7 @@ public class TransactionalPrivateMessageServiceTest {
         verify(pmDao).get(PM_ID);
     }
 
-    @Test(expectedExceptions = NotFoundException.class)
+    @Test(expectedExceptions = AccessDeniedException.class)
     public void testGetNotFoundIfUserHasNoAccessToDeletePmFromInbox() throws NotFoundException {
         PrivateMessage message = new PrivateMessage(user, user, null, null);
         message.setStatus(PrivateMessageStatus.DELETED_FROM_INBOX);
@@ -401,6 +388,13 @@ public class TransactionalPrivateMessageServiceTest {
         String result = pmService.delete(Arrays.asList(1L, 1234L, 2L));
         assertEquals(result, DRAFTS);
         verify(pmDao, times(2)).delete(any(PrivateMessage.class));
+    }
+
+    @Test
+    public void testHandleDraft() throws Exception{
+        JCUser currentUser = new JCUser(USERNAME, "email", "password");
+        when(userService.getCurrentUser()).thenReturn(currentUser);
+
     }
 /*
     @Test

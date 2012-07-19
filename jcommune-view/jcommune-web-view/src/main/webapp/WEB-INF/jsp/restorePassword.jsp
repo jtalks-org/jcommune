@@ -22,8 +22,6 @@
 <head>
     <title><spring:message code="label.restorePassword.header"/></title>
 </head>
-    <jsp:include page="../template/topLine.jsp"/>
-    
     <div class="container form-login-related">
         <form:form id="form" name="form" modelAttribute="dto"
                    action='${pageContext.request.contextPath}/password/restore' method="POST"
@@ -39,8 +37,8 @@
 	                        <spring:message code="label.email"/>
 	                </label>
 	                <div class='controls'>
-	                    <form:input path="email" type="text" size="20"/>
-	                    <form:errors path="email" cssClass="help-inline"/>
+	                    <form:input path="userEmail" type="text" size="20"/>
+	                    <form:errors path="userEmail" cssClass="help-inline"/>
 	                    <c:if test="${not empty message}">
 	                        <br/>
 	                        <spring:message code="${message}"/>

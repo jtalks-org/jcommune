@@ -37,7 +37,7 @@
             <dependency>
                 <groupId>org.jtalks.common</groupId>
                 <artifactId>jtalks-common-model</artifactId>
-                <version>0.21</version>
+                <version>0.23</version>
             </dependency>
             <dependency>
                 <groupId>org.jtalks.common</groupId>
@@ -391,6 +391,12 @@
                 <groupId>com.google.code</groupId>
                 <artifactId>kaptcha</artifactId>
                 <version>2.3.2</version>
+            </dependency>
+            <!-- LambdaJ -->
+            <dependency>
+                <groupId>com.googlecode.lambdaj</groupId>
+                <artifactId>lambdaj</artifactId>
+                <version>2.3.3</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

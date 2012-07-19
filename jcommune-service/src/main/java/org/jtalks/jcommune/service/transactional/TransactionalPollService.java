@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import ch.lambdaj.function.closure.Closure1;
 import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.permissions.GeneralPermission;
@@ -27,6 +28,10 @@ import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
+
+import static ch.lambdaj.Lambda.closure;
+import static ch.lambdaj.Lambda.of;
+import static ch.lambdaj.Lambda.var;
 
 /**
  * The implementation of the {@link PollService}.
@@ -100,9 +105,9 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
     @Override
     public void createPoll(Poll poll) {
         this.getDao().update(poll);
-        for (PollItem option : poll.getPollItems()) {
-            pollOptionDao.update(option);
-        }
+        Closure1<PollItem> closure = closure(PollItem.class);
+        of(pollOptionDao).update(var(PollItem.class));
+        closure.each(poll.getPollItems());
         securityService.createAclBuilder().grant(GeneralPermission.WRITE)
                 .to(groupDao.get(AdministrationGroup.USER.getId()))
                 .on(poll).flush();

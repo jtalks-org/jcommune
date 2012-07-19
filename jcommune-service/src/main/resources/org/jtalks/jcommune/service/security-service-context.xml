@@ -112,7 +112,7 @@
     <bean id="aclAuthorizationStrategy" class="org.jtalks.jcommune.service.security.AclAuthorizationStrategyImpl"/>
 
     <bean id="securityContextFacade"
-          class="org.jtalks.jcommune.service.security.SecurityContextHolderFacade"/>
+          class="org.jtalks.jcommune.service.security.SecurityContextFacade"/>
 
     <bean id="aclManager" class="org.jtalks.common.security.acl.AclManager">
         <constructor-arg name="mutableAclService" ref="aclService"/>

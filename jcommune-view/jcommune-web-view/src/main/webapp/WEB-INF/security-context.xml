@@ -57,6 +57,8 @@
         <security:intercept-url pattern="/pages/*/edit" access="isAuthenticated()"/>
 
         <security:intercept-url pattern="/poll/**" access="isAuthenticated()"/>
+        
+        <security:intercept-url pattern="/search/index/rebuild" access="hasIpAddress('127.0.0.1')"/>
 
         <security:intercept-url pattern="*" access="permitAll()"/>
 

@@ -14,17 +14,75 @@
  */
 package org.jtalks.jcommune.web.listeners;
 
+import org.jtalks.jcommune.model.entity.JCommuneProperty;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
+import java.util.concurrent.TimeUnit;
 
 /**
- * Session listener interface to track active user sessions
+ * Custom session listener implementation to track active user sessions
  *
  * @author Elena Lepaeva
  */
-public interface HttpSessionStatisticListener extends HttpSessionListener {
+public class HttpSessionStatisticListener implements HttpSessionListener {
 
+    private static final String SESSION_TIMEOUT_PROPERTY_NAME = "sessionTimeoutProperty";
+    
+    private static volatile long totalActiveSessions;
+    
     /**
      * @return active sessions count
      */
-    long getTotalActiveSessions();
+    public long getTotalActiveSessions() {
+        return totalActiveSessions;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public synchronized void sessionCreated(HttpSessionEvent se) {
+        JCommuneProperty sessionTimeoutProperty = (JCommuneProperty) getSpringBean(
+                SESSION_TIMEOUT_PROPERTY_NAME,
+                se.getSession().getServletContext());
+        
+        int timeoutInSeconds = (int) TimeUnit.SECONDS.convert(
+                sessionTimeoutProperty.intValue(), TimeUnit.HOURS);
+        se.getSession().setMaxInactiveInterval(timeoutInSeconds);
+        totalActiveSessions++;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public synchronized void sessionDestroyed(HttpSessionEvent se) {
+        /*
+        Tomcat may not invalidate HTTP session on server restart while counter variable
+        will be set to 0 on class reload. So we can quickly get our session count negative when
+        persisted sessions will expire. This check provides us with a self-correcting facility
+        to overcome this problem
+         */
+        if (totalActiveSessions > 0) {
+            totalActiveSessions--;
+        }
+    }
+    
+    /**
+     * Returns Spring manager bean from Spring context.
+     * @param name - name of bean
+     * @param servletContext - servlet context used to get current Spring 
+     *      web application context
+     * @return Spring managed bean with specified name or null if it was not 
+     *      found
+     */
+    private Object getSpringBean(String name, ServletContext servletContext) {
+        WebApplicationContext ctx = WebApplicationContextUtils
+            .getRequiredWebApplicationContext(servletContext);
+        return ctx.getBean(name);
+    }
 }

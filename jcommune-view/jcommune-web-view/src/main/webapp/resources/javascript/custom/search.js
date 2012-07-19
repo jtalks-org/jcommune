@@ -1,4 +1,5 @@
-/**
+
+/*
  * Copyright (C) 2011  JTalks.org Team
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -12,37 +13,34 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.entity;
+
+/** Namespace for this script */
+var Search = {};
+
+/** Selectors for elements used in scripts */
+Search.searchInputSelector = '#searchText';
+Search.searchClearSelector = '#searchClear';
 
 /**
- * Private message status.
- *
- * If the message has been deleted from both Inbox and Outbox folders,
- * or has been deleted from Drafts no status should be set - message
- * is simply to be removed from a database
- *
- * @author Kirill Afonin
- * @author Evgeniy Naumenko
- */
-public enum PrivateMessageStatus {
-    /**
-     * New message, has never be persisted in a database
-     */
-    NEW,
-    /**
-     * Saved as draft to be edited before sending
-     */
-    DRAFT,
-    /**
-     * Sent to the recepient
-     */
-    SENT,
-    /**
-     * Recipient deleted this message from inbox folder
-     */
-    DELETED_FROM_INBOX,
-    /**
-     * Author deleted this message from outbox folder
-     */
-    DELETED_FROM_OUTBOX
+	Checks content of search input and toggle visibility
+	of clear button.
+*/
+Search.adjustClearButton = function() {
+	var text = $(Search.searchInputSelector).val();
+	$(Search.searchClearSelector).toggle(text != '');
 }
+ 
+$().ready(function() {
+	
+	Search.adjustClearButton();
+		
+	$(Search.searchInputSelector).bind('keyup', function() {
+		Search.adjustClearButton();
+	});
+	
+	
+	$(Search.searchClearSelector).click(function() {
+		$(Search.searchInputSelector).val('');
+		$(Search.searchClearSelector).hide();
+	});
+});

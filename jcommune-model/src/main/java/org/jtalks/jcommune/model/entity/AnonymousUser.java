@@ -14,21 +14,27 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import java.util.Collection;
-import java.util.List;
-
 import org.jtalks.common.model.entity.Group;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.util.Collection;
+import java.util.List;
+
 /**
- * Represents null user, e.i. anonymous user.
+ * Represents anonymous user.
+ * This is a Null Object pattern implementation, contains default
+ * parameter values to be used for users not logged in.
+ *
+ * You're likely to get this instance for userService#getCurrentUser if
+ * there is no active user session in progress, i.e. current user is an anonymous.
  *
  * @author Vyacheslav Mishcheryakov
  */
 public class AnonymousUser extends JCUser {
     
-    private static final long serialVersionUID = 1L;
-    
+    /**
+     * Creates anonymous user instance with default properties set
+     */
     public AnonymousUser() {
         super();
         setPageSize(JCUser.DEFAULT_PAGE_SIZE);
@@ -37,44 +43,37 @@ public class AnonymousUser extends JCUser {
 
     @Override
     public Collection<GrantedAuthority> getAuthorities() {
-        throw new UnsupportedOperationException(
-                "Authorities are not defined for anonymous user");
+        throw new UnsupportedOperationException("Authorities are not defined for anonymous user");
     }
     
     @Override
     public String getEmail() {
-        throw new UnsupportedOperationException(
-                "Mail is not defined for anonymous user");
+        throw new UnsupportedOperationException("Mail is not defined for anonymous user");
     }
     
     @Override
     public String getEncodedUsername() {
-        throw new UnsupportedOperationException(
-                "Encoded username is not defined for anonymous user");
+        throw new UnsupportedOperationException("Encoded username is not defined for anonymous user");
     }
     
     @Override
     public List<Group> getGroups() {
-        throw new UnsupportedOperationException(
-                "Groups are not defined for anonymous user");
+        throw new UnsupportedOperationException("Groups are not defined for anonymous user");
     }
     
     @Override
     public long getId() {
-        throw new UnsupportedOperationException(
-                "ID is not defined for anonymous userd");
+        throw new UnsupportedOperationException("ID is not defined for anonymous user");
     }
     
     @Override
     public String getPassword() {
-        throw new UnsupportedOperationException(
-                "Passowrd is not defined for anonymous user");
+        throw new UnsupportedOperationException("Password is not defined for anonymous user");
     }
     
     @Override
     public String getUsername() {
-        throw new UnsupportedOperationException(
-                "Username is not defined for anonymous user");
+        throw new UnsupportedOperationException("Username is not defined for anonymous user");
     }
     
     @Override

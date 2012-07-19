@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import org.apache.commons.lang.Validate;
 import org.apache.solr.analysis.LowerCaseFilterFactory;
 import org.apache.solr.analysis.SnowballPorterFilterFactory;
 import org.apache.solr.analysis.StandardFilterFactory;
@@ -172,9 +173,6 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
         this.title = title;
         this.creationDate = new DateTime();
         this.modificationDate = new DateTime();
-        this.topicWeight = 0;
-        this.sticked = false;
-        this.announcement = false;
     }
 
     /**
@@ -262,18 +260,14 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     }
 
     /**
-     * Sets the topic title.
-     *
-     * @param newTitle the title to set
+     * @param newTitle new title for this topic
      */
     public void setTitle(String newTitle) {
         this.title = newTitle;
     }
 
     /**
-     * Get the list of the posts.
-     *
-     * @return the list of posts
+     * @return the list of posts in the topic, always not null and not empty
      */
     @IndexedEmbedded(prefix = TOPIC_POSTS_PREFIX)
     public List<Post> getPosts() {
@@ -281,17 +275,13 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     }
 
     /**
-     * Set the list of posts
-     *
-     * @param posts the posts to set
+     * @param posts the posts to set as topic contents, must not be empty or null
      */
     protected void setPosts(List<Post> posts) {
         this.posts = posts;
     }
 
     /**
-     * Get branch that contains topic
-     *
      * @return branch that contains the topic
      */
     public Branch getBranch() {
@@ -299,27 +289,21 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     }
 
     /**
-     * Set branch that contains topic
-     *
-     * @param branch branch that contains the topic
+     * @param branch branch to be set as topics branch
      */
     void setBranch(Branch branch) {
         this.branch = branch;
     }
 
     /**
-     * Get the topic first post.
-     *
-     * @return the firstPost
+     * @return the firstPost in the topic, topics are guaranteed to have at least the first post
      */
     public Post getFirstPost() {
         return posts.get(0);
     }
 
     /**
-     * Get the topic last post.
-     *
-     * @return last post
+     * @return last post in the topic, topics are guaranteed to have at least the first post
      */
     public Post getLastPost() {
         return posts.get(posts.size() - 1);
@@ -440,9 +424,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      *              (0 means first post is the last read one)
      */
     public void setLastReadPostIndex(int index) {
-        if (index >= posts.size()) {
-            throw new IllegalArgumentException("Last read post index is bigger than post count in the topic");
-        }
+        Validate.isTrue(index < posts.size(), "Last read post index is bigger than post count in the topic");
         lastReadPostIndex = index;
     }
 
@@ -454,11 +436,8 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      * @return returns first unread post id for the current user
      */
     public Long getFirstUnreadPostId() {
-        if (lastReadPostIndex == null) {
-            return posts.get(0).getId();
-        } else {
-            return posts.get(lastReadPostIndex + 1).getId();
-        }
+        int index = (lastReadPostIndex == null) ? 0 : lastReadPostIndex + 1;
+        return posts.get(index).getId();
     }
 
     /**

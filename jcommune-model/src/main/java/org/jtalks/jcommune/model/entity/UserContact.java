@@ -15,6 +15,7 @@
 
 package org.jtalks.jcommune.model.entity;
 
+import org.apache.commons.lang.StringUtils;
 import org.jtalks.common.model.entity.Entity;
 
 /**
@@ -90,9 +91,7 @@ public class UserContact extends Entity {
      * @return actual ready-to-display contact
      */
     public String getDisplayValue() {
-        String replacement = (value == null) ? "" : value; 
-        String result = type.getDisplayPattern().replaceAll(
-                UserContactType.CONTACT_MASK_PLACEHOLDER, replacement);
-        return result;
+        String replacement = StringUtils.defaultIfBlank(value, "");
+        return type.getDisplayValue(replacement);
     }
 }

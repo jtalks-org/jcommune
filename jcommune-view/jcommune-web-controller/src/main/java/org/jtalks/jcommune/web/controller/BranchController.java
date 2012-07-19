@@ -15,8 +15,6 @@
 
 package org.jtalks.jcommune.web.controller;
 
-import java.util.List;
-
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -37,6 +35,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
+
+import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.project;
 
 /**
  * @author Vitaliy kravchenko
@@ -131,6 +134,7 @@ public class BranchController {
 
         return new ModelAndView("recent")
                 .addObject("topicsPage", topicsPage)
+                .addObject("topics", topicsPage.getContent())  // for rssViewer
                 .addObject(PAGING_ENABLED, true);
     }
 
@@ -192,16 +196,15 @@ public class BranchController {
     }
 
     /**
-     * Converts branch list in branch dto array.
+     * Converts branch list into branch dto array.
      *
      * @param branches branch list
      * @return branch dto array
      */
     private BranchDto[] convertBranchesListToBranchDtoArray(List<Branch> branches) {
-        BranchDto[] branchDtoArray = new BranchDto[branches.size()];
-        for (int i = 0; i < branchDtoArray.length; i++) {
-            branchDtoArray[i] = new BranchDto(branches.get(i));
-        }
-        return branchDtoArray;
+        List<BranchDto> dtos = project(branches, BranchDto.class,
+                on(Branch.class).getId(),
+                on(Branch.class).getName());
+        return dtos.toArray(new BranchDto[dtos.size()]);
     }
 }

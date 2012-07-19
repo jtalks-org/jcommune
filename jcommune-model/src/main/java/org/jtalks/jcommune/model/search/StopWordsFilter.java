@@ -14,18 +14,18 @@
  */
 package org.jtalks.jcommune.model.search;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.analysis.CharArraySet;
+import org.apache.lucene.util.Version;
+import org.apache.solr.analysis.StopFilterFactory;
+import org.hibernate.search.util.HibernateSearchResourceLoader;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.lucene.analysis.CharArraySet;
-import org.apache.lucene.util.Version;
-import org.apache.solr.analysis.StopFilterFactory;
-import org.hibernate.search.util.HibernateSearchResourceLoader;
 
 /**
  * Deletes stop words in the search text.
@@ -53,7 +53,7 @@ public class StopWordsFilter implements SearchRequestFilter {
     public String filter(String searchText) {
         String result = searchText;
         for (String stopWordsFile : stopWordsFiles) {
-            result = filter(searchText, stopWordsFile);
+            result = filter(result, stopWordsFile);
         }
         return result;
     }
