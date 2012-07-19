@@ -17,7 +17,7 @@
 <%@ tag language="java" pageEncoding="UTF-8" %>
 <%@ tag body-content="empty" %>
 <%@ attribute name="users" required="true" type="java.util.List" %>
-<%@ attribute name="branch" required="true" type="org.jtalks.common.model.entity.Branch" %>
+<%@ attribute name="branch" required="false" type="org.jtalks.common.model.entity.Branch" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -25,11 +25,13 @@
     <c:when test="${!(empty users)}">
         <c:forEach var="user" items="${users}" varStatus="i">
             <c:set var='labelClass' value='label'/>
-            <sec:accesscontrollist hasPermission="17" domainObject="${branch}">
-                <c:set var='labelClass' value='label label-success'/>
-            </sec:accesscontrollist>
+            <c:if test="${branch != null}">
+                <sec:accesscontrollist hasPermission="17" domainObject="${branch}">
+                    <c:set var='labelClass' value='label label-success'/>
+                </sec:accesscontrollist>
+            </c:if>
             <c:forEach var="group" items="${user.groups}">
-                <c:if test="${group.id == 13}">
+                <c:if test="${group.id == 13}"> <%--This Id is default ID of Administrators group. --%>
                     <c:set var='labelClass' value='label label-important'/>
                 </c:if>
             </c:forEach>
