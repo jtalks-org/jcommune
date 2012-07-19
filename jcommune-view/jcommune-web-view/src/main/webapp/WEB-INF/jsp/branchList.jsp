@@ -97,9 +97,10 @@
         
         <%-- Users --%>
         <div id="users-stats" class="well forum-user-stats-container">
-            <c:if test="${!(empty viewList)}">
+
                 <strong><spring:message code="label.section.now_browsing"/></strong> 
-            </c:if>
+
+            <jtalks:users users="${viewList" branch=""/>
             <c:forEach var="innerUser" items="${viewList}">
                 <%--todo
                 <c:choose>
