@@ -280,3 +280,8 @@ input.form-check-radio-box[type="radio"] {
     float: none;
     margin: 0 auto;
 }
+
+.search-clear {
+	margin-top:0 !important;
+	font-weight:bold;
+}
