@@ -107,16 +107,3 @@ INSERT INTO `acl_entry` VALUES (85,4,19,3,13,0,0,0);
 INSERT INTO `acl_entry` VALUES (86,4,20,3,10,0,0,0);
 INSERT INTO `acl_entry` VALUES (87,4,21,3,8,0,0,0);
 INSERT INTO `acl_entry` VALUES (88,4,22,3,9,0,0,0);
-
-SET @t1 = 0;
-SET @t2 = 0;
-INSERT INTO `simple_pages` (`UUID`, `NAME`, `PATH_NAME`, `CONTENT`)
-VALUES ('unique', 'Title', 'for_newbies', 'Nothing here');
-select @t1 := last_insert_id();
-INSERT INTO `jtalks`.`acl_class` (`class`) VALUES ('SIMPLE_PAGE');
-select @t2 := last_insert_id();
-INSERT INTO `acl_object_identity` (`object_id_class`, `object_id_identity`, `owner_sid`, `entries_inheriting`)
-VALUES (@t2, @t1, 2, 1);
-select @t2 := last_insert_id();
-INSERT INTO `acl_entry` (`acl_object_identity`, `ace_order`, `sid`, `mask`, `granting`, `audit_success`, `audit_failure`)
-VALUES (@t2, 0, 2, 4, 1, 0, 0);
