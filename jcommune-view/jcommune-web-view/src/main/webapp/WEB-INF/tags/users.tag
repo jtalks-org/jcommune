@@ -24,11 +24,13 @@
 <c:choose>
     <c:when test="${!(empty users)}">
         <c:forEach var="user" items="${users}" varStatus="i">
-            <c:set var='labelClass' value='label'/>
+            <c:set var='labelClass' value=''/>
             <c:if test="${branch != null}">
-                <sec:accesscontrollist hasPermission="17" domainObject="${branch}">
-                    <c:set var='labelClass' value='label label-success'/>
-                </sec:accesscontrollist>
+                <c:forEach var="group" items="${user.groups}">
+                    <c:if test="${group.id == branch.moderatorsGroup.id}">
+                        <c:set var='labelClass' value='label label-success'/>
+                    </c:if>
+                </c:forEach>
             </c:if>
             <c:forEach var="group" items="${user.groups}">
                 <c:if test="${group.id == 13}"> <%--This Id is default ID of Administrators group. --%>
