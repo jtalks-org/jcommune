@@ -42,9 +42,14 @@ $(document).ready(function () {
     // Opera, IE - multipart file using iFrame
     // Chrome, Opera - byte [] using XHR
     var action;
+    //this parameter tells to valums file uploader the appropriate content type
+    //if encoding != multipart, it will use "application/octet-stream" content type
+    //otherwise it will use "multipart/form-data"
+    var encoding = "not-multipart";
     if (navigator.appName.indexOf("Microsoft") != -1 ||
         navigator.appName.indexOf("Opera") != -1) {
         action = $root + '/users/IFrameAvatarpreview';
+        encoding = "multipart";
     }
     else {
         action = $root + '/users/XHRavatarpreview';
@@ -55,6 +60,8 @@ $(document).ready(function () {
         button:$("#upload").get(0),
         //server side uploading handler
         action:action,
+        //
+        encoding: encoding,
         //is multiple file upload available
         multiple:false,
         allowedExtensions:['jpg', 'jpeg', 'png', 'gif'],
