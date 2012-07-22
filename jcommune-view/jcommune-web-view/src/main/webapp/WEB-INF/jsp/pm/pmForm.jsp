@@ -27,6 +27,8 @@
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/privateMessages.js"></script>
     <script language="javascript"
+            src="${pageContext.request.contextPath}/resources/javascript/custom/updateSaveButtonStateOnPmForm.js"></script>
+    <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/leaveConfirm.js"></script>
 </head>
 <body>
