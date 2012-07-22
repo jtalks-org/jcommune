@@ -82,7 +82,7 @@
                         <br/>
 
                         <div class="forum-sections-moderators-container">
-                            <span><spring:message code="label.section.moderators"/></span>
+                            <strong><spring:message code="label.section.moderators"/></strong>
                             <jtalks:moderators moderators="${branch.moderatorsGroup.users}"/>
                         </div>
                     </td>

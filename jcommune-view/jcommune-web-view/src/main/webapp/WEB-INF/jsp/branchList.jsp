@@ -68,7 +68,7 @@
                             <a href="#"><spring:message code="label.section.faq"/></a>
                             <br/>
                             <strong><spring:message code="label.section.moderators"/></strong>
-                            <a class="label label-success" href="#">Vurn</a>
+                            <jtalks:moderators moderators="${branch.moderatorsGroup.users}"/>
                         </td>
                         <td class="topics-posts">
                             <spring:message code="label.section.header.topics"/>:
