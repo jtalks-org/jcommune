@@ -39,24 +39,62 @@ import static java.lang.annotation.ElementType.TYPE;
 @Constraint(validatedBy = PollValidator.class)
 public @interface ValidPoll {
 
+    /**
+     * Resource bundle code for error message
+     */
     String message() default "{defaultPoll.message}";
 
+    /**
+     * Groups settings for this validation constraint
+     */
     Class<?>[] groups() default {};
 
+    /**
+     * Payload element that specifies the payload with which the the
+     * constraint declaration is associated.
+     */
     Class<? extends Payload>[] payload() default {};
 
+    /**
+     * Return min value for poll items number.
+     * @return min value for poll items number.
+     */
     int minItemsNumber() default Poll.MIN_ITEMS_NUMBER;
 
+    /**
+     * Return max value for poll items number.
+     * @return max value for poll items number.
+     */
     int maxItemsNumber() default Poll.MAX_ITEMS_NUMBER;
 
+    /**
+     * Return min value for poll item length.
+     * @return min value for poll item length.
+     */
     int minItemsLength() default PollItem.MIN_ITEM_LENGTH;
 
+    /**
+     * Return max value for poll item length.
+     * @return max value for poll item length.
+     */
     int maxItemsLength() default PollItem.MAX_ITEM_LENGTH;
 
+    /**
+     * Return validated field name.
+     * @return validated field name.
+     */
     String pollTitle();
 
+    /**
+     * Return validated field name.
+     * @return validated field name.
+     */
     String pollItems();
 
+    /**
+     * Return validated field name.
+     * @return validated field name.
+     */
     String endingDate();
 
 }

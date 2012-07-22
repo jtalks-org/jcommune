@@ -101,6 +101,9 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
         return poll;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void createPoll(Poll poll) {
         this.getDao().update(poll);
