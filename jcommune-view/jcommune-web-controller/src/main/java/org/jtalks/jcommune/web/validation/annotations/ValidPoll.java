@@ -56,44 +56,37 @@ public @interface ValidPoll {
     Class<? extends Payload>[] payload() default {};
 
     /**
-     * Return min value for poll items number.
-     * @return min value for poll items number.
+     * Min value for poll items number.
      */
     int minItemsNumber() default Poll.MIN_ITEMS_NUMBER;
 
     /**
-     * Return max value for poll items number.
-     * @return max value for poll items number.
+     * Max value for poll items number.
      */
     int maxItemsNumber() default Poll.MAX_ITEMS_NUMBER;
 
     /**
-     * Return min value for poll item length.
-     * @return min value for poll item length.
+     * Min value for poll item length.
      */
     int minItemsLength() default PollItem.MIN_ITEM_LENGTH;
 
     /**
-     * Return max value for poll item length.
-     * @return max value for poll item length.
+     * Max value for poll item length.
      */
     int maxItemsLength() default PollItem.MAX_ITEM_LENGTH;
 
     /**
-     * Return validated field name.
-     * @return validated field name.
+     * Validated field name.
      */
     String pollTitle();
 
     /**
-     * Return validated field name.
-     * @return validated field name.
+     * Validated field name.
      */
     String pollItems();
 
     /**
-     * Return validated field name.
-     * @return validated field name.
+     * Validated field name.
      */
     String endingDate();
 
