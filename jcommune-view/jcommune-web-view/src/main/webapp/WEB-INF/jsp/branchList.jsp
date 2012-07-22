@@ -41,10 +41,12 @@
                 <tr>
                     <th class="status-col"></th>
                     <th><spring:message code="label.section.header.branches"/></th>
-                    <th class="topics-posts forum-posts-view-header"><spring:message
-                            code="label.branch.header.topics_posts"/></th>
-                    <th class="latest-by forum-latest-by-header"><spring:message
-                            code="label.branch.header.lastMessage"/></th>
+                    <th class="topics-posts forum-posts-view-header">
+                        <spring:message code="label.branch.header.topics_posts"/>
+                    </th>
+                    <th class="latest-by forum-latest-by-header">
+                        <spring:message code="label.branch.header.lastMessage"/>
+                    </th>
                 </tr>
                 </thead>
 
@@ -69,10 +71,15 @@
                             <a class="label label-success" href="#">Vurn</a>
                         </td>
                         <td class="topics-posts">
-                            <spring:message code="label.section.header.topics"/>: <span class='test-topics-count'><c:out
-                                value="${branch.topicCount}"/></span><br/>
-                            <spring:message code="label.section.header.messages"/>: <span
-                                class='test-posts-count'><c:out value="${branch.postCount}"/></span>
+                            <spring:message code="label.section.header.topics"/>:
+                            <span class='test-topics-count'>
+                                <c:out value="${branch.topicCount}"/>
+                            </span>
+                            <br/>
+                            <spring:message code="label.section.header.messages"/>:
+                            <span class='test-posts-count'>
+                                <c:out value="${branch.postCount}"/>
+                            </span>
                         </td>
                         <td class="latest-by">
                             <c:if test="${branch.topicCount>0}">
