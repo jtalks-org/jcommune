@@ -115,24 +115,40 @@
     <%-- END OF Topics table --%>
 
     <div class="well forum-sections-stats-container">
-        <strong><spring:message code="label.onlineUsersInfo.messagesCount"/> </strong><span class="test-messages"><c:out
-            value="${messagesCount}"/></span>
+        <strong>
+            <spring:message code="label.onlineUsersInfo.messagesCount"/>
+        </strong>
+        <span class="test-messages">
+            <c:out value="${messagesCount}"/>
+        </span>
         <br/>
-        <strong><spring:message code="label.onlineUsersInfo.registeredUsers.count"/> </strong><span
-            class="test-registered-users"><c:out value="${registeredUsersCount}"/></span>
+        <strong>
+            <spring:message code="label.onlineUsersInfo.registeredUsers.count"/>
+        </strong>
+        <span class="test-registered-users">
+            <c:out value="${registeredUsersCount}"/>
+        </span>
     </div>
 
     <%-- Users --%>
     <div id="users-stats" class="well forum-sections-userstats-container">
-        <strong><spring:message code="label.onlineUsersInfo.visitors"/> </strong><span
-            class='test-visitors-total'><c:out value="${visitors}"/></span>,
-        <spring:message code="label.onlineUsersInfo.visitors.registered"/> <span class='test-visitors-registered'><c:out
-            value="${visitorsRegistered}"/></span>,
-        <spring:message code="label.onlineUsersInfo.visitors.guests"/> <span class='test-visitors-guests'><c:out
-            value="${visitorsGuests}"/></span>
+        <strong><spring:message code="label.onlineUsersInfo.visitors"/> </strong>
+        <span class='test-visitors-total'>
+            <c:out value="${visitors}"/>
+        </span>,
+        <spring:message code="label.onlineUsersInfo.visitors.registered"/>
+        <span class='test-visitors-registered'>
+            <c:out value="${visitorsRegistered}"/>
+        </span>,
+        <spring:message code="label.onlineUsersInfo.visitors.guests"/>
+        <span class='test-visitors-guests'>
+            <c:out value="${visitorsGuests}"/>
+        </span>
         <br/>
 
-        <strong><spring:message code="label.onlineUsersInfo.registeredUsers"/></strong>
+        <strong>
+            <spring:message code="label.onlineUsersInfo.registeredUsers"/>
+        </strong>
         <jtalks:users users="${usersRegistered}"/>
     </div>
     <%-- END OF Users --%>
