@@ -75,7 +75,7 @@
                                  bodyParameterName="body"
                                  back="${pageContext.request.contextPath}/inbox"/>
 
-                <input id="save_pm" type="submit" class="btn" name="save_pm" value="<spring:message code="label.save"/>"
+                <input id="savePM" type="submit" class="btn" name="save_pm" value="<spring:message code="label.save"/>"
                        onclick="document.editForm.action='${pageContext.request.contextPath}/pm/save';return true;"/>
 
             </form:form>
