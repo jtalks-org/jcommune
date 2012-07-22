@@ -57,20 +57,20 @@ public interface TopicService extends EntityService<Topic> {
      *          when branch not found
      */
     Topic createTopic(String topicName, String bodyText, long branchId, boolean notifyOnAnswers)
-    throws NotFoundException;
+            throws NotFoundException;
 
     /**
      * Get topics that have been updated in the last 24 hours.
-     * 
+     *
      * @param page page page number, for which we will find topics
      * @return object that contains topics(that have been updated in the last 24 hours)
-     *         for one page and information for pagination 
+     *         for one page and information for pagination
      */
     Page<Topic> getRecentTopics(int page);
 
     /**
      * Get unanswered topics(topics which has only 1 post added during topic creation).
-     * 
+     *
      * @param page page number, for which we will find topics
      * @return object that contains unanswered topics for one page and information for
      *         pagination
@@ -91,22 +91,21 @@ public interface TopicService extends EntityService<Topic> {
     /**
      * Update current topic with given title and body.
      *
-     * @param topicId      topic id
-     * @param topicName    name of topic
-     * @param bodyText     body of topic
-     * @param topicWeight  priority for sticked topic
-     * @param sticked      flag for sticking a topic
-     * @param announcement flag, which set topic as announcement
+     * @param topicId         topic id
+     * @param topicName       name of topic
+     * @param bodyText        body of topic
+     * @param sticked         flag for sticking a topic
+     * @param announcement    flag, which set topic as announcement
      * @param notifyOnAnswers user notification on answers flag
      * @throws NotFoundException when topic not found
      */
-    void updateTopic(long topicId, String topicName, String bodyText,
-                     int topicWeight, boolean sticked, boolean announcement, boolean notifyOnAnswers) throws NotFoundException;
+    void updateTopic(long topicId, String topicName, String bodyText, boolean sticked, boolean announcement,
+                     boolean notifyOnAnswers) throws NotFoundException;
 
     /**
      * Delete topic by id.
      *
-     * @param topicId  topic id
+     * @param topicId topic id
      * @return branch from which topic deleted
      * @throws NotFoundException when topic not found
      */
@@ -120,14 +119,14 @@ public interface TopicService extends EntityService<Topic> {
      * @throws NotFoundException when topic or branch with given id not found
      */
     void moveTopic(Long topicId, Long branchId) throws NotFoundException;
-    
+
     /**
      * Get topics in the branch.
-     * 
-     * @param branch for this branch we will find topics
-     * @param page page number, for which we will find topics
+     *
+     * @param branch        for this branch we will find topics
+     * @param page          page number, for which we will find topics
      * @param pagingEnabled if true, then it returns topics for one page, otherwise it
-     *        return all topics in the branch 
+     *                      return all topics in the branch
      * @return object that contains topics for one page(note, that one page may contain
      *         all topics) and information for pagination
      */

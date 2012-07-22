@@ -48,7 +48,6 @@ import java.util.Set;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -145,7 +144,7 @@ public class TopicControllerTest {
         boolean pagingEnabled = true;
         Topic topic = new Topic(null, null);
         branch.addTopic(topic);
-        Page<Post> postsPage = new PageImpl<Post>(Collections.<Post> emptyList());
+        Page<Post> postsPage = new PageImpl<Post>(Collections.<Post>emptyList());
 
         //set expectations
         when(topicService.get(TOPIC_ID)).thenReturn(topic);
@@ -315,7 +314,7 @@ public class TopicControllerTest {
         ModelAndView mav = controller.editTopic(dto, bindingResult, BRANCH_ID, TOPIC_ID);
 
         //check expectations
-        verify(topicService).updateTopic(TOPIC_ID, TOPIC_THEME, TOPIC_CONTENT, 0, false, false, false);
+        verify(topicService).updateTopic(TOPIC_ID, TOPIC_THEME, TOPIC_CONTENT, false, false, false);
 
         //check result
         assertViewName(mav, "redirect:/topics/" + TOPIC_ID);
@@ -337,7 +336,7 @@ public class TopicControllerTest {
         assertEquals(topicId, TOPIC_ID);
 
         verify(topicService, never()).updateTopic(anyLong(), anyString(),
-                anyString(), anyInt(), anyBoolean(), anyBoolean(), anyBoolean());
+                anyString(), anyBoolean(), anyBoolean(), anyBoolean());
     }
 
     @Test

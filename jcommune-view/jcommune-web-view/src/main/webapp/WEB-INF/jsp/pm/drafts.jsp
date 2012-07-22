@@ -33,8 +33,7 @@
     <div class="row">
         <div class="span2">
             <sec:authentication property="principal.id" var="userId"/>
-            <a href="${pageContext.request.contextPath}/pm/new?userId=${userId}"
-               class="btn btn-primary btn-small pm_buttons">
+            <a href="${pageContext.request.contextPath}/pm/new?userId=${userId}" class="btn btn-primary btn-small pm_buttons">
                 <spring:message code="label.new_pm"/></a>
 
             <jsp:include page="../../template/pmFolders.jsp"/>
@@ -77,24 +76,13 @@
                             <tr id="${pm.id}" class="mess">
                                 <td><input type="checkbox" id="${pm.id}" class="checker"/></td>
                                 <td class="pm_user_to_from">
-                                    <c:choose>
-                                        <c:when test="${pm.userTo != null}">
-                                            <a href="${pageContext.request.contextPath}/users/${pm.userTo.id}">
-                                                <c:out value="${pm.userTo.username}"/>
-                                            </a>
-                                        </c:when>
-                                        <c:otherwise><spring:message code="label.not.specified"/></c:otherwise>
-                                    </c:choose>
+                                    <a href="${pageContext.request.contextPath}/users/${pm.userTo.id}">
+                                        <c:out value="${pm.userTo.username}"/>
+                                    </a>
                                 </td>
                                 <td>
-                                    <c:choose>
-                                        <c:when test="${pm.title != null}">
-                                            <a href="${pageContext.request.contextPath}/pm/${pm.id}">
-                                                <c:out value="${pm.title}"/>
-                                            </a>
-                                        </c:when>
-                                        <c:otherwise><spring:message code="label.not.specified"/></c:otherwise>
-                                    </c:choose>
+                                    <a href="${pageContext.request.contextPath}/pm/${pm.id}">
+                                        <c:out value="${pm.title}"/></a>
                                 </td>
                                 <td>
                                     <jtalks:format value="${pm.creationDate}"/>

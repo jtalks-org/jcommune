@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import ch.lambdaj.Lambda;
 import ch.lambdaj.function.closure.Closure1;
 import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.common.model.dao.GroupDao;
@@ -29,9 +30,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
-import static ch.lambdaj.Lambda.closure;
-import static ch.lambdaj.Lambda.of;
-import static ch.lambdaj.Lambda.var;
+import static ch.lambdaj.Lambda.*;
 
 /**
  * The implementation of the {@link PollService}.

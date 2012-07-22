@@ -128,12 +128,8 @@ public class TransactionalPrivateMessageService
      */
     @Override
     @PreAuthorize("hasPermission(#userFrom.id, 'USER', 'ProfilePermission.SEND_PRIVATE_MESSAGES')")
-    public void saveDraft(long id, String recipient, String title, String body, JCUser userFrom)
-            throws NotFoundException {
-
-        JCUser userTo = recipient != null ? userService.getByUsername(recipient) : null;
-
-        PrivateMessage pm = new PrivateMessage(userTo, userFrom, title, body);
+    public PrivateMessage saveDraft(long id, String title, String body, JCUser recipient, JCUser userFrom) {
+        PrivateMessage pm = new PrivateMessage(recipient, userFrom, title, body);
         pm.setId(id);
         pm.setStatus(PrivateMessageStatus.DRAFT);
         this.getDao().saveOrUpdate(pm);
@@ -144,6 +140,7 @@ public class TransactionalPrivateMessageService
 
         logger.debug("Updated private message draft. Message id={}", pm.getId());
 
+        return pm;
     }
 
     /**
