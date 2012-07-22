@@ -304,21 +304,21 @@ public class PrivateMessageControllerTest {
         String view = controller.saveDraft(dto, bindingResult);
 
         assertEquals(view, "redirect:/drafts");
-        verify(pmService).saveDraft(dto.getId(), dto.getTitle(), dto.getBody(), JC_USER, JC_USER);
+        verify(pmService).saveDraft(dto.getId(), USERNAME, dto.getTitle(), dto.getBody(), JC_USER);
     }
 
     @Test
     public void saveDraftWithWrongUser() throws NotFoundException {
         PrivateMessageDto dto = getPrivateMessageDto();
         doThrow(new NotFoundException()).when(pmService)
-                .saveDraft(anyLong(), anyString(), anyString(), any(JCUser.class), any(JCUser.class));
+                .saveDraft(anyLong(), anyString(), anyString(), anyString(), any(JCUser.class));
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
 
         String view = controller.saveDraft(dto, bindingResult);
 
-        assertEquals(view, "pm/pmForm");
+        assertEquals(view, "redirect:/drafts");
         assertEquals(bindingResult.getErrorCount(), 1);
-        verify(pmService).saveDraft(anyLong(), anyString(), anyString(), any(JCUser.class), any(JCUser.class));
+        verify(pmService).saveDraft(anyLong(), anyString(), anyString(), anyString(), any(JCUser.class));
     }
 
     @Test
