@@ -27,16 +27,24 @@ $(document).ready(function () {
     var message = $labelLeavePageConfirmation;
     var mark_class = ".script-confirm-unsaved";
     var allowed_transitions = "input[type=submit]";
+    var currentData = "";
+    var newData;
 
     $(window).bind('beforeunload', function () {
-        if (data_changed) return message;
+        newData = "";
+        $("input" + mark_class + ", textarea" + mark_class).each(function () {
+            newData += this.value;
+        });
+        if (currentData != newData) return message;
     });
 
-    $("input" + mark_class + ", textarea" + mark_class).live('change keypress', function (event) {
-        data_changed = true;
-    });
-
-    $(allowed_transitions).live('click', function(event) {
+    $(allowed_transitions).live('click', function (event) {
         $(window).off('beforeunload');
     });
+
+    $("input" + mark_class + ", textarea" + mark_class).each(function () {
+        currentData += this.value;
+    });
+
+
 });
