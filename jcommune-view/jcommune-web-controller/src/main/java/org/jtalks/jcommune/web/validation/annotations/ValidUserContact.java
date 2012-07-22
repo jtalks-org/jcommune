@@ -14,18 +14,18 @@
  */
 package org.jtalks.jcommune.web.validation.annotations;
 
+import org.jtalks.jcommune.model.entity.UserContactType;
+import org.jtalks.jcommune.web.validation.validators.ValidUserContactValidator;
+
+import javax.validation.Constraint;
+import javax.validation.Payload;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
-
-import org.jtalks.jcommune.model.entity.UserContactType;
-import org.jtalks.jcommune.web.validation.validators.ValidUserContactValidator;
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Constraint for checking that user contact is valid (matches regular 
