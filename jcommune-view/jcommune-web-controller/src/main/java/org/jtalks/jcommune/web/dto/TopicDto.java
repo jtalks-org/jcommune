@@ -225,7 +225,7 @@ public class TopicDto {
 
     /**
      * Setting value indicating that poll allow multiple item selection.
-     * @param multiple
+     * @param multiple value, indicating that poll allow multiple item selection.
      */
     public void setMultiple(boolean multiple) {
         this.multiple = multiple;
