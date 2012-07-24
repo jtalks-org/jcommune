@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import ch.lambdaj.Lambda;
 import ch.lambdaj.function.closure.Closure1;
 import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.common.model.dao.GroupDao;
