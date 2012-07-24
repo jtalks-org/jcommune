@@ -127,7 +127,8 @@ public class TransactionalPrivateMessageService
      */
     @Override
     @PreAuthorize("hasPermission(#userFrom.id, 'USER', 'ProfilePermission.SEND_PRIVATE_MESSAGES')")
-    public void saveDraft(long id, String recipient, String title, String body, JCUser userFrom) throws NotFoundException {
+    public void saveDraft(long id, String recipient, String title, String body, JCUser userFrom) 
+        throws NotFoundException {
 
         JCUser userTo = recipient != null ? userService.getByUsername(recipient) : null;
 
