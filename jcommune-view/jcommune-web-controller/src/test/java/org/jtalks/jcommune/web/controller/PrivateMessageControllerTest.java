@@ -316,7 +316,7 @@ public class PrivateMessageControllerTest {
 
         String view = controller.saveDraft(dto, bindingResult);
 
-        assertEquals(view, "redirect:/drafts");
+        assertEquals(view, "pm/pmForm");
         assertEquals(bindingResult.getErrorCount(), 1);
         verify(pmService).saveDraft(anyLong(), anyString(), anyString(), anyString(), any(JCUser.class));
     }

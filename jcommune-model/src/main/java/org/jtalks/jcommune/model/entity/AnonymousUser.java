@@ -14,11 +14,11 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import org.jtalks.common.model.entity.Group;
-import org.springframework.security.core.GrantedAuthority;
-
 import java.util.Collection;
 import java.util.List;
+
+import org.jtalks.common.model.entity.Group;
+import org.springframework.security.core.GrantedAuthority;
 
 /**
  * Represents anonymous user.

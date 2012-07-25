@@ -27,7 +27,6 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.UserDataCacheService;
 import org.mockito.Mock;
-import org.springframework.security.access.AccessDeniedException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -211,7 +210,7 @@ public class TransactionalPrivateMessageServiceTest {
         PrivateMessage pm = pmService.get(PM_ID);
     }
 
-    @Test(expectedExceptions = AccessDeniedException.class)
+    @Test(expectedExceptions = NotFoundException.class)
     public void testGetNotFoundIfUserHasNoAccessToDeletedPmFromOutBox() throws NotFoundException {
         PrivateMessage message = new PrivateMessage(user, user, null, null);
         message.setStatus(PrivateMessageStatus.DELETED_FROM_OUTBOX);
@@ -224,7 +223,7 @@ public class TransactionalPrivateMessageServiceTest {
         verify(pmDao).get(PM_ID);
     }
 
-    @Test(expectedExceptions = AccessDeniedException.class)
+    @Test(expectedExceptions = NotFoundException.class)
     public void testGetNotFoundIfUserHasNoAccessToDeletePmFromInbox() throws NotFoundException {
         PrivateMessage message = new PrivateMessage(user, user, null, null);
         message.setStatus(PrivateMessageStatus.DELETED_FROM_INBOX);

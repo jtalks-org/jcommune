@@ -13,6 +13,8 @@ INSERT INTO `acl_class` VALUES (1,'BRANCH');
 INSERT INTO `acl_sid` VALUES (1,0,'usergroup:11');
 INSERT INTO `acl_sid` VALUES (3,0,'usergroup:12');
 INSERT INTO `acl_sid` VALUES (2,0,'usergroup:13');
+INSERT INTO `acl_sid` VALUES (4,0,'usergroup:1');
+INSERT INTO `acl_sid` VALUES (5,1,'user:anonymousUser');
 
 INSERT INTO `acl_object_identity` VALUES (1,1,1,NULL,1,1);
 INSERT INTO `acl_object_identity` VALUES (2,1,2,NULL,1,1);
@@ -107,3 +109,7 @@ INSERT INTO `acl_entry` VALUES (85,4,19,3,13,0,0,0);
 INSERT INTO `acl_entry` VALUES (86,4,20,3,10,0,0,0);
 INSERT INTO `acl_entry` VALUES (87,4,21,3,8,0,0,0);
 INSERT INTO `acl_entry` VALUES (88,4,22,3,9,0,0,0);
+INSERT INTO `acl_entry` VALUES (89,1,23,5,17,1,0,0);
+INSERT INTO `acl_entry` VALUES (90,2,23,5,17,1,0,0);
+INSERT INTO `acl_entry` VALUES (91,3,23,5,17,1,0,0);
+INSERT INTO `acl_entry` VALUES (92,4,23,5,17,1,0,0);

@@ -15,20 +15,15 @@
 
 
 function updateSaveButtonState() {
-    console.log("----------- updateSaveButtonState begin---------------");
-    console.log("updateSaveButtonState");
     isContainSomething = ($("#recipient")[0].value != "") || ($("#title")[0].value != "") || ($("#tbMsg")[0].value != "");
     toggleSaveButtonEnabled(isContainSomething);
-    console.log("-------------updateSaveButtonState end------------------");
 }
 
 function toggleSaveButtonEnabled(isContainSomething) {
     if (isContainSomething) {
-        console.log("remove attr disabled");
         $("#savePM").removeAttr('disabled');
         $("#savePM").removeClass('disabled');
     } else {
-        console.log("add attr disabled");
         $("#savePM").attr('disabled', 'disabled');
         $("#savePM").addClass('disabled');
     }
@@ -39,7 +34,6 @@ $(document).ready(function () {
     var mark_class = ".script-confirm-unsaved";
 
     $("input" + mark_class + ", textarea" + mark_class).keyup(function () {
-        console.log("keyup event");
         updateSaveButtonState();
     });
 

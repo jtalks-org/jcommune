@@ -45,9 +45,10 @@
 
         <div class='control-group'>
             <label for='subject' class='control-label'><spring:message code="label.topic.title"/></label>
+            <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>
             <form:input path="topicName" id="subject" type="text" name="subject" size="45"
                         maxlength="255" tabindex="1"
-                        class="post script-confirm-unsaved" placeholder='<spring:message code="label.topic.topic_title"/>'/>
+                        class="post script-confirm-unsaved" placeholder="${topicTitlePlaceholder}"/>
             <br/>
 
             <form:errors path="topicName" id="subject" type="text" name="subject" size="45"
@@ -63,14 +64,6 @@
                 </label>
 
                 <form:errors path="sticked"/>
-            </div>
-            <div class='control-group'>
-                <form:label path="topicWeight" class='control-label'>
-                    <spring:message code="label.weight"/>
-                </form:label>
-                <form:input path="topicWeight" size="1" class="script-confirm-unsaved"/>
-
-                <form:errors path="topicWeight"/>
             </div>
             <div class='control-group'>
                 <form:checkbox path="announcement" value="true" class="script-confirm-unsaved form-check-radio-box"/>

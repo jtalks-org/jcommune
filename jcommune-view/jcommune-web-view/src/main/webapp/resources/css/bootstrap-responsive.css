@@ -424,6 +424,7 @@
   }
   .span4 {
     width: 370px;
+    word-wrap: break-word;
   }
   .span5 {
     width: 470px;

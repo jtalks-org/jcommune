@@ -48,8 +48,6 @@ public class TopicDto {
     @BbCodeAwareSize(min = Post.MIN_LENGTH, max = Post.MAX_LENGTH)
     private String bodyText;
 
-    private int topicWeight;
-
     private boolean sticked;
     private boolean announcement;
     private boolean notifyOnAnswers;
@@ -83,7 +81,6 @@ public class TopicDto {
         topicName = topic.getTitle();
         bodyText = topic.getFirstPost().getPostContent();
         id = topic.getId();
-        topicWeight = topic.getTopicWeight();
         sticked = topic.isSticked();
         announcement = topic.isAnnouncement();
         poll = topic.getPoll();
@@ -142,22 +139,6 @@ public class TopicDto {
     }
 
     /**
-     * @return priority of sticked topic
-     */
-    public int getTopicWeight() {
-        return this.topicWeight;
-    }
-
-    /**
-     * Set priority for a sticked topic.
-     *
-     * @param topicWeight priority(weight) of sticked topic
-     */
-    public void setTopicWeight(int topicWeight) {
-        this.topicWeight = topicWeight;
-    }
-
-    /**
      * @return stickedness flag of topic
      */
     public boolean isSticked() {
@@ -189,34 +170,71 @@ public class TopicDto {
         this.announcement = announcement;
     }
 
+    /**
+     *  Return the poll title.
+     *
+     * @return poll title.
+     */
     public String getPollTitle() {
         return pollTitle;
     }
 
+    /**
+     * Return the poll items.
+     *
+     * @return poll items.
+     */
     public String getPollItems() {
         return pollItems;
     }
 
+    /**
+     * Return the poll ending date.
+     *
+     * @return poll ending date.
+     */
     public String getEndingDate() {
         return endingDate;
     }
 
+    /**
+     * Set the poll title.
+     *
+     * @param pollTitle poll title to set.
+     */
     public void setPollTitle(String pollTitle) {
         this.pollTitle = pollTitle;
     }
 
+    /**
+     * Set the poll items.
+     *
+     * @param pollItems poll items to set.
+     */
     public void setPollItems(String pollItems) {
         this.pollItems = pollItems;
     }
 
+    /**
+     * Return the value indicating that poll allow multiple item selection.
+     * @return <code>true</code> if poll allow multiple item selecting.
+     */
     public boolean isMultiple() {
         return multiple;
     }
 
+    /**
+     * Setting value indicating that poll allow multiple item selection.
+     * @param multiple value, indicating that poll allow multiple item selection.
+     */
     public void setMultiple(boolean multiple) {
         this.multiple = multiple;
     }
 
+    /**
+     * Setting the poll ending date.
+     * @param endingDate poll ending date in {@link org.jtalks.jcommune.web.dto.PollDto .DATE_FORMAT} format.
+     */
     public void setEndingDate(String endingDate) {
         this.endingDate = endingDate;
     }
@@ -237,6 +255,10 @@ public class TopicDto {
         this.notifyOnAnswers = notifyOnAnswers;
     }
 
+    /**
+     * Prepare poll data from this instance.
+     * @return {org.jtalks.jcommune.model.entity.Poll} instance.
+     */
     public Poll preparePollFromTopicDto() {
         Poll poll = new Poll(pollTitle);
         poll.setMultipleAnswer(multiple);
@@ -270,6 +292,10 @@ public class TopicDto {
         return result;
     }
 
+    /**
+     * Return value indicating that topic has the poll.
+     * @return <code>true</code> if the topic has the poll.
+     */
     public boolean hasPoll() {
         return StringUtils.isNotBlank(pollTitle) && StringUtils.isNotBlank(pollItems);
     }

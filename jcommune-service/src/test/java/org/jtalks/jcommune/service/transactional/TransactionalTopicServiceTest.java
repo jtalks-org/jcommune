@@ -75,7 +75,6 @@ public class TransactionalTopicServiceTest {
     final String ANSWER_BODY = "Test Answer Body";
     private final String NEW_TOPIC_TITLE = "new title";
     private final String NEW_POST_CONTENT = "new body";
-    private final int NEW_WEIGHT = 0;
     private final boolean NEW_STICKED = false;
     private final boolean NEW_ANNOUNCEMENT = false;
 
@@ -110,9 +109,9 @@ public class TransactionalTopicServiceTest {
                 notificationService,
                 subscriptionService,
                 userService);
-        
+
         user = new JCUser(USERNAME, "email@mail.com", "password");
-        
+
     }
 
     @Test
@@ -211,9 +210,9 @@ public class TransactionalTopicServiceTest {
         int pageSize = 20;
         List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
         Page<Topic> expectedPage = new PageImpl<Topic>(expectedList);
-        when(topicDao.getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JCommunePageRequest> any()))
-            .thenReturn(expectedPage);
-        
+        when(topicDao.getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JCommunePageRequest>any()))
+                .thenReturn(expectedPage);
+
         JCUser currentUser = new JCUser("current", null, null);
         currentUser.setPageSize(pageSize);
         when(userService.getCurrentUser()).thenReturn(currentUser);
@@ -222,7 +221,7 @@ public class TransactionalTopicServiceTest {
 
         assertNotNull(actualPage);
         assertEquals(expectedPage, actualPage);
-        verify(topicDao).getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JCommunePageRequest> any());
+        verify(topicDao).getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JCommunePageRequest>any());
     }
 
     @Test
@@ -231,8 +230,8 @@ public class TransactionalTopicServiceTest {
         int pageSize = 20;
         List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
         Page<Topic> expectedPage = new PageImpl<Topic>(expectedList);
-        when(topicDao.getUnansweredTopics(Matchers.<JCommunePageRequest> any()))
-            .thenReturn(expectedPage);
+        when(topicDao.getUnansweredTopics(Matchers.<JCommunePageRequest>any()))
+                .thenReturn(expectedPage);
         JCUser currentUser = new JCUser("current", null, null);
         currentUser.setPageSize(pageSize);
         when(userService.getCurrentUser()).thenReturn(currentUser);
@@ -280,8 +279,7 @@ public class TransactionalTopicServiceTest {
 
         updateTopicStubs(topic);
 
-        topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_WEIGHT,
-                NEW_STICKED, NEW_ANNOUNCEMENT, true);
+        topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_STICKED, NEW_ANNOUNCEMENT, true);
 
 
         updateTopicVerifications(topic);
@@ -296,8 +294,7 @@ public class TransactionalTopicServiceTest {
         subscribeUserOnTopic(user, topic);
         updateTopicStubs(topic);
 
-        topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_WEIGHT,
-                NEW_STICKED, NEW_ANNOUNCEMENT, false);
+        topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_STICKED, NEW_ANNOUNCEMENT, false);
 
         updateTopicVerifications(topic);
     }
@@ -310,8 +307,7 @@ public class TransactionalTopicServiceTest {
         subscribeUserOnTopic(user, topic);
         updateTopicStubs(topic);
 
-        topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_WEIGHT,
-                NEW_STICKED, NEW_ANNOUNCEMENT, false);
+        topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_STICKED, NEW_ANNOUNCEMENT, false);
 
         updateTopicVerifications(topic);
         verify(subscriptionService).toggleTopicSubscription(topic);
@@ -325,8 +321,7 @@ public class TransactionalTopicServiceTest {
 
         updateTopicStubs(topic);
 
-        topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_WEIGHT,
-                NEW_STICKED, NEW_ANNOUNCEMENT, false);
+        topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_STICKED, NEW_ANNOUNCEMENT, false);
 
         updateTopicVerifications(topic);
     }
@@ -367,7 +362,6 @@ public class TransactionalTopicServiceTest {
     void testUpdateTopicSimple() throws NotFoundException {
         String newTitle = "new title";
         String newBody = "new body";
-        int newWeight = 0;
         boolean newSticked = false;
         boolean newAnnouncement = false;
         Topic topic = new Topic(user, "title");
@@ -384,7 +378,6 @@ public class TransactionalTopicServiceTest {
 
         assertEquals(topic.getTitle(), newTitle);
         assertEquals(post.getPostContent(), newBody);
-        assertEquals(topic.getTopicWeight(), newWeight);
         assertEquals(topic.isSticked(), newSticked);
         assertEquals(topic.isAnnouncement(), newAnnouncement);
 
@@ -397,12 +390,11 @@ public class TransactionalTopicServiceTest {
     void testUpdateTopicNonExistentTopic() throws NotFoundException {
         String newTitle = "new title";
         String newBody = "new body";
-        int newWeight = 0;
         boolean newSticked = false;
         boolean newAnnouncement = false;
         when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
 
-        topicService.updateTopic(TOPIC_ID, newTitle, newBody, newWeight, newSticked, newAnnouncement, false);
+        topicService.updateTopic(TOPIC_ID, newTitle, newBody, newSticked, newAnnouncement, false);
     }
 
     @Test
@@ -438,22 +430,22 @@ public class TransactionalTopicServiceTest {
 
         topicService.moveTopic(TOPIC_ID, BRANCH_ID);
     }
-    
+
     @Test
     public void testGetTopics() {
         int pageSize = 50;
         Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
-        Page<Topic> expectedPage = new PageImpl<Topic>(Collections.<Topic> emptyList());
-        
+        Page<Topic> expectedPage = new PageImpl<Topic>(Collections.<Topic>emptyList());
+
         JCUser currentUser = new JCUser("current", null, null);
         currentUser.setPageSize(pageSize);
         when(userService.getCurrentUser()).thenReturn(currentUser);
         when(topicDao.getTopics(
                 Matchers.any(Branch.class), Matchers.any(JCommunePageRequest.class)))
-            .thenReturn(expectedPage);
-        
+                .thenReturn(expectedPage);
+
         Page<Topic> actualPage = topicService.getTopics(branch, pageSize, true);
-        
+
         assertEquals(actualPage, expectedPage, "Service returned incorrect data for one page of topics");
         verify(topicDao).getTopics(
                 Matchers.any(Branch.class), Matchers.any(JCommunePageRequest.class));

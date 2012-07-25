@@ -29,9 +29,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
-import static ch.lambdaj.Lambda.closure;
-import static ch.lambdaj.Lambda.of;
-import static ch.lambdaj.Lambda.var;
+import static ch.lambdaj.Lambda.*;
 
 /**
  * The implementation of the {@link PollService}.
@@ -102,6 +100,9 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
         return poll;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void createPoll(Poll poll) {
         this.getDao().update(poll);

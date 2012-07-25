@@ -97,7 +97,7 @@ public class TopicController {
      * @param lastReadPostService to perform post-related actions
      * @param locationService     to track user location on forum (what page he is viewing now)
      * @param sessionRegistry     to obtain list of users currently online
-     * @param userService     to determine the current user logged in
+     * @param userService         to determine the current user logged in
      * @param breadcrumbBuilder   to create Breadcrumbs for pages
      * @param pollService         to create a poll and vote in a poll
      */
@@ -160,7 +160,7 @@ public class TopicController {
         }
 
         Topic createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(),
-                branchId,topicDto.isNotifyOnAnswers());
+                branchId, topicDto.isNotifyOnAnswers());
 
         if (topicDto.hasPoll()) {
             Poll poll = topicDto.preparePollFromTopicDto();
@@ -271,14 +271,17 @@ public class TopicController {
                                   @RequestParam(BRANCH_ID) Long branchId,
                                   @PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
         if (result.hasErrors()) {
+            Topic topic = topicService.get(topicId);
             return new ModelAndView("editTopic")
+                    .addObject("topicDto", topicDto)
+                    .addObject("topic", topic)
                     .addObject(BRANCH_ID, branchId)
-                    .addObject(TOPIC_ID, topicId);
+                    .addObject(TOPIC_ID, topicId)
+                    .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
         }
 
         topicService.updateTopic(topicDto.getId(), topicDto.getTopicName(),
-                topicDto.getBodyText(), topicDto.getTopicWeight(),
-                topicDto.isSticked(),topicDto.isAnnouncement(), topicDto.isNotifyOnAnswers());
+                topicDto.getBodyText(), topicDto.isSticked(), topicDto.isAnnouncement(), topicDto.isNotifyOnAnswers());
 
         return new ModelAndView("redirect:/topics/" + topicId);
     }

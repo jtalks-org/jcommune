@@ -14,13 +14,14 @@
  */
 package org.jtalks.jcommune.web.listeners;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
+
 import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
 import java.util.concurrent.TimeUnit;
 
 /**

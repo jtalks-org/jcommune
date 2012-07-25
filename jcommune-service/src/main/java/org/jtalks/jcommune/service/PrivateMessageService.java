@@ -73,7 +73,7 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
      * @throws NotFoundException if the receiver does not exist.
      */
     void saveDraft(long id, String recipient, String title, String body, JCUser userFrom)
-    throws NotFoundException;
+            throws NotFoundException;
 
     /**
      * Get count of new messages for current user.
@@ -95,7 +95,7 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
      * @throws NotFoundException if the receiver does not exist
      */
     PrivateMessage sendDraft(long id, String title, String body, JCUser recipient, JCUser userFrom)
-    throws NotFoundException;
+            throws NotFoundException;
 
     /**
      * Delete or change status of messages by id.
