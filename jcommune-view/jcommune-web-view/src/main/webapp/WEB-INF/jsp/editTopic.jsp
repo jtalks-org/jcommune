@@ -45,9 +45,10 @@
 
         <div class='control-group'>
             <label for='subject' class='control-label'><spring:message code="label.topic.title"/></label>
+            <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>
             <form:input path="topicName" id="subject" type="text" name="subject" size="45"
                         maxlength="255" tabindex="1"
-                        class="post script-confirm-unsaved" placeholder='<spring:message code="label.topic.topic_title"/>'/>
+                        class="post script-confirm-unsaved" placeholder="${topicTitlePlaceholder}"/>
             <br/>
 
             <form:errors path="topicName" id="subject" type="text" name="subject" size="45"
