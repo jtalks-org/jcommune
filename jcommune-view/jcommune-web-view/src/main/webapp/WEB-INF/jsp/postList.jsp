@@ -370,12 +370,10 @@
 <%-- Users --%>
 <div id="users-stats" class="well forum-user-stats-container">
    <strong><spring:message code="label.topic.moderators"/></strong>
-   <a href="#" title="<spring:message code='label.tips.view_profile'/>">andreyko</a>
-   <a href="#" class="label label-success" title="<spring:message code='label.tips.view_profile'/>">Староверъ</a>
-   <a href="#" class="label label-important" title="<spring:message code='label.tips.view_profile'/>">admin</a>
+   <jtalks:moderators moderators="${topic.branch.moderatorsGroup.users}"/>
    <br/>
    <strong><spring:message code="label.branch.now_browsing"/></strong>
-    <jtalks:users users="${viewList}" branch="${topic.branch}"/>
+   <jtalks:users users="${viewList}" branch="${topic.branch}"/>
 </div>
 <%-- END OF Users --%>
  
