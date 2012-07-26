@@ -15,6 +15,15 @@
 
 package org.jtalks.jcommune.web.controller;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
+
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -37,19 +46,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * Controller for processing avatar related request.
@@ -93,14 +92,14 @@ public class AvatarController {
      */
     @RequestMapping(value = "/users/IFrameAvatarpreview", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<String> uploadAvatar(DefaultMultipartHttpServletRequest request,
+    public ResponseEntity<String> uploadAvatar(@RequestParam(value = "qqfile") MultipartFile file,
                                                Locale locale) throws ServletException, IOException {
         //prepare response parameters
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.setContentType(MediaType.TEXT_HTML);
         Map<String, String> responseContent = new HashMap<String, String>();
 
-        return prepareResponse(request, responseHeaders, responseContent, locale);
+        return prepareResponse(file, responseHeaders, responseContent, locale);
     }
 
     /**
@@ -167,18 +166,12 @@ public class AvatarController {
      * @return ResponseEntity with avatar processing results
      * @throws IOException defined in the JsonFactory implementation, caller must implement exception processing
      */
-    private ResponseEntity<String> prepareResponse(DefaultMultipartHttpServletRequest request,
+    private ResponseEntity<String> prepareResponse(MultipartFile file,
                                                    HttpHeaders responseHeaders,
                                                    Map<String, String> responseContent,
                                                    Locale locale) throws IOException {
 
         HttpStatus statusCode = HttpStatus.INTERNAL_SERVER_ERROR; //default
-
-        //get input file
-        Map<String, MultipartFile> fileMap = request.getFileMap();
-        Collection<MultipartFile> fileCollection = fileMap.values();
-        Iterator<MultipartFile> fileIterator = fileCollection.iterator();
-        MultipartFile file = fileIterator.next();
 
         try {
             avatarService.validateAvatarFormat(file);
