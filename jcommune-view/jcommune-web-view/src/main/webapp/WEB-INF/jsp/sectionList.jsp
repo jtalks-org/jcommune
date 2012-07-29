@@ -22,119 +22,135 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <head>
-   <title><spring:message code="label.section.jtalks_forum"/></title>
+    <title><spring:message code="label.section.jtalks_forum"/></title>
 </head>
 <body>
- 
+
 <div class="container">
-       
-   <div class="row forum-sections-header">
-       <a href="${pageContext.request.contextPath}/">
-           <h1 class="pull-left logo-text">
-               <spring:message code="label.section.jtalks_forum"/>
-           </h1>
-       </a>
-       <div class="pull-right">
+
+    <div class="row forum-sections-header">
+        <a href="${pageContext.request.contextPath}/">
+            <h1 class="pull-left logo-text">
+                <spring:message code="label.section.jtalks_forum"/>
+            </h1>
+        </a>
+
+        <div class="pull-right">
            <span class="forum-sections-header-actions">
-               <a href="${pageContext.request.contextPath}/topics/recent" title="" class="forum-sections-recent-unanswered">
+               <a href="${pageContext.request.contextPath}/topics/recent" title=""
+                  class="forum-sections-recent-unanswered">
                    <spring:message code="label.recent"/>
                </a>
-               <br />
-               <a href="${pageContext.request.contextPath}/topics/unanswered" title="" class="forum-sections-recent-unanswered">
+               <br/>
+               <a href="${pageContext.request.contextPath}/topics/unanswered" title=""
+                  class="forum-sections-recent-unanswered">
                    <spring:message code="label.messagesWithoutAnswers"/>
                </a>
            </span>
-           <a href="${pageContext.request.contextPath}/topics/recent.rss" title="<spring:message code='label.tips.feed_subsription'/>">
-               <img src="${pageContext.request.contextPath}/resources/images/rss-icon.png" alt="" class="rss-icon">
-           </a>
-       </div>
-   </div>
-   <hr class="forum-pagination"/>
-     
-   <%-- Topics table --%>
-   <c:forEach var="section" items="${sectionList}">
-       <h3>
-           <a href="${pageContext.request.contextPath}/sections/${section.id}">
-               <c:out value="${section.name}"/>
-           </a>
-       </h3>
- 
-       <table id="topics-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
-           <tbody>
-               <c:forEach var="branch" items="${section.branches}" varStatus="i">
-                   <tr>
-                       <td class="status-col">
-                           <img class="status-img" src="${pageContext.request.contextPath}/resources/images/closed.png" 
-                                alt=""
-                                title='<spring:message code="label.section.close_forum"/>'/>
-                       </td>
-                       <td  class="title-col">
-                           <a class="branch-title" href="${pageContext.request.contextPath}/branches/${branch.id}">
-                               <c:out value="${branch.name}"/>
-                           </a>           
-                           <br />
-                           <span class="forum-sections-branch-description-container"><c:out value="${branch.description}"/></span>
-                           <br />
-                           <div class="forum-sections-moderators-container">
-                               <span><spring:message code="label.section.moderators"/></span>
-                               <jtalks:moderators moderators="${branch.moderatorsGroup.users}"/>
-                           </div>
-                       </td>
-                       <td class="topics-posts">
-                           <spring:message code="label.section.header.topics"/>: <span class='test-topics-count'><c:out value="${branch.topicCount}"/></span><br />
-                           <spring:message code="label.section.header.messages"/>: <span class='test-posts-count'><c:out value="${branch.postCount}"/></span></td>
-                           
-                       <td class="latest-by">
-                           <c:if test="${branch.topicCount>0}">
-                               <i class="icon-calendar"></i>
-                               <a class="date" href="${pageContext.request.contextPath}/posts/${branch.lastPostInLastUpdatedTopic.id}">
-                                   <jtalks:format value="${branch.lastPostInLastUpdatedTopic.creationDate}"/>
-                               </a>
-                               <p><spring:message code="label.topic.last_post_by"/>                                     
-                                   <a href="${pageContext.request.contextPath}/users/${branch.lastPostInLastUpdatedTopic.userCreated.id}">
-                                       <c:out value="${branch.lastPostInLastUpdatedTopic.userCreated.username}"/>
-                                   </a>
-                               </p>
-                           </c:if>
-                       </td>
-                   </tr>
-               </c:forEach>
-           </tbody>
-       </table>    
-   </c:forEach>        
-   <%-- END OF Topics table --%>
-   
-   <div class="well forum-sections-stats-container">
-       <strong><spring:message code="label.onlineUsersInfo.messagesCount"/> </strong><span class="test-messages"><c:out value="${messagesCount}"/></span>
-       <br />
-       <strong><spring:message code="label.onlineUsersInfo.registeredUsers.count"/> </strong><span class="test-registered-users"><c:out value="${registeredUsersCount}"/></span>
-   </div>
-   
-   <%-- Users --%>
-   <div id="users-stats" class="well forum-sections-userstats-container">
-       <strong><spring:message code="label.onlineUsersInfo.visitors"/> </strong><span class='test-visitors-total'><c:out value="${visitors}"/></span>,
-       <spring:message code="label.onlineUsersInfo.visitors.registered"/> <span class='test-visitors-registered'><c:out value="${visitorsRegistered}"/></span>,
-       <spring:message code="label.onlineUsersInfo.visitors.guests"/> <span class='test-visitors-guests'><c:out value="${visitorsGuests}"/></span>
-       <br />
-       <c:if test="${!(empty usersRegistered)}">
-           <strong><spring:message code="label.onlineUsersInfo.registeredUsers"/></strong>
-           <c:forEach items="${usersRegistered}" var="user">
-               <%--todo
-                <c:choose>
-                   <c:when test="${user.role=='ROLE_ADMIN'}">
-                       <a href="${pageContext.request.contextPath}/users/${user.id}"
-                                title="<spring:message code='label.tips.view_profile'/>"
-                                class="label label-important"><c:out value="${user.username}"/></a>
-                   </c:when>--%>
-                   <%--<c:otherwise>--%>
-                       <a href="${pageContext.request.contextPath}/users/${user.id}"
-                                title="<spring:message code='label.tips.view_profile'/>">
-                               <c:out value="${user.username}"/></a>
-                   <%--</c:otherwise>
-                </c:choose>       --%>
-           </c:forEach>
-       </c:if>
-   </div>
-   <%-- END OF Users --%>
+            <a href="${pageContext.request.contextPath}/topics/recent.rss"
+               title="<spring:message code='label.tips.feed_subsription'/>">
+                <img src="${pageContext.request.contextPath}/resources/images/rss-icon.png" alt="" class="rss-icon">
+            </a>
+        </div>
+    </div>
+    <hr class="forum-pagination"/>
+
+    <%-- Topics table --%>
+    <c:forEach var="section" items="${sectionList}">
+        <h3>
+            <a href="${pageContext.request.contextPath}/sections/${section.id}">
+                <c:out value="${section.name}"/>
+            </a>
+        </h3>
+
+        <table id="topics-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+            <tbody>
+            <c:forEach var="branch" items="${section.branches}" varStatus="i">
+                <tr>
+                    <td class="status-col">
+                        <img class="status-img" src="${pageContext.request.contextPath}/resources/images/closed.png"
+                             alt=""
+                             title='<spring:message code="label.section.close_forum"/>'/>
+                    </td>
+                    <td class="title-col">
+                        <a class="branch-title" href="${pageContext.request.contextPath}/branches/${branch.id}">
+                            <c:out value="${branch.name}"/>
+                        </a>
+                        <br/>
+                        <span class="forum-sections-branch-description-container"><c:out
+                                value="${branch.description}"/></span>
+                        <br/>
+
+                        <div class="forum-sections-moderators-container">
+                            <strong><spring:message code="label.section.moderators"/></strong>
+                            <jtalks:moderators moderators="${branch.moderatorsGroup.users}"/>
+                        </div>
+                    </td>
+                    <td class="topics-posts">
+                        <spring:message code="label.section.header.topics"/>: <span class='test-topics-count'><c:out
+                            value="${branch.topicCount}"/></span><br/>
+                        <spring:message code="label.section.header.messages"/>: <span class='test-posts-count'><c:out
+                            value="${branch.postCount}"/></span></td>
+
+                    <td class="latest-by">
+                        <c:if test="${branch.topicCount>0}">
+                            <i class="icon-calendar"></i>
+                            <a class="date"
+                               href="${pageContext.request.contextPath}/posts/${branch.lastPostInLastUpdatedTopic.id}">
+                                <jtalks:format value="${branch.lastPostInLastUpdatedTopic.creationDate}"/>
+                            </a>
+
+                            <p><spring:message code="label.topic.last_post_by"/>
+                                <a href="${pageContext.request.contextPath}/users/${branch.lastPostInLastUpdatedTopic.userCreated.id}">
+                                    <c:out value="${branch.lastPostInLastUpdatedTopic.userCreated.username}"/>
+                                </a>
+                            </p>
+                        </c:if>
+                    </td>
+                </tr>
+            </c:forEach>
+            </tbody>
+        </table>
+    </c:forEach>
+    <%-- END OF Topics table --%>
+
+    <div class="well forum-sections-stats-container">
+        <strong>
+            <spring:message code="label.onlineUsersInfo.messagesCount"/>
+        </strong>
+        <span class="test-messages">
+            <c:out value="${messagesCount}"/>
+        </span>
+        <br/>
+        <strong>
+            <spring:message code="label.onlineUsersInfo.registeredUsers.count"/>
+        </strong>
+        <span class="test-registered-users">
+            <c:out value="${registeredUsersCount}"/>
+        </span>
+    </div>
+
+    <%-- Users --%>
+    <div id="users-stats" class="well forum-sections-userstats-container">
+        <strong><spring:message code="label.onlineUsersInfo.visitors"/> </strong>
+        <span class='test-visitors-total'>
+            <c:out value="${visitors}"/>
+        </span>,
+        <spring:message code="label.onlineUsersInfo.visitors.registered"/>
+        <span class='test-visitors-registered'>
+            <c:out value="${visitorsRegistered}"/>
+        </span>,
+        <spring:message code="label.onlineUsersInfo.visitors.guests"/>
+        <span class='test-visitors-guests'>
+            <c:out value="${visitorsGuests}"/>
+        </span>
+        <br/>
+
+        <strong>
+            <spring:message code="label.onlineUsersInfo.registeredUsers"/>
+        </strong>
+        <jtalks:users users="${usersRegistered}"/>
+    </div>
+    <%-- END OF Users --%>
 </div>
 </body>

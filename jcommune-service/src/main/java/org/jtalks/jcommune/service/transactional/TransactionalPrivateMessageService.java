@@ -27,7 +27,6 @@ import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.UserDataCacheService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
@@ -128,8 +127,12 @@ public class TransactionalPrivateMessageService
      */
     @Override
     @PreAuthorize("hasPermission(#userFrom.id, 'USER', 'ProfilePermission.SEND_PRIVATE_MESSAGES')")
-    public PrivateMessage saveDraft(long id, String title, String body, JCUser recipient, JCUser userFrom) {
-        PrivateMessage pm = new PrivateMessage(recipient, userFrom, title, body);
+    public void saveDraft(long id, String recipient, String title, String body, JCUser userFrom) 
+        throws NotFoundException {
+
+        JCUser userTo = recipient != null ? userService.getByUsername(recipient) : null;
+
+        PrivateMessage pm = new PrivateMessage(userTo, userFrom, title, body);
         pm.setId(id);
         pm.setStatus(PrivateMessageStatus.DRAFT);
         this.getDao().saveOrUpdate(pm);
@@ -140,7 +143,6 @@ public class TransactionalPrivateMessageService
 
         logger.debug("Updated private message draft. Message id={}", pm.getId());
 
-        return pm;
     }
 
     /**
@@ -199,8 +201,7 @@ public class TransactionalPrivateMessageService
     public PrivateMessage get(Long id) throws NotFoundException {
         PrivateMessage pm = super.get(id);
         if (!hasCurrentUserAccessToPM(pm)) {
-            // todo: mb we should refactor it to use permissions instead
-            throw new AccessDeniedException(String.format("current user has no right to read pm %s with id %d",
+            throw new NotFoundException(String.format("current user has no right to read pm %s with id %d",
                     userService.getCurrentUser(), id));
         }
         if (this.ifMessageShouldBeMarkedAsRead(pm)) {
@@ -213,12 +214,12 @@ public class TransactionalPrivateMessageService
 
     /**
      * Checks if the private message should be marked as read.
-     * The following conditions are checked:
-     * <p>1. Current user is the recipient
+     * The follwing conditions are checked:
+     * <p>1. Current user is the recepient
      * <p>2. Message is not read already
      * <p>3. Message is not a draft
      *
-     * @param pm private message to be tested
+     * @param pm private messag to be tested
      * @return if message should be marked as read
      */
     private boolean ifMessageShouldBeMarkedAsRead(PrivateMessage pm) {

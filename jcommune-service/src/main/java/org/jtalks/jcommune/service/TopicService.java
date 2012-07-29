@@ -100,7 +100,7 @@ public interface TopicService extends EntityService<Topic> {
     /**
      * Delete topic by id.
      *
-     * @param topicId  topic id
+     * @param topicId topic id
      * @return branch from which topic deleted
      * @throws NotFoundException when topic not found
      */

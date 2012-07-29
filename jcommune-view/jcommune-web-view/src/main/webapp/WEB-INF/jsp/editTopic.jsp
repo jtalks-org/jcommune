@@ -45,9 +45,10 @@
 
         <div class='control-group'>
             <label for='subject' class='control-label'><spring:message code="label.topic.title"/></label>
+            <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>
             <form:input path="topic.title" id="subject" type="text" name="subject" size="45"
                         maxlength="255" tabindex="1"
-                        class="post script-confirm-unsaved" placeholder='<spring:message code="label.topic.topic_title"/>'/>
+                        class="post script-confirm-unsaved" placeholder="${topicTitlePlaceholder}"/>
             <br/>
 
             <form:errors path="topic.title" id="subject" type="text" name="subject" size="45"
@@ -65,14 +66,6 @@
                 <form:errors path="topic.sticked"/>
             </div>
             <div class='control-group'>
-                <form:label path="topic.topicWeight" class='control-label'>
-                    <spring:message code="label.weight"/>
-                </form:label>
-                <form:input path="topic.topicWeight" size="1" class="confirm-unsaved"/>
-
-                <form:errors path="topic.topicWeight"/>
-            </div>
-            <div class='control-group'>
                 <form:checkbox path="announcement" value="true" class="script-confirm-unsaved form-check-radio-box"/>
                 <label for='announcement' class='string optional'>
                     <spring:message code="label.announcement"/>
@@ -83,7 +76,7 @@
         </sec:accesscontrollist>
 
         <jtalks:bbeditor labelForAction="label.save"
-                         postText="${topicDto.topic.bodyText}"
+                         postText="${topic.bodyText}"
                          bodyParameterName="bodyText"
                          back="${pageContext.request.contextPath}/topics/${topicId}"/>
         <div class="control-group">

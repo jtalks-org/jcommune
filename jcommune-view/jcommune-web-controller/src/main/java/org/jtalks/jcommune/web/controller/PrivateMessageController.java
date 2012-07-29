@@ -80,7 +80,7 @@ public class PrivateMessageController {
      */
     @Autowired
     public PrivateMessageController(PrivateMessageService pmService, BBCodeService bbCodeService,
-                                     UserService userService) {
+                                    UserService userService) {
         this.pmService = pmService;
         this.bbCodeService = bbCodeService;
         this.userService = userService;
@@ -239,24 +239,18 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/pm/save", method = {RequestMethod.POST, RequestMethod.GET})
     public String saveDraft(@ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
+        String targetView = "redirect:/drafts";
+        
+        JCUser userFrom = userService.getCurrentUser();
         try {
-            if (pmDto.getBody() == null && pmDto.getTitle() == null && pmDto.getRecipient() == null) {
-                result.rejectValue("title", "validation.draft.need.at.least.one.field");
-                result.rejectValue("body", "validation.draft.need.at.least.one.field");
-                result.rejectValue("recipient", "validation.draft.need.at.least.one.field");
-                return PM_FORM;
-            } else {
-                // todo: we can easily get current user in service
-                JCUser userFrom = userService.getCurrentUser();
-                JCUser userTo =  userService.getByUsername(pmDto.getRecipient());
-                pmService.saveDraft(pmDto.getId(), pmDto.getTitle(), pmDto.getBody(), userTo, userFrom );
-                return "redirect:/drafts";
-            }
+            pmService.saveDraft(pmDto.getId(), pmDto.getRecipient(), pmDto.getTitle(), pmDto.getBody(), userFrom);
 
         } catch (NotFoundException e) {
             result.rejectValue("recipient", "validation.wrong_recipient");
-            return PM_FORM;
+            targetView = PM_FORM;
         }
+
+        return targetView;
     }
 
     /**

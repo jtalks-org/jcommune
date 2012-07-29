@@ -190,7 +190,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     public void updateTopic(Topic topicDto, String bodyText, boolean notifyOnAnswers) throws NotFoundException {
         Topic topic = get(topicDto.getId());
         topic.setTitle(topicDto.getTitle());
-        topic.setTopicWeight(topicDto.getTopicWeight());
         topic.setSticked(topicDto.isSticked());
         topic.setAnnouncement(topicDto.isAnnouncement());
         Post post = topic.getFirstPost();
@@ -228,13 +227,13 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         long branchId = topic.getBranch().getId();
         return deleteTopic(topic, branchId);
     }
-    
-    
+
+
     /**
      * Performs actual topic deleting with permission check
      *
-     * @param topic             topic to delete
-     * @param branchId          used for annotation permission check only
+     * @param topic    topic to delete
+     * @param branchId used for annotation permission check only
      * @return branch without deleted topic
      */
     @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.DELETE_TOPICS')")

@@ -97,7 +97,7 @@ public class UserControllerTest {
     @Test
     public void testRestorePassword() throws IOException, NotFoundException, MailingFailedException {
         RestorePasswordDto dto = new RestorePasswordDto();
-        dto.setEmail(EMAIL);
+        dto.setUserEmail(EMAIL);
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "email");
         ModelAndView mav = userController.restorePassword(dto, bindingResult);
         verify(userService, times(1)).restorePassword(EMAIL);
@@ -107,7 +107,7 @@ public class UserControllerTest {
     @Test
     public void testRestorePasswordWrongMail() throws IOException, NotFoundException, MailingFailedException {
         RestorePasswordDto dto = new RestorePasswordDto();
-        dto.setEmail(EMAIL);
+        dto.setUserEmail(EMAIL);
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "email");
         bindingResult.addError(new FieldError("", "", ""));
         ModelAndView mav = userController.restorePassword(dto, bindingResult);
@@ -120,7 +120,7 @@ public class UserControllerTest {
         Exception fail = new MailingFailedException(new RuntimeException());
         doThrow(fail).when(userService).restorePassword(anyString());
         RestorePasswordDto dto = new RestorePasswordDto();
-        dto.setEmail(EMAIL);
+        dto.setUserEmail(EMAIL);
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "email");
         ModelAndView mav = userController.restorePassword(dto, bindingResult);
         verify(userService, times(1)).restorePassword(EMAIL);

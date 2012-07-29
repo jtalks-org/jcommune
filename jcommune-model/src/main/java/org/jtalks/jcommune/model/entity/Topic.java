@@ -131,7 +131,6 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     @NotBlank
     @Size(min = Topic.MIN_NAME_SIZE, max = Topic.MAX_NAME_SIZE)
     private String title;
-    private int topicWeight;
     private boolean sticked;
     private boolean announcement;
     private Branch branch;
@@ -348,20 +347,6 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     }
 
     /**
-     * @return priority of a sticked topic
-     */
-    public int getTopicWeight() {
-        return this.topicWeight;
-    }
-
-    /**
-     * @param topicWeight a priority for a sticked topic
-     */
-    public void setTopicWeight(int topicWeight) {
-        this.topicWeight = topicWeight;
-    }
-
-    /**
      * @return flag og stickedness
      */
     public boolean isSticked() {
@@ -373,9 +358,6 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      */
     public void setSticked(boolean sticked) {
         this.sticked = sticked;
-        if (!sticked) {
-            topicWeight = 0;
-        }
     }
 
     /**

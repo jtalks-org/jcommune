@@ -76,7 +76,6 @@ public class TransactionalTopicServiceTest {
     private final String ANSWER_BODY = "Test Answer Body";
     private final String NEW_TOPIC_TITLE = "new title";
     private final String NEW_POST_CONTENT = "new body";
-    private final int NEW_WEIGHT = 0;
     private final boolean NEW_STICKED = false;
     private final boolean NEW_ANNOUNCEMENT = false;
 
@@ -288,7 +287,6 @@ public class TransactionalTopicServiceTest {
         newTopic.setId(topic.getId());
         topicService.updateTopic(newTopic, NEW_POST_CONTENT, true);
 
-
         updateTopicVerifications(topic);
         verify(subscriptionService).toggleTopicSubscription(topic);
     }
@@ -367,7 +365,6 @@ public class TransactionalTopicServiceTest {
 
         assertEquals(topic.getTitle(), NEW_TOPIC_TITLE);
         assertEquals(post.getPostContent(), NEW_POST_CONTENT);
-        assertEquals(topic.getTopicWeight(), NEW_WEIGHT);
         assertEquals(topic.isSticked(), NEW_STICKED);
         assertEquals(topic.isAnnouncement(), NEW_ANNOUNCEMENT);
 
@@ -381,7 +378,6 @@ public class TransactionalTopicServiceTest {
         Topic topic = new Topic();
         topic.setTitle("new title");
         String newBody = "new body";
-        topic.setTopicWeight(0);
         topic.setSticked(false);
         topic.setAnnouncement(false);
         when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
@@ -461,7 +457,6 @@ public class TransactionalTopicServiceTest {
     private Topic createNewTopic() {
         Topic topic = new Topic();
         topic.setTitle(NEW_TOPIC_TITLE);
-        topic.setTopicWeight(NEW_WEIGHT);
         topic.setSticked(NEW_STICKED);
         topic.setAnnouncement(NEW_ANNOUNCEMENT);
         return topic;
