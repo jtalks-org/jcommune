@@ -47,7 +47,8 @@
                         </constructor-arg>
                 </bean>
         </property>
-     </bean>
-
+    </bean>
+     
+    <bean id="jsonUtils" class="org.jtalks.jcommune.web.util.JSONUtils"/>
 </beans>
 

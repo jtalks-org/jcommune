@@ -24,7 +24,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -32,9 +31,6 @@ import java.util.Map;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.ImageFormatException;
@@ -43,6 +39,7 @@ import org.jtalks.jcommune.service.exceptions.ImageSizeException;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
+import org.jtalks.jcommune.web.util.JSONUtils;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.springframework.context.MessageSource;
@@ -68,6 +65,8 @@ public class AvatarControllerTest {
     private UserService userService;
     @Mock
     private MessageSource messageSource;
+    @Mock
+    private JSONUtils jsonUtils;
 
     private AvatarController avatarController;
 
@@ -96,14 +95,17 @@ public class AvatarControllerTest {
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
-        avatarController = new AvatarController(avatarService,  userService, messageSource);
+        avatarController = new AvatarController(avatarService,  userService, messageSource, jsonUtils);
     }
 
     @Test(dataProvider = "validDataForOperaIE")
-    public void testValidUploadAvatarForOperaIE(MultipartFile file,
-                                                ResponseEntity<String> expectedResponseEntity) throws Exception {
+    public void testValidUploadAvatarForOperaIE(
+            MultipartFile file,
+            ResponseEntity<String> expectedResponseEntity,
+            String imageJSON) throws Exception {
         //set expectations
         when(avatarService.convertBytesToBase64String(validAvatar)).thenReturn(SRC_IMG);
+        when(jsonUtils.prepareJSONString(Matchers.anyMap())).thenReturn(imageJSON);
 
         //invoke object under test
         ResponseEntity<String> actualResponseEntity = avatarController.uploadAvatar(file, locale);
@@ -119,13 +121,15 @@ public class AvatarControllerTest {
     }
 
     @Test(dataProvider = "invalidDataForOperaIE")
-    public void testErrorUploadAvatarDueNonImageDataForOperaIE(MultipartFile file,
-                                                               ResponseEntity<String> expectedResponseEntity)
-            throws Exception {
+    public void testErrorUploadAvatarDueNonImageDataForOperaIE(
+            MultipartFile file,
+            ResponseEntity<String> expectedResponseEntity,
+            String errorJSON) throws Exception {
         //set expectations
         when(avatarService.convertBytesToBase64String(validAvatar)).thenThrow(new ImageProcessException());
         when(messageSource.getMessage(
                 eq("avatar.500.common.error"), Matchers.<Object[]>any(), Matchers.<Locale>any())).thenReturn(message);
+        when(jsonUtils.prepareJSONString(Matchers.anyMap())).thenReturn(errorJSON);
 
         //invoke object under test
         ResponseEntity<String> actualResponseEntity = avatarController.uploadAvatar(file, locale);
@@ -141,13 +145,15 @@ public class AvatarControllerTest {
     }
 
     @Test(dataProvider = "invalidDataForOperaIE")
-    public void testErrorUploadAvatarDueInvalidImageFormatForOperaIE(MultipartFile file,
-                                                                     ResponseEntity<String> expectedResponseEntity)
-            throws Exception {
+    public void testErrorUploadAvatarDueInvalidImageFormatForOperaIE(
+            MultipartFile file, 
+            ResponseEntity<String> expectedResponseEntity,
+            String errorJSON) throws Exception {
         //set expectations
         doThrow(new ImageFormatException()).when(avatarService).validateAvatarFormat(file);
         when(messageSource.getMessage(
                 eq("image.wrong.format"), Matchers.<Object[]>any(), Matchers.<Locale>any())).thenReturn(message);
+        when(jsonUtils.prepareJSONString(Matchers.anyMap())).thenReturn(errorJSON);
 
         //invoke objects under test
         ResponseEntity<String> actualResponseEntity = avatarController.uploadAvatar(file, locale);
@@ -163,9 +169,10 @@ public class AvatarControllerTest {
     }
 
     @Test(dataProvider = "invalidDataForOperaIE")
-    public void testErrorUploadAvatarDueInvalidImageSizeForOperaIE(MultipartFile file,
-                                                                   ResponseEntity<String> expectedResponseEntity)
-            throws Exception {
+    public void testErrorUploadAvatarDueInvalidImageSizeForOperaIE(
+            MultipartFile file,
+            ResponseEntity<String> expectedResponseEntity,
+            String errorJSON) throws Exception {
         //setUp
         byte[] bytes = file.getBytes();
 
@@ -173,6 +180,7 @@ public class AvatarControllerTest {
         doThrow(new ImageSizeException()).when(avatarService).validateAvatarSize(bytes);
         when(messageSource.getMessage(
                 eq("image.wrong.size" + " " + AvatarService.MAX_SIZE), Matchers.<Object[]>any(), Matchers.<Locale>any())).thenReturn(message);
+        when(jsonUtils.prepareJSONString(Matchers.anyMap())).thenReturn(errorJSON);
 
         //invoke objects under test
         ResponseEntity<String> actualResponseEntity = avatarController.uploadAvatar(file, locale);
@@ -288,19 +296,21 @@ public class AvatarControllerTest {
     }
 
     @Test(dataProvider = "testDataForGetDefaultAvatar")
-    public void testGetDefaultAvatar(String srcImage, String expected) throws IOException, ImageProcessException {
+    public void testGetDefaultAvatar(String srcImage) throws IOException, ImageProcessException {
+        String expectedJSON = "{\"team\": \"larks\"}";
         //set expectations
         when(avatarService.getDefaultAvatar()).thenReturn(validAvatar);
         when(avatarService.convertBytesToBase64String(validAvatar)).thenReturn(srcImage);
+        when(jsonUtils.prepareJSONString(Matchers.anyMap())).thenReturn(expectedJSON);
 
         //invoke object under test
-        String actual = avatarController.getDefaultAvatar();
+        String actualJSON = avatarController.getDefaultAvatar();
 
         //check expectations
         verify(avatarService).getDefaultAvatar();
-
+        verify(jsonUtils).prepareJSONString(Matchers.anyMap());
         //check result
-        assertEquals(actual, expected);
+        assertEquals(actualJSON, expectedJSON);
     }
 
     @DataProvider
@@ -315,16 +325,8 @@ public class AvatarControllerTest {
         map.put("srcPrefix", ImageUtils.HTML_SRC_TAG_PREFIX);
         map.put("srcImage", srcImage);
 
-
-        JsonFactory jsonFactory = new JsonFactory();
-        StringWriter stringWriter = new StringWriter();
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonGenerator jgen = jsonFactory.createJsonGenerator(stringWriter);
-        objectMapper.writeValue(jgen, map);
-        String expected = stringWriter.toString();
-
         return new Object[][]{
-                {srcImage, expected}
+                {srcImage}
         };
 
     }
@@ -386,7 +388,7 @@ public class AvatarControllerTest {
         ResponseEntity<String> goodResponseEntity = new ResponseEntity<String>(goodBody, headers, HttpStatus.OK);
 
         return new Object[][]{
-                {file, goodResponseEntity},
+                {file, goodResponseEntity, goodBody},
         };
     }
 
@@ -395,6 +397,7 @@ public class AvatarControllerTest {
     private Object[][] invalidDataForOperaIE() {
         String name = "qqfile";
         MultipartFile file = new MockMultipartFile(name, validAvatar);
+        //
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_HTML);
         String errorBody = "{\"message\":\"message\",\"success\":\"false\"}";
@@ -403,7 +406,7 @@ public class AvatarControllerTest {
                 HttpStatus.INTERNAL_SERVER_ERROR);
 
         return new Object[][]{
-                {file, errorResponseEntity}
+                {file, errorResponseEntity, errorBody}
         };
     }
 

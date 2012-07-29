@@ -16,7 +16,6 @@
 package org.jtalks.jcommune.web.controller;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -24,9 +23,6 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.ImageFormatException;
@@ -35,6 +31,7 @@ import org.jtalks.jcommune.service.exceptions.ImageSizeException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
+import org.jtalks.jcommune.web.util.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
@@ -59,11 +56,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 public class AvatarController {
-
+    public static final String RESULT = "success";
+    
     private AvatarService avatarService;
     private UserService userService;
     private MessageSource messageSource;
-    public static final String RESULT = "success";
+    private JSONUtils jsonUtils;
+   
 
     /**
      * Constructor for controller instantiating, dependencies injected via autowiring.
@@ -73,10 +72,15 @@ public class AvatarController {
      * @param messageSource   to resolve locale-dependent messages
      */
     @Autowired
-    public AvatarController(AvatarService avatarService, UserService userService, MessageSource messageSource) {
+    public AvatarController(
+            AvatarService avatarService,
+            UserService userService,
+            MessageSource messageSource,
+            JSONUtils jsonUtils) {
         this.avatarService = avatarService;
         this.userService = userService;
         this.messageSource = messageSource;
+        this.jsonUtils = jsonUtils;
     }
 
     /**
@@ -153,7 +157,7 @@ public class AvatarController {
     public String getDefaultAvatar() throws ImageProcessException, IOException {
         Map<String, String> responseContent = new HashMap<String, String>();
         prepareNormalResponse(avatarService.getDefaultAvatar(), responseContent);
-        return prepareJSONString(responseContent);
+        return jsonUtils.prepareJSONString(responseContent);
     }
 
     /**
@@ -188,7 +192,7 @@ public class AvatarController {
             prepareCommonErrorResponse(responseContent, locale);
         }
 
-        String body = prepareJSONString(responseContent);
+        String body = jsonUtils.prepareJSONString(responseContent);
 
         return new ResponseEntity<String>(body, responseHeaders, statusCode);
     }
@@ -274,23 +278,4 @@ public class AvatarController {
         responseContent.put("srcPrefix", ImageUtils.HTML_SRC_TAG_PREFIX);
         responseContent.put("srcImage", srcImage);
     }
-
-    /**
-     * Used for prepare JSON string from Map<String, String>
-     *
-     * @param responseContent input Map<String, String>
-     * @return JSON string
-     * @throws IOException defined in the JsonFactory implementation, caller must implement exception processing
-     */
-    private String prepareJSONString(Map<String, String> responseContent) throws IOException {
-        JsonFactory jsonFactory = new JsonFactory();
-        StringWriter stringWriter = new StringWriter();
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonGenerator jgen = jsonFactory.createJsonGenerator(stringWriter);
-        objectMapper.writeValue(jgen, responseContent);
-
-        return stringWriter.toString();
-    }
-
-
 }
