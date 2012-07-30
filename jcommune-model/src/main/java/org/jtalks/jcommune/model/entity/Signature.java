@@ -59,12 +59,14 @@ public class Signature {
      * @return rendered user signature
      */
     public String render() {
-        if (content == null) {
-            return "";
-        } else {
-            String escaped = HtmlUtils.htmlEscape(content);
-            content = escaped.replaceAll(HYPERLINK_REGEX, HYPERLINK_TEMPLATE);
-            return String.format(RENDERING_TEMPLATE, content);
+        String result = "";
+        
+        if (content != null) {
+            String buffer = HtmlUtils.htmlEscape(content);
+            buffer = buffer.replaceAll(HYPERLINK_REGEX, HYPERLINK_TEMPLATE);
+            result =  String.format(RENDERING_TEMPLATE, buffer);
         }
+        
+        return result;
     }
 }
