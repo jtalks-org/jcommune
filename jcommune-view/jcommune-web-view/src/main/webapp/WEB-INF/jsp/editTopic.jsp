@@ -66,12 +66,13 @@
                 <form:errors path="topic.sticked"/>
             </div>
             <div class='control-group'>
-                <form:checkbox path="announcement" value="true" class="script-confirm-unsaved form-check-radio-box"/>
+                <form:checkbox path="topic.announcement" value="true"
+                               class="script-confirm-unsaved form-check-radio-box"/>
                 <label for='announcement' class='string optional'>
                     <spring:message code="label.announcement"/>
                 </label>
 
-                <form:errors path="announcement"/>
+                <form:errors path="topic.announcement"/>
             </div>
         </sec:accesscontrollist>
 
