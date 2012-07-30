@@ -60,10 +60,10 @@
             <div class='controls'>
                 <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>
                 <form:input path="topicName" id="subject" type="text" name="subject" size="45"
-                            maxlength="255" tabindex="1"
+                            maxlength="255"
                             class="span11 script-confirm-unsaved" placeholder="${topicTitlePlaceholder}"/>
                 <form:errors path="topicName" id="subject" type="text" name="subject" size="45"
-                             maxlength="255" tabindex="1"
+                             maxlength="255"
                              class="post" cssClass="help-inline"/>
             </div>
         </div>
