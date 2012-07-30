@@ -74,14 +74,27 @@ public class SimplePageController {
      * @throws NotFoundException        when page was not found or was not exist
      */
     @RequestMapping(value = "/pages/{pagePathName}", method = RequestMethod.GET)
-    public ModelAndView showPage(@PathVariable(PAGE_PATH_NAME) String pagePathName) throws NotFoundException {
-        SimplePage page = simplePageService.getPageByPathName(pagePathName);
+    public ModelAndView showPage(@PathVariable(PAGE_PATH_NAME) String pagePathName) {
+        SimplePage page = null;
+        try {
+             page = simplePageService.getPageByPathName(pagePathName);
+        }
+        finally {
+            if(page != null) {
+                SimplePageDto pageDto = new SimplePageDto(page);
+    
+                return new ModelAndView("simplePage")
+                        .addObject(PAGE_DTO, pageDto)
+                        .addObject("simplePage", page);
+            }
+            else {
+                return new ModelAndView("simplePageNotFound")
+                        .addObject(PAGE_PATH_NAME, pagePathName);
+            }
+            
+        }
 
-        SimplePageDto pageDto = new SimplePageDto(page);
         
-        return new ModelAndView("simplePage")
-                .addObject(PAGE_DTO, pageDto)
-                .addObject("simplePage", page);
     }
 
 
@@ -126,6 +139,19 @@ public class SimplePageController {
         simplePageService.updatePage(simplePageInfoContainer);
 
         return new ModelAndView("redirect:/pages/" + pagePathName);
+    }
+
+    @RequestMapping(value = "/pages/create/{pagePathName}", method = RequestMethod.GET)
+    public ModelAndView createPage(@PathVariable(PAGE_PATH_NAME) String pagePathName) {
+        SimplePage simplePage = new SimplePage();
+        simplePage.setName("Title");
+        simplePage.setContent("Content");
+        simplePage.setPathName(pagePathName);
+        simplePageService.createPage(simplePage);
+        SimplePageDto simplePageDto = new SimplePageDto(simplePage);
+
+        return new ModelAndView("simplePageEditor")
+                .addObject(PAGE_DTO, simplePageDto);
     }
 
 }

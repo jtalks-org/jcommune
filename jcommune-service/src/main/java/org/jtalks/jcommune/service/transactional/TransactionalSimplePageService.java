@@ -97,7 +97,6 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
     /**
      * {@inheritDoc}
      */
-    @PreAuthorize("hasPermission(#simplePage.getId(), 'SIMPLE_PAGE', 'GeneralPermission.WRITE')")
     @Override
     public SimplePage createPage(SimplePage simplePage) throws EntityExistsException {
 
