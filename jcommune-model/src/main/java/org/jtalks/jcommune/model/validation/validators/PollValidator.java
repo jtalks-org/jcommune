@@ -59,7 +59,7 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
     private static final String ITEMS_NOT_BLANK_IF_TITLE_NOT_BLANK_MESSAGE =
             "{PollItemsNotBlankIfPollTitleNotBlank.message}";
     private static final String ITEM_LENGTH_MESSAGE = "{VotingItemLength.message}";
-    public final static String LINE_SEPARATOR = System.getProperty("line.separator");
+    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
     public static final String DATE_FORMAT = "dd-MM-yyyy";
 
     /**
