@@ -48,7 +48,7 @@ public interface TopicService extends EntityService<Topic> {
      * Add new topic with given title and body.
      * Author is current user.
      *
-     * @param topic
+     * @param topic           topic that used as dto
      * @param bodyText        body of topic
      * @param notifyOnAnswers user notification on answers flag
      * @return created topic

@@ -162,10 +162,10 @@
     <form:errors path="${bodyParameterName}" cssClass="help-inline"/>
 </div>
 
-<input id="post" type="submit" class="btn btn-primary" accesskey="s" tabindex="6" name="post"
+<input id="post" type="submit" class="btn btn-primary" accesskey="s" name="post"
        value="<spring:message code="${labelForAction}"/>"/>
 
-<input id="preview" type="button" class="btn btn-success" tabindex="5" name="preview"
+<input id="preview" type="button" class="btn btn-success" name="preview"
        value="<spring:message code="label.answer.preview"/>" onclick="SwitchEditor();return null;"/>
 <script type="text/javascript">
     initEditor("tbMsg", "editorBBCODEdiv", "htmlContent");
