@@ -68,6 +68,17 @@ public class SignatureTest {
 
         assertEquals(expected, result);
     }
+    
+    @Test
+    public void testRenderHyperlinkMultipleTimes() {
+        signature = new Signature(HYPERLINK_CONTENT);
+        String expected = String.format(RENDERING_TEMPLATE, HYPERLINK_CONTENT_REPLACED);
+
+        signature.render();
+        String result = signature.render();
+        
+        assertEquals(expected, result);
+    }
 
     @Test
     public void testRenderNull() {
