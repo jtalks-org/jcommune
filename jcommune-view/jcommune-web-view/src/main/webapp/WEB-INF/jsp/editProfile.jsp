@@ -74,18 +74,7 @@
                 <hr class='user-profile-hr'/>
                
                 <div>
-                    <form class="form-horizontal">
-                        <fieldset>
-                        
-                        <div class="control-group">
-                            <label for="" class="control-label"><spring:message code="label.email"/></label>
-                            <div class="controls">
-                                <form:input class="input-xlarge" path="email" value="${editedUser.email}"/>
-                                <br/>
-                                <form:errors path="email" cssClass="help-inline"/>
-                            </div>
-                        </div>
-                        
+                    <fieldset>
                         <div class="control-group">
                             <label for="" class="control-label"><spring:message code="label.firstname"/></label>
                             <div class="controls">
@@ -105,38 +94,20 @@
                         </div>
                         
                         <div class="control-group">
-                            <label for="" class="control-label"><spring:message code="label.currentPassword"/></label>
-                            <div class="controls">
-                                <form:input class="input-xlarge" type="password" path="currentUserPassword"/>
-                                <br/>
-                                <form:errors path="currentUserPassword" cssClass="help-inline"/>
-                            </div>
-                        </div>
-                        
-                        <div class="control-group">
-                            <label for="" class="control-label"><spring:message code="label.newPassword"/></label>
-                            <div class="controls">
-                                <form:input class="input-xlarge" type="password" path="newUserPassword"/>
-                                <br/>
-                                <form:errors path="newUserPassword" cssClass="help-inline"/>
-                            </div>
-                        </div>
-                        
-                        <div class="control-group">
-                            <label for="" class="control-label"><spring:message code="label.newPasswordConfirmation"/></label>
-                            <div class="controls">
-                                <form:input class="input-xlarge" type="password" path="newUserPasswordConfirm"/>
-                                <br/>
-                                <form:errors path="newUserPasswordConfirm" cssClass="help-inline"/>
-                            </div>
-                        </div>
-                        
-                        <div class="control-group">
                             <label for="" class="control-label"><spring:message code="label.signature"/></label>
                             <div class="controls">
                                 <form:input class="input-xlarge" path="signature" value="${editedUser.signature}"/>
                                 <br/>
                                 <form:errors path="signature" cssClass="help-inline"/>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="" class="control-label"><spring:message code="label.email"/></label>
+                            <div class="controls">
+                                <form:input class="input-xlarge" path="email" value="${editedUser.email}"/>
+                                <br/>
+                                <form:errors path="email" cssClass="help-inline"/>
                             </div>
                         </div>
                         
@@ -172,6 +143,33 @@
                                 <form:input path="location" class="input-xlarge" value="${editedUser.location}"/>
                                 <br/>
                                 <form:errors path="location" cssClass="help-inline"/>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="" class="control-label"><spring:message code="label.currentPassword"/></label>
+                            <div class="controls">
+                                <form:input class="input-xlarge" type="password" path="currentUserPassword"/>
+                                <br/>
+                                <form:errors path="currentUserPassword" cssClass="help-inline"/>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="" class="control-label"><spring:message code="label.newPassword"/></label>
+                            <div class="controls">
+                                <form:input class="input-xlarge" type="password" path="newUserPassword"/>
+                                <br/>
+                                <form:errors path="newUserPassword" cssClass="help-inline"/>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="" class="control-label"><spring:message code="label.newPasswordConfirmation"/></label>
+                            <div class="controls">
+                                <form:input class="input-xlarge" type="password" path="newUserPasswordConfirm"/>
+                                <br/>
+                                <form:errors path="newUserPasswordConfirm" cssClass="help-inline"/>
                             </div>
                         </div>
                         
