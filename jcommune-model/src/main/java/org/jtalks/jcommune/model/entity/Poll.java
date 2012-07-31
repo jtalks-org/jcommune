@@ -17,6 +17,8 @@ package org.jtalks.jcommune.model.entity;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.validation.annotations.ValidPoll;
 import org.jtalks.jcommune.model.validation.validators.PollValidator;
@@ -36,12 +38,15 @@ import static ch.lambdaj.Lambda.sumFrom;
  *
  * @author Anuar Nurmakanov
  */
-@ValidPoll(pollTitle = "title", pollItems = "pollItemsValue", endingDate = "endingDate")
+@ValidPoll(pollTitle = "title", pollItems = "pollItemsValue", endingDate = "endingDateValue")
 public class Poll extends Entity {
+
+    public static final String DATE_FORMAT = "dd-MM-yyyy";
 
     @Size(min = Poll.MIN_TITLE_LENGTH, max = Poll.MAX_TITLE_LENGTH)
     private String title;
     private boolean multipleAnswer;
+    private String endingDateValue;
     private DateTime endingDate;
     private String pollItemsValue;
     private List<PollItem> pollItems = new ArrayList<PollItem>();
@@ -123,6 +128,27 @@ public class Poll extends Entity {
      */
     public void setEndingDate(DateTime endingDate) {
         this.endingDate = endingDate;
+    }
+
+    /**
+     * @return poll ending date in string representation
+     */
+    public String getEndingDateValue() {
+        return endingDateValue;
+    }
+
+    /**
+     * Set string representation of poll ending date.
+     * Parse this string and set ending date.
+     *
+     * @param endingDateValue poll ending date in string representation
+     */
+    public void setEndingDateValue(String endingDateValue) {
+        this.endingDateValue = endingDateValue;
+        if (endingDateValue != null) {
+            DateTimeFormatter format = DateTimeFormat.forPattern(DATE_FORMAT);
+            setEndingDate(format.parseDateTime(endingDateValue));
+        }
     }
 
     /**

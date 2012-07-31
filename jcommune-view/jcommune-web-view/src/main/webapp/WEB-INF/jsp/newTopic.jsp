@@ -88,7 +88,7 @@
                         pollOptionsNameValue="topic.poll.pollItemsValue"
                         multipleName="topic.poll.multipleAnswer"
                         multipleValue="${topicDto.poll.multipleAnswer}"
-                        endingDateNameValue="topic.poll.endingDate"/>
+                        endingDateNameValue="topic.poll.endingDateValue"/>
     </form:form>
 
     <a href="${pageContext.request.contextPath}/branches/${branchId}" class='back-btn'>

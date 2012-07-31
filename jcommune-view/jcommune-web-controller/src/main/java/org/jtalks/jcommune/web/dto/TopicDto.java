@@ -122,15 +122,4 @@ public class TopicDto {
         topic.setPoll(poll);
     }
 
-    /**
-     * Check that topic contents poll.
-     *
-     * @return <tt>true</tt>  if topic contents the poll
-     *         <tt>false</tt>  otherwise
-     */
-    public boolean hasPoll() {
-        Poll poll = topic.getPoll();
-        return StringUtils.isNotBlank(poll.getTitle()) && StringUtils.isNotBlank(poll.getPollItemsValue());
-    }
-
 }
