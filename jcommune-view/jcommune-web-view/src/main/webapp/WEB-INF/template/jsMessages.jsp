@@ -31,6 +31,7 @@ $labelContactType = '<spring:message code="label.contact.type"/>';
 $labelContactValue = '<spring:message code="label.contact.value"/>';
 $labelContactValueInfo = '<spring:message code="label.contact.value.info"/>';
 $labelContactsTipsDelete = '<spring:message code="label.contacts.tips.delete"/>';
+$labelContactsAddDialog = '<spring:message code="label.contacts.addDialog"/>';
 
 $labelRegistrationSuccess = '<spring:message code="label.registration.success"/>';
 $labelRegistrationFailture = '<spring:message code="label.registration.failture"/>';
