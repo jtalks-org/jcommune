@@ -15,8 +15,6 @@
 package org.jtalks.jcommune.web.controller;
 
 import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -33,12 +31,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.ImageFormatException;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
-import org.jtalks.jcommune.service.exceptions.ImageSizeException;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
+import org.jtalks.jcommune.web.dto.ErrorDto;
 import org.jtalks.jcommune.web.util.JSONUtils;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -120,81 +117,6 @@ public class AvatarControllerTest {
 
     }
 
-    @Test(dataProvider = "invalidDataForOperaIE")
-    public void testErrorUploadAvatarDueNonImageDataForOperaIE(
-            MultipartFile file,
-            ResponseEntity<String> expectedResponseEntity,
-            String errorJSON) throws Exception {
-        //set expectations
-        when(avatarService.convertBytesToBase64String(validAvatar)).thenThrow(new ImageProcessException());
-        when(messageSource.getMessage(
-                eq("avatar.500.common.error"), Matchers.<Object[]>any(), Matchers.<Locale>any())).thenReturn(message);
-        when(jsonUtils.prepareJSONString(Matchers.anyMap())).thenReturn(errorJSON);
-
-        //invoke object under test
-        ResponseEntity<String> actualResponseEntity = avatarController.uploadAvatar(file, locale);
-
-        //check expectations
-        verify(avatarService).convertBytesToBase64String(validAvatar);
-
-        //check result
-        assertEquals(actualResponseEntity.getStatusCode(), expectedResponseEntity.getStatusCode());
-        assertEquals(actualResponseEntity.getBody(), expectedResponseEntity.getBody());
-        assertEquals(actualResponseEntity.getHeaders(), expectedResponseEntity.getHeaders());
-
-    }
-
-    @Test(dataProvider = "invalidDataForOperaIE")
-    public void testErrorUploadAvatarDueInvalidImageFormatForOperaIE(
-            MultipartFile file, 
-            ResponseEntity<String> expectedResponseEntity,
-            String errorJSON) throws Exception {
-        //set expectations
-        doThrow(new ImageFormatException()).when(avatarService).validateAvatarFormat(file);
-        when(messageSource.getMessage(
-                eq("image.wrong.format"), Matchers.<Object[]>any(), Matchers.<Locale>any())).thenReturn(message);
-        when(jsonUtils.prepareJSONString(Matchers.anyMap())).thenReturn(errorJSON);
-
-        //invoke objects under test
-        ResponseEntity<String> actualResponseEntity = avatarController.uploadAvatar(file, locale);
-
-        //check expectation
-        verify(avatarService).validateAvatarFormat(file);
-
-        //check result
-        assertEquals(actualResponseEntity.getStatusCode(), expectedResponseEntity.getStatusCode());
-        assertEquals(actualResponseEntity.getBody(), expectedResponseEntity.getBody());
-        assertEquals(actualResponseEntity.getHeaders(), expectedResponseEntity.getHeaders());
-
-    }
-
-    @Test(dataProvider = "invalidDataForOperaIE")
-    public void testErrorUploadAvatarDueInvalidImageSizeForOperaIE(
-            MultipartFile file,
-            ResponseEntity<String> expectedResponseEntity,
-            String errorJSON) throws Exception {
-        //setUp
-        byte[] bytes = file.getBytes();
-
-        //set expectations
-        doThrow(new ImageSizeException()).when(avatarService).validateAvatarSize(bytes);
-        when(messageSource.getMessage(
-                eq("image.wrong.size" + " " + AvatarService.MAX_SIZE), Matchers.<Object[]>any(), Matchers.<Locale>any())).thenReturn(message);
-        when(jsonUtils.prepareJSONString(Matchers.anyMap())).thenReturn(errorJSON);
-
-        //invoke objects under test
-        ResponseEntity<String> actualResponseEntity = avatarController.uploadAvatar(file, locale);
-
-        //check expectation
-        verify(avatarService).validateAvatarSize(bytes);
-
-        //check result
-        assertEquals(actualResponseEntity.getStatusCode(), expectedResponseEntity.getStatusCode());
-        assertEquals(actualResponseEntity.getBody(), expectedResponseEntity.getBody());
-        assertEquals(actualResponseEntity.getHeaders(), expectedResponseEntity.getHeaders());
-
-    }
-
     @Test(dataProvider = "validDataForChromeFF")
     public void testValidUploadAvatarForChromeFF(byte[] avatar, Map<String, String> expectedData) throws Exception {
         //set expectations
@@ -207,75 +129,6 @@ public class AvatarControllerTest {
 
         //check result
         assertEquals(result, expectedData);
-    }
-
-    @Test(dataProvider = "invalidDataGeneralCaseForChromeFF")
-    public void testErrorUploadAvatarDueInvalidDataForChromeFF(byte[] bytes, Map<String, String> expectedData)
-            throws Exception {
-        //setUp
-        HttpServletResponse response = new MockHttpServletResponse();
-
-        //set expectations
-        when(avatarService.convertBytesToBase64String(bytes)).thenThrow(new ImageProcessException());
-
-        //invoke object under test
-        Map<String, String> result = avatarController.uploadAvatar(bytes, response, locale);
-
-        //check expectations
-        verify(avatarService).convertBytesToBase64String(bytes);
-
-        //check result
-        assertEquals(result, expectedData);
-    }
-
-    @Test(dataProvider = "invalidDataCustomCaseForChromeFF")
-    public void testErrorUploadAvatarDueInvalidImageFormatForChromeFF(byte[] bytes, Map<String, String> expectedData)
-            throws Exception {
-        //setUp
-        HttpServletResponse response = new MockHttpServletResponse();
-
-        //set expectations
-        doThrow(new ImageFormatException()).when(avatarService).validateAvatarFormat(bytes);
-        when(messageSource.getMessage(
-                eq("image.wrong.format"), Matchers.<Object[]>any(), Matchers.<Locale>any())).thenReturn(message);
-
-        //invoke objects under test
-        Map<String, String> result = avatarController.uploadAvatar(bytes, response, locale);
-
-        //check expectation
-        verify(avatarService).validateAvatarFormat(bytes);
-        verify(messageSource).getMessage(eq("image.wrong.format"), Matchers.<Object[]>any(), Matchers.<Locale>any());
-
-        //check result
-        assertEquals(result, expectedData);
-
-
-    }
-
-    @Test(dataProvider = "invalidDataCustomCaseForChromeFF")
-    public void testErrorUploadAvatarDueInvalidImageSizeForChromeFF(byte[] bytes, Map<String, String> expectedData)
-            throws Exception {
-        //setUp
-        HttpServletResponse response = new MockHttpServletResponse();
-
-        //set expectations
-        doThrow(new ImageSizeException()).when(avatarService).validateAvatarSize(bytes);
-        when(messageSource.getMessage(
-                eq("image.wrong.size" + " "
-                        + AvatarService.MAX_SIZE), Matchers.<Object[]>any(), Matchers.<Locale>any())).thenReturn(message);
-
-        //invoke objects under test
-        Map<String, String> result = avatarController.uploadAvatar(bytes, response, locale);
-
-        //check expectation
-        verify(avatarService).validateAvatarSize(bytes);
-        verify(messageSource).getMessage(eq("image.wrong.size" + " "
-                + AvatarService.MAX_SIZE), Matchers.<Object[]>any(), Matchers.<Locale>any());
-
-        //check result
-        assertEquals(result, expectedData);
-
-
     }
 
     @Test(dataProvider = "validDataForChromeFF")
@@ -348,33 +201,6 @@ public class AvatarControllerTest {
 
     @DataProvider
     @SuppressWarnings("unused")
-    private Object[][] invalidDataGeneralCaseForChromeFF() {
-
-        Map<String, String> errorResponseContent = new HashMap<String, String>() {{
-            put("success", "false");
-        }};
-
-        return new Object[][]{
-                {validAvatar, errorResponseContent}
-        };
-    }
-
-    @DataProvider
-    @SuppressWarnings("unused")
-    private Object[][] invalidDataCustomCaseForChromeFF() {
-
-        Map<String, String> errorResponseContent = new HashMap<String, String>() {{
-            put(message, message);
-            put("success", "false");
-        }};
-
-        return new Object[][]{
-                {validAvatar, errorResponseContent}
-        };
-    }
-
-    @DataProvider
-    @SuppressWarnings("unused")
     private Object[][] validDataForOperaIE() {
 
         String name = "qqfile";
@@ -391,23 +217,60 @@ public class AvatarControllerTest {
                 {file, goodResponseEntity, goodBody},
         };
     }
-
-    @DataProvider
-    @SuppressWarnings("unused")
-    private Object[][] invalidDataForOperaIE() {
-        String name = "qqfile";
-        MultipartFile file = new MockMultipartFile(name, validAvatar);
+    
+    @Test
+    public void testHandleImageFormatException() {
+        Locale locale = Locale.ENGLISH;//it's not matter
+        String expectedMessage = "a message";
+        boolean expectedSuccess = false;
         //
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.TEXT_HTML);
-        String errorBody = "{\"message\":\"message\",\"success\":\"false\"}";
-        ResponseEntity<String> errorResponseEntity = new ResponseEntity<String>(errorBody,
-                headers,
-                HttpStatus.INTERNAL_SERVER_ERROR);
-
-        return new Object[][]{
-                {file, errorResponseEntity, errorBody}
-        };
+        when(messageSource.getMessage(
+                AvatarController.WRONG_FORMAT_RESOURCE_MESSAGE,
+                null,
+                locale)
+                ).thenReturn(expectedMessage);
+        //
+        ErrorDto result = avatarController.handleImageFormatException(null, locale);
+        //
+        assertEquals(result.isSuccess(), expectedSuccess, "We have an exception, so we should get false value.");
+        assertEquals(result.getMessage(), expectedMessage, "Result contains incorrect message.");
+    }
+    
+    @Test
+    public void testHandleImageSizeException() {
+        Locale locale = Locale.ENGLISH;//it's not matter
+        String messageRoot = "a message";
+        String expectedMessage = messageRoot + " " + AvatarService.MAX_SIZE;//TODO rigid binding
+        boolean expectedSuccess = false;
+        //
+        when(messageSource.getMessage(
+                AvatarController.WRONG_SIZE_RESOURCE_MESSAGE,
+                null,
+                locale)
+                ).thenReturn(messageRoot);
+        //
+        ErrorDto result = avatarController.handleImageSizeException(null, locale);
+        //
+        assertEquals(result.isSuccess(), expectedSuccess, "We have an exception, so we should get false value.");
+        assertEquals(result.getMessage(), expectedMessage, "Result contains incorrect message.");
+    }
+    
+    @Test
+    public void testHandleImageProcessException() {
+        Locale locale = Locale.ENGLISH;//it's not matter
+        String expectedMessage = "a message";
+        boolean expectedSuccess = false;
+        //
+        when(messageSource.getMessage(
+                AvatarController.COMMON_ERROR_RESOURCE_MESSAGE,
+                null,
+                locale)
+                ).thenReturn(expectedMessage);
+        //
+        ErrorDto result = avatarController.handleImageProcessException(null, locale);
+        //
+        assertEquals(result.isSuccess(), expectedSuccess, "We have an exception, so we should get false value.");
+        assertEquals(result.getMessage(), expectedMessage, "Result contains incorrect message.");
     }
 
     private JCUser getUser() throws IOException {
@@ -416,5 +279,4 @@ public class AvatarControllerTest {
         newUser.setLastName(LAST_NAME);
         return newUser;
     }
-
 }

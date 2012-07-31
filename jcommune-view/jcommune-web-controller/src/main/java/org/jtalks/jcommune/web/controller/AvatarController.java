@@ -31,6 +31,7 @@ import org.jtalks.jcommune.service.exceptions.ImageSizeException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
+import org.jtalks.jcommune.web.dto.ErrorDto;
 import org.jtalks.jcommune.web.util.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -39,6 +40,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,11 +54,15 @@ import org.springframework.web.multipart.MultipartFile;
  * todo: this class is too complex, we need to move some logic either to service or to a helper bean
  *
  * @author Alexandre Teterin
+ * @author Anuar Nurmakanov
  */
 
 @Controller
 public class AvatarController {
     public static final String RESULT = "success";
+    static final String WRONG_FORMAT_RESOURCE_MESSAGE = "image.wrong.format";
+    static final String WRONG_SIZE_RESOURCE_MESSAGE = "image.wrong.size";
+    static final String COMMON_ERROR_RESOURCE_MESSAGE = "avatar.500.common.error";
     
     private AvatarService avatarService;
     private UserService userService;
@@ -93,11 +99,12 @@ public class AvatarController {
      * @throws javax.servlet.ServletException avatar processing problem
      * @throws IOException defined in the JsonFactory implementation,
      * caller must implement exception processing
+     * @throws ImageProcessException 
      */
     @RequestMapping(value = "/users/IFrameAvatarpreview", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<String> uploadAvatar(@RequestParam(value = "qqfile") MultipartFile file,
-                                               Locale locale) throws ServletException, IOException {
+                                               Locale locale) throws ServletException, IOException, ImageProcessException {
         //prepare response parameters
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.setContentType(MediaType.TEXT_HTML);
@@ -115,12 +122,13 @@ public class AvatarController {
      * @param locale   current user locale settings to resolve messages
      * @return response content
      * @throws ServletException avatar processing problem
+     * @throws ImageProcessException 
      */
     @RequestMapping(value = "/users/XHRavatarpreview", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, String> uploadAvatar(@RequestBody byte[] bytes,
                                             HttpServletResponse response,
-                                            Locale locale) throws ServletException {
+                                            Locale locale) throws ServletException, ImageProcessException {
 
         Map<String, String> responseContent = new HashMap<String, String>();
         prepareResponse(bytes, response, responseContent, locale);
@@ -169,32 +177,18 @@ public class AvatarController {
      * @param locale          current user locale settings to resolve messages
      * @return ResponseEntity with avatar processing results
      * @throws IOException defined in the JsonFactory implementation, caller must implement exception processing
+     * @throws ImageProcessException 
      */
     private ResponseEntity<String> prepareResponse(MultipartFile file,
                                                    HttpHeaders responseHeaders,
                                                    Map<String, String> responseContent,
-                                                   Locale locale) throws IOException {
-
-        HttpStatus statusCode = HttpStatus.INTERNAL_SERVER_ERROR; //default
-
-        try {
-            avatarService.validateAvatarFormat(file);
-            byte[] bytes = file.getBytes();
-
-            avatarService.validateAvatarSize(bytes);
-            prepareNormalResponse(bytes, responseContent);
-            statusCode = HttpStatus.OK;
-        } catch (ImageFormatException e) {
-            prepareFormatErrorResponse(responseContent, locale);
-        } catch (ImageSizeException e) {
-            prepareSizeErrorResponse(responseContent, locale);
-        } catch (ImageProcessException e) {
-            prepareCommonErrorResponse(responseContent, locale);
-        }
-
+                                                   Locale locale) throws IOException, ImageProcessException {
+        avatarService.validateAvatarFormat(file);
+        byte[] bytes = file.getBytes();
+        avatarService.validateAvatarSize(bytes);
+        prepareNormalResponse(bytes, responseContent);
         String body = jsonUtils.prepareJSONString(responseContent);
-
-        return new ResponseEntity<String>(body, responseHeaders, statusCode);
+        return new ResponseEntity<String>(body, responseHeaders, HttpStatus.OK);
     }
 
     /**
@@ -204,63 +198,16 @@ public class AvatarController {
      * @param response        resulting response
      * @param responseContent with avatar processing results
      * @param locale          current user locale settings to resolve messages
+     * @throws ImageProcessException 
      */
     private void prepareResponse(byte[] bytes,
                                  HttpServletResponse response,
                                  Map<String, String> responseContent,
-                                 Locale locale) {
-        try {
-            avatarService.validateAvatarFormat(bytes);
-            avatarService.validateAvatarSize(bytes);
-            prepareNormalResponse(bytes, responseContent);
-            response.setStatus(HttpServletResponse.SC_OK);
-        } catch (ImageFormatException e) {
-            prepareFormatErrorResponse(responseContent, locale);
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        } catch (ImageSizeException e) {
-            prepareSizeErrorResponse(responseContent, locale);
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        } catch (ImageProcessException e) {
-            prepareCommonErrorResponse(responseContent, locale);
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    /**
-     * Prepare common avatar processing error response content
-     *
-     * @param responseContent with avatar processing common error message
-     * @param locale          current user locale settings to resolve messages
-     */
-    private void prepareCommonErrorResponse(Map<String, String> responseContent, Locale locale) {
-        responseContent.clear();
-        responseContent.put(RESULT, "false");
-        responseContent.put("message", messageSource.getMessage("avatar.500.common.error", null, locale));
-    }
-
-    /**
-     * Prepare invalid size avatar processing error response content
-     *
-     * @param responseContent with avatar processing invalid size error message
-     * @param locale          current user locale settings to resolve messages
-     */
-    private void prepareSizeErrorResponse(Map<String, String> responseContent, Locale locale) {
-        responseContent.clear();
-        responseContent.put(RESULT, "false");
-        responseContent.put("message", messageSource.getMessage("image.wrong.size" + " "
-                + AvatarService.MAX_SIZE, null, locale));
-    }
-
-    /**
-     * Prepare invalid format avatar processing error response content
-     *
-     * @param responseContent with avatar processing invalid format error message
-     * @param locale          current user locale settings to resolve messages
-     */
-    private void prepareFormatErrorResponse(Map<String, String> responseContent, Locale locale) {
-        responseContent.clear();
-        responseContent.put(RESULT, "false");
-        responseContent.put("message", messageSource.getMessage("image.wrong.format", null, locale));
+                                 Locale locale) throws ImageProcessException {
+        avatarService.validateAvatarFormat(bytes);
+        avatarService.validateAvatarSize(bytes);
+        prepareNormalResponse(bytes, responseContent);
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 
     /**
@@ -277,5 +224,45 @@ public class AvatarController {
         responseContent.put(RESULT, "true");
         responseContent.put("srcPrefix", ImageUtils.HTML_SRC_TAG_PREFIX);
         responseContent.put("srcImage", srcImage);
+    }
+    
+    /**
+     * Handles an exception that is thrown when the avatar has incorrect size.
+     * 
+     * @param e exception
+     * @param locale locale, it's needed for error message localization
+     * @return DTO, that contains information about error, it will be converted to JSON
+     */
+    @ExceptionHandler(value = ImageSizeException.class)
+    @ResponseBody
+    public ErrorDto handleImageSizeException(ImageSizeException e, Locale locale) {
+        return new ErrorDto(false, messageSource.getMessage(WRONG_SIZE_RESOURCE_MESSAGE, null, locale) + " "
+                + AvatarService.MAX_SIZE);
+    }
+    
+    /**
+     * Handles an exception that is thrown when the avatar has incorrect format.
+     * 
+     * @param e exception
+     * @param locale locale, it's needed for error message localization
+     * @return DTO, that contains information about error, it will be converted to JSON
+     */
+    @ExceptionHandler(value = ImageFormatException.class)
+    @ResponseBody
+    public ErrorDto handleImageFormatException(ImageFormatException e, Locale locale) {
+        return new ErrorDto(false, messageSource.getMessage(WRONG_FORMAT_RESOURCE_MESSAGE, null, locale));
+    }
+    
+    /**
+     * Handles common exception that can occur when loading an avatar.
+     * 
+     * @param e exception
+     * @param locale locale, it's needed for error message localization
+     * @return DTO, that contains information about error, it will be converted to JSON
+     */
+    @ExceptionHandler(value = ImageProcessException.class)
+    @ResponseBody
+    public ErrorDto handleImageProcessException(ImageProcessException e, Locale locale) {
+        return new ErrorDto(false, messageSource.getMessage(COMMON_ERROR_RESOURCE_MESSAGE, null, locale));
     }
 }
