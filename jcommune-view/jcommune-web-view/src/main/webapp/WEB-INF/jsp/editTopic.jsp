@@ -47,12 +47,12 @@
             <label for='subject' class='control-label'><spring:message code="label.topic.title"/></label>
             <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>
             <form:input path="topic.title" id="subject" type="text" name="subject" size="45"
-                        maxlength="255" tabindex="1"
+                        maxlength="255"
                         class="post script-confirm-unsaved" placeholder="${topicTitlePlaceholder}"/>
             <br/>
 
             <form:errors path="topic.title" id="subject" type="text" name="subject" size="45"
-                         maxlength="255" tabindex="1"
+                         maxlength="255"
                          class="post" cssClass="error"/>
         </div>
 

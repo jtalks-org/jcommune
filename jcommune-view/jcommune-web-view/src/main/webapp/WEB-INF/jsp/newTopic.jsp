@@ -46,6 +46,10 @@
 
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/bbeditorEffects.js"
             type="text/javascript"></script>
+
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/setTabIndexForNewTopic.js"
+            type="text/javascript"></script>
+
 </head>
 <body>
 
@@ -60,10 +64,10 @@
             <div class='controls'>
                 <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>
                 <form:input path="topic.title" id="subject" type="text" name="subject" size="45"
-                            maxlength="255" tabindex="1"
+                            maxlength="255"
                             class="span11 script-confirm-unsaved" placeholder="${topicTitlePlaceholder}"/>
                 <form:errors path="topic.title" id="subject" type="text" name="subject" size="45"
-                             maxlength="255" tabindex="1"
+                             maxlength="255"
                              class="post" cssClass="help-inline"/>
             </div>
         </div>
