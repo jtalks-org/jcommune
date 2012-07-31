@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.model.validation.validators;
 
-import ch.lambdaj.Lambda;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.IntRange;
