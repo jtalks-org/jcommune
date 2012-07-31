@@ -149,6 +149,7 @@
     <c:forEach var="post" items="${postsPage.content}" varStatus="i">
         <%-- Post --%>
         <div class="post">
+            <a name="${post.id}"></a>
             <table class="table table-striped table-bordered table-condensed">
                 <tr>
                     <td class="post-date">
@@ -237,7 +238,7 @@
                                        <i class="icon-quote"></i><spring:message code="label.quotation"/>
                                    </a>
                                </sec:accesscontrollist>
-                               <a class="btn btn-mini" href="#" name="${post.id}">&#8657</a>
+                               <a class="btn btn-mini" href="#">&#8657</a>
                            </div>
                        </div>
                    </td>
