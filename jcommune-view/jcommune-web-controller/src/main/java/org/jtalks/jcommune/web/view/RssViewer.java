@@ -36,6 +36,17 @@ import java.util.Map;
  */
 public class RssViewer extends AbstractRssFeedView {
 
+    /** 
+     * Encoding for proper displaying cyrillic symbols when English language is 
+     * selected
+     */
+    private static final String RSS_CONTENT_TYPE = "application/rss+xml;charset=UTF-8";
+    
+    public RssViewer() {
+        super();
+        setContentType(RSS_CONTENT_TYPE);
+    }
+    
     /**
      * Set meta data for all RSS feed
      *
@@ -46,7 +57,6 @@ public class RssViewer extends AbstractRssFeedView {
     @Override
     protected void buildFeedMetadata(Map<String, Object> model, Channel feed,
                                      HttpServletRequest request) {
-
         feed.setTitle("Java forum JTalks ");
         feed.setDescription("Programmers forum");
         feed.setLink(buildURL(request));
