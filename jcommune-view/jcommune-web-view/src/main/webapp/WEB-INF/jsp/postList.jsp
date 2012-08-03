@@ -203,9 +203,10 @@
                                    <sec:authentication property="principal.id" var="userId"/>
                                    <%--The ability of users to remove their own posts--%>
                                    <c:if test='${userId == post.userCreated.id}'>
-                                       <sec:accesscontrollist hasPermission="7" domainObject="${topic.branch}">
+                                       <jtalks:haspermission targetId="${topic.branch.id}" targetType="BRANCH" 
+                                            permission="BranchPermission.DELETE_OWN_POSTS">                                            
                                        	   <c:set var="isDeleteButtonAvailable" value="true"/>
-                                       </sec:accesscontrollist>
+                                       </jtalks:haspermission>
                                    </c:if>
                                    <%--The ability of users to remove posts of the other users(for moderators and admins)--%>
                                    <c:if test='${userId != post.userCreated.id}'>
