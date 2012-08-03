@@ -23,12 +23,27 @@ import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
+ * Help class that wraps all logic of working with JSON conversion. 
  * 
  * @author Anuar_Nurmakanov
- *
  */
 public class JSONUtils {
+    private JsonFactory jsonFactory;
+    private ObjectMapper objectMapper;
     
+    /**
+     * Constructs an instance with required fields.
+     * 
+     * @param jsonFactory used to configure writer (aka generator, {@link JsonGenerator})
+     *                    instances.
+     * @param objectMapper provides functionality for converting between Java objects
+     *                     and matching JSON constructs
+     */
+    public JSONUtils(JsonFactory jsonFactory, ObjectMapper objectMapper) {
+        this.jsonFactory = jsonFactory;
+        this.objectMapper = objectMapper;
+    }
+
     /**
      * Used for prepare JSON string from Map<String, String>
      *
@@ -37,12 +52,9 @@ public class JSONUtils {
      * @throws IOException defined in the JsonFactory implementation, caller must implement exception processing
      */
     public String prepareJSONString(Map<String, String> value) throws IOException {
-        JsonFactory jsonFactory = new JsonFactory();
         StringWriter stringWriter = new StringWriter();
-        ObjectMapper objectMapper = new ObjectMapper();
         JsonGenerator jgen = jsonFactory.createJsonGenerator(stringWriter);
         objectMapper.writeValue(jgen, value);
-
         return stringWriter.toString();
     }
 }

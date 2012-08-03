@@ -35,7 +35,7 @@ import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
-import org.jtalks.jcommune.web.dto.ErrorDto;
+import org.jtalks.jcommune.web.dto.OperationResultDto;
 import org.jtalks.jcommune.web.util.JSONUtils;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -230,7 +230,7 @@ public class AvatarControllerTest {
                 locale)
                 ).thenReturn(expectedMessage);
         //
-        ErrorDto result = avatarController.handleImageFormatException(null, locale);
+        OperationResultDto result = avatarController.handleImageFormatException(null, locale);
         //
         assertEquals(result.isSuccess(), expectedSuccess, "We have an exception, so we should get false value.");
         assertEquals(result.getMessage(), expectedMessage, "Result contains incorrect message.");
@@ -249,7 +249,7 @@ public class AvatarControllerTest {
                 locale)
                 ).thenReturn(messageRoot);
         //
-        ErrorDto result = avatarController.handleImageSizeException(null, locale);
+        OperationResultDto result = avatarController.handleImageSizeException(null, locale);
         //
         assertEquals(result.isSuccess(), expectedSuccess, "We have an exception, so we should get false value.");
         assertEquals(result.getMessage(), expectedMessage, "Result contains incorrect message.");
@@ -267,7 +267,7 @@ public class AvatarControllerTest {
                 locale)
                 ).thenReturn(expectedMessage);
         //
-        ErrorDto result = avatarController.handleImageProcessException(null, locale);
+        OperationResultDto result = avatarController.handleImageProcessException(null, locale);
         //
         assertEquals(result.isSuccess(), expectedSuccess, "We have an exception, so we should get false value.");
         assertEquals(result.getMessage(), expectedMessage, "Result contains incorrect message.");
