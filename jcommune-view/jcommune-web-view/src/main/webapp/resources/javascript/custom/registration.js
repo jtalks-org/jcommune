@@ -66,8 +66,6 @@ $(function () {
                         {buttons:{OK:true}, focus:0, submit:signupPopup});
                     refreshCaptcha();
                     refreshCaptchaOnClick();
-                    document.getElementById("captcha").setAttribute("value", "");
-
                 } else if ($(data).find("span.error_errorpage").html() != null) {
                     $.prompt($labelRegistrationFailture);
                 } else {
@@ -80,6 +78,7 @@ $(function () {
 
 function refreshCaptchaOnClick() {
     $("#captcha_refresh").on('click', function (e) {
+        document.getElementById("captcha").value = "";
         refreshCaptcha();
     });
 }
