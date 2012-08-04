@@ -52,6 +52,7 @@ public class AvatarService {
      * @param imageUtils        object for image processing
      * @param base64Wrapper     to encode/decode avatar passed from the client side
      * @param defaultAvatarPath path to the default avatar image, to be replaced with image managed in Poulpe in future
+     * @param avatarSizeProperty let us know the limitation of avatar max size
      */
     public AvatarService(
             ImageUtils imageUtils,

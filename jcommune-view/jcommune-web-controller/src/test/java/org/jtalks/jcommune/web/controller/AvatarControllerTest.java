@@ -76,10 +76,6 @@ public class AvatarControllerTest {
     private final String PASSWORD = "password";
     private final String SRC_IMG = "srcImage";
 
-    private Locale locale = Locale.ENGLISH;
-    private final String message = "message";
-
-
     private byte[] validAvatar = new byte[]{-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0,
             0, 0, 4, 0, 0, 0, 4, 1, 0, 0, 0, 0, -127, -118, -93, -45, 0, 0, 0, 9, 112, 72, 89, 115, 0, 0, 1,
             -118, 0, 0, 1, -118, 1, 51, -105, 48, 88, 0, 0, 0, 32, 99, 72, 82, 77, 0, 0, 122, 37, 0, 0,
@@ -88,8 +84,6 @@ public class AvatarControllerTest {
             -64, -60, 0, 0, 0, 0, -1, -1, 3, 0, 5, -71, 0, -26, -35, -7, 32, 96, 0, 0, 0, 0, 73, 69, 78, 68,
             -82, 66, 96, -126
     };
-
-    //private MockMultipartFile file;
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -107,7 +101,7 @@ public class AvatarControllerTest {
         when(jsonUtils.prepareJSONString(Matchers.anyMap())).thenReturn(imageJSON);
 
         //invoke object under test
-        ResponseEntity<String> actualResponseEntity = avatarController.uploadAvatar(file, locale);
+        ResponseEntity<String> actualResponseEntity = avatarController.uploadAvatar(file);
 
         //check expectations
         verify(avatarService).convertBytesToBase64String(validAvatar);
@@ -127,7 +121,7 @@ public class AvatarControllerTest {
         HttpServletResponse response = new MockHttpServletResponse();
 
         //invoke object under test
-        Map<String, String> result = avatarController.uploadAvatar(avatar, response, locale);
+        Map<String, String> result = avatarController.uploadAvatar(avatar, response);
 
         //check result
         assertEquals(result, expectedData);

@@ -93,8 +93,7 @@ public class AvatarController {
      * Process avatar file from request and return avatar preview in response.
      * Used for IE, Opera specific request processing.
      *
-     * @param request incoming request
-     * @param locale  current user locale settings to resolve messages
+     * @param file   file, that contains uploaded image
      * @return ResponseEntity
      * @throws IOException defined in the JsonFactory implementation,
      *         caller must implement exception processing
@@ -102,12 +101,12 @@ public class AvatarController {
      */
     @RequestMapping(value = "/users/IFrameAvatarpreview", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<String> uploadAvatar(@RequestParam(value = "qqfile") MultipartFile file,
-                                               Locale locale) throws IOException, ImageProcessException {
+    public ResponseEntity<String> uploadAvatar(
+            @RequestParam(value = "qqfile") MultipartFile file) throws IOException, ImageProcessException {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.setContentType(MediaType.TEXT_HTML);
         Map<String, String> responseContent = new HashMap<String, String>();
-        return prepareResponse(file, responseHeaders, responseContent, locale);
+        return prepareResponse(file, responseHeaders, responseContent);
     }
 
     /**
@@ -116,17 +115,15 @@ public class AvatarController {
      *
      * @param bytes    input avatar data
      * @param response servlet response
-     * @param locale   current user locale settings to resolve messages
      * @return response content
      * @throws ImageProcessException if error occurred while image processing
      */
     @RequestMapping(value = "/users/XHRavatarpreview", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, String> uploadAvatar(@RequestBody byte[] bytes,
-                                            HttpServletResponse response,
-                                            Locale locale) throws ImageProcessException {
+                                            HttpServletResponse response) throws ImageProcessException {
         Map<String, String> responseContent = new HashMap<String, String>();
-        prepareResponse(bytes, response, responseContent, locale);
+        prepareResponse(bytes, response, responseContent);
         return responseContent;
     }
 
@@ -166,18 +163,16 @@ public class AvatarController {
     /**
      * Prepare valid response after avatar processing
      *
-     * @param request         request with avatar payload
+     * @param file            file, that contains uploaded image
      * @param responseHeaders response HTTP headers
      * @param responseContent response content
-     * @param locale          current user locale settings to resolve messages
      * @return ResponseEntity with avatar processing results
      * @throws IOException defined in the JsonFactory implementation, caller must implement exception processing
      * @throws ImageProcessException if error occurred while image processing
      */
     private ResponseEntity<String> prepareResponse(MultipartFile file,
                                                    HttpHeaders responseHeaders,
-                                                   Map<String, String> responseContent,
-                                                   Locale locale) throws IOException, ImageProcessException {
+                                                   Map<String, String> responseContent) throws IOException, ImageProcessException {
         avatarService.validateAvatarFormat(file);
         byte[] bytes = file.getBytes();
         avatarService.validateAvatarSize(bytes);
@@ -192,13 +187,11 @@ public class AvatarController {
      * @param bytes           input avatar data
      * @param response        resulting response
      * @param responseContent with avatar processing results
-     * @param locale          current user locale settings to resolve messages
      * @throws ImageProcessException 
      */
     private void prepareResponse(byte[] bytes,
                                  HttpServletResponse response,
-                                 Map<String, String> responseContent,
-                                 Locale locale) throws ImageProcessException {
+                                 Map<String, String> responseContent) throws ImageProcessException {
         avatarService.validateAvatarFormat(bytes);
         avatarService.validateAvatarSize(bytes);
         prepareNormalResponse(bytes, responseContent);
