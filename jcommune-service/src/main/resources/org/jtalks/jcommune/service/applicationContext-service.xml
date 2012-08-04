@@ -52,6 +52,7 @@
         <constructor-arg ref="imagePreprocessor"/>
         <constructor-arg ref="base64Wrapper"/>
         <constructor-arg value="org/jtalks/jcommune/service/avatar.gif"/>
+        <constructor-arg ref="avatarMaxSizeProperty"/>
     </bean>
 
     <bean id="base64Wrapper" class="org.jtalks.jcommune.service.nontransactional.Base64Wrapper"/>

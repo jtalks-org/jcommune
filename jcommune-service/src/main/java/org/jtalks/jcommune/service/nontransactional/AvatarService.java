@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service.nontransactional;
 
 import org.apache.commons.lang.Validate;
 import org.apache.tika.Tika;
+import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.jtalks.jcommune.service.exceptions.ImageFormatException;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.jtalks.jcommune.service.exceptions.ImageSizeException;
@@ -37,16 +38,11 @@ import java.util.List;
  */
 public class AvatarService {
 
-
     private static final List<String> VALID_IMAGE_TYPES = Arrays.asList("image/jpeg", "image/png", "image/gif");
-    /**
-     * Max avatar size in bytes (to be moved in DB later)
-     */
-    public static final int MAX_SIZE = 4096 * 1024;
-
     private ImageUtils imageUtils;
     private Base64Wrapper base64Wrapper;
     private String defaultAvatarPath;
+    private JCommuneProperty avatarSizeProperty;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AvatarService.class);
 
@@ -57,10 +53,15 @@ public class AvatarService {
      * @param base64Wrapper     to encode/decode avatar passed from the client side
      * @param defaultAvatarPath path to the default avatar image, to be replaced with image managed in Poulpe in future
      */
-    public AvatarService(ImageUtils imageUtils, Base64Wrapper base64Wrapper, String defaultAvatarPath) {
+    public AvatarService(
+            ImageUtils imageUtils,
+            Base64Wrapper base64Wrapper,
+            String defaultAvatarPath,
+            JCommuneProperty avatarSizeProperty) {
         this.defaultAvatarPath = defaultAvatarPath;
         this.imageUtils = imageUtils;
         this.base64Wrapper = base64Wrapper;
+        this.avatarSizeProperty = avatarSizeProperty;
     }
 
     /**
@@ -121,8 +122,9 @@ public class AvatarService {
      */
     public void validateAvatarSize(byte[] bytes) throws ImageSizeException {
         Validate.notNull(bytes, "Incoming byte array cannot be null");
-        if (bytes.length > MAX_SIZE) {
-            throw new ImageSizeException();
+        int maxSize = avatarSizeProperty.intValue();
+        if (bytes.length > maxSize) {
+            throw new ImageSizeException(maxSize);
         }
     }
 

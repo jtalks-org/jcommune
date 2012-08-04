@@ -29,9 +29,11 @@ import java.util.Map;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
+import org.jtalks.jcommune.service.exceptions.ImageSizeException;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
@@ -172,8 +174,12 @@ public class AvatarControllerTest {
         final String RESULT = "success";
         Map<String, String> map = new HashMap<String, String>();
 
-        String srcImage;
-        srcImage = new AvatarService(new ImageUtils(new Base64Wrapper()), new Base64Wrapper(), "").convertBytesToBase64String(validAvatar);
+        AvatarService avatarService = new AvatarService(
+                new ImageUtils(new Base64Wrapper()),
+                new Base64Wrapper(),
+                StringUtils.EMPTY,
+                null);
+        String srcImage = avatarService.convertBytesToBase64String(validAvatar);
         map.put(RESULT, "true");
         map.put("srcPrefix", ImageUtils.HTML_SRC_TAG_PREFIX);
         map.put("srcImage", srcImage);
@@ -238,9 +244,11 @@ public class AvatarControllerTest {
     
     @Test
     public void testHandleImageSizeException() {
+        int maxSize = 1000;
+        ImageSizeException exception = new ImageSizeException(maxSize);
         Locale locale = Locale.ENGLISH;//it's not matter
         String messageRoot = "a message";
-        String expectedMessage = messageRoot + " " + AvatarService.MAX_SIZE;//TODO rigid binding
+        String expectedMessage = messageRoot + " " + maxSize;
         boolean expectedSuccess = false;
         //
         when(messageSource.getMessage(
@@ -249,7 +257,7 @@ public class AvatarControllerTest {
                 locale)
                 ).thenReturn(messageRoot);
         //
-        OperationResultDto result = avatarController.handleImageSizeException(null, locale);
+        OperationResultDto result = avatarController.handleImageSizeException(exception, locale);
         //
         assertEquals(result.isSuccess(), expectedSuccess, "We have an exception, so we should get false value.");
         assertEquals(result.getMessage(), expectedMessage, "Result contains incorrect message.");

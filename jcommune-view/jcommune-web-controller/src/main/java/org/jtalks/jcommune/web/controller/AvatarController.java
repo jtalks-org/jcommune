@@ -231,7 +231,7 @@ public class AvatarController {
     @ResponseBody
     public OperationResultDto handleImageSizeException(ImageSizeException e, Locale locale) {
         return new OperationResultDto(false, messageSource.getMessage(WRONG_SIZE_RESOURCE_MESSAGE, null, locale) + " "
-                + AvatarService.MAX_SIZE);
+                + e.getMaxSize());
     }
     
     /**
