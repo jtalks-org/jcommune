@@ -67,12 +67,6 @@ public class RssViewerTest {
         topics.add(topic);
         model.put("topics", topics);
     }
-
-    @Test
-    public void testConstructor() {
-        assertEquals(rssViewer.getContentType(), "application/rss+xml;charset=UTF-8");
-    }
-    
     
     @Test
     public void testBuildFeedItems() throws Exception {
