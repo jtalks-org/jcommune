@@ -15,14 +15,21 @@
 
 package org.jtalks.jcommune.model.entity;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.jtalks.common.model.entity.Entity;
+import org.jtalks.jcommune.model.validation.annotations.ValidPoll;
+import org.jtalks.jcommune.model.validation.validators.PollValidator;
 
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static ch.lambdaj.Lambda.*;
+import static ch.lambdaj.Lambda.forEach;
+import static ch.lambdaj.Lambda.sumFrom;
 
 /**
  * Represents the poll of the topic. Contains the list of related {@link PollItem}.
@@ -31,10 +38,17 @@ import static ch.lambdaj.Lambda.*;
  *
  * @author Anuar Nurmakanov
  */
+@ValidPoll(pollTitle = "title", pollItems = "pollItemsValue", endingDate = "endingDateValue")
 public class Poll extends Entity {
+
+    public static final String DATE_FORMAT = "dd-MM-yyyy";
+
+    @Size(min = Poll.MIN_TITLE_LENGTH, max = Poll.MAX_TITLE_LENGTH)
     private String title;
     private boolean multipleAnswer;
+    private String endingDateValue;
     private DateTime endingDate;
+    private String pollItemsValue;
     private List<PollItem> pollItems = new ArrayList<PollItem>();
     private Topic topic;
 
@@ -46,7 +60,7 @@ public class Poll extends Entity {
     /**
      * Used only by Hibernate.
      */
-    protected Poll() {
+    public Poll() {
     }
 
     /**
@@ -92,7 +106,7 @@ public class Poll extends Entity {
      * or "multiple answer type".
      *
      * @param multipleAnswer <tt>false</tt> if the poll is "single answer type",
-     *                     <tt>true</tt> if the poll is "multiple answer type"
+     *                       <tt>true</tt> if the poll is "multiple answer type"
      */
     public void setMultipleAnswer(boolean multipleAnswer) {
         this.multipleAnswer = multipleAnswer;
@@ -117,6 +131,45 @@ public class Poll extends Entity {
     }
 
     /**
+     * @return poll ending date in string representation
+     */
+    public String getEndingDateValue() {
+        return endingDateValue;
+    }
+
+    /**
+     * Set string representation of poll ending date.
+     * Parse this string and set ending date.
+     *
+     * @param endingDateValue poll ending date in string representation
+     */
+    public void setEndingDateValue(String endingDateValue) {
+        this.endingDateValue = endingDateValue;
+        if (endingDateValue != null) {
+            DateTimeFormatter format = DateTimeFormat.forPattern(DATE_FORMAT);
+            setEndingDate(format.parseDateTime(endingDateValue));
+        }
+    }
+
+    /**
+     * @return poll options in string representation.
+     */
+    public String getPollItemsValue() {
+        return pollItemsValue;
+    }
+
+    /**
+     * Set string representation of poll options.
+     * Parse this string and fill poll items list.
+     *
+     * @param pollItemsValue poll options in string representation
+     */
+    public void setPollItemsValue(String pollItemsValue) {
+        this.pollItemsValue = pollItemsValue;
+        setPollItems(PollValidator.parseItems(pollItemsValue));
+    }
+
+    /**
      * Get the list of poll options.
      *
      * @return the list of poll options
@@ -130,7 +183,7 @@ public class Poll extends Entity {
      *
      * @param pollItems the list of poll options
      */
-    protected void setPollItems(List<PollItem> pollItems) {
+    public void setPollItems(List<PollItem> pollItems) {
         this.pollItems = pollItems;
     }
 
@@ -190,4 +243,16 @@ public class Poll extends Entity {
     public boolean isActive() {
         return endingDate == null || endingDate.isAfterNow();
     }
+
+    /**
+     * Determines a existence the poll in the topic.
+     *
+     * @return <tt>true</tt>  if the poll exists
+     *         <tt>false</tt>  if the poll doesn't exist
+     */
+    public boolean isHasPoll() {
+        return StringUtils.isNotBlank(getTitle()) &&
+                StringUtils.isNotBlank(getPollItemsValue());
+    }
+
 }

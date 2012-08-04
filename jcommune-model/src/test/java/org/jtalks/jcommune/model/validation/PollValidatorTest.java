@@ -12,13 +12,13 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.validation.validators;
+package org.jtalks.jcommune.model.validation;
 
 import org.hibernate.validator.engine.ConstraintViolationImpl;
 import org.joda.time.DateTime;
-import org.jtalks.jcommune.web.dto.PollDto;
-import org.jtalks.jcommune.web.dto.TopicDto;
-import org.jtalks.jcommune.web.validation.annotations.ValidPoll;
+import org.jtalks.jcommune.model.entity.Poll;
+import org.jtalks.jcommune.model.validation.annotations.ValidPoll;
+import org.jtalks.jcommune.model.validation.validators.PollValidator;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -38,8 +38,6 @@ import static org.testng.AssertJUnit.assertTrue;
  * @author Alexandre Teterin
  *         Date: 30.04.12
  */
-
-
 public class PollValidatorTest {
     private static Validator validator;
 
@@ -54,7 +52,7 @@ public class PollValidatorTest {
     public void testValidPoll() {
 
         Set<ConstraintViolation<TestObject>> constraintViolations = validator.validate(new TestObject("title",
-                "item1" + TopicDto.LINE_SEPARATOR + "item2", true));
+                "item1" + PollValidator.LINE_SEPARATOR + "item2", true));
         Assert.assertEquals(constraintViolations.size(), 0);
 
 
@@ -63,7 +61,7 @@ public class PollValidatorTest {
     @Test
     public void testNotFutureDateCase() {
         Set<ConstraintViolation<TestObject>> constraintViolations = validator.validate(new TestObject("title",
-                "item1" + TopicDto.LINE_SEPARATOR + "item2", false));
+                "item1" + PollValidator.LINE_SEPARATOR + "item2", false));
         Assert.assertEquals(constraintViolations.size(), 1);
         Assert.assertEquals(constraintViolations.iterator().next().getMessageTemplate(),
                 "{javax.validation.constraints.Future.message}");
@@ -73,7 +71,7 @@ public class PollValidatorTest {
     @Test
     public void testItemLengthNotValid() {
         Set<ConstraintViolation<TestObject>> constraintViolations = validator.validate(new TestObject("title",
-                "item1" + TopicDto.LINE_SEPARATOR +
+                "item1" + PollValidator.LINE_SEPARATOR +
                         "012345678901234567890123456789012345678901234567890123456789", true));
         Assert.assertEquals(constraintViolations.size(), 1);
         Assert.assertEquals(constraintViolations.iterator().next().getMessageTemplate(), "{VotingItemLength.message}");
@@ -83,7 +81,7 @@ public class PollValidatorTest {
     @Test
     public void testTitleBlankItemsDateNotBlank() {
         Set<ConstraintViolation<TestObject>> constraintViolations = validator.validate(new TestObject(null,
-                "item1" + TopicDto.LINE_SEPARATOR +
+                "item1" + PollValidator.LINE_SEPARATOR +
                         "item2", true));
         Assert.assertEquals(constraintViolations.size(), 1);
         Assert.assertEquals(constraintViolations.iterator().next().getMessageTemplate(),
@@ -94,7 +92,7 @@ public class PollValidatorTest {
     @Test
     public void testItemsBlankTitleDateNotBlank() {
         Set<ConstraintViolation<TestObject>> constraintViolations =
-                validator.validate(new TestObject("title","", true));
+                validator.validate(new TestObject("title", "", true));
         Assert.assertEquals(constraintViolations.size(), 2);
         Iterator iterator = constraintViolations.iterator();
         List<String> messageTemplates = new ArrayList<String>(2);
@@ -119,9 +117,9 @@ public class PollValidatorTest {
             DateTime future = new DateTime().plusDays(1);
 
             if (isFuture) {
-                endingDate = future.toLocalDate().toString(PollDto.DATE_FORMAT);
+                endingDate = future.toLocalDate().toString(PollValidator.DATE_FORMAT);
             } else {
-                endingDate = now.toLocalDate().toString(PollDto.DATE_FORMAT);
+                endingDate = now.toLocalDate().toString(PollValidator.DATE_FORMAT);
             }
 
             this.pollTitle = pollTitle;

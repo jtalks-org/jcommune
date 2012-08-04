@@ -25,6 +25,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.ObjectsFactory;
+import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -59,14 +60,14 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     @BeforeMethod
     public void setUp() throws Exception {
         session = sessionFactory.getCurrentSession();
-        ObjectsFactory.setSession(session);
+        PersistedObjectsFactory.setSession(session);
     }
 
     /*===== Common methods =====*/
 
     @Test
     public void testGet() {
-        Topic topic = ObjectsFactory.getDefaultTopic();
+        Topic topic = PersistedObjectsFactory.getDefaultTopic();
         session.save(topic);
 
         Topic result = dao.get(topic.getId());
@@ -86,7 +87,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     @Test
     public void testUpdate() {
         String newTitle = "new title";
-        Topic topic = ObjectsFactory.getDefaultTopic();
+        Topic topic = PersistedObjectsFactory.getDefaultTopic();
         session.save(topic);
         topic.setTitle(newTitle);
 
@@ -184,7 +185,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
     @Test
     public void testGetLastUpdatedTopicInBranch() {
-        Topic firstTopic = ObjectsFactory.getDefaultTopic();
+        Topic firstTopic = PersistedObjectsFactory.getDefaultTopic();
         Branch branch = firstTopic.getBranch();
         Topic secondTopic = new Topic(firstTopic.getTopicStarter(), "Second topic");
         branch.addTopic(secondTopic);
@@ -213,7 +214,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
     @Test
     public void testDeleteWithPoll() {
-        Poll poll = ObjectsFactory.createDefaultVoting();
+        Poll poll = PersistedObjectsFactory.createDefaultVoting();
         Topic topic = poll.getTopic();
         Branch branch = topic.getBranch();
         branch.deleteTopic(topic);
@@ -226,7 +227,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     @Test
     public void testGetCountTopicsInBranch() {
         //this topic is persisted
-        Topic topic = ObjectsFactory.getDefaultTopic();
+        Topic topic = PersistedObjectsFactory.getDefaultTopic();
         JCUser user = topic.getTopicStarter();
         Branch branch = topic.getBranch();
         branch.addTopic(new Topic(user, "Second topic"));
@@ -244,7 +245,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         int pageCount = 2;
         int pageSize = totalSize/pageCount;
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, pageSize);
-        List<Topic> topicList = ObjectsFactory.createAndSaveTopicList(totalSize);
+        List<Topic> topicList = PersistedObjectsFactory.createAndSaveTopicList(totalSize);
         Branch branch = topicList.get(0).getBranch();
         
         Page<Topic> topicsPage = dao.getTopics(branch, pageRequest);
@@ -259,7 +260,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     public void testGetTopicsWithDisabledPaging() {
         int size = 50;
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingDisabled(1, size/2);
-        List<Topic> topicList = ObjectsFactory.createAndSaveTopicList(size);
+        List<Topic> topicList = PersistedObjectsFactory.createAndSaveTopicList(size);
         Branch branch = topicList.get(0).getBranch();
         
         Page<Topic> topicsPage = dao.getTopics(branch, pageRequest);

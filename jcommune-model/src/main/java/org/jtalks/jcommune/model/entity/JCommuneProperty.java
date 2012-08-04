@@ -104,9 +104,9 @@ public enum JCommuneProperty {
     }
 
     /**
-     * Set an instance of {@link PropertyDao} to search properties by name.
+     * Set an instance of {@link org.jtalks.jcommune.model.dao.PropertyDao} to search properties by name.
      * 
-     * @param propertyDao an instance of {@link PropertyDao}
+     * @param propertyDao an instance of {@link org.jtalks.jcommune.model.dao.PropertyDao}
      */
     public void setPropertyDao(PropertyDao propertyDao) {
         this.propertyDao = propertyDao;

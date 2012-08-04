@@ -34,49 +34,50 @@
 
 <div class="container">
 
-    <h2><c:out value="${topicDto.topicName}"/></h2>
+    <h2><c:out value="${topicDto.topic.title}"/></h2>
 
     <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
     <form:form name="editForm"
                action="${pageContext.request.contextPath}/topics/${topicId}/edit?branchId=${branchId}"
                method="POST" modelAttribute="topicDto" class='well anti-multipost'>
-        <form:hidden path="id"/>
+        <form:hidden path="topic.id"/>
 
         <div class='control-group'>
             <label for='subject' class='control-label'><spring:message code="label.topic.title"/></label>
             <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>
-            <form:input path="topicName" id="subject" type="text" name="subject" size="45"
-                        maxlength="255" tabindex="1"
+            <form:input path="topic.title" id="subject" type="text" name="subject" size="45"
+                        maxlength="255"
                         class="post script-confirm-unsaved" placeholder="${topicTitlePlaceholder}"/>
             <br/>
 
-            <form:errors path="topicName" id="subject" type="text" name="subject" size="45"
-                         maxlength="255" tabindex="1"
+            <form:errors path="topic.title" id="subject" type="text" name="subject" size="45"
+                         maxlength="255"
                          class="post" cssClass="error"/>
         </div>
 
         <sec:accesscontrollist hasPermission="16" domainObject="${topic.branch}">
             <div class='control-group'>
-                <form:checkbox path="sticked" value="true" class="script-confirm-unsaved form-check-radio-box"/>
+                <form:checkbox path="topic.sticked" value="true" class="confirm-unsaved form-check-radio-box"/>
                 <label for='sticked' class='string optional'>
                     <spring:message code="label.sticked"/>
                 </label>
 
-                <form:errors path="sticked"/>
+                <form:errors path="topic.sticked"/>
             </div>
             <div class='control-group'>
-                <form:checkbox path="announcement" value="true" class="script-confirm-unsaved form-check-radio-box"/>
+                <form:checkbox path="topic.announcement" value="true"
+                               class="script-confirm-unsaved form-check-radio-box"/>
                 <label for='announcement' class='string optional'>
                     <spring:message code="label.announcement"/>
                 </label>
 
-                <form:errors path="announcement"/>
+                <form:errors path="topic.announcement"/>
             </div>
         </sec:accesscontrollist>
 
         <jtalks:bbeditor labelForAction="label.save"
-                         postText="${topicDto.bodyText}"
+                         postText="${topic.bodyText}"
                          bodyParameterName="bodyText"
                          back="${pageContext.request.contextPath}/topics/${topicId}"/>
         <div class="control-group">

@@ -69,6 +69,12 @@ public class RssViewerTest {
     }
 
     @Test
+    public void testConstructor() {
+        assertEquals(rssViewer.getContentType(), "application/rss+xml;charset=UTF-8");
+    }
+    
+    
+    @Test
     public void testBuildFeedItems() throws Exception {
 
         List<Item> items = rssViewer.buildFeedItems(model, request, response);

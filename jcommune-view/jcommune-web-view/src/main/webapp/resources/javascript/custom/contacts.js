@@ -166,7 +166,7 @@ $(document).ready(function () {
 			AddContact.selectedContactType = json[0];
         	
             //parse returned list of contact types and generate HTML for pop-up window
-            var str = '<ul><div>Add contact:</div>'
+            var str = '<ul><div>' + $labelContactsAddDialog+ '</div>'
 				+ '<span class="empty_cell"></span>'
 				+ '<br/>';
 			

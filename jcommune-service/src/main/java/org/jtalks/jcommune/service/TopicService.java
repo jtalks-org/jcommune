@@ -48,15 +48,14 @@ public interface TopicService extends EntityService<Topic> {
      * Add new topic with given title and body.
      * Author is current user.
      *
-     * @param topicName       name of topic
+     * @param topic           topic that used as dto
      * @param bodyText        body of topic
-     * @param branchId        branch containing topic
      * @param notifyOnAnswers user notification on answers flag
      * @return created topic
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
      */
-    Topic createTopic(String topicName, String bodyText, long branchId, boolean notifyOnAnswers)
+    Topic createTopic(Topic topic, String bodyText, boolean notifyOnAnswers)
             throws NotFoundException;
 
     /**
@@ -80,26 +79,22 @@ public interface TopicService extends EntityService<Topic> {
     /**
      * Update current topic with given title and body.
      *
-     * @param topicId   topic id
-     * @param topicName name of topic
-     * @param bodyText  body of topic
+     * @param topicDto {@link Topic} object used as DTO between layers
+     * @param bodyText body of topic
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic not found
      */
-    void updateTopic(long topicId, String topicName, String bodyText) throws NotFoundException;
+    void updateTopic(Topic topicDto, String bodyText) throws NotFoundException;
 
     /**
      * Update current topic with given title and body.
      *
-     * @param topicId         topic id
-     * @param topicName       name of topic
+     * @param topicDto        {@link Topic} object used as DTO between layers
      * @param bodyText        body of topic
-     * @param sticked         flag for sticking a topic
-     * @param announcement    flag, which set topic as announcement
      * @param notifyOnAnswers user notification on answers flag
      * @throws NotFoundException when topic not found
      */
-    void updateTopic(long topicId, String topicName, String bodyText, boolean sticked, boolean announcement,
+    void updateTopic(Topic topicDto, String bodyText,
                      boolean notifyOnAnswers) throws NotFoundException;
 
     /**
