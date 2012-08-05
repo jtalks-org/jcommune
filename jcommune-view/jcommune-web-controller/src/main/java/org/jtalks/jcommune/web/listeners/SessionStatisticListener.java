@@ -14,24 +14,16 @@
  */
 package org.jtalks.jcommune.web.listeners;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-
-import org.jtalks.jcommune.model.entity.JCommuneProperty;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Custom session listener implementation to track active user sessions
  *
  * @author Elena Lepaeva
  */
-public class HttpSessionStatisticListener implements HttpSessionListener {
+public class SessionStatisticListener implements HttpSessionListener {
 
-    private static final String SESSION_TIMEOUT_PROPERTY_NAME = "sessionTimeoutProperty";
     
     private static volatile long totalActiveSessions;
     
@@ -47,13 +39,6 @@ public class HttpSessionStatisticListener implements HttpSessionListener {
      */
     @Override
     public synchronized void sessionCreated(HttpSessionEvent se) {
-        JCommuneProperty sessionTimeoutProperty = (JCommuneProperty) getSpringBean(
-                SESSION_TIMEOUT_PROPERTY_NAME,
-                se.getSession().getServletContext());
-        
-        int timeoutInSeconds = (int) TimeUnit.SECONDS.convert(
-                sessionTimeoutProperty.intValue(), TimeUnit.HOURS);
-        se.getSession().setMaxInactiveInterval(timeoutInSeconds);
         totalActiveSessions++;
     }
 
@@ -73,17 +58,4 @@ public class HttpSessionStatisticListener implements HttpSessionListener {
         }
     }
     
-    /**
-     * Returns Spring manager bean from Spring context.
-     * @param name - name of bean
-     * @param servletContext - servlet context used to get current Spring 
-     *      web application context
-     * @return Spring managed bean with specified name or null if it was not 
-     *      found
-     */
-    private Object getSpringBean(String name, ServletContext servletContext) {
-        WebApplicationContext ctx = WebApplicationContextUtils
-            .getRequiredWebApplicationContext(servletContext);
-        return ctx.getBean(name);
-    }
 }

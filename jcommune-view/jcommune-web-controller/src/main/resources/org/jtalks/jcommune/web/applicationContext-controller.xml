@@ -31,7 +31,7 @@
 
     <bean id="breadcrumbBuilder" class="org.jtalks.jcommune.web.util.BreadcrumbBuilder"/>
 
-    <bean id="sessionStatisticListener" class="org.jtalks.jcommune.web.listeners.HttpSessionStatisticListener"/>
+    <bean id="sessionStatisticListener" class="org.jtalks.jcommune.web.listeners.SessionStatisticListener"/>
 
     <bean id="captchaProducer"
         class="com.google.code.kaptcha.impl.DefaultKaptcha">

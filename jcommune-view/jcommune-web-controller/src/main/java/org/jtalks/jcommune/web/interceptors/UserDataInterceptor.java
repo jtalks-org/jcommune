@@ -14,10 +14,7 @@
  */
 package org.jtalks.jcommune.web.interceptors;
 
-import org.jtalks.common.security.SecurityService;
-import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.PrivateMessageService;
-import org.jtalks.jcommune.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -32,18 +29,13 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class UserDataInterceptor extends HandlerInterceptorAdapter {
     private PrivateMessageService service;
-    private UserService userService;
 
     /**
-     * Constructor
-     *
-     * @param service         service
-     * @param userService {@link SecurityService}
+     * @param service to fetch unread PM count for user
      */
     @Autowired
-    public UserDataInterceptor(PrivateMessageService service, UserService userService) {
+    public UserDataInterceptor(PrivateMessageService service) {
         this.service = service;
-        this.userService = userService;
     }
 
     /**
@@ -60,11 +52,7 @@ public class UserDataInterceptor extends HandlerInterceptorAdapter {
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
                            ModelAndView modelAndView) {
-        //do not apply to the redirected requests: it's unnecessary and may cause error pages to work incorrectly
-        if (modelAndView != null && !modelAndView.getViewName().contains("redirect:")) {
-            //todo: revise the common information we actually need here
-            int newPmCount = service.currentUserNewPmCount();
-            request.setAttribute("newPmCount", newPmCount);
-        }
+        int newPmCount = service.currentUserNewPmCount();
+        request.setAttribute("newPmCount", newPmCount);
     }
 }
