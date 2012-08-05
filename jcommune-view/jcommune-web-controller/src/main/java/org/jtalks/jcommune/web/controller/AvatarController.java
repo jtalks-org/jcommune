@@ -223,8 +223,9 @@ public class AvatarController {
     @ExceptionHandler(value = ImageSizeException.class)
     @ResponseBody
     public OperationResultDto handleImageSizeException(ImageSizeException e, Locale locale) {
-        return new OperationResultDto(false, messageSource.getMessage(WRONG_SIZE_RESOURCE_MESSAGE, null, locale) + " "
-                + e.getMaxSize());
+        Object[] parameters = new Object[] { e.getMaxSize() };
+        String errorMessage = messageSource.getMessage(WRONG_SIZE_RESOURCE_MESSAGE, parameters, locale);
+        return new OperationResultDto(errorMessage);
     }
     
     /**
@@ -237,7 +238,8 @@ public class AvatarController {
     @ExceptionHandler(value = ImageFormatException.class)
     @ResponseBody
     public OperationResultDto handleImageFormatException(ImageFormatException e, Locale locale) {
-        return new OperationResultDto(false, messageSource.getMessage(WRONG_FORMAT_RESOURCE_MESSAGE, null, locale));
+        String errorMessage = messageSource.getMessage(WRONG_FORMAT_RESOURCE_MESSAGE, null, locale);
+        return new OperationResultDto(errorMessage);
     }
     
     /**
@@ -250,6 +252,7 @@ public class AvatarController {
     @ExceptionHandler(value = ImageProcessException.class)
     @ResponseBody
     public OperationResultDto handleImageProcessException(ImageProcessException e, Locale locale) {
-        return new OperationResultDto(false, messageSource.getMessage(COMMON_ERROR_RESOURCE_MESSAGE, null, locale));
+        String errorMessage = messageSource.getMessage(COMMON_ERROR_RESOURCE_MESSAGE, null, locale);
+        return new OperationResultDto(errorMessage);
     }
 }

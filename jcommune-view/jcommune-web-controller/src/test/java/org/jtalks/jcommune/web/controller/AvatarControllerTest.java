@@ -241,15 +241,14 @@ public class AvatarControllerTest {
         int maxSize = 1000;
         ImageSizeException exception = new ImageSizeException(maxSize);
         Locale locale = Locale.ENGLISH;//it's not matter
-        String messageRoot = "a message";
-        String expectedMessage = messageRoot + " " + maxSize;
+        String expectedMessage = "a message " + maxSize;
         boolean expectedSuccess = false;
         //
         when(messageSource.getMessage(
-                AvatarController.WRONG_SIZE_RESOURCE_MESSAGE,
-                null,
-                locale)
-                ).thenReturn(messageRoot);
+                Matchers.anyString(),
+                Matchers.any(Object[].class),
+                Matchers.any(Locale.class))
+                ).thenReturn(expectedMessage);
         //
         OperationResultDto result = avatarController.handleImageSizeException(exception, locale);
         //

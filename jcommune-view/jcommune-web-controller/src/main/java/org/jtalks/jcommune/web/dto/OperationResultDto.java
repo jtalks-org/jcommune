@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.web.dto;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Data transfer object for sending an information about error, that will be
  * displayed on the client side.
@@ -24,15 +26,24 @@ public class OperationResultDto {
     private boolean success;
     private String message;
     
+    
     /**
-     * Constructs an instance with required fields.
-     * 
-     * @param success true, if the operation completed successfully,
-     *                otherwise false
-     * @param message message that briefly describes the result of operation
+     * Constructs an instance, that contains the successful result of operation.
+     * The result is successful, so the message about performed operation is empty.
      */
-    public OperationResultDto(boolean success, String message) {
-        this.success = success;
+    public OperationResultDto() {
+        this.success = true;
+        this.message = StringUtils.EMPTY;
+    }
+
+    /**
+     * Constructs an instance, that contains the unsuccessful result operation.
+     * The result is unsuccessful, so the message contains information about the
+     * error that occurred during the operation.
+     * 
+     * @param message message that briefly describes the error
+     */
+    public OperationResultDto(String message) {
         this.message = message;
     }
 
