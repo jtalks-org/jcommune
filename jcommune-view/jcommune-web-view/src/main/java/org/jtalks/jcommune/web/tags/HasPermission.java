@@ -14,15 +14,12 @@
  */
 package org.jtalks.jcommune.web.tags;
 
-import java.util.Map;
-
 import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import org.jtalks.common.security.SecurityContextFacade;
+import org.jtalks.common.service.security.SecurityContextFacade;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
@@ -31,67 +28,62 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 /**
  * An implementation of {@link Tag} that allows its body through if some 
  * authorizations are granted to the request's object.
+ * Typical use case: <br>
+ *  <code> 
+ *  &lt;jtalks:haspermission targetId="${topic.branch.id}" targetType="BRANCH"<br>
+ *      &nbsp;&nbsp;&nbsp;&nbsp;permission="BranchPermission.DELETE_OWN_POSTS"&gt;
+ *      <br>&nbsp;&nbsp;&nbsp;&nbsp;Some jsp code<br>
+ *  &lt;/jtalks:haspermission&gt;
+ *  </code>
  * 
- * @author Vyachelav Mishcheryakov
+ * @author Vyacheslav Mishcheryakov
  */
 @SuppressWarnings("serial")
 public class HasPermission extends TagSupport {
 
-    private ApplicationContext applicationContext;
-    private PermissionEvaluator aclEvaluator;
-    private SecurityContextFacade securityContextFacade;
+    private transient ApplicationContext applicationContext;
+    private transient PermissionEvaluator aclEvaluator;
+    private transient SecurityContextFacade securityContextFacade;
     
+    /** Identifier of object to check permission */
     private Long targetId;
+    
+    /** Type of object (e.g. BRANCH) */
     private String targetType;
+    
+    /** Full qualified name of permission. See 
+     * {@link org.jtalks.common.model.permissions.JtalksPermission} and its
+     * subclasses
+     */
     private String permission;
     
-
     /**
-     * @return the targetId
-     */
-    public Long getTargetId() {
-        return targetId;
-    }
-
-    /**
-     * @param targetId the targetId to set
+     * @param targetId the ID of object to check permission
      */
     public void setTargetId(Long targetId) {
         this.targetId = targetId;
     }
 
     /**
-     * @return the targetType
-     */
-    public String getTargetType() {
-        return targetType;
-    }
-
-    /**
-     * @param targetType the targetType to set
+     * @param targetType type of targeted object
      */
     public void setTargetType(String targetType) {
         this.targetType = targetType;
     }
 
     /**
-     * @return the permission
-     */
-    public String getPermission() {
-        return permission;
-    }
-
-    /**
-     * @param permission the permission to set
+     * @param permission Full qualified name of permission
      */
     public void setPermission(String permission) {
         this.permission = permission;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public int doStartTag() throws JspException {
-        if (targetId == null 
-                || targetType == null || "".equals(targetType) 
-                || permission == null || "".equals(permission)) {
+        if (isAnyParameterMissed()) {
             return Tag.SKIP_BODY;
         }
 
@@ -105,56 +97,70 @@ public class HasPermission extends TagSupport {
 
         return Tag.SKIP_BODY;
     }
+    
+    /**
+     * Checks if any required tag parameter is missed or blank
+     * @return true if any required parameter is not specified.
+     */
+    private boolean isAnyParameterMissed() {
+        boolean isTargetIdMissed = targetId == null;
+        boolean isTargetTypeMissed = targetType == null || "".equals(targetType);
+        boolean isPermissionMissed = permission == null || "".equals(permission);
+        return  isTargetIdMissed || isTargetTypeMissed || isPermissionMissed;
+    }
 
    /**
-    * Allows test cases to override where application context obtained from.
+    * Obtain Spring's application context, since we can't use DI in tags. 
     *
-    * @param pageContext so the <code>ServletContext</code> can be accessed as required by Spring's
+    * @param servletContext <code>ServletContext</code> as required by Spring's
     *        <code>WebApplicationContextUtils</code>
     *
     * @return the Spring application context (never <code>null</code>)
     */
-   protected ApplicationContext getContext(PageContext pageContext) {
-       ServletContext servletContext = pageContext.getServletContext();
-
-       return WebApplicationContextUtils.getRequiredWebApplicationContext(
+    private ApplicationContext getContext(ServletContext servletContext) {
+        return WebApplicationContextUtils.getRequiredWebApplicationContext(
                servletContext);
-   }
+    }
+   
+    /**
+     * Sets Spring's application context. Created to be used in tests.
+     * @param ctx - context
+     */
+    public void setApplicationContext(ApplicationContext ctx) {
+        applicationContext = ctx;
+    }
        
-       
+    /**
+     * @param aclEvaluator the aclEvaluator to set
+     */
+    public void setAclEvaluator(PermissionEvaluator aclEvaluator) {
+        this.aclEvaluator = aclEvaluator;
+    }
 
-   private void initializeIfRequired() throws JspException {
-       if (applicationContext != null) {
-           return;
-       }
+    /**
+     * @param securityContextFacade the securityContextFacade to set
+     */
+    public void setSecurityContextFacade(SecurityContextFacade securityContextFacade) {
+        this.securityContextFacade = securityContextFacade;
+    }
 
-       this.applicationContext = getContext(pageContext);
-
-       aclEvaluator = getBeanOfType(PermissionEvaluator.class);
-       
-       securityContextFacade = getBeanOfType(SecurityContextFacade.class);
-       
-       if (securityContextFacade == null) {
-           securityContextFacade = new SecurityContextFacade();
-       }
-   }
-
-   private <T> T getBeanOfType(Class<T> type) throws JspException {
-       Map<String, T> map = applicationContext.getBeansOfType(type);
-
-       for (ApplicationContext context = applicationContext.getParent();
-           context != null; context = context.getParent()) {
-           map.putAll(context.getBeansOfType(type));
-       }
-
-       if (map.size() == 0) {
-           return null;
-       } else if (map.size() == 1) {
-           return map.values().iterator().next();
-       }
-
-       throw new JspException("Found incorrect number of " + type.getSimpleName() +" instances in "
-                   + "application context - you must have only have one!");
-   }
-
+    /** 
+     * Fetches all required beans from Spring context if needed
+     * @throws JspException 
+     *
+     */
+    private void initializeIfRequired() {
+        if (applicationContext == null) {
+            this.applicationContext = getContext(pageContext.getServletContext());
+        
+            aclEvaluator = applicationContext.getBean(PermissionEvaluator.class);
+           
+            securityContextFacade = applicationContext.getBean(
+                    SecurityContextFacade.class);           
+            if (securityContextFacade == null) {
+                securityContextFacade = new org.jtalks.jcommune.service.security.SecurityContextFacade();
+            }
+        }
+    }
+    
 }
