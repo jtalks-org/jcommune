@@ -35,17 +35,6 @@ import java.util.Map;
  * @author Andrey Kluev
  */
 public class RssViewer extends AbstractRssFeedView {
-
-    /** 
-     * Encoding for proper displaying cyrillic symbols when English language is 
-     * selected
-     */
-    private static final String RSS_CONTENT_TYPE = "application/rss+xml;charset=UTF-8";
-    
-    public RssViewer() {
-        super();
-        setContentType(RSS_CONTENT_TYPE);
-    }
     
     /**
      * Set meta data for all RSS feed

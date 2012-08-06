@@ -36,7 +36,12 @@ public enum JCommuneProperty {
     /**
      * Property for session timeout for logged users.
      */
-    SESSION_TIMEOUT;
+    SESSION_TIMEOUT,
+    
+    /**
+     * Property for the maximum size of the avatar.
+     */
+    AVATAR_MAX_SIZE;
     
     private static final Logger LOGGER = LoggerFactory.getLogger(JCommuneProperty.class);
 

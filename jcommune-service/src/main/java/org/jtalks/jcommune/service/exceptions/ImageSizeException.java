@@ -21,14 +21,22 @@ package org.jtalks.jcommune.service.exceptions;
  * @author Alexandre Teterin
  */
 public class ImageSizeException extends ImageProcessException {
-
     static final long serialVersionUID = 2012017L;
+    private int maxSize;
 
     /**
      * Constructs a new exception with <code>null</code> as its detail message.
      */
-    public ImageSizeException() {
-        super();
+    public ImageSizeException(int maxSize) {
+        this.maxSize = maxSize;
     }
-
+    
+    /**
+     * Gets the max size of avatar, that is available in the forum.
+     * 
+     * @return the max size of avatar
+     */
+    public int getMaxSize() {
+        return maxSize;
+    }
 }

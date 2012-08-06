@@ -19,6 +19,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.web.interceptors.UserDataInterceptor;
+import org.mockito.Mock;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
@@ -35,79 +36,45 @@ import static org.testng.Assert.assertEquals;
  * @author Kirill Afonin
  */
 public class UserDataInterceptorTest {
-    private final String USER_NAME = "username";
-    private final String FIRST_NAME = "first name";
-    private final String LAST_NAME = "last name";
-    private final String EMAIL = "mail@mail.com";
-    private final String PASSWORD = "password";
-    private final int USER_NEW_PM_COUNT = 2;
 
     private UserDataInterceptor interceptor;
+
+    @Mock
     private HttpServletRequest request;
+
+    @Mock
     private HttpServletResponse response;
+
+    @Mock
     private PrivateMessageService service;
-    private UserService userService;
 
     @BeforeMethod
     public void setUp() throws Exception {
         service = mock(PrivateMessageService.class);
-        userService = mock(UserService.class);
-        interceptor = new UserDataInterceptor(service, userService);
+        interceptor = new UserDataInterceptor(service);
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
     }
 
     @Test
     public void testUserDataIsSetAfterController() throws Exception {
-        JCUser user = getUser();
-        when(service.currentUserNewPmCount()).thenReturn(USER_NEW_PM_COUNT);
-        when(userService.getCurrentUser()).thenReturn(user);
+        int pmCount = 2;
+        when(service.currentUserNewPmCount()).thenReturn(pmCount);
 
         interceptor.postHandle(request, response, null, new ModelAndView("view"));
 
-        assertEquals(request.getAttribute("newPmCount"), USER_NEW_PM_COUNT);
+        assertEquals(request.getAttribute("newPmCount"), pmCount);
         verify(service).currentUserNewPmCount();
     }
 
     @Test
     public void testPostHandleWithoutCurrentUser() throws Exception {
         when(service.currentUserNewPmCount()).thenReturn(0);
-        when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
 
         interceptor.postHandle(request, response, null, new ModelAndView("view"));
 
         assertEquals(request.getAttribute("newPmCount"), 0);
         verify(service).currentUserNewPmCount();
     }
-    
-    @Test
-    public void testPostHandleWhenModelAndViewNull() {
-    	ModelAndView modelAndView = null;
-    	
-    	interceptor.postHandle(request, response, null, modelAndView);
-    	
-    	verifyNotApplied();
-    }
-    
-    @Test
-    public void testPostHandleWithRedirect() {
-    	ModelAndView modelAndView = new ModelAndView("redirect:view");
-    	
-    	interceptor.postHandle(request, response, null, modelAndView);
-    	
-    	verifyNotApplied();
-    }
-    
-    private void verifyNotApplied() {
-    	assertEquals(request.getAttribute("newPmCount"), null);
-    	verify(service, never()).currentUserNewPmCount();
-        verify(userService, never()).getCurrentUser();
-    }
 
-    private JCUser getUser() {
-        JCUser newUser = new JCUser(USER_NAME, EMAIL, PASSWORD);
-        newUser.setFirstName(FIRST_NAME);
-        newUser.setLastName(LAST_NAME);
-        return newUser;
-    }
 }

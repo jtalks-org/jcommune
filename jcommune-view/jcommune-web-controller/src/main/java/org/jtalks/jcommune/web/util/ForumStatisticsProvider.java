@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.web.util;
 
 import org.jtalks.jcommune.service.nontransactional.ForumStatisticsService;
-import org.jtalks.jcommune.web.listeners.HttpSessionStatisticListener;
+import org.jtalks.jcommune.web.listeners.SessionStatisticListener;
 import org.springframework.security.core.session.SessionRegistry;
 
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.List;
 public class ForumStatisticsProvider {
 
     private SessionRegistry sessionRegistry;
-    private HttpSessionStatisticListener sessionStatisticListener;
+    private SessionStatisticListener sessionStatisticListener;
     private ForumStatisticsService statisticsService;
 
     /**
@@ -37,7 +37,7 @@ public class ForumStatisticsProvider {
      * @param statisticsService        for getting active users information
      */
     public ForumStatisticsProvider(SessionRegistry sessionRegistry,
-                                   HttpSessionStatisticListener sessionStatisticListener,
+                                   SessionStatisticListener sessionStatisticListener,
                                    ForumStatisticsService statisticsService) {
         this.sessionRegistry = sessionRegistry;
         this.sessionStatisticListener = sessionStatisticListener;

@@ -31,7 +31,7 @@
 
     <bean id="breadcrumbBuilder" class="org.jtalks.jcommune.web.util.BreadcrumbBuilder"/>
 
-    <bean id="sessionStatisticListener" class="org.jtalks.jcommune.web.listeners.HttpSessionStatisticListener"/>
+    <bean id="sessionStatisticListener" class="org.jtalks.jcommune.web.listeners.SessionStatisticListener"/>
 
     <bean id="captchaProducer"
         class="com.google.code.kaptcha.impl.DefaultKaptcha">
@@ -47,7 +47,15 @@
                         </constructor-arg>
                 </bean>
         </property>
-     </bean>
-
+    </bean>
+     
+    <bean id="jsonUtils" class="org.jtalks.jcommune.web.util.JSONUtils">
+        <constructor-arg>
+            <bean class="org.codehaus.jackson.JsonFactory"/>
+        </constructor-arg>
+        <constructor-arg>
+            <bean class="org.codehaus.jackson.map.ObjectMapper"/>
+        </constructor-arg>
+    </bean>
 </beans>
 

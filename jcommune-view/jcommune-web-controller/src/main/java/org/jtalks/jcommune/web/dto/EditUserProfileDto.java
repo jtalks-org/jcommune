@@ -39,6 +39,7 @@ import javax.validation.constraints.Size;
 public class EditUserProfileDto {
 
     @NotNull
+    @Size(max=User.EMAIL_MAX_LENGTH, message = "{title.length}")
     @Email(message = "{validation.email.wrong.format}")
     @ChangedEmail
     private String email;
