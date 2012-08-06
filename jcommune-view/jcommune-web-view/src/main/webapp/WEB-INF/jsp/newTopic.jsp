@@ -88,7 +88,7 @@
                         endingDateNameValue="topic.poll.endingDateValue"/>
     </form:form>
 
-    <a href="${pageContext.request.contextPath}/branches/${branchId}" class='back-btn'>
+    <a href="${pageContext.request.contextPath}/branches/${branchId}" tabindex="1000" class='back-btn'>
         <i class="icon-arrow-left"></i>
         <spring:message code="label.back"/>
     </a>
