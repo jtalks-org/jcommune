@@ -33,8 +33,7 @@ $(function () {
             query = "username=" + encodeURIComponent($('#username').val()) +
                 "&password=" + encodeURIComponent($('#password').val()) +
                 "&passwordConfirm=" + encodeURIComponent($('#passwordConfirm').val()) +
-                "&email=" + encodeURIComponent($('#email').val()) +
-                "&captcha=" + encodeURIComponent($('#captcha').val());
+                "&email=" + encodeURIComponent($('#email').val());
         } else {
             query = "username=&password=&passwordConfirm=&email=&captcha&firstView=false";
         }

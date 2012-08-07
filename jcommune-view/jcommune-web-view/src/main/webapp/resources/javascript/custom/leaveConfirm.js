@@ -38,7 +38,7 @@ $(document).ready(function () {
         if (currentData != newData) return message;
     });
 
-    $(allowed_transitions).live('click', function (event) {
+    $(document).on('click',allowed_transitions,function (event) {
         $(window).off('beforeunload');
     });
 
