@@ -56,7 +56,8 @@
                          class="post" cssClass="error"/>
         </div>
 
-        <sec:accesscontrollist hasPermission="16" domainObject="${topic.branch}">
+        <jtalks:haspermission targetId='${topic.branch.id}' targetType='BRANCH' 
+            permission='GeneralPermission.ADMIN'>
             <div class='control-group'>
                 <form:checkbox path="topic.sticked" value="true" class="confirm-unsaved form-check-radio-box"/>
                 <label for='sticked' class='string optional'>
@@ -74,7 +75,7 @@
 
                 <form:errors path="topic.announcement"/>
             </div>
-        </sec:accesscontrollist>
+        </jtalks:haspermission>
 
         <jtalks:bbeditor labelForAction="label.save"
                          postText="${topic.bodyText}"

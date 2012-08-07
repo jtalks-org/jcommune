@@ -73,13 +73,14 @@
 <div class="row-fluid upper-pagination forum-pagination-container">
 
     <div class="span2">
-        <sec:accesscontrollist hasPermission="3" domainObject="${branch}">
+        <jtalks:haspermission targetId='${branch.id}' targetType='BRANCH' 
+            permission='BranchPermission.CREATE_TOPICS'>
             <a id='new-topic-btn' class="btn btn-primary"
                href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"
                title="<spring:message code="label.addtopic"/>">
                 <spring:message code="label.addtopic"/>
             </a>
-        </sec:accesscontrollist>
+        </jtalks:haspermission>
         &nbsp; <%-- For proper pagination layout without buttons--%>
     </div>
 
@@ -221,13 +222,14 @@
 <div class="row-fluid upper-pagination forum-pagination-container">
 
     <div class="span2">
-        <sec:accesscontrollist hasPermission="3" domainObject="${branch}">
+        <jtalks:haspermission targetId='${branch.id}' targetType='BRANCH' 
+            permission='BranchPermission.CREATE_TOPICS'>
             <a id='new-topic-btn' class="btn btn-primary"
                href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"
                title="<spring:message code="label.addtopic"/>">
                 <spring:message code="label.addtopic"/>
             </a>
-        </sec:accesscontrollist>
+        </jtalks:haspermission>
         &nbsp; <%-- For proper pagination layout without buttons--%>
     </div>
 

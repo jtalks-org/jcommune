@@ -18,7 +18,6 @@ import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.model.permissions.BranchPermission;
-import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.common.model.permissions.ProfilePermission;
 import org.jtalks.common.security.acl.AclUtil;
@@ -69,8 +68,9 @@ public class AclGroupPermissionEvaluatorTest {
 
     private Long targetId = 1L;
     private String targetType = "BRANCH";
-    private String permission = "GeneralPermission.WRITE";
-    private GeneralPermission generalPermission = GeneralPermission.WRITE;
+    private String permission = "BranchPermission.CREATE_POSTS";
+    private BranchPermission generalPermission = BranchPermission.CREATE_POSTS;
+    private BranchPermission someOtherPermission = BranchPermission.SPLIT_TOPICS;
 
     @BeforeMethod
     public void init() {
@@ -162,7 +162,9 @@ public class AclGroupPermissionEvaluatorTest {
         Mockito.when(mutableAcl.getEntries()).thenReturn(aces);
 
         List<GroupAce> controlEntries = new ArrayList<GroupAce>();
-        controlEntries.add(createGroupAce(isGranted));
+        controlEntries.add(createGroupAce(someOtherPermission, true));
+        controlEntries.add(createGroupAce(someOtherPermission, false));
+        controlEntries.add(createGroupAce(generalPermission, isGranted));
         Mockito.when(aclManager.getGroupPermissionsOn(objectIdentity)).thenReturn(controlEntries);
     }
 
@@ -200,6 +202,7 @@ public class AclGroupPermissionEvaluatorTest {
         Assert.assertFalse(evaluator.hasPermission(authentication, targetId, targetType, "123"));
     }
 
+    @SuppressWarnings("deprecation")
     @Test(expectedExceptions = UnsupportedOperationException.class)
     public void testHasPermission() throws Exception {
         evaluator.hasPermission(authentication, targetId, permission);
@@ -213,7 +216,7 @@ public class AclGroupPermissionEvaluatorTest {
         return accessControlEntry;
     }
 
-    private GroupAce createGroupAce(boolean isGranted) {
+    private GroupAce createGroupAce(BranchPermission permission, boolean isGranted) {
         GroupAce groupAce = Mockito.mock(GroupAce.class);
         Group group = Mockito.mock(Group.class);
         List<User> users = new ArrayList<User>();
@@ -221,6 +224,7 @@ public class AclGroupPermissionEvaluatorTest {
         Mockito.when(group.getUsers()).thenReturn(users);
         Mockito.when(groupAce.getGroup(groupDao)).thenReturn(group);
         Mockito.when(groupAce.isGranting()).thenReturn(isGranted);
+        Mockito.when(groupAce.getBranchPermission()).thenReturn(permission);
         return groupAce;
     }
 }

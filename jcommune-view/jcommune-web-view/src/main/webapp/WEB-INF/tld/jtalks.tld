@@ -124,7 +124,7 @@
         <body-content>scriptless</body-content>
         <attribute>
             <description>
-                Full qualified name of permission 
+                Simple name of permission (enum value) 
             </description>
             <name>permission</name>
             <required>true</required>

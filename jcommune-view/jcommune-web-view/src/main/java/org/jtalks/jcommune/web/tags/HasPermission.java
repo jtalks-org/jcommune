@@ -51,7 +51,7 @@ public class HasPermission extends TagSupport {
     /** Type of object (e.g. BRANCH) */
     private String targetType;
     
-    /** Full qualified name of permission. See 
+    /** Simple name of permission (enum value). See 
      * {@link org.jtalks.common.model.permissions.JtalksPermission} and its
      * subclasses
      */
@@ -72,7 +72,7 @@ public class HasPermission extends TagSupport {
     }
 
     /**
-     * @param permission Full qualified name of permission
+     * @param permission Simple name of permission (enum value)
      */
     public void setPermission(String permission) {
         this.permission = permission;
