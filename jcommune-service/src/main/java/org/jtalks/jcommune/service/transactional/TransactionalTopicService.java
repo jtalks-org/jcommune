@@ -258,16 +258,28 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.MOVE_TOPICS')")
     public void moveTopic(Long topicId, Long branchId) throws NotFoundException {
         Topic topic = get(topicId);
+        moveTopic(topic, branchId);
+    }
+    
+    /**
+     * Performs actual topic moving with permission check
+     *
+     * @param topic    topic to move
+     * @param branchId ID of target branch
+     * @throws NotFoundException if target branch was not found by id
+     * 
+     */
+    @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.MOVE_TOPICS')")
+    private void moveTopic(Topic topic, Long branchId) throws NotFoundException {
         Branch targetBranch = branchService.get(branchId);
         targetBranch.addTopic(topic);
         branchDao.update(targetBranch);
 
-        notificationService.topicMoved(topic, topicId);
+        notificationService.topicMoved(topic, topic.getId());
 
-        logger.info("Moved topic \"{}\". Topic id: {}", topic.getTitle(), topicId);
+        logger.info("Moved topic \"{}\". Topic id: {}", topic.getTitle(), topic.getId());
     }
 
     /**

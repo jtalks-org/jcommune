@@ -388,6 +388,7 @@ public class TransactionalTopicServiceTest {
     @Test
     public void testMoveTopic() throws NotFoundException {
         Topic topic = new Topic(user, "title");
+        topic.setId(TOPIC_ID);
         Post firstPost = new Post(user, ANSWER_BODY);
         topic.addPost(firstPost);
         Branch currentBranch = createBranch();
