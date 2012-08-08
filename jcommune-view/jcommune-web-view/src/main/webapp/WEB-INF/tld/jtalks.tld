@@ -119,7 +119,7 @@
             has one of the specified permissions to the presented
             domain object instance.
         </description>
-        <name>haspermission</name>
+        <name>hasPermission</name>
         <tag-class>org.jtalks.jcommune.web.tags.HasPermission</tag-class>
         <body-content>scriptless</body-content>
         <attribute>

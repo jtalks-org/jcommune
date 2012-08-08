@@ -26,10 +26,10 @@
 <div id="pollWrap">
     <%-- Determination of whether the user can vote in the topic. --%>
     <c:set var="votingAvailable" value="false" scope="request"/>
-    <jtalks:haspermission targetId="${poll.id}" targetType="POLL" 
+    <jtalks:hasPermission targetId="${poll.id}" targetType="POLL" 
         permission="GeneralPermission.WRITE">
         <c:set var="votingAvailable" value="true" scope="request"/>
-    </jtalks:haspermission>
+    </jtalks:hasPermission>
     <%-- General form. --%>
     <form name="pollForm" action="#">
         <%-- Poll title --%>

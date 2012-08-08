@@ -77,22 +77,22 @@
 <%-- Upper pagination --%>
 <div class="row-fluid upper-pagination forum-pagination-container">
    <div class="span3">
-       <jtalks:haspermission targetId='${topic.branch.id}' targetType='BRANCH' 
+       <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH' 
             permission='BranchPermission.CREATE_POSTS'>
            <a id="new-topic-btn" class="btn btn-primary"
                href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}&branchId=${topic.branch.id}"
                title="<spring:message code='label.tips.create_new_post'/>">
                <spring:message code="label.answer"/>
            </a>
-       </jtalks:haspermission>
-       <jtalks:haspermission targetId='${topic.branch.id}' targetType='BRANCH' 
+       </jtalks:hasPermission>
+       <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH' 
             permission='BranchPermission.MOVE_TOPICS'>
                <span class="topicId" id="${topic.id}">
                <a name="move_topic" href="#" class="btn" title="<spring:message code='label.tips.move_topic'/>">
                    <spring:message code="label.topic.move"/>
                </a>
                </span>
-       </jtalks:haspermission>
+       </jtalks:hasPermission>
        &nbsp; <%-- For proper pagination layout without buttons--%>
    </div>
  
@@ -184,15 +184,15 @@
                                <%--Edit post button start --%>
                                <c:set var="isEditButtonAvailable" value="false"/>
                                <%--  An ability to edit posts for author of this posts --%>
-                               <jtalks:haspermission targetId='${post.id}' targetType='POST' 
+                               <jtalks:hasPermission targetId='${post.id}' targetType='POST' 
                                     permission='GeneralPermission.WRITE'>                              
                                     <c:set var="isEditButtonAvailable" value="true"/>
-                               </jtalks:haspermission>
+                               </jtalks:hasPermission>
                                <%--  An ability to edit posts for administrators and branch moderators --%>
-                               <jtalks:haspermission targetId='${topic.branch.id}' targetType='BRANCH' 
+                               <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH' 
                                     permission='BranchPermission.EDIT_OTHERS_POSTS'>                               
                                     <c:set var="isEditButtonAvailable" value="true"/>
-                               </jtalks:haspermission>
+                               </jtalks:hasPermission>
                                <c:if test="${isEditButtonAvailable}">
                                     <a id="edit_button" href="${edit_url}" rel="${branchId}"
                                        class="btn btn-mini" title="<spring:message code='label.tips.edit_post'/>">
@@ -207,17 +207,17 @@
                                    <sec:authentication property="principal.id" var="userId"/>
                                    <%--The ability of users to remove their own posts--%>
                                    <c:if test='${userId == post.userCreated.id}'>
-                                       <jtalks:haspermission targetId="${topic.branch.id}" targetType="BRANCH" 
+                                       <jtalks:hasPermission targetId="${topic.branch.id}" targetType="BRANCH" 
                                             permission="BranchPermission.DELETE_OWN_POSTS">                                            
                                            <c:set var="isDeleteButtonAvailable" value="true"/>
-                                       </jtalks:haspermission>
+                                       </jtalks:hasPermission>
                                    </c:if>
                                    <%--The ability of users to remove posts of the other users(for moderators and admins)--%>
                                    <c:if test='${userId != post.userCreated.id}'>
-                                       <jtalks:haspermission targetId='${topic.branch.id}' targetType='BRANCH' 
+                                       <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH' 
                                             permission='BranchPermission.DELETE_OTHERS_POSTS'>
                                            <c:set var="isDeleteButtonAvailable" value="true"/>
-                                       </jtalks:haspermission>
+                                       </jtalks:hasPermission>
                                    </c:if>
                                    <c:if test="${isDeleteButtonAvailable}">
                                         <a href="${delete_url}" class="btn btn-mini btn-danger delete"
@@ -238,13 +238,13 @@
                                    href="${pageContext.request.contextPath}/posts/${post.id}">
                                    <i class="icon-link"></i>
                                </a>
-                               <jtalks:haspermission targetId='${topic.branch.id}' targetType='BRANCH' 
+                               <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH' 
                                             permission='BranchPermission.CREATE_POSTS'>                               
                                    <a class="btn btn-mini" href='javascript:quote(${post.id},${topic.branch.id});'
                                        title="<spring:message code='label.tips.quote_post'/>">
                                        <i class="icon-quote"></i><spring:message code="label.quotation"/>
                                    </a>
-                               </jtalks:haspermission>
+                               </jtalks:hasPermission>
                                <a class="btn btn-mini" href="#">&#8657</a>
                            </div>
                        </div>
@@ -330,22 +330,22 @@
  
 <div class="row-fluid forum-pagination-container">
    <div class="span3">
-       <jtalks:haspermission targetId='${topic.branch.id}' targetType='BRANCH' 
+       <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH' 
             permission='BranchPermission.CREATE_POSTS'>
            <a id="new-topic-btn" class="btn btn-primary"
                href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}&branchId=${topic.branch.id}"
                title="<spring:message code='label.tips.create_new_post'/>">
                <spring:message code="label.answer"/>
            </a>
-       </jtalks:haspermission>
-       <jtalks:haspermission targetId='${topic.branch.id}' targetType='BRANCH' 
+       </jtalks:hasPermission>
+       <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH' 
             permission='BranchPermission.MOVE_TOPICS'>
                <span class="topicId" id="${topic.id}">
                    <a name="move_topic" href="#" class="btn" title="<spring:message code='label.tips.move_topic'/>">
                        <spring:message code="label.topic.move"/>
                    </a>
                </span>
-       </jtalks:haspermission>
+       </jtalks:hasPermission>
        &nbsp; <%-- For proper pagination layout without buttons--%>
    </div>
  

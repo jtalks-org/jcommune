@@ -56,7 +56,7 @@
                          class="post" cssClass="error"/>
         </div>
 
-        <jtalks:haspermission targetId='${topic.branch.id}' targetType='BRANCH' 
+        <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH' 
             permission='GeneralPermission.ADMIN'>
             <div class='control-group'>
                 <form:checkbox path="topic.sticked" value="true" class="confirm-unsaved form-check-radio-box"/>
@@ -75,7 +75,7 @@
 
                 <form:errors path="topic.announcement"/>
             </div>
-        </jtalks:haspermission>
+        </jtalks:hasPermission>
 
         <jtalks:bbeditor labelForAction="label.save"
                          postText="${topic.bodyText}"
