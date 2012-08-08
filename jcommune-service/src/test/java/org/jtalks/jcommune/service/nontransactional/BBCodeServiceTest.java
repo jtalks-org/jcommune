@@ -75,11 +75,11 @@ public class BBCodeServiceTest {
                 //highlight
                 {"[highlight]Highlited text[/highlight]", "<span class=\"highlight\">Highlited text</span>"},
                 //alignment
-                {"[left]Left aligned text[/left]", "<p class=\"leftText\">Left aligned text</p>"},
-                {"[right]Right aligned text[/right]", "<p class=\"rightText\">Right aligned text</p>"},
-                {"[center]Center aligned text[/center]", "<p class=\"centerText\">Center aligned text</p>"},
+                {"[left]Left aligned text[/left]", "<div class=\"leftText\">Left aligned text</div>"},
+                {"[right]Right aligned text[/right]", "<div class=\"rightText\">Right aligned text</div>"},
+                {"[center]Center aligned text[/center]", "<div class=\"centerText\">Center aligned text</div>"},
                 //indentation
-                {"[indent=25]Indent text[/indent]", "<p class=\"marginLeft25\">Indent text</p>"},
+                {"[indent=25]Indent text[/indent]", "<div class=\"marginLeft25\">Indent text</div>"},
                 //hyperlinks
                 {"[url=http://www.google.com]Гу\nгл[/url]", "<a href=\"http://www.google.com\">Гу<br/>гл</a>"},
                 //list with bullets
