@@ -52,7 +52,10 @@ public class UserDataInterceptor extends HandlerInterceptorAdapter {
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
                            ModelAndView modelAndView) {
-        int newPmCount = service.currentUserNewPmCount();
-        request.setAttribute("newPmCount", newPmCount);
+        //do not apply to the redirected requests: it's unnecessary and may cause error pages to work incorrectly
+        if (modelAndView != null && !modelAndView.getViewName().contains("redirect:")) {
+            int newPmCount = service.currentUserNewPmCount();
+            request.setAttribute("newPmCount", newPmCount);
+        }
     }
 }

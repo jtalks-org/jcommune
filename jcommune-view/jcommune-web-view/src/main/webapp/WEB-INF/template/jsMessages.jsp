@@ -64,3 +64,5 @@ $labelImageWrongFormatJs = '<spring:message code="image.wrong.format.js"/>';
 $labelImageWrongSizeJs = '<spring:message code="image.wrong.size.js"/>';
 
 $labelNotSpecified = '<spring:message code="label.not.specified"/>';
+
+$labelError500Detail = '<spring:message code="label.500.detail"/>';
