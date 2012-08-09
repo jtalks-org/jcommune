@@ -21,13 +21,23 @@
 <%@ attribute name="pagingEnabled" required="true" type="java.lang.Boolean" %>
 <%@ attribute name="numberLink" required="false" type="java.lang.Integer" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <c:if test="${pagingEnabled}">
 	<%--Set default value for numberLink attribute, if it it wasn't passed.--%>
 	<c:if test="${empty numberLink}" >
-		<c:set var="numberLink" value="7" />
+		<c:set var="numberLink" value="6" />
 	</c:if>
 	
+	<%--First page and previous page --%>
+	<c:if test="${page.number > 1}">
+	 	<li><a href='${uri}?page=1' 
+	 		   title="<spring:message code="label.first"/>"><c:out value="<<"/></a></li>
+		<li><a href='${uri}?page=${page.number - 1}' 
+			   title="<spring:message code="label.previous"/>"><c:out value="<"/></a></li>
+	</c:if>
+	
+	<%----%>
 	<c:forEach var="i" begin="1" step="1" end="${numberLink}">
 		<%--JSTL doesn't have reverse for-each, therefore this trick used.--%>
 	 	<c:set var="j" value="${numberLink - i + 1}" />
@@ -46,4 +56,12 @@
 			<li><a href='${uri}?page=${page.number + i + 1}'>${page.number + i + 1}</a></li>
 		</c:if>
 	</c:forEach>
+	
+	<%--Last page and next page --%>
+	<c:if test="${page.number < page.totalPages}">
+		<li><a href='${uri}?page=${page.number + 1}'
+			   title="<spring:message code="label.next"/>"><c:out value=">"/></a></li>
+	 	<li><a href='${uri}?page=${page.totalPages}'
+	 		   title="<spring:message code="label.last"/>"><c:out value=">>"/></a></li>
+	</c:if>
 </c:if>
