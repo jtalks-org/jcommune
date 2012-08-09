@@ -112,6 +112,41 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    
+    <tag>
+        <description>
+            Allows inclusion of a tag body if the current Authentication
+            has one of the specified permissions to the presented
+            domain object instance.
+        </description>
+        <name>hasPermission</name>
+        <tag-class>org.jtalks.jcommune.web.tags.HasPermission</tag-class>
+        <body-content>scriptless</body-content>
+        <attribute>
+            <description>
+                Simple name of permission (enum value) 
+            </description>
+            <name>permission</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                Identifier of object to check permission
+            </description>
+            <name>targetId</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                Type of object (e.g. BRANCH)
+            </description>
+            <name>targetType</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
 
     <tag-file>
         <name>bbeditor</name>

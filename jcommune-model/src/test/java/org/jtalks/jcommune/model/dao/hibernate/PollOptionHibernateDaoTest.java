@@ -17,7 +17,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.common.model.dao.ChildRepository;
-import org.jtalks.jcommune.model.ObjectsFactory;
+import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.entity.PollItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -44,14 +44,14 @@ public class PollOptionHibernateDaoTest extends AbstractTransactionalTestNGSprin
     @BeforeMethod
     public void setUp() {
         session = sessionFactory.getCurrentSession();
-        ObjectsFactory.setSession(session);
+        PersistedObjectsFactory.setSession(session);
     }
 
     /*===== Common methods =====*/
 
     @Test
     public void testGet() {
-        PollItem expectedOption = ObjectsFactory.createDefaultVotingOption();
+        PollItem expectedOption = PersistedObjectsFactory.createDefaultVotingOption();
         session.save(expectedOption);
 
         PollItem resultOption = pollOptionDao.get(expectedOption.getId());
@@ -70,7 +70,7 @@ public class PollOptionHibernateDaoTest extends AbstractTransactionalTestNGSprin
     @Test
     public void testUpdate() {
         String newName = "Changed name";
-        PollItem option = ObjectsFactory.createDefaultVotingOption();
+        PollItem option = PersistedObjectsFactory.createDefaultVotingOption();
         session.save(option);
 
         option.setName(newName);

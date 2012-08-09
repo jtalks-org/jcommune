@@ -34,7 +34,6 @@
         </param-value>
     </context-param>
 
-    <!-- Servlets -->
     <servlet>
         <servlet-name>spring-dispatcher</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -45,7 +44,6 @@
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 
-    <!-- Filters -->
     <!-- filter helps to remove whitespaces in resulting html pages -->
     <filter>
         <filter-name>trimFilter</filter-name>
@@ -106,12 +104,14 @@
         <servlet-name>spring-dispatcher</servlet-name>
     </filter-mapping>
 
-    <!-- Listeners -->
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
     <listener>
-        <listener-class>org.jtalks.jcommune.web.listeners.HttpSessionStatisticListener</listener-class>
+        <listener-class>org.jtalks.jcommune.web.listeners.SessionStatisticListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.jtalks.jcommune.web.listeners.SessionSetupListener</listener-class>
     </listener>
     <listener>
         <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>

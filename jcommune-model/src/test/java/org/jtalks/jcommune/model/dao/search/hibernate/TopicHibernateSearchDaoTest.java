@@ -24,8 +24,10 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
-import org.jtalks.jcommune.model.ObjectsFactory;
+
+import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dto.JCommunePageRequest;
+
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.search.SearchRequestFilter;
 import org.mockito.Mock;
@@ -67,7 +69,7 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
 	@BeforeMethod
 	public void init() {
 		Session session = sessionFactory.getCurrentSession();
-        ObjectsFactory.setSession(session);
+        PersistedObjectsFactory.setSession(session);
         
         MockitoAnnotations.initMocks(this);
         List<SearchRequestFilter> filters = Arrays.asList(invalidCharactersFilter, stopWordsFilter);
@@ -101,7 +103,7 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
         int pageSize = totalSize/pageCount;
         String searchText = "JCommune";
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, pageSize);
-        List<Topic> topicList = ObjectsFactory.createAndSaveTopicList(totalSize);
+        List<Topic> topicList = PersistedObjectsFactory.createAndSaveTopicList(totalSize);
         for(Topic topic: topicList) {
             topic.setTitle(searchText);
         }
@@ -132,7 +134,7 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
 	
 	@Test(dataProvider = "parameterFullPhraseSearch")
 	public void testFullPhraseSearch(String content) {
-		Topic expectedTopic = ObjectsFactory.getDefaultTopic();
+		Topic expectedTopic = PersistedObjectsFactory.getDefaultTopic();
 		expectedTopic.setTitle(content);
 		
 		saveAndFlushIndexes(Arrays.asList(expectedTopic));
@@ -150,7 +152,7 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
 	
 	@Test(dataProvider = "parameterFullPhraseSearch")
 	public void testPostContentSearch(String content) {
-	    Topic expectedTopic = ObjectsFactory.getDefaultTopic();
+	    Topic expectedTopic = PersistedObjectsFactory.getDefaultTopic();
 	    expectedTopic.getLastPost().setPostContent(content);
 	    
 	    saveAndFlushIndexes(Arrays.asList(expectedTopic));
@@ -182,7 +184,7 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
 				append(secondPiece).
 				toString();
 		
-		Topic expectedTopic = ObjectsFactory.getDefaultTopic();
+		Topic expectedTopic = PersistedObjectsFactory.getDefaultTopic();
         expectedTopic.setTitle(content);
 		
 		saveAndFlushIndexes(Arrays.asList(expectedTopic));
@@ -207,7 +209,7 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
 	
 	@Test(dataProvider = "parameterIncorrectPhraseSearch")
 	public void testIncorrectPhraseSearch(String correct, String incorrect) {
-		Topic expectedTopic = ObjectsFactory.getDefaultTopic();
+		Topic expectedTopic = PersistedObjectsFactory.getDefaultTopic();
         expectedTopic.setTitle(correct);
 		
 		saveAndFlushIndexes(Arrays.asList(expectedTopic));
@@ -236,7 +238,7 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
 	
 	@Test(dataProvider = "parameterSearchByRoot")
 	public void testSearchByRoot(String word, String wordWithSameRoot) {
-	    Topic expectedTopic = ObjectsFactory.getDefaultTopic();
+	    Topic expectedTopic = PersistedObjectsFactory.getDefaultTopic();
         expectedTopic.setTitle(word);
 		
 		saveAndFlushIndexes(Arrays.asList(expectedTopic));
@@ -261,7 +263,7 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
 	
 	@Test(dataProvider = "parameterSearchByBbCodes")
 	public void testSearchByBbCodes(String content, String bbCode) {
-	    Topic expectedTopic = ObjectsFactory.getDefaultTopic();
+	    Topic expectedTopic = PersistedObjectsFactory.getDefaultTopic();
         expectedTopic.getLastPost().setPostContent(content);
         
         saveAndFlushIndexes(Arrays.asList(expectedTopic));
@@ -282,7 +284,7 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
 	
 	@Test(dataProvider = "parameterSearchByBbCodesContent")
 	public void testSearchByBbCodesContent(String content, String bbCodeContent) {
-	    Topic expectedTopic = ObjectsFactory.getDefaultTopic();
+	    Topic expectedTopic = PersistedObjectsFactory.getDefaultTopic();
         expectedTopic.getLastPost().setPostContent(content);
         
         saveAndFlushIndexes(Arrays.asList(expectedTopic));

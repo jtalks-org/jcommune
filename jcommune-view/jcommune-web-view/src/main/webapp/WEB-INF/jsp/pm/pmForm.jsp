@@ -54,7 +54,7 @@
             <div class='control-group'>
                 <div class='controls'>
 	                <spring:message code="label.pm.recipient" var="placeholderRecipient"/>
-	                <form:input class="span3 script-confirm-unsaved" path="recipient"
+	                <form:input class="span3 script-confirm-unsaved" path="recipient" tabindex="100"
 	                            placeholder="${placeholderRecipient}"/>
 	                <br/>
 	                <form:errors path="recipient" cssClass="help-inline"/>
@@ -64,7 +64,7 @@
             <div class='control-group'>
                 <div class='controls'>
 	                <spring:message code="label.pm.title" var="placeholderTitle"/>
-	                <form:input class="span8 script-confirm-unsaved" path="title"
+	                <form:input class="span8 script-confirm-unsaved" path="title" tabindex="101"
 	                            placeholder="${placeholderTitle}"/>
 	                <br/>
 	                <form:errors path="title" cssClass="help-inline"/>
@@ -75,7 +75,7 @@
                                  bodyParameterName="body"
                                  back="${pageContext.request.contextPath}/inbox"/>
 
-                <input id="savePM" type="submit" class="btn" name="save_pm" value="<spring:message code="label.save"/>"
+                <input id="savePM" type="submit" class="btn" tabindex="500" name="save_pm" value="<spring:message code="label.save"/>"
                        onclick="document.editForm.action='${pageContext.request.contextPath}/pm/save';return true;"/>
 
             </form:form>

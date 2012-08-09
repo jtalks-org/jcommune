@@ -27,6 +27,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.UserService;
@@ -64,15 +65,15 @@ import static org.testng.Assert.assertNotNull;
  */
 public class TransactionalTopicServiceTest {
 
-    final long TOPIC_ID = 999L;
-    final long BRANCH_ID = 1L;
-    final long POST_ID = 333L;
-    final String TOPIC_TITLE = "topic title";
-    final String BRANCH_NAME = "branch name";
-    final String BRANCH_DESCRIPTION = "branch description";
+    private final long TOPIC_ID = 999L;
+    private final long BRANCH_ID = 1L;
+    private final long POST_ID = 333L;
+    private final String TOPIC_TITLE = "topic title";
+    private final String BRANCH_NAME = "branch name";
+    private final String BRANCH_DESCRIPTION = "branch description";
     private static final String USERNAME = "username";
     private JCUser user;
-    final String ANSWER_BODY = "Test Answer Body";
+    private final String ANSWER_BODY = "Test Answer Body";
     private final String NEW_TOPIC_TITLE = "new title";
     private final String NEW_POST_CONTENT = "new body";
     private final boolean NEW_STICKED = false;
@@ -94,6 +95,8 @@ public class TransactionalTopicServiceTest {
     private SubscriptionService subscriptionService;
     @Mock
     private UserService userService;
+    @Mock
+    private PollService pollService;
 
     private CompoundAclBuilder<User> aclBuilder;
 
@@ -108,7 +111,8 @@ public class TransactionalTopicServiceTest {
                 branchDao,
                 notificationService,
                 subscriptionService,
-                userService);
+                userService,
+                pollService);
 
         user = new JCUser(USERNAME, "email@mail.com", "password");
 
@@ -159,10 +163,11 @@ public class TransactionalTopicServiceTest {
 
     @Test
     public void testCreateTopicWithSubscription() throws NotFoundException {
-        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
-        createTopicStubs(branch);
+        Branch branch = createBranch();
 
-        Topic createdTopic = topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, BRANCH_ID, false);
+        createTopicStubs(branch);
+        Topic dto = createTopic();
+        Topic createdTopic = topicService.createTopic(dto, ANSWER_BODY, false);
         Post createdPost = createdTopic.getFirstPost();
 
         createTopicAssertions(branch, createdTopic, createdPost);
@@ -171,10 +176,10 @@ public class TransactionalTopicServiceTest {
 
     @Test
     public void testCreateTopicWithoutSubscription() throws NotFoundException {
-        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        Branch branch = createBranch();
         createTopicStubs(branch);
-
-        Topic createdTopic = topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, BRANCH_ID, false);
+        Topic dto = createTopic();
+        Topic createdTopic = topicService.createTopic(dto, ANSWER_BODY, false);
         Post createdPost = createdTopic.getFirstPost();
 
         createTopicAssertions(branch, createdTopic, createdPost);
@@ -249,7 +254,7 @@ public class TransactionalTopicServiceTest {
         Post firstPost = new Post(user, ANSWER_BODY);
         topic.addPost(firstPost);
         user.setPostCount(1);
-        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        Branch branch = createBranch();
         branch.addTopic(topic);
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(topic);
@@ -278,9 +283,9 @@ public class TransactionalTopicServiceTest {
         topic.addPost(post);
 
         updateTopicStubs(topic);
-
-        topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_STICKED, NEW_ANNOUNCEMENT, true);
-
+        Topic newTopic = createNewTopic();
+        newTopic.setId(topic.getId());
+        topicService.updateTopic(newTopic, NEW_POST_CONTENT, true);
 
         updateTopicVerifications(topic);
         verify(subscriptionService).toggleTopicSubscription(topic);
@@ -293,8 +298,9 @@ public class TransactionalTopicServiceTest {
         topic.addPost(post);
         subscribeUserOnTopic(user, topic);
         updateTopicStubs(topic);
-
-        topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_STICKED, NEW_ANNOUNCEMENT, false);
+        Topic newTopic = createNewTopic();
+        newTopic.setId(topic.getId());
+        topicService.updateTopic(newTopic, NEW_POST_CONTENT, false);
 
         updateTopicVerifications(topic);
     }
@@ -306,8 +312,9 @@ public class TransactionalTopicServiceTest {
         topic.addPost(post);
         subscribeUserOnTopic(user, topic);
         updateTopicStubs(topic);
-
-        topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_STICKED, NEW_ANNOUNCEMENT, false);
+        Topic newTopic = createNewTopic();
+        newTopic.setId(topic.getId());
+        topicService.updateTopic(newTopic, NEW_POST_CONTENT, false);
 
         updateTopicVerifications(topic);
         verify(subscriptionService).toggleTopicSubscription(topic);
@@ -320,30 +327,13 @@ public class TransactionalTopicServiceTest {
         topic.addPost(post);
 
         updateTopicStubs(topic);
-
-        topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_STICKED, NEW_ANNOUNCEMENT, false);
+        Topic newTopic = createNewTopic();
+        newTopic.setId(topic.getId());
+        topicService.updateTopic(newTopic, NEW_POST_CONTENT, false);
 
         updateTopicVerifications(topic);
     }
 
-    private Topic createTopic() {
-        Topic topic = new Topic(user, "title");
-        topic.setId(TOPIC_ID);
-        topic.setTitle("title");
-        return topic;
-    }
-
-    private Post createPost() {
-        Post post = new Post(user, "content");
-        post.setId(POST_ID);
-        return post;
-    }
-
-    private void subscribeUserOnTopic(JCUser user, Topic topic) {
-        Set<JCUser> subscribers = new HashSet<JCUser>();
-        subscribers.add(user);
-        topic.setSubscribers(subscribers);
-    }
 
     private void updateTopicStubs(Topic topic) {
         when(userService.getCurrentUser()).thenReturn(user);
@@ -360,10 +350,6 @@ public class TransactionalTopicServiceTest {
 
     @Test
     void testUpdateTopicSimple() throws NotFoundException {
-        String newTitle = "new title";
-        String newBody = "new body";
-        boolean newSticked = false;
-        boolean newAnnouncement = false;
         Topic topic = new Topic(user, "title");
         topic.setId(TOPIC_ID);
         topic.setTitle("title");
@@ -373,13 +359,14 @@ public class TransactionalTopicServiceTest {
 
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(topic);
+        Topic newTopic = createNewTopic();
+        newTopic.setId(topic.getId());
+        topicService.updateTopic(newTopic, NEW_POST_CONTENT);
 
-        topicService.updateTopic(TOPIC_ID, newTitle, newBody);
-
-        assertEquals(topic.getTitle(), newTitle);
-        assertEquals(post.getPostContent(), newBody);
-        assertEquals(topic.isSticked(), newSticked);
-        assertEquals(topic.isAnnouncement(), newAnnouncement);
+        assertEquals(topic.getTitle(), NEW_TOPIC_TITLE);
+        assertEquals(post.getPostContent(), NEW_POST_CONTENT);
+        assertEquals(topic.isSticked(), NEW_STICKED);
+        assertEquals(topic.isAnnouncement(), NEW_ANNOUNCEMENT);
 
         verify(topicDao).isExist(TOPIC_ID);
         verify(topicDao).get(TOPIC_ID);
@@ -388,21 +375,23 @@ public class TransactionalTopicServiceTest {
 
     @Test(expectedExceptions = {NotFoundException.class})
     void testUpdateTopicNonExistentTopic() throws NotFoundException {
-        String newTitle = "new title";
+        Topic topic = new Topic();
+        topic.setTitle("new title");
         String newBody = "new body";
-        boolean newSticked = false;
-        boolean newAnnouncement = false;
+        topic.setSticked(false);
+        topic.setAnnouncement(false);
         when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
 
-        topicService.updateTopic(TOPIC_ID, newTitle, newBody, newSticked, newAnnouncement, false);
+        topicService.updateTopic(topic, newBody, false);
     }
 
     @Test
     public void testMoveTopic() throws NotFoundException {
         Topic topic = new Topic(user, "title");
+        topic.setId(TOPIC_ID);
         Post firstPost = new Post(user, ANSWER_BODY);
         topic.addPost(firstPost);
-        Branch currentBranch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        Branch currentBranch = createBranch();
         currentBranch.addTopic(topic);
         Branch targetBranch = new Branch("target branch", "target branch description");
 
@@ -434,7 +423,7 @@ public class TransactionalTopicServiceTest {
     @Test
     public void testGetTopics() {
         int pageSize = 50;
-        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        Branch branch = createBranch();
         Page<Topic> expectedPage = new PageImpl<Topic>(Collections.<Topic>emptyList());
 
         JCUser currentUser = new JCUser("current", null, null);
@@ -450,4 +439,40 @@ public class TransactionalTopicServiceTest {
         verify(topicDao).getTopics(
                 Matchers.any(Branch.class), Matchers.any(JCommunePageRequest.class));
     }
+
+    private Branch createBranch() {
+        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        branch.setId(BRANCH_ID);
+        branch.setUuid("uuid");
+        return branch;
+    }
+
+    private Topic createTopic() {
+        Topic topic = new Topic(user, TOPIC_TITLE);
+        topic.setId(TOPIC_ID);
+        Branch branch = createBranch();
+        topic.setBranch(branch);
+        return topic;
+    }
+
+    private Topic createNewTopic() {
+        Topic topic = new Topic();
+        topic.setTitle(NEW_TOPIC_TITLE);
+        topic.setSticked(NEW_STICKED);
+        topic.setAnnouncement(NEW_ANNOUNCEMENT);
+        return topic;
+    }
+
+    private Post createPost() {
+        Post post = new Post(user, "content");
+        post.setId(POST_ID);
+        return post;
+    }
+
+    private void subscribeUserOnTopic(JCUser user, Topic topic) {
+        Set<JCUser> subscribers = new HashSet<JCUser>();
+        subscribers.add(user);
+        topic.setSubscribers(subscribers);
+    }
+
 }

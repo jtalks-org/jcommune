@@ -22,7 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
  *
  * @author Kirill Afonin
  */
-public class SecurityContextFacade {
+public class SecurityContextFacade implements org.jtalks.common.service.security.SecurityContextFacade {
 
     /**
      * @return {@code SecurityContext} from {@code SecurityContextHolder}

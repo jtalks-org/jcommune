@@ -67,7 +67,7 @@ public class RssViewerTest {
         topics.add(topic);
         model.put("topics", topics);
     }
-
+    
     @Test
     public void testBuildFeedItems() throws Exception {
 

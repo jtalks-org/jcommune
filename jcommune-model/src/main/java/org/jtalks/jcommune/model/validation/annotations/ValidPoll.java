@@ -12,11 +12,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.validation.annotations;
+package org.jtalks.jcommune.model.validation.annotations;
 
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollItem;
-import org.jtalks.jcommune.web.validation.validators.PollValidator;
+import org.jtalks.jcommune.model.validation.validators.PollValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

@@ -201,25 +201,25 @@
     <!-- Text, align to left -->
     <code name="left">
         <pattern>[left]<var name="text" inherit="true"/>[/left]</pattern>
-        <template>&lt;p class=&quot;leftText&quot;&gt;<var name="text"/>&lt;/p&gt;</template>
+        <template>&lt;div class=&quot;leftText&quot;&gt;<var name="text"/>&lt;/div&gt;</template>
     </code>
 
     <!-- Text, align to right -->
     <code name="right">
         <pattern>[right]<var name="text" inherit="true"/>[/right]</pattern>
-        <template>&lt;p class=&quot;rightText&quot;&gt;<var name="text"/>&lt;/p&gt;</template>
+        <template>&lt;div class=&quot;rightText&quot;&gt;<var name="text"/>&lt;/div&gt;</template>
     </code>
 
     <!-- Text, align to center -->
     <code name="center">
         <pattern>[center]<var name="text" inherit="true"/>[/center]</pattern>
-        <template>&lt;p class=&quot;centerText&quot;&gt;<var name="text"/>&lt;/p&gt;</template>
+        <template>&lt;div class=&quot;centerText&quot;&gt;<var name="text"/>&lt;/div&gt;</template>
     </code>
 
     <!-- Text indent -->
     <code name="indent">
         <pattern>[indent=<var name="size" scope="escapeXmlAndBr"/>]<var name="text" inherit="true"/>[/indent]</pattern>
-        <template>&lt;p class=&quot;marginLeft<var name="size"/>&quot;&gt;<var name="text"/>&lt;/p&gt;</template>
+        <template>&lt;div class=&quot;marginLeft<var name="size"/>&quot;&gt;<var name="text"/>&lt;/div&gt;</template>
     </code>
 
     <!-- List -->

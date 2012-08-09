@@ -33,8 +33,7 @@ $(function () {
             query = "username=" + encodeURIComponent($('#username').val()) +
                 "&password=" + encodeURIComponent($('#password').val()) +
                 "&passwordConfirm=" + encodeURIComponent($('#passwordConfirm').val()) +
-                "&email=" + encodeURIComponent($('#email').val()) +
-                "&captcha=" + encodeURIComponent($('#captcha').val());
+                "&email=" + encodeURIComponent($('#email').val());
         } else {
             query = "username=&password=&passwordConfirm=&email=&captcha&firstView=false";
         }
@@ -66,8 +65,6 @@ $(function () {
                         {buttons:{OK:true}, focus:0, submit:signupPopup});
                     refreshCaptcha();
                     refreshCaptchaOnClick();
-                    document.getElementById("captcha").setAttribute("value", "");
-
                 } else if ($(data).find("span.error_errorpage").html() != null) {
                     $.prompt($labelRegistrationFailture);
                 } else {
@@ -80,6 +77,7 @@ $(function () {
 
 function refreshCaptchaOnClick() {
     $("#captcha_refresh").on('click', function (e) {
+        document.getElementById("captcha").value = "";
         refreshCaptcha();
     });
 }

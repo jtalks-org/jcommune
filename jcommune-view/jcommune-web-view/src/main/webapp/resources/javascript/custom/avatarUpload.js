@@ -70,16 +70,27 @@ $(document).ready(function () {
         onSubmit:function (id, filename) {},
         onProgress:function (id, filename, loaded, total) {},
         onComplete:function (id, filename, responseJSON) {
+        	//If the picture has been replaced by alternative text in the previous avatar uploading,
+        	//we need to restore it, because the next uploading may be successful.
+        	if (!$('#avatarPreview').length) {
+        		$('#avatarPreviewContainer').empty();
+        		$('#avatarPreviewContainer')
+        			.append('<span></span><img id="avatarPreview" src="data:image/jpeg;base64,${editedUser.avatar}" alt="" />');
+        	}
+        	//
             if (responseJSON.success == "true") {
                 //if server side avatar uploading successful  a processed image displayed
-                document.getElementById('avatarPreview').setAttribute('src', responseJSON.srcPrefix
-                    + responseJSON.srcImage);
+            	$('#avatarPreview').attr('src', responseJSON.srcPrefix + responseJSON.srcImage);
                 //
-                document.getElementById('avatar').setAttribute('value', responseJSON.srcImage);
+                $('#avatar').attr('value', responseJSON.srcImage);
             } else {
                 //if server side avatar uploading error occurred instead image an error message displayed
-                document.getElementById('avatarPreview').setAttribute('src', "");
-                document.getElementById('avatarPreview').setAttribute('alt', responseJSON.message);
+            	$('#avatarPreview').attr('src', 'none');
+                $('#avatarPreview').attr('alt', responseJSON.message);
+                
+                //Chrome's engine WebKit has bug of displaying alternative text, when image is not loaded.
+                //So we remove picture, and put plain text instead.
+                addShowAlt('#avatarPreview');
             }
 
         },
@@ -91,4 +102,21 @@ $(document).ready(function () {
     });
 
 });
+
+/**
+ * Remove the component and replace it with alternate text.
+ */
+function showAlt(){
+	$(this).replaceWith(this.alt);
+};
+
+/**
+ * Remove the component and replace it with alternate text
+ * for given selector.
+ *  
+ * @param selector selector for component, which we should replace
+ */
+function addShowAlt(selector){
+	$(selector).error(showAlt).attr("src", $(selector).src);
+};
 

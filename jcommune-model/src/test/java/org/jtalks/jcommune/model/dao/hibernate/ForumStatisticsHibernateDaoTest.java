@@ -17,6 +17,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.ObjectsFactory;
+import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.ForumStatisticsDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -45,13 +46,13 @@ public class ForumStatisticsHibernateDaoTest extends AbstractTransactionalTestNG
     @BeforeMethod
     public void setUp() throws Exception {
         session = sessionFactory.getCurrentSession();
-        ObjectsFactory.setSession(session);
+        PersistedObjectsFactory.setSession(session);
     }
 
     @Test
     public void testGetPostsOnForumCount() {
         int postCount = 5;
-        ObjectsFactory.createAndSavePostList(postCount);
+        PersistedObjectsFactory.createAndSavePostList(postCount);
         int result = dao.getPostsOnForumCount();
         assertEquals(result, postCount);
     }

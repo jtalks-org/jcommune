@@ -46,6 +46,7 @@
 
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/bbeditorEffects.js"
             type="text/javascript"></script>
+
 </head>
 <body>
 
@@ -59,11 +60,11 @@
         <div class='control-group'>
             <div class='controls'>
                 <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>
-                <form:input path="topicName" id="subject" type="text" name="subject" size="45"
-                            maxlength="255" tabindex="1"
+                <form:input path="topic.title" id="subject" type="text" name="subject" size="45"
+                            maxlength="255" tabindex="100"
                             class="span11 script-confirm-unsaved" placeholder="${topicTitlePlaceholder}"/>
-                <form:errors path="topicName" id="subject" type="text" name="subject" size="45"
-                             maxlength="255" tabindex="1"
+                <form:errors path="topic.title" id="subject" type="text" name="subject" size="45"
+                             maxlength="255"
                              class="post" cssClass="help-inline"/>
             </div>
         </div>
@@ -74,20 +75,20 @@
                          back="${pageContext.request.contextPath}/branches/${branchId}"/>
         <div class="control-group">
             <br/>
-            <form:checkbox id="notify" path="notifyOnAnswers" name="notify" checked="checked" value="${notifyOnAnswers}"
+            <form:checkbox id="notify" tabindex="500" path="notifyOnAnswers" name="notify" checked="checked" value="${notifyOnAnswers}"
                             class="script-confirm-unsaved right-magrin"/><spring:message
                 code="label.answer.notify_message"/>
         </div>
         <br/>
         <br/>
-        <jtalks:newPoll titleNameValue="pollTitle"
-                        pollOptionsNameValue="pollItems"
-                        multipleName="multiple"
-                        multipleValue="${topicDto.multiple}"
-                        endingDateNameValue="endingDate"/>
+        <jtalks:newPoll titleNameValue="topic.poll.title"
+                        pollOptionsNameValue="topic.poll.pollItemsValue"
+                        multipleName="topic.poll.multipleAnswer"
+                        multipleValue="${topicDto.poll.multipleAnswer}"
+                        endingDateNameValue="topic.poll.endingDateValue"/>
     </form:form>
 
-    <a href="${pageContext.request.contextPath}/branches/${branchId}" class='back-btn'>
+    <a href="${pageContext.request.contextPath}/branches/${branchId}" tabindex="1000" class='back-btn'>
         <i class="icon-arrow-left"></i>
         <spring:message code="label.back"/>
     </a>

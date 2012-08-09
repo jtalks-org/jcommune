@@ -36,7 +36,12 @@ public enum JCommuneProperty {
     /**
      * Property for session timeout for logged users.
      */
-    SESSION_TIMEOUT;
+    SESSION_TIMEOUT,
+    
+    /**
+     * Property for the maximum size of the avatar.
+     */
+    AVATAR_MAX_SIZE;
     
     private static final Logger LOGGER = LoggerFactory.getLogger(JCommuneProperty.class);
 
@@ -99,9 +104,9 @@ public enum JCommuneProperty {
     }
 
     /**
-     * Set an instance of {@link PropertyDao} to search properties by name.
+     * Set an instance of {@link org.jtalks.jcommune.model.dao.PropertyDao} to search properties by name.
      * 
-     * @param propertyDao an instance of {@link PropertyDao}
+     * @param propertyDao an instance of {@link org.jtalks.jcommune.model.dao.PropertyDao}
      */
     public void setPropertyDao(PropertyDao propertyDao) {
         this.propertyDao = propertyDao;

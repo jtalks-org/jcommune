@@ -35,7 +35,7 @@ import java.util.Map;
  * @author Andrey Kluev
  */
 public class RssViewer extends AbstractRssFeedView {
-
+    
     /**
      * Set meta data for all RSS feed
      *
@@ -46,7 +46,6 @@ public class RssViewer extends AbstractRssFeedView {
     @Override
     protected void buildFeedMetadata(Map<String, Object> model, Channel feed,
                                      HttpServletRequest request) {
-
         feed.setTitle("Java forum JTalks ");
         feed.setDescription("Programmers forum");
         feed.setLink(buildURL(request));

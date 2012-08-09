@@ -120,11 +120,25 @@
         <property name="defaultViews">
             <list>
                 <!-- RSS View -->
-                <bean class="org.jtalks.jcommune.web.view.RssViewer"/>
+                <bean class="org.jtalks.jcommune.web.view.RssViewer">
+                    <property name="contentType" value="application/rss+xml;charset=UTF-8"/>
+                </bean>
             </list>
         </property>
         <property name="ignoreAcceptHeader" value="true"/>
 
+    </bean>
+    
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver" >
+        <property name="messageConverters">
+            <list>
+                <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>
+                <bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
+                <bean class="org.springframework.http.converter.xml.SourceHttpMessageConverter"/>
+                <bean class="org.springframework.http.converter.xml.XmlAwareFormHttpMessageConverter"/>
+                <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"/>
+            </list>
+        </property>
     </bean>
 
 </beans>

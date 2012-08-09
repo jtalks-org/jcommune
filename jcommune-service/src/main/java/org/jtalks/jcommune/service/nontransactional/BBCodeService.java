@@ -70,4 +70,5 @@ public class BBCodeService {
     public String removeBBCodes(String source) {
         return source.replaceAll("\\[.*?\\]", "");
     }
+
 }

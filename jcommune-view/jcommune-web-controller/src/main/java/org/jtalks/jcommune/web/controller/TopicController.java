@@ -22,7 +22,6 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.LastReadPostService;
-import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.UserService;
@@ -43,6 +42,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -75,7 +75,6 @@ public class TopicController {
     private BreadcrumbBuilder breadcrumbBuilder;
     private LocationService locationService;
     private SessionRegistry sessionRegistry;
-    private PollService pollService;
 
     /**
      * This method turns the trim binder on. Trim binder
@@ -99,7 +98,6 @@ public class TopicController {
      * @param sessionRegistry     to obtain list of users currently online
      * @param userService         to determine the current user logged in
      * @param breadcrumbBuilder   to create Breadcrumbs for pages
-     * @param pollService         to create a poll and vote in a poll
      */
     @Autowired
     public TopicController(TopicService topicService,
@@ -109,8 +107,7 @@ public class TopicController {
                            UserService userService,
                            BreadcrumbBuilder breadcrumbBuilder,
                            LocationService locationService,
-                           SessionRegistry sessionRegistry,
-                           PollService pollService) {
+                           SessionRegistry sessionRegistry) {
         this.topicService = topicService;
         this.postService = postService;
         this.branchService = branchService;
@@ -119,7 +116,6 @@ public class TopicController {
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.locationService = locationService;
         this.sessionRegistry = sessionRegistry;
-        this.pollService = pollService;
     }
 
     /**
@@ -132,8 +128,10 @@ public class TopicController {
     @RequestMapping(value = "/topics/new", method = RequestMethod.GET)
     public ModelAndView showNewTopicPage(@RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
         Branch branch = branchService.get(branchId);
+        Topic topic = new Topic();
+        topic.setPoll(new Poll());
         return new ModelAndView("newTopic")
-                .addObject("topicDto", new TopicDto())
+                .addObject("topicDto", new TopicDto(topic))
                 .addObject("branchId", branchId)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch));
     }
@@ -158,15 +156,9 @@ public class TopicController {
                     .addObject(BRANCH_ID, branchId)
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branch));
         }
-
-        Topic createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(),
-                branchId, topicDto.isNotifyOnAnswers());
-
-        if (topicDto.hasPoll()) {
-            Poll poll = topicDto.preparePollFromTopicDto();
-            poll.setTopic(createdTopic);
-            pollService.createPoll(poll);
-        }
+        Topic topic = topicDto.getTopic();
+        topic.setBranch(branch);
+        Topic createdTopic = topicService.createTopic(topic, topicDto.getBodyText(), topicDto.isNotifyOnAnswers());
 
         lastReadPostService.markTopicAsRead(createdTopic);
         return new ModelAndView("redirect:/topics/" + createdTopic.getId());
@@ -279,9 +271,10 @@ public class TopicController {
                     .addObject(TOPIC_ID, topicId)
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
         }
-
-        topicService.updateTopic(topicDto.getId(), topicDto.getTopicName(),
-                topicDto.getBodyText(), topicDto.isSticked(), topicDto.isAnnouncement(), topicDto.isNotifyOnAnswers());
+        Topic topic = topicDto.getTopic();
+        topic.setId(topicId);
+        topicService.updateTopic(topic, topicDto.getBodyText(),
+                topicDto.isNotifyOnAnswers());
 
         return new ModelAndView("redirect:/topics/" + topicId);
     }
@@ -293,7 +286,8 @@ public class TopicController {
      * @param branchId id of target branch
      * @throws NotFoundException when topic or branch with given id not found
      */
-    @RequestMapping(value = "/topics/json/{topicId}", method = RequestMethod.POST)
+    @RequestMapping(value = "/topics/move/json/{topicId}", method = RequestMethod.POST)
+    @ResponseBody
     public void moveTopic(@PathVariable(TOPIC_ID) Long topicId,
                           @RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
         topicService.moveTopic(topicId, branchId);

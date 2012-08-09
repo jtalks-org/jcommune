@@ -17,7 +17,7 @@ package org.jtalks.jcommune.web.util;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.ForumStatisticsService;
-import org.jtalks.jcommune.web.listeners.HttpSessionStatisticListener;
+import org.jtalks.jcommune.web.listeners.SessionStatisticListener;
 import org.springframework.security.core.session.SessionRegistry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -51,7 +51,7 @@ public class ForumStatisticsProviderTest {
         users = Collections.nCopies(userCount , (Object) new JCUser("","",""));
         when(sessionRegistry.getAllPrincipals()).thenReturn(users);
 
-        HttpSessionStatisticListener listener = mock(HttpSessionStatisticListener.class);
+        SessionStatisticListener listener = mock(SessionStatisticListener.class);
         when(listener.getTotalActiveSessions()).thenReturn(sessionCount);
 
         forumStaticsProvider = new ForumStatisticsProvider(sessionRegistry, listener, statisticsService);

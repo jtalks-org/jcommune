@@ -12,9 +12,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.validation.annotations;
+package org.jtalks.jcommune.model.validation.annotations;
 
-import org.jtalks.jcommune.web.validation.validators.BbCodeAwareSizeValidator;
+import org.jtalks.jcommune.model.validation.validators.BbCodeAwareSizeValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

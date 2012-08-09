@@ -22,9 +22,11 @@ import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.UserService;
@@ -56,6 +58,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     private NotificationService notificationService;
     private SubscriptionService subscriptionService;
     private UserService userService;
+    private PollService pollService;
 
     /**
      * Create an instance of User entity based service
@@ -67,12 +70,14 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * @param notificationService to send email nofications on topic updates to subscribed users
      * @param subscriptionService for subscribing user on topic if notification enabled
      * @param userService         to get current logged in user
+     * @param pollService         to create a poll and vote in a poll
      */
     public TransactionalTopicService(TopicDao dao, SecurityService securityService,
                                      BranchService branchService, BranchDao branchDao,
                                      NotificationService notificationService,
                                      SubscriptionService subscriptionService,
-                                     UserService userService) {
+                                     UserService userService,
+                                     PollService pollService) {
         super(dao);
         this.securityService = securityService;
         this.branchService = branchService;
@@ -80,6 +85,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         this.notificationService = notificationService;
         this.subscriptionService = subscriptionService;
         this.userService = userService;
+        this.pollService = pollService;
     }
 
     /**
@@ -108,16 +114,17 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.CREATE_TOPICS')")
-    public Topic createTopic(String topicName, String bodyText, long branchId
-            , boolean notifyOnAnswers) throws NotFoundException {
+    @PreAuthorize("hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_TOPICS')")
+    public Topic createTopic(Topic topicDto, String bodyText,
+                             boolean notifyOnAnswers) throws NotFoundException {
         JCUser currentUser = userService.getCurrentUser();
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);
-        Branch branch = branchService.get(branchId);
-        Topic topic = new Topic(currentUser, topicName);
+        Topic topic = new Topic(currentUser, topicDto.getTitle());
         Post first = new Post(currentUser, bodyText);
         topic.addPost(first);
+        Branch branch = topicDto.getBranch();
+
         branch.addTopic(topic);
         branchDao.update(branch);
 
@@ -129,9 +136,15 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
 
         subscribeOnTopicIfNotificationsEnabled(notifyOnAnswers, topic, currentUser);
 
+        Poll poll = topicDto.getPoll();
+        if (poll!=null && poll.isHasPoll()) {
+            poll.setTopic(topic);
+            pollService.createPoll(poll);
+        }
+
         logger.debug("Created new topic id={}, branch id={}, author={}",
-                new Object[]{topic.getId(), branchId, currentUser.getUsername()});
-        logger.info("Created new topic: \"{}\". Author: {}", topicName, currentUser.getUsername());
+                new Object[]{topic.getId(), branch.getId(), currentUser.getUsername()});
+        logger.info("Created new topic: \"{}\". Author: {}", topicDto.getTitle(), currentUser.getUsername());
 
         return topic;
     }
@@ -162,39 +175,23 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     /**
      * {@inheritDoc}
      */
-    @Override
-    public void updateTopic(long topicId, String topicName, String bodyText)
-            throws NotFoundException {
-        updateTopic(topicId, topicName, bodyText, false, false, false);
+    @Override    
+    public void updateTopic(Topic topicDto, String bodyText) throws NotFoundException {
+        updateTopic(topicDto, bodyText, false);
     }
+
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void updateTopic(long topicId, String topicName, String bodyText, boolean sticked,
-                            boolean announcement, boolean notifyOnAnswers) throws NotFoundException {
-        Topic topic = get(topicId);
-        updateTopic(topic, topicName, bodyText, sticked, announcement, notifyOnAnswers);
-    }
-
-    /**
-     * Performs update an instance of the topic with security checking.
-     *
-     * @param topic           an instance of topic that will be updated
-     * @param topicName       name of topic
-     * @param bodyText        body of topic
-     * @param sticked         flag for sticking a topic
-     * @param announcement    flag, which set topic as announcement
-     * @param notifyOnAnswers user notification on answers flag
-     */
-    @PreAuthorize("hasPermission(#topic.id, 'TOPIC', 'GeneralPermission.WRITE') or " +
-            "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
-    private void updateTopic(Topic topic, String topicName, String bodyText, boolean sticked,
-                             boolean announcement, boolean notifyOnAnswers) {
-        topic.setTitle(topicName);
-        topic.setSticked(sticked);
-        topic.setAnnouncement(announcement);
+    @PreAuthorize("hasPermission(#topicDto.id, 'TOPIC', 'GeneralPermission.WRITE') or " +
+            "hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
+    public void updateTopic(Topic topicDto, String bodyText, boolean notifyOnAnswers) throws NotFoundException {
+        Topic topic = get(topicDto.getId());
+        topic.setTitle(topicDto.getTitle());
+        topic.setSticked(topicDto.isSticked());
+        topic.setAnnouncement(topicDto.isAnnouncement());
         Post post = topic.getFirstPost();
         post.setPostContent(bodyText);
         post.updateModificationDate();
@@ -261,16 +258,28 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.MOVE_TOPICS')")
     public void moveTopic(Long topicId, Long branchId) throws NotFoundException {
         Topic topic = get(topicId);
+        moveTopic(topic, branchId);
+    }
+    
+    /**
+     * Performs actual topic moving with permission check
+     *
+     * @param topic    topic to move
+     * @param branchId ID of target branch
+     * @throws NotFoundException if target branch was not found by id
+     * 
+     */
+    @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.MOVE_TOPICS')")
+    private void moveTopic(Topic topic, Long branchId) throws NotFoundException {
         Branch targetBranch = branchService.get(branchId);
         targetBranch.addTopic(topic);
         branchDao.update(targetBranch);
 
-        notificationService.topicMoved(topic, topicId);
+        notificationService.topicMoved(topic, topic.getId());
 
-        logger.info("Moved topic \"{}\". Topic id: {}", topic.getTitle(), topicId);
+        logger.info("Moved topic \"{}\". Topic id: {}", topic.getTitle(), topic.getId());
     }
 
     /**

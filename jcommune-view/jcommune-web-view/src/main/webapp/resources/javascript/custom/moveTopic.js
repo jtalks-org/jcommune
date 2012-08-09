@@ -159,11 +159,14 @@ function getBranchItemHtml(branches, eliminatedBranchId) {
  */
 function moveTopic(topicId, targetBranchId) {
     $.ajax({
-        url:baseUrl + '/topics/json/' + topicId + '?branchId=' + targetBranchId,
+        url:baseUrl + '/topics/move/json/' + topicId,
         type:"POST",
         data:{"branchId":targetBranchId},
         success:function () {
             document.location = baseUrl + '/topics/' + topicId;
+        },
+        errror:function() {
+        	$.prompt($labelError500Detail);
         }
     });
 }
