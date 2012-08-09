@@ -30,12 +30,18 @@
 	</c:if>
 	
 	<%--First page and previous page --%>
-	<c:if test="${page.number > 1}">
-	 	<li><a href='${uri}?page=1' 
-	 		   title="<spring:message code="label.first"/>"><c:out value="<<"/></a></li>
-		<li><a href='${uri}?page=${page.number - 1}' 
-			   title="<spring:message code="label.previous"/>"><c:out value="<"/></a></li>
-	</c:if>
+	<c:choose>
+		<c:when test="${page.number > 1}">
+		 	<li><a href='${uri}?page=1' 
+		 		   title="<spring:message code="label.first"/>"><c:out value="<<"/></a></li>
+			<li><a href='${uri}?page=${page.number - 1}' 
+				   title="<spring:message code="label.previous"/>"><c:out value="<"/></a></li>
+		</c:when>
+	 	<c:otherwise>
+        	<li class='active'><a href='#' title="<spring:message code="label.first"/>"><c:out value="<<"/></a></li>
+        	<li class='active'><a href='#' title="<spring:message code="label.previous"/>"><c:out value="<"/></a></li>
+        </c:otherwise>
+	</c:choose>
 	
 	<%----%>
 	<c:forEach var="i" begin="1" step="1" end="${numberLink}">
@@ -58,10 +64,16 @@
 	</c:forEach>
 	
 	<%--Last page and next page --%>
-	<c:if test="${page.number < page.totalPages}">
-		<li><a href='${uri}?page=${page.number + 1}'
-			   title="<spring:message code="label.next"/>"><c:out value=">"/></a></li>
-	 	<li><a href='${uri}?page=${page.totalPages}'
-	 		   title="<spring:message code="label.last"/>"><c:out value=">>"/></a></li>
-	</c:if>
+	<c:choose>
+		<c:when test="${page.number < page.totalPages}">
+			<li><a href='${uri}?page=${page.number + 1}'
+				   title="<spring:message code="label.next"/>"><c:out value=">"/></a></li>
+		 	<li><a href='${uri}?page=${page.totalPages}'
+		 		   title="<spring:message code="label.last"/>"><c:out value=">>"/></a></li>
+		</c:when>
+		<c:otherwise>
+			<li class='active'><a href='#' title="<spring:message code="label.next"/>"><c:out value=">"/></a></li>
+        	<li class='active'><a href='#' title="<spring:message code="label.last"/>"><c:out value=">>"/></a></li>
+		</c:otherwise>
+	</c:choose>
 </c:if>
