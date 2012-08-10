@@ -14,15 +14,15 @@
  */
 package org.jtalks.jcommune.web.tags;
 
-import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
 
 import org.jtalks.common.service.security.SecurityContextFacade;
-import org.springframework.context.ApplicationContext;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
@@ -41,7 +41,6 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 @SuppressWarnings("serial")
 public class HasPermission extends TagSupport {
 
-    private transient ApplicationContext applicationContext;
     private transient PermissionEvaluator aclEvaluator;
     private transient SecurityContextFacade securityContextFacade;
     
@@ -84,11 +83,9 @@ public class HasPermission extends TagSupport {
     @Override
     public int doStartTag() throws JspException {
         if (isAnyParameterMissed()) {
-            return Tag.SKIP_BODY;
+            throw new JspException("Some parameter is missed or empty");
         }
 
-        initializeIfRequired();
-        
         Authentication authentication = securityContextFacade.getContext().getAuthentication();
         
         if (aclEvaluator.hasPermission(authentication, targetId, targetType, permission)) {
@@ -109,57 +106,27 @@ public class HasPermission extends TagSupport {
         return  isTargetIdMissed || isTargetTypeMissed || isPermissionMissed;
     }
 
-   /**
-    * Obtain Spring's application context, since we can't use DI in tags. 
-    *
-    * @param servletContext <code>ServletContext</code> as required by Spring's
-    *        <code>WebApplicationContextUtils</code>
-    *
-    * @return the Spring application context (never <code>null</code>)
-    */
-    private ApplicationContext getContext(ServletContext servletContext) {
-        return WebApplicationContextUtils.getRequiredWebApplicationContext(
-               servletContext);
-    }
-   
-    /**
-     * Sets Spring's application context. Created to be used in tests.
-     * @param ctx - context
-     */
-    public void setApplicationContext(ApplicationContext ctx) {
-        applicationContext = ctx;
-    }
-       
-    /**
-     * @param aclEvaluator the aclEvaluator to set
-     */
-    public void setAclEvaluator(PermissionEvaluator aclEvaluator) {
-        this.aclEvaluator = aclEvaluator;
-    }
-
-    /**
-     * @param securityContextFacade the securityContextFacade to set
-     */
-    public void setSecurityContextFacade(SecurityContextFacade securityContextFacade) {
-        this.securityContextFacade = securityContextFacade;
-    }
-
     /** 
-     * Fetches all required beans from Spring context if needed
-     * @throws JspException 
+     * Fetches all required beans from Spring context when page context is set.
+     * This guaranteed that all services will be initialized before actual 
+     * page rendering
+     * 
+     * @param pageContext page context to be set for this tag invocation
      *
      */
-    private void initializeIfRequired() {
-        if (applicationContext == null) {
-            this.applicationContext = getContext(pageContext.getServletContext());
+    @Override
+    public void setPageContext(PageContext pageContext) {
+        super.setPageContext(pageContext);
         
-            aclEvaluator = applicationContext.getBean(PermissionEvaluator.class);
-           
-            securityContextFacade = applicationContext.getBean(
-                    SecurityContextFacade.class);           
-            if (securityContextFacade == null) {
-                securityContextFacade = new org.jtalks.jcommune.service.security.SecurityContextFacade();
-            }
+        WebApplicationContext ctx = WebApplicationContextUtils
+                .getRequiredWebApplicationContext(pageContext.getServletContext());
+    
+        aclEvaluator = ctx.getBean(PermissionEvaluator.class);
+       
+        securityContextFacade = ctx.getBean(
+                SecurityContextFacade.class);           
+        if (securityContextFacade == null) {
+            securityContextFacade = new org.jtalks.common.service.security.SecurityContextHolderFacade();
         }
     }
     

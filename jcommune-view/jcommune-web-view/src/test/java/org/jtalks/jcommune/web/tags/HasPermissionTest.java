@@ -20,16 +20,21 @@ import static org.testng.Assert.assertEquals;
 
 import java.io.Serializable;
 
+import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
 
 import org.jtalks.common.service.security.SecurityContextFacade;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.springframework.beans.BeanUtils;
+import org.springframework.mock.web.MockPageContext;
+import org.springframework.mock.web.MockServletContext;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.GenericWebApplicationContext;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -45,8 +50,7 @@ public class HasPermissionTest {
     
     private HasPermission tag;
     
-    @Mock
-    private WebApplicationContext ctx;
+    private MockPageContext pageContext;
     
     @Mock
     private PermissionEvaluator aclEvaluator;
@@ -62,49 +66,57 @@ public class HasPermissionTest {
         initMocks(this);
         when(securityContextFacade.getContext()).thenReturn(securityContext);
         
+        ServletContext servletContext = new MockServletContext();
+        GenericWebApplicationContext wac = (GenericWebApplicationContext) BeanUtils
+                .instantiateClass(GenericWebApplicationContext.class);
+        wac.getBeanFactory().registerSingleton("aclEvaluator", aclEvaluator);
+        wac.getBeanFactory().registerSingleton("securityContextFacade", 
+                securityContextFacade);
+        servletContext.setAttribute(
+                WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, wac);
+        pageContext = new MockPageContext(servletContext);
+        
         tag = new HasPermission();
         
-        tag.setApplicationContext(ctx);
-        tag.setAclEvaluator(aclEvaluator);
-        tag.setSecurityContextFacade(securityContextFacade);
+        tag.setPageContext(pageContext);
         
     }
     
-    @Test
+    @Test(expectedExceptions=JspException.class)
     public void testTargetIdNotSpecified() throws JspException {
         tag.setTargetType(TARGET_TYPE);
         tag.setPermission(PERMISSION);
-        assertEquals(tag.doStartTag(), Tag.SKIP_BODY);
+        tag.doStartTag();
     }
     
-    @Test
+    @Test(expectedExceptions=JspException.class)
     public void testTargetTypeNotSpecified() throws JspException {
         tag.setTargetId(TARGET_ID);
         tag.setPermission(PERMISSION);
-        assertEquals(tag.doStartTag(), Tag.SKIP_BODY);
+        tag.doStartTag();
     }
     
-    @Test
+    @Test(expectedExceptions=JspException.class)
     public void testTargetTypeBlank() throws JspException {
         tag.setTargetId(TARGET_ID);
         tag.setTargetType("");
         tag.setPermission(PERMISSION);
-        assertEquals(tag.doStartTag(), Tag.SKIP_BODY);
+        tag.doStartTag();
     }
     
-    @Test
+    @Test(expectedExceptions=JspException.class)
     public void testPermissionNotSpecified() throws JspException {
         tag.setTargetId(1L);
         tag.setTargetType("BRANCH");
-        assertEquals(tag.doStartTag(), Tag.SKIP_BODY);
+        tag.doStartTag();
     }
     
-    @Test
+    @Test(expectedExceptions=JspException.class)
     public void testPermissionBlank() throws JspException {
         tag.setTargetId(1L);
         tag.setTargetType("BRANCH");
         tag.setPermission("");
-        assertEquals(tag.doStartTag(), Tag.SKIP_BODY);
+        tag.doStartTag();
     }
     
     @Test

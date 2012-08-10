@@ -88,14 +88,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
     public boolean hasPermission(Authentication authentication, Serializable targetId,
                                  String targetType, Object permission) {
         boolean result = false;
-        Long id = 0L;
-
-        Validate.isTrue(targetId instanceof String || targetId instanceof Long);
-        if (targetId instanceof String) {
-            id = Long.parseLong((String) targetId);
-        } else if (targetId instanceof Long) {
-            id = (Long) targetId;
-        }
+        Long id = parseTargetId(targetId);
 
         ObjectIdentity objectIdentity = aclUtil.createIdentity(id, targetType);
         Permission jtalksPermission = getPermission(permission);
@@ -104,10 +97,10 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
         List<AccessControlEntry> aces = aclUtil.getAclFor(objectIdentity).getEntries();
         List<GroupAce> controlEntries = aclManager.getGroupPermissionsOn(objectIdentity);
 
-        if (isRestricted(sid, aces, jtalksPermission) ||
+        if (isRestrictedForSid(sid, aces, jtalksPermission) ||
                 isRestrictedForGroup(controlEntries, authentication, jtalksPermission)) {
             return false;
-        } else if (isAllowed(sid, aces, jtalksPermission) ||
+        } else if (isAllowedForSid(sid, aces, jtalksPermission) ||
                 isAllowedForGroup(controlEntries, authentication, jtalksPermission)) {
             return true;
         }
@@ -117,9 +110,9 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
                 ObjectIdentity groupIdentity = aclUtil.createIdentity(group.getId(), "GROUP");
                 Sid groupSid = sidFactory.create(group);
                 List<AccessControlEntry> groupAces = aclUtil.getAclFor(groupIdentity).getEntries();
-                if (isRestricted(groupSid, groupAces, jtalksPermission)) {
+                if (isRestrictedForSid(groupSid, groupAces, jtalksPermission)) {
                     return false;
-                } else if (isAllowed(groupSid, groupAces, jtalksPermission)) {
+                } else if (isAllowedForSid(groupSid, groupAces, jtalksPermission)) {
                     return true;
                 }
             }
@@ -127,60 +120,153 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
         return result;
 
     }
+    
+    /**
+     * Parses targetId parameter
+     * @param targetId parameter value to parse.
+     * @return targetId as Long.
+     */
+    private Long parseTargetId(Serializable targetId) {
+        Long result = 0L;
+        Validate.isTrue(targetId instanceof String || targetId instanceof Long);
+        if (targetId instanceof String) {
+            result = Long.parseLong((String) targetId);
+        } else if (targetId instanceof Long) {
+            result = (Long) targetId;
+        }
+        return result;
+    }
 
     /**
-     * @param sid
-     * @param controlEntries
-     * @param permission
-     * @return true if controlEntries contains grant for sid
+     * Check if this <tt>permission</tt> is allowed for specified <tt>sid</tt>
+     * @param sid sid to check permission for it
+     * @param controlEntries list of records with security information for sids
+     * @param permission permission to check
+     * @return <code>true</code> if this permission is allowed
      */
-    private boolean isAllowed(Sid sid, List<AccessControlEntry> controlEntries, Permission permission) {
+    private boolean isAllowedForSid(Sid sid, List<AccessControlEntry> controlEntries, Permission permission) {
+        return isGrantedForSid(sid, controlEntries, permission, true);
+    }
+
+    /**
+     * Check if this <tt>permission</tt> is restricted for specified <tt>sid</tt>
+     * @param sid sid to check permission for it
+     * @param controlEntries list of records with security information for sids
+     * @param permission permission to check
+     * @return <code>true</code> if this permission is restricted
+     */
+    private boolean isRestrictedForSid(Sid sid, List<AccessControlEntry> controlEntries, Permission permission) {
+        return isGrantedForSid(sid, controlEntries, permission, false);
+    }
+    
+    /**
+     * Check if this <tt>permission</tt> is granted for specified <tt>sid</tt>
+     * @param sid sid to check permission for it
+     * @param controlEntries list of records with security information for sids
+     * @param permission permission to check
+     * @param isCheckAllowedGrant flag that indicates what type of grant need to 
+     *      be checked  - 'allowed' (true) or 'restricted' (false)
+     * @return <code>true</code> if this permission was found with specified 
+     *      type of grant.
+     */
+    private boolean isGrantedForSid(Sid sid, List<AccessControlEntry> controlEntries, 
+            Permission permission, boolean isCheckAllowedGrant) {
         for (AccessControlEntry ace : controlEntries) {
-            if (sid.getSidId().equals(ace.getSid().getSidId()) &&
-                    permission.equals(ace.getPermission()) && ace.isGranting()) {
+            if (isGrantedForSid(sid, ace, permission, isCheckAllowedGrant)) {
                 return true;
             }
         }
         return false;
     }
-
-    private boolean isRestricted(Sid sid, List<AccessControlEntry> controlEntries, Permission permission) {
-        for (AccessControlEntry ace : controlEntries) {
-            if (sid.getSidId().equals(ace.getSid().getSidId()) &&
-                    permission.equals(ace.getPermission()) &&
-                    !ace.isGranting()) {
-                return true;
-            }
-        }
-        return false;
+    
+    /**
+     * Check if this <tt>permission</tt> is granted for specified <tt>sid</tt>
+     * @param sid sid to check permission for it
+     * @param ace entry with security information (for sids)
+     * @param permission permission to check
+     * @param isCheckAllowedGrant flag that indicates what type of grant need to 
+     *      be checked  - 'allowed' (true) or 'restricted' (false)
+     * @return <code>true</code> if this entry has specified <tt>permission</tt> 
+     *      and type of grant.
+     */
+    private boolean isGrantedForSid(Sid sid, AccessControlEntry ace, 
+            Permission permission, boolean isCheckAllowedGrant) {
+        return sid.getSidId().equals(ace.getSid().getSidId()) 
+            && permission.equals(ace.getPermission()) 
+            && ace.isGranting() == isCheckAllowedGrant;
     }
 
+    /**
+     * Check if this <tt>permission</tt> is allowed for any <tt>authority's</tt>
+     * group. 
+     * @param controlEntries list of entries with security information for groups
+     *      to loop through
+     * @param authentication authentication to check permission for it
+     * @param permission permission to check
+     * @return <code>true</code> if this permission is allowed.
+     */
     private boolean isAllowedForGroup(List<GroupAce> controlEntries, 
             Authentication authentication, Permission permission) {
-        if (authentication.getPrincipal() instanceof User)
-            for (GroupAce ace : controlEntries) {
-                if (ace.isGranting() 
-                        && permission.equals(ace.getBranchPermission()) 
-                        && ace.getGroup(groupDao).getUsers().
-                        contains(authentication.getPrincipal())) {
-                    return true;
-                }
-            }
-        return false;
+        return isGrantedForGroup(controlEntries, authentication, permission, true);
     }
 
+    /**
+     * Check if this <tt>permission</tt> is restricted for any <tt>authority's</tt>
+     * group. 
+     * @param controlEntries list of entries with security information for groups
+     *      to loop through
+     * @param authentication authentication to check permission for it
+     * @param permission permission to check
+     * @return <code>true</code> if this permission is restricted.
+     */
     private boolean isRestrictedForGroup(List<GroupAce> controlEntries, 
             Authentication authentication, Permission permission) {
-        if (authentication.getPrincipal() instanceof User)
+        return isGrantedForGroup(controlEntries, authentication, permission, false);
+    }
+        
+    /**
+     * Check if this <tt>permission</tt> is granted for any <tt>authority's</tt>
+     * group. 
+     * @param controlEntries list of entries with security information for groups
+     *      to loop through
+     * @param authentication authentication to check permission for it
+     * @param permission permission to check
+     * @param isCheckAllowedGrant flag that indicates what type of grant need to 
+     *      be checked  - 'allowed' (true) or 'restricted' (false)
+     * @return <code>true</code> if this permission was found with specified 
+     *      type of grant.
+     */
+    private boolean isGrantedForGroup(List<GroupAce> controlEntries, 
+            Authentication authentication, Permission permission, 
+            boolean isCheckAllowedGrant) {
+        if (authentication.getPrincipal() instanceof User) {
             for (GroupAce ace : controlEntries) {
-                if (!ace.isGranting()
-                        && permission.equals(ace.getBranchPermission())
-                        && ace.getGroup(groupDao).getUsers().
-                        contains(authentication.getPrincipal())) {
+                if (isGrantedForGroup(ace, authentication, permission, 
+                        isCheckAllowedGrant)) {
                     return true;
                 }
             }
+        }
         return false;
+    }
+    
+    /**
+     * Check if this <tt>permission</tt> is granted for any <tt>authority's</tt>
+     * group. 
+     * @param ace entry with security information (for groups)
+     * @param authentication authentication to check permission for it
+     * @param permission permission to check
+     * @param isCheckAllowedGrant flag that indicates what type of grant need to 
+     *      be checked  - 'allowed' (true) or 'restricted' (false)
+     * @return <code>true</code> if this entry has specified <tt>permission</tt> 
+     *      and type of grant.
+     */
+    private boolean isGrantedForGroup(GroupAce ace, Authentication authentication, 
+            Permission permission, boolean isCheckAllowedGrant) {
+        return ace.isGranting() == isCheckAllowedGrant
+                && permission.equals(ace.getBranchPermission())
+                && ace.getGroup(groupDao).getUsers().
+                    contains(authentication.getPrincipal());
     }
 
     private Permission getPermission(Object permission) {

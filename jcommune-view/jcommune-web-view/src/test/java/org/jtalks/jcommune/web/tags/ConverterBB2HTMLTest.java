@@ -16,28 +16,22 @@ package org.jtalks.jcommune.web.tags;
 
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.springframework.beans.BeanUtils;
-import org.springframework.context.ApplicationContext;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockPageContext;
-import org.springframework.mock.web.MockServletConfig;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.GenericWebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
 
 import java.io.UnsupportedEncodingException;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
 public class ConverterBB2HTMLTest {
 
