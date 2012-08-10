@@ -57,7 +57,7 @@
         </div>
 
         <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH' 
-            permission='GeneralPermission.ADMIN'>
+            permission='BranchPermission.CREATE_STICKED_TOPICS'>
             <div class='control-group'>
                 <form:checkbox path="topic.sticked" value="true" tabindex="101" class="confirm-unsaved form-check-radio-box"/>
                 <label for='sticked' class='string optional'>
@@ -66,6 +66,9 @@
 
                 <form:errors path="topic.sticked"/>
             </div>
+        </jtalks:hasPermission>
+        <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH' 
+            permission='BranchPermission.CREATE_ANNOUNCEMENTS'>
             <div class='control-group'>
                 <form:checkbox path="topic.announcement" value="true" tabindex="102"
                                class="script-confirm-unsaved form-check-radio-box"/>
