@@ -20,10 +20,10 @@
  * Hyperlinks/buttons which bypass confirmation declared in allowed_transitions variable.
  *
  * Opera doesn't support "beforeunload" event, thus code below does nothing in Opera.
+ * Only standard message displays in Firefox (https://bugzilla.mozilla.org/show_bug.cgi?id=641509).
  */
 $(document).ready(function () {
 
-    var data_changed = false;
     var message = $labelLeavePageConfirmation;
     var mark_class = ".script-confirm-unsaved";
     var allowed_transitions = "input[type=submit]";
@@ -38,7 +38,7 @@ $(document).ready(function () {
         if (currentData != newData) return message;
     });
 
-    $(document).on('click',allowed_transitions,function (event) {
+    $(document).on('click', allowed_transitions, function (event) {
         $(window).off('beforeunload');
     });
 
