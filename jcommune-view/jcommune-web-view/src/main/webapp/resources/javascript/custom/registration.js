@@ -33,7 +33,8 @@ $(function () {
             query = "username=" + encodeURIComponent($('#username').val()) +
                 "&password=" + encodeURIComponent($('#password').val()) +
                 "&passwordConfirm=" + encodeURIComponent($('#passwordConfirm').val()) +
-                "&email=" + encodeURIComponent($('#email').val());
+                "&email=" + encodeURIComponent($('#email').val()) +
+                "&captcha=" + encodeURIComponent($('#captcha').val());
         } else {
             query = "username=&password=&passwordConfirm=&email=&captcha&firstView=false";
         }
@@ -77,7 +78,6 @@ $(function () {
 
 function refreshCaptchaOnClick() {
     $("#captcha_refresh").on('click', function (e) {
-        document.getElementById("captcha").value = "";
         refreshCaptcha();
     });
 }
@@ -86,4 +86,5 @@ function refreshCaptcha() {
     var url = $root + "/captcha/image?param=" + $.now();
     //this parameter forces browser to reload image every time
     $("#captcha_img").removeAttr("src").attr("src", url).attr("src", url);
+	document.getElementById("captcha").value = "";
 }
