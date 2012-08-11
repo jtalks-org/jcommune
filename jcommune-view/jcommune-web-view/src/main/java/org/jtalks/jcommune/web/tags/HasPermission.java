@@ -117,17 +117,10 @@ public class HasPermission extends TagSupport {
     @Override
     public void setPageContext(PageContext pageContext) {
         super.setPageContext(pageContext);
-        
         WebApplicationContext ctx = WebApplicationContextUtils
                 .getRequiredWebApplicationContext(pageContext.getServletContext());
-    
         aclEvaluator = ctx.getBean(PermissionEvaluator.class);
-       
-        securityContextFacade = ctx.getBean(
-                SecurityContextFacade.class);           
-        if (securityContextFacade == null) {
-            securityContextFacade = new org.jtalks.common.service.security.SecurityContextHolderFacade();
-        }
+        securityContextFacade = ctx.getBean(SecurityContextFacade.class);
     }
     
 }
