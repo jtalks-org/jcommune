@@ -193,7 +193,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
             Permission permission, boolean isCheckAllowedGrant) {
         return sid.getSidId().equals(ace.getSid().getSidId()) 
             && permission.equals(ace.getPermission()) 
-            && ace.isGranting() == isCheckAllowedGrant;
+            && (ace.isGranting() == isCheckAllowedGrant);
     }
 
     /**
@@ -241,8 +241,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
             boolean isCheckAllowedGrant) {
         if (authentication.getPrincipal() instanceof User) {
             for (GroupAce ace : controlEntries) {
-                if (isGrantedForGroup(ace, authentication, permission, 
-                        isCheckAllowedGrant)) {
+                if (isGrantedForGroup(ace, authentication, permission, isCheckAllowedGrant)) {
                     return true;
                 }
             }
