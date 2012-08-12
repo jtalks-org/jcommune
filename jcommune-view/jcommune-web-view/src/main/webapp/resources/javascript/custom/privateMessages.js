@@ -157,7 +157,7 @@ $(document).ready(function () {
             $("#inbox_link").addClass("active");
         } else if (url.match(/outbox/)) {
             $("#outbox_link").addClass("active");
-        } else if (url.match(/drafts/)) {
+        } else if (url.match(/drafts$/)) {
             $("#draft_link").addClass("active");
         }
     });
