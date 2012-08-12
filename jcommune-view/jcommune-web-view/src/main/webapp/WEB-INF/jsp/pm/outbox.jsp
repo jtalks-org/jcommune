@@ -87,7 +87,7 @@
                                 </a>
                             </td>
                             <td>
-                                <a href="${pageContext.request.contextPath}/pm/${pm.id}?pageFrom=outbox">
+                                <a href="${pageContext.request.contextPath}/pm/outbox/${pm.id}">
                                     <c:out value="${pm.title}"/>
                                 </a>
                             </td>
