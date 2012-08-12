@@ -137,15 +137,16 @@ function bbcode2html() {
             result = result.replace(new RegExp(openBracketCodePlaceholder, 'gi'), "%5B");
             result = result.replace(new RegExp(slashCodePlaceholder, 'gi'), "%22");
             result = result.replace(new RegExp(lowerThenPlaceholder, 'gi'), "&lt;");
-			
-            htmlcontentelement.innerHTML = result;
+
+            $("#" + html_content_id).html(result.trim());
             htmlcontentelement.style.display = "";
             textboxelement.style.display = "none";
 
             editorVisible = true;
             
-			//Code highlight
+			//enable code highlight
 			prettyPrint();
+            //enable image preview
             $("a[rel^='prettyPhoto']").prettyPhoto({social_tools:false});
         }
     });

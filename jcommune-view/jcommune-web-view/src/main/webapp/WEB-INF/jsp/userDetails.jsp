@@ -97,7 +97,7 @@
                             </label>
                             <div class="controls">
                                 <label class="input-xlarge box-label test-signature">
-                                    <c:out value='${user.signature}'/>
+                                    <jtalks:bb2html bbCode='${user.signature}'/>
                                 </label>
                             </div>
                         </div>
