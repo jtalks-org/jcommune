@@ -153,13 +153,11 @@ $(document).ready(function () {
      */
     $(document).ready(function () {
         var url = document.URL.toString();
-        if (url.match(/inbox$/) || (url.match(/pm\/[0-9]*/))) {
+        if (url.match(/inbox/)) {
             $("#inbox_link").addClass("active");
-        } else if (url.match(/outbox$/)) {
+        } else if (url.match(/outbox/)) {
             $("#outbox_link").addClass("active");
-        } else if (url.match(/new$/)) {
-            $("#newmsg_link").addClass("active");
-        } else if (url.match(/drafts$/)) {
+        } else if (url.match(/drafts/)) {
             $("#draft_link").addClass("active");
         }
     });
