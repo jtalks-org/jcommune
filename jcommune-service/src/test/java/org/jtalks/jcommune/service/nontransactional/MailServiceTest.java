@@ -138,7 +138,7 @@ public class MailServiceTest {
 
         this.checkMailCredentials();
         System.out.println(this.getMimeMailBody());
-        assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/pm/1"));
+        assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/pm/inbox/1"));
     }
 
     @Test
