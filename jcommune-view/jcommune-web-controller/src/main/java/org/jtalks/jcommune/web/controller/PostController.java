@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.apache.commons.lang.StringUtils;
-import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.LastReadPostService;
@@ -28,8 +27,6 @@ import org.jtalks.jcommune.web.dto.PostDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -60,7 +57,6 @@ public class PostController {
     public static final String TOPIC_ID = "topicId";
     public static final String POST_ID = "postId";
     public static final String POST_DTO = "postDto";
-    public static final String POST_BB_CONTENT = "bbContent";
     public static final String TOPIC_TITLE = "topicTitle";
 
     private PostService postService;
@@ -250,16 +246,17 @@ public class PostController {
     }
 
     /**
-     * Converted post with bb codes to HTML
+     * Converts post with bb codes to HTML for client-side
+     * preview in bbEditor
      *
-     * @param bbContent post with bb codes
+     * @param content post with bb codes
      * @return HTML content for post
      */
     @RequestMapping(method = RequestMethod.POST, value = "/posts/bbToHtml")
-    public ResponseEntity<String> preview(@RequestParam(POST_BB_CONTENT) String bbContent) {
-        JCUser user = userService.getCurrentUser();
-        String post = bbCodeService.convertBbToHtml(bbContent);
-        post += user.getRenderedSignature();
-        return new ResponseEntity<String>(post, HttpStatus.OK);
+    public ModelAndView preview(@RequestParam("bbContent") String content) {
+        String signature = userService.getCurrentUser().getSignature();
+        return new ModelAndView("ajax/postPreview")
+                .addObject("text", content)
+                .addObject("signature", signature);
     }
 }

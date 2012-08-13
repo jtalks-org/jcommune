@@ -303,17 +303,9 @@
                        </div>
                    </td>
                    <td class='post-content-td'>
-                       <div>
-                           <jtalks:bb2html bbCode="${post.postContent}"/>
-                           <c:if test="${post.modificationDate!=null}">
-                               <br/><br/><br/>
-                               <spring:message code="label.modify"/>
-                               <jtalks:format value="${post.modificationDate}"/>
-                           </c:if>
-                       </div>
-                       <div align="left">
-                               ${post.userCreated.renderedSignature}
-                       </div>
+                       <jtalks:postContent text="${post.postContent}"
+                                           signature="${post.userCreated.signature}"
+                                           modificationDate="${post.modificationDate}"/>
                    </td>
                </tr>
                <tr>

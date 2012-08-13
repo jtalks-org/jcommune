@@ -35,6 +35,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -135,6 +136,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     private boolean announcement;
     private Branch branch;
     private int views;
+    @Valid
     private Poll poll;
     private List<Post> posts = new ArrayList<Post>();
     private Set<JCUser> subscribers = new HashSet<JCUser>();

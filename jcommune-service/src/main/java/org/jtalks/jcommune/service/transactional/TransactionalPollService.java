@@ -120,7 +120,7 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
      * @param poll a poll, in which the user will no longer be able to participate
      */
     private void prohibitRevote(final Poll poll) {
-        securityService.createAclBuilder().restrict(GeneralPermission.WRITE).
+        securityService.createAclBuilder().grant(GeneralPermission.WRITE).
                 to(userService.getCurrentUser()).on(poll).flush();
     }
 }

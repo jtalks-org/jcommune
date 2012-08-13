@@ -279,7 +279,7 @@ public class PostControllerTest {
         controller.redirectToPageWithPost(POST_ID);
     }
 
-    @Test
+/*    @Test
     public void testPreview() {
         String postText = "[code]123[/code]";
         String html = "<code>123</code>";
@@ -290,7 +290,7 @@ public class PostControllerTest {
 
         assertEquals(result, html);
         verify(bbCodeService).convertBbToHtml(postText);
-    }
+    }*/
 
     private void assertAnswerMavIsCorrect(ModelAndView mav) {
         assertViewName(mav, "answer");

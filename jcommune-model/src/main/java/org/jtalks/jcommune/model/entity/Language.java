@@ -30,6 +30,7 @@ public enum Language {
 
     private String label;
     private String code;
+    private Locale locale;
 
     /**
      * @param label same as in resource bundle
@@ -38,8 +39,31 @@ public enum Language {
     private Language(String label, String code) {
         this.label = label;
         this.code = code;
+        this.locale = new Locale(code);
     }
 
+    /**
+     * @param locale locale to select language constant for
+     * @return Language constant matches the locale given. If nothing matches exception is to be raised
+     */
+    public static Language byLocale(Locale locale){
+        for (Language language : values()){
+            if (language.locale.equals(locale)){
+                return language;
+            }
+        }
+        throw new IllegalArgumentException("Locale does not match any known language");
+    }
+
+    /**
+     * Returns locale accordingly language code.
+     *
+     * @return Locale object
+     */
+    public Locale getLocale(){
+        return locale;
+    }
+    
     /**
      * Return resource bundle label for the language name. This method should be used when
      * you need a localized representation of the current instance
@@ -55,14 +79,5 @@ public enum Language {
      */
     public String getLanguageCode() {
         return code;
-    }
-
-    /**
-     * Returns locale accordingly language code.
-     *
-     * @return Locale object
-     */
-    public Locale getLocale(){
-        return new Locale(code);
     }
 }

@@ -205,7 +205,7 @@ public class PrivateMessageController {
      * @return {@code ModelAndView} with a message
      * @throws NotFoundException when message not found
      */
-    @RequestMapping(value = "/pm/{pmId}", method = RequestMethod.GET)
+    @RequestMapping(value = {"/pm/inbox/{pmId}", "/pm/outbox/{pmId}"}, method = RequestMethod.GET)
     public ModelAndView showPmPage(@PathVariable(PM_ID) Long id) throws NotFoundException {
         PrivateMessage pm = pmService.get(id);
         return new ModelAndView("pm/showPm")
@@ -220,7 +220,7 @@ public class PrivateMessageController {
      * @return private message form view and populated form dto
      * @throws NotFoundException when message not found
      */
-    @RequestMapping(value = "/pm/{pmId}/edit", method = RequestMethod.GET)
+    @RequestMapping(value = "/pm/drafts/{pmId}/edit", method = RequestMethod.GET)
     public ModelAndView editDraftPage(@PathVariable(PM_ID) Long id) throws NotFoundException {
         PrivateMessage pm = pmService.get(id);
         if (!pm.getStatus().equals(PrivateMessageStatus.DRAFT)) {
