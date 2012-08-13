@@ -121,16 +121,14 @@
  
                <c:if test="${previousTopic != null}">
                    <li>
-                       <a href="${pageContext.request.contextPath}/topics/${previousTopic.id}"
-                           title="<spring:message code='label.topic.previous'/>">
+                       <a href="${pageContext.request.contextPath}/topics/${previousTopic.id}">
                            <spring:message code='label.topic.previous'/>
                        </a>
                    </li>
                </c:if>
                <c:if test="${nextTopic != null}">
                    <li>
-                       <a href="${pageContext.request.contextPath}/topics/${nextTopic.id}"
-                           title="<spring:message code='label.topic.next'/>">
+                       <a href="${pageContext.request.contextPath}/topics/${nextTopic.id}">
                            <spring:message code='label.topic.next'/>
                        </a>
                    </li>
@@ -245,7 +243,7 @@
                                        <i class="icon-quote"></i><spring:message code="label.quotation"/>
                                    </a>
                                </jtalks:hasPermission>
-                               <a class="btn btn-mini" href="#">&#8657</a>
+                               <a class="btn btn-mini" href="#" title="<spring:message code='label.tips.up'/>">&#8657</a>
                            </div>
                        </div>
                    </td>

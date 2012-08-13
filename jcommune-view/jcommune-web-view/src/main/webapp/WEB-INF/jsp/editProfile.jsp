@@ -60,7 +60,7 @@
                 <div class="clearfix"></div>
                 <div class="user-profile-top-buttons">
                     <div class="user-profile-buttons-avatar">
-                        <a id="upload" href="#" class="btn btn-mini" title="<spring:message code='label.avatar.load'/>">
+                        <a id="upload" href="#" class="btn btn-mini">
                             <i class="icon-picture"></i>
                             <spring:message code="label.avatar.load"/>
                         </a>
@@ -175,12 +175,10 @@
                         
                         <hr class='user-profile-hr'/>
                         <div class='user-profile-buttons-form-actions'>
-                            <button id="saveChanges" class="btn btn-primary" type="submit" 
-                                title="<spring:message code='label.save_changes'/>">
+                            <button id="saveChanges" class="btn btn-primary" type="submit">
                                 <spring:message code="label.save_changes"/>
                             </button>
-                            <a href="${pageContext.request.contextPath}/user" class="btn" 
-                                title="<spring:message code='label.cancel'/>">
+                            <a href="${pageContext.request.contextPath}/user" class="btn">
                                 <spring:message code="label.cancel"/>
                             </a>
                         </div>
@@ -210,8 +208,7 @@
                 </c:forEach>
             </ul>
             
-            <a id="add_contact" href="#" class="btn btn-mini btn-primary user-profile-buttons-addcontact" 
-                title="<spring:message code='label.contacts.addMore'/>">
+            <a id="add_contact" href="#" class="btn btn-mini btn-primary user-profile-buttons-addcontact">
                 <spring:message code="label.contacts.addMore"/>
             </a>
             
