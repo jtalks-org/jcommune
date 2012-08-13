@@ -26,8 +26,6 @@
 
         <security:session-management session-authentication-strategy-ref="concurrentSessionControlStrategy"/>
 
-        <security:intercept-url pattern="/topics/new" method="GET" access="isAuthenticated()"/>
-
         <security:intercept-url pattern="/posts/new" access="isAuthenticated()"/>
         <security:intercept-url pattern="/posts/*/delete" method="GET" access="isAuthenticated()"/>
         <security:intercept-url pattern="/posts/*" method="DELETE" access="isAuthenticated()"/>
@@ -49,9 +47,11 @@
         <security:intercept-url pattern="/drafts" access="isAuthenticated()"/>
         <security:intercept-url pattern="/answer" access="isAuthenticated()"/>
 
+        <security:intercept-url pattern="/topics/new" access="isAuthenticated()"/>
         <security:intercept-url pattern="/topics/*/subscribe" access="isAuthenticated()"/>
         <security:intercept-url pattern="/topics/*/unsubscribe" access="isAuthenticated()"/>
         <security:intercept-url pattern="/topics/json/**" access="isAuthenticated()"/>
+        
         <security:intercept-url pattern="/branches/*/subscribe" access="isAuthenticated()"/>
         <security:intercept-url pattern="/branches/*/unsubscribe" access="isAuthenticated()"/>
 
