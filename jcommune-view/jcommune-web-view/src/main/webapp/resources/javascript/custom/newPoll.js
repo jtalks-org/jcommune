@@ -30,7 +30,7 @@ $(document).ready(function () {
     //setting proper datepicker locale, at current time there are not ukraine and spain datepicker locales,
     // so will be used only en and ru locales.
     if ($localeCode == 'ru') {
-        document.getElementById('datepicker').datepicker($.datepicker.regional['ru']);
+        $.datepicker.setDefaults($.datepicker.regional['ru']);
     } else {
         $.datepicker.setDefaults($.datepicker.regional[""]);
     }
