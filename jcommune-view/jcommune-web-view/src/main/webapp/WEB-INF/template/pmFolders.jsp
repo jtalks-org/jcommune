@@ -22,7 +22,7 @@
     <ul class="nav nav-list">
         <li class="nav-header"><spring:message code="label.pm.folders"/></li>
         <li id="inbox_link"><a href="<c:out value="${pageContext.request.contextPath}"/>/inbox">
-            <i class="icon-white icon-inbox"></i>
+            <i class="icon-inbox"></i>
             <spring:message code="label.inbox"/></a></li>
         <li id="outbox_link"><a href="<c:out value="${pageContext.request.contextPath}"/>/outbox">
             <i class="icon-envelope"></i>

@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -285,7 +286,8 @@ public class TopicController {
      * @param branchId id of target branch
      * @throws NotFoundException when topic or branch with given id not found
      */
-    @RequestMapping(value = "/topics/json/{topicId}", method = RequestMethod.POST)
+    @RequestMapping(value = "/topics/move/json/{topicId}", method = RequestMethod.POST)
+    @ResponseBody
     public void moveTopic(@PathVariable(TOPIC_ID) Long topicId,
                           @RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
         topicService.moveTopic(topicId, branchId);

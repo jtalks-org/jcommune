@@ -29,6 +29,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -72,7 +73,7 @@ public class UserControllerTest {
         RegisterUserDto dto = getRegisterUserDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
 
-        ModelAndView mav = userController.registerUser(dto, bindingResult);
+        ModelAndView mav = userController.registerUser(dto, bindingResult, new Locale("ru"));
 
         assertViewName(mav, "redirect:/");
         verify(userService).registerUser(any(JCUser.class));
@@ -84,7 +85,7 @@ public class UserControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        ModelAndView mav = userController.registerUser(dto, bindingResult);
+        ModelAndView mav = userController.registerUser(dto, bindingResult, Locale.ENGLISH);
 
         assertViewName(mav, "registration");
     }
@@ -143,23 +144,23 @@ public class UserControllerTest {
 
         assertEquals("errors/activationExpired", viewName);
     }
-    
+
     @Test
     public void testLoginUserLogged() {
         when(userService.getCurrentUser()).thenReturn(new JCUser("username", null, null));
-        
+
         String result = userController.loginPage();
-        
+
         assertEquals(result, "redirect:/");
         verify(userService).getCurrentUser();
     }
-    
+
     @Test
     public void testLoginUserNotLogged() {
         when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
-        
+
         String result = userController.loginPage();
-        
+
         assertEquals(result, UserController.LOGIN);
         verify(userService).getCurrentUser();
     }

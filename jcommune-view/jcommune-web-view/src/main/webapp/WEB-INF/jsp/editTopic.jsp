@@ -46,7 +46,7 @@
         <div class='control-group'>
             <label for='subject' class='control-label'><spring:message code="label.topic.title"/></label>
             <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>
-            <form:input path="topic.title" id="subject" type="text" name="subject" size="45"
+            <form:input path="topic.title" id="subject" type="text" name="subject" size="45" tabindex="100"
                         maxlength="255"
                         class="post script-confirm-unsaved" placeholder="${topicTitlePlaceholder}"/>
             <br/>
@@ -56,17 +56,21 @@
                          class="post" cssClass="error"/>
         </div>
 
-        <sec:accesscontrollist hasPermission="16" domainObject="${topic.branch}">
+        <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH' 
+            permission='BranchPermission.CREATE_STICKED_TOPICS'>
             <div class='control-group'>
-                <form:checkbox path="topic.sticked" value="true" class="confirm-unsaved form-check-radio-box"/>
+                <form:checkbox path="topic.sticked" value="true" tabindex="101" class="confirm-unsaved form-check-radio-box"/>
                 <label for='sticked' class='string optional'>
                     <spring:message code="label.sticked"/>
                 </label>
 
                 <form:errors path="topic.sticked"/>
             </div>
+        </jtalks:hasPermission>
+        <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH' 
+            permission='BranchPermission.CREATE_ANNOUNCEMENTS'>
             <div class='control-group'>
-                <form:checkbox path="topic.announcement" value="true"
+                <form:checkbox path="topic.announcement" value="true" tabindex="102"
                                class="script-confirm-unsaved form-check-radio-box"/>
                 <label for='announcement' class='string optional'>
                     <spring:message code="label.announcement"/>
@@ -74,7 +78,7 @@
 
                 <form:errors path="topic.announcement"/>
             </div>
-        </sec:accesscontrollist>
+        </jtalks:hasPermission>
 
         <jtalks:bbeditor labelForAction="label.save"
                          postText="${topic.bodyText}"
@@ -84,12 +88,12 @@
             <br/>
             <c:choose>
                 <c:when test="${topicDto.notifyOnAnswers}">
-                    <form:checkbox id="notify" path="notifyOnAnswers" name="notify" checked="checked"
+                    <form:checkbox id="notify" path="notifyOnAnswers" tabindex="500" name="notify" checked="checked"
                                    class="right-margin"/><spring:message
                         code="label.answer.notify_message"/>
                 </c:when>
                 <c:otherwise>
-                    <form:checkbox id="notify" path="notifyOnAnswers" name="notify"
+                    <form:checkbox id="notify" path="notifyOnAnswers" tabindex="500" name="notify"
                                    class="right-margin"/><spring:message
                         code="label.answer.notify_message"/>
                 </c:otherwise>
@@ -98,7 +102,7 @@
 
     </form:form>
 
-    <a href="${pageContext.request.contextPath}/topics/${topicId}" class='back-btn'>
+    <a href="${pageContext.request.contextPath}/topics/${topicId}" tabindex="501" class='back-btn'>
         <i class="icon-arrow-left"></i>
         <spring:message code="label.back"/>
     </a>

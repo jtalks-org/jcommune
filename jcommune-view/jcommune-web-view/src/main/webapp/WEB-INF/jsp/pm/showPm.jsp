@@ -85,8 +85,7 @@
                     </div>
                 </div>
                 <div class="pm-text-box">
-                    <jtalks:bb2html bbCode="${pm.body}"/>
-                    ${pm.userFrom.renderedSignature}
+                    <jtalks:postContent text="${pm.body}" signature="${pm.userFrom.signature}"/>
                 </div>
             </div>
 

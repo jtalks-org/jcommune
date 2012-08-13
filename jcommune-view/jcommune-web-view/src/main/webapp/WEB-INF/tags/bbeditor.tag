@@ -154,7 +154,7 @@
             <span id="editorBBCODEdiv">
                 <pre id="htmlContent"></pre>
                         <spring:message code="placeholder.editor.content" var="placeholderEditorContent"/>
-                <textarea id="tbMsg" name="${bodyParameterName}" style="width:100%;height: 350px"
+                <textarea id="tbMsg" name="${bodyParameterName}" tabindex="200" style="width:100%;height: 350px"
                           placeholder="${placeholderEditorContent}" class="script-confirm-unsaved"><c:out
                         value="${postText}"/></textarea>
             </span>
@@ -162,10 +162,10 @@
     <form:errors path="${bodyParameterName}" cssClass="help-inline"/>
 </div>
 
-<input id="post" type="submit" class="btn btn-primary" accesskey="s" name="post"
+<input id="post" type="submit" class="btn btn-primary" accesskey="s" name="post" tabindex="300"
        value="<spring:message code="${labelForAction}"/>"/>
 
-<input id="preview" type="button" class="btn btn-success" name="preview"
+<input id="preview" type="button" class="btn btn-success" name="preview" tabindex="400"
        value="<spring:message code="label.answer.preview"/>" onclick="SwitchEditor();return null;"/>
 <script type="text/javascript">
     initEditor("tbMsg", "editorBBCODEdiv", "htmlContent");

@@ -66,8 +66,6 @@ $(function () {
                         {buttons:{OK:true}, focus:0, submit:signupPopup});
                     refreshCaptcha();
                     refreshCaptchaOnClick();
-                    document.getElementById("captcha").setAttribute("value", "");
-
                 } else if ($(data).find("span.error_errorpage").html() != null) {
                     $.prompt($labelRegistrationFailture);
                 } else {
@@ -88,4 +86,5 @@ function refreshCaptcha() {
     var url = $root + "/captcha/image?param=" + $.now();
     //this parameter forces browser to reload image every time
     $("#captcha_img").removeAttr("src").attr("src", url).attr("src", url);
+	document.getElementById("captcha").value = "";
 }

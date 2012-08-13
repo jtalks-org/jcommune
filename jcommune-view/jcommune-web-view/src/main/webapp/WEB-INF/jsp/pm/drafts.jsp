@@ -90,7 +90,7 @@
                                 <td>
                                     <c:choose>
                                         <c:when test="${pm.title != null}">
-                                            <a href="${pageContext.request.contextPath}/pm/${pm.id}/edit">
+                                            <a href="${pageContext.request.contextPath}/pm/drafts/${pm.id}/edit">
                                                 <c:out value="${pm.title}"/>
                                             </a>
                                         </c:when>

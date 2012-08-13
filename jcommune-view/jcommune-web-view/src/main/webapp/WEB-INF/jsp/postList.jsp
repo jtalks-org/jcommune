@@ -77,20 +77,22 @@
 <%-- Upper pagination --%>
 <div class="row-fluid upper-pagination forum-pagination-container">
    <div class="span3">
-       <sec:accesscontrollist hasPermission="12" domainObject="${topic.branch}">
+       <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH' 
+            permission='BranchPermission.CREATE_POSTS'>
            <a id="new-topic-btn" class="btn btn-primary"
                href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}&branchId=${topic.branch.id}"
                title="<spring:message code='label.tips.create_new_post'/>">
                <spring:message code="label.answer"/>
            </a>
-       </sec:accesscontrollist>
-       <sec:accesscontrollist hasPermission="16" domainObject="${topic.branch}">
+       </jtalks:hasPermission>
+       <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH' 
+            permission='BranchPermission.MOVE_TOPICS'>
                <span class="topicId" id="${topic.id}">
                <a name="move_topic" href="#" class="btn" title="<spring:message code='label.tips.move_topic'/>">
                    <spring:message code="label.topic.move"/>
                </a>
                </span>
-       </sec:accesscontrollist>
+       </jtalks:hasPermission>
        &nbsp; <%-- For proper pagination layout without buttons--%>
    </div>
  
@@ -182,15 +184,17 @@
                                <%--Edit post button start --%>
                                <c:set var="isEditButtonAvailable" value="false"/>
                                <%--  An ability to edit posts for author of this posts --%>
-                               <sec:accesscontrollist hasPermission="4" domainObject="${post}">
-                               		<c:set var="isEditButtonAvailable" value="true"/>
-                               </sec:accesscontrollist>
+                               <jtalks:hasPermission targetId='${post.id}' targetType='POST' 
+                                    permission='GeneralPermission.WRITE'>                              
+                                    <c:set var="isEditButtonAvailable" value="true"/>
+                               </jtalks:hasPermission>
                                <%--  An ability to edit posts for administrators and branch moderators --%>
-                               <sec:accesscontrollist hasPermission="17" domainObject="${topic.branch}">
-                               		<c:set var="isEditButtonAvailable" value="true"/>
-                               </sec:accesscontrollist>
+                               <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH' 
+                                    permission='BranchPermission.EDIT_OTHERS_POSTS'>                               
+                                    <c:set var="isEditButtonAvailable" value="true"/>
+                               </jtalks:hasPermission>
                                <c:if test="${isEditButtonAvailable}">
-                               	    <a id="edit_button" href="${edit_url}" rel="${branchId}"
+                                    <a id="edit_button" href="${edit_url}" rel="${branchId}"
                                        class="btn btn-mini" title="<spring:message code='label.tips.edit_post'/>">
                                        <i class="icon-edit"></i>
                                        <spring:message code="label.edit"/>
@@ -199,22 +203,24 @@
                                <%--Edit post button end --%>
                                <%--Delete post button start --%>
                                <sec:authorize access="isAuthenticated()">
-                               	   <c:set var="isDeleteButtonAvailable" value="false"/>
+                                   <c:set var="isDeleteButtonAvailable" value="false"/>
                                    <sec:authentication property="principal.id" var="userId"/>
                                    <%--The ability of users to remove their own posts--%>
                                    <c:if test='${userId == post.userCreated.id}'>
-                                       <sec:accesscontrollist hasPermission="7" domainObject="${topic.branch}">
-                                       	   <c:set var="isDeleteButtonAvailable" value="true"/>
-                                       </sec:accesscontrollist>
+                                       <jtalks:hasPermission targetId="${topic.branch.id}" targetType="BRANCH" 
+                                            permission="BranchPermission.DELETE_OWN_POSTS">                                            
+                                           <c:set var="isDeleteButtonAvailable" value="true"/>
+                                       </jtalks:hasPermission>
                                    </c:if>
                                    <%--The ability of users to remove posts of the other users(for moderators and admins)--%>
                                    <c:if test='${userId != post.userCreated.id}'>
-                                       <sec:accesscontrollist hasPermission="13" domainObject="${topic.branch}">
-                                       	   <c:set var="isDeleteButtonAvailable" value="true"/>
-                                       </sec:accesscontrollist>
+                                       <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH' 
+                                            permission='BranchPermission.DELETE_OTHERS_POSTS'>
+                                           <c:set var="isDeleteButtonAvailable" value="true"/>
+                                       </jtalks:hasPermission>
                                    </c:if>
                                    <c:if test="${isDeleteButtonAvailable}">
-                                   		<a href="${delete_url}" class="btn btn-mini btn-danger delete"
+                                        <a href="${delete_url}" class="btn btn-mini btn-danger delete"
                                             title="<spring:message code='label.tips.remove_post'/>"
                                             rel="<spring:message code='${confirm_message}'/>">
                                             <i class="icon-remove icon-white"></i>
@@ -232,12 +238,13 @@
                                    href="${pageContext.request.contextPath}/posts/${post.id}">
                                    <i class="icon-link"></i>
                                </a>
-                               <sec:accesscontrollist hasPermission="12" domainObject="${topic.branch}">
+                               <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH' 
+                                            permission='BranchPermission.CREATE_POSTS'>                               
                                    <a class="btn btn-mini" href='javascript:quote(${post.id},${topic.branch.id});'
                                        title="<spring:message code='label.tips.quote_post'/>">
                                        <i class="icon-quote"></i><spring:message code="label.quotation"/>
                                    </a>
-                               </sec:accesscontrollist>
+                               </jtalks:hasPermission>
                                <a class="btn btn-mini" href="#">&#8657</a>
                            </div>
                        </div>
@@ -296,17 +303,9 @@
                        </div>
                    </td>
                    <td class='post-content-td'>
-                       <div>
-                           <jtalks:bb2html bbCode="${post.postContent}"/>
-                           <c:if test="${post.modificationDate!=null}">
-                               <br/><br/><br/>
-                               <spring:message code="label.modify"/>
-                               <jtalks:format value="${post.modificationDate}"/>
-                           </c:if>
-                       </div>
-                       <div align="left">
-                               ${post.userCreated.renderedSignature}
-                       </div>
+                       <jtalks:postContent text="${post.postContent}"
+                                           signature="${post.userCreated.signature}"
+                                           modificationDate="${post.modificationDate}"/>
                    </td>
                </tr>
                <tr>
@@ -323,20 +322,22 @@
  
 <div class="row-fluid forum-pagination-container">
    <div class="span3">
-       <sec:accesscontrollist hasPermission="12" domainObject="${topic.branch}">
+       <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH' 
+            permission='BranchPermission.CREATE_POSTS'>
            <a id="new-topic-btn" class="btn btn-primary"
                href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}&branchId=${topic.branch.id}"
                title="<spring:message code='label.tips.create_new_post'/>">
                <spring:message code="label.answer"/>
            </a>
-       </sec:accesscontrollist>
-       <sec:accesscontrollist hasPermission="8" domainObject="${topic.branch}">
+       </jtalks:hasPermission>
+       <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH' 
+            permission='BranchPermission.MOVE_TOPICS'>
                <span class="topicId" id="${topic.id}">
                    <a name="move_topic" href="#" class="btn" title="<spring:message code='label.tips.move_topic'/>">
                        <spring:message code="label.topic.move"/>
                    </a>
                </span>
-       </sec:accesscontrollist>
+       </jtalks:hasPermission>
        &nbsp; <%-- For proper pagination layout without buttons--%>
    </div>
  

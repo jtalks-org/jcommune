@@ -1,4 +1,4 @@
-<!--
+<%--
 
     Copyright (C) 2011  JTalks.org Team
     This library is free software; you can redistribute it and/or
@@ -13,13 +13,7 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
--->
-<decorators defaultdir="/WEB-INF/template">
-    <decorator name="main" page="decorator.jsp">
-        <pattern>*</pattern>
-    </decorator>
-    <excludes>
-        <pattern>/users/IFrameAvatarpreview*</pattern>
-        <pattern>/posts/bbToHtml</pattern>
-    </excludes>
-</decorators>
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
+<jtalks:postContent text="${text}" signature="${signature}"/>

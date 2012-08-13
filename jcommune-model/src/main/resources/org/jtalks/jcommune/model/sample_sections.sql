@@ -14,6 +14,7 @@ INSERT INTO `acl_sid` VALUES (1,0,'usergroup:11');
 INSERT INTO `acl_sid` VALUES (3,0,'usergroup:12');
 INSERT INTO `acl_sid` VALUES (2,0,'usergroup:13');
 INSERT INTO `acl_sid` VALUES (4,0,'usergroup:1');
+INSERT INTO `acl_sid` VALUES (5,1,'user:anonymousUser');
 
 INSERT INTO `acl_object_identity` VALUES (1,1,1,NULL,1,1);
 INSERT INTO `acl_object_identity` VALUES (2,1,2,NULL,1,1);
@@ -112,3 +113,15 @@ INSERT INTO `acl_entry` VALUES (89,1,23,4,17,1,0,0);
 INSERT INTO `acl_entry` VALUES (90,2,23,4,17,1,0,0);
 INSERT INTO `acl_entry` VALUES (91,3,23,4,17,1,0,0);
 INSERT INTO `acl_entry` VALUES (92,4,23,4,17,1,0,0);
+
+/* VIEW_TOPICS FOR registered users */
+INSERT INTO `acl_entry` VALUES (93,1,24,1,6,1,0,0);
+INSERT INTO `acl_entry` VALUES (94,2,24,1,6,1,0,0);
+INSERT INTO `acl_entry` VALUES (95,3,24,1,6,1,0,0);
+INSERT INTO `acl_entry` VALUES (96,4,24,1,6,1,0,0);
+
+/* VIEW_TOPICS FOR anonymous users */
+INSERT INTO `acl_entry` VALUES (97, 1,25,5,6,1,0,0);
+INSERT INTO `acl_entry` VALUES (98, 2,25,5,6,1,0,0);
+INSERT INTO `acl_entry` VALUES (99, 3,25,5,6,1,0,0);
+INSERT INTO `acl_entry` VALUES (100,4,25,5,6,1,0,0);

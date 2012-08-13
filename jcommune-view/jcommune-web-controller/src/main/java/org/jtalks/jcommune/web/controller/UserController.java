@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.Locale;
 
 /**
  * This controller handles custom authentication actions
@@ -113,14 +115,18 @@ public class UserController {
      *
      * @param userDto {@link RegisterUserDto} populated in form
      * @param result  result of {@link RegisterUserDto} validation
+     * @param locale  to set currently selected language as user's default
      * @return redirect to / if registration successful or back to "/registration" if failed
      */
     @RequestMapping(value = "/user/new", method = RequestMethod.POST)
-    public ModelAndView registerUser(@Valid @ModelAttribute("newUser") RegisterUserDto userDto, BindingResult result) {
+    public ModelAndView registerUser(@Valid @ModelAttribute("newUser") RegisterUserDto userDto,
+                                     BindingResult result, Locale locale) {
         if (result.hasErrors()) {
             return new ModelAndView(REGISTRATION);
         }
-        userService.registerUser(userDto.createUser());
+        JCUser user = userDto.createUser();
+        user.setLanguage(Language.byLocale(locale));
+        userService.registerUser(user);
         return new ModelAndView("redirect:/");
     }
 

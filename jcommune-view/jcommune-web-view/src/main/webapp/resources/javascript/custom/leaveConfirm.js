@@ -23,8 +23,6 @@
  */
 $(document).ready(function () {
 
-    var data_changed = false;
-    var message = $labelLeavePageConfirmation;
     var mark_class = ".script-confirm-unsaved";
     var allowed_transitions = "input[type=submit]";
     var currentData = "";
@@ -35,10 +33,10 @@ $(document).ready(function () {
         $("input" + mark_class + ", textarea" + mark_class).each(function () {
             newData += this.value;
         });
-        if (currentData != newData) return message;
+        if (currentData != newData) return '';
     });
 
-    $(allowed_transitions).live('click', function (event) {
+    $(document).on('click', allowed_transitions, function (event) {
         $(window).off('beforeunload');
     });
 

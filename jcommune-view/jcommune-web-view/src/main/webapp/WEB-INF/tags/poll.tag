@@ -26,9 +26,13 @@
 <div id="pollWrap">
     <%-- Determination of whether the user can vote in the topic. --%>
     <c:set var="votingAvailable" value="false" scope="request"/>
-    <sec:accesscontrollist domainObject="${poll}" hasPermission="4">
+    <sec:authorize access="isAuthenticated()" >
         <c:set var="votingAvailable" value="true" scope="request"/>
-    </sec:accesscontrollist>
+        <jtalks:hasPermission targetId="${poll.id}" targetType="POLL"
+                              permission="GeneralPermission.WRITE">
+            <c:set var="votingAvailable" value="false" scope="request"/>
+        </jtalks:hasPermission>
+    </sec:authorize>
     <%-- General form. --%>
     <form name="pollForm" action="#">
         <%-- Poll title --%>
