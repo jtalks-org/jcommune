@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2011  JTalks.org Team
  * This library is free software; you can redistribute it and/or
@@ -14,34 +13,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/** Namespace for this script */
-var Search = {};
 
-/** Selectors for elements used in scripts */
-Search.searchInputSelector = '#searchText';
-Search.searchClearSelector = '#searchClear';
-
-/**
-	Checks content of search input and toggle visibility
-	of clear button.
-*/
-Search.adjustClearButton = function() {
-	var text = $(Search.searchInputSelector).val();
-	$(Search.searchClearSelector).toggle(text != '');
-}
- 
-$().ready(function() {
-	
-	Search.adjustClearButton();
-		
-	$(Search.searchInputSelector).bind('keyup', function() {
-		Search.adjustClearButton();
-	});
-	
-	
-	$(Search.searchClearSelector).click(function() {
-		$(Search.searchInputSelector).val('');
-		$(Search.searchClearSelector).hide();
-		$(Search.searchInputSelector).focus();
-	});
+$(document).ready(function () {
+    document.getElementById('subject').tabIndex="1";
+    document.getElementById('tbMsg').tabIndex="2";
+    document.getElementById('post').tabIndex="3";
+    document.getElementById('preview').tabIndex="4";
+    document.getElementById('notify').tabIndex="5";
+    document.getElementById('topic.poll.title').tabIndex="6";
+    document.getElementById('topic.poll.pollItemsValue').tabIndex="7";
+    document.getElementById('multipleChecker').tabIndex="8";
+    document.getElementById('datepicker').tabIndex="9";
 });

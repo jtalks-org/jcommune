@@ -26,6 +26,7 @@
     <title><spring:message code="label.drafts"/></title>
 </head>
 <body>
+<jsp:include page="../../template/topLine.jsp"/>
 
 <div class="container">
     <h2><spring:message code="label.pm_title"/></h2>
@@ -89,7 +90,7 @@
                                 <td>
                                     <c:choose>
                                         <c:when test="${pm.title != null}">
-                                            <a href="${pageContext.request.contextPath}/pm/${pm.id}">
+                                            <a href="${pageContext.request.contextPath}/pm/${pm.id}/edit">
                                                 <c:out value="${pm.title}"/>
                                             </a>
                                         </c:when>

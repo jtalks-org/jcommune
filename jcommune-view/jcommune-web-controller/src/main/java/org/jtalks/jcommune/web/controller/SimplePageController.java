@@ -14,8 +14,10 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.SimplePage;
 import org.jtalks.jcommune.service.SimplePageService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.SimplePageInfoContainer;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.SimplePageDto;
@@ -44,6 +46,7 @@ public class SimplePageController {
     private static final String PAGE_PATH_NAME = "pagePathName";
 
     private SimplePageService simplePageService;
+    private UserService userService;
 
     /**
      * This method turns the trim binder on. Trim binder
@@ -62,8 +65,9 @@ public class SimplePageController {
      * @param simplePageService the object which provides actions on {@link SimplePage} entity
      */
     @Autowired
-    public SimplePageController(SimplePageService simplePageService) {
+    public SimplePageController(SimplePageService simplePageService, UserService userService) {
         this.simplePageService = simplePageService;
+        this.userService = userService;
     }
 
     /**
@@ -89,7 +93,8 @@ public class SimplePageController {
             }
             else {
                 return new ModelAndView("simplePageNotFound")
-                        .addObject(PAGE_PATH_NAME, pagePathName);
+                        .addObject(PAGE_PATH_NAME, pagePathName)
+                        .addObject("currentUser", userService.getCurrentUser());
             }
             
         }
@@ -147,7 +152,9 @@ public class SimplePageController {
         simplePage.setName("Title");
         simplePage.setContent("Content");
         simplePage.setPathName(pagePathName);
-        simplePageService.createPage(simplePage);
+
+        JCUser userCreator = userService.getCurrentUser();
+        simplePageService.createPage(simplePage, userCreator);
         SimplePageDto simplePageDto = new SimplePageDto(simplePage);
 
         return new ModelAndView("simplePageEditor")

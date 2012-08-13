@@ -42,7 +42,11 @@ public class EditUserProfileDto {
     @Email(message = "{validation.email.wrong.format}")
     @ChangedEmail
     private String email;
+    
+    @Size(max = User.USERNAME_FIRSTNAME_MAX_LENGTH, message = "{user.first_and_last_name.illegal_length}")
     private String firstName;
+    
+    @Size(max = User.USERNAME_LASTNAME_MAX_LENGTH, message = "{user.first_and_last_name.illegal_length}")
     private String lastName;
     @Size(max = JCUser.MAX_SIGNATURE_SIZE, message = "{validation.signature.length}")
     private String signature;

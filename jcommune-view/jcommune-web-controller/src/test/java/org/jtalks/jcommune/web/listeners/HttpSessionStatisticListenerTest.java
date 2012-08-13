@@ -14,22 +14,23 @@
  */
 package org.jtalks.jcommune.web.listeners;
 
-import org.jtalks.common.model.entity.Property;
-import org.jtalks.jcommune.model.dao.PropertyDao;
-import org.jtalks.jcommune.model.entity.JCommuneProperty;
+import java.util.concurrent.TimeUnit;
+
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.web.context.WebApplicationContext;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.jtalks.common.model.entity.Property;
+import org.jtalks.jcommune.model.dao.PropertyDao;
+import org.jtalks.jcommune.model.entity.JCommuneProperty;
 
 import javax.servlet.http.HttpSessionEvent;
-import java.util.concurrent.TimeUnit;
 
-import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 /**
  * Test for {@link HttpSessionStatisticListener}.

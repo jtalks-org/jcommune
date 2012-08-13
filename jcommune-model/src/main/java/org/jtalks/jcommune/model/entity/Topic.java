@@ -31,9 +31,11 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Parameter;
 import org.hibernate.search.annotations.TokenFilterDef;
 import org.hibernate.search.annotations.TokenizerDef;
+import org.hibernate.validator.constraints.NotBlank;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
 
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -122,11 +124,13 @@ import java.util.Set;
 })
 @Indexed
 public class Topic extends Entity implements SubscriptionAwareEntity {
+
     private DateTime creationDate;
     private DateTime modificationDate;
     private JCUser topicStarter;
+    @NotBlank
+    @Size(min = Topic.MIN_NAME_SIZE, max = Topic.MAX_NAME_SIZE)
     private String title;
-    private int topicWeight;
     private boolean sticked;
     private boolean announcement;
     private Branch branch;
@@ -156,9 +160,9 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
 
 
     /**
-     * Used only by hibernate.
+     * Creates the Topic instance.
      */
-    protected Topic() {
+    public Topic() {
     }
 
     /**
@@ -267,6 +271,15 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     }
 
     /**
+     * @return content of the first post of the topic
+     */
+    public String getBodyText() {
+        Post firstPost = getFirstPost();
+        return firstPost.getPostContent();
+    }
+
+
+    /**
      * @return the list of posts in the topic, always not null and not empty
      */
     @IndexedEmbedded(prefix = TOPIC_POSTS_PREFIX)
@@ -291,7 +304,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     /**
      * @param branch branch to be set as topics branch
      */
-    void setBranch(Branch branch) {
+    public void setBranch(Branch branch) {
         this.branch = branch;
     }
 
@@ -334,20 +347,6 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     }
 
     /**
-     * @return priority of a sticked topic
-     */
-    public int getTopicWeight() {
-        return this.topicWeight;
-    }
-
-    /**
-     * @param topicWeight a priority for a sticked topic
-     */
-    public void setTopicWeight(int topicWeight) {
-        this.topicWeight = topicWeight;
-    }
-
-    /**
      * @return flag og stickedness
      */
     public boolean isSticked() {
@@ -359,9 +358,6 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      */
     public void setSticked(boolean sticked) {
         this.sticked = sticked;
-        if (!sticked) {
-            topicWeight = 0;
-        }
     }
 
     /**

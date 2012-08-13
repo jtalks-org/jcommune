@@ -35,5 +35,9 @@ public interface PollService extends EntityService<Poll> {
      */
     Poll vote(Long pollId, List<Long> pollOptionIds);
 
+    /**
+     * Save {@link org.jtalks.jcommune.model.entity.Poll} to database.
+     * @param poll poll to save.
+     */
     void createPoll(Poll poll);
 }

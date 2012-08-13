@@ -149,6 +149,7 @@
     <c:forEach var="post" items="${postsPage.content}" varStatus="i">
         <%-- Post --%>
         <div class="post">
+            <a name="${post.id}"></a>
             <table class="table table-striped table-bordered table-condensed">
                 <tr>
                     <td class="post-date">
@@ -237,7 +238,7 @@
                                        <i class="icon-quote"></i><spring:message code="label.quotation"/>
                                    </a>
                                </sec:accesscontrollist>
-                               <a class="btn btn-mini" href="#" name="${post.id}">&#8657</a>
+                               <a class="btn btn-mini" href="#">&#8657</a>
                            </div>
                        </div>
                    </td>
@@ -370,29 +371,10 @@
 <%-- Users --%>
 <div id="users-stats" class="well forum-user-stats-container">
    <strong><spring:message code="label.topic.moderators"/></strong>
-   <a href="#" title="<spring:message code='label.tips.view_profile'/>">andreyko</a>
-   <a href="#" class="label label-success" title="<spring:message code='label.tips.view_profile'/>">Староверъ</a>
-   <a href="#" class="label label-important" title="<spring:message code='label.tips.view_profile'/>">admin</a>
+   <jtalks:moderators moderators="${topic.branch.moderatorsGroup.users}"/>
    <br/>
-   <c:if test="${!(empty viewList)}">
-       <strong><spring:message code="label.branch.now_browsing"/></strong>
-   </c:if>
-   <c:forEach var="innerUser" items="${viewList}">
-       <%--todo
-       <c:choose>
-<c:when test="${innerUser.role=='ROLE_ADMIN'}">
-           <c:set var='labelClass' value='label label-important'/>
-       </c:when>--%>
-           <%-- <c:otherwise>--%>
-           <c:set var='labelClass' value=''/>
-           <%--</c:otherwise>
-       </c:choose>       --%>
-       <a href="${pageContext.request.contextPath}/users/${innerUser.id}"
-           title="<spring:message code='label.tips.view_profile'/>"
-           class='${labelClass}'>
-           <c:out value="${innerUser.username}"/>
-       </a>
-   </c:forEach>
+   <strong><spring:message code="label.branch.now_browsing"/></strong>
+   <jtalks:users users="${viewList}" branch="${topic.branch}"/>
 </div>
 <%-- END OF Users --%>
  

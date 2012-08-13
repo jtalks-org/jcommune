@@ -18,6 +18,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.ObjectsFactory;
+import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -61,7 +62,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     @BeforeMethod
     public void setUp() throws Exception {
         session = sessionFactory.getCurrentSession();
-        ObjectsFactory.setSession(session);
+        PersistedObjectsFactory.setSession(session);
         branch = ObjectsFactory.getDefaultBranch();
     }
 
@@ -199,11 +200,11 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
 
         assertEquals(persistedBranches.size(), branches.size());
     }
-    
+
     @Test
     public void testGetCountPostsInBranch() {
         //topic with one post
-        Topic topic = ObjectsFactory.getDefaultTopic();
+        Topic topic = PersistedObjectsFactory.getDefaultTopic();
         Branch branch = topic.getBranch();
         //add two posts
         topic.addPost(new Post(topic.getTopicStarter(), "Second post"));
@@ -215,6 +216,5 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         int actualCount = dao.getCountPostsInBranch(branch);
         
         assertEquals(actualCount, expectedCount, "Count of posts in the branch is wrong");
-        
     }
 }

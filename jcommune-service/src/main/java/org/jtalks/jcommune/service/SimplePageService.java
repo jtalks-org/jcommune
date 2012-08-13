@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service;
 
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.SimplePage;
 import org.jtalks.jcommune.service.dto.SimplePageInfoContainer;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -48,7 +49,7 @@ public interface SimplePageService extends EntityService<SimplePage> {
      *
      * @throws EntityExistsException if {@link SimplePage} with path name of new page already exists
      */
-    public SimplePage createPage(SimplePage simplePage) throws EntityExistsException;
+    public SimplePage createPage(SimplePage simplePage, JCUser userCreator) throws EntityExistsException;
 
     /**
      * Get {@link SimplePage} entity which associated of pathName in browser

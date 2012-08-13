@@ -18,7 +18,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.jtalks.jcommune.model.ObjectsFactory;
+import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.LastReadPostDao;
 import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,13 +47,13 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
     @BeforeMethod
     public void setUp() {
         session = sessionFactory.getCurrentSession();
-        ObjectsFactory.setSession(session);
+        PersistedObjectsFactory.setSession(session);
     }
     
     /*===== Common methods =====*/
     @Test
     public void testGet() {
-        LastReadPost expected = ObjectsFactory.getDefaultLastReadPost();
+        LastReadPost expected = PersistedObjectsFactory.getDefaultLastReadPost();
         session.save(expected);
         
         LastReadPost actual = dao.get(expected.getId());
@@ -65,7 +65,7 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
     
     @Test
     public void testUpdate() {
-        LastReadPost post = ObjectsFactory.getDefaultLastReadPost();
+        LastReadPost post = PersistedObjectsFactory.getDefaultLastReadPost();
         session.save(post);
         int newPostIndex = post.getPostIndex() + 1;
         post.setPostIndex(newPostIndex);
@@ -80,7 +80,7 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
     /*===== Specific methods =====*/
     @Test
     public void testListLastReadPostsForTopic() {
-        LastReadPost post = ObjectsFactory.getDefaultLastReadPost();
+        LastReadPost post = PersistedObjectsFactory.getDefaultLastReadPost();
         session.save(post);
         
         List<LastReadPost> lastReadPosts = dao.listLastReadPostsForTopic(post.getTopic());
@@ -92,7 +92,7 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
     
     @Test
     public void testGetLastReadPost() {
-        LastReadPost expected = ObjectsFactory.getDefaultLastReadPost();
+        LastReadPost expected = PersistedObjectsFactory.getDefaultLastReadPost();
         session.save(expected);
         
         LastReadPost actual = dao.getLastReadPost(expected.getUser(), expected.getTopic());

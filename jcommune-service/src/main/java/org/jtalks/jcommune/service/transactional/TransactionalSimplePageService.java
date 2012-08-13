@@ -19,6 +19,7 @@ import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.SimplePageDao;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.SimplePage;
 import org.jtalks.jcommune.service.SimplePageService;
 import org.jtalks.jcommune.service.dto.SimplePageInfoContainer;
@@ -89,6 +90,7 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
             String msg = "SimplePage " + pathName + " not found.";
             logger.info(msg);
             throw new NotFoundException(msg);
+
         }
         return simplePage;
     }
@@ -97,8 +99,9 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
     /**
      * {@inheritDoc}
      */
+    @PreAuthorize("hasPermission(#userCreator.id, 'USER', 'ProfilePermission.CREATE_PAGES')")
     @Override
-    public SimplePage createPage(SimplePage simplePage) throws EntityExistsException {
+    public SimplePage createPage(SimplePage simplePage, JCUser userCreator) throws EntityExistsException {
 
         if(getDao().isExist(simplePage.getPathName())) {
             String msg = "SimplePage with pathName = " + simplePage.getPathName() + " already exists.";

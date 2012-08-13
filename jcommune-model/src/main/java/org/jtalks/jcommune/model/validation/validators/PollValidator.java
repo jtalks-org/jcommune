@@ -12,7 +12,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.validation.validators;
+package org.jtalks.jcommune.model.validation.validators;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
@@ -21,9 +21,7 @@ import org.apache.commons.lang.math.Range;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.jtalks.jcommune.model.entity.PollItem;
-import org.jtalks.jcommune.web.dto.PollDto;
-import org.jtalks.jcommune.web.dto.TopicDto;
-import org.jtalks.jcommune.web.validation.annotations.ValidPoll;
+import org.jtalks.jcommune.model.validation.annotations.ValidPoll;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 
@@ -60,6 +58,8 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
     private static final String ITEMS_NOT_BLANK_IF_TITLE_NOT_BLANK_MESSAGE =
             "{PollItemsNotBlankIfPollTitleNotBlank.message}";
     private static final String ITEM_LENGTH_MESSAGE = "{VotingItemLength.message}";
+    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    public static final String DATE_FORMAT = "dd-MM-yyyy";
 
     /**
      * Initialize validators fields from annotated class instance.
@@ -174,7 +174,7 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
         if (StringUtils.isBlank(endingDateValue)) {//null values are valid
             result = true;
         } else {
-            DateTime date = DateTimeFormat.forPattern(PollDto.DATE_FORMAT).parseDateTime(endingDateValue);
+            DateTime date = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(endingDateValue);
             result = date.isAfter(new DateTime());
         }
         if (!result) {
@@ -195,7 +195,7 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
         endingDateValue = ObjectUtils.defaultIfNull(wrapper.getPropertyValue(endingDateName), "").toString();
 
         if (StringUtils.isNotBlank(pollItemsValue)) {
-            items = TopicDto.parseItems(pollItemsValue);
+            items = parseItems(pollItemsValue);
         } else {
             items = new ArrayList<PollItem>(0);
         }
@@ -214,6 +214,30 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
         context.buildConstraintViolationWithTemplate(message)
                 .addNode(fieldName)
                 .addConstraintViolation();
+    }
+
+    /**
+     * Prepare poll items list from string. Removes empty lines from.
+     *
+     * @param pollItems user input
+     * @return processed poll items list
+     */
+    public static List<PollItem> parseItems(String pollItems) {
+        List<PollItem> result = new ArrayList<PollItem>();
+        if(pollItems == null){
+            return result;
+        }
+        String[] items = StringUtils.split(pollItems, LINE_SEPARATOR);
+        for (String item : items) {
+            //If user entered empty lines these lines are ignoring from validation.
+            // Only meaningful lines are processed and user get processed output
+            if (StringUtils.isNotBlank(item)) {
+                PollItem pollItem = new PollItem(item);
+                result.add(pollItem);
+            }
+        }
+
+        return result;
     }
 
 }

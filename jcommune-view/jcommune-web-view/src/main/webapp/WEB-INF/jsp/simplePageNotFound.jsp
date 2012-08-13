@@ -30,14 +30,16 @@
 
             <h1><span class="error_errorpage"><spring:message code="label.404.title"/></span></h1>
             <spring:message code="label.404.detail"/>
-            <br/>
-            Create
-            <c:out value="${pagePathName}"/>?
             </br>
-            <a class="button" href="${pageContext.request.contextPath}/pages/create/${pagePathName}">
-                Create
-            </a>
-            </br>
+
+            <sec:accesscontrollist hasPermission="20" domainObject="${currentUser}">
+                <a class="button" href="${pageContext.request.contextPath}/pages/create/${pagePathName}">
+                    Create
+                    <c:out value="${pagePathName}"/>
+                </a>
+                </br>
+            </sec:accesscontrollist>
+
             <a href="${pageContext.request.contextPath}/"><spring:message code="label.back2main"/></a>
         </div>
     </div>

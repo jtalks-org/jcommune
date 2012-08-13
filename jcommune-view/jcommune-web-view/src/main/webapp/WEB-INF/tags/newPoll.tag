@@ -31,7 +31,7 @@
         <div class='control-group'>
             <spring:message code='label.poll.title' var='pollTitlePlaceholder'/>
             <form:input path="${titleNameValue}" id="${titleNameValue}" type="text" name="${titleNameValue}"
-                        size="45" maxlength="255" tabindex="1" placeholder="${pollTitlePlaceholder}" class="post"/>
+                        size="45" maxlength="255" placeholder="${pollTitlePlaceholder}" class="post"/>
             <br>
             <form:errors path="${titleNameValue}" cssClass="help-inline"/>
         </div>

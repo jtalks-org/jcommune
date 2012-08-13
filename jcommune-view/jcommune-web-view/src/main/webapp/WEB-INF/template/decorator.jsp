@@ -80,7 +80,7 @@
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/topline.js"
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/search.js"
-            type="text/javascript"></script>  
+            type="text/javascript"></script>   
     <decorator:head/>
     <title><decorator:title/></title>
 </head>

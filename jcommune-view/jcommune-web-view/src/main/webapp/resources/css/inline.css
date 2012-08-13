@@ -282,6 +282,22 @@ input.form-check-radio-box[type="radio"] {
 }
 
 .search-clear {
-	margin-top:0 !important;
-	font-weight:bold;
+    margin-top:0 !important;
+    font-weight:bold;
 }
+
+/** JC-863. Long text in titles, posts, signature. **/
+.post-date {
+	width: 175px;
+}
+
+.table {
+	table-layout: fixed;
+	word-wrap: break-word;
+}
+
+h3 {
+	word-wrap: break-word;
+}
+/** ----------------------------------------------- **/
+

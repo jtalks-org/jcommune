@@ -100,20 +100,28 @@ function SwitchEditor() {
 // open tag regexp
 var patternForOpenBBtag = "\\[([^\\/\\[\\]]*?)(=[^\\[\\]]*)?\\]";
 
+// placeholders for special cases used internally during conversions.
+// e.g. when user inputs characters %5D they will be replaced by 
+// placeholder. And now when we send request to convert BB codes to html
+// server will not treat these symbols as ]
+var closeBracketCodePlaceholder = "@w0956756wo@";
+var openBracketCodePlaceholder = "@ywdffgg434y@";
+var slashCodePlaceholder = "14@123435vggv4f";
+var lowerThenPlaceholder = "gertfgertgf@@@@@#4324234";
+
 function bbcode2html() {
     var textdata = " " + textboxelement.value;
-    textdata = textdata.replace(/%5D/gi, "@w0956756wo@");
-    textdata = textdata.replace(/%5B/gi, "@ywdffgg434y@");
-    textdata = textdata.replace(/%22/gi, "14@123435vggv4f");
-    var reg = /(<)([^\[]*\[\/code\])/gi;
-    while (reg.exec(textdata) != null) {
-        textdata = textdata.replace(reg, "rte@@tet345345frdgfv$2");
-    }
-    textdata = textdata.replace(/</gi, "gertfgertgf@@@@@#4324234");
+    textdata = textdata.replace(/%5D/gi, closeBracketCodePlaceholder);
+    textdata = textdata.replace(/%5B/gi, openBracketCodePlaceholder);
+    textdata = textdata.replace(/%22/gi, slashCodePlaceholder);
+    textdata = textdata.replace(/</gi, lowerThenPlaceholder);
+	
     textdata = encodeURI(textdata);
+	
     textdata = textdata.replace(/%5D/gi, "]");
     textdata = textdata.replace(/%5B/gi, "[");
     textdata = textdata.replace(/%22/gi, "\"");
+	
     $.ajax({
         type:"POST",
         url:$root + '/posts/bbToHtml', //todo
@@ -125,11 +133,11 @@ function bbcode2html() {
             } else {
                 result = decodeURI(data);
             }
-            result = result.replace(/@w0956756wo@/gi, "%5D");
-            result = result.replace(/@ywdffgg434y@/gi, "%5B");
-            result = result.replace(/14@123435vggv4f/gi, "%22");
-            result = result.replace(/rte@@tet345345frdgfv/gi, "&lt;");
-            result = result.replace(/gertfgertgf@@@@@#4324234/gi, "<![CDATA[<]]>");
+            result = result.replace(new RegExp(closeBracketCodePlaceholder, 'gi'), "%5D");
+            result = result.replace(new RegExp(openBracketCodePlaceholder, 'gi'), "%5B");
+            result = result.replace(new RegExp(slashCodePlaceholder, 'gi'), "%22");
+            result = result.replace(new RegExp(lowerThenPlaceholder, 'gi'), "&lt;");
+			
             htmlcontentelement.innerHTML = result;
             htmlcontentelement.style.display = "";
             textboxelement.style.display = "none";

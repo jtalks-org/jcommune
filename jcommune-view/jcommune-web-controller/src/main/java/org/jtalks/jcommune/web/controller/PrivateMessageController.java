@@ -80,7 +80,7 @@ public class PrivateMessageController {
      */
     @Autowired
     public PrivateMessageController(PrivateMessageService pmService, BBCodeService bbCodeService,
-                                     UserService userService) {
+                                    UserService userService) {
         this.pmService = pmService;
         this.bbCodeService = bbCodeService;
         this.userService = userService;
@@ -239,15 +239,18 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/pm/save", method = {RequestMethod.POST, RequestMethod.GET})
     public String saveDraft(@ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
+        String targetView = "redirect:/drafts";
+        
         JCUser userFrom = userService.getCurrentUser();
         try {
             pmService.saveDraft(pmDto.getId(), pmDto.getRecipient(), pmDto.getTitle(), pmDto.getBody(), userFrom);
 
         } catch (NotFoundException e) {
             result.rejectValue("recipient", "validation.wrong_recipient");
+            targetView = PM_FORM;
         }
 
-        return "redirect:/drafts";
+        return targetView;
     }
 
     /**
