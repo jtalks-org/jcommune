@@ -40,7 +40,8 @@ $(function () {
                 if ($(data).find("legend").html() != null) {
                     $.prompt(content,
                     {buttons:{OK:true}, focus:0,
-                        submit:sendLoginPost});
+                        submit:sendLoginPost,
+                        zIndex: 1050});
 
                     $("#j_username, #j_password").live("keyup", function(event) {
                     	if(event.keyCode==13) {
