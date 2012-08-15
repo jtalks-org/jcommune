@@ -26,7 +26,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <div>
     <jtalks:bb2html bbCode="${text}"/>
-    <c:if test="${modificationDate!=null}">
+    <c:if test="${!empty modificationDate}">
         <br/><br/>
         <spring:message code="label.modify"/>
         <jtalks:format value="${modificationDate}"/>

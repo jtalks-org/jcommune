@@ -76,8 +76,7 @@
         <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' 
             permission='BranchPermission.CREATE_TOPICS'>
             <a id='new-topic-btn' class="btn btn-primary"
-               href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"
-               title="<spring:message code="label.addtopic"/>">
+               href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}">
                 <spring:message code="label.addtopic"/>
             </a>
         </jtalks:hasPermission>
@@ -225,8 +224,7 @@
         <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' 
             permission='BranchPermission.CREATE_TOPICS'>
             <a id='new-topic-btn' class="btn btn-primary"
-               href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"
-               title="<spring:message code="label.addtopic"/>">
+               href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}">
                 <spring:message code="label.addtopic"/>
             </a>
         </jtalks:hasPermission>

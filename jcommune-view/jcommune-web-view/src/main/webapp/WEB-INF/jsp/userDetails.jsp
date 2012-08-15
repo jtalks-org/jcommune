@@ -197,8 +197,7 @@
                         
                         <c:if test="${user.username == auth}">
                             <div class="user-profile-buttons-form-actions">
-                                <a class="btn btn-primary" type="submit" 
-                                    title="<spring:message code='label.edit_profile'/>"
+                                <a class="btn btn-primary" type="submit"
                                     href="${pageContext.request.contextPath}/users/edit">
                                     <spring:message code="label.edit_profile"/>
                                 </a>

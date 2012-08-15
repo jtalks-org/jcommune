@@ -113,15 +113,19 @@ INSERT INTO `acl_entry` VALUES (89,1,23,4,17,1,0,0);
 INSERT INTO `acl_entry` VALUES (90,2,23,4,17,1,0,0);
 INSERT INTO `acl_entry` VALUES (91,3,23,4,17,1,0,0);
 INSERT INTO `acl_entry` VALUES (92,4,23,4,17,1,0,0);
+INSERT INTO `acl_entry` VALUES (93,1,24,2,17,1,0,0);
+INSERT INTO `acl_entry` VALUES (94,2,24,2,17,1,0,0);
+INSERT INTO `acl_entry` VALUES (95,3,24,2,17,1,0,0);
+INSERT INTO `acl_entry` VALUES (96,4,24,2,17,1,0,0);
 
 /* VIEW_TOPICS FOR registered users */
-INSERT INTO `acl_entry` VALUES (93,1,24,1,6,1,0,0);
-INSERT INTO `acl_entry` VALUES (94,2,24,1,6,1,0,0);
-INSERT INTO `acl_entry` VALUES (95,3,24,1,6,1,0,0);
-INSERT INTO `acl_entry` VALUES (96,4,24,1,6,1,0,0);
+INSERT INTO `acl_entry` VALUES (97,1,25,1,6,1,0,0);
+INSERT INTO `acl_entry` VALUES (98,2,25,1,6,1,0,0);
+INSERT INTO `acl_entry` VALUES (99,3,25,1,6,1,0,0);
+INSERT INTO `acl_entry` VALUES (100,4,25,1,6,1,0,0);
 
 /* VIEW_TOPICS FOR anonymous users */
-INSERT INTO `acl_entry` VALUES (97, 1,25,5,6,1,0,0);
-INSERT INTO `acl_entry` VALUES (98, 2,25,5,6,1,0,0);
-INSERT INTO `acl_entry` VALUES (99, 3,25,5,6,1,0,0);
-INSERT INTO `acl_entry` VALUES (100,4,25,5,6,1,0,0);
+INSERT INTO `acl_entry` VALUES (101, 1,26,5,6,1,0,0);
+INSERT INTO `acl_entry` VALUES (102, 2,26,5,6,1,0,0);
+INSERT INTO `acl_entry` VALUES (103, 3,26,5,6,1,0,0);
+INSERT INTO `acl_entry` VALUES (104,4,26,5,6,1,0,0);
