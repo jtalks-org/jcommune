@@ -19,11 +19,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertEquals;
 
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.Mock;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -38,18 +41,18 @@ public class PoulpeNotificationHandlerTest {
     @Mock
     private SectionService sectionService;
     
-    private PoulpeNotificationHandler deleteController;
+    private PoulpeNotificationHandler controller;
     
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
         
-        deleteController = new PoulpeNotificationHandler(branchService, sectionService);
+        controller = new PoulpeNotificationHandler(branchService, sectionService);
     }
     
     @Test
     public void testDeleteBranch() throws NotFoundException {
-        deleteController.deleteBranch(BRANCH_ID);
+        controller.deleteBranch(BRANCH_ID);
         
         verify(branchService).deleteAllTopics(BRANCH_ID);
     }
@@ -57,14 +60,14 @@ public class PoulpeNotificationHandlerTest {
     @Test(expectedExceptions=NotFoundException.class)
     public void testDeleteBranchIncorrectId() throws NotFoundException {
         when(branchService.deleteAllTopics(anyLong())).thenThrow(new NotFoundException());
-        deleteController.deleteBranch(BRANCH_ID);
+        controller.deleteBranch(BRANCH_ID);
         
         assertTrue(false);
     }
     
     @Test
     public void testDeleteSection() throws NotFoundException {
-        deleteController.deleteSection(SECTION_ID);
+        controller.deleteSection(SECTION_ID);
         
         verify(sectionService).deleteAllBranches(SECTION_ID);
     }
@@ -72,8 +75,17 @@ public class PoulpeNotificationHandlerTest {
     @Test(expectedExceptions=NotFoundException.class)
     public void testDeleteSectionIncorrectId() throws NotFoundException {
         when(sectionService.deleteAllBranches(anyLong())).thenThrow(new NotFoundException());
-        deleteController.deleteSection(SECTION_ID);
+        controller.deleteSection(SECTION_ID);
         
         assertTrue(false);
+    }
+    
+    @Test
+    public void testHandleAllExceptions() {
+        Exception exception = new Exception("Some message");
+        ModelAndView mav = controller.handleAllExceptions(exception);
+        
+        assertTrue(mav.getView() instanceof MappingJacksonJsonView);
+        assertEquals(mav.getModel().get("errorMessage"), exception.getMessage());
     }
 }

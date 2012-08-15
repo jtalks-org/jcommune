@@ -19,11 +19,16 @@ import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 
 /**
  * Controller that handles notifications from Poulpe
@@ -32,6 +37,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 public class PoulpeNotificationHandler {
+    
+    private static final String ERROR_MESSAGE_PARAMETER = "errorMessage";
     
     private BranchService branchService;
     private SectionService sectionService;
@@ -67,6 +74,21 @@ public class PoulpeNotificationHandler {
     @ResponseBody
     public void deleteSection(@PathVariable("sectionId") long sectionId) throws NotFoundException {
         sectionService.deleteAllBranches(sectionId);
+    }
+    
+    /**
+     * Catches all exceptions threw by any method in this controller and 
+     * returns HTTP status 500 with error message in response body instead.  
+     * @param exception exception that was thrown
+     * @return {@link ModelAndView} object with JSON view and error message as model 
+     */
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ModelAndView handleAllExceptions(Exception exception) {
+        MappingJacksonJsonView jsonView = new MappingJacksonJsonView();
+        ModelAndView mav = new ModelAndView(jsonView);
+        mav.addObject(ERROR_MESSAGE_PARAMETER, exception.getMessage());
+        return mav;
     }
 
 }

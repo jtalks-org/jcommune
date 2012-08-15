@@ -52,8 +52,11 @@
         <security:intercept-url pattern="/topics/*/unsubscribe" access="isAuthenticated()"/>
         <security:intercept-url pattern="/topics/json/**" access="isAuthenticated()"/>
         
+        <security:intercept-url pattern="/branches/*" method="DELETE" access="hasIpAddress('127.0.0.1')"/>
         <security:intercept-url pattern="/branches/*/subscribe" access="isAuthenticated()"/>
         <security:intercept-url pattern="/branches/*/unsubscribe" access="isAuthenticated()"/>
+        
+        <security:intercept-url pattern="/sections/*" method="DELETE" access="hasIpAddress('127.0.0.1')"/>
 
         <security:intercept-url pattern="/poll/**" access="isAuthenticated()"/>
                 
