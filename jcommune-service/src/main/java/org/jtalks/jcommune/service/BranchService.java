@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service;
 
 import java.util.List;
 
+import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
@@ -63,4 +64,22 @@ public interface BranchService extends EntityService<Branch> {
      * @param branches list of branches
      */
     void fillLastPostInLastUpdatedTopic(List<org.jtalks.common.model.entity.Branch> branches);
+
+    /**
+     * Deletes all topics in this branch and recalculates user posts.
+     *
+     * @param branchId branch id
+     * @throws NotFoundException when branch not found
+     */
+    Branch deleteAllTopics(long branchId) throws NotFoundException;
+
+    /**
+     * Delete branch by id. Does not send any notification or log messages.
+     * Just perform logical delete. Intended to be used mostly by other services.
+     *
+     * @param id branch id
+     * @return section from which branch deleted
+     * @throws NotFoundException when branch not found
+     */
+    Section deleteBranchSilent(long id) throws NotFoundException;
 }

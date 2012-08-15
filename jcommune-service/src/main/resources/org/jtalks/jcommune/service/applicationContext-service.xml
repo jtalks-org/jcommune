@@ -97,6 +97,17 @@
         <constructor-arg ref="topicSearchDao"/>
         <constructor-arg ref="userService"/>
     </bean>
+    
+     <bean id="topicService"
+          class="org.jtalks.jcommune.service.transactional.TransactionalTopicService">
+        <constructor-arg ref="topicDao"/>
+        <constructor-arg ref="securityService"/>
+        <constructor-arg ref="topicBranchDao"/>
+        <constructor-arg ref="notificationService"/>
+        <constructor-arg ref="subscriptionService"/>
+        <constructor-arg ref="userService"/>
+        <constructor-arg ref="pollService"/>
+    </bean>
 
     <bean id="topicBranchService"
           class="org.jtalks.jcommune.service.transactional.TransactionalBranchService">
@@ -104,6 +115,8 @@
         <constructor-arg ref="branchSectionDao"/>
         <constructor-arg ref="topicDao"/>
         <constructor-arg ref="postDao"/>
+        <constructor-arg ref="topicService"/>
+        <constructor-arg ref="securityService"/>
     </bean>
 
     <bean id="branchSectionService"
@@ -119,18 +132,6 @@
         <constructor-arg ref="userService"/>
         <constructor-arg ref="userDataCacheService"/>
         <constructor-arg ref="mailService"/>
-    </bean>
-
-    <bean id="topicService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalTopicService">
-        <constructor-arg ref="topicDao"/>
-        <constructor-arg ref="securityService"/>
-        <constructor-arg ref="topicBranchService"/>
-        <constructor-arg ref="topicBranchDao"/>
-        <constructor-arg ref="notificationService"/>
-        <constructor-arg ref="subscriptionService"/>
-        <constructor-arg ref="userService"/>
-        <constructor-arg ref="pollService"/>
     </bean>
 
     <bean id="pollService"

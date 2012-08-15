@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.common.model.entity.Section;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 import java.util.List;
 
@@ -40,4 +41,13 @@ public interface SectionService extends EntityService<Section> {
      * @param sections the list of sections
      */
     void prepareSectionsForView(List<Section> sections);
+
+    /**
+     * Deletes all branches in this section.
+     *
+     * @param sectionId section id
+     * @return section without branches
+     * @throws NotFoundException when section not found
+     */
+    Section deleteAllBranches(long sectionId) throws NotFoundException;
 }

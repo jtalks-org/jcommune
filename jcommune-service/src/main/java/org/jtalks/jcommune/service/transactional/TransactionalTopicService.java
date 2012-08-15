@@ -25,7 +25,6 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.TopicService;
@@ -53,7 +52,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private SecurityService securityService;
-    private BranchService branchService;
     private BranchDao branchDao;
     private NotificationService notificationService;
     private SubscriptionService subscriptionService;
@@ -65,7 +63,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      *
      * @param dao                 data access object, which should be able do all CRUD operations with topic entity
      * @param securityService     {@link org.jtalks.common.security.SecurityService} for retrieving current user
-     * @param branchService       {@link org.jtalks.jcommune.service.BranchService} instance to be injected
      * @param branchDao           used for checking branch existence
      * @param notificationService to send email nofications on topic updates to subscribed users
      * @param subscriptionService for subscribing user on topic if notification enabled
@@ -73,14 +70,13 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * @param pollService         to create a poll and vote in a poll
      */
     public TransactionalTopicService(TopicDao dao, SecurityService securityService,
-                                     BranchService branchService, BranchDao branchDao,
+                                     BranchDao branchDao,
                                      NotificationService notificationService,
                                      SubscriptionService subscriptionService,
                                      UserService userService,
                                      PollService pollService) {
         super(dao);
         this.securityService = securityService;
-        this.branchService = branchService;
         this.branchDao = branchDao;
         this.notificationService = notificationService;
         this.subscriptionService = subscriptionService;
@@ -227,10 +223,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         long branchId = topic.getBranch().getId();
         return deleteTopic(topic, branchId);
     }
-
-
+    
     /**
-     * Performs actual topic deleting with permission check
+     * Performs topic deleting with permission check
      *
      * @param topic    topic to delete
      * @param branchId used for annotation permission check only
@@ -238,6 +233,43 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      */
     @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.DELETE_TOPICS')")
     private Branch deleteTopic(Topic topic, long branchId) throws NotFoundException {
+        Branch branch = deleteTopicSilent(topic);
+        notificationService.branchChanged(branch);
+
+        logger.info("Deleted topic \"{}\". Topic id: {}", topic.getTitle(), topic.getId());
+        return branch;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Branch deleteTopicSilent(long topicId) throws NotFoundException {
+        Topic topic = get(topicId);
+        long branchId = topic.getBranch().getId();
+        return deleteTopicSilent(topic, branchId);
+    }
+    
+    /**
+     * Performs silent topic deleting with permission check
+     *
+     * @param topic    topic to delete
+     * @param branchId used for annotation permission check only
+     * @return branch without deleted topic
+     */
+    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.DELETE_TOPICS')")
+    private Branch deleteTopicSilent(Topic topic, long branchId) throws NotFoundException {
+        return deleteTopicSilent(topic);
+    }
+    
+    /**
+     * Performs actual topic deleting. Deletes all topic related data and 
+     * recalculates user's post count.
+     *
+     * @param topic    topic to delete
+     * @return branch without deleted topic
+     */
+    private Branch deleteTopicSilent(Topic topic) {
         for (Post post : topic.getPosts()) {
             JCUser user = post.getUserCreated();
             user.setPostCount(user.getPostCount() - 1);
@@ -248,9 +280,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         branchDao.update(branch);
 
         securityService.deleteFromAcl(Topic.class, topic.getId());
-        notificationService.branchChanged(branch);
-
-        logger.info("Deleted topic \"{}\". Topic id: {}", topic.getTitle(), topic.getId());
         return branch;
     }
 
@@ -273,7 +302,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      */
     @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.MOVE_TOPICS')")
     private void moveTopic(Topic topic, Long branchId) throws NotFoundException {
-        Branch targetBranch = branchService.get(branchId);
+        Branch targetBranch = branchDao.get(branchId);
         targetBranch.addTopic(topic);
         branchDao.update(targetBranch);
 

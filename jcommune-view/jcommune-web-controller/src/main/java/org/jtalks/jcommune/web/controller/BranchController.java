@@ -34,6 +34,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -97,7 +98,7 @@ public class BranchController {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
      */
-    @RequestMapping("/branches/{branchId}")
+    @RequestMapping(value="/branches/{branchId}", method=RequestMethod.GET)
     public ModelAndView showPage(@PathVariable("branchId") long branchId,
                                  @RequestParam(value = PAGE, defaultValue = "1", required = false) Integer page,
                                  @RequestParam(value = PAGING_ENABLED, defaultValue = "true",

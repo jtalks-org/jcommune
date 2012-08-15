@@ -15,16 +15,20 @@
 package org.jtalks.jcommune.service.transactional;
 
 import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.mock;
+import static org.mockito.MockitoAnnotations.initMocks;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
+import static org.mockito.Mockito.times;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.jtalks.common.model.entity.Section;
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
@@ -33,8 +37,10 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.Matchers;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -50,24 +56,31 @@ public class TransactionalBranchServiceTest {
     final String BRANCH_NAME = "branch name";
     final String BRANCH_DESCRIPTION = "branch description";
 
-
+    @Mock
     private BranchDao branchDao;
+    @Mock
     private SectionDao sectionDao;
+    @Mock
     private TopicDao topicDao;
+    @Mock
     private PostDao postDao;
+    @Mock
     private BranchService branchService;
+    @Mock
+    private TopicService topicService;
+    @Mock
+    private SecurityService securityService;
 
     @BeforeMethod
     public void setUp() throws Exception {
-        branchDao = mock(BranchDao.class);
-        sectionDao = mock(SectionDao.class);
-        topicDao = mock(TopicDao.class);
-        postDao = mock(PostDao.class);
+        initMocks(this);
         branchService = new TransactionalBranchService(
                 branchDao,
                 sectionDao,
                 topicDao,
-                postDao);
+                postDao,
+                topicService,
+                securityService);
     }
 
     @Test
@@ -186,4 +199,79 @@ public class TransactionalBranchServiceTest {
 
         branchService.get(BRANCH_ID);
     }
+    
+    @Test
+    public void testDeleteAllTopics() throws NotFoundException {
+        Branch expectedBranch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        expectedBranch.addTopic(new Topic());
+        expectedBranch.addTopic(new Topic());
+        
+        when(branchDao.isExist(BRANCH_ID)).thenReturn(true);
+        when(branchDao.get(BRANCH_ID)).thenReturn(expectedBranch);
+        
+        Branch actualBranch = branchService.deleteAllTopics(BRANCH_ID);
+        
+        assertEquals(actualBranch, expectedBranch, "Branches aren't equal");
+        verify(branchDao).isExist(BRANCH_ID);
+        verify(branchDao).get(BRANCH_ID);
+        verify(topicService, times(2)).deleteTopicSilent(anyLong());
+    }
+    
+    @Test
+    public void testDeleteAllTopicsInEmptyBranch() throws NotFoundException {
+        Branch expectedBranch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        when(branchDao.isExist(BRANCH_ID)).thenReturn(true);
+        when(branchDao.get(BRANCH_ID)).thenReturn(expectedBranch);
+        
+        Branch actualBranch = branchService.deleteAllTopics(BRANCH_ID);
+        
+        assertEquals(actualBranch, expectedBranch, "Branches aren't equal");
+        verify(branchDao).isExist(BRANCH_ID);
+        verify(branchDao).get(BRANCH_ID);
+        verify(topicService, times(0)).deleteTopicSilent(anyLong());
+    }
+    
+    @Test(expectedExceptions=NotFoundException.class)
+    public void testDeleteAllTopicsWithIncorrectId() throws NotFoundException {
+        when(branchDao.isExist(BRANCH_ID)).thenReturn(false);
+        
+        branchService.deleteAllTopics(BRANCH_ID);
+        
+        assertTrue(false);
+    }
+    
+    @Test
+    public void testDeleteBranchSilent() throws NotFoundException {
+        Branch expectedBranch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        expectedBranch.addTopic(new Topic());
+        expectedBranch.addTopic(new Topic());
+        
+        Section expectedSection = new Section(null);
+        expectedSection.addOrUpdateBranch(expectedBranch);
+        expectedBranch.setSection(expectedSection);
+       
+        when(branchDao.isExist(BRANCH_ID)).thenReturn(true);
+        when(branchDao.get(BRANCH_ID)).thenReturn(expectedBranch);
+        
+        Section actualSection = branchService.deleteBranchSilent(BRANCH_ID);
+        
+        assertEquals(actualSection, expectedSection, "Branches aren't equal");
+        verify(branchDao, times(2)).isExist(BRANCH_ID);
+        verify(branchDao, times(2)).get(BRANCH_ID);
+        verify(sectionDao).update(expectedSection);
+        assertEquals(actualSection.getBranches().size(), 0);
+        verify(topicService, times(2)).deleteTopicSilent(anyLong());
+        verify(securityService).deleteFromAcl(Branch.class, BRANCH_ID);
+    }
+    
+    @Test(expectedExceptions=NotFoundException.class)
+    public void testDeleteBranchSilentWithIncorrectId() throws NotFoundException {
+        when(branchDao.isExist(BRANCH_ID)).thenReturn(false);
+        
+        branchService.deleteBranchSilent(BRANCH_ID);
+        
+        assertTrue(false);
+    }
+    
+    
 }

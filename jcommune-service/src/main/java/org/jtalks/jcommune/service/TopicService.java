@@ -98,13 +98,23 @@ public interface TopicService extends EntityService<Topic> {
                      boolean notifyOnAnswers) throws NotFoundException;
 
     /**
-     * Delete topic by id.
+     * Delete topic by id. Sends notifications to subscribers and performs logging.
      *
      * @param topicId topic id
      * @return branch from which topic deleted
      * @throws NotFoundException when topic not found
      */
     Branch deleteTopic(long topicId) throws NotFoundException;
+    
+    /**
+     * Delete topic by id. Does not send any notification or log messages. 
+     * Intended to be used mostly by other services.
+     *
+     * @param topicId topic id
+     * @return branch from which topic deleted
+     * @throws NotFoundException when topic not found
+     */
+    Branch deleteTopicSilent(long topicId) throws NotFoundException;
 
     /**
      * Moves topic to another branch.

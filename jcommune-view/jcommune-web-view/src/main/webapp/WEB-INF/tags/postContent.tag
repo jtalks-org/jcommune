@@ -29,7 +29,7 @@
     <c:if test="${modificationDate!=null}">
         <br/><br/>
         <spring:message code="label.modify"/>
-        <jtalks:format value="$modificationDate}"/>
+        <jtalks:format value="${modificationDate}"/>
     </c:if>
 </div>
 <div align="left">

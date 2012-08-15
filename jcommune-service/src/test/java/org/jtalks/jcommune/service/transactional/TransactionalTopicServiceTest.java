@@ -26,7 +26,6 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.TopicService;
@@ -84,8 +83,6 @@ public class TransactionalTopicServiceTest {
     @Mock
     private SecurityService securityService;
     @Mock
-    private BranchService branchService;
-    @Mock
     private TopicDao topicDao;
     @Mock
     private BranchDao branchDao;
@@ -107,7 +104,6 @@ public class TransactionalTopicServiceTest {
         topicService = new TransactionalTopicService(
                 topicDao,
                 securityService,
-                branchService,
                 branchDao,
                 notificationService,
                 subscriptionService,
@@ -188,7 +184,7 @@ public class TransactionalTopicServiceTest {
 
     private void createTopicStubs(Branch branch) throws NotFoundException {
         when(userService.getCurrentUser()).thenReturn(user);
-        when(branchService.get(BRANCH_ID)).thenReturn(branch);
+        when(branchDao.get(BRANCH_ID)).thenReturn(branch);
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
     }
 
@@ -274,6 +270,34 @@ public class TransactionalTopicServiceTest {
         when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
 
         topicService.deleteTopic(TOPIC_ID);
+    }
+    
+    @Test
+    public void testDeleteTopicSilent() throws NotFoundException {
+        Topic topic = new Topic(user, "title");
+        topic.setId(TOPIC_ID);
+        Post firstPost = new Post(user, ANSWER_BODY);
+        topic.addPost(firstPost);
+        user.setPostCount(1);
+        Branch branch = createBranch();
+        branch.addTopic(topic);
+        when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
+        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
+
+        Branch branchFromWhichTopicDeleted = topicService.deleteTopicSilent(TOPIC_ID);
+
+        assertEquals(branchFromWhichTopicDeleted, branch);
+        assertEquals(branch.getTopicCount(), 0);
+        assertEquals(user.getPostCount(), 0);
+        verify(branchDao).update(branch);
+        verify(securityService).deleteFromAcl(Topic.class, TOPIC_ID);
+    }
+    
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void testDeleteTopicSilentNonExistent() throws NotFoundException {
+        when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
+
+        topicService.deleteTopicSilent(TOPIC_ID);
     }
 
     @Test
@@ -397,7 +421,7 @@ public class TransactionalTopicServiceTest {
 
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(topic);
-        when(branchService.get(BRANCH_ID)).thenReturn(targetBranch);
+        when(branchDao.get(BRANCH_ID)).thenReturn(targetBranch);
 
         topicService.moveTopic(TOPIC_ID, BRANCH_ID);
 

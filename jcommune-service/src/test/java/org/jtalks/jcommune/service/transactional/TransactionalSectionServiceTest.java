@@ -17,7 +17,10 @@ package org.jtalks.jcommune.service.transactional;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
+import static org.mockito.Matchers.anyLong;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -96,5 +99,45 @@ public class TransactionalSectionServiceTest {
             .fillLastPostInLastUpdatedTopic(Mockito.anyListOf(Branch.class));
         verify(branchService, Mockito.times(sectionSize))
             .fillStatisticInfo(Mockito.anyListOf(Branch.class));
+    }
+    
+    @Test
+    public void testDeleteAllBranches() throws NotFoundException {
+        Section expectedSection = new Section(SECTION_NAME);
+        expectedSection.addOrUpdateBranch(new Branch(null, null));
+        expectedSection.addOrUpdateBranch(new Branch(null, null));
+        
+        when(sectionDao.isExist(SECTION_ID)).thenReturn(true);
+        when(sectionDao.get(SECTION_ID)).thenReturn(expectedSection);
+        
+        Section actualSection = sectionService.deleteAllBranches(SECTION_ID);
+        
+        assertEquals(actualSection, expectedSection, "Sections aren't equals");
+        verify(sectionDao).isExist(SECTION_ID);
+        verify(sectionDao).get(SECTION_ID);
+        verify(branchService, times(2)).deleteBranchSilent(anyLong());
+    }
+    
+    @Test
+    public void testDeleteAllBranchesInEmptySection() throws NotFoundException {
+        Section expectedSection = new Section(SECTION_NAME);
+        
+        when(sectionDao.isExist(SECTION_ID)).thenReturn(true);
+        when(sectionDao.get(SECTION_ID)).thenReturn(expectedSection);
+        
+        Section actualSection = sectionService.deleteAllBranches(SECTION_ID);
+        
+        assertEquals(actualSection, expectedSection, "Sections aren't equals");
+        verify(sectionDao).isExist(SECTION_ID);
+        verify(sectionDao).get(SECTION_ID);
+        verify(branchService, times(0)).deleteBranchSilent(anyLong());
+    }
+    
+    @Test(expectedExceptions=NotFoundException.class)
+    public void testDeleteAllBranchesWithIncorrectId() throws NotFoundException {
+        when(sectionDao.isExist(SECTION_ID)).thenReturn(false);
+
+        sectionService.deleteAllBranches(SECTION_ID);
+        assertTrue(false);
     }
 }

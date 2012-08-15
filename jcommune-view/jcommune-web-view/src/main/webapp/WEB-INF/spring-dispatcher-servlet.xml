@@ -66,7 +66,7 @@
         <property name="defaultLocale" value="ru"/>
     </bean>
 
-    <bean id="handlerMapping" class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
+    <bean id="handlerMapping" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>
 
     <!-- Interceptors -->
     <mvc:interceptors>
@@ -129,7 +129,7 @@
 
     </bean>
     
-    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver" >
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver" >
         <property name="messageConverters">
             <list>
                 <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>
