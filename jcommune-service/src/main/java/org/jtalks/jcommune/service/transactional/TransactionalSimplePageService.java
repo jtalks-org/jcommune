@@ -99,7 +99,7 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
     /**
      * {@inheritDoc}
      */
-    @PreAuthorize("hasPermission(#userCreator.id, 'USER', 'ProfilePermission.CREATE_PAGES')")
+    @PreAuthorize("hasPermission(#userCreator.id, 'USER', 'ProfilePermission.CREATE_FORUM_FAQ')")
     @Override
     public SimplePage createPage(SimplePage simplePage, JCUser userCreator) throws EntityExistsException {
 
