@@ -246,19 +246,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @Override
     public Branch deleteTopicSilent(long topicId) throws NotFoundException {
         Topic topic = get(topicId);
-        long branchId = topic.getBranch().getId();
-        return deleteTopicSilent(topic, branchId);
-    }
-    
-    /**
-     * Performs silent topic deleting with permission check
-     *
-     * @param topic    topic to delete
-     * @param branchId used for annotation permission check only
-     * @return branch without deleted topic
-     */
-    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.DELETE_TOPICS')")
-    private Branch deleteTopicSilent(Topic topic, long branchId) throws NotFoundException {
         return deleteTopicSilent(topic);
     }
     
