@@ -285,9 +285,9 @@ input.form-check-radio-box[type="radio"] {
     margin-top:0 !important;
     font-weight:bold;
     position: relative;
-    left: -35px;
+    left: -30px;
     border-radius: 12px 12px 12px 12px;    
-    padding: 3px 7px;    
+    padding: 0px 5px;    
 }
 
 /** JC-863. Long text in titles, posts, signature. **/
