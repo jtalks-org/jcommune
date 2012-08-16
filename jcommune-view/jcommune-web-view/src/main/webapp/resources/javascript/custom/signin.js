@@ -41,7 +41,7 @@ $(function () {
                     $.prompt(content,
                     {buttons:{OK:true}, focus:0,
                         submit:sendLoginPost,
-                        zIndex: 1050, promptspeed:"fast"});
+                        zIndex: 1050, overlayspeed:"fast"});
 
                     $("#j_username, #j_password").live("keyup", function(event) {
                     	if(event.keyCode==13) {

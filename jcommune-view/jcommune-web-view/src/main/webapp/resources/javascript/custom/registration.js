@@ -63,7 +63,7 @@ $(function () {
                 if ($(data).find("legend").html() != null) {
                     firstView = false;
                     $.prompt(content,
-                        {buttons:{OK:true}, focus:0, submit:signupPopup, zIndex: 1050, promptspeed:"fast"});
+                        {buttons:{OK:true}, focus:0, submit:signupPopup, zIndex: 1050, overlayspeed:"fast"});
                     refreshCaptcha();
                     refreshCaptchaOnClick();
                 } else if ($(data).find("span.error_errorpage").html() != null) {
