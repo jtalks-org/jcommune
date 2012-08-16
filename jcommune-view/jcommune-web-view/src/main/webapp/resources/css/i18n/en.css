@@ -5,5 +5,10 @@ different labels length in different languages.
 
 #topics-table .posts-views {
     font-size: 11px;
-    width: 30px;
+    width: 107px;
+}
+
+#topics-table .author-col {
+    font-size: 11px;
+    width: 93px;
 }
