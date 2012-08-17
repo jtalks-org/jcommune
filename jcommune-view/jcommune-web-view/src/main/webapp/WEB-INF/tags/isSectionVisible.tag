@@ -18,7 +18,6 @@
 <%@ attribute name="section" required="true" type="org.jtalks.common.model.entity.Section" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%--variables --%>
 <c:set var="visibleBranchesCount" value="0" />
 <%--calculate the count of visible branches --%>
