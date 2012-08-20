@@ -19,10 +19,16 @@
 
 var username;
 var remember_me;
+var signInHandler;
+var singInLink; 
+var signInHref;
 
 $(function () {
     $("#signin").on('click', function (e) {
-        signinPopup();
+    	//temporary disable buttons
+    	disableClickEventForComponent("#signin");
+    	disableClickEventForComponent("#signup");
+    	signinPopup();
         //if JS off, then open standart page
         e.preventDefault();
     });
@@ -50,6 +56,8 @@ $(function () {
                     	}
                     });
                 } 
+                //enable all disabled links
+                enableClickEventForDisabledComponents();
             }});
     }
 
