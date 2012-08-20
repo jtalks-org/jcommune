@@ -22,14 +22,13 @@
 <fmt:setLocale value="en"/>
 <!DOCTYPE HTML>
 <html>
-
+<script>
+    <%--Defines URL mapping root to be used in JS--%>
+    $root = "${pageContext.request.contextPath}";
+    <%--Include i18n resources for JS scripts--%>
+    <jsp:include page="jsMessages.jsp"/>
+</script>
 <head>
-    <script>
-        <%--Defines URL mapping root to be used in JS--%>
-        $root = "${pageContext.request.contextPath}";
-        <%--Include i18n resources for JS scripts--%>
-        <jsp:include page="jsMessages.jsp"/>
-    </script>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
     <meta http-equiv="Pragma" content="no-cache"/>
     <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0"/>
