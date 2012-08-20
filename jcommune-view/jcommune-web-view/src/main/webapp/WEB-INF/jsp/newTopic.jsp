@@ -31,7 +31,7 @@
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/newPoll.js"
             type="text/javascript"></script>
-    <script language="javascript"
+    <script
             src="${pageContext.request.contextPath}/resources/javascript/custom/leaveConfirm.js"></script>
 
     <link rel="stylesheet"

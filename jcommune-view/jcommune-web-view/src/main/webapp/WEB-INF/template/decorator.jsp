@@ -48,23 +48,23 @@
           href="${pageContext.request.contextPath}/resources/images/favicon.ico"/>
     <link rel="icon" type="image/png"
           href="${pageContext.request.contextPath}/resources/images/favicon.png"/>
-    <script language="javascript"
+    <script
             src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-1.7.min.js"></script>
-    <script language="javascript"
+    <script
             src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery.prettyPhoto.js"></script>
-    <script language="javascript"
+    <script
             src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery.truncate.js"></script>
-    <script language="javascript"
+    <script
             src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jqery.impromptu.js"></script>
-    <script language="javascript"
+    <script
             src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery.offtmp.js"></script>       
-    <script language="javascript"
+    <script
             src="${pageContext.request.contextPath}/resources/javascript/custom/URLBuilder.js"></script>
-    <script language="javascript"
+    <script
             src="${pageContext.request.contextPath}/resources/javascript/custom/registration.js"></script>
     <script src='${pageContext.request.contextPath}/resources/javascript/custom/signin.js'
             type='text/javascript'></script>
-    <script language="javascript"
+    <script
             src="${pageContext.request.contextPath}/resources/javascript/custom/global.js"></script>
     <script src='${pageContext.request.contextPath}/resources/javascript/licensed/xregexp-min.js'
             type='text/javascript'></script>

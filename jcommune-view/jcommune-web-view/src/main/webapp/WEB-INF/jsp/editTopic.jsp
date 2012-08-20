@@ -25,7 +25,7 @@
     <title><spring:message code="h.edit_topic"/></title>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
             type="text/javascript"></script>
-    <script language="javascript"
+    <script
             src="${pageContext.request.contextPath}/resources/javascript/custom/leaveConfirm.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/bbeditorEffects.js"
             type="text/javascript"></script>
