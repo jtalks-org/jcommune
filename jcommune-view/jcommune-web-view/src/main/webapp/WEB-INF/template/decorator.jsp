@@ -57,6 +57,8 @@
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jqery.impromptu.js"></script>
     <script language="javascript"
+            src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery.offtmp.js"></script>       
+    <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/URLBuilder.js"></script>
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/registration.js"></script>
@@ -80,6 +82,8 @@
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/topline.js"
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/search.js"
+            type="text/javascript"></script> 
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/componentClickEventDisabler.js"
             type="text/javascript"></script>   
     <decorator:head/>
     <title><decorator:title/></title>

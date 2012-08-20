@@ -21,6 +21,10 @@
 $(function () {
     var firstView;
     $("#signup").on('click', function (e) {
+    	//temporary disable buttons
+    	disableClickEventForComponent("#signin");
+    	disableClickEventForComponent("#signup");
+    	//
         firstView = true;
         signupPopup();
         //if JS off, then open standart page
@@ -71,6 +75,8 @@ $(function () {
                 } else {
                     $.prompt($labelRegistrationSuccess);
                 }
+                //enable all disabled links
+                enableClickEventForDisabledComponents();
             }});
     }
 });
