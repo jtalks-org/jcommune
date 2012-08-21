@@ -152,9 +152,10 @@ ul.lang-menu li img {
 }
 
 #topics-table .author-col a {
-    font-size: 11px;
-    min-width: 140px;
-    max-width: 140px;}
+    font-size: 11px;}
+
+#topics-table .author-col {
+    width: 140px;}
 
 #topics-table .posted-in-col a {
     font-size: 11px;
