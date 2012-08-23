@@ -56,7 +56,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * @param securityService     service for authorization
      * @param notificationService to send email updates for subscribed users
      * @param lastReadPostService to modify last read post information when topic structure is changed
-     * @param userService   to get current user
+     * @param userService         to get current user
      */
     public TransactionalPostService(
             PostDao dao,
@@ -81,15 +81,14 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         Post post = get(postId);
         updatePost(post, postContent);
     }
-    
+
     /**
      * Performs update with security checking.
-     * 
-     * @param post an instance of post, that will be updated
+     *
+     * @param post        an instance of post, that will be updated
      * @param postContent new content of the post
      */
-    @PreAuthorize("hasPermission(#post.id, 'POST', 'GeneralPermission.WRITE') or " +
-            "hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
+    //todo: hasPermission
     private void updatePost(Post post, String postContent) {
         post.setPostContent(postContent);
         post.updateModificationDate();

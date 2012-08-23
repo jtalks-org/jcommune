@@ -133,7 +133,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         subscribeOnTopicIfNotificationsEnabled(notifyOnAnswers, topic, currentUser);
 
         Poll poll = topicDto.getPoll();
-        if (poll!=null && poll.isHasPoll()) {
+        if (poll != null && poll.isHasPoll()) {
             poll.setTopic(topic);
             pollService.createPoll(poll);
         }
@@ -171,7 +171,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     /**
      * {@inheritDoc}
      */
-    @Override    
+    @Override
     public void updateTopic(Topic topicDto, String bodyText) throws NotFoundException {
         updateTopic(topicDto, bodyText, false);
     }
@@ -181,8 +181,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicDto.id, 'TOPIC', 'GeneralPermission.WRITE') or " +
-            "hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
+    //todo: hasPermission
     public void updateTopic(Topic topicDto, String bodyText, boolean notifyOnAnswers) throws NotFoundException {
         Topic topic = get(topicDto.getId());
         topic.setTitle(topicDto.getTitle());
@@ -223,7 +222,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         long branchId = topic.getBranch().getId();
         return deleteTopic(topic, branchId);
     }
-    
+
     /**
      * Performs topic deleting with permission check
      *
@@ -239,7 +238,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         logger.info("Deleted topic \"{}\". Topic id: {}", topic.getTitle(), topic.getId());
         return branch;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -248,12 +247,12 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         Topic topic = get(topicId);
         return deleteTopicSilent(topic);
     }
-    
+
     /**
-     * Performs actual topic deleting. Deletes all topic related data and 
+     * Performs actual topic deleting. Deletes all topic related data and
      * recalculates user's post count.
      *
-     * @param topic    topic to delete
+     * @param topic topic to delete
      * @return branch without deleted topic
      */
     private Branch deleteTopicSilent(Topic topic) {
@@ -278,14 +277,13 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         Topic topic = get(topicId);
         moveTopic(topic, branchId);
     }
-    
+
     /**
      * Performs actual topic moving with permission check
      *
      * @param topic    topic to move
      * @param branchId ID of target branch
      * @throws NotFoundException if target branch was not found by id
-     * 
      */
     @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.MOVE_TOPICS')")
     private void moveTopic(Topic topic, Long branchId) throws NotFoundException {

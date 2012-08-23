@@ -159,7 +159,6 @@
                     <td class="top-buttons">
                         &nbsp;
                         <div class="btn-toolbar post-btn-toolbar">
-
                             <c:choose>
                                 <c:when test="${postsPage.number == 1 && i.index == 0}">
                                         <%-- first post - urls to delete & edit topic --%>
@@ -179,25 +178,30 @@
                                 </c:otherwise>
                             </c:choose>
                             <div class="btn-group">
-                               <%--Edit post button start --%>
-                               <c:set var="isEditButtonAvailable" value="false"/>
-                               <%--  An ability to edit posts for author of this posts --%>
-                               <jtalks:hasPermission targetId='${post.id}' targetType='POST' 
-                                    permission='GeneralPermission.WRITE'>                              
-                                    <c:set var="isEditButtonAvailable" value="true"/>
-                               </jtalks:hasPermission>
-                               <%--  An ability to edit posts for administrators and branch moderators --%>
-                               <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH' 
-                                    permission='BranchPermission.EDIT_OTHERS_POSTS'>                               
-                                    <c:set var="isEditButtonAvailable" value="true"/>
-                               </jtalks:hasPermission>
-                               <c:if test="${isEditButtonAvailable}">
-                                    <a id="edit_button" href="${edit_url}" rel="${branchId}"
-                                       class="btn btn-mini" title="<spring:message code='label.tips.edit_post'/>">
-                                       <i class="icon-edit"></i>
-                                       <spring:message code="label.edit"/>
-                                    </a>
-                               </c:if>
+                                <sec:authorize access="isAuthenticated()">
+                                    <sec:authentication property="principal.id" var="userId"/>
+                                    <%--Edit post button start --%>
+                                    <c:set var="isEditButtonAvailable" value="false"/>
+                                    <%--  An ability to edit posts for author of this posts --%>
+                                    <c:if test='${userId == post.userCreated.id}'>
+                                        <jtalks:hasPermission targetId="${topic.branch.id}" targetType="BRANCH"
+                                                              permission="BranchPermission.EDIT_OWN_POSTS">
+                                            <c:set var="isEditButtonAvailable" value="true"/>
+                                        </jtalks:hasPermission>
+                                    </c:if>
+                                    <%--  An ability to edit posts for administrators and branch moderators --%>
+                                    <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
+                                                          permission='BranchPermission.EDIT_OTHERS_POSTS'>
+                                        <c:set var="isEditButtonAvailable" value="true"/>
+                                    </jtalks:hasPermission>
+                                    <c:if test="${isEditButtonAvailable}">
+                                        <a id="edit_button" href="${edit_url}" rel="${branchId}"
+                                           class="btn btn-mini" title="<spring:message code='label.tips.edit_post'/>">
+                                            <i class="icon-edit"></i>
+                                            <spring:message code="label.edit"/>
+                                        </a>
+                                    </c:if>
+                                </sec:authorize>
                                <%--Edit post button end --%>
                                <%--Delete post button start --%>
                                <sec:authorize access="isAuthenticated()">
