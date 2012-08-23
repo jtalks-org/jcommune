@@ -154,23 +154,16 @@ ul.lang-menu li img {
 #topics-table .author-col a {
     font-size: 11px;}
 
-#topics-table .author-col {
-    width: 140px;}
-
 #topics-table .posted-in-col a {
     font-size: 11px;
 }
 
 #topics-table .topics-posts {
     font-size: 11px;
-    width: 90px;
-    max-width: 90px;
 }
 
 #topics-table .posts-views {
     font-size: 11px;
-    width: 90px;
-    max-width: 90px;
 }
 
 #topics-table .created-by {
@@ -181,9 +174,6 @@ ul.lang-menu li img {
 
 #topics-table .latest-by {
     font-size: 10px;
-    width: 160px;
-    min-width: 160px;
-    max-width: 160px;
 }
 
 #topics-table .latest-by p {
@@ -335,4 +325,8 @@ ul.lang-menu li img {
     .upper-pagination {
         display: none;
     }
+}
+
+.shrink-to-fit {
+    display: inline-block;
 }
