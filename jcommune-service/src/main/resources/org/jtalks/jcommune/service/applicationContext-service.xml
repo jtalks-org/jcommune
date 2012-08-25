@@ -92,12 +92,6 @@
         <constructor-arg ref="userService"/>
     </bean>
 
-    <bean id="topicSearchService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalTopicFullSearchService">
-        <constructor-arg ref="topicSearchDao"/>
-        <constructor-arg ref="userService"/>
-    </bean>
-
     <bean id="topicModificationService"
           class="org.jtalks.jcommune.service.transactional.TransactionalTopicModificationService">
         <constructor-arg ref="topicDao"/>
@@ -114,6 +108,7 @@
           class="org.jtalks.jcommune.service.transactional.TransactionalTopicFetchService">
         <constructor-arg ref="topicDao"/>
         <constructor-arg ref="userService"/>
+        <constructor-arg ref="topicSearchDao"/>
     </bean>
 
     <bean id="topicBranchService"

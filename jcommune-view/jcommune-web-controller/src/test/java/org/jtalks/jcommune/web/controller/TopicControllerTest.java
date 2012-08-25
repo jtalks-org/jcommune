@@ -348,6 +348,26 @@ public class TopicControllerTest {
         verify(topicModificationService).moveTopic(topic, BRANCH_ID);
     }
 
+    @Test
+    public void testCloseTopic() throws NotFoundException {
+        Topic topic = createTopic();
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
+        
+        controller.closeTopic(TOPIC_ID);
+        
+        verify(topicModificationService).closeTopic(topic);
+    }
+
+    @Test
+    public void testReopenTopic() throws NotFoundException {
+        Topic topic = createTopic();
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
+
+        controller.openTopic(TOPIC_ID);
+
+        verify(topicModificationService).openTopic(topic);
+    }
+
     private Branch createBranch() {
         Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
         branch.setId(BRANCH_ID);

@@ -294,4 +294,33 @@ public class TopicController {
         Topic topic = topicFetchService.get(topicId);
         topicModificationService.moveTopic(topic, branchId);
     }
+
+    /**
+     * Closes given topic or throws an exception if there is no such topic.
+     * Closed topic is unavailable for posting until it's opened again.
+     *
+     * @param topicId identifies topic to be closed for further posting
+     * @throws NotFoundException if there is no topic for id given
+     * @return redirection to the same topic
+     */
+    @RequestMapping(value = "/topics/{topicId}/close")
+    public String closeTopic(@PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
+        Topic topic = topicFetchService.get(topicId);
+        topicModificationService.closeTopic(topic);
+        return "redirect:/topics/" + topicId;
+    }
+
+    /**
+     * Reopens topic for posting. If topic as opened already, does nothing
+     *
+     * @param topicId topic to be opened for posting
+     * @throws NotFoundException if there is no topic for id given
+     * @return redirection to the same topic
+     */
+    @RequestMapping(value = "/topics/{topicId}/open")
+    public String openTopic(@PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
+        Topic topic = topicFetchService.get(topicId);
+        topicModificationService.openTopic(topic);
+        return "redirect:/topics/" + topicId;
+    }
 }

@@ -38,6 +38,7 @@ public class TopicSearchControllerTest {
 	private static final int START_PAGE = 1;
 	@Mock
 	private TopicFetchService topicFetchService;
+
 	private TopicSearchController topicSearchController;
 
 	@BeforeMethod

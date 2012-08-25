@@ -47,8 +47,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.*;
 
 /**
  * This test cover {@code TransactionalTopicModificationService} logic validation.
@@ -221,7 +220,7 @@ public class TransactionalTopicModificationServiceTest {
         verify(branchDao).update(branch);
         verify(securityService).deleteFromAcl(Topic.class, TOPIC_ID);
     }
-    
+
     @Test(expectedExceptions = {NotFoundException.class})
     public void testDeleteTopicSilentNonExistent() throws NotFoundException {
         when(topicFetchService.get(TOPIC_ID)).thenThrow(new NotFoundException());
@@ -354,6 +353,25 @@ public class TransactionalTopicModificationServiceTest {
         assertEquals(targetBranch.getTopicCount(), 1);
         verify(branchDao).update(targetBranch);
         verify(notificationService).topicMoved(topic, TOPIC_ID);
+    }
+
+    @Test
+    public void testCloseTopic() {
+        Topic topic = this.createTopic();
+        topicService.closeTopic(topic);
+        
+        assertTrue(topic.isClosed());
+        verify(topicDao).update(topic);
+    }
+
+    @Test
+    public void testOpenTopic() {
+        Topic topic = this.createTopic();
+        topic.setClosed(true);
+        topicService.openTopic(topic);
+
+        assertFalse(topic.isClosed());
+        verify(topicDao).update(topic);
     }
 
     private Branch createBranch() {
