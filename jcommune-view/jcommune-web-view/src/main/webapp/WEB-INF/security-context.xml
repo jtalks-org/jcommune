@@ -29,6 +29,7 @@
         <security:intercept-url pattern="/posts/new" access="isAuthenticated()"/>
         <security:intercept-url pattern="/posts/*/delete" method="GET" access="isAuthenticated()"/>
         <security:intercept-url pattern="/posts/*" method="DELETE" access="isAuthenticated()"/>
+        <security:intercept-url pattern="/posts/*/edit" access="isAuthenticated()"/>
 
         <security:intercept-url pattern="/users/new" method="GET" access="permitAll()"/>
         <security:intercept-url pattern="/users/*/avatar" method="GET" access="permitAll()"/>
@@ -51,6 +52,7 @@
         <security:intercept-url pattern="/topics/*/subscribe" access="isAuthenticated()"/>
         <security:intercept-url pattern="/topics/*/unsubscribe" access="isAuthenticated()"/>
         <security:intercept-url pattern="/topics/json/**" access="isAuthenticated()"/>
+        <security:intercept-url pattern="/topics/*/edit" access="isAuthenticated()"/>
         
         <!-- Since DELETE method is actually POST with _method=DELETE parameter -->
         <security:intercept-url pattern="/branches/*" method="POST" access="hasIpAddress('127.0.0.1')"/>

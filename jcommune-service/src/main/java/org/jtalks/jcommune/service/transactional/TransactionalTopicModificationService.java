@@ -132,7 +132,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         subscribeOnTopicIfNotificationsEnabled(notifyOnAnswers, topic, currentUser);
 
         Poll poll = topicDto.getPoll();
-        if (poll!=null && poll.isHasPoll()) {
+        if (poll != null && poll.isHasPoll()) {
             poll.setTopic(topic);
             pollService.createPoll(poll);
         }
@@ -141,6 +141,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
                 new Object[]{topic.getId(), branch.getId(), currentUser.getUsername()});
         return topic;
     }
+
 
     /**
      * {@inheritDoc}
@@ -199,12 +200,12 @@ public class TransactionalTopicModificationService implements TopicModificationS
         Topic topic = topicFetchService.get(topicId);
         this.deleteTopicSilent(topic);
     }
-    
+
     /**
      * Performs actual topic deletion. Deletes all topic related data and
      * recalculates user's post count.
      *
-     * @param topic    topic to delete
+     * @param topic topic to delete
      * @return branch without deleted topic
      */
     private Branch deleteTopicSilent(Topic topic) {

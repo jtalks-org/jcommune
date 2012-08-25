@@ -56,7 +56,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * @param securityService     service for authorization
      * @param notificationService to send email updates for subscribed users
      * @param lastReadPostService to modify last read post information when topic structure is changed
-     * @param userService   to get current user
+     * @param userService         to get current user
      */
     public TransactionalPostService(
             PostDao dao,
@@ -72,10 +72,10 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         this.lastReadPostService = lastReadPostService;
         this.userService = userService;
     }
-    
+
     /**
      * Performs update with security checking.
-     * 
+     *
      * @param post an instance of post, that will be updated
      * @param postContent new content of the post
      */
