@@ -93,7 +93,9 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/inbox", method = RequestMethod.GET)
     public ModelAndView inboxPage() {
-        return new ModelAndView("pm/inbox").addObject("pmList", pmService.getInboxForCurrentUser());
+        return new ModelAndView("pm/inbox")
+            .addObject("pmList", pmService.getInboxForCurrentUser())
+            .addObject("user", userService.getCurrentUser());
     }
 
     /**
@@ -103,7 +105,9 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/outbox", method = RequestMethod.GET)
     public ModelAndView outboxPage() {
-        return new ModelAndView("pm/outbox").addObject("pmList", pmService.getOutboxForCurrentUser());
+        return new ModelAndView("pm/outbox")
+            .addObject("pmList", pmService.getOutboxForCurrentUser())
+            .addObject("user", userService.getCurrentUser());
     }
 
     /**
@@ -113,7 +117,9 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/drafts", method = RequestMethod.GET)
     public ModelAndView draftsPage() {
-        return new ModelAndView("pm/drafts").addObject("pmList", pmService.getDraftsFromCurrentUser());
+        return new ModelAndView("pm/drafts")
+            .addObject("pmList", pmService.getDraftsFromCurrentUser())
+            .addObject("user", userService.getCurrentUser());
     }
 
     /**
