@@ -19,7 +19,7 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SubscriptionService;
-import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.TopicFetchService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
@@ -36,7 +36,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class SubscriptionControllerTest {
 
     @Mock
-    private TopicService topicService;
+    private TopicFetchService topicFetchService;
     @Mock
     private BranchService branchService;
     @Mock
@@ -52,12 +52,12 @@ public class SubscriptionControllerTest {
     @BeforeMethod
     public void setUp() {
         initMocks(this);
-        controller = new SubscriptionController(topicService, branchService, subscriptionService);
+        controller = new SubscriptionController(topicFetchService, branchService, subscriptionService);
     }
 
     @Test
     public void testSubscribeToTopic() throws NotFoundException {
-        when(topicService.get(id)).thenReturn(topic);
+        when(topicFetchService.get(id)).thenReturn(topic);
 
         controller.subscribeToTopic(id);
 
@@ -66,7 +66,7 @@ public class SubscriptionControllerTest {
 
     @Test
     public void testUnsubscribeFromTopic() throws NotFoundException {
-        when(topicService.get(id)).thenReturn(topic);
+        when(topicFetchService.get(id)).thenReturn(topic);
 
        controller.unsubscribeFromTopic(id);
 
@@ -93,13 +93,13 @@ public class SubscriptionControllerTest {
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testSubscribeToNonexistingTopic() throws NotFoundException {
-        doThrow(new NotFoundException()).when(topicService).get(id);
+        doThrow(new NotFoundException()).when(topicFetchService).get(id);
         controller.subscribeToTopic(id);
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testUnsubscribeFromNonexistingTopic() throws NotFoundException {
-        doThrow(new NotFoundException()).when(topicService).get(id);
+        doThrow(new NotFoundException()).when(topicFetchService).get(id);
         controller.unsubscribeFromTopic(id);
     }
 

@@ -33,12 +33,12 @@ public interface PostService extends EntityService<Post> {
     /**
      * Update current post with given content, add the modification date.
      *
-     * @param postId      post id
+     * @param post      post to be updated
      * @param postContent content of post
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when post not found
      */
-    void updatePost(long postId, String postContent) throws NotFoundException;
+    void updatePost(Post post, String postContent) throws NotFoundException;
 
     /**
      * Delete post  by id.

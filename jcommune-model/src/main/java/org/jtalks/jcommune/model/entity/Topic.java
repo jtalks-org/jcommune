@@ -134,6 +134,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     private String title;
     private boolean sticked;
     private boolean announcement;
+    private boolean closed;
     private Branch branch;
     private int views;
     @Valid
@@ -482,5 +483,21 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      */
     public void setSubscribers(Set<JCUser> subscribers) {
         this.subscribers = subscribers;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isClosed() {
+        return closed;
+    }
+
+    /**
+     *
+     * @param closed
+     */
+    public void setClosed(boolean closed) {
+        this.closed = closed;
     }
 }

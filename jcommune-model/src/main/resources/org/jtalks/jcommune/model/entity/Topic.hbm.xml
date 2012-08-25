@@ -33,6 +33,7 @@
         <property name="sticked" column="STICKED" not-null="true"/>
         <property name="views" column="VIEWS"/>
         <property name="announcement" column="ANNOUNCEMENT" not-null="true"/>
+        <property name="closed" column="CLOSED" not-null="true"/>
 
         <list name="posts" cascade="all-delete-orphan">
             <cache usage="nonstrict-read-write"/>
