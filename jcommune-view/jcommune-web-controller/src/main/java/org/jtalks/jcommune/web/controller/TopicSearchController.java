@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.TopicFullSearchService;
+import org.jtalks.jcommune.service.TopicFetchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -54,16 +54,16 @@ public class TopicSearchController {
     
     private static final String SEARCH_RESULT_VIEW_NAME = "searchResult";
 
-    private TopicFullSearchService topicSearchService;
+    private TopicFetchService topicSearchService;
 
     
     /**
      * Constructor for controller instantiating, dependencies injected via autowiring.
      * 
-     * @param topicSearchService {@link TopicFullSearchService} to perform actual search
+     * @param topicSearchService {@link TopicFetchService} to perform actual search
      */
     @Autowired
-    public TopicSearchController(TopicFullSearchService topicSearchService) {
+    public TopicSearchController(TopicFetchService topicSearchService) {
         this.topicSearchService = topicSearchService;
     }
     
@@ -73,7 +73,7 @@ public class TopicSearchController {
     @RequestMapping(value = "/search/index/rebuild")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void rebuildIndexes() {
-        topicSearchService.rebuildIndex();
+        topicSearchService.rebuildSearchIndex();
     }
     
     /**

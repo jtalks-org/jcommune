@@ -14,8 +14,10 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.dao.search.TopicSearchDao;
 import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -23,22 +25,28 @@ import org.jtalks.jcommune.service.TopicFetchService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+
+import java.util.Collections;
 
 /**
- *
+ * Performs load operations on topic based on various
+ * conditions. Topic search operations are also performed here.
  */
 public class TransactionalTopicFetchService extends AbstractTransactionalEntityService<Topic, TopicDao>
         implements TopicFetchService {
     
     private UserService userService;
-
+    private TopicSearchDao searchDao;
     /**
      * @param dao topic dao for database manipulations
      * @param userService to get current user and his preferences
+     * @param searchDao for search index access
      */
-    public TransactionalTopicFetchService(TopicDao dao, UserService userService) {
+    public TransactionalTopicFetchService(TopicDao dao, UserService userService, TopicSearchDao searchDao) {
         super(dao);
         this.userService = userService;
+        this.searchDao = searchDao;
     }
 
     /**
@@ -57,8 +65,8 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
      */
     @Override
     public Page<Topic> getRecentTopics(int page) {
-        JCommunePageRequest pageRequest = JCommunePageRequest.
-                createWithPagingEnabled(page, userService.getCurrentUser().getPageSize());
+        int pageSize =  userService.getCurrentUser().getPageSize();
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(page, pageSize);
         DateTime date24HoursAgo = new DateTime().minusDays(1);
         return this.getDao().getTopicsUpdatedSince(date24HoursAgo, pageRequest);
     }
@@ -68,8 +76,8 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
      */
     @Override
     public Page<Topic> getUnansweredTopics(int page) {
-        JCommunePageRequest pageRequest = JCommunePageRequest.
-                createWithPagingEnabled(page, userService.getCurrentUser().getPageSize());
+        int pageSize =  userService.getCurrentUser().getPageSize();
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(page, pageSize);
         return this.getDao().getUnansweredTopics(pageRequest);
     }
 
@@ -78,8 +86,31 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
      */
     @Override
     public Page<Topic> getTopics(Branch branch, int page, boolean pagingEnabled) {
-        JCommunePageRequest pageRequest = new JCommunePageRequest(
-                page, userService.getCurrentUser().getPageSize(), pagingEnabled);
+        int pageSize =  userService.getCurrentUser().getPageSize();
+        JCommunePageRequest pageRequest = new JCommunePageRequest(page,pageSize, pagingEnabled);
         return getDao().getTopics(branch, pageRequest);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<Topic> searchByTitleAndContent(String phrase, int page) {
+        if (!StringUtils.isEmpty(phrase)) {
+            int pageSize = userService.getCurrentUser().getPageSize();
+            JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(page, pageSize);
+            // hibernate search refuses to process long string throwing error
+            String normalizedPhrase = StringUtils.left(phrase, 50);
+            return searchDao.searchByTitleAndContent(normalizedPhrase, pageRequest);
+        }
+        return new PageImpl<Topic>(Collections.<Topic> emptyList());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void rebuildSearchIndex() {
+        searchDao.rebuildIndex();
     }
 }

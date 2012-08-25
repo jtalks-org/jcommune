@@ -52,4 +52,20 @@ public interface TopicFetchService extends EntityService<Topic>{
      *         pagination
      */
     Page<Topic> getUnansweredTopics(int page);
+
+    /**
+     * Search by topics, title and content of which corresponds to the text of search.
+     *
+     * @param phrase search request from the user
+     * @param page requested page number, page size is calculated based on user's preferences
+     * @return search results page
+     */
+    Page<Topic> searchByTitleAndContent(String phrase, int page);
+
+    /**
+     * Indexing topics from the database.
+     * This functionality is required either when data exists in the database,
+     * but the index doesn't contain this data or the index is re-created.
+     */
+    void rebuildSearchIndex();
 }

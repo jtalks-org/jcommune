@@ -14,8 +14,10 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.dao.search.TopicSearchDao;
 import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -25,9 +27,12 @@ import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
@@ -45,7 +50,9 @@ public class TransactionalTopicFetchServiceTest {
     private TopicDao topicDao;
     @Mock
     private UserService userService;
-    
+    @Mock
+    private TopicSearchDao searchDao;
+
     private TopicFetchService topicFetchService;
 
     private JCUser user;
@@ -53,8 +60,9 @@ public class TransactionalTopicFetchServiceTest {
     @BeforeMethod
     public void init(){
         initMocks(this);
-        topicFetchService = new TransactionalTopicFetchService(topicDao, userService);
+        topicFetchService = new TransactionalTopicFetchService(topicDao, userService, searchDao);
         user = new JCUser("username", "email@mail.com", "password");
+        when(userService.getCurrentUser()).thenReturn(user);
     }
     
     @Test
@@ -142,5 +150,37 @@ public class TransactionalTopicFetchServiceTest {
         branch.setId(1L);
         branch.setUuid("uuid");
         return branch;
+    }
+
+    @Test
+    public void testSearchPosts() {
+        String phrase = "phrase";
+
+        topicFetchService.searchByTitleAndContent(phrase, 50);
+
+        Mockito.verify(searchDao).searchByTitleAndContent(
+                Matchers.anyString(), Matchers.<JCommunePageRequest> any());
+    }
+
+    @Test(dataProvider = "parameterSearchPostsWithEmptySearchPhrase")
+    public void testSearchPostsWithEmptySearchPhrase(String phrase) {
+        Page<Topic> searchResultPage = topicFetchService.searchByTitleAndContent(phrase, 50);
+
+        Assert.assertTrue(!searchResultPage.hasContent(), "The search result must be empty.");
+    }
+
+    @DataProvider(name = "parameterSearchPostsWithEmptySearchPhrase")
+    public Object[][] parameterSearchPostsWithEmptySearchPhrase() {
+        return new Object[][] {
+                {StringUtils.EMPTY},
+                {null}
+        };
+    }
+
+    @Test
+    public void testRebuildIndex() {
+        topicFetchService.rebuildSearchIndex();
+
+        Mockito.verify(searchDao).rebuildIndex();
     }
 }
