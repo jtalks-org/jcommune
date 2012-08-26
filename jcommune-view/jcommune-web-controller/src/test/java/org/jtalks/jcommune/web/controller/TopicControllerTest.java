@@ -308,11 +308,11 @@ public class TopicControllerTest {
     public void testSaveValidationPass() throws NotFoundException {
         TopicDto dto = getDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "topicDto");
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(createTopic());
 
         //invoke the object under test
         ModelAndView mav = controller.editTopic(dto, bindingResult, BRANCH_ID, TOPIC_ID);
-        Topic topic = dto.getTopic();
-        topic.setId(TOPIC_ID);
+        Topic topic =  topicFetchService.get(TOPIC_ID);
         //check expectations
         verify(topicModificationService).updateTopic(topic, TOPIC_CONTENT, false);
 

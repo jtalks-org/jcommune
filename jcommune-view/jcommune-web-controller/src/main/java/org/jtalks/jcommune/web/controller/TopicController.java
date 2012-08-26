@@ -272,11 +272,8 @@ public class TopicController {
                     .addObject(TOPIC_ID, topicId)
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
         }
-        Topic topic = topicDto.getTopic();
-        topic.setId(topicId);
-        topicModificationService.updateTopic(topic, topicDto.getBodyText(),
-                topicDto.isNotifyOnAnswers());
-
+        Topic topic = topicFetchService.get(topicId);
+        topicModificationService.updateTopic(topic, topicDto.getBodyText(), topicDto.isNotifyOnAnswers());
         return new ModelAndView("redirect:/topics/" + topicId);
     }
 

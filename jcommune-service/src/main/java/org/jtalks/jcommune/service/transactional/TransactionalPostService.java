@@ -80,7 +80,8 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * @param postContent new content of the post
      */
 
-    @PreAuthorize("hasPermission(#post.id, 'POST', 'GeneralPermission.WRITE') or " +
+    @PreAuthorize("hasPermission(#post.id, 'POST', 'GeneralPermission.WRITE') and " +
+            "hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OWN_POSTS') or "+
             "hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
     @Override
     public void updatePost(Post post, String postContent) {
