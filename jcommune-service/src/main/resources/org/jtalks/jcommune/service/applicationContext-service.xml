@@ -102,6 +102,8 @@
         <constructor-arg ref="userService"/>
         <constructor-arg ref="pollService"/>
         <constructor-arg ref="topicFetchService"/>
+        <constructor-arg ref="securityContextFacade"/>
+        <constructor-arg ref="aclGroupPermissionEvaluator"/>
     </bean>
 
     <bean id="topicFetchService"

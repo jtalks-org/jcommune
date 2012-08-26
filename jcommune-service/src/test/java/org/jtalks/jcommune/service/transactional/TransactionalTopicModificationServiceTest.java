@@ -14,14 +14,13 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
+import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
@@ -31,18 +30,20 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.Collections;
+import java.io.Serializable;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -93,7 +94,13 @@ public class TransactionalTopicModificationServiceTest {
     private PollService pollService;
     @Mock
     private TopicFetchService topicFetchService;
-
+    @Mock
+    private SecurityContextFacade securityContextFacade;
+    @Mock
+    private PermissionEvaluator permissionEvaluator;
+    @Mock
+    private SecurityContext securityContext;
+    
     private CompoundAclBuilder<User> aclBuilder;
 
     @BeforeMethod
@@ -107,16 +114,50 @@ public class TransactionalTopicModificationServiceTest {
                 notificationService,
                 subscriptionService,
                 userService,
-                pollService, topicFetchService);
+                pollService, topicFetchService, securityContextFacade, permissionEvaluator);
 
         user = new JCUser(USERNAME, "email@mail.com", "password");
-
+        when(securityContextFacade.getContext()).thenReturn(securityContext);
     }
 
 
     @Test
     public void testReplyToTopic() throws NotFoundException {
         Topic answeredTopic = new Topic(user, "title");
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(answeredTopic);
+        when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
+
+        Post createdPost = topicService.replyToTopic(TOPIC_ID, ANSWER_BODY, BRANCH_ID);
+
+        assertEquals(createdPost.getPostContent(), ANSWER_BODY);
+        assertEquals(createdPost.getUserCreated(), user);
+        assertEquals(user.getPostCount(), 1);
+
+        verify(aclBuilder).grant(GeneralPermission.WRITE);
+        verify(aclBuilder).to(user);
+        verify(aclBuilder).on(createdPost);
+        verify(notificationService).topicChanged(answeredTopic);
+    }
+
+    @Test(expectedExceptions = AccessDeniedException.class)
+    public void testReplyToClosedTopic() throws NotFoundException {
+        Topic answeredTopic = new Topic(user, "title");
+        answeredTopic.setBranch(new Branch("",""));
+        answeredTopic.setClosed(true);
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(answeredTopic);
+
+        topicService.replyToTopic(TOPIC_ID, ANSWER_BODY, BRANCH_ID);
+    }
+
+    @Test
+    public void testReplyToClosedTopicWithGrant() throws NotFoundException {
+        Topic answeredTopic = new Topic(user, "title");
+        answeredTopic.setBranch(new Branch("",""));
+        answeredTopic.setClosed(true);
+        when(permissionEvaluator.hasPermission(
+                Matchers.<Authentication>any(), anyLong(), anyString(),  anyString()))
+                .thenReturn(true);
         when(userService.getCurrentUser()).thenReturn(user);
         when(topicFetchService.get(TOPIC_ID)).thenReturn(answeredTopic);
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
