@@ -27,7 +27,7 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.TopicModificationService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +48,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
     private SectionDao sectionDao;
     private TopicDao topicDao;
     private PostDao postDao;
-    private TopicService topicService;
+    private TopicModificationService topicService;
     private SecurityService securityService;
 
     /**
@@ -67,7 +67,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
             SectionDao sectionDao,
             TopicDao topicDao,
             PostDao postDao,
-            TopicService topicService,
+            TopicModificationService topicService,
             SecurityService securityService) {
         super(branchDao);
         this.sectionDao = sectionDao;

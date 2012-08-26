@@ -14,26 +14,20 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.joda.time.DateTime;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.PollService;
-import org.jtalks.jcommune.service.SubscriptionService;
-import org.jtalks.jcommune.service.TopicService;
-import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
@@ -46,11 +40,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
  * @author Max Malakhov
  * @author Eugeny Batov
  */
-public class TransactionalTopicService extends AbstractTransactionalEntityService<Topic, TopicDao>
-        implements TopicService {
+public class TransactionalTopicModificationService implements TopicModificationService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    private TopicDao dao;
+
+    private TopicFetchService topicFetchService;
     private SecurityService securityService;
     private BranchDao branchDao;
     private NotificationService notificationService;
@@ -64,24 +60,27 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * @param dao                 data access object, which should be able do all CRUD operations with topic entity
      * @param securityService     {@link org.jtalks.common.security.SecurityService} for retrieving current user
      * @param branchDao           used for checking branch existence
-     * @param notificationService to send email nofications on topic updates to subscribed users
+     * @param notificationService to send email notifications on topic updates to subscribed users
      * @param subscriptionService for subscribing user on topic if notification enabled
      * @param userService         to get current logged in user
      * @param pollService         to create a poll and vote in a poll
+     * @param topicFetchService   to retrieve topics from a database
      */
-    public TransactionalTopicService(TopicDao dao, SecurityService securityService,
-                                     BranchDao branchDao,
-                                     NotificationService notificationService,
-                                     SubscriptionService subscriptionService,
-                                     UserService userService,
-                                     PollService pollService) {
-        super(dao);
+    public TransactionalTopicModificationService(TopicDao dao, SecurityService securityService,
+                                                 BranchDao branchDao,
+                                                 NotificationService notificationService,
+                                                 SubscriptionService subscriptionService,
+                                                 UserService userService,
+                                                 PollService pollService, 
+                                                 TopicFetchService topicFetchService) {
+        this.dao = dao;
         this.securityService = securityService;
         this.branchDao = branchDao;
         this.notificationService = notificationService;
         this.subscriptionService = subscriptionService;
         this.userService = userService;
         this.pollService = pollService;
+        this.topicFetchService = topicFetchService;
     }
 
     /**
@@ -93,10 +92,10 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         JCUser currentUser = userService.getCurrentUser();
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);
-        Topic topic = get(topicId);
+        Topic topic = topicFetchService.get(topicId);
         Post answer = new Post(currentUser, answerBody);
         topic.addPost(answer);
-        this.getDao().update(topic);
+        dao.update(topic);
 
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(currentUser).on(answer).flush();
         notificationService.topicChanged(topic);
@@ -140,8 +139,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
 
         logger.debug("Created new topic id={}, branch id={}, author={}",
                 new Object[]{topic.getId(), branch.getId(), currentUser.getUsername()});
-        logger.info("Created new topic: \"{}\". Author: {}", topicDto.getTitle(), currentUser.getUsername());
-
         return topic;
     }
 
@@ -150,40 +147,11 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    public Page<Topic> getRecentTopics(int page) {
-        JCommunePageRequest pageRequest = JCommunePageRequest.
-                createWithPagingEnabled(page, userService.getCurrentUser().getPageSize());
-        DateTime date24HoursAgo = new DateTime().minusDays(1);
-        return this.getDao().getTopicsUpdatedSince(date24HoursAgo, pageRequest);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Page<Topic> getUnansweredTopics(int page) {
-        JCommunePageRequest pageRequest = JCommunePageRequest.
-                createWithPagingEnabled(page, userService.getCurrentUser().getPageSize());
-        return this.getDao().getUnansweredTopics(pageRequest);
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void updateTopic(Topic topicDto, String bodyText) throws NotFoundException {
-        updateTopic(topicDto, bodyText, false);
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    //todo: hasPermission
+    @PreAuthorize("hasPermission(#topicDto.id, 'TOPIC', 'GeneralPermission.WRITE') and " +
+            "hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.EDIT_OWN_POSTS') or "+
+            "hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
     public void updateTopic(Topic topicDto, String bodyText, boolean notifyOnAnswers) throws NotFoundException {
-        Topic topic = get(topicDto.getId());
+        Topic topic = topicFetchService.get(topicDto.getId());
         topic.setTitle(topicDto.getTitle());
         topic.setSticked(topicDto.isSticked());
         topic.setAnnouncement(topicDto.isAnnouncement());
@@ -191,7 +159,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         post.setPostContent(bodyText);
         post.updateModificationDate();
         topic.updateModificationDate();
-        this.getDao().update(topic);
+        dao.update(topic);
         notificationService.topicChanged(topic);
         JCUser currentUser = userService.getCurrentUser();
         subscribeOnTopicIfNotificationsEnabled(notifyOnAnswers, topic, currentUser);
@@ -216,40 +184,26 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     /**
      * {@inheritDoc}
      */
+    @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_TOPICS')")
     @Override
-    public Branch deleteTopic(long topicId) throws NotFoundException {
-        Topic topic = get(topicId);
-        long branchId = topic.getBranch().getId();
-        return deleteTopic(topic, branchId);
-    }
-
-    /**
-     * Performs topic deleting with permission check
-     *
-     * @param topic    topic to delete
-     * @param branchId used for annotation permission check only
-     * @return branch without deleted topic
-     */
-    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.DELETE_TOPICS')")
-    private Branch deleteTopic(Topic topic, long branchId) throws NotFoundException {
+    public void deleteTopic(Topic topic) throws NotFoundException {
         Branch branch = deleteTopicSilent(topic);
         notificationService.branchChanged(branch);
 
         logger.info("Deleted topic \"{}\". Topic id: {}", topic.getTitle(), topic.getId());
-        return branch;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Branch deleteTopicSilent(long topicId) throws NotFoundException {
-        Topic topic = get(topicId);
-        return deleteTopicSilent(topic);
+    public void deleteTopicSilent(long topicId) throws NotFoundException {
+        Topic topic = topicFetchService.get(topicId);
+        this.deleteTopicSilent(topic);
     }
 
     /**
-     * Performs actual topic deleting. Deletes all topic related data and
+     * Performs actual topic deletion. Deletes all topic related data and
      * recalculates user's post count.
      *
      * @param topic topic to delete
@@ -272,21 +226,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     /**
      * {@inheritDoc}
      */
-    @Override
-    public void moveTopic(Long topicId, Long branchId) throws NotFoundException {
-        Topic topic = get(topicId);
-        moveTopic(topic, branchId);
-    }
-
-    /**
-     * Performs actual topic moving with permission check
-     *
-     * @param topic    topic to move
-     * @param branchId ID of target branch
-     * @throws NotFoundException if target branch was not found by id
-     */
     @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.MOVE_TOPICS')")
-    private void moveTopic(Topic topic, Long branchId) throws NotFoundException {
+    @Override
+    public void moveTopic(Topic topic, Long branchId) throws NotFoundException {
         Branch targetBranch = branchDao.get(branchId);
         targetBranch.addTopic(topic);
         branchDao.update(targetBranch);
@@ -299,21 +241,20 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     /**
      * {@inheritDoc}
      */
+    @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.CLOSE_TOPICS')")
     @Override
-    public Topic get(Long id) throws NotFoundException {
-        Topic topic = super.get(id);
-        topic.setViews(topic.getViews() + 1);
-        this.getDao().update(topic);
-        return topic;
+    public void closeTopic(Topic topic) {
+        topic.setClosed(true);
+        dao.update(topic);
     }
 
     /**
      * {@inheritDoc}
      */
+    @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.CLOSE_TOPICS')")
     @Override
-    public Page<Topic> getTopics(Branch branch, int page, boolean pagingEnabled) {
-        JCommunePageRequest pageRequest = new JCommunePageRequest(
-                page, userService.getCurrentUser().getPageSize(), pagingEnabled);
-        return getDao().getTopics(branch, pageRequest);
+    public void openTopic(Topic topic) {
+        topic.setClosed(false);
+        dao.update(topic);
     }
 }

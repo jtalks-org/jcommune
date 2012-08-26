@@ -74,22 +74,17 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void updatePost(long postId, String postContent) throws NotFoundException {
-        Post post = get(postId);
-        updatePost(post, postContent);
-    }
-
-    /**
      * Performs update with security checking.
      *
-     * @param post        an instance of post, that will be updated
+     * @param post an instance of post, that will be updated
      * @param postContent new content of the post
      */
-    //todo: hasPermission
-    private void updatePost(Post post, String postContent) {
+
+    @PreAuthorize("hasPermission(#post.id, 'POST', 'GeneralPermission.WRITE') and " +
+            "hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OWN_POSTS') or "+
+            "hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
+    @Override
+    public void updatePost(Post post, String postContent) {
         post.setPostContent(postContent);
         post.updateModificationDate();
 

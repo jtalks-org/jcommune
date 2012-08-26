@@ -17,10 +17,7 @@ package org.jtalks.jcommune.web.controller;
 import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.LastReadPostService;
-import org.jtalks.jcommune.service.PostService;
-import org.jtalks.jcommune.service.TopicService;
-import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.web.dto.PostDto;
@@ -62,7 +59,8 @@ public class PostController {
     private PostService postService;
     private LastReadPostService lastReadPostService;
     private BreadcrumbBuilder breadcrumbBuilder;
-    private TopicService topicService;
+    private TopicFetchService topicFetchService;
+    private TopicModificationService topicModificationService;
     private BBCodeService bbCodeService;
     private UserService userService;
 
@@ -80,20 +78,23 @@ public class PostController {
     }
 
     /**
-     * @param postService         {@link PostService} instance to be injected
-     * @param breadcrumbBuilder   the object which provides actions on {@link BreadcrumbBuilder} entity
-     * @param topicService        {@link TopicService} to be injected
-     * @param bbCodeService       to create valid quotes
-     * @param lastReadPostService not to track user posts as updates for himself
-     * @param userService     to get the current user information
+     * @param postService              {@link PostService} instance to be injected
+     * @param breadcrumbBuilder        the object which provides actions on {@link BreadcrumbBuilder} entity
+     * @param topicFetchService        to retrieve topics from a database
+     * @param topicModificationService to update topics with new posts
+     * @param bbCodeService            to create valid quotes
+     * @param lastReadPostService      not to track user posts as updates for himself
+     * @param userService              to get the current user information
      */
     @Autowired
     public PostController(PostService postService, BreadcrumbBuilder breadcrumbBuilder,
-                          TopicService topicService, BBCodeService bbCodeService,
-                          LastReadPostService lastReadPostService, UserService userService) {
+                          TopicFetchService topicFetchService, TopicModificationService topicModificationService,
+                          BBCodeService bbCodeService, LastReadPostService lastReadPostService,
+                          UserService userService) {
         this.postService = postService;
         this.breadcrumbBuilder = breadcrumbBuilder;
-        this.topicService = topicService;
+        this.topicFetchService = topicFetchService;
+        this.topicModificationService = topicModificationService;
         this.bbCodeService = bbCodeService;
         this.lastReadPostService = lastReadPostService;
         this.userService = userService;
@@ -155,7 +156,8 @@ public class PostController {
                     .addObject(TOPIC_ID, topicId)
                     .addObject(POST_ID, postId);
         }
-        postService.updatePost(postDto.getId(), postDto.getBodyText());
+        Post post = postService.get(postId);
+        postService.updatePost(post, postDto.getBodyText());
         return new ModelAndView("redirect:/posts/" + postId);
     }
 
@@ -168,7 +170,7 @@ public class PostController {
      */
     @RequestMapping(method = RequestMethod.GET, value = "/posts/new")
     public ModelAndView addPost(@RequestParam(TOPIC_ID) Long topicId) throws NotFoundException {
-        Topic answeringTopic = topicService.get(topicId);
+        Topic answeringTopic = topicFetchService.get(topicId);
         return new ModelAndView("answer")
                 .addObject("topic", answeringTopic)
                 .addObject(TOPIC_ID, topicId)
@@ -217,8 +219,9 @@ public class PostController {
             mav.addObject(POST_DTO, postDto);
             return mav;
         }
-        Topic topic = topicService.get(postDto.getTopicId());
-        Post newbie = topicService.replyToTopic(postDto.getTopicId(), postDto.getBodyText(), topic.getBranch().getId());
+        Topic topic = topicFetchService.get(postDto.getTopicId());
+        Post newbie = topicModificationService.replyToTopic(
+                postDto.getTopicId(), postDto.getBodyText(), topic.getBranch().getId());
         lastReadPostService.markTopicAsRead(topic);
         return new ModelAndView(this.redirectToPageWithPost(newbie.getId()));
     }

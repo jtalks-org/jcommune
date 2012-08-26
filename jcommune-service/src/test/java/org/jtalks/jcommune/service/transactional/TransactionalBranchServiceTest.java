@@ -37,7 +37,7 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.TopicModificationService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -67,7 +67,7 @@ public class TransactionalBranchServiceTest {
     @Mock
     private BranchService branchService;
     @Mock
-    private TopicService topicService;
+    private TopicModificationService topicService;
     @Mock
     private SecurityService securityService;
 

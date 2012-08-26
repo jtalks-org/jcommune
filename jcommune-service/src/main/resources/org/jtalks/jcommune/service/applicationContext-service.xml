@@ -45,7 +45,7 @@
     <task:executor id="executor" pool-size="1"/>
 
     <task:scheduler id="scheduler" pool-size="1"/>
-       
+
     <!--Declaration services bean -->
 
     <bean id="avatarService" class="org.jtalks.jcommune.service.nontransactional.AvatarService">
@@ -92,14 +92,8 @@
         <constructor-arg ref="userService"/>
     </bean>
 
-    <bean id="topicSearchService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalTopicFullSearchService">
-        <constructor-arg ref="topicSearchDao"/>
-        <constructor-arg ref="userService"/>
-    </bean>
-    
-     <bean id="topicService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalTopicService">
+    <bean id="topicModificationService"
+          class="org.jtalks.jcommune.service.transactional.TransactionalTopicModificationService">
         <constructor-arg ref="topicDao"/>
         <constructor-arg ref="securityService"/>
         <constructor-arg ref="topicBranchDao"/>
@@ -107,6 +101,14 @@
         <constructor-arg ref="subscriptionService"/>
         <constructor-arg ref="userService"/>
         <constructor-arg ref="pollService"/>
+        <constructor-arg ref="topicFetchService"/>
+    </bean>
+
+    <bean id="topicFetchService"
+          class="org.jtalks.jcommune.service.transactional.TransactionalTopicFetchService">
+        <constructor-arg ref="topicDao"/>
+        <constructor-arg ref="userService"/>
+        <constructor-arg ref="topicSearchDao"/>
     </bean>
 
     <bean id="topicBranchService"
@@ -115,7 +117,7 @@
         <constructor-arg ref="branchSectionDao"/>
         <constructor-arg ref="topicDao"/>
         <constructor-arg ref="postDao"/>
-        <constructor-arg ref="topicService"/>
+        <constructor-arg ref="topicModificationService"/>
         <constructor-arg ref="securityService"/>
     </bean>
 

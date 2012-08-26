@@ -29,7 +29,7 @@ import org.springframework.data.domain.Page;
  * @author Vitaliy Kravchenko
  * @author Eugeny Batov
  */
-public interface TopicService extends EntityService<Topic> {
+public interface TopicModificationService {
 
     /**
      * Add the answer to the topic. Add the specified message to the target topic and save.
@@ -55,36 +55,7 @@ public interface TopicService extends EntityService<Topic> {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
      */
-    Topic createTopic(Topic topic, String bodyText, boolean notifyOnAnswers)
-            throws NotFoundException;
-
-    /**
-     * Get topics that have been updated in the last 24 hours.
-     *
-     * @param page page page number, for which we will find topics
-     * @return object that contains topics(that have been updated in the last 24 hours)
-     *         for one page and information for pagination
-     */
-    Page<Topic> getRecentTopics(int page);
-
-    /**
-     * Get unanswered topics(topics which has only 1 post added during topic creation).
-     *
-     * @param page page number, for which we will find topics
-     * @return object that contains unanswered topics for one page and information for
-     *         pagination
-     */
-    Page<Topic> getUnansweredTopics(int page);
-
-    /**
-     * Update current topic with given title and body.
-     *
-     * @param topicDto {@link Topic} object used as DTO between layers
-     * @param bodyText body of topic
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when topic not found
-     */
-    void updateTopic(Topic topicDto, String bodyText) throws NotFoundException;
+    Topic createTopic(Topic topic, String bodyText, boolean notifyOnAnswers) throws NotFoundException;
 
     /**
      * Update current topic with given title and body.
@@ -100,40 +71,42 @@ public interface TopicService extends EntityService<Topic> {
     /**
      * Delete topic by id. Sends notifications to subscribers and performs logging.
      *
-     * @param topicId topic id
-     * @return branch from which topic deleted
+     * @param topic topic to be deleted
      * @throws NotFoundException when topic not found
      */
-    Branch deleteTopic(long topicId) throws NotFoundException;
+    void deleteTopic(Topic topic) throws NotFoundException;
     
     /**
      * Delete topic by id. Does not send any notification or log messages. 
      * Intended to be used mostly by other services.
      *
      * @param topicId topic id
-     * @return branch from which topic deleted
      * @throws NotFoundException when topic not found
      */
-    Branch deleteTopicSilent(long topicId) throws NotFoundException;
+    void deleteTopicSilent(long topicId) throws NotFoundException;
 
     /**
      * Moves topic to another branch.
      *
-     * @param topicId  id of moving topic
+     * @param topic  topic we're about to move
      * @param branchId id of target branch
      * @throws NotFoundException when topic or branch with given id not found
      */
-    void moveTopic(Long topicId, Long branchId) throws NotFoundException;
+    void moveTopic(Topic topic, Long branchId) throws NotFoundException;
 
     /**
-     * Get topics in the branch.
+     * Closes topic so no one can add new post until it's not open again.
+     * For the topic already closed does nothing.
      *
-     * @param branch        for this branch we will find topics
-     * @param page          page number, for which we will find topics
-     * @param pagingEnabled if true, then it returns topics for one page, otherwise it
-     *                      return all topics in the branch
-     * @return object that contains topics for one page(note, that one page may contain
-     *         all topics) and information for pagination
+     * @param topic  topic we want to close, hibernate session-bound
      */
-    Page<Topic> getTopics(Branch branch, int page, boolean pagingEnabled);
+    void closeTopic(Topic topic);
+
+    /**
+     * Opens topic so granted users may add posts again.
+     * For the topic already open does nothing.
+     *
+     * @param topic topic we want to open, hibernate session-bound
+     */
+    void openTopic(Topic topic);
 }

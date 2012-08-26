@@ -28,10 +28,7 @@ import java.util.List;
 
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.LastReadPostService;
-import org.jtalks.jcommune.service.TopicService;
-import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.BranchDto;
@@ -58,7 +55,7 @@ public class BranchControllerTest {
     @Mock
     private BranchService branchService;
     @Mock
-    private TopicService topicService;
+    private TopicFetchService topicFetchService;
     @Mock
     private BreadcrumbBuilder breadcrumbBuilder;
     @Mock
@@ -77,7 +74,7 @@ public class BranchControllerTest {
         initMocks(this);
         controller = new BranchController(
                 branchService,
-                topicService,
+                topicFetchService,
                 lastReadPostService,
                 userService,
                 breadcrumbBuilder,
@@ -95,7 +92,7 @@ public class BranchControllerTest {
         Page<Topic> topicsPage = new PageImpl<Topic>(Collections.<Topic> emptyList(), pageRequest, 0);
         //set expectations
         when(branchService.get(branchId)).thenReturn(branch);
-        when(topicService.getTopics(branch, page, pagingEnabled)).thenReturn(topicsPage);
+        when(topicFetchService.getTopics(branch, page, pagingEnabled)).thenReturn(topicsPage);
         when(breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)))
                 .thenReturn(new ArrayList<Breadcrumb>());
         when(forumStatisticsProvider.getOnlineRegisteredUsers()).thenReturn(new ArrayList<Object>());
@@ -125,13 +122,13 @@ public class BranchControllerTest {
         int page = 1;
         Page<Topic> topicsPage = new PageImpl<Topic>(new ArrayList<Topic>());
         //set expectations
-        when(topicService.getRecentTopics(page)).thenReturn(topicsPage);
+        when(topicFetchService.getRecentTopics(page)).thenReturn(topicsPage);
 
         //invoke the object under test
         ModelAndView mav = controller.recentTopicsPage(page);
 
         //check expectations
-        verify(topicService).getRecentTopics(page);
+        verify(topicFetchService).getRecentTopics(page);
 
         //check result
         assertViewName(mav, "recent");
@@ -144,13 +141,13 @@ public class BranchControllerTest {
         int page = 1;
         Page<Topic> topicsPage = new PageImpl<Topic>(new ArrayList<Topic>());
         //set expectations
-        when(topicService.getUnansweredTopics(page)).thenReturn(topicsPage);
+        when(topicFetchService.getUnansweredTopics(page)).thenReturn(topicsPage);
 
         //invoke the object under test
         ModelAndView mav = controller.unansweredTopicsPage(page);
 
         //check expectations
-        verify(topicService).getUnansweredTopics(page);
+        verify(topicFetchService).getUnansweredTopics(page);
 
         //check result
         assertViewName(mav, "unansweredTopics");
@@ -171,11 +168,11 @@ public class BranchControllerTest {
         when(breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)))
                 .thenReturn(new ArrayList<Breadcrumb>());
         when(forumStatisticsProvider.getOnlineRegisteredUsers()).thenReturn(new ArrayList<Object>());
-        when(topicService.getTopics(branch, page, pagingEnabled)).thenReturn(topicsPage);
+        when(topicFetchService.getTopics(branch, page, pagingEnabled)).thenReturn(topicsPage);
 
         ModelAndView mav = controller.showPage(branchId, page, pagingEnabled);
 
-        List<String> actualViewList = assertAndReturnModelAttributeOfType(mav, "viewList", List.class);
+        List actualViewList = assertAndReturnModelAttributeOfType(mav, "viewList", List.class);
         assertEquals(actualViewList, new ArrayList<String>());
     }
 

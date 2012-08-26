@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.TopicFullSearchService;
+import org.jtalks.jcommune.service.TopicFetchService;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -37,27 +37,28 @@ public class TopicSearchControllerTest {
 	private static final String DEFAULT_SEARCH_TEXT = "topic content";
 	private static final int START_PAGE = 1;
 	@Mock
-	private TopicFullSearchService topicFullSearchService;
+	private TopicFetchService topicFetchService;
+
 	private TopicSearchController topicSearchController;
 
 	@BeforeMethod
 	public void init() {
 		MockitoAnnotations.initMocks(this);
-		topicSearchController = new TopicSearchController(topicFullSearchService);
+		topicSearchController = new TopicSearchController(topicFetchService);
 	}
 
 	@Test
 	public void testRebuildIndexes() {
 		topicSearchController.rebuildIndexes();
 		
-		Mockito.verify(topicFullSearchService).rebuildIndex();
+		Mockito.verify(topicFetchService).rebuildSearchIndex();
 	}
 	
 	@Test
 	public void testInitSearch() {
 		Page<Topic> searchResultPage = new PageImpl<Topic>(Collections.<Topic> emptyList());
 		
-		Mockito.when(topicFullSearchService.searchByTitleAndContent(DEFAULT_SEARCH_TEXT, START_PAGE))
+		Mockito.when(topicFetchService.searchByTitleAndContent(DEFAULT_SEARCH_TEXT, START_PAGE))
 				.thenReturn(searchResultPage);
 
 		ModelAndView modelAndView = topicSearchController.initSearch(DEFAULT_SEARCH_TEXT);
@@ -67,15 +68,15 @@ public class TopicSearchControllerTest {
 				"The controller must return the result of TopicFullSearchService.");
 		Assert.assertEquals(DEFAULT_SEARCH_TEXT, model.get(TopicSearchController.URI_ATTRIBUTE_NAME),
 				"Uri and the search text must be identical.");
-		Mockito.verify(topicFullSearchService).searchByTitleAndContent(DEFAULT_SEARCH_TEXT, START_PAGE);
+		Mockito.verify(topicFetchService).searchByTitleAndContent(DEFAULT_SEARCH_TEXT, START_PAGE);
 	}
 
     @Test
 	public void testContinueSearch() {
         Page<Topic> searchResultPage = new PageImpl<Topic>(Collections.<Topic> emptyList());
 		int page = 2;
-		
-		Mockito.when(topicFullSearchService.searchByTitleAndContent(DEFAULT_SEARCH_TEXT, page))
+
+        Mockito.when(topicFetchService.searchByTitleAndContent(DEFAULT_SEARCH_TEXT, page))
 				.thenReturn(searchResultPage);
 
 		ModelAndView modelAndView = topicSearchController.continueSearch(DEFAULT_SEARCH_TEXT, page);
@@ -85,6 +86,6 @@ public class TopicSearchControllerTest {
 				"The controller must return the result of TopicFullSearchService.");
 		Assert.assertEquals(DEFAULT_SEARCH_TEXT, model.get(TopicSearchController.URI_ATTRIBUTE_NAME),
 				"Uri and the search text must be identical.");
-		Mockito.verify(topicFullSearchService).searchByTitleAndContent(DEFAULT_SEARCH_TEXT, page);
+		Mockito.verify(topicFetchService).searchByTitleAndContent(DEFAULT_SEARCH_TEXT, page);
 	}
 }

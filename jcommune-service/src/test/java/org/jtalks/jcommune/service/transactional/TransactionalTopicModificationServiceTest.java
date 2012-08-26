@@ -26,10 +26,7 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.PollService;
-import org.jtalks.jcommune.service.SubscriptionService;
-import org.jtalks.jcommune.service.TopicService;
-import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.mockito.Matchers;
@@ -45,15 +42,15 @@ import java.util.List;
 import java.util.Set;
 
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.*;
 
 /**
- * This test cover {@code TransactionalTopicService} logic validation.
+ * This test cover {@code TransactionalTopicModificationService} logic validation.
  * Logic validation cover update/get/error cases by this class.
  *
  * @author Osadchuck Eugeny
@@ -62,7 +59,7 @@ import static org.testng.Assert.assertNotNull;
  * @author Max Malakhov
  * @author Eugeny Batov
  */
-public class TransactionalTopicServiceTest {
+public class TransactionalTopicModificationServiceTest {
 
     private final long TOPIC_ID = 999L;
     private final long BRANCH_ID = 1L;
@@ -78,7 +75,7 @@ public class TransactionalTopicServiceTest {
     private final boolean NEW_STICKED = false;
     private final boolean NEW_ANNOUNCEMENT = false;
 
-    private TopicService topicService;
+    private TopicModificationService topicService;
 
     @Mock
     private SecurityService securityService;
@@ -94,6 +91,8 @@ public class TransactionalTopicServiceTest {
     private UserService userService;
     @Mock
     private PollService pollService;
+    @Mock
+    private TopicFetchService topicFetchService;
 
     private CompoundAclBuilder<User> aclBuilder;
 
@@ -101,48 +100,25 @@ public class TransactionalTopicServiceTest {
     public void setUp() throws Exception {
         initMocks(this);
         aclBuilder = mockAclBuilder();
-        topicService = new TransactionalTopicService(
+        topicService = new TransactionalTopicModificationService(
                 topicDao,
                 securityService,
                 branchDao,
                 notificationService,
                 subscriptionService,
                 userService,
-                pollService);
+                pollService, topicFetchService);
 
         user = new JCUser(USERNAME, "email@mail.com", "password");
 
     }
 
-    @Test
-    public void testGetTopic() throws NotFoundException {
-        Topic expectedTopic = new Topic(user, "title");
-        when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
-        when(topicDao.get(TOPIC_ID)).thenReturn(expectedTopic);
-
-        int viewsCount = expectedTopic.getViews();
-
-        Topic actualTopic = topicService.get(TOPIC_ID);
-
-        assertEquals(actualTopic.getViews(), viewsCount + 1);
-        assertEquals(actualTopic, expectedTopic, "Topics aren't equal");
-        verify(topicDao).isExist(TOPIC_ID);
-        verify(topicDao).get(TOPIC_ID);
-    }
-
-    @Test(expectedExceptions = {NotFoundException.class})
-    public void testGetTopicWithIncorrectId() throws NotFoundException {
-        when(topicDao.isExist(POST_ID)).thenReturn(false);
-
-        topicService.get(POST_ID);
-    }
 
     @Test
     public void testReplyToTopic() throws NotFoundException {
         Topic answeredTopic = new Topic(user, "title");
         when(userService.getCurrentUser()).thenReturn(user);
-        when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
-        when(topicDao.get(TOPIC_ID)).thenReturn(answeredTopic);
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(answeredTopic);
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
         Post createdPost = topicService.replyToTopic(TOPIC_ID, ANSWER_BODY, BRANCH_ID);
@@ -167,7 +143,7 @@ public class TransactionalTopicServiceTest {
         Post createdPost = createdTopic.getFirstPost();
 
         createTopicAssertions(branch, createdTopic, createdPost);
-        createTopicVerifications(branch, createdTopic, createdPost);
+        createTopicVerifications(branch);
     }
 
     @Test
@@ -179,7 +155,7 @@ public class TransactionalTopicServiceTest {
         Post createdPost = createdTopic.getFirstPost();
 
         createTopicAssertions(branch, createdTopic, createdPost);
-        createTopicVerifications(branch, createdTopic, createdPost);
+        createTopicVerifications(branch);
     }
 
     private void createTopicStubs(Branch branch) throws NotFoundException {
@@ -197,51 +173,12 @@ public class TransactionalTopicServiceTest {
         assertEquals(user.getPostCount(), 1);
     }
 
-    private void createTopicVerifications(Branch branch, Topic createdTopic, Post createdPost)
+    private void createTopicVerifications(Branch branch)
             throws NotFoundException {
         verify(branchDao).update(branch);
         verify(aclBuilder, times(2)).grant(GeneralPermission.WRITE);
         verify(notificationService).branchChanged(branch);
     }
-
-
-    @Test
-    public void testGetAllTopicsPastLastDay() throws NotFoundException {
-        int pageNumber = 1;
-        int pageSize = 20;
-        List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
-        Page<Topic> expectedPage = new PageImpl<Topic>(expectedList);
-        when(topicDao.getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JCommunePageRequest>any()))
-                .thenReturn(expectedPage);
-
-        JCUser currentUser = new JCUser("current", null, null);
-        currentUser.setPageSize(pageSize);
-        when(userService.getCurrentUser()).thenReturn(currentUser);
-
-        Page<Topic> actualPage = topicService.getRecentTopics(pageNumber);
-
-        assertNotNull(actualPage);
-        assertEquals(expectedPage, actualPage);
-        verify(topicDao).getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JCommunePageRequest>any());
-    }
-
-    @Test
-    public void testGetUnansweredTopics() {
-        int pageNumber = 1;
-        int pageSize = 20;
-        List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
-        Page<Topic> expectedPage = new PageImpl<Topic>(expectedList);
-        when(topicDao.getUnansweredTopics(Matchers.<JCommunePageRequest>any()))
-                .thenReturn(expectedPage);
-        JCUser currentUser = new JCUser("current", null, null);
-        currentUser.setPageSize(pageSize);
-        when(userService.getCurrentUser()).thenReturn(currentUser);
-
-        Page<Topic> actualPage = topicService.getUnansweredTopics(pageNumber);
-        assertNotNull(actualPage);
-        assertEquals(actualPage, expectedPage);
-    }
-
 
     @Test
     public void testDeleteTopic() throws NotFoundException {
@@ -255,9 +192,8 @@ public class TransactionalTopicServiceTest {
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(topic);
 
-        Branch branchFromWhichTopicDeleted = topicService.deleteTopic(TOPIC_ID);
+        topicService.deleteTopic(topic);
 
-        assertEquals(branchFromWhichTopicDeleted, branch);
         assertEquals(branch.getTopicCount(), 0);
         assertEquals(user.getPostCount(), 0);
         verify(branchDao).update(branch);
@@ -265,13 +201,7 @@ public class TransactionalTopicServiceTest {
         verify(notificationService).branchChanged(branch);
     }
 
-    @Test(expectedExceptions = {NotFoundException.class})
-    public void testDeleteNonExistentTopic() throws NotFoundException {
-        when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
 
-        topicService.deleteTopic(TOPIC_ID);
-    }
-    
     @Test
     public void testDeleteTopicSilent() throws NotFoundException {
         Topic topic = new Topic(user, "title");
@@ -281,21 +211,19 @@ public class TransactionalTopicServiceTest {
         user.setPostCount(1);
         Branch branch = createBranch();
         branch.addTopic(topic);
-        when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
-        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
 
-        Branch branchFromWhichTopicDeleted = topicService.deleteTopicSilent(TOPIC_ID);
+        topicService.deleteTopicSilent(TOPIC_ID);
 
-        assertEquals(branchFromWhichTopicDeleted, branch);
         assertEquals(branch.getTopicCount(), 0);
         assertEquals(user.getPostCount(), 0);
         verify(branchDao).update(branch);
         verify(securityService).deleteFromAcl(Topic.class, TOPIC_ID);
     }
-    
+
     @Test(expectedExceptions = {NotFoundException.class})
     public void testDeleteTopicSilentNonExistent() throws NotFoundException {
-        when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
+        when(topicFetchService.get(TOPIC_ID)).thenThrow(new NotFoundException());
 
         topicService.deleteTopicSilent(TOPIC_ID);
     }
@@ -324,6 +252,8 @@ public class TransactionalTopicServiceTest {
         updateTopicStubs(topic);
         Topic newTopic = createNewTopic();
         newTopic.setId(topic.getId());
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
+
         topicService.updateTopic(newTopic, NEW_POST_CONTENT, false);
 
         updateTopicVerifications(topic);
@@ -359,15 +289,13 @@ public class TransactionalTopicServiceTest {
     }
 
 
-    private void updateTopicStubs(Topic topic) {
+    private void updateTopicStubs(Topic topic) throws NotFoundException {
         when(userService.getCurrentUser()).thenReturn(user);
-        when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
-        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
     }
 
-    private void updateTopicVerifications(Topic topic) {
-        verify(topicDao).isExist(TOPIC_ID);
-        verify(topicDao).get(TOPIC_ID);
+    private void updateTopicVerifications(Topic topic) throws NotFoundException {
+        verify(topicFetchService).get(TOPIC_ID);
         verify(notificationService).topicChanged(topic);
     }
 
@@ -381,30 +309,28 @@ public class TransactionalTopicServiceTest {
         post.setId(POST_ID);
         topic.addPost(post);
 
-        when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
-        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
         Topic newTopic = createNewTopic();
         newTopic.setId(topic.getId());
-        topicService.updateTopic(newTopic, NEW_POST_CONTENT);
+        topicService.updateTopic(newTopic, NEW_POST_CONTENT, false);
 
         assertEquals(topic.getTitle(), NEW_TOPIC_TITLE);
         assertEquals(post.getPostContent(), NEW_POST_CONTENT);
         assertEquals(topic.isSticked(), NEW_STICKED);
         assertEquals(topic.isAnnouncement(), NEW_ANNOUNCEMENT);
 
-        verify(topicDao).isExist(TOPIC_ID);
-        verify(topicDao).get(TOPIC_ID);
         verify(notificationService).topicChanged(topic);
     }
 
     @Test(expectedExceptions = {NotFoundException.class})
     void testUpdateTopicNonExistentTopic() throws NotFoundException {
         Topic topic = new Topic();
+        topic.setId(TOPIC_ID);
         topic.setTitle("new title");
         String newBody = "new body";
         topic.setSticked(false);
         topic.setAnnouncement(false);
-        when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
+        when(topicFetchService.get(TOPIC_ID)).thenThrow(new NotFoundException());
 
         topicService.updateTopic(topic, newBody, false);
     }
@@ -419,49 +345,33 @@ public class TransactionalTopicServiceTest {
         currentBranch.addTopic(topic);
         Branch targetBranch = new Branch("target branch", "target branch description");
 
-        when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
-        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
         when(branchDao.get(BRANCH_ID)).thenReturn(targetBranch);
 
-        topicService.moveTopic(TOPIC_ID, BRANCH_ID);
+        topicService.moveTopic(topic, BRANCH_ID);
 
         assertEquals(targetBranch.getTopicCount(), 1);
         verify(branchDao).update(targetBranch);
         verify(notificationService).topicMoved(topic, TOPIC_ID);
     }
 
-    @Test(expectedExceptions = {NotFoundException.class})
-    public void testMoveNonExistentTopic() throws NotFoundException {
-        when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
-
-        topicService.moveTopic(TOPIC_ID, BRANCH_ID);
-    }
-
-    @Test(expectedExceptions = {NotFoundException.class})
-    public void testMoveTopicInNonExistentTargetBranch() throws NotFoundException {
-        when(branchDao.isExist(BRANCH_ID)).thenReturn(false);
-
-        topicService.moveTopic(TOPIC_ID, BRANCH_ID);
+    @Test
+    public void testCloseTopic() {
+        Topic topic = this.createTopic();
+        topicService.closeTopic(topic);
+        
+        assertTrue(topic.isClosed());
+        verify(topicDao).update(topic);
     }
 
     @Test
-    public void testGetTopics() {
-        int pageSize = 50;
-        Branch branch = createBranch();
-        Page<Topic> expectedPage = new PageImpl<Topic>(Collections.<Topic>emptyList());
+    public void testOpenTopic() {
+        Topic topic = this.createTopic();
+        topic.setClosed(true);
+        topicService.openTopic(topic);
 
-        JCUser currentUser = new JCUser("current", null, null);
-        currentUser.setPageSize(pageSize);
-        when(userService.getCurrentUser()).thenReturn(currentUser);
-        when(topicDao.getTopics(
-                Matchers.any(Branch.class), Matchers.any(JCommunePageRequest.class)))
-                .thenReturn(expectedPage);
-
-        Page<Topic> actualPage = topicService.getTopics(branch, pageSize, true);
-
-        assertEquals(actualPage, expectedPage, "Service returned incorrect data for one page of topics");
-        verify(topicDao).getTopics(
-                Matchers.any(Branch.class), Matchers.any(JCommunePageRequest.class));
+        assertFalse(topic.isClosed());
+        verify(topicDao).update(topic);
     }
 
     private Branch createBranch() {
