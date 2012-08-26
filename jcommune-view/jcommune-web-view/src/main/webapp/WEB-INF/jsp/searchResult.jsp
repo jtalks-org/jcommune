@@ -20,6 +20,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <head>
    <title><spring:message code="label.section.jtalks_forum"/></title>
 </head>
@@ -47,7 +48,9 @@
 	       <c:when test="${!(empty searchResultPage.content)}">
 	           <thead>
 		            <tr>
-		                <th class="status-col"></th>
+                        <sec:authorize access="isAuthenticated()">
+                            <th class="status-col"></th>
+                        </sec:authorize>
 		                <th><spring:message code="label.branch.header.topics"/></th>
 		                <th class="author-col"><spring:message code="label.branch.header.author"/></th>
 		                <th class="posted-in-col"><spring:message code="label.branch.header.branches"/></th>
@@ -58,10 +61,11 @@
 		        <tbody>
                     <c:forEach var="topic" items="${searchResultPage.content}" varStatus="i">
                         <tr>
-                            <td class="status-col"><img class="status-img" 
-                                src="${pageContext.request.contextPath}/resources/images/closed.png" 
-                                title="<spring:message code="label.section.close_forum"/>" /></td>
-                                
+                            <sec:authorize access="isAuthenticated()">
+                                <td class="status-col">
+                                    <jtalks:topicIcon topic="${topic}"/>
+                                </td>
+                            </sec:authorize>
 	                        <td>
 	                           <a href="${pageContext.request.contextPath}/topics/${topic.id}">
 	                               <c:out value="${topic.title}"/>

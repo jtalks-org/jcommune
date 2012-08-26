@@ -57,7 +57,7 @@
 	                    <tr>
 	                        <td class="status-col">
 	                            <img class="status-img"
-	                                 src="${pageContext.request.contextPath}/resources/images/closed.png"
+	                                 src="${pageContext.request.contextPath}/resources/images/closed-no-new-posts.png"
 	                                 title="<spring:message code="label.section.close_forum"/>"/>
 	                        </td>
 	                        <td>

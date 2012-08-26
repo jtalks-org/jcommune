@@ -73,8 +73,8 @@
 <div class="row-fluid upper-pagination forum-pagination-container">
 
     <div class="span2">
-        <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' 
-            permission='BranchPermission.CREATE_TOPICS'>
+        <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
+                              permission='BranchPermission.CREATE_TOPICS'>
             <a id='new-topic-btn' class="btn btn-primary"
                href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}">
                 <spring:message code="label.addtopic"/>
@@ -115,7 +115,9 @@
         <c:when test="${!(empty topicsPage.content)}">
             <thead>
             <tr>
-                <th class="status-col"></th>
+                <sec:authorize access="isAuthenticated()">
+                    <th class="status-col"></th>
+                </sec:authorize>
                 <th><spring:message code="label.branch.header.topics"/></th>
                 <th class="author-col shrink-to-fit"><spring:message code="label.branch.header.author"/></th>
                 <th class="posts-views shrink-to-fit forum-posts-view-header"><spring:message
@@ -128,30 +130,11 @@
             <c:forEach var="topic" items="${topicsPage.content}">
                 <%-- Topic row --%>
                 <tr>
-                    <td class="status-col">
-
-                        <c:set var="hasNewPosts" value="false"/>
-                        <sec:authorize access="isAuthenticated()">
-                            <c:if test="${topic.hasUpdates}">
-                                <c:set var="hasNewPosts" value="true"/>
-                            </c:if>
-                        </sec:authorize>
-
-                        <c:choose>
-                            <c:when test="${hasNewPosts}">
-                                <a href="${pageContext.request.contextPath}/posts/${topic.firstUnreadPostId}">
-                                    <img class="status-img"
-                                         src="${pageContext.request.contextPath}/resources/images/new_badge.png"
-                                         title="<spring:message code="label.topic.new_posts"/>"/>
-                                </a>
-                            </c:when>
-                            <c:otherwise>
-                                <img class="status-img"
-                                     src="${pageContext.request.contextPath}/resources/images/old_badge.png"
-                                     title="<spring:message code="label.topic.no_new_posts"/>"/>
-                            </c:otherwise>
-                        </c:choose>
-                    </td>
+                    <sec:authorize access="isAuthenticated()">
+                        <td class="status-col">
+                            <jtalks:topicIcon topic="${topic}"/>
+                        </td>
+                    </sec:authorize>
                     <td>
                         <c:choose>
                             <%--Some topic types should have a special prefix when displayed--%>
@@ -221,8 +204,8 @@
 <div class="row-fluid upper-pagination forum-pagination-container">
 
     <div class="span2">
-        <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' 
-            permission='BranchPermission.CREATE_TOPICS'>
+        <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
+                              permission='BranchPermission.CREATE_TOPICS'>
             <a id='new-topic-btn' class="btn btn-primary"
                href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}">
                 <spring:message code="label.addtopic"/>
