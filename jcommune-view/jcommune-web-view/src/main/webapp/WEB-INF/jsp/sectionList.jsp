@@ -71,11 +71,13 @@
                     <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
                                           permission='BranchPermission.VIEW_TOPICS'>
                         <tr>
-                            <td class="status-col">
-                                <img class="status-img"
-                                     src="${pageContext.request.contextPath}/resources/images/no-new-posts.png"
-                                     title="<spring:message code="label.topic.no_new_posts"/>"/>
-                            </td>
+                            <sec:authorize access="isAuthenticated()">
+                                <td class="status-col">
+                                    <img class="status-img"
+                                         src="${pageContext.request.contextPath}/resources/images/no-new-posts.png"
+                                         title="<spring:message code="label.topic.no_new_posts"/>"/>
+                                </td>
+                            </sec:authorize>
                             <td class="title-col">
                                 <a class="branch-title" href="${pageContext.request.contextPath}/branches/${branch.id}">
                                     <c:out value="${branch.name}"/>
