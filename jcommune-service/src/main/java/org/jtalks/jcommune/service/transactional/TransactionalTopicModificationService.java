@@ -147,7 +147,8 @@ public class TransactionalTopicModificationService implements TopicModificationS
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicDto.id, 'TOPIC', 'GeneralPermission.WRITE') or " +
+    @PreAuthorize("hasPermission(#topicDto.id, 'TOPIC', 'GeneralPermission.WRITE') and " +
+            "hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.EDIT_OWN_POSTS') or "+
             "hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
     public void updateTopic(Topic topicDto, String bodyText, boolean notifyOnAnswers) throws NotFoundException {
         Topic topic = topicFetchService.get(topicDto.getId());
