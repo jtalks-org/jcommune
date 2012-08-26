@@ -102,7 +102,11 @@ public class UserProfileController {
     @RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
     public ModelAndView showProfilePage(@PathVariable Long id) throws NotFoundException {
         JCUser user = userService.get(id);
-        return getUserProfileModelAndView(user);
+        JCUser currentUser = userService.getCurrentUser();
+        return new ModelAndView("userDetails")
+            .addObject("user", user)
+            .addObject("currentUser", currentUser)
+            .addObject("language", user.getLanguage());
     }
 
     /**
