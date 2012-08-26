@@ -63,7 +63,7 @@
                         <tr>
                             <sec:authorize access="isAuthenticated()">
                                 <td class="status-col">
-                                    <jtalks:topicIcon topic="${topic}"/>
+                                    <jtalks:topicIcon topic="${item}"/>
                                 </td>
                             </sec:authorize>
                             <td>
