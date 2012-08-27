@@ -296,7 +296,6 @@ input.form-check-radio-box[type="radio"] {
 }
 
 .table {
-    table-layout: fixed;
     word-wrap: break-word;
 }
 
