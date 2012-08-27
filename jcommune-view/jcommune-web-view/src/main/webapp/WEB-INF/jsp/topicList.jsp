@@ -161,12 +161,12 @@
                         </sub>
                     </td>
                     <td class="author-col">
-                        <span class="shrink-to-fit"><a href='${pageContext.request.contextPath}/users/${topic.topicStarter.id}'>
+                        <a href='${pageContext.request.contextPath}/users/${topic.topicStarter.id}'>
                             <c:out value="${topic.topicStarter.username}"/>
-                        </a></span>
+                        </a>
                     </td>
                     <td class="posts-views">
-                        <span class="shrink-to-fit"><spring:message code="label.section.header.messages"/></span>:
+                        <spring:message code="label.section.header.messages"/>:
                         <span class='test-posts-count'><c:out value="${topic.postCount}"/></span><br/>
                         <spring:message code="label.branch.header.views"/>:
                         <span class='test-views'><c:out value="${topic.views}"/></span>
@@ -178,9 +178,9 @@
                         </a>
 
                         <p><spring:message code="label.topic.last_post_by"/>
-                            <span class="shrink-to-fit"><a href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.id}">
+                            <a href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.id}">
                                 <c:out value="${topic.lastPost.userCreated.username}"/>
-                            </a></span>
+                            </a>
                         </p>
                     </td>
                 </tr>
