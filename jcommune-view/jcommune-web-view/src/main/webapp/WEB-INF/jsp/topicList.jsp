@@ -161,7 +161,7 @@
                         </sub>
                     </td>
                     <td class="author-col">
-                        <span><a href='${pageContext.request.contextPath}/users/${topic.topicStarter.id}'>
+                        <span class="shrink-to-fit"><a href='${pageContext.request.contextPath}/users/${topic.topicStarter.id}'>
                             <c:out value="${topic.topicStarter.username}"/>
                         </a></span>
                     </td>
