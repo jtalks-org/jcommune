@@ -24,6 +24,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.jtalks.common.model.entity.Branch;
@@ -110,7 +111,7 @@ public class TransactionalSectionServiceTest {
         when(sectionDao.isExist(SECTION_ID)).thenReturn(true);
         when(sectionDao.get(SECTION_ID)).thenReturn(expectedSection);
         
-        Section actualSection = sectionService.deleteAllBranches(SECTION_ID);
+        Section actualSection = sectionService.deleteAllTopicsInSection(SECTION_ID);
         
         assertEquals(actualSection, expectedSection, "Sections aren't equals");
         verify(sectionDao).isExist(SECTION_ID);
@@ -125,7 +126,7 @@ public class TransactionalSectionServiceTest {
         when(sectionDao.isExist(SECTION_ID)).thenReturn(true);
         when(sectionDao.get(SECTION_ID)).thenReturn(expectedSection);
         
-        Section actualSection = sectionService.deleteAllBranches(SECTION_ID);
+        Section actualSection = sectionService.deleteAllTopicsInSection(SECTION_ID);
         
         assertEquals(actualSection, expectedSection, "Sections aren't equals");
         verify(sectionDao).isExist(SECTION_ID);
@@ -137,7 +138,32 @@ public class TransactionalSectionServiceTest {
     public void testDeleteAllBranchesWithIncorrectId() throws NotFoundException {
         when(sectionDao.isExist(SECTION_ID)).thenReturn(false);
 
-        sectionService.deleteAllBranches(SECTION_ID);
+        sectionService.deleteAllTopicsInSection(SECTION_ID);
         assertTrue(false);
+    }
+
+    @Test
+    public void testDeleteAllTopics() throws NotFoundException {
+        Section expectedSection = new Section(SECTION_NAME);
+        expectedSection.setId(SECTION_ID);
+        when(sectionDao.getAll()).thenReturn(Collections.singletonList(expectedSection));
+        when(sectionDao.isExist(SECTION_ID)).thenReturn(true);
+        when(sectionDao.get(SECTION_ID)).thenReturn(expectedSection);
+
+        sectionService.deleteAllTopicsInForum();
+;
+        verify(sectionDao).isExist(SECTION_ID);
+        verify(sectionDao).get(SECTION_ID);
+        verify(branchService, times(0)).deleteBranchSilent(anyLong());
+    }
+
+    @Test(expectedExceptions=NotFoundException.class)
+    public void testDeleteAllTopicsWithIncorrectId() throws NotFoundException {
+        Section section = new Section(SECTION_NAME);
+        section.setId(SECTION_ID);
+        when(sectionDao.isExist(SECTION_ID)).thenReturn(false);
+        when(sectionDao.getAll()).thenReturn(Collections.singletonList(section));
+
+        sectionService.deleteAllTopicsInForum();
     }
 }

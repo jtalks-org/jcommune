@@ -73,7 +73,7 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
      * {@inheritDoc}
      */
     @Override
-    public Section deleteAllBranches(long sectionId) throws NotFoundException {
+    public Section deleteAllTopicsInSection(long sectionId) throws NotFoundException {
         Section section = get(sectionId);
         
         //Create tmp list to avoid ConcurrentModificationException
@@ -85,5 +85,15 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
         logger.info("All branches for sections \"{}\" were deleted. " +
                 "Section id: {}", section.getName(), section.getId());
         return section;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteAllTopicsInForum() throws NotFoundException {
+        for (Section section : this.getAll()){
+             this.deleteAllTopicsInSection(section.getId());
+        }
     }
 }
