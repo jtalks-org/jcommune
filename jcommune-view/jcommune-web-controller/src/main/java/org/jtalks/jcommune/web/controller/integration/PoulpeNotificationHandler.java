@@ -87,7 +87,7 @@ public class PoulpeNotificationHandler {
      *
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException if object for deletion has not been found
      */
-    @RequestMapping(value="/component}", method=RequestMethod.DELETE)
+    @RequestMapping(value="/component", method=RequestMethod.DELETE)
     @ResponseBody
     public void deleteComponent() throws NotFoundException {
         sectionService.deleteAllTopicsInForum();
