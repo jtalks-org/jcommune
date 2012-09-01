@@ -116,7 +116,6 @@ public class TransactionalSectionServiceTest {
         assertEquals(actualSection, expectedSection, "Sections aren't equals");
         verify(sectionDao).isExist(SECTION_ID);
         verify(sectionDao).get(SECTION_ID);
-        verify(branchService, times(2)).deleteBranchSilent(anyLong());
     }
     
     @Test
@@ -131,7 +130,6 @@ public class TransactionalSectionServiceTest {
         assertEquals(actualSection, expectedSection, "Sections aren't equals");
         verify(sectionDao).isExist(SECTION_ID);
         verify(sectionDao).get(SECTION_ID);
-        verify(branchService, times(0)).deleteBranchSilent(anyLong());
     }
     
     @Test(expectedExceptions=NotFoundException.class)
@@ -151,10 +149,9 @@ public class TransactionalSectionServiceTest {
         when(sectionDao.get(SECTION_ID)).thenReturn(expectedSection);
 
         sectionService.deleteAllTopicsInForum();
-;
+
         verify(sectionDao).isExist(SECTION_ID);
         verify(sectionDao).get(SECTION_ID);
-        verify(branchService, times(0)).deleteBranchSilent(anyLong());
     }
 
     @Test(expectedExceptions=NotFoundException.class)

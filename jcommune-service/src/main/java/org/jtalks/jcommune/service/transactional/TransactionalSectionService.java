@@ -79,7 +79,7 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
         //Create tmp list to avoid ConcurrentModificationException
         List<Branch> loopList = new ArrayList<Branch>(section.getBranches());        
         for (Branch branch : loopList) {
-            branchService.deleteBranchSilent(branch.getId());
+            branchService.deleteAllTopics(branch.getId());
         }
         
         logger.info("All branches for sections \"{}\" were deleted. " +

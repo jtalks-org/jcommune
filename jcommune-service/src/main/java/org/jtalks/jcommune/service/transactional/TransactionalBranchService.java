@@ -49,7 +49,6 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
     private TopicDao topicDao;
     private PostDao postDao;
     private TopicModificationService topicService;
-    private SecurityService securityService;
 
     /**
      * Create an instance of entity based service
@@ -59,22 +58,18 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
      * @param topicDao data access object for operations with topics  
      * @param postDao data access object for operations with posts 
      * @param topicService service to perform complex operations with topics
-     * @param securityService {@link org.jtalks.common.security.SecurityService} 
-     *          to perform ACL operations
      */
     public TransactionalBranchService(
             BranchDao branchDao,
             SectionDao sectionDao,
             TopicDao topicDao,
             PostDao postDao,
-            TopicModificationService topicService,
-            SecurityService securityService) {
+            TopicModificationService topicService) {
         super(branchDao);
         this.sectionDao = sectionDao;
         this.topicDao = topicDao;
         this.postDao = postDao;
         this.topicService = topicService;
-        this.securityService = securityService;
     }
 
     /**
@@ -151,23 +146,5 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
         logger.info("All topics for branch \"{}\" were deleted. " +
         		"Branch id: {}", branch.getName(), branch.getId());
         return branch;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Section deleteBranchSilent(long id) throws NotFoundException {
-        Branch branch = get(id);
-        
-        deleteAllTopics(id);
-        
-        Section section = branch.getSection();
-        section.deleteBranch(branch);
-        sectionDao.update(section);
-        
-        securityService.deleteFromAcl(Branch.class, id);
-        
-        return section;
     }
 }

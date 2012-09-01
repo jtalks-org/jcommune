@@ -120,7 +120,6 @@
         <constructor-arg ref="topicDao"/>
         <constructor-arg ref="postDao"/>
         <constructor-arg ref="topicModificationService"/>
-        <constructor-arg ref="securityService"/>
     </bean>
 
     <bean id="branchSectionService"

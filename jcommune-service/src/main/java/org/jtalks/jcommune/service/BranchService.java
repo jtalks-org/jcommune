@@ -70,16 +70,9 @@ public interface BranchService extends EntityService<Branch> {
      *
      * @param branchId branch id
      * @throws NotFoundException when branch not found
+     * @return branch for the id given
      */
     Branch deleteAllTopics(long branchId) throws NotFoundException;
 
-    /**
-     * Delete branch by id. Does not send any notification or log messages.
-     * Just perform logical delete. Intended to be used mostly by other services.
-     *
-     * @param id branch id
-     * @return section from which branch deleted
-     * @throws NotFoundException when branch not found
-     */
-    Section deleteBranchSilent(long id) throws NotFoundException;
+
 }
