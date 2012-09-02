@@ -52,7 +52,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class PrivateMessageController {
 
     public static final String PM_IDENTIFIERS = "pmIdentifiers";
-    private static final String SENDER_ID = "senderId";
+    public static final String SENDER_ID = "senderId";
     private PrivateMessageService pmService;
     private BBCodeService bbCodeService;
     private UserService userService;
@@ -96,8 +96,7 @@ public class PrivateMessageController {
     @RequestMapping(value = "/inbox", method = RequestMethod.GET)
     public ModelAndView inboxPage() {
         return new ModelAndView("pm/inbox")
-            .addObject("pmList", pmService.getInboxForCurrentUser())
-            .addObject("user", userService.getCurrentUser());
+            .addObject("pmList", pmService.getInboxForCurrentUser());
     }
 
     /**
@@ -108,8 +107,7 @@ public class PrivateMessageController {
     @RequestMapping(value = "/outbox", method = RequestMethod.GET)
     public ModelAndView outboxPage() {
         return new ModelAndView("pm/outbox")
-            .addObject("pmList", pmService.getOutboxForCurrentUser())
-            .addObject("user", userService.getCurrentUser());
+            .addObject("pmList", pmService.getOutboxForCurrentUser());
     }
 
     /**
@@ -120,8 +118,7 @@ public class PrivateMessageController {
     @RequestMapping(value = "/drafts", method = RequestMethod.GET)
     public ModelAndView draftsPage() {
         return new ModelAndView("pm/drafts")
-            .addObject("pmList", pmService.getDraftsFromCurrentUser())
-            .addObject("user", userService.getCurrentUser());
+            .addObject("pmList", pmService.getDraftsFromCurrentUser());
     }
 
     /**
@@ -133,7 +130,8 @@ public class PrivateMessageController {
     @RequestMapping(value = "/pm/new", method = RequestMethod.GET)
     public ModelAndView newPmPage(@RequestParam(SENDER_ID) Long senderId) {
         pmService.checkPermissionsToSend(senderId);
-        return new ModelAndView(PM_FORM).addObject(DTO, new PrivateMessageDto());
+        return new ModelAndView(PM_FORM)
+            .addObject(DTO, new PrivateMessageDto());
     }
 
     /**

@@ -56,7 +56,8 @@
 			<div class="clearfix"></div>
 			<div class="user-profile-top-buttons">
 				<c:if test="${user.username != auth}">
-					<jtalks:hasPermission targetId='${currentUser.id}' targetType='USER' 
+					<sec:authentication property="principal.id" var="senderId"/>
+					<jtalks:hasPermission targetId='${senderId}' targetType='USER' 
             							permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
 						<div class="user-profile-buttons-send">
 							<a class="btn btn-mini btn-info"

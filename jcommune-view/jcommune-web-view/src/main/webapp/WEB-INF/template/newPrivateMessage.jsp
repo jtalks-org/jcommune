@@ -18,8 +18,9 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<jtalks:hasPermission targetId='${user.id}' targetType='USER' permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
-	<a href="${pageContext.request.contextPath}/pm/new?senderId=${user.id}"
+<sec:authentication property="principal.id" var="senderId"/>
+<jtalks:hasPermission targetId='${senderId}' targetType='USER' permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
+	<a href="${pageContext.request.contextPath}/pm/new?senderId=${senderId}"
 	   class="btn btn-primary btn-small pm_buttons">
 	    <spring:message code="label.new_pm"/></a>
 </jtalks:hasPermission>
