@@ -72,7 +72,6 @@
                                 <br/>
 
                                 <c:out value="${branch.description}"/>
-                                <a href="#"><spring:message code="label.section.faq"/></a>
                                 <br/>
                                 <strong><spring:message code="label.section.moderators"/></strong>
                                 <jtalks:moderators moderators="${branch.moderatorsGroup.users}"/>
