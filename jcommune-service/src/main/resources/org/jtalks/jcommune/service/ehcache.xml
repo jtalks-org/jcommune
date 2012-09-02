@@ -17,11 +17,9 @@
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="http://ehcache.sf.net/ehcache.xsd">
 
+    <!--Contains local caches which are NOT synchronized between the application components-->
+
     <diskStore path="java.io.tmpdir"/>
-
-<!--    <cacheManagerPeerProviderFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheManagerPeerProviderFactory"
-                                     properties="file=jgroups-udp.xml"/>-->
-
     <defaultCache
             maxElementsInMemory="500"
             eternal="false"
@@ -30,10 +28,6 @@
             overflowToDisk="false"
             diskPersistent="false"
             memoryStoreEvictionPolicy="LFU">
-<!--        <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
-                                   properties="replicateAsynchronously=true, replicatePuts=true,
-                replicateUpdates=true, replicateUpdatesViaCopy=false,
-                replicateRemovals=true"/>-->
     </defaultCache>
 
     <!--

@@ -169,7 +169,7 @@
         <constructor-arg ref="lastReadPostHibernateDao"/>
     </bean>
 
-    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+    <bean id="localCache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
         <property name="configLocation" value="classpath:/org/jtalks/jcommune/service/ehcache.xml"/>
     </bean>
 
@@ -178,7 +178,7 @@
     Now used for storing new private messages count.
     -->
     <bean id="userDataCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
-        <property name="cacheManager" ref="cacheManager"/>
+        <property name="cacheManager" ref="localCache"/>
         <property name="cacheName" value="cuserDataCache"/>
     </bean>
 

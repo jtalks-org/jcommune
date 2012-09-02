@@ -17,6 +17,8 @@
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="http://ehcache.sf.net/ehcache.xsd">
 
+    <!--Contains replicating caches which are synchronized between the application components-->
+
     <diskStore path="java.io.tmpdir"/>
 
     <cacheManagerPeerProviderFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheManagerPeerProviderFactory"
