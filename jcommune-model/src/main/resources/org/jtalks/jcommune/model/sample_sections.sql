@@ -9,6 +9,7 @@ INSERT INTO BRANCHES (BRANCH_ID, UUID, NAME, DESCRIPTION, POSITION, SECTION_ID, 
 INSERT INTO BRANCHES (BRANCH_ID, UUID, NAME, DESCRIPTION, POSITION, SECTION_ID, MODERATORS_GROUP_ID) VALUES(4, '6', 'The last, but not least', 'More information', 1, 2 ,1);
 
 INSERT INTO `acl_class` VALUES (1,'BRANCH');
+INSERT INTO `acl_class` VALUES (2,'GROUP');
 
 INSERT INTO `acl_sid` VALUES (1,0,'usergroup:11');
 INSERT INTO `acl_sid` VALUES (3,0,'usergroup:12');
@@ -20,6 +21,7 @@ INSERT INTO `acl_object_identity` VALUES (1,1,1,NULL,1,1);
 INSERT INTO `acl_object_identity` VALUES (2,1,2,NULL,1,1);
 INSERT INTO `acl_object_identity` VALUES (3,1,3,NULL,1,1);
 INSERT INTO `acl_object_identity` VALUES (4,1,4,NULL,1,1);
+INSERT INTO `acl_object_identity` VALUES (5,2,11,NULL,1,1);
 
 INSERT INTO `acl_entry` VALUES (1,1,1,1,12,1,0,0);
 INSERT INTO `acl_entry` VALUES (2,1,2,1,6,1,0,0);
@@ -125,7 +127,10 @@ INSERT INTO `acl_entry` VALUES (99,3,25,1,6,1,0,0);
 INSERT INTO `acl_entry` VALUES (100,4,25,1,6,1,0,0);
 
 /* VIEW_TOPICS FOR anonymous users */
-INSERT INTO `acl_entry` VALUES (101, 1,26,5,6,1,0,0);
-INSERT INTO `acl_entry` VALUES (102, 2,26,5,6,1,0,0);
-INSERT INTO `acl_entry` VALUES (103, 3,26,5,6,1,0,0);
+INSERT INTO `acl_entry` VALUES (101,1,26,5,6,1,0,0);
+INSERT INTO `acl_entry` VALUES (102,2,26,5,6,1,0,0);
+INSERT INTO `acl_entry` VALUES (103,3,26,5,6,1,0,0);
 INSERT INTO `acl_entry` VALUES (104,4,26,5,6,1,0,0);
+
+/* SEND_PRIVATE_MESSAGES for registered users */
+INSERT INTO `acl_entry` VALUES (105,5,1,1,14,1,0,0);

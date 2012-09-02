@@ -27,8 +27,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.jtalks.common.model.entity.Section;
-import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
@@ -68,8 +66,6 @@ public class TransactionalBranchServiceTest {
     private BranchService branchService;
     @Mock
     private TopicModificationService topicService;
-    @Mock
-    private SecurityService securityService;
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -79,8 +75,7 @@ public class TransactionalBranchServiceTest {
                 sectionDao,
                 topicDao,
                 postDao,
-                topicService,
-                securityService);
+                topicService);
     }
 
     @Test
@@ -239,39 +234,4 @@ public class TransactionalBranchServiceTest {
         
         assertTrue(false);
     }
-    
-    @Test
-    public void testDeleteBranchSilent() throws NotFoundException {
-        Branch expectedBranch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
-        expectedBranch.addTopic(new Topic());
-        expectedBranch.addTopic(new Topic());
-        
-        Section expectedSection = new Section(null);
-        expectedSection.addOrUpdateBranch(expectedBranch);
-        expectedBranch.setSection(expectedSection);
-       
-        when(branchDao.isExist(BRANCH_ID)).thenReturn(true);
-        when(branchDao.get(BRANCH_ID)).thenReturn(expectedBranch);
-        
-        Section actualSection = branchService.deleteBranchSilent(BRANCH_ID);
-        
-        assertEquals(actualSection, expectedSection, "Branches aren't equal");
-        verify(branchDao, times(2)).isExist(BRANCH_ID);
-        verify(branchDao, times(2)).get(BRANCH_ID);
-        verify(sectionDao).update(expectedSection);
-        assertEquals(actualSection.getBranches().size(), 0);
-        verify(topicService, times(2)).deleteTopicSilent(anyLong());
-        verify(securityService).deleteFromAcl(Branch.class, BRANCH_ID);
-    }
-    
-    @Test(expectedExceptions=NotFoundException.class)
-    public void testDeleteBranchSilentWithIncorrectId() throws NotFoundException {
-        when(branchDao.isExist(BRANCH_ID)).thenReturn(false);
-        
-        branchService.deleteBranchSilent(BRANCH_ID);
-        
-        assertTrue(false);
-    }
-    
-    
 }

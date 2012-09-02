@@ -77,40 +77,7 @@
 <%-- Upper pagination --%>
 <div class="row-fluid upper-pagination forum-pagination-container">
     <div class="span3">
-        <c:if test="${!topic.closed}">
-            <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
-                                  permission='BranchPermission.CREATE_POSTS'>
-                <a id="new-topic-btn" class="btn btn-primary"
-                   href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}&branchId=${topic.branch.id}"
-                   title="<spring:message code='label.tips.create_new_post'/>">
-                    <spring:message code="label.answer"/>
-                </a>
-            </jtalks:hasPermission>
-        </c:if>
-        <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
-                              permission='BranchPermission.MOVE_TOPICS'>
-               <span class="topicId" id="${topic.id}">
-               <a name="move_topic" href="#" class="btn" title="<spring:message code='label.tips.move_topic'/>">
-                   <spring:message code="label.topic.move"/>
-               </a>
-               </span>
-        </jtalks:hasPermission>
-        <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
-                              permission='BranchPermission.CLOSE_TOPICS'>
-            <c:choose>
-                <c:when test="${topic.closed}">
-                    <a name="open_topic" href="${pageContext.request.contextPath}/topics/${topic.id}/open" class="btn">
-                        <spring:message code="label.topic.open"/>
-                    </a>
-                </c:when>
-                <c:otherwise>
-                    <a name="open_topic" href="${pageContext.request.contextPath}/topics/${topic.id}/close" class="btn">
-                        <spring:message code="label.topic.close"/>
-                    </a>
-                </c:otherwise>
-            </c:choose>
-
-        </jtalks:hasPermission>
+        <jtalks:topicControls topic="${topic}"/>
         &nbsp; <%-- For proper pagination layout without buttons--%>
     </div>
 
@@ -344,40 +311,7 @@
 
 <div class="row-fluid forum-pagination-container">
     <div class="span3">
-        <c:if test="${!topic.closed}">
-            <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
-                                  permission='BranchPermission.CREATE_POSTS'>
-                <a id="new-topic-btn" class="btn btn-primary"
-                   href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}&branchId=${topic.branch.id}"
-                   title="<spring:message code='label.tips.create_new_post'/>">
-                    <spring:message code="label.answer"/>
-                </a>
-            </jtalks:hasPermission>
-        </c:if>
-        <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
-                              permission='BranchPermission.MOVE_TOPICS'>
-               <span class="topicId" id="${topic.id}">
-                   <a name="move_topic" href="#" class="btn" title="<spring:message code='label.tips.move_topic'/>">
-                       <spring:message code="label.topic.move"/>
-                   </a>
-               </span>
-        </jtalks:hasPermission>
-        <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
-                              permission='BranchPermission.CLOSE_TOPICS'>
-            <c:choose>
-                <c:when test="${topic.closed}">
-                    <a name="open_topic" href="${pageContext.request.contextPath}/topics/${topic.id}/open" class="btn">
-                        <spring:message code="label.topic.open"/>
-                    </a>
-                </c:when>
-                <c:otherwise>
-                    <a name="open_topic" href="${pageContext.request.contextPath}/topics/${topic.id}/close" class="btn">
-                        <spring:message code="label.topic.close"/>
-                    </a>
-                </c:otherwise>
-            </c:choose>
-
-        </jtalks:hasPermission>
+        <jtalks:topicControls topic="${topic}"/>
         &nbsp; <%-- For proper pagination layout without buttons--%>
     </div>
 

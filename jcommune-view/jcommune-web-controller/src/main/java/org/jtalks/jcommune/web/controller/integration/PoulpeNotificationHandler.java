@@ -31,9 +31,13 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 
 /**
- * Controller that handles notifications from Poulpe
- * @author Vyacheslav Mishcheryakov
+ * Controller that handles notifications from Poulpe.
+ * Main purpose of this is to support data consistency, e.g. when deleting
+ * branch Poulpe can't take care of topics, proper post count, notifications and
+ * so on. That is why messages are sent here.
  *
+ * @author Vyacheslav Mishcheryakov
+ * @author Evgeniy Naumenko
  */
 @Controller
 public class PoulpeNotificationHandler {
@@ -54,7 +58,8 @@ public class PoulpeNotificationHandler {
 
     /**
      * Handles notification about branch deletion. This method deletes all 
-     * topics in branch
+     * topics in branch. Branch itself is not deleted as Poulpe can cope with it
+     *
      * @param branchId branch id
      * @throws NotFoundException is thrown if branch not found
      */
@@ -65,15 +70,27 @@ public class PoulpeNotificationHandler {
     }
     
     /**
-     * Handles notification about section deletion. Removes all branches from
-     * section. 
+     * Handles notification about section deletion. Removes all topics from
+     * section. Sections and branches won't be removed
      * @param sectionId section id
      * @throws NotFoundException is thrown if section not found
      */
     @RequestMapping(value="/sections/{sectionId}", method=RequestMethod.DELETE)
     @ResponseBody
     public void deleteSection(@PathVariable("sectionId") long sectionId) throws NotFoundException {
-        sectionService.deleteAllBranches(sectionId);
+        sectionService.deleteAllTopicsInSection(sectionId);
+    }
+
+    /**
+     * Handles notification about component deletion.
+     * As for now it removes all the topics, leaving branches, sections and components untouched.
+     *
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException if object for deletion has not been found
+     */
+    @RequestMapping(value="/component", method=RequestMethod.DELETE)
+    @ResponseBody
+    public void deleteComponent() throws NotFoundException {
+        sectionService.deleteAllTopicsInForum();
     }
     
     /**

@@ -56,19 +56,14 @@
         
         <!-- Since DELETE method is actually POST with _method=DELETE parameter -->
         <security:intercept-url pattern="/branches/*" method="POST" access="hasIpAddress('127.0.0.1')"/>
-        
+        <security:intercept-url pattern="/sections/*" method="POST" access="hasIpAddress('127.0.0.1')"/>
+        <security:intercept-url pattern="/component" method="POST" access="hasIpAddress('127.0.0.1')"/>
+
         <security:intercept-url pattern="/branches/*/subscribe" access="isAuthenticated()"/>
         <security:intercept-url pattern="/branches/*/unsubscribe" access="isAuthenticated()"/>
-        
-        <!-- Since DELETE method is actually POST with _method=DELETE parameter -->
-        <security:intercept-url pattern="/sections/*" method="POST" access="hasIpAddress('127.0.0.1')"/>
-
         <security:intercept-url pattern="/poll/**" access="isAuthenticated()"/>
-                
         <security:intercept-url pattern="/search/index/rebuild" access="hasIpAddress('127.0.0.1')"/>
-
         <security:intercept-url pattern="*" access="permitAll()"/>
-
         <security:form-login login-page="/login" login-processing-url="/j_spring_security_check"
                              authentication-failure-url="/login?login_error=1" default-target-url="/"
                              authentication-success-handler-ref="successAuthHandler"/>

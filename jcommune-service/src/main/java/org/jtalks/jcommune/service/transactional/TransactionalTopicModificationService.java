@@ -14,8 +14,10 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.SecurityService;
+import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -28,7 +30,10 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 
 /**
  * Topic service class. This class contains method needed to manipulate with Topic persistent entity.
@@ -53,26 +58,32 @@ public class TransactionalTopicModificationService implements TopicModificationS
     private SubscriptionService subscriptionService;
     private UserService userService;
     private PollService pollService;
+    private PermissionEvaluator permissionEvaluator;
+    private SecurityContextFacade securityContextFacade;
 
     /**
      * Create an instance of User entity based service
      *
-     * @param dao                 data access object, which should be able do all CRUD operations with topic entity
-     * @param securityService     {@link org.jtalks.common.security.SecurityService} for retrieving current user
-     * @param branchDao           used for checking branch existence
-     * @param notificationService to send email notifications on topic updates to subscribed users
-     * @param subscriptionService for subscribing user on topic if notification enabled
-     * @param userService         to get current logged in user
-     * @param pollService         to create a poll and vote in a poll
-     * @param topicFetchService   to retrieve topics from a database
+     * @param dao                   data access object, which should be able do all CRUD operations with topic entity
+     * @param securityService       {@link org.jtalks.common.security.SecurityService} for retrieving current user
+     * @param branchDao             used for checking branch existence
+     * @param notificationService   to send email notifications on topic updates to subscribed users
+     * @param subscriptionService   for subscribing user on topic if notification enabled
+     * @param userService           to get current logged in user
+     * @param pollService           to create a poll and vote in a poll
+     * @param topicFetchService     to retrieve topics from a database
+     * @param securityContextFacade authentication object retrieval
+     * @param permissionEvaluator   for authorization purposes
      */
     public TransactionalTopicModificationService(TopicDao dao, SecurityService securityService,
                                                  BranchDao branchDao,
                                                  NotificationService notificationService,
                                                  SubscriptionService subscriptionService,
                                                  UserService userService,
-                                                 PollService pollService, 
-                                                 TopicFetchService topicFetchService) {
+                                                 PollService pollService,
+                                                 TopicFetchService topicFetchService,
+                                                 SecurityContextFacade securityContextFacade,
+                                                 PermissionEvaluator permissionEvaluator) {
         this.dao = dao;
         this.securityService = securityService;
         this.branchDao = branchDao;
@@ -81,6 +92,8 @@ public class TransactionalTopicModificationService implements TopicModificationS
         this.userService = userService;
         this.pollService = pollService;
         this.topicFetchService = topicFetchService;
+        this.securityContextFacade = securityContextFacade;
+        this.permissionEvaluator = permissionEvaluator;
     }
 
     /**
@@ -89,10 +102,12 @@ public class TransactionalTopicModificationService implements TopicModificationS
     @Override
     @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.CREATE_POSTS')")
     public Post replyToTopic(long topicId, String answerBody, long branchId) throws NotFoundException {
-        JCUser currentUser = userService.getCurrentUser();
-
-        currentUser.setPostCount(currentUser.getPostCount() + 1);
         Topic topic = topicFetchService.get(topicId);
+        this.assertPostingIsAllowed(topic);
+
+        JCUser currentUser = userService.getCurrentUser();
+        currentUser.setPostCount(currentUser.getPostCount() + 1);
+
         Post answer = new Post(currentUser, answerBody);
         topic.addPost(answer);
         dao.update(topic);
@@ -103,6 +118,21 @@ public class TransactionalTopicModificationService implements TopicModificationS
                 new Object[]{topicId, answer.getId(), currentUser.getUsername()});
 
         return answer;
+    }
+
+    /**
+     * Checks if the current topic is closed for posting.
+     * Some users, however, can add posts even to the closed branches. These
+     * users are granted with BranchPermission.CLOSE_TOPICS permission.
+     *
+     * @param topic topic to be checked for if posting is allowed
+     */
+    private void assertPostingIsAllowed(Topic topic) {
+        Authentication auth = securityContextFacade.getContext().getAuthentication();
+        if (topic.isClosed() && !permissionEvaluator.hasPermission(
+                auth, topic.getBranch().getId(), "BRANCH", "BranchPermission.CLOSE_TOPICS")) { // holy shit...
+            throw new AccessDeniedException("Posting is forbidden for closed topics");
+        }
     }
 
     /**
@@ -148,7 +178,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
      */
     @Override
     @PreAuthorize("hasPermission(#topicDto.id, 'TOPIC', 'GeneralPermission.WRITE') and " +
-            "hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.EDIT_OWN_POSTS') or "+
+            "hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.EDIT_OWN_POSTS') or " +
             "hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
     public void updateTopic(Topic topicDto, String bodyText, boolean notifyOnAnswers) throws NotFoundException {
         Topic topic = topicFetchService.get(topicDto.getId());

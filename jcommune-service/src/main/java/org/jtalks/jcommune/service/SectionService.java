@@ -43,11 +43,18 @@ public interface SectionService extends EntityService<Section> {
     void prepareSectionsForView(List<Section> sections);
 
     /**
-     * Deletes all branches in this section.
+     * Deletes all topics in the session given, causing post count updates.
      *
      * @param sectionId section id
      * @return section without branches
      * @throws NotFoundException when section not found
      */
-    Section deleteAllBranches(long sectionId) throws NotFoundException;
+    Section deleteAllTopicsInSection(long sectionId) throws NotFoundException;
+
+    /**
+     *  Deletes all topics in all the sections, causing post count updates.
+     *
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException if object for deletion has not been found
+     */
+    void deleteAllTopicsInForum() throws NotFoundException;
 }
