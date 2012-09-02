@@ -121,4 +121,17 @@ public class TopicDto {
         topic.setPoll(poll);
     }
 
+    /**
+     * Fills persistent topic object with data from the current dto
+     *
+     * @param persistentTopic persistent topic
+     * @return the same topic with fields set from dto
+     */
+    public Topic fillTopic(Topic persistentTopic){
+        persistentTopic.setTitle(topic.getTitle());
+        persistentTopic.getFirstPost().setPostContent(bodyText);
+        persistentTopic.setAnnouncement(topic.isAnnouncement());
+        persistentTopic.setSticked(topic.isSticked());
+        return topic;
+    }
 }

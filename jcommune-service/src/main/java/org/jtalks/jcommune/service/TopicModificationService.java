@@ -61,12 +61,9 @@ public interface TopicModificationService {
      * Update current topic with given title and body.
      *
      * @param topicDto        {@link Topic} object used as DTO between layers
-     * @param bodyText        body of topic
      * @param notifyOnAnswers user notification on answers flag
-     * @throws NotFoundException when topic not found
      */
-    void updateTopic(Topic topicDto, String bodyText,
-                     boolean notifyOnAnswers) throws NotFoundException;
+    void updateTopic(Topic topicDto, boolean notifyOnAnswers);
 
     /**
      * Delete topic by id. Sends notifications to subscribers and performs logging.

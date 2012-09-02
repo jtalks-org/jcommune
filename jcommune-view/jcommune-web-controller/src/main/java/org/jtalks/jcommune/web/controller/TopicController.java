@@ -263,8 +263,8 @@ public class TopicController {
                                   BindingResult result,
                                   @RequestParam(BRANCH_ID) Long branchId,
                                   @PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
+        Topic topic = topicFetchService.get(topicId);
         if (result.hasErrors()) {
-            Topic topic = topicFetchService.get(topicId);
             return new ModelAndView("editTopic")
                     .addObject("topicDto", topicDto)
                     .addObject("topic", topic)
@@ -272,8 +272,8 @@ public class TopicController {
                     .addObject(TOPIC_ID, topicId)
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
         }
-        Topic topic = topicFetchService.get(topicId);
-        topicModificationService.updateTopic(topic, topicDto.getBodyText(), topicDto.isNotifyOnAnswers());
+        topicDto.fillTopic(topic);
+        topicModificationService.updateTopic(topic, topicDto.isNotifyOnAnswers());
         return new ModelAndView("redirect:/topics/" + topicId);
     }
 

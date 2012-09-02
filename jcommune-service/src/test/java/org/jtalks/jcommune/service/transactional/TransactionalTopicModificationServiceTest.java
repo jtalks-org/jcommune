@@ -37,7 +37,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -274,13 +273,11 @@ public class TransactionalTopicModificationServiceTest {
         Topic topic = createTopic();
         Post post = createPost();
         topic.addPost(post);
+        when(userService.getCurrentUser()).thenReturn(user);
 
-        updateTopicStubs(topic);
-        Topic newTopic = createNewTopic();
-        newTopic.setId(topic.getId());
-        topicService.updateTopic(newTopic, NEW_POST_CONTENT, true);
+        topicService.updateTopic(topic, true);
 
-        updateTopicVerifications(topic);
+        verify(notificationService).topicChanged(topic);
         verify(subscriptionService).toggleTopicSubscription(topic);
     }
 
@@ -290,14 +287,11 @@ public class TransactionalTopicModificationServiceTest {
         Post post = createPost();
         topic.addPost(post);
         subscribeUserOnTopic(user, topic);
-        updateTopicStubs(topic);
-        Topic newTopic = createNewTopic();
-        newTopic.setId(topic.getId());
-        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
+        when(userService.getCurrentUser()).thenReturn(user);
 
-        topicService.updateTopic(newTopic, NEW_POST_CONTENT, false);
+        topicService.updateTopic(topic, false);
 
-        updateTopicVerifications(topic);
+        verify(notificationService).topicChanged(topic);
     }
 
     @Test
@@ -306,12 +300,11 @@ public class TransactionalTopicModificationServiceTest {
         Post post = createPost();
         topic.addPost(post);
         subscribeUserOnTopic(user, topic);
-        updateTopicStubs(topic);
-        Topic newTopic = createNewTopic();
-        newTopic.setId(topic.getId());
-        topicService.updateTopic(newTopic, NEW_POST_CONTENT, false);
+        when(userService.getCurrentUser()).thenReturn(user);
 
-        updateTopicVerifications(topic);
+        topicService.updateTopic(topic, false);
+
+        verify(notificationService).topicChanged(topic);
         verify(subscriptionService).toggleTopicSubscription(topic);
     }
 
@@ -320,23 +313,10 @@ public class TransactionalTopicModificationServiceTest {
         Topic topic = createTopic();
         Post post = createPost();
         topic.addPost(post);
-
-        updateTopicStubs(topic);
-        Topic newTopic = createNewTopic();
-        newTopic.setId(topic.getId());
-        topicService.updateTopic(newTopic, NEW_POST_CONTENT, false);
-
-        updateTopicVerifications(topic);
-    }
-
-
-    private void updateTopicStubs(Topic topic) throws NotFoundException {
         when(userService.getCurrentUser()).thenReturn(user);
-        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
-    }
 
-    private void updateTopicVerifications(Topic topic) throws NotFoundException {
-        verify(topicFetchService).get(TOPIC_ID);
+        topicService.updateTopic(topic, false);
+
         verify(notificationService).topicChanged(topic);
     }
 
@@ -347,33 +327,12 @@ public class TransactionalTopicModificationServiceTest {
         topic.setId(TOPIC_ID);
         topic.setTitle("title");
         Post post = new Post(user, "content");
-        post.setId(POST_ID);
         topic.addPost(post);
 
-        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
-        Topic newTopic = createNewTopic();
-        newTopic.setId(topic.getId());
-        topicService.updateTopic(newTopic, NEW_POST_CONTENT, false);
+        topicService.updateTopic(topic, false);
 
-        assertEquals(topic.getTitle(), NEW_TOPIC_TITLE);
-        assertEquals(post.getPostContent(), NEW_POST_CONTENT);
-        assertEquals(topic.isSticked(), NEW_STICKED);
-        assertEquals(topic.isAnnouncement(), NEW_ANNOUNCEMENT);
-
+        verify(topicDao).update(topic);
         verify(notificationService).topicChanged(topic);
-    }
-
-    @Test(expectedExceptions = {NotFoundException.class})
-    void testUpdateTopicNonExistentTopic() throws NotFoundException {
-        Topic topic = new Topic();
-        topic.setId(TOPIC_ID);
-        topic.setTitle("new title");
-        String newBody = "new body";
-        topic.setSticked(false);
-        topic.setAnnouncement(false);
-        when(topicFetchService.get(TOPIC_ID)).thenThrow(new NotFoundException());
-
-        topicService.updateTopic(topic, newBody, false);
     }
 
     @Test

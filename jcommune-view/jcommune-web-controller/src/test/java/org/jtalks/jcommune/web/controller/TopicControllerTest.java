@@ -25,6 +25,7 @@ import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
@@ -312,9 +313,9 @@ public class TopicControllerTest {
 
         //invoke the object under test
         ModelAndView mav = controller.editTopic(dto, bindingResult, BRANCH_ID, TOPIC_ID);
-        Topic topic =  topicFetchService.get(TOPIC_ID);
+        Topic topic = topicFetchService.get(TOPIC_ID);
         //check expectations
-        verify(topicModificationService).updateTopic(topic, TOPIC_CONTENT, false);
+        verify(topicModificationService).updateTopic(topic, false);
 
         //check result
         assertViewName(mav, "redirect:/topics/" + TOPIC_ID);
@@ -335,7 +336,7 @@ public class TopicControllerTest {
         assertEquals(branchId, BRANCH_ID);
         assertEquals(topicId, TOPIC_ID);
 
-        verify(topicModificationService, never()).updateTopic((Topic) anyObject(), anyString(), anyBoolean());
+        verify(topicModificationService, never()).updateTopic(Matchers.<Topic>any(), anyBoolean());
     }
 
     @Test
@@ -344,7 +345,7 @@ public class TopicControllerTest {
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
 
         controller.moveTopic(TOPIC_ID, BRANCH_ID);
-                
+
         verify(topicModificationService).moveTopic(topic, BRANCH_ID);
     }
 
@@ -352,9 +353,9 @@ public class TopicControllerTest {
     public void testCloseTopic() throws NotFoundException {
         Topic topic = createTopic();
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
-        
+
         controller.closeTopic(TOPIC_ID);
-        
+
         verify(topicModificationService).closeTopic(topic);
     }
 
@@ -380,6 +381,7 @@ public class TopicControllerTest {
         topic.setId(TOPIC_ID);
         topic.setUuid("uuid");
         topic.setBranch(branch);
+        topic.addPost(new Post(user, TOPIC_CONTENT));
         return topic;
     }
 

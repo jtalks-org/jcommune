@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.service.security.SecurityContextFacade;
@@ -177,23 +176,16 @@ public class TransactionalTopicModificationService implements TopicModificationS
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicDto.id, 'TOPIC', 'GeneralPermission.WRITE') and " +
-            "hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.EDIT_OWN_POSTS') or " +
-            "hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
-    public void updateTopic(Topic topicDto, String bodyText, boolean notifyOnAnswers) throws NotFoundException {
-        Topic topic = topicFetchService.get(topicDto.getId());
-        topic.setTitle(topicDto.getTitle());
-        topic.setSticked(topicDto.isSticked());
-        topic.setAnnouncement(topicDto.isAnnouncement());
+    @PreAuthorize("hasPermission(#topic.id, 'TOPIC', 'GeneralPermission.WRITE') and " +
+            "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OWN_POSTS') or " +
+            "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
+    public void updateTopic(Topic topic, boolean notifyOnAnswers){
         Post post = topic.getFirstPost();
-        post.setPostContent(bodyText);
         post.updateModificationDate();
-        topic.updateModificationDate();
         dao.update(topic);
         notificationService.topicChanged(topic);
         JCUser currentUser = userService.getCurrentUser();
         subscribeOnTopicIfNotificationsEnabled(notifyOnAnswers, topic, currentUser);
-
         logger.debug("Topic id={} updated", topic.getId());
     }
 
