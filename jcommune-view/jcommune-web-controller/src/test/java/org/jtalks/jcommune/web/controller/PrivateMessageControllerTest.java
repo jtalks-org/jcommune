@@ -54,7 +54,8 @@ import static org.testng.Assert.assertEquals;
  * @author Evheniy Naumenko
  */
 public class PrivateMessageControllerTest {
-
+    
+    private static final Long SENDER_ID = Long.valueOf(10);
     public static final long PM_ID = 2L;
 
     private PrivateMessageController controller;
@@ -123,9 +124,10 @@ public class PrivateMessageControllerTest {
     @Test
     public void newPmPage() {
         //invoke the object under test
-        ModelAndView mav = controller.newPmPage();
+        ModelAndView mav = controller.newPmPage(SENDER_ID);
 
         //check result
+        verify(pmService).checkPermissionsToSend(SENDER_ID);
         assertViewName(mav, "pm/pmForm");
         assertAndReturnModelAttributeOfType(mav, "privateMessageDto", PrivateMessageDto.class);
     }
@@ -135,9 +137,10 @@ public class PrivateMessageControllerTest {
         //invoke the object under test
         String name = "name";
         when(userService.get(PM_ID)).thenReturn(new JCUser(name, null, null));
-        ModelAndView mav = controller.newPmPageForUser(PM_ID);
+        ModelAndView mav = controller.newPmPageForUser(PM_ID, SENDER_ID);
 
         //check result
+        verify(pmService).checkPermissionsToSend(SENDER_ID);
         assertViewName(mav, "pm/pmForm");
         PrivateMessageDto dto = assertAndReturnModelAttributeOfType(mav, "privateMessageDto", PrivateMessageDto.class);
         assertEquals(dto.getRecipient(), name);
@@ -147,7 +150,7 @@ public class PrivateMessageControllerTest {
     public void newPmPageWithWrongUserSet() throws NotFoundException {
         doThrow(new NotFoundException()).when(userService).get(PM_ID);
 
-        controller.newPmPageForUser(PM_ID);
+        controller.newPmPageForUser(PM_ID, SENDER_ID);
     }
 
     @Test
