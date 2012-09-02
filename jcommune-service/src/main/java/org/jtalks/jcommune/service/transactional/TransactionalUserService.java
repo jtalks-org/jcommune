@@ -116,7 +116,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         mailService.sendAccountActivationMail(user);
         LOGGER.info("JCUser registered: {}", user.getUsername());
         securityService.createAclBuilder().grant(ProfilePermission.EDIT_PROFILE).to(user).on(user).flush();
-        securityService.createAclBuilder().grant(ProfilePermission.SEND_PRIVATE_MESSAGES).to(user).on(user).flush();
         Group group = groupDao.get(AdministrationGroup.USER.getId());
         group.getUsers().add(user);
         groupDao.update(group);
