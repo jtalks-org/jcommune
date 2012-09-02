@@ -39,9 +39,7 @@
     <hr/>
     <div class="row">
         <div class="span2">
-            <sec:authentication property="principal.id" var="userId"/>
-            <a href="${pageContext.request.contextPath}/pm/new?userId=${userId}" class="btn btn-primary btn-small pm_buttons">
-                <spring:message code="label.new_pm"/></a>
+            <jsp:include page="../../template/newPrivateMessage.jsp"/>
             <jsp:include page="../../template/pmFolders.jsp"/>
         </div>
 

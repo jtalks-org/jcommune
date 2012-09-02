@@ -109,4 +109,12 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
      * @throws NotFoundException if one or more messages specified are missing
      */
     String delete(List<Long> ids) throws NotFoundException;
+    
+    /**
+     * This methods checks a permissions of user to send
+     * private message.
+     * 
+     * @param senderId an identifier of sender of private message
+     */
+    void checkPermissionsToSend(Long senderId);
 }

@@ -14,6 +14,10 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
@@ -35,9 +39,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.validation.Valid;
-import java.util.List;
-
 /**
  * MVC controller for Private Messaging. Handles request for inbox, outbox and new private messages.
  *
@@ -51,6 +52,7 @@ import java.util.List;
 public class PrivateMessageController {
 
     public static final String PM_IDENTIFIERS = "pmIdentifiers";
+    public static final String SENDER_ID = "senderId";
     private PrivateMessageService pmService;
     private BBCodeService bbCodeService;
     private UserService userService;
@@ -93,7 +95,8 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/inbox", method = RequestMethod.GET)
     public ModelAndView inboxPage() {
-        return new ModelAndView("pm/inbox").addObject("pmList", pmService.getInboxForCurrentUser());
+        return new ModelAndView("pm/inbox")
+            .addObject("pmList", pmService.getInboxForCurrentUser());
     }
 
     /**
@@ -103,7 +106,8 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/outbox", method = RequestMethod.GET)
     public ModelAndView outboxPage() {
-        return new ModelAndView("pm/outbox").addObject("pmList", pmService.getOutboxForCurrentUser());
+        return new ModelAndView("pm/outbox")
+            .addObject("pmList", pmService.getOutboxForCurrentUser());
     }
 
     /**
@@ -113,31 +117,39 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/drafts", method = RequestMethod.GET)
     public ModelAndView draftsPage() {
-        return new ModelAndView("pm/drafts").addObject("pmList", pmService.getDraftsFromCurrentUser());
+        return new ModelAndView("pm/drafts")
+            .addObject("pmList", pmService.getDraftsFromCurrentUser());
     }
 
     /**
      * Render the page with a form for creation new Private Message with empty {@link PrivateMessageDto} bound.
-     *
+     * 
+     * @param senderUserId an identifier of sender of private message
      * @return {@code ModelAndView} with the form
      */
     @RequestMapping(value = "/pm/new", method = RequestMethod.GET)
-    public ModelAndView newPmPage() {
-        return new ModelAndView(PM_FORM).addObject(DTO, new PrivateMessageDto());
+    public ModelAndView newPmPage(@RequestParam(SENDER_ID) Long senderId) {
+        pmService.checkPermissionsToSend(senderId);
+        return new ModelAndView(PM_FORM)
+            .addObject(DTO, new PrivateMessageDto());
     }
 
     /**
      * Render the page with a form for creation new Private Message for particular user.
      * This method performs no validation on username given simply passing it to the view as is.
      *
-     * @param id user database identifier
+     * @param recipientId an identifier of recipient of private message
+     * @param senderId an identifier of sender of private message
      * @return {@code ModelAndView} with the form
      * @throws NotFoundException if no user has been found for given id
      */
     @RequestMapping(value = "/pm/new/{id}", method = RequestMethod.GET)
-    public ModelAndView newPmPageForUser(@PathVariable Long id) throws NotFoundException {
+    public ModelAndView newPmPageForUser(
+            @PathVariable("id") Long recipientId,
+            @RequestParam(SENDER_ID) Long senderId) throws NotFoundException {
+        pmService.checkPermissionsToSend(senderId);
         PrivateMessageDto dto = new PrivateMessageDto();
-        String name = userService.get(id).getUsername();
+        String name = userService.get(recipientId).getUsername();
         dto.setRecipient(name);
         return new ModelAndView(PM_FORM).addObject(DTO, dto);
     }

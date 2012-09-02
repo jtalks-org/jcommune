@@ -280,5 +280,13 @@ public class TransactionalPrivateMessageService
                 (messageStatus.equals(PrivateMessageStatus.DELETED_FROM_INBOX)));
 
     }
-
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @PreAuthorize("hasPermission(#senderId, 'USER', 'ProfilePermission.SEND_PRIVATE_MESSAGES')")
+    public void checkPermissionsToSend(Long senderId) {
+        logger.debug("Check permission to send private message for user - " + senderId);
+    }
 }
