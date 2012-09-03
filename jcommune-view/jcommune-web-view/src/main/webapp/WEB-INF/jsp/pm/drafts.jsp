@@ -43,9 +43,6 @@
                         <i class="icon-trash icon-white"></i>
                         <spring:message code="label.delete"/>
                     </a>
-                    <a class="btn btn-success" id="editCheckedPM">
-                        <spring:message code="label.edit"/>
-                    </a>
                     <form:form id="deleteForm" method="DELETE"/>
                 </span>
             </div>
@@ -78,7 +75,11 @@
                                                 <c:out value="${pm.userTo.username}"/>
                                             </a>
                                         </c:when>
-                                        <c:otherwise><spring:message code="label.not.specified"/></c:otherwise>
+                                        <c:otherwise>
+                                            <a href="${pageContext.request.contextPath}/pm/drafts/${pm.id}/edit">
+                                                <spring:message code="label.not.specified"/>
+                                            </a>
+                                        </c:otherwise>
                                     </c:choose>
                                 </td>
                                 <td>
@@ -88,7 +89,11 @@
                                                 <c:out value="${pm.title}"/>
                                             </a>
                                         </c:when>
-                                        <c:otherwise><spring:message code="label.not.specified"/></c:otherwise>
+                                        <c:otherwise>
+                                            <a href="${pageContext.request.contextPath}/pm/drafts/${pm.id}/edit">
+                                                <spring:message code="label.not.specified"/>
+                                            </a>
+                                        </c:otherwise>
                                     </c:choose>
                                 </td>
                                 <td>
