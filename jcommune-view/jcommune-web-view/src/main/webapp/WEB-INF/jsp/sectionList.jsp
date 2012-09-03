@@ -58,14 +58,14 @@
     <%-- Topics table --%>
     <c:forEach var="section" items="${sectionList}">
         <jtalks:isSectionVisible section="${section}">
-            <h3>
-                <a href="${pageContext.request.contextPath}/sections/${section.id}">
-                    <c:out value="${section.name}"/>
-                </a>
-            </h3>
 
             <table id="topics-table" cellpadding="0" cellspacing="0" border="0"
                    class="table table-striped table-bordered">
+                <h3>
+                    <a href="${pageContext.request.contextPath}/sections/${section.id}">
+                        <c:out value="${section.name}"/>
+                    </a>
+                </h3>
                 <tbody>
                 <c:forEach var="branch" items="${section.branches}" varStatus="i">
                     <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
@@ -92,7 +92,7 @@
                                     <jtalks:moderators moderators="${branch.moderatorsGroup.users}"/>
                                 </div>
                             </td>
-                            <td class="topics-posts">
+                            <td class="topics-posts shrink-to-fit">
                                 <spring:message code="label.section.header.topics"/>: <span
                                     class='test-topics-count'><c:out
                                     value="${branch.topicCount}"/></span><br/>
@@ -100,7 +100,7 @@
                                     class='test-posts-count'><c:out
                                     value="${branch.postCount}"/></span></td>
 
-                            <td class="latest-by">
+                            <td class="latest-by shrink-to-fit">
                                 <c:if test="${branch.topicCount>0}">
                                     <i class="icon-calendar"></i>
                                     <a class="date"

@@ -327,5 +327,5 @@ ul.lang-menu li img {
 }
 
 .shrink-to-fit {
-    display: inline-block;
-}
+    width: 1px;
+    white-space: nowrap;}

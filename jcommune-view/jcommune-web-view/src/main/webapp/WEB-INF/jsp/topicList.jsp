@@ -119,10 +119,10 @@
                     <th class="status-col"></th>
                 </sec:authorize>
                 <th><spring:message code="label.branch.header.topics"/></th>
-                <th class="author-col"><spring:message code="label.branch.header.author"/></th>
-                <th class="posts-views forum-posts-view-header"><spring:message
+                <th class="author-col shrink-to-fit"><spring:message code="label.branch.header.author"/></th>
+                <th class="posts-views forum-posts-view-header shrink-to-fit"><spring:message
                         code="label.branch.header.posts_views"/></th>
-                <th class="latest-by forum-latest-by-header"><spring:message
+                <th class="latest-by forum-latest-by-header shrink-to-fit"><spring:message
                         code="label.branch.header.lastMessage"/></th>
             </tr>
             </thead>
@@ -160,18 +160,18 @@
                             </a>
                         </sub>
                     </td>
-                    <td class="author-col">
+                    <td class="author-col shrink-to-fit">
                         <a href='${pageContext.request.contextPath}/users/${topic.topicStarter.id}'>
                             <c:out value="${topic.topicStarter.username}"/>
                         </a>
                     </td>
-                    <td class="posts-views">
+                    <td class="posts-views shrink-to-fit">
                         <spring:message code="label.section.header.messages"/>:
                         <span class='test-posts-count'><c:out value="${topic.postCount}"/></span><br/>
                         <spring:message code="label.branch.header.views"/>:
                         <span class='test-views'><c:out value="${topic.views}"/></span>
                     </td>
-                    <td class="latest-by">
+                    <td class="latest-by shrink-to-fit">
                         <i class="icon-calendar"></i>
                         <a class="date" href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}">
                             <jtalks:format value="${topic.lastPost.creationDate}"/>
