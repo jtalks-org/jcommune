@@ -3134,7 +3134,7 @@ button.btn.small, input[type="submit"].btn.small {
 .thumbnail {
   display: block;
   padding: 4px;
-  line-height: 1;
+  line-height: 1.5;
   border: 1px solid #ddd;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;

@@ -50,7 +50,6 @@
                 <div class='user-profile-header'>
                     <span class="pull-left thumbnail">
                         <div id="avatarPreviewContainer" class="wraptocenter">
-                            <span></span>
                             <%--String prefix "data:image/jpeg;base64," needed for correct image rendering--%>
                            	<img id="avatarPreview" src="data:image/jpeg;base64,${editedUser.avatar}" alt="" />
                         </div>
