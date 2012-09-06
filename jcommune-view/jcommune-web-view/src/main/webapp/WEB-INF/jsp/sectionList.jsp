@@ -61,12 +61,20 @@
 
             <table id="topics-table" cellpadding="0" cellspacing="0" border="0"
                    class="table table-striped table-bordered">
-                <h3>
-                    <a href="${pageContext.request.contextPath}/sections/${section.id}">
-                        <c:out value="${section.name}"/>
-                    </a>
-                </h3>
+
                 <tbody>
+                <tr>
+
+                    <td colspan="4">
+                        <h3>
+                            <a href="${pageContext.request.contextPath}/sections/${section.id}">
+                                <c:out value="${section.name}"/>
+                            </a>
+                        </h3>
+                    </td>
+
+
+                </tr>
                 <c:forEach var="branch" items="${section.branches}" varStatus="i">
                     <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
                                           permission='BranchPermission.VIEW_TOPICS'>
