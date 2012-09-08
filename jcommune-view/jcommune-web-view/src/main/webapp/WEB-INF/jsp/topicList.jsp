@@ -74,7 +74,7 @@
 
     <div class="span2">
         <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
-                              permission='BranchPermission.CREATE_TOPICS'>
+                              permission='BranchPermission.CREATE_POSTS'>
             <a id='new-topic-btn' class="btn btn-primary"
                href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}">
                 <spring:message code="label.addtopic"/>
@@ -205,7 +205,7 @@
 
     <div class="span2">
         <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
-                              permission='BranchPermission.CREATE_TOPICS'>
+                              permission='BranchPermission.CREATE_POSTS'>
             <a id='new-topic-btn' class="btn btn-primary"
                href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}">
                 <spring:message code="label.addtopic"/>
