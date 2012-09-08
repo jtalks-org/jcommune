@@ -36,6 +36,7 @@ import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  * User service class. This class contains method needed to manipulate with User persistent entity.
@@ -217,5 +218,14 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
                 this.getDao().delete(user);
             }
         }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @PreAuthorize("hasPermission(#userId, 'USER', 'ProfilePermission.EDIT_PROFILE')")
+    public void checkPermissionsToEditProfile(Long userId) {
+        LOGGER.debug("Check permission to edit profile for user - " + userId);
     }
 }

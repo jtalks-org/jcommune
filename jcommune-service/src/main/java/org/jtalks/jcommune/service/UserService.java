@@ -95,4 +95,11 @@ public interface UserService extends EntityService<JCUser> {
      * is expired if it's created, but not activated for a day or more.
      */
     void deleteUnactivatedAccountsByTimer();
+    
+    /**
+     * This methods checks a permissions of user to edit profile.
+     * 
+     * @param userId an identifier of user, for which we check permission
+     */
+    void checkPermissionsToEditProfile(Long userId);
 }
