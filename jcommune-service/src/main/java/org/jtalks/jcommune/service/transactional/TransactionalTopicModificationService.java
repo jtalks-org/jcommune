@@ -145,6 +145,8 @@ public class TransactionalTopicModificationService implements TopicModificationS
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);
         Topic topic = new Topic(currentUser, topicDto.getTitle());
+        topic.setAnnouncement(topicDto.isAnnouncement());
+        topic.setSticked(topicDto.isSticked());
         Post first = new Post(currentUser, bodyText);
         topic.addPost(first);
         Branch branch = topicDto.getBranch();

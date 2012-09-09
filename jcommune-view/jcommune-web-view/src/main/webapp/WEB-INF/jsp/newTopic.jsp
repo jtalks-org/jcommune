@@ -68,6 +68,31 @@
                              class="post" cssClass="help-inline"/>
             </div>
         </div>
+        <jtalks:hasPermission targetId='${branchId}' targetType='BRANCH'
+                              permission='BranchPermission.CREATE_STICKED_TOPICS'>
+            <div class='control-group'>
+                <form:checkbox path="topic.sticked" value="true" tabindex="101"
+                               class="confirm-unsaved form-check-radio-box"/>
+                <label for='sticked' class='string optional'>
+                    <spring:message code="label.sticked"/>
+                </label>
+
+                <form:errors path="topic.sticked"/>
+            </div>
+        </jtalks:hasPermission>
+
+        <jtalks:hasPermission targetId='${branchId}' targetType='BRANCH'
+                              permission='BranchPermission.CREATE_ANNOUNCEMENTS'>
+            <div class='control-group'>
+                <form:checkbox path="topic.announcement" value="true" tabindex="102"
+                               class="script-confirm-unsaved form-check-radio-box"/>
+                <label for='announcement' class='string optional'>
+                    <spring:message code="label.announcement"/>
+                </label>
+
+                <form:errors path="topic.announcement"/>
+            </div>
+        </jtalks:hasPermission>
 
         <jtalks:bbeditor labelForAction="label.addtopic"
                          postText="${topicDto.bodyText}"
