@@ -138,7 +138,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_TOPICS')")
+    @PreAuthorize("hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_POSTS')")
     public Topic createTopic(Topic topicDto, String bodyText,
                              boolean notifyOnAnswers) throws NotFoundException {
         JCUser currentUser = userService.getCurrentUser();
@@ -206,7 +206,8 @@ public class TransactionalTopicModificationService implements TopicModificationS
     /**
      * {@inheritDoc}
      */
-    @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_TOPICS')")
+    @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OWN_POSTS') and " +
+            "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OTHERS_POSTS')")
     @Override
     public void deleteTopic(Topic topic) throws NotFoundException {
         Branch branch = deleteTopicSilent(topic);

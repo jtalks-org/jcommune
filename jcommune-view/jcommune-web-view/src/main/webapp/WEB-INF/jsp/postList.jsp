@@ -191,22 +191,37 @@
                                     <%--Edit post button end --%>
                                     <%--Delete post button start --%>
                                 <sec:authorize access="isAuthenticated()">
-                                    <c:set var="isDeleteButtonAvailable" value="false"/>
                                     <sec:authentication property="principal.id" var="userId"/>
-                                    <%--The ability of users to remove their own posts--%>
-                                    <c:if test='${userId == post.userCreated.id}'>
-                                        <jtalks:hasPermission targetId="${topic.branch.id}" targetType="BRANCH"
-                                                              permission="BranchPermission.DELETE_OWN_POSTS">
-                                            <c:set var="isDeleteButtonAvailable" value="true"/>
-                                        </jtalks:hasPermission>
-                                    </c:if>
-                                    <%--The ability of users to remove posts of the other users(for moderators and admins)--%>
-                                    <c:if test='${userId != post.userCreated.id}'>
-                                        <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
-                                                              permission='BranchPermission.DELETE_OTHERS_POSTS'>
-                                            <c:set var="isDeleteButtonAvailable" value="true"/>
-                                        </jtalks:hasPermission>
-                                    </c:if>
+                                    <c:set var="isDeleteButtonAvailable" value="false"/>
+                                    <c:choose>
+                                        <%--Controls for the first post, they affect topic--%>
+                                        <c:when test="${postsPage.number == 1 && i.index == 0}">
+                                            <jtalks:hasPermission targetId="${topic.branch.id}" targetType="BRANCH"
+                                                                  permission="BranchPermission.DELETE_OWN_POSTS">
+                                                <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
+                                                                      permission='BranchPermission.DELETE_OTHERS_POSTS'>
+                                                    <c:set var="isDeleteButtonAvailable" value="true"/>
+                                                </jtalks:hasPermission>
+                                            </jtalks:hasPermission>
+                                        </c:when>
+                                        <%--Controls for the any other ordinaru post--%>
+                                        <c:otherwise>
+                                            <%--The ability of users to remove their own posts--%>
+                                            <c:if test='${userId == post.userCreated.id}'>
+                                                <jtalks:hasPermission targetId="${topic.branch.id}" targetType="BRANCH"
+                                                                      permission="BranchPermission.DELETE_OWN_POSTS">
+                                                    <c:set var="isDeleteButtonAvailable" value="true"/>
+                                                </jtalks:hasPermission>
+                                            </c:if>
+                                            <%--The ability of users to remove posts of the other users(for moderators and admins)--%>
+                                            <c:if test='${userId != post.userCreated.id}'>
+                                                <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
+                                                                      permission='BranchPermission.DELETE_OTHERS_POSTS'>
+                                                    <c:set var="isDeleteButtonAvailable" value="true"/>
+                                                </jtalks:hasPermission>
+                                            </c:if>
+                                        </c:otherwise>
+                                    </c:choose>
                                     <c:if test="${isDeleteButtonAvailable}">
                                         <a href="${delete_url}" class="btn btn-mini btn-danger delete"
                                            title="<spring:message code='label.tips.remove_post'/>"
@@ -255,10 +270,8 @@
                             </a>
                         </div>
              
-                   <span class="thumbnail post-userinfo-avatal">
-                       <div class="wraptocenter"><span></span>
-                           <img src="${pageContext.request.contextPath}/users/${post.userCreated.id}/avatar" alt=""/>
-                       </div>
+                   <span class="thumbnail post-userinfo-avatal wraptocenter">
+                        <img src="${pageContext.request.contextPath}/users/${post.userCreated.id}/avatar" alt=""/>
                    </span>
 
                         <div>
