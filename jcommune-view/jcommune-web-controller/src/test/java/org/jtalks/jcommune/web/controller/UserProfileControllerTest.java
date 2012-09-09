@@ -138,6 +138,7 @@ public class UserProfileControllerTest {
         assertEquals(dto.getFirstName(), user.getFirstName(), "First name is not equal");
         assertEquals(dto.getLastName(), user.getLastName(), "Last name is not equal");
         assertEquals(dto.getEmail(), user.getEmail(), "Last name is not equal");
+        verify(userService).checkPermissionsToEditProfile(user.getId());
     }
 
 

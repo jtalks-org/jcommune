@@ -56,8 +56,7 @@
 			<div class="clearfix"></div>
 			<div class="user-profile-top-buttons">
 				<c:if test="${user.username != auth}">
-					<sec:authentication property="principal.id" var="senderId"/>
-					<jtalks:hasPermission targetId='${senderId}' targetType='USER' 
+					<jtalks:hasPermission targetId='${userId}' targetType='USER' 
             							permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
 						<div class="user-profile-buttons-send">
 							<a class="btn btn-mini btn-info"
@@ -210,12 +209,15 @@
 						</c:if>
 
 						<c:if test="${user.username == auth}">
-							<div class="user-profile-buttons-form-actions">
-								<a class="btn btn-primary" type="submit"
-									href="${pageContext.request.contextPath}/users/edit"> <spring:message
-										code="label.edit_profile" />
-								</a>
-							</div>
+							<jtalks:hasPermission targetId='${userId}' targetType='USER' 
+            							permission='ProfilePermission.EDIT_PROFILE'>
+								<div class="user-profile-buttons-form-actions">
+									<a class="btn btn-primary" type="submit"
+										href="${pageContext.request.contextPath}/users/edit"> <spring:message
+											code="label.edit_profile" />
+									</a>
+								</div>
+							</jtalks:hasPermission>
 						</c:if>
 					</fieldset>
 				</form>
