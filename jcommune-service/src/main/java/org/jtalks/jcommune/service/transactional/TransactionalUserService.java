@@ -153,6 +153,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     public JCUser editUserProfile(UserInfoContainer info) {
 
         JCUser currentUser = this.getCurrentUser();
+        checkPermissionsToEditProfile(currentUser.getId());
         byte[] decodedAvatar = base64Wrapper.decodeB64Bytes(info.getB64EncodedAvatar());
 
         String newPassword = info.getNewPassword();
