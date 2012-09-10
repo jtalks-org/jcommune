@@ -15,9 +15,11 @@
 package org.jtalks.jcommune.model.entity;
 
 import org.jtalks.common.model.entity.Property;
+import org.jtalks.jcommune.model.dao.ComponentDao;
 import org.jtalks.jcommune.model.dao.PropertyDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 /**
@@ -32,17 +34,23 @@ public enum JCommuneProperty {
      * The property to check the enabling of email notifications to subscribers of topics or branches.
      */
     SENDING_NOTIFICATIONS_ENABLED,
-    
+
     /**
      * Property for session timeout for logged users.
      */
     SESSION_TIMEOUT,
-    
+
     /**
      * Property for the maximum size of the avatar.
      */
-    AVATAR_MAX_SIZE;
-    
+    AVATAR_MAX_SIZE,
+
+    /**
+     * Name of component
+     */
+    CMP_NAME;
+
+
     private static final Logger LOGGER = LoggerFactory.getLogger(JCommuneProperty.class);
 
     private String name;
@@ -55,7 +63,7 @@ public enum JCommuneProperty {
      * a value of property.
      * It is also worth noting that if the property has not been found,
      * it will return a default value.
-     * 
+     *
      * @return a string value of the property
      */
     public String getValue() {
@@ -67,28 +75,28 @@ public enum JCommuneProperty {
             return defaultValue;
         }
     }
-    
+
     /**
      * Converts a value of the property to boolean and returns it.
      * Keep in mind, if the property isn't boolean, the result will false.
-     * 
+     *
      * @return a boolean value of the property
      */
     public boolean booleanValue() {
-        return Boolean.valueOf(getValue()); 
+        return Boolean.valueOf(getValue());
     }
-    
+
     /**
      * Converts a value of the property to int and returns it.
      * Keep in mind, if the property isn't integer {@link NumberFormatException}
      * will be thrown
-     * 
+     *
      * @return a boolean value of the property
      */
     public int intValue() {
         return Integer.valueOf(getValue());
     }
-    
+
     /**
      * @param name the name of the property
      */
@@ -105,10 +113,11 @@ public enum JCommuneProperty {
 
     /**
      * Set an instance of {@link org.jtalks.jcommune.model.dao.PropertyDao} to search properties by name.
-     * 
+     *
      * @param propertyDao an instance of {@link org.jtalks.jcommune.model.dao.PropertyDao}
      */
     public void setPropertyDao(PropertyDao propertyDao) {
         this.propertyDao = propertyDao;
     }
+
 }

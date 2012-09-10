@@ -22,7 +22,8 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <head>
-    <title><spring:message code="label.section.jtalks_forum"/></title>
+    <%--TODO !!!--%>
+    <title>title</title>
 </head>
 <body>
 
@@ -31,7 +32,8 @@
     <div class="row forum-sections-header">
         <a href="${pageContext.request.contextPath}/">
             <h1 class="pull-left logo-text">
-                <spring:message code="label.section.jtalks_forum"/>
+               <%--TODO !!!--%>
+                   <c:out value="${jcommuneproperty.CMP_NAME}"/>
             </h1>
         </a>
 

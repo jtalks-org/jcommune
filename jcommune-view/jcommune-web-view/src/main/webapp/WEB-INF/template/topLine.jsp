@@ -28,7 +28,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </a>
-            <a class="brand" href="${pageContext.request.contextPath}/">JTalks - JCommune</a>
+            <a class="brand" href="${pageContext.request.contextPath}/">NAME!!!</a>
             
             <div class="nav-collapse">
                 <form action='<c:url value="/search/"/>' method="GET" name="form" id="form" class="navbar-search pull-left dropdown">
