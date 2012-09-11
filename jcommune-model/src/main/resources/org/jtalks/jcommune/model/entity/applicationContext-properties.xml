@@ -16,9 +16,9 @@
 
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-    
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
     <bean id="sendingNotificationsProperty" class="org.jtalks.jcommune.model.entity.JCommuneProperty"
           factory-method="valueOf">
         <constructor-arg type="java.lang.String" value="SENDING_NOTIFICATIONS_ENABLED"/>
@@ -40,7 +40,24 @@
         <constructor-arg type="java.lang.String" value="AVATAR_MAX_SIZE"/>
         <property name="propertyDao" ref="propertyDao"/>
         <property name="name" value="jcommune.avatar_max_size"/>
-        <property name="defaultValue" value="4194304"/> <!-- 4096 * 1024 = 4194304 -->
+        <property name="defaultValue" value="4194304"/>
+        <!-- 4096 * 1024 = 4194304 -->
+    </bean>
+
+    <bean id="componentNameProperty" class="org.jtalks.jcommune.model.entity.JCommuneProperty"
+          factory-method="valueOf">
+        <constructor-arg type="java.lang.String" value="CMP_NAME"/>
+        <property name="componentDao" ref="componentDao"/>
+        <property name="name" value="cmp.name"/>
+        <property name="defaultValue" value=""/>
+    </bean>
+
+    <bean id="componentDescriptionProperty" class="org.jtalks.jcommune.model.entity.JCommuneProperty"
+          factory-method="valueOf">
+        <constructor-arg type="java.lang.String" value="CMP_DESCRIPTION"/>
+        <property name="componentDao" ref="componentDao"/>
+        <property name="name" value="cmp.description"/>
+        <property name="defaultValue" value=""/>
     </bean>
 
 </beans>

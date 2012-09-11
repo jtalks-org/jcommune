@@ -26,12 +26,8 @@ import org.jtalks.common.model.entity.Component;
 public interface ComponentDao extends ChildRepository<Component> {
     /**
      * Gets a component.
-     * 
+     *
      * @return get component of Forum
      */
     Component getComponent();
-
-    String getComponentName();
-
-    String getComponentDescription();
 }

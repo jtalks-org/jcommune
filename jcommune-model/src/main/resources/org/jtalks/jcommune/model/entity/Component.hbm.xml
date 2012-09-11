@@ -15,7 +15,8 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 -->
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
 <hibernate-mapping package="org.jtalks.common.model.entity">
     <class name="Component" table="COMPONENTS">
         <cache usage="nonstrict-read-write" region="org.jtalks.EHCOMMON"/>
@@ -25,9 +26,8 @@
         <property column="UUID" name="uuid" unique="true" not-null="true"/>
         <property name="name" column="NAME"/>
         <property name="description" column="DESCRIPTION"/>
-        <property name="componentType" column="COMPONENT_TYPE"/>
     </class>
-    
+
     <query name="getForumComponent">
         <![CDATA[FROM Component]]>
     </query>

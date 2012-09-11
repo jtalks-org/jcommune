@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import org.jtalks.common.model.entity.Component;
 import org.jtalks.common.model.entity.Property;
 import org.jtalks.jcommune.model.dao.ComponentDao;
 import org.jtalks.jcommune.model.dao.PropertyDao;
@@ -48,7 +49,12 @@ public enum JCommuneProperty {
     /**
      * Name of component
      */
-    CMP_NAME;
+    CMP_NAME,
+
+    /**
+     * Description of component
+     */
+    CMP_DESCRIPTION;
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JCommuneProperty.class);
@@ -56,6 +62,7 @@ public enum JCommuneProperty {
     private String name;
     private String defaultValue;
     private PropertyDao propertyDao;
+    private ComponentDao componentDao;
 
     /**
      * Returns a string value of the property. Property values
@@ -67,11 +74,23 @@ public enum JCommuneProperty {
      * @return a string value of the property
      */
     public String getValue() {
-        Property property = propertyDao.getByName(name);
-        if (property != null) {
-            return property.getValue();
-        } else {
-            LOGGER.warn("{} property was not found, using default value {}", name, defaultValue);
+
+        if (propertyDao != null) {
+            Property property = propertyDao.getByName(name);
+            if (property != null) {
+                return property.getValue();
+            }
+            else {
+                LOGGER.warn("{} property was not found, using default value {}", name, defaultValue);
+                return defaultValue;
+            }
+        }
+        else if (componentDao != null) {
+            Component cmp = componentDao.getComponent();
+            return name.equals("cmp.name") ? cmp.getName() : cmp.getDescription();
+        }
+        else {
+            LOGGER.warn("{} property of component was not found, using default value {}", name, defaultValue);
             return defaultValue;
         }
     }
@@ -120,4 +139,12 @@ public enum JCommuneProperty {
         this.propertyDao = propertyDao;
     }
 
+    /**
+     * Set an instance of {@link org.jtalks.jcommune.model.dao.ComponentDao} to search properties of Component.
+     *
+     * @param componentDao an instance of {@link org.jtalks.jcommune.model.dao.ComponentDao}
+     */
+    public void setComponentDao(ComponentDao componentDao) {
+        this.componentDao = componentDao;
+    }
 }

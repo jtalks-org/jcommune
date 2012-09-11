@@ -40,16 +40,6 @@ public class ComponentHibernateDao extends AbstractHibernateChildRepository<Comp
 
     @Override
     public Component getComponent() {
-        return (Component)getSession().getNamedQuery("getForumComponent").uniqueResult();
-    }
-
-    @Override
-    public String getComponentName() {
-        return ((Component)getSession().getNamedQuery("getForumComponent")).getName();
-    }
-
-    @Override
-    public String getComponentDescription() {
-        return ((Component)getSession().getNamedQuery("getForumComponent")).getDescription();
+        return (Component) getSession().getNamedQuery("getForumComponent").uniqueResult();
     }
 }
