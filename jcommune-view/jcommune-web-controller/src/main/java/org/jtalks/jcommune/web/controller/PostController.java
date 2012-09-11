@@ -117,19 +117,16 @@ public class PostController {
     /**
      * Edit post page filled with data from post with given id
      *
-     * @param topicId topic id
      * @param postId  post id
      * @return redirect to post form page
      * @throws NotFoundException when topic or post not found
      */
     @RequestMapping(value = "/posts/{postId}/edit", method = RequestMethod.GET)
-    public ModelAndView editPage(@RequestParam(TOPIC_ID) Long topicId,
-                                 @PathVariable(POST_ID) Long postId) throws NotFoundException {
+    public ModelAndView editPage(@PathVariable(POST_ID) Long postId) throws NotFoundException {
         Post post = postService.get(postId);
-
         return new ModelAndView("editPost")
                 .addObject(POST_DTO, PostDto.getDtoFor(post))
-                .addObject(TOPIC_ID, topicId)
+                .addObject(TOPIC_ID, post.getTopic().getId())
                 .addObject(POST_ID, postId)
                 .addObject(TOPIC_TITLE, post.getTopic().getTitle())
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(post.getTopic()));
@@ -140,23 +137,20 @@ public class PostController {
      *
      * @param postDto Dto populated in form
      * @param result  validation result
-     * @param topicId the current topicId
      * @param postId  the current postId
      * @return {@code ModelAndView} object which will be redirect to topic page
      *         if saved successfully or show form with error message
      * @throws NotFoundException when topic, branch or post not found
      */
     @RequestMapping(value = "/posts/{postId}/edit", method = RequestMethod.POST)
-    public ModelAndView update(@Valid @ModelAttribute PostDto postDto,
-                               BindingResult result,
-                               @RequestParam(TOPIC_ID) Long topicId,
+    public ModelAndView update(@Valid @ModelAttribute PostDto postDto, BindingResult result,
                                @PathVariable(POST_ID) Long postId) throws NotFoundException {
+        Post post = postService.get(postId);
         if (result.hasErrors()) {
             return new ModelAndView("editPost")
-                    .addObject(TOPIC_ID, topicId)
+                    .addObject(TOPIC_ID,post.getTopic().getId())
                     .addObject(POST_ID, postId);
         }
-        Post post = postService.get(postId);
         postService.updatePost(post, postDto.getBodyText());
         return new ModelAndView("redirect:/posts/" + postId);
     }

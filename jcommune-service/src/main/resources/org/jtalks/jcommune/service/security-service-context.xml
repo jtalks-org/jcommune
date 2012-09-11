@@ -100,14 +100,10 @@
     <bean id="aclCache" class="org.springframework.security.acls.domain.EhCacheBasedAclCache">
         <constructor-arg>
             <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean">
-                <property name="cacheManager" ref="replicatingCache"/>
+                <property name="cacheManager" ref="localCache"/>
                 <property name="cacheName" value="org.jtalks.EHCOMMON"/>
             </bean>
         </constructor-arg>
-    </bean>
-
-    <bean id="replicatingCache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-        <property name="configLocation" value="classpath:/org/jtalks/jcommune/model/entity/ehcache.xml"/>
     </bean>
 
     <!-- Authorization for ACLs administration setup -->

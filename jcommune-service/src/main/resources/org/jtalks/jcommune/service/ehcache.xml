@@ -30,15 +30,5 @@
             memoryStoreEvictionPolicy="LFU">
     </defaultCache>
 
-    <!--
-    Cache for user related data.
-    Now used for storing new pm count.
-    -->
-    <cache name="cuserDataCache"
-           maxElementsInMemory="1000"
-           eternal="false"
-           timeToLiveSeconds="1200"
-           overflowToDisk="false"
-           diskPersistent="false"
-           memoryStoreEvictionPolicy="LRU"/>
+
 </ehcache>
