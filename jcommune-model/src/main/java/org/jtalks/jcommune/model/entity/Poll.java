@@ -15,6 +15,7 @@
 
 package org.jtalks.jcommune.model.entity;
 
+import com.google.common.base.Joiner;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -42,7 +43,8 @@ import static ch.lambdaj.Lambda.sumFrom;
 public class Poll extends Entity {
 
     public static final String DATE_FORMAT = "dd-MM-yyyy";
-
+    private static final String SEPARATOR = System.getProperty("line.separator");
+    
     @Size(min = Poll.MIN_TITLE_LENGTH, max = Poll.MAX_TITLE_LENGTH)
     private String title;
     private boolean multipleAnswer;
@@ -166,7 +168,9 @@ public class Poll extends Entity {
      */
     public void setPollItemsValue(String pollItemsValue) {
         this.pollItemsValue = pollItemsValue;
-        setPollItems(PollValidator.parseItems(pollItemsValue));
+        if (StringUtils.isNotBlank(pollItemsValue)) {
+            this.setPollItems(PollValidator.parseItems(pollItemsValue));
+        }
     }
 
     /**
@@ -185,6 +189,7 @@ public class Poll extends Entity {
      */
     public void setPollItems(List<PollItem> pollItems) {
         this.pollItems = pollItems;
+        pollItemsValue = Joiner.on(SEPARATOR).join(pollItems);
     }
 
     /**

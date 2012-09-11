@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -60,10 +61,11 @@ public interface TopicModificationService {
     /**
      * Update current topic with given title and body.
      *
-     * @param topicDto        {@link Topic} object used as DTO between layers
+     * @param topic topic to be updated
+     * @param poll poll of the updated topic, if any
      * @param notifyOnAnswers user notification on answers flag
      */
-    void updateTopic(Topic topicDto, boolean notifyOnAnswers);
+    void updateTopic(Topic topic, Poll poll, boolean notifyOnAnswers);
 
     /**
      * Delete topic by id. Sends notifications to subscribers and performs logging.

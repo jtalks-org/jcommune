@@ -46,8 +46,6 @@ import java.util.Set;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -68,10 +66,7 @@ import static org.testng.Assert.assertEquals;
 public class TopicControllerTest {
     public long BRANCH_ID = 1L;
     private long TOPIC_ID = 1L;
-    private final String BRANCH_NAME = "branch name";
-    private final String BRANCH_DESCRIPTION = "branch description";
     private String TOPIC_CONTENT = "content here";
-    private String TOPIC_THEME = "Topic theme";
 
     private JCUser user;
     private Branch branch;
@@ -166,12 +161,6 @@ public class TopicControllerTest {
         Topic actualTopic = assertAndReturnModelAttributeOfType(mav, "topic", Topic.class);
         assertEquals(actualTopic, topic);
 
-        Long actualTopicId = assertAndReturnModelAttributeOfType(mav, "topicId", Long.class);
-        assertEquals((long) actualTopicId, TOPIC_ID);
-
-        Long actualBranchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
-        assertEquals((long) actualBranchId, TOPIC_ID);
-
         assertModelAttributeAvailable(mav, "breadcrumbList");
     }
 
@@ -212,7 +201,7 @@ public class TopicControllerTest {
         verify(branchService).get(BRANCH_ID);
         verify(breadcrumbBuilder).getForumBreadcrumb(branch);
         //check result
-        assertViewName(mav, "newTopic");
+        assertViewName(mav, "topicForm");
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         assertEquals(branchId, BRANCH_ID);
     }
@@ -232,7 +221,7 @@ public class TopicControllerTest {
         verify(breadcrumbBuilder).getNewTopicBreadcrumb(branch);
 
         //check result
-        assertViewName(mav, "newTopic");
+        assertViewName(mav, "topicForm");
         assertModelAttributeAvailable(mav, "topicDto");
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         assertEquals(branchId, BRANCH_ID);
@@ -241,15 +230,14 @@ public class TopicControllerTest {
 
     @Test
     public void editTopicPageNotSubscribedUser() throws NotFoundException {
-        Topic topic = new Topic(user, "title");
-        topic.setId(TOPIC_ID);
+        Topic topic = this.createTopic();
         Post post = new Post(user, "content");
         topic.addPost(post);
 
         editTopicStubs(topic);
 
         //invoke the object under test
-        ModelAndView mav = controller.editTopicPage(BRANCH_ID, TOPIC_ID);
+        ModelAndView mav = controller.editTopicPage(TOPIC_ID);
 
         editTopicVerification(topic);
 
@@ -258,8 +246,7 @@ public class TopicControllerTest {
 
     @Test
     public void editTopicPageSubscribedUser() throws NotFoundException {
-        Topic topic = new Topic(user, "title");
-        topic.setId(TOPIC_ID);
+        Topic topic = this.createTopic();
         Set<JCUser> subscribers = new HashSet<JCUser>();
         subscribers.add(user);
         topic.setSubscribers(subscribers);
@@ -269,7 +256,7 @@ public class TopicControllerTest {
         editTopicStubs(topic);
 
         //invoke the object under test
-        ModelAndView mav = controller.editTopicPage(BRANCH_ID, TOPIC_ID);
+        ModelAndView mav = controller.editTopicPage(TOPIC_ID);
 
         editTopicVerification(topic);
 
@@ -291,16 +278,13 @@ public class TopicControllerTest {
 
     private void editTopicAssertions(ModelAndView mav) {
         //check result
-        assertViewName(mav, "editTopic");
+        assertViewName(mav, "topicForm");
 
         TopicDto dto = assertAndReturnModelAttributeOfType(mav, "topicDto", TopicDto.class);
         assertEquals(dto.getTopic().getId(), TOPIC_ID);
 
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         assertEquals(branchId, BRANCH_ID);
-
-        long topicId = assertAndReturnModelAttributeOfType(mav, "topicId", Long.class);
-        assertEquals(topicId, TOPIC_ID);
 
         assertModelAttributeAvailable(mav, "breadcrumbList");
     }
@@ -312,10 +296,10 @@ public class TopicControllerTest {
         when(topicFetchService.get(TOPIC_ID)).thenReturn(createTopic());
 
         //invoke the object under test
-        ModelAndView mav = controller.editTopic(dto, bindingResult, BRANCH_ID, TOPIC_ID);
+        ModelAndView mav = controller.editTopic(dto, bindingResult, TOPIC_ID);
         Topic topic = topicFetchService.get(TOPIC_ID);
         //check expectations
-        verify(topicModificationService).updateTopic(topic, false);
+        verify(topicModificationService).updateTopic(topic, dto.getPoll(), false);
 
         //check result
         assertViewName(mav, "redirect:/topics/" + TOPIC_ID);
@@ -325,18 +309,17 @@ public class TopicControllerTest {
     public void testSaveValidationFail() throws NotFoundException {
         TopicDto dto = getDto();
         BeanPropertyBindingResult resultWithErrors = mock(BeanPropertyBindingResult.class);
-
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(this.createTopic());
         when(resultWithErrors.hasErrors()).thenReturn(true);
 
-        ModelAndView mav = controller.editTopic(dto, resultWithErrors, BRANCH_ID, TOPIC_ID);
+        ModelAndView mav = controller.editTopic(dto, resultWithErrors, TOPIC_ID);
 
-        assertViewName(mav, "editTopic");
+        assertViewName(mav, "topicForm");
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
-        long topicId = assertAndReturnModelAttributeOfType(mav, "topicId", Long.class);
         assertEquals(branchId, BRANCH_ID);
-        assertEquals(topicId, TOPIC_ID);
 
-        verify(topicModificationService, never()).updateTopic(Matchers.<Topic>any(), anyBoolean());
+        verify(topicModificationService, never()).updateTopic(
+                Matchers.<Topic>any(), Matchers.<Poll>any(), anyBoolean());
     }
 
     @Test
@@ -370,14 +353,14 @@ public class TopicControllerTest {
     }
 
     private Branch createBranch() {
-        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        Branch branch = new Branch("branch name", "branch description");
         branch.setId(BRANCH_ID);
         return branch;
     }
 
     private Topic createTopic() {
         Branch branch = createBranch();
-        Topic topic = new Topic(user, TOPIC_THEME);
+        Topic topic = new Topic(user, "Topic theme");
         topic.setId(TOPIC_ID);
         topic.setUuid("uuid");
         topic.setBranch(branch);

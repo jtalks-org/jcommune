@@ -161,12 +161,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         notificationService.branchChanged(branch);
 
         subscribeOnTopicIfNotificationsEnabled(notifyOnAnswers, topic, currentUser);
-
-        Poll poll = topicDto.getPoll();
-        if (poll != null && poll.isHasPoll()) {
-            poll.setTopic(topic);
-            pollService.createPoll(poll);
-        }
+        createOrUpdatePoll(topicDto.getPoll(), topic);
 
         logger.debug("Created new topic id={}, branch id={}, author={}",
                 new Object[]{topic.getId(), branch.getId(), currentUser.getUsername()});
@@ -181,14 +176,22 @@ public class TransactionalTopicModificationService implements TopicModificationS
     @PreAuthorize("hasPermission(#topic.id, 'TOPIC', 'GeneralPermission.WRITE') and " +
             "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OWN_POSTS') or " +
             "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
-    public void updateTopic(Topic topic, boolean notifyOnAnswers){
+    public void updateTopic(Topic topic, Poll poll, boolean notifyOnAnswers){
         Post post = topic.getFirstPost();
         post.updateModificationDate();
+        this.createOrUpdatePoll(poll, topic);
         dao.update(topic);
         notificationService.topicChanged(topic);
         JCUser currentUser = userService.getCurrentUser();
         subscribeOnTopicIfNotificationsEnabled(notifyOnAnswers, topic, currentUser);
         logger.debug("Topic id={} updated", topic.getId());
+    }
+    
+    private void createOrUpdatePoll(Poll poll, Topic persistentTopic){
+        if (poll != null && poll.isHasPoll()) {
+            poll.setTopic(persistentTopic);
+            pollService.createPoll(poll);
+        } 
     }
 
     /**

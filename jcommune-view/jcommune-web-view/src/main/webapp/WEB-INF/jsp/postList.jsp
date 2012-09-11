@@ -127,7 +127,13 @@
 <%-- END OF Upper pagination --%>
 
 <%-- Include poll row. --%>
-<jsp:include page="../template/pollRow.jsp"/>
+<c:if test="${topic.poll != null}">
+    <div class="row well poll">
+        <div class="span4  poll-row">
+            <jtalks:poll poll="${topic.poll}"/>
+        </div>
+    </div>
+</c:if>
 
 <div>
     <%-- List of posts. --%>

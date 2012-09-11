@@ -70,7 +70,7 @@ public class AclGroupPermissionEvaluatorTest {
     private String targetType = "BRANCH";
     private String permission = "BranchPermission.CREATE_POSTS";
     private BranchPermission generalPermission = BranchPermission.CREATE_POSTS;
-    private BranchPermission someOtherPermission = BranchPermission.SPLIT_TOPICS;
+    private BranchPermission someOtherPermission = BranchPermission.CLOSE_TOPICS;
 
     @BeforeMethod
     public void init() {
