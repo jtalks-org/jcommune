@@ -26,9 +26,16 @@
         <property column="UUID" name="uuid" unique="true" not-null="true"/>
         <property name="name" column="NAME"/>
         <property name="description" column="DESCRIPTION"/>
+        <property name="componentType" column="COMPONENT_TYPE">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.jtalks.common.model.entity.ComponentType</param>
+                <!--varchar-->
+                <param name="type">12</param>
+            </type>
+        </property>
     </class>
 
     <query name="getForumComponent">
-        <![CDATA[FROM Component]]>
+        <![CDATA[FROM Component where componentType ='FORUM']]>
     </query>
 </hibernate-mapping>

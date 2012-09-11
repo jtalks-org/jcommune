@@ -87,10 +87,16 @@ public enum JCommuneProperty {
         }
         else if (componentDao != null) {
             Component cmp = componentDao.getComponent();
-            return name.equals("cmp.name") ? cmp.getName() : cmp.getDescription();
+            if (cmp != null) {
+                return name.equals("cmp.name") ? cmp.getName() : cmp.getDescription();
+            }
+            else {
+                LOGGER.warn("{} property of component was not found, using default value {}", name, defaultValue);
+                return defaultValue;
+            }
         }
         else {
-            LOGGER.warn("{} property of component was not found, using default value {}", name, defaultValue);
+            LOGGER.warn("{} property was not found, using default value {}", name, defaultValue);
             return defaultValue;
         }
     }
