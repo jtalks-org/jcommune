@@ -35,6 +35,8 @@ public class JCommunePropertyTest {
     private PropertyDao propertyDao;
     @Mock
     private ComponentDao componentDao;
+    @Mock
+    Component cmp;
     private JCommuneProperty jcommuneProperty = JCommuneProperty.SENDING_NOTIFICATIONS_ENABLED;
     private JCommuneProperty jcommuneComponentProperty = JCommuneProperty.CMP_NAME;
 
@@ -51,41 +53,6 @@ public class JCommunePropertyTest {
         jcommuneProperty.setPropertyDao(propertyDao);
 
         String actual = jcommuneProperty.getValue();
-
-        Assert.assertEquals(actual, expected, "Returned an invalid property value.");
-    }
-
-    @Test
-    public void testGetNameOfComponent() {
-        String expected = "value";
-        Component cmp = new Component(expected, "description", ComponentType.FORUM);
-        Mockito.when(componentDao.getComponent()).thenReturn(cmp);
-        jcommuneComponentProperty.setComponentDao(componentDao);
-        jcommuneComponentProperty.setName("cmp.name");
-        String actual = jcommuneComponentProperty.getValueOfComponent();
-
-        Assert.assertEquals(actual, expected, "Returned an invalid property value.");
-    }
-
-    @Test
-    public void testGetDescriptionOfComponent() {
-        String expected = "description";
-        Component cmp = new Component("name", expected, ComponentType.FORUM);
-        Mockito.when(componentDao.getComponent()).thenReturn(cmp);
-        jcommuneComponentProperty.setComponentDao(componentDao);
-        jcommuneComponentProperty.setName("anyString");
-        String actual = jcommuneComponentProperty.getValueOfComponent();
-
-        Assert.assertEquals(actual, expected, "Returned an invalid property value.");
-    }
-
-    @Test
-    public void testGetDefaultValueOfComponent() {
-        String expected = "";
-        Mockito.when(componentDao.getComponent()).thenReturn(null);
-        jcommuneComponentProperty.setName("anyString");
-        jcommuneComponentProperty.setDefaultValue("");
-        String actual = jcommuneComponentProperty.getValueOfComponent();
 
         Assert.assertEquals(actual, expected, "Returned an invalid property value.");
     }
@@ -144,4 +111,62 @@ public class JCommunePropertyTest {
 
         Assert.assertEquals(actual, expectedValue, "Returned an invalid property value.");
     }
+
+    @Test
+    public void testGetDefaultValue() {
+        String expected = "";
+        jcommuneProperty.setPropertyDao(null);
+        jcommuneProperty.setDefaultValue(expected);
+
+        String actual = jcommuneProperty.getValue();
+
+        Assert.assertEquals(actual, expected, "Returned an invalid property value.");
+    }
+
+    @Test
+    public void testGetNameOfComponent() {
+        String expected = "value";
+        Component cmp = new Component(expected, "description", ComponentType.FORUM);
+        Mockito.when(componentDao.getComponent()).thenReturn(cmp);
+        jcommuneComponentProperty.setComponentDao(componentDao);
+        jcommuneComponentProperty.setName("cmp.name");
+        String actual = jcommuneComponentProperty.getValueOfComponent();
+
+        Assert.assertEquals(actual, expected, "Returned an invalid property value.");
+    }
+
+    @Test
+    public void testGetDescriptionOfComponent() {
+        String expected = "description";
+        Component cmp = new Component("name", expected, ComponentType.FORUM);
+        Mockito.when(componentDao.getComponent()).thenReturn(cmp);
+        jcommuneComponentProperty.setComponentDao(componentDao);
+        jcommuneComponentProperty.setName("anyString");
+        String actual = jcommuneComponentProperty.getValueOfComponent();
+
+        Assert.assertEquals(actual, expected, "Returned an invalid property value.");
+    }
+
+    @Test
+    public void testGetDefaultValueOfComponent() {
+        String expected = "";
+        Mockito.when(componentDao.getComponent()).thenReturn(null);
+        jcommuneComponentProperty.setName("anyString");
+        jcommuneComponentProperty.setDefaultValue(expected);
+        String actual = jcommuneComponentProperty.getValueOfComponent();
+
+        Assert.assertEquals(actual, expected, "Returned an invalid property value.");
+    }
+
+    @Test
+    public void testGetDefaultValueOfComponentWithNotFoundedProperty() {
+        String expected = "";
+        Mockito.when(cmp.getName()).thenReturn(null);
+        jcommuneComponentProperty.setName("cmp.name");
+        jcommuneComponentProperty.setComponentDao(componentDao);
+        jcommuneComponentProperty.setDefaultValue(expected);
+        String actual = jcommuneComponentProperty.getValueOfComponent();
+        Assert.assertEquals(actual, expected, "Returned an invalid property value.");
+    }
+
 }
