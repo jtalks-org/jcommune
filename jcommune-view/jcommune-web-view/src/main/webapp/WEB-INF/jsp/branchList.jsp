@@ -46,10 +46,10 @@
                         <th class="status-col"></th>
                     </sec:authorize>
                     <th><spring:message code="label.section.header.branches"/></th>
-                    <th class="topics-posts forum-posts-view-header">
+                    <th class="topics-posts forum-posts-view-header shrink-to-fit">
                         <spring:message code="label.branch.header.topics_posts"/>
                     </th>
-                    <th class="latest-by forum-latest-by-header">
+                    <th class="latest-by forum-latest-by-header shrink-to-fit">
                         <spring:message code="label.branch.header.lastMessage"/>
                     </th>
                 </tr>

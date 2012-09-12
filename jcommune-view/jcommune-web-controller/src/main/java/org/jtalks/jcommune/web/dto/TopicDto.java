@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.web.dto;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.Post;
@@ -53,6 +55,9 @@ public class TopicDto {
      */
     public TopicDto(Topic topic) {
         this.topic = topic;
+        if (!topic.getPosts().isEmpty()){
+            bodyText = topic.getBodyText();
+        }
     }
 
     /**

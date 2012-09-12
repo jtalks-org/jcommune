@@ -169,14 +169,16 @@
         <constructor-arg ref="lastReadPostHibernateDao"/>
     </bean>
 
-    <bean id="localCache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-        <property name="configLocation" value="classpath:/org/jtalks/jcommune/service/ehcache.xml"/>
-    </bean>
+    <bean id="bbCodeService" class="org.jtalks.jcommune.service.nontransactional.BBCodeService"/>
 
     <!--
-    Cache for user related data.
+    Cache beans for user related data.
     Now used for storing new private messages count.
     -->
+    <bean id="localCache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+        <property name="configLocation" value="classpath:/org/jtalks/jcommune/model/entity/ehcache.xml"/>
+    </bean>
+
     <bean id="userDataCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
         <property name="cacheManager" ref="localCache"/>
         <property name="cacheName" value="cuserDataCache"/>
@@ -186,6 +188,4 @@
           class="org.jtalks.jcommune.service.nontransactional.UserDataCacheService">
         <constructor-arg name="userDataCache" ref="userDataCache"/>
     </bean>
-
-    <bean id="bbCodeService" class="org.jtalks.jcommune.service.nontransactional.BBCodeService"/>
 </beans>

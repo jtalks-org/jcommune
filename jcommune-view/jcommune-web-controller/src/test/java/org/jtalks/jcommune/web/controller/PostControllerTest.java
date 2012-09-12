@@ -148,7 +148,7 @@ public class PostControllerTest {
     @Test
     public void editPost() throws NotFoundException {
         //invoke the object under test
-        ModelAndView actualMav = controller.editPage(TOPIC_ID, POST_ID);
+        ModelAndView actualMav = controller.editPage(POST_ID);
         //check result
         this.assertEditPostFormMavIsCorrect(actualMav);
 
@@ -162,7 +162,7 @@ public class PostControllerTest {
     public void testUpdatePost() throws NotFoundException {
         PostDto dto = getDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "postDto");
-        ModelAndView mav = controller.update(dto, bindingResult, TOPIC_ID, POST_ID);
+        ModelAndView mav = controller.update(dto, bindingResult, POST_ID);
         assertViewName(mav, "redirect:/posts/" + dto.getId());
         verify(postService).updatePost(Matchers.<Post>any(), anyString());
     }
@@ -174,7 +174,7 @@ public class PostControllerTest {
 
         when(resultWithErrors.hasErrors()).thenReturn(true);
 
-        ModelAndView mav = controller.update(dto, resultWithErrors, TOPIC_ID, POST_ID);
+        ModelAndView mav = controller.update(dto, resultWithErrors, POST_ID);
 
         this.assertEditPostFormMavIsCorrect(mav);
 

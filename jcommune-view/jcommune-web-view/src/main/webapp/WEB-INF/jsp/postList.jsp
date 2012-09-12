@@ -127,7 +127,13 @@
 <%-- END OF Upper pagination --%>
 
 <%-- Include poll row. --%>
-<jsp:include page="../template/pollRow.jsp"/>
+<c:if test="${topic.poll != null}">
+    <div class="row well poll">
+        <div class="span4  poll-row">
+            <jtalks:poll poll="${topic.poll}"/>
+        </div>
+    </div>
+</c:if>
 
 <div>
     <%-- List of posts. --%>
@@ -152,15 +158,15 @@
                                         <c:set var="delete_url"
                                                value="${pageContext.request.contextPath}/topics/${topic.id}"/>
                                         <c:set var="edit_url"
-                                               value="${pageContext.request.contextPath}/topics/${topic.id}/edit?branchId=${branchId}"/>
+                                               value="${pageContext.request.contextPath}/topics/${topic.id}/edit"/>
                                         <c:set var="confirm_message" value="label.deleteTopicConfirmation"/>
                                     </c:when>
                                     <c:otherwise>
                                         <%-- url to delete & edit post --%>
                                         <c:set var="delete_url"
-                                               value="${pageContext.request.contextPath}/posts/${post.id}?branchId=${topic.branch.id}"/>
+                                               value="${pageContext.request.contextPath}/posts/${post.id}"/>
                                         <c:set var="edit_url"
-                                               value="${pageContext.request.contextPath}/posts/${post.id}/edit?topicId=${topic.id}"/>
+                                               value="${pageContext.request.contextPath}/posts/${post.id}/edit"/>
                                         <c:set var="confirm_message" value="label.deletePostConfirmation"/>
                                     </c:otherwise>
                                 </c:choose>
@@ -181,7 +187,7 @@
                                         <c:set var="isEditButtonAvailable" value="true"/>
                                     </jtalks:hasPermission>
                                     <c:if test="${isEditButtonAvailable}">
-                                        <a id="edit_button" href="${edit_url}" rel="${branchId}"
+                                        <a id="edit_button" href="${edit_url}" rel="${topic.branch.id}"
                                            class="btn btn-mini" title="<spring:message code='label.tips.edit_post'/>">
                                             <i class="icon-edit"></i>
                                             <spring:message code="label.edit"/>

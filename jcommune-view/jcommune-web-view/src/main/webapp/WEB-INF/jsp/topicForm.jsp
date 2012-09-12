@@ -21,7 +21,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <head>
     <title><spring:message code="h.new_topic"/></title>
-        <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-ui.min.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-ui.min.js"
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/datepicker/development-bundle/ui/i18n/jquery.ui.datepicker-ru.js"
             type="text/javascript"></script>
@@ -29,10 +29,10 @@
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/datepicker.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/newPoll.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/pollPreview.js"
             type="text/javascript"></script>
-    <script
-            src="${pageContext.request.contextPath}/resources/javascript/custom/leaveConfirm.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/leaveConfirm.js"
+            type="text/javascript"></script>
 
     <link rel="stylesheet"
           href="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/datepicker/development-bundle/themes/smoothness/jquery.ui.datepicker.css"
@@ -49,15 +49,22 @@
 
 </head>
 <body>
-
 <div class="container">
-    <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
-
+    <div id="branch-header">
+        <h3>
+            <span id="topicTitle">
+                <c:out value="${topicDto.topic.title}"/>
+            </span>
+        </h3>
+    </div>
+    <br>
     <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
+    <div id="previewPoll" class="well">
+    </div>
     <form:form action="${pageContext.request.contextPath}/topics/new?branchId=${branchId}"
                method="POST" modelAttribute="topicDto" class="well anti-multipost">
-        <div class='control-group'>
+        <div class='control-group hide-on-preview'>
             <div class='controls'>
                 <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>
                 <form:input path="topic.title" id="subject" type="text" name="subject" size="45"
@@ -70,7 +77,7 @@
         </div>
         <jtalks:hasPermission targetId='${branchId}' targetType='BRANCH'
                               permission='BranchPermission.CREATE_STICKED_TOPICS'>
-            <div class='control-group'>
+            <div class='control-group hide-on-preview'>
                 <form:checkbox path="topic.sticked" value="true" tabindex="101"
                                class="confirm-unsaved form-check-radio-box"/>
                 <label for='sticked' class='string optional'>
@@ -83,7 +90,7 @@
 
         <jtalks:hasPermission targetId='${branchId}' targetType='BRANCH'
                               permission='BranchPermission.CREATE_ANNOUNCEMENTS'>
-            <div class='control-group'>
+            <div class='control-group hide-on-preview'>
                 <form:checkbox path="topic.announcement" value="true" tabindex="102"
                                class="script-confirm-unsaved form-check-radio-box"/>
                 <label for='announcement' class='string optional'>
@@ -93,24 +100,62 @@
                 <form:errors path="topic.announcement"/>
             </div>
         </jtalks:hasPermission>
-
-        <jtalks:bbeditor labelForAction="label.addtopic"
+        <div class="control-group hide-on-preview">
+            <form:checkbox id="notify" tabindex="500" path="notifyOnAnswers" name="notify" checked="checked"
+                           value="${notifyOnAnswers}"
+                           class="script-confirm-unsaved form-check-radio-box"/>
+            <label for='notifyOnAnswers' class='string optional'>
+                <spring:message code="label.answer.notify_message"/>
+            </label>
+        </div>
+        <jtalks:bbeditor labelForAction="label.save"
                          postText="${topicDto.bodyText}"
                          bodyParameterName="bodyText"
                          back="${pageContext.request.contextPath}/branches/${branchId}"/>
-        <div class="control-group">
-            <br/>
-            <form:checkbox id="notify" tabindex="500" path="notifyOnAnswers" name="notify" checked="checked" value="${notifyOnAnswers}"
-                            class="script-confirm-unsaved right-magrin"/><spring:message
-                code="label.answer.notify_message"/>
+        <br/>
+        <br/>
+
+        <div class='well hide-on-preview'>
+            <div id="editPoll">
+                <legend><spring:message code="label.poll.header"/></legend>
+
+                <div class='control-group'>
+                    <spring:message code='label.poll.title' var='pollTitlePlaceholder'/>
+                    <form:input path="topic.poll.title" tabindex="600" type="text" id="pollTitle"
+                                size="45" maxlength="255" placeholder="${pollTitlePlaceholder}" class="post"/>
+                    <br>
+                    <form:errors path="topic.poll.title" cssClass="help-inline"/>
+                </div>
+
+                <div class='control-group'>
+                    <spring:message code='label.poll.options.title' var='optionsPlaceholder'/>
+                    <form:textarea path="topic.poll.pollItemsValue" tabindex="700" rows="8" id="pollItems"
+                                   class="post" placeholder="${optionsPlaceholder}"/>
+                    <br>
+                    <form:errors path="topic.poll.pollItemsValue" cssClass="help-inline"/>
+                </div>
+
+                <div class='control-group'>
+                    <form:checkbox path="topic.poll.multipleAnswer" id="multipleChecker" class="form-check-radio-box"
+                                   tabindex="800" value="${topicDto.poll.multipleAnswer}"/>
+                    <label for='multipleChecker' class='string optional'>
+                        <spring:message code="label.poll.multiple.title"/>
+                    </label>
+                </div>
+
+                <div class="control-group right-aligned">
+                    <spring:message code="label.poll.date"/>
+                    <spring:message code='label.poll.date.set' var='datePlaceholder'/>
+                    <form:input path="topic.poll.endingDateValue" tabindex="900" id="datepicker" type="text"
+                                readonly="true" placeholder="${datePlaceholder}" class="cursor-pointer"/>
+                    &nbsp;<i class="icon-trash cursor-pointer" id="deleteEndingDate"></i>
+                    <br>
+                    <form:errors path="topic.poll.endingDateValue" cssClass="help-inline"/>
+                </div>
+                    <%--Make parent div include floated divs explicitly, or they'll be shown out of parent container--%>
+                <div class="cleared"></div>
+            </div>
         </div>
-        <br/>
-        <br/>
-        <jtalks:newPoll titleNameValue="topic.poll.title"
-                        pollOptionsNameValue="topic.poll.pollItemsValue"
-                        multipleName="topic.poll.multipleAnswer"
-                        multipleValue="${topicDto.poll.multipleAnswer}"
-                        endingDateNameValue="topic.poll.endingDateValue"/>
     </form:form>
 
     <a href="${pageContext.request.contextPath}/branches/${branchId}" tabindex="1000" class='back-btn'>

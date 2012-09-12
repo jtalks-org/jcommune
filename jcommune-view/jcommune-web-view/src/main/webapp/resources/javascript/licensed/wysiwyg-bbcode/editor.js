@@ -86,13 +86,15 @@ function SwitchEditor() {
         textboxelement.style.display = "";
         htmlcontentelement.style.display = "none";
         editorVisible = false;
-        $(".btn-toolbar").show();
+        $(".hide-on-preview").show();
+        $(".show-on-preview").hide();
         $("#preview")[0].value = $labelPreview;
     }
     else { // enter preview
         content = textboxelement.value;
         bbcode2html();
-        $(".btn-toolbar").hide();
+        $(".show-on-preview").show();
+        $(".hide-on-preview").hide();
         $("#preview")[0].value = $labelEdit;
     }
 }

@@ -275,7 +275,7 @@ public class TransactionalTopicModificationServiceTest {
         topic.addPost(post);
         when(userService.getCurrentUser()).thenReturn(user);
 
-        topicService.updateTopic(topic, true);
+        topicService.updateTopic(topic, null, true);
 
         verify(notificationService).topicChanged(topic);
         verify(subscriptionService).toggleTopicSubscription(topic);
@@ -289,7 +289,7 @@ public class TransactionalTopicModificationServiceTest {
         subscribeUserOnTopic(user, topic);
         when(userService.getCurrentUser()).thenReturn(user);
 
-        topicService.updateTopic(topic, false);
+        topicService.updateTopic(topic, null, false);
 
         verify(notificationService).topicChanged(topic);
     }
@@ -302,7 +302,7 @@ public class TransactionalTopicModificationServiceTest {
         subscribeUserOnTopic(user, topic);
         when(userService.getCurrentUser()).thenReturn(user);
 
-        topicService.updateTopic(topic, false);
+        topicService.updateTopic(topic, null, false);
 
         verify(notificationService).topicChanged(topic);
         verify(subscriptionService).toggleTopicSubscription(topic);
@@ -315,7 +315,7 @@ public class TransactionalTopicModificationServiceTest {
         topic.addPost(post);
         when(userService.getCurrentUser()).thenReturn(user);
 
-        topicService.updateTopic(topic, false);
+        topicService.updateTopic(topic, null, false);
 
         verify(notificationService).topicChanged(topic);
     }
@@ -329,7 +329,7 @@ public class TransactionalTopicModificationServiceTest {
         Post post = new Post(user, "content");
         topic.addPost(post);
 
-        topicService.updateTopic(topic, false);
+        topicService.updateTopic(topic, null, false);
 
         verify(topicDao).update(topic);
         verify(notificationService).topicChanged(topic);
