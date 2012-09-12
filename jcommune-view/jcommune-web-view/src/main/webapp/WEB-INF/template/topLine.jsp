@@ -29,7 +29,8 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </a>
-            <a class="brand" href="${pageContext.request.contextPath}/"><%= JCommuneProperty.CMP_NAME.getValue() %>
+            <a class="brand"
+               href="${pageContext.request.contextPath}/"><%= JCommuneProperty.CMP_NAME.getValueOfComponent() %>
             </a>
 
             <div class="nav-collapse">

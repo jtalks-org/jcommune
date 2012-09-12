@@ -23,7 +23,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <head>
-    <title><%= JCommuneProperty.CMP_DESCRIPTION.getValue() %>
+    <title><%= JCommuneProperty.CMP_DESCRIPTION.getValueOfComponent() %>
     </title>
 </head>
 <body>

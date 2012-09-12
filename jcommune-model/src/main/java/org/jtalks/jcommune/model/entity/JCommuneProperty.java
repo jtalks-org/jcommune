@@ -20,7 +20,6 @@ import org.jtalks.jcommune.model.dao.ComponentDao;
 import org.jtalks.jcommune.model.dao.PropertyDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 
 /**
@@ -79,24 +78,34 @@ public enum JCommuneProperty {
             Property property = propertyDao.getByName(name);
             if (property != null) {
                 return property.getValue();
-            }
-            else {
+            } else {
                 LOGGER.warn("{} property was not found, using default value {}", name, defaultValue);
                 return defaultValue;
             }
+        } else {
+            LOGGER.warn("{} property was not found, using default value {}", name, defaultValue);
+            return defaultValue;
         }
-        else if (componentDao != null) {
+    }
+
+    /**
+     * Returns a string value of the component property.
+     * It is also worth noting that if the property has not been found,
+     * it will return a default value.
+     *
+     * @return a string value of component property
+     */
+    public String getValueOfComponent() {
+        if (componentDao != null) {
             Component cmp = componentDao.getComponent();
             if (cmp != null) {
                 return name.equals("cmp.name") ? cmp.getName() : cmp.getDescription();
-            }
-            else {
-                LOGGER.warn("{} property of component was not found, using default value {}", name, defaultValue);
+            } else {
+                LOGGER.warn("{} name of component was not found, using default value {}", name, defaultValue);
                 return defaultValue;
             }
-        }
-        else {
-            LOGGER.warn("{} property was not found, using default value {}", name, defaultValue);
+        } else {
+            LOGGER.warn("{} name of component was not found, using default value {}", name, defaultValue);
             return defaultValue;
         }
     }

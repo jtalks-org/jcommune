@@ -23,7 +23,7 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <head>
-    <title><%= JCommuneProperty.CMP_DESCRIPTION.getValue() %>
+    <title><%= JCommuneProperty.CMP_DESCRIPTION.getValueOfComponent() %>
     </title>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/subscription.js"
             type="text/javascript"></script>
