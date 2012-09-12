@@ -78,13 +78,13 @@ public enum JCommuneProperty {
             Property property = propertyDao.getByName(name);
             if (property != null) {
                 return property.getValue();
-            } else {
-                LOGGER.warn("{} property was not found, using default value {}", name, defaultValue);
-                return defaultValue;
             }
-        } else {
-            LOGGER.warn("{} property was not found, using default value {}", name, defaultValue);
-            return defaultValue;
+            else {
+                return getDefaultValue();
+            }
+        }
+        else {
+            return getDefaultValue();
         }
     }
 
@@ -96,17 +96,22 @@ public enum JCommuneProperty {
      * @return a string value of component property
      */
     public String getValueOfComponent() {
-        if (componentDao != null) {
-            Component cmp = componentDao.getComponent();
-            if (cmp != null) {
-                return name.equals("cmp.name") ? cmp.getName() : cmp.getDescription();
-            } else {
-                LOGGER.warn("{} name of component was not found, using default value {}", name, defaultValue);
-                return defaultValue;
+        try {
+            if (componentDao != null) {
+                Component cmp = componentDao.getComponent();
+                if (cmp != null) {
+                    return name.equals("cmp.name") ? cmp.getName() : cmp.getDescription();
+                }
+                else {
+                    return getDefaultValue();
+                }
             }
-        } else {
-            LOGGER.warn("{} name of component was not found, using default value {}", name, defaultValue);
-            return defaultValue;
+            else {
+                return getDefaultValue();
+            }
+        }
+        catch (Exception ex) {
+            return getDefaultValue();
         }
     }
 
@@ -143,6 +148,16 @@ public enum JCommuneProperty {
      */
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
+    }
+
+    /**
+     * Default value returns if property not found, or connection to database is down
+     *
+     * @return defaultValue
+     */
+    private String getDefaultValue() {
+        LOGGER.warn("{} property was not found, using default value {}");
+        return defaultValue;
     }
 
     /**
