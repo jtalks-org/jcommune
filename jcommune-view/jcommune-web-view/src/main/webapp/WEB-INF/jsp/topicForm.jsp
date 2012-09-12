@@ -109,7 +109,7 @@
             </label>
         </div>
         <jtalks:bbeditor labelForAction="label.save"
-                         postText="${topicDto.topic.bodyText}"
+                         postText="${topicDto.bodyText}"
                          bodyParameterName="bodyText"
                          back="${pageContext.request.contextPath}/branches/${branchId}"/>
         <br/>

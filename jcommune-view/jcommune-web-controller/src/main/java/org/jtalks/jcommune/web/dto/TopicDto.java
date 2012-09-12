@@ -55,6 +55,9 @@ public class TopicDto {
      */
     public TopicDto(Topic topic) {
         this.topic = topic;
+        if (!topic.getPosts().isEmpty()){
+            bodyText = topic.getBodyText();
+        }
     }
 
     /**
