@@ -19,11 +19,7 @@ import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Poll;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
@@ -33,6 +29,9 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * Topic service class. This class contains method needed to manipulate with Topic persistent entity.
@@ -189,9 +188,13 @@ public class TransactionalTopicModificationService implements TopicModificationS
     
     private void createOrUpdatePoll(Poll poll, Topic persistentTopic){
         if (poll != null && poll.isHasPoll()) {
-            poll.setTopic(persistentTopic);
-            pollService.createPoll(poll);
-        } 
+            if (persistentTopic.getPoll() == null) {
+                poll.setTopic(persistentTopic);
+                pollService.createPoll(poll);
+            } else {
+
+            }
+        }
     }
 
     /**

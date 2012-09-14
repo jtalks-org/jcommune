@@ -114,6 +114,11 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
                 .on(poll).flush();
     }
 
+    @Override
+    public void update(Poll poll) {
+        this.getDao().update(poll);
+    }
+
     /**
      * Prohibit the re-vote. In this poll a user will no longer be able to participate.
      *
