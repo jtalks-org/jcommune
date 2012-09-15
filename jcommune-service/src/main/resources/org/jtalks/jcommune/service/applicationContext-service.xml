@@ -169,6 +169,13 @@
         <constructor-arg ref="lastReadPostHibernateDao"/>
     </bean>
 
+    <bean id="simplePageService"
+          class="org.jtalks.jcommune.service.transactional.TransactionalSimplePageService">
+        <constructor-arg ref="simplePageDao"/>
+        <constructor-arg ref="groupDao"/>
+        <constructor-arg ref="securityService"/>
+    </bean>
+
     <bean id="bbCodeService" class="org.jtalks.jcommune.service.nontransactional.BBCodeService"/>
 
     <!--
