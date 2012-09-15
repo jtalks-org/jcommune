@@ -21,6 +21,7 @@ import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
+import org.jtalks.jcommune.model.entity.*;
 
 /**
  * @author Kirill Afonin
@@ -83,5 +84,8 @@ public final class ObjectsFactory {
         contact.setOwner(ObjectsFactory.getDefaultUser());
         return contact;
     }
-
+    
+    public static SimplePage getDefaultSimplePage() {
+        return new SimplePage("name", "content", "pathName");
+    }
 }

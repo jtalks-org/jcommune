@@ -44,6 +44,11 @@
                 <ul class="nav pull-right">
                     <%-- Not logged in block --%>
                     <sec:authorize access="isAnonymous()">
+                    	<li>
+                        	<a href="${pageContext.request.contextPath}/pages/for_newbies">
+                            	<fmt:message key="label.newbies"/>
+                        	</a>
+                    	</li>
                         <li>
                             <a id="signup" href="${pageContext.request.contextPath}/user/new">
                                 <fmt:message key="label.signup"/>
