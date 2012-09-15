@@ -75,7 +75,7 @@ $(document).ready(function () {
         	if (!$('#avatarPreview').length) {
         		$('#avatarPreviewContainer').empty();
         		$('#avatarPreviewContainer')
-        			.append('<span></span><img id="avatarPreview" src="data:image/jpeg;base64,${editedUser.avatar}" alt="" />');
+        			.append('<img id="avatarPreview" src="data:image/jpeg;base64,${editedUser.avatar}" alt="" />');
         	}
         	//
             if (responseJSON.success == "true") {

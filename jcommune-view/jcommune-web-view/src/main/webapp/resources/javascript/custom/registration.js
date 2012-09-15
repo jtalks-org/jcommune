@@ -21,6 +21,10 @@
 $(function () {
     var firstView;
     $("#signup").on('click', function (e) {
+    	//temporary disable buttons
+    	disableClickEventForComponent("#signin");
+    	disableClickEventForComponent("#signup");
+    	//
         firstView = true;
         signupPopup();
         //if JS off, then open standart page
@@ -63,7 +67,7 @@ $(function () {
                 if ($(data).find("legend").html() != null) {
                     firstView = false;
                     $.prompt(content,
-                        {buttons:{OK:true}, focus:0, submit:signupPopup});
+                        {buttons:{OK:true}, focus:0, submit:signupPopup, zIndex: 1050, overlayspeed:"fast"});
                     refreshCaptcha();
                     refreshCaptchaOnClick();
                 } else if ($(data).find("span.error_errorpage").html() != null) {
@@ -71,6 +75,8 @@ $(function () {
                 } else {
                     $.prompt($labelRegistrationSuccess);
                 }
+                //enable all disabled links
+                enableClickEventForDisabledComponents();
             }});
     }
 });

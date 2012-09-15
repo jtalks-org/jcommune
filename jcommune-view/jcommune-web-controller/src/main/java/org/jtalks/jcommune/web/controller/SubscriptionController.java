@@ -18,7 +18,7 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SubscriptionService;
-import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.TopicFetchService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,20 +34,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class SubscriptionController {
 
-    private TopicService topicService;
+    private TopicFetchService topicFetchService;
     private BranchService branchService;
     private SubscriptionService subscriptionService;
 
     /**
-     * @param topicService        topic service to load topics from DB
+     * @param topicFetchService   topic service to load topics from DB
      * @param branchService       branch service to load branches from DB
      * @param subscriptionService to manage actual updates subscription info
      */
     @Autowired
-    public SubscriptionController(TopicService topicService,
+    public SubscriptionController(TopicFetchService topicFetchService,
                                   BranchService branchService,
                                   SubscriptionService subscriptionService) {
-        this.topicService = topicService;
+        this.topicFetchService = topicFetchService;
         this.branchService = branchService;
         this.subscriptionService = subscriptionService;
     }
@@ -61,7 +61,7 @@ public class SubscriptionController {
      */
     @RequestMapping("topics/{id}/subscribe")
     public void subscribeToTopic(@PathVariable Long id) throws NotFoundException {
-        Topic topic = topicService.get(id);
+        Topic topic = topicFetchService.get(id);
         subscriptionService.toggleTopicSubscription(topic);
     }
 
@@ -73,7 +73,7 @@ public class SubscriptionController {
      */
     @RequestMapping("topics/{id}/unsubscribe")
     public void unsubscribeFromTopic(@PathVariable Long id) throws NotFoundException {
-        Topic topic = topicService.get(id);
+        Topic topic = topicFetchService.get(id);
         subscriptionService.toggleTopicSubscription(topic);
     }
 

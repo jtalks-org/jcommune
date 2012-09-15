@@ -21,7 +21,7 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <head>
-    <script language="javascript"
+    <script
             src="${pageContext.request.contextPath}/resources/javascript/custom/privateMessages.js"></script>
     <title><spring:message code="label.pm_title"/></title>
 </head>
@@ -32,10 +32,7 @@
     <hr/>
     <div class="row">
         <div class="span2">
-            <sec:authentication property="principal.id" var="userId"/>
-            <a href="${pageContext.request.contextPath}/pm/new?userId=${userId}"
-               class="btn btn-primary btn-small pm_buttons">
-                <spring:message code="label.new_pm"/></a>
+            <jsp:include page="../../template/newPrivateMessage.jsp"/>
             <jsp:include page="../../template/pmFolders.jsp"/>
         </div>
         <!-- /span2 -->

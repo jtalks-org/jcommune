@@ -14,6 +14,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  
 --%>
+<%@ page import="org.jtalks.jcommune.model.entity.JCommuneProperty" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -22,7 +23,8 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <head>
-    <title><spring:message code="label.section.jtalks_forum"/></title>
+    <title><%= JCommuneProperty.CMP_DESCRIPTION.getValueOfComponent() %>
+    </title>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/subscription.js"
             type="text/javascript"></script>
 </head>
@@ -73,11 +75,10 @@
 <div class="row-fluid upper-pagination forum-pagination-container">
 
     <div class="span2">
-        <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' 
-            permission='BranchPermission.CREATE_TOPICS'>
+        <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
+                              permission='BranchPermission.CREATE_POSTS'>
             <a id='new-topic-btn' class="btn btn-primary"
-               href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"
-               title="<spring:message code="label.addtopic"/>">
+               href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}">
                 <spring:message code="label.addtopic"/>
             </a>
         </jtalks:hasPermission>
@@ -116,12 +117,14 @@
         <c:when test="${!(empty topicsPage.content)}">
             <thead>
             <tr>
-                <th class="status-col"></th>
+                <sec:authorize access="isAuthenticated()">
+                    <th class="status-col"></th>
+                </sec:authorize>
                 <th><spring:message code="label.branch.header.topics"/></th>
-                <th class="author-col"><spring:message code="label.branch.header.author"/></th>
-                <th class="posts-views forum-posts-view-header"><spring:message
+                <th class="author-col shrink-to-fit"><spring:message code="label.branch.header.author"/></th>
+                <th class="posts-views forum-posts-view-header shrink-to-fit"><spring:message
                         code="label.branch.header.posts_views"/></th>
-                <th class="latest-by forum-latest-by-header"><spring:message
+                <th class="latest-by forum-latest-by-header shrink-to-fit"><spring:message
                         code="label.branch.header.lastMessage"/></th>
             </tr>
             </thead>
@@ -129,30 +132,11 @@
             <c:forEach var="topic" items="${topicsPage.content}">
                 <%-- Topic row --%>
                 <tr>
-                    <td class="status-col">
-
-                        <c:set var="hasNewPosts" value="false"/>
-                        <sec:authorize access="isAuthenticated()">
-                            <c:if test="${topic.hasUpdates}">
-                                <c:set var="hasNewPosts" value="true"/>
-                            </c:if>
-                        </sec:authorize>
-
-                        <c:choose>
-                            <c:when test="${hasNewPosts}">
-                                <a href="${pageContext.request.contextPath}/posts/${topic.firstUnreadPostId}">
-                                    <img class="status-img"
-                                         src="${pageContext.request.contextPath}/resources/images/new_badge.png"
-                                         title="<spring:message code="label.topic.new_posts"/>"/>
-                                </a>
-                            </c:when>
-                            <c:otherwise>
-                                <img class="status-img"
-                                     src="${pageContext.request.contextPath}/resources/images/old_badge.png"
-                                     title="<spring:message code="label.topic.no_new_posts"/>"/>
-                            </c:otherwise>
-                        </c:choose>
-                    </td>
+                    <sec:authorize access="isAuthenticated()">
+                        <td class="status-col">
+                            <jtalks:topicIcon topic="${topic}"/>
+                        </td>
+                    </sec:authorize>
                     <td>
                         <c:choose>
                             <%--Some topic types should have a special prefix when displayed--%>
@@ -178,18 +162,18 @@
                             </a>
                         </sub>
                     </td>
-                    <td class="author-col">
+                    <td class="author-col shrink-to-fit">
                         <a href='${pageContext.request.contextPath}/users/${topic.topicStarter.id}'>
                             <c:out value="${topic.topicStarter.username}"/>
                         </a>
                     </td>
-                    <td class="posts-views">
+                    <td class="posts-views shrink-to-fit">
                         <spring:message code="label.section.header.messages"/>:
                         <span class='test-posts-count'><c:out value="${topic.postCount}"/></span><br/>
                         <spring:message code="label.branch.header.views"/>:
                         <span class='test-views'><c:out value="${topic.views}"/></span>
                     </td>
-                    <td class="latest-by">
+                    <td class="latest-by shrink-to-fit">
                         <i class="icon-calendar"></i>
                         <a class="date" href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}">
                             <jtalks:format value="${topic.lastPost.creationDate}"/>
@@ -222,11 +206,10 @@
 <div class="row-fluid upper-pagination forum-pagination-container">
 
     <div class="span2">
-        <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' 
-            permission='BranchPermission.CREATE_TOPICS'>
+        <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
+                              permission='BranchPermission.CREATE_POSTS'>
             <a id='new-topic-btn' class="btn btn-primary"
-               href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"
-               title="<spring:message code="label.addtopic"/>">
+               href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}">
                 <spring:message code="label.addtopic"/>
             </a>
         </jtalks:hasPermission>

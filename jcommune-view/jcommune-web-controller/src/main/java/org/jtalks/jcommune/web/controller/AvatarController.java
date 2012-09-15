@@ -58,6 +58,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 public class AvatarController {
+
     public static final String RESULT = "success";
     static final String WRONG_FORMAT_RESOURCE_MESSAGE = "image.wrong.format";
     static final String WRONG_SIZE_RESOURCE_MESSAGE = "image.wrong.size";

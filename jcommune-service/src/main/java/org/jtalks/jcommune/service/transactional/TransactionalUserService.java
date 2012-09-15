@@ -36,6 +36,7 @@ import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  * User service class. This class contains method needed to manipulate with User persistent entity.
@@ -116,7 +117,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         mailService.sendAccountActivationMail(user);
         LOGGER.info("JCUser registered: {}", user.getUsername());
         securityService.createAclBuilder().grant(ProfilePermission.EDIT_PROFILE).to(user).on(user).flush();
-        securityService.createAclBuilder().grant(ProfilePermission.SEND_PRIVATE_MESSAGES).to(user).on(user).flush();
         Group group = groupDao.get(AdministrationGroup.USER.getId());
         group.getUsers().add(user);
         groupDao.update(group);
@@ -153,6 +153,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     public JCUser editUserProfile(UserInfoContainer info) {
 
         JCUser currentUser = this.getCurrentUser();
+        checkPermissionsToEditProfile(currentUser.getId());
         byte[] decodedAvatar = base64Wrapper.decodeB64Bytes(info.getB64EncodedAvatar());
 
         String newPassword = info.getNewPassword();
@@ -218,5 +219,14 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
                 this.getDao().delete(user);
             }
         }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @PreAuthorize("hasPermission(#userId, 'USER', 'ProfilePermission.EDIT_PROFILE')")
+    public void checkPermissionsToEditProfile(Long userId) {
+        LOGGER.debug("Check permission to edit profile for user - " + userId);
     }
 }

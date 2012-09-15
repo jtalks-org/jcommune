@@ -20,7 +20,9 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
        http://www.springframework.org/schema/aop
-       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+     ">
+
 
     <bean id="exceptionTranslationInterceptor"
           class="org.springframework.dao.support.PersistenceExceptionTranslationInterceptor"/>
@@ -83,6 +85,10 @@
           class="org.jtalks.jcommune.model.dao.hibernate.PropertyHibernateDao"
           parent="abstractHibernateDao"/>
 
+    <bean id="componentDao"
+          class="org.jtalks.jcommune.model.dao.hibernate.ComponentHibernateDao"
+          parent="abstractHibernateDao"/>
+
     <!-- Declaration of Hibernate Search DAO beans -->
     <bean id="topicSearchDao" class="org.jtalks.jcommune.model.dao.search.hibernate.TopicHibernateSearchDao">
         <constructor-arg name="sessionFactory" ref="sessionFactory"/>
@@ -136,6 +142,7 @@
                 <value>/org/jtalks/jcommune/model/entity/PollOption.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/Property.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/SimplePage.hbm.xml</value>
+                <value>/org/jtalks/jcommune/model/entity/Component.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -201,4 +208,5 @@
         <property name="table" value="jcommune_schema_version"/>
         <property name="enabled" value="${migrations_enabled}"/>
     </bean>
+
 </beans>

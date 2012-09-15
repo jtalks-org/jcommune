@@ -128,6 +128,7 @@ public class UserProfileController {
     @RequestMapping(value = "/users/edit", method = RequestMethod.GET)
     public ModelAndView editProfilePage() throws NotFoundException {
         JCUser user = userService.getCurrentUser();
+        userService.checkPermissionsToEditProfile(user.getId());
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
         byte[] avatar = user.getAvatar();
         editedUser.setAvatar(imageUtils.prepareHtmlImgSrc(avatar));

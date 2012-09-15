@@ -107,4 +107,12 @@ public class PollItem extends Entity {
     public void increaseVotesCount() {
         this.votesCount++;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return name;
+    }
 }

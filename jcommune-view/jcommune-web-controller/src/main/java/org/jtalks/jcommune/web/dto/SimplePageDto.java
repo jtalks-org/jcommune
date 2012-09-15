@@ -14,12 +14,12 @@
  */
 package org.jtalks.jcommune.web.dto;
 
+import javax.validation.constraints.Size;
+
 import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.SimplePage;
+import org.jtalks.jcommune.model.validation.annotations.BbCodeAwareSize;
 import org.jtalks.jcommune.service.dto.SimplePageInfoContainer;
-import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
-
-import javax.validation.constraints.Size;
 
 public class SimplePageDto {
 

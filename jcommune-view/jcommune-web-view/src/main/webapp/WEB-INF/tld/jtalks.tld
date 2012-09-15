@@ -162,11 +162,6 @@
         <name>poll</name>
         <path>/WEB-INF/tags/poll.tag</path>
     </tag-file>
-
-    <tag-file>
-        <name>newPoll</name>
-        <path>/WEB-INF/tags/newPoll.tag</path>
-    </tag-file>
     
     <tag-file>
         <name>pagination</name>
@@ -188,4 +183,18 @@
         <path>/WEB-INF/tags/postContent.tag</path>
     </tag-file>
 
+    <tag-file>
+        <name>isSectionVisible</name>
+        <path>/WEB-INF/tags/isSectionVisible.tag</path>
+    </tag-file>
+
+    <tag-file>
+        <name>topicIcon</name>
+        <path>/WEB-INF/tags/topicIcon.tag</path>
+    </tag-file>
+
+    <tag-file>
+        <name>topicControls</name>
+        <path>/WEB-INF/tags/topicControls.tag</path>
+    </tag-file>
 </taglib>

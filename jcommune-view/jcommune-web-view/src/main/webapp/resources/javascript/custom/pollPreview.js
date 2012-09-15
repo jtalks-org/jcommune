@@ -13,24 +13,25 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 var pollEditFormVisible = true;
-var editFormElement, previewFormElement, multipleButtonElement;
+var previewFormElement, multipleButtonElement;
+var oldTopicTile = "";
 
 $(document).ready(function () {
-    editFormElement = document.getElementById("editPoll");
-    previewFormElement = document.getElementById("previewPoll");
-    multipleButtonElement = document.getElementById("multipleChecker");
+    previewFormElement = $("#previewPoll");
+    previewFormElement.hide();
+    multipleButtonElement = $("#multipleChecker");
     $("#preview").click(function () {
         SwitchPoll();
-    })
+    });
 
-    document.getElementById('deleteEndingDate').onclick = function () {
-        document.getElementById('datepicker').value = "";
-    }
+    $("#deleteEndingDate").onclick = function () {
+        $("#datepicker").value = "";
+    };
 
     //setting proper datepicker locale, at current time there are not ukraine and spain datepicker locales,
     // so will be used only en and ru locales.
     if ($localeCode == 'ru') {
-        document.getElementById('datepicker').datepicker($.datepicker.regional['ru']);
+        $.datepicker.setDefaults($.datepicker.regional['ru']);
     } else {
         $.datepicker.setDefaults($.datepicker.regional[""]);
     }
@@ -42,39 +43,30 @@ $(document).ready(function () {
  */
 function SwitchPoll() {
     pollEditFormVisible = !pollEditFormVisible;
-    if (pollEditFormVisible) { // exit preview
-        editFormElement.style.display = "";
-        previewFormElement.style.display = "none";
-    }
-    else { // enter preview
-        pollPreview($("#pollTitle")[0].value, $("#pollItems")[0].value, $("#datepicker")[0].value);
-        previewFormElement.style.display = "";
-        editFormElement.style.display = "none";
+    if (!pollEditFormVisible) {  // enter preview
+        oldTopicTile = $("#topicTitle").val();
+        $("#topicTitle").html($("#subject").val());
+        if (isPollSet()) {
+            previewFormElement.html(prepareTitle() + prepareItems());
+            previewFormElement.show();
+        }
+    } else {
+        $("#topicTitle").html(oldTopicTile);
+        previewFormElement.hide();
     }
 }
 
-
-/**
- * Perform necessary operation to prepare poll preview.
- *
- * @param pollTitleValue poll title value.
- * @param pollItemsValue poll items.
- * @param endingDateValue poll ending date.
- */
-function pollPreview(pollTitleValue, pollItemsValue, endingDateValue) {
-    var title = prepareTitle(pollTitleValue, endingDateValue);
-    var items = prepareItems(pollItemsValue);
-    previewFormElement.innerHTML = title + items;
+function isPollSet() {
+    return $("#pollTitle").val() || $("#pollItems").val();
 }
 
 /**
  * Prepare resulting poll title value.
- * @param title raw poll title value.
- * @param date poll ending date.
  * @return resulting poll title value.
  */
-function prepareTitle(title, date) {
-
+function prepareTitle() {
+    title = $("#pollTitle")[0].value;
+    date = $("#datepicker")[0].value;
     var result = "<h3>" + title + " ";
     if (date != "") {
         result += $labelPollTitleWithEnding.replace("{0}", date);
@@ -88,13 +80,12 @@ function prepareTitle(title, date) {
 /**
  * Prepare poll items.
  *
- * @param items raw poll items.
  * @return processed poll items without leading spaces and empty strings.
  */
-function prepareItems(items) {
+function prepareItems() {
     var result;
     //"normalize" line endings
-    result = items.replace(/(?:\r\n|\r)+/g, "\n");
+    result = $("#pollItems")[0].value.replace(/(?:\r\n|\r)+/g, "\n");
     result = trim(result);
     result = result.split("\n");
     return stringItemsArrayToHtmlItems(result);

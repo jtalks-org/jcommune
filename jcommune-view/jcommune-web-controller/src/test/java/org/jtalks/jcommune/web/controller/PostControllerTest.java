@@ -18,10 +18,7 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.LastReadPostService;
-import org.jtalks.jcommune.service.PostService;
-import org.jtalks.jcommune.service.TopicService;
-import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
@@ -69,7 +66,9 @@ public class PostControllerTest {
     @Mock
     private BBCodeService bbCodeService;
     @Mock
-    private TopicService topicService;
+    private TopicModificationService topicModificationService;
+    @Mock
+    private TopicFetchService topicFetchService;
     @Mock
     private BreadcrumbBuilder breadcrumbBuilder;
     @Mock
@@ -112,13 +111,13 @@ public class PostControllerTest {
 
         when(postService.get(POST_ID)).thenReturn(post);
 
-        when(topicService.get(TOPIC_ID)).thenReturn(topic);
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
 
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
 
         controller = new PostController(
-                postService, breadcrumbBuilder, topicService, bbCodeService,
-                lastReadPostService, userService);
+                postService, breadcrumbBuilder, topicFetchService, topicModificationService,
+                bbCodeService, lastReadPostService, userService);
     }
 
     @Test
@@ -149,7 +148,7 @@ public class PostControllerTest {
     @Test
     public void editPost() throws NotFoundException {
         //invoke the object under test
-        ModelAndView actualMav = controller.editPage(TOPIC_ID, POST_ID);
+        ModelAndView actualMav = controller.editPage(POST_ID);
         //check result
         this.assertEditPostFormMavIsCorrect(actualMav);
 
@@ -163,9 +162,9 @@ public class PostControllerTest {
     public void testUpdatePost() throws NotFoundException {
         PostDto dto = getDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "postDto");
-        ModelAndView mav = controller.update(dto, bindingResult, TOPIC_ID, POST_ID);
+        ModelAndView mav = controller.update(dto, bindingResult, POST_ID);
         assertViewName(mav, "redirect:/posts/" + dto.getId());
-        verify(postService).updatePost(anyLong(), anyString());
+        verify(postService).updatePost(Matchers.<Post>any(), anyString());
     }
 
     @Test
@@ -175,11 +174,11 @@ public class PostControllerTest {
 
         when(resultWithErrors.hasErrors()).thenReturn(true);
 
-        ModelAndView mav = controller.update(dto, resultWithErrors, TOPIC_ID, POST_ID);
+        ModelAndView mav = controller.update(dto, resultWithErrors, POST_ID);
 
         this.assertEditPostFormMavIsCorrect(mav);
 
-        verify(postService, never()).updatePost(anyLong(), anyString());
+        verify(postService, never()).updatePost(Matchers.<Post>any(), anyString());
     }
 
     @Test
@@ -188,7 +187,7 @@ public class PostControllerTest {
         ModelAndView mav = controller.addPost(TOPIC_ID);
 
         //check expectations
-        verify(topicService).get(TOPIC_ID);
+        verify(topicFetchService).get(TOPIC_ID);
         verify(breadcrumbBuilder).getForumBreadcrumb(Matchers.<Topic>any());
 
         //check result
@@ -197,7 +196,7 @@ public class PostControllerTest {
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testAnswerForUnexistingTopic() throws NotFoundException {
-        doThrow(new NotFoundException()).when(topicService).get(TOPIC_ID);
+        doThrow(new NotFoundException()).when(topicFetchService).get(TOPIC_ID);
         controller.addPost(TOPIC_ID);
     }
 
@@ -237,13 +236,13 @@ public class PostControllerTest {
     public void testSubmitAnswerValidationPass() throws NotFoundException {
         BeanPropertyBindingResult resultWithoutErrors = mock(BeanPropertyBindingResult.class);
         when(resultWithoutErrors.hasErrors()).thenReturn(false);
-        when(topicService.replyToTopic(anyLong(), Matchers.<String>any(), eq(BRANCH_ID))).thenReturn(post);
+        when(topicModificationService.replyToTopic(anyLong(), Matchers.<String>any(), eq(BRANCH_ID))).thenReturn(post);
         when(postService.calculatePageForPost(post)).thenReturn(1);
         //invoke the object under test
         ModelAndView mav = controller.create(getDto(), resultWithoutErrors);
 
         //check expectations
-        verify(topicService).replyToTopic(TOPIC_ID, POST_CONTENT, BRANCH_ID);
+        verify(topicModificationService).replyToTopic(TOPIC_ID, POST_CONTENT, BRANCH_ID);
 
         //check result
         assertViewName(mav, "redirect:/topics/" + TOPIC_ID + "?page=1#" + POST_ID);
@@ -257,7 +256,7 @@ public class PostControllerTest {
         ModelAndView mav = controller.create(getDto(), resultWithErrors);
 
         //check expectations
-        verify(topicService, never()).replyToTopic(anyLong(), anyString(), eq(BRANCH_ID));
+        verify(topicModificationService, never()).replyToTopic(anyLong(), anyString(), eq(BRANCH_ID));
 
         //check result
         assertViewName(mav, "answer");

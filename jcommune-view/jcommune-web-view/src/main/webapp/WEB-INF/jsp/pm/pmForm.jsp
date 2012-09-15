@@ -24,11 +24,11 @@
     <title><spring:message code="label.new_pm"/></title>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
             type="text/javascript"></script>
-    <script language="javascript"
+    <script
             src="${pageContext.request.contextPath}/resources/javascript/custom/privateMessages.js"></script>
-    <script language="javascript"
+    <script
             src="${pageContext.request.contextPath}/resources/javascript/custom/updateSaveButtonStateOnPmForm.js"></script>
-    <script language="javascript"
+    <script
             src="${pageContext.request.contextPath}/resources/javascript/custom/leaveConfirm.js"></script>
 </head>
 <body>
@@ -39,9 +39,7 @@
     <hr/>
     <div class="row">
         <div class="span2">
-            <sec:authentication property="principal.id" var="userId"/>
-            <a href="${pageContext.request.contextPath}/pm/new?userId=${userId}" class="btn btn-primary btn-small pm_buttons">
-                <spring:message code="label.new_pm"/></a>
+            <jsp:include page="../../template/newPrivateMessage.jsp"/>
             <jsp:include page="../../template/pmFolders.jsp"/>
         </div>
 

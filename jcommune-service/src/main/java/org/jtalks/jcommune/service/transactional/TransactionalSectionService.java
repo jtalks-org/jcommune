@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jtalks.common.model.entity.Branch;
@@ -21,6 +22,9 @@ import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SectionService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The implementation of SectionService
@@ -29,6 +33,9 @@ import org.jtalks.jcommune.service.SectionService;
  */
 public class TransactionalSectionService extends AbstractTransactionalEntityService<Section, SectionDao>
         implements SectionService {
+    
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+    
     private BranchService branchService;
     
     /**
@@ -59,6 +66,34 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
             List<Branch> branches = section.getBranches();
             branchService.fillStatisticInfo(branches);
             branchService.fillLastPostInLastUpdatedTopic(branches);
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Section deleteAllTopicsInSection(long sectionId) throws NotFoundException {
+        Section section = get(sectionId);
+        
+        //Create tmp list to avoid ConcurrentModificationException
+        List<Branch> loopList = new ArrayList<Branch>(section.getBranches());        
+        for (Branch branch : loopList) {
+            branchService.deleteAllTopics(branch.getId());
+        }
+        
+        logger.info("All branches for sections \"{}\" were deleted. " +
+                "Section id: {}", section.getName(), section.getId());
+        return section;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteAllTopicsInForum() throws NotFoundException {
+        for (Section section : this.getAll()){
+             this.deleteAllTopicsInSection(section.getId());
         }
     }
 }

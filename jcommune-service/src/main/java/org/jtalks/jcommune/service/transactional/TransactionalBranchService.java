@@ -14,8 +14,11 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.jtalks.common.model.entity.Section;
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
@@ -24,7 +27,10 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.TopicModificationService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
@@ -36,28 +42,34 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 public class TransactionalBranchService extends AbstractTransactionalEntityService<Branch, BranchDao>
         implements BranchService {
+    
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private SectionDao sectionDao;
     private TopicDao topicDao;
     private PostDao postDao;
+    private TopicModificationService topicService;
 
     /**
      * Create an instance of entity based service
      *
      * @param branchDao data access object, which should be able do all CRUD operations.
-     * @param sectionDao used for checking branch existance.
+     * @param sectionDao used for checking branch existence.
      * @param topicDao data access object for operations with topics  
      * @param postDao data access object for operations with posts 
+     * @param topicService service to perform complex operations with topics
      */
     public TransactionalBranchService(
             BranchDao branchDao,
             SectionDao sectionDao,
             TopicDao topicDao,
-            PostDao postDao) {
+            PostDao postDao,
+            TopicModificationService topicService) {
         super(branchDao);
         this.sectionDao = sectionDao;
         this.topicDao = topicDao;
         this.postDao = postDao;
+        this.topicService = topicService;
     }
 
     /**
@@ -116,5 +128,23 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
     @PreAuthorize("hasPermission(#id, 'BRANCH', 'BranchPermission.VIEW_TOPICS')")
     public Branch get(Long id) throws NotFoundException {
         return super.get(id);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Branch deleteAllTopics(long branchId) throws NotFoundException {
+        Branch branch = get(branchId);
+        
+        // Create tmp list to avoid ConcurrentModificationException
+        List<Topic> loopList = new ArrayList<Topic>(branch.getTopics());
+        for (Topic topic : loopList) {
+            topicService.deleteTopicSilent(topic.getId());
+        }
+        
+        logger.info("All topics for branch \"{}\" were deleted. " +
+        		"Branch id: {}", branch.getName(), branch.getId());
+        return branch;
     }
 }

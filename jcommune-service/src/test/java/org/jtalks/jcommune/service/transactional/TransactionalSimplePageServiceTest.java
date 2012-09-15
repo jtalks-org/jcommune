@@ -16,33 +16,31 @@
 package org.jtalks.jcommune.service.transactional;
 
 
-import org.jtalks.common.model.dao.GroupDao;
-import org.jtalks.common.model.entity.User;
-import org.jtalks.common.security.SecurityService;
-import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
-import org.jtalks.jcommune.model.dao.SimplePageDao;
-import org.jtalks.jcommune.service.SimplePageService;
-import org.jtalks.jcommune.model.entity.SimplePage;
-import org.jtalks.jcommune.service.dto.SimplePageInfoContainer;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.security.AdministrationGroup;
-import org.jtalks.common.model.entity.Group;
-import org.jtalks.common.model.permissions.GeneralPermission;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
-import javax.persistence.EntityExistsException;
-
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
-
-import static org.mockito.Mockito.verify;
 import static org.testng.Assert.assertNotNull;
+
+import javax.persistence.EntityExistsException;
+
+import org.jtalks.common.model.dao.GroupDao;
+import org.jtalks.common.model.entity.Group;
+import org.jtalks.common.model.entity.User;
+import org.jtalks.common.model.permissions.GeneralPermission;
+import org.jtalks.common.security.SecurityService;
+import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
+import org.jtalks.jcommune.model.dao.SimplePageDao;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.SimplePage;
+import org.jtalks.jcommune.service.SimplePageService;
+import org.jtalks.jcommune.service.dto.SimplePageInfoContainer;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.security.AdministrationGroup;
+import org.mockito.Mock;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 public class TransactionalSimplePageServiceTest {
 
@@ -110,12 +108,13 @@ public class TransactionalSimplePageServiceTest {
     @Test
     void testCreatePage() throws EntityExistsException {
         SimplePage simplePage = new SimplePage(NAME, CONTENT, PATH_NAME);
+        JCUser user = new JCUser("username", "email", "password");
 
         when(dao.isExist(PATH_NAME)).thenReturn(false);
         Group group = new Group();
         when(groupDao.get(AdministrationGroup.ADMIN.getId())).thenReturn(group);
 
-        SimplePage actualSimplePage = simplePageService.createPage(simplePage);
+        SimplePage actualSimplePage = simplePageService.createPage(simplePage, user);
 
         assertEquals(actualSimplePage.getName(), NAME);
         assertEquals(actualSimplePage.getContent(), CONTENT);
@@ -152,8 +151,10 @@ public class TransactionalSimplePageServiceTest {
     void testCreatePageFailPageAlreadyExists() throws EntityExistsException {
 
         SimplePage simplePage = new SimplePage(NAME, CONTENT, PATH_NAME);
+        JCUser user = new JCUser("username", "email", "password");
+        
         when(dao.isExist(PATH_NAME)).thenReturn(true);
-        SimplePage actualSimpePage = simplePageService.createPage(simplePage);
+        SimplePage actualSimpePage = simplePageService.createPage(simplePage, user);
     }
    
 }

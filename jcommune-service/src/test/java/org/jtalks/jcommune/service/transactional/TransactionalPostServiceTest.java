@@ -126,12 +126,12 @@ public class TransactionalPostServiceTest {
         when(postDao.isExist(POST_ID)).thenReturn(true);
         when(postService.get(POST_ID)).thenReturn(post);
 
-        postService.updatePost(POST_ID, newBody);
+        postService.updatePost(post, newBody);
 
         assertEquals(post.getPostContent(), newBody);
 
         verify(notificationService).topicChanged(topic);
-        verify(postDao).get(POST_ID);
+
         verify(postDao).update(post);
     }
 

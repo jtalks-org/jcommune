@@ -33,6 +33,7 @@
         <property name="sticked" column="STICKED" not-null="true"/>
         <property name="views" column="VIEWS"/>
         <property name="announcement" column="ANNOUNCEMENT" not-null="true"/>
+        <property name="closed" column="CLOSED" not-null="true"/>
 
         <list name="posts" cascade="all-delete-orphan">
             <cache usage="nonstrict-read-write"/>
@@ -47,7 +48,7 @@
         <many-to-one name="branch" column="BRANCH_ID" class="Branch"
                      not-null="false"/>
 
-        <one-to-one name="poll" class="org.jtalks.jcommune.model.entity.Poll" cascade="delete"/>
+        <one-to-one name="poll" class="org.jtalks.jcommune.model.entity.Poll" cascade="all"/>
 
         <set name="subscribers" table="TOPIC_SUBSCRIPTIONS">
             <key column="TOPIC_ID"/>

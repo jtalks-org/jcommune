@@ -40,4 +40,7 @@ public interface PollService extends EntityService<Poll> {
      * @param poll poll to save.
      */
     void createPoll(Poll poll);
+    
+    
+    void update(Poll poll);
 }

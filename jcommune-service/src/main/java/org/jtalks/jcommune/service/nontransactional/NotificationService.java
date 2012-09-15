@@ -73,7 +73,7 @@ public class NotificationService {
 
     /**
      * Notifies subscribers about branch updates by email.
-     * If mailing failed thi implementation simply continues
+     * If mailing failed this implementation simply continues
      * with other subscribers.
      *
      * @param branch branch changed

@@ -175,7 +175,7 @@ public class MailService {
      */
     public void sendReceivedPrivateMessageNotification(JCUser recipient, PrivateMessage pm) {
         try {
-            String urlSuffix = "/pm/" + pm.getId();
+            String urlSuffix = "/pm/inbox/" + pm.getId();
             String url = this.getDeploymentRootUrl() + urlSuffix;
             Locale locale = recipient.getLanguage().getLocale();
             Map<String, Object> model = new HashMap<String, Object>();

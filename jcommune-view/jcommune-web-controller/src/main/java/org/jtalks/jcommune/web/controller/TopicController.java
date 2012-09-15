@@ -20,11 +20,7 @@ import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.LastReadPostService;
-import org.jtalks.jcommune.service.PostService;
-import org.jtalks.jcommune.service.TopicService;
-import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.TopicDto;
@@ -66,8 +62,10 @@ public class TopicController {
     public static final String BRANCH_ID = "branchId";
     public static final String BREADCRUMB_LIST = "breadcrumbList";
     private static final String PAGING_ENABLED = "pagingEnabled";
+    private static final String SUBMIT_URL = "submitUrl";
 
-    private TopicService topicService;
+    private TopicModificationService topicModificationService;
+    private TopicFetchService topicFetchService;
     private PostService postService;
     private BranchService branchService;
     private LastReadPostService lastReadPostService;
@@ -90,25 +88,27 @@ public class TopicController {
     }
 
     /**
-     * @param topicService        the object which provides actions on {@link Topic} entity
-     * @param postService         the object which provides actions on {@link Post} entity
-     * @param branchService       the object which provides actions on  {@link Branch} entity
-     * @param lastReadPostService to perform post-related actions
-     * @param locationService     to track user location on forum (what page he is viewing now)
-     * @param sessionRegistry     to obtain list of users currently online
-     * @param userService         to determine the current user logged in
-     * @param breadcrumbBuilder   to create Breadcrumbs for pages
+     * @param topicModificationService the object which provides actions on {@link org.jtalks.jcommune.model.entity.Topic} entity
+     * @param postService              the object which provides actions on {@link org.jtalks.jcommune.model.entity.Post} entity
+     * @param branchService            the object which provides actions on  {@link org.jtalks.jcommune.model.entity.Branch} entity
+     * @param lastReadPostService      to perform post-related actions
+     * @param userService              to determine the current user logged in
+     * @param breadcrumbBuilder        to create Breadcrumbs for pages
+     * @param locationService          to track user location on forum (what page he is viewing now)
+     * @param sessionRegistry          to obtain list of users currently online
+     * @param topicFetchService        to load topics from a database
      */
     @Autowired
-    public TopicController(TopicService topicService,
+    public TopicController(TopicModificationService topicModificationService,
                            PostService postService,
                            BranchService branchService,
                            LastReadPostService lastReadPostService,
                            UserService userService,
                            BreadcrumbBuilder breadcrumbBuilder,
                            LocationService locationService,
-                           SessionRegistry sessionRegistry) {
-        this.topicService = topicService;
+                           SessionRegistry sessionRegistry,
+                           TopicFetchService topicFetchService) {
+        this.topicModificationService = topicModificationService;
         this.postService = postService;
         this.branchService = branchService;
         this.lastReadPostService = lastReadPostService;
@@ -116,6 +116,7 @@ public class TopicController {
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.locationService = locationService;
         this.sessionRegistry = sessionRegistry;
+        this.topicFetchService = topicFetchService;
     }
 
     /**
@@ -130,9 +131,10 @@ public class TopicController {
         Branch branch = branchService.get(branchId);
         Topic topic = new Topic();
         topic.setPoll(new Poll());
-        return new ModelAndView("newTopic")
+        return new ModelAndView("topicForm")
                 .addObject("topicDto", new TopicDto(topic))
                 .addObject("branchId", branchId)
+                .addObject(SUBMIT_URL, "/topics/new?branchId=" + branchId)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch));
     }
 
@@ -144,7 +146,6 @@ public class TopicController {
      * @param branchId branch, where topic will be created
      * @return {@code ModelAndView} object which will be redirect to forum.html
      * @throws NotFoundException when branch not found
-     *                           todo: move logic to service
      */
     @RequestMapping(value = "/topics/new", method = RequestMethod.POST)
     public ModelAndView createTopic(@Valid @ModelAttribute TopicDto topicDto,
@@ -152,13 +153,16 @@ public class TopicController {
                                     @RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
         Branch branch = branchService.get(branchId);
         if (result.hasErrors()) {
-            return new ModelAndView("newTopic")
+            return new ModelAndView("topicForm")
                     .addObject(BRANCH_ID, branchId)
+                    .addObject("topicDto", topicDto)
+                    .addObject(SUBMIT_URL, "/topics/new?branchId=" + branchId)
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branch));
         }
         Topic topic = topicDto.getTopic();
         topic.setBranch(branch);
-        Topic createdTopic = topicService.createTopic(topic, topicDto.getBodyText(), topicDto.isNotifyOnAnswers());
+        Topic createdTopic = topicModificationService.createTopic(
+                topic, topicDto.getBodyText(), topicDto.isNotifyOnAnswers());
 
         lastReadPostService.markTopicAsRead(createdTopic);
         return new ModelAndView("redirect:/topics/" + createdTopic.getId());
@@ -173,8 +177,8 @@ public class TopicController {
      */
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.DELETE)
     public ModelAndView deleteTopic(@PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
-        Topic topic = topicService.get(topicId);
-        topicService.deleteTopic(topicId);
+        Topic topic = topicFetchService.get(topicId);
+        topicModificationService.deleteTopic(topic);
         return new ModelAndView("redirect:/branches/" + topic.getBranch().getId());
     }
 
@@ -193,17 +197,12 @@ public class TopicController {
                                       @RequestParam(value = PAGING_ENABLED, defaultValue = "true",
                                               required = false) Boolean pagingEnabled) throws NotFoundException {
 
-        Topic topic = topicService.get(topicId);
+        Topic topic = topicFetchService.get(topicId);
         Page<Post> postsPage = postService.getPosts(topic, page, pagingEnabled);
-        Poll poll = topic.getPoll();
-        List<PollItem> pollOptions = topic.isHasPoll() ? poll.getPollItems() : null;
-
         Branch branch = topic.getBranch();
         JCUser currentUser = userService.getCurrentUser();
-
         Integer lastReadPostIndex = lastReadPostService.getLastReadPostForTopic(topic);
         lastReadPostService.markTopicPageAsRead(topic, page, pagingEnabled);
-        //todo: optimize this binding
         return new ModelAndView("postList")
                 .addObject("viewList", locationService.getUsersViewing(topic))
                 .addObject("usersOnline", sessionRegistry.getAllPrincipals())
@@ -211,13 +210,9 @@ public class TopicController {
                 .addObject("topic", topic)
                 .addObject("nextTopic", branch.getNextTopic(topic))
                 .addObject("previousTopic", branch.getPreviousTopic(topic))
-                .addObject(BRANCH_ID, branch.getId())
-                .addObject(TOPIC_ID, topicId)
                 .addObject("subscribed", topic.getSubscribers().contains(currentUser))
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic))
                 .addObject("lastReadPost", lastReadPostIndex)
-                .addObject("poll", poll)
-                .addObject("pollOptions", pollOptions)
                 .addObject("pagingEnabled", pagingEnabled);
     }
 
@@ -225,25 +220,21 @@ public class TopicController {
      * Shows edit topic page with form, populated with fields from topic.
      *
      * @param topicId  the id of selected Topic
-     * @param branchId the id of selected topic's branch
      * @return {@code ModelAndView}
      * @throws NotFoundException when topic or branch not found
      */
     @RequestMapping(value = "/topics/{topicId}/edit", method = RequestMethod.GET)
-    public ModelAndView editTopicPage(@RequestParam(BRANCH_ID) Long branchId,
-                                      @PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
-        Topic topic = topicService.get(topicId);
+    public ModelAndView editTopicPage(@PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
+        Topic topic = topicFetchService.get(topicId);
         TopicDto topicDto = new TopicDto(topic);
         JCUser currentUser = userService.getCurrentUser();
         if (topic.userSubscribed(currentUser)) {
             topicDto.setNotifyOnAnswers(true);
         }
-
-        return new ModelAndView("editTopic")
+        return new ModelAndView("topicForm")
+                .addObject(BRANCH_ID, topic.getBranch().getId())
                 .addObject("topicDto", topicDto)
-                .addObject("topic", topic)
-                .addObject(BRANCH_ID, branchId)
-                .addObject(TOPIC_ID, topicId)
+                .addObject(SUBMIT_URL, "/topics/"+topicId+"/edit")
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
     }
 
@@ -252,7 +243,6 @@ public class TopicController {
      *
      * @param topicDto Dto populated in form
      * @param result   validation result
-     * @param branchId hold the current branchId
      * @param topicId  the current topicId
      * @return {@code ModelAndView} with redirect to saved topic or the same page with validation errors, if any
      * @throws NotFoundException when topic or branch not found
@@ -260,22 +250,17 @@ public class TopicController {
     @RequestMapping(value = "/topics/{topicId}/edit", method = RequestMethod.POST)
     public ModelAndView editTopic(@Valid @ModelAttribute TopicDto topicDto,
                                   BindingResult result,
-                                  @RequestParam(BRANCH_ID) Long branchId,
                                   @PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
+        Topic topic = topicFetchService.get(topicId);
         if (result.hasErrors()) {
-            Topic topic = topicService.get(topicId);
-            return new ModelAndView("editTopic")
+            return new ModelAndView("topicForm")
+                    .addObject(BRANCH_ID, topic.getBranch().getId())
                     .addObject("topicDto", topicDto)
-                    .addObject("topic", topic)
-                    .addObject(BRANCH_ID, branchId)
-                    .addObject(TOPIC_ID, topicId)
+                    .addObject(SUBMIT_URL, "/topics/"+topicId+"/edit")
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
         }
-        Topic topic = topicDto.getTopic();
-        topic.setId(topicId);
-        topicService.updateTopic(topic, topicDto.getBodyText(),
-                topicDto.isNotifyOnAnswers());
-
+        topicDto.fillTopic(topic);
+        topicModificationService.updateTopic(topic, topicDto.getPoll(), topicDto.isNotifyOnAnswers());
         return new ModelAndView("redirect:/topics/" + topicId);
     }
 
@@ -290,6 +275,36 @@ public class TopicController {
     @ResponseBody
     public void moveTopic(@PathVariable(TOPIC_ID) Long topicId,
                           @RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
-        topicService.moveTopic(topicId, branchId);
+        Topic topic = topicFetchService.get(topicId);
+        topicModificationService.moveTopic(topic, branchId);
+    }
+
+    /**
+     * Closes given topic or throws an exception if there is no such topic.
+     * Closed topic is unavailable for posting until it's opened again.
+     *
+     * @param topicId identifies topic to be closed for further posting
+     * @throws NotFoundException if there is no topic for id given
+     * @return redirection to the same topic
+     */
+    @RequestMapping(value = "/topics/{topicId}/close")
+    public String closeTopic(@PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
+        Topic topic = topicFetchService.get(topicId);
+        topicModificationService.closeTopic(topic);
+        return "redirect:/topics/" + topicId;
+    }
+
+    /**
+     * Reopens topic for posting. If topic as opened already, does nothing
+     *
+     * @param topicId topic to be opened for posting
+     * @throws NotFoundException if there is no topic for id given
+     * @return redirection to the same topic
+     */
+    @RequestMapping(value = "/topics/{topicId}/open")
+    public String openTopic(@PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
+        Topic topic = topicFetchService.get(topicId);
+        topicModificationService.openTopic(topic);
+        return "redirect:/topics/" + topicId;
     }
 }

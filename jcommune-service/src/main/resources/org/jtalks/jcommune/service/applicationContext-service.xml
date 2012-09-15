@@ -45,7 +45,7 @@
     <task:executor id="executor" pool-size="1"/>
 
     <task:scheduler id="scheduler" pool-size="1"/>
-       
+
     <!--Declaration services bean -->
 
     <bean id="avatarService" class="org.jtalks.jcommune.service.nontransactional.AvatarService">
@@ -92,10 +92,25 @@
         <constructor-arg ref="userService"/>
     </bean>
 
-    <bean id="topicSearchService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalTopicFullSearchService">
-        <constructor-arg ref="topicSearchDao"/>
+    <bean id="topicModificationService"
+          class="org.jtalks.jcommune.service.transactional.TransactionalTopicModificationService">
+        <constructor-arg ref="topicDao"/>
+        <constructor-arg ref="securityService"/>
+        <constructor-arg ref="topicBranchDao"/>
+        <constructor-arg ref="notificationService"/>
+        <constructor-arg ref="subscriptionService"/>
         <constructor-arg ref="userService"/>
+        <constructor-arg ref="pollService"/>
+        <constructor-arg ref="topicFetchService"/>
+        <constructor-arg ref="securityContextFacade"/>
+        <constructor-arg ref="aclGroupPermissionEvaluator"/>
+    </bean>
+
+    <bean id="topicFetchService"
+          class="org.jtalks.jcommune.service.transactional.TransactionalTopicFetchService">
+        <constructor-arg ref="topicDao"/>
+        <constructor-arg ref="userService"/>
+        <constructor-arg ref="topicSearchDao"/>
     </bean>
 
     <bean id="topicBranchService"
@@ -104,6 +119,7 @@
         <constructor-arg ref="branchSectionDao"/>
         <constructor-arg ref="topicDao"/>
         <constructor-arg ref="postDao"/>
+        <constructor-arg ref="topicModificationService"/>
     </bean>
 
     <bean id="branchSectionService"
@@ -119,18 +135,6 @@
         <constructor-arg ref="userService"/>
         <constructor-arg ref="userDataCacheService"/>
         <constructor-arg ref="mailService"/>
-    </bean>
-
-    <bean id="topicService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalTopicService">
-        <constructor-arg ref="topicDao"/>
-        <constructor-arg ref="securityService"/>
-        <constructor-arg ref="topicBranchService"/>
-        <constructor-arg ref="topicBranchDao"/>
-        <constructor-arg ref="notificationService"/>
-        <constructor-arg ref="subscriptionService"/>
-        <constructor-arg ref="userService"/>
-        <constructor-arg ref="pollService"/>
     </bean>
 
     <bean id="pollService"
@@ -172,16 +176,18 @@
         <constructor-arg ref="securityService"/>
     </bean>
 
-    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-        <property name="configLocation" value="classpath:/org/jtalks/jcommune/service/ehcache.xml"/>
-    </bean>
+    <bean id="bbCodeService" class="org.jtalks.jcommune.service.nontransactional.BBCodeService"/>
 
     <!--
-    Cache for user related data.
+    Cache beans for user related data.
     Now used for storing new private messages count.
     -->
+    <bean id="localCache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+        <property name="configLocation" value="classpath:/org/jtalks/jcommune/model/entity/ehcache.xml"/>
+    </bean>
+
     <bean id="userDataCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
-        <property name="cacheManager" ref="cacheManager"/>
+        <property name="cacheManager" ref="localCache"/>
         <property name="cacheName" value="cuserDataCache"/>
     </bean>
 
@@ -189,6 +195,4 @@
           class="org.jtalks.jcommune.service.nontransactional.UserDataCacheService">
         <constructor-arg name="userDataCache" ref="userDataCache"/>
     </bean>
-
-    <bean id="bbCodeService" class="org.jtalks.jcommune.service.nontransactional.BBCodeService"/>
 </beans>

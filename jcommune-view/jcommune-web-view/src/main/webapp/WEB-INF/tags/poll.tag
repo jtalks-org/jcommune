@@ -16,9 +16,7 @@
 --%>
 <%@ tag language="java" pageEncoding="UTF-8" %>
 <%@ tag body-content="empty" %>
-<%@ attribute name="pollItems" required="true" type="java.util.List" %>
 <%@ attribute name="poll" required="true" type="org.jtalks.jcommune.model.entity.Poll" %>
-<%@ attribute name="isVoteButtonEnabled" required="true" type="java.lang.Boolean" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -26,7 +24,7 @@
 <div id="pollWrap">
     <%-- Determination of whether the user can vote in the topic. --%>
     <c:set var="votingAvailable" value="false" scope="request"/>
-    <sec:authorize access="isAuthenticated()" >
+    <sec:authorize access="isAuthenticated()">
         <c:set var="votingAvailable" value="true" scope="request"/>
         <jtalks:hasPermission targetId="${poll.id}" targetType="POLL"
                               permission="GeneralPermission.WRITE">
@@ -48,7 +46,7 @@
         <c:choose>
             <c:when test="${poll.active && votingAvailable}">
 
-                <c:forEach items="${pollOptions}" var="option">
+                <c:forEach items="${poll.pollItems}" var="option">
                     <div class="control-group">
                             <%-- RadioButton/CheckBox. Available when poll is active and user not voted. --%>
                         <c:choose>
@@ -72,16 +70,14 @@
                 </c:forEach>
 
                 <%-- Poll button. Available when poll is active and user not voted and is button not disabled. --%>
-                <c:if test="${isVoteButtonEnabled}">
-                    <input type="submit" name="pollSubmit" id="pollSubmit"
-                           class="btn btn-primary"
-                           value="<fmt:message key="label.poll.vote"/>">
-                </c:if>
+                <input type="submit" name="pollSubmit" id="pollSubmit"
+                       class="btn btn-primary"
+                       value="<fmt:message key="label.poll.vote"/>">
             </c:when>
 
             <%-- Available to anonymous users and voted users. --%>
             <c:otherwise>
-                <c:forEach items="${pollOptions}" var="option">
+                <c:forEach items="${poll.pollItems}" var="option">
                     <c:out value="${option.name}"/>
                             <span id="pollAnswer${option.id}">
                                 <div class="progress" style="margin-bottom: 3px;">

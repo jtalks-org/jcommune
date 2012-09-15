@@ -14,28 +14,24 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.joda.time.DateTime;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.SecurityService;
+import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.dto.JCommunePageRequest;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Poll;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.PollService;
-import org.jtalks.jcommune.service.SubscriptionService;
-import org.jtalks.jcommune.service.TopicService;
-import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * Topic service class. This class contains method needed to manipulate with Topic persistent entity.
@@ -47,45 +43,55 @@ import org.springframework.security.access.prepost.PreAuthorize;
  * @author Max Malakhov
  * @author Eugeny Batov
  */
-public class TransactionalTopicService extends AbstractTransactionalEntityService<Topic, TopicDao>
-        implements TopicService {
+public class TransactionalTopicModificationService implements TopicModificationService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    private TopicDao dao;
+
+    private TopicFetchService topicFetchService;
     private SecurityService securityService;
-    private BranchService branchService;
     private BranchDao branchDao;
     private NotificationService notificationService;
     private SubscriptionService subscriptionService;
     private UserService userService;
     private PollService pollService;
+    private PermissionEvaluator permissionEvaluator;
+    private SecurityContextFacade securityContextFacade;
 
     /**
      * Create an instance of User entity based service
      *
-     * @param dao                 data access object, which should be able do all CRUD operations with topic entity
-     * @param securityService     {@link org.jtalks.common.security.SecurityService} for retrieving current user
-     * @param branchService       {@link org.jtalks.jcommune.service.BranchService} instance to be injected
-     * @param branchDao           used for checking branch existence
-     * @param notificationService to send email nofications on topic updates to subscribed users
-     * @param subscriptionService for subscribing user on topic if notification enabled
-     * @param userService         to get current logged in user
-     * @param pollService         to create a poll and vote in a poll
+     * @param dao                   data access object, which should be able do all CRUD operations with topic entity
+     * @param securityService       {@link org.jtalks.common.security.SecurityService} for retrieving current user
+     * @param branchDao             used for checking branch existence
+     * @param notificationService   to send email notifications on topic updates to subscribed users
+     * @param subscriptionService   for subscribing user on topic if notification enabled
+     * @param userService           to get current logged in user
+     * @param pollService           to create a poll and vote in a poll
+     * @param topicFetchService     to retrieve topics from a database
+     * @param securityContextFacade authentication object retrieval
+     * @param permissionEvaluator   for authorization purposes
      */
-    public TransactionalTopicService(TopicDao dao, SecurityService securityService,
-                                     BranchService branchService, BranchDao branchDao,
-                                     NotificationService notificationService,
-                                     SubscriptionService subscriptionService,
-                                     UserService userService,
-                                     PollService pollService) {
-        super(dao);
+    public TransactionalTopicModificationService(TopicDao dao, SecurityService securityService,
+                                                 BranchDao branchDao,
+                                                 NotificationService notificationService,
+                                                 SubscriptionService subscriptionService,
+                                                 UserService userService,
+                                                 PollService pollService,
+                                                 TopicFetchService topicFetchService,
+                                                 SecurityContextFacade securityContextFacade,
+                                                 PermissionEvaluator permissionEvaluator) {
+        this.dao = dao;
         this.securityService = securityService;
-        this.branchService = branchService;
         this.branchDao = branchDao;
         this.notificationService = notificationService;
         this.subscriptionService = subscriptionService;
         this.userService = userService;
         this.pollService = pollService;
+        this.topicFetchService = topicFetchService;
+        this.securityContextFacade = securityContextFacade;
+        this.permissionEvaluator = permissionEvaluator;
     }
 
     /**
@@ -94,13 +100,15 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @Override
     @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.CREATE_POSTS')")
     public Post replyToTopic(long topicId, String answerBody, long branchId) throws NotFoundException {
-        JCUser currentUser = userService.getCurrentUser();
+        Topic topic = topicFetchService.get(topicId);
+        this.assertPostingIsAllowed(topic);
 
+        JCUser currentUser = userService.getCurrentUser();
         currentUser.setPostCount(currentUser.getPostCount() + 1);
-        Topic topic = get(topicId);
+
         Post answer = new Post(currentUser, answerBody);
         topic.addPost(answer);
-        this.getDao().update(topic);
+        dao.update(topic);
 
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(currentUser).on(answer).flush();
         notificationService.topicChanged(topic);
@@ -111,16 +119,33 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     }
 
     /**
+     * Checks if the current topic is closed for posting.
+     * Some users, however, can add posts even to the closed branches. These
+     * users are granted with BranchPermission.CLOSE_TOPICS permission.
+     *
+     * @param topic topic to be checked for if posting is allowed
+     */
+    private void assertPostingIsAllowed(Topic topic) {
+        Authentication auth = securityContextFacade.getContext().getAuthentication();
+        if (topic.isClosed() && !permissionEvaluator.hasPermission(
+                auth, topic.getBranch().getId(), "BRANCH", "BranchPermission.CLOSE_TOPICS")) { // holy shit...
+            throw new AccessDeniedException("Posting is forbidden for closed topics");
+        }
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_TOPICS')")
+    @PreAuthorize("hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_POSTS')")
     public Topic createTopic(Topic topicDto, String bodyText,
                              boolean notifyOnAnswers) throws NotFoundException {
         JCUser currentUser = userService.getCurrentUser();
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);
         Topic topic = new Topic(currentUser, topicDto.getTitle());
+        topic.setAnnouncement(topicDto.isAnnouncement());
+        topic.setSticked(topicDto.isSticked());
         Post first = new Post(currentUser, bodyText);
         topic.addPost(first);
         Branch branch = topicDto.getBranch();
@@ -135,17 +160,10 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         notificationService.branchChanged(branch);
 
         subscribeOnTopicIfNotificationsEnabled(notifyOnAnswers, topic, currentUser);
-
-        Poll poll = topicDto.getPoll();
-        if (poll!=null && poll.isHasPoll()) {
-            poll.setTopic(topic);
-            pollService.createPoll(poll);
-        }
+        createOrUpdatePoll(topicDto.getPoll(), topic);
 
         logger.debug("Created new topic id={}, branch id={}, author={}",
                 new Object[]{topic.getId(), branch.getId(), currentUser.getUsername()});
-        logger.info("Created new topic: \"{}\". Author: {}", topicDto.getTitle(), currentUser.getUsername());
-
         return topic;
     }
 
@@ -154,54 +172,29 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    public Page<Topic> getRecentTopics(int page) {
-        JCommunePageRequest pageRequest = JCommunePageRequest.
-                createWithPagingEnabled(page, userService.getCurrentUser().getPageSize());
-        DateTime date24HoursAgo = new DateTime().minusDays(1);
-        return this.getDao().getTopicsUpdatedSince(date24HoursAgo, pageRequest);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Page<Topic> getUnansweredTopics(int page) {
-        JCommunePageRequest pageRequest = JCommunePageRequest.
-                createWithPagingEnabled(page, userService.getCurrentUser().getPageSize());
-        return this.getDao().getUnansweredTopics(pageRequest);
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override    
-    public void updateTopic(Topic topicDto, String bodyText) throws NotFoundException {
-        updateTopic(topicDto, bodyText, false);
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @PreAuthorize("hasPermission(#topicDto.id, 'TOPIC', 'GeneralPermission.WRITE') or " +
-            "hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
-    public void updateTopic(Topic topicDto, String bodyText, boolean notifyOnAnswers) throws NotFoundException {
-        Topic topic = get(topicDto.getId());
-        topic.setTitle(topicDto.getTitle());
-        topic.setSticked(topicDto.isSticked());
-        topic.setAnnouncement(topicDto.isAnnouncement());
+    @PreAuthorize("hasPermission(#topic.id, 'TOPIC', 'GeneralPermission.WRITE') and " +
+            "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OWN_POSTS') or " +
+            "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
+    public void updateTopic(Topic topic, Poll poll, boolean notifyOnAnswers){
         Post post = topic.getFirstPost();
-        post.setPostContent(bodyText);
         post.updateModificationDate();
-        topic.updateModificationDate();
-        this.getDao().update(topic);
+        this.createOrUpdatePoll(poll, topic);
+        dao.update(topic);
         notificationService.topicChanged(topic);
         JCUser currentUser = userService.getCurrentUser();
         subscribeOnTopicIfNotificationsEnabled(notifyOnAnswers, topic, currentUser);
-
         logger.debug("Topic id={} updated", topic.getId());
+    }
+    
+    private void createOrUpdatePoll(Poll poll, Topic persistentTopic){
+        if (poll != null && poll.isHasPoll()) {
+            if (persistentTopic.getPoll() == null) {
+                poll.setTopic(persistentTopic);
+                pollService.createPoll(poll);
+            } else {
+
+            }
+        }
     }
 
     /**
@@ -221,23 +214,33 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     /**
      * {@inheritDoc}
      */
+    @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OWN_POSTS') and " +
+            "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OTHERS_POSTS')")
     @Override
-    public Branch deleteTopic(long topicId) throws NotFoundException {
-        Topic topic = get(topicId);
-        long branchId = topic.getBranch().getId();
-        return deleteTopic(topic, branchId);
+    public void deleteTopic(Topic topic) throws NotFoundException {
+        Branch branch = deleteTopicSilent(topic);
+        notificationService.branchChanged(branch);
+
+        logger.info("Deleted topic \"{}\". Topic id: {}", topic.getTitle(), topic.getId());
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteTopicSilent(long topicId) throws NotFoundException {
+        Topic topic = topicFetchService.get(topicId);
+        this.deleteTopicSilent(topic);
+    }
 
     /**
-     * Performs actual topic deleting with permission check
+     * Performs actual topic deletion. Deletes all topic related data and
+     * recalculates user's post count.
      *
-     * @param topic    topic to delete
-     * @param branchId used for annotation permission check only
+     * @param topic topic to delete
      * @return branch without deleted topic
      */
-    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.DELETE_TOPICS')")
-    private Branch deleteTopic(Topic topic, long branchId) throws NotFoundException {
+    private Branch deleteTopicSilent(Topic topic) {
         for (Post post : topic.getPosts()) {
             JCUser user = post.getUserCreated();
             user.setPostCount(user.getPostCount() - 1);
@@ -248,32 +251,16 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         branchDao.update(branch);
 
         securityService.deleteFromAcl(Topic.class, topic.getId());
-        notificationService.branchChanged(branch);
-
-        logger.info("Deleted topic \"{}\". Topic id: {}", topic.getTitle(), topic.getId());
         return branch;
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override
-    public void moveTopic(Long topicId, Long branchId) throws NotFoundException {
-        Topic topic = get(topicId);
-        moveTopic(topic, branchId);
-    }
-    
-    /**
-     * Performs actual topic moving with permission check
-     *
-     * @param topic    topic to move
-     * @param branchId ID of target branch
-     * @throws NotFoundException if target branch was not found by id
-     * 
-     */
     @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.MOVE_TOPICS')")
-    private void moveTopic(Topic topic, Long branchId) throws NotFoundException {
-        Branch targetBranch = branchService.get(branchId);
+    @Override
+    public void moveTopic(Topic topic, Long branchId) throws NotFoundException {
+        Branch targetBranch = branchDao.get(branchId);
         targetBranch.addTopic(topic);
         branchDao.update(targetBranch);
 
@@ -285,21 +272,20 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     /**
      * {@inheritDoc}
      */
+    @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.CLOSE_TOPICS')")
     @Override
-    public Topic get(Long id) throws NotFoundException {
-        Topic topic = super.get(id);
-        topic.setViews(topic.getViews() + 1);
-        this.getDao().update(topic);
-        return topic;
+    public void closeTopic(Topic topic) {
+        topic.setClosed(true);
+        dao.update(topic);
     }
 
     /**
      * {@inheritDoc}
      */
+    @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.CLOSE_TOPICS')")
     @Override
-    public Page<Topic> getTopics(Branch branch, int page, boolean pagingEnabled) {
-        JCommunePageRequest pageRequest = new JCommunePageRequest(
-                page, userService.getCurrentUser().getPageSize(), pagingEnabled);
-        return getDao().getTopics(branch, pageRequest);
+    public void openTopic(Topic topic) {
+        topic.setClosed(false);
+        dao.update(topic);
     }
 }

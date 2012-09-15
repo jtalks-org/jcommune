@@ -24,7 +24,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 
-<div class="btn-toolbar">
+<div class="btn-toolbar hide-on-preview">
     <div class="btn-group">
         <a id="format_b" class="btn" accesskey="b" name="format_b" onclick="doClick('bold');"
            title="<spring:message code='label.answer.bold'/>">
@@ -105,8 +105,7 @@
             <i class="icon-link"></i>
         </a>
 
-        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"
-           title="<spring:message code="label.answer.font_code"/>">
+        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
             <spring:message code="label.answer.font_code"/>
             <span class="caret"></span>
         </a>

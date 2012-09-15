@@ -16,27 +16,31 @@
 package org.jtalks.jcommune.web.controller;
 
 
-import org.codehaus.jackson.map.BeanProperty;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeValue;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.testng.Assert.assertEquals;
+
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.SimplePage;
 import org.jtalks.jcommune.service.SimplePageService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.SimplePageInfoContainer;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.SimplePageDto;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
-import static org.testng.Assert.assertEquals;
 
 /**
  * @author Alexander Gavrikov
@@ -49,6 +53,9 @@ public class SimplePageControllerTest {
 
     @Mock
     private SimplePageService simplePageService;
+    
+    @Mock
+    private UserService userService;
 
     private static final long PAGE_ID = 1L;
     private static final String NAME = "test";
@@ -58,7 +65,7 @@ public class SimplePageControllerTest {
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
-        controller = new SimplePageController(simplePageService);
+        controller = new SimplePageController(simplePageService, userService);
     }
 
     @Test
@@ -78,13 +85,6 @@ public class SimplePageControllerTest {
         assertViewName(modelAndView, "simplePage");
         SimplePageDto actualSimplePage = assertAndReturnModelAttributeOfType(modelAndView, "simplePageDto", SimplePageDto.class);
         assertEqualsSimplePageAndSimplePageDto(actualSimplePage, simplePage);
-    }
-
-    @Test (expectedExceptions = NotFoundException.class)
-    public void showPageFailTest() throws NotFoundException {
-        SimplePage simplePage = new SimplePage(NAME, CONTENT, PATH_NAME);
-        doThrow(new NotFoundException()).when(simplePageService).getPageByPathName(PATH_NAME);
-        controller.showPage(PATH_NAME);
     }
 
     @Test
@@ -108,7 +108,6 @@ public class SimplePageControllerTest {
 
     @Test (expectedExceptions = NotFoundException.class)
     public void showEditPageFailTest() throws NotFoundException {
-        SimplePage simplePage = new SimplePage(NAME, CONTENT, PATH_NAME);
         doThrow(new NotFoundException()).when(simplePageService).getPageByPathName(PATH_NAME);
         controller.showEditPage(PATH_NAME);
     }
@@ -151,14 +150,18 @@ public class SimplePageControllerTest {
         assertEquals(simplePageDto.getContentText(), simplePage.getContent());
     }
 
-    @Test(expectedExceptions = {NotFoundException.class})
+    @Test
     public void showNotExistingPageTest() throws NotFoundException {
-
-        SimplePage simplePage = new SimplePage(NAME, CONTENT, PATH_NAME);
-
+        JCUser user = new JCUser("username", "email", "password");
+        
         when(simplePageService.getPageByPathName(PATH_NAME)).thenThrow(new NotFoundException());
-
+        when(userService.getCurrentUser()).thenReturn(user);
+        
         ModelAndView modelAndView = controller.showPage(PATH_NAME);
+        
+        assertViewName(modelAndView, SimplePageController.PAGE_NOT_FOUND);
+        assertModelAttributeValue(modelAndView, SimplePageController.PAGE_PATH_NAME, PATH_NAME);
+        assertModelAttributeValue(modelAndView, SimplePageController.CURRENT_USER_PARAMETER, user);
     }
 
 }

@@ -14,6 +14,21 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.testng.Assert.assertEquals;
+
+import java.util.Arrays;
+import java.util.List;
+
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
@@ -32,21 +47,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
-import static org.testng.Assert.assertEquals;
-
 /**
  * @author Pavel Vervenko
  * @author Max Malakhov
@@ -54,7 +54,8 @@ import static org.testng.Assert.assertEquals;
  * @author Evheniy Naumenko
  */
 public class PrivateMessageControllerTest {
-
+    
+    private static final Long SENDER_ID = Long.valueOf(10);
     public static final long PM_ID = 2L;
 
     private PrivateMessageController controller;
@@ -123,9 +124,10 @@ public class PrivateMessageControllerTest {
     @Test
     public void newPmPage() {
         //invoke the object under test
-        ModelAndView mav = controller.newPmPage();
+        ModelAndView mav = controller.newPmPage(SENDER_ID);
 
         //check result
+        verify(pmService).checkPermissionsToSend(SENDER_ID);
         assertViewName(mav, "pm/pmForm");
         assertAndReturnModelAttributeOfType(mav, "privateMessageDto", PrivateMessageDto.class);
     }
@@ -135,9 +137,10 @@ public class PrivateMessageControllerTest {
         //invoke the object under test
         String name = "name";
         when(userService.get(PM_ID)).thenReturn(new JCUser(name, null, null));
-        ModelAndView mav = controller.newPmPageForUser(PM_ID);
+        ModelAndView mav = controller.newPmPageForUser(PM_ID, SENDER_ID);
 
         //check result
+        verify(pmService).checkPermissionsToSend(SENDER_ID);
         assertViewName(mav, "pm/pmForm");
         PrivateMessageDto dto = assertAndReturnModelAttributeOfType(mav, "privateMessageDto", PrivateMessageDto.class);
         assertEquals(dto.getRecipient(), name);
@@ -147,7 +150,7 @@ public class PrivateMessageControllerTest {
     public void newPmPageWithWrongUserSet() throws NotFoundException {
         doThrow(new NotFoundException()).when(userService).get(PM_ID);
 
-        controller.newPmPageForUser(PM_ID);
+        controller.newPmPageForUser(PM_ID, SENDER_ID);
     }
 
     @Test

@@ -19,10 +19,16 @@
 
 var username;
 var remember_me;
+var signInHandler;
+var singInLink; 
+var signInHref;
 
 $(function () {
     $("#signin").on('click', function (e) {
-        signinPopup();
+    	//temporary disable buttons
+    	disableClickEventForComponent("#signin");
+    	disableClickEventForComponent("#signup");
+    	signinPopup();
         //if JS off, then open standart page
         e.preventDefault();
     });
@@ -40,7 +46,8 @@ $(function () {
                 if ($(data).find("legend").html() != null) {
                     $.prompt(content,
                     {buttons:{OK:true}, focus:0,
-                        submit:sendLoginPost});
+                        submit:sendLoginPost,
+                        zIndex: 1050, overlayspeed:"fast"});
 
                     $("#j_username, #j_password").live("keyup", function(event) {
                     	if(event.keyCode==13) {
@@ -49,6 +56,8 @@ $(function () {
                     	}
                     });
                 } 
+                //enable all disabled links
+                enableClickEventForDisabledComponents();
             }});
     }
 

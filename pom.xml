@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.jtalks.jcommune</groupId>
     <artifactId>jcommune</artifactId>
     <packaging>pom</packaging>
-    <version>0.18-SNAPSHOT</version>
+    <version>0.20-SNAPSHOT</version>
     <name>${project.artifactId}</name>
     <modules>
         <module>jcommune-model</module>
         <module>jcommune-service</module>
         <module>jcommune-view</module>
-        <!--<module>functional-tests</module>-->
     </modules>
 
     <dependencyManagement>
@@ -37,7 +35,7 @@
             <dependency>
                 <groupId>org.jtalks.common</groupId>
                 <artifactId>jtalks-common-model</artifactId>
-                <version>0.29</version>
+                <version>0.38</version>
             </dependency>
             <dependency>
                 <groupId>org.jtalks.common</groupId>
@@ -551,7 +549,7 @@
 
     <properties>
         <hibernateVersion>3.6.6.Final</hibernateVersion>
-        <springVersion>3.1.0.RELEASE</springVersion>
+        <springVersion>3.1.2.RELEASE</springVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <headerBaseDir>${basedir}</headerBaseDir>
         <pathtoHeader>${headerBaseDir}/header.txt</pathtoHeader>

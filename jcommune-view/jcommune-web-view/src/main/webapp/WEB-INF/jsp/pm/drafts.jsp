@@ -19,7 +19,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <head>
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/privateMessages.js"></script>
@@ -33,13 +32,8 @@
     <hr/>
     <div class="row">
         <div class="span2">
-            <sec:authentication property="principal.id" var="userId"/>
-            <a href="${pageContext.request.contextPath}/pm/new?userId=${userId}"
-               class="btn btn-primary btn-small pm_buttons">
-                <spring:message code="label.new_pm"/></a>
-
+            <jsp:include page="../../template/newPrivateMessage.jsp"/>
             <jsp:include page="../../template/pmFolders.jsp"/>
-
         </div>
         <div class="span9">
             <div class="pm_buttons">
@@ -48,9 +42,6 @@
                        href="${pageContext.request.contextPath}/pm">
                         <i class="icon-trash icon-white"></i>
                         <spring:message code="label.delete"/>
-                    </a>
-                    <a class="btn btn-success" id="editCheckedPM">
-                        <spring:message code="label.edit"/>
                     </a>
                     <form:form id="deleteForm" method="DELETE"/>
                 </span>
@@ -84,7 +75,11 @@
                                                 <c:out value="${pm.userTo.username}"/>
                                             </a>
                                         </c:when>
-                                        <c:otherwise><spring:message code="label.not.specified"/></c:otherwise>
+                                        <c:otherwise>
+                                            <a href="${pageContext.request.contextPath}/pm/drafts/${pm.id}/edit">
+                                                <spring:message code="label.not.specified"/>
+                                            </a>
+                                        </c:otherwise>
                                     </c:choose>
                                 </td>
                                 <td>
@@ -94,7 +89,11 @@
                                                 <c:out value="${pm.title}"/>
                                             </a>
                                         </c:when>
-                                        <c:otherwise><spring:message code="label.not.specified"/></c:otherwise>
+                                        <c:otherwise>
+                                            <a href="${pageContext.request.contextPath}/pm/drafts/${pm.id}/edit">
+                                                <spring:message code="label.not.specified"/>
+                                            </a>
+                                        </c:otherwise>
                                     </c:choose>
                                 </td>
                                 <td>

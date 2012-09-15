@@ -41,9 +41,10 @@ import javax.validation.Valid;
 
 @Controller
 public class SimplePageController {
-
+    static final String PAGE_NOT_FOUND = "simplePageNotFound";
     private static final String PAGE_DTO = "simplePageDto";
-    private static final String PAGE_PATH_NAME = "pagePathName";
+    static final String PAGE_PATH_NAME = "pagePathName";
+    static final String CURRENT_USER_PARAMETER = "currentUser";
 
     private SimplePageService simplePageService;
     private UserService userService;
@@ -92,9 +93,9 @@ public class SimplePageController {
                         .addObject("simplePage", page);
             }
             else {
-                return new ModelAndView("simplePageNotFound")
+                return new ModelAndView(PAGE_NOT_FOUND)
                         .addObject(PAGE_PATH_NAME, pagePathName)
-                        .addObject("currentUser", userService.getCurrentUser());
+                        .addObject(CURRENT_USER_PARAMETER, userService.getCurrentUser());
             }
             
         }

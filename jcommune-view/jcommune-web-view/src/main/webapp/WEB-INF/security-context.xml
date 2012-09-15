@@ -29,6 +29,7 @@
         <security:intercept-url pattern="/posts/new" access="isAuthenticated()"/>
         <security:intercept-url pattern="/posts/*/delete" method="GET" access="isAuthenticated()"/>
         <security:intercept-url pattern="/posts/*" method="DELETE" access="isAuthenticated()"/>
+        <security:intercept-url pattern="/posts/*/edit" access="isAuthenticated()"/>
 
         <security:intercept-url pattern="/users/new" method="GET" access="permitAll()"/>
         <security:intercept-url pattern="/users/*/avatar" method="GET" access="permitAll()"/>
@@ -51,7 +52,13 @@
         <security:intercept-url pattern="/topics/*/subscribe" access="isAuthenticated()"/>
         <security:intercept-url pattern="/topics/*/unsubscribe" access="isAuthenticated()"/>
         <security:intercept-url pattern="/topics/json/**" access="isAuthenticated()"/>
+        <security:intercept-url pattern="/topics/*/edit" access="isAuthenticated()"/>
         
+        <!-- Since DELETE method is actually POST with _method=DELETE parameter -->
+        <security:intercept-url pattern="/branches/*" method="DELETE" access="hasIpAddress('127.0.0.1')"/>
+        <security:intercept-url pattern="/sections/*" method="DELETE" access="hasIpAddress('127.0.0.1')"/>
+        <security:intercept-url pattern="/component" method="DELETE" access="hasIpAddress('127.0.0.1')"/>
+
         <security:intercept-url pattern="/branches/*/subscribe" access="isAuthenticated()"/>
         <security:intercept-url pattern="/branches/*/unsubscribe" access="isAuthenticated()"/>
 
@@ -59,11 +66,8 @@
         <security:intercept-url pattern="/pages/create/**" access="isAuthenticated()"/>
 
         <security:intercept-url pattern="/poll/**" access="isAuthenticated()"/>
-                
         <security:intercept-url pattern="/search/index/rebuild" access="hasIpAddress('127.0.0.1')"/>
-
         <security:intercept-url pattern="*" access="permitAll()"/>
-
         <security:form-login login-page="/login" login-processing-url="/j_spring_security_check"
                              authentication-failure-url="/login?login_error=1" default-target-url="/"
                              authentication-success-handler-ref="successAuthHandler"/>

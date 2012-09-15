@@ -12,31 +12,22 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service;
+package org.jtalks.jcommune.model.dao;
 
-import org.jtalks.jcommune.model.entity.Topic;
-import org.springframework.data.domain.Page;
+import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.entity.Component;
 
 /**
- * This service provides full-text search topics.
- * 
- * @author Anuar Nurmakanov
+ * Interface allows to make basic CRUD operations with the {@link org.jtalks.common.model.entity.Component}
+ * objects.
  *
+ * @author masyan
  */
-public interface TopicFullSearchService {
+public interface ComponentDao extends ChildRepository<Component> {
     /**
-     * Search by topics, title and content of which corresponds to the text of search.
-     * 
-     * @param phrase phrase
-     * @param page TODO
-     * @return list of topics
+     * Gets a component.
+     *
+     * @return get component of Forum
      */
-    Page<Topic> searchByTitleAndContent(String phrase, int page);
-    
-    /**
-     * Indexing topics from the database.
-     * This functionality is required either when data exists in the database,
-     * but the index doesn't contain this data or the index is re-created.
-     */
-    void rebuildIndex();
+    Component getComponent();
 }
