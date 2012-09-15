@@ -24,6 +24,7 @@ import static org.testng.Assert.assertEquals;
 
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SectionService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.Mock;
 import org.springframework.web.servlet.ModelAndView;
@@ -41,6 +42,8 @@ public class PoulpeNotificationHandlerTest {
     private BranchService branchService;
     @Mock
     private SectionService sectionService;
+    @Mock
+    private UserService userService;
 
     private PoulpeNotificationHandler controller;
 
@@ -48,12 +51,12 @@ public class PoulpeNotificationHandlerTest {
     public void setUp() throws Exception {
         initMocks(this);
 
-        controller = new PoulpeNotificationHandler(branchService, sectionService);
+        controller = new PoulpeNotificationHandler(branchService, sectionService, userService);
     }
 
     @Test
     public void testDeleteBranch() throws NotFoundException {
-        controller.deleteBranch(BRANCH_ID);
+        controller.deleteBranch(BRANCH_ID, "");
 
         verify(branchService).deleteAllTopics(BRANCH_ID);
     }
@@ -61,7 +64,7 @@ public class PoulpeNotificationHandlerTest {
     @Test(expectedExceptions = NotFoundException.class)
     public void testDeleteBranchIncorrectId() throws NotFoundException {
         when(branchService.deleteAllTopics(anyLong())).thenThrow(new NotFoundException());
-        controller.deleteBranch(BRANCH_ID);
+        controller.deleteBranch(BRANCH_ID, "");
 
         assertTrue(false);
     }

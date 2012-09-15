@@ -19,6 +19,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
+import org.jtalks.common.model.entity.User;
 import org.jtalks.common.model.permissions.ProfilePermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.UserDao;
@@ -94,13 +95,26 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     public JCUser getByUsername(String username) throws NotFoundException {
         JCUser user = this.getDao().getByUsername(username);
         if (user == null) {
-            String msg = "JCUser " + username + " not found.";
+            String msg = "JCUser [" + username + "] not found.";
             LOGGER.info(msg);
             throw new NotFoundException(msg);
         }
         return user;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public User getCommonUserByUsername(String username) throws NotFoundException {
+        User user = this.getDao().getCommonUserByUsername(username);
+        if (user == null) {
+            String msg = "Common User [" + username + "] not found.";
+            LOGGER.info(msg);
+            throw new NotFoundException(msg);
+        }
+        return user;
+    }
 
     /**
      * {@inheritDoc}

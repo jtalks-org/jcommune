@@ -14,20 +14,20 @@
  */
 package org.jtalks.jcommune.model.dao;
 
+import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.entity.JCUser;
 
 import java.util.Collection;
 
 /**
- * This interface provides persistence operations for
- * {@link org.jtalks.jcommune.model.entity.JCUser} objects.
+ * This interface provides persistence operations for {@link org.jtalks.jcommune.model.entity.JCUser} objects.
  *
  * @author Pavel Vervenko
  * @author Kirill Afonin
  * @author Evgeniy Naumenko
  * @see org.jtalks.jcommune.model.dao.hibernate.UserHibernateDao
  */
-public interface UserDao extends org.jtalks.common.model.dao.UserDao<JCUser>{
+public interface UserDao extends org.jtalks.common.model.dao.UserDao<JCUser> {
 
     /**
      * Get {@link JCUser} with corresponding username.
@@ -57,11 +57,20 @@ public interface UserDao extends org.jtalks.common.model.dao.UserDao<JCUser>{
     JCUser getByUuid(String uuid);
 
     /**
-     * Returns all users, whose accounts are not enables.
-     * At the moment registration creates disabled accounts and user should activate
-     * them manually following the link in an e-mail.
+     * Returns all users, whose accounts are not enables. At the moment registration creates disabled accounts and user
+     * should activate them manually following the link in an e-mail.
      *
      * @return list of non-activated user accounts
      */
     Collection<JCUser> getNonActivatedUsers();
+
+    /**
+     * Gets a common (not JCommune one) user from the database. This is done because there might be some users not
+     * registered within JCommune, but via some other component and we might need accessing them.
+     *
+     * @param username a full username to search the common user for, note that depending on the column/table collation
+     *                 specified during table creation the search might be either case sensitive or not.
+     * @return a user with the specified username, or {@code null} if such user wasn't found
+     */
+    User getCommonUserByUsername(String username);
 }
