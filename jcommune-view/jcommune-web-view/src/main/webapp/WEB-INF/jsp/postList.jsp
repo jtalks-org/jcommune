@@ -140,7 +140,9 @@
     <c:forEach var="post" items="${postsPage.content}" varStatus="i">
         <%-- Post --%>
         <div class="post">
-            <a name="${post.id}"></a>
+            <div class="anchor">
+                <a name="${post.id}">anchor</a>
+            </div>
             <table class="table table-striped table-bordered table-condensed">
                 <tr>
                     <td class="post-date">
