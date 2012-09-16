@@ -200,6 +200,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
                 pollService.createPoll(poll);
             } else {
                 persistentTopic.getPoll().setTitle(poll.getTitle());
+                persistentTopic.getPoll().setEndingDate(poll.getEndingDate());
                 pollService.mergePollItems(persistentTopic.getPoll(), poll.getPollItems());
             }
         }

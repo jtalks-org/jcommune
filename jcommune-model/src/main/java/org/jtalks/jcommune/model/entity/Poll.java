@@ -42,7 +42,7 @@ import static ch.lambdaj.Lambda.sumFrom;
 @ValidPoll(pollTitle = "title", pollItems = "pollItemsValue", endingDate = "endingDateValue")
 public class Poll extends Entity {
 
-    public static final String DATE_FORMAT = "dd-MM-yyyy";
+    private static final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("dd-MM-yyyy");
     private static final String SEPARATOR = System.getProperty("line.separator");
     
     @Size(min = Poll.MIN_TITLE_LENGTH, max = Poll.MAX_TITLE_LENGTH)
@@ -130,6 +130,9 @@ public class Poll extends Entity {
      */
     public void setEndingDate(DateTime endingDate) {
         this.endingDate = endingDate;
+        if (endingDate != null) {
+            this.endingDateValue= FORMAT.print(endingDate);
+        }
     }
 
     /**
@@ -148,8 +151,7 @@ public class Poll extends Entity {
     public void setEndingDateValue(String endingDateValue) {
         this.endingDateValue = endingDateValue;
         if (endingDateValue != null) {
-            DateTimeFormatter format = DateTimeFormat.forPattern(DATE_FORMAT);
-            setEndingDate(format.parseDateTime(endingDateValue));
+            setEndingDate(FORMAT.parseDateTime(endingDateValue));
         }
     }
 
