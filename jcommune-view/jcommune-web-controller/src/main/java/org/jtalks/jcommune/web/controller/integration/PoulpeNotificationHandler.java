@@ -69,9 +69,12 @@ public class PoulpeNotificationHandler {
     }
 
     /**
+     * Checks whether the admin password is not blank and it matches the admin password from database. Note that Poulpe
+     * sends hash of the password to us and thus we compare it with has as well.
      *
-     * @param adminPassword
-     * @throws NotFoundException
+     * @param adminPassword the password sent by Poulpe
+     * @throws IllegalArgumentException if the password sent by Poulpe is blank or does not match the one in the
+     *                                  database
      */
     private void assertAdminPasswordCorrect(String adminPassword) throws NotFoundException {
         checkArgument(isNotBlank(adminPassword), "No password specified while it is required");
@@ -97,8 +100,7 @@ public class PoulpeNotificationHandler {
      * Handles notification about component deletion. As for now it removes all the topics, leaving branches, sections
      * and components untouched.
      *
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          if object for deletion has not been found
+     * @throws NotFoundException if object for deletion has not been found
      */
     @RequestMapping(value = "/component", method = RequestMethod.DELETE)
     @ResponseBody
