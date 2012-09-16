@@ -39,7 +39,7 @@
     </layout>
   </appender>
   <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
-    <param name="Encoding" value="Cp866"/>
+    <param name="Encoding" value="UTF-8"/>
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="%d{ISO8601} [%-5p][%-16.16t][%36.60c] - %m%n"/>
     </layout>

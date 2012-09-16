@@ -221,6 +221,20 @@ public class TransactionalUserServiceTest {
         verify(userDao).get(USER_ID);
     }
 
+    @Test(expectedExceptions = NotFoundException.class)
+    public void getCommonUserByUsernameShouldNotFind() throws Exception {
+        userService.getCommonUserByUsername("username");
+    }
+
+    @Test
+    public void getCommonUserByUsernameShouldReturnOne() throws Exception {
+        User expectedUser = new User("username", null, null, null);
+        doReturn(expectedUser).when(userDao).getCommonUserByUsername("username");
+
+        User actualUser = userService.getCommonUserByUsername("username");
+        assertSame(expectedUser, actualUser);
+    }
+
     @Test
     public void testUpdateLastLoginTime() throws Exception {
         JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);

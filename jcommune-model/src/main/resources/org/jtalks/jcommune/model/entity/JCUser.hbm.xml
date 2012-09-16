@@ -71,5 +71,8 @@
     </class>
 
     <query name="getCountOfUsers" cacheable="false"><![CDATA[ SELECT count(*) FROM JCUser]]></query>
+    <query name="getCommonUserByUsername" cacheable="false" read-only="true"><![CDATA[
+           from User where username = :username]]>
+    </query>
 
 </hibernate-mapping>
