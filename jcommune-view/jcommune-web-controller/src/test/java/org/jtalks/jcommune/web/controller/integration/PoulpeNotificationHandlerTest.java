@@ -83,31 +83,35 @@ public class PoulpeNotificationHandlerTest {
 
     @Test
     public void testDeleteSection() throws NotFoundException {
-        controller.deleteSection(SECTION_ID);
+        doReturn(userWithPassword("password")).when(userService).getCommonUserByUsername("admin");
+        controller.deleteSection(SECTION_ID, "password");
 
         verify(sectionService).deleteAllTopicsInSection(SECTION_ID);
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testDeleteSectionIncorrectId() throws NotFoundException {
+        doReturn(userWithPassword("password")).when(userService).getCommonUserByUsername("admin");
         when(sectionService.deleteAllTopicsInSection(anyLong())).thenThrow(new NotFoundException());
-        controller.deleteSection(SECTION_ID);
+        controller.deleteSection(SECTION_ID, "password");
 
         assertTrue(false);
     }
 
     @Test
     public void testDeleteComponent() throws NotFoundException {
-        controller.deleteComponent();
+        doReturn(userWithPassword("password")).when(userService).getCommonUserByUsername("admin");
+        controller.deleteComponent("password");
 
         verify(sectionService).deleteAllTopicsInForum();
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testDeleteComponentFail() throws NotFoundException {
+        doReturn(userWithPassword("password")).when(userService).getCommonUserByUsername("admin");
         doThrow(new NotFoundException()).when(sectionService).deleteAllTopicsInForum();
 
-        controller.deleteComponent();
+        controller.deleteComponent("password");
     }
 
     @Test
