@@ -341,4 +341,18 @@ div.anchor {
     line-height: 0;
 }
 
+.capcha-field {
+    width: 180px !important;
+    margin-bottom: 30px;
+}
 
+.capcha-img {
+    margin-left: 2px;
+    margin-right: 3px;
+    margin-top: 4px;
+    height: 35px
+}
+
+.capcha-reload {
+    cursor: pointer;
+}

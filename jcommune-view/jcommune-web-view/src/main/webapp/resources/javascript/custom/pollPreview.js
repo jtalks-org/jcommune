@@ -24,9 +24,9 @@ $(document).ready(function () {
         SwitchPoll();
     });
 
-    $("#deleteEndingDate").onclick = function () {
+    $("#deleteEndingDate").click(function () {
         $("#datepicker").val("");
-    };
+    });
 
     //setting proper datepicker locale, at current time there are not ukraine and spain datepicker locales,
     // so will be used only en and ru locales.
