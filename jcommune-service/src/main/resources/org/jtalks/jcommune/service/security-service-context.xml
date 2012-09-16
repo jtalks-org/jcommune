@@ -62,6 +62,7 @@
                    <entry key="org.jtalks.jcommune.model.entity.Post" value="POST"/>
                    <entry key="org.jtalks.jcommune.model.entity.PrivateMessage" value="PRIVATE_MESSAGE"/>
                    <entry key="org.jtalks.jcommune.model.entity.Topic" value="TOPIC"/>
+                   <entry key="org.jtalks.jcommune.model.entity.SimplePage" value="SIMPLE_PAGE"/>
                    <entry key="org.jtalks.common.model.entity.Section" value="SECTION"/>
                    <entry key="org.jtalks.common.model.entity.Component" value="COMPONENT"/>
                    <entry key="org.jtalks.common.model.entity.Group" value="GROUP"/>

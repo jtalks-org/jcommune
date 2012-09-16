@@ -328,4 +328,17 @@ ul.lang-menu li img {
 
 .shrink-to-fit {
     width: 1px;
-    white-space: nowrap;}
+    white-space: nowrap;
+}
+
+div.anchor {
+    position: relative;
+    z-index: -1000;
+    top: -50px;
+    left: -100px;
+    visibility: hidden;
+    width: 1px;
+    line-height: 0;
+}
+
+
