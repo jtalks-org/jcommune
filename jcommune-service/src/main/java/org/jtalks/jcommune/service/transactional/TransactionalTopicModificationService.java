@@ -14,8 +14,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import com.google.common.collect.Iterables;
-import org.apache.commons.collections.ListUtils;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.service.security.SecurityContextFacade;
@@ -32,10 +30,6 @@ import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Set;
 
 /**
  * Topic service class. This class contains method needed to manipulate with Topic persistent entity.
