@@ -30,55 +30,51 @@
 
 <div class="container form-login-related">
     <form:form id="form" name="form" action='${pageContext.request.contextPath}/user/new'
-            modelAttribute="newUser" method="POST" class='form-vertical'>
+               modelAttribute="newUser" method="POST" class='form-vertical'>
         <fieldset>
             <legend><spring:message code="label.fillmessage"/></legend>
-          
             <div class="control-group">
-                    <form:label path="username" class='control-label'> <spring:message code="label.username"/></form:label>
-                    <div class="controls">
-                            <form:input path="username" class="reg_input" type="text"/><br/>
-                        <form:errors path="username" cssClass="help-inline"/>
-                    </div>
-                    <span class="reg_info"><spring:message code="label.tip.username"/></span>
+                <span class="reg_info"><spring:message code="label.tip.username"/></span>
+                <div class="controls">
+                    <form:input path="username" class="reg_input" type="text"/>
+                    <br/>
+                    <form:errors path="username" cssClass="help-inline"/>
+                </div>
             </div>
             <div class="control-group">
-                    <form:label path="email" class='control-label'><spring:message code="label.email"/></form:label>
-                    <div class="controls">
-                            <form:input path="email" class="reg_input" type="text"/><br/>
-                        <form:errors path="email" cssClass="help-inline"/>
-                    </div>
-                    <span class="reg_info"><spring:message code="label.tip.email"/></span>
+                <span class="reg_info"><spring:message code="label.tip.email"/></span>
+                <div class="controls">
+                    <form:input path="email" class="reg_input" type="text"/>
+                    <br/>
+                    <form:errors path="email" cssClass="help-inline"/>
+                </div>
             </div>
             <div class="control-group">
-                    <form:label path="password" class='control-label'><spring:message code="label.password"/></form:label>
-
-                    <div class="controls">
-                            <form:input path="password" class="reg_input" type="password"/><br/>
-                        <form:errors path="password" cssClass="help-inline"/>
-                    </div>
-                    <span class="reg_info"><spring:message code="label.tip.password"/></span>
+                <span class="reg_info"><spring:message code="label.tip.password"/></span>
+                <div class="controls">
+                    <form:input path="password" class="reg_input" type="password"/>
+                    <br/>
+                    <form:errors path="password" cssClass="help-inline"/>
+                </div>
             </div>
             <div class="control-group">
-                    <form:label path="passwordConfirm" class='control-label'><spring:message code="label.confirmation"/></form:label>
-
-                    <div class="controls">
-                            <form:input path="passwordConfirm" class="reg_input" type="password"/><br/>
-                        <form:errors path="passwordConfirm" cssClass="help-inline"/>
-                    </div>
-                    <span class="reg_info"><spring:message code="label.tip.confirmation"/></span>
+                <span class="reg_info"><spring:message code="label.tip.confirmation"/></span>
+                <div class="controls">
+                    <form:input path="passwordConfirm" class="reg_input" type="password"/>
+                    <br/>
+                    <form:errors path="passwordConfirm" cssClass="help-inline"/>
+                </div>
             </div>
             <div class="control-group">
-                    <form:label path="captcha" class='control-label'><spring:message code="label.captcha"/></form:label>
-
-                    <div class="controls">
-                        <img id="captcha_img" src='${pageContext.request.contextPath}/captcha/image' class="captcha"/>
-                        <img id="captcha_refresh"
-                             src='${pageContext.request.contextPath}/resources/images/captcha-refresh.gif'/>
-                            <form:input path="captcha" class="captcha_input" type="text" id="captcha"/><br/>
-                        <form:errors path="captcha" cssClass="help-inline"/>
-                    </div>
-                    <span class="reg_info"><spring:message code="label.tip.captcha"/></span>
+                <span class="reg_info"><spring:message code="label.tip.captcha"/></span>
+                <div class="controls">
+                    <img id="captcha_img" class="capcha-img src='${pageContext.request.contextPath}/captcha/image' class="captcha"/>
+                    <img id="captcha_refresh" class="capcha-img capcha-reload"
+                         src='${pageContext.request.contextPath}/resources/images/captcha-refresh.png'/>
+                    <form:input path="captcha" class="capcha-field" type="text" id="captcha"/>
+                    <br>
+                    <form:errors path="captcha" cssClass="help-inline"/>
+                </div>
             </div>
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">
