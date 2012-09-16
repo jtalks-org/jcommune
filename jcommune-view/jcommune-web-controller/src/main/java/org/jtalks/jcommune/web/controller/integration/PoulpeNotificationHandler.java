@@ -33,7 +33,9 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 /**
  * Controller that handles notifications from Poulpe. Main purpose of this is to support data consistency, e.g. when
  * deleting branch Poulpe can't take care of topics, proper post count, notifications and so on. That is why messages
- * are sent here.
+ * are sent here. Note that in order to make things secure, Poulpe sends admin password as a parameter and we're
+ * matching it with what we have in our database, if passwords are the same, then removal is allowed, otherwise an error
+ * response is sent back.
  *
  * @author Vyacheslav Mishcheryakov
  * @author Evgeniy Naumenko
@@ -41,6 +43,12 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 @Controller
 public class PoulpeNotificationHandler {
     private static final String ERROR_MESSAGE_PARAMETER = "errorMessage";
+    /**
+     * A username to find admin user in the database in order to check its password and what was sent in the delete
+     * request. We use this to secure removal of sections/branches/components so that only Poulpe can do that and no one
+     * else (because only Poulpe knows the admin password).
+     */
+    private static final String ADMIN_USERNAME = "admin";
 
     private final BranchService branchService;
     private final SectionService sectionService;
@@ -69,21 +77,6 @@ public class PoulpeNotificationHandler {
     }
 
     /**
-     * Checks whether the admin password is not blank and it matches the admin password from database. Note that Poulpe
-     * sends hash of the password to us and thus we compare it with has as well.
-     *
-     * @param adminPassword the password sent by Poulpe
-     * @throws IllegalArgumentException if the password sent by Poulpe is blank or does not match the one in the
-     *                                  database
-     */
-    private void assertAdminPasswordCorrect(String adminPassword) throws NotFoundException {
-        checkArgument(isNotBlank(adminPassword), "No password specified while it is required");
-        User admin = userService.getCommonUserByUsername("admin");
-        checkArgument(adminPassword.equals(admin.getPassword()),
-                "Wrong password was specified during removal of branch/section/component.");
-    }
-
-    /**
      * Handles notification about section deletion. Removes all topics from section. Sections and branches won't be
      * removed
      *
@@ -92,7 +85,9 @@ public class PoulpeNotificationHandler {
      */
     @RequestMapping(value = "/sections/{sectionId}", method = RequestMethod.DELETE)
     @ResponseBody
-    public void deleteSection(@PathVariable("sectionId") long sectionId) throws NotFoundException {
+    public void deleteSection(@PathVariable("sectionId") long sectionId,
+                              @RequestParam(value = "password") String adminPassword) throws NotFoundException {
+        assertAdminPasswordCorrect(adminPassword);
         sectionService.deleteAllTopicsInSection(sectionId);
     }
 
@@ -104,7 +99,8 @@ public class PoulpeNotificationHandler {
      */
     @RequestMapping(value = "/component", method = RequestMethod.DELETE)
     @ResponseBody
-    public void deleteComponent() throws NotFoundException {
+    public void deleteComponent(@RequestParam(value = "password") String adminPassword) throws NotFoundException {
+        assertAdminPasswordCorrect(adminPassword);
         sectionService.deleteAllTopicsInForum();
     }
 
@@ -122,6 +118,21 @@ public class PoulpeNotificationHandler {
         ModelAndView mav = new ModelAndView(jsonView);
         mav.addObject(ERROR_MESSAGE_PARAMETER, exception.getMessage());
         return mav;
+    }
+
+    /**
+     * Checks whether the admin password is not blank and it matches the admin password from database. Note that Poulpe
+     * sends hash of the password to us and thus we compare it with has as well.
+     *
+     * @param adminPassword the password sent by Poulpe
+     * @throws IllegalArgumentException if the password sent by Poulpe is blank or does not match the one in the
+     *                                  database
+     */
+    private void assertAdminPasswordCorrect(String adminPassword) throws NotFoundException {
+        checkArgument(isNotBlank(adminPassword), "No password specified while it is required");
+        User admin = userService.getCommonUserByUsername(ADMIN_USERNAME);
+        checkArgument(adminPassword.equals(admin.getPassword()),
+                "Wrong password was specified during removal of branch/section/component.");
     }
 
 }
