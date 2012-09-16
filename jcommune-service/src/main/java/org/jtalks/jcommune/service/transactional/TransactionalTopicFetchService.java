@@ -78,7 +78,7 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
     public Page<Topic> getUnansweredTopics(int page) {
         int pageSize =  userService.getCurrentUser().getPageSize();
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(page, pageSize);
-        return this.getDao().getUnansweredTopics(pageRequest);
+        return this.getDao().getUnansweredTopics(pageRequest,userService.getViewTopicsBranchesIds());
     }
 
     /**

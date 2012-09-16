@@ -76,11 +76,11 @@
     </query>
     
     <query name="getCountUnansweredTopics">
-        <![CDATA[SELECT COUNT(t) FROM Topic t WHERE t.posts.size=1]]>
+        <![CDATA[SELECT COUNT(t) FROM Topic t WHERE t.posts.size=1 AND t.branch.id in (:branchIds)]]>
     </query>
     
     <query name="getUnansweredTopics">
-        <![CDATA[FROM Topic t WHERE t.posts.size=1 
+        <![CDATA[FROM Topic t WHERE t.posts.size=1 AND t.branch.id in (:branchIds)
                 ORDER BY modificationDate DESC]]>
     </query>
 </hibernate-mapping>

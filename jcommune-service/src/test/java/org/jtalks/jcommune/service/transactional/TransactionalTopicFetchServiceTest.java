@@ -35,9 +35,11 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -114,7 +116,7 @@ public class TransactionalTopicFetchServiceTest {
         int pageSize = 20;
         List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
         Page<Topic> expectedPage = new PageImpl<Topic>(expectedList);
-        when(topicDao.getUnansweredTopics(Matchers.<JCommunePageRequest>any()))
+        when(topicDao.getUnansweredTopics(Matchers.<JCommunePageRequest>any(),eq(new ArrayList<Long>())))
                 .thenReturn(expectedPage);
         JCUser currentUser = new JCUser("current", null, null);
         currentUser.setPageSize(pageSize);
