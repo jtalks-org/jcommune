@@ -148,9 +148,7 @@
                             </c:when>
                         </c:choose>
                         <c:if test="${topic.hasPoll}">
-                            <a class="red-style"
-                               href="${pageContext.request.contextPath}/topics/${topic.id}">
-                                [POLL]</a>
+                            <span class="sticky"><spring:message code="label.marked_as_poll"/></span>
                         </c:if>
                         <a href="${pageContext.request.contextPath}/topics/${topic.id}">
                             <c:out value="${topic.title}"/>
