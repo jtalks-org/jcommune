@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import com.google.common.collect.Iterables;
+import org.apache.commons.collections.ListUtils;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.service.security.SecurityContextFacade;
@@ -30,7 +32,9 @@ import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
 
 /**
@@ -175,7 +179,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
     @PreAuthorize("hasPermission(#topic.id, 'TOPIC', 'GeneralPermission.WRITE') and " +
             "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OWN_POSTS') or " +
             "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
-    public void updateTopic(Topic topic, Poll poll, boolean notifyOnAnswers){
+    public void updateTopic(Topic topic, Poll poll, boolean notifyOnAnswers) {
         Post post = topic.getFirstPost();
         post.updateModificationDate();
         this.createOrUpdatePoll(poll, topic);
@@ -185,14 +189,24 @@ public class TransactionalTopicModificationService implements TopicModificationS
         subscribeOnTopicIfNotificationsEnabled(notifyOnAnswers, topic, currentUser);
         logger.debug("Topic id={} updated", topic.getId());
     }
-    
-    private void createOrUpdatePoll(Poll poll, Topic persistentTopic){
+
+    /**
+     * Creates a poll for the topic or updates an existing one.
+     * On update all poll items with the same name remain unchanged,
+     * except probably their position in list. Users, previously voted
+     * for the deleted items can NOT vote again.
+     *
+     * @param poll poll data from UI form
+     * @param persistentTopic topic from a database
+     */
+    private void createOrUpdatePoll(Poll poll, Topic persistentTopic) {
         if (poll != null && poll.isHasPoll()) {
             if (persistentTopic.getPoll() == null) {
                 poll.setTopic(persistentTopic);
                 pollService.createPoll(poll);
             } else {
-
+                persistentTopic.getPoll().setTitle(poll.getTitle());
+                pollService.mergePollItems(persistentTopic.getPoll(), poll.getPollItems());
             }
         }
     }

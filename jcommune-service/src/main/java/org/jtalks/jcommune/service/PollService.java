@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.Poll;
+import org.jtalks.jcommune.model.entity.PollItem;
 
 import java.util.List;
 
@@ -40,7 +41,16 @@ public interface PollService extends EntityService<Poll> {
      * @param poll poll to save.
      */
     void createPoll(Poll poll);
-    
-    
-    void update(Poll poll);
+
+    /**
+     * Merges edited poll items for the poll with existing ones.
+     * This implementation preserves vote count for items, whose
+     * name hasn't been changed. It can also recognize the item if
+     * it has been moved up/down the list. Newly added items have
+     * vote count = 0;
+     *
+     * @param poll persistent object from hibernate session
+     * @param newItems edited items list to merge
+     */
+    void mergePollItems(Poll poll, List<PollItem> newItems);
 }
