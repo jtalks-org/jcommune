@@ -31,11 +31,20 @@ public class ViewTopicsBranchesHibernateDao extends AbstractHibernateParentRepos
     @Override
     public List<ViewTopicsBranches> getViewTopicsBranchesByGroups(List<Group> groups) {
         Query query =  getSession().getNamedQuery("findViewTopicsBranchesByGroups");
-        ArrayList<Long> groupIds = new ArrayList<Long>();
+        ArrayList<String> groupIds = new ArrayList<String>();
         for (Group group : groups) {
-            groupIds.add(group.getId());
+            groupIds.add(group.getId()+"");
         }
         query.setParameterList("groupIds",groupIds);
+        return query.list();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<ViewTopicsBranches> getViewTopicsBranchesForAnonymous() {
+        Query query =  getSession().getNamedQuery("findViewTopicsBranchesForAnonymous");
         return query.list();
     }
 }

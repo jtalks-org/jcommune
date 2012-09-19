@@ -20,15 +20,19 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
     <class name="ViewTopicsBranches" table="BRANCHES_VIEW_TOPICS">
-        <id column="id" name="id">
+        <id column="ID" name="id">
             <generator class="native"/>
         </id>
         <property name="branchId" type="long" column="BRANCH_ID"/>
-        <property name="groupId" type="long" column="GROUP_ID"/>
+        <property name="sid" type="string" column="SID"/>
     </class>
 
     <query name="findViewTopicsBranchesByGroups">
-        <![CDATA[from ViewTopicsBranches vtb where  vtb.groupId in (:groupIds) ]]>
+        <![CDATA[from ViewTopicsBranches vtb where vtb.sid in (:groupIds) ]]>
+    </query>
+
+    <query name="findViewTopicsBranchesForAnonymous">
+        <![CDATA[from ViewTopicsBranches vtb where vtb.sid like 'anonymousUser' ]]>
     </query>
 
 </hibernate-mapping>

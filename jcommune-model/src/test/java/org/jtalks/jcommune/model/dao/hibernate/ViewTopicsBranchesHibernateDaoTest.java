@@ -59,4 +59,10 @@ public class ViewTopicsBranchesHibernateDaoTest extends AbstractTransactionalTes
         List<ViewTopicsBranches> viewTopicsBranchesList = viewTopicsBranchesDao.getViewTopicsBranchesByGroups(groups);
 
     }
+
+    @Test
+    public void testGetViewTopicsBranchesForAnonymous(){
+        List<ViewTopicsBranches> viewTopicsBranchesList = viewTopicsBranchesDao.getViewTopicsBranchesForAnonymous();
+
+    }
 }

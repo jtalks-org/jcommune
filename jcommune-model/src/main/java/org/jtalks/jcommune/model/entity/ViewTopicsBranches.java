@@ -20,7 +20,7 @@ import org.jtalks.common.model.entity.Entity;
 public class ViewTopicsBranches extends Entity {
 
     private Long branchId;
-    private Long groupId;
+    private String sid;
 
 
     public Long getBranchId() {
@@ -31,11 +31,11 @@ public class ViewTopicsBranches extends Entity {
         this.branchId = branchId;
     }
 
-    public Long getGroupId() {
-        return groupId;
+    public String getSid() {
+        return sid;
     }
 
-    public void setGroupId(Long groupId) {
-        this.groupId = groupId;
+    public void setSid(String sid) {
+        this.sid = sid;
     }
 }

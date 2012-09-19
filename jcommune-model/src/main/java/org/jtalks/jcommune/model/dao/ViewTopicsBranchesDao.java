@@ -22,9 +22,15 @@ import java.util.List;
 public interface ViewTopicsBranchesDao {
 
     /**
-     * Return ViewTopicsBranches by groups
+     * Return ViewTopicsBranches list by groups
      * @param groups groups
-     * @return ViewTopicsBranches
+     * @return ViewTopicsBranches list
      */
     public List<ViewTopicsBranches> getViewTopicsBranchesByGroups(List<Group> groups);
+
+    /**
+     * Return ViewTopicsBranches list for anonymous users
+     * @return ViewTopicsBranches list
+     */
+    public List<ViewTopicsBranches> getViewTopicsBranchesForAnonymous();
 }

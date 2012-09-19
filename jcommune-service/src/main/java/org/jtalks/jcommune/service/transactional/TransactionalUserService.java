@@ -258,8 +258,12 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      */
     @Override
     public List<Long> getViewTopicsBranchesIds() {
-        List<ViewTopicsBranches> viewTopicsBranchesList=
-                viewTopicsBranchesDao.getViewTopicsBranchesByGroups(getCurrentUser().getGroups());
+        List<ViewTopicsBranches> viewTopicsBranchesList = null;
+        if(!getCurrentUser().isAnonymous()){
+            viewTopicsBranchesList= viewTopicsBranchesDao.getViewTopicsBranchesByGroups(getCurrentUser().getGroups());
+        }else{
+            viewTopicsBranchesList = viewTopicsBranchesDao.getViewTopicsBranchesForAnonymous();
+        }
         List<Long> branchIds = new ArrayList<Long>();
         for(ViewTopicsBranches v: viewTopicsBranchesList){
             branchIds.add(v.getBranchId());
