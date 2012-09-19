@@ -96,7 +96,8 @@ public class TransactionalTopicFetchServiceTest {
         int pageSize = 20;
         List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
         Page<Topic> expectedPage = new PageImpl<Topic>(expectedList);
-        when(topicDao.getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JCommunePageRequest>any()))
+        when(topicDao.getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JCommunePageRequest>any()
+                ,eq(new ArrayList<Long>())))
                 .thenReturn(expectedPage);
 
         JCUser currentUser = new JCUser("current", null, null);
@@ -107,7 +108,8 @@ public class TransactionalTopicFetchServiceTest {
 
         assertNotNull(actualPage);
         assertEquals(expectedPage, actualPage);
-        verify(topicDao).getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JCommunePageRequest>any());
+        verify(topicDao).getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JCommunePageRequest>any(),
+                eq(new ArrayList<Long>()));
     }
 
     @Test

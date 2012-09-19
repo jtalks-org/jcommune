@@ -124,25 +124,25 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, size);
         DateTime lastLogin = new DateTime().minusDays(1);
 
-        Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest);
+        Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest, new ArrayList<Long>());
 
-        assertEquals(page.getContent().size(), size);
+        assertEquals(page.getContent().size(), 0);
     }
     
     @Test
     public void testGetUpdateTopicsUpdatedSinceWithPaging() {
-        int listSize = 10;
-        int pageSize = 5;
+        int listSize = 5;
+        int pageSize = 2;
         int lastPage = listSize / pageSize;
         createAndSaveTopicList(listSize);
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(lastPage, pageSize);
         DateTime lastLogin = new DateTime().minusDays(1);
 
-        Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest);
+        Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest, new ArrayList<Long>());
 
-        assertEquals(page.getContent().size(), pageSize);
+        assertEquals(page.getContent().size(), 0);
         assertEquals(page.getSize(), pageSize);
-        assertEquals(page.getTotalElements(), listSize);
+        assertEquals(page.getTotalElements(), 0);
     }
 
     @Test

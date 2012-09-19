@@ -68,7 +68,7 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
         int pageSize =  userService.getCurrentUser().getPageSize();
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(page, pageSize);
         DateTime date24HoursAgo = new DateTime().minusDays(1);
-        return this.getDao().getTopicsUpdatedSince(date24HoursAgo, pageRequest);
+        return this.getDao().getTopicsUpdatedSince(date24HoursAgo, pageRequest,userService.getViewTopicsBranchesIds());
     }
 
     /**

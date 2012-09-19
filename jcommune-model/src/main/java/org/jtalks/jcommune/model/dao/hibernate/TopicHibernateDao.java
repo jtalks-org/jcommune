@@ -49,19 +49,22 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      * {@inheritDoc}
      */
     @Override
-    public Page<Topic> getTopicsUpdatedSince(DateTime timeStamp, JCommunePageRequest pageRequest) {
-        Number totalCount = (Number) getSession()
-                .getNamedQuery("getCountResentTopics")
-                .setParameter("maxModDate", timeStamp)
-                .uniqueResult();
-        @SuppressWarnings("unchecked")
-        List<Topic> recentTopics = (List<Topic>) getSession()
-                .getNamedQuery("getResentTopics")
-                .setParameter("maxModDate", timeStamp)
-                .setFirstResult(pageRequest.getIndexOfFirstItem())
-                .setMaxResults(pageRequest.getPageSize())
-                .list();
-        return new PageImpl<Topic>(recentTopics, pageRequest, totalCount.intValue());
+    public Page<Topic> getTopicsUpdatedSince(DateTime timeStamp, JCommunePageRequest pageRequest, List<Long> branchIds){
+        PageImpl<Topic> result = new PageImpl(new ArrayList(), pageRequest, 0);
+        if (!branchIds.isEmpty()) {
+            Query query = getSession().getNamedQuery("getCountRecentTopics");
+            query.setParameter("maxModDate", timeStamp);
+            query.setParameterList("branchIds", branchIds);
+            Number totalCount = (Number) query.uniqueResult();
+            query = getSession().getNamedQuery("getRecentTopics");
+            query.setParameter("maxModDate", timeStamp);
+            query.setParameterList("branchIds", branchIds);
+            query.setFirstResult(pageRequest.getIndexOfFirstItem()).setMaxResults(pageRequest.getPageSize());
+            @SuppressWarnings("unchecked")
+            List<Topic> recentTopics = (List<Topic>) query.list();
+            result = new PageImpl<Topic>(recentTopics, pageRequest, totalCount.intValue());
+        }
+        return result;
     }
 
 

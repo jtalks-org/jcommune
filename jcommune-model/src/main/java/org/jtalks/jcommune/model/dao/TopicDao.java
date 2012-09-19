@@ -42,15 +42,17 @@ public interface TopicDao extends ChildRepository<Topic> {
      *
      * @param lastLogin user's last login date and time
      * @param pageRequest contains information for pagination: page number, page size
+     * @param branchIds branches only VIEW_TOPIC permissions
      * @return object that contains topics for one page and information for pagination
      */
-    Page<Topic> getTopicsUpdatedSince(DateTime lastLogin, JCommunePageRequest pageRequest);
+    Page<Topic> getTopicsUpdatedSince(DateTime lastLogin, JCommunePageRequest pageRequest, List<Long> branchIds);
 
 
     /**
      * Get unanswered topics(topics which has only 1 post added during topic creation).
      *
      * @param pageRequest contains information for pagination: page number, page size
+     * @param branchIds branches only VIEW_TOPIC permissions
      * @return object that contains unanswered topics for one page and information
      *         for pagination
      */
