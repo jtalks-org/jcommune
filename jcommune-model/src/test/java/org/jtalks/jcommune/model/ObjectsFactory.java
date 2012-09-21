@@ -14,13 +14,12 @@
  */
 package org.jtalks.jcommune.model;
 
+import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.Section;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.PrivateMessage;
-import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.UserContact;
-import org.jtalks.jcommune.model.entity.UserContactType;
+import org.jtalks.jcommune.model.entity.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Kirill Afonin
@@ -84,4 +83,21 @@ public final class ObjectsFactory {
         return contact;
     }
 
+    public static List<Group> getDefaultGroupList(){
+        List<Group> groups = new ArrayList<Group>();
+        Group group =  new Group("Administrators");
+        group.setId(13L);
+        groups.add(group);
+        group =  new Group("Banned Users");
+        group.setId(12L);
+        groups.add(group);
+        group =  new Group("Registered Users");
+        group.setId(11L);
+        groups.add(group);
+        return groups;
+    }
+    
+    public static SimplePage getDefaultSimplePage() {
+        return new SimplePage("name", "content", "pathName");
+    }
 }

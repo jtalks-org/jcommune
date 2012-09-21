@@ -20,11 +20,10 @@ $(document).ready(function () {
     $("a[rel^='prettyPhoto']").prettyPhoto({social_tools:false});
     // popups for individual post links
     $("a.postLink").each(function () {
-        var href = window.location.toString().split("#", 1)[0];
         $(this).click(function (e) {
             e.preventDefault();
-            $.prompt(href + '#' + $(this)[0].rel,
-                {buttons:{}, persistent:false});
+            var path = window.location.protocol + "//" + window.location.host;
+            $.prompt(path + $(this).attr("href"), {buttons:{}, persistent:false});
         })
     })
     // popups to confirm post/topic/pm deletion
@@ -46,14 +45,13 @@ $(document).ready(function () {
             );
         })
     })
-    
+
     /** Handler to prevent multiposting. */
-    $('form.anti-multipost').submit(function() {
-		if ($(this).attr('submitted')) 
-		{
-			return false;
-		}
-		$(this).attr('submitted','true');    	
+    $('form.anti-multipost').submit(function () {
+        if ($(this).attr('submitted')) {
+            return false;
+        }
+        $(this).attr('submitted', 'true');
     });
 });
 

@@ -16,6 +16,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.UserDao;
@@ -31,12 +32,7 @@ import org.testng.annotations.Test;
 
 import java.util.Collection;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNotSame;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
@@ -158,6 +154,29 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     }
 
     @Test
+    public void getCommonUserByUsernameShouldFindOne() {
+        User expected = givenCommonUserWithUsernameStoredInDb("username");
+
+        User actual = dao.getCommonUserByUsername("username");
+        assertNotNull(actual);
+        assertReflectionEquals(actual, expected);
+    }
+
+    @Test
+    public void getCommonUserByUsernameShouldNotFind() {
+        givenCommonUserWithUsernameStoredInDb("username");
+
+        User actual = dao.getCommonUserByUsername("wrong username there is no such user");
+        assertNull(actual);
+    }
+
+    @Test
+    public void getCommonUserByUsernameShouldNotFindInEmptyDb() {
+        User actual = dao.getCommonUserByUsername("username");
+        assertNull(actual);
+    }
+
+    @Test
     public void testGetByUsernameNotExist() {
         JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
@@ -207,6 +226,20 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
         assertTrue(users.contains(nonActivated));
         assertEquals(users.size(), 1);
+    }
+
+    /**
+     * Creates a user with the specified username, stores it into database and clears the session so that we won't get
+     * the same object from the session, but rather a new one will be returned from database.
+     *
+     * @param username a username to store the user with, other properties will be pretty random
+     * @return a user that was stored in the database and removed from the Hibernate session
+     */
+    private User givenCommonUserWithUsernameStoredInDb(String username) {
+        User expected = new User(username, "mail@mail.com", "pass", null);//salt will be null anyway after retrieval
+        session.save(expected);
+        session.clear();
+        return expected;
     }
 
 

@@ -62,7 +62,7 @@
 
     <div id="previewPoll" class="well">
     </div>
-    <form:form action="${pageContext.request.contextPath}/topics/new?branchId=${branchId}"
+    <form:form action="${pageContext.request.contextPath}${submitUrl}"
                method="POST" modelAttribute="topicDto" class="well anti-multipost">
         <div class='control-group hide-on-preview'>
             <div class='controls'>

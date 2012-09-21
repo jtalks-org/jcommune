@@ -16,6 +16,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.criterion.Restrictions;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateParentRepository;
+import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 
@@ -31,6 +32,15 @@ import java.util.Collection;
  */
 public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser>
         implements UserDao {
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public User getCommonUserByUsername(String username){
+        return (User) getSession().getNamedQuery("getCommonUserByUsername")
+                .setString("username", username).uniqueResult();
+    }
 
     /**
      * {@inheritDoc}

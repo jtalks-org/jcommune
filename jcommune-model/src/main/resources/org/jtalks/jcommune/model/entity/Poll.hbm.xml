@@ -32,8 +32,7 @@
                   type="org.joda.time.contrib.hibernate.PersistentDateTime"/>
         <property column="MULTIPLE_ANSWER" name="multipleAnswer" not-null="true"/>
         <one-to-one name="topic"
-                    class="org.jtalks.jcommune.model.entity.Topic"
-                    constrained="true"/>
+                    class="org.jtalks.jcommune.model.entity.Topic" constrained="true"/>
 
         <list name="pollItems" cascade="all-delete-orphan">
             <cache usage="nonstrict-read-write"/>

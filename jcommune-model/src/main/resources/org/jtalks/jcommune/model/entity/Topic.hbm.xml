@@ -48,7 +48,7 @@
         <many-to-one name="branch" column="BRANCH_ID" class="Branch"
                      not-null="false"/>
 
-        <one-to-one name="poll" class="org.jtalks.jcommune.model.entity.Poll" cascade="delete"/>
+        <one-to-one name="poll" class="org.jtalks.jcommune.model.entity.Poll" cascade="all"/>
 
         <set name="subscribers" table="TOPIC_SUBSCRIPTIONS">
             <key column="TOPIC_ID"/>
@@ -66,21 +66,21 @@
                  ORDER BY sticked DESC, modificationDate DESC]]>
     </query>
     
-    <query name="getCountResentTopics">
-        <![CDATA[SELECT COUNT(topic) FROM Topic topic WHERE modificationDate > :maxModDate]]>
+    <query name="getCountRecentTopics">
+        <![CDATA[SELECT COUNT(topic) FROM Topic topic WHERE modificationDate > :maxModDate AND topic.branch.id in (:branchIds)]]>
     </query>
     
-    <query name="getResentTopics">
-        <![CDATA[FROM Topic WHERE modificationDate > :maxModDate
+    <query name="getRecentTopics">
+        <![CDATA[FROM Topic topic WHERE modificationDate > :maxModDate AND topic.branch.id in (:branchIds)
                  ORDER BY modificationDate DESC]]>
     </query>
     
     <query name="getCountUnansweredTopics">
-        <![CDATA[SELECT COUNT(t) FROM Topic t WHERE t.posts.size=1]]>
+        <![CDATA[SELECT COUNT(t) FROM Topic t WHERE t.posts.size=1 AND t.branch.id in (:branchIds)]]>
     </query>
     
     <query name="getUnansweredTopics">
-        <![CDATA[FROM Topic t WHERE t.posts.size=1 
+        <![CDATA[FROM Topic t WHERE t.posts.size=1 AND t.branch.id in (:branchIds)
                 ORDER BY modificationDate DESC]]>
     </query>
 </hibernate-mapping>

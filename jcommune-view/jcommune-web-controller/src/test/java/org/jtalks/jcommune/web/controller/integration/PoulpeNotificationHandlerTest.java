@@ -15,15 +15,15 @@
 package org.jtalks.jcommune.web.controller.integration;
 
 import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertEquals;
 
+import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SectionService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.Mock;
 import org.springframework.web.servlet.ModelAndView;
@@ -32,67 +32,86 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class PoulpeNotificationHandlerTest {
-
     private static final long BRANCH_ID = 1L;
-
     private static final long SECTION_ID = 1L;
 
     @Mock
     private BranchService branchService;
     @Mock
     private SectionService sectionService;
+    @Mock
+    private UserService userService;
 
     private PoulpeNotificationHandler controller;
 
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
-
-        controller = new PoulpeNotificationHandler(branchService, sectionService);
+        controller = new PoulpeNotificationHandler(branchService, sectionService, userService);
     }
 
     @Test
     public void testDeleteBranch() throws NotFoundException {
-        controller.deleteBranch(BRANCH_ID);
+        doReturn(userWithPassword("password")).when(userService).getCommonUserByUsername("admin");
+        controller.deleteBranch(BRANCH_ID, "password");
 
         verify(branchService).deleteAllTopics(BRANCH_ID);
     }
 
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void shouldThrowIfEmptyPasswordWasSentByPoulpe() throws NotFoundException {
+        controller.deleteBranch(BRANCH_ID, "");
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void shouldThrowIfNullPasswordWasSentByPoulpe() throws NotFoundException {
+        controller.deleteBranch(BRANCH_ID, null);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void shouldThrowIfWrongPasswordWasSentByPoulpe() throws NotFoundException {
+        doReturn(userWithPassword("correct password")).when(userService).getCommonUserByUsername("admin");
+        controller.deleteBranch(BRANCH_ID, "wrong password");
+    }
+
     @Test(expectedExceptions = NotFoundException.class)
     public void testDeleteBranchIncorrectId() throws NotFoundException {
+        doReturn(userWithPassword("password")).when(userService).getCommonUserByUsername("admin");
         when(branchService.deleteAllTopics(anyLong())).thenThrow(new NotFoundException());
-        controller.deleteBranch(BRANCH_ID);
-
-        assertTrue(false);
+        controller.deleteBranch(BRANCH_ID, "password");
     }
 
     @Test
     public void testDeleteSection() throws NotFoundException {
-        controller.deleteSection(SECTION_ID);
+        doReturn(userWithPassword("password")).when(userService).getCommonUserByUsername("admin");
+        controller.deleteSection(SECTION_ID, "password");
 
         verify(sectionService).deleteAllTopicsInSection(SECTION_ID);
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testDeleteSectionIncorrectId() throws NotFoundException {
+        doReturn(userWithPassword("password")).when(userService).getCommonUserByUsername("admin");
         when(sectionService.deleteAllTopicsInSection(anyLong())).thenThrow(new NotFoundException());
-        controller.deleteSection(SECTION_ID);
+        controller.deleteSection(SECTION_ID, "password");
 
         assertTrue(false);
     }
 
     @Test
     public void testDeleteComponent() throws NotFoundException {
-        controller.deleteComponent();
+        doReturn(userWithPassword("password")).when(userService).getCommonUserByUsername("admin");
+        controller.deleteComponent("password");
 
         verify(sectionService).deleteAllTopicsInForum();
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testDeleteComponentFail() throws NotFoundException {
+        doReturn(userWithPassword("password")).when(userService).getCommonUserByUsername("admin");
         doThrow(new NotFoundException()).when(sectionService).deleteAllTopicsInForum();
 
-        controller.deleteComponent();
+        controller.deleteComponent("password");
     }
 
     @Test
@@ -102,5 +121,9 @@ public class PoulpeNotificationHandlerTest {
 
         assertTrue(mav.getView() instanceof MappingJacksonJsonView);
         assertEquals(mav.getModel().get("errorMessage"), exception.getMessage());
+    }
+
+    private User userWithPassword(String password) {
+        return new User("admin", "mail", password, "");
     }
 }

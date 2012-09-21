@@ -2951,7 +2951,7 @@ button.btn.small, input[type="submit"].btn.small {
 }
 .tooltip {
   position: absolute;
-  z-index: 1020;
+  z-index: 1500;
   display: block;
   visibility: visible;
   padding: 5px;

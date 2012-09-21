@@ -140,7 +140,9 @@
     <c:forEach var="post" items="${postsPage.content}" varStatus="i">
         <%-- Post --%>
         <div class="post">
-            <a name="${post.id}"></a>
+            <div class="anchor">
+                <a name="${post.id}">anchor</a>
+            </div>
             <table class="table table-striped table-bordered table-condensed">
                 <tr>
                     <td class="post-date">
@@ -243,7 +245,7 @@
 
                             <div class="btn-group">
                                 <a class="btn btn-mini postLink"
-                                   title="<spring:message code='label.tips.link_to_post'/>" rel="${post.id}"
+                                   title="<spring:message code='label.tips.link_to_post'/>"
                                    href="${pageContext.request.contextPath}/posts/${post.id}">
                                     <i class="icon-link"></i>
                                 </a>

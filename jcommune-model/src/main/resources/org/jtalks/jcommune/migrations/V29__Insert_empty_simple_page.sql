@@ -1,0 +1,1 @@
+INSERT INTO `SIMPLE_PAGES` (`UUID`, `NAME`, `PATH_NAME`, `CONTENT`) VALUES (uuid(), 'Title', 'for_newbies', 'Nothing here');

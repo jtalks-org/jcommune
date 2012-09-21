@@ -15,89 +15,101 @@
 
 package org.jtalks.jcommune.web.controller.integration;
 
+import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SectionService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 /**
- * Controller that handles notifications from Poulpe.
- * Main purpose of this is to support data consistency, e.g. when deleting
- * branch Poulpe can't take care of topics, proper post count, notifications and
- * so on. That is why messages are sent here.
+ * Controller that handles notifications from Poulpe. Main purpose of this is to support data consistency, e.g. when
+ * deleting branch Poulpe can't take care of topics, proper post count, notifications and so on. That is why messages
+ * are sent here. Note that in order to make things secure, Poulpe sends admin password as a parameter and we're
+ * matching it with what we have in our database, if passwords are the same, then removal is allowed, otherwise an error
+ * response is sent back.
  *
  * @author Vyacheslav Mishcheryakov
  * @author Evgeniy Naumenko
  */
 @Controller
 public class PoulpeNotificationHandler {
-    
     private static final String ERROR_MESSAGE_PARAMETER = "errorMessage";
-    
-    private BranchService branchService;
-    private SectionService sectionService;
-    
-    
+    /**
+     * A username to find admin user in the database in order to check its password and what was sent in the delete
+     * request. We use this to secure removal of sections/branches/components so that only Poulpe can do that and no one
+     * else (because only Poulpe knows the admin password).
+     */
+    private static final String ADMIN_USERNAME = "admin";
+
+    private final BranchService branchService;
+    private final SectionService sectionService;
+    private final UserService userService;
+
     @Autowired
-    public PoulpeNotificationHandler(BranchService branchService,
-                            SectionService sectionService) {
+    public PoulpeNotificationHandler(BranchService branchService, SectionService sectionService, UserService userService) {
         this.branchService = branchService;
         this.sectionService = sectionService;
+        this.userService = userService;
     }
 
-
     /**
-     * Handles notification about branch deletion. This method deletes all 
-     * topics in branch. Branch itself is not deleted as Poulpe can cope with it
+     * Handles notification about branch deletion. This method deletes all topics in branch. Branch itself is not
+     * deleted as Poulpe can cope with it
      *
      * @param branchId branch id
      * @throws NotFoundException is thrown if branch not found
      */
-    @RequestMapping(value="/branches/{branchId}", method=RequestMethod.DELETE)
+    @RequestMapping(value = "/branches/{branchId}", method = RequestMethod.DELETE)
     @ResponseBody
-    public void deleteBranch(@PathVariable("branchId") long branchId) throws NotFoundException {
+    public void deleteBranch(@PathVariable("branchId") long branchId,
+                             @RequestParam(value = "password") String adminPassword) throws NotFoundException {
+        assertAdminPasswordCorrect(adminPassword);
         branchService.deleteAllTopics(branchId);
     }
-    
+
     /**
-     * Handles notification about section deletion. Removes all topics from
-     * section. Sections and branches won't be removed
+     * Handles notification about section deletion. Removes all topics from section. Sections and branches won't be
+     * removed
+     *
      * @param sectionId section id
      * @throws NotFoundException is thrown if section not found
      */
-    @RequestMapping(value="/sections/{sectionId}", method=RequestMethod.DELETE)
+    @RequestMapping(value = "/sections/{sectionId}", method = RequestMethod.DELETE)
     @ResponseBody
-    public void deleteSection(@PathVariable("sectionId") long sectionId) throws NotFoundException {
+    public void deleteSection(@PathVariable("sectionId") long sectionId,
+                              @RequestParam(value = "password") String adminPassword) throws NotFoundException {
+        assertAdminPasswordCorrect(adminPassword);
         sectionService.deleteAllTopicsInSection(sectionId);
     }
 
     /**
-     * Handles notification about component deletion.
-     * As for now it removes all the topics, leaving branches, sections and components untouched.
+     * Handles notification about component deletion. As for now it removes all the topics, leaving branches, sections
+     * and components untouched.
      *
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException if object for deletion has not been found
+     * @throws NotFoundException if object for deletion has not been found
      */
-    @RequestMapping(value="/component", method=RequestMethod.DELETE)
+    @RequestMapping(value = "/component", method = RequestMethod.DELETE)
     @ResponseBody
-    public void deleteComponent() throws NotFoundException {
+    public void deleteComponent(@RequestParam(value = "password") String adminPassword) throws NotFoundException {
+        assertAdminPasswordCorrect(adminPassword);
         sectionService.deleteAllTopicsInForum();
     }
-    
+
     /**
-     * Catches all exceptions threw by any method in this controller and 
-     * returns HTTP status 500 with error message in response body instead.  
+     * Catches all exceptions threw by any method in this controller and returns HTTP status 500 with error message in
+     * response body instead.
+     *
      * @param exception exception that was thrown
-     * @return {@link ModelAndView} object with JSON view and error message as model 
+     * @return {@link ModelAndView} object with JSON view and error message as model
      */
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -106,6 +118,21 @@ public class PoulpeNotificationHandler {
         ModelAndView mav = new ModelAndView(jsonView);
         mav.addObject(ERROR_MESSAGE_PARAMETER, exception.getMessage());
         return mav;
+    }
+
+    /**
+     * Checks whether the admin password is not blank and it matches the admin password from database. Note that Poulpe
+     * sends hash of the password to us and thus we compare it with has as well.
+     *
+     * @param adminPassword the password sent by Poulpe
+     * @throws IllegalArgumentException if the password sent by Poulpe is blank or does not match the one in the
+     *                                  database
+     */
+    private void assertAdminPasswordCorrect(String adminPassword) throws NotFoundException {
+        checkArgument(isNotBlank(adminPassword), "No password specified while it is required");
+        User admin = userService.getCommonUserByUsername(ADMIN_USERNAME);
+        checkArgument(adminPassword.equals(admin.getPassword()),
+                "Wrong password was specified during removal of branch/section/component.");
     }
 
 }

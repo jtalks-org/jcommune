@@ -21,6 +21,8 @@ import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 /**
  * DAO for the {@link Topic} objects.
  * Besides the basic CRUD methods it provides a method to load any Topics with associated Posts.
@@ -40,19 +42,21 @@ public interface TopicDao extends ChildRepository<Topic> {
      *
      * @param lastLogin user's last login date and time
      * @param pageRequest contains information for pagination: page number, page size
+     * @param branchIds branches only VIEW_TOPIC permissions
      * @return object that contains topics for one page and information for pagination
      */
-    Page<Topic> getTopicsUpdatedSince(DateTime lastLogin, JCommunePageRequest pageRequest);
+    Page<Topic> getTopicsUpdatedSince(DateTime lastLogin, JCommunePageRequest pageRequest, List<Long> branchIds);
 
 
     /**
      * Get unanswered topics(topics which has only 1 post added during topic creation).
      *
      * @param pageRequest contains information for pagination: page number, page size
+     * @param branchIds branches only VIEW_TOPIC permissions
      * @return object that contains unanswered topics for one page and information
      *         for pagination
      */
-    Page<Topic> getUnansweredTopics(JCommunePageRequest pageRequest);
+    Page<Topic> getUnansweredTopics(JCommunePageRequest pageRequest, List<Long> branchIds);
     
     /**
      * Find the last updated topic in the branch.

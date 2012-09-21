@@ -28,6 +28,7 @@ import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
+import java.util.ListIterator;
 
 import static ch.lambdaj.Lambda.*;
 
@@ -113,6 +114,26 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
                 .to(groupDao.get(AdministrationGroup.USER.getId()))
                 .on(poll).flush();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void mergePollItems(Poll poll, List<PollItem> newItems) {
+        List<PollItem> existing = poll.getPollItems();
+        ListIterator<PollItem> updated = newItems.listIterator();
+        while (updated.hasNext()) {
+            PollItem item = updated.next();
+            for (PollItem old : existing){
+                if (item.getName().equals(old.getName())){
+                    updated.set(old);
+                }
+            }
+        }
+        existing.clear();
+        existing.addAll(newItems);
+    }
+
 
     /**
      * Prohibit the re-vote. In this poll a user will no longer be able to participate.

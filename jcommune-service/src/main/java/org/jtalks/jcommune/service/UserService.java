@@ -14,10 +14,13 @@
  */
 package org.jtalks.jcommune.service;
 
+import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+
+import java.util.List;
 
 /**
  * This interface should have methods which give us more abilities in manipulating User persistent entity.
@@ -51,7 +54,7 @@ public interface UserService extends EntityService<JCUser> {
      * @return logged in user or null, if user hasn't yet log in
      */
     JCUser getCurrentUser();
-    
+
     /**
      * Updates user last login time to current time.
      *
@@ -72,7 +75,7 @@ public interface UserService extends EntityService<JCUser> {
      * Performs the following:
      * 1. Alters the password for this user to the random string
      * 2. Sends an e-mail with new password to this address to notify user
-     *
+     * <p/>
      * If mailing fails password won't be changed.
      *
      * @param email address to identify user
@@ -95,11 +98,29 @@ public interface UserService extends EntityService<JCUser> {
      * is expired if it's created, but not activated for a day or more.
      */
     void deleteUnactivatedAccountsByTimer();
-    
+
     /**
      * This methods checks a permissions of user to edit profile.
-     * 
+     *
      * @param userId an identifier of user, for which we check permission
      */
     void checkPermissionsToEditProfile(Long userId);
+
+    /**
+     * Return VIEW_TOPICS branches id's
+     *
+     * @return list id's
+     */
+    public List<Long> getViewTopicsBranchesIds();
+
+    /**
+     * Searches for the common user, meaning that she might or might not be registered in JCommune, she can also be
+     * registered by some other JTalks component. This might be required to search through all the users of JTalks.
+     *
+     * @param username a user's login to find her in the database, depending on the used DB Engine might or might not be
+     *                 case-sensitive
+     * @return a common user with the specified username
+     * @throws NotFoundException if no user was found with the specified username
+     */
+    User getCommonUserByUsername(String username) throws NotFoundException;
 }

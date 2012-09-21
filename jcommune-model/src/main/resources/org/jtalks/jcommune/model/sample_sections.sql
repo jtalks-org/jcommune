@@ -8,6 +8,15 @@ INSERT INTO BRANCHES (BRANCH_ID, UUID, NAME, DESCRIPTION, POSITION, SECTION_ID, 
 INSERT INTO BRANCHES (BRANCH_ID, UUID, NAME, DESCRIPTION, POSITION, SECTION_ID, MODERATORS_GROUP_ID) VALUES(3, '5', 'One more branch', 'More information', 0, 2 ,1);
 INSERT INTO BRANCHES (BRANCH_ID, UUID, NAME, DESCRIPTION, POSITION, SECTION_ID, MODERATORS_GROUP_ID) VALUES(4, '6', 'The last, but not least', 'More information', 1, 2 ,1);
 
+-- Creates a default user with default/default credentials to be able to log in without manual registration
+INSERT IGNORE INTO USERS (UUID, FIRST_NAME, LAST_NAME, USERNAME, ENCODED_USERNAME, EMAIL, PASSWORD, ROLE, SALT, REGISTRATION_DATE)
+  VALUES('7241p12-2720-99h0-r210-ed26491k86j7', 'default', 'default', 'default', 'default', 'default@jtalks.org', MD5('default'), 'USER_ROLE', '', NOW());
+INSERT IGNORE INTO JC_USER_DETAILS (USER_ID, REGISTRATION_DATE, POST_COUNT, ENABLED)
+  select ID, NOW(), 0, true from USERS where USERNAME = 'default';
+-- Default user is then being added to Registered Users group and to the Moderator group
+INSERT IGNORE INTO GROUP_USER_REF select 1, ID from USERS where USERNAME = 'default';
+INSERT IGNORE INTO GROUP_USER_REF select 11, ID from USERS where USERNAME = 'default';
+
 INSERT INTO `acl_class` VALUES (1,'BRANCH');
 INSERT INTO `acl_class` VALUES (2,'GROUP');
 

@@ -62,6 +62,7 @@ public class TopicController {
     public static final String BRANCH_ID = "branchId";
     public static final String BREADCRUMB_LIST = "breadcrumbList";
     private static final String PAGING_ENABLED = "pagingEnabled";
+    private static final String SUBMIT_URL = "submitUrl";
 
     private TopicModificationService topicModificationService;
     private TopicFetchService topicFetchService;
@@ -133,6 +134,7 @@ public class TopicController {
         return new ModelAndView("topicForm")
                 .addObject("topicDto", new TopicDto(topic))
                 .addObject("branchId", branchId)
+                .addObject(SUBMIT_URL, "/topics/new?branchId=" + branchId)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch));
     }
 
@@ -154,6 +156,7 @@ public class TopicController {
             return new ModelAndView("topicForm")
                     .addObject(BRANCH_ID, branchId)
                     .addObject("topicDto", topicDto)
+                    .addObject(SUBMIT_URL, "/topics/new?branchId=" + branchId)
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branch));
         }
         Topic topic = topicDto.getTopic();
@@ -231,6 +234,7 @@ public class TopicController {
         return new ModelAndView("topicForm")
                 .addObject(BRANCH_ID, topic.getBranch().getId())
                 .addObject("topicDto", topicDto)
+                .addObject(SUBMIT_URL, "/topics/"+topicId+"/edit")
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
     }
 
@@ -252,6 +256,7 @@ public class TopicController {
             return new ModelAndView("topicForm")
                     .addObject(BRANCH_ID, topic.getBranch().getId())
                     .addObject("topicDto", topicDto)
+                    .addObject(SUBMIT_URL, "/topics/"+topicId+"/edit")
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
         }
         topicDto.fillTopic(topic);

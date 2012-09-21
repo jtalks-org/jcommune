@@ -19,11 +19,7 @@ import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Poll;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
@@ -33,6 +29,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+
 
 /**
  * Topic service class. This class contains method needed to manipulate with Topic persistent entity.
@@ -176,7 +173,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
     @PreAuthorize("hasPermission(#topic.id, 'TOPIC', 'GeneralPermission.WRITE') and " +
             "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OWN_POSTS') or " +
             "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
-    public void updateTopic(Topic topic, Poll poll, boolean notifyOnAnswers){
+    public void updateTopic(Topic topic, Poll poll, boolean notifyOnAnswers) {
         Post post = topic.getFirstPost();
         post.updateModificationDate();
         this.createOrUpdatePoll(poll, topic);
@@ -186,12 +183,27 @@ public class TransactionalTopicModificationService implements TopicModificationS
         subscribeOnTopicIfNotificationsEnabled(notifyOnAnswers, topic, currentUser);
         logger.debug("Topic id={} updated", topic.getId());
     }
-    
-    private void createOrUpdatePoll(Poll poll, Topic persistentTopic){
+
+    /**
+     * Creates a poll for the topic or updates an existing one.
+     * On update all poll items with the same name remain unchanged,
+     * except probably their position in list. Users, previously voted
+     * for the deleted items can NOT vote again.
+     *
+     * @param poll poll data from UI form
+     * @param persistentTopic topic from a database
+     */
+    private void createOrUpdatePoll(Poll poll, Topic persistentTopic) {
         if (poll != null && poll.isHasPoll()) {
-            poll.setTopic(persistentTopic);
-            pollService.createPoll(poll);
-        } 
+            if (persistentTopic.getPoll() == null) {
+                poll.setTopic(persistentTopic);
+                pollService.createPoll(poll);
+            } else {
+                persistentTopic.getPoll().setTitle(poll.getTitle());
+                persistentTopic.getPoll().setEndingDate(poll.getEndingDate());
+                pollService.mergePollItems(persistentTopic.getPoll(), poll.getPollItems());
+            }
+        }
     }
 
     /**

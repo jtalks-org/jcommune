@@ -69,6 +69,7 @@
     <bean id="userService" class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
         <constructor-arg ref="userDao"/>
         <constructor-arg ref="groupDao"/>
+        <constructor-arg ref="viewTopicsBranchesDao"/>
         <constructor-arg ref="securityService"/>
         <constructor-arg ref="mailService"/>
         <constructor-arg ref="base64Wrapper"/>
@@ -167,6 +168,13 @@
     <bean id="lastReadPostService" class="org.jtalks.jcommune.service.transactional.TransactionalLastReadPostService">
         <constructor-arg ref="userService"/>
         <constructor-arg ref="lastReadPostHibernateDao"/>
+    </bean>
+
+    <bean id="simplePageService"
+          class="org.jtalks.jcommune.service.transactional.TransactionalSimplePageService">
+        <constructor-arg ref="simplePageDao"/>
+        <constructor-arg ref="groupDao"/>
+        <constructor-arg ref="securityService"/>
     </bean>
 
     <bean id="bbCodeService" class="org.jtalks.jcommune.service.nontransactional.BBCodeService"/>
