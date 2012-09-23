@@ -145,7 +145,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     // transient, makes sense for current user only if set explicitly
     private transient Integer lastReadPostIndex;
 
-    public static final int MIN_NAME_SIZE = 5;
+    public static final int MIN_NAME_SIZE = 1;
     public static final int MAX_NAME_SIZE = 120;
 
     /**
