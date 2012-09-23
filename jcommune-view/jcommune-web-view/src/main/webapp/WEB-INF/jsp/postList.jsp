@@ -299,17 +299,18 @@
                                 <spring:message code="label.topic.message_count"/>
                                 <c:out value="${post.userCreated.postCount}"/>
                             </div>
-                            <sec:authorize access="isAuthenticated()">
+                            <jtalks:hasPermission targetId='${userId}' targetType='USER'
+                                                  permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
                                 <sec:authentication property="principal.id" var="userId"/>
                                 <c:if test='${userId != post.userCreated.id}'>
                                     <div>
-                                        <a href="${pageContext.request.contextPath}/pm/new/${post.userCreated.id}?userId=${userId}"
+                                        <a href="${pageContext.request.contextPath}/pm/new/${post.userCreated.id}"
                                            title='<spring:message code="label.pm.send"/>'>
                                             <img src="${pageContext.request.contextPath}/resources/images/message-icon.png"/>
                                         </a>
                                     </div>
                                 </c:if>
-                            </sec:authorize>
+                            </jtalks:hasPermission>
                         </div>
                     </td>
                     <td class='post-content-td'>

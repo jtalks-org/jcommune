@@ -124,11 +124,11 @@ public class PrivateMessageController {
     /**
      * Render the page with a form for creation new Private Message with empty {@link PrivateMessageDto} bound.
      * 
-     * @param senderUserId an identifier of sender of private message
      * @return {@code ModelAndView} with the form
      */
     @RequestMapping(value = "/pm/new", method = RequestMethod.GET)
-    public ModelAndView newPmPage(@RequestParam(SENDER_ID) Long senderId) {
+    public ModelAndView newPmPage() {
+        Long senderId = userService.getCurrentUser().getId();
         pmService.checkPermissionsToSend(senderId);
         return new ModelAndView(PM_FORM)
             .addObject(DTO, new PrivateMessageDto());
@@ -139,14 +139,13 @@ public class PrivateMessageController {
      * This method performs no validation on username given simply passing it to the view as is.
      *
      * @param recipientId an identifier of recipient of private message
-     * @param senderId an identifier of sender of private message
      * @return {@code ModelAndView} with the form
      * @throws NotFoundException if no user has been found for given id
      */
     @RequestMapping(value = "/pm/new/{id}", method = RequestMethod.GET)
     public ModelAndView newPmPageForUser(
-            @PathVariable("id") Long recipientId,
-            @RequestParam(SENDER_ID) Long senderId) throws NotFoundException {
+            @PathVariable("id") Long recipientId) throws NotFoundException {
+        Long senderId = userService.getCurrentUser().getId();
         pmService.checkPermissionsToSend(senderId);
         PrivateMessageDto dto = new PrivateMessageDto();
         String name = userService.get(recipientId).getUsername();
