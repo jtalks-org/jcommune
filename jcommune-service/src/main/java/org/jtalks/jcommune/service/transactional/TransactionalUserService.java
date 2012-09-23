@@ -53,6 +53,7 @@ import java.util.List;
  * @author Kirill Afonin
  * @author Alexandre Teterin
  * @author Evgeniy Naumenko
+ * @author Mikhail Zaitsev
  */
 public class TransactionalUserService extends AbstractTransactionalEntityService<JCUser, UserDao>
         implements UserService {

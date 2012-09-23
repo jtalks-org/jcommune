@@ -23,6 +23,11 @@ import org.jtalks.jcommune.model.entity.ViewTopicsBranches;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Hibernate DAO implementation from the {@link ViewTopicsBranches}.
+ *
+ * @author Mikhail Zaitsev
+ */
 public class ViewTopicsBranchesHibernateDao extends AbstractHibernateParentRepository<ViewTopicsBranches>
         implements ViewTopicsBranchesDao {
     /**
@@ -30,12 +35,12 @@ public class ViewTopicsBranchesHibernateDao extends AbstractHibernateParentRepos
      */
     @Override
     public List<ViewTopicsBranches> getViewTopicsBranchesByGroups(List<Group> groups) {
-        Query query =  getSession().getNamedQuery("findViewTopicsBranchesByGroups");
+        Query query = getSession().getNamedQuery("findViewTopicsBranchesByGroups");
         ArrayList<String> groupIds = new ArrayList<String>();
         for (Group group : groups) {
-            groupIds.add(group.getId()+"");
+            groupIds.add(group.getId() + "");
         }
-        query.setParameterList("groupIds",groupIds);
+        query.setParameterList("groupIds", groupIds);
         return query.list();
     }
 
@@ -44,7 +49,7 @@ public class ViewTopicsBranchesHibernateDao extends AbstractHibernateParentRepos
      */
     @Override
     public List<ViewTopicsBranches> getViewTopicsBranchesForAnonymous() {
-        Query query =  getSession().getNamedQuery("findViewTopicsBranchesForAnonymous");
+        Query query = getSession().getNamedQuery("findViewTopicsBranchesForAnonymous");
         return query.list();
     }
 }

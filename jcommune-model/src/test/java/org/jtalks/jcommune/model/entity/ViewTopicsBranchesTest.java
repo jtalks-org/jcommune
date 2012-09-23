@@ -14,47 +14,23 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import org.jtalks.common.model.entity.Entity;
+import org.testng.annotations.Test;
+
+import static org.testng.Assert.assertEquals;
 
 /**
- * Stores information about the branch on which a group of users are allowed to view
- *
  * @author Mikhail Zaitsev
  */
-public class ViewTopicsBranches extends Entity {
+public class ViewTopicsBranchesTest {
 
-    private Long branchId;
-    private String sid;
-
-    /**
-     * @return id branch
-     */
-    public Long getBranchId() {
-        return branchId;
-    }
-
-    /**
-     * Set branch id on which a group of users are allowed to view
-     *
-     * @param branchId branch id
-     */
-    public void setBranchId(Long branchId) {
-        this.branchId = branchId;
-    }
-
-    /**
-     * @return sid - group or anonymous users
-     */
-    public String getSid() {
-        return sid;
-    }
-
-    /**
-     * Set sid - group or anonymous users
-     *
-     * @param sid sid
-     */
-    public void setSid(String sid) {
-        this.sid = sid;
+    @Test
+    public void testFunctions(){
+        ViewTopicsBranches viewTopicsBranches = new ViewTopicsBranches();
+        viewTopicsBranches.setId(1L);
+        viewTopicsBranches.setBranchId(2L);
+        viewTopicsBranches.setSid("testSid");
+        assertEquals(viewTopicsBranches.getId(),1);
+        assertEquals((Object) viewTopicsBranches.getBranchId(),2L);
+        assertEquals(viewTopicsBranches.getSid(), "testSid");
     }
 }
