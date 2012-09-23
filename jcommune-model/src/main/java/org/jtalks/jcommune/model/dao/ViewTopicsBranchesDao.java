@@ -32,12 +32,12 @@ public interface ViewTopicsBranchesDao {
      * @param groups groups
      * @return ViewTopicsBranches list
      */
-    public List<ViewTopicsBranches> getViewTopicsBranchesByGroups(List<Group> groups);
+    List<ViewTopicsBranches> getViewTopicsBranchesByGroups(List<Group> groups);
 
     /**
      * Return ViewTopicsBranches list for anonymous users
      *
      * @return ViewTopicsBranches list
      */
-    public List<ViewTopicsBranches> getViewTopicsBranchesForAnonymous();
+    List<ViewTopicsBranches> getViewTopicsBranchesForAnonymous();
 }

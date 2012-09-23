@@ -24,8 +24,8 @@ import org.jtalks.common.model.permissions.ProfilePermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.dao.ViewTopicsBranchesDao;
-import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.ViewTopicsBranches;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
@@ -72,13 +72,14 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     /**
      * Create an instance of User entity based service
      *
-     * @param dao             for operations with data storage
-     * @param groupDao        for user group operations with data storage
-     * @param securityService for security
-     * @param mailService     to send e-mails
-     * @param base64Wrapper   for avatar image-related operations
-     * @param avatarService   some more avatar operations)
-     * @param encryptionService encodes user password before store
+     * @param dao                   for operations with data storage
+     * @param viewTopicsBranchesDao for load branches on which a groups of users are allowed to view
+     * @param groupDao              for user group operations with data storage
+     * @param securityService       for security
+     * @param mailService           to send e-mails
+     * @param base64Wrapper         for avatar image-related operations
+     * @param avatarService         some more avatar operations)
+     * @param encryptionService     encodes user password before store
      */
     public TransactionalUserService(UserDao dao, GroupDao groupDao,
                                     ViewTopicsBranchesDao viewTopicsBranchesDao,
@@ -87,7 +88,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
                                     Base64Wrapper base64Wrapper,
                                     AvatarService avatarService,
                                     EncryptionService encryptionService
-                                    ) {
+    ) {
         super(dao);
         this.groupDao = groupDao;
         this.securityService = securityService;
@@ -244,7 +245,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -260,13 +261,13 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     @Override
     public List<Long> getViewTopicsBranchesIds() {
         List<ViewTopicsBranches> viewTopicsBranchesList = null;
-        if(!getCurrentUser().isAnonymous()){
-            viewTopicsBranchesList= viewTopicsBranchesDao.getViewTopicsBranchesByGroups(getCurrentUser().getGroups());
-        }else{
+        if (!getCurrentUser().isAnonymous()) {
+            viewTopicsBranchesList = viewTopicsBranchesDao.getViewTopicsBranchesByGroups(getCurrentUser().getGroups());
+        } else {
             viewTopicsBranchesList = viewTopicsBranchesDao.getViewTopicsBranchesForAnonymous();
         }
         List<Long> branchIds = new ArrayList<Long>();
-        for(ViewTopicsBranches v: viewTopicsBranchesList){
+        for (ViewTopicsBranches v : viewTopicsBranchesList) {
             branchIds.add(v.getBranchId());
         }
         return branchIds;

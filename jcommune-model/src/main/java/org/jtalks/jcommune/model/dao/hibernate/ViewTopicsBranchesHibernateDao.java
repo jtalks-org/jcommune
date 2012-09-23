@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Hibernate DAO implementation from the {@link ViewTopicsBranches}.
+ * Hibernate DAO implementation from the {@link ViewTopicsBranchesDao}.
  *
  * @author Mikhail Zaitsev
  */
