@@ -23,8 +23,10 @@ import org.jtalks.common.model.entity.User;
 import org.jtalks.common.model.permissions.ProfilePermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.dao.ViewTopicsBranchesDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
+import org.jtalks.jcommune.model.entity.ViewTopicsBranches;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
@@ -38,6 +40,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User service class. This class contains method needed to manipulate with User persistent entity.
@@ -53,6 +58,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         implements UserService {
 
     private GroupDao groupDao;
+    private ViewTopicsBranchesDao viewTopicsBranchesDao;
     private SecurityService securityService;
     private MailService mailService;
     private Base64Wrapper base64Wrapper;
@@ -74,14 +80,17 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * @param encryptionService encodes user password before store
      */
     public TransactionalUserService(UserDao dao, GroupDao groupDao,
+                                    ViewTopicsBranchesDao viewTopicsBranchesDao,
                                     SecurityService securityService,
                                     MailService mailService,
                                     Base64Wrapper base64Wrapper,
                                     AvatarService avatarService,
-                                    EncryptionService encryptionService) {
+                                    EncryptionService encryptionService
+                                    ) {
         super(dao);
         this.groupDao = groupDao;
         this.securityService = securityService;
+        this.viewTopicsBranchesDao = viewTopicsBranchesDao;
         this.mailService = mailService;
         this.base64Wrapper = base64Wrapper;
         this.avatarService = avatarService;
@@ -242,5 +251,23 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     @PreAuthorize("hasPermission(#userId, 'USER', 'ProfilePermission.EDIT_PROFILE')")
     public void checkPermissionsToEditProfile(Long userId) {
         LOGGER.debug("Check permission to edit profile for user - " + userId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Long> getViewTopicsBranchesIds() {
+        List<ViewTopicsBranches> viewTopicsBranchesList = null;
+        if(!getCurrentUser().isAnonymous()){
+            viewTopicsBranchesList= viewTopicsBranchesDao.getViewTopicsBranchesByGroups(getCurrentUser().getGroups());
+        }else{
+            viewTopicsBranchesList = viewTopicsBranchesDao.getViewTopicsBranchesForAnonymous();
+        }
+        List<Long> branchIds = new ArrayList<Long>();
+        for(ViewTopicsBranches v: viewTopicsBranchesList){
+            branchIds.add(v.getBranchId());
+        }
+        return branchIds;
     }
 }

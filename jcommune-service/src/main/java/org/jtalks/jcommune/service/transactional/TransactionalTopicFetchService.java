@@ -68,7 +68,7 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
         int pageSize =  userService.getCurrentUser().getPageSize();
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(page, pageSize);
         DateTime date24HoursAgo = new DateTime().minusDays(1);
-        return this.getDao().getTopicsUpdatedSince(date24HoursAgo, pageRequest);
+        return this.getDao().getTopicsUpdatedSince(date24HoursAgo, pageRequest,userService.getViewTopicsBranchesIds());
     }
 
     /**
@@ -78,7 +78,7 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
     public Page<Topic> getUnansweredTopics(int page) {
         int pageSize =  userService.getCurrentUser().getPageSize();
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(page, pageSize);
-        return this.getDao().getUnansweredTopics(pageRequest);
+        return this.getDao().getUnansweredTopics(pageRequest,userService.getViewTopicsBranchesIds());
     }
 
     /**

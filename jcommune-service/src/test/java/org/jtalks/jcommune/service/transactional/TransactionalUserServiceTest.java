@@ -23,6 +23,7 @@ import org.jtalks.common.model.permissions.ProfilePermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.dao.ViewTopicsBranchesDao;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
@@ -81,6 +82,8 @@ public class TransactionalUserServiceTest {
     @Mock
     private GroupDao groupDao;
     @Mock
+    private ViewTopicsBranchesDao viewTopicsBranchesDao;
+    @Mock
     private SecurityService securityService;
     @Mock
     private MailService mailService;
@@ -103,6 +106,7 @@ public class TransactionalUserServiceTest {
         userService = new TransactionalUserService(
                 userDao,
                 groupDao,
+                viewTopicsBranchesDao,
                 securityService,
                 mailService,
                 base64Wrapper,

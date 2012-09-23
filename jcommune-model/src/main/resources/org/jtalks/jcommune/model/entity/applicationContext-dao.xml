@@ -89,6 +89,10 @@
           class="org.jtalks.jcommune.model.dao.hibernate.ComponentHibernateDao"
           parent="abstractHibernateDao"/>
 
+    <bean id="viewTopicsBranchesDao"
+          class="org.jtalks.jcommune.model.dao.hibernate.ViewTopicsBranchesHibernateDao"
+          parent="abstractHibernateDao"/>
+
     <!-- Declaration of Hibernate Search DAO beans -->
     <bean id="topicSearchDao" class="org.jtalks.jcommune.model.dao.search.hibernate.TopicHibernateSearchDao">
         <constructor-arg name="sessionFactory" ref="sessionFactory"/>
@@ -143,6 +147,7 @@
                 <value>/org/jtalks/jcommune/model/entity/Property.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/SimplePage.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/Component.hbm.xml</value>
+                <value>/org/jtalks/jcommune/model/entity/ViewTopicsBranches.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">

@@ -69,6 +69,7 @@
     <bean id="userService" class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
         <constructor-arg ref="userDao"/>
         <constructor-arg ref="groupDao"/>
+        <constructor-arg ref="viewTopicsBranchesDao"/>
         <constructor-arg ref="securityService"/>
         <constructor-arg ref="mailService"/>
         <constructor-arg ref="base64Wrapper"/>
