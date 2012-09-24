@@ -151,7 +151,6 @@ public class TransactionalUserServiceTest {
                 .toDuration().getMillis() <= MAX_REGISTRATION_TIMEOUT);
         verify(userDao).saveOrUpdate(user);
         verify(groupDao).update(group);
-        verify(aclBuilder).grant(ProfilePermission.EDIT_PROFILE);
     }
 
 
