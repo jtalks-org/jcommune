@@ -56,31 +56,48 @@
         </set>
 
     </class>
-    
+
     <query name="getCountTopicsInBranch">
         <![CDATA[SELECT COUNT(topic) FROM Topic topic WHERE topic.branch = :branch]]>
     </query>
-    
+
     <query name="getTopicsInBranch">
         <![CDATA[SELECT topic FROM Topic topic WHERE topic.branch = :branch 
                  ORDER BY sticked DESC, modificationDate DESC]]>
     </query>
-    
+
     <query name="getCountRecentTopics">
         <![CDATA[SELECT COUNT(topic) FROM Topic topic WHERE modificationDate > :maxModDate AND topic.branch.id in (:branchIds)]]>
     </query>
-    
+
     <query name="getRecentTopics">
         <![CDATA[FROM Topic topic WHERE modificationDate > :maxModDate AND topic.branch.id in (:branchIds)
                  ORDER BY modificationDate DESC]]>
     </query>
-    
+
     <query name="getCountUnansweredTopics">
         <![CDATA[SELECT COUNT(t) FROM Topic t WHERE t.posts.size=1 AND t.branch.id in (:branchIds)]]>
     </query>
-    
+
     <query name="getUnansweredTopics">
         <![CDATA[FROM Topic t WHERE t.posts.size=1 AND t.branch.id in (:branchIds)
                 ORDER BY modificationDate DESC]]>
     </query>
+
+    <sql-query name="getTopicAndCountOfPostsInBranch">
+        <return-scalar column="topic" type="string"/>
+        <return-scalar column="cposts" type="integer"/>
+        SELECT tp.TOPIC_ID as topic, COUNT(*)-1 as cposts FROM TOPIC tp left join POST p ON
+        tp.TOPIC_ID=p.TOPIC_ID where BRANCH_ID=:branch group by tp.TOPIC_ID
+    </sql-query>
+
+    <sql-query name="markAllTopicsRead">
+        INSERT INTO LAST_READ_POSTS(UUID,USER_ID,LAST_READ_POST_INDEX,TOPIC_ID) VALUES(:uuid,:user,:lrpi,:topic)
+    </sql-query>
+
+    <sql-query name="deleteAllMarksReadToUser">
+        DELETE FROM LAST_READ_POSTS where USER_ID=:user
+    </sql-query>
+
+
 </hibernate-mapping>

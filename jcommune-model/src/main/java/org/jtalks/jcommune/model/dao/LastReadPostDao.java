@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -43,5 +44,13 @@ public interface LastReadPostDao extends ChildRepository<LastReadPost> {
      * @return last read post for the particular topic or null if user had never opened this topic
      */
     LastReadPost getLastReadPost(JCUser forWho, Topic topic);
+
+    /**
+     * Mark all topics as read.
+     *
+     * @param forWho user to find last read post for
+     * @param branch branch contained topics to mark
+     */
+    void markAllRead(JCUser forWho, Branch branch);
 
 }
