@@ -56,15 +56,8 @@ public class HttpSessionStatisticListenerImpl implements HttpSessionStatisticLis
         persisted sessions will expire. This check provides us with a self-correcting facility
         to overcome this problem
          */
-        for (;;) {
-            long current = totalActiveSessions.get();
-            if (current <= 0) {
-                return;
-            } else {
-                if (totalActiveSessions.compareAndSet(current, current - 1)) {
-                    return;
-                }
-            }
+        if (totalActiveSessions.get() > 0) {
+            totalActiveSessions.decrementAndGet();
         }
     }
 }
