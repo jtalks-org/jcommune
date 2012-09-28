@@ -1,36 +1,37 @@
-INSERT INTO SECTIONS (SECTION_ID, UUID, NAME, DESCRIPTION, POSITION, COMPONENT_ID) VALUES (1,'1','Sample section', 'Some description here', 1, 1);
-INSERT INTO SECTIONS (SECTION_ID, UUID, NAME, DESCRIPTION, POSITION, COMPONENT_ID) VALUES (2,'2','Another section', 'Whatever else', 2,  1);
+INSERT INTO SECTIONS (SECTION_ID, UUID, `NAME`, DESCRIPTION, POSITION, COMPONENT_ID) VALUES (1,(SELECT UUID() FROM dual),'Sample section', 'Some description here', 1, 1);
+INSERT INTO SECTIONS (SECTION_ID, UUID, `NAME`, DESCRIPTION, POSITION, COMPONENT_ID) VALUES (2,(SELECT UUID() FROM dual),'Another section', 'Whatever else', 2,  1);
 
-INSERT INTO GROUPS (GROUP_ID, UUID, NAME, DESCRIPTION) VALUES(1, '1', 'Moderator group', 'Moderator group');
+INSERT INTO GROUPS (GROUP_ID, UUID, `NAME`, DESCRIPTION) VALUES(5, (SELECT UUID() FROM dual), 'Moderator group', 'Moderator group');
 
-INSERT INTO BRANCHES (BRANCH_ID, UUID, NAME, DESCRIPTION, POSITION, SECTION_ID, MODERATORS_GROUP_ID) VALUES(1, '3', 'A cool branch', 'More information', 0, 1, 1);
-INSERT INTO BRANCHES (BRANCH_ID, UUID, NAME, DESCRIPTION, POSITION, SECTION_ID, MODERATORS_GROUP_ID) VALUES(2, '4', 'The second branch', 'More information', 1, 1 ,1);
-INSERT INTO BRANCHES (BRANCH_ID, UUID, NAME, DESCRIPTION, POSITION, SECTION_ID, MODERATORS_GROUP_ID) VALUES(3, '5', 'One more branch', 'More information', 0, 2 ,1);
-INSERT INTO BRANCHES (BRANCH_ID, UUID, NAME, DESCRIPTION, POSITION, SECTION_ID, MODERATORS_GROUP_ID) VALUES(4, '6', 'The last, but not least', 'More information', 1, 2 ,1);
+INSERT INTO BRANCHES (BRANCH_ID, UUID, `NAME`, DESCRIPTION, POSITION, SECTION_ID, MODERATORS_GROUP_ID) VALUES(1, (SELECT UUID() FROM dual), 'A cool branch', 'More information', 0, 1, 1);
+INSERT INTO BRANCHES (BRANCH_ID, UUID, `NAME`, DESCRIPTION, POSITION, SECTION_ID, MODERATORS_GROUP_ID) VALUES(2, (SELECT UUID() FROM dual), 'The second branch', 'More information', 1, 1 ,1);
+INSERT INTO BRANCHES (BRANCH_ID, UUID, `NAME`, DESCRIPTION, POSITION, SECTION_ID, MODERATORS_GROUP_ID) VALUES(3, (SELECT UUID() FROM dual), 'One more branch', 'More information', 0, 2 ,1);
+INSERT INTO BRANCHES (BRANCH_ID, UUID, `NAME`, DESCRIPTION, POSITION, SECTION_ID, MODERATORS_GROUP_ID) VALUES(4, (SELECT UUID() FROM dual), 'The last, but not least', 'More information', 1, 2 ,1);
 
 -- Creates a default user with default/default credentials to be able to log in without manual registration
 INSERT IGNORE INTO USERS (UUID, FIRST_NAME, LAST_NAME, USERNAME, ENCODED_USERNAME, EMAIL, PASSWORD, ROLE, SALT, REGISTRATION_DATE)
-  VALUES('7241p12-2720-99h0-r210-ed26491k86j7', 'default', 'default', 'default', 'default', 'default@jtalks.org', MD5('default'), 'USER_ROLE', '', NOW());
+  VALUES((SELECT UUID() FROM dual), 'default', 'default', 'default', 'default', 'default@jtalks.org', MD5('default'), 'USER_ROLE', '', NOW());
 INSERT IGNORE INTO JC_USER_DETAILS (USER_ID, REGISTRATION_DATE, POST_COUNT, ENABLED)
   select ID, NOW(), 0, true from USERS where USERNAME = 'default';
 -- Default user is then being added to Registered Users group and to the Moderator group
-INSERT IGNORE INTO GROUP_USER_REF select 1, ID from USERS where USERNAME = 'default';
-INSERT IGNORE INTO GROUP_USER_REF select 11, ID from USERS where USERNAME = 'default';
+INSERT IGNORE INTO GROUP_USER_REF select (select GROUP_ID from GROUPS where `NAME`='Moderator group'), ID from USERS where USERNAME = 'default';
+INSERT IGNORE INTO GROUP_USER_REF select (select GROUP_ID from GROUPS where `NAME`='Administrators'), ID from USERS where USERNAME = 'default';
+INSERT IGNORE INTO GROUP_USER_REF select (select GROUP_ID from GROUPS where `NAME`='Registered Users'), ID from USERS where USERNAME = 'default';
 
 INSERT INTO `acl_class` VALUES (1,'BRANCH');
 INSERT INTO `acl_class` VALUES (2,'GROUP');
 
-INSERT INTO `acl_sid` VALUES (1,0,'usergroup:11');
-INSERT INTO `acl_sid` VALUES (3,0,'usergroup:12');
-INSERT INTO `acl_sid` VALUES (2,0,'usergroup:13');
-INSERT INTO `acl_sid` VALUES (4,0,'usergroup:1');
+INSERT INTO `acl_sid` VALUES (1,0,concat('usergroup:',(select GROUP_ID from GROUPS where `NAME`='Registered Users')));
+INSERT INTO `acl_sid` VALUES (3,0,concat('usergroup:',(select GROUP_ID from GROUPS where `NAME`='Banned Users')));
+INSERT INTO `acl_sid` VALUES (2,0,concat('usergroup:',(select GROUP_ID from GROUPS where `NAME`='Administrators')));
+INSERT INTO `acl_sid` VALUES (4,0,concat('usergroup:',(select GROUP_ID from GROUPS where `NAME`='Moderator group')));
 INSERT INTO `acl_sid` VALUES (5,1,'user:anonymousUser');
 
 INSERT INTO `acl_object_identity` VALUES (1,1,1,NULL,1,1);
 INSERT INTO `acl_object_identity` VALUES (2,1,2,NULL,1,1);
 INSERT INTO `acl_object_identity` VALUES (3,1,3,NULL,1,1);
 INSERT INTO `acl_object_identity` VALUES (4,1,4,NULL,1,1);
-INSERT INTO `acl_object_identity` VALUES (5,2,11,NULL,1,1);
+INSERT INTO `acl_object_identity` VALUES (5,2,(select GROUP_ID from GROUPS where `NAME`='Registered Users'),NULL,1,1);
 
 INSERT INTO `acl_entry` VALUES (1,1,1,1,12,1,0,0);
 INSERT INTO `acl_entry` VALUES (2,1,2,1,6,1,0,0);
@@ -115,3 +116,6 @@ INSERT INTO `acl_entry` VALUES (104,4,26,5,6,1,0,0);
 
 /* SEND_PRIVATE_MESSAGES for registered users */
 INSERT INTO `acl_entry` VALUES (105,5,1,1,14,1,0,0);
+
+/* EDIT_PROFILE for registered users */
+INSERT INTO `acl_entry` VALUES (106,6,1,1,15,1,0,0);

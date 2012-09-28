@@ -97,6 +97,11 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
         List<AccessControlEntry> aces = aclUtil.getAclFor(objectIdentity).getEntries();
         List<GroupAce> controlEntries = aclManager.getGroupPermissionsOn(objectIdentity);
 
+        if (permission == ProfilePermission.EDIT_PROFILE &&
+                ((JCUser) authentication.getPrincipal()).getId() != id) {
+             return false;
+        }
+
         if (isRestrictedForSid(sid, aces, jtalksPermission) ||
                 isRestrictedForGroup(controlEntries, authentication, jtalksPermission) ||
                 isRestrictedPersonalPermission(authentication, jtalksPermission)) {

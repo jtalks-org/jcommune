@@ -54,8 +54,7 @@ import org.testng.annotations.Test;
  * @author Evheniy Naumenko
  */
 public class PrivateMessageControllerTest {
-    
-    private static final Long SENDER_ID = Long.valueOf(10);
+
     public static final long PM_ID = 2L;
 
     private PrivateMessageController controller;
@@ -71,6 +70,7 @@ public class PrivateMessageControllerTest {
 
     @BeforeMethod
     public void init() {
+        JC_USER.setId(1);
         MockitoAnnotations.initMocks(this);
         controller = new PrivateMessageController(pmService, bbCodeService, userService);
     }
@@ -123,11 +123,12 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void newPmPage() {
+        when(userService.getCurrentUser()).thenReturn(JC_USER);
         //invoke the object under test
-        ModelAndView mav = controller.newPmPage(SENDER_ID);
+        ModelAndView mav = controller.newPmPage();
 
         //check result
-        verify(pmService).checkPermissionsToSend(SENDER_ID);
+        verify(pmService).checkPermissionsToSend(JC_USER.getId());
         assertViewName(mav, "pm/pmForm");
         assertAndReturnModelAttributeOfType(mav, "privateMessageDto", PrivateMessageDto.class);
     }
@@ -135,22 +136,23 @@ public class PrivateMessageControllerTest {
     @Test
     public void newPmPageWithUserSet() throws NotFoundException {
         //invoke the object under test
-        String name = "name";
-        when(userService.get(PM_ID)).thenReturn(new JCUser(name, null, null));
-        ModelAndView mav = controller.newPmPageForUser(PM_ID, SENDER_ID);
+        when(userService.getCurrentUser()).thenReturn(JC_USER);
+        when(userService.get(JC_USER.getId())).thenReturn(JC_USER);
+        ModelAndView mav = controller.newPmPageForUser(JC_USER.getId());
 
         //check result
-        verify(pmService).checkPermissionsToSend(SENDER_ID);
+        verify(pmService).checkPermissionsToSend(JC_USER.getId());
         assertViewName(mav, "pm/pmForm");
         PrivateMessageDto dto = assertAndReturnModelAttributeOfType(mav, "privateMessageDto", PrivateMessageDto.class);
-        assertEquals(dto.getRecipient(), name);
+        assertEquals(dto.getRecipient(), JC_USER.getUsername());
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     public void newPmPageWithWrongUserSet() throws NotFoundException {
-        doThrow(new NotFoundException()).when(userService).get(PM_ID);
+        when(userService.getCurrentUser()).thenReturn(JC_USER);
+        doThrow(new NotFoundException()).when(userService).get(JC_USER.getId());
 
-        controller.newPmPageForUser(PM_ID, SENDER_ID);
+        controller.newPmPageForUser(JC_USER.getId());
     }
 
     @Test

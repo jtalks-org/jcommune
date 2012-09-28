@@ -60,7 +60,7 @@
             							permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
 						<div class="user-profile-buttons-send">
 							<a class="btn btn-mini btn-info"
-								href="${pageContext.request.contextPath}/pm/new/${user.id}?senderId=${userId}">
+								href="${pageContext.request.contextPath}/pm/new/${user.id}">
 								<spring:message code="label.pm.send" />
 							</a>
 						</div>

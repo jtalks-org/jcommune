@@ -111,7 +111,7 @@ public interface UserService extends EntityService<JCUser> {
      *
      * @return list id's
      */
-    public List<Long> getViewTopicsBranchesIds();
+    List<Long> getViewTopicsBranchesIds();
 
     /**
      * Searches for the common user, meaning that she might or might not be registered in JCommune, she can also be

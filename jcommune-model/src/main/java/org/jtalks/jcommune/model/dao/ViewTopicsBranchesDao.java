@@ -19,18 +19,25 @@ import org.jtalks.jcommune.model.entity.ViewTopicsBranches;
 
 import java.util.List;
 
+/**
+ * DAO for the {@link ViewTopicsBranches} objects.
+ *
+ * @author Mikhail Zaitsev
+ */
 public interface ViewTopicsBranchesDao {
 
     /**
      * Return ViewTopicsBranches list by groups
+     *
      * @param groups groups
      * @return ViewTopicsBranches list
      */
-    public List<ViewTopicsBranches> getViewTopicsBranchesByGroups(List<Group> groups);
+    List<ViewTopicsBranches> getViewTopicsBranchesByGroups(List<Group> groups);
 
     /**
      * Return ViewTopicsBranches list for anonymous users
+     *
      * @return ViewTopicsBranches list
      */
-    public List<ViewTopicsBranches> getViewTopicsBranchesForAnonymous();
+    List<ViewTopicsBranches> getViewTopicsBranchesForAnonymous();
 }
