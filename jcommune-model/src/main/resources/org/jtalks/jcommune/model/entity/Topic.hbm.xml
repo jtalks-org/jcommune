@@ -67,7 +67,8 @@
     </query>
 
     <query name="getCountRecentTopics">
-        <![CDATA[SELECT COUNT(topic) FROM Topic topic WHERE modificationDate > :maxModDate AND topic.branch.id in (:branchIds)]]>
+        <![CDATA[SELECT COUNT(topic) FROM Topic topic WHERE modificationDate > :maxModDate AND topic.branch.id
+            in (:branchIds)]]>
     </query>
 
     <query name="getRecentTopics">
@@ -84,6 +85,7 @@
                 ORDER BY modificationDate DESC]]>
     </query>
 
+    <!--Get all the topics ID and the number of posts (to them) from the branch-->
     <sql-query name="getTopicAndCountOfPostsInBranch">
         <return-scalar column="topic" type="string"/>
         <return-scalar column="cposts" type="integer"/>
@@ -91,10 +93,12 @@
         tp.TOPIC_ID=p.TOPIC_ID where BRANCH_ID=:branch group by tp.TOPIC_ID
     </sql-query>
 
+    <!--Mark topic as read for user-->
     <sql-query name="markAllTopicsRead">
         INSERT INTO LAST_READ_POSTS(UUID,USER_ID,LAST_READ_POST_INDEX,TOPIC_ID) VALUES(:uuid,:user,:lrpi,:topic)
     </sql-query>
 
+    <!--Mark all topics unread for user-->
     <sql-query name="deleteAllMarksReadToUser">
         DELETE FROM LAST_READ_POSTS where USER_ID=:user
     </sql-query>

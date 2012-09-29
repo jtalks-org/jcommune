@@ -72,9 +72,9 @@ public class TransactionalLastReadPostTest {
     }
 
     @Test
-    public void testFillLastReadPostsForTopicsAnonymous() {        
+    public void testFillLastReadPostsForTopicsAnonymous() {
         when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
-        
+
         lastReadPostService.fillLastReadPostForTopics(new ArrayList<Topic>());
 
         verify(lastReadPostDao, never()).getLastReadPost(Matchers.<JCUser>any(), Matchers.<Topic>any());
@@ -95,7 +95,7 @@ public class TransactionalLastReadPostTest {
     @Test
     public void testMarkTopicPageAsReadAnonymous() {
         when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
-        
+
         Topic topic = this.createTestTopic();
 
         lastReadPostService.markTopicPageAsRead(topic, 1, true);
@@ -140,6 +140,7 @@ public class TransactionalLastReadPostTest {
 
     @Test
     public void testMarkAllTopicReadAnonymous() {
+        when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
         Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
 
         lastReadPostService.markAllTopicsAsRead(branch);
@@ -148,16 +149,14 @@ public class TransactionalLastReadPostTest {
     }
 
     @Test
-    public void testMarkAllTopicRead() {
+    public void testMarkAllTopicsAsRead() throws Exception {
         Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
-        Topic topic = this.createTestTopic();
-        branch.addTopic(topic);
         when(userService.getCurrentUser()).thenReturn(user);
 
         lastReadPostService.markAllTopicsAsRead(branch);
 
-        verify(lastReadPostDao).update(argThat(
-                new LastReadPostMatcher(topic, topic.getPostCount() - 1)));
+        verify(userService).getCurrentUser();
+        verify(lastReadPostDao).markAllRead(user, branch);
     }
 
     @Test
@@ -174,7 +173,7 @@ public class TransactionalLastReadPostTest {
     @Test
     public void testMarkTopicAsReadAnonymous() {
         when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
-        
+
         Topic topic = this.createTestTopic();
 
         lastReadPostService.markTopicAsRead(topic);
@@ -201,14 +200,14 @@ public class TransactionalLastReadPostTest {
 
         assertNull(lastReadPostService.getLastReadPostForTopic(topic));
     }
-    
+
     @Test
     public void testGetLastReadPostInTopicForAnonymous() {
         Topic topic = this.createTestTopic();
         JCUser anonymous = new AnonymousUser();
         when(userService.getCurrentUser()).thenReturn(anonymous);
         when(lastReadPostDao.getLastReadPost(anonymous, topic))
-            .thenThrow(new TransientObjectException("Object refrence to unsaved object"));
+                .thenThrow(new TransientObjectException("Object refrence to unsaved object"));
 
         assertNull(lastReadPostService.getLastReadPostForTopic(topic));
     }

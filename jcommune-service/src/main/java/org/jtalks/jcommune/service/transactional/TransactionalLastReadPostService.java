@@ -110,7 +110,9 @@ public class TransactionalLastReadPostService implements LastReadPostService {
     @PreAuthorize("hasPermission(#branch.id, 'BRANCH', 'BranchPermission.VIEW_TOPICS')")
     public void markAllTopicsAsRead(Branch branch) {
         JCUser user = userService.getCurrentUser();
-        lastReadPostDao.markAllRead(user, branch);
+        if (!user.isAnonymous()) {
+            lastReadPostDao.markAllRead(user, branch);
+        }
     }
 
     /**
