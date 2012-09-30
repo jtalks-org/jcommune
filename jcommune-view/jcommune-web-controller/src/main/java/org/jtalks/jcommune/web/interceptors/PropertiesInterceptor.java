@@ -28,17 +28,40 @@ import javax.servlet.http.HttpServletResponse;
  * @autor masyan
  */
 public class PropertiesInterceptor extends HandlerInterceptorAdapter {
-    JCommuneProperty componentNameProperty;
-    JCommuneProperty componentDescriptionProperty;
+    private JCommuneProperty componentNameProperty;
+    private JCommuneProperty componentDescriptionProperty;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesInterceptor.class);
 
+    /**
+     * @param componentNameProperty Property {@link org.jtalks.jcommune.model.entity.JCommuneProperty} name of component
+     */
     public void setComponentNameProperty(JCommuneProperty componentNameProperty) {
         this.componentNameProperty = componentNameProperty;
     }
 
+    /**
+     * @param componentDescriptionProperty Property {@link org.jtalks.jcommune.model.entity.JCommuneProperty}
+     *                                     description of component
+     */
     public void setComponentDescriptionProperty(JCommuneProperty componentDescriptionProperty) {
         this.componentDescriptionProperty = componentDescriptionProperty;
+    }
+
+    /**
+     * @return componentDescriptionProperty Property {@link org.jtalks.jcommune.model.entity.JCommuneProperty}
+     *         name of component
+     */
+    public JCommuneProperty getComponentNameProperty() {
+        return componentNameProperty;
+    }
+
+    /**
+     * @return componentDescriptionProperty Property {@link org.jtalks.jcommune.model.entity.JCommuneProperty}
+     *         description of component
+     */
+    public JCommuneProperty getComponentDescriptionProperty() {
+        return componentDescriptionProperty;
     }
 
     /**

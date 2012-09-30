@@ -42,7 +42,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 public class TransactionalBranchService extends AbstractTransactionalEntityService<Branch, BranchDao>
         implements BranchService {
-    
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private SectionDao sectionDao;
@@ -53,10 +53,10 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
     /**
      * Create an instance of entity based service
      *
-     * @param branchDao data access object, which should be able do all CRUD operations.
-     * @param sectionDao used for checking branch existence.
-     * @param topicDao data access object for operations with topics  
-     * @param postDao data access object for operations with posts 
+     * @param branchDao    data access object, which should be able do all CRUD operations.
+     * @param sectionDao   used for checking branch existence.
+     * @param topicDao     data access object for operations with topics
+     * @param postDao      data access object for operations with posts
      * @param topicService service to perform complex operations with topics
      */
     public TransactionalBranchService(
@@ -91,13 +91,13 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
 
         return this.getDao().getBranchesInSection(sectionId);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void fillStatisticInfo(List<org.jtalks.common.model.entity.Branch> branches) {
-        for(org.jtalks.common.model.entity.Branch commonBranch: branches) {
+        for (org.jtalks.common.model.entity.Branch commonBranch : branches) {
             Branch jcommuneBranch = (Branch) commonBranch;
             int postsCount = getDao().getCountPostsInBranch(jcommuneBranch);
             jcommuneBranch.setPostsCount(postsCount);
@@ -105,13 +105,13 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
             jcommuneBranch.setTopicsCount(topicsCount);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void fillLastPostInLastUpdatedTopic(List<org.jtalks.common.model.entity.Branch> branches) {
-        for(org.jtalks.common.model.entity.Branch commonBranch: branches) {
+        for (org.jtalks.common.model.entity.Branch commonBranch : branches) {
             Branch jcommuneBranch = (Branch) commonBranch;
             Topic lastUpdatedTopic = topicDao.getLastUpdatedTopicInBranch(jcommuneBranch);
             if (lastUpdatedTopic != null) {
@@ -120,7 +120,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -129,22 +129,22 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
     public Branch get(Long id) throws NotFoundException {
         return super.get(id);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public Branch deleteAllTopics(long branchId) throws NotFoundException {
         Branch branch = get(branchId);
-        
+
         // Create tmp list to avoid ConcurrentModificationException
         List<Topic> loopList = new ArrayList<Topic>(branch.getTopics());
         for (Topic topic : loopList) {
             topicService.deleteTopicSilent(topic.getId());
         }
-        
+
         logger.info("All topics for branch \"{}\" were deleted. " +
-        		"Branch id: {}", branch.getName(), branch.getId());
+                "Branch id: {}", branch.getName(), branch.getId());
         return branch;
     }
 }

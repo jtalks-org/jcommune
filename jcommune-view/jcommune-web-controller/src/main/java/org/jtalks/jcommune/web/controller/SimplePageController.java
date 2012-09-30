@@ -55,7 +55,7 @@ public class SimplePageController {
      * So, it ensures, that all validations will be applied to
      * trimmed field values only.
      *
-     * @param binder    Binder object to be injected
+     * @param binder Binder object to be injected
      */
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -74,20 +74,18 @@ public class SimplePageController {
     /**
      * Show a page information by its path name.
      *
-     * @param pagePathName              address in browser which associated with current simple page
+     * @param pagePathName address in browser which associated with current simple page
      * @return {@code ModelAndView}     object with 'simplePage' view with data from {@link SimplePageDto}
-     * @throws NotFoundException        when page was not found or was not exist
      */
     @RequestMapping(value = "/pages/{pagePathName}", method = RequestMethod.GET)
     public ModelAndView showPage(@PathVariable(PAGE_PATH_NAME) String pagePathName) {
         SimplePage page = null;
         try {
-             page = simplePageService.getPageByPathName(pagePathName);
-        }
-        finally {
-            if(page != null) {
+            page = simplePageService.getPageByPathName(pagePathName);
+        } finally {
+            if (page != null) {
                 SimplePageDto pageDto = new SimplePageDto(page);
-    
+
                 return new ModelAndView("simplePage")
                         .addObject(PAGE_DTO, pageDto)
                         .addObject("simplePage", page);
@@ -97,10 +95,10 @@ public class SimplePageController {
                         .addObject(PAGE_PATH_NAME, pagePathName)
                         .addObject(CURRENT_USER_PARAMETER, userService.getCurrentUser());
             }
-            
+
         }
 
-        
+
     }
 
 
@@ -108,9 +106,9 @@ public class SimplePageController {
      * Show a form in browser for edit page information and content in {@link SimplePage} entity
      * associated with address in browser
      *
-     * @param pagePathName              address in browser which associated with current {@link SimplePage}
+     * @param pagePathName address in browser which associated with current {@link SimplePage}
      * @return {@code ModelAndView}     object with 'simplePageEditor' view filled with data from {@link SimplePageDto}
-     * @throws NotFoundException        when page was not found or not exist
+     * @throws NotFoundException when page was not found or not exist
      */
     @RequestMapping(value = "/pages/{pagePathName}/edit", method = RequestMethod.GET)
     public ModelAndView showEditPage(@PathVariable(PAGE_PATH_NAME) String pagePathName) throws NotFoundException {
@@ -125,12 +123,11 @@ public class SimplePageController {
     /**
      * Change name or/and content of page associated with pagePathName
      *
-     * @param simplePageDto             Dto with entered data
-     * @param result                    Validation result
-     * @param pagePathName              address in browser which associated with current simple page
+     * @param simplePageDto Dto with entered data
+     * @param result        Validation result
+     * @param pagePathName  address in browser which associated with current simple page
      * @return {@code ModelAndView}     object with redirect to edited page if saved successfully
-     *                              or show form with error message
-     *
+     *         or show form with error message
      * @throws NotFoundException when page was not found or not exist
      */
     @RequestMapping(value = "/pages/{pagePathName}/edit", method = RequestMethod.POST)

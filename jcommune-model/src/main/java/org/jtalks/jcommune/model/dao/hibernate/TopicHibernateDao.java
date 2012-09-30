@@ -44,21 +44,23 @@ import java.util.List;
  */
 public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> implements TopicDao {
 
+    private static final String BRANCH_IDS = "branchIds";
+    private static final String BRANCH = "branch";
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Page<Topic> getTopicsUpdatedSince(DateTime timeStamp, JCommunePageRequest pageRequest, List<Long> branchIds){
+    public Page<Topic> getTopicsUpdatedSince(DateTime timeStamp, JCommunePageRequest pageRequest, List<Long> branchIds) {
         PageImpl<Topic> result = new PageImpl(new ArrayList(), pageRequest, 0);
         if (!branchIds.isEmpty()) {
             Query query = getSession().getNamedQuery("getCountRecentTopics");
             query.setParameter("maxModDate", timeStamp);
-            query.setParameterList("branchIds", branchIds);
+            query.setParameterList(BRANCH_IDS, branchIds);
             Number totalCount = (Number) query.uniqueResult();
             query = getSession().getNamedQuery("getRecentTopics");
             query.setParameter("maxModDate", timeStamp);
-            query.setParameterList("branchIds", branchIds);
+            query.setParameterList(BRANCH_IDS, branchIds);
             query.setFirstResult(pageRequest.getIndexOfFirstItem()).setMaxResults(pageRequest.getPageSize());
             @SuppressWarnings("unchecked")
             List<Topic> recentTopics = (List<Topic>) query.list();
@@ -76,10 +78,10 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
         PageImpl<Topic> result = new PageImpl(new ArrayList(), pageRequest, 0);
         if (!branchIds.isEmpty()) {
             Query query = getSession().getNamedQuery("getCountUnansweredTopics");
-            query.setParameterList("branchIds", branchIds);
+            query.setParameterList(BRANCH_IDS, branchIds);
             Number totalCount = (Number) query.uniqueResult();
             query = getSession().getNamedQuery("getUnansweredTopics");
-            query.setParameterList("branchIds", branchIds);
+            query.setParameterList(BRANCH_IDS, branchIds);
             query.setFirstResult(pageRequest.getIndexOfFirstItem()).setMaxResults(pageRequest.getPageSize());
             @SuppressWarnings("unchecked")
             List<Topic> unansweredTopics = (List<Topic>) query.list();
@@ -99,12 +101,12 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
         DetachedCriteria topicMaxModificationDateCriteria =
                 DetachedCriteria.forClass(Topic.class)
                         .setProjection(Projections.max(modificationDateProperty))
-                        .add(Restrictions.eq("branch", branch));
+                        .add(Restrictions.eq(BRANCH, branch));
         //possible that the two topics will be modified at the same time
         @SuppressWarnings("unchecked")
         List<Topic> topics = (List<Topic>) session
                 .createCriteria(Topic.class)
-                .add(Restrictions.eq("branch", branch))
+                .add(Restrictions.eq(BRANCH, branch))
                 .add(Property.forName(modificationDateProperty).eq(topicMaxModificationDateCriteria))
                 .list();
         return topics.isEmpty() ? null : topics.get(0);
@@ -118,7 +120,7 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
     public Page<Topic> getTopics(Branch branch, JCommunePageRequest pageRequest) {
         int totalCount = countTopics(branch);
         Query query = getSession().getNamedQuery("getTopicsInBranch")
-                .setParameter("branch", branch);
+                .setParameter(BRANCH, branch);
         if (pageRequest.isPagingEnabled()) {
             query = query.setFirstResult(pageRequest.getIndexOfFirstItem())
                     .setMaxResults(pageRequest.getPageSize());
@@ -135,7 +137,7 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
     public int countTopics(Branch branch) {
         Number count = (Number) getSession()
                 .getNamedQuery("getCountTopicsInBranch")
-                .setParameter("branch", branch)
+                .setParameter(BRANCH, branch)
                 .uniqueResult();
         return count.intValue();
     }

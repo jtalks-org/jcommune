@@ -486,16 +486,14 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     }
 
     /**
-     *
-     * @return
+     * @return True if topic is closed
      */
     public boolean isClosed() {
         return closed;
     }
 
     /**
-     *
-     * @param closed
+     * @param closed If true then topic set to closed, else to open
      */
     public void setClosed(boolean closed) {
         this.closed = closed;
