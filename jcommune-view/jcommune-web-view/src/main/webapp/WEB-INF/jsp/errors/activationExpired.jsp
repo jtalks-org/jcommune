@@ -20,7 +20,6 @@
     <title><spring:message code="label.500.title"/></title>
 </head>
 <body>
-    <jsp:include page="../../template/topLine.jsp"/>
     <div class="container">
         <div class="text_errorpage">
             <h2><spring:message code="label.activation.error"/></h2>

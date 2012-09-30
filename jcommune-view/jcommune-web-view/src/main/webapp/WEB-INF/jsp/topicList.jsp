@@ -136,15 +136,13 @@
                         </td>
                     </sec:authorize>
                     <td>
-                        <c:choose>
-                            <%--Some topic types should have a special prefix when displayed--%>
-                            <c:when test="${topic.announcement=='true'}">
-                                <span class="sticky"><spring:message code="label.marked_as_announcement"/> </span>
-                            </c:when>
-                            <c:when test="${topic.sticked=='true'}">
-                                <span class="sticky"><spring:message code="label.marked_as_sticked"/></span>
-                            </c:when>
-                        </c:choose>
+                        <%--Some topic types should have a special prefix when displayed--%>
+                        <c:if test="${topic.announcement=='true'}">
+                            <span class="sticky"><spring:message code="label.marked_as_announcement"/> </span>
+                        </c:if>
+                        <c:if test="${topic.sticked=='true'}">
+                            <span class="sticky"><spring:message code="label.marked_as_sticked"/></span>
+                        </c:if>
                         <c:if test="${topic.hasPoll}">
                             <span class="sticky"><spring:message code="label.marked_as_poll"/></span>
                         </c:if>

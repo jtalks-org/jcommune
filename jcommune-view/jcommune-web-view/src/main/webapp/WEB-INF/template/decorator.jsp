@@ -90,7 +90,6 @@
 </head>
 <body>
 <jsp:include page="../template/topLine.jsp"/>
-
 <decorator:body/>
 <div class="container">
     <footer>
