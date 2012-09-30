@@ -27,12 +27,4 @@
         <property name="sid" type="string" column="SID"/>
     </class>
 
-    <query name="findViewTopicsBranchesByGroups">
-        <![CDATA[from ViewTopicsBranches vtb where vtb.sid in (:groupIds) ]]>
-    </query>
-
-    <query name="findViewTopicsBranchesForAnonymous">
-        <![CDATA[from ViewTopicsBranches vtb where vtb.sid like 'anonymousUser' ]]>
-    </query>
-
 </hibernate-mapping>

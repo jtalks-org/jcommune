@@ -19,15 +19,12 @@ import org.joda.time.Interval;
 import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
-import org.jtalks.common.model.permissions.ProfilePermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
 import org.jtalks.jcommune.model.dao.UserDao;
-import org.jtalks.jcommune.model.dao.ViewTopicsBranchesDao;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
-import org.jtalks.jcommune.model.entity.ViewTopicsBranches;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
@@ -83,8 +80,6 @@ public class TransactionalUserServiceTest {
     @Mock
     private GroupDao groupDao;
     @Mock
-    private ViewTopicsBranchesDao viewTopicsBranchesDao;
-    @Mock
     private SecurityService securityService;
     @Mock
     private MailService mailService;
@@ -107,7 +102,6 @@ public class TransactionalUserServiceTest {
         userService = spy(new TransactionalUserService(
                 userDao,
                 groupDao,
-                viewTopicsBranchesDao,
                 securityService,
                 mailService,
                 base64Wrapper,
@@ -339,18 +333,6 @@ public class TransactionalUserServiceTest {
         JCUser user = userService.getCurrentUser();
         assertNotNull(user);
         assertTrue(user instanceof AnonymousUser);
-    }
-
-    @Test
-    public void testGetViewTopicsBranchesIds(){
-        List<ViewTopicsBranches> viewTopicsBranchesList = new ArrayList<ViewTopicsBranches>();
-        viewTopicsBranchesList.add(new ViewTopicsBranches());
-        JCUser user = new JCUser("Test name", "Test email", "**** ****");
-        doReturn(user).when(userService).getCurrentUser();
-        doReturn(viewTopicsBranchesList).when(viewTopicsBranchesDao).getViewTopicsBranchesByGroups(user.getGroups());
-        AnonymousUser anonymousUser = new AnonymousUser();
-        doReturn(anonymousUser).when(userService).getCurrentUser();
-        doReturn(viewTopicsBranchesList).when(viewTopicsBranchesDao).getViewTopicsBranchesForAnonymous();
     }
 
     /**

@@ -89,10 +89,6 @@
           class="org.jtalks.jcommune.model.dao.hibernate.ComponentHibernateDao"
           parent="abstractHibernateDao"/>
 
-    <bean id="viewTopicsBranchesDao"
-          class="org.jtalks.jcommune.model.dao.hibernate.ViewTopicsBranchesHibernateDao"
-          parent="abstractHibernateDao"/>
-
     <!-- Declaration of Hibernate Search DAO beans -->
     <bean id="topicSearchDao" class="org.jtalks.jcommune.model.dao.search.hibernate.TopicHibernateSearchDao">
         <constructor-arg name="sessionFactory" ref="sessionFactory"/>
