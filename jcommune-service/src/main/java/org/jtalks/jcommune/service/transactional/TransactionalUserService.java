@@ -141,7 +141,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         this.getDao().saveOrUpdate(user);
         mailService.sendAccountActivationMail(user);
         LOGGER.info("JCUser registered: {}", user.getUsername());
-        Group group = groupDao.get(AdministrationGroup.USER.getId());
+        Group group = groupDao.getMatchedByName(AdministrationGroup.USER.getName()).get(0);
         group.getUsers().add(user);
         groupDao.update(group);
         return user;

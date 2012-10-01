@@ -42,6 +42,9 @@ import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TransactionalSimplePageServiceTest {
 
   private static final long ID = 2L;
@@ -112,7 +115,9 @@ public class TransactionalSimplePageServiceTest {
 
         when(dao.isExist(PATH_NAME)).thenReturn(false);
         Group group = new Group();
-        when(groupDao.get(AdministrationGroup.ADMIN.getId())).thenReturn(group);
+        List<Group> groupList=new ArrayList<Group>();
+        groupList.add(group);
+        when(groupDao.getMatchedByName(AdministrationGroup.ADMIN.getName())).thenReturn(groupList);
 
         SimplePage actualSimplePage = simplePageService.createPage(simplePage, user);
 

@@ -139,7 +139,9 @@ public class TransactionalUserServiceTest {
         JCUser user = getUser(USERNAME);
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
         Group group = new Group();
-        when(groupDao.get(AdministrationGroup.USER.getId())).thenReturn(group);
+        List<Group> groupList=new ArrayList<Group>();
+        groupList.add(group);
+        when(groupDao.getMatchedByName(AdministrationGroup.USER.getName())).thenReturn(groupList);
 
         JCUser registeredUser = userService.registerUser(user);
         DateTime now = new DateTime();

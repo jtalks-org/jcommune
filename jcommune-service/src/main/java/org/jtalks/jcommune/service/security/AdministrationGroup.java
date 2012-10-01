@@ -24,29 +24,29 @@ public enum AdministrationGroup {
     /**
      * Administrators
      */
-    ADMIN(13L),
+    ADMIN("Administrators"),
     /**
      * Registered users
      */
-    USER(11L),
+    USER("Registered Users"),
     /**
      * Banned users
      */
-    BANNED_USER(12L);
+    BANNED_USER("Banned Users");
 
-    private Long id;
+    private String name;
 
     /**
-     * @param id group database identifier, hardcoded in initial SQL migrations
+     * @param name group database name, hardcoded in initial SQL migrations
      */
-    private AdministrationGroup(Long id) {
-        this.id = id;
+    private AdministrationGroup(String name) {
+        this.name = name;
     }
 
     /**
-     * @return group database identifier, hardcoded in initial SQL migrations
+     * @return group database name, hardcoded in initial SQL migrations
      */
-    public Long getId() {
-        return id;
+    public String getName() {
+        return name;
     }
 }

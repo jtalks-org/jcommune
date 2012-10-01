@@ -33,7 +33,7 @@
                 </c:forEach>
             </c:if>
             <c:forEach var="group" items="${user.groups}">
-                <c:if test="${group.id == 13}"> <%--This Id is default ID of Administrators group. --%>
+                <c:if test="${group.name == 'Administrators'}"> <%--This string is default Name of Administrators group. --%>
                     <c:set var='labelClass' value='label label-important'/>
                 </c:if>
             </c:forEach>
