@@ -48,6 +48,7 @@
           factory-method="valueOf">
         <constructor-arg type="java.lang.String" value="CMP_NAME"/>
         <property name="componentDao" ref="componentDao"/>
+        <property name="propertyDao" ref="propertyDao"/>
         <property name="name" value="cmp.name"/>
         <property name="defaultValue" value=""/>
     </bean>
@@ -56,6 +57,7 @@
           factory-method="valueOf">
         <constructor-arg type="java.lang.String" value="CMP_DESCRIPTION"/>
         <property name="componentDao" ref="componentDao"/>
+        <property name="propertyDao" ref="propertyDao"/>
         <property name="name" value="cmp.description"/>
         <property name="defaultValue" value=""/>
     </bean>

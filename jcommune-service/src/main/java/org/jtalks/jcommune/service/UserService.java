@@ -20,8 +20,6 @@ import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
-import java.util.List;
-
 /**
  * This interface should have methods which give us more abilities in manipulating User persistent entity.
  *
@@ -105,13 +103,6 @@ public interface UserService extends EntityService<JCUser> {
      * @param userId an identifier of user, for which we check permission
      */
     void checkPermissionsToEditProfile(Long userId);
-
-    /**
-     * Return VIEW_TOPICS branches id's
-     *
-     * @return list id's
-     */
-    List<Long> getViewTopicsBranchesIds();
 
     /**
      * Searches for the common user, meaning that she might or might not be registered in JCommune, she can also be

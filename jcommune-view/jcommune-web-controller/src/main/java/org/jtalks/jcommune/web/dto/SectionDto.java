@@ -14,12 +14,10 @@
  */
 package org.jtalks.jcommune.web.dto;
 
-import org.jtalks.common.model.entity.Section;
-
 /**
  * Dto for transferring sections to client side.
  * Dto does not contains branches in section, just id and name.
- *
+ * <p/>
  * todo: it duplicates Branch dto, mb we need some more generic here
  *
  * @author Eugeny Batov
@@ -30,7 +28,7 @@ public class SectionDto {
     private String name;
 
     /**
-     * @param id unique section identifier
+     * @param id   unique section identifier
      * @param name section display name
      */
     public SectionDto(long id, String name) {

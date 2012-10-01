@@ -38,16 +38,17 @@ import javax.persistence.EntityExistsException;
  * @author Alexander Gavrikov
  */
 
-public class TransactionalSimplePageService extends AbstractTransactionalEntityService<SimplePage, SimplePageDao> implements SimplePageService {
+public class TransactionalSimplePageService extends AbstractTransactionalEntityService<SimplePage, SimplePageDao>
+        implements SimplePageService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private GroupDao groupDao;
     private SecurityService securityService;
 
     /**
-     *  Create an instance of Simple Page entity based service
+     * Create an instance of Simple Page entity based service
      *
-     *  @param simplePageDao - data access object which should be create or get simplePage object from database
+     * @param simplePageDao - data access object which should be create or get simplePage object from database
      */
 
     public TransactionalSimplePageService(SimplePageDao simplePageDao,
@@ -67,7 +68,7 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
 
         SimplePage simplePage = get(simplePageInfoContainer.getId());
         if (simplePage == null) {
-            String message = "Simple page with id = " + simplePage.getId() + " not found.";
+            String message = "Simple page with id = " + simplePageInfoContainer.getId() + " not found.";
             logger.info(message);
             throw new NotFoundException(message);
         }
@@ -103,7 +104,7 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
     @Override
     public SimplePage createPage(SimplePage simplePage, JCUser userCreator) throws EntityExistsException {
 
-        if(getDao().isExist(simplePage.getPathName())) {
+        if (getDao().isExist(simplePage.getPathName())) {
             String msg = "SimplePage with pathName = " + simplePage.getPathName() + " already exists.";
             logger.info(msg);
             throw new EntityExistsException(msg);

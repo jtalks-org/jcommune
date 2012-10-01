@@ -83,6 +83,22 @@ public final class PersistedObjectsFactory {
         return branch.getTopics();
     }
 
+    /**
+     * Create the Topics with posts.
+     *
+     * @return saved topics
+     */
+    public static List<Topic> createAndSaveTopicListWithPosts(int size) {
+        Branch branch = ObjectsFactory.getDefaultBranch();
+        JCUser user = persist(ObjectsFactory.getDefaultUser());
+        for (int i = 0; i < size; i++) {
+            Topic topic = new Topic(user, "title" + i);
+            topic.addPost(new Post(topic.getTopicStarter(), "content"));
+            branch.addTopic(topic);
+        }
+        persist(branch);
+        return branch.getTopics();
+    }
 
     public static List<Post> createAndSavePostList(int size) {
         List<Post> posts = new ArrayList<Post>();
@@ -120,6 +136,12 @@ public final class PersistedObjectsFactory {
         PollItem option = new PollItem("First voting option");
         voting.addPollOptions(option);
         return option;
+    }
+
+    public static JCUser getDefaultUser() {
+        JCUser user = new JCUser("user", "email@user.org", "user");
+        persist(user);
+        return user;
     }
 
     private static <T> T persist(T entity) {

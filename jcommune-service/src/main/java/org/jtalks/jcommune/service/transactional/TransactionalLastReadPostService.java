@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.LastReadPostDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -39,7 +38,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
     private LastReadPostDao lastReadPostDao;
 
     /**
-     * @param userService to figure out the current user logged in
+     * @param userService     to figure out the current user logged in
      * @param lastReadPostDao to save/read last read post information from a database
      */
     public TransactionalLastReadPostService(UserService userService, LastReadPostDao lastReadPostDao) {
@@ -73,7 +72,8 @@ public class TransactionalLastReadPostService implements LastReadPostService {
         JCUser current = userService.getCurrentUser();
         if (current.isAnonymous()) {
             return null;
-        } else {
+        }
+        else {
             LastReadPost post = lastReadPostDao.getLastReadPost(current, topic);
             return (post == null) ? null : post.getPostIndex();
         }
@@ -109,9 +109,8 @@ public class TransactionalLastReadPostService implements LastReadPostService {
     @PreAuthorize("hasPermission(#branch.id, 'BRANCH', 'BranchPermission.VIEW_TOPICS')")
     public void markAllTopicsAsRead(Branch branch) {
         JCUser user = userService.getCurrentUser();
-        for (Topic topic : branch.getTopics()) {
-            this.saveLastReadPost(user, topic, topic.getPostCount() - 1);
-
+        if (!user.isAnonymous()) {
+            lastReadPostDao.markAllRead(user, branch);
         }
     }
 
@@ -130,7 +129,8 @@ public class TransactionalLastReadPostService implements LastReadPostService {
         if (pagingEnabled) {  // last post on the page given
             int maxPostIndex = user.getPageSize() * pageNum - 1;
             return Math.min(topic.getPostCount() - 1, maxPostIndex);
-        } else {              // last post in the topic
+        }
+        else {              // last post in the topic
             return topic.getPostCount() - 1;
         }
     }
@@ -148,7 +148,8 @@ public class TransactionalLastReadPostService implements LastReadPostService {
         LastReadPost post = lastReadPostDao.getLastReadPost(user, topic);
         if (post == null) {
             post = new LastReadPost(user, topic, postIndex);
-        } else {
+        }
+        else {
             post.setPostIndex(Math.max(post.getPostIndex(), postIndex));
         }
         lastReadPostDao.update(post);

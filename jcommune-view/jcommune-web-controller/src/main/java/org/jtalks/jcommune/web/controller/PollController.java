@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -67,9 +66,9 @@ public class PollController {
      * Adds a multiple votes.
      * This method needed for "multiple type" polls.
      *
-     * @param pollId   id of poll
-     * @param pollDto  data transfer object, that contains
-     *                 identifiers of selected options.
+     * @param pollId  id of poll
+     * @param pollDto data transfer object, that contains
+     *                identifiers of selected options.
      * @return data transfer object, that contains data about poll
      */
     @RequestMapping(value = "/poll/{pollId}/multiple", method = RequestMethod.POST)

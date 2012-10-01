@@ -14,13 +14,17 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
 import org.jtalks.jcommune.model.dao.LastReadPostDao;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Topic;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Evgeniy Naumenko
@@ -38,7 +42,7 @@ public class LastReadPostHibernateDao extends AbstractHibernateChildRepository<L
                 .list();
     }
 
-        /**
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -49,5 +53,40 @@ public class LastReadPostHibernateDao extends AbstractHibernateChildRepository<L
                 .setCacheable(false)
                 .uniqueResult();
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void markAllRead(JCUser forWho, Branch branch) {
+        Session session = getSession();
+
+        SQLQuery deletedEntities = (SQLQuery) session.getNamedQuery("deleteAllMarksReadToUser");
+        deletedEntities
+                .addSynchronizedEntityClass(LastReadPost.class)
+                .setParameter("user", forWho.getId())
+                .setCacheable(false)
+                .executeUpdate();
+
+        List<Object[]> topicsOfBranch = session.getNamedQuery("getTopicAndCountOfPostsInBranch")
+                .setParameter("branch", branch.getId())
+                .setCacheable(false)
+                .list();
+
+        SQLQuery insertQuery = (SQLQuery) session.getNamedQuery("markAllTopicsRead");
+        insertQuery
+                .addSynchronizedEntityClass(LastReadPost.class)
+                .setCacheable(false);
+
+        for (Object[] o : topicsOfBranch) {
+            insertQuery.setParameter("uuid", UUID.randomUUID().toString())
+                    .setParameter("user", forWho.getId())
+                    .setParameter("lrpi", o[1])
+                    .setParameter("topic", o[0])
+                    .executeUpdate();
+        }
+
+        session.flush();
     }
 }

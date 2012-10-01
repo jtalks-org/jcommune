@@ -12,32 +12,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao;
-
-import org.jtalks.common.model.entity.Group;
-import org.jtalks.jcommune.model.entity.ViewTopicsBranches;
-
-import java.util.List;
-
 /**
- * DAO for the {@link ViewTopicsBranches} objects.
  *
- * @author Mikhail Zaitsev
+ * Package of validators.
+ *
  */
-public interface ViewTopicsBranchesDao {
-
-    /**
-     * Return ViewTopicsBranches list by groups
-     *
-     * @param groups groups
-     * @return ViewTopicsBranches list
-     */
-    List<ViewTopicsBranches> getViewTopicsBranchesByGroups(List<Group> groups);
-
-    /**
-     * Return ViewTopicsBranches list for anonymous users
-     *
-     * @return ViewTopicsBranches list
-     */
-    List<ViewTopicsBranches> getViewTopicsBranchesForAnonymous();
-}
+package org.jtalks.jcommune.model.validation.validators;
