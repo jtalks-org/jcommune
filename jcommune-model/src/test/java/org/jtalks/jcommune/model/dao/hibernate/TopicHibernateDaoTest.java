@@ -117,19 +117,19 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
     /*===== TopicDao specific methods =====*/
 
-    @Test(enabled = false)
+    @Test
     public void testGetTopicsUpdatedSince() {
         int size = 5;
         createAndSaveTopicList(size);
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, size);
         DateTime lastLogin = new DateTime().minusDays(1);
 
-        Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest,null);
+        Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest,ObjectsFactory.getDefaultUser());
 
         assertEquals(page.getContent().size(), 0);
     }
     
-    @Test(enabled = false)
+    @Test
     public void testGetUpdateTopicsUpdatedSinceWithPaging() {
         int listSize = 5;
         int pageSize = 2;
@@ -138,26 +138,41 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(lastPage, pageSize);
         DateTime lastLogin = new DateTime().minusDays(1);
 
-        Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest, null);
+        JCUser user = new JCUser("Current", null, null);
+        user.setGroups(ObjectsFactory.getDefaultGroupList());
+        Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest, user);
+
+        assertEquals(page.getContent().size(), 0);
+        assertEquals(page.getSize(), pageSize);
+        assertEquals(page.getTotalElements(), 0);
+
+        page = dao.getTopicsUpdatedSince(lastLogin, pageRequest, new AnonymousUser());
 
         assertEquals(page.getContent().size(), 0);
         assertEquals(page.getSize(), pageSize);
         assertEquals(page.getTotalElements(), 0);
     }
 
-    @Test(enabled = false)
+    @Test
     public void testGetUnansweredTopics() {
         createAndSaveTopicsWithUnansweredTopics();
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, 2);
-        Page<Topic> result = dao.getUnansweredTopics(pageRequest, null);
+
+        JCUser user = new JCUser("Current", null, null);
+        user.setGroups(ObjectsFactory.getDefaultGroupList());
+
+        Page<Topic> result = dao.getUnansweredTopics(pageRequest, user);
+        assertEquals(result.getContent().size(), 0);
+
+        result = dao.getUnansweredTopics(pageRequest, new AnonymousUser());
         assertEquals(result.getContent().size(), 0);
     }
     
-    @Test(enabled = false)
+    @Test
     public void testGetUnansweredTopicsWithPaging() {
         createAndSaveTopicsWithUnansweredTopics();
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(2, 1);
-        Page<Topic> result = dao.getUnansweredTopics(pageRequest,null);
+        Page<Topic> result = dao.getUnansweredTopics(pageRequest,ObjectsFactory.getDefaultUser());
         assertEquals(result.getContent().size(), 0);
     }
 

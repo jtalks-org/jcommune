@@ -48,44 +48,17 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
     private static final String BRANCH = "branch";
     private static final String MAX_MOD_DATE = "maxModDate";
     private static final String GROUP_IDS = "groupIds";
+    private static final String UNCHECKED = "unchecked";
 
     /**
      * {@inheritDoc}
      */
     @Override
     public Page<Topic> getTopicsUpdatedSince(DateTime timeStamp, JCommunePageRequest pageRequest, JCUser user) {
-        PageImpl<Topic> result = new PageImpl(new ArrayList(), pageRequest, 0);
         if (!user.isAnonymous()) {
-            List<Group> groups = user.getGroups();
-            if (!groups.isEmpty()) {
-                List<String> groupIds = new ArrayList<String>();
-                for (Group g : groups) {
-                    groupIds.add(g.getId() + "");
-                }
-                Query query = getSession().getNamedQuery("getCountRecentTopicsByGroups");
-                query.setParameter(MAX_MOD_DATE, timeStamp);
-                query.setParameterList(GROUP_IDS, groupIds);
-                Number totalCount = (Number) query.uniqueResult();
-                query = getSession().getNamedQuery("getRecentTopicsByGroups");
-                query.setParameter(MAX_MOD_DATE, timeStamp);
-                query.setParameterList(GROUP_IDS, groupIds);
-                query.setFirstResult(pageRequest.getIndexOfFirstItem()).setMaxResults(pageRequest.getPageSize());
-                @SuppressWarnings("unchecked")
-                List<Topic> recentTopics = (List<Topic>) query.list();
-                result = new PageImpl<Topic>(recentTopics, pageRequest, totalCount.intValue());
-            }
-        } else {
-            Query query = getSession().getNamedQuery("getCountRecentTopicsForAnonymousUser");
-            query.setParameter(MAX_MOD_DATE, timeStamp);
-            Number totalCount = (Number) query.uniqueResult();
-            query = getSession().getNamedQuery("getRecentTopicsForAnonymousUser");
-            query.setParameter(MAX_MOD_DATE, timeStamp);
-            query.setFirstResult(pageRequest.getIndexOfFirstItem()).setMaxResults(pageRequest.getPageSize());
-            @SuppressWarnings("unchecked")
-            List<Topic> recentTopics = (List<Topic>) query.list();
-            result = new PageImpl<Topic>(recentTopics, pageRequest, totalCount.intValue());
+            return getRecentTopicsByGroupIds(getGroupIds(user), timeStamp, pageRequest);
         }
-        return result;
+        return getRecentTopicsForAnonymousUser(timeStamp, pageRequest);
     }
 
 
@@ -94,34 +67,108 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      */
     @Override
     public Page<Topic> getUnansweredTopics(JCommunePageRequest pageRequest, JCUser user) {
-        PageImpl<Topic> result = new PageImpl(new ArrayList(), pageRequest, 0);
         if (!user.isAnonymous()) {
-            List<Group> groups = user.getGroups();
-            if (!groups.isEmpty()) {
-                List<String> groupIds = new ArrayList<String>();
-                for (Group g : groups) {
-                    groupIds.add(g.getId() + "");
-                }
-                Query query = getSession().getNamedQuery("getCountUnansweredTopicsByGroups");
-                query.setParameterList(GROUP_IDS, groupIds);
-                Number totalCount = (Number) query.uniqueResult();
-                query = getSession().getNamedQuery("getUnansweredTopicsByGroups");
-                query.setParameterList(GROUP_IDS, groupIds);
-                query.setFirstResult(pageRequest.getIndexOfFirstItem()).setMaxResults(pageRequest.getPageSize());
-                @SuppressWarnings("unchecked")
-                List<Topic> unansweredTopics = (List<Topic>) query.list();
-                result = new PageImpl<Topic>(unansweredTopics, pageRequest, totalCount.intValue());
-            }
-        } else {
-            Query query = getSession().getNamedQuery("getCountUnansweredTopicsForAnonymousUser");
-            Number totalCount = (Number) query.uniqueResult();
-            query = getSession().getNamedQuery("getUnansweredTopicsForAnonymousUser");
-            query.setFirstResult(pageRequest.getIndexOfFirstItem()).setMaxResults(pageRequest.getPageSize());
-            @SuppressWarnings("unchecked")
-            List<Topic> unansweredTopics = (List<Topic>) query.list();
-            result = new PageImpl<Topic>(unansweredTopics, pageRequest, totalCount.intValue());
+            return getUnansweredTopicsByGroupIds(getGroupIds(user), pageRequest);
         }
-        return result;
+        return getUnansweredTopicsForAnonymousUser(pageRequest);
+    }
+
+    /**
+     * Return group ids for select branches with VIEW_TOPICS permission
+     *
+     * @param user current user
+     * @return group ids
+     */
+    private List<String> getGroupIds(JCUser user) {
+        List<Group> groups = user.getGroups();
+        List<String> groupIds = new ArrayList<String>();
+        for (Group g : groups) {
+            groupIds.add(g.getId() + "");
+        }
+        return groupIds;
+    }
+
+    /**
+     * Return unanswered topics with VIEW_TOPICS permission by group ids
+     *
+     * @param groupIds    group ids
+     * @param pageRequest ontains information for pagination: page number, page size
+     * @return unanswered topics
+     */
+    private PageImpl<Topic> getUnansweredTopicsByGroupIds(List<String> groupIds, JCommunePageRequest pageRequest) {
+        if (!groupIds.isEmpty()) {
+            Query query = getSession().getNamedQuery("getCountUnansweredTopicsByGroups");
+            query.setParameterList(GROUP_IDS, groupIds);
+            Number totalCount = (Number) query.uniqueResult();
+            query = getSession().getNamedQuery("getUnansweredTopicsByGroups");
+            query.setParameterList(GROUP_IDS, groupIds);
+            query.setFirstResult(pageRequest.getIndexOfFirstItem()).setMaxResults(pageRequest.getPageSize());
+            @SuppressWarnings(UNCHECKED)
+            List<Topic> unansweredTopics = (List<Topic>) query.list();
+            return new PageImpl<Topic>(unansweredTopics, pageRequest, totalCount.intValue());
+        }
+        return new PageImpl(new ArrayList(), pageRequest, 0);
+    }
+
+    /**
+     * Return unanswered topics with VIEW_TOPICS permission for anonymous user
+     *
+     * @param pageRequest ontains information for pagination: page number, page size
+     * @return unanswered topics
+     */
+    private PageImpl<Topic> getUnansweredTopicsForAnonymousUser(JCommunePageRequest pageRequest) {
+        Query query = getSession().getNamedQuery("getCountUnansweredTopicsForAnonymousUser");
+        Number totalCount = (Number) query.uniqueResult();
+        query = getSession().getNamedQuery("getUnansweredTopicsForAnonymousUser");
+        query.setFirstResult(pageRequest.getIndexOfFirstItem()).setMaxResults(pageRequest.getPageSize());
+        @SuppressWarnings(UNCHECKED)
+        List<Topic> unansweredTopics = (List<Topic>) query.list();
+        return new PageImpl<Topic>(unansweredTopics, pageRequest, totalCount.intValue());
+    }
+
+    /**
+     * Return recent topics with VIEW_TOPICS permission by group ids
+     *
+     * @param groupIds    group ids
+     * @param timeStamp   user's last login date and time
+     * @param pageRequest ontains information for pagination: page number, page size
+     * @return recent topics
+     */
+    private PageImpl<Topic> getRecentTopicsByGroupIds(List<String> groupIds, DateTime timeStamp,
+                                                      JCommunePageRequest pageRequest) {
+        if (!groupIds.isEmpty()) {
+            Query query = getSession().getNamedQuery("getCountRecentTopicsByGroups");
+            query.setParameter(MAX_MOD_DATE, timeStamp);
+            query.setParameterList(GROUP_IDS, groupIds);
+            Number totalCount = (Number) query.uniqueResult();
+            query = getSession().getNamedQuery("getRecentTopicsByGroups");
+            query.setParameter(MAX_MOD_DATE, timeStamp);
+            query.setParameterList(GROUP_IDS, groupIds);
+            query.setFirstResult(pageRequest.getIndexOfFirstItem()).setMaxResults(pageRequest.getPageSize());
+            @SuppressWarnings(UNCHECKED)
+            List<Topic> recentTopics = (List<Topic>) query.list();
+            return new PageImpl<Topic>(recentTopics, pageRequest, totalCount.intValue());
+        }
+        return new PageImpl(new ArrayList(), pageRequest, 0);
+    }
+
+    /**
+     * Return recent topics with VIEW_TOPICS permission for anonymous user
+     *
+     * @param timeStamp   user's last login date and time
+     * @param pageRequest ontains information for pagination: page number, page size
+     * @return recent topics
+     */
+    private PageImpl<Topic> getRecentTopicsForAnonymousUser(DateTime timeStamp, JCommunePageRequest pageRequest) {
+        Query query = getSession().getNamedQuery("getCountRecentTopicsForAnonymousUser");
+        query.setParameter(MAX_MOD_DATE, timeStamp);
+        Number totalCount = (Number) query.uniqueResult();
+        query = getSession().getNamedQuery("getRecentTopicsForAnonymousUser");
+        query.setParameter(MAX_MOD_DATE, timeStamp);
+        query.setFirstResult(pageRequest.getIndexOfFirstItem()).setMaxResults(pageRequest.getPageSize());
+        @SuppressWarnings(UNCHECKED)
+        List<Topic> recentTopics = (List<Topic>) query.list();
+        return new PageImpl<Topic>(recentTopics, pageRequest, totalCount.intValue());
     }
 
     /**
@@ -137,7 +184,7 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
                         .setProjection(Projections.max(modificationDateProperty))
                         .add(Restrictions.eq(BRANCH, branch));
         //possible that the two topics will be modified at the same time
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings(UNCHECKED)
         List<Topic> topics = (List<Topic>) session
                 .createCriteria(Topic.class)
                 .add(Restrictions.eq(BRANCH, branch))
@@ -159,7 +206,7 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
             query = query.setFirstResult(pageRequest.getIndexOfFirstItem())
                     .setMaxResults(pageRequest.getPageSize());
         }
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings(UNCHECKED)
         List<Topic> topics = (List<Topic>) query.list();
         return new PageImpl<Topic>(topics, pageRequest, totalCount);
     }
