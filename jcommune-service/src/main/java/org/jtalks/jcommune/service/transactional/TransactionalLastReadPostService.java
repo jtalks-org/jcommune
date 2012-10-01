@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.LastReadPostDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;

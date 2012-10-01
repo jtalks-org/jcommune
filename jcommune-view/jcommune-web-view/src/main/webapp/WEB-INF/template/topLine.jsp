@@ -14,7 +14,6 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
-<%@ page import="org.jtalks.jcommune.model.entity.JCommuneProperty" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
@@ -30,7 +29,7 @@
                 <span class="icon-bar"></span>
             </a>
             <a class="brand"
-               href="${pageContext.request.contextPath}/"><%= JCommuneProperty.CMP_NAME.getValueOfComponent() %>
+               href="${pageContext.request.contextPath}/">${cmpName}
             </a>
 
             <div class="nav-collapse">
@@ -44,11 +43,11 @@
                 <ul class="nav pull-right">
                     <%-- Not logged in block --%>
                     <sec:authorize access="isAnonymous()">
-                    	<li>
-                        	<a href="${pageContext.request.contextPath}/pages/for_newbies">
-                            	<fmt:message key="label.newbies"/>
-                        	</a>
-                    	</li>
+                        <li>
+                            <a href="${pageContext.request.contextPath}/pages/for_newbies">
+                                <fmt:message key="label.newbies"/>
+                            </a>
+                        </li>
                         <li>
                             <a id="signup" href="${pageContext.request.contextPath}/user/new">
                                 <fmt:message key="label.signup"/>

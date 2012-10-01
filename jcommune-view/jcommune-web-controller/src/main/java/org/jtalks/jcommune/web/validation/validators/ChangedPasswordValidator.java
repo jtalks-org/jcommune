@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.web.validation.validators;
 
-import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
@@ -38,7 +37,7 @@ public class ChangedPasswordValidator implements ConstraintValidator<ChangedPass
     private EncryptionService encryptionService;
 
     /**
-     * @param userService to obtain current user logged in
+     * @param userService       to obtain current user logged in
      * @param encryptionService to encrypt passwords
      */
     @Autowired

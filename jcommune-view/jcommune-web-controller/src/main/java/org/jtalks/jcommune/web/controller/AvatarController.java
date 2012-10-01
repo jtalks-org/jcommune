@@ -63,20 +63,20 @@ public class AvatarController {
     static final String WRONG_FORMAT_RESOURCE_MESSAGE = "image.wrong.format";
     static final String WRONG_SIZE_RESOURCE_MESSAGE = "image.wrong.size";
     static final String COMMON_ERROR_RESOURCE_MESSAGE = "avatar.500.common.error";
-    
+
     private AvatarService avatarService;
     private UserService userService;
     private MessageSource messageSource;
     private JSONUtils jsonUtils;
-   
+
 
     /**
      * Constructor for controller instantiating, dependencies injected via autowiring.
      *
-     * @param avatarService   for avatar manipulation
-     * @param userService     to manipulate user-related data
-     * @param messageSource   to resolve locale-dependent messages
-     * @param jsonUtils       to convert data to JSON format
+     * @param avatarService for avatar manipulation
+     * @param userService   to manipulate user-related data
+     * @param messageSource to resolve locale-dependent messages
+     * @param jsonUtils     to convert data to JSON format
      */
     @Autowired
     public AvatarController(
@@ -94,10 +94,10 @@ public class AvatarController {
      * Process avatar file from request and return avatar preview in response.
      * Used for IE, Opera specific request processing.
      *
-     * @param file   file, that contains uploaded image
+     * @param file file, that contains uploaded image
      * @return ResponseEntity
-     * @throws IOException defined in the JsonFactory implementation,
-     *         caller must implement exception processing
+     * @throws IOException           defined in the JsonFactory implementation,
+     *                               caller must implement exception processing
      * @throws ImageProcessException if error occurred while image processing
      */
     @RequestMapping(value = "/users/IFrameAvatarpreview", method = RequestMethod.POST)
@@ -132,13 +132,13 @@ public class AvatarController {
      * Write user avatar in response for rendering it on html pages.
      *
      * @param response servlet response
-     * @param id user database identifier
+     * @param id       user database identifier
      * @throws NotFoundException if user with given encodedUsername not found
-     * @throws IOException throws if an output exception occurred
+     * @throws IOException       throws if an output exception occurred
      */
     @RequestMapping(value = "/users/{id}/avatar", method = RequestMethod.GET)
     public void renderAvatar(HttpServletResponse response, @PathVariable Long id)
-        throws NotFoundException, IOException {
+            throws NotFoundException, IOException {
         JCUser user = userService.get(id);
         byte[] avatar = user.getAvatar();
         response.setContentType("image/jpeg");
@@ -151,7 +151,7 @@ public class AvatarController {
      *
      * @return JSON string with default user avatar
      * @throws ImageProcessException due to common avatar processing error
-     * @throws IOException defined in the JsonFactory implementation, caller must implement exception processing
+     * @throws IOException           defined in the JsonFactory implementation, caller must implement exception processing
      */
     @RequestMapping(value = "/defaultAvatar", method = RequestMethod.GET)
     @ResponseBody
@@ -168,12 +168,13 @@ public class AvatarController {
      * @param responseHeaders response HTTP headers
      * @param responseContent response content
      * @return ResponseEntity with avatar processing results
-     * @throws IOException defined in the JsonFactory implementation, caller must implement exception processing
+     * @throws IOException           defined in the JsonFactory implementation, caller must implement exception processing
      * @throws ImageProcessException if error occurred while image processing
      */
     private ResponseEntity<String> prepareResponse(MultipartFile file,
                                                    HttpHeaders responseHeaders,
-                                                   Map<String, String> responseContent) throws IOException, ImageProcessException {
+                                                   Map<String, String> responseContent)
+            throws IOException, ImageProcessException {
         avatarService.validateAvatarFormat(file);
         byte[] bytes = file.getBytes();
         avatarService.validateAvatarSize(bytes);
@@ -188,7 +189,7 @@ public class AvatarController {
      * @param bytes           input avatar data
      * @param response        resulting response
      * @param responseContent with avatar processing results
-     * @throws ImageProcessException 
+     * @throws ImageProcessException
      */
     private void prepareResponse(byte[] bytes,
                                  HttpServletResponse response,
@@ -213,26 +214,26 @@ public class AvatarController {
         responseContent.put("srcPrefix", ImageUtils.HTML_SRC_TAG_PREFIX);
         responseContent.put("srcImage", srcImage);
     }
-    
+
     /**
      * Handles an exception that is thrown when the avatar has incorrect size.
-     * 
-     * @param e exception
+     *
+     * @param e      exception
      * @param locale locale, it's needed for error message localization
      * @return DTO, that contains information about error, it will be converted to JSON
      */
     @ExceptionHandler(value = ImageSizeException.class)
     @ResponseBody
     public OperationResultDto handleImageSizeException(ImageSizeException e, Locale locale) {
-        Object[] parameters = new Object[] { e.getMaxSize() };
+        Object[] parameters = new Object[]{e.getMaxSize()};
         String errorMessage = messageSource.getMessage(WRONG_SIZE_RESOURCE_MESSAGE, parameters, locale);
         return new OperationResultDto(errorMessage);
     }
-    
+
     /**
      * Handles an exception that is thrown when the avatar has incorrect format.
-     * 
-     * @param e exception
+     *
+     * @param e      exception
      * @param locale locale, it's needed for error message localization
      * @return DTO, that contains information about error, it will be converted to JSON
      */
@@ -242,11 +243,11 @@ public class AvatarController {
         String errorMessage = messageSource.getMessage(WRONG_FORMAT_RESOURCE_MESSAGE, null, locale);
         return new OperationResultDto(errorMessage);
     }
-    
+
     /**
      * Handles common exception that can occur when loading an avatar.
-     * 
-     * @param e exception
+     *
+     * @param e      exception
      * @param locale locale, it's needed for error message localization
      * @return DTO, that contains information about error, it will be converted to JSON
      */

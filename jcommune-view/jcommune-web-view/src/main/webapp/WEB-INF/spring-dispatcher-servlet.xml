@@ -66,7 +66,8 @@
         <property name="defaultLocale" value="ru"/>
     </bean>
 
-    <bean id="handlerMapping" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>
+    <bean id="handlerMapping"
+          class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>
 
     <!-- Interceptors -->
     <mvc:interceptors>
@@ -89,6 +90,10 @@
         </bean>
         <!--Fills common data, required to render all the pages-->
         <bean id="userDataInterceptor" class="org.jtalks.jcommune.web.interceptors.UserDataInterceptor"/>
+        <bean id="propertiesInterceptor" class="org.jtalks.jcommune.web.interceptors.PropertiesInterceptor">
+            <property name="componentNameProperty" ref="componentNameProperty"/>
+            <property name="componentDescriptionProperty" ref="componentDescriptionProperty"/>
+        </bean>
         <mvc:interceptor>
             <!--Clear user location when user is about to get a new page-->
             <mvc:mapping path="/topics/**"/>
@@ -131,8 +136,8 @@
         <property name="ignoreAcceptHeader" value="true"/>
 
     </bean>
-    
-    <bean class="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver" >
+
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver">
         <property name="messageConverters">
             <list>
                 <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>

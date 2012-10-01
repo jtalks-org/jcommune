@@ -12,41 +12,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service.security;
-
 /**
- * Elements contains IDs predefined user groups.
- * More information see in V21__Add_predefined_groups.sql migration.
  *
- * @author Elena Lepaeva
+ * Package for handlers of integration.
+ *
  */
-public enum AdministrationGroup {
-    /**
-     * Administrators
-     */
-    ADMIN("Administrators"),
-    /**
-     * Registered users
-     */
-    USER("Registered Users"),
-    /**
-     * Banned users
-     */
-    BANNED_USER("Banned Users");
-
-    private String name;
-
-    /**
-     * @param name group database name, hardcoded in initial SQL migrations
-     */
-    private AdministrationGroup(String name) {
-        this.name = name;
-    }
-
-    /**
-     * @return group database name, hardcoded in initial SQL migrations
-     */
-    public String getName() {
-        return name;
-    }
-}
+package org.jtalks.jcommune.web.controller.integration;

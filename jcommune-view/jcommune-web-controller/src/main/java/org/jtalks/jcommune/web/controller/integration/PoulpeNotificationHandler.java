@@ -55,7 +55,8 @@ public class PoulpeNotificationHandler {
     private final UserService userService;
 
     @Autowired
-    public PoulpeNotificationHandler(BranchService branchService, SectionService sectionService, UserService userService) {
+    public PoulpeNotificationHandler(BranchService branchService, SectionService sectionService,
+                                     UserService userService) {
         this.branchService = branchService;
         this.sectionService = sectionService;
         this.userService = userService;
@@ -65,7 +66,8 @@ public class PoulpeNotificationHandler {
      * Handles notification about branch deletion. This method deletes all topics in branch. Branch itself is not
      * deleted as Poulpe can cope with it
      *
-     * @param branchId branch id
+     * @param branchId      branch id
+     * @param adminPassword password of admin
      * @throws NotFoundException is thrown if branch not found
      */
     @RequestMapping(value = "/branches/{branchId}", method = RequestMethod.DELETE)
@@ -80,7 +82,8 @@ public class PoulpeNotificationHandler {
      * Handles notification about section deletion. Removes all topics from section. Sections and branches won't be
      * removed
      *
-     * @param sectionId section id
+     * @param sectionId     section id
+     * @param adminPassword password of admin
      * @throws NotFoundException is thrown if section not found
      */
     @RequestMapping(value = "/sections/{sectionId}", method = RequestMethod.DELETE)
@@ -95,6 +98,7 @@ public class PoulpeNotificationHandler {
      * Handles notification about component deletion. As for now it removes all the topics, leaving branches, sections
      * and components untouched.
      *
+     * @param adminPassword password of admin
      * @throws NotFoundException if object for deletion has not been found
      */
     @RequestMapping(value = "/component", method = RequestMethod.DELETE)
@@ -125,8 +129,8 @@ public class PoulpeNotificationHandler {
      * sends hash of the password to us and thus we compare it with has as well.
      *
      * @param adminPassword the password sent by Poulpe
-     * @throws IllegalArgumentException if the password sent by Poulpe is blank or does not match the one in the
-     *                                  database
+     * @throws NotFoundException if the password sent by Poulpe is blank or does not match the one in the
+     *                           database
      */
     private void assertAdminPasswordCorrect(String adminPassword) throws NotFoundException {
         checkArgument(isNotBlank(adminPassword), "No password specified while it is required");

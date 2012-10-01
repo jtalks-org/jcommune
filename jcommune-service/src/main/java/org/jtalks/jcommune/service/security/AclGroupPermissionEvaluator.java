@@ -99,14 +99,15 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
 
         if (permission == ProfilePermission.EDIT_PROFILE &&
                 ((JCUser) authentication.getPrincipal()).getId() != id) {
-             return false;
+            return false;
         }
 
         if (isRestrictedForSid(sid, aces, jtalksPermission) ||
                 isRestrictedForGroup(controlEntries, authentication, jtalksPermission) ||
                 isRestrictedPersonalPermission(authentication, jtalksPermission)) {
             return false;
-        } else if (isAllowedForSid(sid, aces, jtalksPermission) ||
+        }
+        else if (isAllowedForSid(sid, aces, jtalksPermission) ||
                 isAllowedForGroup(controlEntries, authentication, jtalksPermission) ||
                 isAllowedPersonalPermission(authentication, jtalksPermission)) {
             return true;
@@ -125,7 +126,8 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
         Validate.isTrue(targetId instanceof String || targetId instanceof Long);
         if (targetId instanceof String) {
             result = Long.parseLong((String) targetId);
-        } else if (targetId instanceof Long) {
+        }
+        else if (targetId instanceof Long) {
             result = (Long) targetId;
         }
         return result;
@@ -324,15 +326,18 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
             String particularPermission = permissionName.replace(GeneralPermission.class.getSimpleName() + ".", "");
             return GeneralPermission.valueOf(particularPermission);
 
-        } else if ((permissionName).startsWith(BranchPermission.class.getSimpleName())) {
+        }
+        else if ((permissionName).startsWith(BranchPermission.class.getSimpleName())) {
             String particularPermission = permissionName.replace(BranchPermission.class.getSimpleName() + ".", "");
             return BranchPermission.valueOf(particularPermission);
 
-        } else if ((permissionName).startsWith(ProfilePermission.class.getSimpleName())) {
+        }
+        else if ((permissionName).startsWith(ProfilePermission.class.getSimpleName())) {
             String particularPermission = permissionName.replace(ProfilePermission.class.getSimpleName() + ".", "");
             return ProfilePermission.valueOf(particularPermission);
 
-        } else {
+        }
+        else {
             throw new IllegalArgumentException("No other permissions that GeneralPermission are supported now. " +
                     "Was specified: " + permission);
         }

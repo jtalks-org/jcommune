@@ -35,13 +35,14 @@ import java.util.Collections;
  */
 public class TransactionalTopicFetchService extends AbstractTransactionalEntityService<Topic, TopicDao>
         implements TopicFetchService {
-    
+
     private UserService userService;
     private TopicSearchDao searchDao;
+
     /**
-     * @param dao topic dao for database manipulations
+     * @param dao         topic dao for database manipulations
      * @param userService to get current user and his preferences
-     * @param searchDao for search index access
+     * @param searchDao   for search index access
      */
     public TransactionalTopicFetchService(TopicDao dao, UserService userService, TopicSearchDao searchDao) {
         super(dao);
@@ -65,10 +66,10 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
      */
     @Override
     public Page<Topic> getRecentTopics(int page) {
-        int pageSize =  userService.getCurrentUser().getPageSize();
+        int pageSize = userService.getCurrentUser().getPageSize();
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(page, pageSize);
         DateTime date24HoursAgo = new DateTime().minusDays(1);
-        return this.getDao().getTopicsUpdatedSince(date24HoursAgo, pageRequest,userService.getViewTopicsBranchesIds());
+        return this.getDao().getTopicsUpdatedSince(date24HoursAgo, pageRequest, userService.getCurrentUser());
     }
 
     /**
@@ -76,9 +77,9 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
      */
     @Override
     public Page<Topic> getUnansweredTopics(int page) {
-        int pageSize =  userService.getCurrentUser().getPageSize();
+        int pageSize = userService.getCurrentUser().getPageSize();
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(page, pageSize);
-        return this.getDao().getUnansweredTopics(pageRequest,userService.getViewTopicsBranchesIds());
+        return this.getDao().getUnansweredTopics(pageRequest, userService.getCurrentUser());
     }
 
     /**
@@ -86,8 +87,8 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
      */
     @Override
     public Page<Topic> getTopics(Branch branch, int page, boolean pagingEnabled) {
-        int pageSize =  userService.getCurrentUser().getPageSize();
-        JCommunePageRequest pageRequest = new JCommunePageRequest(page,pageSize, pagingEnabled);
+        int pageSize = userService.getCurrentUser().getPageSize();
+        JCommunePageRequest pageRequest = new JCommunePageRequest(page, pageSize, pagingEnabled);
         return getDao().getTopics(branch, pageRequest);
     }
 
@@ -103,7 +104,7 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
             String normalizedPhrase = StringUtils.left(phrase, 50);
             return searchDao.searchByTitleAndContent(normalizedPhrase, pageRequest);
         }
-        return new PageImpl<Topic>(Collections.<Topic> emptyList());
+        return new PageImpl<Topic>(Collections.<Topic>emptyList());
     }
 
     /**

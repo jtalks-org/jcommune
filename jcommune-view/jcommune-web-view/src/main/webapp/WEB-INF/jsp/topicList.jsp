@@ -14,7 +14,6 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  
 --%>
-<%@ page import="org.jtalks.jcommune.model.entity.JCommuneProperty" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -23,8 +22,7 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <head>
-    <title><%= JCommuneProperty.CMP_DESCRIPTION.getValueOfComponent() %>
-    </title>
+    <title>${cmpDescription}</title>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/subscription.js"
             type="text/javascript"></script>
 </head>

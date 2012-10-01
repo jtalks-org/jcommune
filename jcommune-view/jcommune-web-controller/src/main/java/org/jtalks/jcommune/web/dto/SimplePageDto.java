@@ -30,7 +30,7 @@ public class SimplePageDto {
     @NotBlank
     @BbCodeAwareSize(min = SimplePage.MIN_CONTENT_LENGTH, max = SimplePage.MAX_CONTENT_LENGTH)
     private String contentText;
-    
+
     private long id;
 
     @NotBlank
@@ -44,7 +44,6 @@ public class SimplePageDto {
      * Create dto for simple page
      *
      * @param simplePage simple page for conversion
-     * @return dto for simple page
      */
     public SimplePageDto(SimplePage simplePage) {
         this.setId(simplePage.getId());
