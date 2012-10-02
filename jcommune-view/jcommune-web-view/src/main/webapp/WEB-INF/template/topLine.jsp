@@ -29,7 +29,7 @@
                 <span class="icon-bar"></span>
             </a>
             <a class="brand"
-               href="${pageContext.request.contextPath}/">${cmpName}
+               href="${pageContext.request.contextPath}/"><c:out value="${cmpName}"/>
             </a>
 
             <div class="nav-collapse">

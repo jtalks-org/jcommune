@@ -22,17 +22,17 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <head>
-    <title>${cmpDescription}</title>
+    <title><c:out value="${cmpDescription}"/></title>
 </head>
 <body>
 <div class="container">
 
     <div class="row forum-sections-header">
-        <a href="${pageContext.request.contextPath}/">
-            <h1 class="pull-left logo-text">
-                ${cmpDescription}
-            </h1>
-        </a>
+        <h1 class="pull-left logo-text">
+            <a href="${pageContext.request.contextPath}/">
+                <c:out value="${cmpDescription}"/>
+            </a>
+        </h1>
 
         <div class="pull-right">
            <span class="forum-sections-header-actions">
