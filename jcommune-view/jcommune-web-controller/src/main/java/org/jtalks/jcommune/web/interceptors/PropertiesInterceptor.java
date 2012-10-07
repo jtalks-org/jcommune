@@ -37,9 +37,10 @@ public class PropertiesInterceptor extends HandlerInterceptorAdapter {
 
     /**
      * @param componentDescriptionProperty component description property
-     * @param componentNameProperty component name property
+     * @param componentNameProperty        component name property
      */
-    public PropertiesInterceptor(JCommuneProperty componentDescriptionProperty, JCommuneProperty componentNameProperty) {
+    public PropertiesInterceptor(JCommuneProperty componentNameProperty,
+                                 JCommuneProperty componentDescriptionProperty) {
         this.componentDescriptionProperty = componentDescriptionProperty;
         this.componentNameProperty = componentNameProperty;
     }

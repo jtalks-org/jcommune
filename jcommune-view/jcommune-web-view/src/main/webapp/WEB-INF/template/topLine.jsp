@@ -28,9 +28,16 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </a>
-            <a class="brand"
-               href="${pageContext.request.contextPath}/"><c:out value="${cmpName}"/>
-            </a>
+            <c:choose>
+                <c:when test="${cmpName==null}">
+                    <span class="brand"><fmt:message key="label.error"/></span>
+                </c:when>
+                <c:otherwise>
+                    <a class="brand"
+                       href="${pageContext.request.contextPath}/"><c:out value="${cmpName}"/>
+                    </a>
+                </c:otherwise>
+            </c:choose>
 
             <div class="nav-collapse">
                 <form action='<c:url value="/search/"/>' method="GET" name="form" id="form"
