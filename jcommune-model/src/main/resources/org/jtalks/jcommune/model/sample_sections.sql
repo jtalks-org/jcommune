@@ -118,4 +118,4 @@ INSERT INTO `acl_entry` VALUES (104,4,26,5,6,1,0,0);
 INSERT INTO `acl_entry` VALUES (105,5,1,1,14,1,0,0);
 
 /* EDIT_PROFILE for registered users */
-INSERT INTO `acl_entry` VALUES (106,6,1,1,15,1,0,0);
+INSERT INTO `acl_entry` VALUES (106,5,2,1,15,1,0,0);
