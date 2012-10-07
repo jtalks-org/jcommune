@@ -122,7 +122,8 @@
                 <div class='control-group'>
                     <spring:message code='label.poll.title' var='pollTitlePlaceholder'/>
                     <form:input path="topic.poll.title" tabindex="600" type="text" id="pollTitle"
-                                size="45" maxlength="255" placeholder="${pollTitlePlaceholder}" class="post"/>
+                                size="45" maxlength="255" placeholder="${pollTitlePlaceholder}"
+                                class="post script-confirm-unsaved"/>
                     <br>
                     <form:errors path="topic.poll.title" cssClass="help-inline"/>
                 </div>
@@ -130,13 +131,14 @@
                 <div class='control-group'>
                     <spring:message code='label.poll.options.title' var='optionsPlaceholder'/>
                     <form:textarea path="topic.poll.pollItemsValue" tabindex="700" rows="8" id="pollItems"
-                                   class="post" placeholder="${optionsPlaceholder}"/>
+                                   class="post script-confirm-unsaved" placeholder="${optionsPlaceholder}"/>
                     <br>
                     <form:errors path="topic.poll.pollItemsValue" cssClass="help-inline"/>
                 </div>
 
                 <div class='control-group'>
-                    <form:checkbox path="topic.poll.multipleAnswer" id="multipleChecker" class="form-check-radio-box"
+                    <form:checkbox path="topic.poll.multipleAnswer" id="multipleChecker"
+                                   class="form-check-radio-box script-confirm-unsaved"
                                    tabindex="800" value="${topicDto.poll.multipleAnswer}"/>
                     <label for='multipleChecker' class='string optional'>
                         <spring:message code="label.poll.multiple.title"/>
@@ -147,7 +149,8 @@
                     <spring:message code="label.poll.date"/>
                     <spring:message code='label.poll.date.set' var='datePlaceholder'/>
                     <form:input path="topic.poll.endingDateValue" tabindex="900" id="datepicker" type="text"
-                                readonly="true" placeholder="${datePlaceholder}" class="cursor-pointer"/>
+                                readonly="true" placeholder="${datePlaceholder}"
+                                class="cursor-pointer script-confirm-unsaved"/>
                     &nbsp;<i class="icon-trash cursor-pointer" id="deleteEndingDate"></i>
                     <br>
                     <form:errors path="topic.poll.endingDateValue" cssClass="help-inline"/>
