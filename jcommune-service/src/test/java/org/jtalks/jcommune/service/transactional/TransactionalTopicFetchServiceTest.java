@@ -89,39 +89,35 @@ public class TransactionalTopicFetchServiceTest {
         topicFetchService.get(333L);
     }
 
-    @Test(enabled = false)
+    @Test
     public void testGetAllTopicsPastLastDay() throws NotFoundException {
         int pageNumber = 1;
         int pageSize = 20;
         List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
         Page<Topic> expectedPage = new PageImpl<Topic>(expectedList);
-        when(topicDao.getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JCommunePageRequest>any()
-                ,eq(new JCUser("current", null, null))))
+        when(topicDao.getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JCommunePageRequest>any(),eq(user)))
                 .thenReturn(expectedPage);
-
-        JCUser currentUser = new JCUser("current", null, null);
-        currentUser.setPageSize(pageSize);
-        when(userService.getCurrentUser()).thenReturn(currentUser);
+        user.setPageSize(pageSize);
+        when(userService.getCurrentUser()).thenReturn(user);
 
         Page<Topic> actualPage = topicFetchService.getRecentTopics(pageNumber);
 
         assertNotNull(actualPage);
         assertEquals(expectedPage, actualPage);
         verify(topicDao).getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JCommunePageRequest>any(),
-                eq(new JCUser("current", null, null)));
+                eq(user));
     }
 
-    @Test(enabled = false)
+    @Test
     public void testGetUnansweredTopics() {
         int pageNumber = 1;
         int pageSize = 20;
         List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
         Page<Topic> expectedPage = new PageImpl<Topic>(expectedList);
-        when(topicDao.getUnansweredTopics(Matchers.<JCommunePageRequest>any(),eq(new JCUser("current", null, null))))
+        when(topicDao.getUnansweredTopics(Matchers.<JCommunePageRequest>any(),eq(user)))
                 .thenReturn(expectedPage);
-        JCUser currentUser = new JCUser("current", null, null);
-        currentUser.setPageSize(pageSize);
-        when(userService.getCurrentUser()).thenReturn(currentUser);
+        user.setPageSize(pageSize);
+        when(userService.getCurrentUser()).thenReturn(user);
 
         Page<Topic> actualPage = topicFetchService.getUnansweredTopics(pageNumber);
         assertNotNull(actualPage);

@@ -25,43 +25,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * @autor masyan
+ * Sets forum name and descriptions to be shown on all the pages.
+ * These properties are set in Poulpe and are stored in a database.
+ *
+ * @author masyan
+ * @author Evgeniy Naumenko
  */
 public class PropertiesInterceptor extends HandlerInterceptorAdapter {
     private JCommuneProperty componentNameProperty;
     private JCommuneProperty componentDescriptionProperty;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesInterceptor.class);
-
     /**
-     * @param componentNameProperty Property {@link org.jtalks.jcommune.model.entity.JCommuneProperty} name of component
+     * @param componentDescriptionProperty component description property
+     * @param componentNameProperty        component name property
      */
-    public void setComponentNameProperty(JCommuneProperty componentNameProperty) {
-        this.componentNameProperty = componentNameProperty;
-    }
-
-    /**
-     * @param componentDescriptionProperty Property {@link org.jtalks.jcommune.model.entity.JCommuneProperty}
-     *                                     description of component
-     */
-    public void setComponentDescriptionProperty(JCommuneProperty componentDescriptionProperty) {
+    public PropertiesInterceptor(JCommuneProperty componentNameProperty,
+                                 JCommuneProperty componentDescriptionProperty) {
         this.componentDescriptionProperty = componentDescriptionProperty;
-    }
-
-    /**
-     * @return componentDescriptionProperty Property {@link org.jtalks.jcommune.model.entity.JCommuneProperty}
-     *         name of component
-     */
-    public JCommuneProperty getComponentNameProperty() {
-        return componentNameProperty;
-    }
-
-    /**
-     * @return componentDescriptionProperty Property {@link org.jtalks.jcommune.model.entity.JCommuneProperty}
-     *         description of component
-     */
-    public JCommuneProperty getComponentDescriptionProperty() {
-        return componentDescriptionProperty;
+        this.componentNameProperty = componentNameProperty;
     }
 
     /**
@@ -76,12 +57,10 @@ public class PropertiesInterceptor extends HandlerInterceptorAdapter {
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
                            ModelAndView modelAndView) {
-        try {
-            request.setAttribute("cmpName", componentNameProperty.getValueOfComponent());
-            request.setAttribute("cmpDescription", componentDescriptionProperty.getValueOfComponent());
-        }
-        catch (Exception e) {
-            LOGGER.error("Failed to get component properties", e);
+        //do not apply to the redirected requests: it's unnecessary and may cause error pages to work incorrectly
+        if (modelAndView != null && !modelAndView.getViewName().contains("redirect:")) {
+            modelAndView.addObject("cmpName", componentNameProperty.getValueOfComponent());
+            modelAndView.addObject("cmpDescription", componentDescriptionProperty.getValueOfComponent());
         }
     }
 }

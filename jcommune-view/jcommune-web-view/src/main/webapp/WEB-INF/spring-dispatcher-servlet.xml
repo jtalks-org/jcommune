@@ -91,8 +91,8 @@
         <!--Fills common data, required to render all the pages-->
         <bean id="userDataInterceptor" class="org.jtalks.jcommune.web.interceptors.UserDataInterceptor"/>
         <bean id="propertiesInterceptor" class="org.jtalks.jcommune.web.interceptors.PropertiesInterceptor">
-            <property name="componentNameProperty" ref="componentNameProperty"/>
-            <property name="componentDescriptionProperty" ref="componentDescriptionProperty"/>
+            <constructor-arg ref="componentNameProperty"/>
+            <constructor-arg ref="componentDescriptionProperty"/>
         </bean>
         <mvc:interceptor>
             <!--Clear user location when user is about to get a new page-->
