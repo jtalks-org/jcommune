@@ -29,9 +29,7 @@
 
     <div class="row forum-sections-header">
         <h1 class="pull-left logo-text">
-            <a href="${pageContext.request.contextPath}/">
-                <c:out value="${cmpDescription}"/>
-            </a>
+            <c:out value="${cmpDescription}"/>
         </h1>
 
         <div class="pull-right">
