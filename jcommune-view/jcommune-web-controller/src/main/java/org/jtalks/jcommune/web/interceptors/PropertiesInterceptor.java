@@ -57,7 +57,10 @@ public class PropertiesInterceptor extends HandlerInterceptorAdapter {
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
                            ModelAndView modelAndView) {
-        modelAndView.addObject("cmpName", componentNameProperty.getValueOfComponent());
-        modelAndView.addObject("cmpDescription", componentDescriptionProperty.getValueOfComponent());
+        //do not apply to the redirected requests: it's unnecessary and may cause error pages to work incorrectly
+        if (modelAndView != null && !modelAndView.getViewName().contains("redirect:")) {
+            modelAndView.addObject("cmpName", componentNameProperty.getValueOfComponent());
+            modelAndView.addObject("cmpDescription", componentDescriptionProperty.getValueOfComponent());
+        }
     }
 }
