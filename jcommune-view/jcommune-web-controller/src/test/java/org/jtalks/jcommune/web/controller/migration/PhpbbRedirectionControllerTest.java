@@ -55,6 +55,12 @@ public class PhpbbRedirectionControllerTest {
         this.assertHeadersSet(CONTEXT + "/posts/1");
     }
 
+    @Test
+    public void testShowBranch() {
+        controller.showBranch("1", response, request);
+        this.assertHeadersSet(CONTEXT + "/branches/1");
+    }
+
     private void assertHeadersSet(String redirectUrl) {
         verify(response).setStatus(301);
         verify(response).setHeader("Location", redirectUrl);
