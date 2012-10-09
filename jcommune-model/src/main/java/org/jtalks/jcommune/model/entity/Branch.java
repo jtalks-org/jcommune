@@ -29,6 +29,7 @@ import java.util.Set;
  * @author Vitaliy Kravchenko
  * @author Kirill Afonin
  * @author Max Malakhov
+ * @author masyan
  */
 public class Branch extends org.jtalks.common.model.entity.Branch
         implements SubscriptionAwareEntity {
@@ -39,6 +40,7 @@ public class Branch extends org.jtalks.common.model.entity.Branch
     private Integer topicsCount;
     private Integer postsCount;
     private Post lastPostInLastUpdatedTopic;
+    private int countUnreadPosts;
 
     /**
      * For Hibernate use only
@@ -233,5 +235,23 @@ public class Branch extends org.jtalks.common.model.entity.Branch
      */
     public void setLastPostInLastUpdatedTopic(Post lastPostInLastUpdatedTopic) {
         this.lastPostInLastUpdatedTopic = lastPostInLastUpdatedTopic;
+    }
+
+    /**
+     * Returns count of unread posts in branch to user
+     *
+     * @return count of unread posts
+     */
+    public int getCountUnreadPosts() {
+        return countUnreadPosts;
+    }
+
+    /**
+     * Set count of unread posts in branch to user
+     *
+     * @param countUnreadPosts actual count of unread posts
+     */
+    public void setCountUnreadPosts(int countUnreadPosts) {
+        this.countUnreadPosts = countUnreadPosts;
     }
 }

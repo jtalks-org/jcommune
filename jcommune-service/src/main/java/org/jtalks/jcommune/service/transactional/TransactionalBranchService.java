@@ -14,30 +14,28 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jtalks.common.model.entity.Section;
-import org.jtalks.common.security.SecurityService;
-import org.jtalks.jcommune.model.dao.BranchDao;
-import org.jtalks.jcommune.model.dao.PostDao;
-import org.jtalks.jcommune.model.dao.SectionDao;
-import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.dao.*;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicModificationService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The implementation of BranchService
  *
  * @author Vitaliy Kravchenko
  * @author Max Malakhov
+ * @author masyan
  */
 
 public class TransactionalBranchService extends AbstractTransactionalEntityService<Branch, BranchDao>
@@ -49,6 +47,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
     private TopicDao topicDao;
     private PostDao postDao;
     private TopicModificationService topicService;
+    private UserService userService;
 
     /**
      * Create an instance of entity based service
@@ -64,12 +63,14 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
             SectionDao sectionDao,
             TopicDao topicDao,
             PostDao postDao,
-            TopicModificationService topicService) {
+            TopicModificationService topicService,
+            UserService userService) {
         super(branchDao);
         this.sectionDao = sectionDao;
         this.topicDao = topicDao;
         this.postDao = postDao;
         this.topicService = topicService;
+        this.userService = userService;
     }
 
     /**
@@ -97,12 +98,17 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
      */
     @Override
     public void fillStatisticInfo(List<org.jtalks.common.model.entity.Branch> branches) {
+        JCUser user = userService.getCurrentUser();
         for (org.jtalks.common.model.entity.Branch commonBranch : branches) {
             Branch jcommuneBranch = (Branch) commonBranch;
             int postsCount = getDao().getCountPostsInBranch(jcommuneBranch);
             jcommuneBranch.setPostsCount(postsCount);
             int topicsCount = topicDao.countTopics(jcommuneBranch);
             jcommuneBranch.setTopicsCount(topicsCount);
+            if (!user.isAnonymous()) {
+                int countUnreadPosts = getDao().getCountUnreadPostsInBranch(jcommuneBranch, user);
+                jcommuneBranch.setCountUnreadPosts(countUnreadPosts);
+            }
         }
     }
 

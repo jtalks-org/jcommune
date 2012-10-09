@@ -14,11 +14,12 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import java.util.List;
-
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
+
+import java.util.List;
 
 /**
  * Hibernate DAO implementation for operations with a {@link Branch}.
@@ -27,6 +28,7 @@ import org.jtalks.jcommune.model.entity.Branch;
  * @author Max Malakhov
  * @author Eugeny Batov
  * @author Anuar Nurmakanov
+ * @author masyan
  */
 public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch> implements BranchDao {
 
@@ -56,7 +58,7 @@ public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch>
                 .list();
         return branches;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -65,6 +67,19 @@ public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch>
         Number count = (Number) getSession()
                 .getNamedQuery("getCountPostsInBranch")
                 .setParameter("branch", branch)
+                .uniqueResult();
+        return count.intValue();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getCountUnreadPostsInBranch(Branch branch, JCUser user) {
+        Number count = (Number) getSession()
+                .getNamedQuery("getCountUnreadPostsInBranch")
+                .setParameter("user", user.getId())
+                .setParameter("branch", branch.getId())
                 .uniqueResult();
         return count.intValue();
     }
