@@ -95,9 +95,10 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="${pageContext.request.contextPath}/pages/for_newbies">
                                 <fmt:message key="label.newbies"/>
                             </a>
+                        </li>
                         <li class="divider-vertical"></li>
                         <li>
                             <div>
