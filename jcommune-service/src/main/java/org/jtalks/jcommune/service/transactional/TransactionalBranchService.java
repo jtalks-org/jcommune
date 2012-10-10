@@ -57,6 +57,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
      * @param topicDao     data access object for operations with topics
      * @param postDao      data access object for operations with posts
      * @param topicService service to perform complex operations with topics
+     * @param userService  service to perform complex operations with users
      */
     public TransactionalBranchService(
             BranchDao branchDao,
