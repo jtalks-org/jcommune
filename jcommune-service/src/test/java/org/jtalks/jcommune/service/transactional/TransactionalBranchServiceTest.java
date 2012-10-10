@@ -18,9 +18,7 @@ import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicModificationService;
 import org.jtalks.jcommune.service.UserService;
@@ -124,23 +122,50 @@ public class TransactionalBranchServiceTest {
     }
 
     @Test
-    public void testFillStatisticInfo() {
-//        int expectedPostsCount = 10;
-//        int expectedTopicsCount = 20;
-//        JCUser user = new JCUser("username", "email", "password");
-//        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
-//        org.jtalks.common.model.entity.Branch commonBranch = branch;
-//
-//        when(branchDao.getCountPostsInBranch(branch)).thenReturn(expectedPostsCount);
-//        when(topicDao.countTopics(branch)).thenReturn(expectedTopicsCount);
-//        when(userService.getCurrentUser()).thenReturn(user);
-//
-//        branchService.fillStatisticInfo(Arrays.asList(commonBranch));
-//
-//        assertEquals(branch.getTopicCount(), expectedTopicsCount,
-//                "Incorrect count of topics");
-//        assertEquals(branch.getPostCount(), expectedPostsCount,
-//                "Incorrect count of posts");
+    public void testFillStatisticInfoToRegisteredUser() {
+        int expectedPostsCount = 10;
+        int expectedTopicsCount = 20;
+        boolean expectedUnreadPostsCount = true;
+        JCUser user = new JCUser("username", "email", "password");
+        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        org.jtalks.common.model.entity.Branch commonBranch = branch;
+
+        when(branchDao.getCountPostsInBranch(branch)).thenReturn(expectedPostsCount);
+        when(topicDao.countTopics(branch)).thenReturn(expectedTopicsCount);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(branchDao.isUnreadPostsInBranch(branch, user)).thenReturn(expectedUnreadPostsCount);
+
+        branchService.fillStatisticInfo(Arrays.asList(commonBranch));
+
+        assertEquals(branch.getTopicCount(), expectedTopicsCount,
+                "Incorrect count of topics");
+        assertEquals(branch.getPostCount(), expectedPostsCount,
+                "Incorrect count of posts");
+        assertEquals(branch.isUnreadPosts(), expectedUnreadPostsCount,
+                "Incorrect unread posts state");
+    }
+
+    @Test
+    public void testFillStatisticInfoToAnnonumous() {
+        int expectedPostsCount = 10;
+        int expectedTopicsCount = 20;
+        boolean expectedUnreadPostsCount = true;
+        JCUser user = new AnonymousUser();
+        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        org.jtalks.common.model.entity.Branch commonBranch = branch;
+
+        when(branchDao.getCountPostsInBranch(branch)).thenReturn(expectedPostsCount);
+        when(topicDao.countTopics(branch)).thenReturn(expectedTopicsCount);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(branchDao.isUnreadPostsInBranch(branch, user)).thenReturn(expectedUnreadPostsCount);
+
+        branchService.fillStatisticInfo(Arrays.asList(commonBranch));
+
+        assertEquals(branch.getTopicCount(), expectedTopicsCount,
+                "Incorrect count of topics");
+        assertEquals(branch.getPostCount(), expectedPostsCount,
+                "Incorrect count of posts");
+        verify(branchDao, times(0)).isUnreadPostsInBranch(branch, user);
     }
 
     @Test

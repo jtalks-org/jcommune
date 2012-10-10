@@ -61,7 +61,7 @@
                             <sec:authorize access="isAuthenticated()">
                                 <td class="status-col">
                                     <c:choose>
-                                        <c:when test="${branch.countUnreadPosts>0}">
+                                        <c:when test="${branch.unreadPosts}">
                                             <img class="status-img"
                                                  src="${pageContext.request.contextPath}/resources/images/new-posts.png"
                                                  title="<spring:message code="label.topic.new_posts"/>"/>

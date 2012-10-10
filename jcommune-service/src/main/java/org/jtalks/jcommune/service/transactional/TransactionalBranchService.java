@@ -106,8 +106,8 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
             int topicsCount = topicDao.countTopics(jcommuneBranch);
             jcommuneBranch.setTopicsCount(topicsCount);
             if (!user.isAnonymous()) {
-                int countUnreadPosts = getDao().getCountUnreadPostsInBranch(jcommuneBranch, user);
-                jcommuneBranch.setCountUnreadPosts(countUnreadPosts);
+                boolean isUnreadPosts = getDao().isUnreadPostsInBranch(jcommuneBranch, user);
+                jcommuneBranch.setUnreadPosts(isUnreadPosts);
             }
         }
     }

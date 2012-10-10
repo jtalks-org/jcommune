@@ -148,7 +148,6 @@
                 <value>/org/jtalks/jcommune/model/entity/SimplePage.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/Component.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/ViewTopicsBranches.hbm.xml</value>
-                <value>/org/jtalks/jcommune/model/entity/ViewTopicsPostsCount.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">

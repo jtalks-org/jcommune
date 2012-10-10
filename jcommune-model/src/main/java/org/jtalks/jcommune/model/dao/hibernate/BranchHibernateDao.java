@@ -75,12 +75,12 @@ public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch>
      * {@inheritDoc}
      */
     @Override
-    public int getCountUnreadPostsInBranch(Branch branch, JCUser user) {
+    public boolean isUnreadPostsInBranch(Branch branch, JCUser user) {
         Number count = (Number) getSession()
                 .getNamedQuery("getCountUnreadPostsInBranch")
                 .setParameter("user", user.getId())
                 .setParameter("branch", branch.getId())
                 .uniqueResult();
-        return count.intValue();
+        return count.intValue() > 0 ? true : false;
     }
 }

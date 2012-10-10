@@ -57,10 +57,10 @@ public interface BranchDao extends ChildRepository<Branch> {
     int getCountPostsInBranch(Branch branch);
 
     /**
-     * Get count of unread posts in the branch.
+     * Get state of unread posts in the branch.
      *
      * @param branch the branch
-     * @return count of unread posts in the branch
+     * @return state of unread posts in the branch
      */
-    int getCountUnreadPostsInBranch(Branch branch, JCUser user);
+    boolean isUnreadPostsInBranch(Branch branch, JCUser user);
 }

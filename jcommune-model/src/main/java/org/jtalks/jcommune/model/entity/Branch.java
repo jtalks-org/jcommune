@@ -40,7 +40,7 @@ public class Branch extends org.jtalks.common.model.entity.Branch
     private Integer topicsCount;
     private Integer postsCount;
     private Post lastPostInLastUpdatedTopic;
-    private int countUnreadPosts;
+    private boolean unreadPosts;
 
     /**
      * For Hibernate use only
@@ -70,7 +70,8 @@ public class Branch extends org.jtalks.common.model.entity.Branch
         int index = this.getTopicIndexInList(topic);
         if (index == topics.size() - 1) {
             return null;
-        } else {
+        }
+        else {
             return topics.get(index + 1);
         }
     }
@@ -87,7 +88,8 @@ public class Branch extends org.jtalks.common.model.entity.Branch
         int index = this.getTopicIndexInList(topic);
         if (index == 0) {
             return null;
-        } else {
+        }
+        else {
             return topics.get(index - 1);
         }
     }
@@ -238,20 +240,20 @@ public class Branch extends org.jtalks.common.model.entity.Branch
     }
 
     /**
-     * Returns count of unread posts in branch to user
+     * Returns state of unread posts in branch to user
      *
-     * @return count of unread posts
+     * @return state of unread posts
      */
-    public int getCountUnreadPosts() {
-        return countUnreadPosts;
+    public boolean isUnreadPosts() {
+        return this.unreadPosts;
     }
 
     /**
-     * Set count of unread posts in branch to user
+     * Set state of unread posts in branch to user
      *
-     * @param countUnreadPosts actual count of unread posts
+     * @param unreadPosts actual state of unread posts
      */
-    public void setCountUnreadPosts(int countUnreadPosts) {
-        this.countUnreadPosts = countUnreadPosts;
+    public void setUnreadPosts(boolean unreadPosts) {
+        this.unreadPosts = unreadPosts;
     }
 }
