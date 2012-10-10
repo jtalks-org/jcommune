@@ -15,7 +15,9 @@
 package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.common.model.dao.ParentRepository;
+import org.jtalks.common.model.entity.Branch;
 import org.jtalks.common.model.entity.Section;
+import org.jtalks.jcommune.model.entity.JCUser;
 
 import java.util.List;
 
@@ -33,4 +35,12 @@ public interface SectionDao extends ParentRepository<Section> {
      * @return list of section
      */
     List<Section> getAll();
+
+    /**
+     * Get count branches with VIEW_TOPICS permission
+     * @param user current user
+     * @param branches branches of current section
+     * @return count branches
+     */
+    int getCountAvailableBranches(JCUser user, List<Branch> branches);
 }

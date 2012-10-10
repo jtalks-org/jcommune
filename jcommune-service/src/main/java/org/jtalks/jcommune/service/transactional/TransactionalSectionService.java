@@ -14,17 +14,19 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jtalks.common.model.entity.Branch;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SectionService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.AccessDeniedException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The implementation of SectionService
@@ -37,17 +39,20 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
     private final Logger logger = LoggerFactory.getLogger(getClass());
     
     private BranchService branchService;
+
+    private UserService userService;
     
     /**
      * Create an instance of entity based service
      *
      * @param dao data access object, which should be able do all CRUD operations.
-     * @param branchService autowired object, that represents service for the working with
-     *                      branches
+     * @param branchService autowired object, that represents service for the working with branches
+     * @param userService autowired object, that represents service for the working with users
      */
-    public TransactionalSectionService(SectionDao dao, BranchService branchService) {
+    public TransactionalSectionService(SectionDao dao, BranchService branchService, UserService userService) {
         super(dao);
         this.branchService = branchService;
+        this.userService = userService;
     }
 
     /**
@@ -68,7 +73,7 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
             branchService.fillLastPostInLastUpdatedTopic(branches);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -94,6 +99,17 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
     public void deleteAllTopicsInForum() throws NotFoundException {
         for (Section section : this.getAll()){
              this.deleteAllTopicsInSection(section.getId());
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void checkAccessForVisible(Section section) throws AccessDeniedException{
+        List<Branch> branches = section.getBranches();
+        if(getDao().getCountAvailableBranches(userService.getCurrentUser(),branches)==0){
+            throw new AccessDeniedException("Access denied to view for section "+ section.getId());
         }
     }
 }

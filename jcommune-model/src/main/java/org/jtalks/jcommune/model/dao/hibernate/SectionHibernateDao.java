@@ -14,11 +14,17 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import org.hibernate.Query;
 import org.hibernate.criterion.Order;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateParentRepository;
+import org.jtalks.common.model.entity.Branch;
+import org.jtalks.common.model.entity.Entity;
+import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.dao.SectionDao;
+import org.jtalks.jcommune.model.entity.JCUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,5 +46,40 @@ public class SectionHibernateDao extends AbstractHibernateParentRepository<Secti
                 .addOrder(Order.asc("position"))
                 .setCacheable(true).list();
         return sectionList;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getCountAvailableBranches(JCUser user, List<Branch> branches) {
+        if(branches.isEmpty()){return 0;}
+        List<Long> branchesIds =  getEntityIds((List<Entity>) branches);
+        if(!user.isAnonymous()){
+            List<Group> groups = user.getGroups();
+            if(groups.isEmpty()){return 0;}
+            List<Long> groupsIds = getEntityIds((List<Entity>) groups);
+
+            Query query = getSession().getNamedQuery("getCountAvailableBranchesByGroupsIds");
+            query.setParameterList("groupsIds",groupsIds);
+            query.setParameterList("branchesIds",branchesIds);
+            return (Integer)query.uniqueResult();
+        }
+        Query query = getSession().getNamedQuery("getCountAvailableBranchesForAnonymousUser");
+        query.setParameterList("branchesIds",branchesIds);
+        return (Integer)query.uniqueResult();
+    }
+
+    /**
+     * Return entity id's from list entities
+     * @param entities entities
+     * @return id's entities
+     */
+    private List<Long> getEntityIds(List<Entity> entities){
+        List<Long> ids = new ArrayList<Long>();
+        for(Entity e: entities){
+            ids.add(e.getId());
+        }
+        return ids;
     }
 }

@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service;
 
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.util.List;
 
@@ -57,4 +58,11 @@ public interface SectionService extends EntityService<Section> {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException if object for deletion has not been found
      */
     void deleteAllTopicsInForum() throws NotFoundException;
+
+    /**
+     * Checks permission VIEW_TOPICS for access
+     * @param section section
+     * @throws AccessDeniedException throw if there is no permission for access
+     */
+    void checkAccessForVisible(Section section) throws AccessDeniedException;
 }
