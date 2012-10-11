@@ -68,7 +68,7 @@
     <bean id="userContactsDao"
           class="org.jtalks.jcommune.model.dao.hibernate.UserContactsHibernateDao"
           parent="abstractHibernateDao"/>
-    
+
     <bean id="simplePageDao"
           class="org.jtalks.jcommune.model.dao.hibernate.SimplePageHibernateDao"
           parent="abstractHibernateDao"/>
@@ -80,13 +80,17 @@
     <bean id="pollOptionDao"
           class="org.jtalks.jcommune.model.dao.hibernate.PollOptionHibernateDao"
           parent="abstractHibernateDao"/>
-          
+
     <bean id="propertyDao"
           class="org.jtalks.jcommune.model.dao.hibernate.PropertyHibernateDao"
           parent="abstractHibernateDao"/>
 
     <bean id="componentDao"
           class="org.jtalks.jcommune.model.dao.hibernate.ComponentHibernateDao"
+          parent="abstractHibernateDao"/>
+
+    <bean id="lastReadPostDao"
+          class="org.jtalks.jcommune.model.dao.hibernate.LastReadPostHibernateDao"
           parent="abstractHibernateDao"/>
 
     <!-- Declaration of Hibernate Search DAO beans -->

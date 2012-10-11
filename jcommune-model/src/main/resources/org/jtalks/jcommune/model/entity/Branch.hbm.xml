@@ -24,10 +24,10 @@
         <id column="BRANCH_ID" name="id" unsaved-value="0">
             <generator class="native"/>
         </id>
-        
+
         <!-- 
-            Used to make dummy hibernate hierarchy used in distributed cache.
-         -->
+           Used to make dummy hibernate hierarchy used in distributed cache.
+        -->
         <discriminator>
             <formula>'BRANCH'</formula>
         </discriminator>
@@ -35,7 +35,7 @@
         <property column="UUID" name="uuid" unique="true" not-null="true"/>
         <property name="name" column="NAME" not-null="true"/>
         <property name="description" column="DESCRIPTION"/>
-        
+
         <many-to-one name="moderatorsGroup" column="MODERATORS_GROUP_ID" class="org.jtalks.common.model.entity.Group"
                      not-null="false"/>
 
@@ -59,8 +59,16 @@
             </set>
         </subclass>
     </class>
-        
+
     <query name="getCountPostsInBranch">
         <![CDATA[SELECT COUNT(post) FROM Post post WHERE post.topic.branch = :branch]]>
     </query>
+
+    <!--Get count of unread posts in branch to user-->
+    <sql-query name="getCountUnreadPostsInBranch">
+        <return-scalar column="cposts" type="integer"/>
+        select COUNT(*) as cposts from COUNT_POSTS_TOPICS_VIEW c left join LAST_READ_POSTS lrp ON
+        c.TOPIC_ID=lrp.TOPIC_ID and lrp.USER_ID=:user
+        where c.BRANCH_ID=:branch and (lrp.ID is NULL or lrp.LAST_READ_POST_INDEX &lt; c.POSTS_COUNT)
+    </sql-query>
 </hibernate-mapping>

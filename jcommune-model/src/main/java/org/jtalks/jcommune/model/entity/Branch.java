@@ -29,6 +29,7 @@ import java.util.Set;
  * @author Vitaliy Kravchenko
  * @author Kirill Afonin
  * @author Max Malakhov
+ * @author masyan
  */
 public class Branch extends org.jtalks.common.model.entity.Branch
         implements SubscriptionAwareEntity {
@@ -39,6 +40,7 @@ public class Branch extends org.jtalks.common.model.entity.Branch
     private Integer topicsCount;
     private Integer postsCount;
     private Post lastPostInLastUpdatedTopic;
+    private boolean unreadPosts;
 
     /**
      * For Hibernate use only
@@ -68,7 +70,8 @@ public class Branch extends org.jtalks.common.model.entity.Branch
         int index = this.getTopicIndexInList(topic);
         if (index == topics.size() - 1) {
             return null;
-        } else {
+        }
+        else {
             return topics.get(index + 1);
         }
     }
@@ -85,7 +88,8 @@ public class Branch extends org.jtalks.common.model.entity.Branch
         int index = this.getTopicIndexInList(topic);
         if (index == 0) {
             return null;
-        } else {
+        }
+        else {
             return topics.get(index - 1);
         }
     }
@@ -233,5 +237,23 @@ public class Branch extends org.jtalks.common.model.entity.Branch
      */
     public void setLastPostInLastUpdatedTopic(Post lastPostInLastUpdatedTopic) {
         this.lastPostInLastUpdatedTopic = lastPostInLastUpdatedTopic;
+    }
+
+    /**
+     * Returns state of unread posts in branch to user
+     *
+     * @return state of unread posts
+     */
+    public boolean isUnreadPosts() {
+        return this.unreadPosts;
+    }
+
+    /**
+     * Set state of unread posts in branch to user
+     *
+     * @param unreadPosts actual state of unread posts
+     */
+    public void setUnreadPosts(boolean unreadPosts) {
+        this.unreadPosts = unreadPosts;
     }
 }

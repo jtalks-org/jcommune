@@ -14,10 +14,11 @@
  */
 package org.jtalks.jcommune.model.dao;
 
-import java.util.List;
-
 import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
+
+import java.util.List;
 
 /**
  * DAO for the {@link Branch} objects.
@@ -26,6 +27,7 @@ import org.jtalks.jcommune.model.entity.Branch;
  * @author Max Malakhov
  * @author Evgeniy Naumenko
  * @author Eugeny Batov
+ * @author masyan
  * @see org.jtalks.jcommune.model.dao.hibernate.BranchHibernateDao
  */
 
@@ -45,12 +47,21 @@ public interface BranchDao extends ChildRepository<Branch> {
      * @return list of {@code Branch} objects
      */
     List<Branch> getBranchesInSection(Long sectionId);
-    
+
     /**
      * Get count of posts in the branch.
+     *
      * @param branch the branch
-     * 
      * @return count of posts in the branch
      */
     int getCountPostsInBranch(Branch branch);
+
+    /**
+     * Get state of unread posts in the branch.
+     *
+     * @param branch the branch
+     * @param user   the user
+     * @return state of unread posts in the branch for user
+     */
+    boolean isUnreadPostsInBranch(Branch branch, JCUser user);
 }

@@ -32,6 +32,7 @@ import java.util.List;
  * @author Alexandre Teterin
  * @author Max Malakhov
  * @author Eugeny Batov
+ * @author masyan
  */
 public final class PersistedObjectsFactory {
     //todo: refactor this class without using static
@@ -142,6 +143,20 @@ public final class PersistedObjectsFactory {
         JCUser user = new JCUser("user", "email@user.org", "user");
         persist(user);
         return user;
+    }
+
+    public static void createViewUnreadPostsInBranch() {
+        session.createSQLQuery("CREATE VIEW COUNT_POSTS_TOPICS_VIEW AS SELECT tp.TOPIC_ID, tp.BRANCH_ID," +
+                " COUNT(*)-1 as POSTS_COUNT FROM TOPIC tp join POST p ON p.TOPIC_ID=tp.TOPIC_ID group by tp.TOPIC_ID")
+                .executeUpdate();
+    }
+
+    /**
+     * Used in manual rollback
+     */
+    public static void deleteViewUnreadPostsInBranch() {
+        session.createSQLQuery("DROP VIEW COUNT_POSTS_TOPICS_VIEW")
+                .executeUpdate();
     }
 
     private static <T> T persist(T entity) {

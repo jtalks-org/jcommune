@@ -1,0 +1,9 @@
+CREATE VIEW COUNT_POSTS_TOPICS_VIEW AS
+ SELECT
+     tp.TOPIC_ID, tp.BRANCH_ID, COUNT(*)-1 as POSTS_COUNT
+ FROM
+     TOPIC tp
+     join POST p ON p.TOPIC_ID=tp.TOPIC_ID
+     group by tp.TOPIC_ID;
+
+
