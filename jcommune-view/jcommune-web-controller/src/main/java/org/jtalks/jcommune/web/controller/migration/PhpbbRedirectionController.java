@@ -31,10 +31,10 @@ import javax.servlet.http.HttpServletResponse;
 public class PhpbbRedirectionController {
 
     /**
-     * Redirects topic URL's, assumes that topic ids
+     * Redirects topic URLs, assumes that topic ids
      * haven't been changed during data migration
      *
-     * @param id post identifier from url
+     * @param id topic identifier from url
      * @param response http response object to set headers on
      * @param request http request to figure out the context path
      */
@@ -45,16 +45,30 @@ public class PhpbbRedirectionController {
     }
 
     /**
-     * Redirects post URL's, assumes that topic ids
+     * Redirects post URLs, assumes that post ids
      * haven't been changed during data migration
      *
      * @param id post identifier from url
      * @param response http response object to set headers on
      * @param request http request to figure out the context path
      */
-    @RequestMapping("/sutra{id}.php")
+    @RequestMapping({"/sutra{id}.php", "/sutra{id}"})
     public void showPost(@PathVariable String id, HttpServletResponse response, WebRequest request) {
         String redirectUrl = request.getContextPath() +  "/posts/" + id;
+        this.setHttp301Headers(response, redirectUrl);
+    }
+
+    /**
+     * Redirects branch URL's, assumes that bramch ids
+     * haven't been changed during data migration
+     *
+     * @param id branch identifier from url
+     * @param response http response object to set headers on
+     * @param request http request to figure out the context path
+     */
+    @RequestMapping("/forum{id}.php")
+    public void showBranch(@PathVariable String id, HttpServletResponse response, WebRequest request) {
+        String redirectUrl = request.getContextPath() +  "/branches/" + id;
         this.setHttp301Headers(response, redirectUrl);
     }
 

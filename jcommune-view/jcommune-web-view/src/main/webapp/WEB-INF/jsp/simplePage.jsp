@@ -49,13 +49,17 @@
         </div>
     </div>
 
-    <sec:accesscontrollist hasPermission="4" domainObject="${simplePage}">
-        <div>
-            <a class="button" href="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}/edit">
-                <spring:message code="label.edit"/>
-            </a>
-        </div>
-    </sec:accesscontrollist>
+	<sec:authorize access="isAuthenticated()">
+		<sec:authentication property="principal.id" var="userId" />
+	    <jtalks:hasPermission targetId='${userId}' targetType='USER' 
+	            							permission='ProfilePermission.CREATE_FORUM_FAQ'>
+	        <div>
+	            <a class="button" href="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}/edit">
+	                <spring:message code="label.edit"/>
+	            </a>
+	        </div>
+	   </jtalks:hasPermission>
+   </sec:authorize>
 </div>
 
 <div class="footer_buffer">

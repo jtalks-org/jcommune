@@ -60,9 +60,18 @@
                         <tr>
                             <sec:authorize access="isAuthenticated()">
                                 <td class="status-col">
-                                    <img class="status-img"
-                                         src="${pageContext.request.contextPath}/resources/images/closed-no-new-posts.png"
-                                         title="<spring:message code="label.section.close_forum"/>"/>
+                                    <c:choose>
+                                        <c:when test="${branch.unreadPosts}">
+                                            <img class="status-img"
+                                                 src="${pageContext.request.contextPath}/resources/images/new-posts.png"
+                                                 title="<spring:message code="label.topic.new_posts"/>"/>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <img class="status-img"
+                                                 src="${pageContext.request.contextPath}/resources/images/no-new-posts.png"
+                                                 title="<spring:message code="label.topic.no_new_posts"/>"/>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </td>
                             </sec:authorize>
                             <td>

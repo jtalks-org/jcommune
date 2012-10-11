@@ -258,4 +258,12 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         LOGGER.debug("Check permission to edit profile for user - " + userId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @PreAuthorize("hasPermission(#userId, 'USER', 'ProfilePermission.CREATE_FORUM_FAQ')")
+    public void checkPermissionToCreateAndEditSimplePage(Long userId) {
+        LOGGER.debug("Check permission to create or edit simple(static) pages - " + userId);
+    }
 }

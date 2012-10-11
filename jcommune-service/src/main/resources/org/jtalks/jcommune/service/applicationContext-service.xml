@@ -121,6 +121,7 @@
         <constructor-arg ref="topicDao"/>
         <constructor-arg ref="postDao"/>
         <constructor-arg ref="topicModificationService"/>
+        <constructor-arg ref="userService"/>
     </bean>
 
     <bean id="branchSectionService"

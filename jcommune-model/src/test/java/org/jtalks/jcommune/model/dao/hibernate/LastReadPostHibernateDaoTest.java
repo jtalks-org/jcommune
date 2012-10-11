@@ -45,7 +45,7 @@ import org.testng.annotations.Test;
 @Transactional
 public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
     @Autowired
-    private LastReadPostDao dao;
+    private LastReadPostDao lastReadPostDao;
     @Autowired
     private SessionFactory sessionFactory;
     private Session session;
@@ -62,7 +62,7 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
         LastReadPost expected = PersistedObjectsFactory.getDefaultLastReadPost();
         session.save(expected);
 
-        LastReadPost actual = dao.get(expected.getId());
+        LastReadPost actual = lastReadPostDao.get(expected.getId());
 
         Assert.assertNotNull(actual, "Get returns null.");
         Assert.assertEquals(actual.getId(), expected.getId(),
@@ -76,7 +76,7 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
         int newPostIndex = post.getPostIndex() + 1;
         post.setPostIndex(newPostIndex);
 
-        dao.update(post);
+        lastReadPostDao.update(post);
         LastReadPost updatedPost = (LastReadPost) session.get(LastReadPost.class, post.getId());
 
         Assert.assertEquals(updatedPost.getPostIndex(), newPostIndex,
@@ -153,7 +153,7 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
         LastReadPost post = PersistedObjectsFactory.getDefaultLastReadPost();
         session.save(post);
 
-        List<LastReadPost> lastReadPosts = dao.listLastReadPostsForTopic(post.getTopic());
+        List<LastReadPost> lastReadPosts = lastReadPostDao.listLastReadPostsForTopic(post.getTopic());
 
         Assert.assertTrue(lastReadPosts.size() == 1, "Result list has incorrect size");
         Assert.assertEquals(lastReadPosts.get(0).getId(), post.getId(),
@@ -165,7 +165,7 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
         LastReadPost expected = PersistedObjectsFactory.getDefaultLastReadPost();
         session.save(expected);
 
-        LastReadPost actual = dao.getLastReadPost(expected.getUser(), expected.getTopic());
+        LastReadPost actual = lastReadPostDao.getLastReadPost(expected.getUser(), expected.getTopic());
 
         Assert.assertEquals(actual.getId(), expected.getId(),
                 "Found incorrect last read post.");

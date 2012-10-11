@@ -62,8 +62,8 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
     /**
      * {@inheritDoc}
      */
-    @PreAuthorize("hasPermission(#simplePageInfoContainer.getId(), 'SIMPLE_PAGE', 'GeneralPermission.WRITE')")
     @Override
+    @PreAuthorize("hasPermission(#simplePageInfoContainer.getId(), 'USER', 'ProfilePermission.CREATE_FORUM_FAQ')")
     public void updatePage(SimplePageInfoContainer simplePageInfoContainer) throws NotFoundException {
 
         SimplePage simplePage = get(simplePageInfoContainer.getId());

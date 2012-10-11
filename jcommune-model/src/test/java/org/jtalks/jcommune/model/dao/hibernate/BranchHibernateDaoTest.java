@@ -20,11 +20,13 @@ import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.BranchDao;
+import org.jtalks.jcommune.model.dao.LastReadPostDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -36,16 +38,12 @@ import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNotSame;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
  * @author Kirill Afonin
+ * @author masyan
  */
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
@@ -56,6 +54,8 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     private SessionFactory sessionFactory;
     @Autowired
     private BranchDao dao;
+    @Autowired
+    private LastReadPostDao lastReadPostDao;
     private Session session;
     Branch branch;
 
@@ -212,9 +212,65 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         //
         session.save(branch);
         int expectedCount = topic.getPosts().size();
-        
+
         int actualCount = dao.getCountPostsInBranch(branch);
-        
+
         assertEquals(actualCount, expectedCount, "Count of posts in the branch is wrong");
+    }
+
+    @Test
+    @Rollback(false)
+    /**
+     * User have unread posts in branch
+     */
+    public void testUnreadPostsInBranchWithExist() {
+        Topic topic = PersistedObjectsFactory.getDefaultTopic();
+        Branch branch = topic.getBranch();
+        JCUser user = topic.getTopicStarter();
+        //add post
+        topic.addPost(new Post(topic.getTopicStarter(), "New post"));
+
+        session.save(branch);
+
+        PersistedObjectsFactory.createViewUnreadPostsInBranch();
+        boolean expectedState = true;
+        boolean actualState = dao.isUnreadPostsInBranch(branch, user);
+
+        //manual rollback
+        session.delete(branch);
+        session.delete(user);
+        PersistedObjectsFactory.deleteViewUnreadPostsInBranch();
+        session.flush();
+
+        assertEquals(actualState, expectedState, "State of unread posts in the branch is wrong");
+    }
+
+    @Test
+    @Rollback(false)
+    /**
+     * User have't unread posts in branch
+     */
+    public void testUnreadPostsInBranchWithoutExist() {
+        Topic topic = PersistedObjectsFactory.getDefaultTopic();
+        Branch branch = topic.getBranch();
+        JCUser user = topic.getTopicStarter();
+        //add post
+        topic.addPost(new Post(topic.getTopicStarter(), "New post"));
+
+        session.save(branch);
+
+        PersistedObjectsFactory.createViewUnreadPostsInBranch();
+        lastReadPostDao.markAllRead(topic.getTopicStarter(), branch);
+        boolean expectedState = false;
+        boolean actualState = dao.isUnreadPostsInBranch(branch, user);
+
+        //manual rollback
+        session.delete(branch);
+        session.delete(user);
+        PersistedObjectsFactory.deleteViewUnreadPostsInBranch();
+        session.delete(lastReadPostDao.getLastReadPost(user, topic));
+        session.flush();
+
+        assertEquals(actualState, expectedState, "State of unread posts in the branch is wrong");
     }
 }

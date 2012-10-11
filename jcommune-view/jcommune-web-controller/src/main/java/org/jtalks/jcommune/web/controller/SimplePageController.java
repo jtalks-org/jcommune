@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.SimplePage;
 import org.jtalks.jcommune.service.SimplePageService;
@@ -79,6 +80,7 @@ public class SimplePageController {
      */
     @RequestMapping(value = "/pages/{pagePathName}", method = RequestMethod.GET)
     public ModelAndView showPage(@PathVariable(PAGE_PATH_NAME) String pagePathName) {
+        checkPermissionToCreateAndEditPage();
         SimplePage page = null;
         try {
             page = simplePageService.getPageByPathName(pagePathName);
@@ -112,12 +114,21 @@ public class SimplePageController {
      */
     @RequestMapping(value = "/pages/{pagePathName}/edit", method = RequestMethod.GET)
     public ModelAndView showEditPage(@PathVariable(PAGE_PATH_NAME) String pagePathName) throws NotFoundException {
+        checkPermissionToCreateAndEditPage();
         SimplePage page = simplePageService.getPageByPathName(pagePathName);
 
         SimplePageDto pageDto = new SimplePageDto(page);
 
         return new ModelAndView("simplePageEditor")
                 .addObject(PAGE_DTO, pageDto);
+    }
+    
+    /**
+     * Check permissions to edit or create simple(static) pages.
+     */
+    private void checkPermissionToCreateAndEditPage() {
+        User currentUser = userService.getCurrentUser();
+        userService.checkPermissionToCreateAndEditSimplePage(currentUser.getId());
     }
 
     /**
