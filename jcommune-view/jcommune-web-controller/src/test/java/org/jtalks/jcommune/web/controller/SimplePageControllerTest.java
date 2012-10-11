@@ -66,6 +66,9 @@ public class SimplePageControllerTest {
     public void init() {
         MockitoAnnotations.initMocks(this);
         controller = new SimplePageController(simplePageService, userService);
+        //expectations for 2 or more tests
+        JCUser currentUser = new JCUser("username", "email", "password");
+        when(userService.getCurrentUser()).thenReturn(currentUser);
     }
 
     @Test
@@ -93,6 +96,7 @@ public class SimplePageControllerTest {
 
         //set expectations
         when(simplePageService.getPageByPathName(PATH_NAME)).thenReturn(simplePage);
+        
 
         //invoke the object under test
         ModelAndView modelAndView = controller.showEditPage(PATH_NAME);
