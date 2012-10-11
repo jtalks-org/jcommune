@@ -125,6 +125,7 @@ public class SectionController {
      * @param sectionId section for display
      * @return {@code ModelAndView} the chosen section
      * @throws NotFoundException when section not found
+     * @throws AccessDeniedException when denied access a section
      */
     @RequestMapping(value = "/sections/{sectionId}", method = RequestMethod.GET)
     public ModelAndView branchList(@PathVariable("sectionId") long sectionId) throws AccessDeniedException,

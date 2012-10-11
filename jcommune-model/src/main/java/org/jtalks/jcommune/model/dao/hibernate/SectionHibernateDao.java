@@ -24,7 +24,6 @@ import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
