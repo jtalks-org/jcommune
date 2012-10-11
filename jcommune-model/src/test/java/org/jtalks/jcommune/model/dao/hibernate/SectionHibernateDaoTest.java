@@ -16,11 +16,14 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.SectionDao;
+import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -31,14 +34,10 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.validation.ConstraintViolationException;
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNotSame;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
@@ -204,6 +203,26 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
         Branch branchTwo = (Branch) section.getBranches().get(0);
 
         assertEquals(branchTwo.getTopicCount(), 0);
+    }
+
+    @Test
+    public void testGetCountAvailableBranches(){
+        JCUser user =  ObjectsFactory.getDefaultUser();
+        assertTrue(dao.getCountAvailableBranches(user,
+                new ArrayList<org.jtalks.common.model.entity.Branch>())==0);
+        user.setGroups(new ArrayList<Group>());
+
+        List<Branch> branches = ObjectsFactory.getDefaultBranchList();
+        assertTrue(dao.getCountAvailableBranches(user,
+                new ArrayList<org.jtalks.common.model.entity.Branch>(branches)) == 0);
+
+
+        List<Group> groups = ObjectsFactory.getDefaultGroupList();
+        user.setGroups(groups);
+        assertTrue(dao.getCountAvailableBranches(user,
+                new ArrayList<org.jtalks.common.model.entity.Branch>(branches)) == 0);
+        assertTrue(dao.getCountAvailableBranches(new AnonymousUser(),
+                new ArrayList<org.jtalks.common.model.entity.Branch>(branches))==0);
     }
 
     private int getSectionCount() {

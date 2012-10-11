@@ -42,5 +42,5 @@ public interface SectionDao extends ParentRepository<Section> {
      * @param branches branches of current section
      * @return count branches
      */
-    int getCountAvailableBranches(JCUser user, List<Branch> branches);
+    Long getCountAvailableBranches(JCUser user, List<Branch> branches);
 }

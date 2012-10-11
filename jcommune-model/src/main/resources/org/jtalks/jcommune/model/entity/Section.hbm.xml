@@ -38,4 +38,13 @@
         </list>
     </class>
 
+    <query name="getCountAvailableBranchesByGroupsIds">
+        <![CDATA[SELECT COUNT(distinct view.branchId) FROM org.jtalks.jcommune.model.entity.ViewTopicsBranches view WHERE view.branchId IN (:branchIds) AND view.sid IN (:groupIds)]]>
+    </query>
+
+    <query name="getCountAvailableBranchesForAnonymousUser">
+        <![CDATA[SELECT COUNT(distinct view.branchId) FROM org.jtalks.jcommune.model.entity.ViewTopicsBranches view WHERE view.branchId IN (:branchIds) AND view.sid LIKE 'anonymousUser']]>
+    </query>
+
+
 </hibernate-mapping>

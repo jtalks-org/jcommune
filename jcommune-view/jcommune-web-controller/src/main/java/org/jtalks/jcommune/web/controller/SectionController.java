@@ -14,11 +14,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import java.util.Arrays;
-import java.util.List;
-
-import javax.servlet.http.HttpSession;
-
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -26,12 +21,17 @@ import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.SectionDto;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpSession;
+import java.util.Arrays;
+import java.util.List;
 
 import static ch.lambdaj.Lambda.on;
 import static ch.lambdaj.Lambda.project;
@@ -127,8 +127,10 @@ public class SectionController {
      * @throws NotFoundException when section not found
      */
     @RequestMapping(value = "/sections/{sectionId}", method = RequestMethod.GET)
-    public ModelAndView branchList(@PathVariable("sectionId") long sectionId) throws NotFoundException {
+    public ModelAndView branchList(@PathVariable("sectionId") long sectionId) throws AccessDeniedException,
+        NotFoundException {
         Section section = sectionService.get(sectionId);
+        sectionService.checkAccessForVisible(section);
         sectionService.prepareSectionsForView(Arrays.asList(section));
         return new ModelAndView("branchList")
                 .addObject("viewList", locationService.getUsersViewing(section))

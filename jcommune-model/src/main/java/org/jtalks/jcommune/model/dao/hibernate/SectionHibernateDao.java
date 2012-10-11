@@ -24,6 +24,7 @@ import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,33 +53,38 @@ public class SectionHibernateDao extends AbstractHibernateParentRepository<Secti
      * {@inheritDoc}
      */
     @Override
-    public int getCountAvailableBranches(JCUser user, List<Branch> branches) {
-        if(branches.isEmpty()){return 0;}
-        List<Long> branchesIds =  getEntityIds((List<Entity>) branches);
+    public Long getCountAvailableBranches(JCUser user, List<Branch> branches) {
+        if(branches.isEmpty()){return 0L;}
+        List<Long> branchIds =  new ArrayList(getEntityIds(new ArrayList<Entity>(branches),Long.class));
         if(!user.isAnonymous()){
             List<Group> groups = user.getGroups();
-            if(groups.isEmpty()){return 0;}
-            List<Long> groupsIds = getEntityIds((List<Entity>) groups);
+            if(groups.isEmpty()){return 0L;}
+            List<String> groupIds = new ArrayList(getEntityIds(new ArrayList<Entity>(groups),String.class));
 
             Query query = getSession().getNamedQuery("getCountAvailableBranchesByGroupsIds");
-            query.setParameterList("groupsIds",groupsIds);
-            query.setParameterList("branchesIds",branchesIds);
-            return (Integer)query.uniqueResult();
+            query.setParameterList("groupIds",groupIds);
+            query.setParameterList("branchIds",branchIds);
+            return (Long)query.uniqueResult();
         }
         Query query = getSession().getNamedQuery("getCountAvailableBranchesForAnonymousUser");
-        query.setParameterList("branchesIds",branchesIds);
-        return (Integer)query.uniqueResult();
+        query.setParameterList("branchIds",branchIds);
+        return (Long)query.uniqueResult();
     }
 
     /**
      * Return entity id's from list entities
      * @param entities entities
+     * @param type type for result list
      * @return id's entities
      */
-    private List<Long> getEntityIds(List<Entity> entities){
-        List<Long> ids = new ArrayList<Long>();
+    private List<Object> getEntityIds(List<Entity> entities, Class type){
+        List<Object> ids = new ArrayList<Object>();
         for(Entity e: entities){
-            ids.add(e.getId());
+            if(type.equals(String.class)){
+                ids.add(e.getId()+"");
+            }else if(type.equals(Long.class)){
+                ids.add(e.getId());
+            }
         }
         return ids;
     }

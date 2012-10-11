@@ -174,7 +174,7 @@ public class TransactionalSectionServiceTest {
         List<Branch> branches = new ArrayList<Branch>();
         Section section = new Section(SECTION_NAME);
         when(userService.getCurrentUser()).thenReturn(user);
-        when(sectionDao.getCountAvailableBranches(user,branches)).thenReturn(0);
+        when(sectionDao.getCountAvailableBranches(user,branches)).thenReturn(0L);
 
         sectionService.checkAccessForVisible(section);
     }
@@ -185,7 +185,7 @@ public class TransactionalSectionServiceTest {
         List<Branch> branches = new ArrayList<Branch>();
         Section section = new Section(SECTION_NAME);
         when(userService.getCurrentUser()).thenReturn(user);
-        when(sectionDao.getCountAvailableBranches(user,branches)).thenReturn(1);
+        when(sectionDao.getCountAvailableBranches(user,branches)).thenReturn(1L);
 
         sectionService.checkAccessForVisible(section);
     }
