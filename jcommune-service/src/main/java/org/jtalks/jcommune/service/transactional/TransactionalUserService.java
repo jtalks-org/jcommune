@@ -21,6 +21,7 @@ import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.security.SecurityService;
+import org.jtalks.common.security.acl.AclUtil;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -32,11 +33,17 @@ import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
+import org.jtalks.jcommune.service.security.AclClassName;
 import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.acls.model.AccessControlEntry;
+import org.springframework.security.acls.model.ObjectIdentity;
+
+import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * User service class. This class contains method needed to manipulate with User persistent entity.
@@ -59,6 +66,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     private AvatarService avatarService;
     //Important, use for every password creation.
     private EncryptionService encryptionService;
+    private AclUtil aclUtil;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalUserService.class);
 
@@ -78,7 +86,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
                                     MailService mailService,
                                     Base64Wrapper base64Wrapper,
                                     AvatarService avatarService,
-                                    EncryptionService encryptionService
+                                    EncryptionService encryptionService,
+                                    AclUtil aclUtil
     ) {
         super(dao);
         this.groupDao = groupDao;
@@ -87,6 +96,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         this.base64Wrapper = base64Wrapper;
         this.avatarService = avatarService;
         this.encryptionService = encryptionService;
+        this.aclUtil = aclUtil;
     }
 
     /**
@@ -134,6 +144,10 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         Group group = groupDao.getMatchedByName(AdministrationGroup.USER.getName()).get(0);
         group.getUsers().add(user);
         groupDao.update(group);
+
+        // Creates sids for user if it is not exist.
+        aclUtil.getAclFor(aclUtil.createIdentity(user.getId(), AclClassName.USER.name()));
+
         return user;
     }
 

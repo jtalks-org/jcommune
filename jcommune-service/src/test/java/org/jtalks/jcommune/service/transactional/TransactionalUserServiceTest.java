@@ -20,6 +20,7 @@ import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.security.SecurityService;
+import org.jtalks.common.security.acl.AclUtil;
 import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
@@ -33,10 +34,12 @@ import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
+import org.jtalks.jcommune.service.security.AclClassName;
 import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.springframework.security.acls.model.ObjectIdentity;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -91,6 +94,8 @@ public class TransactionalUserServiceTest {
     private EncryptionService encryptionService;
     @Mock
     private CompoundAclBuilder<User> aclBuilder;
+    @Mock
+    private AclUtil aclUtil;
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -106,7 +111,8 @@ public class TransactionalUserServiceTest {
                 mailService,
                 base64Wrapper,
                 avatarService,
-                encryptionService));
+                encryptionService,
+                aclUtil));
     }
 
     @Test
@@ -147,6 +153,7 @@ public class TransactionalUserServiceTest {
                 .toDuration().getMillis() <= MAX_REGISTRATION_TIMEOUT);
         verify(userDao).saveOrUpdate(user);
         verify(groupDao).update(group);
+        verify(aclUtil).getAclFor(any(ObjectIdentity.class));
     }
 
 
@@ -329,9 +336,9 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
-    public void testGetCurrentUserForAnonymous(){
+    public void testGetCurrentUserForAnonymous() {
         when(securityService.getCurrentUserUsername()).thenReturn(null);
-        
+
         JCUser user = userService.getCurrentUser();
         assertNotNull(user);
         assertTrue(user instanceof AnonymousUser);

@@ -74,6 +74,7 @@
         <constructor-arg ref="base64Wrapper"/>
         <constructor-arg ref="avatarService"/>
         <constructor-arg ref="encryptionService"/>
+        <constructor-arg ref="aclUtils"/>
     </bean>
 
     <bean id="userContactsService"
