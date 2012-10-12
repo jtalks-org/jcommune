@@ -52,7 +52,7 @@
     </div>
     <hr class="forum-pagination"/>
 
-    <%-- Topics table --%>
+    <%-- Sections and branches --%>
     <c:forEach var="section" items="${sectionList}">
         <jtalks:isSectionVisible section="${section}">
 
@@ -114,7 +114,7 @@
                                     class='test-posts-count'><c:out
                                     value="${branch.postCount}"/></span></td>
 
-                            <td class="latest-by shrink-to-fit">
+                            <td class="latest-by shrink-to-fit sections-author">
                                 <c:if test="${branch.topicCount>0}">
                                     <i class="icon-calendar"></i>
                                     <a class="date"
