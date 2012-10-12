@@ -116,26 +116,30 @@
                              data-toggle="dropdown"
                              title="<fmt:message key='label.click_language'/>">
                             <a href="#">
-                                <img src="${pageContext.request.contextPath}/resources/images/flags/<fmt:message key='locale.code'/>.png"/>
+                                <img src="${pageContext.request.contextPath}/resources/images/flags/<fmt:message key='locale.code'/>.png"
+                                    alt="<fmt:message key='locale.name'/>"/>
                             </a>
                             <b class="caret"></b>
                         </div>
                         <ul class="dropdown-menu lang-menu">
                             <li id='lang-en'>
                                 <a href="#" onclick="window.location = getLanguageLink('en')">
-                                    <img src="${pageContext.request.contextPath}/resources/images/flags/en.png"/>
+                                    <img src="${pageContext.request.contextPath}/resources/images/flags/en.png"
+                                        alt="<fmt:message key='label.english'/>"/>
                                     <fmt:message key='label.english'/>
                                 </a>
                             </li>
                             <li id='lang-ru'>
                                 <a href="#" onclick="window.location = getLanguageLink('ru')">
-                                    <img src="${pageContext.request.contextPath}/resources/images/flags/ru.png"/>
+                                    <img src="${pageContext.request.contextPath}/resources/images/flags/ru.png"
+                                        alt="<fmt:message key='label.russian'/>"/>
                                     <fmt:message key='label.russian'/>
                                 </a>
                             </li>
                             <li id='lang-uk'>
                                 <a href="#" onclick="window.location = getLanguageLink('uk')">
-                                    <img src="${pageContext.request.contextPath}/resources/images/flags/uk.png"/>
+                                    <img src="${pageContext.request.contextPath}/resources/images/flags/uk.png" 
+                                        alt="<fmt:message key='label.ukrainian'/>"/>
                                     <fmt:message key='label.ukrainian'/>
                                 </a>
                             </li>

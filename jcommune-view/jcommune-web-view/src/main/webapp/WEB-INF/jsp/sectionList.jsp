@@ -56,13 +56,15 @@
     <c:forEach var="section" items="${sectionList}">
         <jtalks:isSectionVisible section="${section}">
 
-            <table id="topics-table" cellpadding="0" cellspacing="0" border="0"
-                   class="table table-striped table-bordered">
+            <table id="topics-table" class="table table-striped table-bordered">
 
                 <tbody>
                 <tr>
-
-                    <td colspan="4">
+                    <c:set var="colspanOfSectionName" value="3"/>
+                    <sec:authorize access="isAuthenticated()">
+                        <c:set var="colspanOfSectionName" value="4"/>
+                    </sec:authorize>
+                    <td colspan="${colspanOfSectionName}">
                         <h3>
                             <a href="${pageContext.request.contextPath}/sections/${section.id}">
                                 <c:out value="${section.name}"/>
