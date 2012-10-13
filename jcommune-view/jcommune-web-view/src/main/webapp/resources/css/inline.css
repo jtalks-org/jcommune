@@ -303,9 +303,3 @@ h3 {
     word-wrap: break-word;
 }
 /** ----------------------------------------------- **/
-
-/** JC-918. Long authors name in section list       **/
-.sections-author {
-	min-width: 231px;
-}
-/** ----------------------------------------------- **/
