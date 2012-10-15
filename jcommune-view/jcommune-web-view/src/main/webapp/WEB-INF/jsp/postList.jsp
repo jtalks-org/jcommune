@@ -87,23 +87,6 @@
             <ul>
                 <jtalks:pagination uri="${topicId}" page="${postsPage}" pagingEnabled="${pagingEnabled}"/>
 
-                <c:if test="${postsPage.totalPages>1}">
-                    <c:if test="${pagingEnabled == true}">
-                        <li>
-                            <a href="?pagingEnabled=false">
-                                <spring:message code="label.showAll"/>
-                            </a>
-                        </li>
-                    </c:if>
-                </c:if>
-                <c:if test="${pagingEnabled == false}">
-                    <li>
-                        <a href="?pagingEnabled=true">
-                            <spring:message code="label.showPages"/>
-                        </a>
-                    </li>
-                </c:if>
-
                 <c:if test="${previousTopic != null}">
                     <li>
                         <a href="${pageContext.request.contextPath}/topics/${previousTopic.id}">
@@ -344,23 +327,6 @@
         <div class="pagination pull-right forum-pagination">
             <ul>
                 <jtalks:pagination uri="${topicId}" page="${postsPage}" pagingEnabled="${pagingEnabled}"/>
-
-                <c:if test="${postsPage.totalPages>1}">
-                    <c:if test="${pagingEnabled == true}">
-                        <li>
-                            <a href="?pagingEnabled=false">
-                                <spring:message code="label.showAll"/>
-                            </a>
-                        </li>
-                    </c:if>
-                </c:if>
-                <c:if test="${pagingEnabled == false}">
-                    <li>
-                        <a href="?pagingEnabled=true">
-                            <spring:message code="label.showPages"/>
-                        </a>
-                    </li>
-                </c:if>
             </ul>
         </div>
     </div>

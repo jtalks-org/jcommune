@@ -190,7 +190,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
      * except probably their position in list. Users, previously voted
      * for the deleted items can NOT vote again.
      *
-     * @param poll poll data from UI form
+     * @param poll            poll data from UI form
      * @param persistentTopic topic from a database
      */
     private void createOrUpdatePoll(Poll poll, Topic persistentTopic) {
@@ -201,6 +201,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
             } else {
                 persistentTopic.getPoll().setTitle(poll.getTitle());
                 persistentTopic.getPoll().setEndingDate(poll.getEndingDate());
+                persistentTopic.getPoll().setMultipleAnswer(poll.isMultipleAnswer());
                 pollService.mergePollItems(persistentTopic.getPoll(), poll.getPollItems());
             }
         }

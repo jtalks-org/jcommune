@@ -227,7 +227,7 @@
         <pattern>[list]<var scope="listScope"/>[/list]</pattern>
         <template>&lt;ul class=&quot;list&quot;&gt;<var/>&lt;/ul&gt;</template>
     </code>
-    <scope name="listScope" ignoreText="true">
+    <scope name="listScope" ignoreText="false">
         <code name="li">
             <pattern>[*]<var regex="[^(\[\*\])]+" scope="escapeXmlAndBr"/></pattern>
             <template>&lt;li&gt;<var/>&lt;/li&gt;</template>
