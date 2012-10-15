@@ -22,18 +22,19 @@
 <fmt:setLocale value="en"/>
 <!DOCTYPE HTML>
 <html>
-<script>
-    <%--Defines URL mapping root to be used in JS--%>
-    $root = "${pageContext.request.contextPath}";
-    <%--Include i18n resources for JS scripts--%>
-    <jsp:include page="jsMessages.jsp"/>
-</script>
 <head>
+    <meta charset="UTF-8">
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
     <meta http-equiv="Pragma" content="no-cache"/>
     <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0"/>
     <meta http-equiv="Expires" content="-1"/>
-    <meta charset="UTF-8">
+    
+    <script>
+        <%--Defines URL mapping root to be used in JS--%>
+        $root = "${pageContext.request.contextPath}";
+        <%--Include i18n resources for JS scripts--%>
+        <jsp:include page="jsMessages.jsp"/>
+    </script>
     
     <%-- support of HTML5 elements for IE6-8 --%>
     <%--[if lt IE 9]>
@@ -98,11 +99,12 @@
         Design with <a href="http://twitter.github.com/bootstrap">Twitter Bootstrap</a>
     </footer>
 </div>
-</body>
+
 <script type="text/javascript">
 jQuery(document).ready(function() {
     //Code highlight
     prettyPrint();
 });
 </script>
+</body>
 </html>

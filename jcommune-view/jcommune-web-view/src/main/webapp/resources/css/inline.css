@@ -290,7 +290,7 @@ input.form-check-radio-box[type="radio"] {
     padding: 0px 5px;    
 }
 
-/** JC-863. Long text in titles, posts, signature. **/
+/* JC-863. Long text in titles, posts, signature. */
 .post-date {
     width: 175px;
 }
@@ -302,5 +302,24 @@ input.form-check-radio-box[type="radio"] {
 h3 {
     word-wrap: break-word;
 }
-/** ----------------------------------------------- **/
+/* ----------------------------------------------- */
+
+/* JC-918. Long author name in sections list */
+.table-with-titles {
+    border-collapse: collapse;
+}
+
+.table-with-titles td, .table-with-titles th {
+    border: 1px solid #DDDDDD;
+}
+
+.table-with-titles th {
+    border: 0px;
+    padding-top: 18px !important;
+}
+
+.table-with-titles tbody tr:hover th {
+  background-color: white !important;
+}
+/* ----------------------------------------- */
 

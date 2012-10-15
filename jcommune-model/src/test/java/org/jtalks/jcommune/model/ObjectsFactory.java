@@ -48,6 +48,23 @@ public final class ObjectsFactory {
         return newBranch;
     }
 
+    public static List<Branch> getDefaultBranchList(){
+        List<Branch> branches = new ArrayList<Branch>();
+        Branch branch = new Branch("branch name0", "branch description0");
+        branch.setId(0L);
+        branches.add(branch);
+        branch = new Branch("branch name1", "branch description1");
+        branch.setId(1L);
+        branches.add(branch);
+        branch = new Branch("branch name2", "branch description2");
+        branch.setId(2L);
+        branches.add(branch);
+        branch = new Branch("branch name3", "branch description3");
+        branch.setId(3L);
+        branches.add(branch);
+        return branches;
+    }
+
     public static Section getDefaultSection() {
         Section newSection = new Section("section name");
         newSection.setDescription("branch description");

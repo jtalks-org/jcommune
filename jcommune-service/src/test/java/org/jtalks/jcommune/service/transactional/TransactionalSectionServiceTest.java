@@ -14,28 +14,27 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.times;
-import static org.mockito.Matchers.anyLong;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import org.jtalks.common.model.entity.Branch;
+import org.jtalks.common.model.entity.Section;
+import org.jtalks.jcommune.model.dao.SectionDao;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.SectionService;
+import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.mockito.Mockito;
+import org.springframework.security.access.AccessDeniedException;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.jtalks.common.model.entity.Branch;
-import org.jtalks.common.model.entity.Section;
-import org.jtalks.jcommune.model.dao.SectionDao;
-import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.SectionService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.mockito.Mockito;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import static org.mockito.Mockito.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 /**
  * This test class is intended to test all topic-related forum branch facilities
@@ -45,16 +44,21 @@ import org.testng.annotations.Test;
 public class TransactionalSectionServiceTest {
     final long SECTION_ID = 1L;
     final String SECTION_NAME = "section name";
+    final String USER_NAME = "user name";
+    final String USER_PASSWORD = "password";
+    final String EMAIL = "test@email.test";
 
     private SectionDao sectionDao;
     private BranchService branchService;
+    private UserService userService;
     private SectionService sectionService;
 
     @BeforeMethod
     public void setUp() throws Exception {
         sectionDao = mock(SectionDao.class);
         branchService = mock(BranchService.class);
-        sectionService = new TransactionalSectionService(sectionDao, branchService);
+        userService = mock(UserService.class);
+        sectionService = new TransactionalSectionService(sectionDao, branchService, userService);
     }
 
     @Test
@@ -162,5 +166,27 @@ public class TransactionalSectionServiceTest {
         when(sectionDao.getAll()).thenReturn(Collections.singletonList(section));
 
         sectionService.deleteAllTopicsInForum();
+    }
+
+    @Test(expectedExceptions = AccessDeniedException.class)
+    public void testCheckAccessForVisibleException()throws AccessDeniedException{
+        JCUser user = new JCUser(USER_NAME, EMAIL, USER_PASSWORD);
+        List<Branch> branches = new ArrayList<Branch>();
+        Section section = new Section(SECTION_NAME);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(sectionDao.getCountAvailableBranches(user,branches)).thenReturn(0L);
+
+        sectionService.checkAccessForVisible(section);
+    }
+
+    @Test
+    public void testCheckAccessForVisibleNoException()throws AccessDeniedException{
+        JCUser user = new JCUser(USER_NAME, EMAIL, USER_PASSWORD);
+        List<Branch> branches = new ArrayList<Branch>();
+        Section section = new Section(SECTION_NAME);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(sectionDao.getCountAvailableBranches(user,branches)).thenReturn(1L);
+
+        sectionService.checkAccessForVisible(section);
     }
 }

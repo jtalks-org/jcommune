@@ -29,128 +29,99 @@
         <div class="span3">
             <h3><spring:message code="label.postListOfUser"/><c:out value="${user.username}"/></h3>
         </div>
-       
+
         <div class="span9">
             <div class="pagination pull-right forum-pagination">
                 <ul>
-                    <jtalks:pagination uri="${topicId}" page="${postsPage}" numberLink="3" pagingEnabled="${pagingEnabled}"/>
-                 
-                    <c:if test="${postsPage.totalPages>1}">
-                        <c:if test="${pagingEnabled == true}">
-                            <li>
-                                <a href="?pagingEnabled=false">
-                                    <spring:message code="label.showAll"/>
-                                </a>
-                            </li>
-                        </c:if>
-                    </c:if>
-                    <c:if test="${pagingEnabled == false}">
-                        <li>
-                            <a href="?pagingEnabled=true">
-                                <spring:message code="label.showPages"/>
-                            </a>
-                        </li>
-                    </c:if>
+                    <jtalks:pagination uri="${topicId}" page="${postsPage}" numberLink="3"
+                                       pagingEnabled="${pagingEnabled}"/>
                 </ul>
             </div>
         </div>
     </div>
-                 
+
     <%-- Topics table --%>
-    <div class='post'>  
-    <table class="table table-striped table-bordered table-condensed">     
-        <c:choose>
-            <c:when test="${!(empty postsPage.content)}">
-                <thead>
+    <div class='post'>
+        <table class="table table-striped table-bordered table-condensed">
+            <c:choose>
+                <c:when test="${!(empty postsPage.content)}">
+                    <thead>
                     <tr>
                         <th><spring:message code="label.info"/></th>
                         <th><spring:message code="label.topic.header.message"/></th>
                     </tr>
-                </thead> 
-                <tbody>
+                    </thead>
+                    <tbody>
                     <c:forEach var="post" items="${postsPage.content}" varStatus="i">
-                    <tr class='post-content-tr'>
-                        <td class='userinfo'>
-                            <spring:message code='label.branch.header.branches'/>
-                            <a class="forum_message_cell_text"
-                                   href="${pageContext.request.contextPath}/branches/${post.topic.branch.id}">
-                                <c:out value="${post.topic.branch.name}"/></a>
-                            <br>
+                        <jtalks:hasPermission targetId='${post.topic.branch.id}' targetType='BRANCH'
+                                              permission='BranchPermission.VIEW_TOPICS'>
+                            <tr class='post-content-tr'>
+                                <td class='userinfo'>
+                                    <spring:message code='label.branch.header.branches'/>
+                                    <a class="forum_message_cell_text"
+                                       href="${pageContext.request.contextPath}/branches/${post.topic.branch.id}">
+                                        <c:out value="${post.topic.branch.name}"/></a>
+                                    <br>
 
-                            <spring:message code='label.branch.header.topics'/>
-                            <a class="forum_message_cell_text"
-                                   href="${pageContext.request.contextPath}/topics/${post.topic.id}">
-                                    <c:out value="${post.topic.title}"/></a>
-                        </td>
-                        <td class='post-content-td'>
-                            <div>
-                                <div class='user-posts-date-title'>
-                                    <spring:message code="label.added"/>&nbsp;
-                                    <jtalks:format value="${post.creationDate}"/>
-                                </div>
-                                <div class='user-posts-buttons'>
-                                    
-                                        <a class="btn btn-mini"
-                                            href="${pageContext.request.contextPath}/posts/${post.id}">
+                                    <spring:message code='label.branch.header.topics'/>
+                                    <a class="forum_message_cell_text"
+                                       href="${pageContext.request.contextPath}/topics/${post.topic.id}">
+                                        <c:out value="${post.topic.title}"/></a>
+                                </td>
+                                <td class='post-content-td'>
+                                    <div>
+                                        <div class='user-posts-date-title'>
+                                            <spring:message code="label.added"/>&nbsp;
+                                            <jtalks:format value="${post.creationDate}"/>
+                                        </div>
+                                        <div class='user-posts-buttons'>
+
+                                            <a class="btn btn-mini"
+                                               href="${pageContext.request.contextPath}/posts/${post.id}">
                                                 <spring:message code="label.goToPost"/>
-                                        </a>
-                                    
-                                </div>
-                            </div>
-                            <hr/>
-                            <div>                                    
-                                <jtalks:bb2html bbCode="${post.postContent}"/>
-                                <br/><br/><br/>
-                            </div>
-                            <c:if test="${post.modificationDate!=null}">
-                                <hr/>
-                                <div>
-                                    <spring:message code="label.modify"/>
-                                    <jtalks:format value="${post.modificationDate}"/>
-                                </div>
-                            </c:if>
-                            
+                                            </a>
+
+                                        </div>
+                                    </div>
+                                    <hr/>
+                                    <div>
+                                        <jtalks:bb2html bbCode="${post.postContent}"/>
+                                        <br/><br/><br/>
+                                    </div>
+                                    <c:if test="${post.modificationDate!=null}">
+                                        <hr/>
+                                        <div>
+                                            <spring:message code="label.modify"/>
+                                            <jtalks:format value="${post.modificationDate}"/>
+                                        </div>
+                                    </c:if>
+
+                                </td>
+                            </tr>
+                        </jtalks:hasPermission>
+                    </c:forEach>
+                    </tbody>
+                </c:when>
+                <c:otherwise>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <spring:message code="label.postListOfUser.empty"/>
                         </td>
                     </tr>
-                    </c:forEach>
-                </tbody>
-            </c:when>
-            <c:otherwise>
-                <tbody>
-                <tr>
-                    <td>
-                        <spring:message code="label.postListOfUser.empty"/>
-                    </td>
-                </tr>
-                </tbody>
-            </c:otherwise>
-        </c:choose>
-    </table>
+                    </tbody>
+                </c:otherwise>
+            </c:choose>
+        </table>
     </div>
-    
+
     <%-- Pagination --%>
     <div class="row-fluid upper-pagination forum-pagination-container">
         <div class="span12">
             <div class="pagination pull-right forum-pagination">
                 <ul>
-                    <jtalks:pagination uri="${topicId}" page="${postsPage}" numberLink="3" pagingEnabled="${pagingEnabled}"/>
-                 
-                    <c:if test="${postsPage.totalPages>1}">
-                        <c:if test="${pagingEnabled == true}">
-                            <li>
-                                <a href="?pagingEnabled=false">
-                                    <spring:message code="label.showAll"/>
-                                </a>
-                            </li>
-                        </c:if>
-                    </c:if>
-                    <c:if test="${pagingEnabled == false}">
-                        <li>
-                            <a href="?pagingEnabled=true">
-                                <spring:message code="label.showPages"/>
-                            </a>
-                        </li>
-                    </c:if>
+                    <jtalks:pagination uri="${topicId}" page="${postsPage}" numberLink="3"
+                                       pagingEnabled="${pagingEnabled}"/>
                 </ul>
             </div>
         </div>
@@ -162,6 +133,6 @@
             <spring:message code="label.back"/>
         </a>
     </sec:authorize>
-        
+
 </div>
 </body>
