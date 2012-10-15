@@ -313,7 +313,7 @@ h3 {
     border: 1px solid #DDDDDD;
 }
 
-th.section-title  {
+.table-with-titles th {
     border: 0px;
     padding-top: 18px !important;
 }

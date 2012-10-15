@@ -63,7 +63,7 @@
         <c:forEach var="section" items="${sectionList}">
             <jtalks:isSectionVisible section="${section}">
                 <tr>
-                    <th colspan="${colspanOfSectionName}" class="section-title">
+                    <th colspan="${colspanOfSectionName}">
                         <h3>
                             <a href="${pageContext.request.contextPath}/sections/${section.id}">
                                 <c:out value="${section.name}"/>
