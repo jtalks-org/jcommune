@@ -94,8 +94,6 @@ public class TransactionalUserServiceTest {
     private EncryptionService encryptionService;
     @Mock
     private CompoundAclBuilder<User> aclBuilder;
-    @Mock
-    private AclUtil aclUtil;
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -111,8 +109,7 @@ public class TransactionalUserServiceTest {
                 mailService,
                 base64Wrapper,
                 avatarService,
-                encryptionService,
-                aclUtil));
+                encryptionService));
     }
 
     @Test
@@ -153,7 +150,6 @@ public class TransactionalUserServiceTest {
                 .toDuration().getMillis() <= MAX_REGISTRATION_TIMEOUT);
         verify(userDao).saveOrUpdate(user);
         verify(groupDao).update(group);
-        verify(aclUtil).getAclFor(any(ObjectIdentity.class));
     }
 
 

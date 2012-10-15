@@ -21,11 +21,7 @@ INSERT IGNORE INTO GROUP_USER_REF select (select GROUP_ID from GROUPS where `NAM
 INSERT INTO `acl_class` VALUES (1,'BRANCH');
 INSERT INTO `acl_class` VALUES (2,'GROUP');
 
-INSERT INTO `acl_sid` VALUES (1,0,concat('usergroup:',(select GROUP_ID from GROUPS where `NAME`='Registered Users')));
-INSERT INTO `acl_sid` VALUES (3,0,concat('usergroup:',(select GROUP_ID from GROUPS where `NAME`='Banned Users')));
-INSERT INTO `acl_sid` VALUES (2,0,concat('usergroup:',(select GROUP_ID from GROUPS where `NAME`='Administrators')));
 INSERT INTO `acl_sid` VALUES (4,0,concat('usergroup:',(select GROUP_ID from GROUPS where `NAME`='Moderator group')));
-INSERT INTO `acl_sid` VALUES (5,1,'user:anonymousUser');
 
 INSERT INTO `acl_object_identity` VALUES (1,1,1,NULL,1,1);
 INSERT INTO `acl_object_identity` VALUES (2,1,2,NULL,1,1);

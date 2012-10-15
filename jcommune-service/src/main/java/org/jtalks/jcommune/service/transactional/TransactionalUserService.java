@@ -66,7 +66,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     private AvatarService avatarService;
     //Important, use for every password creation.
     private EncryptionService encryptionService;
-    private AclUtil aclUtil;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalUserService.class);
 
@@ -86,8 +85,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
                                     MailService mailService,
                                     Base64Wrapper base64Wrapper,
                                     AvatarService avatarService,
-                                    EncryptionService encryptionService,
-                                    AclUtil aclUtil
+                                    EncryptionService encryptionService
     ) {
         super(dao);
         this.groupDao = groupDao;
@@ -96,7 +94,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         this.base64Wrapper = base64Wrapper;
         this.avatarService = avatarService;
         this.encryptionService = encryptionService;
-        this.aclUtil = aclUtil;
     }
 
     /**
@@ -144,9 +141,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         Group group = groupDao.getMatchedByName(AdministrationGroup.USER.getName()).get(0);
         group.getUsers().add(user);
         groupDao.update(group);
-
-        // Creates sids for user if it is not exist.
-        aclUtil.getAclFor(aclUtil.createIdentity(user.getId(), AclClassName.USER.name()));
 
         return user;
     }
