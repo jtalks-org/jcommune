@@ -1098,7 +1098,7 @@ table {
   -moz-border-radius: 0 0 4px 0;
   border-radius: 0 0 4px 0;
 }
-.table-striped tbody tr:nth-child(odd) td, .table-striped tbody tr:nth-child(odd) th {
+.table-striped tbody tr:nth-child(odd) td {
   background-color: #f9f9f9;
 }
 .table tbody tr:hover td, .table tbody tr:hover th {

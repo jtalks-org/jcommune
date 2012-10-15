@@ -53,7 +53,7 @@
     <hr class="forum-pagination"/>
 
     <%-- Sections and branches --%>
-    <table id="topics-table" class="table table-striped table-bordered">
+    <table id="topics-table" class="table table-striped table-with-titles">
         <tbody>
             <c:set var="colspanOfSectionName" value="3"/>
                 <sec:authorize access="isAuthenticated()">
@@ -63,13 +63,13 @@
             <c:forEach var="section" items="${sectionList}">
                 <jtalks:isSectionVisible section="${section}">
                     <tr>
-                        <td colspan="${colspanOfSectionName}">
+                        <th colspan="${colspanOfSectionName}" class="section-title">
                             <h3>
                                 <a href="${pageContext.request.contextPath}/sections/${section.id}">
                                     <c:out value="${section.name}"/>
                                 </a>
                             </h3>
-                        </td>
+                        </th>
                     </tr>
                     <c:forEach var="branch" items="${section.branches}" varStatus="i">
                         <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
