@@ -64,11 +64,9 @@
             <jtalks:isSectionVisible section="${section}">
                 <tr>
                     <th colspan="${colspanOfSectionName}">
-                        <h3>
                             <a href="${pageContext.request.contextPath}/sections/${section.id}">
                                 <c:out value="${section.name}"/>
                             </a>
-                        </h3>
                     </th>
                 </tr>
                 <c:forEach var="branch" items="${section.branches}" varStatus="i">
