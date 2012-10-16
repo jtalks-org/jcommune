@@ -23,18 +23,18 @@ import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.model.permissions.ProfilePermission;
 import org.jtalks.common.security.acl.AclManager;
 import org.jtalks.common.security.acl.AclUtil;
+import org.jtalks.common.security.acl.ExtendedMutableAcl;
 import org.jtalks.common.security.acl.GroupAce;
 import org.jtalks.common.security.acl.sids.JtalksSidFactory;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.springframework.security.access.PermissionEvaluator;
-import org.springframework.security.acls.model.AccessControlEntry;
-import org.springframework.security.acls.model.ObjectIdentity;
-import org.springframework.security.acls.model.Permission;
-import org.springframework.security.acls.model.Sid;
+import org.springframework.security.acls.jdbc.JdbcMutableAclService;
+import org.springframework.security.acls.model.*;
 import org.springframework.security.core.Authentication;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,20 +52,24 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
     private final AclUtil aclUtil;
     private final GroupDao groupDao;
     private final JtalksSidFactory sidFactory;
+    private final JdbcMutableAclService mutableAclService;
 
     /**
-     * @param aclManager for getting permissions on object indentity
-     * @param aclUtil    utilities to work with Spring ACL
-     * @param groupDao   dao for user group getting
-     * @param sidFactory factory to work with principals
+     * @param aclManager        for getting permissions on object indentity
+     * @param aclUtil           utilities to work with Spring ACL
+     * @param groupDao          dao for user group getting
+     * @param sidFactory        factory to work with principals
+     * @param mutableAclService for checking existing of sids
      */
     public AclGroupPermissionEvaluator(@Nonnull org.jtalks.common.security.acl.AclManager aclManager,
                                        @Nonnull AclUtil aclUtil, @Nonnull GroupDao groupDao,
-                                       @Nonnull JtalksSidFactory sidFactory) {
+                                       @Nonnull JtalksSidFactory sidFactory,
+                                       @Nonnull JdbcMutableAclService mutableAclService) {
         this.aclManager = aclManager;
         this.aclUtil = aclUtil;
         this.groupDao = groupDao;
         this.sidFactory = sidFactory;
+        this.mutableAclService = mutableAclService;
     }
 
     /**
@@ -93,9 +97,16 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
         ObjectIdentity objectIdentity = aclUtil.createIdentity(id, targetType);
         Permission jtalksPermission = getPermission(permission);
         Sid sid = sidFactory.createPrincipal(authentication);
+        List<AccessControlEntry> aces;
+        List<GroupAce> controlEntries;
 
-        List<AccessControlEntry> aces = aclUtil.getAclFor(objectIdentity).getEntries();
-        List<GroupAce> controlEntries = aclManager.getGroupPermissionsOn(objectIdentity);
+        try {
+            aces = ExtendedMutableAcl.castAndCreate(mutableAclService.readAclById(objectIdentity)).getEntries();
+            controlEntries = aclManager.getGroupPermissionsOn(objectIdentity);
+        } catch (NotFoundException nfe) {
+            aces = new ArrayList<AccessControlEntry>();
+            controlEntries = new ArrayList<GroupAce>();
+        }
 
         if (permission == ProfilePermission.EDIT_PROFILE &&
                 ((JCUser) authentication.getPrincipal()).getId() != id) {
@@ -106,8 +117,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
                 isRestrictedForGroup(controlEntries, authentication, jtalksPermission) ||
                 isRestrictedPersonalPermission(authentication, jtalksPermission)) {
             return false;
-        }
-        else if (isAllowedForSid(sid, aces, jtalksPermission) ||
+        } else if (isAllowedForSid(sid, aces, jtalksPermission) ||
                 isAllowedForGroup(controlEntries, authentication, jtalksPermission) ||
                 isAllowedPersonalPermission(authentication, jtalksPermission)) {
             return true;
@@ -126,8 +136,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
         Validate.isTrue(targetId instanceof String || targetId instanceof Long);
         if (targetId instanceof String) {
             result = Long.parseLong((String) targetId);
-        }
-        else if (targetId instanceof Long) {
+        } else if (targetId instanceof Long) {
             result = (Long) targetId;
         }
         return result;
@@ -234,7 +243,12 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
             for (Group group : groups) {
                 ObjectIdentity groupIdentity = aclUtil.createIdentity(group.getId(), "GROUP");
                 Sid groupSid = sidFactory.create(group);
-                List<AccessControlEntry> groupAces = aclUtil.getAclFor(groupIdentity).getEntries();
+                List<AccessControlEntry> groupAces;
+                try {
+                    groupAces = ExtendedMutableAcl.castAndCreate(mutableAclService.readAclById(groupIdentity)).getEntries();
+                } catch (NotFoundException nfe) {
+                    groupAces = new ArrayList<AccessControlEntry>();
+                }
                 if (isGrantedForSid(groupSid, groupAces, permission, isCheckAllowedGrant)) {
                     return true;
                 }
@@ -326,18 +340,15 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
             String particularPermission = permissionName.replace(GeneralPermission.class.getSimpleName() + ".", "");
             return GeneralPermission.valueOf(particularPermission);
 
-        }
-        else if ((permissionName).startsWith(BranchPermission.class.getSimpleName())) {
+        } else if ((permissionName).startsWith(BranchPermission.class.getSimpleName())) {
             String particularPermission = permissionName.replace(BranchPermission.class.getSimpleName() + ".", "");
             return BranchPermission.valueOf(particularPermission);
 
-        }
-        else if ((permissionName).startsWith(ProfilePermission.class.getSimpleName())) {
+        } else if ((permissionName).startsWith(ProfilePermission.class.getSimpleName())) {
             String particularPermission = permissionName.replace(ProfilePermission.class.getSimpleName() + ".", "");
             return ProfilePermission.valueOf(particularPermission);
 
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("No other permissions that GeneralPermission are supported now. " +
                     "Was specified: " + permission);
         }

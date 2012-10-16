@@ -31,9 +31,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
-import org.springframework.security.acls.model.AccessControlEntry;
-import org.springframework.security.acls.model.ObjectIdentity;
-import org.springframework.security.acls.model.Sid;
+import org.springframework.security.acls.jdbc.JdbcMutableAclService;
+import org.springframework.security.acls.model.*;
 import org.springframework.security.core.Authentication;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -58,6 +57,10 @@ public class AclGroupPermissionEvaluatorTest {
     private ExtendedMutableAcl mutableAcl;
     @Mock
     Authentication authentication;
+    @Mock
+    JdbcMutableAclService mutableAclService;
+    @Mock
+    MutableAcl acl;
 
     private AclGroupPermissionEvaluator evaluator;
     private UserGroupSid groupSid;
@@ -75,7 +78,7 @@ public class AclGroupPermissionEvaluatorTest {
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
-        evaluator = new AclGroupPermissionEvaluator(aclManager, aclUtil, groupDao, sidFactory);
+        evaluator = new AclGroupPermissionEvaluator(aclManager, aclUtil, groupDao, sidFactory,mutableAclService);
         objectIdentity = new ObjectIdentityImpl(targetType, targetId);
         Mockito.when(aclUtil.createIdentity(targetId, targetType)).thenReturn(objectIdentity);
         user = new JCUser("username", "email", "password");
@@ -90,6 +93,7 @@ public class AclGroupPermissionEvaluatorTest {
         Mockito.when(sidFactory.createPrincipal(authentication)).thenReturn(userSid);
         Mockito.when(sidFactory.create(group)).thenReturn(groupSid);
         Mockito.when(authentication.getPrincipal()).thenReturn(user);
+        Mockito.when(mutableAclService.readAclById(Mockito.any(ObjectIdentity.class))).thenReturn(acl);
     }
 
     @Test
@@ -98,6 +102,7 @@ public class AclGroupPermissionEvaluatorTest {
         aces.add(createAccessControlEntry(generalPermission, true, userSid));
         aces.add(createAccessControlEntry(ProfilePermission.EDIT_PROFILE, true, userSid));
         aces.add(createAccessControlEntry(BranchPermission.CLOSE_TOPICS, true, userSid));
+        Mockito.when(acl.getEntries()).thenReturn(aces);
         Mockito.when(aclUtil.getAclFor(objectIdentity)).thenReturn(mutableAcl);
         Mockito.when(mutableAcl.getEntries()).thenReturn(aces);
 
@@ -130,7 +135,7 @@ public class AclGroupPermissionEvaluatorTest {
 
         List<AccessControlEntry> aces = new ArrayList<AccessControlEntry>();
         aces.add(createAccessControlEntry(generalPermission, isGranted, groupSid));
-
+        Mockito.when(acl.getEntries()).thenReturn(aces);
         Mockito.when(mutableAcl.getEntries()).thenReturn(aces);
 
         Mockito.when(aclUtil.getAclFor(objectIdentity)).thenReturn(mutableAcl);
@@ -160,6 +165,7 @@ public class AclGroupPermissionEvaluatorTest {
         List<AccessControlEntry> aces = new ArrayList<AccessControlEntry>();
         Mockito.when(aclUtil.getAclFor(objectIdentity)).thenReturn(mutableAcl);
         Mockito.when(mutableAcl.getEntries()).thenReturn(aces);
+        Mockito.when(acl.getEntries()).thenReturn(aces);
 
         List<GroupAce> controlEntries = new ArrayList<GroupAce>();
         controlEntries.add(createGroupAce(someOtherPermission, true));
@@ -174,6 +180,7 @@ public class AclGroupPermissionEvaluatorTest {
         aces.add(createAccessControlEntry(generalPermission, false, userSid));
         Mockito.when(aclUtil.getAclFor(objectIdentity)).thenReturn(mutableAcl);
         Mockito.when(mutableAcl.getEntries()).thenReturn(aces);
+        Mockito.when(acl.getEntries()).thenReturn(aces);
 
         List<GroupAce> controlEntries = new ArrayList<GroupAce>();
         Mockito.when(aclManager.getGroupPermissionsOn(objectIdentity)).thenReturn(controlEntries);
@@ -185,6 +192,7 @@ public class AclGroupPermissionEvaluatorTest {
         List<AccessControlEntry> aces = new ArrayList<AccessControlEntry>();
         Mockito.when(aclUtil.getAclFor(objectIdentity)).thenReturn(mutableAcl);
         Mockito.when(mutableAcl.getEntries()).thenReturn(aces);
+        Mockito.when(acl.getEntries()).thenReturn(aces);
 
         List<GroupAce> controlEntries = new ArrayList<GroupAce>();
         Mockito.when(aclManager.getGroupPermissionsOn(objectIdentity)).thenReturn(controlEntries);
@@ -196,6 +204,7 @@ public class AclGroupPermissionEvaluatorTest {
         List<AccessControlEntry> aces = new ArrayList<AccessControlEntry>();
         Mockito.when(aclUtil.getAclFor(objectIdentity)).thenReturn(mutableAcl);
         Mockito.when(mutableAcl.getEntries()).thenReturn(aces);
+        Mockito.when(acl.getEntries()).thenReturn(aces);
 
         List<GroupAce> controlEntries = new ArrayList<GroupAce>();
         Mockito.when(aclManager.getGroupPermissionsOn(objectIdentity)).thenReturn(controlEntries);
