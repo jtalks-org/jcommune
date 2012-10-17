@@ -101,7 +101,11 @@ function sendLoginPost() {
             } else {
                 history.go(0);
             }
-        }});
+        },
+		error: function(data) {
+			$.prompt($labelError500Detail);
+		}
+	});
 }
 
 /**
