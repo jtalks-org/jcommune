@@ -151,6 +151,7 @@ public class TopicControllerTest {
 
         //check expectations
         verify(topicFetchService).get(TOPIC_ID);
+        verify(topicFetchService).checkViewTopicPermission(branch.getId());
         verify(breadcrumbBuilder).getForumBreadcrumb(topic);
 
 
