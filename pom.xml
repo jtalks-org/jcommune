@@ -503,6 +503,42 @@
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.lazerycode.jmeter</groupId>
+                <artifactId>jmeter-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <id>jmeter-tests</id>
+                        <phase>jmeter</phase>
+                        <goals>
+                            <goal>jmeter</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.lazerycode.jmeter</groupId>
+                <artifactId>jmeter-analysis-maven-plugin</artifactId>
+                <version>1.0.1</version>
+                <executions>
+                    <execution>
+                        <id>jmeter-tests</id>
+                        <phase>jmeter</phase>
+                        <goals>
+                            <goal>analyze</goal>
+                        </goals>
+                        
+                    </execution>
+                </executions>
+                <configuration>
+                    <source>${project.build.directory}/jmeter/results/*</source>
+                    <targetDirectory>${project.build.directory}/jmeter/reports</targetDirectory>
+                    <generateCSVs>true</generateCSVs>
+                    <generateCharts>true</generateCharts>
+                    <processAllFilesFound>true</processAllFilesFound>
+                </configuration>
+            </plugin> 
         </plugins>
     </build>
     <scm>
