@@ -71,6 +71,8 @@
             type='text/javascript'></script>
     <script src='${pageContext.request.contextPath}/resources/javascript/licensed/bootstrap.min.js'
             type='text/javascript'></script>
+    <script src='${pageContext.request.contextPath}/resources/javascript/licensed/bootbox.min.js'
+            type='text/javascript'></script>
     <link href='http://fonts.googleapis.com/css?family=Carter+One' rel='stylesheet' type='text/css'>
     <script src='${pageContext.request.contextPath}/resources/javascript/custom/errorUtils.js'
             type='text/javascript'></script>

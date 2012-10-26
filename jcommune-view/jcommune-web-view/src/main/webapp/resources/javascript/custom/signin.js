@@ -17,51 +17,49 @@
  * Handles login request and displays form with user and password field
  */
 
-var username;
-var remember_me;
-var signInHandler;
-var singInLink; 
-var signInHref;
-
 $(function () {
-    $("#signin").on('click', function (e) {
-    	//temporary disable buttons
-    	disableClickEventForComponent("#signin");
-    	disableClickEventForComponent("#signup");
-    	signinPopup();
-        //if JS off, then open standart page
-        e.preventDefault();
+
+    // hide dialog on backdrop click
+    $('.modal-backdrop').live('click', function(e) {
+        $('#signin-dialog').modal('hide');
     });
-    function signinPopup() {
-        //POST-query
+
+    // send ajax-request on submit button click
+    $("#signin-submit-button").live('click', function(e){
+        sendLoginPost();
+    });
+
+    // submit on press enter
+    $("#j_username, #j_password, input[name=_spring_security_remember_me]").live("keyup", function(event) {
+        if (event.keyCode == 13) {
+            sendLoginPost();
+        }
+    });
+
+    // remove dialog from DOM on hide
+    $("#signin-dialog").live("hide", function(e) {
+        $("#signin-dialog").remove();
+    });
+
+    $("#signin").on('click', function (e) {
+        // prevent from following link
+        e.preventDefault();
+        signinDialog(); // open dialog
+    });
+
+    function signinDialog() {
         $.ajax({
-            type:"GET",
-            url:$root + "/login",
-            dataType:"html",
-            //handling query answer, create registration form
-            success:function (data) {
-                var form_elements = formatFormElements(data);
-                var content = formatHTMLContent(data, form_elements);
-                //Check the query answer and displays prompt
-                if ($(data).find("legend").html() != null) {
-                    $.prompt(content,
-                    {buttons:{OK:true}, focus:0,
-                        submit:sendLoginPost,
-                        zIndex: 1050, overlayspeed:"fast"});
-
-                    $("#j_username, #j_password").live("keyup", function(event) {
-                    	if(event.keyCode==13) {
-                    		sendLoginPost();
-                    		$.prompt.close();
-                    	}
-                    });
-                } 
-                //enable all disabled links
-                enableClickEventForDisabledComponents();
-            }});
+            type: "GET",
+            url: $root + "/login",
+            dataType: "html",
+            success: function (data) {
+                var dataJq = $(data);
+                if (dataJq.find("legend").html() != null) {
+                    showSigninDialog(dataJq);
+                }
+            }
+        });
     }
-
-    ;
 });
 
 
@@ -73,70 +71,118 @@ $(function () {
  * get error message, providing user with opportunity to change login or password
  */
 function sendLoginPost() {
-    remember_me = $('input[name=_spring_security_remember_me]').is(':checked');
-    username = $('#j_username').val();
-    var query = "j_username=" + encodeURIComponent(username) + "&" + "j_password=" + encodeURIComponent($('#j_password').val());
+    var dialog = $("#signin-dialog");
+
+    // parse values from form and disable elements
+    dialog.find("#signin-submit-button").attr('disabled', true);
+    var remember_me = dialog.find('input[name=_spring_security_remember_me]').attr('disabled', true).is(':checked');
+    var username = dialog.find('#j_username').attr('disabled', true).val();
+    var password = dialog.find('#j_password').attr('disabled', true).val();
+    
+    var query = "j_username=" + encodeURIComponent(username) + "&" + "j_password=" + encodeURIComponent(password);
     if (remember_me) {
-        query =  query + "&_spring_security_remember_me=on";
+        query = query + "&_spring_security_remember_me=on";
     }
+
     $.ajax({
-        type:"POST",
-        url:$root + "/j_spring_security_check",
-        data:query,
-        dataType:"html",
-        //handling query answer, create registration form
-        success:function (data) {
-             
+        type: "POST",
+        url: $root + "/j_spring_security_check",
+        data: query,
+        dataType: "html",
+        success: function(data) {
+            var dataJq = $(data);
             //Check the query answer and displays prompt
-            if ($(data).find("legend").html() != null) {
-				var form_elements = formatFormElements(data);
-				var content = formatHTMLContent(data, form_elements);
-                $.prompt(content,
-					{buttons:{OK:true}, 
-					focus:0,
-                    submit:sendLoginPost});
-				
-				$('#j_username').val(username);
-				$('input[name=_spring_security_remember_me]').attr('checked', remember_me);				
-            } else {
-            	location.reload();
+            if (dataJq.find("legend").html() != null) { // signin failure
+                // hide dialog in order to show new dialog 
+                dialog.modal('hide');
+                // show new dialog with errors
+                dialog = showSigninDialog(dataJq);
+                dialog.find('#j_username').val(username);
+                dialog.find('input[name=_spring_security_remember_me]').attr('checked', remember_me);               
+            } else { // signin success
+                location.reload();
             }
         },
-		error: function(data) {
-			$.prompt($labelError500Detail);
-		}
-	});
+        error: function(data) {
+            $.prompt($labelError500Detail);
+        }
+    });
 }
 
 /**
- * Formats form elements such as text fields with login and password
- * for login popup page
- * @param data html page
- * @return form_elements array of form elements
+ * Create form elements using data from server.
  */
-function formatFormElements(data){
-     var form_elements = [];
-            $.each($(data).find("div.control-group").wrap('<p>').parent(), function (index, value) {
-				ErrorUtils.addErrorStyles($(value).find('span.help-inline'));
-                form_elements[index] = $(value).html();
-            });
-    return form_elements;
-}
-
+function getFormElements(data) {
+    var formElements = [];
+    $.each(data.find("div.control-group").wrap('<p>').parent(), function (index, value) {
+        value = $(value);
+        if (index < 2) { // text inputs
+            // get element label
+            var controlLabel = value.find("label.control-label");
+            var text = controlLabel.html();
+            // label is no longer needed
+            controlLabel.remove();
+            // set label text as text field placeholder
+            value.find('input').attr("placeholder", text);
+        } else if (index == 3) { // checkbox
+            var checkboxCss = { 'float' : 'left', 'margin-right' : '10px' }
+            value.css(checkboxCss);
+        }
+        ErrorUtils.addErrorStyles(value.find('span.help-inline'));
+        formElements[index] = value.html();
+    });
+    return formElements;
+};
 
 /**
- * Formats html content from given data, for representing login page
- * @param data html data
- * @param form_elements form elements
- * @return content formatted html content
+ * Create form element using data from server.
  */
-function formatHTMLContent(data,form_elements){
-     var content = '<ul><div>' + $(data).find("legend").html() +
-                          '</div><br/><span class="empty_cell"></span>' + form_elements[0] +
-                          form_elements[1] + form_elements[2] + '</ul>' +
-                          '<div class="form_controls">' +
-                          '<a href ="' + $(data).find('.form-actions a').attr("href") + '">' +
-                          $(data).find('.form-actions a').html() + "</a>" +
-                          '</div>'  ;
-    return content;
-}
+function composeForm(data) {
+    var legendText = data.find("legend").html();
+    var restorePasswordUrl = data.find('.form-actions a').attr("href");
+    var restorePasswordText = data.find('.form-actions a').html();
+
+    var formElements = getFormElements(data);
+    var usernameDiv = formElements[0];
+    var passwordDiv = formElements[1];
+    var rememberMeDiv = formElements[2];
+
+    var signinDialog = $(' \
+        <div class="modal" id="signin-dialog" tabindex="-1" role="dialog" aria-labelledby="sign in" aria-hidden="true" style="width: 300px; margin: -150px 0px 0px -150px;"> \
+            <div class="modal-header"> \
+                <button type="button" class="close" style="padding: 0; cursor: pointer; background: transparent; border: 0; -webkit-appearance: none;" data-dismiss="modal" aria-hidden="true">&times;</button> \
+                <h3>' + legendText + '</h3> \
+            </div> \
+            <div class="modal-body">' 
+                  + usernameDiv
+                  + passwordDiv
+                  + rememberMeDiv + 
+                '<div class="clearfix"> \
+                    <a href="' + restorePasswordUrl + '">' + restorePasswordText + '</a> \
+                </div> \
+            </div> \
+            <div class="modal-footer"> \
+                <button id="signin-submit-button" class="btn btn-primary" style="clear: left; width: 100%; height: 32px; font-size: 13px;" name="commit" type="submit">' + legendText + '</button> \
+            </div> \
+        </div> \
+    ');
+
+    return signinDialog;
+};
+
+/**
+ * Show modal dialog.
+ */
+function showSigninDialog(data) {
+    var signinDialog = composeForm(data);
+
+    // show dialog
+    signinDialog.modal({
+      "backdrop" : "static",
+      "keyboard" : true,
+      "show" : true // this parameter ensures the modal is shown immediately
+    });
+
+    signinDialog.find("#j_username").focus();
+    return signinDialog;
+};
