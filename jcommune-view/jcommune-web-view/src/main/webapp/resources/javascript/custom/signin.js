@@ -90,7 +90,6 @@ function sendLoginPost() {
         data:query,
         dataType:"html",
         success:function (data) {
-            console.log("after bif " + $.now());
             var dataJq = $(data);
             //Check the query answer and displays prompt
             if (dataJq.find("legend").html() != null) { // signin failure
@@ -102,7 +101,6 @@ function sendLoginPost() {
                 dialog.find('input[name=_spring_security_remember_me]').attr('checked', remember_me);
             }
             else { // signin success
-                console.log("after aif " + $.now());
                 location.reload();
             }
         },
