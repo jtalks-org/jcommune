@@ -26,6 +26,7 @@ import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Collections;
 
@@ -53,7 +54,7 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
     /**
      * {@inheritDoc}
      */
-    @Override
+    @Override    
     public Topic get(Long id) throws NotFoundException {
         Topic topic = super.get(id);
         topic.setViews(topic.getViews() + 1);
@@ -113,5 +114,13 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
     @Override
     public void rebuildSearchIndex() {
         searchDao.rebuildIndex();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.VIEW_TOPICS')")
+    @Override    
+    public void checkViewTopicPermission(Long branchId) {
     }
 }

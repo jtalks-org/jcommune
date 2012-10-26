@@ -202,6 +202,7 @@ public class TopicController {
                                               required = false) Boolean pagingEnabled) throws NotFoundException {
 
         Topic topic = topicFetchService.get(topicId);
+        topicFetchService.checkViewTopicPermission(topic.getBranch().getId());
         Page<Post> postsPage = postService.getPosts(topic, page, pagingEnabled);
         Branch branch = topic.getBranch();
         JCUser currentUser = userService.getCurrentUser();

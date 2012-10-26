@@ -99,7 +99,7 @@ function sendLoginPost() {
 				$('#j_username').val(username);
 				$('input[name=_spring_security_remember_me]').attr('checked', remember_me);				
             } else {
-                history.go(0);
+            	location.reload();
             }
         },
 		error: function(data) {

@@ -68,4 +68,13 @@ public interface TopicFetchService extends EntityService<Topic>{
      * but the index doesn't contain this data or the index is re-created.
      */
     void rebuildSearchIndex();
+    
+    /**
+     * Check if user has given permission. Throws 
+     * {@link org.springframework.security.access.AccessDeniedException} if user
+     * don't have specified permission.
+     *
+     * @param branchId ID of the branch which holds permissions
+     */
+    public void checkViewTopicPermission(Long branchId);
 }
