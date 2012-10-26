@@ -121,12 +121,24 @@
     </bean>
     <!--Declaration and setting up datasource, sessionFactory and transactionalManager
    beans -->
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="${jdbc.driverClassName}"/>
-        <property name="url" value="${jdbc.url}"/>
-        <property name="username" value="${jdbc.username:root}"/>
-        <property name="password" value="${jdbc.password:root}"/>
+
+    <!--We're wrapping our underlying data source with lazy one so that connection is not retrieved from the pool unless-->
+    <!--it's really necessary. E.g. if Hibernate hits only cache, there is no need to fetch connection, but without lazy-->
+    <!--data source, it will be actually fetched if service methods are marked with @Transactional-->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy">
+        <property name="targetDataSource">
+            <bean class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+                <property name="driverClass" value="${jdbc.driverClassName}"/>
+                <property name="jdbcUrl" value="${jdbc.url}"/>
+                <property name="user" value="${jdbc.username:root}"/>
+                <property name="password" value="${jdbc.password:root}"/>
+                <!--Every hour we'll be hitting DB to make sure MySQL doesn't kill the connection. By default if connection
+         is idle for 8 hrs, MySQL kills it-->
+                <property name="idleConnectionTestPeriod" value="3600"/>
+            </bean>
+        </property>
     </bean>
+
     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
           depends-on="flyway_jcommune">
         <property name="dataSource" ref="dataSource"/>
