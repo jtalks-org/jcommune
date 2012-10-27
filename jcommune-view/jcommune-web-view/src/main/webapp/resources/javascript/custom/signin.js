@@ -18,27 +18,9 @@
  */
 
 $(function () {
-
     // hide dialog on backdrop click
     $('.modal-backdrop').live('click', function(e) {
-        $('#signin-dialog').modal('hide');
-    });
-
-    // send ajax-request on submit button click
-    $("#signin-submit-button").live('click', function(e){
-        sendLoginPost();
-    });
-
-    // submit on press enter
-    $("#j_username, #j_password, input[name=_spring_security_remember_me]").live("keyup", function(event) {
-        if (event.keyCode == 13) {
-            sendLoginPost();
-        }
-    });
-
-    // remove dialog from DOM on hide
-    $("#signin-dialog").live("hide", function(e) {
-        $("#signin-dialog").remove();
+        $('#signin-modal-dialog').modal('hide');
     });
 
     $("#signin").on('click', function (e) {
@@ -71,7 +53,7 @@ $(function () {
  * get error message, providing user with opportunity to change login or password
  */
 function sendLoginPost() {
-    var dialog = $("#signin-dialog");
+    var dialog = $("#signin-modal-dialog");
 
     // parse values from form and disable elements
     dialog.find("#signin-submit-button").attr('disabled', true);
@@ -124,9 +106,8 @@ function getFormElements(data) {
             controlLabel.remove();
             // set label text as text field placeholder
             value.find('input').attr("placeholder", text);
-        } else if (index == 3) { // checkbox
-            var checkboxCss = { 'float' : 'left', 'margin-right' : '10px' }
-            value.css(checkboxCss);
+        } else if (index == 2) { // checkbox
+            value.find('.control-group').attr('id', 'rememberme-area');
         }
         ErrorUtils.addErrorStyles(value.find('span.help-inline'));
         formElements[index] = value.html();
@@ -148,23 +129,24 @@ function composeForm(data) {
     var rememberMeDiv = formElements[2];
 
     var signinDialog = $(' \
-        <div class="modal" id="signin-dialog" tabindex="-1" role="dialog" aria-labelledby="sign in" aria-hidden="true" style="width: 300px; margin: -150px 0px 0px -150px;"> \
+        <form class="modal" id="signin-modal-dialog" tabindex="-1" role="dialog" \
+                    aria-labelledby="sign in" aria-hidden="true"> \
             <div class="modal-header"> \
-                <button type="button" class="close" style="padding: 0; cursor: pointer; background: transparent; border: 0; -webkit-appearance: none;" data-dismiss="modal" aria-hidden="true">&times;</button> \
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> \
                 <h3>' + legendText + '</h3> \
             </div> \
             <div class="modal-body">' 
                   + usernameDiv
                   + passwordDiv
-                  + rememberMeDiv + 
-                '<div class="clearfix"> \
+                  + rememberMeDiv + '\
+                <div class="clearfix"> \
                     <a href="' + restorePasswordUrl + '">' + restorePasswordText + '</a> \
                 </div> \
             </div> \
             <div class="modal-footer"> \
-                <button id="signin-submit-button" class="btn btn-primary" style="clear: left; width: 100%; height: 32px; font-size: 13px;" name="commit" type="submit">' + legendText + '</button> \
+                <button id="signin-submit-button" class="btn btn-primary" name="commit" type="submit">' + legendText + '</button> \
             </div> \
-        </div> \
+        </form> \
     ');
 
     return signinDialog;
@@ -176,6 +158,40 @@ function composeForm(data) {
 function showSigninDialog(data) {
     var signinDialog = composeForm(data);
 
+    // trigger checkbox on click inside outer div
+    var checkbox = signinDialog.find("input[name=_spring_security_remember_me]");
+    signinDialog.find('#rememberme-area').click(function(e) {
+        if (!$(event.target).is(':checkbox')) { // prevent from handling event when clicked on checkbox 
+            if (checkbox.is(':checked')) {
+                checkbox.removeAttr('checked');
+            } else {
+                checkbox.attr('checked', 'checked');
+            }
+        }
+    });
+    
+    // send ajax-request on submit button click
+    var submitButton = signinDialog.find("#signin-submit-button");
+    submitButton.click(function(e) {
+        e.preventDefault();
+        sendLoginPost();
+        return false;
+    });
+
+    // returns focus back to uername field
+    submitButton.keypress(function(e) {
+        if (e.keyCode === 9) { //TAB key
+            e.preventDefault();
+            signinDialog.find("#j_username").focus();
+        }
+    });
+
+    // remove dialog from DOM on hide
+    signinDialog.bind("hide", function(e) {
+        signinDialog.remove();
+    });
+
+
     // show dialog
     signinDialog.modal({
       "backdrop" : "static",
@@ -184,5 +200,6 @@ function showSigninDialog(data) {
     });
 
     signinDialog.find("#j_username").focus();
+
     return signinDialog;
 };

@@ -356,3 +356,36 @@ div.anchor {
 .capcha-reload {
     cursor: pointer;
 }
+
+#signin-modal-dialog {
+    width: 300px; 
+    margin: -150px 0px 0px -150px;
+}
+
+#signin-modal-dialog .modal-header {
+    background-color: rgb(245, 245, 245)
+}
+
+#signin-modal-dialog .close {
+    padding: 0; 
+    cursor: pointer; 
+    background: transparent; 
+    border: 0; 
+    -webkit-appearance: none;
+}
+
+#signin-modal-dialog #signin-submit-button {
+    clear: left; 
+    width: 100%; 
+    height: 32px; 
+    font-size: 13px;
+}
+
+#signin-modal-dialog div.control-group {
+    margin: 0 0 0 25px;
+}
+
+#signin-modal-dialog #rememberme-area {
+    float: left;
+    margin: 0px 10px 9px 25px;
+}
