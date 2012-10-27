@@ -179,8 +179,8 @@ function showSigninDialog(data) {
     });
 
     // returns focus back to uername field
-    submitButton.keypress(function(e) {
-        if (e.keyCode === 9) { //TAB key
+    submitButton.keydown(function(e) {
+        if ((e.keyCode || e.charCode) == 9) { //TAB key
             e.preventDefault();
             signinDialog.find("#j_username").focus();
         }
