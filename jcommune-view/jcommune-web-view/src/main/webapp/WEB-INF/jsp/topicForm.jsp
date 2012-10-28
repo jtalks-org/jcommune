@@ -63,7 +63,7 @@
     <div id="previewPoll" class="well">
     </div>
     <form:form action="${pageContext.request.contextPath}${submitUrl}"
-               method="POST" modelAttribute="topicDto" class="well anti-multipost">
+               method="POST" modelAttribute="topicDto" class="well anti-multipost" enctype="multipart/form-data">
         <div class='control-group hide-on-preview'>
             <div class='controls'>
                 <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>
