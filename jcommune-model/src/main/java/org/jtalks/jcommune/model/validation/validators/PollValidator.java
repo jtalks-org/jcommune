@@ -108,15 +108,11 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
         }
         Range range = new IntRange(minItemsLength, maxItemsLength);
         for (PollItem item : items) {
-            System.out.println("item = " + item.getName());
-            System.out.println("item.length = " + item.getName().length());
-            System.out.println("!range.containsInteger(item.getName().length()) = " + !range.containsInteger(item.getName().length()));
             if (!range.containsInteger(item.getName().length())) {
                 result = false;
                 constraintViolated(context, ITEM_LENGTH_MESSAGE, pollItemsName);
             }
         }
-        System.out.println("Validation result " + result);
         return result;
     }
 
