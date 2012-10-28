@@ -24,14 +24,14 @@ import org.springframework.security.core.GrantedAuthority;
  * Represents anonymous user.
  * This is a Null Object pattern implementation, contains default
  * parameter values to be used for users not logged in.
- *
+ * <p/>
  * You're likely to get this instance for userService#getCurrentUser if
- * there is no active user session in progress, i.e. current user is an anonymous.
+ * there is no active user session in progress, i.e. current user is an  anonymous.
  *
  * @author Vyacheslav Mishcheryakov
  */
 public class AnonymousUser extends JCUser {
-    
+
     /**
      * Creates anonymous user instance with default properties set
      */
@@ -45,37 +45,37 @@ public class AnonymousUser extends JCUser {
     public Collection<GrantedAuthority> getAuthorities() {
         throw new UnsupportedOperationException("Authorities are not defined for anonymous user");
     }
-    
+
     @Override
     public String getEmail() {
         throw new UnsupportedOperationException("Mail is not defined for anonymous user");
     }
-    
+
     @Override
     public String getEncodedUsername() {
         throw new UnsupportedOperationException("Encoded username is not defined for anonymous user");
     }
-    
+
     @Override
     public List<Group> getGroups() {
         throw new UnsupportedOperationException("Groups are not defined for anonymous user");
     }
-    
+
     @Override
     public long getId() {
         throw new UnsupportedOperationException("ID is not defined for anonymous user");
     }
-    
+
     @Override
     public String getPassword() {
         throw new UnsupportedOperationException("Password is not defined for anonymous user");
     }
-    
+
     @Override
     public String getUsername() {
         throw new UnsupportedOperationException("Username is not defined for anonymous user");
     }
-    
+
     @Override
     public boolean isAnonymous() {
         return true;
