@@ -169,7 +169,7 @@ public class Poll extends Entity {
      * @param pollItemsValue poll options in string representation
      */
     public void setPollItemsValue(String pollItemsValue) {
-        this.pollItemsValue = pollItemsValue.trim();
+        this.pollItemsValue = pollItemsValue;
         if (StringUtils.isNotBlank(pollItemsValue)) {
             this.setPollItems(PollValidator.parseItems(pollItemsValue));
         }

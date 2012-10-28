@@ -236,6 +236,7 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
             //If user entered empty lines these lines are ignoring from validation.
             // Only meaningful lines are processed and user get processed output
             if (StringUtils.isNotBlank(item)) {
+                item = item.trim();
                 PollItem pollItem = new PollItem(item);
                 result.add(pollItem);
             }
