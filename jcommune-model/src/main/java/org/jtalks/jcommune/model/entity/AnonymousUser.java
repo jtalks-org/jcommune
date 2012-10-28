@@ -26,7 +26,7 @@ import org.springframework.security.core.GrantedAuthority;
  * parameter values to be used for users not logged in.
  * <p/>
  * You're likely to get this instance for userService#getCurrentUser if
- * there is no active user session in progress, i.e. current user is an  anonymous.
+ * there is no active user session in progress, i.e. current user is an anonymous.
  *
  * @author Vyacheslav Mishcheryakov
  */
