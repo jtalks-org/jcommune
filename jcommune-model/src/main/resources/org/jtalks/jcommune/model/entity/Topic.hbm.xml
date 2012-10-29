@@ -35,7 +35,9 @@
         <property name="announcement" column="ANNOUNCEMENT" not-null="true"/>
         <property name="closed" column="CLOSED" not-null="true"/>
 
-        <list name="posts" cascade="all-delete-orphan">
+      <!--By experimenting figured out that 10 is the best batch size when it comes to opening the branch page
+      This might be tuned further in the future if the page size itself changes.-->
+        <list name="posts" cascade="all-delete-orphan" batch-size="10">
             <cache usage="nonstrict-read-write"/>
             <key column="TOPIC_ID" foreign-key="FK_TOPIC"/>
             <index column="LIST_INDEX"/>
@@ -47,8 +49,10 @@
                      not-null="true" foreign-key="FK_TOPIC_STARTER"/>
         <many-to-one name="branch" column="BRANCH_ID" class="Branch"
                      not-null="false"/>
-
-        <one-to-one name="poll" class="org.jtalks.jcommune.model.entity.Poll" cascade="all"/>
+        <!--This is an emulation of OTO association. It's actually OTO, but expressed via MTO because in OTO schema it's
+        impossible to have additional column for POLL_ID in TOPIC, thus it's impossible to have lazy loading unless every
+        TOPIC has POLL which is not our case.-->
+        <many-to-one name="poll" class="org.jtalks.jcommune.model.entity.Poll" cascade="all" column="POLL_ID" />
 
         <set name="subscribers" table="TOPIC_SUBSCRIPTIONS">
             <key column="TOPIC_ID"/>
