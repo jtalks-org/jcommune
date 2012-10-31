@@ -19,16 +19,20 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.JsonResponse;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import static org.mockito.Matchers.any;
@@ -89,7 +93,35 @@ public class UserControllerTest {
 
         assertViewName(mav, "registration");
     }
+    
+    @Test 
+    void testRegisterAjax() {
+    	RegisterUserDto dto = getRegisterUserDto();
+        BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
 
+        JsonResponse jsonResponse = userController.registerUserAjax(dto, bindingResult, new Locale("ru"));
+        
+        assertEquals(jsonResponse.getStatus(), "success");
+        assertNull(jsonResponse.getResult());
+        verify(userService).registerUser(any(JCUser.class));
+    }
+
+    @Test 
+    void testRegisterAjaxFail() {
+        RegisterUserDto dto = getRegisterUserDto();
+        List<ObjectError> errors = new ArrayList<ObjectError>();
+        ObjectError error = new ObjectError("username", "bullshit");
+		errors.add(error);
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(true);
+        when(bindingResult.getAllErrors()).thenReturn(errors);
+        JsonResponse jsonResponse = userController.registerUserAjax(dto, bindingResult, new Locale("ru"));
+        
+        assertEquals(jsonResponse.getStatus(), "fail");
+        ObjectError objectError = ((List<ObjectError>) jsonResponse.getResult()).get(0);
+		assertEquals(objectError, error);
+    }
+    
     @Test
     public void testRestorePasswordPage() {
         assertViewName(userController.showRestorePasswordPage(), "restorePassword");

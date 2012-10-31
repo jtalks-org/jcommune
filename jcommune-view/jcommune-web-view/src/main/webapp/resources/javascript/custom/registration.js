@@ -19,78 +19,192 @@
  */
 //handling click on menu link Sign Up
 $(function () {
-    var firstView;
-    $("#signup").on('click', function (e) {
-    	//temporary disable buttons
-    	disableClickEventForComponent("#signin");
-    	disableClickEventForComponent("#signup");
-    	//
-        firstView = true;
-        signupPopup();
-        //if JS off, then open standart page
-        e.preventDefault();
-    });
-    function signupPopup() {
-        var query;
-        //data for query
-        if (!firstView) {
-            query = "username=" + encodeURIComponent($('#username').val()) +
-                "&password=" + encodeURIComponent($('#password').val()) +
-                "&passwordConfirm=" + encodeURIComponent($('#passwordConfirm').val()) +
-                "&email=" + encodeURIComponent($('#email').val()) +
-                "&captcha=" + encodeURIComponent($('#captcha').val());
-        } else {
-            query = "username=&password=&passwordConfirm=&email=&captcha&firstView=false";
-        }
 
-        //POST-query
-        $.ajax({
-            type:"POST",
-            url:$root + "/user/new",
-            data:query,
-            dataType:"html",
-            //handling query answer, create registration form
-            success:function (data) {
-                var form_elements = [];
-                $.each($(data).find("div.control-group").wrap('<p>').parent(), function (index, value) {
-                    if (firstView) {
-						$(value).find("span.help-inline").remove();
-					}
-					ErrorUtils.addErrorStyles($(value).find('span.help-inline'));
-                    form_elements[index] = $(value).html();
-                });
-                var content = '<ul><div>' + $(data).find("legend").html() +
-                    '</div><br/><span class="empty_cell"></span>' + form_elements[0] +
-                    form_elements[1] + form_elements[2] + form_elements[3] + form_elements[4] +
-                    '</ul>';
-                //Check the query answer and displays prompt
-                if ($(data).find("legend").html() != null) {
-                    firstView = false;
-                    $.prompt(content,
-                        {buttons:{OK:true}, focus:0, submit:signupPopup, zIndex: 1050, overlayspeed:"fast"});
-                    refreshCaptcha();
-                    refreshCaptchaOnClick();
-                } else if ($(data).find("span.error_errorpage").html() != null) {
-                    $.prompt($labelRegistrationFailture);
-                } else {
-                    $.prompt($labelRegistrationSuccess);
+    // hide dialog on backdrop click
+    $('.modal-backdrop').live('click', function(e) {
+        $('#signup-modal-dialog').modal('hide');
+    });
+
+    $("#signup").on('click', function (e) {
+        e.preventDefault();
+        
+        var signupDialog = createDialog();
+
+        // show dialog
+        signupDialog.modal({
+          "backdrop" : "static",
+          "keyboard" : true,
+          "show" : true
+        });
+
+        // refres captcha on click refresh button or captcha itself
+        signupDialog.find("#captcha-refresh, #captcha-img").bind('click', function(e) {
+            e.preventDefault();
+            refreshCaptcha(signupDialog);
+        });
+
+        // focus on first element
+        signupDialog.find('#username').focus();
+
+        var submitButton = signupDialog.find('#signup-submit-button');
+        
+        // returns focus back to uername field
+        submitButton.keydown(function(e) {
+            if ((e.keyCode || e.charCode) == 9) { //TAB key
+                e.preventDefault();
+                signupDialog.find("#username").focus();
+            }
+        });
+
+        // skip captcha image and refresh and go to captcha input
+        signupDialog.find('#passwordConfirm').keydown(function(e) {
+            if ((e.keyCode || e.charCode) == 9) { //TAB key
+                e.preventDefault();
+                signupDialog.find("#captcha").focus();
+            }
+        });
+
+        // remove dialog from DOM on hide
+        signupDialog.bind("hide", function(e) {
+            signupDialog.remove();
+        });
+
+        // submit button handler
+        submitButton.click(function(e) {
+            e.preventDefault();
+            // disable all elements before and during submission
+            signupDialog.find('*').attr('disabled', true);
+            var query = composeQuery(signupDialog);
+            $.ajax({
+                type: "POST",
+                url: $root + "/user/new_ajax",
+                data: query,
+                dataType: "html",
+                success: function(resp) {
+                    resp = eval('(' + resp + ')'); // warning: not safe
+                    if (resp.status == "success") {
+                        // hide dialog and show success message
+                        signupDialog.modal('hide');
+                        bootbox.alert($labelRegistrationSuccess);
+                    } else {
+                        // remove previous errors and show new errors
+                        prepareDialog(signupDialog);
+                        showErrors(signupDialog, resp.result);
+                    }
+                },
+                error: function (resp) {
+                    alert("Error: " + resp);
                 }
-                //enable all disabled links
-                enableClickEventForDisabledComponents();
-            }});
-    }
+            });
+        });
+    });
 });
 
-
-function refreshCaptchaOnClick() {
-    $("#captcha_refresh").on('click', function (e) {
-        refreshCaptcha();
-    });
+/**
+ * Enable all disabled elements
+ * Remove previous errors
+ * Show hidden hel text
+ */
+function prepareDialog(signupDialog) {
+    refreshCaptcha(signupDialog);
+    signupDialog.find('*').attr('disabled', false);
+    signupDialog.find('._error').remove();
+    signupDialog.find(".help-block").show();
+    signupDialog.find('.control-group').removeClass('error');
 }
 
-function refreshCaptcha() {
-    var url = $root + "/captcha/image?param=" + $.now();
+/**
+ * Get new captcha image
+ */
+function refreshCaptcha(signupDialog) {
     //this parameter forces browser to reload image every time
-    $("#captcha_img").removeAttr("src").attr("src", url).attr("src", url);
-	document.getElementById("captcha").value = "";
+    signupDialog.find("#captcha-img").removeAttr("src").attr("src", captchaUrl());
+    signupDialog.find("#captcha").val("");
+}
+
+function captchaUrl() {
+    return $root + "/captcha/image?param=" + $.now();
+}
+
+/**
+ * Show errors under fields with errors
+ * Errors overrides help text (help text will be hidden)
+ */
+function showErrors(signupDialog, errors) {
+    for (var i = 0; i < errors.length; i++) {
+        var e = signupDialog.find('#' + errors[i].field);
+        e.parent().wrap('<div class="control-group error" />');
+        e.parent().find(".help-block").hide();
+        e.parent().last().append('<span class="help-block _error">' + errors[i].defaultMessage + '</span>');
+    }
+}
+
+/**
+ * POST request query
+ */
+function composeQuery(signupDialog) {
+    return "username="         + encodeURIComponent(signupDialog.find('#username').val()) +
+           "&password="        + encodeURIComponent(signupDialog.find('#password').val()) +
+           "&passwordConfirm=" + encodeURIComponent(signupDialog.find('#passwordConfirm').val()) +
+           "&email="           + encodeURIComponent(signupDialog.find('#email').val()) +
+           "&captcha="         + encodeURIComponent(signupDialog.find('#captcha').val());
+}
+
+/**
+ * Create captcha form elements: captcha image, refresh button, input field
+ */
+function createCaptchaElements(label) {
+    return $(' \
+        <div class="control-group"> \
+            <div class="controls" style="margin-top: 10px"> \
+                <input type="image" id="captcha-img" src="' + captchaUrl() + '" /> \
+                <input type="image" id="captcha-refresh" src="' + $root + "/resources/images/captcha-refresh.png" + '" /> \
+            </div> \
+            <div class="controls"> \
+                <input type="text" id="captcha" placeholder="' + label + '" class="input-xlarge" /> \
+            </div> \
+        </div> \
+    ').html();
+}
+
+/**
+ * Create form field with given label(placeholder), id, type and help text (optional)
+ */
+function createFormElement(label, id, helpText, type) {
+    var elementHtml = ' \
+        <div class="control-group"> \
+            <div class="controls"> \
+                <input type="' + type + '" id="'+ id + '" name="'+ id + '" placeholder="' + label +'" class="input-xlarge" /> \
+    ';
+    if (helpText != null) {
+        elementHtml +=  
+                '<p class="help-block">' + helpText + '</p>';
+    }
+    elementHtml += ' \
+            </div> \
+        </div> \
+    ';
+    return $(elementHtml).html();
+}
+
+function createDialog() {
+    return $(' \
+        <form class="modal" id="signup-modal-dialog" tabindex="-1" role="dialog" \
+                    aria-labelledby="sign in" aria-hidden="true"> \
+            <div class="modal-header"> \
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> \
+                <h3>' + "Registration" + '</h3> \
+            </div> \
+            <div class="modal-body">' + 
+            createFormElement('Username', 'username', 'username may contain 125 ch', 'text') +
+            createFormElement('Email', 'email', null, 'text') +
+            createFormElement('Password', 'password', 'username may contain 125 ch', 'password') + 
+            createFormElement('Password confirmation', 'passwordConfirm', null, 'password') + 
+            createCaptchaElements('Text from image') + ' \
+            </div> \
+            <div class="modal-footer"> \
+                <button id="signup-submit-button" class="btn btn-primary" name="commit" type="submit">' + "Sign Up" + '</button> \
+            </div> \
+        </form> \
+        ');
 }

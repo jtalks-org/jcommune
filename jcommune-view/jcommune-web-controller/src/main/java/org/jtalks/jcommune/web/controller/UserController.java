@@ -19,16 +19,19 @@ import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.JsonResponse;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -129,8 +132,31 @@ public class UserController {
         userService.registerUser(user);
         return new ModelAndView("redirect:/");
     }
-
+    
     /**
+     * Register {@link org.jtalks.jcommune.model.entity.JCUser} from populated {@link RegisterUserDto}.
+     * <p/>
+     *
+     * @param userDto {@link RegisterUserDto} populated in form
+     * @param result  result of {@link RegisterUserDto} validation
+     * @param locale  to set currently selected language as user's default
+     * @return redirect validation result in JSON format
+     */
+    @RequestMapping(value = "/user/new_ajax", method = RequestMethod.POST)
+    public @ResponseBody JsonResponse registerUserAjax(@Valid @ModelAttribute("newUser") RegisterUserDto userDto,
+                                     BindingResult result, Locale locale) {
+    	 if (result.hasErrors()) {
+             return new JsonResponse("fail", result.getAllErrors());
+         }
+         JCUser user = userDto.createUser();
+         user.setLanguage(Language.byLocale(locale));
+         userService.registerUser(user);
+         return new JsonResponse("success");
+    }
+
+
+
+	/**
      * Activates user account with UUID-based URL
      * We use UUID's to be sure activation link cannot be generated from username
      * by script or any other tool.

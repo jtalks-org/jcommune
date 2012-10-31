@@ -341,37 +341,22 @@ div.anchor {
     line-height: 0;
 }
 
-.capcha-field {
-    width: 180px !important;
-    margin-bottom: 30px;
-}
 
-.capcha-img {
-    margin-left: 2px;
-    margin-right: 3px;
-    margin-top: 4px;
-    height: 35px
-}
-
-.capcha-reload {
-    cursor: pointer;
-}
-
-#signin-modal-dialog {
-    width: 300px; 
-    margin: -150px 0px 0px -150px;
-}
-
-#signin-modal-dialog .modal-header {
-    background-color: rgb(245, 245, 245)
-}
-
-#signin-modal-dialog .close {
+.modal .close {
     padding: 0; 
     cursor: pointer; 
     background: transparent; 
     border: 0; 
     -webkit-appearance: none;
+}
+
+.modal .modal-header {
+    background-color: rgb(245, 245, 245)
+}
+
+#signin-modal-dialog {
+    width: 300px; 
+    margin: -150px 0px 0px -150px;
 }
 
 #signin-modal-dialog #signin-submit-button {
@@ -388,4 +373,29 @@ div.anchor {
 #signin-modal-dialog #rememberme-area {
     float: left;
     margin: 0px 10px 9px 25px;
+}
+
+
+
+#signup-modal-dialog {
+    margin: -250px 0px 0px -150px; 
+    width: 350px; 
+    max-height: none;
+}
+
+#signup-modal-dialog #captcha-refresh {
+    vertical-align: middle;
+}
+
+#signup-modal-dialog .help-block {
+    margin: 0px 5px;
+}
+
+#signup-modal-dialog input {
+    margin-bottom: 0px;
+}
+
+#signup-modal-dialog .controls {
+    margin-bottom: 7px;
+    margin-left: 20px;
 }
