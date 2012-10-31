@@ -64,3 +64,15 @@ $labelImageWrongSizeJs = '<spring:message code="image.wrong.size.js"/>';
 $labelNotSpecified = '<spring:message code="label.not.specified"/>';
 
 $labelError500Detail = '<spring:message code="label.500.detail"/>';
+
+$labelRegistration = '<spring:message code="label.signup"/>'
+$labelUsername = '<spring:message code="label.username"/>'
+$labelUsernameHelp = '<spring:message code="label.tip.username"/>'
+$labelEmail = '<spring:message code="label.tip.email"/>'
+$labelPassword = '<spring:message code="label.password"/>'
+$labelPasswordHelp = '<spring:message code="label.tip.password"/>'
+$labelPasswordConfirmation = '<spring:message code="label.confirmation"/>'
+$labelPasswordConfirmationHelp = null
+$signupButtonLabel = '<spring:message code="label.signup"/>'
+$labelEmailHelp = null
+$labelCaptcha = '<spring:message code="label.tip.captcha"/>'

@@ -93,7 +93,7 @@ $(function () {
                     }
                 },
                 error: function (resp) {
-                    alert("Error: " + resp);
+                    bootbox.alert($labelRegistrationFailture);
                 }
             });
         });
@@ -153,7 +153,7 @@ function composeQuery(signupDialog) {
 /**
  * Create captcha form elements: captcha image, refresh button, input field
  */
-function createCaptchaElements(label) {
+function createCaptchaElements() {
     return $(' \
         <div class="control-group"> \
             <div class="controls" style="margin-top: 10px"> \
@@ -161,7 +161,7 @@ function createCaptchaElements(label) {
                 <input type="image" id="captcha-refresh" src="' + $root + "/resources/images/captcha-refresh.png" + '" /> \
             </div> \
             <div class="controls"> \
-                <input type="text" id="captcha" placeholder="' + label + '" class="input-xlarge" /> \
+                <input type="text" id="captcha" placeholder="' + $labelCaptcha + '" class="input-xlarge" /> \
             </div> \
         </div> \
     ').html();
@@ -193,17 +193,17 @@ function createDialog() {
                     aria-labelledby="sign in" aria-hidden="true"> \
             <div class="modal-header"> \
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> \
-                <h3>' + "Registration" + '</h3> \
+                <h3>' + $labelRegistration + '</h3> \
             </div> \
             <div class="modal-body">' + 
-            createFormElement('Username', 'username', 'username may contain 125 ch', 'text') +
-            createFormElement('Email', 'email', null, 'text') +
-            createFormElement('Password', 'password', 'username may contain 125 ch', 'password') + 
-            createFormElement('Password confirmation', 'passwordConfirm', null, 'password') + 
-            createCaptchaElements('Text from image') + ' \
+            createFormElement($labelUsername, 'username', $labelUsernameHelp, 'text') +
+            createFormElement($labelEmail, 'email', $labelEmailHelp, 'text') +
+            createFormElement($labelPassword, 'password', $labelPasswordHelp, 'password') + 
+            createFormElement($labelPasswordConfirmation, 'passwordConfirm', $labelPasswordConfirmationHelp, 'password') + 
+            createCaptchaElements() + ' \
             </div> \
             <div class="modal-footer"> \
-                <button id="signup-submit-button" class="btn btn-primary" name="commit" type="submit">' + "Sign Up" + '</button> \
+                <button id="signup-submit-button" class="btn btn-primary" name="commit" type="submit">' + $signupButtonLabel + '</button> \
             </div> \
         </form> \
         ');
