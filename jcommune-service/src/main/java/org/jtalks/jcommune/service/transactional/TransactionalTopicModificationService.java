@@ -160,6 +160,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         subscribeOnTopicIfNotificationsEnabled(notifyOnAnswers, topic, currentUser);
         createOrUpdatePoll(topicDto.getPoll(), topic);
 
+        dao.update(topic);
         logger.debug("Created new topic id={}, branch id={}, author={}",
                 new Object[]{topic.getId(), branch.getId(), currentUser.getUsername()});
         return topic;
@@ -196,6 +197,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
     private void createOrUpdatePoll(Poll poll, Topic persistentTopic) {
         if (poll != null && poll.isHasPoll()) {
             if (persistentTopic.getPoll() == null) {
+                persistentTopic.setPoll(poll);
                 poll.setTopic(persistentTopic);
                 pollService.createPoll(poll);
             } else {

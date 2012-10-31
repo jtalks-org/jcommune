@@ -1,0 +1,1 @@
+alter table POLLS drop foreign key SHARED_PK_POLL_TOPIC;
