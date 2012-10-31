@@ -37,8 +37,8 @@ $(function () {
           "show" : true
         });
 
-        // refres captcha on click refresh button or captcha itself
-        signupDialog.find("#captcha-refresh, #captcha-img").bind('click', function(e) {
+        // refreshes captcha on click refresh button or captcha image
+        signupDialog.find("#captcha-refresh, #captcha-img").click(function(e) {
             e.preventDefault();
             refreshCaptcha(signupDialog);
         });
@@ -70,7 +70,7 @@ $(function () {
         });
 
         // submit button handler
-        submitButton.click(function(e) {
+        signupDialog.submit(function(e) {
             e.preventDefault();
             // disable all elements before and during submission
             signupDialog.find('*').attr('disabled', true);
@@ -156,9 +156,9 @@ function composeQuery(signupDialog) {
 function createCaptchaElements() {
     return $(' \
         <div class="control-group"> \
-            <div class="controls" style="margin-top: 10px"> \
-                <input type="image" id="captcha-img" src="' + captchaUrl() + '" /> \
-                <input type="image" id="captcha-refresh" src="' + $root + "/resources/images/captcha-refresh.png" + '" /> \
+            <div class="controls captcha-images"> \
+                <img id="captcha-img" src="' + captchaUrl() + '" /> \
+                <img id="captcha-refresh" src="' + $root + "/resources/images/captcha-refresh.png" + '" /> \
             </div> \
             <div class="controls"> \
                 <input type="text" id="captcha" placeholder="' + $labelCaptcha + '" class="input-xlarge" /> \

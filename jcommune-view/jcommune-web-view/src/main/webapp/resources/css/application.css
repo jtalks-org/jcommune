@@ -383,10 +383,6 @@ div.anchor {
     max-height: none;
 }
 
-#signup-modal-dialog #captcha-refresh {
-    vertical-align: middle;
-}
-
 #signup-modal-dialog .help-block {
     margin: 0px 5px;
 }
@@ -398,4 +394,12 @@ div.anchor {
 #signup-modal-dialog .controls {
     margin-bottom: 7px;
     margin-left: 20px;
+}
+
+#signup-modal-dialog .captcha-images {
+    display: inline;
+}
+
+#signup-modal-dialog .captcha-images img {
+    vertical-align: middle;
 }
