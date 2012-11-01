@@ -19,7 +19,7 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
     <class name="org.jtalks.common.model.entity.Group" table="GROUPS" abstract="true">
-        <cache usage="nonstrict-read-write" />
+        <cache usage="nonstrict-read-write" region="org.jtalks.EHCOMMON"/>
 
         <id column="GROUP_ID" name="id" unsaved-value="0">
             <generator class="native" />
@@ -31,7 +31,7 @@
 
         <!-- "Extra-lazy" is used due to probable large amount of users in a group -->
         <bag name="users" table="GROUP_USER_REF" lazy="extra" fetch="select">
-            <cache usage="nonstrict-read-write" />
+            <cache usage="nonstrict-read-write" region="org.jtalks.common.model.entity.Group.users"/>
             <key column="GROUP_ID" not-null="true" />
             <many-to-many class="org.jtalks.jcommune.model.entity.JCUser">
                 <column name="USER_ID" not-null="true" />
