@@ -14,6 +14,13 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+
+import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.service.UserService;
@@ -23,19 +30,20 @@ import org.jtalks.jcommune.web.dto.JsonResponse;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.validation.Valid;
-import java.util.Locale;
 
 /**
  * This controller handles custom authentication actions
@@ -54,13 +62,20 @@ public class UserController {
     public static final String LOGIN = "login";
 
     private UserService userService;
-
+    private AuthenticationManager authenticationManager;
+    private SecurityContextHolderFacade securityFacade;
+    private RememberMeServices rememberMeServices;
+    
     /**
      * @param userService to delegate business logic invocation
      */
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AuthenticationManager authenticationManager, 
+    		SecurityContextHolderFacade securityFacade, RememberMeServices rememberMeServices) {
         this.userService = userService;
+		this.authenticationManager = authenticationManager;
+		this.securityFacade = securityFacade;
+		this.rememberMeServices = rememberMeServices;
     }
 
     /**
@@ -189,5 +204,35 @@ public class UserController {
         } else {
             return "redirect:/";
         }
+    }
+    
+    /**
+     * Handles login action for ajax clients.
+     * 
+     * @param username username
+     * @param password password
+     * @param rememberMe set remember me token if equal to "on"
+     * @param request servlet request
+     * @param response servlet response 
+     * @return "success" or "fail" response status
+     */
+    @RequestMapping(value="/login_ajax", method=RequestMethod.POST)
+    public @ResponseBody JsonResponse loginAjax(@RequestParam("j_username") String username,
+            					  				@RequestParam("j_password") String password,
+            					  				@RequestParam(value="_spring_security_remember_me", defaultValue="off") String rememberMe,
+            					  				HttpServletRequest request, HttpServletResponse response) {
+		try {
+			UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
+			JCUser user = userService.getByUsername(username);
+			token.setDetails(user);
+			Authentication auth = authenticationManager.authenticate(token);
+			securityFacade.getContext().setAuthentication(auth);
+			if (rememberMe.equals("on") && auth.isAuthenticated()) {
+				rememberMeServices.loginSuccess(request, response, auth);
+			}
+			return new JsonResponse(auth.isAuthenticated() ? "success" : "fail");
+		} catch (Exception e) {
+			return new JsonResponse("fail");
+		}
     }
 }

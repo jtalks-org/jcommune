@@ -26,22 +26,8 @@ $(function () {
     $("#signin").on('click', function (e) {
         // prevent from following link
         e.preventDefault();
-        signinDialog(); // open dialog
+        showSigninDialog(); // open dialog
     });
-
-    function signinDialog() {
-        $.ajax({
-            type: "GET",
-            url: $root + "/login",
-            dataType: "html",
-            success: function (data) {
-                var dataJq = $(data);
-                if (dataJq.find("legend").html() != null) {
-                    showSigninDialog(dataJq);
-                }
-            }
-        });
-    }
 });
 
 
@@ -56,10 +42,16 @@ function sendLoginPost() {
     var dialog = $("#signin-modal-dialog");
 
     // parse values from form and disable elements
-    dialog.find("#signin-submit-button").attr('disabled', true);
-    var remember_me = dialog.find('input[name=_spring_security_remember_me]').attr('disabled', true).is(':checked');
-    var username = dialog.find('#j_username').attr('disabled', true).val();
-    var password = dialog.find('#j_password').attr('disabled', true).val();
+    var submitButtonElement = dialog.find("#signin-submit-button");
+    var rememberMeElement = dialog.find('input[name=_spring_security_remember_me]');
+    var usernameElement = dialog.find('#j_username');
+    var passwordElement = dialog.find('#j_password');
+
+    var remember_me = rememberMeElement.is(':checked');
+    var username = usernameElement.val();
+    var password = passwordElement.val();
+
+    dialog.find('*').attr('disabled', true);
     
     var query = "j_username=" + encodeURIComponent(username) + "&" + "j_password=" + encodeURIComponent(password);
     if (remember_me) {
@@ -68,100 +60,79 @@ function sendLoginPost() {
 
     $.ajax({
         type: "POST",
-        url: $root + "/j_spring_security_check",
+        url: $root + "/login_ajax",
         data: query,
         dataType: "html",
-        success: function(data) {
-            var dataJq = $(data);
-            //Check the query answer and displays prompt
-            if (dataJq.find("legend").html() != null) { // signin failure
-                // hide dialog in order to show new dialog 
-                dialog.modal('hide');
-                // show new dialog with errors
-                dialog = showSigninDialog(dataJq);
-                dialog.find('#j_username').val(username);
-                dialog.find('input[name=_spring_security_remember_me]').attr('checked', remember_me);               
-            } else { // signin success
+        success: function(resp) {
+            resp = eval('(' + resp + ')');
+
+            if (resp.status == "success") {
                 location.reload();
+            } else {
+                dialog.find('*').attr('disabled', false);
+                dialog.find('.control-group').removeClass('error');
+                dialog.find('._error').remove();
+
+                ErrorUtils.addErrorStyles("#j_username");
+                ErrorUtils.addErrorStyles("#j_password");
+
+                passwordElement.append('<span class="help-inline _error">' +  $labelLoginError + '</span>');
             }
         },
         error: function(data) {
-            $.prompt($labelError500Detail);
+            bootbox.alert($labelError500Detail);
         }
     });
 }
 
 /**
- * Create form elements using data from server.
- */
-function getFormElements(data) {
-    var formElements = [];
-    $.each(data.find("div.control-group").wrap('<p>').parent(), function (index, value) {
-        value = $(value);
-        if (index < 2) { // text inputs
-            // get element label
-            var controlLabel = value.find("label.control-label");
-            var text = controlLabel.html();
-            // label is no longer needed
-            controlLabel.remove();
-            // set label text as text field placeholder
-            value.find('input').attr("placeholder", text);
-        } else if (index == 2) { // checkbox
-            value.find('.control-group').attr('id', 'rememberme-area');
-        }
-        ErrorUtils.addErrorStyles(value.find('span.help-inline'));
-        formElements[index] = value.html();
-    });
-    return formElements;
-};
-
-/**
  * Create form element using data from server.
  */
-function composeForm(data) {
-    var legendText = data.find("legend").html();
-    var restorePasswordUrl = data.find('.form-actions a').attr("href");
-    var restorePasswordText = data.find('.form-actions a').html();
-
-    var formElements = getFormElements(data);
-    var usernameDiv = formElements[0];
-    var passwordDiv = formElements[1];
-    var rememberMeDiv = formElements[2];
-
+function composeForm() {
     var signinDialog = $(' \
         <form class="modal" id="signin-modal-dialog" tabindex="-1" role="dialog" \
                     aria-labelledby="sign in" aria-hidden="true"> \
             <div class="modal-header"> \
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> \
-                <h3>' + legendText + '</h3> \
+                <h3>' + $labelSignin + '</h3> \
             </div> \
-            <div class="modal-body">' 
-                  + usernameDiv
-                  + passwordDiv
-                  + rememberMeDiv + '\
-                <div class="clearfix"> \
-                    <a href="' + restorePasswordUrl + '">' + restorePasswordText + '</a> \
+            <div class="modal-body"> \
+                <div class="control-group"> \
+                    <div class="controls"> \
+                        <input placeholder="' + $labelUsername + '" name="j_username" id="j_username" type="text"> \
+                    </div> \
                 </div> \
+                <div class="control-group"> \
+                    <div class="controls"> \
+                        <input placeholder="' + $labelPassword + '" name="j_password" id="j_password" type="password"> \
+                    </div> \
+                </div> \
+                <div id="rememberme-area" class="control-group"> \
+                    <input name="_spring_security_remember_me" class="form-check-radio-box" type="checkbox"> \
+                    <label class="string optional">' + $labelRememberMe + '</label> \
+                </div> \
+                <div class="clearfix" /> \
+                <a href="' + $root + '/password/restore' + '">' + $labelRestorePassword + '</a> \
             </div> \
             <div class="modal-footer"> \
-                <button id="signin-submit-button" class="btn btn-primary" name="commit" type="submit">' + legendText + '</button> \
+                <button id="signin-submit-button" class="btn btn-primary" name="commit" type="submit">' + $labelSignin + '</button> \
             </div> \
         </form> \
     ');
 
     return signinDialog;
-};
+}
 
 /**
  * Show modal dialog.
  */
-function showSigninDialog(data) {
-    var signinDialog = composeForm(data);
+function showSigninDialog() {
+    var signinDialog = composeForm();
 
     // trigger checkbox on click inside outer div
     var checkbox = signinDialog.find("input[name=_spring_security_remember_me]");
     signinDialog.find('#rememberme-area').click(function(e) {
-        if (!$(event.target).is(':checkbox')) { // prevent from handling event when clicked on checkbox 
+        if (!$(e.target).is(':checkbox')) { // prevent from handling event when clicked on checkbox
             if (checkbox.is(':checked')) {
                 checkbox.removeAttr('checked');
             } else {
@@ -196,7 +167,7 @@ function showSigninDialog(data) {
     signinDialog.modal({
       "backdrop" : "static",
       "keyboard" : true,
-      "show" : true // this parameter ensures the modal is shown immediately
+      "show" : true
     });
 
     signinDialog.find("#j_username").focus();

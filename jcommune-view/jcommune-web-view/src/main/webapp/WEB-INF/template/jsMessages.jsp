@@ -76,3 +76,7 @@ $labelPasswordConfirmationHelp = null
 $signupButtonLabel = '<spring:message code="label.signup"/>'
 $labelEmailHelp = null
 $labelCaptcha = '<spring:message code="label.tip.captcha"/>'
+$labelRememberMe = '<spring:message code="label.auto_logon"/>'
+$labelRestorePassword = '<spring:message code="label.restorePassword.prompt"/>'
+$labelSignin = '<spring:message code="label.signin"/>'
+$labelLoginError = '<spring:message code="label.login_error"/>'

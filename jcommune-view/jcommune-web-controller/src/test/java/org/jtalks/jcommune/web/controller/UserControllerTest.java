@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
@@ -22,6 +23,15 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.JsonResponse;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -32,8 +42,12 @@ import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -56,11 +70,21 @@ public class UserControllerTest {
 
     private UserController userController;
     private UserService userService;
-
+    private AuthenticationManager authenticationManager;
+    private SecurityContextHolderFacade securityFacade;
+    private RememberMeServices rememberMeServices;
+    private SecurityContext securityContext;
+    
     @BeforeMethod
     public void setUp() throws IOException {
         userService = mock(UserService.class);
-        userController = new UserController(userService);
+        authenticationManager = mock(AuthenticationManager.class);
+        securityFacade = mock(SecurityContextHolderFacade.class);
+        securityContext = mock(SecurityContext.class);
+        when(securityFacade.getContext()).thenReturn(securityContext);
+        rememberMeServices = mock(RememberMeServices.class);
+
+        userController = new UserController(userService,authenticationManager,securityFacade,rememberMeServices);
     }
 
     @Test
@@ -195,6 +219,80 @@ public class UserControllerTest {
 
         assertEquals(result, UserController.LOGIN);
         verify(userService).getCurrentUser();
+    }
+    
+    @Test
+    public void testAjaxLoginSuccess() throws Exception {
+    	String username = "username";
+    	HttpServletRequest httpRequest = new MockHttpServletRequest();
+		HttpServletResponse httpResponse = new MockHttpServletResponse();
+		UsernamePasswordAuthenticationToken expectedToken = mock(UsernamePasswordAuthenticationToken.class);
+		when(expectedToken.isAuthenticated()).thenReturn(true);
+		when(userService.getByUsername(username)).thenReturn(new JCUser(username, null, null));
+		when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(expectedToken);
+		
+		JsonResponse response = userController.loginAjax(username, 
+    			PASSWORD, "off", httpRequest, httpResponse);
+		
+		assertEquals(response.getStatus(), "success");
+		verify(userService).getByUsername(username);
+		verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+		verify(securityContext).setAuthentication(expectedToken);
+		verify(rememberMeServices, never()).loginSuccess(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Authentication.class));
+    }
+    
+    @Test
+    public void testAjaxLoginSuccessWithRememberMe() throws Exception {
+    	String username = "username";
+    	HttpServletRequest httpRequest = new MockHttpServletRequest();
+		HttpServletResponse httpResponse = new MockHttpServletResponse();
+		UsernamePasswordAuthenticationToken expectedToken = mock(UsernamePasswordAuthenticationToken.class);
+		when(expectedToken.isAuthenticated()).thenReturn(true);
+		when(userService.getByUsername(username)).thenReturn(new JCUser(username, null, null));
+		when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(expectedToken);
+		
+		JsonResponse response = userController.loginAjax(username, 
+    			PASSWORD, "on", httpRequest, httpResponse);
+		
+		assertEquals(response.getStatus(), "success");
+		verify(userService).getByUsername(username);
+		verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+		verify(securityContext).setAuthentication(expectedToken);
+		verify(rememberMeServices).loginSuccess(eq(httpRequest), eq(httpResponse), any(UsernamePasswordAuthenticationToken.class));
+    }
+    
+    @Test
+    public void testAjaxLoginFailUserNotFound() throws Exception {
+    	String username = "username";
+    	HttpServletRequest httpRequest = new MockHttpServletRequest();
+		HttpServletResponse httpResponse = new MockHttpServletResponse();
+		when(userService.getByUsername(username)).thenReturn(new JCUser(username, null, null));
+		UsernamePasswordAuthenticationToken expectedToken = mock(UsernamePasswordAuthenticationToken.class);
+		when(expectedToken.isAuthenticated()).thenReturn(false);
+		when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(expectedToken);
+		
+		JsonResponse response = userController.loginAjax(username, 
+    			PASSWORD, "on", httpRequest, httpResponse);
+		
+    	assertEquals(response.getStatus(), "fail");
+    	verify(userService).getByUsername(username);
+    	verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+    	verify(rememberMeServices, never()).loginSuccess(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Authentication.class));
+    }
+    
+    @Test
+    public void testAjaxLoginFailIncorrectPassword() throws Exception {
+    	String username = "username";
+    	HttpServletRequest httpRequest = new MockHttpServletRequest();
+		HttpServletResponse httpResponse = new MockHttpServletResponse();
+    	when(userService.getByUsername(username)).thenThrow(new NotFoundException());
+    	
+		JsonResponse response = userController.loginAjax(username, 
+    			PASSWORD, "on", httpRequest, httpResponse);
+		
+    	assertEquals(response.getStatus(), "fail");
+    	verify(userService).getByUsername(username);
+    	verify(rememberMeServices, never()).loginSuccess(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Authentication.class));
     }
 
     private void assertNullFields(RegisterUserDto dto) {
