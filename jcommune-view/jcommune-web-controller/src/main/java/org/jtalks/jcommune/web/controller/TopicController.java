@@ -135,8 +135,10 @@ public class TopicController {
         Branch branch = branchService.get(branchId);
         Topic topic = new Topic();
         topic.setPoll(new Poll());
+        TopicDto dto = new TopicDto();
+        dto.setNotifyOnAnswers(true);
         return new ModelAndView(TOPIC_VIEW)
-                .addObject(TOPIC_DTO, new TopicDto(topic))
+                .addObject(TOPIC_DTO, dto)
                 .addObject("branchId", branchId)
                 .addObject(SUBMIT_URL, "/topics/new?branchId=" + branchId)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch));
