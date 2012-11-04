@@ -57,45 +57,36 @@
                                               permission='BranchPermission.VIEW_TOPICS'>
                             <tr class='post-content-tr'>
                                 <td class='userinfo'>
-                                    <spring:message code='label.branch.header.branches'/>
+                                    <spring:message code='label.branch.header.branches'/>:
                                     <a class="forum_message_cell_text"
                                        href="${pageContext.request.contextPath}/branches/${post.topic.branch.id}">
                                         <c:out value="${post.topic.branch.name}"/></a>
-                                    <br>
-
-                                    <spring:message code='label.branch.header.topics'/>
+                                    <br/>
+                                    <spring:message code='label.branch.header.topics'/>:
                                     <a class="forum_message_cell_text"
                                        href="${pageContext.request.contextPath}/topics/${post.topic.id}">
                                         <c:out value="${post.topic.title}"/></a>
+                                    <br/>
+                                    <spring:message code="label.added"/>&nbsp;
+                                    <jtalks:format value="${post.creationDate}" pattern="dd.MM.yy"/>
+                                    <br/>
+                                    <c:if test="${post.modificationDate!=null}">
+                                        <spring:message code="label.modify"/>&nbsp;
+                                        <jtalks:format value="${post.modificationDate}" pattern="dd.MM.yy"/>
+                                        <br/>
+                                    </c:if>
+                                    <br/>
+                                    <div>
+                                        <a class="btn"
+                                           href="${pageContext.request.contextPath}/posts/${post.id}">
+                                            <spring:message code="label.goToPost"/>
+                                        </a>
+                                    </div>
+                                    <br/>
                                 </td>
                                 <td class='post-content-td'>
-                                    <div>
-                                        <div class='user-posts-date-title'>
-                                            <spring:message code="label.added"/>&nbsp;
-                                            <jtalks:format value="${post.creationDate}"/>
-                                        </div>
-                                        <div class='user-posts-buttons'>
-
-                                            <a class="btn btn-mini"
-                                               href="${pageContext.request.contextPath}/posts/${post.id}">
-                                                <spring:message code="label.goToPost"/>
-                                            </a>
-
-                                        </div>
-                                    </div>
-                                    <hr/>
-                                    <div>
-                                        <jtalks:bb2html bbCode="${post.postContent}"/>
-                                        <br/><br/><br/>
-                                    </div>
-                                    <c:if test="${post.modificationDate!=null}">
-                                        <hr/>
-                                        <div>
-                                            <spring:message code="label.modify"/>
-                                            <jtalks:format value="${post.modificationDate}"/>
-                                        </div>
-                                    </c:if>
-
+                                    <jtalks:postContent text="${post.postContent}"/>
+                                    <br/>
                                 </td>
                             </tr>
                         </jtalks:hasPermission>

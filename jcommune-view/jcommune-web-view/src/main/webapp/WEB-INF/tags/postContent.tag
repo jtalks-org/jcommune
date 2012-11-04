@@ -17,24 +17,25 @@
 <%@ tag language="java" pageEncoding="UTF-8" %>
 <%@ tag body-content="empty" %>
 <%@ attribute name="text" required="true" type="java.lang.String" %>
-<%@ attribute name="signature" required="true" type="java.lang.String" %>
+<%@ attribute name="signature" required="false" type="java.lang.String" %>
 <%@ attribute name="modificationDate" required="false" type="org.joda.time.DateTime" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<div>
-    <jtalks:bb2html bbCode="${text}"/>
+<div class="word-wrap"><jtalks:bb2html bbCode="${text}"/>
     <c:if test="${!empty modificationDate}">
         <br/><br/>
         <spring:message code="label.modify"/>
         <jtalks:format value="${modificationDate}"/>
     </c:if>
 </div>
-<div align="left">
-    <hr/>
-    <span class='signature'>
-         <jtalks:bb2html bbCode="${signature}"/>
-    </span>
-</div>
+<c:if test="${!empty signature}">
+    <div  class="word-wrap" align="left">
+        <hr/>
+        <span class='signature'>
+            <jtalks:bb2html bbCode="${signature}"/>
+        </span>
+    </div>
+</c:if>
