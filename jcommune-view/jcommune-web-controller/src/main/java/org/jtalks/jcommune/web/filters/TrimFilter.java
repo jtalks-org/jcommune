@@ -16,15 +16,14 @@ package org.jtalks.jcommune.web.filters;
 
 import java.io.IOException;
 
-import javax.servlet.FilterChain;
 import javax.servlet.Filter;
+import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +39,7 @@ import com.cj.trim.trimFilter;
  *
  */
 public class TrimFilter implements Filter {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger logger = LoggerFactory.getLogger(TrimFilter.class);
     static final String EXCLUDE_PATTERNS_INIT_PARAMETER = "excludePatterns";
     private Filter wrappedTrimFilter;
     private String excludePatterns;
@@ -98,11 +97,8 @@ public class TrimFilter implements Filter {
      *         it returns ulr of request, otherwise it returns empty string
      */
     private String getRequestUrl(ServletRequest request) {
-        String url = StringUtils.EMPTY;
-        if (request instanceof HttpServletRequest) {
-            url = ((HttpServletRequest)request).getRequestURL().toString();
-        }
-        return url; 
+        StringBuffer requestURL = ((HttpServletRequest)request).getRequestURL();
+        return requestURL.toString(); 
     }
     
     /**
