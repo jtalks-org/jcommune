@@ -126,7 +126,6 @@ public class TransactionalPrivateMessageServiceTest {
         verify(mailService).sendReceivedPrivateMessageNotification(JC_USER, pm);
         verify(pmDao).saveOrUpdate(pm);
         verify(aclBuilder, times(2)).grant(GeneralPermission.READ);
-        verify(propertyDao).getByName(PROPERTY_NAME);
     }
 
     @Test
