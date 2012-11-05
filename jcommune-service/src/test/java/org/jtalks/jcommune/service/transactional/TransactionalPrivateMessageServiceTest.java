@@ -14,12 +14,15 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.common.model.entity.Property;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
+import org.jtalks.jcommune.model.dao.PropertyDao;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.service.UserService;
@@ -52,6 +55,9 @@ import static org.testng.Assert.assertTrue;
  */
 public class TransactionalPrivateMessageServiceTest {
 
+    private static final String PROPERTY_NAME = "property";
+    private static final boolean SENDING_NOTIFICATIONS_ENABLED = true;
+
     @Mock
     private PrivateMessageDao pmDao;
     @Mock
@@ -62,6 +68,9 @@ public class TransactionalPrivateMessageServiceTest {
     private UserDataCacheService userDataCache;
     @Mock
     private MailService mailService;
+    @Mock
+    private PropertyDao propertyDao;
+    private JCommuneProperty sendingNotificationsEnabledProperty = JCommuneProperty.SENDING_NOTIFICATIONS_ENABLED;
 
     private TransactionalPrivateMessageService pmService;
 
@@ -79,9 +88,13 @@ public class TransactionalPrivateMessageServiceTest {
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
+        sendingNotificationsEnabledProperty.setName(PROPERTY_NAME);
+        sendingNotificationsEnabledProperty.setPropertyDao(propertyDao);
+        when(propertyDao.getByName(PROPERTY_NAME)).
+                thenReturn(new Property(PROPERTY_NAME, String.valueOf(SENDING_NOTIFICATIONS_ENABLED)));
         aclBuilder = mockAclBuilder();
         pmService = new TransactionalPrivateMessageService(pmDao, securityService, userService, userDataCache,
-                mailService);
+                mailService, sendingNotificationsEnabledProperty);
         when(userService.getCurrentUser()).thenReturn(user);
     }
 

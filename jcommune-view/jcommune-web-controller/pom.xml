@@ -70,6 +70,10 @@
             <groupId>com.google.code</groupId>
             <artifactId>kaptcha</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.cj.trim</groupId>
+            <artifactId>trim-filter</artifactId>
+        </dependency>
     </dependencies>
 
     <properties>

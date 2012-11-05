@@ -137,6 +137,7 @@
         <constructor-arg ref="userService"/>
         <constructor-arg ref="userDataCacheService"/>
         <constructor-arg ref="mailService"/>
+        <constructor-arg ref="sendingNotificationsProperty"/>
     </bean>
 
     <bean id="pollService"

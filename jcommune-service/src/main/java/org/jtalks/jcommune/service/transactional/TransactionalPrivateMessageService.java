@@ -18,6 +18,7 @@ import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.service.PrivateMessageService;
@@ -47,6 +48,7 @@ public class TransactionalPrivateMessageService
     private final UserService userService;
     private final UserDataCacheService userDataCache;
     private final MailService mailService;
+    private final JCommuneProperty sendingNotificationsEnabledProperty;
 
     /**
      * Creates the instance of service.
@@ -61,12 +63,14 @@ public class TransactionalPrivateMessageService
                                               SecurityService securityService,
                                               UserService userService,
                                               UserDataCacheService userDataCache,
-                                              MailService mailService) {
+                                              MailService mailService,
+                                              JCommuneProperty sendingNotificationsEnabledProperty) {
         super(pmDao);
         this.securityService = securityService;
         this.userService = userService;
         this.userDataCache = userDataCache;
         this.mailService = mailService;
+        this.sendingNotificationsEnabledProperty = sendingNotificationsEnabledProperty;
     }
 
     /**
@@ -106,7 +110,9 @@ public class TransactionalPrivateMessageService
         securityService.createAclBuilder().grant(GeneralPermission.READ).to(userFrom).on(pm).flush();
 
         long pmId = pm.getId();
-        mailService.sendReceivedPrivateMessageNotification(recipient, pm);
+        if (sendingNotificationsEnabledProperty.booleanValue()) {
+            mailService.sendReceivedPrivateMessageNotification(recipient, pm);
+        }
 
         logger.debug("Private message to user {} was sent. Message id={}", recipient.getUsername(), pmId);
 
@@ -185,7 +191,9 @@ public class TransactionalPrivateMessageService
         securityService.createAclBuilder().grant(GeneralPermission.READ).to(userFrom).on(pm).flush();
 
         long pmId = pm.getId();
-        mailService.sendReceivedPrivateMessageNotification(recipient, pm);
+        if (sendingNotificationsEnabledProperty.booleanValue()) {
+            mailService.sendReceivedPrivateMessageNotification(recipient, pm);
+        }
 
         logger.debug("Private message(was draft) to user {} was sent. Message id={}",
                 recipient.getUsername(), pmId);
