@@ -57,6 +57,7 @@ public class TransactionalPrivateMessageServiceTest {
 
     private static final String PROPERTY_NAME = "property";
     private static final boolean SENDING_NOTIFICATIONS_ENABLED = true;
+    private static final boolean SENDING_NOTIFICATIONS_DISABLED = false;
 
     @Mock
     private PrivateMessageDao pmDao;
@@ -90,8 +91,6 @@ public class TransactionalPrivateMessageServiceTest {
         initMocks(this);
         sendingNotificationsEnabledProperty.setName(PROPERTY_NAME);
         sendingNotificationsEnabledProperty.setPropertyDao(propertyDao);
-        when(propertyDao.getByName(PROPERTY_NAME)).
-                thenReturn(new Property(PROPERTY_NAME, String.valueOf(SENDING_NOTIFICATIONS_ENABLED)));
         aclBuilder = mockAclBuilder();
         pmService = new TransactionalPrivateMessageService(pmDao, securityService, userService, userDataCache,
                 mailService, sendingNotificationsEnabledProperty);
@@ -118,6 +117,9 @@ public class TransactionalPrivateMessageServiceTest {
     public void testSendMessage() throws NotFoundException {
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
+        when(propertyDao.getByName(PROPERTY_NAME)).
+                thenReturn(new Property(PROPERTY_NAME, String.valueOf(SENDING_NOTIFICATIONS_ENABLED)));
+
         PrivateMessage pm = pmService.sendMessage("body", "title", JC_USER, user);
 
         assertFalse(pm.isRead());
@@ -126,6 +128,24 @@ public class TransactionalPrivateMessageServiceTest {
         verify(mailService).sendReceivedPrivateMessageNotification(JC_USER, pm);
         verify(pmDao).saveOrUpdate(pm);
         verify(aclBuilder, times(2)).grant(GeneralPermission.READ);
+        verify(propertyDao).getByName(PROPERTY_NAME);
+    }
+
+    @Test
+    public void testSendMessageNotificationDisabled() throws NotFoundException {
+        when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
+
+        when(propertyDao.getByName(PROPERTY_NAME)).
+                thenReturn(new Property(PROPERTY_NAME, String.valueOf(SENDING_NOTIFICATIONS_DISABLED)));
+
+        PrivateMessage pm = pmService.sendMessage("body", "title", JC_USER, user);
+
+        assertFalse(pm.isRead());
+        assertEquals(pm.getStatus(), PrivateMessageStatus.SENT);
+        verify(userDataCache).incrementNewMessageCountFor(USERNAME);
+        verify(pmDao).saveOrUpdate(pm);
+        verify(aclBuilder, times(2)).grant(GeneralPermission.READ);
+        verify(propertyDao).getByName(PROPERTY_NAME);
     }
 
     @Test
@@ -190,6 +210,8 @@ public class TransactionalPrivateMessageServiceTest {
     @Test
     public void testSendDraft() throws NotFoundException {
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
+        when(propertyDao.getByName(PROPERTY_NAME)).
+                thenReturn(new Property(PROPERTY_NAME, String.valueOf(SENDING_NOTIFICATIONS_ENABLED)));
 
         PrivateMessage pm = pmService.sendDraft(1L, "body", "title", JC_USER, user);
 
@@ -200,6 +222,24 @@ public class TransactionalPrivateMessageServiceTest {
         verify(pmDao).saveOrUpdate(pm);
         verify(securityService).deleteFromAcl(pm);
         verify(aclBuilder, times(2)).grant(GeneralPermission.READ);
+        verify(propertyDao).getByName(PROPERTY_NAME);
+    }
+
+    @Test
+    public void testSendDraftNotificationDisabled() throws NotFoundException {
+        when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
+        when(propertyDao.getByName(PROPERTY_NAME)).
+                thenReturn(new Property(PROPERTY_NAME, String.valueOf(SENDING_NOTIFICATIONS_DISABLED)));
+
+        PrivateMessage pm = pmService.sendDraft(1L, "body", "title", JC_USER, user);
+
+        assertFalse(pm.isRead());
+        assertEquals(pm.getStatus(), PrivateMessageStatus.SENT);
+        verify(userDataCache).incrementNewMessageCountFor(USERNAME);
+        verify(pmDao).saveOrUpdate(pm);
+        verify(securityService).deleteFromAcl(pm);
+        verify(aclBuilder, times(2)).grant(GeneralPermission.READ);
+        verify(propertyDao).getByName(PROPERTY_NAME);
     }
 
     @Test
