@@ -110,7 +110,9 @@ public class TransactionalPrivateMessageService
         securityService.createAclBuilder().grant(GeneralPermission.READ).to(userFrom).on(pm).flush();
 
         long pmId = pm.getId();
+        System.out.println("sendingNotificationsEnabledProperty.booleanValue() = " + sendingNotificationsEnabledProperty.booleanValue());
         if (sendingNotificationsEnabledProperty.booleanValue()) {
+            System.out.println("Sending notification");
             mailService.sendReceivedPrivateMessageNotification(recipient, pm);
         }
 
