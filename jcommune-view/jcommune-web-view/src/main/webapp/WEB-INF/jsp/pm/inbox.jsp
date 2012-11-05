@@ -47,16 +47,18 @@
 
             <table class="table table-bordered table-condensed">
                 <thead>
-                <th class="pm_header_check">
-                    <input type="checkbox" class="check_all"/></th>
+                    <tr>
+                        <th class="pm_header_check">
+                            <input type="checkbox" class="check_all"/></th>
 
-                <th class="pm_header_info"><i class="icon-user"></i>
-                    <spring:message code="label.sender"/></th>
+                        <th class="pm_header_info"><i class="icon-user"></i>
+                            <spring:message code="label.sender"/></th>
 
-                <th><i class="icon-font"></i> <spring:message code="label.pm.title"/></th>
+                        <th><i class="icon-font"></i> <spring:message code="label.pm.title"/></th>
 
-                <th class="pm_sending_date"><i class="icon-calendar"></i>
-                    <spring:message code="label.sending_date"/></th>
+                        <th class="pm_sending_date"><i class="icon-calendar"></i>
+                            <spring:message code="label.sending_date"/></th>
+                    </tr>
                 </thead>
 
                 <tbody>
