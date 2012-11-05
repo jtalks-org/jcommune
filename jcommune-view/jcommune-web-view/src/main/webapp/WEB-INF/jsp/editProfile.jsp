@@ -49,10 +49,10 @@
                 
                 <div class='user-profile-header'>
                     <span class="pull-left thumbnail">
-                        <div id="avatarPreviewContainer" class="wraptocenter">
+                        <span id="avatarPreviewContainer" class="wraptocenter">
                             <%--String prefix "data:image/jpeg;base64," needed for correct image rendering--%>
-                           	<img id="avatarPreview" src="data:image/jpeg;base64,${editedUser.avatar}" alt="" />
-                        </div>
+                            <img id="avatarPreview" src="data:image/jpeg;base64,${editedUser.avatar}" alt="" />
+                        </span>
                     </span>
                     <h2 class="pull-right user-profile-username"><c:out value="${auth}"/></h2>
                 </div>
@@ -75,7 +75,7 @@
                 <div>
                     <fieldset>
                         <div class="control-group">
-                            <label for="" class="control-label"><spring:message code="label.firstname"/></label>
+                            <label class="control-label"><spring:message code="label.firstname"/></label>
                             <div class="controls">
                                 <form:input class="input-xlarge" path="firstName" value="${editedUser.firstName}"/>
                                 <br/>
@@ -84,7 +84,7 @@
                         </div>
                         
                         <div class="control-group">
-                            <label for="" class="control-label"><spring:message code="label.lastname"/></label>
+                            <label class="control-label"><spring:message code="label.lastname"/></label>
                             <div class="controls">
                                 <form:input class="input-xlarge" path="lastName" value="${editedUser.lastName}"/>
                                 <br/>
@@ -93,7 +93,7 @@
                         </div>
                         
                         <div class="control-group">
-                            <label for="" class="control-label"><spring:message code="label.signature"/></label>
+                            <label class="control-label"><spring:message code="label.signature"/></label>
                             <div class="controls">
                                 <form:input class="input-xlarge" path="signature" value="${editedUser.signature}"/>
                                 <br/>
@@ -102,18 +102,18 @@
                         </div>
                         
                         <div class="control-group">
-                            <label for="" class="control-label"><spring:message code="label.email"/></label>
+                            <label class="control-label"><spring:message code="label.email"/></label>
                             <div class="controls">
-                                <form:input class="input-xlarge" path="email" value="${editedUser.email}"/>
+                                <form:input class="input-xlarge" path="email"/>
                                 <br/>
                                 <form:errors path="email" cssClass="help-inline"/>
                             </div>
                         </div>
                         
                         <div class="control-group">
-                            <label for="" class="control-label"><spring:message code="label.language"/></label>
+                            <label class="control-label"><spring:message code="label.language"/></label>
                             <div class="controls">
-                                <form:select path="language" value="${editedUser.language}" class="input-medium">
+                                <form:select path="language" class="input-medium">
                                     <c:forEach items="${editedUser.languagesAvailable}" var="language">
                                         <form:option value="${language}">
                                             <spring:message code="${language.languageNameLabel}"/>
@@ -126,9 +126,9 @@
                         </div>
                         
                         <div class="control-group">
-                            <label for="" class="control-label"><spring:message code="label.pageSize"/></label>
+                            <label class="control-label"><spring:message code="label.pageSize"/></label>
                             <div class="controls">
-                                <form:select path="pageSize" value="${editedUser.pageSize}"
+                                <form:select path="pageSize"
                                          items="${editedUser.pageSizesAvailable}"
                                          class="input-mini"/>
                                 <br/>
@@ -137,7 +137,7 @@
                         </div>
                         
                         <div class="control-group">
-                            <label for="" class="control-label"><spring:message code="label.location"/></label>
+                            <label class="control-label"><spring:message code="label.location"/></label>
                             <div class="controls">
                                 <form:input path="location" class="input-xlarge" value="${editedUser.location}"/>
                                 <br/>
@@ -146,7 +146,7 @@
                         </div>
                         
                         <div class="control-group">
-                            <label for="" class="control-label"><spring:message code="label.currentPassword"/></label>
+                            <label class="control-label"><spring:message code="label.currentPassword"/></label>
                             <div class="controls">
                                 <form:input class="input-xlarge" type="password" path="currentUserPassword"/>
                                 <br/>
@@ -155,7 +155,7 @@
                         </div>
                         
                         <div class="control-group">
-                            <label for="" class="control-label"><spring:message code="label.newPassword"/></label>
+                            <label class="control-label"><spring:message code="label.newPassword"/></label>
                             <div class="controls">
                                 <form:input class="input-xlarge" type="password" path="newUserPassword"/>
                                 <br/>
@@ -164,7 +164,7 @@
                         </div>
                         
                         <div class="control-group">
-                            <label for="" class="control-label"><spring:message code="label.newPasswordConfirmation"/></label>
+                            <label class="control-label"><spring:message code="label.newPasswordConfirmation"/></label>
                             <div class="controls">
                                 <form:input class="input-xlarge" type="password" path="newUserPasswordConfirm"/>
                                 <br/>

@@ -57,7 +57,8 @@
         <tbody>
         <c:set var="colspanOfSectionName" value="3"/>
         <sec:authorize access="isAuthenticated()">
-            <c:set var="colspanOfSectionName" value="4"/>
+            <%-- TODO: change to 4 during below fix about unread posts --%>
+            <c:set var="colspanOfSectionName" value="3"/>
         </sec:authorize>
 
         <c:forEach var="section" items="${sectionList}">
