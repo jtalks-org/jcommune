@@ -26,7 +26,7 @@
 
 <%-- Container --%>
 <div class="container form-login-related">
-    <form action='<c:url value="/j_spring_security_check"/>' method="POST" name="form" id="form" class="form-vertical">
+    <form action='<c:url value="/j_spring_security_check"/>' method="POST" name="login-form" id="login-form" class="form-vertical">
         <fieldset>
             <legend><spring:message code="label.signin"/></legend>
             
@@ -57,7 +57,7 @@
             </div>
             
             <div class="form-actions">
-                <input type="submit" class="btn btn-primary" value="<spring:message code="label.signin"/>"></input><br/>
+                <input type="submit" class="btn btn-primary" value="<spring:message code="label.signin"/>"/><br/>
                 <a href='<c:url value="/password/restore"/>'><spring:message
                         code="label.restorePassword.prompt"/></a>
             </div>

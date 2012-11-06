@@ -40,7 +40,7 @@
             </c:choose>
 
             <div class="nav-collapse">
-                <form action='<c:url value="/search/"/>' method="GET" name="form" id="form"
+                <form action='<c:url value="/search/"/>' method="GET" name="search-form" id="search-form"
                       class="navbar-search pull-left dropdown">
                     <input id="searchText" name="searchText" type="text" class="search-query dropdown-toggle"
                            placeholder='<fmt:message key="label.search"/>' maxlength="50"
