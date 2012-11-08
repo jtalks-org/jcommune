@@ -343,10 +343,10 @@ div.anchor {
 
 
 .modal .close {
-    padding: 0; 
-    cursor: pointer; 
-    background: transparent; 
-    border: 0; 
+    padding: 0;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
     -webkit-appearance: none;
 }
 
@@ -355,14 +355,14 @@ div.anchor {
 }
 
 #signin-modal-dialog {
-    width: 300px; 
+    width: 300px;
     margin: -150px 0px 0px -150px;
 }
 
 #signin-modal-dialog #signin-submit-button {
-    clear: left; 
-    width: 100%; 
-    height: 32px; 
+    clear: left;
+    width: 100%;
+    height: 32px;
     font-size: 13px;
 }
 
@@ -377,8 +377,8 @@ div.anchor {
 
 
 #signup-modal-dialog {
-    margin: -250px 0px 0px -150px; 
-    width: 350px; 
+    margin: -250px 0px 0px -150px;
+    width: 350px;
     max-height: none;
 }
 
@@ -395,10 +395,20 @@ div.anchor {
     margin-left: 20px;
 }
 
-#signup-modal-dialog .captcha-images {
-    display: inline;
-}
-
 #signup-modal-dialog .captcha-images img {
     vertical-align: middle;
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+    padding-right: 0px;
+    padding-left: 0px;
+    -moz-box-sizing: border-box;
+}
+
+#captcha-img:hover,
+#captcha-refresh:hover {
+    cursor: hand;
+    cursor: pointer;
 }

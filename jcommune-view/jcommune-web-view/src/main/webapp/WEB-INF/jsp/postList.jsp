@@ -124,7 +124,7 @@
         <%-- Post --%>
         <div class="post">
             <div class="anchor">
-                <a name="${post.id}">anchor</a>
+                <a id="${post.id}">anchor</a>
             </div>
             <table class="table table-striped table-bordered table-condensed">
                 <tr>
@@ -240,7 +240,7 @@
                                     </a>
                                 </jtalks:hasPermission>
                                 <a class="btn btn-mini" href="#"
-                                   title="<spring:message code='label.tips.up'/>">&#8657</a>
+                                   title="<spring:message code='label.tips.up'/>">&#8657;</a>
                             </div>
                         </div>
                     </td>

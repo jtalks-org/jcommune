@@ -52,6 +52,8 @@ public class JCUser extends User {
     private static final long serialVersionUID = 19981017L;
     private Set<UserContact> contacts = new HashSet<UserContact>();
     private List<Group> groups = new ArrayList<Group>();
+    
+    private DateTime avatarLastModificationTime = new DateTime(System.currentTimeMillis());
 
     /**
      * Only for hibernate usage.
@@ -241,4 +243,20 @@ public class JCUser extends User {
     public boolean isAnonymous() {
         return false;
     }
+
+    /**
+     * @return last modification time of avatar
+     */
+    public DateTime getAvatarLastModificationTime() {
+        return avatarLastModificationTime;
+    }
+
+    /**
+     * @param avatarLastModificationTime time when avatar was last modified
+     */
+    public void setAvatarLastModificationTime(DateTime avatarLastModificationTime) {
+        this.avatarLastModificationTime = avatarLastModificationTime;
+    }
+    
+    
 }

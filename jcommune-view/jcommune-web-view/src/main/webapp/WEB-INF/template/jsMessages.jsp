@@ -19,64 +19,60 @@
 <%--
  This page contains localized messages to be used in JS files on a client side
 --%>
-$labelDeleteContactConfirmation = '<spring:message code="label.deleteContactConfirmation"/>';
-$labelDeleteContactFailture = '<spring:message code="label.deleteContactFailture"/>';
+$labelDeleteContactConfirmation = '<spring:message code="label.deleteContactConfirmation" htmlEscape="true"/>';
+$labelDeleteContactFailture = '<spring:message code="label.deleteContactFailture" htmlEscape="true"/>';
 
-$labelDeletePmGroupConfirmation = '<spring:message code="label.deletePMGroupConfirmation"/>';
+$labelDeletePmGroupConfirmation = '<spring:message code="label.deletePMGroupConfirmation" htmlEscape="true"/>';
 
-$labelValidationUsercontactNotMatch = '<spring:message code="validation.usercontact.notmatch"/>';
-$labelContactType = '<spring:message code="label.contact.type"/>';
-$labelContactValue = '<spring:message code="label.contact.value"/>';
-$labelContactValueInfo = '<spring:message code="label.contact.value.info"/>';
-$labelContactsTipsDelete = '<spring:message code="label.contacts.tips.delete"/>';
-$labelContactsAddDialog = '<spring:message code="label.contacts.addDialog"/>';
+$labelValidationUsercontactNotMatch = '<spring:message code="validation.usercontact.notmatch" htmlEscape="true"/>';
+$labelContactType = '<spring:message code="label.contact.type" htmlEscape="true"/>';
+$labelContactValue = '<spring:message code="label.contact.value" htmlEscape="true"/>';
+$labelContactValueInfo = '<spring:message code="label.contact.value.info" htmlEscape="true"/>';
+$labelContactsTipsDelete = '<spring:message code="label.contacts.tips.delete" htmlEscape="true"/>';
+$labelContactsAddDialog = '<spring:message code="label.contacts.addDialog" htmlEscape="true"/>';
 
-$labelRegistrationSuccess = '<spring:message code="label.registration.success"/>';
-$labelRegistrationFailture = '<spring:message code="label.registration.failture"/>';
-$labelUrlHeader = '<spring:message code="label.url.header"/>';
-$labelUrlText = '<spring:message code="label.url.text"/>';
-$labelUrl = '<spring:message code="label.url"/>';
-$labelUrlInfo = '<spring:message code="label.url.info"/>';
-$labelUrlRequired = '<spring:message code="label.url.required"/>';
-$labelImgHeader = '<spring:message code="label.img.header"/>';
+$labelRegistrationSuccess = '<spring:message code="label.registration.success" htmlEscape="true"/>';
+$labelRegistrationFailture = '<spring:message code="label.registration.failture" htmlEscape="true"/>';
+$labelUrlHeader = '<spring:message code="label.url.header" htmlEscape="true"/>';
+$labelUrlText = '<spring:message code="label.url.text" htmlEscape="true"/>';
+$labelUrl = '<spring:message code="label.url" htmlEscape="true"/>';
+$labelUrlInfo = '<spring:message code="label.url.info" htmlEscape="true"/>';
+$labelUrlRequired = '<spring:message code="label.url.required" htmlEscape="true"/>';
+$labelImgHeader = '<spring:message code="label.img.header" htmlEscape="true"/>';
 
-$labelPreview= '<spring:message code="label.answer.preview"/>';
-$labelEdit= '<spring:message code="label.edit"/>';
+$labelPreview= '<spring:message code="label.answer.preview" htmlEscape="true"/>';
+$labelEdit= '<spring:message code="label.edit" htmlEscape="true"/>';
 
-$labelPollTitleWithEnding = '<spring:message code="label.poll.title.with.ending"/>';
-$labelPollVote = '<spring:message code="label.poll.vote"/>';
+$labelPollTitleWithEnding = '<spring:message code="label.poll.title.with.ending" htmlEscape="true"/>';
+$labelPollVote = '<spring:message code="label.poll.vote" htmlEscape="true"/>';
 
 
-$labelSelectedColor = '<spring:message code="label.selected.color"/>';
+$labelSelectedColor = '<spring:message code="label.selected.color" htmlEscape="true"/>';
 
-$localeCode = '<spring:message code="locale.code"/>';
+$localeCode = '<spring:message code="locale.code" htmlEscape="true"/>';
 
-$labelSubscribe = '<spring:message code="label.subscribe"/>';
-$labelSubscribeTooltip = '<spring:message code="label.subscribe.tooltip"/>';
-$labelUnsubscribe = '<spring:message code="label.unsubscribe"/>';
-$labelUnsubscribeTooltip = '<spring:message code="label.unsubscribe.tooltip"/>';
+$labelSubscribe = '<spring:message code="label.subscribe" htmlEscape="true"/>';
+$labelSubscribeTooltip = '<spring:message code="label.subscribe.tooltip" htmlEscape="true"/>';
+$labelUnsubscribe = '<spring:message code="label.unsubscribe" htmlEscape="true"/>';
+$labelUnsubscribeTooltip = '<spring:message code="label.unsubscribe.tooltip" htmlEscape="true"/>';
 
-$labelErrorsNotEmpty = '<spring:message code="label.errors.not_empty"/>';
-$labelDeleteAvatarConfirmation = '<spring:message code="label.deleteAvatarConfirmation"/>';
-$labelImageWrongFormatJs = '<spring:message code="image.wrong.format.js"/>';
-$labelImageWrongSizeJs = '<spring:message code="image.wrong.size.js"/>';
+$labelErrorsNotEmpty = '<spring:message code="label.errors.not_empty" htmlEscape="true"/>';
+$labelDeleteAvatarConfirmation = '<spring:message code="label.deleteAvatarConfirmation" htmlEscape="true"/>';
+$labelImageWrongFormatJs = '<spring:message code="image.wrong.format.js" htmlEscape="true"/>';
+$labelImageWrongSizeJs = '<spring:message code="image.wrong.size.js" htmlEscape="true"/>';
 
-$labelNotSpecified = '<spring:message code="label.not.specified"/>';
+$labelNotSpecified = '<spring:message code="label.not.specified" htmlEscape="true"/>';
 
-$labelError500Detail = '<spring:message code="label.500.detail"/>';
+$labelError500Detail = '<spring:message code="label.500.detail" htmlEscape="true"/>';
 
-$labelRegistration = '<spring:message code="label.signup"/>'
-$labelUsername = '<spring:message code="label.username"/>'
-$labelUsernameHelp = '<spring:message code="label.tip.username"/>'
-$labelEmail = '<spring:message code="label.tip.email"/>'
-$labelPassword = '<spring:message code="label.password"/>'
-$labelPasswordHelp = '<spring:message code="label.tip.password"/>'
-$labelPasswordConfirmation = '<spring:message code="label.confirmation"/>'
-$labelPasswordConfirmationHelp = null
-$signupButtonLabel = '<spring:message code="label.signup"/>'
-$labelEmailHelp = null
-$labelCaptcha = '<spring:message code="label.tip.captcha"/>'
-$labelRememberMe = '<spring:message code="label.auto_logon"/>'
-$labelRestorePassword = '<spring:message code="label.restorePassword.prompt"/>'
-$labelSignin = '<spring:message code="label.signin"/>'
-$labelLoginError = '<spring:message code="label.login_error"/>'
+$labelRegistration = '<spring:message code="label.signup" htmlEscape="true"/>'
+$labelUsername = '<spring:message code="label.username" htmlEscape="true"/>'
+$labelEmail = '<spring:message code="label.tip.email" htmlEscape="true"/>'
+$labelPassword = '<spring:message code="label.password" htmlEscape="true"/>'
+$labelPasswordConfirmation = '<spring:message code="label.confirmation" htmlEscape="true"/>'
+$signupButtonLabel = '<spring:message code="label.signup" htmlEscape="true"/>'
+$labelCaptcha = '<spring:message code="label.tip.captcha" htmlEscape="true"/>'
+$labelRememberMe = '<spring:message code="label.auto_logon" htmlEscape="true"/>'
+$labelRestorePassword = '<spring:message code="label.restorePassword.prompt" htmlEscape="true"/>'
+$labelSignin = '<spring:message code="label.signin" htmlEscape="true"/>'
+$labelLoginError = '<spring:message code="label.login_error" htmlEscape="true"/>'
