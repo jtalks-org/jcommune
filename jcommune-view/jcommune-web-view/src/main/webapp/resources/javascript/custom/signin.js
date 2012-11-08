@@ -52,7 +52,7 @@ function sendLoginPost() {
     var password = passwordElement.val();
 
     dialog.find('*').attr('disabled', true);
-    
+
     var query = "j_username=" + encodeURIComponent(username) + "&" + "j_password=" + encodeURIComponent(password);
     if (remember_me) {
         query = query + "&_spring_security_remember_me=on";
@@ -76,7 +76,7 @@ function sendLoginPost() {
                 ErrorUtils.addErrorStyles("#j_username");
                 ErrorUtils.addErrorStyles("#j_password");
 
-                passwordElement.append('<span class="help-inline _error">' +  $labelLoginError + '</span>');
+                passwordElement.after('<span class="help-inline _error">' +  $labelLoginError + '</span>');
             }
         },
         error: function(data) {
@@ -140,7 +140,7 @@ function showSigninDialog() {
             }
         }
     });
-    
+
     // send ajax-request on submit button click
     var submitButton = signinDialog.find("#signin-submit-button");
     submitButton.click(function(e) {
