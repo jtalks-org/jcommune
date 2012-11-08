@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.web.interceptors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -33,15 +35,24 @@ import java.io.IOException;
  */
 public class ChainBreakingInterceptor extends HandlerInterceptorAdapter {
 
+    private final static Logger logger = LoggerFactory.getLogger(ChainBreakingInterceptor.class);
+    
     /**
      * {@inheritDoc}
      */
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) throws IOException, ServletException {
-        HttpRequestHandler resourcehandler = ((HttpRequestHandler) handler);
-        resourcehandler.handleRequest(request, response);
-        //break interceptor chain
-        return false;
+        
+        if (handler instanceof HttpRequestHandler) {
+            HttpRequestHandler resourcehandler = ((HttpRequestHandler) handler);
+            resourcehandler.handleRequest(request, response);
+            //break interceptor chain
+            return false;
+        } else {
+            logger.warn("handler can not be cast to HttpRequestHandler. " +
+            		"It is of class " + handler.getClass().getCanonicalName());
+            return true;
+        }
     }
 }

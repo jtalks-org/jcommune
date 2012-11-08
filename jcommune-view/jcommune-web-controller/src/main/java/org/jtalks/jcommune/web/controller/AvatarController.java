@@ -16,12 +16,18 @@
 package org.jtalks.jcommune.web.controller;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.ImageFormatException;
@@ -63,6 +69,8 @@ public class AvatarController {
     static final String WRONG_FORMAT_RESOURCE_MESSAGE = "image.wrong.format";
     static final String WRONG_SIZE_RESOURCE_MESSAGE = "image.wrong.size";
     static final String COMMON_ERROR_RESOURCE_MESSAGE = "avatar.500.common.error";
+    public static final String HTTP_HEADER_DATETIME_PATTERN = "E, dd MMM yyyy HH:mm:ss z"; 
+    private static final String IF_MODIFIED_SINCE_HEADER = "If-Modified-Since";
 
     private AvatarService avatarService;
     private UserService userService;
@@ -131,19 +139,80 @@ public class AvatarController {
     /**
      * Write user avatar in response for rendering it on html pages.
      *
+     * @parra reqeust servlet request
      * @param response servlet response
      * @param id       user database identifier
      * @throws NotFoundException if user with given encodedUsername not found
      * @throws IOException       throws if an output exception occurred
      */
     @RequestMapping(value = "/users/{id}/avatar", method = RequestMethod.GET)
-    public void renderAvatar(HttpServletResponse response, @PathVariable Long id)
+    public void renderAvatar(
+            HttpServletRequest request, 
+            HttpServletResponse response, 
+            @PathVariable Long id)
             throws NotFoundException, IOException {
         JCUser user = userService.get(id);
-        byte[] avatar = user.getAvatar();
-        response.setContentType("image/jpeg");
-        response.setContentLength(avatar.length);
-        response.getOutputStream().write(avatar);
+        
+        Date ifModifiedDate = getIfModifiedSineHeader(request);
+        if (!user.getAvatarLastModificationTime().isAfter(ifModifiedDate.getTime())) {
+            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+        } else {
+            byte[] avatar = user.getAvatar();
+            response.setContentType("image/jpeg");
+            response.setContentLength(avatar.length);
+        
+            Date avatarLastModificationDate = new Date(
+                    user.getAvatarLastModificationTime().getMillis());
+            setupAvatarHeaders(response, avatarLastModificationDate);
+            response.getOutputStream().write(avatar);
+        }
+    }
+    
+    
+    /**
+     * Check 'If-Modified-Since' header in the request and converts it to 
+     * {@link java.util.Date} representation
+     * @param request - HTTP request
+     * @return If-Modified-Since header or Jan 1, 1970 if it is not set or
+     *      can't be parsed
+     */
+    private Date getIfModifiedSineHeader(HttpServletRequest request) {
+        String ifModifiedSinceHeader = request.getHeader(IF_MODIFIED_SINCE_HEADER);
+        Date ifModifiedSinceDate = new Date(0);
+        if (ifModifiedSinceHeader != null) {
+            try {
+                DateFormat dateFormat = new SimpleDateFormat(
+                        HTTP_HEADER_DATETIME_PATTERN,
+                        Locale.US); 
+                ifModifiedSinceDate = dateFormat.parse(ifModifiedSinceHeader);
+            } catch (ParseException e) {
+                // in case date is wrong or not specified date will be Jan 1, 1970.
+            }
+        }
+        
+        return ifModifiedSinceDate;
+    }
+    
+    /**
+     * Sets up avatar cache related headers. 
+     * @param response - HTTP response object where set headers
+     * @param avatarLastModificationTime - last modification time of avatar
+     */
+    private void setupAvatarHeaders(HttpServletResponse response, 
+            Date avatarLastModificationTime) {
+        response.setHeader("Pragma", "public");
+        response.setHeader("Cache-Control", "public");
+        response.addHeader("Cache-Control", "must-revalidate");
+        response.addHeader("Cache-Control","max-age=0");
+        String formattedDateExpires = DateFormatUtils.format(
+                new Date(System.currentTimeMillis()), 
+                HTTP_HEADER_DATETIME_PATTERN, Locale.US);
+        response.setHeader("Expires", formattedDateExpires);
+    
+        String formattedDateLastModified = DateFormatUtils.format(
+                avatarLastModificationTime, 
+                HTTP_HEADER_DATETIME_PATTERN, Locale.US);
+        response.setHeader("Last-Modified", formattedDateLastModified);
     }
 
     /**

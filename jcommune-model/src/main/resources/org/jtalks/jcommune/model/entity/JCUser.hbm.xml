@@ -67,6 +67,9 @@
                     <column name="GROUP_ID" not-null="true"/>
                 </many-to-many>
             </bag>
+            
+            <property column="AVATAR_LAST_MODIFICATION_TIME" name="avatarLastModificationTime" 
+                    type="org.joda.time.contrib.hibernate.PersistentDateTime" not-null="false"/>
         </joined-subclass>
     </class>
 
