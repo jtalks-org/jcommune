@@ -113,7 +113,7 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
 
         this.getDao().update(simplePage);
 
-        Group group = groupDao.getMatchedByName(AdministrationGroup.ADMIN.getName()).get(0);
+        Group group = groupDao.getGroupByName(AdministrationGroup.ADMIN.getName());
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(group).on(simplePage).flush();
 
         logger.info("SimplePage registered: {}", simplePage.getName());

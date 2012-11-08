@@ -111,7 +111,7 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
         of(pollOptionDao).update(var(PollItem.class));
         closure.each(poll.getPollItems());
         securityService.createAclBuilder().grant(GeneralPermission.WRITE)
-                .to(groupDao.getMatchedByName(AdministrationGroup.USER.getName()).get(0))
+                .to(groupDao.getGroupByName(AdministrationGroup.USER.getName()))
                 .on(poll).flush();
     }
 
