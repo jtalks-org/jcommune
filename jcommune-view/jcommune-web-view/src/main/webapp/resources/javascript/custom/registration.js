@@ -27,7 +27,7 @@ $(function () {
 
     $("#signup").on('click', function (e) {
         e.preventDefault();
-        
+
         var signupDialog = createDialog();
 
         // show dialog
@@ -47,7 +47,7 @@ $(function () {
         signupDialog.find('#username').focus();
 
         var submitButton = signupDialog.find('#signup-submit-button');
-        
+
         // returns focus back to uername field
         submitButton.keydown(function(e) {
             if ((e.keyCode || e.charCode) == 9) { //TAB key
@@ -168,19 +168,13 @@ function createCaptchaElements() {
 }
 
 /**
- * Create form field with given label(placeholder), id, type and help text (optional)
+ * Create form field with given label(placeholder), id, type
  */
-function createFormElement(label, id, helpText, type) {
+function createFormElement(label, id, type) {
     var elementHtml = ' \
         <div class="control-group"> \
             <div class="controls"> \
                 <input type="' + type + '" id="'+ id + '" name="'+ id + '" placeholder="' + label +'" class="input-xlarge" /> \
-    ';
-    if (helpText != null) {
-        elementHtml +=  
-                '<p class="help-block">' + helpText + '</p>';
-    }
-    elementHtml += ' \
             </div> \
         </div> \
     ';
@@ -195,15 +189,15 @@ function createDialog() {
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> \
                 <h3>' + $labelRegistration + '</h3> \
             </div> \
-            <div class="modal-body">' + 
-            createFormElement($labelUsername, 'username', $labelUsernameHelp, 'text') +
-            createFormElement($labelEmail, 'email', $labelEmailHelp, 'text') +
-            createFormElement($labelPassword, 'password', $labelPasswordHelp, 'password') + 
-            createFormElement($labelPasswordConfirmation, 'passwordConfirm', $labelPasswordConfirmationHelp, 'password') + 
+            <div class="modal-body">' +
+            createFormElement($labelUsername, 'username', 'text') +
+            createFormElement($labelEmail, 'email', 'text') +
+            createFormElement($labelPassword, 'password', 'password') +
+            createFormElement($labelPasswordConfirmation, 'passwordConfirm', 'password') +
             createCaptchaElements() + ' \
             </div> \
             <div class="modal-footer"> \
-                <button id="signup-submit-button" class="btn btn-primary" name="commit" type="submit">' + $signupButtonLabel + '</button> \
+                <button id="signup-submit-button" class="btn btn-primary btn-block" name="commit" type="submit">' + $signupButtonLabel + '</button> \
             </div> \
         </form> \
         ');

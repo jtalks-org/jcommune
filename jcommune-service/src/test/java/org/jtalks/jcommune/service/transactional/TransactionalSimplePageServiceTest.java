@@ -114,10 +114,7 @@ public class TransactionalSimplePageServiceTest {
         JCUser user = new JCUser("username", "email", "password");
 
         when(dao.isExist(PATH_NAME)).thenReturn(false);
-        Group group = new Group();
-        List<Group> groupList=new ArrayList<Group>();
-        groupList.add(group);
-        when(groupDao.getMatchedByName(AdministrationGroup.ADMIN.getName())).thenReturn(groupList);
+        when(groupDao.getGroupByName(AdministrationGroup.ADMIN.getName())).thenReturn(new Group());
 
         SimplePage actualSimplePage = simplePageService.createPage(simplePage, user);
 
