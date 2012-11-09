@@ -32,6 +32,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -74,6 +75,7 @@ public class UserControllerTest {
     private SecurityContextHolderFacade securityFacade;
     private RememberMeServices rememberMeServices;
     private SecurityContext securityContext;
+    private SessionAuthenticationStrategy sessionStrategy;
     
     @BeforeMethod
     public void setUp() throws IOException {
@@ -83,8 +85,10 @@ public class UserControllerTest {
         securityContext = mock(SecurityContext.class);
         when(securityFacade.getContext()).thenReturn(securityContext);
         rememberMeServices = mock(RememberMeServices.class);
+        sessionStrategy = mock(SessionAuthenticationStrategy.class);
 
-        userController = new UserController(userService,authenticationManager,securityFacade,rememberMeServices);
+        userController = new UserController(userService, authenticationManager, 
+                securityFacade, rememberMeServices, sessionStrategy);
     }
 
     @Test
@@ -239,6 +243,8 @@ public class UserControllerTest {
 		verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
 		verify(securityContext).setAuthentication(expectedToken);
 		verify(rememberMeServices, never()).loginSuccess(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Authentication.class));
+		verify(sessionStrategy).onAuthentication(any(Authentication.class), 
+		        any(HttpServletRequest.class), any(HttpServletResponse.class));
     }
     
     @Test
@@ -259,6 +265,8 @@ public class UserControllerTest {
 		verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
 		verify(securityContext).setAuthentication(expectedToken);
 		verify(rememberMeServices).loginSuccess(eq(httpRequest), eq(httpResponse), any(UsernamePasswordAuthenticationToken.class));
+		verify(sessionStrategy).onAuthentication(any(Authentication.class), 
+		        any(HttpServletRequest.class), any(HttpServletResponse.class));
     }
     
     @Test

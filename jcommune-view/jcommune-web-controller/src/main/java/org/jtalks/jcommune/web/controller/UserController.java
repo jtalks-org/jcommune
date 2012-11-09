@@ -34,6 +34,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -65,17 +66,22 @@ public class UserController {
     private AuthenticationManager authenticationManager;
     private SecurityContextHolderFacade securityFacade;
     private RememberMeServices rememberMeServices;
+    private SessionAuthenticationStrategy sessionStrategy;
     
     /**
      * @param userService to delegate business logic invocation
+     * @param sessionStratedy used to call after authentication to store users 
+     *      online list
      */
     @Autowired
     public UserController(UserService userService, AuthenticationManager authenticationManager, 
-    		SecurityContextHolderFacade securityFacade, RememberMeServices rememberMeServices) {
+    		SecurityContextHolderFacade securityFacade, RememberMeServices rememberMeServices,
+    		SessionAuthenticationStrategy sessionStratedy) {
         this.userService = userService;
 		this.authenticationManager = authenticationManager;
 		this.securityFacade = securityFacade;
 		this.rememberMeServices = rememberMeServices;
+		this.sessionStrategy = sessionStratedy;
     }
 
     /**
@@ -227,8 +233,11 @@ public class UserController {
 			token.setDetails(user);
 			Authentication auth = authenticationManager.authenticate(token);
 			securityFacade.getContext().setAuthentication(auth);
-			if (rememberMe.equals("on") && auth.isAuthenticated()) {
-				rememberMeServices.loginSuccess(request, response, auth);
+			if (auth.isAuthenticated()) {
+			    sessionStrategy.onAuthentication(auth, request, response);
+			    if (rememberMe.equals("on")) {
+			        rememberMeServices.loginSuccess(request, response, auth);
+			    }
 			}
 			return new JsonResponse(auth.isAuthenticated() ? "success" : "fail");
 		} catch (Exception e) {
