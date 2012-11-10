@@ -107,6 +107,10 @@ public class TransactionalTopicModificationService implements TopicModificationS
         Post answer = new Post(currentUser, answerBody);
         topic.addPost(answer);
         dao.update(topic);
+        
+        Branch branch = topic.getBranch();
+        branch.setLastPost(answer);
+        branchDao.update(branch);
 
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(currentUser).on(answer).flush();
         notificationService.topicChanged(topic);
@@ -149,6 +153,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         Branch branch = topicDto.getBranch();
 
         branch.addTopic(topic);
+        branch.setLastPost(first);
         branchDao.update(branch);
 
         JCUser user = userService.getCurrentUser();

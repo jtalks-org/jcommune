@@ -57,6 +57,8 @@
                 <key column="BRANCH_ID"/>
                 <many-to-many column="USER_ID" class="org.jtalks.jcommune.model.entity.JCUser"/>
             </set>
+            
+            <many-to-one name="lastPost" column="LAST_POST" class="org.jtalks.jcommune.model.entity.Post" />
         </subclass>
     </class>
 

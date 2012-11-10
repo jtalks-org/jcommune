@@ -18,6 +18,7 @@ import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dto.JCommunePageRequest;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -150,5 +151,13 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         JCommunePageRequest pageRequest = new JCommunePageRequest(
                 page, userService.getCurrentUser().getPageSize(), pagingEnabled);
         return getDao().getPosts(topic, pageRequest);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Post getLastPostFor(Branch branch) {
+        return getDao().getLastPostFor(branch);
     }
 }

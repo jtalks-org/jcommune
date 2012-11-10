@@ -14,10 +14,15 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.jcommune.model.dao.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jtalks.jcommune.model.dao.BranchDao;
+import org.jtalks.jcommune.model.dao.PostDao;
+import org.jtalks.jcommune.model.dao.SectionDao;
+import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicModificationService;
@@ -26,9 +31,6 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The implementation of BranchService
@@ -111,21 +113,6 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
 //                boolean isUnreadPosts = getDao().isUnreadPostsInBranch(jcommuneBranch, user);
 //                jcommuneBranch.setUnreadPosts(isUnreadPosts);
 //            }
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void fillLastPostInLastUpdatedTopic(List<org.jtalks.common.model.entity.Branch> branches) {
-        for (org.jtalks.common.model.entity.Branch commonBranch : branches) {
-            Branch jcommuneBranch = (Branch) commonBranch;
-            Topic lastUpdatedTopic = topicDao.getLastUpdatedTopicInBranch(jcommuneBranch);
-            if (lastUpdatedTopic != null) {
-                Post lastPost = postDao.getLastPostInTopic(lastUpdatedTopic);
-                jcommuneBranch.setLastPostInLastUpdatedTopic(lastPost);
-            }
         }
     }
 

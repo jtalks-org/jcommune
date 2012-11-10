@@ -57,6 +57,7 @@ public final class PersistedObjectsFactory {
         Post post = new Post(user, "post content");
         newTopic.addPost(post);
         branch.addTopic(newTopic);
+        newTopic.setLastPost(post);
         persist(branch);
         return newTopic;
     }

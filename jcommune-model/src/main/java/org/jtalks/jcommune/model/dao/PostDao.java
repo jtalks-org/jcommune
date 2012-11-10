@@ -16,6 +16,7 @@ package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.jcommune.model.dto.JCommunePageRequest;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -46,14 +47,6 @@ public interface PostDao extends ChildRepository<Post> {
     Page<Post> getUserPosts(JCUser author, JCommunePageRequest pageRequest);
 
     /**
-     * Find the latest post in the forum topic.
-     * 
-     * @param topic the topic, in which we try to find
-     * @return the latest post in the forum topic
-     */
-    Post getLastPostInTopic(Topic topic);
-    
-    /**
      * Get all posts in the topic of forum.
      * 
      * @param topic for this topic we will find posts
@@ -62,4 +55,12 @@ public interface PostDao extends ChildRepository<Post> {
      *         all posts) and information for pagination
      */
     Page<Post> getPosts(Topic topic, JCommunePageRequest pageRequest);
+    
+    /**
+     * Get last post that was posted in a topic of branch.
+     * 
+     * @param branch in this branch post was posted
+     * @return last post that was posted in a topic of branch
+     */
+    Post getLastPostFor(Branch branch);
 }

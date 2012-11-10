@@ -46,13 +46,6 @@ public class TopicTest {
     }
 
     @Test
-    public void getLastPost() {
-        Post lastPost = topic.getLastPost();
-
-        assertEquals(lastPost, post2);
-    }
-
-    @Test
     public void addPost() throws InterruptedException {
         DateTime prevDate = topic.getModificationDate();
         Thread.sleep(25); // millisecond precise is a kind of fiction

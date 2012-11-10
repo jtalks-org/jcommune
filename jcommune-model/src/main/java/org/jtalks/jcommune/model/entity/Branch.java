@@ -14,14 +14,14 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import ch.lambdaj.Lambda;
-import org.apache.commons.lang.Validate;
-import org.joda.time.DateTime;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.commons.lang.Validate;
+
+import ch.lambdaj.Lambda;
 
 /**
  * Forum branch that contains topics related to branch theme.
@@ -30,6 +30,7 @@ import java.util.Set;
  * @author Kirill Afonin
  * @author Max Malakhov
  * @author masyan
+ * @author Anuar_Nurmakanov
  */
 public class Branch extends org.jtalks.common.model.entity.Branch
         implements SubscriptionAwareEntity {
@@ -39,8 +40,8 @@ public class Branch extends org.jtalks.common.model.entity.Branch
 
     private Integer topicsCount;
     private Integer postsCount;
-    private Post lastPostInLastUpdatedTopic;
     private boolean unreadPosts;
+    private Post lastPost;
 
     /**
      * For Hibernate use only
@@ -105,28 +106,6 @@ public class Branch extends org.jtalks.common.model.entity.Branch
         int index = topics.indexOf(topic);
         Validate.isTrue(index != -1, "There is no such topic in the branch");
         return index;
-    }
-
-
-    /**
-     * Get the branch's last updated topic.
-     * Updates include post addition/update/removal or changes in the topic itself.
-     *
-     * @return last topic or null if there are no topics in the branch
-     */
-    public Topic getLastUpdatedTopic() {
-        if (topics.isEmpty()) {
-            return null;
-        }
-        int lastTopicIndex = 0;
-        for (int i = 1; i < this.getTopicCount(); i++) {
-            DateTime currentTopicDate = topics.get(i).getModificationDate();
-            DateTime latestTopicDate = topics.get(lastTopicIndex).getModificationDate();
-            if (currentTopicDate.isAfter(latestTopicDate)) {
-                lastTopicIndex = i;
-            }
-        }
-        return topics.get(lastTopicIndex);
     }
 
     /**
@@ -219,25 +198,6 @@ public class Branch extends org.jtalks.common.model.entity.Branch
         this.postsCount = postsCount;
     }
 
-    /**
-     * Returns the last post of the last updated topic.
-     * Note, that field is transient, so we must define
-     * it by ourselves.
-     *
-     * @return the last post of the last updated topic
-     */
-    public Post getLastPostInLastUpdatedTopic() {
-        return lastPostInLastUpdatedTopic;
-    }
-
-    /**
-     * Sets the last post of the last updated topic.
-     *
-     * @param lastPostInLastUpdatedTopic the last post of the last updated topic
-     */
-    public void setLastPostInLastUpdatedTopic(Post lastPostInLastUpdatedTopic) {
-        this.lastPostInLastUpdatedTopic = lastPostInLastUpdatedTopic;
-    }
 
     /**
      * Returns state of unread posts in branch to user
@@ -255,5 +215,23 @@ public class Branch extends org.jtalks.common.model.entity.Branch
      */
     public void setUnreadPosts(boolean unreadPosts) {
         this.unreadPosts = unreadPosts;
+    }
+
+    /**
+     * Get last post in this branch.
+     * 
+     * @return last post in this branch
+     */
+    public Post getLastPost() {
+        return lastPost;
+    }
+
+    /**
+     * Set last post in this branch.
+     * 
+     * @return last post in this branch
+     */
+    public void setLastPost(Post lastPost) {
+        this.lastPost = lastPost;
     }
 }

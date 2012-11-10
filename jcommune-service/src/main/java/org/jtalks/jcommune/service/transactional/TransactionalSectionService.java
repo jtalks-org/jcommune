@@ -70,7 +70,6 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
         for(Section section: sections) {
             List<Branch> branches = section.getBranches();
             branchService.fillStatisticInfo(branches);
-            branchService.fillLastPostInLastUpdatedTopic(branches);
         }
     }
 

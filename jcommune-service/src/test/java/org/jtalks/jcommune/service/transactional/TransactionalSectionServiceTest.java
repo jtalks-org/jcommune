@@ -99,9 +99,7 @@ public class TransactionalSectionServiceTest {
         int sectionSize = sections.size();
         
         sectionService.prepareSectionsForView(sections);
-        
-        verify(branchService, Mockito.times(sectionSize))
-            .fillLastPostInLastUpdatedTopic(Mockito.anyListOf(Branch.class));
+
         verify(branchService, Mockito.times(sectionSize))
             .fillStatisticInfo(Mockito.anyListOf(Branch.class));
     }

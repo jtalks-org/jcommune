@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service;
 
 
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -83,4 +84,11 @@ public interface PostService extends EntityService<Post> {
      */
     Page<Post> getPosts(Topic topic, int page, boolean pagingEnabled);
 
+    /**
+     * Get the last post, that was posted in a topic of branch.
+     * 
+     * @param branch for this branch it gets the last post
+     * @return the last post that was posted in branch
+     */
+    Post getLastPostFor(Branch branch);
 }

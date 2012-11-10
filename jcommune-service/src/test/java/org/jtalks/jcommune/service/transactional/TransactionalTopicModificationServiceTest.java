@@ -14,6 +14,20 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.SecurityService;
@@ -25,7 +39,11 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.*;
+import org.jtalks.jcommune.service.PollService;
+import org.jtalks.jcommune.service.SubscriptionService;
+import org.jtalks.jcommune.service.TopicFetchService;
+import org.jtalks.jcommune.service.TopicModificationService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.mockito.Matchers;
@@ -36,18 +54,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.*;
 
 /**
  * This test cover {@code TransactionalTopicModificationService} logic validation.
@@ -70,10 +76,6 @@ public class TransactionalTopicModificationServiceTest {
     private static final String USERNAME = "username";
     private JCUser user;
     private final String ANSWER_BODY = "Test Answer Body";
-    private final String NEW_TOPIC_TITLE = "new title";
-    private final String NEW_POST_CONTENT = "new body";
-    private final boolean NEW_STICKED = false;
-    private final boolean NEW_ANNOUNCEMENT = false;
 
     private TopicModificationService topicService;
 
@@ -123,6 +125,7 @@ public class TransactionalTopicModificationServiceTest {
     @Test
     public void testReplyToTopic() throws NotFoundException {
         Topic answeredTopic = new Topic(user, "title");
+        answeredTopic.setBranch(new Branch("name", "description"));
         when(userService.getCurrentUser()).thenReturn(user);
         when(topicFetchService.get(TOPIC_ID)).thenReturn(answeredTopic);
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
@@ -389,14 +392,6 @@ public class TransactionalTopicModificationServiceTest {
         return topic;
     }
 
-    private Topic createNewTopic() {
-        Topic topic = new Topic();
-        topic.setTitle(NEW_TOPIC_TITLE);
-        topic.setSticked(NEW_STICKED);
-        topic.setAnnouncement(NEW_ANNOUNCEMENT);
-        return topic;
-    }
-
     private Post createPost() {
         Post post = new Post(user, "content");
         post.setId(POST_ID);
@@ -408,5 +403,4 @@ public class TransactionalTopicModificationServiceTest {
         subscribers.add(user);
         topic.setSubscribers(subscribers);
     }
-
 }

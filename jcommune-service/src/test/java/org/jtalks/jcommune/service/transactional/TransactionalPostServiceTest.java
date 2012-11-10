@@ -27,6 +27,7 @@ import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dto.JCommunePageRequest;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -37,6 +38,7 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.testng.Assert;
@@ -280,5 +282,18 @@ public class TransactionalPostServiceTest {
         assertEquals(actualPage, expectedPage, "Service returned incorrect data for one page of posts");
         verify(postDao).getPosts(
                 Matchers.any(Topic.class), Matchers.any(JCommunePageRequest.class));
+    }
+    
+    @Test
+    public void testGetLastPostForBranch() {
+        Branch postBranch = new Branch(null, null);
+        Post expectedPost = new Post(null, null);
+        when(postDao.getLastPostFor(Mockito.<Branch> any()))
+            .thenReturn(expectedPost);
+        
+        Post actualPost = postService.getLastPostFor(postBranch);
+        
+        assertEquals(actualPost, expectedPost, "Service returned incorrect last post for branch");
+        verify(postDao).getLastPostFor(postBranch);
     }
 }

@@ -24,6 +24,7 @@ import org.hibernate.criterion.Restrictions;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dto.JCommunePageRequest;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -66,26 +67,6 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
      * {@inheritDoc}
      */
     @Override
-    public Post getLastPostInTopic(Topic topic) {
-        String creationDateProperty = "creationDate";
-        DetachedCriteria postMaxCreationDateCriteria = 
-                DetachedCriteria.forClass(Post.class)
-                .setProjection(Projections.max(creationDateProperty))
-                .add(Restrictions.eq("topic", topic));
-        //Uses the list because it's possible that two posts will have the same creation date
-        @SuppressWarnings("unchecked")
-        List<Post> posts = (List<Post>) getSession().createCriteria(Post.class)
-                .add(Restrictions.eq("topic", topic))
-                .add(Property.forName(creationDateProperty).eq(postMaxCreationDateCriteria))
-                .list();
-        //if the result contains more than one message, then we return the first
-        return posts.isEmpty()? null: posts.get(0);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public Page<Post> getPosts(Topic topic, JCommunePageRequest pageRequest) {
         Number totalCount = (Number) getSession()
                 .getNamedQuery("getCountPostsInTopic")
@@ -98,9 +79,29 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
             query.setFirstResult(pageRequest.getIndexOfFirstItem());
             query.setMaxResults(pageRequest.getPageSize());
         }
-        //TODO LIST_INDEX?
         @SuppressWarnings("unchecked")
         List<Post> posts = (List<Post> ) query.list();
         return new PageImpl<Post>(posts, pageRequest, totalCount.intValue());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Post getLastPostFor(Branch branch) {
+        String creationDateProperty = "creationDate";
+        DetachedCriteria postMaxCreationDateCriteria = 
+                DetachedCriteria.forClass(Post.class)
+                .createAlias("topic", "postTopic")
+                .setProjection(Projections.max(creationDateProperty))
+                .add(Restrictions.eq("postTopic.branch", branch));
+        //Uses the list because it's possible that two posts will have the same creation date
+        @SuppressWarnings("unchecked")
+        List<Post> posts = (List<Post>) getSession().createCriteria(Post.class)
+                .createAlias("topic", "postTopic")
+                .add(Restrictions.eq("postTopic.branch", branch))
+                .add(Property.forName(creationDateProperty).eq(postMaxCreationDateCriteria))
+                .list();
+        return posts.isEmpty()? null: posts.get(0);
     }
 }

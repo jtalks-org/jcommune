@@ -72,19 +72,6 @@ public class BranchTest {
     }
 
     @Test
-    public void testLastUpdatedTopic() throws InterruptedException {
-        Thread.sleep(25);
-        second.addPost(new Post());
-        assertEquals(branch.getLastUpdatedTopic(), second);
-    }
-
-    @Test
-    public void testLastUpdatedTopicWithoutTopics() {
-        branch.setTopics(new ArrayList<Topic>());
-        assertEquals(branch.getLastUpdatedTopic(), null);
-    }
-
-    @Test
     public void testPostCount() {
         first.addPost(new Post());
         second.addPost(new Post());
