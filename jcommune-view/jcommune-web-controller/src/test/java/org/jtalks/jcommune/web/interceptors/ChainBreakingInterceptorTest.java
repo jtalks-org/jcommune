@@ -25,7 +25,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Evgeniy Naumenko
@@ -51,5 +53,13 @@ public class ChainBreakingInterceptorTest {
 
         verify(handler).handleRequest(request, response);
         assertFalse(result);
+    }
+    
+    @Test
+    public void testPreHandleInvalidHandlerClass() throws Exception {
+        boolean result = interceptor.preHandle(request, response, new String());
+
+        verify(handler, never()).handleRequest(request, response);
+        assertTrue(result);
     }
 }

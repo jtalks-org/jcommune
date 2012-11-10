@@ -15,21 +15,29 @@
 package org.jtalks.jcommune.web.controller;
 
 import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
@@ -128,20 +136,88 @@ public class AvatarControllerTest {
     }
 
     @Test(dataProvider = "validDataForChromeFF")
-    public void testRenderAvatar(byte[] avatar, Map<String, String> expectedData) throws Exception {
+    public void testRenderAvatarModified(byte[] avatar, Map<String, String> expectedData) throws Exception {
         JCUser user = getUser();
         user.setAvatar(avatar);
+        user.setAvatarLastModificationTime(new DateTime(1000));
         when(userService.get(anyLong())).thenReturn(user);
+        
         HttpServletResponse response = mock(HttpServletResponse.class);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeader("If-Modified-Since")).thenReturn("Thu, 01 Jan 1970 02:00:00 EET");
+        
         ServletOutputStream servletOutputStream = mock(ServletOutputStream.class);
         when(response.getOutputStream()).thenReturn(servletOutputStream);
 
-        avatarController.renderAvatar(response, 0L);
+        avatarController.renderAvatar(request, response, 0L);
 
         verify(response).setContentType("image/jpeg");
         verify(response).setContentLength(avatar.length);
         verify(response).getOutputStream();
         verify(servletOutputStream).write(avatar);
+        
+        verify(response).setHeader("Pragma", "public");
+        verify(response).setHeader("Cache-Control", "public");
+        verify(response).addHeader("Cache-Control", "must-revalidate");
+        verify(response).addHeader("Cache-Control","max-age=0");
+        verify(response).setHeader(eq("Expires"), anyString()); //System.currentTimeMillis() is used
+        verify(response).setHeader(eq("Last-Modified"), anyString()); // depends on current timezone
+    }
+    
+    @Test(dataProvider = "validDataForChromeFF")
+    public void testRenderAvatarNullIfModifiedSinceHeader(
+            byte[] avatar, Map<String, String> expectedData) throws Exception {
+        JCUser user = getUser();
+        user.setAvatar(avatar);
+        user.setAvatarLastModificationTime(new DateTime(1000));
+        when(userService.get(anyLong())).thenReturn(user);
+        
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        
+        ServletOutputStream servletOutputStream = mock(ServletOutputStream.class);
+        when(response.getOutputStream()).thenReturn(servletOutputStream);
+
+        avatarController.renderAvatar(request, response, 0L);
+
+        verify(response).setContentType("image/jpeg");
+        verify(response).setContentLength(avatar.length);
+        verify(response).getOutputStream();
+        verify(servletOutputStream).write(avatar);
+        
+        verify(response).setHeader("Pragma", "public");
+        verify(response).setHeader("Cache-Control", "public");
+        verify(response).addHeader("Cache-Control", "must-revalidate");
+        verify(response).addHeader("Cache-Control","max-age=0");
+        verify(response).setHeader(eq("Expires"), anyString()); //System.currentTimeMillis() is used
+        verify(response).setHeader(eq("Last-Modified"), anyString()); // depends on current timezone
+    }
+    
+    @Test(dataProvider = "validDataForChromeFF")
+    public void testRenderAvatarNotModified(
+            byte[] avatar, Map<String, String> expectedData) throws Exception {
+        JCUser user = getUser();
+        user.setAvatar(avatar);
+        user.setAvatarLastModificationTime(new DateTime(System.currentTimeMillis()));
+        when(userService.get(anyLong())).thenReturn(user);
+        
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        DateFormat dateFormat = new SimpleDateFormat(
+                AvatarController.HTTP_HEADER_DATETIME_PATTERN,
+                Locale.US); 
+        String ifModifiedSinceHeader = dateFormat.format(new Date(System.currentTimeMillis() + 1000));
+        when(request.getHeader("If-Modified-Since")).thenReturn(ifModifiedSinceHeader);
+        
+        ServletOutputStream servletOutputStream = mock(ServletOutputStream.class);
+        when(response.getOutputStream()).thenReturn(servletOutputStream);
+
+        avatarController.renderAvatar(request, response, 0L);
+
+        verify(response).setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+        verify(response, never()).getOutputStream();
+        verify(servletOutputStream, never()).write(avatar);
+        verify(response, never()).setHeader(anyString(), anyString());
     }
 
     @Test(dataProvider = "testDataForGetDefaultAvatar")

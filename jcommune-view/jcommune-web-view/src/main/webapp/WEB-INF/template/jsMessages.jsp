@@ -67,14 +67,10 @@ $labelError500Detail = '<spring:message code="label.500.detail" htmlEscape="true
 
 $labelRegistration = '<spring:message code="label.signup" htmlEscape="true"/>'
 $labelUsername = '<spring:message code="label.username" htmlEscape="true"/>'
-$labelUsernameHelp = '<spring:message code="label.tip.username" htmlEscape="true"/>'
 $labelEmail = '<spring:message code="label.tip.email" htmlEscape="true"/>'
 $labelPassword = '<spring:message code="label.password" htmlEscape="true"/>'
-$labelPasswordHelp = '<spring:message code="label.tip.password" htmlEscape="true"/>'
 $labelPasswordConfirmation = '<spring:message code="label.confirmation" htmlEscape="true"/>'
-$labelPasswordConfirmationHelp = null
 $signupButtonLabel = '<spring:message code="label.signup" htmlEscape="true"/>'
-$labelEmailHelp = null
 $labelCaptcha = '<spring:message code="label.tip.captcha" htmlEscape="true"/>'
 $labelRememberMe = '<spring:message code="label.auto_logon" htmlEscape="true"/>'
 $labelRestorePassword = '<spring:message code="label.restorePassword.prompt" htmlEscape="true"/>'

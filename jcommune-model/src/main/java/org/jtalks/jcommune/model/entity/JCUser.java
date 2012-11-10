@@ -16,12 +16,9 @@ package org.jtalks.jcommune.model.entity;
 
 import org.apache.commons.collections.set.UnmodifiableSet;
 import org.joda.time.DateTime;
-import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -51,7 +48,8 @@ public class JCUser extends User {
 
     private static final long serialVersionUID = 19981017L;
     private Set<UserContact> contacts = new HashSet<UserContact>();
-    private List<Group> groups = new ArrayList<Group>();
+    
+    private DateTime avatarLastModificationTime = new DateTime(System.currentTimeMillis());
 
     /**
      * Only for hibernate usage.
@@ -217,20 +215,6 @@ public class JCUser extends User {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
-
-    /**
-     * @return groups groups of user
-     */
-    public List<Group> getGroups() {
-        return groups;
-    }
-
-    /**
-     * @param groups groups of user
-     */
-    public void setGroups(List<Group> groups) {
-        this.groups = groups;
-    }
     
     /**
      * Returns whether current user is logged in or not. Vast majority of user 
@@ -241,4 +225,20 @@ public class JCUser extends User {
     public boolean isAnonymous() {
         return false;
     }
+
+    /**
+     * @return last modification time of avatar
+     */
+    public DateTime getAvatarLastModificationTime() {
+        return avatarLastModificationTime;
+    }
+
+    /**
+     * @param avatarLastModificationTime time when avatar was last modified
+     */
+    public void setAvatarLastModificationTime(DateTime avatarLastModificationTime) {
+        this.avatarLastModificationTime = avatarLastModificationTime;
+    }
+    
+    
 }

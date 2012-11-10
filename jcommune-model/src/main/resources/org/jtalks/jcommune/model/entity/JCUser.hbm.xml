@@ -38,6 +38,14 @@
             <column name="AVATAR" sql-type="blob"/>
         </property>
 
+        <bag name="groups" table="GROUP_USER_REF" lazy="false" fetch="select">
+            <cache usage="nonstrict-read-write" region="org.jtalks.common.model.entity.User.groups"/>
+            <key column="USER_ID" not-null="true"/>
+            <many-to-many class="org.jtalks.common.model.entity.Group">
+                <column name="GROUP_ID" not-null="true"/>
+            </many-to-many>
+        </bag>
+
         <joined-subclass name="org.jtalks.jcommune.model.entity.JCUser" table="JC_USER_DETAILS">
             <key column="USER_ID"/>
             <property column="SIGNATURE" name="signature" type="text"/>
@@ -59,14 +67,9 @@
                 <key column="USER_ID" foreign-key="FK_USER"/>
                 <one-to-many class="org.jtalks.jcommune.model.entity.UserContact"/>
             </set>
-
-            <bag name="groups" table="GROUP_USER_REF" lazy="false" fetch="select">
-                <cache usage="nonstrict-read-write" region="org.jtalks.common.model.entity.User.groups"/>
-                <key column="USER_ID" not-null="true"/>
-                <many-to-many class="org.jtalks.common.model.entity.Group">
-                    <column name="GROUP_ID" not-null="true"/>
-                </many-to-many>
-            </bag>
+            
+            <property column="AVATAR_LAST_MODIFICATION_TIME" name="avatarLastModificationTime" 
+                    type="org.joda.time.contrib.hibernate.PersistentDateTime" not-null="false"/>
         </joined-subclass>
     </class>
 
