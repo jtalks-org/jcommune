@@ -150,6 +150,8 @@ public class TransactionalPostServiceTest {
         postForDelete.setId(POST_ID);
         topic.addPost(post);
         topic.addPost(postForDelete);
+        Branch branch = new Branch("branch", "branch description");
+        topic.setBranch(branch);
         user.setPostCount(2);
         when(postDao.isExist(POST_ID)).thenReturn(true);
         when(postDao.get(POST_ID)).thenReturn(postForDelete);

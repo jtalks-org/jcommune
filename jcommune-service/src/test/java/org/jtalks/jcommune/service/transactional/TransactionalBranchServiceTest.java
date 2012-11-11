@@ -240,13 +240,11 @@ public class TransactionalBranchServiceTest {
     @Test
     public void testUpdateLastPostInBranchWhenPostDeletedIsLastPost() {
         Branch branchOfDeletedPost = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
-        Post deletedPost = new Post(null, null);
-        branchOfDeletedPost.setLastPost(deletedPost);
         Post expectedNewLastPost = new Post(null, null);
         when(postDao.getLastPostFor(branchOfDeletedPost))
             .thenReturn(expectedNewLastPost);
         
-        branchService.updateLastPostInBranchWhenPostDeleted(branchOfDeletedPost, deletedPost);
+        branchService.refreshLastPostInBranch(branchOfDeletedPost);
         Post actualNewLastPost = branchOfDeletedPost.getLastPost();
         
         assertEquals(actualNewLastPost, expectedNewLastPost, "Incorrect last post was setted.");
@@ -259,9 +257,8 @@ public class TransactionalBranchServiceTest {
         Branch branchOfDeletedPost = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
         Post expectedLastPost = new Post(null, null);
         branchOfDeletedPost.setLastPost(expectedLastPost);
-        Post deletedPost = new Post(null, null);
         
-        branchService.updateLastPostInBranchWhenPostDeleted(branchOfDeletedPost, deletedPost);
+        branchService.refreshLastPostInBranch(branchOfDeletedPost);
         Post actualLastPost = branchOfDeletedPost.getLastPost();
         
         assertEquals(expectedLastPost, actualLastPost, "Last post was changed.");

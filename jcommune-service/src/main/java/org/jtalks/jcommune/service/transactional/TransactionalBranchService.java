@@ -148,8 +148,8 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
      * {@inheritDoc}
      */
     @Override
-    public void updateLastPostInBranchWhenPostDeleted(Branch branch, Post deletedPost) {
-        if (branch.isLastPost(deletedPost)) {
+    public void refreshLastPostInBranch(Branch branch) {
+        if (branch.getLastPost() == null) {
             Post lastPostOfBranch = postDao.getLastPostFor(branch);
             branch.setLastPost(lastPostOfBranch);
             getDao().update(branch);

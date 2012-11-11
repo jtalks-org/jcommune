@@ -113,13 +113,16 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         Topic topic = post.getTopic();
         topic.removePost(post);
         Branch branch = topic.getBranch();
+        if (branch.isLastPost(post)) {
+            branch.clearLastPost();
+        }
 
         // todo: event API?
         topicDao.update(topic);
         securityService.deleteFromAcl(post);
         notificationService.topicChanged(topic);
         lastReadPostService.updateLastReadPostsWhenPostIsDeleted(post);
-        branchService.updateLastPostInBranchWhenPostDeleted(branch, post);
+        branchService.refreshLastPostInBranch(branch);
 
         logger.debug("Deleted post id={}", postId);
     }

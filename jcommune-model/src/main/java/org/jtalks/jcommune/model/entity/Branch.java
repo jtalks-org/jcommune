@@ -248,4 +248,11 @@ public class Branch extends org.jtalks.common.model.entity.Branch
         }
         return false;
     }
+    
+    /**
+     * Clear the last post in the branch.
+     */
+    public void clearLastPost() {
+        this.lastPost = null;
+    }
 }
