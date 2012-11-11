@@ -90,6 +90,7 @@
         <constructor-arg ref="notificationService"/>
         <constructor-arg ref="lastReadPostService"/>
         <constructor-arg ref="userService"/>
+        <constructor-arg ref="topicBranchService"/>
     </bean>
 
     <bean id="topicModificationService"
@@ -118,9 +119,9 @@
         <constructor-arg ref="topicBranchDao"/>
         <constructor-arg ref="branchSectionDao"/>
         <constructor-arg ref="topicDao"/>
-        <constructor-arg ref="postDao"/>
         <constructor-arg ref="topicModificationService"/>
         <constructor-arg ref="userService"/>
+        <constructor-arg ref="postDao"/>
     </bean>
 
     <bean id="branchSectionService"
