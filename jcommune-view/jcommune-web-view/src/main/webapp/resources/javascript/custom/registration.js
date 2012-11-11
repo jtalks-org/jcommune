@@ -21,7 +21,7 @@
 $(function () {
 
     // hide dialog on backdrop click
-    $('.modal-backdrop').live('click', function(e) {
+    $('.modal-backdrop').live('click', function (e) {
         $('#signup-modal-dialog').modal('hide');
     });
 
@@ -32,13 +32,14 @@ $(function () {
 
         // show dialog
         signupDialog.modal({
-          "backdrop" : "static",
-          "keyboard" : true,
-          "show" : true
+            "backdrop":"static",
+            "keyboard":true,
+            "show":true
         });
 
+        Utils.resizeDialog(signupDialog);
         // refreshes captcha on click refresh button or captcha image
-        signupDialog.find("#captcha-refresh, #captcha-img").click(function(e) {
+        signupDialog.find("#captcha-refresh, #captcha-img").click(function (e) {
             e.preventDefault();
             refreshCaptcha(signupDialog);
         });
@@ -49,7 +50,7 @@ $(function () {
         var submitButton = signupDialog.find('#signup-submit-button');
 
         // returns focus back to uername field
-        submitButton.keydown(function(e) {
+        submitButton.keydown(function (e) {
             if ((e.keyCode || e.charCode) == 9) { //TAB key
                 e.preventDefault();
                 signupDialog.find("#username").focus();
@@ -57,7 +58,7 @@ $(function () {
         });
 
         // skip captcha image and refresh and go to captcha input
-        signupDialog.find('#passwordConfirm').keydown(function(e) {
+        signupDialog.find('#passwordConfirm').keydown(function (e) {
             if ((e.keyCode || e.charCode) == 9) { //TAB key
                 e.preventDefault();
                 signupDialog.find("#captcha").focus();
@@ -65,34 +66,35 @@ $(function () {
         });
 
         // remove dialog from DOM on hide
-        signupDialog.bind("hide", function(e) {
+        signupDialog.bind("hide", function (e) {
             signupDialog.remove();
         });
 
         // submit button handler
-        signupDialog.submit(function(e) {
+        signupDialog.submit(function (e) {
             e.preventDefault();
             // disable all elements before and during submission
             signupDialog.find('*').attr('disabled', true);
             var query = composeQuery(signupDialog);
             $.ajax({
-                type: "POST",
-                url: $root + "/user/new_ajax",
-                data: query,
-                dataType: "html",
-                success: function(resp) {
+                type:"POST",
+                url:$root + "/user/new_ajax",
+                data:query,
+                dataType:"html",
+                success:function (resp) {
                     resp = eval('(' + resp + ')'); // warning: not safe
                     if (resp.status == "success") {
                         // hide dialog and show success message
                         signupDialog.modal('hide');
                         bootbox.alert($labelRegistrationSuccess);
-                    } else {
+                    }
+                    else {
                         // remove previous errors and show new errors
                         prepareDialog(signupDialog);
                         showErrors(signupDialog, resp.result);
                     }
                 },
-                error: function (resp) {
+                error:function (resp) {
                     bootbox.alert($labelRegistrationFailture);
                 }
             });
@@ -137,17 +139,18 @@ function showErrors(signupDialog, errors) {
         e.parent().find(".help-block").hide();
         e.parent().last().append('<span class="help-block _error">' + errors[i].defaultMessage + '</span>');
     }
+    Utils.resizeDialog(signupDialog);
 }
 
 /**
  * POST request query
  */
 function composeQuery(signupDialog) {
-    return "username="         + encodeURIComponent(signupDialog.find('#username').val()) +
-           "&password="        + encodeURIComponent(signupDialog.find('#password').val()) +
-           "&passwordConfirm=" + encodeURIComponent(signupDialog.find('#passwordConfirm').val()) +
-           "&email="           + encodeURIComponent(signupDialog.find('#email').val()) +
-           "&captcha="         + encodeURIComponent(signupDialog.find('#captcha').val());
+    return "username=" + encodeURIComponent(signupDialog.find('#username').val()) +
+            "&password=" + encodeURIComponent(signupDialog.find('#password').val()) +
+            "&passwordConfirm=" + encodeURIComponent(signupDialog.find('#passwordConfirm').val()) +
+            "&email=" + encodeURIComponent(signupDialog.find('#email').val()) +
+            "&captcha=" + encodeURIComponent(signupDialog.find('#captcha').val());
 }
 
 /**
@@ -174,7 +177,7 @@ function createFormElement(label, id, type) {
     var elementHtml = ' \
         <div class="control-group"> \
             <div class="controls"> \
-                <input type="' + type + '" id="'+ id + '" name="'+ id + '" placeholder="' + label +'" class="input-xlarge" /> \
+                <input type="' + type + '" id="' + id + '" name="' + id + '" placeholder="' + label + '" class="input-xlarge" /> \
             </div> \
         </div> \
     ';

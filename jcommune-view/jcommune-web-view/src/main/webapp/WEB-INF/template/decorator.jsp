@@ -28,19 +28,19 @@
     <meta http-equiv="Pragma" content="no-cache"/>
     <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0"/>
     <meta http-equiv="Expires" content="-1"/>
-    
+
     <script>
         <%--Defines URL mapping root to be used in JS--%>
         $root = "${pageContext.request.contextPath}";
         <%--Include i18n resources for JS scripts--%>
         <jsp:include page="jsMessages.jsp"/>
     </script>
-    
+
     <%-- support of HTML5 elements for IE6-8 --%>
     <%--[if lt IE 9]>
       <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]--%>
-    
+
     <link rel="stylesheet" type="text/css" media="screen, projection"
           href="${pageContext.request.contextPath}/resources/css/screen.css"/>
     <link rel="stylesheet" type="text/css" media="screen, projection"
@@ -58,7 +58,7 @@
     <script
             src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jqery.impromptu.js"></script>
     <script
-            src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery.offtmp.js"></script>       
+            src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery.offtmp.js"></script>
     <script
             src="${pageContext.request.contextPath}/resources/javascript/custom/URLBuilder.js"></script>
     <script
@@ -76,18 +76,20 @@
     <link href='http://fonts.googleapis.com/css?family=Carter+One' rel='stylesheet' type='text/css'>
     <script src='${pageContext.request.contextPath}/resources/javascript/custom/errorUtils.js'
             type='text/javascript'></script>
+    <script src='${pageContext.request.contextPath}/resources/javascript/custom/utils.js'
+            type='text/javascript'></script>
     <script src='${pageContext.request.contextPath}/resources/javascript/custom/dropdown.js'
             type='text/javascript'></script>
     <script src='${pageContext.request.contextPath}/resources/javascript/custom/forumEffects.js'
             type='text/javascript'></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/prettify/prettify.js" 
-           type='text/javascript'></script>          
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/prettify/prettify.js"
+            type='text/javascript'></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/topline.js"
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/search.js"
-            type="text/javascript"></script> 
+            type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/componentClickEventDisabler.js"
-            type="text/javascript"></script>   
+            type="text/javascript"></script>
     <decorator:head/>
     <title><decorator:title/></title>
 </head>
@@ -96,17 +98,17 @@
 <decorator:body/>
 <div class="container">
     <footer>
-        Powered by JCommune ${project.version}<br />
-        &copy; 2012 <a href="http://jtalks.org">jtalks.org</a><br />
+        Powered by JCommune ${project.version}<br/>
+        &copy; 2012 <a href="http://jtalks.org">jtalks.org</a><br/>
         Design with <a href="http://twitter.github.com/bootstrap">Twitter Bootstrap</a>
     </footer>
 </div>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
-    //Code highlight
-    prettyPrint();
-});
+    jQuery(document).ready(function () {
+        //Code highlight
+        prettyPrint();
+    });
 </script>
 </body>
 </html>
