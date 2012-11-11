@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 
 /**
@@ -83,5 +85,44 @@ public class BranchTest {
     public void testPostCountWithoutTopics() {
         branch.setTopics(new ArrayList<Topic>());
         assertEquals(branch.getPostCount(), 0);
+    }
+    
+    @Test
+    public void testIsLastPostWhenBranchIsEmpty() {
+        Post checkedPost = new Post();
+        branch.getTopics().clear();
+        branch.setLastPost(null);
+        
+        boolean isLastPost = branch.isLastPost(checkedPost);
+        
+        assertFalse(isLastPost);
+    }
+    
+    @Test
+    public void testIsLastPostWhenSentPostIsNull() {
+        boolean isLastPost = branch.isLastPost(null);
+        
+        assertFalse(isLastPost);
+    }
+    
+    @Test
+    public void testIsLastPostWhenCheckedPostIsLastPost() {
+        Post checkedPost = new Post();
+        branch.setLastPost(checkedPost);
+        
+        boolean isLastPost = branch.isLastPost(checkedPost);
+        
+        assertTrue(isLastPost);
+    }
+    
+    @Test
+    public void testIsLastPostWhenCheckedPostIsNotLastPost() {
+        Post lastPost = new Post();
+        Post checkedPost = new Post();
+        branch.setLastPost(lastPost);
+        
+        boolean isLastPost = branch.isLastPost(checkedPost);
+        
+        assertFalse(isLastPost);  
     }
 }

@@ -18,13 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jtalks.jcommune.model.dao.BranchDao;
-import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicModificationService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -47,9 +48,9 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
 
     private SectionDao sectionDao;
     private TopicDao topicDao;
-    private PostDao postDao;
     private TopicModificationService topicService;
     private UserService userService;
+    private PostService postService;
 
     /**
      * Create an instance of entity based service
@@ -57,23 +58,23 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
      * @param branchDao    data access object, which should be able do all CRUD operations.
      * @param sectionDao   used for checking branch existence.
      * @param topicDao     data access object for operations with topics
-     * @param postDao      data access object for operations with posts
      * @param topicService service to perform complex operations with topics
      * @param userService  service to perform complex operations with users
+     * @param postService it's needed for working with posts(to determine the last post for example)
      */
     public TransactionalBranchService(
             BranchDao branchDao,
             SectionDao sectionDao,
             TopicDao topicDao,
-            PostDao postDao,
             TopicModificationService topicService,
-            UserService userService) {
+            UserService userService,
+            PostService postService) {
         super(branchDao);
         this.sectionDao = sectionDao;
         this.topicDao = topicDao;
-        this.postDao = postDao;
         this.topicService = topicService;
         this.userService = userService;
+        this.postService = postService;
     }
 
     /**
@@ -141,5 +142,17 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
         logger.info("All topics for branch \"{}\" were deleted. " +
                 "Branch id: {}", branch.getName(), branch.getId());
         return branch;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void updateLastPostInBranchWhenPostDeleted(Branch branch, Post deletedPost) {
+        if (branch.isLastPost(deletedPost)) {
+            Post lastPostOfBranch = postService.getLastPostFor(branch);
+            branch.setLastPost(lastPostOfBranch);
+            getDao().update(branch);
+        }
     }
 }

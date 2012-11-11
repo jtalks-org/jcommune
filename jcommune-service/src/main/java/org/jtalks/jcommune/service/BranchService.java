@@ -17,6 +17,7 @@ package org.jtalks.jcommune.service;
 import java.util.List;
 
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 /**
@@ -64,5 +65,13 @@ public interface BranchService extends EntityService<Branch> {
      * @return branch for the id given
      */
     Branch deleteAllTopics(long branchId) throws NotFoundException;
-
+    
+    /**
+     * Determine the last post in the branch and update it value
+     * in the branch when a post was deleted in this branch.
+     * 
+     * @param branch for this branch it determine the last post
+     * @param deletedPost a post that was deleted in branch
+     */
+    void updateLastPostInBranchWhenPostDeleted(Branch branch, Post deletedPost);
 }

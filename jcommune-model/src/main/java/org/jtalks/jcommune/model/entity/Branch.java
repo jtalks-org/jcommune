@@ -234,4 +234,18 @@ public class Branch extends org.jtalks.common.model.entity.Branch
     public void setLastPost(Post lastPost) {
         this.lastPost = lastPost;
     }
+    
+    /**
+     * Checks whether a sent post is the last in the branch.
+     * 
+     * @param checkedPost checked post
+     * @return {@code true} if sent post is the last in the branch,
+     *         otherwise {@code false}
+     */
+    public boolean isLastPost(Post checkedPost) {
+        if (lastPost != null && checkedPost != null) {
+            return lastPost.equals(checkedPost);
+        }
+        return false;
+    }
 }

@@ -31,6 +31,7 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.UserService;
@@ -73,6 +74,8 @@ public class TransactionalPostServiceTest {
     private LastReadPostService lastReadPostService;
     @Mock 
     private UserService userService;
+    @Mock
+    private BranchService branchService;
 
     private PostService postService;
 
@@ -94,7 +97,8 @@ public class TransactionalPostServiceTest {
                 securityService,
                 notificationService,
                 lastReadPostService,
-                userService);
+                userService,
+                branchService);
     }
 
     @Test

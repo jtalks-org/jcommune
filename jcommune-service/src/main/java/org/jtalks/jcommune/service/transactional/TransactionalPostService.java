@@ -22,6 +22,7 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.UserService;
@@ -48,6 +49,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     private NotificationService notificationService;
     private LastReadPostService lastReadPostService;
     private UserService userService;
+    private BranchService branchService;
 
     /**
      * Create an instance of Post entity based service
@@ -58,6 +60,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * @param notificationService to send email updates for subscribed users
      * @param lastReadPostService to modify last read post information when topic structure is changed
      * @param userService         to get current user
+     * @param branchService       to work with the branch of the post 
      */
     public TransactionalPostService(
             PostDao dao,
@@ -65,13 +68,15 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
             SecurityService securityService,
             NotificationService notificationService,
             LastReadPostService lastReadPostService,
-            UserService userService) {
+            UserService userService,
+            BranchService branchService) {
         super(dao);
         this.topicDao = topicDao;
         this.securityService = securityService;
         this.notificationService = notificationService;
         this.lastReadPostService = lastReadPostService;
         this.userService = userService;
+        this.branchService = branchService;
     }
 
     /**
@@ -107,12 +112,14 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         user.setPostCount(user.getPostCount() - 1);
         Topic topic = post.getTopic();
         topic.removePost(post);
+        Branch branch = topic.getBranch();
 
         // todo: event API?
         topicDao.update(topic);
         securityService.deleteFromAcl(post);
         notificationService.topicChanged(topic);
         lastReadPostService.updateLastReadPostsWhenPostIsDeleted(post);
+        branchService.updateLastPostInBranchWhenPostDeleted(branch, post);
 
         logger.debug("Deleted post id={}", postId);
     }

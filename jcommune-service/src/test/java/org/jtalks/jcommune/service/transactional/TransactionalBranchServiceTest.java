@@ -27,19 +27,21 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jtalks.jcommune.model.dao.BranchDao;
-import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicModificationService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -61,13 +63,13 @@ public class TransactionalBranchServiceTest {
     @Mock
     private TopicDao topicDao;
     @Mock
-    private PostDao postDao;
-    @Mock
     private BranchService branchService;
     @Mock
     private TopicModificationService topicService;
     @Mock
     private UserService userService;
+    @Mock
+    private PostService postService;
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -76,9 +78,9 @@ public class TransactionalBranchServiceTest {
                 branchDao,
                 sectionDao,
                 topicDao,
-                postDao,
                 topicService,
-                userService);
+                userService,
+                postService);
     }
 
     @Test
@@ -233,5 +235,37 @@ public class TransactionalBranchServiceTest {
         branchService.deleteAllTopics(BRANCH_ID);
 
         assertTrue(false);
+    }
+    
+    @Test
+    public void testUpdateLastPostInBranchWhenPostDeletedIsLastPost() {
+        Branch branchOfDeletedPost = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        Post deletedPost = new Post(null, null);
+        branchOfDeletedPost.setLastPost(deletedPost);
+        Post expectedNewLastPost = new Post(null, null);
+        when(postService.getLastPostFor(branchOfDeletedPost))
+            .thenReturn(expectedNewLastPost);
+        
+        branchService.updateLastPostInBranchWhenPostDeleted(branchOfDeletedPost, deletedPost);
+        Post actualNewLastPost = branchOfDeletedPost.getLastPost();
+        
+        assertEquals(actualNewLastPost, expectedNewLastPost, "Incorrect last post was setted.");
+        verify(branchDao).update(branchOfDeletedPost);
+        verify(postService).getLastPostFor(branchOfDeletedPost);
+    }
+    
+    @Test
+    public void testUpdateLastPostWhenPostDeletedIsNotLastPost() {
+        Branch branchOfDeletedPost = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        Post expectedLastPost = new Post(null, null);
+        branchOfDeletedPost.setLastPost(expectedLastPost);
+        Post deletedPost = new Post(null, null);
+        
+        branchService.updateLastPostInBranchWhenPostDeleted(branchOfDeletedPost, deletedPost);
+        Post actualLastPost = branchOfDeletedPost.getLastPost();
+        
+        assertEquals(expectedLastPost, actualLastPost, "Last post was changed.");
+        verify(branchDao, Mockito.never()).update(branchOfDeletedPost);
+        verify(postService, Mockito.never()).getLastPostFor(branchOfDeletedPost);
     }
 }
