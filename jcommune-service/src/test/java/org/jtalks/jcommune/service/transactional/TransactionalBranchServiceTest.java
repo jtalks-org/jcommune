@@ -140,7 +140,7 @@ public class TransactionalBranchServiceTest {
         when(branchDao.getCountPostsInBranch(branch)).thenReturn(expectedPostsCount);
         when(topicDao.countTopics(branch)).thenReturn(expectedTopicsCount);
         when(userService.getCurrentUser()).thenReturn(user);
-        //TODO fix in milestone2
+        //TODO Was removed till milestone 2 due to performance issues
 //        when(branchDao.isUnreadPostsInBranch(branch, user)).thenReturn(expectedUnreadPostsCount);
 
         branchService.fillStatisticInfo(Arrays.asList(commonBranch));
@@ -165,7 +165,7 @@ public class TransactionalBranchServiceTest {
         when(branchDao.getCountPostsInBranch(branch)).thenReturn(expectedPostsCount);
         when(topicDao.countTopics(branch)).thenReturn(expectedTopicsCount);
         when(userService.getCurrentUser()).thenReturn(user);
-        //TODO fix in milestone2
+        //TODO fWas removed till milestone 2 due to performance issues
 //        when(branchDao.isUnreadPostsInBranch(branch, user)).thenReturn(expectedUnreadPostsCount);
 
         branchService.fillStatisticInfo(Arrays.asList(commonBranch));

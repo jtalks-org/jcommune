@@ -139,7 +139,7 @@ public class AvatarController {
     /**
      * Write user avatar in response for rendering it on html pages.
      *
-     * @parra reqeust servlet request
+     * @param request servlet request
      * @param response servlet response
      * @param id       user database identifier
      * @throws NotFoundException if user with given encodedUsername not found
@@ -258,7 +258,7 @@ public class AvatarController {
      * @param bytes           input avatar data
      * @param response        resulting response
      * @param responseContent with avatar processing results
-     * @throws ImageProcessException
+     * @throws ImageProcessException if it's impossible to form correct image response
      */
     private void prepareResponse(byte[] bytes,
                                  HttpServletResponse response,

@@ -39,7 +39,7 @@ import com.cj.trim.trimFilter;
  *
  */
 public class TrimFilter implements Filter {
-    private static final Logger logger = LoggerFactory.getLogger(TrimFilter.class);
+
     static final String EXCLUDE_PATTERNS_INIT_PARAMETER = "excludePatterns";
     private Filter wrappedTrimFilter;
     private String excludePatterns;
@@ -82,10 +82,8 @@ public class TrimFilter implements Filter {
         boolean isExcluded = isInExcludeUrls(url);
         if (!isExcluded) {
             wrappedTrimFilter.doFilter(request, response, chain);
-            logger.debug("Request is excluded by filter for - " + url);
         } else {
             chain.doFilter(request, response);
-            logger.debug("Request isn't excluded by filter for - " + url );
         }
     }
 
