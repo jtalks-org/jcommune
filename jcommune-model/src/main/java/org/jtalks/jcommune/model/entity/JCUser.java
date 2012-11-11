@@ -43,7 +43,7 @@ public class JCUser extends User {
     public static final int MAX_SIGNATURE_SIZE = 255;
     public static final int MAX_LOCATION_SIZE = 30;
 
-    public static final int DEFAULT_PAGE_SIZE = 50;
+    public static final int DEFAULT_PAGE_SIZE = 15;
     public static final int[] PAGE_SIZES_AVAILABLE = new int[]{15, 25, 50};
 
     private static final long serialVersionUID = 19981017L;
