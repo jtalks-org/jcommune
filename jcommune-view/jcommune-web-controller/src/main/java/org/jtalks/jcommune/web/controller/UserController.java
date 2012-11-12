@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.service.UserService;
@@ -30,11 +29,6 @@ import org.jtalks.jcommune.web.dto.JsonResponse;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.RememberMeServices;
-import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -61,12 +55,14 @@ public class UserController {
     public static final String REGISTRATION = "registration";
     
     public static final String LOGIN = "login";
+    
+    private static final String REMEMBER_ME_ON = "on";
+    
+    private static final String JSON_RESPONSE_SUCCESS = "success";
+    
+    private static final String JSON_RESPONSE_FAIL = "fail";
 
     private UserService userService;
-    private AuthenticationManager authenticationManager;
-    private SecurityContextHolderFacade securityFacade;
-    private RememberMeServices rememberMeServices;
-    private SessionAuthenticationStrategy sessionStrategy;
     
     /**
      * @param userService to delegate business logic invocation
@@ -74,14 +70,8 @@ public class UserController {
      *      online list
      */
     @Autowired
-    public UserController(UserService userService, AuthenticationManager authenticationManager, 
-    		SecurityContextHolderFacade securityFacade, RememberMeServices rememberMeServices,
-    		SessionAuthenticationStrategy sessionStratedy) {
+    public UserController(UserService userService) {
         this.userService = userService;
-		this.authenticationManager = authenticationManager;
-		this.securityFacade = securityFacade;
-		this.rememberMeServices = rememberMeServices;
-		this.sessionStrategy = sessionStratedy;
     }
 
     /**
@@ -164,7 +154,8 @@ public class UserController {
      * @return redirect validation result in JSON format
      */
     @RequestMapping(value = "/user/new_ajax", method = RequestMethod.POST)
-    public @ResponseBody JsonResponse registerUserAjax(@Valid @ModelAttribute("newUser") RegisterUserDto userDto,
+    @ResponseBody 
+    public JsonResponse registerUserAjax(@Valid @ModelAttribute("newUser") RegisterUserDto userDto,
                                      BindingResult result, Locale locale) {
     	 if (result.hasErrors()) {
              return new JsonResponse("fail", result.getAllErrors());
@@ -223,25 +214,14 @@ public class UserController {
      * @return "success" or "fail" response status
      */
     @RequestMapping(value="/login_ajax", method=RequestMethod.POST)
-    public @ResponseBody JsonResponse loginAjax(@RequestParam("j_username") String username,
+    @ResponseBody 
+    public JsonResponse loginAjax(@RequestParam("j_username") String username,
             					  				@RequestParam("j_password") String password,
             					  				@RequestParam(value="_spring_security_remember_me", defaultValue="off") String rememberMe,
             					  				HttpServletRequest request, HttpServletResponse response) {
-		try {
-			UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
-			JCUser user = userService.getByUsername(username);
-			token.setDetails(user);
-			Authentication auth = authenticationManager.authenticate(token);
-			securityFacade.getContext().setAuthentication(auth);
-			if (auth.isAuthenticated()) {
-			    sessionStrategy.onAuthentication(auth, request, response);
-			    if (rememberMe.equals("on")) {
-			        rememberMeServices.loginSuccess(request, response, auth);
-			    }
-			}
-			return new JsonResponse(auth.isAuthenticated() ? "success" : "fail");
-		} catch (Exception e) {
-			return new JsonResponse("fail");
-		}
+	    boolean rememberMeBoolean = rememberMe.equals(REMEMBER_ME_ON);
+	    boolean isAuthenticated = userService.loginUser(username, password, 
+	            rememberMeBoolean, request, response);
+		return new JsonResponse(isAuthenticated ? JSON_RESPONSE_SUCCESS : JSON_RESPONSE_FAIL);
     }
 }
