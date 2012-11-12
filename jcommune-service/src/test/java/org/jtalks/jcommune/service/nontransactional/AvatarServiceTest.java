@@ -23,12 +23,17 @@ import static org.testng.Assert.assertTrue;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.jtalks.common.model.entity.Property;
 import org.jtalks.jcommune.model.dao.PropertyDao;
 import org.jtalks.jcommune.model.entity.JCommuneProperty;
@@ -253,6 +258,27 @@ public class AvatarServiceTest {
                 {new byte[AVATAR_MAX_SIZE]},
                 {new byte[Math.round(AVATAR_MAX_SIZE / 2)]}
         };
+    }
+    
+    @Test
+    public void testGetIfModifiedSinceDate() {
+        long currentMillis = System.currentTimeMillis();
+        long currentTimeIgnoreMillis = (currentMillis / 1000) * 1000; 
+        Date date = new Date(currentTimeIgnoreMillis);
+        String dateAsString = DateFormatUtils.format(date, 
+                AvatarService.HTTP_HEADER_DATETIME_PATTERN,
+                Locale.US);
+        
+        Date result = avatarService.getIfModifiedSineDate(dateAsString);
+        
+        assertEquals(result.getTime(), date.getTime());
+    }
+    
+    @Test
+    public void testGetIfModifiedSinceDateNullHeader() {
+        Date result = avatarService.getIfModifiedSineDate(null);
+        
+        assertEquals(result, new Date(0));
     }
 
 }
