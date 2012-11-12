@@ -16,6 +16,9 @@ package org.jtalks.jcommune.service.transactional;
 
 import java.util.Arrays;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
@@ -23,6 +26,7 @@ import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.security.SecurityService;
+import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -39,6 +43,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 
 /**
  * User service class. This class contains method needed to manipulate with User persistent entity.
@@ -61,6 +71,10 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     private AvatarService avatarService;
     //Important, use for every password creation.
     private EncryptionService encryptionService;
+    private AuthenticationManager authenticationManager;
+    private SecurityContextHolderFacade securityFacade;
+    private RememberMeServices rememberMeServices;
+    private SessionAuthenticationStrategy sessionStrategy;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalUserService.class);
 
@@ -74,13 +88,23 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * @param base64Wrapper     for avatar image-related operations
      * @param avatarService     some more avatar operations)
      * @param encryptionService encodes user password before store
+     * @param authenticationManager used in login logic
+     * @param securityFacade    used in login logic
+     * @param rememberMeServices used in login logic to specify remember user or
+     *                          not
+     * @param sessionStrategy   used in login logic to call onAuthentication hook
+     *                          which stored this user to online uses list.
      */
     public TransactionalUserService(UserDao dao, GroupDao groupDao,
                                     SecurityService securityService,
                                     MailService mailService,
                                     Base64Wrapper base64Wrapper,
                                     AvatarService avatarService,
-                                    EncryptionService encryptionService
+                                    EncryptionService encryptionService,
+                                    AuthenticationManager authenticationManager,
+                                    SecurityContextHolderFacade securityFacade,
+                                    RememberMeServices rememberMeServices,
+                                    SessionAuthenticationStrategy sessionStrategy
     ) {
         super(dao);
         this.groupDao = groupDao;
@@ -89,6 +113,10 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         this.base64Wrapper = base64Wrapper;
         this.avatarService = avatarService;
         this.encryptionService = encryptionService;
+        this.authenticationManager = authenticationManager;
+        this.securityFacade = securityFacade;
+        this.rememberMeServices = rememberMeServices;
+        this.sessionStrategy = sessionStrategy;
     }
 
     /**
@@ -258,5 +286,35 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     @PreAuthorize("hasPermission(#userId, 'USER', 'ProfilePermission.CREATE_FORUM_FAQ')")
     public void checkPermissionToCreateAndEditSimplePage(Long userId) {
         LOGGER.debug("Check permission to create or edit simple(static) pages - " + userId);
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean loginUser(String username, String password, boolean rememberMe, 
+            HttpServletRequest request, HttpServletResponse response) {
+        boolean result = false;
+        try {
+            JCUser user = getByUsername(username);
+            UsernamePasswordAuthenticationToken token = 
+                new UsernamePasswordAuthenticationToken(username, password);
+            token.setDetails(user);
+            Authentication auth = authenticationManager.authenticate(token);
+            securityFacade.getContext().setAuthentication(auth);
+            if (auth.isAuthenticated()) {
+                sessionStrategy.onAuthentication(auth, request, response);
+                if (rememberMe) {
+                    rememberMeServices.loginSuccess(request, response, auth);
+                }
+                
+                result = true;
+            }
+        } catch (NotFoundException e) {
+        } catch (AuthenticationException e) {
+            LOGGER.warn(e.getMessage());
+        }
+        return result;
     }
 }
