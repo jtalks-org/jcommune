@@ -64,12 +64,4 @@ public interface BranchService extends EntityService<Branch> {
      * @return branch for the id given
      */
     Branch deleteAllTopics(long branchId) throws NotFoundException;
-    
-    /**
-     * Determine the last post in the branch and update it value
-     * in the branch when a post was deleted in this branch.
-     * 
-     * @param branch for this branch it determine the last post
-     */
-    void refreshLastPostInBranch(Branch branch);
 }

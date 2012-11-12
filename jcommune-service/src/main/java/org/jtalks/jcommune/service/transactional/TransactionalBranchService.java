@@ -18,12 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jtalks.jcommune.model.dao.BranchDao;
-import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicModificationService;
@@ -50,7 +48,6 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
     private TopicDao topicDao;
     private TopicModificationService topicService;
     private UserService userService;
-    private PostDao postDao;
 
     /**
      * Create an instance of entity based service
@@ -60,21 +57,18 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
      * @param topicDao     data access object for operations with topics
      * @param topicService service to perform complex operations with topics
      * @param userService  service to perform complex operations with users
-     * @param postDao      data access object for getting last post in the branch
      */
     public TransactionalBranchService(
             BranchDao branchDao,
             SectionDao sectionDao,
             TopicDao topicDao,
             TopicModificationService topicService,
-            UserService userService,
-            PostDao postDao) {
+            UserService userService) {
         super(branchDao);
         this.sectionDao = sectionDao;
         this.topicDao = topicDao;
         this.topicService = topicService;
         this.userService = userService;
-        this.postDao = postDao;
     }
 
     /**
@@ -142,17 +136,5 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
         logger.info("All topics for branch \"{}\" were deleted. " +
                 "Branch id: {}", branch.getName(), branch.getId());
         return branch;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void refreshLastPostInBranch(Branch branch) {
-        if (branch.getLastPost() == null) {
-            Post lastPostOfBranch = postDao.getLastPostFor(branch);
-            branch.setLastPost(lastPostOfBranch);
-            getDao().update(branch);
-        }
     }
 }

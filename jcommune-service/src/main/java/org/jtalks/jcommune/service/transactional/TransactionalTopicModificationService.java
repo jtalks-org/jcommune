@@ -14,13 +14,24 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import java.util.List;
+
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.entity.*;
-import org.jtalks.jcommune.service.*;
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Poll;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.BranchLastPostService;
+import org.jtalks.jcommune.service.PollService;
+import org.jtalks.jcommune.service.SubscriptionService;
+import org.jtalks.jcommune.service.TopicFetchService;
+import org.jtalks.jcommune.service.TopicModificationService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.slf4j.Logger;
@@ -56,6 +67,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
     private PollService pollService;
     private PermissionEvaluator permissionEvaluator;
     private SecurityContextFacade securityContextFacade;
+    private BranchLastPostService branchLastPostService;
 
     /**
      * Create an instance of User entity based service
@@ -70,6 +82,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
      * @param topicFetchService     to retrieve topics from a database
      * @param securityContextFacade authentication object retrieval
      * @param permissionEvaluator   for authorization purposes
+     * @param branchLastPostService to refresh the last post of the branch
      */
     public TransactionalTopicModificationService(TopicDao dao, SecurityService securityService,
                                                  BranchDao branchDao,
@@ -79,7 +92,8 @@ public class TransactionalTopicModificationService implements TopicModificationS
                                                  PollService pollService,
                                                  TopicFetchService topicFetchService,
                                                  SecurityContextFacade securityContextFacade,
-                                                 PermissionEvaluator permissionEvaluator) {
+                                                 PermissionEvaluator permissionEvaluator,
+                                                 BranchLastPostService branchLastPostService) {
         this.dao = dao;
         this.securityService = securityService;
         this.branchDao = branchDao;
@@ -90,6 +104,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         this.topicFetchService = topicFetchService;
         this.securityContextFacade = securityContextFacade;
         this.permissionEvaluator = permissionEvaluator;
+        this.branchLastPostService = branchLastPostService;
     }
 
     /**
@@ -258,15 +273,25 @@ public class TransactionalTopicModificationService implements TopicModificationS
      * @return branch without deleted topic
      */
     private Branch deleteTopicSilent(Topic topic) {
-        for (Post post : topic.getPosts()) {
+        List<Post> topicPosts = topic.getPosts();
+        for (Post post : topicPosts) {
             JCUser user = post.getUserCreated();
             user.setPostCount(user.getPostCount() - 1);
         }
-
         Branch branch = topic.getBranch();
+        Post lastPostInBranch = branch.getLastPost();
+        boolean branchLastPostFromDeletedTopic = topicPosts.contains(lastPostInBranch);
+        if (branchLastPostFromDeletedTopic) {
+            branch.clearLastPost();
+        }
+        
         branch.deleteTopic(topic);
         branchDao.update(branch);
-
+        
+        if (branchLastPostFromDeletedTopic) {
+            branchLastPostService.refreshLastPostInBranch(branch);
+        }
+        
         securityService.deleteFromAcl(Topic.class, topic.getId());
         return branch;
     }
@@ -277,9 +302,16 @@ public class TransactionalTopicModificationService implements TopicModificationS
     @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.MOVE_TOPICS')")
     @Override
     public void moveTopic(Topic topic, Long branchId) throws NotFoundException {
+        Branch sourceBranch = topic.getBranch();
         Branch targetBranch = branchDao.get(branchId);
         targetBranch.addTopic(topic);
         branchDao.update(targetBranch);
+        
+        List<Post> topicPosts = topic.getPosts();
+        if (topicPosts.contains(sourceBranch.getLastPost())) {
+            branchLastPostService.refreshLastPostInBranch(sourceBranch); 
+        }
+        branchLastPostService.refreshLastPostInBranch(targetBranch);
 
         notificationService.topicMoved(topic, topic.getId());
 

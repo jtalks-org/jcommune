@@ -39,6 +39,7 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.TopicFetchService;
@@ -101,6 +102,8 @@ public class TransactionalTopicModificationServiceTest {
     private PermissionEvaluator permissionEvaluator;
     @Mock
     private SecurityContext securityContext;
+    @Mock
+    private BranchService branchService;
     
     private CompoundAclBuilder<User> aclBuilder;
 
@@ -115,7 +118,11 @@ public class TransactionalTopicModificationServiceTest {
                 notificationService,
                 subscriptionService,
                 userService,
-                pollService, topicFetchService, securityContextFacade, permissionEvaluator);
+                pollService, 
+                topicFetchService,
+                securityContextFacade,
+                permissionEvaluator,
+                branchService);
 
         user = new JCUser(USERNAME, "email@mail.com", "password");
         when(securityContextFacade.getContext()).thenReturn(securityContext);

@@ -22,7 +22,7 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.BranchLastPostService;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.UserService;
@@ -49,18 +49,18 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     private NotificationService notificationService;
     private LastReadPostService lastReadPostService;
     private UserService userService;
-    private BranchService branchService;
+    private BranchLastPostService branchLastPostService;
 
     /**
      * Create an instance of Post entity based service
      *
-     * @param dao                 data access object, which should be able do all CRUD operations with post entity.
-     * @param topicDao            this dao used for checking branch existance
-     * @param securityService     service for authorization
-     * @param notificationService to send email updates for subscribed users
-     * @param lastReadPostService to modify last read post information when topic structure is changed
-     * @param userService         to get current user
-     * @param branchService       to work with the branch of the post 
+     * @param dao                   data access object, which should be able do all CRUD operations with post entity.
+     * @param topicDao              this dao used for checking branch existance
+     * @param securityService       service for authorization
+     * @param notificationService   to send email updates for subscribed users
+     * @param lastReadPostService   to modify last read post information when topic structure is changed
+     * @param userService           to get current user
+     * @param branchLastPostService to refresh the last post of the branch
      */
     public TransactionalPostService(
             PostDao dao,
@@ -69,14 +69,14 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
             NotificationService notificationService,
             LastReadPostService lastReadPostService,
             UserService userService,
-            BranchService branchService) {
+            BranchLastPostService branchLastPostService) {
         super(dao);
         this.topicDao = topicDao;
         this.securityService = securityService;
         this.notificationService = notificationService;
         this.lastReadPostService = lastReadPostService;
         this.userService = userService;
-        this.branchService = branchService;
+        this.branchLastPostService = branchLastPostService;
     }
 
     /**
@@ -113,16 +113,19 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         Topic topic = post.getTopic();
         topic.removePost(post);
         Branch branch = topic.getBranch();
-        if (branch.isLastPost(post)) {
+        boolean deletedPostIsLastPostInBranch = branch.isLastPost(post);
+        if (deletedPostIsLastPostInBranch) {
             branch.clearLastPost();
         }
-
+        
         // todo: event API?
         topicDao.update(topic);
         securityService.deleteFromAcl(post);
         notificationService.topicChanged(topic);
         lastReadPostService.updateLastReadPostsWhenPostIsDeleted(post);
-        branchService.refreshLastPostInBranch(branch);
+        if (deletedPostIsLastPostInBranch) {
+            branchLastPostService.refreshLastPostInBranch(branch);
+        }
 
         logger.debug("Deleted post id={}", postId);
     }

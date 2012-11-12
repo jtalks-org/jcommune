@@ -90,7 +90,7 @@
         <constructor-arg ref="notificationService"/>
         <constructor-arg ref="lastReadPostService"/>
         <constructor-arg ref="userService"/>
-        <constructor-arg ref="topicBranchService"/>
+        <constructor-arg ref="branchLastPostService"/>
     </bean>
 
     <bean id="topicModificationService"
@@ -105,6 +105,7 @@
         <constructor-arg ref="topicFetchService"/>
         <constructor-arg ref="securityContextFacade"/>
         <constructor-arg ref="aclGroupPermissionEvaluator"/>
+        <constructor-arg ref="branchLastPostService"/>
     </bean>
 
     <bean id="topicFetchService"
@@ -121,7 +122,12 @@
         <constructor-arg ref="topicDao"/>
         <constructor-arg ref="topicModificationService"/>
         <constructor-arg ref="userService"/>
+    </bean>
+    
+    <bean id="branchLastPostService" 
+            class="org.jtalks.jcommune.service.transactional.TransactionalBranchLastPostService" >
         <constructor-arg ref="postDao"/>
+        <constructor-arg ref="topicBranchDao"/>
     </bean>
 
     <bean id="branchSectionService"
