@@ -99,14 +99,15 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
      */
     @Override
     public void fillStatisticInfo(List<org.jtalks.common.model.entity.Branch> branches) {
-        JCUser user = userService.getCurrentUser();
+
         for (org.jtalks.common.model.entity.Branch commonBranch : branches) {
             Branch jcommuneBranch = (Branch) commonBranch;
             int postsCount = getDao().getCountPostsInBranch(jcommuneBranch);
             jcommuneBranch.setPostsCount(postsCount);
             int topicsCount = topicDao.countTopics(jcommuneBranch);
             jcommuneBranch.setTopicsCount(topicsCount);
-            //TODO fix in milestone2
+            //TODO Was removed till milestone 2 due to performance issues
+//            JCUser user = userService.getCurrentUser();
 //            if (!user.isAnonymous()) {
 //                boolean isUnreadPosts = getDao().isUnreadPostsInBranch(jcommuneBranch, user);
 //                jcommuneBranch.setUnreadPosts(isUnreadPosts);

@@ -12,6 +12,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+var Utils = {};
+
 
 function quote(postId, branchId) {
     // we need a synchronous POST here so we're creating a form. Found no better way to do it(
@@ -31,10 +33,21 @@ function getSelectedPostText() {
     var txt = '';
     if (document.getSelection) {
         txt = document.getSelection().toString();
-    } else if (window.getSelection) {
+    }
+    else if (window.getSelection) {
         txt = window.getSelection().toString();
-    } else if (document.selection) {
+    }
+    else if (document.selection) {
         txt = document.selection.createRange().text;
     }
     return txt;
+}
+
+Utils.resizeDialog = function (dialog) {
+    dialog.css("margin-top", function () {
+        return $(this).outerHeight() / 2 * (-1)
+    });
+    dialog.css("margin-left", function () {
+        return $(this).outerWidth() / 2 * (-1)
+    });
 }

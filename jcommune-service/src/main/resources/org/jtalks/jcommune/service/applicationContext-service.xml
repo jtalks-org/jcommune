@@ -74,6 +74,10 @@
         <constructor-arg ref="base64Wrapper"/>
         <constructor-arg ref="avatarService"/>
         <constructor-arg ref="encryptionService"/>
+        <constructor-arg ref="authenticationManager"/>
+        <constructor-arg ref="securityContextFacade"/>
+        <constructor-arg ref="rememberMeServices"/>
+        <constructor-arg ref="concurrentSessionControlStrategy"/>
     </bean>
 
     <bean id="userContactsService"
@@ -179,7 +183,13 @@
         <constructor-arg ref="securityService"/>
     </bean>
 
-    <bean id="bbCodeService" class="org.jtalks.jcommune.service.nontransactional.BBCodeService"/>
+    <bean id="bbCodeService" class="org.jtalks.jcommune.service.nontransactional.BBCodeService">
+        <property name="preprocessors">
+            <list>
+                <bean class="org.jtalks.jcommune.service.bb2htmlprocessors.BBCodeListPreprocessor"/>
+            </list>
+        </property>
+    </bean>
 
     <!--
     Cache beans for user related data.

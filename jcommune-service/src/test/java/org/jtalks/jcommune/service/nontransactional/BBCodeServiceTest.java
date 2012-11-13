@@ -83,7 +83,9 @@ public class BBCodeServiceTest {
                 //hyperlinks
                 {"[url=http://www.google.com]Гу\nгл[/url]", "<a href=\"http://www.google.com\">Гу<br/>гл</a>"},
                 //list with bullets
-                {"[list][*]1й пункт[*]2й пункт[/list]", "<ul class=\"list\"><li>1й пункт</li><li>2й пункт</li></ul>"},
+                {"[list][*]1й пункт[/*][*]2й пункт[/*][/list]", "<ul class=\"list unordered-list\"><li>1й пункт</li><li>2й пункт</li></ul>"},
+                {"[list=1][*]1й пункт[/*][*]2й пункт[/*][/list]", "<ol type=\"1\" class=\"list\"><li>1й пункт</li><li>2й пункт</li></ol>"},
+                {"[list=a][*]1й пункт[/*][*]2й пункт[/*][/list]", "<ol type=\"a\" class=\"list\"><li>1й пункт</li><li>2й пункт</li></ol>"},
                 //images
                 {"[img]http://narod.ru/avatar.jpg[/img]",
                         "<a title=\"\" href=\"http://narod.ru/avatar.jpg\" rel=\"prettyPhoto\">" +

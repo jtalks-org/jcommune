@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.service.UserService;
@@ -30,10 +29,6 @@ import org.jtalks.jcommune.web.dto.JsonResponse;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -58,24 +53,23 @@ import org.springframework.web.servlet.ModelAndView;
 public class UserController {
 
     public static final String REGISTRATION = "registration";
-    
+
     public static final String LOGIN = "login";
 
+    private static final String REMEMBER_ME_ON = "on";
+
+    private static final String JSON_RESPONSE_SUCCESS = "success";
+
+    private static final String JSON_RESPONSE_FAIL = "fail";
+
     private UserService userService;
-    private AuthenticationManager authenticationManager;
-    private SecurityContextHolderFacade securityFacade;
-    private RememberMeServices rememberMeServices;
-    
+
     /**
      * @param userService to delegate business logic invocation
      */
     @Autowired
-    public UserController(UserService userService, AuthenticationManager authenticationManager, 
-    		SecurityContextHolderFacade securityFacade, RememberMeServices rememberMeServices) {
+    public UserController(UserService userService) {
         this.userService = userService;
-		this.authenticationManager = authenticationManager;
-		this.securityFacade = securityFacade;
-		this.rememberMeServices = rememberMeServices;
     }
 
     /**
@@ -147,7 +141,7 @@ public class UserController {
         userService.registerUser(user);
         return new ModelAndView("redirect:/");
     }
-    
+
     /**
      * Register {@link org.jtalks.jcommune.model.entity.JCUser} from populated {@link RegisterUserDto}.
      * <p/>
@@ -158,20 +152,20 @@ public class UserController {
      * @return redirect validation result in JSON format
      */
     @RequestMapping(value = "/user/new_ajax", method = RequestMethod.POST)
-    public @ResponseBody JsonResponse registerUserAjax(@Valid @ModelAttribute("newUser") RegisterUserDto userDto,
-                                     BindingResult result, Locale locale) {
-    	 if (result.hasErrors()) {
-             return new JsonResponse("fail", result.getAllErrors());
-         }
-         JCUser user = userDto.createUser();
-         user.setLanguage(Language.byLocale(locale));
-         userService.registerUser(user);
-         return new JsonResponse("success");
+    @ResponseBody
+    public JsonResponse registerUserAjax(@Valid @ModelAttribute("newUser") RegisterUserDto userDto,
+                                         BindingResult result, Locale locale) {
+        if (result.hasErrors()) {
+            return new JsonResponse("fail", result.getAllErrors());
+        }
+        JCUser user = userDto.createUser();
+        user.setLanguage(Language.byLocale(locale));
+        userService.registerUser(user);
+        return new JsonResponse("success");
     }
 
 
-
-	/**
+    /**
      * Activates user account with UUID-based URL
      * We use UUID's to be sure activation link cannot be generated from username
      * by script or any other tool.
@@ -188,16 +182,15 @@ public class UserController {
             return "errors/activationExpired";
         }
     }
-    
+
     /**
-     * Shows login page. Also checks if user is already logged in. 
+     * Shows login page. Also checks if user is already logged in.
      * If so he is redirected to main page.
-     * 
+     *
      * @return login view name or redirect to main page
      */
-    @RequestMapping(value="/login", method=RequestMethod.GET)
-    public String loginPage()
-    {
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public String loginPage() {
         JCUser currentUser = userService.getCurrentUser();
         if (currentUser.isAnonymous()) {
             return LOGIN;
@@ -205,34 +198,25 @@ public class UserController {
             return "redirect:/";
         }
     }
-    
+
     /**
      * Handles login action for ajax clients.
-     * 
-     * @param username username
-     * @param password password
+     *
+     * @param username   username
+     * @param password   password
      * @param rememberMe set remember me token if equal to "on"
-     * @param request servlet request
-     * @param response servlet response 
+     * @param request    servlet request
+     * @param response   servlet response
      * @return "success" or "fail" response status
      */
-    @RequestMapping(value="/login_ajax", method=RequestMethod.POST)
-    public @ResponseBody JsonResponse loginAjax(@RequestParam("j_username") String username,
-            					  				@RequestParam("j_password") String password,
-            					  				@RequestParam(value="_spring_security_remember_me", defaultValue="off") String rememberMe,
-            					  				HttpServletRequest request, HttpServletResponse response) {
-		try {
-			UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
-			JCUser user = userService.getByUsername(username);
-			token.setDetails(user);
-			Authentication auth = authenticationManager.authenticate(token);
-			securityFacade.getContext().setAuthentication(auth);
-			if (rememberMe.equals("on") && auth.isAuthenticated()) {
-				rememberMeServices.loginSuccess(request, response, auth);
-			}
-			return new JsonResponse(auth.isAuthenticated() ? "success" : "fail");
-		} catch (Exception e) {
-			return new JsonResponse("fail");
-		}
+    @RequestMapping(value = "/login_ajax", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResponse loginAjax(@RequestParam("j_username") String username,
+                                  @RequestParam("j_password") String password,
+                                  @RequestParam(value = "_spring_security_remember_me", defaultValue = "off") String rememberMe,
+                                  HttpServletRequest request, HttpServletResponse response) {
+        boolean rememberMeBoolean = rememberMe.equals(REMEMBER_ME_ON);
+        boolean isAuthenticated = userService.loginUser(username, password, rememberMeBoolean, request, response);
+        return new JsonResponse(isAuthenticated ? JSON_RESPONSE_SUCCESS : JSON_RESPONSE_FAIL);
     }
 }

@@ -129,6 +129,7 @@
         <coderef name="center"/>
         <coderef name="indent"/>
         <coderef name="list"/>
+        <coderef name="orderedList"/>
         <coderef name="offtop"/>
 
         <!-- Quotes -->
@@ -225,11 +226,15 @@
     <!-- List -->
     <code name="list">
         <pattern>[list]<var scope="listScope"/>[/list]</pattern>
-        <template>&lt;ul class=&quot;list&quot;&gt;<var/>&lt;/ul&gt;</template>
+        <template>&lt;ul class=&quot;list unordered-list&quot;&gt;<var/>&lt;/ul&gt;</template>
+    </code>
+    <code name="orderedList">
+        <pattern>[list=<var name="listType"/>]<var name="listItems" scope="listScope"/>[/list]</pattern>
+        <template>&lt;ol type=&quot;<var name="listType"/>&quot; class=&quot;list&quot;&gt;<var name="listItems"/>&lt;/ol&gt;</template>
     </code>
     <scope name="listScope" ignoreText="false">
         <code name="li">
-            <pattern>[*]<var regex="[^(\[\*\])]+" scope="escapeXmlAndBr"/></pattern>
+            <pattern>[*]<var scope="ROOT"/>[/*]</pattern>
             <template>&lt;li&gt;<var/>&lt;/li&gt;</template>
         </code>
     </scope>
