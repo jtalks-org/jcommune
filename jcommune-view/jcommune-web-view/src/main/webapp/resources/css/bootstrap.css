@@ -472,10 +472,6 @@ ul {
     list-style: disc;
 }
 
-ol {
-    list-style: decimal;
-}
-
 li {
     line-height: 18px;
 }

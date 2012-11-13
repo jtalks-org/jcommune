@@ -14,6 +14,9 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.Validate;
 import org.jtalks.jcommune.model.entity.JCUser;
 import ru.perm.kefir.bbcode.BBProcessorFactory;
@@ -32,7 +35,12 @@ public class BBCodeService {
      * Processor is thread safe as it's explicitly stated in documentation
      */
     private TextProcessor processor = BBProcessorFactory.getInstance().create();
-
+    
+    /**
+     * Preprocessors of BB encoded text used before actual BB2HTML converter
+     */
+    private List<TextProcessor> preprocessors = new ArrayList<TextProcessor>();
+    
     /**
      * Quotes text given as a valid BB-coded quote.
      * Such a quotes are rendered automatically in posts or forum messages
@@ -57,6 +65,9 @@ public class BBCodeService {
      * @return the same text with HTML markup to be shown
      */
     public String convertBbToHtml(String bbEncodedText) {
+        for (TextProcessor preprocessor : preprocessors) {
+            bbEncodedText = preprocessor.process(bbEncodedText);;
+        }
         return processor.process(bbEncodedText);
     }
 
@@ -71,4 +82,18 @@ public class BBCodeService {
         return source.replaceAll("\\[.*?\\]", "");
     }
 
+    /**
+     * @return the preprocessors
+     */
+    public List<TextProcessor> getPreprocessors() {
+        return preprocessors;
+    }
+
+    /**
+     * @param preprocessors the preprocessors to set
+     */
+    public void setPreprocessors(List<TextProcessor> preprocessors) {
+        this.preprocessors = preprocessors;
+    }
+    
 }
