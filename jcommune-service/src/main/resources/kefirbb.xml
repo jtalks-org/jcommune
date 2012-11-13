@@ -229,7 +229,7 @@
     </code>
     <scope name="listScope" ignoreText="false">
         <code name="li">
-            <pattern>[*]<var regex="[^(\[\*\])]+" scope="escapeXmlAndBr"/></pattern>
+            <pattern>[*]<var scope="ROOT"/>[/*]</pattern>
             <template>&lt;li&gt;<var/>&lt;/li&gt;</template>
         </code>
     </scope>
