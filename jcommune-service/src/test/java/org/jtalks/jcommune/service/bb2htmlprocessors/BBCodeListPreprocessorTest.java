@@ -28,19 +28,46 @@ public class BBCodeListPreprocessorTest {
         service = new BBCodeListPreprocessor();
     }
     
-    @Test(dataProvider="validBBCodes")
+    @Test(dataProvider="validLists")
     public void testProcess(String bbCode, String expectedResult) {
         String result = service.process(bbCode);
         assertEquals(result, expectedResult);
     }
     
+    @Test(dataProvider="validLists")
+    public void testProcessStringBuilder(String bbCode, String expectedResult) {
+        StringBuilder result = service.process(new StringBuilder(bbCode));
+        assertEquals(result.toString(), expectedResult);
+    }
+    
+    @Test(dataProvider="validLists")
+    public void testProcessStringBuffer(String bbCode, String expectedResult) {
+        StringBuffer result = service.process(new StringBuffer(bbCode));
+        assertEquals(result.toString(), expectedResult);
+    }
+    
+    @Test(dataProvider="validLists")
+    public void testProcessCharSequence(String bbCode, String expectedResult) {
+        CharSequence result = service.process(new StringBuilder(bbCode).subSequence(0, bbCode.length()));
+        assertEquals(result.toString(), expectedResult);
+    }
     
     @DataProvider
-    public Object[][] validBBCodes() {
+    public Object[][] validLists() {
         return new Object[][]{  // {"bb code before", "bb code after"}
                 {"aaa[list][*]bbb[*]ccc[/list]ddd", "aaa[list][*]bbb[/*][*]ccc[/*][/list]ddd"},
                 {"aaa[list][*][b]bbb[/b][*][padding=10]ccc[/padding][/list]ddd", "aaa[list][*][b]bbb[/b][/*][*][padding=10]ccc[/padding][/*][/list]ddd"},
-                {"[list][*]aaa[*]bbb[/list]", "[list][*]aaa[/*][*]bbb[/*][/list]"}
+                {"[list][*]aaa[*]bbb[/list]", "[list][*]aaa[/*][*]bbb[/*][/list]"},
+                {"aaa[list][*]bbb[*]ccc[/list]dddaaa[list][*]bbb[*]ccc[/list]ddd", "aaa[list][*]bbb[/*][*]ccc[/*][/list]dddaaa[list][*]bbb[/*][*]ccc[/*][/list]ddd"},
+                {"aaa[list=1][*]bbb[*]ccc[/list]dddaaa[list=1][*]bbb[*]ccc[/list]ddd", "aaa[list=1][*]bbb[/*][*]ccc[/*][/list]dddaaa[list=1][*]bbb[/*][*]ccc[/*][/list]ddd"},
+                {"aaa[list=1][*][b]bbb[/b][*][padding=10]ccc[/padding][/list]ddd", "aaa[list=1][*][b]bbb[/b][/*][*][padding=10]ccc[/padding][/*][/list]ddd"},
+                {"[list=1][*]aaa[*]bbb[/list]", "[list=1][*]aaa[/*][*]bbb[/*][/list]"},
+                {"aaa[list=a][*]bbb[*]ccc[/list]ddd", "aaa[list=a][*]bbb[/*][*]ccc[/*][/list]ddd"},
+                {"aaa[list=a][*][b]bbb[/b][*][padding=10]ccc[/padding][/list]ddd", "aaa[list=a][*][b]bbb[/b][/*][*][padding=10]ccc[/padding][/*][/list]ddd"},
+                {"[list=a][*]aaa[*]bbb[/list]", "[list=a][*]aaa[/*][*]bbb[/*][/list]"},
+                {"aaa[list=1][*]bbb[*]ccc[/list]d[b]dda[/b]aa[list][*]bbb[*]ccc[/list]ddd", "aaa[list=1][*]bbb[/*][*]ccc[/*][/list]d[b]dda[/b]aa[list][*]bbb[/*][*]ccc[/*][/list]ddd"},
+                {"aaa[list]\n[*]bbb\n[*]ccc\n[/list]", "aaa[list]\n[*]bbb\n[/*][*]ccc\n[/*][/list]"},
+                {"", ""}
         };
     }
 }

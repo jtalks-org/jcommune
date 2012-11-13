@@ -15,6 +15,9 @@
 
 package org.jtalks.jcommune.service.bb2htmlprocessors;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import ru.perm.kefir.bbcode.TextProcessor;
 
 /**
@@ -25,8 +28,7 @@ import ru.perm.kefir.bbcode.TextProcessor;
  */
 public class BBCodeListPreprocessor implements TextProcessor {
 
-    private static final String LIST_OPEN_TAG = "[list]";
-    private static final String LIST_CLOSE_TAG = "[/list]";
+    private static final String BBLIST_PATTERN = "(\\[list[\\]|=?\\]])(.*?)(\\[/list\\])";
     private static final String LIST_ITEM_OPEN_TAG = "[*]";
     private static final String LIST_ITEM_CLOSE_TAG = "[/*]";
     
@@ -45,31 +47,23 @@ public class BBCodeListPreprocessor implements TextProcessor {
      * @return processed text
      */
     private StringBuilder preprocessLists(String bbEncodedText) {
+        Pattern pattern = Pattern.compile(BBLIST_PATTERN, Pattern.DOTALL);
+        Matcher matcher = pattern.matcher(bbEncodedText);
+
         StringBuilder result = new StringBuilder();
-        int listStart = bbEncodedText.indexOf(LIST_OPEN_TAG);
-        if (listStart == -1) {
-            // if no lists found return original text;
-            result.append(bbEncodedText);
-        } else {
-            // append text before first list
-            result.append(bbEncodedText.substring(0, listStart));
-            int listEnd = 0;
-            int cutListEnd = 0;
-            while (listStart != -1) {
-                result.append(LIST_OPEN_TAG);
-                listEnd = bbEncodedText.indexOf(LIST_CLOSE_TAG, listStart);
-                String listItems = bbEncodedText.substring(listStart + LIST_OPEN_TAG.length(), listEnd);
-                result.append(preprocessListItems(listItems));
-                result.append(LIST_CLOSE_TAG);
-                
-                cutListEnd = bbEncodedText.indexOf(LIST_OPEN_TAG, listEnd);
-                listStart = cutListEnd;
-                if (cutListEnd == -1) {
-                    cutListEnd = bbEncodedText.length();
-                }
-                result.append(bbEncodedText.substring(listEnd + LIST_CLOSE_TAG.length(), cutListEnd));
-            }
+        int lastEnd = 0;
+        while (matcher.find())
+        {
+            result.append(bbEncodedText.substring(lastEnd, matcher.start()));
+            result.append(matcher.group(1));
+            String listItems = matcher.group(2);
+            result.append(preprocessListItems(listItems));
+            result.append(matcher.group(3));
+            lastEnd = matcher.end();
         }
+        
+        result.append(bbEncodedText.substring(lastEnd, bbEncodedText.length()));
+        
         return result;
      }
 
@@ -133,5 +127,5 @@ public class BBCodeListPreprocessor implements TextProcessor {
     public StringBuffer process(StringBuffer bbEncodedText) {
         return new StringBuffer(process(bbEncodedText.toString()));
     }
-    
+
 }
