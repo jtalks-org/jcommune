@@ -16,9 +16,6 @@
 package org.jtalks.jcommune.web.controller;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -69,7 +66,6 @@ public class AvatarController {
     static final String WRONG_FORMAT_RESOURCE_MESSAGE = "image.wrong.format";
     static final String WRONG_SIZE_RESOURCE_MESSAGE = "image.wrong.size";
     static final String COMMON_ERROR_RESOURCE_MESSAGE = "avatar.500.common.error";
-    public static final String HTTP_HEADER_DATETIME_PATTERN = "E, dd MMM yyyy HH:mm:ss z"; 
     private static final String IF_MODIFIED_SINCE_HEADER = "If-Modified-Since";
 
     private AvatarService avatarService;
@@ -139,7 +135,7 @@ public class AvatarController {
     /**
      * Write user avatar in response for rendering it on html pages.
      *
-     * @parra reqeust servlet request
+     * @param request servlet request
      * @param response servlet response
      * @param id       user database identifier
      * @throws NotFoundException if user with given encodedUsername not found
@@ -153,7 +149,7 @@ public class AvatarController {
             throws NotFoundException, IOException {
         JCUser user = userService.get(id);
         
-        Date ifModifiedDate = getIfModifiedSineHeader(request);
+        Date ifModifiedDate = avatarService.getIfModifiedSineDate(request.getHeader(IF_MODIFIED_SINCE_HEADER));
         if (!user.getAvatarLastModificationTime().isAfter(ifModifiedDate.getTime())) {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
         } else {
@@ -170,30 +166,6 @@ public class AvatarController {
     
     
     /**
-     * Check 'If-Modified-Since' header in the request and converts it to 
-     * {@link java.util.Date} representation
-     * @param request - HTTP request
-     * @return If-Modified-Since header or Jan 1, 1970 if it is not set or
-     *      can't be parsed
-     */
-    private Date getIfModifiedSineHeader(HttpServletRequest request) {
-        String ifModifiedSinceHeader = request.getHeader(IF_MODIFIED_SINCE_HEADER);
-        Date ifModifiedSinceDate = new Date(0);
-        if (ifModifiedSinceHeader != null) {
-            try {
-                DateFormat dateFormat = new SimpleDateFormat(
-                        HTTP_HEADER_DATETIME_PATTERN,
-                        Locale.US); 
-                ifModifiedSinceDate = dateFormat.parse(ifModifiedSinceHeader);
-            } catch (ParseException e) {
-                // in case date is wrong or not specified date will be Jan 1, 1970.
-            }
-        }
-        
-        return ifModifiedSinceDate;
-    }
-    
-    /**
      * Sets up avatar cache related headers. 
      * @param response - HTTP response object where set headers
      * @param avatarLastModificationTime - last modification time of avatar
@@ -206,12 +178,12 @@ public class AvatarController {
         response.addHeader("Cache-Control","max-age=0");
         String formattedDateExpires = DateFormatUtils.format(
                 new Date(System.currentTimeMillis()), 
-                HTTP_HEADER_DATETIME_PATTERN, Locale.US);
+                AvatarService.HTTP_HEADER_DATETIME_PATTERN, Locale.US);
         response.setHeader("Expires", formattedDateExpires);
     
         String formattedDateLastModified = DateFormatUtils.format(
                 avatarLastModificationTime, 
-                HTTP_HEADER_DATETIME_PATTERN, Locale.US);
+                AvatarService.HTTP_HEADER_DATETIME_PATTERN, Locale.US);
         response.setHeader("Last-Modified", formattedDateLastModified);
     }
 
@@ -258,7 +230,7 @@ public class AvatarController {
      * @param bytes           input avatar data
      * @param response        resulting response
      * @param responseContent with avatar processing results
-     * @throws ImageProcessException
+     * @throws ImageProcessException if it's impossible to form correct image response
      */
     private void prepareResponse(byte[] bytes,
                                  HttpServletResponse response,

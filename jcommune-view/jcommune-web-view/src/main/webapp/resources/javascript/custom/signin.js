@@ -19,14 +19,15 @@
 
 $(function () {
     // hide dialog on backdrop click
-    $('.modal-backdrop').live('click', function(e) {
+    $('.modal-backdrop').live('click', function (e) {
         $('#signin-modal-dialog').modal('hide');
     });
 
     $("#signin").on('click', function (e) {
         // prevent from following link
         e.preventDefault();
-        showSigninDialog(); // open dialog
+        var signinDialog = showSigninDialog(); // open dialog
+        Utils.resizeDialog(signinDialog);
     });
 });
 
@@ -59,16 +60,17 @@ function sendLoginPost() {
     }
 
     $.ajax({
-        type: "POST",
-        url: $root + "/login_ajax",
-        data: query,
-        dataType: "html",
-        success: function(resp) {
+        type:"POST",
+        url:$root + "/login_ajax",
+        data:query,
+        dataType:"html",
+        success:function (resp) {
             resp = eval('(' + resp + ')');
 
             if (resp.status == "success") {
                 location.reload();
-            } else {
+            }
+            else {
                 dialog.find('*').attr('disabled', false);
                 dialog.find('.control-group').removeClass('error');
                 dialog.find('._error').remove();
@@ -76,10 +78,11 @@ function sendLoginPost() {
                 ErrorUtils.addErrorStyles("#j_username");
                 ErrorUtils.addErrorStyles("#j_password");
 
-                passwordElement.after('<span class="help-inline _error">' +  $labelLoginError + '</span>');
+                passwordElement.after('<span class="help-inline _error">' + $labelLoginError + '</span>');
+                Utils.resizeDialog(dialog);
             }
         },
-        error: function(data) {
+        error:function (data) {
             bootbox.alert($labelError500Detail);
         }
     });
@@ -131,11 +134,12 @@ function showSigninDialog() {
 
     // trigger checkbox on click inside outer div
     var checkbox = signinDialog.find("input[name=_spring_security_remember_me]");
-    signinDialog.find('#rememberme-area').click(function(e) {
+    signinDialog.find('#rememberme-area').click(function (e) {
         if (!$(e.target).is(':checkbox')) { // prevent from handling event when clicked on checkbox
             if (checkbox.is(':checked')) {
                 checkbox.removeAttr('checked');
-            } else {
+            }
+            else {
                 checkbox.attr('checked', 'checked');
             }
         }
@@ -143,14 +147,14 @@ function showSigninDialog() {
 
     // send ajax-request on submit button click
     var submitButton = signinDialog.find("#signin-submit-button");
-    submitButton.click(function(e) {
+    submitButton.click(function (e) {
         e.preventDefault();
         sendLoginPost();
         return false;
     });
 
     // returns focus back to uername field
-    submitButton.keydown(function(e) {
+    submitButton.keydown(function (e) {
         if ((e.keyCode || e.charCode) == 9) { //TAB key
             e.preventDefault();
             signinDialog.find("#j_username").focus();
@@ -158,19 +162,20 @@ function showSigninDialog() {
     });
 
     // remove dialog from DOM on hide
-    signinDialog.bind("hide", function(e) {
+    signinDialog.bind("hide", function (e) {
         signinDialog.remove();
     });
 
 
     // show dialog
     signinDialog.modal({
-      "backdrop" : "static",
-      "keyboard" : true,
-      "show" : true
+        "backdrop":"static",
+        "keyboard":true,
+        "show":true
     });
 
     signinDialog.find("#j_username").focus();
 
     return signinDialog;
-};
+}
+;

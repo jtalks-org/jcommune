@@ -14,6 +14,9 @@
  */
 package org.jtalks.jcommune.service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
@@ -122,4 +125,18 @@ public interface UserService extends EntityService<JCUser> {
      * @throws NotFoundException if no user was found with the specified username
      */
     User getCommonUserByUsername(String username) throws NotFoundException;
+
+    /**
+     * Perform login logic for provided user. After calling this the method
+     * this user will be logged in
+     * @param username user name of user to login
+     * @param password password to login
+     * @param rememberMe remember this user or not
+     * @param request HTTP request
+     * @param response HTTP response
+     * @return true if user was logged in. false if there were any errors during
+     *      logging in.
+     */
+    boolean loginUser(String username, String password,  boolean rememberMe, 
+            HttpServletRequest request, HttpServletResponse response);
 }

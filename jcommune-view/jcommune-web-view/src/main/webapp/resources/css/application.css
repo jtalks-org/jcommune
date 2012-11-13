@@ -151,7 +151,8 @@ ul.lang-menu li img {
 }
 
 #topics-table .author-col a {
-    font-size: 11px;}
+    font-size: 11px;
+}
 
 #topics-table .posted-in-col a {
     font-size: 11px;
@@ -341,7 +342,6 @@ div.anchor {
     line-height: 0;
 }
 
-
 .modal .close {
     padding: 0;
     cursor: pointer;
@@ -356,7 +356,6 @@ div.anchor {
 
 #signin-modal-dialog {
     width: 300px;
-    margin: -150px 0px 0px -150px;
 }
 
 #signin-modal-dialog #signin-submit-button {
@@ -374,10 +373,7 @@ div.anchor {
     margin: 0px 10px 9px 25px;
 }
 
-
-
 #signup-modal-dialog {
-    margin: -250px 0px 0px -150px;
     width: 350px;
     max-height: none;
 }

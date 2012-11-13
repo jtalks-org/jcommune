@@ -35,7 +35,7 @@ import java.io.IOException;
  */
 public class ChainBreakingInterceptor extends HandlerInterceptorAdapter {
 
-    private final static Logger logger = LoggerFactory.getLogger(ChainBreakingInterceptor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChainBreakingInterceptor.class);
     
     /**
      * {@inheritDoc}
@@ -50,7 +50,7 @@ public class ChainBreakingInterceptor extends HandlerInterceptorAdapter {
             //break interceptor chain
             return false;
         } else {
-            logger.warn("handler can not be cast to HttpRequestHandler. " +
+            LOGGER.warn("handler can not be cast to HttpRequestHandler. " +
             		"It is of class " + handler.getClass().getCanonicalName());
             return true;
         }

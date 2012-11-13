@@ -74,6 +74,10 @@
         <constructor-arg ref="base64Wrapper"/>
         <constructor-arg ref="avatarService"/>
         <constructor-arg ref="encryptionService"/>
+        <constructor-arg ref="authenticationManager"/>
+        <constructor-arg ref="securityContextFacade"/>
+        <constructor-arg ref="rememberMeServices"/>
+        <constructor-arg ref="concurrentSessionControlStrategy"/>
     </bean>
 
     <bean id="userContactsService"

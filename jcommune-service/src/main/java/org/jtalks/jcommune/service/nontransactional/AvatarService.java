@@ -28,8 +28,13 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Service for avatar related operations
@@ -39,6 +44,8 @@ import java.util.List;
 public class AvatarService {
 
     private static final List<String> VALID_IMAGE_TYPES = Arrays.asList("image/jpeg", "image/png", "image/gif");
+    public static final String HTTP_HEADER_DATETIME_PATTERN = "E, dd MMM yyyy HH:mm:ss z";
+    
     private ImageUtils imageUtils;
     private Base64Wrapper base64Wrapper;
     private String defaultAvatarPath;
@@ -144,5 +151,29 @@ public class AvatarService {
             LOGGER.error("Failed to load default avatar", e);
         }
         return result;
+    }
+    
+    /**
+     * Check 'If-Modified-Since' header in the request and converts it to 
+     * {@link java.util.Date} representation
+     * @param ifModifiedSinceHeader - value of 'If-Modified-Since' header in 
+     *      string form
+     * @return If-Modified-Since header or Jan 1, 1970 if it is not set or
+     *      can't be parsed
+     */
+    public Date getIfModifiedSineDate(String ifModifiedSinceHeader) {
+        Date ifModifiedSinceDate = new Date(0);
+        if (ifModifiedSinceHeader != null) {
+            try {
+                DateFormat dateFormat = new SimpleDateFormat(
+                        HTTP_HEADER_DATETIME_PATTERN,
+                        Locale.US); 
+                ifModifiedSinceDate = dateFormat.parse(ifModifiedSinceHeader);
+            } catch (ParseException e) {
+                // in case date is wrong or not specified date will be Jan 1, 1970.
+            }
+        }
+        
+        return ifModifiedSinceDate;
     }
 }
