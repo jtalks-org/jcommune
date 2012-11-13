@@ -141,7 +141,6 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     private Poll poll;
     private List<Post> posts = new ArrayList<Post>();
     private Set<JCUser> subscribers = new HashSet<JCUser>();
-    private Post lastPost;
 
     // transient, makes sense for current user only if set explicitly
     private transient Integer lastReadPostIndex;
@@ -193,7 +192,6 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
         post.setTopic(this);
         updateModificationDate();
         this.posts.add(post);
-        this.lastPost = post;
     }
 
     /**
@@ -203,7 +201,6 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      */
     public void removePost(Post postToRemove) {
         posts.remove(postToRemove);
-        this.lastPost = posts.get(posts.size() - 1);
         updateModificationDate();
     }
 
@@ -327,16 +324,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      * @return last post in the topic.
      */
     public Post getLastPost() {
-        return lastPost;
-    }
-    
-    /**
-     * Set the last post in the topic.
-     * 
-     * @param lastPost the last post in the topic
-     */
-    public void setLastPost(Post lastPost) {
-        this.lastPost = lastPost;
+        return posts.get(posts.size() - 1);
     }
 
     /**
