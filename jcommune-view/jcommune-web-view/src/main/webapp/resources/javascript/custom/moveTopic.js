@@ -40,7 +40,7 @@ $(document).ready(function () {
  * @return html template for "Move topic" modal window
  */
 function prepareHtmlTemplateForModalWindow(sections) {
-    var htmlTemplate = '<b>Move topic</b><br/>' +
+    var htmlTemplate = '<b>' + $labelTopicMoveFull + '</b><br/>' +
         '<select style="width: 45%" name="section_name" id="section_name" size="10">' +
         '<option value="all">All sections</option>';
 
@@ -66,7 +66,7 @@ function showMoveTopicModalWindow(htmlTemplate) {
     var eliminatedBranchId = $("#edit_button").attr("rel");
     var topicId = $(".topicId").attr('id');
     $.prompt(htmlTemplate, {
-        buttons:{ Move:true, Cancel:false},
+        buttons:{ Ok:true, Cancel:false},
         loaded:function () {
             displayBranches(eliminatedBranchId);
             $("#branch_name").change(function () {
