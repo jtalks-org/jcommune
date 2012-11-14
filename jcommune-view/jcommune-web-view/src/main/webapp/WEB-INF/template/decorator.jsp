@@ -38,13 +38,15 @@
 
     <%-- support of HTML5 elements for IE6-8 --%>
     <%--[if lt IE 9]>
-      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/licensed/html5.js"></script>
     <![endif]--%>
 
     <link rel="stylesheet" type="text/css" media="screen, projection"
           href="${pageContext.request.contextPath}/resources/css/screen.css"/>
     <link rel="stylesheet" type="text/css" media="screen, projection"
           href="${pageContext.request.contextPath}/resources/css/i18n/<spring:message code="locale.code"/>.css"/>
+    <link rel="stylesheet" type="text/css" media="screen, projection" 
+          href='${pageContext.request.contextPath}/resources/css/fonts-googleapis-com.css'/>
     <link rel="shortcut icon" type="image/x-icon"
           href="${pageContext.request.contextPath}/resources/images/favicon.ico"/>
     <link rel="icon" type="image/png"
@@ -73,7 +75,6 @@
             type='text/javascript'></script>
     <script src='${pageContext.request.contextPath}/resources/javascript/licensed/bootbox.min.js'
             type='text/javascript'></script>
-    <link href='http://fonts.googleapis.com/css?family=Carter+One' rel='stylesheet' type='text/css'>
     <script src='${pageContext.request.contextPath}/resources/javascript/custom/errorUtils.js'
             type='text/javascript'></script>
     <script src='${pageContext.request.contextPath}/resources/javascript/custom/utils.js'
