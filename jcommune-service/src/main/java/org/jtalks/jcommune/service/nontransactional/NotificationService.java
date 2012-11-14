@@ -20,6 +20,7 @@ import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.UserService;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -63,7 +64,7 @@ public class NotificationService {
     public void topicChanged(Topic topic) {
         if (notificationsEnabledProperty.booleanValue()) {
             JCUser current = userService.getCurrentUser();
-            Set<JCUser> subscribers = topic.getSubscribers();
+            Set<JCUser> subscribers = new HashSet<JCUser>(topic.getSubscribers());
             subscribers.remove(current);
             for (JCUser user : subscribers) {
                 mailService.sendTopicUpdatesOnSubscription(user, topic);
@@ -81,7 +82,7 @@ public class NotificationService {
     public void branchChanged(Branch branch) {
         if (notificationsEnabledProperty.booleanValue()) {
             JCUser current = userService.getCurrentUser();
-            Set<JCUser> subscribers = branch.getSubscribers();
+            Set<JCUser> subscribers = new HashSet<JCUser>(branch.getSubscribers());
             subscribers.remove(current);
             for (JCUser user : subscribers) {
                 mailService.sendBranchUpdatesOnSubscription(user, branch);
@@ -101,7 +102,8 @@ public class NotificationService {
         if (notificationsEnabledProperty.booleanValue()) {
             JCUser currentUser = userService.getCurrentUser();
             JCUser topicStarter = topic.getTopicStarter();
-            Set<JCUser> subscribers = topic.getBranch().getSubscribers();
+            Set<JCUser> subscribers = new HashSet<JCUser>(topic.getBranch()
+                    .getSubscribers());
             // temp transient collection modification to ease the iteration
             subscribers.add(topicStarter);
             subscribers.remove(currentUser);
