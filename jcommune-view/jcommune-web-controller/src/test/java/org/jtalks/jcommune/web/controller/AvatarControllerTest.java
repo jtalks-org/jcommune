@@ -184,7 +184,12 @@ public class AvatarControllerTest {
         verify(response).setStatus(HttpServletResponse.SC_NOT_MODIFIED);
         verify(response, never()).getOutputStream();
         verify(servletOutputStream, never()).write(avatar);
-        verify(response, never()).setHeader(anyString(), anyString());
+        verify(response).setHeader("Pragma", "public");
+        verify(response).setHeader("Cache-Control", "public");
+        verify(response).addHeader("Cache-Control", "must-revalidate");
+        verify(response).addHeader("Cache-Control","max-age=0");
+        verify(response).setHeader(eq("Expires"), anyString()); //System.currentTimeMillis() is used
+        verify(response).setHeader(eq("Last-Modified"), anyString()); // depends on current timezone
     }
 
     @Test(dataProvider = "testDataForGetDefaultAvatar")
