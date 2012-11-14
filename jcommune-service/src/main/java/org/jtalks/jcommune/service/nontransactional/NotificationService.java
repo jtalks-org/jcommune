@@ -64,10 +64,10 @@ public class NotificationService {
     public void topicChanged(Topic topic) {
         if (notificationsEnabledProperty.booleanValue()) {
             JCUser current = userService.getCurrentUser();
-            Set<JCUser> subscribers = new HashSet<JCUser>(topic.getSubscribers());
-            subscribers.remove(current);
-            for (JCUser user : subscribers) {
-                mailService.sendTopicUpdatesOnSubscription(user, topic);
+            for (JCUser user : topic.getSubscribers()) {
+                if (!user.equals(current)) {
+                    mailService.sendTopicUpdatesOnSubscription(user, topic);
+                }
             }
         }
     }
@@ -82,10 +82,10 @@ public class NotificationService {
     public void branchChanged(Branch branch) {
         if (notificationsEnabledProperty.booleanValue()) {
             JCUser current = userService.getCurrentUser();
-            Set<JCUser> subscribers = new HashSet<JCUser>(branch.getSubscribers());
-            subscribers.remove(current);
-            for (JCUser user : subscribers) {
-                mailService.sendBranchUpdatesOnSubscription(user, branch);
+            for (JCUser user : branch.getSubscribers()) {
+                if (!user.equals(current)){ 
+                    mailService.sendBranchUpdatesOnSubscription(user, branch);
+                }
             }
         }
     }
