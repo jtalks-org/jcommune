@@ -17,6 +17,7 @@ package org.jtalks.jcommune.service.transactional;
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -40,7 +41,6 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchLastPostService;
-import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.TopicFetchService;
@@ -50,6 +50,9 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
@@ -271,6 +274,55 @@ public class TransactionalTopicModificationServiceTest {
         verify(branchDao).update(branch);
         verify(securityService).deleteFromAcl(Topic.class, TOPIC_ID);
     }
+    
+    @Test
+    public void testDeleteTopicWithLastPostInBranch() throws NotFoundException {
+        Topic topic = new Topic(user, "title");
+        topic.setId(TOPIC_ID);
+        Post firstPost = new Post(user, ANSWER_BODY);
+        topic.addPost(firstPost);
+        final Branch branch = createBranch();
+        branch.addTopic(topic);
+        
+        Post lastPostInBranch = new Post(user, ANSWER_BODY);
+        branch.setLastPost(lastPostInBranch);
+        topic.addPost(lastPostInBranch);
+        final Post newLastPostInBranch = new Post(user, ANSWER_BODY);
+        
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                branch.setLastPost(newLastPostInBranch);
+                return null;
+            }
+        }).when(branchLastPostService).refreshLastPostInBranch(branch);
+        
+        topicService.deleteTopicSilent(TOPIC_ID);
+
+        assertEquals(newLastPostInBranch, branch.getLastPost());
+        verify(branchLastPostService).refreshLastPostInBranch(branch);
+    }
+    
+    @Test
+    public void testDeleteTopicWithoutLastPostInBranch() throws NotFoundException {
+        Topic topic = new Topic(user, "title");
+        topic.setId(TOPIC_ID);
+        Post firstPost = new Post(user, ANSWER_BODY);
+        topic.addPost(firstPost);
+        final Branch branch = createBranch();
+        branch.addTopic(topic);
+        
+        Post lastPostInBranch = new Post(user, ANSWER_BODY);
+        branch.setLastPost(lastPostInBranch);
+        
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
+        
+        topicService.deleteTopicSilent(TOPIC_ID);
+
+        assertEquals(lastPostInBranch, branch.getLastPost());
+        verify(branchLastPostService, Mockito.never()).refreshLastPostInBranch(branch);
+    }
+    
 
     @Test(expectedExceptions = {NotFoundException.class})
     public void testDeleteTopicSilentNonExistent() throws NotFoundException {
@@ -364,6 +416,46 @@ public class TransactionalTopicModificationServiceTest {
         assertEquals(targetBranch.getTopicCount(), 1);
         verify(branchDao).update(targetBranch);
         verify(notificationService).topicMoved(topic, TOPIC_ID);
+    }
+    
+    @Test
+    public void testMoveTopicWithLastPostInBranch() throws NotFoundException {
+        Topic topic = new Topic(user, "title");
+        topic.setId(TOPIC_ID);
+        Post firstPost = new Post(user, ANSWER_BODY);
+        topic.addPost(firstPost);
+        Branch currentBranch = createBranch();
+        currentBranch.addTopic(topic);
+        currentBranch.setLastPost(firstPost);
+        Branch targetBranch = new Branch("target branch", "target branch description");
+
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
+        when(branchDao.get(BRANCH_ID)).thenReturn(targetBranch);
+
+        topicService.moveTopic(topic, BRANCH_ID);
+
+        verify(branchLastPostService).refreshLastPostInBranch(currentBranch);
+        verify(branchLastPostService).refreshLastPostInBranch(targetBranch);
+    }
+    
+    @Test
+    public void testMoveTopicWithoutLastPostInBranch() throws NotFoundException {
+        Topic topic = new Topic(user, "title");
+        topic.setId(TOPIC_ID);
+        Post firstPost = new Post(user, ANSWER_BODY);
+        topic.addPost(firstPost);
+        Branch currentBranch = createBranch();
+        currentBranch.addTopic(topic);
+        currentBranch.setLastPost(new Post(user, ANSWER_BODY));
+        Branch targetBranch = new Branch("target branch", "target branch description");
+
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
+        when(branchDao.get(BRANCH_ID)).thenReturn(targetBranch);
+
+        topicService.moveTopic(topic, BRANCH_ID);
+
+        verify(branchLastPostService, Mockito.never()).refreshLastPostInBranch(currentBranch);
+        verify(branchLastPostService).refreshLastPostInBranch(targetBranch);
     }
 
     @Test
