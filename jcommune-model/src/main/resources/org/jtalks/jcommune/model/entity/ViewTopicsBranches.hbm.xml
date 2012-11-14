@@ -25,6 +25,7 @@
         </id>
         <property name="branchId" type="long" column="BRANCH_ID"/>
         <property name="sid" type="string" column="SID"/>
+        <property name="granting" type="boolean" column="GRANTING"/>
     </class>
 
 </hibernate-mapping>

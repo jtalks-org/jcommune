@@ -25,6 +25,7 @@ public class ViewTopicsBranches extends Entity {
 
     private Long branchId;
     private String sid;
+    private Boolean granting;
 
     /**
      * @return id branch
@@ -56,5 +57,21 @@ public class ViewTopicsBranches extends Entity {
      */
     public void setSid(String sid) {
         this.sid = sid;
+    }
+
+    /**
+     * Get 'Allowed' or 'Restricted' group for branch
+     * @return true-allowed, false-restricted
+     */
+    public Boolean getGranting() {
+        return granting;
+    }
+
+    /**
+     * Set 'Allowed' or 'Restricted' group for branch
+     * @param granting true-allowed, false-restricted
+     */
+    public void setGranting(Boolean granting) {
+        this.granting = granting;
     }
 }

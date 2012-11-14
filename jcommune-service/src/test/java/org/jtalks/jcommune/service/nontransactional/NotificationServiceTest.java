@@ -33,7 +33,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.*;
 
 /**
  * @author Evgeniy Naumenko
@@ -55,6 +59,8 @@ public class NotificationServiceTest {
     private JCUser user1 = new JCUser("name1", "email1", "password1");
     private JCUser user2 = new JCUser("name2", "email2", "password2");
     private JCUser user3 = new JCUser("name3", "email3", "password3");
+    private JCUser currentUser = new JCUser("current", "email4", "password4");
+    
     private Topic topic;
     private Branch branch;
 
@@ -70,6 +76,8 @@ public class NotificationServiceTest {
         topic = new Topic(user1, "title");
         branch = new Branch("name", "description");
         branch.addTopic(topic);
+        
+        when(userService.getCurrentUser()).thenReturn(currentUser);
     }
 
     @Test
@@ -77,11 +85,14 @@ public class NotificationServiceTest {
         prepareEnabledProperty();
         topic.getSubscribers().add(user1);
         topic.getSubscribers().add(user2);
+        topic.getSubscribers().add(currentUser);
 
         service.topicChanged(topic);
 
+        verify(mailService, times(2)).sendTopicUpdatesOnSubscription(any(JCUser.class), eq(topic));
         verify(mailService).sendTopicUpdatesOnSubscription(user1, topic);
         verify(mailService).sendTopicUpdatesOnSubscription(user2, topic);
+        assertEquals(topic.getSubscribers().size(), 3);
     }
     
     @Test
@@ -99,11 +110,14 @@ public class NotificationServiceTest {
         prepareEnabledProperty();
         branch.getSubscribers().add(user1);
         branch.getSubscribers().add(user2);
+        branch.getSubscribers().add(currentUser);
 
         service.branchChanged(branch);
 
+        verify(mailService, times(2)).sendBranchUpdatesOnSubscription(any(JCUser.class), eq(branch));
         verify(mailService).sendBranchUpdatesOnSubscription(user1, branch);
         verify(mailService).sendBranchUpdatesOnSubscription(user2, branch);
+        assertEquals(branch.getSubscribers().size(), 3);
     }
     
     @Test
@@ -161,8 +175,7 @@ public class NotificationServiceTest {
     @Test
     public void testTopicMovedWithBranchSubscribers() {
         prepareEnabledProperty();
-        when(userService.getCurrentUser()).thenReturn(user1);
-        branch.getSubscribers().add(user1);
+        branch.getSubscribers().add(currentUser);
         branch.getSubscribers().add(user2);
         branch.getSubscribers().add(user3);
 
@@ -175,14 +188,16 @@ public class NotificationServiceTest {
     @Test
     public void testTopicMovedTopicStarterIsNotASubscriber() {
         prepareEnabledProperty();
-        when(userService.getCurrentUser()).thenReturn(user1);
+        branch.getSubscribers().add(currentUser);
         branch.getSubscribers().add(user2);
         branch.getSubscribers().add(user3);
 
         service.topicMoved(topic, TOPIC_ID);
 
+        verify(mailService, times(3)).sendTopicMovedMail(any(JCUser.class), eq(TOPIC_ID));
         verify(mailService).sendTopicMovedMail(user2, TOPIC_ID);
         verify(mailService).sendTopicMovedMail(user3, TOPIC_ID);
+        assertEquals(branch.getSubscribers().size(), 3);
     }
     
     @Test

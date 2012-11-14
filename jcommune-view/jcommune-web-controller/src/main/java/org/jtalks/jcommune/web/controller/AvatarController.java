@@ -156,12 +156,12 @@ public class AvatarController {
             byte[] avatar = user.getAvatar();
             response.setContentType("image/jpeg");
             response.setContentLength(avatar.length);
-        
-            Date avatarLastModificationDate = new Date(
-                    user.getAvatarLastModificationTime().getMillis());
-            setupAvatarHeaders(response, avatarLastModificationDate);
             response.getOutputStream().write(avatar);
         }
+        
+        Date avatarLastModificationDate = new Date(
+                user.getAvatarLastModificationTime().getMillis());
+        setupAvatarHeaders(response, avatarLastModificationDate);
     }
     
     
