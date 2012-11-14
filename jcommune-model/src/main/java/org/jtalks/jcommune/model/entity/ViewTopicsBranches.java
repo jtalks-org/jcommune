@@ -61,7 +61,7 @@ public class ViewTopicsBranches extends Entity {
 
     /**
      * Get 'Allowed' or 'Restricted' group for branch
-     * @return 1-allowed, 0-restricted
+     * @return true-allowed, false-restricted
      */
     public Boolean getGranting() {
         return granting;
@@ -69,7 +69,7 @@ public class ViewTopicsBranches extends Entity {
 
     /**
      * Set 'Allowed' or 'Restricted' group for branch
-     * @param granting 1-allowed, 0-restricted
+     * @param granting true-allowed, false-restricted
      */
     public void setGranting(Boolean granting) {
         this.granting = granting;
