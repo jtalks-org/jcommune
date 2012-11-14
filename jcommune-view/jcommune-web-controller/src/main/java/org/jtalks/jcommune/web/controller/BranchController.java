@@ -15,12 +15,18 @@
 
 package org.jtalks.jcommune.web.controller;
 
+import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.project;
+
 import java.util.List;
 
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.*;
+import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.LastReadPostService;
+import org.jtalks.jcommune.service.TopicFetchService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.BranchDto;
@@ -35,9 +41,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-
-import static ch.lambdaj.Lambda.on;
-import static ch.lambdaj.Lambda.project;
 
 /**
  * @author Vitaliy kravchenko

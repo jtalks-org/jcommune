@@ -24,9 +24,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.cj.trim.trimFilter;
 
 /**
@@ -77,7 +74,8 @@ public class TrimFilter implements Filter {
      */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) 
-            throws IOException, ServletException {
+        throws IOException, ServletException {
+        
         String url = getRequestUrl(request);
         boolean isExcluded = isInExcludeUrls(url);
         if (!isExcluded) {

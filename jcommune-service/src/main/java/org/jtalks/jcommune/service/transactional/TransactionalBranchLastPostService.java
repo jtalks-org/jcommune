@@ -21,6 +21,9 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.BranchLastPostService;
 
 /**
+ * An implementation of {@link BranchLastPostService} that based
+ * on working with database. It provides an ability to find the
+ * last post in database for branch and save it in the branch field.
  * 
  * @author Anuar_Nurmakanov
  *

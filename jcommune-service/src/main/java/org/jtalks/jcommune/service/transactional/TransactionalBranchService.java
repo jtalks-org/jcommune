@@ -21,7 +21,6 @@ import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicModificationService;
@@ -47,7 +46,6 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
     private SectionDao sectionDao;
     private TopicDao topicDao;
     private TopicModificationService topicService;
-    private UserService userService;
 
     /**
      * Create an instance of entity based service
@@ -68,7 +66,6 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
         this.sectionDao = sectionDao;
         this.topicDao = topicDao;
         this.topicService = topicService;
-        this.userService = userService;
     }
 
     /**

@@ -17,6 +17,7 @@ package org.jtalks.jcommune.service;
 import org.jtalks.jcommune.model.entity.Branch;
 
 /**
+ * Provides an ability to find and refresh the last post in the branch.
  * 
  * @author Anuar_Nurmakanov
  *

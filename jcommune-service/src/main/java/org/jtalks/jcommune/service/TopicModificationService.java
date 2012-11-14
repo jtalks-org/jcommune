@@ -14,12 +14,10 @@
  */
 package org.jtalks.jcommune.service;
 
-import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.springframework.data.domain.Page;
 
 /**
  * This interface should have methods which give us more abilities in manipulating Topic persistent entity.
