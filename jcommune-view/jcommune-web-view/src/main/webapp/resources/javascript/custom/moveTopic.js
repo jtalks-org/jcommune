@@ -66,12 +66,15 @@ function showMoveTopicModalWindow(htmlTemplate) {
     var eliminatedBranchId = $("#edit_button").attr("rel");
     var topicId = $(".topicId").attr('id');
     $.prompt(htmlTemplate, {
-        buttons:{ Move:true, Cancel:false},
+        buttons:[
+            {title:$labelTopicMove, value:true, id:'buttonMove'},
+            {title:$labelCancel, value:false}
+        ],
         loaded:function () {
             displayBranches(eliminatedBranchId);
             $("#branch_name").change(function () {
-                $("#jqi_state0_buttonMove").removeAttr("disabled");
-                $("#jqi_state0_buttonMove").css({'color':'#262626'})
+                $(".jqidefaultbutton").removeAttr("disabled");
+                $(".jqidefaultbutton").css({'color':'#262626'})
                 branchId = $(this).val();
             });
         },
@@ -176,7 +179,7 @@ function moveTopic(topicId, targetBranchId) {
  * Disables Move button in "Move topic" modal window
  */
 function disableMoveButton() {
-    $("#jqi_state0_buttonMove").attr('disabled', 'disabled');
-    $("#jqi_state0_buttonMove").css({'color':'grey'});
+    $(".jqidefaultbutton").attr('disabled', 'disabled');
+    $(".jqidefaultbutton").css({'color':'grey'});
 }
 
