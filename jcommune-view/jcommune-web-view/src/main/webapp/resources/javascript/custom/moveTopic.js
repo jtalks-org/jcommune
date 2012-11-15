@@ -66,7 +66,7 @@ function showMoveTopicModalWindow(htmlTemplate) {
     var eliminatedBranchId = $("#edit_button").attr("rel");
     var topicId = $(".topicId").attr('id');
     $.prompt(htmlTemplate, {
-        buttons:{ Ok:true, Cancel:false},
+        buttons:{ Move:true, Cancel:false},
         loaded:function () {
             displayBranches(eliminatedBranchId);
             $("#branch_name").change(function () {
