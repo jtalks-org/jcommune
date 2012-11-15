@@ -21,10 +21,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
 import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
+import static org.mockito.Matchers.anyLong;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,6 +50,7 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -149,6 +152,7 @@ public class UserProfileControllerTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         when(userService.editUserProfile(Matchers.<UserInfoContainer>any())).thenReturn(user);
+        when(userService.getCurrentUser()).thenReturn(user);
 
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
@@ -177,6 +181,21 @@ public class UserProfileControllerTest {
 
         assertViewName(mav, "editProfile");
         verify(userService, never()).editUserProfile(Matchers.<UserInfoContainer>any());
+    }
+    
+    @Test(expectedExceptions=AccessDeniedException.class)
+    public void testEditProfileNotAllowed() throws Exception {
+        JCUser user = getUser();
+        EditUserProfileDto userDto = getEditUserProfileDto();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        when(userService.editUserProfile(Matchers.<UserInfoContainer>any())).thenReturn(user);
+        when(userService.getCurrentUser()).thenReturn(user);
+        doThrow(new AccessDeniedException("")).when(userService).checkPermissionsToEditProfile(anyLong());
+
+        BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
+
+        profileController.editProfile(userDto, bindingResult, response);
     }
 
     @Test
