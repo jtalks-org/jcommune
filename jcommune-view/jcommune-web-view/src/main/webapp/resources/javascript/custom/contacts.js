@@ -41,7 +41,10 @@ function deleteContactHandler() {
     var element = $(this).parent();
     var id = $(this).parent().find("input:hidden").attr("value");
     $.prompt($labelDeleteContactConfirmation, {
-            buttons:{ Ok:true, Cancel:false},
+            buttons:[
+                {title:$labelOk, value:true},
+                {title:$labelCancel, value:false}
+            ],
             submit:function (value, message, form) {
                 if (value != undefined && value) {
                     $.ajax({
@@ -192,7 +195,10 @@ $(document).ready(function () {
 			str += '</ul>';
 
             $.prompt(str, {
-                buttons:{ Ok:true, Cancel:false},
+                buttons:[
+                    {title:$labelOk, value:true},
+                    {title:$labelCancel, value:false}
+                ],
                 submit:function (value, message, form) {
                 	var result = false;
 					

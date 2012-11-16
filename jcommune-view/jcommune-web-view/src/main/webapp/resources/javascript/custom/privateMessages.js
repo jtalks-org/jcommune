@@ -76,7 +76,10 @@ $(document).ready(function () {
                 var deletePmPromt = $labelDeletePmGroupConfirmation.replace('%s', identifiers.length);
                 $.prompt(deletePmPromt,
                     {
-                        buttons:{ Ok:true, Cancel:false },
+                        buttons:[
+                            {title:$labelOk, value:true},
+                            {title:$labelCancel, value:false}
+                        ],
                         persistent:false,
                         submit:function (confirmed) {
                             if (confirmed) {

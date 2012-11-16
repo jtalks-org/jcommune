@@ -22,7 +22,10 @@ $(document).ready(function () {
     //remove avatar handler
     $('#removeAvatar').click(function () {
     	$.prompt($labelDeleteAvatarConfirmation,
-    	    {buttons:{ Ok:true, Cancel:false },
+    	    {buttons:[
+                {title:$labelOk, value:true},
+                {title:$labelCancel, value:false}
+            ],
             persistent:false,
             submit:function (confirmed) {
                	if (confirmed) {
