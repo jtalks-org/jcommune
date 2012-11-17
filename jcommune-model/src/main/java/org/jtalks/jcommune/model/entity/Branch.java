@@ -243,10 +243,8 @@ public class Branch extends org.jtalks.common.model.entity.Branch
      *         otherwise {@code false}
      */
     public boolean isLastPost(Post checkedPost) {
-        if (lastPost != null && checkedPost != null) {
-            return lastPost.equals(checkedPost);
-        }
-        return false;
+        Validate.notNull(checkedPost);
+        return checkedPost.equals(lastPost);
     }
     
     /**

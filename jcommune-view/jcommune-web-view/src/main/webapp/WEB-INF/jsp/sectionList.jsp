@@ -114,7 +114,7 @@
                                     value="${branch.postCount}"/></span></td>
 
                             <td class="latest-by shrink-to-fit">
-                                <c:if test="${branch.topicCount>0 && not empty branch.lastPost}">
+                                <c:if test="${branch.topicCount>0}">
                                     <i class="icon-calendar"></i>
                                     <a class="date"
                                        href="${pageContext.request.contextPath}/posts/${branch.lastPost.id}">
