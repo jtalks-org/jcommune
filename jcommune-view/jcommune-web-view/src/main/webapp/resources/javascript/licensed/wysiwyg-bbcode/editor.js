@@ -332,7 +332,7 @@ function doLink() {
         $.prompt(content,
             {buttons:[
                 {title:$labelOk, value:true},
-                {title:$labelCancel, value:true}
+                {title:$labelCancel, value:false}
             ], focus:0,
                 submit:function (value, message, form) {
                     if (value != undefined && value) {
