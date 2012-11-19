@@ -101,13 +101,13 @@
                                 <c:if test="${branch.topicCount>0}">
                                     <i class="icon-calendar"></i>
                                     <a class="date"
-                                       href="${pageContext.request.contextPath}/posts/${branch.lastPostInLastUpdatedTopic.id}">
-                                        <jtalks:format value="${branch.lastPostInLastUpdatedTopic.creationDate}"/>
+                                       href="${pageContext.request.contextPath}/posts/${branch.lastPost.id}">
+                                        <jtalks:format value="${branch.lastPost.creationDate}"/>
                                     </a>
 
                                     <p><spring:message code="label.topic.last_post_by"/>
-                                        <a href="${pageContext.request.contextPath}/users/${branch.lastPostInLastUpdatedTopic.userCreated.id}">
-                                            <c:out value="${branch.lastPostInLastUpdatedTopic.userCreated.username}"/>
+                                        <a href="${pageContext.request.contextPath}/users/${branch.lastPost.userCreated.id}">
+                                            <c:out value="${branch.lastPost.userCreated.username}"/>
                                         </a>
                                     </p>
                                 </c:if>
