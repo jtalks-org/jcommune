@@ -621,7 +621,7 @@ function showColorGrid2(Sam, textBoxId) {
 
         $.prompt(context,
             {buttons:[
-                {title:$labelTopicMove, value:true},
+                {title:$labelOk, value:true},
                 {title:$labelCancel, value:false}
             ], focus:0,
                 submit:function (value) {
