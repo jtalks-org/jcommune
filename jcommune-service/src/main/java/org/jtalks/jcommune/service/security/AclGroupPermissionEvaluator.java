@@ -26,7 +26,11 @@ import org.jtalks.common.security.acl.AclUtil;
 import org.jtalks.common.security.acl.ExtendedMutableAcl;
 import org.jtalks.common.security.acl.GroupAce;
 import org.jtalks.common.security.acl.sids.JtalksSidFactory;
+import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.acls.jdbc.JdbcMutableAclService;
 import org.springframework.security.acls.model.*;
@@ -48,11 +52,14 @@ import java.util.List;
  * @author stanislav bashkirtsev
  */
 public class AclGroupPermissionEvaluator implements PermissionEvaluator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AclGroupPermissionEvaluator.class);
+    
     private final AclManager aclManager;
     private final AclUtil aclUtil;
     private final GroupDao groupDao;
     private final JtalksSidFactory sidFactory;
     private final JdbcMutableAclService mutableAclService;
+    private final UserDao userDao;
 
     /**
      * @param aclManager        for getting permissions on object indentity
@@ -64,12 +71,14 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
     public AclGroupPermissionEvaluator(@Nonnull org.jtalks.common.security.acl.AclManager aclManager,
                                        @Nonnull AclUtil aclUtil, @Nonnull GroupDao groupDao,
                                        @Nonnull JtalksSidFactory sidFactory,
-                                       @Nonnull JdbcMutableAclService mutableAclService) {
+                                       @Nonnull JdbcMutableAclService mutableAclService,
+                                       @Nonnull UserDao userDao) {
         this.aclManager = aclManager;
         this.aclUtil = aclUtil;
         this.groupDao = groupDao;
         this.sidFactory = sidFactory;
         this.mutableAclService = mutableAclService;
+        this.userDao = userDao;
     }
 
     /**
@@ -239,7 +248,16 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
     private boolean isGrantedPersonalPermission(Authentication authentication, Permission permission,
                                                 boolean isCheckAllowedGrant) {
         if (authentication.getPrincipal() instanceof User) {
-            List<Group> groups = ((JCUser) authentication.getPrincipal()).getGroups();
+            JCUser storedUser = (JCUser) authentication.getPrincipal();
+            // retriev user with replicated groups from EhCache
+            JCUser actualUser = userDao.get(storedUser.getId());
+            if (actualUser == null) {
+                LOGGER.warn("{} : User #{} not found", 
+                        this.getClass().getCanonicalName(), 
+                        storedUser.getId());
+                return !isCheckAllowedGrant;
+            }
+            List<Group> groups = actualUser.getGroups();
             for (Group group : groups) {
                 ObjectIdentity groupIdentity = aclUtil.createIdentity(group.getId(), "GROUP");
                 Sid groupSid = sidFactory.create(group);

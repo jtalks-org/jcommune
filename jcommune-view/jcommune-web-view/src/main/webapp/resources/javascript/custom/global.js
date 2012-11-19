@@ -32,7 +32,10 @@ $(document).ready(function () {
             e.preventDefault();
             deletePath = $(this)[0].href;
             $.prompt($(this)[0].rel,
-                {buttons:{ Ok:true, Cancel:false },
+                {buttons:[
+                    {title:$labelOk, value:true},
+                    {title:$labelCancel, value:false}
+                ],
                     persistent:false,
                     submit:function (confirmed) {
                         if (confirmed) {

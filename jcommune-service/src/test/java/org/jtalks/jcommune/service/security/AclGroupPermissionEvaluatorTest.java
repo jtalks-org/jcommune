@@ -26,9 +26,13 @@ import org.jtalks.common.security.acl.GroupAce;
 import org.jtalks.common.security.acl.sids.JtalksSidFactory;
 import org.jtalks.common.security.acl.sids.UserGroupSid;
 import org.jtalks.common.security.acl.sids.UserSid;
+import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.jdbc.JdbcMutableAclService;
@@ -61,12 +65,14 @@ public class AclGroupPermissionEvaluatorTest {
     JdbcMutableAclService mutableAclService;
     @Mock
     MutableAcl acl;
+    @Mock
+    UserDao userDao;
 
     private AclGroupPermissionEvaluator evaluator;
     private UserGroupSid groupSid;
     private UserSid userSid;
     private ObjectIdentityImpl objectIdentity;
-    private User user;
+    private JCUser user;
     private Group group;
 
     private Long targetId = 1L;
@@ -76,9 +82,10 @@ public class AclGroupPermissionEvaluatorTest {
     private BranchPermission someOtherPermission = BranchPermission.CLOSE_TOPICS;
 
     @BeforeMethod
-    public void init() {
+    public void init() throws NotFoundException {
         MockitoAnnotations.initMocks(this);
-        evaluator = new AclGroupPermissionEvaluator(aclManager, aclUtil, groupDao, sidFactory,mutableAclService);
+        evaluator = new AclGroupPermissionEvaluator(aclManager, aclUtil, groupDao, 
+                sidFactory,mutableAclService, userDao);
         objectIdentity = new ObjectIdentityImpl(targetType, targetId);
         Mockito.when(aclUtil.createIdentity(targetId, targetType)).thenReturn(objectIdentity);
         user = new JCUser("username", "email", "password");
@@ -88,12 +95,13 @@ public class AclGroupPermissionEvaluatorTest {
         group = Mockito.mock(Group.class);
         List<User> users = new ArrayList<User>();
         users.add(user);
-        Mockito.when(group.getUsers()).thenReturn(users);
-        Mockito.when(group.getId()).thenReturn(targetId);
-        Mockito.when(sidFactory.createPrincipal(authentication)).thenReturn(userSid);
-        Mockito.when(sidFactory.create(group)).thenReturn(groupSid);
-        Mockito.when(authentication.getPrincipal()).thenReturn(user);
-        Mockito.when(mutableAclService.readAclById(Mockito.any(ObjectIdentity.class))).thenReturn(acl);
+        when(group.getUsers()).thenReturn(users);
+        when(group.getId()).thenReturn(targetId);
+        when(sidFactory.createPrincipal(authentication)).thenReturn(userSid);
+        when(sidFactory.create(group)).thenReturn(groupSid);
+        when(authentication.getPrincipal()).thenReturn(user);
+        when(mutableAclService.readAclById(Mockito.any(ObjectIdentity.class))).thenReturn(acl);
+        when(userDao.get(user.getId())).thenReturn(user);
     }
 
     @Test
@@ -121,6 +129,16 @@ public class AclGroupPermissionEvaluatorTest {
         setEnvForPermissionOnGroupTests(true);
         Assert.assertTrue(evaluator.hasPermission(authentication, targetId, targetType, permission));
         Assert.assertFalse(evaluator.hasPermission(authentication, targetId, targetType, "GeneralPermission.READ"));
+    }
+    
+    @Test
+    public void testHasPermissionForPermissionOnGroupNonExistentUserTest() throws Exception {
+        setEnvForPermissionOnGroupTests(true);
+        Long nonExistentId = -1L;
+        user.setId(nonExistentId);
+        when(userDao.get(nonExistentId)).thenReturn(null);
+        Assert.assertFalse(evaluator.hasPermission(authentication, nonExistentId, targetType, permission));
+        Assert.assertFalse(evaluator.hasPermission(authentication, nonExistentId, targetType, "GeneralPermission.READ"));
     }
 
     @Test

@@ -154,6 +154,8 @@ public class UserProfileController {
         if (result.hasErrors()) {
             return new ModelAndView(EDIT_PROFILE, EDITED_USER, userDto);
         }
+        JCUser currentUser = userService.getCurrentUser();
+        userService.checkPermissionsToEditProfile(currentUser.getId());
         JCUser user = userService.editUserProfile(userDto.getUserInfoContainer());
         // apply language changes immediately
         String code = userDto.getLanguage().getLanguageCode();

@@ -76,3 +76,8 @@ $labelRememberMe = '<spring:message code="label.auto_logon" htmlEscape="true"/>'
 $labelRestorePassword = '<spring:message code="label.restorePassword.prompt" htmlEscape="true"/>'
 $labelSignin = '<spring:message code="label.signin" htmlEscape="true"/>'
 $labelLoginError = '<spring:message code="label.login_error" htmlEscape="true"/>'
+
+$labelCancel = '<spring:message code="label.cancel" htmlEscape="true"/>'
+$labelOk = '<spring:message code="label.ok" htmlEscape="true"/>'
+$labelTopicMove = '<spring:message code="label.topic.move" htmlEscape="true"/>'
+$labelTopicMoveFull = '<spring:message code="label.topic.move.full" htmlEscape="true"/>'

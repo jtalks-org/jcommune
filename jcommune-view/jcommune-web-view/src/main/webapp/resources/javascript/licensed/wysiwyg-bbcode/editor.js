@@ -330,7 +330,10 @@ function doLink() {
             createFormRow($labelUrl, "", "urlId", $labelUrlRequired) +
             '</ul>';
         $.prompt(content,
-            {buttons:{OK:true, Cancel:false}, focus:0,
+            {buttons:[
+                {title:$labelOk, value:true},
+                {title:$labelCancel, value:false}
+            ], focus:0,
                 submit:function (value, message, form) {
                     if (value != undefined && value) {
                         mylink = document.getElementById("urlAltId").value;
@@ -371,7 +374,7 @@ function doImage() {
             '</ul>';
 
         $.prompt(content,
-            {buttons:{OK:true}, focus:0,
+            {buttons:{Ok:true}, focus:0,
                 submit:function () {
                     myimg = document.getElementById("imgId").value;
                     if ((myimg != null) && (myimg != "")) {
@@ -617,7 +620,10 @@ function showColorGrid2(Sam, textBoxId) {
         context += "</tr></table>";
 
         $.prompt(context,
-            {buttons:{OK:true, Cancel:false}, focus:0,
+            {buttons:[
+                {title:$labelOk, value:true},
+                {title:$labelCancel, value:false}
+            ], focus:0,
                 submit:function (value) {
                     if (value) {
                         var rgb_color = document.getElementById("o5582n66a").style.backgroundColor;
