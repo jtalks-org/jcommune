@@ -98,7 +98,7 @@ public class BranchTest {
         assertFalse(isLastPost);
     }
     
-    @Test
+    @Test(expectedExceptions = {IllegalArgumentException.class})
     public void testIsLastPostWhenSentPostIsNull() {
         boolean isLastPost = branch.isLastPost(null);
         
