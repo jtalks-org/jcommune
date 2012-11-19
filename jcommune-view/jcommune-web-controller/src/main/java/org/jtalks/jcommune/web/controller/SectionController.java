@@ -131,7 +131,7 @@ public class SectionController {
     public ModelAndView branchList(@PathVariable("sectionId") long sectionId) throws AccessDeniedException,
         NotFoundException {
         Section section = sectionService.get(sectionId);
-        sectionService.checkAccessForVisible(section);
+        sectionService.ifSectionIsVisible(section);
         sectionService.prepareSectionsForView(Arrays.asList(section));
         return new ModelAndView("branchList")
                 .addObject("viewList", locationService.getUsersViewing(section))

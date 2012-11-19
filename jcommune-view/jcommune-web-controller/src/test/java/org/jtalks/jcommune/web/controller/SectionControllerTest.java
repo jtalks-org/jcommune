@@ -94,7 +94,7 @@ public class SectionControllerTest {
 
         //set expectations
         when(sectionService.get(sectionId)).thenReturn(section);
-        doNothing().when(sectionService).checkAccessForVisible(section);
+        doNothing().when(sectionService).ifSectionIsVisible(section);
         when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
 
         //invoke the object under test

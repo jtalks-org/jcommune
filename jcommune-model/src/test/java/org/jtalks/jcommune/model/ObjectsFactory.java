@@ -48,20 +48,17 @@ public final class ObjectsFactory {
         return newBranch;
     }
 
+    public static Branch getDefaultBranch(Long id) {
+        Branch newBranch = new Branch("branch name"+id, "branch description"+id);
+        newBranch.setId(id);
+        return newBranch;
+    }
+
     public static List<Branch> getDefaultBranchList(){
         List<Branch> branches = new ArrayList<Branch>();
-        Branch branch = new Branch("branch name0", "branch description0");
-        branch.setId(0L);
-        branches.add(branch);
-        branch = new Branch("branch name1", "branch description1");
-        branch.setId(1L);
-        branches.add(branch);
-        branch = new Branch("branch name2", "branch description2");
-        branch.setId(2L);
-        branches.add(branch);
-        branch = new Branch("branch name3", "branch description3");
-        branch.setId(3L);
-        branches.add(branch);
+        for(Long i=1L; i<=3; i++){
+            branches.add(getDefaultBranch(i));
+        }
         return branches;
     }
 

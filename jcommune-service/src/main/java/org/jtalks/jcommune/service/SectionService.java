@@ -64,5 +64,5 @@ public interface SectionService extends EntityService<Section> {
      * @param section section
      * @throws AccessDeniedException throw if there is no permission for access
      */
-    void checkAccessForVisible(Section section) throws AccessDeniedException;
+    void ifSectionIsVisible(Section section) throws AccessDeniedException;
 }

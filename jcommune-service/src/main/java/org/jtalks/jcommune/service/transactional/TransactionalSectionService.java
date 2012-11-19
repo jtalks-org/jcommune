@@ -105,7 +105,7 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
      * {@inheritDoc}
      */
     @Override
-    public void checkAccessForVisible(Section section) throws AccessDeniedException{
+    public void ifSectionIsVisible(Section section) throws AccessDeniedException{
         List<Branch> branches = section.getBranches();
         if(getDao().getCountAvailableBranches(userService.getCurrentUser(),branches)==0){
             throw new AccessDeniedException("Access denied to view for section "+ section.getId());

@@ -174,7 +174,7 @@ public class TransactionalSectionServiceTest {
         when(userService.getCurrentUser()).thenReturn(user);
         when(sectionDao.getCountAvailableBranches(user,branches)).thenReturn(0L);
 
-        sectionService.checkAccessForVisible(section);
+        sectionService.ifSectionIsVisible(section);
     }
 
     @Test
@@ -185,6 +185,6 @@ public class TransactionalSectionServiceTest {
         when(userService.getCurrentUser()).thenReturn(user);
         when(sectionDao.getCountAvailableBranches(user,branches)).thenReturn(1L);
 
-        sectionService.checkAccessForVisible(section);
+        sectionService.ifSectionIsVisible(section);
     }
 }

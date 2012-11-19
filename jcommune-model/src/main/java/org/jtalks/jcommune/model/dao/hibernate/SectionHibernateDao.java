@@ -54,36 +54,54 @@ public class SectionHibernateDao extends AbstractHibernateParentRepository<Secti
     @Override
     public Long getCountAvailableBranches(JCUser user, List<Branch> branches) {
         if(branches.isEmpty()){return 0L;}
-        List<Long> branchIds =  new ArrayList(getEntityIds(new ArrayList<Entity>(branches),Long.class));
+        List<Long> branchIds =  getEntityIdsLongs(new ArrayList<Entity>(branches));
         if(!user.isAnonymous()){
-            List<Group> groups = user.getGroups();
-            if(groups.isEmpty()){return 0L;}
-            List<String> groupIds = new ArrayList(getEntityIds(new ArrayList<Entity>(groups),String.class));
-
-            Query query = getSession().getNamedQuery("getCountAvailableBranchesByGroupsIds");
-            query.setParameterList("groupIds",groupIds);
-            query.setParameterList("branchIds",branchIds);
-            return (Long)query.uniqueResult();
+            return countVisibleBranchesForLoggedIn(user,branchIds);
         }
         Query query = getSession().getNamedQuery("getCountAvailableBranchesForAnonymousUser");
+        query.setParameterList("branchIds",branchIds);
+        return (Long) query.uniqueResult();
+    }
+
+    /**
+     * Get count visible branches, from branch ids, for logged user
+     * @param user user
+     * @param branchIds branch ids
+     * @return count visible branches
+     */
+    private Long countVisibleBranchesForLoggedIn(JCUser user, List<Long> branchIds){
+        List<Group> groups = user.getGroups();
+        if(groups.isEmpty()){return 0L;}
+        List<String> groupIds = new ArrayList(getEntityIdsStrings(new ArrayList<Entity>(groups)));
+
+        Query query = getSession().getNamedQuery("getCountAvailableBranchesByGroupsIds");
+        query.setParameterList("groupIds",groupIds);
         query.setParameterList("branchIds",branchIds);
         return (Long)query.uniqueResult();
     }
 
     /**
-     * Return entity id's from list entities
+     * Return entity ids from list entities as strings
      * @param entities entities
-     * @param type type for result list
      * @return id's entities
      */
-    private List<Object> getEntityIds(List<Entity> entities, Class type){
-        List<Object> ids = new ArrayList<Object>();
+    private List<String> getEntityIdsStrings(List<Entity> entities){
+        List<String> ids = new ArrayList<String>();
         for(Entity e: entities){
-            if(type.equals(String.class)){
-                ids.add(e.getId()+"");
-            }else if(type.equals(Long.class)){
-                ids.add(e.getId());
-            }
+            ids.add(e.getId()+"");
+        }
+        return ids;
+    }
+
+    /**
+     * Return entity id's from list entities as long numbers
+     * @param entities entities
+     * @return id's entities
+     */
+    private List<Long> getEntityIdsLongs(List<Entity> entities){
+        List<Long> ids = new ArrayList<Long>();
+        for(Entity e: entities){
+            ids.add(e.getId());
         }
         return ids;
     }
