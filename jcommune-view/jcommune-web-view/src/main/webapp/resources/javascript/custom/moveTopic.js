@@ -168,7 +168,7 @@ function moveTopic(topicId, targetBranchId) {
         success:function () {
             document.location = baseUrl + '/topics/' + topicId;
         },
-        errror:function() {
+        error:function() {
         	$.prompt($labelError500Detail);
         }
     });

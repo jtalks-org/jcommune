@@ -344,7 +344,8 @@ function doLink() {
                             }
                             AddTag('[url=' + link + ']', '[/url]');
                         } else {
-                            ErrorUtils.addErrorMessage('#urlId', $labelErrorsNotEmpty)
+                            ErrorUtils.removeErrorMessage('#urlId', $labelErrorsNotEmpty);
+                            ErrorUtils.addErrorMessage('#urlId', $labelErrorsNotEmpty);
                             return false;
                         }
                     }
