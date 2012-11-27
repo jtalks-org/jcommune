@@ -27,3 +27,7 @@ logs
 /jcommune-model/test-output
 /jcommune-service/test-output
 /jcommune-view/jcommune-web-view/test-output
+/jcommune-view/jcommune-web-controller/bin
+/jcommune-view/jcommune-web-view/bin
+/jcommune-service/bin
+/jcommune-model/bin
