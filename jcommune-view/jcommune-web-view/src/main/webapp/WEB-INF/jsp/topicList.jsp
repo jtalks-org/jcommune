@@ -72,7 +72,7 @@
     <%-- Upper pagination --%>
     <div class="row-fluid upper-pagination forum-pagination-container">
 
-        <div class="span2">
+        <div class="span4">
             <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
                                   permission='BranchPermission.CREATE_POSTS'>
                 <a id='new-topic-btn' class="btn btn-primary"
@@ -80,11 +80,18 @@
                     <spring:message code="label.addtopic"/>
                 </a>
             </jtalks:hasPermission>
+            <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
+                                  permission='BranchPermission.CREATE_CODE_REVIEW'>
+                <a id='new-topic-btn' class="btn btn-primary"
+                   href="${pageContext.request.contextPath}/reviews/new?branchId=${branch.id}">
+                    <spring:message code="label.addCodeReview"/>
+                </a>
+            </jtalks:hasPermission>
             &nbsp; <%-- For proper pagination layout without buttons--%>
         </div>
 
 
-        <div class="span10">
+        <div class="span8">
             <div class="pagination pull-right forum-pagination">
                 <ul>
                     <jtalks:pagination uri="${branch.id}" page="${topicsPage}" pagingEnabled="${pagingEnabled}"/>
@@ -185,7 +192,7 @@
     <%-- Bottom pagination --%>
     <div class="row-fluid upper-pagination forum-pagination-container">
 
-        <div class="span2">
+        <div class="span4">
             <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
                                   permission='BranchPermission.CREATE_POSTS'>
                 <a id='new-topic-btn' class="btn btn-primary"
@@ -193,10 +200,17 @@
                     <spring:message code="label.addtopic"/>
                 </a>
             </jtalks:hasPermission>
+            <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
+                                  permission='BranchPermission.CREATE_CODE_REVIEW'>
+                <a id='new-topic-btn' class="btn btn-primary"
+                   href="${pageContext.request.contextPath}/reviews/new?branchId=${branch.id}">
+                    <spring:message code="label.addCodeReview"/>
+                </a>
+            </jtalks:hasPermission>
             &nbsp; <%-- For proper pagination layout without buttons--%>
         </div>
 
-        <div class="span10">
+        <div class="span8">
             <div class="pagination pull-right forum-pagination">
                 <ul>
                     <jtalks:pagination uri="${branch.id}" page="${topicsPage}" pagingEnabled="${pagingEnabled}"/>

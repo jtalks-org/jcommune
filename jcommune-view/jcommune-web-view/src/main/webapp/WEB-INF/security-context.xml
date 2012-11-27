@@ -54,6 +54,8 @@
         <security:intercept-url pattern="/topics/json/**" access="isAuthenticated()"/>
         <security:intercept-url pattern="/topics/*/edit" access="isAuthenticated()"/>
         
+        <security:intercept-url pattern="/reviews/new" access="isAuthenticated()"/>
+        
         <!-- Since DELETE method is actually POST with _method=DELETE parameter -->
         <security:intercept-url pattern="/branches/*" method="DELETE" access="hasIpAddress('127.0.0.1')"/>
         <security:intercept-url pattern="/sections/*" method="DELETE" access="hasIpAddress('127.0.0.1')"/>
