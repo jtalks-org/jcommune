@@ -74,7 +74,7 @@
                         <img src="${pageContext.request.contextPath}/users/${pm.userFrom.id}/avatar" alt=""/>
                     </div>
                     <div class="pm_message_userTo_link">
-                        <a href="${pageContext.request.contextPath}/users/${pm.userTo.id}">
+                        <a href="${pageContext.request.contextPath}/users/${pm.userFrom.id}">
                             <i class="icon-user"></i><c:out value="${pm.userFrom.username}"/>
                         </a>
                         <br/>
