@@ -41,14 +41,14 @@ public class PageSizeValidatorTest {
     }
     
     @Test(dataProvider = "validPageSizes")
-    public void testValidPageSize(int mustBeValidValue) {
-        boolean isValid = pageSizeValidator.isValid(mustBeValidValue, validatorContext);
+    public void testIsValidWithAvailablePageSize(int availablePageSize) {
+        boolean isValid = pageSizeValidator.isValid(availablePageSize, validatorContext);
         
         Assert.assertTrue(isValid, "Value from the list of available sizes must be valid.");
     }
     
     @DataProvider(name = "validPageSizes")
-    public Object[][] validPageSizes() {
+    public Object[][] getValidPageSizes() {
         int rowSize = 1;
         Object[][] validPageSizes = new Object[JCUser.PAGE_SIZES_AVAILABLE.length][rowSize];
         for (int i = 0; i < JCUser.PAGE_SIZES_AVAILABLE.length; i++) {
@@ -57,20 +57,37 @@ public class PageSizeValidatorTest {
         return validPageSizes;
     }
     
-    @Test(dataProvider = "invalidPageSizes")
-    public void testInvalidPageSizes(int mustBeInvalidValue) {
-        boolean isValid = pageSizeValidator.isValid(mustBeInvalidValue, validatorContext);
+    @Test
+    public void testIsValidWithPageSizeAsNull() {
+        boolean isValid = pageSizeValidator.isValid(null, validatorContext);
         
-        Assert.assertFalse(isValid, "Value isn't from the list of available values must be invalid.");
+        Assert.assertFalse(isValid, "Null must be invalid value.");
     }
     
-    @DataProvider(name = "invalidPageSizes")
-    public Object[][] invalidPageSizes() {
-        int rowSize = 1;
-        Object[][] validPageSizes = new Object[JCUser.PAGE_SIZES_AVAILABLE.length][rowSize];
-        for (int i = 0; i < JCUser.PAGE_SIZES_AVAILABLE.length; i++) {
-            validPageSizes[i][rowSize] = JCUser.PAGE_SIZES_AVAILABLE[i] * 5;
-        }
-        return validPageSizes;
+    @Test(dataProvider = "boundaryValues")
+    public void testIsValidWithBoundaryValue(int boundaryValue) {
+        boolean isValid = pageSizeValidator.isValid(null, validatorContext);
+        
+        Assert.assertFalse(isValid, 
+                "Max possible integer and min possible integer must be invalid values.");
     }
+    
+    @DataProvider(name = "boundaryValues")
+    public Object[][] getBoundaryValues() {
+        return new Object[][] {
+                {Integer.MAX_VALUE},
+                {Integer.MIN_VALUE}
+        };
+    }
+    
+    @Test
+    public void testIsValidWithNotAvailablePageSize() {
+        int notAvailablePageSize = 379;
+        
+        boolean isValid = pageSizeValidator.isValid(notAvailablePageSize, validatorContext);
+        
+        Assert.assertFalse(isValid, 
+                "This value isn't available, so it must be invalid. Passed value - " + notAvailablePageSize);
+    }
+    
 }

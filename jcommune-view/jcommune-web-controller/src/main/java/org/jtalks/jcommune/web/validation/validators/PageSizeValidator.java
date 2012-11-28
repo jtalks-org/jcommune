@@ -43,6 +43,6 @@ public class PageSizeValidator implements ConstraintValidator<PageSize, Integer>
      */
     @Override
     public boolean isValid(Integer value, ConstraintValidatorContext context) {
-        return ArrayUtils.contains(JCUser.PAGE_SIZES_AVAILABLE, value);
+        return value!= null && ArrayUtils.contains(JCUser.PAGE_SIZES_AVAILABLE, value);
     }
 }
