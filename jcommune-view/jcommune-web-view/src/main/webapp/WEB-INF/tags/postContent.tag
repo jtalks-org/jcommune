@@ -27,12 +27,13 @@
 <div class="word-wrap"><jtalks:bb2html bbCode="${text}"/>
     <c:if test="${!empty modificationDate}">
         <br/><br/>
-        <spring:message code="label.modify"/>
-        <jtalks:format value="${modificationDate}"/>
+        <span class="update-note">
+             <spring:message code="label.modify"/><jtalks:format value="${modificationDate}"/>
+        </span>
     </c:if>
 </div>
 <c:if test="${!empty signature}">
-    <div  class="word-wrap" align="left">
+    <div class="word-wrap" align="left">
         <hr/>
         <span class='signature'>
             <jtalks:bb2html bbCode="${signature}"/>
