@@ -14,17 +14,23 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import javax.validation.Valid;
+
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.LastReadPostService;
+import org.jtalks.jcommune.service.TopicModificationService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,21 +50,31 @@ public class CodeReviewController {
     public static final String BREADCRUMB_LIST = "breadcrumbList";
     private static final String SUBMIT_URL = "submitUrl";
     private static final String TOPIC_DTO = "topicDto";
+    private static final String REDIRECT_URL = "redirect:/topics/";
     
 
     private BranchService branchService;    
     private BreadcrumbBuilder breadcrumbBuilder;
+    private TopicModificationService topicModificationService;
+    private LastReadPostService lastReadPostService;
     
     /**
      * @param branchService            the object which provides actions on
      *                                 {@link org.jtalks.jcommune.model.entity.Branch} entity
      * @param breadcrumbBuilder        to create Breadcrumbs for pages
+     * @param topicModificationService the object which provides actions on
+     *                                 {@link org.jtalks.jcommune.model.entity.Topic} entity
+     * @param lastReadPostService      to perform post-related actions                          
      */
     @Autowired
     public CodeReviewController(BranchService branchService,
-            BreadcrumbBuilder breadcrumbBuilder) {
+                                BreadcrumbBuilder breadcrumbBuilder,
+                                TopicModificationService topicModificationService,
+                                LastReadPostService lastReadPostService) {
         this.branchService = branchService;
         this.breadcrumbBuilder = breadcrumbBuilder;
+        this.topicModificationService = topicModificationService;
+        this.lastReadPostService = lastReadPostService;
     }
     
     /**
@@ -90,7 +106,37 @@ public class CodeReviewController {
         return new ModelAndView(CODE_REVIEW_VIEW)
                 .addObject(TOPIC_DTO, dto)
                 .addObject(BRANCH_ID, branchId)
-                .addObject(SUBMIT_URL, "/codeReview/new?branchId=" + branchId)
+                .addObject(SUBMIT_URL, "/reviews/new?branchId=" + branchId)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch));
+    }
+    
+    /**
+     * Create code review from data entered in form
+     *
+     * @param topicDto object with data from form
+     * @param result   {@link BindingResult} validation result
+     * @param branchId branch, where topic will be created
+     * @return {@code ModelAndView} object which will be redirect to forum.html
+     * @throws NotFoundException when branch not found
+     */
+    @RequestMapping(value = "/reviews/new", method = RequestMethod.POST)
+    public ModelAndView createCodeReview(@Valid @ModelAttribute TopicDto topicDto,
+                                    BindingResult result,
+                                    @RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
+        Branch branch = branchService.get(branchId);
+        if (result.hasErrors()) {
+            return new ModelAndView(CODE_REVIEW_VIEW)
+                    .addObject(TOPIC_DTO, topicDto)
+                    .addObject(BRANCH_ID, branchId)
+                    .addObject(SUBMIT_URL, "/reviews/new?branchId=" + branchId)
+                    .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branch));
+        }
+        Topic topic = topicDto.getTopic();
+        topic.setBranch(branch);
+        Topic createdTopic = topicModificationService.createCodeReview(
+                topic, topicDto.getBodyText(), topicDto.isNotifyOnAnswers());
+
+        lastReadPostService.markTopicAsRead(createdTopic);
+        return new ModelAndView(REDIRECT_URL + createdTopic.getId());
     }
 }

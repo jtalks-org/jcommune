@@ -22,6 +22,7 @@ import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.Post;
@@ -54,6 +55,9 @@ import org.springframework.security.core.Authentication;
  */
 public class TransactionalTopicModificationService implements TopicModificationService {
 
+    private static final String CODE_JAVA_BBCODE_START = "[code=java]";
+    private static final String CODE_JAVA_BBCODE_END = "[/code]";
+    
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private TopicDao dao;
@@ -185,8 +189,52 @@ public class TransactionalTopicModificationService implements TopicModificationS
                 new Object[]{topic.getId(), branch.getId(), currentUser.getUsername()});
         return topic;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @PreAuthorize("hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_CODE_REVIEW')")
+    public Topic createCodeReview(Topic topicDto, String bodyText,
+                             boolean notifyOnAnswers) throws NotFoundException {
+        JCUser currentUser = userService.getCurrentUser();
 
+        currentUser.setPostCount(currentUser.getPostCount() + 1);
+        Topic topic = new Topic(currentUser, topicDto.getTitle());
+        Post first = new Post(currentUser, getWrappedReviewBody(bodyText));
+        topic.addPost(first);
+        CodeReview codeReview = new CodeReview();
+        codeReview.setTopic(topic);
+        topic.setCodeReview(codeReview);
+        
+        Branch branch = topicDto.getBranch();
+        branch.addTopic(topic);
+        branch.setLastPost(first);
+        branchDao.update(branch);
 
+        JCUser user = userService.getCurrentUser();
+        securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(topic).flush();
+        securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(first).flush();
+
+        notificationService.branchChanged(branch);
+
+        subscribeOnTopicIfNotificationsEnabled(notifyOnAnswers, topic, currentUser);
+
+        dao.update(topic);
+        logger.debug("Created new code review topic id={}, branch id={}, author={}",
+                new Object[]{topic.getId(), branch.getId(), currentUser.getUsername()});
+        return topic;
+    }
+    
+    private String getWrappedReviewBody(String message) {
+        String trimmedMessage = message.trim();
+        if (!trimmedMessage.startsWith(CODE_JAVA_BBCODE_START) || 
+            !trimmedMessage.endsWith(CODE_JAVA_BBCODE_END)) {
+            return CODE_JAVA_BBCODE_START + message + CODE_JAVA_BBCODE_END;
+        }
+        return message;
+    }
+    
     /**
      * {@inheritDoc}
      */

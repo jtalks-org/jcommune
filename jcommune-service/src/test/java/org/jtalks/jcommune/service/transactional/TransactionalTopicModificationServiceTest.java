@@ -25,6 +25,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertSame;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -81,6 +83,7 @@ public class TransactionalTopicModificationServiceTest {
     private static final String USERNAME = "username";
     private JCUser user;
     private final String ANSWER_BODY = "Test Answer Body";
+    private final String CODE_REVIEW_PATTERN = "[code=java]%s[/code]";
 
     private TopicModificationService topicService;
 
@@ -199,6 +202,21 @@ public class TransactionalTopicModificationServiceTest {
         createTopicAssertions(branch, createdTopic, createdPost);
         createTopicVerifications(branch);
     }
+    
+    @Test
+    public void testCreateCodeReviewWithSubscription() throws NotFoundException {
+        Branch branch = createBranch();
+
+        createTopicStubs(branch);
+        Topic dto = createTopic();
+        dto.setAnnouncement(true);
+        dto.setSticked(true);
+        Topic createdTopic = topicService.createCodeReview(dto, ANSWER_BODY, false);
+        Post createdPost = createdTopic.getFirstPost();
+
+        createCodeReviewAssertions(branch, createdTopic, createdPost);
+        createTopicVerifications(branch);        
+    }
 
     @Test
     public void testCreateTopicWithoutSubscription() throws NotFoundException {
@@ -211,7 +229,34 @@ public class TransactionalTopicModificationServiceTest {
         createTopicAssertions(branch, createdTopic, createdPost);
         createTopicVerifications(branch);
     }
+    
+    @Test
+    public void testCreateCodeReviewWithoutSubscription() throws NotFoundException {
+        Branch branch = createBranch();
+        createTopicStubs(branch);
+        Topic dto = createTopic();
+        dto.setAnnouncement(true);
+        dto.setSticked(true);
+        Topic createdTopic = topicService.createCodeReview(dto, ANSWER_BODY, false);
+        Post createdPost = createdTopic.getFirstPost();
 
+        createCodeReviewAssertions(branch, createdTopic, createdPost);
+        createTopicVerifications(branch);        
+    }
+    
+    @Test
+    public void testCreateCodeReviewWithWrappedBBCode() throws NotFoundException {
+        Branch branch = createBranch();
+        createTopicStubs(branch);
+        Topic dto = createTopic();
+        Topic createdTopic = topicService.createCodeReview(
+                dto, String.format(CODE_REVIEW_PATTERN, ANSWER_BODY), false);
+        Post createdPost = createdTopic.getFirstPost();
+
+        createCodeReviewAssertions(branch, createdTopic, createdPost);
+        createTopicVerifications(branch);        
+    }
+    
     private void createTopicStubs(Branch branch) throws NotFoundException {
         when(userService.getCurrentUser()).thenReturn(user);
         when(branchDao.get(BRANCH_ID)).thenReturn(branch);
@@ -225,6 +270,20 @@ public class TransactionalTopicModificationServiceTest {
         assertEquals(createdPost.getUserCreated(), user);
         assertEquals(createdPost.getPostContent(), ANSWER_BODY);
         assertEquals(user.getPostCount(), 1);
+    }
+    
+    private void createCodeReviewAssertions(Branch branch, Topic createdTopic, Post createdPost) {
+        assertEquals(createdTopic.getTitle(), TOPIC_TITLE);
+        assertEquals(createdTopic.getTopicStarter(), user);
+        assertEquals(createdTopic.getBranch(), branch);
+        assertEquals(createdPost.getUserCreated(), user);
+        assertEquals(createdPost.getPostContent(), "[code=java]" + ANSWER_BODY + "[/code]");
+        assertEquals(user.getPostCount(), 1);
+        assertFalse(createdTopic.isAnnouncement());
+        assertFalse(createdTopic.isSticked());
+        assertNotNull(createdTopic.getCodeReview());
+        assertSame(createdTopic.getCodeReview().getTopic(), createdTopic);
+        assertEquals(createdTopic.getCodeReview().getComments().size(), 0);
     }
 
     private void createTopicVerifications(Branch branch)

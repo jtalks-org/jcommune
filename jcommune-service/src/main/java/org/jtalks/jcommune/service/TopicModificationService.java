@@ -57,6 +57,19 @@ public interface TopicModificationService {
     Topic createTopic(Topic topic, String bodyText, boolean notifyOnAnswers) throws NotFoundException;
 
     /**
+     * Add new code review with given title and body.
+     * Author is current user.
+     *
+     * @param topic           topic that used as dto
+     * @param bodyText        body of topic
+     * @param notifyOnAnswers user notification on answers flag
+     * @return created code review topic
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when branch not found
+     */
+    Topic createCodeReview(Topic topicDto, String bodyText, boolean notifyOnAnswers) throws NotFoundException;
+    
+    /**
      * Update current topic with given title and body.
      *
      * @param topic topic to be updated
@@ -106,4 +119,5 @@ public interface TopicModificationService {
      * @param topic topic we want to open, hibernate session-bound
      */
     void openTopic(Topic topic);
+
 }

@@ -139,6 +139,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     private int views;
     @Valid
     private Poll poll;
+    private CodeReview codeReview;    
     private List<Post> posts = new ArrayList<Post>();
     private Set<JCUser> subscribers = new HashSet<JCUser>();
 
@@ -418,6 +419,20 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      */
     public void setPoll(Poll poll) {
         this.poll = poll;
+    }
+
+    /**
+     * @return the codeReview
+     */
+    public CodeReview getCodeReview() {
+        return codeReview;
+    }
+
+    /**
+     * @param codeReview the codeReview to set
+     */
+    public void setCodeReview(CodeReview codeReview) {
+        this.codeReview = codeReview;
     }
 
     /**

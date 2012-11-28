@@ -164,6 +164,8 @@
                 <value>/org/jtalks/jcommune/model/entity/SimplePage.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/Component.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/ViewTopicsBranches.hbm.xml</value>
+                <value>/org/jtalks/jcommune/model/entity/CodeReview.hbm.xml</value>
+                <value>/org/jtalks/jcommune/model/entity/CodeReviewComment.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">
