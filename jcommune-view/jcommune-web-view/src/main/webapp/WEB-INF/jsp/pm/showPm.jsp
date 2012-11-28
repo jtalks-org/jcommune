@@ -28,7 +28,7 @@
 <body>
 
 <div class="container">
-    <h2>${pm.title}</h2>
+    <h2><c:out value="${pm.title}"/></h2>
     <hr/>
     <div class="row">
         <div class="span2">
