@@ -135,7 +135,7 @@
                 <property name="maxStatements" value="1500"/>
                 <property name="maxStatementsPerConnection" value="50"/>
                 <!--Should be close to the size of the web server thread pool in order not to let threads wait for connections-->
-                <property name="maxPoolSize" value="30"/>
+                <property name="maxPoolSize" value="50"/>
                 <!--Every hour we'll be hitting DB to make sure MySQL doesn't kill the connection. By default if connection
          is idle for 8 hrs, MySQL kills it-->
                 <property name="idleConnectionTestPeriod" value="3600"/>
