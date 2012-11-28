@@ -21,6 +21,7 @@ import org.jtalks.common.validation.annotations.Email;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
+import org.jtalks.jcommune.web.validation.annotations.PageSize;
 import org.jtalks.jcommune.web.validation.annotations.ChangedEmail;
 import org.jtalks.jcommune.web.validation.annotations.ChangedPassword;
 import org.jtalks.jcommune.web.validation.annotations.Matches;
@@ -56,6 +57,7 @@ public class EditUserProfileDto {
     private String newUserPassword;
     private String newUserPasswordConfirm;
     private Language language;
+    @PageSize(message = "{validation.profile.page.size}")
     private int pageSize;
     private String avatar;
     @Length(max = JCUser.MAX_LOCATION_SIZE)
