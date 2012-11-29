@@ -147,9 +147,6 @@ public class CodeReviewControllerTest {
         //invoke the object under test
         ModelAndView mav = controller.createCodeReview(getDto(), result, BRANCH_ID);
 
-        //check expectations
-        verify(branchService).get(BRANCH_ID);
-        verify(breadcrumbBuilder).getForumBreadcrumb(branch);
         //check result
         assertViewName(mav, "codeReviewForm");
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);

@@ -20,6 +20,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
@@ -196,11 +197,12 @@ public class TransactionalTopicModificationServiceTest {
 
         createTopicStubs(branch);
         Topic dto = createTopic();
-        Topic createdTopic = topicService.createTopic(dto, ANSWER_BODY, false);
+        Topic createdTopic = topicService.createTopic(dto, ANSWER_BODY, true);
         Post createdPost = createdTopic.getFirstPost();
 
         createTopicAssertions(branch, createdTopic, createdPost);
         createTopicVerifications(branch);
+        verify(subscriptionService).toggleTopicSubscription(createdTopic);
     }
     
     @Test
@@ -211,11 +213,12 @@ public class TransactionalTopicModificationServiceTest {
         Topic dto = createTopic();
         dto.setAnnouncement(true);
         dto.setSticked(true);
-        Topic createdTopic = topicService.createCodeReview(dto, ANSWER_BODY, false);
+        Topic createdTopic = topicService.createCodeReview(dto, ANSWER_BODY, true);
         Post createdPost = createdTopic.getFirstPost();
 
         createCodeReviewAssertions(branch, createdTopic, createdPost);
         createTopicVerifications(branch);        
+        verify(subscriptionService).toggleTopicSubscription(createdTopic);
     }
 
     @Test
@@ -228,6 +231,7 @@ public class TransactionalTopicModificationServiceTest {
 
         createTopicAssertions(branch, createdTopic, createdPost);
         createTopicVerifications(branch);
+        verify(subscriptionService, never()).toggleTopicSubscription(createdTopic);
     }
     
     @Test
@@ -242,6 +246,7 @@ public class TransactionalTopicModificationServiceTest {
 
         createCodeReviewAssertions(branch, createdTopic, createdPost);
         createTopicVerifications(branch);        
+        verify(subscriptionService, never()).toggleTopicSubscription(createdTopic);
     }
     
     @Test

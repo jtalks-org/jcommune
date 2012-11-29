@@ -21,19 +21,18 @@
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
     <class name="CodeReview" table="CODE_REVIEWS">
         <cache usage="read-write"/>
-        <id column="CODE_REVIEW_ID" name="id" unsaved-value="0">
+        <id column="CR_ID" name="id" unsaved-value="0">
             <generator class="native"/>
         </id>
         <property column="UUID" name="uuid" unique="true" not-null="true"/>
         
         <one-to-one name="topic" constrained="true" property-ref="codeReview"
-                    class="org.jtalks.jcommune.model.entity.Topic" />
+                    class="Topic" />
 
-        <list name="comments" cascade="all-delete-orphan">
+        <bag name="comments" cascade="all-delete-orphan" order-by="CREATION_DATE">
             <cache usage="nonstrict-read-write"/>
             <key column="CODE_REVIEW_ID" foreign-key="FK_CRC_CODE_REVIEW"/>
-            <index column="LIST_INDEX"/>
-            <one-to-many class="org.jtalks.jcommune.model.entity.CodeReviewComment"/>
-        </list>
+            <one-to-many class="CodeReviewComment"/>
+        </bag>
     </class>
 </hibernate-mapping>

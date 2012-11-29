@@ -201,7 +201,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);
         Topic topic = new Topic(currentUser, topicDto.getTitle());
-        Post first = new Post(currentUser, getWrappedReviewBody(bodyText));
+        Post first = new Post(currentUser, wrapWithCodeTag(bodyText));
         topic.addPost(first);
         CodeReview codeReview = new CodeReview();
         codeReview.setTopic(topic);
@@ -226,7 +226,13 @@ public class TransactionalTopicModificationService implements TopicModificationS
         return topic;
     }
     
-    private String getWrappedReviewBody(String message) {
+    /**
+     * Wrap given message with [code=java]...[/code] tags if it is not wrapped 
+     * yet
+     * @param message message to wrap
+     * @return wrapped message
+     */
+    private String wrapWithCodeTag(String message) {
         String trimmedMessage = message.trim();
         if (!trimmedMessage.startsWith(CODE_JAVA_BBCODE_START) || 
             !trimmedMessage.endsWith(CODE_JAVA_BBCODE_END)) {

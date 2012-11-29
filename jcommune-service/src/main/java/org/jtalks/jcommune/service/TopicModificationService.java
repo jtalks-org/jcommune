@@ -58,7 +58,9 @@ public interface TopicModificationService {
 
     /**
      * Add new code review with given title and body.
-     * Author is current user.
+     * Author is current user.<br>
+     * <b>NOTE</b>: The whole body will be wrapped with [code] if it is not wrapped, 
+     * because CR implies that there is no usual text in the post body.
      *
      * @param topic           topic that used as dto
      * @param bodyText        body of topic

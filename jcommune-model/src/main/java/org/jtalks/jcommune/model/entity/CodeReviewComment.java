@@ -14,6 +14,11 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotBlank;
+import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
 
 /**
@@ -23,12 +28,21 @@ import org.jtalks.common.model.entity.Entity;
  */
 public class CodeReviewComment extends Entity {
 
+    private static final int BODY_MIN_LENGTH = 1;
+    
+    private static final int BODY_MAX_LENGTH = 5000;
+    
     private int lineNumber;
     
+    @NotNull
     private JCUser author;
     
-    private String comment;
-
+    private DateTime creationDate;
+    
+    @NotBlank
+    @Size(min = BODY_MIN_LENGTH, max = BODY_MAX_LENGTH)
+    private String body;
+    
     /**
      * @return the lineNumber
      */
@@ -56,19 +70,34 @@ public class CodeReviewComment extends Entity {
     public void setAuthor(JCUser author) {
         this.author = author;
     }
-
+    
     /**
-     * @return the comment
+     * The time when comment was added
+     * @return the creationDate
      */
-    public String getComment() {
-        return comment;
+    public DateTime getCreationDate() {
+        return creationDate;
     }
 
     /**
-     * @param comment the comment to set
+     * @param creationDate the creation date of this comment
      */
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setCreationDate(DateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    /**
+     * @return the comment body
+     */
+    public String getBody() {
+        return body;
+    }
+
+    /**
+     * @param body the comment body to set
+     */
+    public void setBody(String body) {
+        this.body = body;
     }
     
 }
