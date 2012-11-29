@@ -16,6 +16,7 @@ package org.jtalks.jcommune.model;
 
 import org.hibernate.Session;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Poll;
@@ -144,13 +145,23 @@ public final class PersistedObjectsFactory {
         persist(user);
         return user;
     }
+    
+    public static Topic getCodeReviewTopic() {
+        Topic topic = getDefaultTopic();
+        CodeReview review = new CodeReview();
+        topic.setCodeReview(review);
+        review.setTopic(topic);        
+        session.update(topic);
+        session.flush();
+        return topic;
+    }
 
     public static void createViewUnreadPostsInBranch() {
         session.createSQLQuery("CREATE VIEW COUNT_POSTS_TOPICS_VIEW AS SELECT tp.TOPIC_ID, tp.BRANCH_ID," +
                 " COUNT(*)-1 as POSTS_COUNT FROM TOPIC tp join POST p ON p.TOPIC_ID=tp.TOPIC_ID group by tp.TOPIC_ID")
                 .executeUpdate();
     }
-
+    
     /**
      * Used in manual rollback
      */

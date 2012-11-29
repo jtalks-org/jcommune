@@ -278,4 +278,45 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
                 "Paging is disabled, so it should retrieve all topics in the branch.");
         assertEquals(topicsPage.getTotalElements(), size, "Incorrect total count.");
     }
+    
+    @Test
+    public void testAddCodeReview() {
+        Topic topic = PersistedObjectsFactory.getDefaultTopic();        
+        
+        CodeReview review = new CodeReview();
+        topic.setCodeReview(review);
+        review.setTopic(topic);
+        dao.update(topic);
+        
+        session.evict(topic);
+        
+        assertNotNull(dao.get(topic.getId()).getCodeReview());
+    }
+    
+    @Test
+    public void testRemoveCodeReview() {
+        Topic topic = PersistedObjectsFactory.getCodeReviewTopic();
+        
+        topic.getCodeReview().setTopic(null);
+        topic.setCodeReview(null);
+        dao.update(topic);
+        
+        session.evict(topic);
+        
+        assertNull(dao.get(topic.getId()).getCodeReview());
+    }
+    
+    @Test
+    public void testDeleteCodeReviewTopic() {
+        Topic topic = PersistedObjectsFactory.getCodeReviewTopic();
+        long reviewId = topic.getCodeReview().getId();
+        
+        Branch topicBranch = topic.getBranch();
+        topicBranch.deleteTopic(topic);
+        session.update(topicBranch);
+        session.flush();
+        
+        assertNull(dao.get(topic.getId()));
+        assertNull(session.get(CodeReview.class, reviewId));
+    }
 }
