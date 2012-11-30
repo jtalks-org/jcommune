@@ -134,8 +134,8 @@
       <bean class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <property name="driverClass" value="${jdbc.driverClassName}"/>
         <property name="jdbcUrl" value="${jdbc.url}"/>
-        <property name="user" value="${jdbc.username:root}"/>
-        <property name="password" value="${jdbc.password:root}"/>
+        <property name="user" value="${JCOMMUNE_DB_USER:root}"/>
+        <property name="password" value="${JCOMMUNE_DB_PASS:root}"/>
         <property name="maxStatements" value="1500"/>
         <property name="maxStatementsPerConnection" value="50"/>
         <!--Should be close to the size of the web server thread pool in order not to let threads wait for connections-->
@@ -143,6 +143,8 @@
         <!--Every hour we'll be hitting DB to make sure MySQL doesn't kill the connection. By default if connection
  is idle for 8 hrs, MySQL kills it-->
         <property name="idleConnectionTestPeriod" value="3600"/>
+        <!--This is required because if all the connections are taken and threads are waiting, they might be blocked
+        forever. But if we specify this timeout, an exception will be raised in case of threads being blocked for too long.-->
         <property name="checkoutTimeout" value="10000"/>
       </bean>
     </property>
