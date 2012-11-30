@@ -27,7 +27,7 @@
 <div class="word-wrap"><jtalks:bb2html bbCode="${text}"/>
     <c:if test="${!empty modificationDate}">
         <br/><br/>
-        <span class="update-note">
+        <span class="post-update-mark">
              <spring:message code="label.modify"/><jtalks:format value="${modificationDate}"/>
         </span>
     </c:if>
