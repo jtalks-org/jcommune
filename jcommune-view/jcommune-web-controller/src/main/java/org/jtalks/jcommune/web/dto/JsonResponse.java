@@ -20,6 +20,10 @@ package org.jtalks.jcommune.web.dto;
  * @author wedens
  */
 public class JsonResponse {
+    public static final String RESPONSE_STATUS_SUCCESS = "success";
+    public static final String RESPONSE_STATUS_FAIL = "fail";
+    
+    
 	private String status;
 	private Object result;
 

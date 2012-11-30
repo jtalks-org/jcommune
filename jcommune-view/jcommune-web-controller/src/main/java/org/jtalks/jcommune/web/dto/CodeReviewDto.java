@@ -12,52 +12,62 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.entity;
+package org.jtalks.jcommune.web.dto;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jtalks.common.model.entity.Entity;
+import org.jtalks.jcommune.model.entity.CodeReview;
+import org.jtalks.jcommune.model.entity.CodeReviewComment;
 
 /**
- * Represents the code review for the topic. Contains the list of {@link CodeReviewComment}
- * for each commented line of code and configuration parameters for review.
- *
+ * DTO for {@link CodeReview}
  * @author Vyacheslav Mishcheryakov
+ *
  */
-public class CodeReview extends Entity {
+public class CodeReviewDto {
 
-    private Topic topic;
+    private long id;
     
-    private List<CodeReviewComment> comments = new ArrayList<CodeReviewComment>();
+    private List<CodeReviewCommentDto> comments = new ArrayList<CodeReviewCommentDto>();
 
+    public CodeReviewDto() {
+    }
     
-    /**
-     * @return the topic
-     */
-    public Topic getTopic() {
-        return topic;
+    public CodeReviewDto(CodeReview review) {
+        this.id = review.getId();
+        for (CodeReviewComment comment : review.getComments()) {
+            this.comments.add(new CodeReviewCommentDto(comment));
+        }
     }
 
     /**
-     * @param topic the topic to set
+     * @return the id
      */
-    public void setTopic(Topic topic) {
-        this.topic = topic;
+    public long getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(long id) {
+        this.id = id;
     }
 
     /**
      * @return the comments
      */
-    public List<CodeReviewComment> getComments() {
+    public List<CodeReviewCommentDto> getComments() {
         return comments;
     }
 
     /**
      * @param comments the comments to set
      */
-    public void setComments(List<CodeReviewComment> comments) {
+    public void setComments(List<CodeReviewCommentDto> comments) {
         this.comments = comments;
     }
+    
     
 }

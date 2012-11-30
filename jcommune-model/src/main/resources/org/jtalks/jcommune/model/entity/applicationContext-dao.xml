@@ -92,6 +92,10 @@
     <bean id="lastReadPostDao"
           class="org.jtalks.jcommune.model.dao.hibernate.LastReadPostHibernateDao"
           parent="abstractHibernateDao"/>
+          
+    <bean id="codeReviewDao"
+          class="org.jtalks.jcommune.model.dao.hibernate.CodeReviewHibernateDao"
+          parent="abstractHibernateDao"/>
 
     <!-- Declaration of Hibernate Search DAO beans -->
     <bean id="topicSearchDao" class="org.jtalks.jcommune.model.dao.search.hibernate.TopicHibernateSearchDao">

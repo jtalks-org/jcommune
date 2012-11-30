@@ -104,12 +104,5 @@
         Design with <a href="http://twitter.github.com/bootstrap">Twitter Bootstrap</a>
     </footer>
 </div>
-
-<script type="text/javascript">
-    jQuery(document).ready(function () {
-        //Code highlight
-        prettyPrint();
-    });
-</script>
 </body>
 </html>

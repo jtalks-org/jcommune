@@ -17,11 +17,15 @@ package org.jtalks.jcommune.web.controller;
 import javax.validation.Valid;
 
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.TopicModificationService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.CodeReviewDto;
+import org.jtalks.jcommune.web.dto.JsonResponse;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +35,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -52,11 +58,11 @@ public class CodeReviewController {
     private static final String TOPIC_DTO = "topicDto";
     private static final String REDIRECT_URL = "redirect:/topics/";
     
-
     private BranchService branchService;    
     private BreadcrumbBuilder breadcrumbBuilder;
     private TopicModificationService topicModificationService;
     private LastReadPostService lastReadPostService;
+    private CodeReviewService codeReviewService;
     
     /**
      * @param branchService            the object which provides actions on
@@ -64,17 +70,21 @@ public class CodeReviewController {
      * @param breadcrumbBuilder        to create Breadcrumbs for pages
      * @param topicModificationService the object which provides actions on
      *                                 {@link org.jtalks.jcommune.model.entity.Topic} entity
-     * @param lastReadPostService      to perform post-related actions                          
+     * @param lastReadPostService      to perform post-related actions   
+     * @param codeReviewService        to operate with {@linke CodeReview} entities                       
      */
     @Autowired
     public CodeReviewController(BranchService branchService,
                                 BreadcrumbBuilder breadcrumbBuilder,
                                 TopicModificationService topicModificationService,
-                                LastReadPostService lastReadPostService) {
+                                LastReadPostService lastReadPostService,
+                                CodeReviewService codeReviewService) {
         this.branchService = branchService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.topicModificationService = topicModificationService;
         this.lastReadPostService = lastReadPostService;
+        this.codeReviewService = codeReviewService;
+        
     }
     
     /**
@@ -139,4 +149,19 @@ public class CodeReviewController {
         lastReadPostService.markTopicAsRead(createdTopic);
         return new ModelAndView(REDIRECT_URL + createdTopic.getId());
     }
+    
+    /**
+     * Returns code review by its ID as JSON data
+     * @param reviewId ID of code review
+     * @return JSON response object containing string status and review DTO as 
+     *          result field 
+     * @throws NotFoundException if code review was not found
+     */
+    @RequestMapping(value="/reviews/{reviewId}/json", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonResponse getCodeReview(@PathVariable("reviewId") Long reviewId) throws NotFoundException {
+        CodeReview review = codeReviewService.get(reviewId);
+        return new JsonResponse(JsonResponse.RESPONSE_STATUS_SUCCESS, new CodeReviewDto(review));
+    }
+    
 }

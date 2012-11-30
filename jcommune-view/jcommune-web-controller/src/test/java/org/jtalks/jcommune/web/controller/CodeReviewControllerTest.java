@@ -15,12 +15,15 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
+import org.jtalks.jcommune.web.dto.CodeReviewDto;
+import org.jtalks.jcommune.web.dto.JsonResponse;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.mockito.Mock;
@@ -51,6 +54,7 @@ public class CodeReviewControllerTest {
     public long BRANCH_ID = 1L;
     private long TOPIC_ID = 1L;
     private String TOPIC_CONTENT = "content here";
+    private long REVIEW_ID = 1L;
 
     private JCUser user;
     private Branch branch;
@@ -63,6 +67,9 @@ public class CodeReviewControllerTest {
     private TopicModificationService topicModificationService;
     @Mock
     private LastReadPostService lastReadPostService;
+    @Mock
+    private CodeReviewService codeReviewService;
+    
 
     private CodeReviewController controller;
 
@@ -73,7 +80,8 @@ public class CodeReviewControllerTest {
                 branchService,
                 breadcrumbBuilder,
                 topicModificationService,
-                lastReadPostService);
+                lastReadPostService,
+                codeReviewService);
     }
 
     @BeforeMethod
@@ -153,6 +161,25 @@ public class CodeReviewControllerTest {
         assertEquals(branchId, BRANCH_ID);
     }
     
+    @Test
+    public void testGetCodeReviewSuccess() throws NotFoundException {
+        CodeReview review = new CodeReview();
+        review.setId(REVIEW_ID);
+        when(codeReviewService.get(REVIEW_ID)).thenReturn(review);
+        
+        JsonResponse response = controller.getCodeReview(REVIEW_ID);
+        
+        assertEquals(response.getStatus(), JsonResponse.RESPONSE_STATUS_SUCCESS);
+        assertEquals(((CodeReviewDto)response.getResult()).getId(), REVIEW_ID);
+    }
+    
+    @Test(expectedExceptions=NotFoundException.class)
+    public void testGetCodeReviewNotFound() throws NotFoundException {
+        when(codeReviewService.get(REVIEW_ID)).thenThrow(new NotFoundException());
+        
+        controller.getCodeReview(REVIEW_ID);
+    }
+    
     private Branch createBranch() {
         Branch branch = new Branch("branch name", "branch description");
         branch.setId(BRANCH_ID);
@@ -176,5 +203,5 @@ public class CodeReviewControllerTest {
         dto.setTopic(topic);
         return dto;
     }
-
+    
 }

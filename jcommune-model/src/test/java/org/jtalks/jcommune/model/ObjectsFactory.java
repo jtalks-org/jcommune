@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model;
 
+import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.entity.*;
@@ -113,5 +114,31 @@ public final class ObjectsFactory {
     
     public static SimplePage getDefaultSimplePage() {
         return new SimplePage("name", "content", "pathName");
+    }
+    
+    public static CodeReview getDefaultCodeReview() {
+        CodeReview review = new CodeReview();
+        review.setId(1L);
+        
+        List<CodeReviewComment> comments = new ArrayList<CodeReviewComment>();
+        CodeReviewComment comment1 = new CodeReviewComment();
+        comment1.setId(1L);
+        comment1.setAuthor(getDefaultUser());
+        comment1.setBody("Comment1 body");
+        comment1.setLineNumber(1);
+        comment1.setCreationDate(new DateTime(1));
+        comments.add(comment1);
+        
+        CodeReviewComment comment2 = new CodeReviewComment();
+        comment2.setId(2L);
+        comment2.setAuthor(getDefaultUser());
+        comment2.setBody("Comment2 body");
+        comment2.setLineNumber(2);
+        comment2.setCreationDate(new DateTime(2));
+        comments.add(comment2);
+        
+        review.setComments(comments);
+        
+        return review;
     }
 }

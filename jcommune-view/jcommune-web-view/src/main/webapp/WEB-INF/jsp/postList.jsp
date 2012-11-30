@@ -33,6 +33,8 @@
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/poll.js"
             type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/codeHighlighting.js"
+            type="text/javascript"></script>
 </head>
 <body>
 
@@ -118,11 +120,21 @@
     </div>
 </c:if>
 
+<%-- Setup indicators --%>
+<c:if test="${topic.codeReview != null}">
+    <input type="hidden" id="has-code-review" value="true"/>
+    <input type="hidden" id="codeReviewId" value="${topic.codeReview.id}"/>
+</c:if>
+
 <div>
     <%-- List of posts. --%>
     <c:forEach var="post" items="${postsPage.content}" varStatus="i">
         <%-- Post --%>
-        <div class="post">
+        <c:set var="postClass" value=""/>
+        <c:if test="${postsPage.number == 1 && i.index == 0}">
+            <c:set var="postClass" value="script-first-post"/>
+        </c:if>
+        <div class="post ${postClass}">
             <div class="anchor">
                 <a id="${post.id}">anchor</a>
             </div>
