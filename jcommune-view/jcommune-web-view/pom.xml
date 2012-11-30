@@ -100,12 +100,6 @@
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.cargo</groupId>
@@ -161,8 +155,6 @@
 
     <properties>
         <headerBaseDir>${basedir}/../..</headerBaseDir>
-        <jdbc.user>${env.JCOMMUNE_DB_USER}</jdbc.user>
-        <jdbc.pass>${env.JCOMMUNE_DB_PASS}</jdbc.pass>
     </properties>
 
 </project>
