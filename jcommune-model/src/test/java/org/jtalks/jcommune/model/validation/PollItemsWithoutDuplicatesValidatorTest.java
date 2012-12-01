@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.model.validation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.validation.ConstraintValidatorContext;
@@ -65,5 +66,14 @@ public class PollItemsWithoutDuplicatesValidatorTest {
         boolean isValid = validator.isValid(pollItems, validatorContext);
         
         Assert.assertFalse(isValid, "The poll items with duplicates must be invalid");
+    }
+    
+    @Test
+    public void testEmptyItems() {
+        List<PollItem> pollItems = Collections.emptyList();
+        
+        boolean isValid = validator.isValid(pollItems, validatorContext);
+        
+        Assert.assertTrue(isValid, "Epmty list of poll items mus be valid");
     }
 }

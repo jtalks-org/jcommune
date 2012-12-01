@@ -39,7 +39,7 @@ public @interface PollItemsWithoutDuplicates {
     /**
      * Resource bundle code for error message
      */
-    String message() default "{defaultPoll.message}";
+    String message() default "{poll.items.duplicates}";
 
     /**
      * Groups settings for this validation constraint
