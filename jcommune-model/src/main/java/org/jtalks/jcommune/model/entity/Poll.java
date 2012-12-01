@@ -21,6 +21,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.jtalks.common.model.entity.Entity;
+import org.jtalks.jcommune.model.validation.annotations.PollItemsWithoutDuplicates;
 import org.jtalks.jcommune.model.validation.annotations.ValidPoll;
 import org.jtalks.jcommune.model.validation.validators.PollValidator;
 
@@ -51,6 +52,7 @@ public class Poll extends Entity {
     private String endingDateValue;
     private DateTime endingDate;
     private String pollItemsValue;
+    @PollItemsWithoutDuplicates
     private List<PollItem> pollItems = new ArrayList<PollItem>();
     private Topic topic;
 

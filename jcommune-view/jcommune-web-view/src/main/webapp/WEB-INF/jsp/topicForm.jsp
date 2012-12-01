@@ -133,6 +133,7 @@
                                    class="post script-confirm-unsaved" placeholder="${optionsPlaceholder}"/>
                     <br>
                     <form:errors path="topic.poll.pollItemsValue" cssClass="help-inline"/>
+                    <form:errors path="topic.poll.pollItems" cssClass="help-inline"/>
                 </div>
 
                 <div class='control-group'>
