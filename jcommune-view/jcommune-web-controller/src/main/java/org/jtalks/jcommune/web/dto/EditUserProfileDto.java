@@ -16,6 +16,7 @@ package org.jtalks.jcommune.web.dto;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.validation.annotations.Email;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -39,15 +40,16 @@ import javax.validation.constraints.Size;
 @ChangedPassword
 public class EditUserProfileDto {
 
-    @NotNull
-    @Size(max=User.EMAIL_MAX_LENGTH, message = "{title.length}")
+    @NotBlank(message = "{validation.email.not_empty}")
+    @NotNull(message = "{validation.email.not_empty}")
+    @Size(max = User.EMAIL_MAX_LENGTH, message = "{validation.email.length}")
     @Email(message = "{validation.email.wrong.format}")
     @ChangedEmail
     private String email;
-    
+
     @Size(max = User.USERNAME_FIRSTNAME_MAX_LENGTH, message = "{user.first_and_last_name.illegal_length}")
     private String firstName;
-    
+
     @Size(max = User.USERNAME_LASTNAME_MAX_LENGTH, message = "{user.first_and_last_name.illegal_length}")
     private String lastName;
     @Size(max = JCUser.MAX_SIGNATURE_SIZE, message = "{validation.signature.length}")
