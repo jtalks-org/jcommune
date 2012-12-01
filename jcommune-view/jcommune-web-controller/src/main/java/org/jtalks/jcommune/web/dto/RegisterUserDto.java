@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.dto;
 
+import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.validation.annotations.Email;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -21,6 +22,7 @@ import org.jtalks.jcommune.web.validation.annotations.Captcha;
 import org.jtalks.jcommune.web.validation.annotations.Matches;
 import org.jtalks.jcommune.web.validation.annotations.Unique;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -37,6 +39,9 @@ public class RegisterUserDto {
     @Unique(entity = JCUser.class, field = "username", message = "{validation.duplicateuser}")
     private String username;
 
+    @NotBlank(message = "{validation.email.not_empty}")
+    @NotNull(message = "{validation.email.not_empty}")
+    @Size(max = User.EMAIL_MAX_LENGTH, message = "{validation.email.length}")
     @Email(message = "{validation.email.wrong.format}")
     @Unique(entity = JCUser.class, field = "email", message = "{validation.duplicateemail}")
     private String email;
