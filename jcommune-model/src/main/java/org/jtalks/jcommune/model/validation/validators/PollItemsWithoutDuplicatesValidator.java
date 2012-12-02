@@ -20,8 +20,6 @@ import java.util.List;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.model.validation.annotations.PollItemsWithoutDuplicates;
 
@@ -49,7 +47,7 @@ public class PollItemsWithoutDuplicatesValidator
     @Override
     public boolean isValid(List<PollItem> pollItems, ConstraintValidatorContext context) {
         int actualSize = pollItems.size();
-        int withoutDuplicatesSize = getCountUniqueItems(pollItems);
+        int withoutDuplicatesSize = getUniqueItemsCount(pollItems);
         return actualSize == withoutDuplicatesSize;
     }
     
@@ -59,59 +57,12 @@ public class PollItemsWithoutDuplicatesValidator
      * @param pollItems the source list of poll items
      * @return count of unique poll items
      */
-    private int getCountUniqueItems(List<PollItem> pollItems) {
-        HashSet<PollItemNameEqualWrapper> containerWithoutDuplicates = 
-                new HashSet<PollItemNameEqualWrapper>();
+    private int getUniqueItemsCount(List<PollItem> pollItems) {
+        HashSet<String> uniquePollItemsNames = new HashSet<String>();
         for (PollItem pollItem: pollItems) {
             String pollItemName = pollItem.getName();
-            containerWithoutDuplicates.add(new PollItemNameEqualWrapper(pollItemName));
+            uniquePollItemsNames.add(pollItemName);
         }
-        return containerWithoutDuplicates.size();
-    }
-    
-    /**
-     * Help wrapper that gives an ability to remove duplicates by using
-     * {@link HashSet}.
-     * We can't use {@link PollItem} for this purpose, because in this
-     * case we need to fully override equals and hashcode methods.
-     * 
-     * @author Anuar_Nurmakanov
-     *
-     */
-    private static class PollItemNameEqualWrapper {
-        private String pollItem;
-
-        /**
-         * Constructs an instance with required fields.
-         * 
-         * @param pollItem the name of the poll
-         */
-        public PollItemNameEqualWrapper(String pollItem) {
-            this.pollItem = pollItem;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int hashCode() {
-            return new HashCodeBuilder()
-                .append(pollItem)
-                .hashCode();
-        }
-        
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean equals(Object obj) {
-            if (!(obj instanceof PollItemNameEqualWrapper)) {
-                return false;
-            }
-            PollItemNameEqualWrapper equaledObject = (PollItemNameEqualWrapper) obj;
-            return new EqualsBuilder()
-                .append(pollItem, equaledObject.pollItem)
-                .isEquals();
-        }
+        return uniquePollItemsNames.size();
     }
 }

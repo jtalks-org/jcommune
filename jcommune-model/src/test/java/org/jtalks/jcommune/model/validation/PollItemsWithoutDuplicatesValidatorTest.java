@@ -74,6 +74,6 @@ public class PollItemsWithoutDuplicatesValidatorTest {
         
         boolean isValid = validator.isValid(pollItems, validatorContext);
         
-        Assert.assertTrue(isValid, "Epmty list of poll items mus be valid");
+        Assert.assertTrue(isValid, "Empty list of poll items must be valid");
     }
 }
