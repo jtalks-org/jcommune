@@ -62,5 +62,6 @@ public class BbCodeNestingValidatorTest {
         assertTrue(bbCodeNestingValidator.isValid(text,null));
         text = "[*][*][*][*][*][*][*][*][*][*][*][*][*][*][*]";
         assertTrue(bbCodeNestingValidator.isValid(text,null));
+        assertTrue(bbCodeNestingValidator.isValid(null,null));
     }
 }

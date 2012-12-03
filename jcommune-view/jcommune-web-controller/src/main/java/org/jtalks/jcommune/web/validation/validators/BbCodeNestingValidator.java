@@ -58,6 +58,9 @@ public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting
      */
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
+        if(value==null){
+            return true;
+        }
         return checkNestingLevel(value);
     }
 
