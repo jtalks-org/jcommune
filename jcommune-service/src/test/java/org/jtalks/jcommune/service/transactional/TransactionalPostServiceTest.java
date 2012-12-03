@@ -14,24 +14,11 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dto.JCommunePageRequest;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.CodeReview;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.BranchLastPostService;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
@@ -47,6 +34,15 @@ import org.springframework.security.access.AccessDeniedException;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
 
 /**
  * This test cover {@code TransactionalPostService} logic validation.
@@ -144,17 +140,27 @@ public class TransactionalPostServiceTest {
     }
     
     @Test(expectedExceptions=AccessDeniedException.class)
-    void testUpdateFirstPostInCodeReview() throws NotFoundException {
+    void shouldBeImpossibleToEditCodeReviewBody() throws NotFoundException {
+        Post post = firstPostOfCodeReview();
+        when(postDao.isExist(post.getId())).thenReturn(true);
+        when(postService.get(post.getId())).thenReturn(post);
+
+        postService.updatePost(post, null);
+    }
+
+    /**
+     * Creates a code review with the first post.
+     *
+     * @return a post of the created code review
+     */
+    private Post firstPostOfCodeReview() {
         Topic topic = new Topic(user, "title");
         topic.setCodeReview(new CodeReview());
         Post post = new Post(user, "");
         topic.addPost(post);
-        post.setId(POST_ID);
+        post.setId(123L);//we don't care about ID
         topic.addPost(post);
-        when(postDao.isExist(POST_ID)).thenReturn(true);
-        when(postService.get(POST_ID)).thenReturn(post);
-
-        postService.updatePost(post, null);
+        return post;
     }
 
     @Test

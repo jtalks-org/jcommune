@@ -85,8 +85,9 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      *
      * @param post an instance of post, that will be updated
      * @param postContent new content of the post
+     * @throws AccessDeniedException if user tries to update the first post of code review which should be impossible,
+     *         see <a href="http://jtalks.org/display/jcommune/1.1+Larks">Requirements</a> for details
      */
-
     @PreAuthorize("hasPermission(#post.id, 'POST', 'GeneralPermission.WRITE') and " +
             "hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OWN_POSTS') or "+
             "hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
@@ -95,7 +96,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         Topic postTopic = post.getTopic();
         if (postTopic.getCodeReview() != null 
             && postTopic.getPosts().get(0).getId() == post.getId()) {
-            throw new AccessDeniedException("Update topic post in code review");
+            throw new AccessDeniedException("It is impossible to edit code review!");
         }
         post.setPostContent(postContent);
         post.updateModificationDate();
