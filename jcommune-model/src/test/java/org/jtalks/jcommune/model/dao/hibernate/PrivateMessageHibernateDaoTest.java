@@ -20,11 +20,13 @@ import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -142,14 +144,18 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         assertFalse(result, "Entity deleted");
     }
 
-    @Test
-    public void testGetAllFromUser() {
-        saveMessagesWithDifferentStatus();
 
-        List<PrivateMessage> listFrom = dao.getAllFromUser(author);
-
-        assertEquals(listFrom.size(), 2);
-        assertFalse(listFrom.contains(draftPm));
+    @Test void testGettAllFromUserPagingEnabled() {
+        int totalSize = 50;
+        int pageCount = 2;
+        int pageSize = totalSize/pageCount;
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, pageSize);
+        List<PrivateMessage> messages = PersistedObjectsFactory.createAndSavePrivateMessageList(totalSize);
+        Page<PrivateMessage> messagePage = dao.getAllFromUser(ObjectsFactory.getUser("UserFrom", "mail1@mail.com"),
+                pageRequest);
+        assertEquals(messagePage.getContent().size(), pageSize, "Incorrect count of message in one page.");
+        assertEquals(messagePage.getTotalElements(), totalSize, "Incorrect total count.");
+        assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
     }
 
     @Test

@@ -67,4 +67,7 @@
              and pm.status = :status
              and pm.read = :read]]>
     </query>
+    <query name="getCountUserSentPm">
+        <![CDATA[SELECT count(*) FROM PrivateMessage pm WHERE pm.userFrom = :userFrom ORDER BY creationDate DESC]]>
+    </query>
 </hibernate-mapping>

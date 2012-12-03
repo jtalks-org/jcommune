@@ -17,6 +17,7 @@ package org.jtalks.jcommune.service;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -39,9 +40,13 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
     /**
      * Get all outgoing messages from the current user.
      *
-     * @return the list of messages
+     * @param page          page number for needed messages.
+     * @param pagingEnabled if {@code true} then it returns messages for one page,
+     *                      otherwise it return all messages for current user.
+     * @return object with messages for one page and pagination information.
+     *         Note that may be all messages for current user.
      */
-    List<PrivateMessage> getOutboxForCurrentUser();
+    Page<PrivateMessage> getOutboxForCurrentUser(int page, boolean pagingEnabled);
 
     /**
      * Send the private message to the user.
