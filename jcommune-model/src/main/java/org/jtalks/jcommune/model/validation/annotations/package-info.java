@@ -14,7 +14,9 @@
  */
 /**
  *
- * Package for JSR-303(validation API) custom annotations.
- *
+ * Package for JSR-303(validation API) custom annotations. They are used by Hibernate and Spring MVC to validate
+ * objects. From time to time we need to create our custom annotations that are placed inside of this package.
+ * Note, that most annotations will have their custom validators which are located inside of
+ * {@link org.jtalks.jcommune.model.validation.validators}.
  */
 package org.jtalks.jcommune.model.validation.annotations;
