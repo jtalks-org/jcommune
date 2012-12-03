@@ -31,6 +31,7 @@ import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 
@@ -91,6 +92,11 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
             "hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
     @Override
     public void updatePost(Post post, String postContent) {
+        Topic postTopic = post.getTopic();
+        if (postTopic.getCodeReview() != null 
+            && postTopic.getPosts().get(0).getId() == post.getId()) {
+            throw new AccessDeniedException("Update topic post in code review");
+        }
         post.setPostContent(postContent);
         post.updateModificationDate();
 

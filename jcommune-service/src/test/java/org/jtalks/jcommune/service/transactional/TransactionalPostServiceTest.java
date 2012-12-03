@@ -28,6 +28,7 @@ import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -42,6 +43,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.security.access.AccessDeniedException;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -122,7 +124,7 @@ public class TransactionalPostServiceTest {
     }
 
     @Test
-    void updatePost() throws NotFoundException {
+    public void testUpdatePost() throws NotFoundException {
         String newBody = "new body";
         Topic topic = new Topic(user, "title");
         Post post = new Post(user, "");
@@ -139,6 +141,20 @@ public class TransactionalPostServiceTest {
         verify(notificationService).topicChanged(topic);
 
         verify(postDao).update(post);
+    }
+    
+    @Test(expectedExceptions=AccessDeniedException.class)
+    void testUpdateFirstPostInCodeReview() throws NotFoundException {
+        Topic topic = new Topic(user, "title");
+        topic.setCodeReview(new CodeReview());
+        Post post = new Post(user, "");
+        topic.addPost(post);
+        post.setId(POST_ID);
+        topic.addPost(post);
+        when(postDao.isExist(POST_ID)).thenReturn(true);
+        when(postService.get(POST_ID)).thenReturn(post);
+
+        postService.updatePost(post, null);
     }
 
     @Test
