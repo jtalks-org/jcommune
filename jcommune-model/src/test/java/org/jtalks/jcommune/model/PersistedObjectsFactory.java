@@ -15,8 +15,10 @@
 package org.jtalks.jcommune.model;
 
 import org.hibernate.Session;
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.CodeReview;
+import org.jtalks.jcommune.model.entity.CodeReviewComment;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Poll;
@@ -141,7 +143,11 @@ public final class PersistedObjectsFactory {
     }
 
     public static JCUser getDefaultUser() {
-        JCUser user = new JCUser("user", "email@user.org", "user");
+        return getUser("user", "email@user.org");
+    }
+    
+    public static JCUser getUser(String username, String mail) {
+        JCUser user = new JCUser(username, mail, "user");
         persist(user);
         return user;
     }
@@ -151,9 +157,36 @@ public final class PersistedObjectsFactory {
         CodeReview review = new CodeReview();
         topic.setCodeReview(review);
         review.setTopic(topic);        
-        session.update(topic);
-        session.flush();
+        persist(topic);
         return topic;
+    }
+    
+    /**
+     * Create code review with two comments and persist it to session
+     * @return persisted code review entity
+     */
+    public static CodeReview getDefaultCodeReview() {
+        CodeReview review = new CodeReview();
+        
+        List<CodeReviewComment> comments = new ArrayList<CodeReviewComment>();
+        CodeReviewComment comment1 = new CodeReviewComment();
+        comment1.setAuthor(getUser("user1", "mail1@mail.ru"));
+        comment1.setBody("Comment1 body");
+        comment1.setLineNumber(1);
+        comment1.setCreationDate(new DateTime(1));
+        comments.add(comment1);
+        
+        CodeReviewComment comment2 = new CodeReviewComment();
+        comment2.setAuthor(getUser("user2", "mail2@mail.ru"));
+        comment2.setBody("Comment2 body");
+        comment2.setLineNumber(2);
+        comment2.setCreationDate(new DateTime(2));
+        comments.add(comment2);
+        
+        review.setComments(comments);
+        
+        persist(review);
+        return review;
     }
 
     public static void createViewUnreadPostsInBranch() {
