@@ -27,7 +27,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = BbCodeNestingValidator.class)
 
 /**
- * Annotation is for valid nesting bb code
+ * Constraint annotation for limiting maximum level of BB-code nesting
  */
 public @interface BbCodeNesting {
 
@@ -42,4 +42,10 @@ public @interface BbCodeNesting {
      * Payload, not used here
      */
     Class<? extends Payload>[] payload() default {};
+
+    /**
+     * maximum level of BB-code nesting
+     */
+    int maxNestingValue() default 10;
+
 }

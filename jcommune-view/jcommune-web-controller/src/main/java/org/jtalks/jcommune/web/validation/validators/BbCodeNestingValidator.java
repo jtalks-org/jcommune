@@ -26,7 +26,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Checked nesting bb code level (MAX_NESTING)
+ * Checked nesting bb code level (maxNestingValue)
  */
 public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting,String>{
 
@@ -34,7 +34,7 @@ public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting
 
     private UserService userService;
 
-    private static final int MAX_NESTING = 10;
+    private int maxNestingValue;
 
     /**
      * Constructor
@@ -50,7 +50,7 @@ public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting
      */
     @Override
     public void initialize(BbCodeNesting constraintAnnotation) {
-        //we don't have any parameters
+        maxNestingValue = constraintAnnotation.maxNestingValue();
     }
 
     /**
@@ -62,7 +62,7 @@ public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting
     }
 
     /**
-     * Checked nesting bb code level (MAX_NESTING)
+     * Checked nesting bb code level (maxNestingValue)
      * @param text text with bb code
      * @return allowed or not allowed
      */
@@ -78,9 +78,9 @@ public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting
             }else{
                 count++;
             }
-            if(MAX_NESTING<count || (MAX_NESTING*-1)>count){
-                LOGGER.warn("Possible attack: Too deep bb-code nesting. " +
-                        "User UUID: "+userService.getCurrentUser().getUuid());
+            if(maxNestingValue <count || (-maxNestingValue)>count){
+                LOGGER.warn("Possible attack: Too deep bb-code nesting. ",
+                        "User UUID: ",userService.getCurrentUser().getUuid());
                 return false;
             }
         }
