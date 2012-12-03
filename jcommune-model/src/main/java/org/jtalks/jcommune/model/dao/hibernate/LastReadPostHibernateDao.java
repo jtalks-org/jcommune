@@ -66,6 +66,7 @@ public class LastReadPostHibernateDao extends AbstractHibernateChildRepository<L
         deletedEntities
                 .addSynchronizedEntityClass(LastReadPost.class)
                 .setParameter("user", forWho.getId())
+                .setParameter("branch", branch.getId())
                 .setCacheable(false)
                 .executeUpdate();
 

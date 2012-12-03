@@ -125,6 +125,7 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
         deletedEntities
                 .addSynchronizedEntityClass(LastReadPost.class)
                 .setParameter("user", user.getId())
+                .setParameter("branch", topics.get(0).getBranch().getId())
                 .setCacheable(false)
                 .executeUpdate();
         SQLQuery checkDelete = (SQLQuery) session.createSQLQuery("select TOPIC_ID, " +
