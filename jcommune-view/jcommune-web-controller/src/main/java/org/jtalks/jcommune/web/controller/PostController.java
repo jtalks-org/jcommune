@@ -24,6 +24,7 @@ import org.jtalks.jcommune.web.dto.PostDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -165,6 +166,9 @@ public class PostController {
     @RequestMapping(method = RequestMethod.GET, value = "/posts/new")
     public ModelAndView addPost(@RequestParam(TOPIC_ID) Long topicId) throws NotFoundException {
         Topic answeringTopic = topicFetchService.get(topicId);
+        if (answeringTopic.getCodeReview() != null) {
+            throw new AccessDeniedException("Add post for code review");
+        }
         return new ModelAndView("answer")
                 .addObject("topic", answeringTopic)
                 .addObject(TOPIC_ID, topicId)

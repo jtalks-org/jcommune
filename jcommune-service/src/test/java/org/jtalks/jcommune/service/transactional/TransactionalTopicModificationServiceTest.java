@@ -40,6 +40,7 @@ import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -461,6 +462,14 @@ public class TransactionalTopicModificationServiceTest {
         verify(topicDao).update(topic);
         verify(notificationService).topicChanged(topic);
     }
+    
+    @Test(expectedExceptions=AccessDeniedException.class)
+    void testUpdateTopicCodeReview() throws NotFoundException {
+        Topic topic = new Topic(user, "title");
+        topic.setCodeReview(new CodeReview());
+
+        topicService.updateTopic(topic, null, false);
+    }
 
     @Test
     public void testMoveTopic() throws NotFoundException {
@@ -529,6 +538,13 @@ public class TransactionalTopicModificationServiceTest {
         
         assertTrue(topic.isClosed());
         verify(topicDao).update(topic);
+    }
+    
+    @Test(expectedExceptions=AccessDeniedException.class)
+    public void testCloseCodeReviewTopic() {
+        Topic topic = this.createTopic();
+        topic.setCodeReview(new CodeReview());
+        topicService.closeTopic(topic);
     }
 
     @Test

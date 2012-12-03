@@ -249,6 +249,9 @@ public class TransactionalTopicModificationService implements TopicModificationS
             "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OWN_POSTS') or " +
             "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
     public void updateTopic(Topic topic, Poll poll, boolean notifyOnAnswers) {
+        if (topic.getCodeReview() != null) {
+            throw new AccessDeniedException("Update code review topic");
+        }
         Post post = topic.getFirstPost();
         post.updateModificationDate();
         this.createOrUpdatePoll(poll, topic);
@@ -378,6 +381,9 @@ public class TransactionalTopicModificationService implements TopicModificationS
     @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.CLOSE_TOPICS')")
     @Override
     public void closeTopic(Topic topic) {
+        if (topic.getCodeReview() != null) {
+            throw new AccessDeniedException("Close for code review");
+        }
         topic.setClosed(true);
         dao.update(topic);
     }
