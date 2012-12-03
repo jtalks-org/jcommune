@@ -250,7 +250,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
             "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
     public void updateTopic(Topic topic, Poll poll, boolean notifyOnAnswers) {
         if (topic.getCodeReview() != null) {
-            throw new AccessDeniedException("Update code review topic");
+            throw new AccessDeniedException("It is not allowed to edit Code Review!");
         }
         Post post = topic.getFirstPost();
         post.updateModificationDate();
