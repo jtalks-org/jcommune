@@ -14,25 +14,13 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import java.util.List;
-
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.CodeReview;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Poll;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.BranchLastPostService;
-import org.jtalks.jcommune.service.PollService;
-import org.jtalks.jcommune.service.SubscriptionService;
-import org.jtalks.jcommune.service.TopicFetchService;
-import org.jtalks.jcommune.service.TopicModificationService;
-import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.slf4j.Logger;
@@ -41,6 +29,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+
+import java.util.List;
 
 
 /**
@@ -243,12 +233,18 @@ public class TransactionalTopicModificationService implements TopicModificationS
     
     /**
      * {@inheritDoc}
+     * @throws AccessDeniedException besides other reasons, always throws this when Code Review is edited because it
+     *         shouldn't be possible to edit it. More details on requirements can be found here
+     *         <a href="http://jtalks.org/display/jcommune/1.1+Larks">here</a>.
      */
     @Override
     @PreAuthorize("hasPermission(#topic.id, 'TOPIC', 'GeneralPermission.WRITE') and " +
             "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OWN_POSTS') or " +
             "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
     public void updateTopic(Topic topic, Poll poll, boolean notifyOnAnswers) {
+        if (topic.getCodeReview() != null) {
+            throw new AccessDeniedException("It is not allowed to edit Code Review!");
+        }
         Post post = topic.getFirstPost();
         post.updateModificationDate();
         this.createOrUpdatePoll(poll, topic);
@@ -378,6 +374,9 @@ public class TransactionalTopicModificationService implements TopicModificationS
     @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.CLOSE_TOPICS')")
     @Override
     public void closeTopic(Topic topic) {
+        if (topic.getCodeReview() != null) {
+            throw new AccessDeniedException("Close for code review");
+        }
         topic.setClosed(true);
         dao.update(topic);
     }

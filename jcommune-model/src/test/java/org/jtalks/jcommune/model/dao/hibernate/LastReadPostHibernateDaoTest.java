@@ -87,54 +87,26 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
     public void testMarkAllRead() {
         List<Topic> topics = PersistedObjectsFactory.createAndSaveTopicListWithPosts(10);
         JCUser user = PersistedObjectsFactory.getDefaultUser();
-
+        //records of posts in topics
         Map<Long, Integer> readPosts = new HashMap<Long, Integer>();
+        //records in database about read topic
         Map<Long, Integer> resultOfInserts = new HashMap<Long, Integer>();
-        Map<Long, Integer> resultOfGetTopics = new HashMap<Long, Integer>();
 
         //check mark as read
-        SQLQuery insertQuery = (SQLQuery) session.getNamedQuery("markAllTopicsRead");
-        insertQuery.setCacheable(false);
-
-        for (Topic tp : topics) {
-            Integer indexReadPosts = tp.getPosts().size() - 1;
-            insertQuery.setParameter("uuid", UUID.randomUUID().toString())
-                    .setParameter("user", user.getId())
-                    .setParameter("lrpi", indexReadPosts)
-                    .setParameter("topic", tp.getId())
-                    .executeUpdate();
-            readPosts.put(tp.getId(), indexReadPosts);
-        }
-
-        session.flush();
-
-        SQLQuery checkInsert = (SQLQuery) session.createSQLQuery("select TOPIC_ID, " +
-                "LAST_READ_POST_INDEX FROM LAST_READ_POSTS where USER_ID = :user");
-        checkInsert.setParameter("user", user.getId());
-        List<Object[]> resultCheckInsert = checkInsert.list();
-
-        for (Object[] record : resultCheckInsert) {
-            resultOfInserts.put(new Long(record[0].toString()), new Integer(record[1].toString()));
-        }
+        markAllTopicsASRead(topics, user, readPosts, resultOfInserts);
 
         Assert.assertEquals(resultOfInserts, readPosts);
 
         //check delete record about read posts for user
+        Assert.assertTrue(checkDeleteRecords(topics, user).isEmpty());
+    }
 
-        SQLQuery deletedEntities = (SQLQuery) session.getNamedQuery("deleteAllMarksReadToUser");
-        deletedEntities
-                .addSynchronizedEntityClass(LastReadPost.class)
-                .setParameter("user", user.getId())
-                .setCacheable(false)
-                .executeUpdate();
-        SQLQuery checkDelete = (SQLQuery) session.createSQLQuery("select TOPIC_ID, " +
-                "LAST_READ_POST_INDEX FROM LAST_READ_POSTS where USER_ID = :user");
-        checkDelete.setParameter("user", user.getId());
-        List<Object[]> resultCheckDelete = checkDelete.list();
-
-        Assert.assertTrue(resultCheckDelete.isEmpty());
-
-        //check get topics of branch
+    @Test
+    public void testGetTopicAndCountOfPostsInBranch() {
+        List<Topic> topics = PersistedObjectsFactory.createAndSaveTopicListWithPosts(10);
+        //records of posts in topics
+        Map<Long, Integer> actualCountOfPosts = getTopicAndCountOfPostsFromBranch(topics);
+        Map<Long, Integer> resultOfGetTopics = new HashMap<Long, Integer>();
         List<Object[]> resultCheckGetTopics = session.getNamedQuery("getTopicAndCountOfPostsInBranch")
                 .setParameter("branch", topics.get(0).getBranch().getId())
                 .setCacheable(false)
@@ -144,7 +116,28 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
             resultOfGetTopics.put(new Long(record[0].toString()), new Integer(record[1].toString()));
         }
 
-        Assert.assertEquals(resultOfGetTopics, readPosts);
+        Assert.assertEquals(resultOfGetTopics, actualCountOfPosts);
+    }
+
+    @Test
+    public void testMarkAllReadInTwoBranches() {
+        JCUser user = PersistedObjectsFactory.getDefaultUser();
+        List<Topic> topicsOfFirstBranch = PersistedObjectsFactory.createAndSaveTopicListWithPosts(10);
+        List<Topic> topicsOfSecondBranch = PersistedObjectsFactory.createAndSaveTopicListWithPosts(10);
+        //records of posts in topics
+        Map<Long, Integer> readPostsOfFirstBranch = new HashMap<Long, Integer>();
+        Map<Long, Integer> readPostsOfSecondBranch = new HashMap<Long, Integer>();
+        //records in database about read topic
+        Map<Long, Integer> resultOfInsertsOfFirstBranch = new HashMap<Long, Integer>();
+        Map<Long, Integer> resultOfInsertsOfSecondBranch = new HashMap<Long, Integer>();
+
+        markAllTopicsASRead(topicsOfFirstBranch, user, readPostsOfFirstBranch, resultOfInsertsOfFirstBranch);
+        markAllTopicsASRead(topicsOfSecondBranch, user, readPostsOfSecondBranch, resultOfInsertsOfSecondBranch);
+        //concatenate  results from first and second branches
+        resultOfInsertsOfFirstBranch.putAll(resultOfInsertsOfSecondBranch);
+        readPostsOfFirstBranch.putAll(readPostsOfSecondBranch);
+
+        Assert.assertEquals(resultOfInsertsOfFirstBranch, readPostsOfFirstBranch);
     }
 
     /*===== Specific methods =====*/
@@ -169,5 +162,60 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
 
         Assert.assertEquals(actual.getId(), expected.getId(),
                 "Found incorrect last read post.");
+    }
+
+    private void markAllTopicsASRead(List<Topic> topics, JCUser user, Map<Long, Integer> readPosts, Map<Long, Integer> resultOfInserts) {
+        SQLQuery insertQuery = (SQLQuery) session.getNamedQuery("markAllTopicsRead");
+        insertQuery.setCacheable(false);
+
+        for (Topic tp : topics) {
+            Integer indexReadPosts = tp.getPosts().size() - 1;
+            insertQuery.setParameter("uuid", UUID.randomUUID().toString())
+                    .setParameter("user", user.getId())
+                    .setParameter("lrpi", indexReadPosts)
+                    .setParameter("topic", tp.getId())
+                    .executeUpdate();
+            readPosts.put(tp.getId(), indexReadPosts);
+        }
+
+        session.flush();
+
+        SQLQuery checkInsert = (SQLQuery) session.createSQLQuery("select TOPIC_ID, " +
+                "LAST_READ_POST_INDEX FROM LAST_READ_POSTS where TOPIC_ID IN (select TOPIC_ID from TOPIC where " +
+                "BRANCH_ID=:branch) and USER_ID = :user");
+        checkInsert.setParameter("user", user.getId());
+        checkInsert.setParameter("branch", topics.get(0).getBranch().getId());
+        List<Object[]> resultCheckInsert = checkInsert.list();
+
+        for (Object[] record : resultCheckInsert) {
+            resultOfInserts.put(new Long(record[0].toString()), new Integer(record[1].toString()));
+        }
+    }
+
+    private List<Object[]> checkDeleteRecords(List<Topic> topics, JCUser user) {
+        SQLQuery deletedEntities = (SQLQuery) session.getNamedQuery("deleteAllMarksReadToUser");
+        deletedEntities
+                .addSynchronizedEntityClass(LastReadPost.class)
+                .setParameter("user", user.getId())
+                .setParameter("branch", topics.get(0).getBranch().getId())
+                .setCacheable(false)
+                .executeUpdate();
+        SQLQuery checkDelete = (SQLQuery) session.createSQLQuery("select TOPIC_ID, " +
+                "LAST_READ_POST_INDEX FROM LAST_READ_POSTS where TOPIC_ID IN (select TOPIC_ID from TOPIC where " +
+                "BRANCH_ID=:branch) and USER_ID = :user");
+        checkDelete.setParameter("user", user.getId());
+        checkDelete.setParameter("branch", topics.get(0).getBranch().getId());
+        List<Object[]> resultCheckDelete = checkDelete.list();
+
+        return checkDelete.list();
+    }
+
+    private Map<Long, Integer> getTopicAndCountOfPostsFromBranch(List<Topic> topics) {
+        Map<Long, Integer> result = new HashMap<Long, Integer>();
+        for (Topic topic : topics) {
+            //second parameter it's index of last post
+            result.put(topic.getId(), topic.getPostCount() - 1);
+        }
+        return result;
     }
 }
