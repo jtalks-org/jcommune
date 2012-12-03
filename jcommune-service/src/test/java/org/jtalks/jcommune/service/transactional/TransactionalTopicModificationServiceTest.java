@@ -464,7 +464,7 @@ public class TransactionalTopicModificationServiceTest {
     }
     
     @Test(expectedExceptions=AccessDeniedException.class)
-    void testUpdateTopicCodeReview() throws NotFoundException {
+    void shouldBeImpossibleToUpdateCodeReview() throws NotFoundException {
         Topic topic = new Topic(user, "title");
         topic.setCodeReview(new CodeReview());
 

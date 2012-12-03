@@ -28,12 +28,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -162,12 +157,15 @@ public class PostController {
      * @param topicId the id of the topic for the answer
      * @return answering {@code ModelAndView} or redirect to the login page
      * @throws NotFoundException when topic not found
+     * @throws AccessDeniedException besides other reasons, always throws this when Code Review is edited because it
+     *         shouldn't be possible to edit it. More details on requirements can be found here
+     *         <a href="http://jtalks.org/display/jcommune/1.1+Larks">here</a>.
      */
     @RequestMapping(method = RequestMethod.GET, value = "/posts/new")
     public ModelAndView addPost(@RequestParam(TOPIC_ID) Long topicId) throws NotFoundException {
         Topic answeringTopic = topicFetchService.get(topicId);
         if (answeringTopic.getCodeReview() != null) {
-            throw new AccessDeniedException("Add post for code review");
+            throw new AccessDeniedException("It is not possible to add posts to code review except the initial one!");
         }
         return new ModelAndView("answer")
                 .addObject("topic", answeringTopic)
