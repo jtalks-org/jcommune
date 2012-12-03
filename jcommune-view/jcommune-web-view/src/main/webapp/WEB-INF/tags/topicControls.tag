@@ -5,14 +5,17 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+
 <%--Users with this grant can post even in closed topics.--%>
 <c:set var="hasCloseTopicPermission" value="false"/>
-<jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
+<c:if test='${topic.codeReview == null}'>
+    <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
                       permission='BranchPermission.CLOSE_TOPICS'>
-    <c:set var="hasCloseTopicPermission" value="true"/>
-</jtalks:hasPermission>
+        <c:set var="hasCloseTopicPermission" value="true"/>
+    </jtalks:hasPermission>
+</c:if>
 <%--User can post either if the topic is open, or he has a permission to close/open it--%>
-<c:if test="${!topic.closed || hasCloseTopicPermission}">
+<c:if test="${(!topic.closed || hasCloseTopicPermission) && topic.codeReview == null}">
     <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
                           permission='BranchPermission.CREATE_POSTS'>
         <a id="new-topic-btn" class="btn btn-primary"
@@ -22,6 +25,7 @@
         </a>
     </jtalks:hasPermission>
 </c:if>
+
 <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
                       permission='BranchPermission.MOVE_TOPICS'>
                <span class="topicId" id="${topic.id}">
@@ -30,8 +34,8 @@
                </a>
                </span>
 </jtalks:hasPermission>
-<jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
-                      permission='BranchPermission.CLOSE_TOPICS'>
+
+<c:if test='${topic.codeReview == null && hasCloseTopicPermission}'>
     <c:choose>
         <c:when test="${topic.closed}">
             <a name="open_topic" href="${pageContext.request.contextPath}/topics/${topic.id}/open" class="btn">
@@ -44,4 +48,4 @@
             </a>
         </c:otherwise>
     </c:choose>
-</jtalks:hasPermission>
+</c:if>

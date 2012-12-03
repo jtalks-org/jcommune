@@ -130,8 +130,13 @@
     <%-- List of posts. --%>
     <c:forEach var="post" items="${postsPage.content}" varStatus="i">
         <%-- Post --%>
-        <c:set var="postClass" value=""/>
+        <c:set var="isFirstPost" value="false"/>
         <c:if test="${postsPage.number == 1 && i.index == 0}">
+            <c:set var="isFirstPost" value="true"/>
+        </c:if>
+        
+        <c:set var="postClass" value=""/>
+        <c:if test="${isFirstPost}">
             <c:set var="postClass" value="script-first-post"/>
         </c:if>
         <div class="post ${postClass}">
@@ -150,7 +155,7 @@
                             <div class="btn-group">
 
                                 <c:choose>
-                                    <c:when test="${postsPage.number == 1 && i.index == 0}">
+                                    <c:when test="${isFirstPost}">
                                         <%-- first post - urls to delete & edit topic --%>
                                         <c:set var="delete_url"
                                                value="${pageContext.request.contextPath}/topics/${topic.id}"/>
@@ -172,17 +177,20 @@
                                     <%--Edit post button start --%>
                                     <c:set var="isEditButtonAvailable" value="false"/>
                                     <%--  An ability to edit posts for author of this posts --%>
-                                    <c:if test='${userId == post.userCreated.id}'>
+                                    <c:if test='${userId == post.userCreated.id && topic.codeReview == null}'>
                                         <jtalks:hasPermission targetId="${topic.branch.id}" targetType="BRANCH"
                                                               permission="BranchPermission.EDIT_OWN_POSTS">
                                             <c:set var="isEditButtonAvailable" value="true"/>
                                         </jtalks:hasPermission>
                                     </c:if>
                                     <%--  An ability to edit posts for administrators and branch moderators --%>
-                                    <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
+                                    <c:if test='${topic.codeReview == null}'>
+                                        <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
                                                           permission='BranchPermission.EDIT_OTHERS_POSTS'>
-                                        <c:set var="isEditButtonAvailable" value="true"/>
-                                    </jtalks:hasPermission>
+                                        
+                                            <c:set var="isEditButtonAvailable" value="true"/>                                       
+                                        </jtalks:hasPermission>
+                                    </c:if>
                                     <c:if test="${isEditButtonAvailable}">
                                         <a id="edit_button" href="${edit_url}" rel="${topic.branch.id}"
                                            class="btn btn-mini" title="<spring:message code='label.tips.edit_post'/>">
@@ -198,7 +206,7 @@
                                     <c:set var="isDeleteButtonAvailable" value="false"/>
                                     <c:choose>
                                         <%--Controls for the first post, they affect topic--%>
-                                        <c:when test="${postsPage.number == 1 && i.index == 0}">
+                                        <c:when test="${isFirstPost}">
                                             <jtalks:hasPermission targetId="${topic.branch.id}" targetType="BRANCH"
                                                                   permission="BranchPermission.DELETE_OWN_POSTS">
                                                 <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
@@ -244,13 +252,15 @@
                                    href="${pageContext.request.contextPath}/posts/${post.id}">
                                     <i class="icon-link"></i>
                                 </a>
-                                <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
+                                <c:if test='${topic.codeReview == null}'>
+                                    <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
                                                       permission='BranchPermission.CREATE_POSTS'>
-                                    <a class="btn btn-mini" href='javascript:quote(${post.id},${topic.branch.id});'
-                                       title="<spring:message code='label.tips.quote_post'/>">
-                                        <i class="icon-quote"></i><spring:message code="label.quotation"/>
-                                    </a>
-                                </jtalks:hasPermission>
+                                        <a class="btn btn-mini" href='javascript:quote(${post.id},${topic.branch.id});'
+                                            title="<spring:message code='label.tips.quote_post'/>">
+                                            <i class="icon-quote"></i><spring:message code="label.quotation"/>
+                                        </a>
+                                    </jtalks:hasPermission>
+                                </c:if>
                                 <a class="btn btn-mini" href="#"
                                    title="<spring:message code='label.tips.up'/>">&#8657;</a>
                             </div>
