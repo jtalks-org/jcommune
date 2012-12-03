@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model;
 
+import org.apache.commons.lang.math.RandomUtils;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.Section;
@@ -21,6 +22,7 @@ import org.jtalks.jcommune.model.entity.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author Kirill Afonin
@@ -37,6 +39,10 @@ public final class ObjectsFactory {
         return getUser("username", "username@mail.com");
     }
 
+    public static JCUser getRandomUser() {
+        return getUser("username" + RandomUtils.nextInt(10000), RandomUtils.nextInt(10000) + "username@mail.com");
+    }
+
     public static JCUser getUser(String username, String email) {
         JCUser newUser = new JCUser(username, email, "password");
         newUser.setFirstName("first name");
@@ -50,14 +56,14 @@ public final class ObjectsFactory {
     }
 
     public static Branch getDefaultBranch(Long id) {
-        Branch newBranch = new Branch("branch name"+id, "branch description"+id);
+        Branch newBranch = new Branch("branch name" + id, "branch description" + id);
         newBranch.setId(id);
         return newBranch;
     }
 
-    public static List<Branch> getDefaultBranchList(){
+    public static List<Branch> getDefaultBranchList() {
         List<Branch> branches = new ArrayList<Branch>();
-        for(Long i=1L; i<=3; i++){
+        for (Long i = 1L; i <= 3; i++) {
             branches.add(getDefaultBranch(i));
         }
         return branches;
@@ -98,28 +104,28 @@ public final class ObjectsFactory {
         return contact;
     }
 
-    public static List<Group> getDefaultGroupList(){
+    public static List<Group> getDefaultGroupList() {
         List<Group> groups = new ArrayList<Group>();
-        Group group =  new Group("Administrators");
+        Group group = new Group("Administrators");
         group.setId(13L);
         groups.add(group);
-        group =  new Group("Banned Users");
+        group = new Group("Banned Users");
         group.setId(12L);
         groups.add(group);
-        group =  new Group("Registered Users");
+        group = new Group("Registered Users");
         group.setId(11L);
         groups.add(group);
         return groups;
     }
-    
+
     public static SimplePage getDefaultSimplePage() {
         return new SimplePage("name", "content", "pathName");
     }
-    
+
     public static CodeReview getDefaultCodeReview() {
         CodeReview review = new CodeReview();
         review.setId(1L);
-        
+
         List<CodeReviewComment> comments = new ArrayList<CodeReviewComment>();
         CodeReviewComment comment1 = new CodeReviewComment();
         comment1.setId(1L);
@@ -128,7 +134,7 @@ public final class ObjectsFactory {
         comment1.setLineNumber(1);
         comment1.setCreationDate(new DateTime(1));
         comments.add(comment1);
-        
+
         CodeReviewComment comment2 = new CodeReviewComment();
         comment2.setId(2L);
         comment2.setAuthor(getDefaultUser());
@@ -136,9 +142,9 @@ public final class ObjectsFactory {
         comment2.setLineNumber(2);
         comment2.setCreationDate(new DateTime(2));
         comments.add(comment2);
-        
+
         review.setComments(comments);
-        
+
         return review;
     }
 }
