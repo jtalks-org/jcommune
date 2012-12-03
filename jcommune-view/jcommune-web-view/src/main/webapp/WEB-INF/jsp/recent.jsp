@@ -31,7 +31,7 @@
             <div class="span3">
                 <h3><spring:message code="label.recent"/></h3>
             </div>
-        
+
             <div class="span9">
                 <div class="pagination pull-right forum-pagination">
                     <ul>
@@ -40,10 +40,10 @@
                 </div>
             </div>
         </div>
-        
-        
+
+
     <%-- Topics table --%>
-    <table id="topics-table" class="table table-striped table-bordered">     
+    <table id="topics-table" class="table table-striped table-bordered">
         <c:choose>
             <c:when test="${!(empty topicsPage.content)}">
                 <thead>
@@ -57,7 +57,7 @@
 			            <th class="posts-views forum-posts-view-header"><spring:message code="label.branch.header.posts_views"/></th>
 			            <th class="latest-by forum-latest-by-header"><spring:message code="label.branch.header.lastMessage"/></th>
 			        </tr>
-			    </thead> 
+			    </thead>
 			    <tbody>
                 <c:forEach var="topic" items="${topicsPage.content}">
                     <tr>
@@ -68,22 +68,21 @@
                         </sec:authorize>
                         <td>
                             <c:if test="${topic.hasPoll}">
-                                <a class="red-style"
-                                       href="${pageContext.request.contextPath}/topics/${topic.id}">
-                                        [POLL]</a>
+                               <span class="sticky"><spring:message
+                                       code="label.marked_as_poll"/> </span>
                             </c:if>
-                            
+
                             <a href="${pageContext.request.contextPath}/topics/${topic.id}">
                                 <c:out value="${topic.title}"/>
                             </a>
                             <br/>
-                            <sub class="created-by">by 
+                            <sub class="created-by">by
                                 <a href='${pageContext.request.contextPath}/users/${topic.topicStarter.id}"'>
                                     <c:out value="${topic.topicStarter.username}"/>
                                 </a>
-                            </sub>            
+                            </sub>
                         </td>
-                    
+
                         <td class="author-col">
                             <a href='${pageContext.request.contextPath}/users/${topic.topicStarter.id}'
                                 title="<spring:message code="label.topic.header.author"/>">
@@ -95,18 +94,18 @@
                                 <c:out value="${topic.branch.name}"/>
                             </a>
                         </td>
-                        
+
                         <td class="posts-views">
                             <spring:message code="label.section.header.messages"/>: <span class='test-posts-count'><c:out value="${topic.postCount}"/></span><br />
                             <spring:message code="label.branch.header.views"/>: <span class='test-views'><c:out value="${topic.views}"/></span>
                         </td>
-                            
+
                         <td class="latest-by">
                             <i class="icon-calendar"></i>
                             <a class="date" href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}">
                                 <jtalks:format value="${topic.lastPost.creationDate}"/>
                             </a>
-                            <p><spring:message code="label.topic.last_post_by"/> 
+                            <p><spring:message code="label.topic.last_post_by"/>
                                 <a href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.id}">
                                     <c:out value="${topic.lastPost.userCreated.username}"/>
                                 </a>
@@ -127,7 +126,7 @@
             </c:otherwise>
         </c:choose>
     </table>
-        
+
     <div class="row-fluid upper-pagination forum-pagination-container">
         <div class="span12">
             <div class="pagination pull-right forum-pagination">

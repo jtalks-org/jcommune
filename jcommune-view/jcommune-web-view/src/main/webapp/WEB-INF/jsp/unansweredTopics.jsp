@@ -80,9 +80,8 @@
                                     </span>
                             </c:if>
                             <c:if test="${item.hasPoll}">
-                                <a class="red-style"
-                                   href="${pageContext.request.contextPath}/topics/${item.id}">
-                                    [POLL]</a>
+                               <span class="sticky"><spring:message
+                                       code="label.marked_as_poll"/> </span>
                             </c:if>
                             <a href="${pageContext.request.contextPath}/topics/${item.id}">
                                 <c:out value="${item.title}"/>
