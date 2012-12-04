@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Poll;
+import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.*;
@@ -39,8 +40,10 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.mockito.Matchers.any;
@@ -374,7 +377,8 @@ public class TopicControllerTest {
         Topic topic = createTopic();
         dto.setBodyText(TOPIC_CONTENT);
         Poll poll = new Poll();
-        poll.setPollItemsValue("123");
+        List<PollItem> pollItems = Arrays.asList(new PollItem("123"));
+        poll.addPollOptions(pollItems);
         topic.setPoll(poll);
         dto.setTopic(topic);
         return dto;

@@ -124,12 +124,15 @@ public final class PersistedObjectsFactory {
 
     public static Poll createDefaultVoting() {
         Topic topic = getDefaultTopic();
-        Poll voting = new Poll("New voting");
-        voting.setPollItemsValue("item1\nitem2\nitem3\n");
-        topic.setPoll(voting);
-        voting.setTopic(topic);
+        Poll poll = new Poll("New voting");
+        List<PollItem> pollItems = new ArrayList<PollItem>();
+        pollItems.add(new PollItem("item1"));
+        pollItems.add(new PollItem("item2"));
+        pollItems.add(new PollItem("item3"));
+        topic.setPoll(poll);
+        poll.setTopic(topic);
         persist(topic);
-        return voting;
+        return poll;
     }
 
     public static PollItem createDefaultVotingOption() {
