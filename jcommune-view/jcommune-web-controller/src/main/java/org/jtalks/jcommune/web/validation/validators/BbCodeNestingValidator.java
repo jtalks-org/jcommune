@@ -73,17 +73,17 @@ public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting
         Pattern pattern = Pattern.compile("\\[[a-zA-Z_0-9=]*\\]|\\[/[a-zA-Z_0-9=]*\\]");
         Matcher matcher = pattern.matcher(text);
         int count=0;
-        String teg = "";
+        String tag = "";
         while (matcher.find()){
-            teg = matcher.group();
-            if(teg.contains("/")){
+            tag = matcher.group();
+            if(tag.contains("/")){
                 count--;
             }else{
                 count++;
             }
-            if(maxNestingValue <count || (-maxNestingValue)>count){
-                LOGGER.warn("Possible attack: Too deep bb-code nesting. ",
-                        "User UUID: ",userService.getCurrentUser().getUuid());
+            if(Math.abs(count) > maxNestingValue) {
+                LOGGER.warn("Possible attack: Too deep bb-code nesting. "
+                        + "User UUID: {}", userService.getCurrentUser().getUuid());
                 return false;
             }
         }

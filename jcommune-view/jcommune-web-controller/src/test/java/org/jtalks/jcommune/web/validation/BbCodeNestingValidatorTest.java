@@ -18,6 +18,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeNesting;
 import org.jtalks.jcommune.web.validation.validators.BbCodeNestingValidator;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import static org.mockito.Mockito.mock;
@@ -42,26 +43,37 @@ public class BbCodeNestingValidatorTest {
         bbCodeNestingValidator.initialize(bbCodeNesting);
     }
 
-    @Test
-    public void testValidationFail(){
-
+    @Test(dataProvider="invalidMessages")
+    public void testValidationFail(String message){
         when(userService.getCurrentUser()).thenReturn(new JCUser("","",""));
-        String text = "[b][b][b][b][b][color][b][b][b][b][u]";
-        assertFalse(bbCodeNestingValidator.isValid(text, null));
-        text = "[b][b][b][b][b][b][b][b][b][b][b][b][color][b][/b][/b][/b][u]";
-        assertFalse(bbCodeNestingValidator.isValid(text, null));
+        assertFalse(bbCodeNestingValidator.isValid(message, null));
     }
 
+    @Test(dataProvider="validMessages")
+    public void testValidationSuccess(String message){
+        assertTrue(bbCodeNestingValidator.isValid(message,null));
+    }
+    
     @Test
-    public void testValidationSuccess(){
-        text = "[b][/b][b][/b][u][/u][u][/u][u][u][u][/u][/u][/u]";
-        assertTrue(bbCodeNestingValidator.isValid(text,null));
-        text = "[b][/b][b][/b][u][/u][u]text[/u][u][u][u][/u][/u][/u]text";
-        assertTrue(bbCodeNestingValidator.isValid(text,null));
-        text = "text";
-        assertTrue(bbCodeNestingValidator.isValid(text,null));
-        text = "[*][*][*][*][*][*][*][*][*][*][*][*][*][*][*]";
-        assertTrue(bbCodeNestingValidator.isValid(text,null));
+    public void testTextIsNull() {
         assertTrue(bbCodeNestingValidator.isValid(null,null));
+    }
+    
+    @DataProvider
+    public String[][] validMessages() {
+        return new String[][] { // {"message"}
+                {"[b][/b][b][/b][u][/u][u][/u][u][u][u][/u][/u][/u]"},
+                {"[b][/b][b][/b][u][/u][u]text[/u][u][u][u][/u][/u][/u]text"},
+                {"text"},
+                {"[*][*][*][*][*][*][*][*][*][*][*][*][*][*][*]"}
+        };
+    }
+    
+    @DataProvider
+    public String[][] invalidMessages() {
+        return new String[][] { // {"message"}
+                {"[b][b][b][b][b][color][b][b][b][b][u]"},
+                {"[b][b][b][b][b][b][b][b][b][b][b][b][color][b][/b][/b][/b][u]"}
+        };
     }
 }
