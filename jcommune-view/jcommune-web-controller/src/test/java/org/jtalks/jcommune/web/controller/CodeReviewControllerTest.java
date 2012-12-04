@@ -52,7 +52,6 @@ import static org.testng.Assert.assertEquals;
  */
 public class CodeReviewControllerTest {
     public long BRANCH_ID = 1L;
-    private long TOPIC_ID = 1L;
     private String TOPIC_CONTENT = "content here";
     private long REVIEW_ID = 1L;
 
@@ -100,17 +99,12 @@ public class CodeReviewControllerTest {
 
     @Test
     public void testCreatePage() throws NotFoundException {
-
         //set expectations
         when(branchService.get(BRANCH_ID)).thenReturn(branch);
         when(breadcrumbBuilder.getNewTopicBreadcrumb(branch)).thenReturn(new ArrayList<Breadcrumb>());
 
         //invoke the object under test
         ModelAndView mav = controller.showNewCodeReviewPage(BRANCH_ID);
-
-        //check expectations
-        verify(branchService).get(BRANCH_ID);
-        verify(breadcrumbBuilder).getNewTopicBreadcrumb(branch);
 
         //check result
         assertViewName(mav, "codeReviewForm");
@@ -189,7 +183,7 @@ public class CodeReviewControllerTest {
     private Topic createTopic() {
         Branch branch = createBranch();
         Topic topic = new Topic(user, "Topic theme");
-        topic.setId(TOPIC_ID);
+        topic.setId(1L);//we don't care what id is set
         topic.setUuid("uuid");
         topic.setBranch(branch);
         topic.addPost(new Post(user, TOPIC_CONTENT));
