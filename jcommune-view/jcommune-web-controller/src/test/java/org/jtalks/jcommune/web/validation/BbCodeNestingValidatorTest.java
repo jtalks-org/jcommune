@@ -18,24 +18,24 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeNesting;
 import org.jtalks.jcommune.web.validation.validators.BbCodeNestingValidator;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import static org.apache.commons.lang.StringUtils.repeat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 public class BbCodeNestingValidatorTest {
-
     private BbCodeNestingValidator bbCodeNestingValidator;
-
     private UserService userService;
-
     @BbCodeNesting
     private String text;
 
-    public BbCodeNestingValidatorTest() throws NoSuchFieldException {
+    @BeforeMethod
+    public void initMocks() throws NoSuchFieldException {
         userService = mock(UserService.class);
         bbCodeNestingValidator = new BbCodeNestingValidator(userService);
         BbCodeNesting bbCodeNesting = (BbCodeNesting) BbCodeNestingValidatorTest.class
@@ -43,35 +43,48 @@ public class BbCodeNestingValidatorTest {
         bbCodeNestingValidator.initialize(bbCodeNesting);
     }
 
-    @Test(dataProvider="invalidMessages")
-    public void testValidationFail(String message){
-        when(userService.getCurrentUser()).thenReturn(new JCUser("","",""));
+    @Test(dataProvider = "tooDeepNestingMessages")
+    public void testValidationFail(String message) {
+        when(userService.getCurrentUser()).thenReturn(new JCUser("", "", ""));
         assertFalse(bbCodeNestingValidator.isValid(message, null));
     }
 
-    @Test(dataProvider="validMessages")
-    public void testValidationSuccess(String message){
-        assertTrue(bbCodeNestingValidator.isValid(message,null));
+    @Test(dataProvider = "validMessages")
+    public void testValidationSuccess(String message) {
+        assertTrue(bbCodeNestingValidator.isValid(message, null));
     }
-    
+
     @Test
-    public void testTextIsNull() {
-        assertTrue(bbCodeNestingValidator.isValid(null,null));
+    public void onlyOpeningBbCodesShouldResultInError() {
+        when(userService.getCurrentUser()).thenReturn(new JCUser("", "", ""));
+        assertFalse(bbCodeNestingValidator.isValid(repeat("[b]", 100), null));
     }
-    
+
+    @Test
+    public void onlyClosingBbCodesShouldResultInError() {
+        when(userService.getCurrentUser()).thenReturn(new JCUser("", "", ""));
+        assertFalse(bbCodeNestingValidator.isValid(repeat("[/b]", 100), null));
+    }
+
+    @Test
+    public void nullAndEmptyStringShouldBeTreatedAsValid() {
+        assertTrue(bbCodeNestingValidator.isValid(null, null));
+        assertTrue(bbCodeNestingValidator.isValid("", null));
+    }
+
     @DataProvider
     public String[][] validMessages() {
-        return new String[][] { // {"message"}
+        return new String[][]{ // {"message"}
                 {"[b][/b][b][/b][u][/u][u][/u][u][u][u][/u][/u][/u]"},
                 {"[b][/b][b][/b][u][/u][u]text[/u][u][u][u][/u][/u][/u]text"},
                 {"text"},
                 {"[*][*][*][*][*][*][*][*][*][*][*][*][*][*][*]"}
         };
     }
-    
+
     @DataProvider
-    public String[][] invalidMessages() {
-        return new String[][] { // {"message"}
+    public String[][] tooDeepNestingMessages() {
+        return new String[][]{ // {"message"}
                 {"[b][b][b][b][b][color][b][b][b][b][u]"},
                 {"[b][b][b][b][b][b][b][b][b][b][b][b][color][b][/b][/b][/b][u]"}
         };

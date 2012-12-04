@@ -26,14 +26,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Checked nesting bb code level (maxNestingValue)
+ * Checked nesting bb code level (maxNestingValue). This is required because our BB-code processor uses recursion for
+ * parsing and if we have a deep nesting, we'll run into StackOverflow error. Thus before posting something, we check
+ * whether the nesting of BB-codes is not too deep.
  */
-public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting,String>{
-
+public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting,String> {
     private static final Logger LOGGER = LoggerFactory.getLogger(BbCodeNestingValidator.class);
-
     private UserService userService;
-
     private int maxNestingValue;
 
     /**
@@ -58,7 +57,7 @@ public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting
      */
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if(value==null){
+        if (value == null) {
             return true;
         }
         return checkNestingLevel(value);
@@ -66,22 +65,22 @@ public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting
 
     /**
      * Checked nesting bb code level (maxNestingValue)
+     *
      * @param text text with bb code
      * @return allowed or not allowed
      */
-    private boolean checkNestingLevel(String text){
+    private boolean checkNestingLevel(String text) {
         Pattern pattern = Pattern.compile("\\[[a-zA-Z_0-9=]*\\]|\\[/[a-zA-Z_0-9=]*\\]");
         Matcher matcher = pattern.matcher(text);
-        int count=0;
-        String tag = "";
-        while (matcher.find()){
-            tag = matcher.group();
-            if(tag.contains("/")){
+        int count = 0;
+        while (matcher.find()) {
+            String tag = matcher.group();
+            if (tag.contains("/")) {
                 count--;
-            }else{
+            } else {
                 count++;
             }
-            if(Math.abs(count) > maxNestingValue) {
+            if (Math.abs(count) > maxNestingValue) {
                 LOGGER.warn("Possible attack: Too deep bb-code nesting. "
                         + "User UUID: {}", userService.getCurrentUser().getUuid());
                 return false;
