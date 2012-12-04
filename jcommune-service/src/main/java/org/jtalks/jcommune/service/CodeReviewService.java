@@ -15,6 +15,8 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.CodeReview;
+import org.jtalks.jcommune.model.entity.CodeReviewComment;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 /**
  * The interface to manipulate with code reviews
@@ -22,5 +24,7 @@ import org.jtalks.jcommune.model.entity.CodeReview;
  * @author Vyacheslav Mishcheryakov
  */
 public interface CodeReviewService extends EntityService<CodeReview> {
+
+    CodeReviewComment addComment(Long reviewId, int lineNumber, String body) throws NotFoundException;
 
 }

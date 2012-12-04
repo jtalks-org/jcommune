@@ -60,4 +60,12 @@ public class CodeReview extends Entity {
         this.comments = comments;
     }
     
+    /**
+     * Add comment to this review
+     * @param comment comment to add
+     */
+    public void addComment(CodeReviewComment comment) {
+        comments.add(comment);
+    }
+    
 }

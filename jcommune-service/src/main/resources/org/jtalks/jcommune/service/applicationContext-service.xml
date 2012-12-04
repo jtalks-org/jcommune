@@ -200,6 +200,7 @@
     
     <bean id="codeReviewService" class="org.jtalks.jcommune.service.transactional.TransactionalCodeReviewService">
         <constructor-arg ref="codeReviewDao"/>
+        <constructor-arg ref="userService"/>
     </bean>
 
     <!--

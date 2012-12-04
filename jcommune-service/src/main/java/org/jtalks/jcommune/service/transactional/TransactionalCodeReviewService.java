@@ -14,9 +14,14 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.CodeReviewDao;
 import org.jtalks.jcommune.model.entity.CodeReview;
+import org.jtalks.jcommune.model.entity.CodeReviewComment;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.CodeReviewService;
+import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 /**
  * The implementation of (@link {@link CodeReviewService}
@@ -26,8 +31,29 @@ import org.jtalks.jcommune.service.CodeReviewService;
 public class TransactionalCodeReviewService extends AbstractTransactionalEntityService<CodeReview, CodeReviewDao> 
         implements CodeReviewService {
 
-    TransactionalCodeReviewService(CodeReviewDao dao) {
+    private UserService userService;
+    
+    TransactionalCodeReviewService(CodeReviewDao dao,
+                                   UserService userService) {
         super(dao);
+        this.userService = userService;
+    }
+    
+    @Override
+    public CodeReviewComment addComment(Long reviewId, int lineNumber, String body) throws NotFoundException {
+        CodeReview review = get(reviewId);
+        JCUser currentUser = userService.getCurrentUser(); 
+        
+        CodeReviewComment comment = new CodeReviewComment();
+        comment.setLineNumber(lineNumber);
+        comment.setBody(body);
+        comment.setCreationDate(new DateTime(System.currentTimeMillis()));
+        comment.setAuthor(currentUser);
+        
+        review.addComment(comment);
+        getDao().update(review);
+        
+        return comment;
     }
 
 }
