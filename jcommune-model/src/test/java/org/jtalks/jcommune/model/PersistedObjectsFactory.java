@@ -131,6 +131,7 @@ public final class PersistedObjectsFactory {
         pollItems.add(new PollItem("item1"));
         pollItems.add(new PollItem("item2"));
         pollItems.add(new PollItem("item3"));
+        poll.setPollItems(pollItems);
         topic.setPoll(poll);
         poll.setTopic(topic);
         persist(topic);

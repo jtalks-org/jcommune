@@ -24,7 +24,7 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 import org.jtalks.jcommune.model.entity.Poll;
-import org.jtalks.jcommune.model.validation.validators.PollItemsWithoutDuplicatesValidator;
+import org.jtalks.jcommune.model.validation.validators.PollItemsSizeValidator;
 
 /**
  * 
@@ -34,7 +34,7 @@ import org.jtalks.jcommune.model.validation.validators.PollItemsWithoutDuplicate
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Constraint(validatedBy = PollItemsWithoutDuplicatesValidator.class)
+@Constraint(validatedBy = PollItemsSizeValidator.class)
 public @interface PollItemsSize {
     /**
      * Resource bundle code for error message

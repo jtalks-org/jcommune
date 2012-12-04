@@ -30,7 +30,7 @@ import org.springframework.util.CollectionUtils;
  * @author Anuar_Nurmakanov
  *
  */
-public class PollFilledCompleteletValidator implements ConstraintValidator<PollFilledCompletely, Poll> {
+public class PollFilledCompletelyValidator implements ConstraintValidator<PollFilledCompletely, Poll> {
 
     /**
      * {@inheritDoc}

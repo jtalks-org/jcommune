@@ -14,8 +14,10 @@
  */
 package org.jtalks.jcommune.model.validation.annotations;
 
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.TYPE;
+
 import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -23,22 +25,22 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-import org.jtalks.jcommune.model.validation.validators.PollFilledCompleteletValidator;
+import org.jtalks.jcommune.model.validation.validators.PollFilledCompletelyValidator;
 
 /**
  * 
  * @author Anuar_Nurmakanov
  *
  */
-@Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
+@Target({TYPE, ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Constraint(validatedBy = PollFilledCompleteletValidator.class)
+@Constraint(validatedBy = PollFilledCompletelyValidator.class)
 public @interface PollFilledCompletely {
     /**
      * Resource bundle code for error message
      */
-    String message() default "{poll.items.size}";
+    String message() default "{defaultPoll.message}";
 
     /**
      * Groups settings for this validation constraint
