@@ -14,11 +14,15 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import org.hibernate.Query;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateParentRepository;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 import java.util.List;
 
@@ -39,13 +43,26 @@ public class PrivateMessageHibernateDao extends
      * {@inheritDoc}
      */
     @Override
-    public List<PrivateMessage> getAllFromUser(JCUser userFrom) {
+    public Page<PrivateMessage> getAllFromUser(JCUser userFrom, JCommunePageRequest pageRequest) {
+        Number totalCount = (Number) getSession()
+                .getNamedQuery("getCountUserSentPm")
+                .setParameter("userFrom", userFrom)
+                .uniqueResult();
+
         PrivateMessageStatus[] statuses = {PrivateMessageStatus.DRAFT, PrivateMessageStatus.DELETED_FROM_OUTBOX};
-        return getSession().getNamedQuery("getAllFromUser")
+        Query query = getSession().getNamedQuery("getAllFromUser")
                 .setCacheable(true)
                 .setParameterList(STATUSES, statuses)
-                .setEntity("user", userFrom)
-                .list();
+                .setEntity("user", userFrom);
+
+        if (pageRequest.isPagingEnabled()) {
+            query.setFirstResult(pageRequest.getIndexOfFirstItem());
+            query.setMaxResults(pageRequest.getPageSize());
+        }
+
+        List<PrivateMessage> messages = (List<PrivateMessage>) query.list();
+
+        return new PageImpl<PrivateMessage>(messages, pageRequest, totalCount.intValue());
     }
 
     /**
