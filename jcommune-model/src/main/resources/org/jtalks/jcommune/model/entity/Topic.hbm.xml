@@ -122,7 +122,8 @@ This might be tuned further in the future if the page size itself changes.-->
 
     <!--Mark topic as read for user-->
     <sql-query name="markAllTopicsRead">
-        INSERT INTO LAST_READ_POSTS(UUID,USER_ID,LAST_READ_POST_INDEX,TOPIC_ID) VALUES(:uuid,:user,:lrpi,:topic)
+        INSERT INTO LAST_READ_POSTS(UUID,USER_ID,LAST_READ_POST_INDEX,TOPIC_ID)
+        VALUES(:uuid,:user,:lastPostIndex,:topic)
     </sql-query>
 
     <!--Mark all topics unread for user-->
