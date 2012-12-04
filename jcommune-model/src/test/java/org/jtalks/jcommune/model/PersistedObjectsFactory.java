@@ -82,11 +82,14 @@ public final class PersistedObjectsFactory {
      * @return saved pm list.
      */
     public static List<PrivateMessage> createAndSavePrivateMessageList(int size) {
+        JCUser userTo = persist(ObjectsFactory.getUser("UserTo", "mail2@mail.com"));
+        JCUser userFrom = persist(ObjectsFactory.getUser("UserFrom", "mail1@mail.com"));
         List<PrivateMessage> messages = new ArrayList<PrivateMessage>(size);
         for (int i = 0; i < size; i++) {
-            PrivateMessage pm = getDefaultPrivateMessage();
+            PrivateMessage pm = new PrivateMessage(userTo, userFrom,
+                    "Message title", "Private message body");
             messages.add(pm);
-            session.save(pm);
+            persist(pm);
         }
         return messages;
     }

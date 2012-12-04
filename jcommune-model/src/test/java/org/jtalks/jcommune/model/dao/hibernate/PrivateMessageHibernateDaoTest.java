@@ -145,7 +145,9 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
     }
 
 
-    @Test void testGettAllFromUserPagingEnabled() {
+    //@Test(enabled = false)
+    @Test
+    public void testGettAllFromUserPagingEnabled() {
         int totalSize = 50;
         int pageCount = 2;
         int pageSize = totalSize/pageCount;
