@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollItem;
@@ -31,6 +32,7 @@ import org.mockito.Mock;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
@@ -265,6 +267,16 @@ public class TopicControllerTest {
         editTopicVerification(topic);
 
         editTopicAssertions(mav);
+    }
+    
+    @Test(expectedExceptions=AccessDeniedException.class)
+    public void editTopicPageForCodeReview() throws NotFoundException {
+        Topic topic = this.createTopic();
+        topic.setCodeReview(new CodeReview());
+
+        editTopicStubs(topic);
+        
+        controller.editTopicPage(TOPIC_ID);
     }
 
     private void editTopicStubs(Topic topic) throws NotFoundException {

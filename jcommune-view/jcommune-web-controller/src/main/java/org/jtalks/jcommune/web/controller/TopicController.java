@@ -27,6 +27,7 @@ import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -233,6 +234,9 @@ public class TopicController {
     @RequestMapping(value = "/topics/{topicId}/edit", method = RequestMethod.GET)
     public ModelAndView editTopicPage(@PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
         Topic topic = topicFetchService.get(topicId);
+        if (topic.getCodeReview() != null) {
+            throw new AccessDeniedException("Edit page for code review");
+        }
         TopicDto topicDto = new TopicDto(topic);
         JCUser currentUser = userService.getCurrentUser();
         if (topic.userSubscribed(currentUser)) {

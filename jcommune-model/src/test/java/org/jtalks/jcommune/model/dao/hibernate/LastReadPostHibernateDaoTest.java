@@ -14,11 +14,6 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -35,6 +30,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author Evgeniy Naumenko
@@ -84,57 +84,46 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
     }
 
     @Test
-    public void testMarkAllRead() {
+    public void testMarkAsReadTopicsToUser() {
         List<Topic> topics = PersistedObjectsFactory.createAndSaveTopicListWithPosts(10);
         JCUser user = PersistedObjectsFactory.getDefaultUser();
+        //records of posts in topics
+        Map<Long, Integer> listCountPostsToTopics = new HashMap<Long, Integer>();
+        //records in database about read topic
+        Map<Long, Integer> actualCountPostsToTopics = new HashMap<Long, Integer>();
 
-        Map<Long, Integer> readPosts = new HashMap<Long, Integer>();
-        Map<Long, Integer> resultOfInserts = new HashMap<Long, Integer>();
-        Map<Long, Integer> resultOfGetTopics = new HashMap<Long, Integer>();
+        listCountPostsToTopics = markAllTopicsASRead(topics, user);
+        actualCountPostsToTopics = getActualListCountPostsToTopics(topics, user);
 
-        //check mark as read
-        SQLQuery insertQuery = (SQLQuery) session.getNamedQuery("markAllTopicsRead");
-        insertQuery.setCacheable(false);
+        Assert.assertEquals(actualCountPostsToTopics, listCountPostsToTopics);
+    }
 
-        for (Topic tp : topics) {
-            Integer indexReadPosts = tp.getPosts().size() - 1;
-            insertQuery.setParameter("uuid", UUID.randomUUID().toString())
-                    .setParameter("user", user.getId())
-                    .setParameter("lrpi", indexReadPosts)
-                    .setParameter("topic", tp.getId())
-                    .executeUpdate();
-            readPosts.put(tp.getId(), indexReadPosts);
-        }
-
-        session.flush();
-
-        SQLQuery checkInsert = (SQLQuery) session.createSQLQuery("select TOPIC_ID, " +
-                "LAST_READ_POST_INDEX FROM LAST_READ_POSTS where USER_ID = :user");
-        checkInsert.setParameter("user", user.getId());
-        List<Object[]> resultCheckInsert = checkInsert.list();
-
-        for (Object[] record : resultCheckInsert) {
-            resultOfInserts.put(new Long(record[0].toString()), new Integer(record[1].toString()));
-        }
-
-        Assert.assertEquals(resultOfInserts, readPosts);
-
-        //check delete record about read posts for user
-
+    @Test
+    public void testDeleteMarksTopicsToUser() {
+        List<Topic> topics = PersistedObjectsFactory.createAndSaveTopicListWithPosts(10);
+        JCUser user = PersistedObjectsFactory.getDefaultUser();
         SQLQuery deletedEntities = (SQLQuery) session.getNamedQuery("deleteAllMarksReadToUser");
         deletedEntities
                 .addSynchronizedEntityClass(LastReadPost.class)
                 .setParameter("user", user.getId())
+                .setParameter("branch", topics.get(0).getBranch().getId())
                 .setCacheable(false)
                 .executeUpdate();
         SQLQuery checkDelete = (SQLQuery) session.createSQLQuery("select TOPIC_ID, " +
-                "LAST_READ_POST_INDEX FROM LAST_READ_POSTS where USER_ID = :user");
+                "LAST_READ_POST_INDEX FROM LAST_READ_POSTS where TOPIC_ID IN (select TOPIC_ID from TOPIC where " +
+                "BRANCH_ID=:branch) and USER_ID = :user");
         checkDelete.setParameter("user", user.getId());
-        List<Object[]> resultCheckDelete = checkDelete.list();
+        checkDelete.setParameter("branch", topics.get(0).getBranch().getId());
+        //check delete record about read posts for user
+        Assert.assertTrue(checkDelete.list().isEmpty());
+    }
 
-        Assert.assertTrue(resultCheckDelete.isEmpty());
-
-        //check get topics of branch
+    @Test
+    public void testGetTopicAndCountOfPostsInBranch() {
+        List<Topic> topics = PersistedObjectsFactory.createAndSaveTopicListWithPosts(10);
+        //records of posts in topics
+        Map<Long, Integer> actualCountOfPosts = getTopicAndCountOfPostsInBranch(topics);
+        Map<Long, Integer> resultOfGetTopics = new HashMap<Long, Integer>();
         List<Object[]> resultCheckGetTopics = session.getNamedQuery("getTopicAndCountOfPostsInBranch")
                 .setParameter("branch", topics.get(0).getBranch().getId())
                 .setCacheable(false)
@@ -144,7 +133,31 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
             resultOfGetTopics.put(new Long(record[0].toString()), new Integer(record[1].toString()));
         }
 
-        Assert.assertEquals(resultOfGetTopics, readPosts);
+        Assert.assertEquals(resultOfGetTopics, actualCountOfPosts);
+    }
+
+    @Test
+    public void testMarkAllReadToUserInTwoBranches() {
+        JCUser user = PersistedObjectsFactory.getDefaultUser();
+        List<Topic> topicsOfFirstBranch = PersistedObjectsFactory.createAndSaveTopicListWithPosts(10);
+        List<Topic> topicsOfSecondBranch = PersistedObjectsFactory.createAndSaveTopicListWithPosts(10);
+        //records of posts in topics
+        Map<Long, Integer> listCountPostsToTopicsInFBranch = new HashMap<Long, Integer>();
+        Map<Long, Integer> listCountPostsToTopicsInSBranch = new HashMap<Long, Integer>();
+        //records in database about read topic
+        Map<Long, Integer> actualCountPostsToTopicsInFBranch = new HashMap<Long, Integer>();
+        Map<Long, Integer> actualCountPostsToTopicsInSBranch = new HashMap<Long, Integer>();
+
+        listCountPostsToTopicsInFBranch = markAllTopicsASRead(topicsOfFirstBranch, user);
+        listCountPostsToTopicsInSBranch = markAllTopicsASRead(topicsOfSecondBranch, user);
+        actualCountPostsToTopicsInFBranch = getActualListCountPostsToTopics(topicsOfFirstBranch, user);
+        actualCountPostsToTopicsInSBranch = getActualListCountPostsToTopics(topicsOfSecondBranch, user);
+
+        //concatenate  results from first and second branches
+        listCountPostsToTopicsInFBranch.putAll(listCountPostsToTopicsInSBranch);
+        actualCountPostsToTopicsInFBranch.putAll(actualCountPostsToTopicsInSBranch);
+
+        Assert.assertEquals(listCountPostsToTopicsInFBranch, actualCountPostsToTopicsInFBranch);
     }
 
     /*===== Specific methods =====*/
@@ -169,5 +182,67 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
 
         Assert.assertEquals(actual.getId(), expected.getId(),
                 "Found incorrect last read post.");
+    }
+
+    /**
+     * Method marks topics as read to user
+     *
+     * @param topics List of topics to mark
+     * @param user   User for which threads are marked as read
+     * @return list of count posts for each topic, for verification
+     */
+    private Map<Long, Integer> markAllTopicsASRead(List<Topic> topics, JCUser user) {
+        SQLQuery insertQuery = (SQLQuery) session.getNamedQuery("markAllTopicsRead");
+        insertQuery.setCacheable(false);
+        Map<Long, Integer> listCountPostsToTopics = new HashMap<Long, Integer>();
+
+        for (Topic tp : topics) {
+            Integer indexReadPosts = tp.getPosts().size() - 1;
+            insertQuery.setParameter("uuid", UUID.randomUUID().toString())
+                    .setParameter("user", user.getId())
+                    .setParameter("lastPostIndex", indexReadPosts)
+                    .setParameter("topic", tp.getId())
+                    .executeUpdate();
+            listCountPostsToTopics.put(tp.getId(), indexReadPosts);
+        }
+        return listCountPostsToTopics;
+    }
+
+    /**
+     * Method returns the data read topics that are stored in the database
+     *
+     * @param topics List of topics, which marked as read to user
+     * @param user   User for which threads are marked as read
+     * @return List of count posts for each topic, for verification, stored in the database
+     */
+    private Map<Long, Integer> getActualListCountPostsToTopics(List<Topic> topics, JCUser user) {
+        Map<Long, Integer> listCountPostsToTopics = new HashMap<Long, Integer>();
+
+        SQLQuery checkInsert = (SQLQuery) session.createSQLQuery("select TOPIC_ID, " +
+                "LAST_READ_POST_INDEX FROM LAST_READ_POSTS where TOPIC_ID IN (select TOPIC_ID from TOPIC where " +
+                "BRANCH_ID=:branch) and USER_ID = :user");
+        checkInsert.setParameter("user", user.getId());
+        checkInsert.setParameter("branch", topics.get(0).getBranch().getId());
+        List<Object[]> resultCheckInsert = checkInsert.list();
+
+        for (Object[] record : resultCheckInsert) {
+            listCountPostsToTopics.put(new Long(record[0].toString()), new Integer(record[1].toString()));
+        }
+        return listCountPostsToTopics;
+    }
+
+    /**
+     * Method returns the data for each topics, which marked as read
+     *
+     * @param topics List of topics in branch
+     * @return List of count posts for each topic
+     */
+    private Map<Long, Integer> getTopicAndCountOfPostsInBranch(List<Topic> topics) {
+        Map<Long, Integer> result = new HashMap<Long, Integer>();
+        for (Topic topic : topics) {
+            //second parameter it's index of last post
+            result.put(topic.getId(), topic.getPostCount() - 1);
+        }
+        return result;
     }
 }

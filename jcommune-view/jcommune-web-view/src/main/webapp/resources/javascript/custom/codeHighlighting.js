@@ -21,25 +21,36 @@ $(document).ready(function () {
     prettyPrint(function() {
 		var hasCodeReview = $('#has-code-review').val();
 		if (hasCodeReview == 'true') {
-		 
-			var codeReviewId = $('#codeReviewId').val();
-			$.ajax({
-				url: baseUrl + '/reviews/' + codeReviewId + '/json',
-				type: "GET",
-				success: function(data) {
-					var comments = data.result.comments;
-					for (var i = 0; i < comments.length; i++) {
-						$('.script-first-post ol.linenums li:nth-child(' + comments[i].lineNumber + ')')
-							.append(CodeHighlighting.getCommentHtml(comments[i]);
-					}
-				}
-			});
+			CodeHighlighting.displayReviewComments();
 		}
 			
 	});
 });
 
-CodeHighlighting.getCommentHtml(comment) {
+/**
+ * Get review comments for this topic from server and display them
+ */
+CodeHighlighting.displayReviewComments = function() {
+	var codeReviewId = $('#codeReviewId').val();
+	$.ajax({
+		url: baseUrl + '/reviews/' + codeReviewId + '/json',
+		type: "GET",
+		success: function(data) {
+			var comments = data.result.comments;
+			for (var i = 0; i < comments.length; i++) {
+				$('.script-first-post ol.linenums li:nth-child(' + comments[i].lineNumber + ')')
+					.append(CodeHighlighting.getCommentHtml(comments[i]));
+			}
+		}
+	});
+}
+
+/**
+ * Build HTML piece for review comment 
+ * @param Code review comment 
+ * @return div (string) with comment data
+ */
+CodeHighlighting.getCommentHtml = function(comment) {
 	var result = 
 		'<div class="review-container"> '
 			+ '<div class="review-avatar">'

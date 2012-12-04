@@ -66,6 +66,7 @@ public class LastReadPostHibernateDao extends AbstractHibernateChildRepository<L
         deletedEntities
                 .addSynchronizedEntityClass(LastReadPost.class)
                 .setParameter("user", forWho.getId())
+                .setParameter("branch", branch.getId())
                 .setCacheable(false)
                 .executeUpdate();
 
@@ -82,7 +83,7 @@ public class LastReadPostHibernateDao extends AbstractHibernateChildRepository<L
         for (Object[] o : topicsOfBranch) {
             insertQuery.setParameter("uuid", UUID.randomUUID().toString())
                     .setParameter("user", forWho.getId())
-                    .setParameter("lrpi", o[1])
+                    .setParameter("lastPostIndex", o[1])
                     .setParameter("topic", o[0])
                     .executeUpdate();
         }

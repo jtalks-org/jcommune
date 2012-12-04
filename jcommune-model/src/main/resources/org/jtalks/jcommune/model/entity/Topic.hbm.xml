@@ -35,8 +35,8 @@
         <property name="announcement" column="ANNOUNCEMENT" not-null="true"/>
         <property name="closed" column="CLOSED" not-null="true"/>
 
-      <!--By experimenting figured out that 10 is the best batch size when it comes to opening the branch page
-      This might be tuned further in the future if the page size itself changes.-->
+        <!--By experimenting figured out that 10 is the best batch size when it comes to opening the branch page
+This might be tuned further in the future if the page size itself changes.-->
         <list name="posts" cascade="all-delete-orphan" batch-size="10">
             <cache usage="nonstrict-read-write"/>
             <key column="TOPIC_ID" foreign-key="FK_TOPIC"/>
@@ -53,12 +53,12 @@
         impossible to have additional column for POLL_ID in TOPIC, thus it's impossible to have lazy loading unless every
         TOPIC has POLL which is not our case.-->
         <many-to-one name="poll" class="Poll" column="POLL_ID"
-                     foreign-key="TOPIC_POLL_FK" cascade="all" />
+                     foreign-key="TOPIC_POLL_FK" cascade="all"/>
         <!--This is an emulation of OTO association. It's actually OTO, but expressed via MTO because in OTO schema it's
         impossible to have additional column for CODE_REVIEW_ID in TOPIC, thus it's impossible to have lazy loading unless every
         TOPIC has CODE_REVIEW which is not our case.-->
         <many-to-one name="codeReview" class="CodeReview" column="CODE_REVIEW_ID"
-                     foreign-key="FK_TOPIC_CODE_REVIEW" cascade="all" />
+                     foreign-key="FK_TOPIC_CODE_REVIEW" cascade="all"/>
 
         <set name="subscribers" table="TOPIC_SUBSCRIPTIONS">
             <key column="TOPIC_ID"/>
@@ -122,12 +122,14 @@
 
     <!--Mark topic as read for user-->
     <sql-query name="markAllTopicsRead">
-        INSERT INTO LAST_READ_POSTS(UUID,USER_ID,LAST_READ_POST_INDEX,TOPIC_ID) VALUES(:uuid,:user,:lrpi,:topic)
+        INSERT INTO LAST_READ_POSTS(UUID,USER_ID,LAST_READ_POST_INDEX,TOPIC_ID)
+        VALUES(:uuid,:user,:lastPostIndex,:topic)
     </sql-query>
 
     <!--Mark all topics unread for user-->
     <sql-query name="deleteAllMarksReadToUser">
-        DELETE FROM LAST_READ_POSTS where USER_ID=:user
+        DELETE FROM LAST_READ_POSTS where TOPIC_ID IN (select TOPIC_ID from TOPIC where BRANCH_ID=:branch) and
+        USER_ID=:user
     </sql-query>
 
 

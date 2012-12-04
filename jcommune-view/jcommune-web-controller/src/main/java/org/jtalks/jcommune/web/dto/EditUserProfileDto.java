@@ -22,10 +22,7 @@ import org.jtalks.common.validation.annotations.Email;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
-import org.jtalks.jcommune.web.validation.annotations.PageSize;
-import org.jtalks.jcommune.web.validation.annotations.ChangedEmail;
-import org.jtalks.jcommune.web.validation.annotations.ChangedPassword;
-import org.jtalks.jcommune.web.validation.annotations.Matches;
+import org.jtalks.jcommune.web.validation.annotations.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -53,6 +50,7 @@ public class EditUserProfileDto {
     @Size(max = User.USERNAME_LASTNAME_MAX_LENGTH, message = "{user.first_and_last_name.illegal_length}")
     private String lastName;
     @Size(max = JCUser.MAX_SIGNATURE_SIZE, message = "{validation.signature.length}")
+    @BbCodeNesting
     private String signature;
     private String currentUserPassword;
     @Size(min = User.PASSWORD_MIN_LENGTH, max = User.PASSWORD_MAX_LENGTH)

@@ -19,6 +19,7 @@ import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.validation.annotations.BbCodeAwareSize;
+import org.jtalks.jcommune.web.validation.annotations.BbCodeNesting;
 
 import javax.validation.Valid;
 
@@ -36,6 +37,7 @@ public class TopicDto {
 
     @NotBlank
     @BbCodeAwareSize(min = Post.MIN_LENGTH, max = Post.MAX_LENGTH)
+    @BbCodeNesting
     private String bodyText;
 
     private boolean notifyOnAnswers;
