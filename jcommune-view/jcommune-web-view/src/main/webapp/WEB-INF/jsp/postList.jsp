@@ -35,6 +35,8 @@
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/codeHighlighting.js"
             type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/permissionService.js"
+            type="text/javascript"></script>
 </head>
 <body>
 

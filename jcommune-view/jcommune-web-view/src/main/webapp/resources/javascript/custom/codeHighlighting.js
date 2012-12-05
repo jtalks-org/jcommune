@@ -25,42 +25,10 @@ $(document).ready(function () {
 		if (hasCodeReview == 'true') {
 			CodeHighlighting.displayReviewComments();
 			
-			$('.script-first-post').on('click', 'ol.linenums li', function() {			    
-				var addCommentForm = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID);
-				if (addCommentForm.length == 0) {
-					var index = $(this).index();	
-					$(this).append(CodeHighlighting.getAddCommentForm(index + 1));
-				}								
-			});
+			PermissionService.hasPermission(1, 'BRANCH', 
+				'BranchPermission.LEAVE_COMMENTS_IN_CODE_REVIEW', 
+				CodeHighlighting.setupAddCommentFormHandlers);
 			
-			$('.script-first-post').on('click', "input:button[name=submit]", function(event) {
-				event.stopPropagation();
-				var reviewId = $('#codeReviewId').val();
-				var lineNumber = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=lineNumber]').val();
-				var body = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=body]').val();
-				$.post(
-					baseUrl + '/reviews/' + reviewId + '/add-comment',
-					{lineNumber: lineNumber, body: body, id:0, authorId:0, authorUsername:""}					
-				)
-				.success(function(data) {
-					if (data.status == 'success') {
-						CodeHighlighting.removeAddCommentForm();
-						var addedComment = data.result;
-						$('.script-first-post ol.linenums li:nth-child(' + addedComment.lineNumber + ')')
-								.append(CodeHighlighting.getCommentHtml(addedComment));
-					} else {
-						 bootbox.alert('Input valid data');
-					}
-				})			
-				.error(function(data) {
-					 bootbox.alert('Error during adding comment');
-				});
-			});
-			
-			$('.script-first-post').on('click', 'input:button[name=cancel]', function(event) {
-				event.stopPropagation();
-				CodeHighlighting.removeAddCommentForm();
-			});
 		}
 			
 	});
@@ -81,6 +49,45 @@ CodeHighlighting.displayReviewComments = function() {
 					.append(CodeHighlighting.getCommentHtml(comments[i]));
 			}
 		}
+	});
+}
+
+CodeHighlighting.setupAddCommentFormHandlers = function() {
+	$('.script-first-post').on('click', 'ol.linenums li', function() {			    
+		var addCommentForm = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID);
+		if (addCommentForm.length == 0) {
+			var index = $(this).index();	
+			$(this).append(CodeHighlighting.getAddCommentForm(index + 1));
+		}								
+	});
+	
+	$('.script-first-post').on('click', "input:button[name=submit]", function(event) {
+		event.stopPropagation();
+		var reviewId = $('#codeReviewId').val();
+		var lineNumber = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=lineNumber]').val();
+		var body = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=body]').val();
+		$.post(
+			baseUrl + '/reviews/' + reviewId + '/add-comment',
+			{lineNumber: lineNumber, body: body, id:0, authorId:0, authorUsername:""}					
+		)
+		.success(function(data) {
+			if (data.status == 'success') {
+				CodeHighlighting.removeAddCommentForm();
+				var addedComment = data.result;
+				$('.script-first-post ol.linenums li:nth-child(' + addedComment.lineNumber + ')')
+						.append(CodeHighlighting.getCommentHtml(addedComment));
+			} else {
+				 bootbox.alert('Input valid data');
+			}
+		})			
+		.error(function(data) {
+			 bootbox.alert('Error during adding comment');
+		});
+	});
+	
+	$('.script-first-post').on('click', 'input:button[name=cancel]', function(event) {
+		event.stopPropagation();
+		CodeHighlighting.removeAddCommentForm();
 	});
 }
 

@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
+import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.jcommune.model.dao.CodeReviewDao;
 import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
@@ -22,6 +23,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.security.PermissionService;
 
 /**
  * The implementation of (@link {@link CodeReviewService}
@@ -32,18 +34,26 @@ public class TransactionalCodeReviewService extends AbstractTransactionalEntityS
         implements CodeReviewService {
 
     private UserService userService;
+    private PermissionService permissionService;
     
     TransactionalCodeReviewService(CodeReviewDao dao,
-                                   UserService userService) {
+                                   UserService userService,
+                                   PermissionService permissionService) {
         super(dao);
         this.userService = userService;
+        this.permissionService = permissionService;
     }
     
     @Override
     public CodeReviewComment addComment(Long reviewId, int lineNumber, String body) throws NotFoundException {
         CodeReview review = get(reviewId);
-        JCUser currentUser = userService.getCurrentUser(); 
+        JCUser currentUser = userService.getCurrentUser();
         
+        permissionService.checkPermission(
+                review.getTopic().getBranch().getId(), 
+                "BRANCH", 
+                BranchPermission.LEAVE_COMMENTS_IN_CODE_REVIEW);
+                
         CodeReviewComment comment = new CodeReviewComment();
         comment.setLineNumber(lineNumber);
         comment.setBody(body);
