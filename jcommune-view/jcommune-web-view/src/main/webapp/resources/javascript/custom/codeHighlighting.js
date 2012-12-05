@@ -25,7 +25,8 @@ $(document).ready(function () {
 		if (hasCodeReview == 'true') {
 			CodeHighlighting.displayReviewComments();
 			
-			PermissionService.hasPermission(1, 'BRANCH', 
+			var branchId = $('#branchId').val();
+			PermissionService.hasPermission(branchId, 'BRANCH', 
 				'BranchPermission.LEAVE_COMMENTS_IN_CODE_REVIEW', 
 				CodeHighlighting.setupAddCommentFormHandlers);
 			

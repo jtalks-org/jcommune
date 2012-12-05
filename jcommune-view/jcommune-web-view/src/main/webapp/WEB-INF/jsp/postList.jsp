@@ -126,6 +126,7 @@
 <c:if test="${topic.codeReview != null}">
     <input type="hidden" id="has-code-review" value="true"/>
     <input type="hidden" id="codeReviewId" value="${topic.codeReview.id}"/>
+    <input type="hidden" id="branchId" value="${topic.branch.id}"/>
 </c:if>
 
 <div>
