@@ -20,117 +20,127 @@ CodeHighlighting.ADD_COMMENT_FORM_ID = 'add-comment-form';
 
 $(document).ready(function () {
     //Code highlight
-    prettyPrint(function() {
-		var hasCodeReview = $('#has-code-review').val();
-		if (hasCodeReview == 'true') {
-			CodeHighlighting.displayReviewComments();
-			
-			var branchId = $('#branchId').val();
-			PermissionService.hasPermission(branchId, 'BRANCH', 
-				'BranchPermission.LEAVE_COMMENTS_IN_CODE_REVIEW', 
-				CodeHighlighting.setupAddCommentFormHandlers);
-			
-		}
-			
-	});
+    prettyPrint(function () {
+        var hasCodeReview = $('#has-code-review').val();
+        if (hasCodeReview == 'true') {
+            CodeHighlighting.displayReviewComments();
+
+            var branchId = $('#branchId').val();
+            PermissionService.hasPermission(branchId, 'BRANCH',
+                'BranchPermission.LEAVE_COMMENTS_IN_CODE_REVIEW',
+                CodeHighlighting.setupAddCommentFormHandlers);
+
+        }
+
+    });
 });
+
+/**
+ * Function to append commentto HTML
+ */
+CodeHighlighting.addComment = function (comment) {
+    var nextLine = $('.script-first-post ol.linenums li:nth-child(' + comment.lineNumber + ') ~ li:first');
+    if (nextLine.length > 0) {
+        nextLine.before(CodeHighlighting.getCommentHtml(comment));
+    } else {
+        $('.script-first-post ol.linenums li:nth-child(' + comment.lineNumber + ')')
+            .parent('.linenums').append(CodeHighlighting.getCommentHtml(comment))
+    }
+}
 
 /**
  * Get review comments for this topic from server and display them
  */
-CodeHighlighting.displayReviewComments = function() {
-	var codeReviewId = $('#codeReviewId').val();
-	$.ajax({
-		url: baseUrl + '/reviews/' + codeReviewId + '/json',
-		type: "GET",
-		success: function(data) {
-			var comments = data.result.comments;
-			for (var i = 0; i < comments.length; i++) {
-				$('.script-first-post ol.linenums li:nth-child(' + comments[i].lineNumber + ')')
-					.append(CodeHighlighting.getCommentHtml(comments[i]));
-			}
-		}
-	});
+CodeHighlighting.displayReviewComments = function () {
+    var codeReviewId = $('#codeReviewId').val();
+    $.ajax({
+        url:baseUrl + '/reviews/' + codeReviewId + '/json',
+        type:"GET",
+        success:function (data) {
+            var comments = data.result.comments;
+            for (var i = 0; i < comments.length; i++) {
+                CodeHighlighting.addComment(comments[i]);
+            }
+        }
+    });
 }
 
-CodeHighlighting.setupAddCommentFormHandlers = function() {
-	$('.script-first-post').on('click', 'ol.linenums li', function() {			    
-		var addCommentForm = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID);
-		if (addCommentForm.length == 0) {
-			var index = $(this).index();	
-			$(this).append(CodeHighlighting.getAddCommentForm(index + 1));
-		}								
-	});
-	
-	$('.script-first-post').on('click', "input:button[name=submit]", function(event) {
-		event.stopPropagation();
-		var reviewId = $('#codeReviewId').val();
-		var lineNumber = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=lineNumber]').val();
-		var body = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=body]').val();
-		$.post(
-			baseUrl + '/reviews/' + reviewId + '/add-comment',
-			{lineNumber: lineNumber, body: body, id:0, authorId:0, authorUsername:""}					
-		)
-		.success(function(data) {
-			if (data.status == 'success') {
-				CodeHighlighting.removeAddCommentForm();
-				var addedComment = data.result;
-				$('.script-first-post ol.linenums li:nth-child(' + addedComment.lineNumber + ')')
-						.append(CodeHighlighting.getCommentHtml(addedComment));
-			} else {
-				 bootbox.alert('Input valid data');
-			}
-		})			
-		.error(function(data) {
-			 bootbox.alert('Error during adding comment');
-		});
-	});
-	
-	$('.script-first-post').on('click', 'input:button[name=cancel]', function(event) {
-		event.stopPropagation();
-		CodeHighlighting.removeAddCommentForm();
-	});
+CodeHighlighting.setupAddCommentFormHandlers = function () {
+    $('.script-first-post').on('click', 'ol.linenums li', function () {
+        var addCommentForm = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID);
+        if (addCommentForm.length == 0) {
+            var index = $(this).index();
+            $(this).after(CodeHighlighting.getAddCommentForm(index + 1));
+        }
+    });
+
+    $('.script-first-post').on('click', "input:button[name=submit]", function (event) {
+        event.stopPropagation();
+        var reviewId = $('#codeReviewId').val();
+        var lineNumber = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=lineNumber]').val();
+        var body = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=body]').val();
+        $.post(
+            baseUrl + '/reviews/' + reviewId + '/add-comment',
+            {lineNumber:lineNumber, body:body, id:0, authorId:0, authorUsername:""}
+        )
+            .success(function (data) {
+                if (data.status == 'success') {
+                    CodeHighlighting.removeAddCommentForm();
+                    CodeHighlighting.addComment(data.result)
+                } else {
+                    bootbox.alert('Input valid data');
+                }
+            })
+            .error(function (data) {
+                bootbox.alert('Error during adding comment');
+            });
+    });
+
+    $('.script-first-post').on('click', 'input:button[name=cancel]', function (event) {
+        event.stopPropagation();
+        CodeHighlighting.removeAddCommentForm();
+    });
 }
 
 /**
- * Build HTML piece for review comment 
- * @param Code review comment 
+ * Build HTML piece for review comment
+ * @param Code review comment
  * @return div (string) with comment data
  */
-CodeHighlighting.getCommentHtml = function(comment) {
-	var result = 
-		'<div class="review-container"> '
-			+ '<div class="review-avatar">'
-				+'<img class="review-avatar-img" src="' + baseUrl + '/users/' + comment.authorId + '/avatar"/>'
-			+ '</div>'
-			+ '<div class="review-content">'
-				+ '<div class="review-header">'
-					+ '<a href="' + baseUrl + '/users/' + comment.authorId + '">' + comment.authorUsername + '</a>'
-					+ ' ' + $labelReviewSays + ': '
-				+ '</div>'
-				+ '<div class="review-body">'
-					+ comment.body
-				+ '</div>'
-			+ '</div>'
-		+ '</div>';
-	return result;
+CodeHighlighting.getCommentHtml = function (comment) {
+    var result =
+        '<div class="review-container"> '
+            + '<div class="review-avatar">'
+            + '<img class="review-avatar-img" src="' + baseUrl + '/users/' + comment.authorId + '/avatar"/>'
+            + '</div>'
+            + '<div class="review-content">'
+            + '<div class="review-header">'
+            + '<a href="' + baseUrl + '/users/' + comment.authorId + '">' + comment.authorUsername + '</a>'
+            + ' ' + $labelReviewSays + ': '
+            + '</div>'
+            + '<div class="review-body">'
+            + comment.body
+            + '</div>'
+            + '</div>'
+            + '</div>';
+    return result;
 }
 
-CodeHighlighting.getAddCommentForm = function(lineNumber) {
-	var result = 
-		'<div id="' + CodeHighlighting.ADD_COMMENT_FORM_ID + '" class="review-container">'
-			+ '<div>'
-				+ '<input type=hidden name=lineNumber value="' + lineNumber + '"/>'
-				+ '<textarea name="body"/>'
-			+ '</div>'
-			+ '<div>'
-				+ '<input type=button name=submit value="Save"/>'
-				+ '<input type=button name=cancel value="Cancel"/>'
-			+ '</div>'
-		+ '</div>';
-	return result;
+CodeHighlighting.getAddCommentForm = function (lineNumber) {
+    var result =
+        '<div id="' + CodeHighlighting.ADD_COMMENT_FORM_ID + '" class="review-container">'
+            + '<div>'
+            + '<input type=hidden name=lineNumber value="' + lineNumber + '"/>'
+            + '<textarea name="body" class="review-container-content"/>'
+            + '</div>'
+            + '<div>'
+            + '<input type=button name=submit value="Save" class="btn btn-primary review-container-controls-ok"/>'
+            + '<input type=button name=cancel value="Cancel" class="btn btn-primary review-container-controls-cancel"/>'
+            + '</div>'
+            + '</div>';
+    return result;
 }
 
-CodeHighlighting.removeAddCommentForm = function() {
-	$('#' + CodeHighlighting.ADD_COMMENT_FORM_ID).remove();
+CodeHighlighting.removeAddCommentForm = function () {
+    $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID).remove();
 }
