@@ -83,3 +83,4 @@ $labelTopicMove = '<spring:message code="label.topic.move" htmlEscape="true"/>'
 $labelTopicMoveFull = '<spring:message code="label.topic.move.full" htmlEscape="true"/>'
 
 $labelReviewSays = '<spring:message code="label.review.says" htmlEscape="true"/>'
+$labelAdd = '<spring:message code="label.add" htmlEscape="true"/>'
