@@ -116,18 +116,18 @@ CodeHighlighting.getCommentHtml = function (comment) {
     var result =
         '<div class="review-container"> '
             + '<div class="review-avatar">'
-            + '<img class="review-avatar-img" src="' + baseUrl + '/users/' + comment.authorId + '/avatar"/>'
+                + '<img class="review-avatar-img" src="' + baseUrl + '/users/' + comment.authorId + '/avatar"/>'
             + '</div>'
             + '<div class="review-content">'
-            + '<div class="review-header">'
-            + '<a href="' + baseUrl + '/users/' + comment.authorId + '">' + comment.authorUsername + '</a>'
-            + ' ' + $labelReviewSays + ': '
+                + '<div class="review-header">'
+                    + '<a href="' + baseUrl + '/users/' + comment.authorId + '">' + comment.authorUsername + '</a>'
+                    + ' ' + $labelReviewSays + ': '
+                + '</div>'
+                + '<div class="review-body">'
+                    + comment.body
+                + '</div>'
             + '</div>'
-            + '<div class="review-body">'
-            + comment.body
-            + '</div>'
-            + '</div>'
-            + '</div>';
+        + '</div>';
     return result;
 }
 
@@ -140,14 +140,14 @@ CodeHighlighting.getAddCommentForm = function (lineNumber) {
     var result =
         '<div id="' + CodeHighlighting.ADD_COMMENT_FORM_ID + '" class="review-container">'
             + '<div>'
-            + '<input type=hidden name=lineNumber value="' + lineNumber + '"/>'
-            + '<textarea name="body" class="review-container-content"/>'
+                + '<input type=hidden name=lineNumber value="' + lineNumber + '"/>'
+                + '<textarea name="body" class="review-container-content"/>'
             + '</div>'
             + '<div>'
-            + '<input type=button name=submit value="Save" class="btn btn-primary review-container-controls-ok"/>'
-            + '<input type=button name=cancel value="Cancel" class="btn btn-primary review-container-controls-cancel"/>'
+                + '<input type=button name=submit value="Save" class="btn btn-primary review-container-controls-ok"/>'
+                + '<input type=button name=cancel value="Cancel" class="btn review-container-controls-cancel"/>'
             + '</div>'
-            + '</div>';
+        + '</div>';
     return result;
 }
 
