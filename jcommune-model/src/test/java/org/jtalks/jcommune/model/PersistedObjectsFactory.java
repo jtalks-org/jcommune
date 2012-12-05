@@ -76,6 +76,23 @@ public final class PersistedObjectsFactory {
                 "Message title", "Private message body");
     }
 
+    /**
+     * Create list of private messages.
+     * @param size message number.
+     * @return saved pm list.
+     */
+    public static List<PrivateMessage> createAndSavePrivateMessageList(int size, JCUser userTo,
+                                                                       JCUser userFrom) {
+        List<PrivateMessage> messages = new ArrayList<PrivateMessage>(size);
+        for (int i = 0; i < size; i++) {
+            PrivateMessage pm = new PrivateMessage(userTo, userFrom,
+                    "Message title", "Private message body");
+            messages.add(pm);
+            persist(pm);
+        }
+        return messages;
+    }
+
     public static List<Topic> createAndSaveTopicList(int size) {
         Branch branch = ObjectsFactory.getDefaultBranch();
         JCUser user = persist(ObjectsFactory.getDefaultUser());

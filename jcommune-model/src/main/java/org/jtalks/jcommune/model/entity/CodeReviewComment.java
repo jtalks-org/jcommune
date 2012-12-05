@@ -14,10 +14,6 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.NotBlank;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
 
@@ -28,19 +24,13 @@ import org.jtalks.common.model.entity.Entity;
  */
 public class CodeReviewComment extends Entity {
 
-    private static final int BODY_MIN_LENGTH = 1;
-    
-    private static final int BODY_MAX_LENGTH = 5000;
-    
+    /** Number of commented line of code */
     private int lineNumber;
     
-    @NotNull
     private JCUser author;
     
     private DateTime creationDate;
     
-    @NotBlank
-    @Size(min = BODY_MIN_LENGTH, max = BODY_MAX_LENGTH)
     private String body;
     
     /**

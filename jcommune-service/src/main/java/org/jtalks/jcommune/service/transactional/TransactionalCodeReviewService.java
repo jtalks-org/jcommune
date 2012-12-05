@@ -14,9 +14,16 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.joda.time.DateTime;
+import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.jcommune.model.dao.CodeReviewDao;
 import org.jtalks.jcommune.model.entity.CodeReview;
+import org.jtalks.jcommune.model.entity.CodeReviewComment;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.CodeReviewService;
+import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.security.PermissionService;
 
 /**
  * The implementation of (@link {@link CodeReviewService}
@@ -26,8 +33,45 @@ import org.jtalks.jcommune.service.CodeReviewService;
 public class TransactionalCodeReviewService extends AbstractTransactionalEntityService<CodeReview, CodeReviewDao> 
         implements CodeReviewService {
 
-    TransactionalCodeReviewService(CodeReviewDao dao) {
+    private UserService userService;
+    private PermissionService permissionService;
+    
+    /**
+     * Create an instance of CodeReview entity based service
+     * @param dao               data access object, which should be able do all CRUD operations with entity. 
+     * @param userService       to get current user
+     * @param permissionService to check permission for current user ({@link org.springframework.security.access.prepost.PreAuthorize} annotation emulation)
+     */
+    public TransactionalCodeReviewService(
+                                    CodeReviewDao dao,
+                                    UserService userService,
+                                    PermissionService permissionService) {
         super(dao);
+        this.userService = userService;
+        this.permissionService = permissionService;
+    }
+    
+    @Override
+    public CodeReviewComment addComment(Long reviewId, int lineNumber, String body) 
+            throws NotFoundException {
+        CodeReview review = get(reviewId);
+        JCUser currentUser = userService.getCurrentUser();
+        
+        permissionService.checkPermission(
+                review.getTopic().getBranch().getId(), 
+                "BRANCH", 
+                BranchPermission.LEAVE_COMMENTS_IN_CODE_REVIEW);
+                
+        CodeReviewComment comment = new CodeReviewComment();
+        comment.setLineNumber(lineNumber);
+        comment.setBody(body);
+        comment.setCreationDate(new DateTime(System.currentTimeMillis()));
+        comment.setAuthor(currentUser);
+        
+        review.addComment(comment);
+        getDao().update(review);
+        
+        return comment;
     }
 
 }

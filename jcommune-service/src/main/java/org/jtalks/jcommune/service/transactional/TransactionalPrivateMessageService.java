@@ -17,6 +17,7 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
@@ -28,6 +29,7 @@ import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.UserDataCacheService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
@@ -86,9 +88,11 @@ public class TransactionalPrivateMessageService
      * {@inheritDoc}
      */
     @Override
-    public List<PrivateMessage> getOutboxForCurrentUser() {
+    public Page<PrivateMessage> getOutboxForCurrentUser(int page, boolean pagingEnabled) {
         JCUser currentUser = userService.getCurrentUser();
-        return this.getDao().getAllFromUser(currentUser);
+        JCommunePageRequest pageRequest = new JCommunePageRequest(page,
+                currentUser.getPageSize(), pagingEnabled);
+        return this.getDao().getAllFromUser(currentUser, pageRequest);
     }
 
 

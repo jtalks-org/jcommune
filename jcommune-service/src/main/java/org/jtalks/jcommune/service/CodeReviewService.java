@@ -15,6 +15,9 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.CodeReview;
+import org.jtalks.jcommune.model.entity.CodeReviewComment;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.springframework.security.access.AccessDeniedException;
 
 /**
  * The interface to manipulate with code reviews
@@ -22,5 +25,17 @@ import org.jtalks.jcommune.model.entity.CodeReview;
  * @author Vyacheslav Mishcheryakov
  */
 public interface CodeReviewService extends EntityService<CodeReview> {
+
+    /**
+     * Add code review (CR) comment
+     * @param reviewId - ID of code review where add comment to
+     * @param lineNumber - number of code line for comment
+     * @param body - message body 
+     * @return created CR comment entity
+     * @throws NotFoundException if CR was not found
+     * @throws AccessDeniedException when user has no permission to add comment
+     */
+    CodeReviewComment addComment(Long reviewId, int lineNumber, String body) 
+        throws NotFoundException;
 
 }

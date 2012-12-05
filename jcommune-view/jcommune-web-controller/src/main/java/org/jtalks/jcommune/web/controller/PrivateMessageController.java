@@ -14,10 +14,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import java.util.List;
-
-import javax.validation.Valid;
-
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
@@ -28,6 +24,7 @@ import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -38,6 +35,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * MVC controller for Private Messaging. Handles request for inbox, outbox and new private messages.
@@ -105,9 +105,14 @@ public class PrivateMessageController {
      * @return {@code ModelAndView} with added list of outbox messages
      */
     @RequestMapping(value = "/outbox", method = RequestMethod.GET)
-    public ModelAndView outboxPage() {
+    public ModelAndView outboxPage(@RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
+                                   @RequestParam(value = "pagingEnabled", defaultValue = "true", required = false)
+                                   Boolean pagingEnabled) {
+        Page<PrivateMessage> outboxPage = pmService.getOutboxForCurrentUser(page, pagingEnabled);
+
         return new ModelAndView("pm/outbox")
-            .addObject("pmList", pmService.getOutboxForCurrentUser());
+            .addObject("outboxPage", outboxPage)
+                .addObject("pagingEnabled", pagingEnabled);
     }
 
     /**

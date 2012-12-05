@@ -21,6 +21,7 @@ import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.jtalks.jcommune.model.dao.PropertyDao;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
@@ -29,16 +30,21 @@ import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.UserDataCacheService;
+import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -106,11 +112,17 @@ public class TransactionalPrivateMessageServiceTest {
 
     @Test
     public void testGetOutboxForCurrentUser() {
-        when(pmDao.getAllFromUser(user)).thenReturn(new ArrayList<PrivateMessage>());
+        int pageNumber = 1;
+        boolean pagingEnabled = true;
+        List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(user, user,
+                "Message title", "Private message body"));
+        Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
+        when(pmDao.getAllFromUser(eq(user), Matchers.<JCommunePageRequest>any())).thenReturn(expectedPage);
 
-        pmService.getOutboxForCurrentUser();
+        Page<PrivateMessage> actual = pmService.getOutboxForCurrentUser(pageNumber, pagingEnabled);
 
-        verify(pmDao).getAllFromUser(user);
+        verify(pmDao).getAllFromUser(eq(user), Matchers.<JCommunePageRequest>any());
+        assertEquals(expectedPage, actual);
     }
 
     @Test
