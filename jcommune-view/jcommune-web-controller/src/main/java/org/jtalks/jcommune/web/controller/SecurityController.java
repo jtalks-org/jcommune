@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
+ * Controller for secuirty related REST methods.
  * 
  * @author Vyacheslav Mishcheryakov
  *
@@ -34,11 +35,23 @@ public class SecurityController {
     private PermissionService permissionService;
     
 
+    /**
+     * 
+     * @param permissionService to check permissions for current user
+     */
     @Autowired
     public SecurityController(PermissionService permissionService) {
         this.permissionService = permissionService;
     }
 
+    /**
+     * Checks if current user is granted with permission
+     * @param targetId the identifier for the object instance
+     * @param targetType a String representing the target's type (e.g. 'BRANCH' or 'USER'). Not null.
+     * @param permission a representation of the permission object as supplied by the expression system. Not null.
+     * @return JSON response with 'status' = 'success' if user is granted and 
+     *      'status' = 'fail' otherwise. 'result' object is null in both cases 
+     */
     @RequestMapping(value="/security/has-permission", method=RequestMethod.GET)
     @ResponseBody
     public JsonResponse hasPermission(

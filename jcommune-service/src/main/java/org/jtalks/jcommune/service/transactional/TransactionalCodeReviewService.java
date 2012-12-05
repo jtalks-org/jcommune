@@ -24,6 +24,7 @@ import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.security.PermissionService;
+import org.springframework.security.access.AccessDeniedException;
 
 /**
  * The implementation of (@link {@link CodeReviewService}
@@ -36,16 +37,24 @@ public class TransactionalCodeReviewService extends AbstractTransactionalEntityS
     private UserService userService;
     private PermissionService permissionService;
     
-    TransactionalCodeReviewService(CodeReviewDao dao,
-                                   UserService userService,
-                                   PermissionService permissionService) {
+    /**
+     * Create an instance of CodeReview entity based service
+     * @param dao               data access object, which should be able do all CRUD operations with entity. 
+     * @param userService       to get current user
+     * @param permissionService to check permission for current user ({@link org.springframework.security.access.prepost.PreAuthorize} annotation emulation)
+     */
+    public TransactionalCodeReviewService(
+                                    CodeReviewDao dao,
+                                    UserService userService,
+                                    PermissionService permissionService) {
         super(dao);
         this.userService = userService;
         this.permissionService = permissionService;
     }
     
     @Override
-    public CodeReviewComment addComment(Long reviewId, int lineNumber, String body) throws NotFoundException {
+    public CodeReviewComment addComment(Long reviewId, int lineNumber, String body) 
+            throws NotFoundException, AccessDeniedException {
         CodeReview review = get(reviewId);
         JCUser currentUser = userService.getCurrentUser();
         

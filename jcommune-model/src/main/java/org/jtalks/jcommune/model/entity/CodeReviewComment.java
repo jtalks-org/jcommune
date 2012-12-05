@@ -24,6 +24,7 @@ import org.jtalks.common.model.entity.Entity;
  */
 public class CodeReviewComment extends Entity {
 
+    /** Number of commented line of code */
     private int lineNumber;
     
     private JCUser author;

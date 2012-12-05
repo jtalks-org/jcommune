@@ -20,14 +20,24 @@ import org.jtalks.jcommune.service.security.AclGroupPermissionEvaluator;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 
+/**
+ * Implementation of {@link PermissionService} interface
+ * @author Vyacheslav Mishcheryakov
+ *
+ */
 public class TransactionalPermissionService implements PermissionService {
 
-    private static final String CLASS_CANONICAL_NAME_PATTERN = "%s.%s";
+    /** Pattern to build permission full name */
+    private static final String PERMISSION_FULLNAME_PATTERN = "%s.%s";
     
     private SecurityContextHolderFacade contextFacade;
     
     private AclGroupPermissionEvaluator aclEvaluator;
     
+    /**
+     * @param contextFacade to get {@link Authentication} object from security context
+     * @param aclEvaluator to evaluate permissions
+     */
     public TransactionalPermissionService(SecurityContextHolderFacade contextFacade,
             AclGroupPermissionEvaluator aclEvaluator) {
         super();
@@ -35,14 +45,20 @@ public class TransactionalPermissionService implements PermissionService {
         this.aclEvaluator = aclEvaluator;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean hasPermission(long targetId, String targetType,
             JtalksPermission permission) {
-        String stringPermission = String.format(CLASS_CANONICAL_NAME_PATTERN,
+        String stringPermission = String.format(PERMISSION_FULLNAME_PATTERN,
                 permission.getClass().getSimpleName(), permission.getName()); 
         return hasPermission(targetId, targetType, stringPermission);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean hasPermission(long targetId, String targetType,
             String permission) {
@@ -50,6 +66,9 @@ public class TransactionalPermissionService implements PermissionService {
         return aclEvaluator.hasPermission(authentication, targetId, targetType, permission);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void checkPermission(long targetId, String targetType,
             JtalksPermission permission) throws AccessDeniedException {

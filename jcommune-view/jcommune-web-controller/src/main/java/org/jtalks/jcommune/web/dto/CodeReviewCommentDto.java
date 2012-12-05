@@ -27,7 +27,9 @@ import org.jtalks.jcommune.model.entity.CodeReviewComment;
  */
 public class CodeReviewCommentDto {
 
+    /** Minimal allowed length of comment message */
     private static final int BODY_MIN_LENGTH = 1;
+    /** Maximum allowed length of comment message */
     private static final int BODY_MAX_LENGTH = 5000;
     
     private long id;

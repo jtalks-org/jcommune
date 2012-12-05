@@ -166,6 +166,15 @@ public class CodeReviewController {
         return new JsonResponse(JsonResponse.RESPONSE_STATUS_SUCCESS, new CodeReviewDto(review));
     }
     
+    /**
+     * Adds CR comment to review
+     * @param commentDto incoming DTO object from client
+     * @param bindingResult object contains validation information
+     * @param reviewId ID of review where add comment to
+     * @return response with status 'success' and comment DTO object if comment 
+     *          was added or 'fail' with no objects if there were some errors
+     * @throws NotFoundException when no review wit <code>reviewId</code>was found
+     */
     @RequestMapping(value="/reviews/{reviewId}/add-comment", method = RequestMethod.POST)
     @ResponseBody
     public JsonResponse addComment(

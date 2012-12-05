@@ -15,12 +15,45 @@
 package org.jtalks.jcommune.service.security;
 
 import org.jtalks.common.model.permissions.JtalksPermission;
+import org.springframework.security.access.AccessDeniedException;
 
+/**
+ * Service for checking permission like @PreAuthorize('hasPermission(...)') 
+ * annotation does. Intended to be used when we can't pass required IDs to 
+ * methods (e.g. branch ID in code review addComment method)
+ * 
+ * @author Vyacheslav Mishcheryakov
+ *
+ * @see {@link AclGroupPermissionEvaluator}
+ */
 public interface PermissionService {
 
+    /**
+     * Checks if current user is granted with permission
+     * @param targetId the identifier for the object instance
+     * @param targetType a String representing the target's type (e.g. 'BRANCH' or 'USER'). Not null.
+     * @param permission permission to check. Not null.
+     * @return true if the permission is granted, false otherwise
+     */
     boolean hasPermission(long targetId, String targetType, JtalksPermission permission);
     
+    /**
+     * Checks if current user is granted with permission
+     * @param targetId the identifier for the object instance
+     * @param targetType a String representing the target's type (e.g. 'BRANCH' or 'USER'). Not null.
+     * @param permission a representation of the permission object as supplied by the expression system. Not null.
+     * @return true if the permission is granted, false otherwise
+     */
     boolean hasPermission(long targetId, String targetType, String permission);
     
-    void checkPermission(long targetId, String targetType, JtalksPermission permission);
+    /**
+     * Emulates @PreAuthorize('hasPermission(...)')
+     * @param targetId the identifier for the object instance
+     * @param targetType a String representing the target's type (e.g. 'BRANCH' or 'USER'). Not null.
+     * @param permission permission to check. Not null.
+     * 
+     * @throws AccessDeniedException if current user is not granted with permission
+     */
+    void checkPermission(long targetId, String targetType, JtalksPermission permission)
+        throws AccessDeniedException;
 }
