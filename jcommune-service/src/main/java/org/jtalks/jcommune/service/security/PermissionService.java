@@ -54,6 +54,5 @@ public interface PermissionService {
      * 
      * @throws AccessDeniedException if current user is not granted with permission
      */
-    void checkPermission(long targetId, String targetType, JtalksPermission permission)
-        throws AccessDeniedException;
+    void checkPermission(long targetId, String targetType, JtalksPermission permission);
 }

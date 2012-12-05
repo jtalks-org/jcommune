@@ -53,7 +53,11 @@ CodeHighlighting.displayReviewComments = function() {
 	});
 }
 
+/**
+ * Setup UI handlers for add comment functionality. 
+ */
 CodeHighlighting.setupAddCommentFormHandlers = function() {
+	// clicking on line
 	$('.script-first-post').on('click', 'ol.linenums li', function() {			    
 		var addCommentForm = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID);
 		if (addCommentForm.length == 0) {
@@ -62,6 +66,7 @@ CodeHighlighting.setupAddCommentFormHandlers = function() {
 		}								
 	});
 	
+	// submitting add comment form
 	$('.script-first-post').on('click', "input:button[name=submit]", function(event) {
 		event.stopPropagation();
 		var reviewId = $('#codeReviewId').val();
@@ -86,6 +91,7 @@ CodeHighlighting.setupAddCommentFormHandlers = function() {
 		});
 	});
 	
+	// clicking cancel button on add comment form
 	$('.script-first-post').on('click', 'input:button[name=cancel]', function(event) {
 		event.stopPropagation();
 		CodeHighlighting.removeAddCommentForm();
@@ -94,7 +100,7 @@ CodeHighlighting.setupAddCommentFormHandlers = function() {
 
 /**
  * Build HTML piece for review comment 
- * @param Code review comment 
+ * @param comment code review comment 
  * @return div (string) with comment data
  */
 CodeHighlighting.getCommentHtml = function(comment) {
@@ -116,6 +122,11 @@ CodeHighlighting.getCommentHtml = function(comment) {
 	return result;
 }
 
+/**
+ * Build HTML piece for add comment form 
+ * @param lineNumber number of line where form will be placed 
+ * @return string with HTML piece for the form 
+ */
 CodeHighlighting.getAddCommentForm = function(lineNumber) {
 	var result = 
 		'<div id="' + CodeHighlighting.ADD_COMMENT_FORM_ID + '" class="review-container">'
@@ -131,6 +142,9 @@ CodeHighlighting.getAddCommentForm = function(lineNumber) {
 	return result;
 }
 
+/**
+ * Remove add comment form from the page
+ */
 CodeHighlighting.removeAddCommentForm = function() {
 	$('#' + CodeHighlighting.ADD_COMMENT_FORM_ID).remove();
 }

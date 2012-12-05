@@ -36,6 +36,6 @@ public interface CodeReviewService extends EntityService<CodeReview> {
      * @throws AccessDeniedException when user has no permission to add comment
      */
     CodeReviewComment addComment(Long reviewId, int lineNumber, String body) 
-        throws NotFoundException, AccessDeniedException;
+        throws NotFoundException;
 
 }

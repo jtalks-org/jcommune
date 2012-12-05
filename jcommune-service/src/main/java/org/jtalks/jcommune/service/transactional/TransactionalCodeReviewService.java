@@ -24,7 +24,6 @@ import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.security.PermissionService;
-import org.springframework.security.access.AccessDeniedException;
 
 /**
  * The implementation of (@link {@link CodeReviewService}
@@ -54,7 +53,7 @@ public class TransactionalCodeReviewService extends AbstractTransactionalEntityS
     
     @Override
     public CodeReviewComment addComment(Long reviewId, int lineNumber, String body) 
-            throws NotFoundException, AccessDeniedException {
+            throws NotFoundException {
         CodeReview review = get(reviewId);
         JCUser currentUser = userService.getCurrentUser();
         

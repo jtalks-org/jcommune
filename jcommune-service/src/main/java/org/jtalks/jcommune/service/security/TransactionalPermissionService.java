@@ -70,8 +70,8 @@ public class TransactionalPermissionService implements PermissionService {
      * {@inheritDoc}
      */
     @Override
-    public void checkPermission(long targetId, String targetType,
-            JtalksPermission permission) throws AccessDeniedException {
+    public void checkPermission(long targetId, String targetType, 
+            JtalksPermission permission){
         if (!hasPermission(targetId, targetType, permission)) {
             Authentication authentication = contextFacade.getContext().getAuthentication();
             throw new AccessDeniedException(
