@@ -28,7 +28,7 @@ public class PrivateMessage extends Entity {
 
     public static final int MAX_MESSAGE_LENGTH = 20000;
     public static final int MIN_MESSAGE_LENGTH = 2;
-    public static final int MAX_TITLE_LENGTH = 22;
+    public static final int MAX_TITLE_LENGTH = 120;
     public static final int MIN_TITLE_LENGTH = 2;
 
     private DateTime creationDate;
