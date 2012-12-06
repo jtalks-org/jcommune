@@ -25,17 +25,32 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
 
+/**
+ * 
+ * @author Vyacheslav Mishcheryakov
+ *
+ */
 public class CodeReviewDtoTest {
     
     private static final long REVIEW_ID = 1L;
     
     @Test
-    public void testConstructor() {
+    public void testDefaultConstructor() {
+        CodeReviewDto dto = new CodeReviewDto();
+        
+        assertEquals(dto.getId(), 0);
+        assertNotNull(dto.getComments());
+        assertEquals(dto.getComments().size(), 0);
+    }
+    
+    @Test
+    public void testPrototypeConstructor() {
         CodeReview review = getCodeReview();
         
         CodeReviewDto dto = new CodeReviewDto(review);
         
         assertEquals(dto.getId(), REVIEW_ID);
+        assertNotNull(dto.getComments());
         assertEquals(dto.getComments().size(), review.getComments().size());
     }
     

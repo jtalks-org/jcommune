@@ -76,5 +76,5 @@ public interface TopicFetchService extends EntityService<Topic>{
      *
      * @param branchId ID of the branch which holds permissions
      */
-    public void checkViewTopicPermission(Long branchId);
+    void checkViewTopicPermission(Long branchId);
 }

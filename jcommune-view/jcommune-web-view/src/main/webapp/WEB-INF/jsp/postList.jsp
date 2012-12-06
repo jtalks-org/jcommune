@@ -35,6 +35,8 @@
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/codeHighlighting.js"
             type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/permissionService.js"
+            type="text/javascript"></script>
 </head>
 <body>
 
@@ -124,6 +126,7 @@
 <c:if test="${topic.codeReview != null}">
     <input type="hidden" id="has-code-review" value="true"/>
     <input type="hidden" id="codeReviewId" value="${topic.codeReview.id}"/>
+    <input type="hidden" id="branchId" value="${topic.branch.id}"/>
 </c:if>
 
 <div>

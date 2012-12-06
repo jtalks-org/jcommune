@@ -67,8 +67,10 @@
             src="${pageContext.request.contextPath}/resources/javascript/custom/registration.js"></script>
     <script src='${pageContext.request.contextPath}/resources/javascript/custom/signin.js'
             type='text/javascript'></script>
-    <script
-            src="${pageContext.request.contextPath}/resources/javascript/custom/global.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/global.js"
+            type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/antimultipost.js"
+            type="text/javascript"></script>
     <script src='${pageContext.request.contextPath}/resources/javascript/licensed/xregexp-min.js'
             type='text/javascript'></script>
     <script src='${pageContext.request.contextPath}/resources/javascript/licensed/bootstrap.min.js'

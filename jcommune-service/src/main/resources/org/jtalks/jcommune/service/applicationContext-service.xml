@@ -46,6 +46,20 @@
 
     <task:scheduler id="scheduler" pool-size="1"/>
 
+  <bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean">
+    <property name="locateExistingServerIfPossible" value="true"/>
+  </bean>
+
+  <bean id="jmxExporter" class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
+    <property name="beans">
+      <map>
+        <entry key="jcommune:type=logging,name=config">
+          <bean class="org.jtalks.jcommune.service.jmx.Log4jConfigurator"/>
+        </entry>
+      </map>
+    </property>
+  </bean>
+
     <!--Declaration services bean -->
 
     <bean id="avatarService" class="org.jtalks.jcommune.service.nontransactional.AvatarService">
@@ -200,6 +214,13 @@
     
     <bean id="codeReviewService" class="org.jtalks.jcommune.service.transactional.TransactionalCodeReviewService">
         <constructor-arg ref="codeReviewDao"/>
+        <constructor-arg ref="userService"/>
+        <constructor-arg ref="permissionService"/>
+    </bean>
+    
+    <bean id="permissionService" class="org.jtalks.jcommune.service.security.TransactionalPermissionService">
+        <constructor-arg ref="securityContextFacade"/>
+        <constructor-arg ref="aclGroupPermissionEvaluator"/>
     </bean>
 
     <!--

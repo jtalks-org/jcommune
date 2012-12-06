@@ -51,10 +51,10 @@ $(document).ready(function () {
 
     /** Handler to prevent multiposting. */
     $('form.anti-multipost').submit(function () {
-        if ($(this).attr('submitted')) {
-            return false;
+        if (Antimultipost.beingSubmitted($(this))) {
+        	return false;
         }
-        $(this).attr('submitted', 'true');
+       Antimultipost.disableSubmit($(this));
     });
 });
 

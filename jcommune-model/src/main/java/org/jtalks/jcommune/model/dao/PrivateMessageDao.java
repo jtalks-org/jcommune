@@ -15,8 +15,10 @@
 package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.common.model.dao.ParentRepository;
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -33,10 +35,11 @@ public interface PrivateMessageDao extends ParentRepository<PrivateMessage> {
     /**
      * Get all messages sent by specified user.
      *
-     * @param userFrom the sender
-     * @return the list of messages
+     * @param userFrom    the sender
+     * @param pageRequest pagination information.
+     * @return {@link Page} with messages.
      */
-    List<PrivateMessage> getAllFromUser(JCUser userFrom);
+    Page<PrivateMessage> getAllFromUser(JCUser userFrom, JCommunePageRequest pageRequest);
 
     /**
      * Get all private messages to the specified user.

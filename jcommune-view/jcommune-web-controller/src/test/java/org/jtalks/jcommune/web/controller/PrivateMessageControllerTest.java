@@ -14,21 +14,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
-import static org.testng.Assert.assertEquals;
-
-import java.util.Arrays;
-import java.util.List;
-
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
@@ -40,12 +25,30 @@ import org.jtalks.jcommune.web.dto.PrivateMessageDto;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.testng.Assert.assertEquals;
 
 /**
  * @author Pavel Vervenko
@@ -97,15 +100,26 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void outboxPage() {
+        int page = 1;
+        boolean pagingEnabled = true;
+        List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(JC_USER, JC_USER,
+                "Message title", "Private message body"));
+        Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
+
+        when(pmService.getOutboxForCurrentUser(page, pagingEnabled)).thenReturn(expectedPage);
+
         //invoke the object under test
-        ModelAndView mav = controller.outboxPage();
+        ModelAndView mav = controller.outboxPage(page, pagingEnabled);
 
         //check expectations
-        verify(pmService).getOutboxForCurrentUser();
+        verify(pmService).getOutboxForCurrentUser(page, pagingEnabled);
+
+        verify(pmService).getOutboxForCurrentUser(page, pagingEnabled);
 
         //check result
         assertViewName(mav, "pm/outbox");
-        assertAndReturnModelAttributeOfType(mav, "pmList", List.class);
+        assertModelAttributeAvailable(mav, "outboxPage");
+        assertModelAttributeAvailable(mav, "pagingEnabled");
     }
 
     @Test
