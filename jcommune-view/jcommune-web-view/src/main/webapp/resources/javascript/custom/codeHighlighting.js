@@ -81,7 +81,14 @@ CodeHighlighting.setupAddCommentFormHandlers = function () {
     });
 
     $('.script-first-post').on('click', "input:button[name=submit]", function (event) {
-        event.stopPropagation();
+		event.stopPropagation();
+		
+		var formContainer = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID);
+		if (Antimultipost.beingSubmitted(formContainer)) {
+			return;
+		}
+		Antimultipost.disableSubmit(formContainer);
+		
         var reviewId = $('#codeReviewId').val();
         var lineNumber = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=lineNumber]').val();
         var body = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=body]').val();
@@ -101,7 +108,10 @@ CodeHighlighting.setupAddCommentFormHandlers = function () {
             })
             .error(function (data) {
                 bootbox.alert($labelUnexpectedError);
-            });
+            })
+			.complete(function() {
+				Antimultipost.enableSubmit(formContainer);
+			});
     });
 
     $('.script-first-post').on('click', 'input:button[name=cancel]', function (event) {
