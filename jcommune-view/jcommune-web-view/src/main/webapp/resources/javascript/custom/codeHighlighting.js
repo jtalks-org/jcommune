@@ -147,8 +147,8 @@ CodeHighlighting.getAddCommentForm = function (lineNumber) {
                 + '<textarea name="body" class="review-container-content"/>'
             + '</div>'
             + '<div>'
-                + '<input type=button name=submit value="$labelAdd" class="btn btn-primary review-container-controls-ok"/>'
-                + '<input type=button name=cancel value="$labelCancel" class="btn review-container-controls-cancel"/>'
+                + '<input type=button name=submit value="' + $labelAdd + '" class="btn btn-primary review-container-controls-ok"/>'
+                + '<input type=button name=cancel value="' + $labelCancel + '" class="btn review-container-controls-cancel"/>'
             + '</div>'
         + '</div>';
     return result;
