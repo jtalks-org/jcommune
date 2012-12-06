@@ -52,7 +52,6 @@ public class PollItemsSizeValidator implements ConstraintValidator<PollItemsSize
         if (!CollectionUtils.isEmpty(pollItems)) {
             Range range = new IntRange(minSize, maxSize);
             if (!range.containsInteger(pollItems.size())) {
-                
                 return false;
             }
         }
