@@ -56,14 +56,6 @@
             </div>
         </div>
         
-        <div class="control-group hide-on-preview">
-            <form:checkbox id="notify" tabindex="500" path="notifyOnAnswers" name="notify"
-                           class="script-confirm-unsaved form-check-radio-box"/>
-            <label for='notifyOnAnswers' class='string optional'>
-                <spring:message code="label.answer.notify_message"/>
-            </label>
-        </div>
-        
         <div class='control-group'>
             <spring:message code="placeholder.editor.content" var="placeholderEditorContent"/>
             <form:textarea path="bodyText" id="body" name="body" tabindex="200" style="width:100%;height: 350px"

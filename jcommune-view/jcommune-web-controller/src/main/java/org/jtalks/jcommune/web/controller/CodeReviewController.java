@@ -147,7 +147,7 @@ public class CodeReviewController {
         Topic topic = topicDto.getTopic();
         topic.setBranch(branch);
         Topic createdTopic = topicModificationService.createCodeReview(
-                topic, topicDto.getBodyText(), topicDto.isNotifyOnAnswers());
+                topic, topicDto.getBodyText(), false);
 
         lastReadPostService.markTopicAsRead(createdTopic);
         return new ModelAndView(REDIRECT_URL + createdTopic.getId());

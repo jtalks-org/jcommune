@@ -135,7 +135,8 @@ public class CodeReviewControllerTest {
 
         //set expectations
         when(branchService.get(BRANCH_ID)).thenReturn(branch);
-        when(topicModificationService.createCodeReview(topic, TOPIC_CONTENT, false)).thenReturn(topic);
+        when(topicModificationService.createCodeReview(topic, TOPIC_CONTENT, false))
+                .thenReturn(topic);
 
         //invoke the object under test
         ModelAndView mav = controller.createCodeReview(dto, result, BRANCH_ID);
