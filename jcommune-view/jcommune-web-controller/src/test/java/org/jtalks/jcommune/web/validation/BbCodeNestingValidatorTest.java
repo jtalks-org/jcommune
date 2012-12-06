@@ -79,17 +79,16 @@ public class BbCodeNestingValidatorTest {
                 {"[b][/b][b][/b][u][/u][u]text[/u][u][u][u][/u][/u][/u]text"},
                 {"[u][/u]"},
                 {"text"},
-                {"[*][*][*][*][*][*][*][*][*][*][*][*][*][*][*]"}
+                {"[*][*][*][*][*][*][*][*][*][*][*][*][*][*][*]"},
+                {repeat("[b]",50)},
         };
     }
 
     @DataProvider
     public String[][] tooDeepNestingMessages() {
         return new String[][]{ // {"message"}
-                {"[color][b][color][b][b][b][b][b][b][color][b][b][b][b][b][b][b][b][b][b][color][b][b][b][b][b][b][b][b][b][b][b]"+
-                        "[b][b][color][b][b][b][b][b][b][b][b][color][b][color][b][color][color][b][b][b][b][/b][/b][/b][u]"},
-                {"[b][b][b][b][b][b][b][b][b][b][b][b][b][b][b][b][b][b][b][b][color][b][b][b][b][b][b][b][b][b][b][b]"+
-                 "[b][b][color][b][b][b][b][b][b][b][b][b][b][b][b][b][b][b][b][color][b][/b][/b][/b][u]"}
+                {repeat("[b]",51)},
+                {repeat("[color][u]",50)}
         };
     }
 }
