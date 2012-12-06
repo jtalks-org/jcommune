@@ -27,8 +27,8 @@ $(document).ready(function () {
 
             var branchId = $('#branchId').val();
             PermissionService.hasPermission(branchId, 'BRANCH',
-                'BranchPermission.LEAVE_COMMENTS_IN_CODE_REVIEW',
-                CodeHighlighting.setupAddCommentFormHandlers);
+                    'BranchPermission.LEAVE_COMMENTS_IN_CODE_REVIEW',
+                    CodeHighlighting.setupAddCommentFormHandlers);
 
         }
 
@@ -42,9 +42,10 @@ CodeHighlighting.addComment = function (comment) {
     var nextLine = $('.script-first-post ol.linenums li:nth-child(' + comment.lineNumber + ') ~ li:first');
     if (nextLine.length > 0) {
         nextLine.before(CodeHighlighting.getCommentHtml(comment));
-    } else {
+    }
+    else {
         $('.script-first-post ol.linenums li:nth-child(' + comment.lineNumber + ')')
-            .parent('.linenums').append(CodeHighlighting.getCommentHtml(comment))
+                .parent('.linenums').append(CodeHighlighting.getCommentHtml(comment))
     }
 }
 
@@ -66,9 +67,9 @@ CodeHighlighting.displayReviewComments = function () {
 }
 
 /**
- * Build HTML piece for add comment form 
- * @param lineNumber number of line where form will be placed 
- * @return string with HTML piece for the form 
+ * Build HTML piece for add comment form
+ * @param lineNumber number of line where form will be placed
+ * @return string with HTML piece for the form
  */
 CodeHighlighting.setupAddCommentFormHandlers = function () {
     $('.script-first-post').on('click', 'ol.linenums li', function () {
@@ -85,8 +86,8 @@ CodeHighlighting.setupAddCommentFormHandlers = function () {
         var lineNumber = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=lineNumber]').val();
         var body = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=body]').val();
         $.post(
-            baseUrl + '/reviews/' + reviewId + '/add-comment',
-            {lineNumber:lineNumber, body:body, id:0, authorId:0, authorUsername:""}
+                baseUrl + '/reviews/' + reviewId + '/add-comment',
+                {lineNumber:lineNumber, body:body, id:0, authorId:0, authorUsername:""}
         )
             .success(function (data) {
                 if (data.status == 'success') {
@@ -110,8 +111,8 @@ CodeHighlighting.setupAddCommentFormHandlers = function () {
 }
 
 /**
- * Build HTML piece for review comment 
- * @param comment code review comment 
+ * Build HTML piece for review comment
+ * @param comment code review comment
  * @return div (string) with comment data
  */
 CodeHighlighting.getCommentHtml = function (comment) {
@@ -134,9 +135,9 @@ CodeHighlighting.getCommentHtml = function (comment) {
 }
 
 /**
- * Build HTML piece for add comment form 
- * @param lineNumber number of line where form will be placed 
- * @return string with HTML piece for the form 
+ * Build HTML piece for add comment form
+ * @param lineNumber number of line where form will be placed
+ * @return string with HTML piece for the form
  */
 CodeHighlighting.getAddCommentForm = function (lineNumber) {
     var result =
@@ -146,8 +147,8 @@ CodeHighlighting.getAddCommentForm = function (lineNumber) {
                 + '<textarea name="body" class="review-container-content"/>'
             + '</div>'
             + '<div>'
-                + '<input type=button name=submit value="Save" class="btn btn-primary review-container-controls-ok"/>'
-                + '<input type=button name=cancel value="Cancel" class="btn review-container-controls-cancel"/>'
+                + '<input type=button name=submit value="$labelAdd" class="btn btn-primary review-container-controls-ok"/>'
+                + '<input type=button name=cancel value="$labelCancel" class="btn review-container-controls-cancel"/>'
             + '</div>'
         + '</div>';
     return result;
