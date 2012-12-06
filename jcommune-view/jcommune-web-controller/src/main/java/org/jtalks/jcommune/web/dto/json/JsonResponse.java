@@ -15,7 +15,9 @@
 package org.jtalks.jcommune.web.dto.json;
 
 /**
- * Ajax response class for sending JSON response
+ * This is a generic AJAX response class to send JSON response from server to the client. This class can be used for
+ * any generic AJAX interaction between server and client. See subclasses to understand what other responses are
+ * possible.
  * 
  * @author wedens
  */
