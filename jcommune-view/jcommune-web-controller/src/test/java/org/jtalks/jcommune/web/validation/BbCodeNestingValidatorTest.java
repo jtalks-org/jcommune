@@ -77,6 +77,7 @@ public class BbCodeNestingValidatorTest {
         return new String[][]{ // {"message"}
                 {"[b][/b][b][/b][u][/u][u][/u][u][u][u][/u][/u][/u]"},
                 {"[b][/b][b][/b][u][/u][u]text[/u][u][u][u][/u][/u][/u]text"},
+                {"[u][/u]"},
                 {"text"},
                 {"[*][*][*][*][*][*][*][*][*][*][*][*][*][*][*]"}
         };
@@ -85,8 +86,10 @@ public class BbCodeNestingValidatorTest {
     @DataProvider
     public String[][] tooDeepNestingMessages() {
         return new String[][]{ // {"message"}
-                {"[b][b][b][b][b][color][b][b][b][b][u]"},
-                {"[b][b][b][b][b][b][b][b][b][b][b][b][color][b][/b][/b][/b][u]"}
+                {"[color][b][color][b][b][b][b][b][b][color][b][b][b][b][b][b][b][b][b][b][color][b][b][b][b][b][b][b][b][b][b][b]"+
+                        "[b][b][color][b][b][b][b][b][b][b][b][color][b][color][b][color][color][b][b][b][b][/b][/b][/b][u]"},
+                {"[b][b][b][b][b][b][b][b][b][b][b][b][b][b][b][b][b][b][b][b][color][b][b][b][b][b][b][b][b][b][b][b]"+
+                 "[b][b][color][b][b][b][b][b][b][b][b][b][b][b][b][b][b][b][b][color][b][/b][/b][/b][u]"}
         };
     }
 }
