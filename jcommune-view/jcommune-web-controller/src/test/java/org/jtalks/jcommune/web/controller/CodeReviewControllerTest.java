@@ -25,7 +25,8 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.CodeReviewCommentDto;
 import org.jtalks.jcommune.web.dto.CodeReviewDto;
-import org.jtalks.jcommune.web.dto.JsonResponse;
+import org.jtalks.jcommune.web.dto.json.FailValidationJsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.mockito.Mock;
@@ -210,11 +211,10 @@ public class CodeReviewControllerTest {
         
         when(bindingResult.hasErrors()).thenReturn(true);
         
-        JsonResponse response = controller.addComment(
-                new CodeReviewCommentDto(), bindingResult, 1L);
+        FailValidationJsonResponse response = (FailValidationJsonResponse)controller
+                .addComment(new CodeReviewCommentDto(), bindingResult, 1L);
         
-        assertEquals(response.getStatus(), JsonResponse.RESPONSE_STATUS_FAIL);
-        assertEquals(response.getResult(), null);
+        assertNotNull(response.getResult());
     }
     
     @Test(expectedExceptions=NotFoundException.class)

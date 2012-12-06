@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.service.security.PermissionService;
-import org.jtalks.jcommune.web.dto.JsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

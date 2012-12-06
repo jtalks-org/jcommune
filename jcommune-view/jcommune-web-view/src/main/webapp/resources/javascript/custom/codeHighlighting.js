@@ -92,12 +92,14 @@ CodeHighlighting.setupAddCommentFormHandlers = function () {
                 if (data.status == 'success') {
                     CodeHighlighting.removeAddCommentForm();
                     CodeHighlighting.addComment(data.result)
+                } else if (data.reason == 'validation') {
+                	CodeHighlighting.displayValidationErrors(data.result);
                 } else {
-                    bootbox.alert('Input valid data');
+                	bootbox.alert($labelUnexpectedError);
                 }
             })
             .error(function (data) {
-                bootbox.alert('Error during adding comment');
+                bootbox.alert($labelUnexpectedError);
             });
     });
 
@@ -139,7 +141,7 @@ CodeHighlighting.getCommentHtml = function (comment) {
 CodeHighlighting.getAddCommentForm = function (lineNumber) {
     var result =
         '<div id="' + CodeHighlighting.ADD_COMMENT_FORM_ID + '" class="review-container">'
-            + '<div>'
+            + '<div class="control-group">'
                 + '<input type=hidden name=lineNumber value="' + lineNumber + '"/>'
                 + '<textarea name="body" class="review-container-content"/>'
             + '</div>'
@@ -156,4 +158,24 @@ CodeHighlighting.getAddCommentForm = function (lineNumber) {
  */
 CodeHighlighting.removeAddCommentForm = function () {
     $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID).remove();
+}
+
+/**
+ * Display error messages
+ * 
+ * @param errors list or errors
+ */
+CodeHighlighting.displayValidationErrors = function(errors) {
+	$('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' span.help-inline').remove();
+	
+	if (errors.length > 0) {
+		var currentControlGroup = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=body]').parent();
+		currentControlGroup.addClass("error");
+		currentControlGroup.append('<span class="help-inline"/>');
+		
+		var errorsContainer = currentControlGroup.find('span.help-inline');
+		for (var i = 0; i < errors.length; i++) {
+			errorsContainer.append(errors[i].message + '<br/>');
+		}
+	}
 }

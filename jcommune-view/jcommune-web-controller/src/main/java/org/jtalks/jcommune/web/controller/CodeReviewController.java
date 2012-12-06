@@ -27,7 +27,8 @@ import org.jtalks.jcommune.service.TopicModificationService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.CodeReviewCommentDto;
 import org.jtalks.jcommune.web.dto.CodeReviewDto;
-import org.jtalks.jcommune.web.dto.JsonResponse;
+import org.jtalks.jcommune.web.dto.json.FailValidationJsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -182,7 +183,7 @@ public class CodeReviewController {
             BindingResult bindingResult,
             @PathVariable("reviewId") Long reviewId) throws NotFoundException {
         if (bindingResult.hasErrors()) {
-            return new JsonResponse(JsonResponse.RESPONSE_STATUS_FAIL);
+            return new FailValidationJsonResponse(bindingResult.getAllErrors());
         }
         CodeReviewComment addedComment = codeReviewService.addComment(
                 reviewId, commentDto.getLineNumber(), commentDto.getBody());
