@@ -16,6 +16,7 @@
 package org.jtalks.jcommune.model.entity;
 
 import org.jtalks.common.model.entity.Entity;
+import org.jtalks.jcommune.model.validation.annotations.PollItemNameLength;
 
 /**
  * Represents the option of poll of the topic. Counts the number of votes
@@ -24,6 +25,7 @@ import org.jtalks.common.model.entity.Entity;
  * @author Anuar Nurmakanov
  */
 public class PollItem extends Entity {
+    @PollItemNameLength
     private String name;
     private int votesCount;
     private Poll poll;
