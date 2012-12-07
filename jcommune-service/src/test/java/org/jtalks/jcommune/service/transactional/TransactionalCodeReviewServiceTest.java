@@ -24,6 +24,7 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.security.AclClassName;
 import org.jtalks.jcommune.service.security.PermissionService;
 import org.mockito.Mock;
 import org.springframework.security.access.AccessDeniedException;
@@ -90,7 +91,7 @@ public class TransactionalCodeReviewServiceTest {
     @Test(expectedExceptions=AccessDeniedException.class)
     public void testAddCommentUserHasNoPermission() throws AccessDeniedException, NotFoundException {
         doThrow(new AccessDeniedException(""))
-            .when(permissionService).checkPermission(anyLong(), anyString(), any(JtalksPermission.class));
+            .when(permissionService).checkPermission(anyLong(), any(AclClassName.class), any(JtalksPermission.class));
         codeReviewService.addComment(CR_ID, 0, null);
     }
     

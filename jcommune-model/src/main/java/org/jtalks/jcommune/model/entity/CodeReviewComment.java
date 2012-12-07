@@ -24,6 +24,11 @@ import org.jtalks.common.model.entity.Entity;
  */
 public class CodeReviewComment extends Entity {
 
+    /** Minimal allowed length of comment message */
+    public static final int BODY_MIN_LENGTH = 1;
+    /** Maximum allowed length of comment message */
+    public static final int BODY_MAX_LENGTH = 5000;
+    
     /** Number of commented line of code */
     private int lineNumber;
     

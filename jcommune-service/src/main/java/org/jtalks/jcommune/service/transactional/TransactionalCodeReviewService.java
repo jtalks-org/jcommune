@@ -23,6 +23,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.security.AclClassName;
 import org.jtalks.jcommune.service.security.PermissionService;
 
 /**
@@ -59,7 +60,7 @@ public class TransactionalCodeReviewService extends AbstractTransactionalEntityS
         
         permissionService.checkPermission(
                 review.getTopic().getBranch().getId(), 
-                "BRANCH", 
+                AclClassName.BRANCH, 
                 BranchPermission.LEAVE_COMMENTS_IN_CODE_REVIEW);
                 
         CodeReviewComment comment = new CodeReviewComment();

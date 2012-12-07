@@ -27,6 +27,7 @@ import org.jtalks.jcommune.web.dto.CodeReviewCommentDto;
 import org.jtalks.jcommune.web.dto.CodeReviewDto;
 import org.jtalks.jcommune.web.dto.json.FailValidationJsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.mockito.Mock;
@@ -174,7 +175,7 @@ public class CodeReviewControllerTest {
         
         JsonResponse response = controller.getCodeReview(REVIEW_ID);
         
-        assertEquals(response.getStatus(), JsonResponse.RESPONSE_STATUS_SUCCESS);
+        assertEquals(response.getStatus(), JsonResponseStatus.Success);
         assertEquals(((CodeReviewDto)response.getResult()).getId(), REVIEW_ID);
     }
     
@@ -198,7 +199,7 @@ public class CodeReviewControllerTest {
         
         CodeReviewCommentDto dto = (CodeReviewCommentDto) response.getResult();
         
-        assertEquals(response.getStatus(), JsonResponse.RESPONSE_STATUS_SUCCESS);
+        assertEquals(response.getStatus(), JsonResponseStatus.Success);
         assertEquals(dto.getId(), COMMENT_ID);
         assertEquals(dto.getBody(), COMMENT_BODY);
         assertEquals(dto.getLineNumber(), COMMENT_LINE_NUMBER);

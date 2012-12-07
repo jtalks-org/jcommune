@@ -49,11 +49,11 @@ public class TransactionalPermissionService implements PermissionService {
      * {@inheritDoc}
      */
     @Override
-    public boolean hasPermission(long targetId, String targetType,
+    public boolean hasPermission(long targetId, AclClassName targetClass,
             JtalksPermission permission) {
         String stringPermission = String.format(PERMISSION_FULLNAME_PATTERN,
                 permission.getClass().getSimpleName(), permission.getName()); 
-        return hasPermission(targetId, targetType, stringPermission);
+        return hasPermission(targetId, targetClass.toString(), stringPermission);
     }
 
     /**
@@ -70,13 +70,13 @@ public class TransactionalPermissionService implements PermissionService {
      * {@inheritDoc}
      */
     @Override
-    public void checkPermission(long targetId, String targetType, 
+    public void checkPermission(long targetId, AclClassName targetClass, 
             JtalksPermission permission){
-        if (!hasPermission(targetId, targetType, permission)) {
+        if (!hasPermission(targetId, targetClass, permission)) {
             Authentication authentication = contextFacade.getContext().getAuthentication();
             throw new AccessDeniedException(
                     "Access denied for " + authentication.getName() + ". " 
-                    + targetType + ": " + targetId 
+                    + targetClass + ": " + targetId 
                     + ", permission - " + permission.getName());
         }
     }

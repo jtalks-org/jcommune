@@ -16,6 +16,7 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.service.security.PermissionService;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -50,7 +51,7 @@ public class SecurityControllerTest {
         
         JsonResponse response = securityController.hasPermission(0, null, null);
         
-        assertEquals(response.getStatus(), JsonResponse.RESPONSE_STATUS_SUCCESS);
+        assertEquals(response.getStatus(), JsonResponseStatus.Success);
     }
     
     @Test
@@ -60,6 +61,6 @@ public class SecurityControllerTest {
         
         JsonResponse response = securityController.hasPermission(0, null, null);
         
-        assertEquals(response.getStatus(), JsonResponse.RESPONSE_STATUS_FAIL);
+        assertEquals(response.getStatus(), JsonResponseStatus.Fail);
     }
 }

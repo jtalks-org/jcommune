@@ -40,7 +40,7 @@ public class FailValidationJsonResponseTest {
         
         List<ValidationError> result = (List<ValidationError>) response.getResult();
         
-        assertEquals(response.getStatus(), JsonResponse.RESPONSE_STATUS_FAIL);
+        assertEquals(response.getStatus(), JsonResponseStatus.Fail);
         assertEquals(response.getReason(), FailValidationJsonResponse.FAIL_REASON_VALIDATION);
         assertEquals(result.size(), 2);
         assertEquals(result.get(0).getField(), null);
