@@ -67,7 +67,7 @@ function sendLoginPost() {
         success:function (resp) {
             resp = eval('(' + resp + ')');
 
-            if (resp.status == "success") {
+            if (resp.status == "Success") {
                 location.reload();
             }
             else {

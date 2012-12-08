@@ -88,7 +88,7 @@ public class TransactionalPermissionServiceTest {
                 anyString()))
         .thenReturn(true);
         
-        assertTrue(permissionService.hasPermission(0, null, GeneralPermission.READ));
+        assertTrue(permissionService.hasPermission(0, AclClassName.BRANCH, GeneralPermission.READ));
     }
     
     @Test
@@ -100,7 +100,7 @@ public class TransactionalPermissionServiceTest {
                 anyString()))
         .thenReturn(false);
         
-        assertFalse(permissionService.hasPermission(0, null, GeneralPermission.READ));
+        assertFalse(permissionService.hasPermission(0, AclClassName.BRANCH, GeneralPermission.READ));
     }
     
     @Test
@@ -112,7 +112,7 @@ public class TransactionalPermissionServiceTest {
                 anyString()))
         .thenReturn(true);
         
-        permissionService.checkPermission(0, null, GeneralPermission.READ);
+        permissionService.checkPermission(0, AclClassName.BRANCH, GeneralPermission.READ);
     }
     
     @Test(expectedExceptions=AccessDeniedException.class)
@@ -124,6 +124,6 @@ public class TransactionalPermissionServiceTest {
                 anyString()))
         .thenReturn(false);
         
-        permissionService.checkPermission(0, null, GeneralPermission.READ);
+        permissionService.checkPermission(0, AclClassName.BRANCH, GeneralPermission.READ);
     }
 }

@@ -27,17 +27,12 @@ import org.jtalks.jcommune.model.entity.CodeReviewComment;
  */
 public class CodeReviewCommentDto {
 
-    /** Minimal allowed length of comment message */
-    private static final int BODY_MIN_LENGTH = 1;
-    /** Maximum allowed length of comment message */
-    private static final int BODY_MAX_LENGTH = 5000;
-    
     private long id;
     
     private int lineNumber;
     
     @NotBlank
-    @Size(min = BODY_MIN_LENGTH, max = BODY_MAX_LENGTH)
+    @Size(min = CodeReviewComment.BODY_MIN_LENGTH, max = CodeReviewComment.BODY_MAX_LENGTH)
     private String body;
     
     private long authorId;

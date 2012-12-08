@@ -46,6 +46,6 @@ public @interface BbCodeNesting {
     /**
      * maximum level of BB-code nesting
      */
-    int maxNestingValue() default 10;
+    int maxNestingValue() default 50;
 
 }

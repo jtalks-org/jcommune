@@ -24,11 +24,14 @@ var PermissionService = {};
  * @param callback function to be called if user granted with permission
  */
 PermissionService.hasPermission = function(targetId, targetType, permission, callback) {
-	$.get(baseUrl + '/security/has-permission',
+	$.get(baseUrl + '/security/haspermission',
 		{targetId:targetId, targetType:targetType, permission:permission})
-	.success(function(data) {
-		if (data.status == 'success') {
-			callback();
-		}
-	});
+		.success(function(data) {
+			if (data.status == 'Success') {
+				callback();
+			}
+		})
+		.error(function() {
+			bootbox.alert($labelUnexpectedError);
+		});
 }

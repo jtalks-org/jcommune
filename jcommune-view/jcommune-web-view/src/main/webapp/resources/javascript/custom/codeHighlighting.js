@@ -62,7 +62,10 @@ CodeHighlighting.displayReviewComments = function () {
             for (var i = 0; i < comments.length; i++) {
                 CodeHighlighting.addComment(comments[i]);
             }
-        }
+        },
+    	error: function() {
+    		bootbox.alert($labelUnexpectedError);
+    	}
     });
 }
 
@@ -97,7 +100,7 @@ CodeHighlighting.setupAddCommentFormHandlers = function () {
                 {lineNumber:lineNumber, body:body, id:0, authorId:0, authorUsername:""}
         )
             .success(function (data) {
-                if (data.status == 'success') {
+                if (data.status == 'Success') {
                     CodeHighlighting.removeAddCommentForm();
                     CodeHighlighting.addComment(data.result)
                 } else if (data.reason == 'validation') {

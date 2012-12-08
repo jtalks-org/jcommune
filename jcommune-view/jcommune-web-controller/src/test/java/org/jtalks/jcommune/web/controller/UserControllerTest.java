@@ -21,6 +21,7 @@ import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.springframework.security.core.context.SecurityContext;
@@ -110,7 +111,7 @@ public class UserControllerTest {
 
         JsonResponse jsonResponse = userController.registerUserAjax(dto, bindingResult, new Locale("ru"));
         
-        assertEquals(jsonResponse.getStatus(), "success");
+        assertEquals(jsonResponse.getStatus(), JsonResponseStatus.Success);
         assertNull(jsonResponse.getResult());
         verify(userService).registerUser(any(JCUser.class));
     }
@@ -126,7 +127,7 @@ public class UserControllerTest {
         when(bindingResult.getAllErrors()).thenReturn(errors);
         JsonResponse jsonResponse = userController.registerUserAjax(dto, bindingResult, new Locale("ru"));
         
-        assertEquals(jsonResponse.getStatus(), "fail");
+        assertEquals(jsonResponse.getStatus(), JsonResponseStatus.Fail);
         ObjectError objectError = ((List<ObjectError>) jsonResponse.getResult()).get(0);
 		assertEquals(objectError, error);
     }
@@ -213,7 +214,7 @@ public class UserControllerTest {
         .thenReturn(true);
         
         JsonResponse response = userController.loginAjax(null, null, "on", null, null);
-        assertEquals(response.getStatus(), "success");
+        assertEquals(response.getStatus(), JsonResponseStatus.Success);
         verify(userService).loginUser(anyString(), anyString(), eq(true), 
                 any(HttpServletRequest.class), any(HttpServletResponse.class));
     }
@@ -225,7 +226,7 @@ public class UserControllerTest {
         .thenReturn(false);
         
         JsonResponse response = userController.loginAjax(null, null, "off", null, null);
-        assertEquals(response.getStatus(), "fail");
+        assertEquals(response.getStatus(), JsonResponseStatus.Fail);
         verify(userService).loginUser(anyString(), anyString(), eq(false), 
                 any(HttpServletRequest.class), any(HttpServletResponse.class));
     }

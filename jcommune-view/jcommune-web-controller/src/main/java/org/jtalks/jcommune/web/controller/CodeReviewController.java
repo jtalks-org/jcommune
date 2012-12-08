@@ -29,6 +29,7 @@ import org.jtalks.jcommune.web.dto.CodeReviewCommentDto;
 import org.jtalks.jcommune.web.dto.CodeReviewDto;
 import org.jtalks.jcommune.web.dto.json.FailValidationJsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -164,7 +165,7 @@ public class CodeReviewController {
     @ResponseBody
     public JsonResponse getCodeReview(@PathVariable("reviewId") Long reviewId) throws NotFoundException {
         CodeReview review = codeReviewService.get(reviewId);
-        return new JsonResponse(JsonResponse.RESPONSE_STATUS_SUCCESS, new CodeReviewDto(review));
+        return new JsonResponse(JsonResponseStatus.Success, new CodeReviewDto(review));
     }
     
     /**
@@ -188,7 +189,7 @@ public class CodeReviewController {
         CodeReviewComment addedComment = codeReviewService.addComment(
                 reviewId, commentDto.getLineNumber(), commentDto.getBody());
         CodeReviewCommentDto addedCommentDto = new CodeReviewCommentDto(addedComment);
-        return new JsonResponse(JsonResponse.RESPONSE_STATUS_SUCCESS, addedCommentDto);
+        return new JsonResponse(JsonResponseStatus.Success, addedCommentDto);
     }
     
 }
