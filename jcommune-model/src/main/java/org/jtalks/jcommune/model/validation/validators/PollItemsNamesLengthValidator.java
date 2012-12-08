@@ -27,6 +27,8 @@ import org.springframework.util.CollectionUtils;
 
 
 /**
+ * It validates the list of poll items to find poll item that has
+ * incorrect length of the name. 
  * 
  * @author Anuar_Nurmakanov
  *

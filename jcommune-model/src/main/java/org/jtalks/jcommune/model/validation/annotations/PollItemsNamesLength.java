@@ -28,6 +28,8 @@ import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.model.validation.validators.PollItemsNamesLengthValidator;
 
 /**
+ * It's necessary to validate the all names of poll items to find
+ * poll items with incorrect length of the name.
  * 
  * @author Anuar_Nurmakanov
  *

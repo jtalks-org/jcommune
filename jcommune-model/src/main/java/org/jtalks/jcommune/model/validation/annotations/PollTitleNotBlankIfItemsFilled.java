@@ -28,6 +28,9 @@ import javax.validation.Payload;
 import org.jtalks.jcommune.model.validation.validators.PollTitleNotBlankIfItemsFilledValidator;
 
 /**
+ * It's necessary to validate the poll to find case when poll title is blank,
+ * but poll items are filled in poll.
+ * 
  * @author Anuar_Nurmakanov
  */
 @Target({TYPE, ANNOTATION_TYPE})

@@ -27,6 +27,7 @@ import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.validation.validators.PollItemsSizeValidator;
 
 /**
+ * It's necessary to check the size of the list of poll items.
  * 
  * @author Anuar_Nurmakanov
  * 

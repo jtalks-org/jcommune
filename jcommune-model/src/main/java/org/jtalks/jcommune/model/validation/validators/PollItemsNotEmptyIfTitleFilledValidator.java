@@ -26,6 +26,8 @@ import org.jtalks.jcommune.model.validation.annotations.PollItemsNotEmptyIfTitle
 import org.springframework.util.CollectionUtils;
 
 /**
+ * It validates the poll to find cases when poll items are empty,
+ * but title of the poll is filled.
  * 
  * @author Anuar_Nurmakanov
  *

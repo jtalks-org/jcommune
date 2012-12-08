@@ -26,6 +26,7 @@ import org.jtalks.jcommune.model.validation.annotations.PollItemsSize;
 import org.springframework.util.CollectionUtils;
 
 /**
+ * It validates the size of the list of poll items.
  * 
  * @author Anuar_Nurmakanov
  * 
@@ -51,7 +52,6 @@ public class PollItemsSizeValidator implements ConstraintValidator<PollItemsSize
         if (!CollectionUtils.isEmpty(pollItems)) {
             Range range = new IntRange(minSize, maxSize);
             if (!range.containsInteger(pollItems.size())) {
-
                 return false;
             }
         }
