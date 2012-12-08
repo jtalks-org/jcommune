@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-import org.jtalks.jcommune.model.validation.validators.PollFilledCompletelyValidator;
+import org.jtalks.jcommune.model.validation.validators.PollItemsNotEmptyIfTitleFilledValidator;
 
 /**
  * 
@@ -35,21 +35,21 @@ import org.jtalks.jcommune.model.validation.validators.PollFilledCompletelyValid
 @Target({TYPE, ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Constraint(validatedBy = PollFilledCompletelyValidator.class)
-public @interface PollFilledCompletely {
-    /**
-     * Resource bundle code for error message
-     */
-    String message() default "{defaultPoll.message}";
+@Constraint(validatedBy = PollItemsNotEmptyIfTitleFilledValidator.class)
+public @interface PollItemsNotEmptyIfTitleFilled {
+   /**
+    * Resource bundle code for error message
+    */
+   String message() default "{poll.items.not.blank}";
 
-    /**
-     * Groups settings for this validation constraint
-     */
-    Class<?>[] groups() default {};
+   /**
+    * Groups settings for this validation constraint
+    */
+   Class<?>[] groups() default {};
 
-    /**
-     * Payload element that specifies the payload with which the the
-     * constraint declaration is associated.
-     */
-    Class<? extends Payload>[] payload() default {};
+   /**
+    * Payload element that specifies the payload with which the the
+    * constraint declaration is associated.
+    */
+   Class<? extends Payload>[] payload() default {};
 }

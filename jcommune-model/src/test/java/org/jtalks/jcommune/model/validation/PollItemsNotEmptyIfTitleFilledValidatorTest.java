@@ -23,7 +23,7 @@ import javax.validation.ConstraintValidatorContext;
 import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollItem;
-import org.jtalks.jcommune.model.validation.validators.PollFilledCompletelyValidator;
+import org.jtalks.jcommune.model.validation.validators.PollItemsNotEmptyIfTitleFilledValidator;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.Assert;
@@ -35,19 +35,19 @@ import org.testng.annotations.Test;
  * @author Anuar_Nurmakanov
  *
  */
-public class PollFilledCompletelyValidatorTest {
+public class PollItemsNotEmptyIfTitleFilledValidatorTest {
     @Mock
     private ConstraintValidatorContext validatorContext;
-    private PollFilledCompletelyValidator validator;
+    private PollItemsNotEmptyIfTitleFilledValidator validator;
     
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
-        this.validator = new PollFilledCompletelyValidator();
+        this.validator = new PollItemsNotEmptyIfTitleFilledValidator();
     }
     
     @Test
-    public void testPollWithEmptyTitleAndEmptyItemsIsValid() {
+    public void testEmptyTitleAndEmptyItemsValid() {
         String title = StringUtils.EMPTY;
         List<PollItem> items = Collections.emptyList();
         Poll poll = new Poll(title);
@@ -59,7 +59,7 @@ public class PollFilledCompletelyValidatorTest {
     }
     
     @Test
-    public void testPollWithFilledTitleAndFilledItemsIsValid() {
+    public void testFilledTitleAndFilledItemsValid() {
         String title = "larks! Stands and deliver.";
         List<PollItem> items = Arrays.asList(new PollItem("larks"));
         Poll poll = new Poll(title);
@@ -71,8 +71,8 @@ public class PollFilledCompletelyValidatorTest {
     }
     
     @Test
-    public void testPollWithFilledTitleAndEmptyItemsIsInvalid() {
-        String title = "larks! Stands and deliver.";
+    public void testFilledTitleAndEmptyItemsInvalid() {
+        String title = "title";
         List<PollItem> items = Collections.emptyList();
         Poll poll = new Poll(title);
         poll.setPollItems(items);
@@ -80,19 +80,6 @@ public class PollFilledCompletelyValidatorTest {
         boolean isValid = validator.isValid(poll, validatorContext);
         
         Assert.assertFalse(isValid, 
-                "Poll has filled title, but the list of items is empty, so it must be invalid");
-    }
-    
-    @Test
-    public void testPollWithEmptyTitleAndFilledItemsIsInvalid() {
-        String title = StringUtils.EMPTY;
-        List<PollItem> items = Arrays.asList(new PollItem("larks"));
-        Poll poll = new Poll(title);
-        poll.setPollItems(items);
-        
-        boolean isValid = validator.isValid(poll, validatorContext);
-        
-        Assert.assertFalse(isValid, 
-                "Poll has the filled list of items, but title is empty, so it must be invalid");
+                "Poll has the empty list of items, but title is filled, so it must be invalid");
     }
 }

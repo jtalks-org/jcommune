@@ -22,7 +22,7 @@ import javax.validation.ConstraintValidatorContext;
 import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollItem;
-import org.jtalks.jcommune.model.validation.annotations.PollFilledCompletely;
+import org.jtalks.jcommune.model.validation.annotations.PollItemsNotEmptyIfTitleFilled;
 import org.springframework.util.CollectionUtils;
 
 /**
@@ -30,13 +30,15 @@ import org.springframework.util.CollectionUtils;
  * @author Anuar_Nurmakanov
  *
  */
-public class PollFilledCompletelyValidator implements ConstraintValidator<PollFilledCompletely, Poll> {
+public class PollItemsNotEmptyIfTitleFilledValidator 
+    implements ConstraintValidator<PollItemsNotEmptyIfTitleFilled, Poll> {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void initialize(PollFilledCompletely constraintAnnotation) {
+    public void initialize(PollItemsNotEmptyIfTitleFilled constraintAnnotation) {
+        
     }
 
     /**
@@ -49,12 +51,9 @@ public class PollFilledCompletelyValidator implements ConstraintValidator<PollFi
         boolean isTitleFilled = StringUtils.isNotBlank(pollTitle);
         boolean isItemsFilled = !CollectionUtils.isEmpty(pollItems);
         //
-        boolean isFilledCompletely = true;
         if (isTitleFilled && !isItemsFilled) {
-            isFilledCompletely = false;
-        } else if(!isTitleFilled && isItemsFilled) {
-            isFilledCompletely = false;
-        }
-        return isFilledCompletely;
+            return false;
+        } 
+        return true;
     }
 }

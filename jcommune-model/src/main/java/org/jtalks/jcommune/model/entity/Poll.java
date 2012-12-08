@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.Size;
 
@@ -31,8 +30,11 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.jtalks.common.model.entity.Entity;
-import org.jtalks.jcommune.model.validation.annotations.PollFilledCompletely;
+import org.jtalks.jcommune.model.validation.annotations.PollItemsNamesLength;
+import org.jtalks.jcommune.model.validation.annotations.PollItemsNotEmptyIfTitleFilled;
+import org.jtalks.jcommune.model.validation.annotations.PollItemsSize;
 import org.jtalks.jcommune.model.validation.annotations.PollItemsWithoutDuplicates;
+import org.jtalks.jcommune.model.validation.annotations.PollTitleNotBlankIfItemsFilled;
 import org.springframework.util.CollectionUtils;
 
 /**
@@ -42,7 +44,8 @@ import org.springframework.util.CollectionUtils;
  *
  * @author Anuar Nurmakanov
  */
-@PollFilledCompletely
+@PollTitleNotBlankIfItemsFilled
+@PollItemsNotEmptyIfTitleFilled
 public class Poll extends Entity {
     private static final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("dd-MM-yyyy");
     private static final String SEPARATOR = System.getProperty("line.separator");
@@ -57,8 +60,8 @@ public class Poll extends Entity {
     private boolean multipleAnswer;
     @Future
     private DateTime endingDate;
-    @Valid
-    @Size(min = Poll.MIN_ITEMS_NUMBER, max = Poll.MAX_ITEMS_NUMBER, message = "{poll.items.size}")
+    @PollItemsSize
+    @PollItemsNamesLength
     @PollItemsWithoutDuplicates
     private List<PollItem> pollItems = new ArrayList<PollItem>();
     private Topic topic;

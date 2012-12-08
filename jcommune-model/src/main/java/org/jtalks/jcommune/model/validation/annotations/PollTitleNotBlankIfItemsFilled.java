@@ -14,7 +14,8 @@
  */
 package org.jtalks.jcommune.model.validation.annotations;
 
-import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.TYPE;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -24,42 +25,29 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-import org.jtalks.jcommune.model.entity.PollItem;
-import org.jtalks.jcommune.model.validation.validators.PollItemNameLengthValidator;
+import org.jtalks.jcommune.model.validation.validators.PollTitleNotBlankIfItemsFilledValidator;
 
 /**
- * 
  * @author Anuar_Nurmakanov
- *
  */
-@Target({FIELD})
+@Target({TYPE, ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Constraint(validatedBy = PollItemNameLengthValidator.class)
-public @interface PollItemNameLength {
-    /**
-     * Resource bundle code for error message
-     */
-    String message() default "{poll.item.length}";
+@Constraint(validatedBy = PollTitleNotBlankIfItemsFilledValidator.class)
+public @interface PollTitleNotBlankIfItemsFilled {
+   /**
+    * Resource bundle code for error message
+    */
+   String message() default "{poll.title.not.blank}";
 
-    /**
-     * Groups settings for this validation constraint
-     */
-    Class<?>[] groups() default {};
+   /**
+    * Groups settings for this validation constraint
+    */
+   Class<?>[] groups() default {};
 
-    /**
-     * Payload element that specifies the payload with which the the
-     * constraint declaration is associated.
-     */
-    Class<? extends Payload>[] payload() default {};
-    
-    /**
-     * Min value for poll item length.
-     */
-    int min() default PollItem.MIN_ITEM_LENGTH;
-
-    /**
-     * Max value for poll item length.
-     */
-    int max() default PollItem.MAX_ITEM_LENGTH;
+   /**
+    * Payload element that specifies the payload with which the the
+    * constraint declaration is associated.
+    */
+   Class<? extends Payload>[] payload() default {};
 }

@@ -14,10 +14,15 @@
  */
 package org.jtalks.jcommune.model.validation;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import javax.validation.ConstraintValidatorContext;
 
-import org.jtalks.jcommune.model.validation.annotations.PollItemNameLength;
-import org.jtalks.jcommune.model.validation.validators.PollItemNameLengthValidator;
+import org.jtalks.jcommune.model.entity.PollItem;
+import org.jtalks.jcommune.model.validation.annotations.PollItemsNamesLength;
+import org.jtalks.jcommune.model.validation.validators.PollItemsNamesLengthValidator;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -34,57 +39,72 @@ public class PollItemNameLengthValidatorTest {
     @Mock
     private ConstraintValidatorContext validatorContext;
     @Mock
-    private PollItemNameLength pollItemNameLength;
-    private PollItemNameLengthValidator validator;
+    private PollItemsNamesLength pollItemsNamesLength;
+    private PollItemsNamesLengthValidator validator;
     
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
-        this.validator = new PollItemNameLengthValidator();
+        this.validator = new PollItemsNamesLengthValidator();
+    }
+    
+    public void testEmptyPollItemsAreValid() {
+        int min = 5;
+        int max = 10;
+        List<PollItem> pollItems = Collections.emptyList();
+        Mockito.when(pollItemsNamesLength.min()).thenReturn(min);
+        Mockito.when(pollItemsNamesLength.max()).thenReturn(max);
+        
+        validator.initialize(pollItemsNamesLength);
+        boolean isValid = validator.isValid(pollItems, validatorContext);
+        
+        Assert.assertTrue(isValid, "PollItem list is empty, so it must be valid");
     }
     
     @Test
-    public void testPollItemLengthBetweenMinAndMaxIsValid() {
+    public void testPollItemNameLengthBetweenMinAndMaxIsValid() {
         String pollItemName = "1234567";
         int min = 5;
         int max = 10;
-        Mockito.when(pollItemNameLength.min()).thenReturn(min);
-        Mockito.when(pollItemNameLength.max()).thenReturn(max);
+        List<PollItem> pollItems = Arrays.asList(new PollItem(pollItemName));
+        Mockito.when(pollItemsNamesLength.min()).thenReturn(min);
+        Mockito.when(pollItemsNamesLength.max()).thenReturn(max);
         
-        validator.initialize(pollItemNameLength);
-        boolean isValid = validator.isValid(pollItemName, validatorContext);
+        validator.initialize(pollItemsNamesLength);
+        boolean isValid = validator.isValid(pollItems, validatorContext);
         
-        Assert.assertTrue(isValid, "PollItem has correct lenght, so it must be valid");
+        Assert.assertTrue(isValid, "PollItems have correct names lenght, so they must be valid");
     }
     
     @Test
-    public void testPollItemLenghtLessThanMinIsInvalid() {
+    public void testPollItemNameLenghtLessThanMinIsInvalid() {
         String pollItemName = "123";
         int min = 5;
         int max = 10;
+        List<PollItem> pollItems = Arrays.asList(new PollItem(pollItemName));
+        Mockito.when(pollItemsNamesLength.min()).thenReturn(min);
+        Mockito.when(pollItemsNamesLength.max()).thenReturn(max);
         
-        Mockito.when(pollItemNameLength.min()).thenReturn(min);
-        Mockito.when(pollItemNameLength.max()).thenReturn(max);
-        
-        validator.initialize(pollItemNameLength);
-        boolean isValid = validator.isValid(pollItemName, validatorContext);
+        validator.initialize(pollItemsNamesLength);
+        boolean isValid = validator.isValid(pollItems, validatorContext);
         
         Assert.assertFalse(isValid, 
-                "PollItems has length, that less than min possible, so it must be invalid");
+                "PollItems has names length, that less than min possible, so they must be invalid");
     }
     
     @Test
-    public void testPollItemLengthMoreThanMaxIsInvalid() {
+    public void testPollItemNameLengthMoreThanMaxIsInvalid() {
         String pollItemName = "1234567890123456789";
         int min = 5;
         int max = 10;
-        Mockito.when(pollItemNameLength.min()).thenReturn(min);
-        Mockito.when(pollItemNameLength.max()).thenReturn(max);
+        List<PollItem> pollItems = Arrays.asList(new PollItem(pollItemName));
+        Mockito.when(pollItemsNamesLength.min()).thenReturn(min);
+        Mockito.when(pollItemsNamesLength.max()).thenReturn(max);
         
-        validator.initialize(pollItemNameLength);
-        boolean isValid = validator.isValid(pollItemName, validatorContext);
+        validator.initialize(pollItemsNamesLength);
+        boolean isValid = validator.isValid(pollItems, validatorContext);
         
         Assert.assertFalse(isValid, 
-                "Poll has size of the items, that more than min possible size, so it must be invalid");
+                "PollItems has names lenght, that more than min possible size, so they must be invalid");
     }
 }

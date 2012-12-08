@@ -14,38 +14,47 @@
  */
 package org.jtalks.jcommune.model.validation.validators;
 
+import java.util.List;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import org.apache.commons.lang.math.IntRange;
 import org.apache.commons.lang.math.Range;
-import org.jtalks.jcommune.model.validation.annotations.PollItemNameLength;
+import org.jtalks.jcommune.model.entity.PollItem;
+import org.jtalks.jcommune.model.validation.annotations.PollItemsSize;
+import org.springframework.util.CollectionUtils;
 
 /**
  * 
  * @author Anuar_Nurmakanov
- *
+ * 
  */
-public class PollItemNameLengthValidator implements ConstraintValidator<PollItemNameLength, String> {
-    private int minLength;
-    private int maxLenght;
-    
+public class PollItemsSizeValidator implements ConstraintValidator<PollItemsSize, List<PollItem>> {
+    private int minSize;
+    private int maxSize;
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public void initialize(PollItemNameLength constraintAnnotation) {
-        this.minLength = constraintAnnotation.min();
-        this.maxLenght = constraintAnnotation.max();
+    public void initialize(PollItemsSize constraintAnnotation) {
+        this.minSize = constraintAnnotation.min();
+        this.maxSize = constraintAnnotation.max();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean isValid(String pollItemName, ConstraintValidatorContext context) {
-        Range range = new IntRange(minLength, maxLenght);
-        int pollItemLength = pollItemName.length();
-        return range.containsInteger(pollItemLength);
+    public boolean isValid(List<PollItem> pollItems, ConstraintValidatorContext context) {
+        if (!CollectionUtils.isEmpty(pollItems)) {
+            Range range = new IntRange(minSize, maxSize);
+            if (!range.containsInteger(pollItems.size())) {
+
+                return false;
+            }
+        }
+        return true;
     }
 }
