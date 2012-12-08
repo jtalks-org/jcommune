@@ -35,7 +35,7 @@ import org.testng.annotations.Test;
  * @author Anuar_Nurmakanov
  *
  */
-public class PollItemNameLengthValidatorTest {
+public class PollItemsNamesLengthValidatorTest {
     @Mock
     private ConstraintValidatorContext validatorContext;
     @Mock

@@ -57,8 +57,6 @@ public @interface PollItemsNotEmptyIfTitleFilled {
    /**
     * Get the name of validated poll items field. It's needed to
     * construct constraint violation error.
-    * 
-    * @return the name of validated poll items field
     */
    String pollItemsFieldName() default "pollItems";
 }
