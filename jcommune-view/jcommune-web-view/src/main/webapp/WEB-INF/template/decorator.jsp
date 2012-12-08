@@ -45,7 +45,7 @@
           href="${pageContext.request.contextPath}/resources/css/screen.css"/>
     <link rel="stylesheet" type="text/css" media="screen, projection"
           href="${pageContext.request.contextPath}/resources/css/i18n/<spring:message code="locale.code"/>.css"/>
-    <link rel="stylesheet" type="text/css" media="screen, projection" 
+    <link rel="stylesheet" type="text/css" media="screen, projection"
           href='${pageContext.request.contextPath}/resources/css/fonts-googleapis-com.css'/>
     <link rel="shortcut icon" type="image/x-icon"
           href="${pageContext.request.contextPath}/resources/images/favicon.ico"/>
@@ -63,6 +63,8 @@
             src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery.offtmp.js"></script>
     <script
             src="${pageContext.request.contextPath}/resources/javascript/custom/URLBuilder.js"></script>
+    <script
+            src="${pageContext.request.contextPath}/resources/javascript/custom/keymaps.js"></script>
     <script
             src="${pageContext.request.contextPath}/resources/javascript/custom/registration.js"></script>
     <script src='${pageContext.request.contextPath}/resources/javascript/custom/signin.js'

@@ -55,17 +55,17 @@ CodeHighlighting.addComment = function (comment) {
 CodeHighlighting.displayReviewComments = function () {
     var codeReviewId = $('#codeReviewId').val();
     $.ajax({
-        url:baseUrl + '/reviews/' + codeReviewId + '/json',
-        type:"GET",
-        success:function (data) {
+        url: baseUrl + '/reviews/' + codeReviewId + '/json',
+        type: "GET",
+        success: function (data) {
             var comments = data.result.comments;
             for (var i = 0; i < comments.length; i++) {
                 CodeHighlighting.addComment(comments[i]);
             }
         },
-    	error: function() {
-    		bootbox.alert($labelUnexpectedError);
-    	}
+        error: function () {
+            bootbox.alert($labelUnexpectedError);
+        }
     });
 }
 
@@ -81,40 +81,46 @@ CodeHighlighting.setupAddCommentFormHandlers = function () {
             var index = $(this).index();
             $(this).after(CodeHighlighting.getAddCommentForm(index + 1));
         }
+        var reviewContent = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' textarea');
+        reviewContent.keydown(Keymaps.review);
+        reviewContent.focus();
+
     });
 
     $('.script-first-post').on('click', "input:button[name=submit]", function (event) {
-		event.stopPropagation();
-		
-		var formContainer = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID);
-		if (Antimultipost.beingSubmitted(formContainer)) {
-			return;
-		}
-		Antimultipost.disableSubmit(formContainer);
-		
+        event.stopPropagation();
+
+        var formContainer = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID);
+        if (Antimultipost.beingSubmitted(formContainer)) {
+            return;
+        }
+        Antimultipost.disableSubmit(formContainer);
+
         var reviewId = $('#codeReviewId').val();
         var lineNumber = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=lineNumber]').val();
         var body = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=body]').val();
         $.post(
                 baseUrl + '/reviews/' + reviewId + '/add-comment',
-                {lineNumber:lineNumber, body:body, id:0, authorId:0, authorUsername:""}
+                {lineNumber: lineNumber, body: body, id: 0, authorId: 0, authorUsername: ""}
         )
-            .success(function (data) {
-                if (data.status == 'Success') {
-                    CodeHighlighting.removeAddCommentForm();
-                    CodeHighlighting.addComment(data.result)
-                } else if (data.reason == 'validation') {
-                	CodeHighlighting.displayValidationErrors(data.result);
-                } else {
-                	bootbox.alert($labelUnexpectedError);
-                }
-            })
-            .error(function (data) {
-                bootbox.alert($labelUnexpectedError);
-            })
-			.complete(function() {
-				Antimultipost.enableSubmit(formContainer);
-			});
+                .success(function (data) {
+                    if (data.status == 'Success') {
+                        CodeHighlighting.removeAddCommentForm();
+                        CodeHighlighting.addComment(data.result)
+                    }
+                    else if (data.reason == 'validation') {
+                        CodeHighlighting.displayValidationErrors(data.result);
+                    }
+                    else {
+                        bootbox.alert($labelUnexpectedError);
+                    }
+                })
+                .error(function (data) {
+                    bootbox.alert($labelUnexpectedError);
+                })
+                .complete(function () {
+                    Antimultipost.enableSubmit(formContainer);
+                });
     });
 
     $('.script-first-post').on('click', 'input:button[name=cancel]', function (event) {
@@ -130,20 +136,20 @@ CodeHighlighting.setupAddCommentFormHandlers = function () {
  */
 CodeHighlighting.getCommentHtml = function (comment) {
     var result =
-        '<div class="review-container"> '
-            + '<div class="review-avatar">'
-                + '<img class="review-avatar-img" src="' + baseUrl + '/users/' + comment.authorId + '/avatar"/>'
-            + '</div>'
-            + '<div class="review-content">'
-                + '<div class="review-header">'
+            '<div class="review-container"> '
+                    + '<div class="review-avatar">'
+                    + '<img class="review-avatar-img" src="' + baseUrl + '/users/' + comment.authorId + '/avatar"/>'
+                    + '</div>'
+                    + '<div class="review-content">'
+                    + '<div class="review-header">'
                     + '<a href="' + baseUrl + '/users/' + comment.authorId + '">' + comment.authorUsername + '</a>'
                     + ' ' + $labelReviewSays + ': '
-                + '</div>'
-                + '<div class="review-body">'
+                    + '</div>'
+                    + '<div class="review-body">'
                     + comment.body
-                + '</div>'
-            + '</div>'
-        + '</div>';
+                    + '</div>'
+                    + '</div>'
+                    + '</div>';
     return result;
 }
 
@@ -154,16 +160,17 @@ CodeHighlighting.getCommentHtml = function (comment) {
  */
 CodeHighlighting.getAddCommentForm = function (lineNumber) {
     var result =
-        '<div id="' + CodeHighlighting.ADD_COMMENT_FORM_ID + '" class="review-container">'
-            + '<div class="control-group">'
-                + '<input type=hidden name=lineNumber value="' + lineNumber + '"/>'
-                + '<textarea name="body" class="review-container-content"/>'
-            + '</div>'
-            + '<div>'
-                + '<input type=button name=submit value="' + $labelAdd + '" class="btn btn-primary review-container-controls-ok"/>'
-                + '<input type=button name=cancel value="' + $labelCancel + '" class="btn review-container-controls-cancel"/>'
-            + '</div>'
-        + '</div>';
+            '<div id="' + CodeHighlighting.ADD_COMMENT_FORM_ID + '" class="review-container">'
+                    + '<div class="control-group">'
+                    + '<input type=hidden name=lineNumber value="' + lineNumber + '"/>'
+                    + '<textarea name="body" class="review-container-content"/>'
+                    + '</div>'
+                    + '<div>'
+                    + '<input type=button name=submit value="' + $labelAdd + '" class="btn btn-primary review-container-controls-ok"/>'
+                    + '<input type=button name=cancel value="' + $labelCancel + '" class="btn review-container-controls-cancel"/>'
+                    + '</div>'
+                    + '<span class="keymaps-caption">' + $labelKeymapsReview + '</span>'
+                    + '</div>';
     return result;
 }
 
@@ -176,20 +183,20 @@ CodeHighlighting.removeAddCommentForm = function () {
 
 /**
  * Display error messages
- * 
+ *
  * @param errors list or errors
  */
-CodeHighlighting.displayValidationErrors = function(errors) {
-	$('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' span.help-inline').remove();
-	
-	if (errors.length > 0) {
-		var currentControlGroup = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=body]').parent();
-		currentControlGroup.addClass("error");
-		currentControlGroup.append('<span class="help-inline"/>');
-		
-		var errorsContainer = currentControlGroup.find('span.help-inline');
-		for (var i = 0; i < errors.length; i++) {
-			errorsContainer.append(errors[i].message + '<br/>');
-		}
-	}
+CodeHighlighting.displayValidationErrors = function (errors) {
+    $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' span.help-inline').remove();
+
+    if (errors.length > 0) {
+        var currentControlGroup = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=body]').parent();
+        currentControlGroup.addClass("error");
+        currentControlGroup.append('<span class="help-inline"/>');
+
+        var errorsContainer = currentControlGroup.find('span.help-inline');
+        for (var i = 0; i < errors.length; i++) {
+            errorsContainer.append(errors[i].message + '<br/>');
+        }
+    }
 }
