@@ -19,12 +19,15 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.validation.ConstraintValidatorContext;
+import javax.validation.ConstraintValidatorContext.ConstraintViolationBuilder;
+import javax.validation.ConstraintValidatorContext.ConstraintViolationBuilder.NodeBuilderDefinedContext;
 
 import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.model.validation.validators.PollItemsNotEmptyIfTitleFilledValidator;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -38,6 +41,10 @@ import org.testng.annotations.Test;
 public class PollItemsNotEmptyIfTitleFilledValidatorTest {
     @Mock
     private ConstraintValidatorContext validatorContext;
+    @Mock
+    private ConstraintViolationBuilder constraintViolationBuilder;
+    @Mock
+    private NodeBuilderDefinedContext nodeBuilderDefinedContext;
     private PollItemsNotEmptyIfTitleFilledValidator validator;
     
     @BeforeMethod
@@ -76,10 +83,22 @@ public class PollItemsNotEmptyIfTitleFilledValidatorTest {
         List<PollItem> items = Collections.emptyList();
         Poll poll = new Poll(title);
         poll.setPollItems(items);
+        String defaultErrorMessage = "message";
+        Mockito.when(validatorContext.getDefaultConstraintMessageTemplate())
+            .thenReturn(defaultErrorMessage);
+        Mockito.when(validatorContext.buildConstraintViolationWithTemplate(defaultErrorMessage))
+            .thenReturn(constraintViolationBuilder);
+        Mockito.when(constraintViolationBuilder.addNode(Mockito.anyString()))
+            .thenReturn(nodeBuilderDefinedContext);
+        
         
         boolean isValid = validator.isValid(poll, validatorContext);
         
         Assert.assertFalse(isValid, 
                 "Poll has the empty list of items, but title is filled, so it must be invalid");
+        Mockito.verify(validatorContext).getDefaultConstraintMessageTemplate();
+        Mockito.verify(validatorContext).buildConstraintViolationWithTemplate(defaultErrorMessage);
+        Mockito.verify(constraintViolationBuilder).addNode(Mockito.anyString());
+        Mockito.verify(nodeBuilderDefinedContext).addConstraintViolation();
     }
 }

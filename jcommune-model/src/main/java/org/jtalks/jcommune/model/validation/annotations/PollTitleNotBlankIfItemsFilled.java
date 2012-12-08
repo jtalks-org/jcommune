@@ -50,4 +50,12 @@ public @interface PollTitleNotBlankIfItemsFilled {
     * constraint declaration is associated.
     */
    Class<? extends Payload>[] payload() default {};
+   
+   /**
+    * Get the name of validated title field. It's needed to
+    * construct constraint violation error.
+    * 
+    * @return the name of validated title field
+    */
+   String titleFieldName() default "title";
 }

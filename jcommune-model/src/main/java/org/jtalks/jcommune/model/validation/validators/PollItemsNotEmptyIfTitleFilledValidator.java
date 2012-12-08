@@ -32,13 +32,14 @@ import org.springframework.util.CollectionUtils;
  */
 public class PollItemsNotEmptyIfTitleFilledValidator 
     implements ConstraintValidator<PollItemsNotEmptyIfTitleFilled, Poll> {
-
+    private String pollItemsFieldName;
+    
     /**
      * {@inheritDoc}
      */
     @Override
     public void initialize(PollItemsNotEmptyIfTitleFilled constraintAnnotation) {
-        
+        this.pollItemsFieldName = constraintAnnotation.pollItemsFieldName();
     }
 
     /**
@@ -52,8 +53,23 @@ public class PollItemsNotEmptyIfTitleFilledValidator
         boolean isItemsFilled = !CollectionUtils.isEmpty(pollItems);
         //
         if (isTitleFilled && !isItemsFilled) {
+            addConstraintViolatedErrorMessage(context);
             return false;
         } 
         return true;
+    }
+    
+    /**
+     * We must show error for the list of items of validated poll, so
+     * we must change the node name in error message to do it.
+     * 
+     * @param context to add error message for the title fields
+     */
+    private void addConstraintViolatedErrorMessage(ConstraintValidatorContext context) {
+        String message = context.getDefaultConstraintMessageTemplate();
+        context.disableDefaultConstraintViolation();
+        context.buildConstraintViolationWithTemplate(message)
+                .addNode(pollItemsFieldName)
+                .addConstraintViolation();
     }
 }
