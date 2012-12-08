@@ -138,7 +138,6 @@
             </div>
         </div>
         <%-- End of pagination --%>
-
 </div>
 <%--/container--%>
 <div class="footer_buffer"></div>

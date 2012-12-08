@@ -87,15 +87,24 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void inboxPage() {
+        int page = 1;
+        boolean pagingEnabled = true;
+        List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(JC_USER, JC_USER,
+                "Message title", "Private message body"));
+        Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
+
+        when(pmService.getInboxForCurrentUser(page, pagingEnabled)).thenReturn(expectedPage);
+
         //invoke the object under test
-        ModelAndView mav = controller.inboxPage();
+        ModelAndView mav = controller.inboxPage(page, pagingEnabled);
 
         //check expectations
-        verify(pmService).getInboxForCurrentUser();
+        verify(pmService).getInboxForCurrentUser(page, pagingEnabled);
 
         //check result
         assertViewName(mav, "pm/inbox");
-        assertAndReturnModelAttributeOfType(mav, "pmList", List.class);
+        assertModelAttributeAvailable(mav, "inboxPage");
+        assertModelAttributeAvailable(mav, "pagingEnabled");
     }
 
     @Test
@@ -113,9 +122,6 @@ public class PrivateMessageControllerTest {
 
         //check expectations
         verify(pmService).getOutboxForCurrentUser(page, pagingEnabled);
-
-        verify(pmService).getOutboxForCurrentUser(page, pagingEnabled);
-
         //check result
         assertViewName(mav, "pm/outbox");
         assertModelAttributeAvailable(mav, "outboxPage");

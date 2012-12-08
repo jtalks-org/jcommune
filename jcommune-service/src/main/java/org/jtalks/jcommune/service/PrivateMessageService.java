@@ -33,9 +33,12 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
     /**
      * Get all inbox messages for the current user.
      *
-     * @return the list of messages
+     * @param page          page number for needed messages.
+     * @param pagingEnabled if {@code true} then it returns messages for one page,
+     *                      otherwise it return all messages for current user.
+     * @return object with messages for one page and pagination information.
      */
-    List<PrivateMessage> getInboxForCurrentUser();
+    Page<PrivateMessage> getInboxForCurrentUser(int page, boolean pagingEnabled);
 
     /**
      * Get all outgoing messages from the current user.

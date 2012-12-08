@@ -25,6 +25,7 @@ import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.model.entity.Topic;
 
 import java.util.ArrayList;
@@ -81,12 +82,28 @@ public final class PersistedObjectsFactory {
      * @param size message number.
      * @return saved pm list.
      */
-    public static List<PrivateMessage> createAndSavePrivateMessageList(int size, JCUser userTo,
-                                                                       JCUser userFrom) {
+    public static List<PrivateMessage> preparePrivateMessageListWithSentNewDeletedStatuses(int size, JCUser userTo,
+                                                                                           JCUser userFrom) {
         List<PrivateMessage> messages = new ArrayList<PrivateMessage>(size);
         for (int i = 0; i < size; i++) {
             PrivateMessage pm = new PrivateMessage(userTo, userFrom,
                     "Message title", "Private message body");
+            if (i % 2 == 0) {
+                pm.setStatus(PrivateMessageStatus.SENT);
+            } else {
+                pm.setStatus(PrivateMessageStatus.NEW);
+            }
+            messages.add(pm);
+            persist(pm);
+        }
+        for (int i = 0; i < size; i++) {
+            PrivateMessage pm = new PrivateMessage(userTo, userFrom,
+                    "Message title", "Private message body");
+            if (i % 2 == 0) {
+                pm.setStatus(PrivateMessageStatus.DELETED_FROM_OUTBOX);
+            } else {
+                pm.setStatus(PrivateMessageStatus.DELETED_FROM_INBOX);
+            }
             messages.add(pm);
             persist(pm);
         }

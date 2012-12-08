@@ -105,9 +105,17 @@ public class TransactionalPrivateMessageServiceTest {
 
     @Test
     public void testGetInboxForCurrentUser() {
-        when(pmDao.getAllForUser(user)).thenReturn(new ArrayList<PrivateMessage>());
+        int pageNumber = 1;
+        boolean pagingEnabled = true;
+        List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(user, user,
+                "Message title", "Private message body"));
+        Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
+        when(pmDao.getAllForUser(eq(user), Matchers.<JCommunePageRequest>any())).thenReturn(expectedPage);
 
-        pmService.getInboxForCurrentUser();
+        Page<PrivateMessage> actual = pmService.getInboxForCurrentUser(pageNumber, pagingEnabled);
+
+        verify(pmDao).getAllForUser(eq(user), Matchers.<JCommunePageRequest>any());
+        assertEquals(expectedPage, actual);
     }
 
     @Test

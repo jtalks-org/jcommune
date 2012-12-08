@@ -44,15 +44,17 @@ public class PrivateMessageHibernateDao extends
      */
     @Override
     public Page<PrivateMessage> getAllFromUser(JCUser userFrom, JCommunePageRequest pageRequest) {
+        PrivateMessageStatus[] notInStatuses = {PrivateMessageStatus.DRAFT, PrivateMessageStatus.DELETED_FROM_OUTBOX,
+        PrivateMessageStatus.DELETED_FROM_INBOX};
         Number totalCount = (Number) getSession()
                 .getNamedQuery("getCountUserSentPm")
                 .setParameter("userFrom", userFrom)
+                .setParameterList(STATUSES, notInStatuses)
                 .uniqueResult();
 
-        PrivateMessageStatus[] statuses = {PrivateMessageStatus.DRAFT, PrivateMessageStatus.DELETED_FROM_OUTBOX};
         Query query = getSession().getNamedQuery("getAllFromUser")
                 .setCacheable(true)
-                .setParameterList(STATUSES, statuses)
+                .setParameterList(STATUSES, notInStatuses)
                 .setEntity("user", userFrom);
 
         if (pageRequest.isPagingEnabled()) {
@@ -69,13 +71,24 @@ public class PrivateMessageHibernateDao extends
      * {@inheritDoc}
      */
     @Override
-    public List<PrivateMessage> getAllForUser(JCUser userTo) {
-        PrivateMessageStatus[] statuses = {PrivateMessageStatus.DRAFT, PrivateMessageStatus.DELETED_FROM_INBOX};
-        return getSession().getNamedQuery("getAllToUser")
+    public Page<PrivateMessage> getAllForUser(JCUser userTo, JCommunePageRequest pageRequest) {
+        PrivateMessageStatus[] notInStatuses = {PrivateMessageStatus.DRAFT, PrivateMessageStatus.DELETED_FROM_OUTBOX,
+                PrivateMessageStatus.DELETED_FROM_INBOX};
+        Number totalCount = (Number) getSession()
+                .getNamedQuery("getCountUserInboxPm")
+                .setParameter("userTo", userTo)
+                .setParameterList(STATUSES, notInStatuses)
+                .uniqueResult();
+        Query query = getSession().getNamedQuery("getAllToUser")
                 .setCacheable(true)
-                .setParameterList(STATUSES, statuses)
-                .setEntity("user", userTo)
-                .list();
+                .setParameterList(STATUSES, notInStatuses)
+                .setEntity("user", userTo);
+        if (pageRequest.isPagingEnabled()) {
+            query.setFirstResult(pageRequest.getIndexOfFirstItem());
+            query.setMaxResults(pageRequest.getPageSize());
+        }
+        List<PrivateMessage> messages = (List<PrivateMessage>) query.list();
+        return new PageImpl<PrivateMessage>(messages, pageRequest, totalCount.intValue());
     }
 
     /**

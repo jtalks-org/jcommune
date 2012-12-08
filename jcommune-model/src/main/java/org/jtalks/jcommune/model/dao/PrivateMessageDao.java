@@ -45,9 +45,10 @@ public interface PrivateMessageDao extends ParentRepository<PrivateMessage> {
      * Get all private messages to the specified user.
      *
      * @param userTo the recipient of the messages
+     * @param pageRequest pagination information.
      * @return the list of messages
      */
-    List<PrivateMessage> getAllForUser(JCUser userTo);
+    Page<PrivateMessage> getAllForUser(JCUser userTo, JCommunePageRequest pageRequest);
 
     /**
      * Get draft messages for user,

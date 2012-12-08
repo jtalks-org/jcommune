@@ -94,9 +94,14 @@ public class PrivateMessageController {
      * @return {@code ModelAndView} with added list of inbox messages
      */
     @RequestMapping(value = "/inbox", method = RequestMethod.GET)
-    public ModelAndView inboxPage() {
+    public ModelAndView inboxPage(@RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
+                                  @RequestParam(value = "pagingEnabled", defaultValue = "true", required = false)
+                                  Boolean pagingEnabled) {
+        Page<PrivateMessage> inboxPage = pmService.getInboxForCurrentUser(page, pagingEnabled);
+
         return new ModelAndView("pm/inbox")
-            .addObject("pmList", pmService.getInboxForCurrentUser());
+                .addObject("inboxPage", inboxPage)
+                .addObject("pagingEnabled", pagingEnabled);
     }
 
     /**

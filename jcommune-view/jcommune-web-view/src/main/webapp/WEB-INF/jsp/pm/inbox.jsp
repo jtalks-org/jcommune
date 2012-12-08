@@ -26,7 +26,22 @@
 </head>
 <body>
 <div class="container">
-    <h2><spring:message code="label.pm_title"/></h2>
+    <%-- Start of pagination --%>
+    <div class="row-fluid upper-pagination forum-pagination-container">
+        <div class="span3">
+            <h2><spring:message code="label.pm_title"/></h2>
+        </div>
+
+        <div class="span9">
+            <div class="pagination pull-right forum-pagination">
+                <ul>
+                    <jtalks:pagination uri="" page="${inboxPage}" numberLink="3"
+                                       pagingEnabled="${pagingEnabled}"/>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <%-- End of pagination --%>
     <hr/>
     <div class="row">
         <div class="span2">
@@ -64,8 +79,8 @@
                 <tbody>
 
                 <c:choose>
-                    <c:when test="${!(empty pmList)}">
-                        <c:forEach var="pm" items="${pmList}">
+                    <c:when test="${!(empty inboxPage.content)}">
+                        <c:forEach var="pm" items="${inboxPage.content}">
                             <c:choose>
                                 <c:when test="${pm.read}">
                                     <tr id="${pm.id}" class="mess" >
@@ -102,6 +117,23 @@
         <!-- /span9 -->
     </div>
     <!-- /row -->
+        <hr/>
+        <%-- Start of pagination --%>
+        <div class="row-fluid upper-pagination forum-pagination-container">
+            <div class="span3">
+                <h2><spring:message code="label.pm_title"/></h2>
+            </div>
+
+            <div class="span9">
+                <div class="pagination pull-right forum-pagination">
+                    <ul>
+                        <jtalks:pagination uri="" page="${inboxPage}" numberLink="3"
+                                           pagingEnabled="${pagingEnabled}"/>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <%-- End of pagination --%>
 </div>
 <!-- /container -->
 

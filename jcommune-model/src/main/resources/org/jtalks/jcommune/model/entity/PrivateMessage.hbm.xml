@@ -68,6 +68,13 @@
              and pm.read = :read]]>
     </query>
     <query name="getCountUserSentPm">
-        <![CDATA[SELECT count(*) FROM PrivateMessage pm WHERE pm.userFrom = :userFrom]]>
+        <![CDATA[SELECT count(*) FROM PrivateMessage as pm
+        WHERE pm.userFrom = :userFrom
+        and pm.status not in (:statuses)]]>
+    </query>
+    <query name="getCountUserInboxPm">
+        <![CDATA[SELECT count(*) FROM PrivateMessage as pm
+        WHERE pm.userTo = :userTo
+        and pm.status not in (:statuses)]]>
     </query>
 </hibernate-mapping>
