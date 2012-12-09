@@ -132,7 +132,6 @@
                     <form:textarea path="topic.poll.pollItemsValue" tabindex="700" rows="8" id="pollItems"
                                    class="post script-confirm-unsaved" placeholder="${optionsPlaceholder}"/>
                     <br>
-                    <form:errors path="topic.poll.pollItemsValue" cssClass="help-inline"/>
                     <form:errors path="topic.poll.pollItems" cssClass="help-inline"/>
                 </div>
 
@@ -153,7 +152,7 @@
                                 class="cursor-pointer script-confirm-unsaved"/>
                     &nbsp;<i class="icon-trash cursor-pointer" id="deleteEndingDate"></i>
                     <br>
-                    <form:errors path="topic.poll.endingDateValue" cssClass="help-inline"/>
+                    <form:errors path="topic.poll.endingDate" cssClass="help-inline"/>
                 </div>
                     <%--Make parent div include floated divs explicitly, or they'll be shown out of parent container--%>
                 <div class="cleared"></div>
