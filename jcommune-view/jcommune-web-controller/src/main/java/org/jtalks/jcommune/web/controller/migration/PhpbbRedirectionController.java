@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller.migration;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,7 +40,25 @@ public class PhpbbRedirectionController {
      * @param request http request to figure out the context path
      */
     @RequestMapping("/ftopic{id}/**")
-    public void showTopic(@PathVariable String id, HttpServletResponse response, WebRequest request) {
+    public void showTopic(@PathVariable Long id, HttpServletResponse response, WebRequest request) {
+        String redirectUrl = request.getContextPath() +  "/topics/" + id;
+        this.setHttp301Headers(response, redirectUrl);
+    }
+    
+    /**
+     * Redirect topic URLs to, assumes that topic ids
+     * haven't been changed during migration. 
+     * 
+     * @param topicParams contains topic id and additional info(it will be ignored)
+     * @param response http response object to set headers on
+     * @param request http request to figure out the context path
+     */
+    @RequestMapping("/topics/{topicParams}.php")
+    public void showTopicWithAdditionalParams(
+            @PathVariable String topicParams,
+            HttpServletResponse response,
+            WebRequest request) {
+        String id = StringUtils.substringBefore(topicParams, "-");
         String redirectUrl = request.getContextPath() +  "/topics/" + id;
         this.setHttp301Headers(response, redirectUrl);
     }

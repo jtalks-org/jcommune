@@ -27,7 +27,7 @@ public class FailJsonResponseTest {
     public void testConstructorWithReason() {
         FailJsonResponse response = new FailJsonResponse(FAILTURE_REASON);
         
-        assertEquals(response.getStatus(), JsonResponse.RESPONSE_STATUS_FAIL);
+        assertEquals(response.getStatus(), JsonResponseStatus.Fail);
         assertEquals(response.getReason(), FAILTURE_REASON);
         assertNull(response.getResult());
     }
@@ -36,7 +36,7 @@ public class FailJsonResponseTest {
     public void testConstructorWithReasonAndResult() {
         FailJsonResponse response = new FailJsonResponse(FAILTURE_REASON, RESULT);
         
-        assertEquals(response.getStatus(), JsonResponse.RESPONSE_STATUS_FAIL);
+        assertEquals(response.getStatus(), JsonResponseStatus.Fail);
         assertEquals(response.getReason(), FAILTURE_REASON);
         assertEquals(response.getResult(), RESULT);
     }

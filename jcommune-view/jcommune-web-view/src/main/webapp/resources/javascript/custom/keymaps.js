@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2011  JTalks.org Team
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -12,42 +12,19 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.dto.json;
 
-/**
- * AJAX response class to send fail JSON response
- * 
- * @author Vyacheslav Mishcheryakov
- *
- */
-public class FailJsonResponse extends JsonResponse {
-    
-    private String reason;
+var Keymaps = {};
 
-    public FailJsonResponse(String reason, Object result) {
-        this(reason);
-        setResult(result);
+var escCode = 27;
+var enterCode = 13;
+
+Keymaps.review = function (e) {
+    if (e.ctrlKey && e.keyCode == enterCode) {
+        e.preventDefault();
+        $(".review-container-controls-ok").click();
     }
-    
-    public FailJsonResponse(String reason) {
-        super(JsonResponseStatus.Fail);
-        this.reason = reason;
+    else if (e.keyCode == escCode) {
+        e.preventDefault();
+        $(".review-container-controls-cancel").click();
     }
-
-
-
-    /**
-     * @return the reason
-     */
-    public String getReason() {
-        return reason;
-    }
-
-    /**
-     * @param reason the reason to set
-     */
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
-    
-}
+};

@@ -22,11 +22,8 @@ package org.jtalks.jcommune.web.dto.json;
  * @author wedens
  */
 public class JsonResponse {
-    public static final String RESPONSE_STATUS_SUCCESS = "success";
-    public static final String RESPONSE_STATUS_FAIL = "fail";
     
-    
-	private String status;
+	private JsonResponseStatus status;
 	private Object result;
 
 	/**
@@ -34,7 +31,7 @@ public class JsonResponse {
 	 * @param status response status
 	 * @param result data
 	 */
-	public JsonResponse(String status, Object result) {
+	public JsonResponse(JsonResponseStatus status, Object result) {
 		this.status = status;
 		this.result = result;
 	}
@@ -43,21 +40,21 @@ public class JsonResponse {
 	 * Creates new instance
 	 * @param status response status 
 	 */
-	public JsonResponse(String status) {
+	public JsonResponse(JsonResponseStatus status) {
 		this(status, null);
 	}
 
 	/**
 	 * @return response status
 	 */
-	public String getStatus() {
+	public JsonResponseStatus getStatus() {
 		return status;
 	}
 
 	/**
 	 * @param status response status
 	 */
-	public void setStatus(String status) {
+	public void setStatus(JsonResponseStatus status) {
 		this.status = status;
 	}
 

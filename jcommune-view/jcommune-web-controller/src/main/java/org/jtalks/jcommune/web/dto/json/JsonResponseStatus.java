@@ -15,39 +15,28 @@
 package org.jtalks.jcommune.web.dto.json;
 
 /**
- * AJAX response class to send fail JSON response
+ * Allowed response statuses for AJAX requests.
  * 
  * @author Vyacheslav Mishcheryakov
  *
  */
-public class FailJsonResponse extends JsonResponse {
+public enum JsonResponseStatus {
+    Success("success"),
+    Fail("fail");
     
-    private String reason;
+    /** String representation of status (what will be sent to client). */
+    private String status;
 
-    public FailJsonResponse(String reason, Object result) {
-        this(reason);
-        setResult(result);
-    }
-    
-    public FailJsonResponse(String reason) {
-        super(JsonResponseStatus.Fail);
-        this.reason = reason;
-    }
-
-
-
-    /**
-     * @return the reason
-     */
-    public String getReason() {
-        return reason;
-    }
-
-    /**
-     * @param reason the reason to set
-     */
-    public void setReason(String reason) {
-        this.reason = reason;
+    private JsonResponseStatus(String status) {
+        this.status = status;
     }
     
+    @Override
+    public String toString() {
+        return status;
+    }
+
+    public String getStatus() {
+        return status;
+    }
 }

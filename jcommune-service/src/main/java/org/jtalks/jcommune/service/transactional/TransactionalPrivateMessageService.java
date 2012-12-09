@@ -79,9 +79,11 @@ public class TransactionalPrivateMessageService
      * {@inheritDoc}
      */
     @Override
-    public List<PrivateMessage> getInboxForCurrentUser() {
+    public Page<PrivateMessage> getInboxForCurrentUser(int page, boolean pagingEnabled) {
         JCUser currentUser = userService.getCurrentUser();
-        return this.getDao().getAllForUser(currentUser);
+        JCommunePageRequest pageRequest = new JCommunePageRequest(page,
+                currentUser.getPageSize(), pagingEnabled);
+        return this.getDao().getAllForUser(currentUser, pageRequest);
     }
 
     /**
@@ -127,9 +129,11 @@ public class TransactionalPrivateMessageService
      * {@inheritDoc}
      */
     @Override
-    public List<PrivateMessage> getDraftsFromCurrentUser() {
+    public Page<PrivateMessage> getDraftsForCurrentUser(int page, boolean pagingEnabled) {
         JCUser currentUser = userService.getCurrentUser();
-        return this.getDao().getDraftsFromUser(currentUser);
+        JCommunePageRequest pageRequest = new JCommunePageRequest(page,
+                currentUser.getPageSize(), pagingEnabled);
+        return this.getDao().getDraftsForUser(currentUser, pageRequest);
     }
 
     /**

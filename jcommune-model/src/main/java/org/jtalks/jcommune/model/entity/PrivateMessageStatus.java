@@ -34,7 +34,7 @@ public enum PrivateMessageStatus {
      */
     DRAFT,
     /**
-     * Sent to the recepient
+     * Sent to the recipient.
      */
     SENT,
     /**

@@ -26,6 +26,7 @@ import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,10 +58,6 @@ public class UserController {
     public static final String LOGIN = "login";
 
     private static final String REMEMBER_ME_ON = "on";
-
-    private static final String JSON_RESPONSE_SUCCESS = "success";
-
-    private static final String JSON_RESPONSE_FAIL = "fail";
 
     private UserService userService;
 
@@ -156,12 +153,12 @@ public class UserController {
     public JsonResponse registerUserAjax(@Valid @ModelAttribute("newUser") RegisterUserDto userDto,
                                          BindingResult result, Locale locale) {
         if (result.hasErrors()) {
-            return new JsonResponse("fail", result.getAllErrors());
+            return new JsonResponse(JsonResponseStatus.Fail, result.getAllErrors());
         }
         JCUser user = userDto.createUser();
         user.setLanguage(Language.byLocale(locale));
         userService.registerUser(user);
-        return new JsonResponse("success");
+        return new JsonResponse(JsonResponseStatus.Success);
     }
 
 
@@ -217,6 +214,10 @@ public class UserController {
                                   HttpServletRequest request, HttpServletResponse response) {
         boolean rememberMeBoolean = rememberMe.equals(REMEMBER_ME_ON);
         boolean isAuthenticated = userService.loginUser(username, password, rememberMeBoolean, request, response);
-        return new JsonResponse(isAuthenticated ? JSON_RESPONSE_SUCCESS : JSON_RESPONSE_FAIL);
+        if (isAuthenticated) {
+            return new JsonResponse(JsonResponseStatus.Success);
+        } else {
+            return new JsonResponse(JsonResponseStatus.Fail);
+        }
     }
 }

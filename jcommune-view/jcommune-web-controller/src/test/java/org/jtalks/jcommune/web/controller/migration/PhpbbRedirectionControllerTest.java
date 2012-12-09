@@ -45,8 +45,20 @@ public class PhpbbRedirectionControllerTest {
 
     @Test
     public void testShowTopic() {
-       controller.showTopic("1", response, request);
+       controller.showTopic(1L, response, request);
        this.assertHeadersSet(CONTEXT + "/topics/1");
+    }
+    
+    @Test
+    public void testShowTopicWithAdditionalParams() {
+       controller.showTopicWithAdditionalParams("14912-0", response, request);
+       this.assertHeadersSet(CONTEXT + "/topics/14912");
+    }
+
+    @Test
+    public void testShowTopicWithSorting() {
+        controller.showTopicWithAdditionalParams("25044-0-asc-90", response, request);
+        this.assertHeadersSet(CONTEXT + "/topics/25044");
     }
 
     @Test

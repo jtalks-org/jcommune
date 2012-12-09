@@ -20,8 +20,6 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
-
 /**
  * DAO interface for private messaging. Except of basic CRUD operations from {@link ParentRepository}
  * provides methods to get all messages from some user or to the user.
@@ -33,7 +31,9 @@ import java.util.List;
 public interface PrivateMessageDao extends ParentRepository<PrivateMessage> {
 
     /**
-     * Get all messages sent by specified user.
+     * Get all messages sent by specified user (either
+     * {@link org.jtalks.jcommune.model.entity.PrivateMessageStatus#NEW}, or
+     * {@link org.jtalks.jcommune.model.entity.PrivateMessageStatus#SENT} (Outbox page).
      *
      * @param userFrom    the sender
      * @param pageRequest pagination information.
@@ -45,17 +45,19 @@ public interface PrivateMessageDao extends ParentRepository<PrivateMessage> {
      * Get all private messages to the specified user.
      *
      * @param userTo the recipient of the messages
-     * @return the list of messages
+     * @param pageRequest pagination information.
+     * @return {@link Page} with messages.
      */
-    List<PrivateMessage> getAllForUser(JCUser userTo);
+    Page<PrivateMessage> getAllForUser(JCUser userTo, JCommunePageRequest pageRequest);
 
     /**
      * Get draft messages for user,
      *
      * @param user drafts author
-     * @return list of draft messages
+     * @param pageRequest pagination information.
+     * @return {@link Page} with messages.
      */
-    List<PrivateMessage> getDraftsFromUser(JCUser user);
+    Page<PrivateMessage> getDraftsForUser(JCUser user, JCommunePageRequest pageRequest);
 
     /**
      * Get count of new (unread) messages for user.

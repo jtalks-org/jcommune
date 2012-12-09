@@ -31,11 +31,11 @@ public interface PermissionService {
     /**
      * Checks if current user is granted with permission
      * @param targetId the identifier for the object instance
-     * @param targetType a String representing the target's type (e.g. 'BRANCH' or 'USER'). Not null.
+     * @param targetClass the target's ACL class (e.g. 'BRANCH' or 'USER'). Not null.
      * @param permission permission to check. Not null.
      * @return true if the permission is granted, false otherwise
      */
-    boolean hasPermission(long targetId, String targetType, JtalksPermission permission);
+    boolean hasPermission(long targetId, AclClassName targetClass, JtalksPermission permission);
     
     /**
      * Checks if current user is granted with permission
@@ -49,10 +49,10 @@ public interface PermissionService {
     /**
      * Emulates @PreAuthorize('hasPermission(...)')
      * @param targetId the identifier for the object instance
-     * @param targetType a String representing the target's type (e.g. 'BRANCH' or 'USER'). Not null.
+     * @param targetClass target's ACL class (e.g. 'BRANCH' or 'USER'). Not null.
      * @param permission permission to check. Not null.
      * 
      * @throws AccessDeniedException if current user is not granted with permission
      */
-    void checkPermission(long targetId, String targetType, JtalksPermission permission);
+    void checkPermission(long targetId, AclClassName targetClass, JtalksPermission permission);
 }

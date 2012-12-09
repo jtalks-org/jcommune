@@ -16,6 +16,7 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.service.security.PermissionService;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,16 +53,16 @@ public class SecurityController {
      * @return JSON response with 'status' = 'success' if user is granted and 
      *      'status' = 'fail' otherwise. 'result' object is null in both cases 
      */
-    @RequestMapping(value="/security/has-permission", method=RequestMethod.GET)
+    @RequestMapping(value="/security/haspermission", method=RequestMethod.GET)
     @ResponseBody
     public JsonResponse hasPermission(
             @RequestParam("targetId") long targetId,
             @RequestParam("targetType") String targetType,
             @RequestParam("permission") String permission) {
         if (permissionService.hasPermission(targetId, targetType, permission)) {
-            return new JsonResponse(JsonResponse.RESPONSE_STATUS_SUCCESS);
+            return new JsonResponse(JsonResponseStatus.Success);
         } else {
-            return new JsonResponse(JsonResponse.RESPONSE_STATUS_FAIL);
+            return new JsonResponse(JsonResponseStatus.Fail);
         }
     }
     

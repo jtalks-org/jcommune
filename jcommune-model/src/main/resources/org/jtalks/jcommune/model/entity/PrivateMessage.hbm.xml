@@ -46,13 +46,13 @@
     <query name="getAllFromUser">
         <![CDATA[FROM PrivateMessage as pm
              WHERE pm.userFrom = :user
-             and pm.status not in (:statuses)
+             and pm.status in (:statuses)
              ORDER BY pm.creationDate DESC]]>
     </query>
     <query name="getAllToUser">
         <![CDATA[FROM PrivateMessage as pm
              WHERE pm.userTo = :user
-             and pm.status not in (:statuses)
+             and pm.status in (:statuses)
              ORDER BY pm.creationDate DESC]]>
     </query>
     <query name="getDraftsFromUser">
@@ -68,6 +68,18 @@
              and pm.read = :read]]>
     </query>
     <query name="getCountUserSentPm">
-        <![CDATA[SELECT count(*) FROM PrivateMessage pm WHERE pm.userFrom = :userFrom]]>
+        <![CDATA[SELECT count(*) FROM PrivateMessage as pm
+        WHERE pm.userFrom = :userFrom
+        and pm.status in (:statuses)]]>
+    </query>
+    <query name="getCountUserInboxPm">
+        <![CDATA[SELECT count(*) FROM PrivateMessage as pm
+        WHERE pm.userTo = :userTo
+        and pm.status in (:statuses)]]>
+    </query>
+    <query name="getCountUserDraftPm">
+        <![CDATA[SELECT count(*) FROM PrivateMessage as pm
+        WHERE pm.userFrom = :userFrom
+             and pm.status = :status]]>
     </query>
 </hibernate-mapping>

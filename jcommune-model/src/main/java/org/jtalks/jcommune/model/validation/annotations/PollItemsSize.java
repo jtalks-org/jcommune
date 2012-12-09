@@ -15,34 +15,29 @@
 package org.jtalks.jcommune.model.validation.annotations;
 
 import org.jtalks.jcommune.model.entity.Poll;
-import org.jtalks.jcommune.model.entity.PollItem;
-import org.jtalks.jcommune.model.validation.validators.PollValidator;
+import org.jtalks.jcommune.model.validation.validators.PollItemsSizeValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
-import static java.lang.annotation.ElementType.TYPE;
+import java.lang.annotation.*;
 
 /**
- * @author Alexandre Teterin
- *         Date: 14.04.12
+ * It's necessary to check the size of the list of poll items.
+ * 
+ * @author Anuar_Nurmakanov
+ * @see Poll#MIN_ITEMS_NUMBER
+ * @see Poll#MAX_ITEMS_NUMBER
+ * 
  */
-
-@Target({TYPE, ANNOTATION_TYPE})
+@Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Constraint(validatedBy = PollValidator.class)
-public @interface ValidPoll {
-
+@Constraint(validatedBy = PollItemsSizeValidator.class)
+public @interface PollItemsSize {
     /**
      * Resource bundle code for error message
      */
-    String message() default "{defaultPoll.message}";
+    String message() default "{poll.items.size}";
 
     /**
      * Groups settings for this validation constraint
@@ -50,45 +45,18 @@ public @interface ValidPoll {
     Class<?>[] groups() default {};
 
     /**
-     * Payload element that specifies the payload with which the the
-     * constraint declaration is associated.
+     * Payload element that specifies the payload with which the the constraint
+     * declaration is associated.
      */
     Class<? extends Payload>[] payload() default {};
 
     /**
      * Min value for poll items number.
      */
-    int minItemsNumber() default Poll.MIN_ITEMS_NUMBER;
+    int min() default Poll.MIN_ITEMS_NUMBER;
 
     /**
      * Max value for poll items number.
      */
-    int maxItemsNumber() default Poll.MAX_ITEMS_NUMBER;
-
-    /**
-     * Min value for poll item length.
-     */
-    int minItemsLength() default PollItem.MIN_ITEM_LENGTH;
-
-    /**
-     * Max value for poll item length.
-     */
-    int maxItemsLength() default PollItem.MAX_ITEM_LENGTH;
-
-    /**
-     * Validated field name.
-     */
-    String pollTitle();
-
-    /**
-     * Validated field name.
-     */
-    String pollItems();
-
-    /**
-     * Validated field name.
-     */
-    String endingDate();
-
+    int max() default Poll.MAX_ITEMS_NUMBER;
 }
-

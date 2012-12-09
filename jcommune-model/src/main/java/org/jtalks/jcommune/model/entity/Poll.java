@@ -15,16 +15,19 @@
 
 package org.jtalks.jcommune.model.entity;
 
-import com.google.common.base.Joiner;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.jtalks.common.model.entity.Entity;
+import org.jtalks.jcommune.model.validation.annotations.PollItemsNamesLength;
+import org.jtalks.jcommune.model.validation.annotations.PollItemsNotEmptyIfTitleFilled;
+import org.jtalks.jcommune.model.validation.annotations.PollItemsSize;
 import org.jtalks.jcommune.model.validation.annotations.PollItemsWithoutDuplicates;
-import org.jtalks.jcommune.model.validation.annotations.ValidPoll;
-import org.jtalks.jcommune.model.validation.validators.PollValidator;
+import org.jtalks.jcommune.model.validation.annotations.PollTitleNotBlankIfItemsFilled;
+import org.springframework.util.CollectionUtils;
 
+import javax.validation.constraints.Future;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,26 +43,31 @@ import static ch.lambdaj.Lambda.sumFrom;
  *
  * @author Anuar Nurmakanov
  */
-@ValidPoll(pollTitle = "title", pollItems = "pollItemsValue", endingDate = "endingDateValue")
+@PollTitleNotBlankIfItemsFilled
+@PollItemsNotEmptyIfTitleFilled
 public class Poll extends Entity {
-
     private static final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("dd-MM-yyyy");
     private static final String SEPARATOR = System.getProperty("line.separator");
     
-    @Size(min = Poll.MIN_TITLE_LENGTH, max = Poll.MAX_TITLE_LENGTH)
-    private String title;
-    private boolean multipleAnswer;
-    private String endingDateValue;
-    private DateTime endingDate;
-    private String pollItemsValue;
-    @PollItemsWithoutDuplicates
-    private List<PollItem> pollItems = new ArrayList<PollItem>();
-    private Topic topic;
-
     public static final int MIN_TITLE_LENGTH = 3;
     public static final int MAX_TITLE_LENGTH = 120;
     public static final int MIN_ITEMS_NUMBER = 2;
     public static final int MAX_ITEMS_NUMBER = 50;
+    
+    @Size(min = Poll.MIN_TITLE_LENGTH, max = Poll.MAX_TITLE_LENGTH)
+    private String title;
+    private boolean multipleAnswer;
+    @Future
+    private DateTime endingDate;
+    @PollItemsSize
+    @PollItemsNamesLength
+    @PollItemsWithoutDuplicates
+    private List<PollItem> pollItems = new ArrayList<PollItem>();
+    private Topic topic;
+    //transient fields
+    private String pollItemsValue;
+    private String endingDateValue;
+    
 
     /**
      * Used only by Hibernate.
@@ -124,57 +132,14 @@ public class Poll extends Entity {
     public DateTime getEndingDate() {
         return endingDate;
     }
-
+    
     /**
      * Set the poll ending date.
-     *
-     * @param endingDate the poll ending date
+     * 
+     * @param endingDate poll ending date
      */
     public void setEndingDate(DateTime endingDate) {
         this.endingDate = endingDate;
-        if (endingDate != null) {
-            this.endingDateValue= FORMAT.print(endingDate);
-        }
-    }
-
-    /**
-     * @return poll ending date in string representation
-     */
-    public String getEndingDateValue() {
-        return endingDateValue;
-    }
-
-    /**
-     * Set string representation of poll ending date.
-     * Parse this string and set ending date.
-     *
-     * @param endingDateValue poll ending date in string representation
-     */
-    public void setEndingDateValue(String endingDateValue) {
-        this.endingDateValue = endingDateValue;
-        if (endingDateValue != null) {
-            setEndingDate(FORMAT.parseDateTime(endingDateValue));
-        }
-    }
-
-    /**
-     * @return poll options in string representation.
-     */
-    public String getPollItemsValue() {
-        return pollItemsValue;
-    }
-
-    /**
-     * Set string representation of poll options.
-     * Parse this string and fill poll items list.
-     *
-     * @param pollItemsValue poll options in string representation
-     */
-    public void setPollItemsValue(String pollItemsValue) {
-        this.pollItemsValue = pollItemsValue;
-        if (StringUtils.isNotBlank(pollItemsValue)) {
-            this.setPollItems(PollValidator.parseItems(pollItemsValue));
-        }
     }
 
     /**
@@ -193,7 +158,6 @@ public class Poll extends Entity {
      */
     public void setPollItems(List<PollItem> pollItems) {
         this.pollItems = pollItems;
-        pollItemsValue = Joiner.on(SEPARATOR).join(pollItems);
     }
 
     /**
@@ -261,7 +225,70 @@ public class Poll extends Entity {
      */
     public boolean isHasPoll() {
         return StringUtils.isNotBlank(getTitle()) &&
-                StringUtils.isNotBlank(getPollItemsValue());
+                !CollectionUtils.isEmpty(pollItems);
+    }
+    
+    /**
+     * Set string representation of poll ending date. Parse this string and set
+     * ending date.
+     * 
+     * @param endingDateValue poll ending date in string representation
+     */
+    public void setEndingDateValue(String endingDateValue) {
+        if (endingDateValue != null) {
+            setEndingDate(FORMAT.parseDateTime(endingDateValue));
+        }
+    }
+    
+    /**
+     * @return poll ending date in string representation
+     */
+    public String getEndingDateValue() {
+        return endingDateValue;
+    }
+   
+    /**
+     * Set string representation of poll options. Parse this string and fill
+     * poll items list.
+     * 
+     * @param pollItemsValue poll options in string representation
+     */
+    public void setPollItemsValue(String pollItemsValue) {
+        if (StringUtils.isNotBlank(pollItemsValue)) {
+            this.pollItemsValue = pollItemsValue;
+            this.setPollItems(parseItems(pollItemsValue));
+        }
+    }
+    
+    /**
+     * @return poll options in string representation.
+     */
+    public String getPollItemsValue() {
+        return pollItemsValue;
     }
 
+    /**
+     * Prepare poll items list from string. Removes empty lines from.
+     * 
+     * @param pollItems user input
+     * @return processed poll items list
+     */
+    private List<PollItem> parseItems(String pollItems) {
+        List<PollItem> result = new ArrayList<PollItem>();
+        if (pollItems == null) {
+            return result;
+        }
+        String[] items = StringUtils.split(pollItems, SEPARATOR);
+        for (String item : items) {
+            // If user entered empty lines these lines are ignoring from
+            // validation.
+            // Only meaningful lines are processed and user get processed output
+            if (StringUtils.isNotBlank(item)) {
+                item = item.trim();
+                PollItem pollItem = new PollItem(item);
+                result.add(pollItem);
+            }
+        }
+        return result;
+    }
 }
