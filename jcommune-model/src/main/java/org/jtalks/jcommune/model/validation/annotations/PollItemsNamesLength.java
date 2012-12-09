@@ -27,10 +27,11 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.FIELD;
 
 /**
- * It's necessary to validate the all names of poll items to find
- * poll items with incorrect length of the name.
+ * It's necessary to validate all names of poll items to find poll items with incorrect length of the name.
  * 
  * @author Anuar_Nurmakanov
+ * @see PollItem#MIN_ITEM_LENGTH
+ * @see PollItem#MAX_ITEM_LENGTH
  *
  */
 @Target({FIELD})
@@ -39,12 +40,12 @@ import static java.lang.annotation.ElementType.FIELD;
 @Constraint(validatedBy = PollItemsNamesLengthValidator.class)
 public @interface PollItemsNamesLength {
     /**
-     * Resource bundle code for error message
+     * Resource bundle code for error message.
      */
     String message() default "{poll.item.length}";
 
     /**
-     * Groups settings for this validation constraint
+     * Groups settings for this validation constraint.
      */
     Class<?>[] groups() default {};
 

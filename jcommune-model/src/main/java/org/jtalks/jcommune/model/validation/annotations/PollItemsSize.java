@@ -19,16 +19,14 @@ import org.jtalks.jcommune.model.validation.validators.PollItemsSizeValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * It's necessary to check the size of the list of poll items.
  * 
  * @author Anuar_Nurmakanov
+ * @see Poll#MIN_ITEMS_NUMBER
+ * @see Poll#MAX_ITEMS_NUMBER
  * 
  */
 @Target({ ElementType.FIELD })

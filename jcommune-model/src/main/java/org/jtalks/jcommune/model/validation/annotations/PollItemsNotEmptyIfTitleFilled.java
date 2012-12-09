@@ -54,8 +54,8 @@ public @interface PollItemsNotEmptyIfTitleFilled {
    Class<? extends Payload>[] payload() default {};
    
    /**
-    * Get the name of validated poll items field. It's needed to
-    * construct constraint violation error.
+    * Get the name of validated poll items field. It's needed to construct constraint violation error (the annotation is
+    * set for the class itself, but if problem appeared, we need to show error for particular field).
     */
    String pollItemsFieldName() default "pollItems";
 }

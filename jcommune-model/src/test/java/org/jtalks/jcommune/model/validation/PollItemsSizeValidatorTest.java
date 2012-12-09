@@ -62,10 +62,7 @@ public class PollItemsSizeValidatorTest {
         int min = 5;
         int size = 7;
         int max = 10;
-        List<PollItem> pollItems = new ArrayList<PollItem>();
-        for (int i = 0; i < size; i++) {
-            pollItems.add(new PollItem(String.valueOf(i)));
-        }
+        List<PollItem> pollItems = createPollItems(size);
         Mockito.when(pollItemsSize.min()).thenReturn(min);
         Mockito.when(pollItemsSize.max()).thenReturn(max);
 
@@ -81,10 +78,7 @@ public class PollItemsSizeValidatorTest {
         int min = 5;
         int size = 2;
         int max = 10;
-        List<PollItem> pollItems = new ArrayList<PollItem>();
-        for (int i = 0; i < size; i++) {
-            pollItems.add(new PollItem(String.valueOf(i)));
-        }
+        List<PollItem> pollItems = createPollItems(size);
         Mockito.when(pollItemsSize.min()).thenReturn(min);
         Mockito.when(pollItemsSize.max()).thenReturn(max);
 
@@ -101,10 +95,7 @@ public class PollItemsSizeValidatorTest {
         int min = 5;
         int size = 15;
         int max = 10;
-        List<PollItem> pollItems = new ArrayList<PollItem>();
-        for (int i = 0; i < size; i++) {
-            pollItems.add(new PollItem(String.valueOf(i)));
-        }
+        List<PollItem> pollItems = createPollItems(size);
         Mockito.when(pollItemsSize.min()).thenReturn(min);
         Mockito.when(pollItemsSize.max()).thenReturn(max);
 
@@ -114,5 +105,13 @@ public class PollItemsSizeValidatorTest {
         Assert.assertFalse(
                 isValid,
                 "Poll has size of the items, that more than min possible size, so it must be invalid");
+    }
+
+    private List<PollItem> createPollItems(int size) {
+        List<PollItem> pollItems = new ArrayList<PollItem>();
+        for (int i = 0; i < size; i++) {
+            pollItems.add(new PollItem(String.valueOf(i)));
+        }
+        return pollItems;
     }
 }

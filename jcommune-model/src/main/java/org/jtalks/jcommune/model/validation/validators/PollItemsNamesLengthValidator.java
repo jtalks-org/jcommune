@@ -18,7 +18,6 @@ import org.apache.commons.lang.math.IntRange;
 import org.apache.commons.lang.math.Range;
 import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.model.validation.annotations.PollItemsNamesLength;
-import org.springframework.util.CollectionUtils;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -27,17 +26,17 @@ import java.util.List;
 
 /**
  * It validates the list of poll items to find poll item that has
- * incorrect length of the name. 
- * 
+ * incorrect length of the name.
+ *
  * @author Anuar_Nurmakanov
  *
  */
-public class PollItemsNamesLengthValidator 
-    implements ConstraintValidator<PollItemsNamesLength, List<PollItem>> {
-    
+public class PollItemsNamesLengthValidator
+implements ConstraintValidator<PollItemsNamesLength, List<PollItem>> {
+
     private int minLength;
     private int maxLenght;
-    
+
     /**
      * {@inheritDoc}
      */
@@ -52,7 +51,7 @@ public class PollItemsNamesLengthValidator
      */
     @Override
     public boolean isValid(List<PollItem> pollItems, ConstraintValidatorContext context) {
-        if (!CollectionUtils.isEmpty(pollItems)) {
+        if (pollItems != null) {
             for (PollItem pollItem: pollItems) {
                 if (!isPollItemValid(pollItem)) {
                     return false;
@@ -61,10 +60,10 @@ public class PollItemsNamesLengthValidator
         }
         return true;
     }
-    
+
     /**
      * Validates the name of poll title.
-     * 
+     *
      * @param pollItem validated poll item
      * @return {@code true} if poll item name has correct length,
      *         otherwise {@code false}

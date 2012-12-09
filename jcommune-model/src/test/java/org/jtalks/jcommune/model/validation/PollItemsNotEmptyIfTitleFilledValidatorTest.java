@@ -83,8 +83,7 @@ public class PollItemsNotEmptyIfTitleFilledValidatorTest {
         Poll poll = new Poll(title);
         poll.setPollItems(items);
         String defaultErrorMessage = "message";
-        Mockito.when(validatorContext.getDefaultConstraintMessageTemplate())
-            .thenReturn(defaultErrorMessage);
+        Mockito.when(validatorContext.getDefaultConstraintMessageTemplate()).thenReturn(defaultErrorMessage);
         Mockito.when(validatorContext.buildConstraintViolationWithTemplate(defaultErrorMessage))
             .thenReturn(constraintViolationBuilder);
         Mockito.when(constraintViolationBuilder.addNode(Mockito.anyString()))
