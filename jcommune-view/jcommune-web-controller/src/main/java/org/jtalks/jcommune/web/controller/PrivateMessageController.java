@@ -89,9 +89,11 @@ public class PrivateMessageController {
     }
 
     /**
-     * Render the PM inbox page with the list of incoming messages for the /inbox URI.
+     * Render the PM page with the list of incoming messages for the /inbox URI.
      *
-     * @return {@code ModelAndView} with added list of inbox messages
+     * @param page the private message page number.
+     * @param pagingEnabled indicate if pagination enabled.
+     * @return {@code ModelAndView} with added {@link Page} instance with of private messages.
      */
     @RequestMapping(value = "/inbox", method = RequestMethod.GET)
     public ModelAndView inboxPage(@RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
@@ -104,10 +106,12 @@ public class PrivateMessageController {
                 .addObject("pagingEnabled", pagingEnabled);
     }
 
-    /**
+     /**
      * Render the PM outbox page with the list of sent messages for the /outbox URI.
      *
-     * @return {@code ModelAndView} with added list of outbox messages
+     * @param page the private message page number.
+     * @param pagingEnabled indicate if pagination enabled.
+     * @return {@code ModelAndView} with added {@link Page} instance with of private messages.
      */
     @RequestMapping(value = "/outbox", method = RequestMethod.GET)
     public ModelAndView outboxPage(@RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
@@ -121,14 +125,20 @@ public class PrivateMessageController {
     }
 
     /**
-     * Get list of current user's list of draft messages.
+     * Render the PM draft page with the list of draft messages for the /outbox URI.
      *
-     * @return {@code ModelAndView} with list of messages
+     * @param page the private message page number.
+     * @param pagingEnabled indicate if pagination enabled.
+     * @return {@code ModelAndView} with added {@link Page} instance with of private messages.
      */
     @RequestMapping(value = "/drafts", method = RequestMethod.GET)
-    public ModelAndView draftsPage() {
+    public ModelAndView draftsPage(@RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
+                                   @RequestParam(value = "pagingEnabled", defaultValue = "true", required = false)
+                                   Boolean pagingEnabled) {
+        Page<PrivateMessage> draftsPage = pmService.getDraftsForCurrentUser(page, pagingEnabled);
         return new ModelAndView("pm/drafts")
-            .addObject("pmList", pmService.getDraftsFromCurrentUser());
+                .addObject("draftsPage", draftsPage)
+                .addObject("pagingEnabled", pagingEnabled);
     }
 
     /**
@@ -265,7 +275,6 @@ public class PrivateMessageController {
         JCUser userFrom = userService.getCurrentUser();
         try {
             pmService.saveDraft(pmDto.getId(), pmDto.getRecipient(), pmDto.getTitle(), pmDto.getBody(), userFrom);
-
         } catch (NotFoundException e) {
             result.rejectValue("recipient", "validation.wrong_recipient");
             targetView = PM_FORM;

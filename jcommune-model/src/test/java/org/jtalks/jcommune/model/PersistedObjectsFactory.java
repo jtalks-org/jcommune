@@ -107,6 +107,13 @@ public final class PersistedObjectsFactory {
             messages.add(pm);
             persist(pm);
         }
+        for (int i = 0; i < size; i++) {
+            PrivateMessage pm = new PrivateMessage(userTo, userFrom,
+                    "Message title", "Private message body");
+            pm.setStatus(PrivateMessageStatus.DRAFT);
+            messages.add(pm);
+            persist(pm);
+        }
         return messages;
     }
 

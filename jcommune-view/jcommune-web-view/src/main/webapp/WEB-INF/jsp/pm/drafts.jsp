@@ -28,7 +28,22 @@
 <jsp:include page="../../template/topLine.jsp"/>
 
 <div class="container">
-    <h2><spring:message code="label.pm_title"/></h2>
+    <%-- Start of pagination --%>
+    <div class="row-fluid upper-pagination forum-pagination-container">
+        <div class="span3">
+            <h2><spring:message code="label.pm_title"/></h2>
+        </div>
+
+        <div class="span9">
+            <div class="pagination pull-right forum-pagination">
+                <ul>
+                    <jtalks:pagination uri="" page="${draftsPage}" numberLink="3"
+                                       pagingEnabled="${pagingEnabled}"/>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <%-- End of pagination --%>
     <hr/>
     <div class="row">
         <div class="span2">
@@ -66,8 +81,8 @@
                 <tbody>
 
                 <c:choose>
-                    <c:when test="${!(empty pmList)}">
-                        <c:forEach var="pm" items="${pmList}">
+                    <c:when test="${!(empty draftsPage.content)}">
+                        <c:forEach var="pm" items="${draftsPage.content}">
                             <tr id="${pm.id}" class="mess">
                                 <td><input type="checkbox" id="${pm.id}" class="checker"/></td>
                                 <td class="pm_user_to_from">
@@ -113,7 +128,27 @@
                 </tbody>
             </table>
         </div>
+        <!-- /span9 -->
     </div>
+        <%-- /row--%>
+        <hr/>
+        <%-- Start of pagination --%>
+        <div class="row-fluid upper-pagination forum-pagination-container">
+            <div class="span3">
+                <h2><spring:message code="label.pm_title"/></h2>
+            </div>
+
+            <div class="span9">
+                <div class="pagination pull-right forum-pagination">
+                    <ul>
+                        <jtalks:pagination uri="" page="${draftsPage}" numberLink="3"
+                                           pagingEnabled="${pagingEnabled}"/>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <%-- End of pagination --%>
 </div>
+<%--/container--%>
 <div class="footer_buffer"></div>
 </body>

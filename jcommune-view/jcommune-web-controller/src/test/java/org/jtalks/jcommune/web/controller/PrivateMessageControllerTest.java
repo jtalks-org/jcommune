@@ -130,15 +130,23 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void draftsPage() {
+        int page = 1;
+        boolean pagingEnabled = true;
+        List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(JC_USER, JC_USER,
+                "Message title", "Private message body"));
+        Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
+
+        when(pmService.getDraftsForCurrentUser(page, pagingEnabled)).thenReturn(expectedPage);
+
         //invoke the object under test
-        ModelAndView mav = controller.draftsPage();
+        ModelAndView mav = controller.draftsPage(page, pagingEnabled);
 
         //check expectations
-        verify(pmService).getDraftsFromCurrentUser();
-
+        verify(pmService).getDraftsForCurrentUser(page, pagingEnabled);
         //check result
         assertViewName(mav, "pm/drafts");
-        assertAndReturnModelAttributeOfType(mav, "pmList", List.class);
+        assertModelAttributeAvailable(mav, "draftsPage");
+        assertModelAttributeAvailable(mav, "pagingEnabled");
     }
 
     @Test
