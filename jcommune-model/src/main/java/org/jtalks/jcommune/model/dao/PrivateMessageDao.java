@@ -31,7 +31,9 @@ import org.springframework.data.domain.Page;
 public interface PrivateMessageDao extends ParentRepository<PrivateMessage> {
 
     /**
-     * Get all messages sent by specified user.
+     * Get all messages sent by specified user (either
+     * {@link org.jtalks.jcommune.model.entity.PrivateMessageStatus#NEW}, or
+     * {@link org.jtalks.jcommune.model.entity.PrivateMessageStatus#SENT} (Outbox page).
      *
      * @param userFrom    the sender
      * @param pageRequest pagination information.
