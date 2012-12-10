@@ -105,13 +105,12 @@ public class TransactionalPrivateMessageServiceTest {
     @Test
     public void testGetInboxForCurrentUser() {
         int pageNumber = 1;
-        boolean pagingEnabled = true;
         List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(user, user,
                 "Message title", "Private message body"));
         Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
         when(pmDao.getAllForUser(eq(user), Matchers.<JCommunePageRequest>any())).thenReturn(expectedPage);
 
-        Page<PrivateMessage> actual = pmService.getInboxForCurrentUser(pageNumber, pagingEnabled);
+        Page<PrivateMessage> actual = pmService.getInboxForCurrentUser(pageNumber);
 
         verify(pmDao).getAllForUser(eq(user), Matchers.<JCommunePageRequest>any());
         assertEquals(expectedPage, actual);
@@ -120,13 +119,12 @@ public class TransactionalPrivateMessageServiceTest {
     @Test
     public void testGetOutboxForCurrentUser() {
         int pageNumber = 1;
-        boolean pagingEnabled = true;
         List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(user, user,
                 "Message title", "Private message body"));
         Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
         when(pmDao.getAllFromUser(eq(user), Matchers.<JCommunePageRequest>any())).thenReturn(expectedPage);
 
-        Page<PrivateMessage> actual = pmService.getOutboxForCurrentUser(pageNumber, pagingEnabled);
+        Page<PrivateMessage> actual = pmService.getOutboxForCurrentUser(pageNumber);
 
         verify(pmDao).getAllFromUser(eq(user), Matchers.<JCommunePageRequest>any());
         assertEquals(expectedPage, actual);
@@ -170,13 +168,12 @@ public class TransactionalPrivateMessageServiceTest {
     @Test
     public void testGetDraftsForCurrentUser() {
         int pageNumber = 1;
-        boolean pagingEnabled = true;
         List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(user, user,
                 "Message title", "Private message body"));
         Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
         when(pmDao.getDraftsForUser(eq(user), Matchers.<JCommunePageRequest>any())).thenReturn(expectedPage);
 
-        Page<PrivateMessage> actual = pmService.getDraftsForCurrentUser(pageNumber, pagingEnabled);
+        Page<PrivateMessage> actual = pmService.getDraftsForCurrentUser(pageNumber);
 
         verify(pmDao).getDraftsForUser(eq(user), Matchers.<JCommunePageRequest>any());
         assertEquals(expectedPage, actual);

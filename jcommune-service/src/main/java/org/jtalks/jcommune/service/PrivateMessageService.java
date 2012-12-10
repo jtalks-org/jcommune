@@ -34,22 +34,18 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
      * Get all inbox messages for the current user.
      *
      * @param page          page number for needed messages.
-     * @param pagingEnabled if {@code true} then it returns messages for one page,
-     *                      otherwise it return all messages for current user.
      * @return object with messages for one page and pagination information.
      */
-    Page<PrivateMessage> getInboxForCurrentUser(int page, boolean pagingEnabled);
+    Page<PrivateMessage> getInboxForCurrentUser(int page);
 
     /**
      * Get all outgoing messages from the current user.
      *
      * @param page          page number for needed messages.
-     * @param pagingEnabled if {@code true} then it returns messages for one page,
-     *                      otherwise it return all messages for current user.
      * @return object with messages for one page and pagination information.
      *         Note that may be all messages for current user.
      */
-    Page<PrivateMessage> getOutboxForCurrentUser(int page, boolean pagingEnabled);
+    Page<PrivateMessage> getOutboxForCurrentUser(int page);
 
     /**
      * Send the private message to the user.
@@ -67,12 +63,10 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
      * Get current user's drafts
      *
      * @param page          page number for needed messages.
-     * @param pagingEnabled if {@code true} then it returns messages for one page,
-     *                      otherwise it return all messages for current user.
      * @return object with messages for one page and pagination information.
      *         Note that may be all messages for current user.
      */
-    Page<PrivateMessage> getDraftsForCurrentUser(int page, boolean pagingEnabled);
+    Page<PrivateMessage> getDraftsForCurrentUser(int page);
 
     /**
      * Save message as draft. If message exist it will be updated.
