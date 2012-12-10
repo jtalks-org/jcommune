@@ -41,9 +41,9 @@ public class JCommunePageRequest extends PageRequest {
     
     /**
      * Create an instance of {@link JCommunePageRequest} with enabled paging.
-     * 
-     * @param size size of page
+     *
      * @param page page number
+     * @param size size of page
      * @return an instance of {@link JCommunePageRequest} with enabled paging
      */
     public static JCommunePageRequest createWithPagingEnabled(int page, int size) {
