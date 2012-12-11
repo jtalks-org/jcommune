@@ -93,39 +93,36 @@ public class PrivateMessageControllerTest {
                 "Message title", "Private message body"));
         Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
 
-        when(pmService.getInboxForCurrentUser(page, pagingEnabled)).thenReturn(expectedPage);
+        when(pmService.getInboxForCurrentUser(page)).thenReturn(expectedPage);
 
         //invoke the object under test
-        ModelAndView mav = controller.inboxPage(page, pagingEnabled);
+        ModelAndView mav = controller.inboxPage(page);
 
         //check expectations
-        verify(pmService).getInboxForCurrentUser(page, pagingEnabled);
+        verify(pmService).getInboxForCurrentUser(page);
 
         //check result
         assertViewName(mav, "pm/inbox");
         assertModelAttributeAvailable(mav, "inboxPage");
-        assertModelAttributeAvailable(mav, "pagingEnabled");
     }
 
     @Test
     public void outboxPage() {
         int page = 1;
-        boolean pagingEnabled = true;
         List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(JC_USER, JC_USER,
                 "Message title", "Private message body"));
         Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
 
-        when(pmService.getOutboxForCurrentUser(page, pagingEnabled)).thenReturn(expectedPage);
+        when(pmService.getOutboxForCurrentUser(page)).thenReturn(expectedPage);
 
         //invoke the object under test
-        ModelAndView mav = controller.outboxPage(page, pagingEnabled);
+        ModelAndView mav = controller.outboxPage(page);
 
         //check expectations
-        verify(pmService).getOutboxForCurrentUser(page, pagingEnabled);
+        verify(pmService).getOutboxForCurrentUser(page);
         //check result
         assertViewName(mav, "pm/outbox");
         assertModelAttributeAvailable(mav, "outboxPage");
-        assertModelAttributeAvailable(mav, "pagingEnabled");
     }
 
     @Test
@@ -136,17 +133,16 @@ public class PrivateMessageControllerTest {
                 "Message title", "Private message body"));
         Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
 
-        when(pmService.getDraftsForCurrentUser(page, pagingEnabled)).thenReturn(expectedPage);
+        when(pmService.getDraftsForCurrentUser(page)).thenReturn(expectedPage);
 
         //invoke the object under test
-        ModelAndView mav = controller.draftsPage(page, pagingEnabled);
+        ModelAndView mav = controller.draftsPage(page);
 
         //check expectations
-        verify(pmService).getDraftsForCurrentUser(page, pagingEnabled);
+        verify(pmService).getDraftsForCurrentUser(page);
         //check result
         assertViewName(mav, "pm/drafts");
         assertModelAttributeAvailable(mav, "draftsPage");
-        assertModelAttributeAvailable(mav, "pagingEnabled");
     }
 
     @Test

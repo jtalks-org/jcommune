@@ -44,5 +44,13 @@ public enum PrivateMessageStatus {
     /**
      * Author deleted this message from outbox folder
      */
-    DELETED_FROM_OUTBOX
+    DELETED_FROM_OUTBOX;
+
+    /**
+     * Return private message statuses for inbox/outbox page.
+     * @return private message statuses for inbox/outbox page.
+     */
+    public static PrivateMessageStatus[] getInboxOutboxStatus() {
+        return new PrivateMessageStatus[] {NEW, SENT};
+    }
 }

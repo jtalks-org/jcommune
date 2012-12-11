@@ -36,7 +36,7 @@
             <div class="pagination pull-right forum-pagination">
                 <ul>
                     <jtalks:pagination uri="" page="${inboxPage}" numberLink="3"
-                                       pagingEnabled="${pagingEnabled}"/>
+                                       pagingEnabled="true"/>
                 </ul>
             </div>
         </div>
@@ -128,7 +128,7 @@
                 <div class="pagination pull-right forum-pagination">
                     <ul>
                         <jtalks:pagination uri="" page="${inboxPage}" numberLink="3"
-                                           pagingEnabled="${pagingEnabled}"/>
+                                           pagingEnabled="${true}"/>
                     </ul>
                 </div>
             </div>

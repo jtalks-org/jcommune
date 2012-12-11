@@ -42,7 +42,9 @@ public interface PrivateMessageDao extends ParentRepository<PrivateMessage> {
     Page<PrivateMessage> getAllFromUser(JCUser userFrom, JCommunePageRequest pageRequest);
 
     /**
-     * Get all private messages to the specified user.
+     * Get all private messages to the specified user (either
+     * {@link org.jtalks.jcommune.model.entity.PrivateMessageStatus#NEW}, or
+     * {@link org.jtalks.jcommune.model.entity.PrivateMessageStatus#SENT} (Inbox page).
      *
      * @param userTo the recipient of the messages
      * @param pageRequest pagination information.
@@ -51,7 +53,8 @@ public interface PrivateMessageDao extends ParentRepository<PrivateMessage> {
     Page<PrivateMessage> getAllForUser(JCUser userTo, JCommunePageRequest pageRequest);
 
     /**
-     * Get draft messages for user,
+     * Get draft messages for user,(
+     * {@link org.jtalks.jcommune.model.entity.PrivateMessageStatus#DRAFT} (Draft page).
      *
      * @param user drafts author
      * @param pageRequest pagination information.

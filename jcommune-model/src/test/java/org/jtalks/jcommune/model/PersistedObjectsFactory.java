@@ -78,12 +78,12 @@ public final class PersistedObjectsFactory {
     }
 
     /**
-     * Create list of private messages.
-     * @param size message number.
+     * Create and persist list of private messages with all possible statuses.
+     * @param size message number for DRAFT status. For other statuses message number is size / 2.
      * @return saved pm list.
      */
-    public static List<PrivateMessage> preparePrivateMessageListWithSentNewDeletedStatuses(int size, JCUser userTo,
-                                                                                           JCUser userFrom) {
+    public static List<PrivateMessage> preparePrivateMessages(int size, JCUser userTo,
+                                                              JCUser userFrom) {
         List<PrivateMessage> messages = new ArrayList<PrivateMessage>(size);
         for (int i = 0; i < size; i++) {
             PrivateMessage pm = new PrivateMessage(userTo, userFrom,

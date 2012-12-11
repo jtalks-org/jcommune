@@ -92,53 +92,41 @@ public class PrivateMessageController {
      * Render the PM page with the list of incoming messages for the /inbox URI.
      *
      * @param page the private message page number.
-     * @param pagingEnabled indicate if pagination enabled.
      * @return {@code ModelAndView} with added {@link Page} instance with of private messages.
      */
     @RequestMapping(value = "/inbox", method = RequestMethod.GET)
-    public ModelAndView inboxPage(@RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
-                                  @RequestParam(value = "pagingEnabled", defaultValue = "true", required = false)
-                                  Boolean pagingEnabled) {
-        Page<PrivateMessage> inboxPage = pmService.getInboxForCurrentUser(page, pagingEnabled);
+    public ModelAndView inboxPage(@RequestParam(value = "page", defaultValue = "1", required = false) Integer page) {
+        Page<PrivateMessage> inboxPage = pmService.getInboxForCurrentUser(page);
 
         return new ModelAndView("pm/inbox")
-                .addObject("inboxPage", inboxPage)
-                .addObject("pagingEnabled", pagingEnabled);
+                .addObject("inboxPage", inboxPage);
     }
 
      /**
      * Render the PM outbox page with the list of sent messages for the /outbox URI.
      *
      * @param page the private message page number.
-     * @param pagingEnabled indicate if pagination enabled.
      * @return {@code ModelAndView} with added {@link Page} instance with of private messages.
      */
     @RequestMapping(value = "/outbox", method = RequestMethod.GET)
-    public ModelAndView outboxPage(@RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
-                                   @RequestParam(value = "pagingEnabled", defaultValue = "true", required = false)
-                                   Boolean pagingEnabled) {
-        Page<PrivateMessage> outboxPage = pmService.getOutboxForCurrentUser(page, pagingEnabled);
+    public ModelAndView outboxPage(@RequestParam(value = "page", defaultValue = "1", required = false) Integer page) {
+        Page<PrivateMessage> outboxPage = pmService.getOutboxForCurrentUser(page);
 
         return new ModelAndView("pm/outbox")
-            .addObject("outboxPage", outboxPage)
-                .addObject("pagingEnabled", pagingEnabled);
+            .addObject("outboxPage", outboxPage);
     }
 
     /**
      * Render the PM draft page with the list of draft messages for the /outbox URI.
      *
      * @param page the private message page number.
-     * @param pagingEnabled indicate if pagination enabled.
      * @return {@code ModelAndView} with added {@link Page} instance with of private messages.
      */
     @RequestMapping(value = "/drafts", method = RequestMethod.GET)
-    public ModelAndView draftsPage(@RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
-                                   @RequestParam(value = "pagingEnabled", defaultValue = "true", required = false)
-                                   Boolean pagingEnabled) {
-        Page<PrivateMessage> draftsPage = pmService.getDraftsForCurrentUser(page, pagingEnabled);
+    public ModelAndView draftsPage(@RequestParam(value = "page", defaultValue = "1", required = false) Integer page) {
+        Page<PrivateMessage> draftsPage = pmService.getDraftsForCurrentUser(page);
         return new ModelAndView("pm/drafts")
-                .addObject("draftsPage", draftsPage)
-                .addObject("pagingEnabled", pagingEnabled);
+                .addObject("draftsPage", draftsPage);
     }
 
     /**
