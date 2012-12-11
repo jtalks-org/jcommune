@@ -122,6 +122,7 @@ public final class PersistedObjectsFactory {
         JCUser user = persist(ObjectsFactory.getDefaultUser());
         for (int i = 0; i < size; i++) {
             Topic topic = new Topic(user, "title" + i);
+            topic.addPost(new Post(user,"post_context" + i));
             branch.addTopic(topic);
         }
         persist(branch);
