@@ -19,6 +19,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.fail;
 
 /**
  * Is created in order to find out if we changed the classes or Spring contexts per se so that it won't start up. Usual
@@ -26,20 +27,26 @@ import static org.testng.Assert.assertNotNull;
  * that the contexts are being created correctly is this test.
  *
  * @author Evgeny Surovtsev
+ * @author Vitaliy Kravchenko
  */
 public class ApplicationContextTest {
     @Test
     public void applicationContextShouldConstructAllBeans() {
-        ApplicationContext ctx = new ClassPathXmlApplicationContext(
-                "/org/jtalks/jcommune/model/entity/applicationContext-dao.xml",
-                "/org/jtalks/jcommune/model/entity/applicationContext-properties.xml",
-                "/org/jtalks/jcommune/service/applicationContext-service.xml",
-                "/org/jtalks/jcommune/service/security-service-context.xml",
-                "/org/jtalks/jcommune/service/email-context.xml",
-                "/org/jtalks/jcommune/web/applicationContext-controller.xml",
-                "/org/jtalks/jcommune/web/view/security-mock-context.xml"
-        );
-        assertNotNull(ctx, "Application context hasn't been initialized");
+        try
+        {
+            ApplicationContext ctx = new ClassPathXmlApplicationContext(
+                    "/org/jtalks/jcommune/model/entity/applicationContext-dao.xml",
+                    "/org/jtalks/jcommune/model/entity/applicationContext-properties.xml",
+                    "/org/jtalks/jcommune/service/applicationContext-service.xml",
+                    "/org/jtalks/jcommune/service/security-service-context.xml",
+                    "/org/jtalks/jcommune/service/email-context.xml",
+                    "/org/jtalks/jcommune/web/applicationContext-controller.xml",
+                    "/org/jtalks/jcommune/web/view/security-mock-context.xml"
+            );  
+        }
+        catch (Exception ex) {
+            fail("Application initialization is failed", ex);
+        }
     }
 }
 
