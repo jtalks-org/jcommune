@@ -27,6 +27,8 @@ import org.jtalks.jcommune.model.validation.annotations.PollItemsWithoutDuplicat
 import org.jtalks.jcommune.model.validation.annotations.PollTitleNotBlankIfItemsFilled;
 import org.springframework.util.CollectionUtils;
 
+import com.google.common.base.Joiner;
+
 import javax.validation.constraints.Future;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
@@ -264,6 +266,9 @@ public class Poll extends Entity {
      * @return poll options in string representation.
      */
     public String getPollItemsValue() {
+        if (StringUtils.isBlank(pollItemsValue) && !CollectionUtils.isEmpty(pollItems)) {
+            pollItemsValue = Joiner.on(SEPARATOR).join(pollItems);
+        }
         return pollItemsValue;
     }
 
