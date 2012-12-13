@@ -16,6 +16,11 @@ package org.jtalks.jcommune.model.entity;
 
 
 import org.jtalks.common.model.entity.Entity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 /**
  * The only reason why this class is serializable is that is required by
@@ -27,6 +32,8 @@ public class LastReadPost extends Entity {
     private Topic topic;
     private JCUser user;
     private int postIndex;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(LastReadPost.class);
 
     /**
      * For hibernate use only
@@ -42,6 +49,7 @@ public class LastReadPost extends Entity {
     public LastReadPost(JCUser user, Topic topic, int postIndex) {
         this.topic = topic;
         this.postIndex = postIndex;
+        checkPostIndex(getPostIndex());
         this.user = user;
     }
     
@@ -71,6 +79,7 @@ public class LastReadPost extends Entity {
      */
     public void setPostIndex(int postIndex) {
         this.postIndex = postIndex;
+        checkPostIndex(getPostIndex());
     }
 
     /**
@@ -85,5 +94,28 @@ public class LastReadPost extends Entity {
      */
     protected void setUser(JCUser user) {
         this.user = user;
+    }
+
+    /**
+     * To check post index value (postIndex >= -1)
+     * @param postIndex post index value
+     */
+    private void checkPostIndex(int postIndex){
+        final int MIN_VALUE = -1;
+        if(postIndex<MIN_VALUE){
+            this.postIndex=MIN_VALUE;
+            LOGGER.warn(getStackTrace("Post index value "+postIndex+" is too low"));
+        }
+    }
+
+    /**
+     * Return stack trace with message,To format stack trace for logging
+     * @param message stack trace's message
+     * @return stack trace with message
+     */
+    private String getStackTrace(String message){
+        StringWriter sw = new StringWriter();
+        new Throwable(message).printStackTrace(new PrintWriter(sw));
+        return sw.toString();
     }
 }
