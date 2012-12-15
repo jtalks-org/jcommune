@@ -31,10 +31,15 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.jtalks.jcommune.model.matchers.HasPages.hasPages;
 import static org.testng.Assert.*;
 
 /**
@@ -153,7 +158,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
                 String.valueOf(user.getGroups().get(0).getId()), true);
         Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest, user);
 
-        verifyPageSizeAndPageTotalElements(listSize, pageSize, page);
+        assertThat("Topics should be paginated for registered users", page , hasPages());
     }
 
     @Test
@@ -168,12 +173,22 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         createAndSaveViewTopicsBranchesEntity(createdTopicList.get(0).getBranch().getId(), "anonymousUser", true);
         Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest, new AnonymousUser());
 
-        verifyPageSizeAndPageTotalElements(listSize, pageSize, page);
+        assertThat("Topics should be paginated for anonymous group", page , hasPages());
     }
+    
+    @Test
+    public void testGetUpdateTopicsUpdatedForNoneExistingBranchAndUserGroup(){
+        int listSize = 5;
+        int pageSize = 2;
+        int lastPage = listSize / pageSize;
+        List<Topic> createdTopicList = createAndSaveTopicList(listSize);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(lastPage, pageSize);
+        DateTime lastLogin = new DateTime().minusDays(1);
 
-    private void verifyPageSizeAndPageTotalElements(int expectedTotalElementsSize, int pageSize, Page<Topic> page) {
-        assertEquals(page.getSize(), pageSize);
-        assertEquals(page.getTotalElements(), expectedTotalElementsSize);
+        createAndSaveViewTopicsBranchesEntity(22l, "noneExistingGroup", true);
+        Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest, new AnonymousUser());
+
+        assertThat("Topics shouldn't be paginated for none existing group", page , not(hasPages()));
     }
 
     @Test
@@ -281,11 +296,8 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         Branch branch = topicList.get(0).getBranch();
         
         Page<Topic> topicsPage = dao.getTopics(branch, pageRequest);
-        
-        assertEquals(topicsPage.getContent().size(), pageSize, "Incorrect count of topics in one page.");
-        assertEquals(topicsPage.getTotalElements(), totalSize, "Incorrect total count.");
-        assertEquals(topicsPage.getTotalPages(), pageCount, "Incorrect count of pages.");
-        
+
+        assertThat("Incorrect pagination", topicsPage , hasPages());
     }
     
     @Test
