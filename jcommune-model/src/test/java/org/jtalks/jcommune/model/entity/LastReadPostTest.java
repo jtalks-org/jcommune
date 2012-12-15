@@ -20,17 +20,22 @@ import static org.testng.Assert.assertEquals;
 
 public class LastReadPostTest {
 
+    private final int MINVALUE = -1;
+
     @Test
-    public void testAllowPostIndexMinValue(){
-        final int MIN_VALUE = -1;
+    public void resultsInMinValueIfAllowNumberWasSet(){
+        LastReadPost lastReadPost = new LastReadPost(null,null,5);
+        assertEquals(lastReadPost.getPostIndex(), 5);
+        lastReadPost.setPostIndex(MINVALUE);
+        assertEquals(lastReadPost.getPostIndex(),MINVALUE);
+    }
+
+    @Test
+    public void resultsInMinValueIfInvalidNumberWasSet(){
         LastReadPost lastReadPost = new LastReadPost(null,null,-5);
-        assertEquals(lastReadPost.getPostIndex(), MIN_VALUE);
-
+        assertEquals(lastReadPost.getPostIndex(), MINVALUE);
         lastReadPost.setPostIndex(-2);
-        assertEquals(lastReadPost.getPostIndex(), MIN_VALUE);
-
-        lastReadPost.setPostIndex(-1);
-        assertEquals(lastReadPost.getPostIndex(), -1);
+        assertEquals(lastReadPost.getPostIndex(), MINVALUE);
     }
 
 }

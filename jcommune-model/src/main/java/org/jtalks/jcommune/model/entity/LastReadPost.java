@@ -48,8 +48,7 @@ public class LastReadPost extends Entity {
      */
     public LastReadPost(JCUser user, Topic topic, int postIndex) {
         this.topic = topic;
-        this.postIndex = postIndex;
-        checkPostIndex(getPostIndex());
+        this.postIndex = checkPostIndex(postIndex);
         this.user = user;
     }
     
@@ -78,8 +77,7 @@ public class LastReadPost extends Entity {
      * @param postIndex last read post index in topic's collection, starting from 0
      */
     public void setPostIndex(int postIndex) {
-        this.postIndex = postIndex;
-        checkPostIndex(getPostIndex());
+        this.postIndex = checkPostIndex(postIndex);
     }
 
     /**
@@ -97,19 +95,22 @@ public class LastReadPost extends Entity {
     }
 
     /**
-     * To check post index value (postIndex >= -1)
+     * To check post index value (postIndex >= -1). If postIndex value fails validation, the state is logged.
+     * It is used to identify the source of the error (see http://jira.jtalks.org/browse/JC-1177)
      * @param postIndex post index value
+     * @return checked post index
      */
-    private void checkPostIndex(int postIndex){
-        final int MIN_VALUE = -1;
-        if(postIndex<MIN_VALUE){
-            this.postIndex=MIN_VALUE;
+    private int checkPostIndex(int postIndex){
+        final int MINVALUE = -1;
+        if(postIndex<MINVALUE){
             LOGGER.warn(getStackTrace("Post index value "+postIndex+" is too low"));
+            return MINVALUE;
         }
+        return postIndex;
     }
 
     /**
-     * Return stack trace with message,To format stack trace for logging
+     * Return stack trace with message,To format stack trace for logging, For easy viewing of text log
      * @param message stack trace's message
      * @return stack trace with message
      */
