@@ -20,7 +20,7 @@ import static org.testng.Assert.assertEquals;
 
 public class LastReadPostTest {
 
-    private final int MINVALUE = -1;
+    private static final int MINVALUE = -1;
 
     @Test
     public void resultsInMinValueIfAllowNumberWasSet(){

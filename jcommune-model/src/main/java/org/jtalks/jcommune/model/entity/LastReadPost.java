@@ -101,10 +101,10 @@ public class LastReadPost extends Entity {
      * @return checked post index
      */
     private int checkPostIndex(int postIndex){
-        final int MINVALUE = -1;
-        if(postIndex<MINVALUE){
-            LOGGER.warn(getStackTrace("Post index value "+postIndex+" is too low"));
-            return MINVALUE;
+        final int minValue = -1;
+        if(postIndex<minValue){
+            LOGGER.warn(getStackTrace("Post index value "+postIndex+" is too low."));
+            return minValue;
         }
         return postIndex;
     }
