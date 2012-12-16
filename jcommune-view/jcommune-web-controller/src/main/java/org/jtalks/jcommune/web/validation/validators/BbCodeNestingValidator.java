@@ -70,11 +70,14 @@ public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting
      * @return allowed or not allowed
      */
     private boolean checkNestingLevel(String text) {
-        Pattern pattern = Pattern.compile("\\[[a-zA-Z_0-9=]*\\]|\\[/[a-zA-Z_0-9=]*\\]");
+        Pattern pattern = Pattern.compile("\\[[a-zA-Z_0-9=\"\']*\\]|\\[/[a-zA-Z_0-9=\"\']*\\]");
         Matcher matcher = pattern.matcher(text);
         int count = 0;
         while (matcher.find()) {
             String tag = matcher.group();
+            if(tag.isEmpty()){
+                continue;
+            }
             if (tag.contains("/")) {
                 count--;
             } else {
