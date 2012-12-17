@@ -96,7 +96,7 @@
             <dependency>
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
-                <version>1.2.12</version>
+                <version>1.2.16</version>
             </dependency>
             <dependency>
                 <groupId>log4j</groupId>
@@ -258,6 +258,12 @@
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-all</artifactId>
                 <version>1.8.5</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-core</artifactId>
+                <version>1.1</version>
                 <scope>test</scope>
             </dependency>
             <dependency>

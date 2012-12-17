@@ -81,6 +81,7 @@ public class BbCodeNestingValidatorTest {
                 {"text"},
                 {"[*][*][*][*][*][*][*][*][*][*][*][*][*][*][*]"},
                 {repeat("[b]",50)},
+                {"[quote=\"name\"]"+repeat("[b]",49)+"[//quote]"}
         };
     }
 
@@ -88,7 +89,8 @@ public class BbCodeNestingValidatorTest {
     public String[][] tooDeepNestingMessages() {
         return new String[][]{ // {"message"}
                 {repeat("[b]",51)},
-                {repeat("[color][u]",50)}
+                {repeat("[color][u]",50)},
+                {"[quote=\"name\"]"+repeat("[b]",50)+"[//quote]"}
         };
     }
 }

@@ -35,7 +35,7 @@
     <param name="MaxBackupIndex" value="10"/>
     <param name="Encoding" value="UTF-8"/>
     <layout class="org.apache.log4j.EnhancedPatternLayout">
-      <param name="ConversionPattern" value="%d{ISO8601} [%-5p][%-16.16t][%30c{-2}] - %m%n"/>
+      <param name="ConversionPattern" value="%d{ISO8601} [%-5p][%-16.16t][%30c{-2}] - %m%n %throwable{short}"/>
     </layout>
   </appender>
   <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">

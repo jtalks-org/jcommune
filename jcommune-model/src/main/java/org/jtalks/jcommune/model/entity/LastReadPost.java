@@ -16,6 +16,11 @@ package org.jtalks.jcommune.model.entity;
 
 
 import org.jtalks.common.model.entity.Entity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 /**
  * The only reason why this class is serializable is that is required by
@@ -27,6 +32,8 @@ public class LastReadPost extends Entity {
     private Topic topic;
     private JCUser user;
     private int postIndex;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(LastReadPost.class);
 
     /**
      * For hibernate use only
@@ -41,7 +48,7 @@ public class LastReadPost extends Entity {
      */
     public LastReadPost(JCUser user, Topic topic, int postIndex) {
         this.topic = topic;
-        this.postIndex = postIndex;
+        this.postIndex = checkPostIndex(postIndex);
         this.user = user;
     }
     
@@ -70,7 +77,7 @@ public class LastReadPost extends Entity {
      * @param postIndex last read post index in topic's collection, starting from 0
      */
     public void setPostIndex(int postIndex) {
-        this.postIndex = postIndex;
+        this.postIndex = checkPostIndex(postIndex);
     }
 
     /**
@@ -85,5 +92,31 @@ public class LastReadPost extends Entity {
      */
     protected void setUser(JCUser user) {
         this.user = user;
+    }
+
+    /**
+     * To check post index value (postIndex >= -1). If postIndex value fails validation, the state is logged.
+     * It is used to identify the source of the error (see http://jira.jtalks.org/browse/JC-1177)
+     * @param postIndex post index value
+     * @return checked post index
+     */
+    private int checkPostIndex(int postIndex){
+        final int minValue = -1;
+        if(postIndex<minValue){
+            LOGGER.warn(getStackTrace("Post index value "+postIndex+" is too low."));
+            return minValue;
+        }
+        return postIndex;
+    }
+
+    /**
+     * Return stack trace with message,To format stack trace for logging, For easy viewing of text log
+     * @param message stack trace's message
+     * @return stack trace with message
+     */
+    private String getStackTrace(String message){
+        StringWriter sw = new StringWriter();
+        new Throwable(message).printStackTrace(new PrintWriter(sw));
+        return sw.toString();
     }
 }
