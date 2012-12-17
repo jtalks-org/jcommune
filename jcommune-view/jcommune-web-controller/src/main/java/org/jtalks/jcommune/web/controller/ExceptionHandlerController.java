@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/exception")
 public class ExceptionHandlerController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionHandlerController.class);
-    static final String REDIRECT_TO_LOGIN = "redirect:/login";
+    static final String REDIRECT_TO_LOGIN = "redirect:/login?login_error=1";
     
     /**
      * Handle the remember me exception. This method is called by servlet container,
