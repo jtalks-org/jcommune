@@ -46,9 +46,10 @@
 
     <task:scheduler id="scheduler" pool-size="1"/>
 
-  <bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean">
-    <property name="locateExistingServerIfPossible" value="true"/>
-  </bean>
+    <!--JMX configuration-->
+    <bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean">
+        <property name="locateExistingServerIfPossible" value="true"/>
+    </bean>
 
   <bean id="jmxExporter" class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
     <property name="beans">
@@ -60,6 +61,16 @@
     </property>
   </bean>
 
+    <bean id="managementService" class="net.sf.ehcache.management.ManagementService"
+          init-method="init"
+          destroy-method="dispose">
+        <constructor-arg ref="localCache"/>
+        <constructor-arg ref="mbeanServer"/>
+        <constructor-arg index="2" value="true"/>
+        <constructor-arg index="3" value="true"/>
+        <constructor-arg index="4" value="true"/>
+        <constructor-arg index="5" value="true"/>
+    </bean>
     <!--Declaration services bean -->
 
     <bean id="avatarService" class="org.jtalks.jcommune.service.nontransactional.AvatarService">
