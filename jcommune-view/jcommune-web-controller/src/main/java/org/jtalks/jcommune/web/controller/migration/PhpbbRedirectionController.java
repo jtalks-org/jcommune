@@ -39,12 +39,27 @@ public class PhpbbRedirectionController {
      * @param response http response object to set headers on
      * @param request http request to figure out the context path
      */
-    @RequestMapping("/ftopic{id}/**")
+    @RequestMapping({"/ftopic{id}", "/ftopic{id}.php/**", "/ftopic{id}/**"})
     public void showTopic(@PathVariable Long id, HttpServletResponse response, WebRequest request) {
         String redirectUrl = request.getContextPath() +  "/topics/" + id;
         this.setHttp301Headers(response, redirectUrl);
     }
-    
+
+    /**
+     * http://www.javatalks.ru/ftopic2036-0.php
+     * http://www.javatalks.ru/ftopic2036-0.php/topicname
+     * @param topicParams
+     * @param response
+     * @param request
+     */
+    @RequestMapping({"/ftopic{topicParams}.php", "/ftopic{topicParams}.php/**"})
+    public void showFtopicWithAdditionalParams(@PathVariable String topicParams, HttpServletResponse response,
+                                               WebRequest request) {
+        String id = StringUtils.substringBefore(topicParams, "-");
+        String redirectUrl = request.getContextPath() +  "/topics/" + id;
+        this.setHttp301Headers(response, redirectUrl);
+    }
+
     /**
      * Redirect topic URLs to, assumes that topic ids
      * haven't been changed during migration. 
