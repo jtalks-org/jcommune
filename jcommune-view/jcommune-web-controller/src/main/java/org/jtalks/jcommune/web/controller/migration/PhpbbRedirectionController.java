@@ -48,9 +48,7 @@ public class PhpbbRedirectionController {
     /**
      * http://www.javatalks.ru/ftopic2036-0.php
      * http://www.javatalks.ru/ftopic2036-0.php/topicname
-     * @param topicParams
-     * @param response
-     * @param request
+     * @param topicParams example ftopic2036-0, where the last number is page, which is ignored in our case
      */
     @RequestMapping({"/ftopic{topicParams}.php", "/ftopic{topicParams}.php/**"})
     public void showFtopicWithAdditionalParams(@PathVariable String topicParams, HttpServletResponse response,
