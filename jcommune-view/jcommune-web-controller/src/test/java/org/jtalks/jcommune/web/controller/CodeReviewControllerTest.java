@@ -79,6 +79,8 @@ public class CodeReviewControllerTest {
     private LastReadPostService lastReadPostService;
     @Mock
     private CodeReviewService codeReviewService;
+    @Mock
+    private CodeReviewCommentService codeReviewCommentService;
     
 
     private CodeReviewController controller;
@@ -91,7 +93,8 @@ public class CodeReviewControllerTest {
                 breadcrumbBuilder,
                 topicModificationService,
                 lastReadPostService,
-                codeReviewService);
+                codeReviewService,
+                codeReviewCommentService);
     }
 
     @BeforeMethod
@@ -239,6 +242,61 @@ public class CodeReviewControllerTest {
             .thenThrow(new AccessDeniedException(null));
         
         controller.addComment(new CodeReviewCommentDto(), bindingResult, 1L);
+    }
+    
+    @Test
+    public void testEditCommentSuccess() throws AccessDeniedException, NotFoundException {
+        BindingResult bindingResult = mock(BindingResult.class);
+        
+        when(bindingResult.hasErrors()).thenReturn(false);
+        when(codeReviewCommentService.updateComment(anyLong(), anyString()))
+            .thenReturn(createComment());
+        
+        JsonResponse response = controller.editComment(
+                new CodeReviewCommentDto(), bindingResult);
+        
+        CodeReviewCommentDto dto = (CodeReviewCommentDto) response.getResult();
+        
+        assertEquals(response.getStatus(), JsonResponseStatus.Success);
+        assertEquals(dto.getId(), COMMENT_ID);
+        assertEquals(dto.getBody(), COMMENT_BODY);
+        assertEquals(dto.getLineNumber(), COMMENT_LINE_NUMBER);
+        assertEquals(dto.getAuthorId(), USER_ID);
+        assertEquals(dto.getAuthorUsername(), USERNAME);
+    }
+    
+    @Test
+    public void testEditCommentValidationFail() throws AccessDeniedException, NotFoundException {
+        BindingResult bindingResult = mock(BindingResult.class);
+        
+        when(bindingResult.hasErrors()).thenReturn(true);
+        
+        FailValidationJsonResponse response = (FailValidationJsonResponse)controller
+                .editComment(new CodeReviewCommentDto(), bindingResult);
+        
+        assertNotNull(response.getResult());
+    }
+    
+    @Test(expectedExceptions=NotFoundException.class)
+    public void testEditCommentNotFound() throws AccessDeniedException, NotFoundException {
+        BindingResult bindingResult = mock(BindingResult.class);
+        
+        when(bindingResult.hasErrors()).thenReturn(false);
+        when(codeReviewCommentService.updateComment(anyLong(), anyString()))
+            .thenThrow(new NotFoundException());
+        
+        controller.editComment(new CodeReviewCommentDto(), bindingResult);
+    }
+    
+    @Test(expectedExceptions=AccessDeniedException.class)
+    public void testEditCommentAccessDenied() throws AccessDeniedException, NotFoundException {
+        BindingResult bindingResult = mock(BindingResult.class);
+        
+        when(bindingResult.hasErrors()).thenReturn(false);
+        when(codeReviewCommentService.updateComment(anyLong(), anyString()))
+            .thenThrow(new AccessDeniedException(null));
+        
+        controller.editComment(new CodeReviewCommentDto(), bindingResult);
     }
     
     

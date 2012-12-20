@@ -14,16 +14,11 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.joda.time.DateTime;
-import org.jtalks.common.model.permissions.BranchPermission;
-import org.jtalks.jcommune.model.dao.CodeReviewDao;
-import org.jtalks.jcommune.model.entity.CodeReview;
+import org.jtalks.jcommune.model.dao.CodeReviewCommentDao;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
-import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.service.CodeReviewCommentService;
 import org.jtalks.jcommune.service.CodeReviewService;
-import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.security.AclClassName;
 import org.jtalks.jcommune.service.security.PermissionService;
 
 /**
@@ -31,10 +26,9 @@ import org.jtalks.jcommune.service.security.PermissionService;
  * 
  * @author Vyacheslav Mishcheryakov
  */
-public class TransactionalCodeReviewService extends AbstractTransactionalEntityService<CodeReview, CodeReviewDao> 
-        implements CodeReviewService {
+public class TransactionalCodeReviewCommentService extends AbstractTransactionalEntityService<CodeReviewComment, CodeReviewCommentDao> 
+        implements CodeReviewCommentService {
 
-    private UserService userService;
     private PermissionService permissionService;
     
     /**
@@ -43,36 +37,23 @@ public class TransactionalCodeReviewService extends AbstractTransactionalEntityS
      * @param userService       to get current user
      * @param permissionService to check permission for current user ({@link org.springframework.security.access.prepost.PreAuthorize} annotation emulation)
      */
-    public TransactionalCodeReviewService(
-                                    CodeReviewDao dao,
-                                    UserService userService,
+    public TransactionalCodeReviewCommentService(
+                                    CodeReviewCommentDao dao,
                                     PermissionService permissionService) {
         super(dao);
-        this.userService = userService;
         this.permissionService = permissionService;
     }
-    
+ 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public CodeReviewComment addComment(Long reviewId, int lineNumber, String body) 
-            throws NotFoundException {
-        CodeReview review = get(reviewId);
-        JCUser currentUser = userService.getCurrentUser();
+    public CodeReviewComment updateComment(long id, String body) throws NotFoundException {
+        CodeReviewComment comment = get(id);
         
-        permissionService.checkPermission(
-                review.getTopic().getBranch().getId(), 
-                AclClassName.BRANCH, 
-                BranchPermission.LEAVE_COMMENTS_IN_CODE_REVIEW);
-                
-        CodeReviewComment comment = new CodeReviewComment();
-        comment.setLineNumber(lineNumber);
         comment.setBody(body);
-        comment.setCreationDate(new DateTime(System.currentTimeMillis()));
-        comment.setAuthor(currentUser);
-        
-        review.addComment(comment);
-        getDao().update(review);
+        getDao().update(comment);
         
         return comment;
     }
-    
 }

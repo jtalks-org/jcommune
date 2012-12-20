@@ -235,6 +235,22 @@ public final class PersistedObjectsFactory {
         persist(review);
         return review;
     }
+    
+    /**
+     * Create code review comment and persist it to session
+     *
+     * @return persisted code review comment entity
+     */
+    public static CodeReviewComment getDefaultCodeReviewComment() {
+        CodeReviewComment comment = new CodeReviewComment();
+        comment.setAuthor(getDefaultUser());
+        comment.setBody("body");
+        comment.setLineNumber(1);
+        comment.setCreationDate(new DateTime(1));
+
+        persist(comment);
+        return comment;
+    }
 
     public static void createViewUnreadPostsInBranch() {
         session.createSQLQuery("CREATE VIEW COUNT_POSTS_TOPICS_VIEW AS SELECT tp.TOPIC_ID, tp.BRANCH_ID," +
