@@ -90,21 +90,6 @@
         <div class="pagination pull-right forum-pagination">
             <ul>
                 <jtalks:pagination uri="${topicId}" page="${postsPage}" pagingEnabled="${pagingEnabled}"/>
-
-                <c:if test="${previousTopic != null}">
-                    <li>
-                        <a href="${pageContext.request.contextPath}/topics/${previousTopic.id}">
-                            <spring:message code='label.topic.previous'/>
-                        </a>
-                    </li>
-                </c:if>
-                <c:if test="${nextTopic != null}">
-                    <li>
-                        <a href="${pageContext.request.contextPath}/topics/${nextTopic.id}">
-                            <spring:message code='label.topic.next'/>
-                        </a>
-                    </li>
-                </c:if>
             </ul>
         </div>
     </div>

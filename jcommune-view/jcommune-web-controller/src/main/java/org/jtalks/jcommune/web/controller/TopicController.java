@@ -207,7 +207,6 @@ public class TopicController {
         Topic topic = topicFetchService.get(topicId);
         topicFetchService.checkViewTopicPermission(topic.getBranch().getId());
         Page<Post> postsPage = postService.getPosts(topic, page, pagingEnabled);
-        Branch branch = topic.getBranch();
         JCUser currentUser = userService.getCurrentUser();
         Integer lastReadPostIndex = lastReadPostService.getLastReadPostForTopic(topic);
         lastReadPostService.markTopicPageAsRead(topic, page, pagingEnabled);
@@ -216,8 +215,6 @@ public class TopicController {
                 .addObject("usersOnline", sessionRegistry.getAllPrincipals())
                 .addObject("postsPage", postsPage)
                 .addObject("topic", topic)
-                .addObject("nextTopic", branch.getNextTopic(topic))
-                .addObject("previousTopic", branch.getPreviousTopic(topic))
                 .addObject("subscribed", topic.getSubscribers().contains(currentUser))
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic))
                 .addObject("lastReadPost", lastReadPostIndex)
