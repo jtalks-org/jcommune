@@ -86,4 +86,5 @@ $labelReviewSays = '<spring:message code="label.review.says" htmlEscape="true"/>
 
 $labelUnexpectedError = '<spring:message code="label.unexpected.error" htmlEscape="true"/>'
 $labelAdd = '<spring:message code="label.add" htmlEscape="true"/>'
+$labelEdit = '<spring:message code="label.edit" htmlEscape="true"/>'
 $labelKeymapsReview = '<spring:message code="label.keymaps.review" htmlEscape="true"/>'

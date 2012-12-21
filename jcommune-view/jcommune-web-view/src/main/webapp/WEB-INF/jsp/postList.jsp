@@ -109,9 +109,11 @@
 
 <%-- Setup indicators --%>
 <c:if test="${topic.codeReview != null}">
+    <sec:authentication property="principal.id" var="userId"/>
     <input type="hidden" id="has-code-review" value="true"/>
     <input type="hidden" id="codeReviewId" value="${topic.codeReview.id}"/>
     <input type="hidden" id="branchId" value="${topic.branch.id}"/>
+    <input type="hidden" id="userId" value="${userId}"/>
 </c:if>
 
 <div>

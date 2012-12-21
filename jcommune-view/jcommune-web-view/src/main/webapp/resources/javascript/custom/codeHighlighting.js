@@ -18,24 +18,25 @@ var CodeHighlighting = {}
 
 CodeHighlighting.ADD_COMMENT_FORM_ID = 'add-comment-form';
 
+/**
+ * Called when document rendering is completed. Highligh code and
+ * sets up handlers for code review if needed.
+ */
 $(document).ready(function () {
-    //Code highlight
     prettyPrint(function () {
         var hasCodeReview = $('#has-code-review').val();
         if (hasCodeReview == 'true') {
-            CodeHighlighting.displayReviewComments();
+            CodeHighlighting.displayReviewComments().done(CodeHighlighting.setupEditButtons);
 
+			CodeHighlighting.setupGeneralHandlers();
+			
             var branchId = $('#branchId').val();
             PermissionService.hasPermission(branchId, 'BRANCH',
                     'BranchPermission.LEAVE_COMMENTS_IN_CODE_REVIEW',
                     CodeHighlighting.setupAddCommentFormHandlers);
-			// TODO: Check permissions
-			CodeHighlighting.setupEditCommentHandlers();
 			
-			CodeHighlighting.setupGeneralHandlers();
-
+			CodeHighlighting.setupEditCommentHandlers();
         }
-
     });
 });
 
@@ -63,10 +64,11 @@ CodeHighlighting.updateComment = function (comment) {
 
 /**
  * Get review comments for this topic from server and display them
+ * @return deffered object for AJAX request (displaying comments)
  */
 CodeHighlighting.displayReviewComments = function () {
     var codeReviewId = $('#codeReviewId').val();
-    $.ajax({
+    return $.ajax({
         url: baseUrl + '/reviews/' + codeReviewId + '/json',
         type: "GET",
         success: function (data) {
@@ -195,6 +197,28 @@ CodeHighlighting.setupEditCommentHandlers = function() {
 }
 
 /**
+ * Loop through the comments and add edit buttons to those which current user
+ * can edit
+ */
+CodeHighlighting.setupEditButtons = function() {
+	var branchId = $('#branchId').val();
+	var userId = $('#userId').val();
+	var canEditOwnPosts = PermissionService.getHasPermission(branchId, 'BRANCH',
+                    'BranchPermission.EDIT_OWN_POSTS');
+	var canEditOtherPosts = PermissionService.getHasPermission(branchId, 'BRANCH',
+                    'BranchPermission.EDIT_OTHERS_POSTS');
+	
+	$('.script-first-post div.review-container').each(function() {
+		var authorId = $(this).find('input[name=authorId]').val();
+		if (canEditOtherPosts || (authorId == userId && canEditOwnPosts)) {
+			$(this).find('.review-buttons').append(
+				'<a href="" name=edit-review>' + $labelEdit + '</a>'
+			);
+		}
+	});
+}
+
+/**
  * Build HTML piece for review comment
  * @param comment code review comment
  * @return div (string) with comment data
@@ -203,13 +227,12 @@ CodeHighlighting.getCommentHtml = function (comment) {
     var result =
             '<div class="review-container"> '
 				+ '<input type=hidden name=id value="' + comment.id + '"/>'
+				+ '<input type=hidden name=authorId value="' + comment.authorId + '"/>'
                 + '<div class="review-avatar">'
                     + '<img class="review-avatar-img" src="' + baseUrl + '/users/' + comment.authorId + '/avatar"/>'
                 + '</div>'
                 + '<div class="review-content">'
-				    + '<div class="review-buttons" style="float:right">'
-						+ '<a href="" name=edit-review>Edit</a>'
-					+ '</div>'
+				    + '<div class="review-buttons" style="float:right"/>'
                     + '<div class="review-header">'
 						+ '<a href="' + baseUrl + '/users/' + comment.authorId + '">' + CodeHighlighting.htmlEncode(comment.authorUsername) + '</a>'
 						+ ' ' + $labelReviewSays + ': '
@@ -224,6 +247,8 @@ CodeHighlighting.getCommentHtml = function (comment) {
 
 /**
  * Build HTML piece for add comment form
+ * @param submitButtonTitle title of submit button
+ * @param submitButtonName name of submit button element
  * @param lineNumber number of line where form will be placed
  * @param comment data to fill form if defined
  * @return string with HTML piece for the form
@@ -248,6 +273,14 @@ CodeHighlighting.getCommentForm = function (submitButtonTitle, submitButtonName,
     return result;
 }
 
+/**
+ * Show comment form below given element
+ * @param element jquery element after which show form
+ * @param submitButtonTitle title of submit button
+ * @param submitButtonName name of submit button element
+ * @param lineNumber number of line where form will be placed
+ * @param comment data to fill form if defined
+ */
 CodeHighlighting.showCommentForm = function(element, submitButtonTitle, submitButtonName, lineNumber, comment) {
 	element.after(CodeHighlighting.getCommentForm(submitButtonTitle, submitButtonName, lineNumber + 1, comment));
 	var reviewContent = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' textarea');
@@ -255,16 +288,26 @@ CodeHighlighting.showCommentForm = function(element, submitButtonTitle, submitBu
     reviewContent.focus();
 }
 
+/**
+ * Show 'add comment' form below given element
+ * @param element jquery element after which show form
+ * @param lineNumber number of line where form will be placed
+ */
 CodeHighlighting.showAddCommentForm = function(element, lineNumber) {
 	CodeHighlighting.showCommentForm(element, $labelAdd, 'add', lineNumber);
 }
 
+/**
+ * Show 'edit comment' form below given element
+ * @param element jquery element after which show form
+ * @param comment data to fill form
+ */
 CodeHighlighting.showEditCommentForm = function(element, comment) {
 	CodeHighlighting.showCommentForm(element, $labelEdit, 'edit', 0, comment);
 }
 
 /**
- * Remove add comment form from the page
+ * Remove comment form from the page
  */
 CodeHighlighting.removeCommentForm = function () {
     $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID).remove();
