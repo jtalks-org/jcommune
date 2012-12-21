@@ -17,7 +17,6 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.jcommune.model.dao.CodeReviewCommentDao;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.security.PermissionService;
 import org.mockito.Mock;
 import org.springframework.security.access.AccessDeniedException;
 import org.testng.annotations.BeforeMethod;
@@ -29,12 +28,12 @@ import static org.testng.Assert.*;
 
 public class TransactionalCodeReviewCommentServiceTest {
 
+    private static final long BRANCH_ID = 1L;
+
     private static final long CR_ID = 1L;
     
     @Mock
     private CodeReviewCommentDao dao;
-    @Mock
-    private PermissionService permissionService;
     
     private TransactionalCodeReviewCommentService codeReviewCommentService;
     
@@ -44,7 +43,7 @@ public class TransactionalCodeReviewCommentServiceTest {
     public void initEnvironmental() {
         initMocks(this);
         
-        codeReviewCommentService = new TransactionalCodeReviewCommentService(dao, permissionService);
+        codeReviewCommentService = new TransactionalCodeReviewCommentService(dao);
     }
     
     @BeforeMethod 
@@ -57,21 +56,14 @@ public class TransactionalCodeReviewCommentServiceTest {
     
     @Test
     public void testUpdateCommentSuccess() throws AccessDeniedException, NotFoundException {
-        CodeReviewComment comment = codeReviewCommentService.updateComment(CR_ID, "body");
+        CodeReviewComment comment = codeReviewCommentService.updateComment(CR_ID, "body", BRANCH_ID);
         
         assertEquals(comment.getBody(), "body");
     }
     
     @Test(expectedExceptions=NotFoundException.class)
     public void testUpdateCommentNotFound() throws AccessDeniedException, NotFoundException {
-        codeReviewCommentService.updateComment(123L, null);
+        codeReviewCommentService.updateComment(123L, null, BRANCH_ID);
     }
-    
-//    @Test(expectedExceptions=AccessDeniedException.class)
-//    public void testUpdateCommentUserHasNoPermission() throws AccessDeniedException, NotFoundException {
-//        doThrow(new AccessDeniedException(""))
-//            .when(permissionService).checkPermission(anyLong(), any(AclClassName.class), any(JtalksPermission.class));
-//        codeReviewCommentService.addComment(CR_ID, 0, null);
-//    }
     
 }

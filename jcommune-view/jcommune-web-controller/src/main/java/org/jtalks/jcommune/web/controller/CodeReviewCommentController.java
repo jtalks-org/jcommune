@@ -114,12 +114,13 @@ public class CodeReviewCommentController {
     @ResponseBody
     public JsonResponse editComment(
             @Valid @ModelAttribute CodeReviewCommentDto commentDto,
-            BindingResult bindingResult) throws NotFoundException {
+            BindingResult bindingResult,
+            @RequestParam("branchId") long branchId) throws NotFoundException {
         if (bindingResult.hasErrors()) {
             return new FailValidationJsonResponse(bindingResult.getAllErrors());
         }
         CodeReviewComment editedComment = codeReviewCommentService.updateComment(
-                commentDto.getId(), commentDto.getBody());
+                commentDto.getId(), commentDto.getBody(), branchId);
         CodeReviewCommentDto addedCommentDto = new CodeReviewCommentDto(editedComment);
         return new JsonResponse(JsonResponseStatus.Success, addedCommentDto);
     }

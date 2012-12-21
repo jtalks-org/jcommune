@@ -142,11 +142,11 @@ public class CodeReviewCommentControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
         
         when(bindingResult.hasErrors()).thenReturn(false);
-        when(codeReviewCommentService.updateComment(anyLong(), anyString()))
+        when(codeReviewCommentService.updateComment(anyLong(), anyString(), anyLong()))
             .thenReturn(createComment());
         
         JsonResponse response = controller.editComment(
-                new CodeReviewCommentDto(), bindingResult);
+                new CodeReviewCommentDto(), bindingResult, BRANCH_ID);
         
         CodeReviewCommentDto dto = (CodeReviewCommentDto) response.getResult();
         
@@ -165,7 +165,7 @@ public class CodeReviewCommentControllerTest {
         when(bindingResult.hasErrors()).thenReturn(true);
         
         FailValidationJsonResponse response = (FailValidationJsonResponse)controller
-                .editComment(new CodeReviewCommentDto(), bindingResult);
+                .editComment(new CodeReviewCommentDto(), bindingResult, BRANCH_ID);
         
         assertNotNull(response.getResult());
     }
@@ -175,10 +175,10 @@ public class CodeReviewCommentControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
         
         when(bindingResult.hasErrors()).thenReturn(false);
-        when(codeReviewCommentService.updateComment(anyLong(), anyString()))
+        when(codeReviewCommentService.updateComment(anyLong(), anyString(), anyLong()))
             .thenThrow(new NotFoundException());
         
-        controller.editComment(new CodeReviewCommentDto(), bindingResult);
+        controller.editComment(new CodeReviewCommentDto(), bindingResult, BRANCH_ID);
     }
     
     @Test(expectedExceptions=AccessDeniedException.class)
@@ -186,10 +186,10 @@ public class CodeReviewCommentControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
         
         when(bindingResult.hasErrors()).thenReturn(false);
-        when(codeReviewCommentService.updateComment(anyLong(), anyString()))
+        when(codeReviewCommentService.updateComment(anyLong(), anyString(), anyLong()))
             .thenThrow(new AccessDeniedException(null));
         
-        controller.editComment(new CodeReviewCommentDto(), bindingResult);
+        controller.editComment(new CodeReviewCommentDto(), bindingResult, BRANCH_ID);
     }
     
     private CodeReviewComment createComment() {

@@ -19,7 +19,7 @@ var CodeHighlighting = {}
 CodeHighlighting.ADD_COMMENT_FORM_ID = 'add-comment-form';
 
 /**
- * Called when document rendering is completed. Highligh code and
+ * Called when document rendering is completed. Highlight code and
  * sets up handlers for code review if needed.
  */
 $(document).ready(function () {
@@ -41,7 +41,7 @@ $(document).ready(function () {
 });
 
 /**
- * Function to append commentto HTML
+ * Function to append comment to HTML
  */
 CodeHighlighting.addComment = function (comment) {
     var nextLine = $('.script-first-post ol.linenums li:nth-child(' + comment.lineNumber + ') ~ li:first');
@@ -173,7 +173,8 @@ CodeHighlighting.setupEditCommentHandlers = function() {
 		data.id = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=id]').val();
         data.lineNumber = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=lineNumber]').val();
         data.body = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=body]').val();
-		
+		data.branchId = $('#branchId').val();
+        
         $.post(baseUrl + '/reviewcomments/edit', data)
                 .success(function (data) {
                     if (data.status == 'Success') {

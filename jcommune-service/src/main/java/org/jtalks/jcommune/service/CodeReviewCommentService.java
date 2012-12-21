@@ -28,9 +28,10 @@ public interface CodeReviewCommentService extends EntityService<CodeReviewCommen
      * Updates CR comment's body
      * @param id ID of CR comment
      * @param body new body of comment
+     * @param branchId ID of branch containing code review to check permissions
      * @return updated CR comment entity
      * @throws NotFoundException when entity not found
      */
-    CodeReviewComment updateComment(long id, String body) throws NotFoundException;
+    CodeReviewComment updateComment(long id, String body, long branchId) throws NotFoundException;
 
 }

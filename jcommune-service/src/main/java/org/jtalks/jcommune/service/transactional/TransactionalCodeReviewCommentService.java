@@ -19,7 +19,7 @@ import org.jtalks.jcommune.model.entity.CodeReviewComment;
 import org.jtalks.jcommune.service.CodeReviewCommentService;
 import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.security.PermissionService;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  * The implementation of (@link {@link CodeReviewService}
@@ -29,8 +29,6 @@ import org.jtalks.jcommune.service.security.PermissionService;
 public class TransactionalCodeReviewCommentService extends AbstractTransactionalEntityService<CodeReviewComment, CodeReviewCommentDao> 
         implements CodeReviewCommentService {
 
-    private PermissionService permissionService;
-    
     /**
      * Create an instance of CodeReview entity based service
      * @param dao               data access object, which should be able do all CRUD operations with entity. 
@@ -38,17 +36,17 @@ public class TransactionalCodeReviewCommentService extends AbstractTransactional
      * @param permissionService to check permission for current user ({@link org.springframework.security.access.prepost.PreAuthorize} annotation emulation)
      */
     public TransactionalCodeReviewCommentService(
-                                    CodeReviewCommentDao dao,
-                                    PermissionService permissionService) {
+                                    CodeReviewCommentDao dao) {
         super(dao);
-        this.permissionService = permissionService;
     }
  
     /**
      * {@inheritDoc}
      */
+    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.EDIT_OWN_POSTS') or "+
+                  "hasPermission(#branchId, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
     @Override
-    public CodeReviewComment updateComment(long id, String body) throws NotFoundException {
+    public CodeReviewComment updateComment(long id, String body, long branchId) throws NotFoundException {
         CodeReviewComment comment = get(id);
         
         comment.setBody(body);
