@@ -18,17 +18,13 @@ import javax.validation.Valid;
 
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.CodeReview;
-import org.jtalks.jcommune.model.entity.CodeReviewComment;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.CodeReviewCommentService;
 import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.TopicModificationService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.web.dto.CodeReviewCommentDto;
 import org.jtalks.jcommune.web.dto.CodeReviewDto;
-import org.jtalks.jcommune.web.dto.json.FailValidationJsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.dto.TopicDto;
@@ -68,7 +64,6 @@ public class CodeReviewController {
     private TopicModificationService topicModificationService;
     private LastReadPostService lastReadPostService;
     private CodeReviewService codeReviewService;
-    private CodeReviewCommentService codeReviewCommentService;
     
     /**
      * @param branchService            the object which provides actions on
@@ -78,21 +73,18 @@ public class CodeReviewController {
      *                                 {@link org.jtalks.jcommune.model.entity.Topic} entity
      * @param lastReadPostService      to perform post-related actions   
      * @param codeReviewService        to operate with {@link CodeReview} entities
-     * @param codeReviewCommentService to operate with (@link {@link CodeReviewComment} entities
      */
     @Autowired
     public CodeReviewController(BranchService branchService,
                                 BreadcrumbBuilder breadcrumbBuilder,
                                 TopicModificationService topicModificationService,
                                 LastReadPostService lastReadPostService,
-                                CodeReviewService codeReviewService,
-                                CodeReviewCommentService codeReviewCommentService) {
+                                CodeReviewService codeReviewService) {
         this.branchService = branchService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.topicModificationService = topicModificationService;
         this.lastReadPostService = lastReadPostService;
         this.codeReviewService = codeReviewService;
-        this.codeReviewCommentService = codeReviewCommentService;
     }
     
     /**
@@ -170,53 +162,6 @@ public class CodeReviewController {
     public JsonResponse getCodeReview(@PathVariable("reviewId") Long reviewId) throws NotFoundException {
         CodeReview review = codeReviewService.get(reviewId);
         return new JsonResponse(JsonResponseStatus.Success, new CodeReviewDto(review));
-    }
-    
-    /**
-     * Adds CR comment to review
-     * @param commentDto incoming DTO object from client
-     * @param bindingResult object contains validation information
-     * @param reviewId ID of review where add comment to
-     * @return response with status 'success' and comment DTO object if comment 
-     *          was added or 'fail' with no objects if there were some errors
-     * @throws NotFoundException when no review with <code>reviewId</code>was found
-     */
-    @RequestMapping(value="/crcomments/new", method = RequestMethod.POST)
-    @ResponseBody
-    public JsonResponse addComment(
-            @Valid @ModelAttribute CodeReviewCommentDto commentDto,
-            BindingResult bindingResult,
-            @RequestParam("reviewId") Long reviewId) throws NotFoundException {
-        if (bindingResult.hasErrors()) {
-            return new FailValidationJsonResponse(bindingResult.getAllErrors());
-        }
-        CodeReviewComment addedComment = codeReviewService.addComment(
-                reviewId, commentDto.getLineNumber(), commentDto.getBody());
-        CodeReviewCommentDto addedCommentDto = new CodeReviewCommentDto(addedComment);
-        return new JsonResponse(JsonResponseStatus.Success, addedCommentDto);
-    }
-    
-    /**
-     * Save CR comment
-     * @param commentDto incoming DTO object from client
-     * @param bindingResult object contains validation information
-     * @return response with status 'success' and comment DTO object if comment 
-     *          was added or 'fail' with no objects if there were some errors
-     * @throws NotFoundException when no CR comment with <code>commentDto.id</code> 
-     *          was found
-     */
-    @RequestMapping(value="/crcomments/edit", method = RequestMethod.POST)
-    @ResponseBody
-    public JsonResponse editComment(
-            @Valid @ModelAttribute CodeReviewCommentDto commentDto,
-            BindingResult bindingResult) throws NotFoundException {
-        if (bindingResult.hasErrors()) {
-            return new FailValidationJsonResponse(bindingResult.getAllErrors());
-        }
-        CodeReviewComment editedComment = codeReviewCommentService.updateComment(
-                commentDto.getId(), commentDto.getBody());
-        CodeReviewCommentDto addedCommentDto = new CodeReviewCommentDto(editedComment);
-        return new JsonResponse(JsonResponseStatus.Success, addedCommentDto);
     }
     
 }

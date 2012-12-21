@@ -119,7 +119,7 @@ CodeHighlighting.setupAddCommentFormHandlers = function () {
         data.body = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=body]').val();
 		data.reviewId = $('#codeReviewId').val();
 		
-        $.post(baseUrl + '/crcomments/new', data)
+        $.post(baseUrl + '/reviewcomments/new', data)
                 .success(function (data) {
                     if (data.status == 'Success') {
                         CodeHighlighting.removeCommentForm();
@@ -172,7 +172,7 @@ CodeHighlighting.setupEditCommentHandlers = function() {
         data.lineNumber = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=lineNumber]').val();
         data.body = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=body]').val();
 		
-        $.post(baseUrl + '/crcomments/edit', data)
+        $.post(baseUrl + '/reviewcomments/edit', data)
                 .success(function (data) {
                     if (data.status == 'Success') {
                         CodeHighlighting.removeCommentForm();
