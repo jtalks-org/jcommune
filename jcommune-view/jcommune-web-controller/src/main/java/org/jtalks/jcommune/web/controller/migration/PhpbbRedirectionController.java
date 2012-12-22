@@ -42,22 +42,22 @@ public class PhpbbRedirectionController {
     @RequestMapping({"/ftopic{id}", "/ftopic{id}.php/**", "/ftopic{id}/**"})
     public void showTopic(@PathVariable Long id, HttpServletResponse response, WebRequest request) {
         String redirectUrl = request.getContextPath() +  "/topics/" + id;
-        this.setHttp301Headers(response, redirectUrl);
+        setHttp301Headers(response, redirectUrl);
     }
 
     /**
      * http://www.javatalks.ru/ftopic2036-0.php
      * http://www.javatalks.ru/ftopic2036-0.php/topicname
-     * @param topicParams
-     * @param response
-     * @param request
+     * @param topicParams example ftopic2036-0, where the last number is page, which is ignored in our case
+     * @param response http response object to set headers on
+     * @param request http request to figure out the context path
      */
     @RequestMapping({"/ftopic{topicParams}.php", "/ftopic{topicParams}.php/**"})
     public void showFtopicWithAdditionalParams(@PathVariable String topicParams, HttpServletResponse response,
                                                WebRequest request) {
         String id = StringUtils.substringBefore(topicParams, "-");
         String redirectUrl = request.getContextPath() +  "/topics/" + id;
-        this.setHttp301Headers(response, redirectUrl);
+        setHttp301Headers(response, redirectUrl);
     }
 
     /**
@@ -75,7 +75,7 @@ public class PhpbbRedirectionController {
             WebRequest request) {
         String id = StringUtils.substringBefore(topicParams, "-");
         String redirectUrl = request.getContextPath() +  "/topics/" + id;
-        this.setHttp301Headers(response, redirectUrl);
+        setHttp301Headers(response, redirectUrl);
     }
 
     /**
@@ -89,7 +89,7 @@ public class PhpbbRedirectionController {
     @RequestMapping({"/sutra{id}.php", "/sutra{id}"})
     public void showPost(@PathVariable String id, HttpServletResponse response, WebRequest request) {
         String redirectUrl = request.getContextPath() +  "/posts/" + id;
-        this.setHttp301Headers(response, redirectUrl);
+        setHttp301Headers(response, redirectUrl);
     }
 
     /**
@@ -103,7 +103,7 @@ public class PhpbbRedirectionController {
     @RequestMapping("/forum{id}.php")
     public void showBranch(@PathVariable String id, HttpServletResponse response, WebRequest request) {
         String redirectUrl = request.getContextPath() +  "/branches/" + id;
-        this.setHttp301Headers(response, redirectUrl);
+        setHttp301Headers(response, redirectUrl);
     }
 
     /**

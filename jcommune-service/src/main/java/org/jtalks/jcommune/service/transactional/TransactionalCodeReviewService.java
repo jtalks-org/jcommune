@@ -74,5 +74,5 @@ public class TransactionalCodeReviewService extends AbstractTransactionalEntityS
         
         return comment;
     }
-
+    
 }

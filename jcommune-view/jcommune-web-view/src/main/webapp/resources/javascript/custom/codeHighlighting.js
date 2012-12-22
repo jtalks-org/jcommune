@@ -18,25 +18,30 @@ var CodeHighlighting = {}
 
 CodeHighlighting.ADD_COMMENT_FORM_ID = 'add-comment-form';
 
+/**
+ * Called when document rendering is completed. Highlight code and
+ * sets up handlers for code review if needed.
+ */
 $(document).ready(function () {
-    //Code highlight
     prettyPrint(function () {
         var hasCodeReview = $('#has-code-review').val();
         if (hasCodeReview == 'true') {
-            CodeHighlighting.displayReviewComments();
+            CodeHighlighting.displayReviewComments().done(CodeHighlighting.setupEditButtons);
 
+			CodeHighlighting.setupGeneralHandlers();
+			
             var branchId = $('#branchId').val();
             PermissionService.hasPermission(branchId, 'BRANCH',
                     'BranchPermission.LEAVE_COMMENTS_IN_CODE_REVIEW',
                     CodeHighlighting.setupAddCommentFormHandlers);
-
+			
+			CodeHighlighting.setupEditCommentHandlers();
         }
-
     });
 });
 
 /**
- * Function to append commentto HTML
+ * Function to append comment to HTML
  */
 CodeHighlighting.addComment = function (comment) {
     var nextLine = $('.script-first-post ol.linenums li:nth-child(' + comment.lineNumber + ') ~ li:first');
@@ -50,11 +55,20 @@ CodeHighlighting.addComment = function (comment) {
 }
 
 /**
+ * Function to update existing comment
+ */
+CodeHighlighting.updateComment = function (comment) {
+    var reviewContainer = $('.script-first-post .review-container input[name=id][value=' + comment.id + ']').parent();
+	reviewContainer.find('.review-body').html(CodeHighlighting.htmlEncode(comment.body));
+}
+
+/**
  * Get review comments for this topic from server and display them
+ * @return deffered object for AJAX request (displaying comments)
  */
 CodeHighlighting.displayReviewComments = function () {
     var codeReviewId = $('#codeReviewId').val();
-    $.ajax({
+    return $.ajax({
         url: baseUrl + '/reviews/' + codeReviewId + '/json',
         type: "GET",
         success: function (data) {
@@ -70,24 +84,29 @@ CodeHighlighting.displayReviewComments = function () {
 }
 
 /**
- * Build HTML piece for add comment form
- * @param lineNumber number of line where form will be placed
- * @return string with HTML piece for the form
+ * Initializes general handlers
+ */
+CodeHighlighting.setupGeneralHandlers = function() {
+	$('.script-first-post').on('click', 'input:button[name=cancel]', function (event) {
+        event.stopPropagation();
+        CodeHighlighting.removeCommentForm();
+    });
+}
+
+/**
+ * Initializes handlers for 'Add comment' action
  */
 CodeHighlighting.setupAddCommentFormHandlers = function () {
     $('.script-first-post').on('click', 'ol.linenums li', function () {
         var addCommentForm = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID);
         if (addCommentForm.length == 0) {
             var index = $(this).index();
-            $(this).after(CodeHighlighting.getAddCommentForm(index + 1));
+			CodeHighlighting.showAddCommentForm($(this), index + 1);
         }
-        var reviewContent = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' textarea');
-        reviewContent.keydown(Keymaps.review);
-        reviewContent.focus();
-
+        
     });
 
-    $('.script-first-post').on('click', "input:button[name=submit]", function (event) {
+    $('.script-first-post').on('click', "input:button[name=add]", function (event) {
         event.stopPropagation();
 
         var formContainer = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID);
@@ -96,17 +115,17 @@ CodeHighlighting.setupAddCommentFormHandlers = function () {
         }
         Antimultipost.disableSubmit(formContainer);
 
-        var reviewId = $('#codeReviewId').val();
-        var lineNumber = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=lineNumber]').val();
-        var body = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=body]').val();
-        $.post(
-                baseUrl + '/reviews/' + reviewId + '/add-comment',
-                {lineNumber: lineNumber, body: body, id: 0, authorId: 0, authorUsername: ""}
-        )
+        
+		var data = {id: 0, authorId:0, authorUsername:""};
+        data.lineNumber = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=lineNumber]').val();
+        data.body = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=body]').val();
+		data.reviewId = $('#codeReviewId').val();
+		
+        $.post(baseUrl + '/reviewcomments/new', data)
                 .success(function (data) {
                     if (data.status == 'Success') {
-                        CodeHighlighting.removeAddCommentForm();
-                        CodeHighlighting.addComment(data.result)
+                        CodeHighlighting.removeCommentForm();
+						CodeHighlighting.addComment(data.result)
                     }
                     else if (data.reason == 'validation') {
                         CodeHighlighting.displayValidationErrors(data.result);
@@ -122,11 +141,82 @@ CodeHighlighting.setupAddCommentFormHandlers = function () {
                     Antimultipost.enableSubmit(formContainer);
                 });
     });
+}
 
-    $('.script-first-post').on('click', 'input:button[name=cancel]', function (event) {
+/**
+ * Initializes handlers for 'Edit comment' actions
+ */
+CodeHighlighting.setupEditCommentHandlers = function() {
+	$('.script-first-post').on('click', 'div.review-container a[name=edit-review]', function() {
+		var addCommentForm = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID);
+		if (addCommentForm.length == 0) {
+			var reviewContainer = $(this).closest('.review-container');
+			var comment = {};
+			comment.id = reviewContainer.find('input[name=id]').val();
+			comment.body = reviewContainer.find('.review-body').html();
+			CodeHighlighting.showEditCommentForm(reviewContainer, comment);
+        }
+		
+		return false;
+	});
+	
+	$('.script-first-post').on('click', "input:button[name=edit]", function (event) {
         event.stopPropagation();
-        CodeHighlighting.removeAddCommentForm();
+
+        var formContainer = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID);
+        if (Antimultipost.beingSubmitted(formContainer)) {
+            return;
+        }
+        Antimultipost.disableSubmit(formContainer);
+
+		var data = {authorId:0, authorUsername:""};
+		data.id = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=id]').val();
+        data.lineNumber = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=lineNumber]').val();
+        data.body = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' [name=body]').val();
+		data.branchId = $('#branchId').val();
+        
+        $.post(baseUrl + '/reviewcomments/edit', data)
+                .success(function (data) {
+                    if (data.status == 'Success') {
+                        CodeHighlighting.removeCommentForm();
+						CodeHighlighting.updateComment(data.result);
+                    }
+                    else if (data.reason == 'validation') {
+                        CodeHighlighting.displayValidationErrors(data.result);
+                    }
+                    else {
+                        bootbox.alert($labelUnexpectedError);
+                    }
+                })
+                .error(function (data) {
+                    bootbox.alert($labelUnexpectedError);
+                })
+                .complete(function () {
+                    Antimultipost.enableSubmit(formContainer);
+                });
     });
+}
+
+/**
+ * Loop through the comments and add edit buttons to those which current user
+ * can edit
+ */
+CodeHighlighting.setupEditButtons = function() {
+	var branchId = $('#branchId').val();
+	var userId = $('#userId').val();
+	var canEditOwnPosts = PermissionService.getHasPermission(branchId, 'BRANCH',
+                    'BranchPermission.EDIT_OWN_POSTS');
+	var canEditOtherPosts = PermissionService.getHasPermission(branchId, 'BRANCH',
+                    'BranchPermission.EDIT_OTHERS_POSTS');
+	
+	$('.script-first-post div.review-container').each(function() {
+		var authorId = $(this).find('input[name=authorId]').val();
+		if (canEditOtherPosts || (authorId == userId && canEditOwnPosts)) {
+			$(this).find('.review-buttons').append(
+				'<a href="" name=edit-review>' + $labelEdit + '</a>'
+			);
+		}
+	});
 }
 
 /**
@@ -137,47 +227,90 @@ CodeHighlighting.setupAddCommentFormHandlers = function () {
 CodeHighlighting.getCommentHtml = function (comment) {
     var result =
             '<div class="review-container"> '
-                    + '<div class="review-avatar">'
+				+ '<input type=hidden name=id value="' + comment.id + '"/>'
+				+ '<input type=hidden name=authorId value="' + comment.authorId + '"/>'
+                + '<div class="review-avatar">'
                     + '<img class="review-avatar-img" src="' + baseUrl + '/users/' + comment.authorId + '/avatar"/>'
-                    + '</div>'
-                    + '<div class="review-content">'
+                + '</div>'
+                + '<div class="review-content">'
+				    + '<div class="review-buttons" style="float:right"/>'
                     + '<div class="review-header">'
-                    + '<a href="' + baseUrl + '/users/' + comment.authorId + '">' + CodeHighlighting.htmlEncode(comment.authorUsername) + '</a>'
-                    + ' ' + $labelReviewSays + ': '
+						+ '<a href="' + baseUrl + '/users/' + comment.authorId + '">' + CodeHighlighting.htmlEncode(comment.authorUsername) + '</a>'
+						+ ' ' + $labelReviewSays + ': '
                     + '</div>'
                     + '<div class="review-body">'
-                    + CodeHighlighting.htmlEncode(comment.body)
+						+ CodeHighlighting.htmlEncode(comment.body)
                     + '</div>'
-                    + '</div>'
-                    + '</div>';
+                + '</div>'
+            + '</div>';
     return result;
 }
 
 /**
  * Build HTML piece for add comment form
+ * @param submitButtonTitle title of submit button
+ * @param submitButtonName name of submit button element
  * @param lineNumber number of line where form will be placed
+ * @param comment data to fill form if defined
  * @return string with HTML piece for the form
  */
-CodeHighlighting.getAddCommentForm = function (lineNumber) {
+CodeHighlighting.getCommentForm = function (submitButtonTitle, submitButtonName, lineNumber, comment) {
+    if (comment === undefined) {
+		comment = {id:0,body:''};
+	}
     var result =
             '<div id="' + CodeHighlighting.ADD_COMMENT_FORM_ID + '" class="review-container">'
-                    + '<div class="control-group">'
+                + '<div class="control-group">'
                     + '<input type=hidden name=lineNumber value="' + lineNumber + '"/>'
-                    + '<textarea name="body" class="review-container-content"/>'
-                    + '</div>'
-                    + '<div>'
-                    + '<input type=button name=submit value="' + $labelAdd + '" class="btn btn-primary review-container-controls-ok"/>'
+					+ '<input type=hidden name=id value="' + comment.id + '"/>'
+                    + '<textarea name="body" class="review-container-content">' + comment.body + '</textarea>'
+                + '</div>'
+                + '<div>'
+                    + '<input type=button name="' + submitButtonName + '" value="' + submitButtonTitle + '" class="btn btn-primary review-container-controls-ok"/>'
                     + '<input type=button name=cancel value="' + $labelCancel + '" class="btn review-container-controls-cancel"/>'
-                    + '</div>'
-                    + '<span class="keymaps-caption">' + $labelKeymapsReview + '</span>'
-                    + '</div>';
+                + '</div>'
+                + '<span class="keymaps-caption">' + $labelKeymapsReview + '</span>'
+            + '</div>';
     return result;
 }
 
 /**
- * Remove add comment form from the page
+ * Show comment form below given element
+ * @param element jquery element after which show form
+ * @param submitButtonTitle title of submit button
+ * @param submitButtonName name of submit button element
+ * @param lineNumber number of line where form will be placed
+ * @param comment data to fill form if defined
  */
-CodeHighlighting.removeAddCommentForm = function () {
+CodeHighlighting.showCommentForm = function(element, submitButtonTitle, submitButtonName, lineNumber, comment) {
+	element.after(CodeHighlighting.getCommentForm(submitButtonTitle, submitButtonName, lineNumber + 1, comment));
+	var reviewContent = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' textarea');
+    reviewContent.keydown(Keymaps.review);
+    reviewContent.focus();
+}
+
+/**
+ * Show 'add comment' form below given element
+ * @param element jquery element after which show form
+ * @param lineNumber number of line where form will be placed
+ */
+CodeHighlighting.showAddCommentForm = function(element, lineNumber) {
+	CodeHighlighting.showCommentForm(element, $labelAdd, 'add', lineNumber);
+}
+
+/**
+ * Show 'edit comment' form below given element
+ * @param element jquery element after which show form
+ * @param comment data to fill form
+ */
+CodeHighlighting.showEditCommentForm = function(element, comment) {
+	CodeHighlighting.showCommentForm(element, $labelEdit, 'edit', 0, comment);
+}
+
+/**
+ * Remove comment form from the page
+ */
+CodeHighlighting.removeCommentForm = function () {
     $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID).remove();
 }
 

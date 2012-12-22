@@ -35,3 +35,27 @@ PermissionService.hasPermission = function(targetId, targetType, permission, cal
 			bootbox.alert($labelUnexpectedError);
 		});
 }
+
+/**
+ * Checks if current user granted with permission.
+ * @param targetId the identifier for the object instance
+ * @param targetType a String representing the target's type (e.g. 'BRANCH' or 'USER'). Not null.
+ * @param permission a representation of the permission object as supplied by the expression system. Not null.
+ * @return true if granted, false otherwise
+ */
+PermissionService.getHasPermission = function(targetId, targetType, permission) {
+	var result = false;
+	$.ajax({
+		url: baseUrl + '/security/haspermission',
+		async: false,
+		data: {targetId:targetId, targetType:targetType, permission:permission},
+		success: function(data) {
+			result = (data.status == 'Success');
+		},
+		error : function() {
+			bootbox.alert($labelUnexpectedError);
+		}
+	});
+	
+	return result;
+}
