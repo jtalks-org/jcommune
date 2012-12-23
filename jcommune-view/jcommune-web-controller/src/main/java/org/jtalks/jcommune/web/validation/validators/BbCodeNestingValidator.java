@@ -30,13 +30,14 @@ import java.util.regex.Pattern;
  * parsing and if we have a deep nesting, we'll run into StackOverflow error. Thus before posting something, we check
  * whether the nesting of BB-codes is not too deep.
  */
-public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting,String> {
+public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting, String> {
     private static final Logger LOGGER = LoggerFactory.getLogger(BbCodeNestingValidator.class);
     private UserService userService;
     private int maxNestingValue;
 
     /**
      * Constructor
+     *
      * @param userService user service
      */
     @Autowired
@@ -60,22 +61,27 @@ public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting
         if (value == null) {
             return true;
         }
-        return checkNestingLevel(value);
+        if (!checkForDifferent(value) ||
+                !checkForQuote(value)) {
+            return false;
+        }
+        return true;
     }
 
     /**
      * Checked nesting bb code level (maxNestingValue)
      *
-     * @param text text with bb code
+     * @param text  text with bb code
+     * @param regex regular expression for check
      * @return allowed or not allowed
      */
-    private boolean checkNestingLevel(String text) {
-        Pattern pattern = Pattern.compile("\\[[a-zA-Z_0-9=\"\']*\\]|\\[/[a-zA-Z_0-9=\"\']*\\]");
+    private boolean checkNestingLevel(String text, String regex) {
+        Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(text);
         int count = 0;
         while (matcher.find()) {
             String tag = matcher.group();
-            if(tag.isEmpty()){
+            if (tag.isEmpty() || tag.equals("[*]")) {
                 continue;
             }
             if (tag.contains("/")) {
@@ -90,5 +96,28 @@ public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting
             }
         }
         return true;
+    }
+
+    /**
+     * Check nesting level for different bb-codes
+     *
+     * @param value text value
+     * @return allowed or not allowed
+     */
+    private boolean checkForDifferent(String value) {
+        final String regexForSimples = "\\[[^\\[\\]]*\\]|\\[/[^\\[\\]]*\\]";
+        return checkNestingLevel(value, regexForSimples);
+    }
+
+    /**
+     * Check nesting level for quote bb-code, This bb-code can be in their element with another bb codes.
+     *
+     * @param value text value
+     * @return allowed or not allowed
+     */
+    private boolean checkForQuote(String value) {
+        final String regexForQuote = "\\[quote=\".*?\"\\]";
+        String cleanValue = value.replace(" ","");
+        return checkNestingLevel(cleanValue, regexForQuote);
     }
 }

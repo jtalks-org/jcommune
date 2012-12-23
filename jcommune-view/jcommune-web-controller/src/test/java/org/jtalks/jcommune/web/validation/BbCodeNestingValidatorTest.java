@@ -81,7 +81,13 @@ public class BbCodeNestingValidatorTest {
                 {"text"},
                 {"[*][*][*][*][*][*][*][*][*][*][*][*][*][*][*]"},
                 {repeat("[b]",50)},
-                {"[quote=\"name\"]"+repeat("[b]",49)+"[//quote]"}
+                {"[quote=\"name\"]"+repeat("[b]",49)+"[//quote]"},
+                {repeat("[*]",51)},
+                {repeat("[/u]",50)},
+                {"[quote="+repeat("[/b]",49)+"]text[/quote]"},
+                {repeat("[quote=]text[/quote]",51)},
+                {repeat("[quote][/quote]",100)},
+                {"[quote="+repeat("[b]",50)+"]text[/quote]"}
         };
     }
 
@@ -90,7 +96,13 @@ public class BbCodeNestingValidatorTest {
         return new String[][]{ // {"message"}
                 {repeat("[b]",51)},
                 {repeat("[color][u]",50)},
-                {"[quote=\"name\"]"+repeat("[b]",50)+"[//quote]"}
+                {repeat("[/u]",51)},
+                {"[quote=\"name\"]"+repeat("[b]",50)+"[//quote]"},
+                {"[quote=\"Имя%%%+===hhh\"]"+repeat("[b]",50)+"[//quote]"},
+                {"[quote="+repeat("[b]",51)+"]text[//quote]"},
+                {repeat("[quote=[url=123]]",51)},
+                {repeat("[quote=\"\"]",51)},
+                {"[quote=\""+repeat("[url=123]",51)+"\"]"}
         };
     }
 }
