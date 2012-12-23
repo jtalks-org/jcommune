@@ -20,14 +20,16 @@ import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * This class decorated with {@link org.springframework.web.servlet.handler.SimpleMappingExceptionResolver}
- * with logger that intercepts only {@link org.jtalks.jcommune.service.exceptions.NotFoundException} and
- * shows only info level messages.
+ * Catches all the exceptions thrown in controllers, logs them and directs to the error pages. The standard
+ * {@link SimpleMappingExceptionResolver} wasn't sufficient because it was logging all exceptions as warnings while
+ * some of them are expected and should be logged as INFO (such as 404 topic not found).
  *
  * @author Vitaliy Kravchenko
  */
 public class PrettyLogExceptionResolver extends SimpleMappingExceptionResolver {
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void logException(Exception ex, HttpServletRequest request) {
         if (ex instanceof NotFoundException) {
