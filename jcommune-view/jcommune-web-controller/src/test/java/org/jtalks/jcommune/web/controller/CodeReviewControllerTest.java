@@ -16,23 +16,19 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.CodeReview;
-import org.jtalks.jcommune.model.entity.CodeReviewComment;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
-import org.jtalks.jcommune.web.dto.CodeReviewCommentDto;
 import org.jtalks.jcommune.web.dto.CodeReviewDto;
-import org.jtalks.jcommune.web.dto.json.FailValidationJsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.mockito.Mock;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.servlet.ModelAndView;
@@ -59,13 +55,6 @@ public class CodeReviewControllerTest {
     private String TOPIC_CONTENT = "content here";
     private long REVIEW_ID = 1L;
     
-    private long COMMENT_ID = 1L;
-    private String COMMENT_BODY = "body";
-    private int COMMENT_LINE_NUMBER = 1;
-    
-    private long USER_ID = 1L;
-    private String USERNAME = "username";
-
     private JCUser user;
     private Branch branch;
 
@@ -186,64 +175,6 @@ public class CodeReviewControllerTest {
         controller.getCodeReview(REVIEW_ID);
     }
     
-    @Test
-    public void testAddCommentSuccess() throws AccessDeniedException, NotFoundException {
-        BindingResult bindingResult = mock(BindingResult.class);
-        
-        when(bindingResult.hasErrors()).thenReturn(false);
-        when(codeReviewService.addComment(anyLong(), anyInt(), anyString()))
-            .thenReturn(createComment());
-        
-        JsonResponse response = controller.addComment(
-                new CodeReviewCommentDto(), bindingResult, 1L);
-        
-        CodeReviewCommentDto dto = (CodeReviewCommentDto) response.getResult();
-        
-        assertEquals(response.getStatus(), JsonResponseStatus.Success);
-        assertEquals(dto.getId(), COMMENT_ID);
-        assertEquals(dto.getBody(), COMMENT_BODY);
-        assertEquals(dto.getLineNumber(), COMMENT_LINE_NUMBER);
-        assertEquals(dto.getAuthorId(), USER_ID);
-        assertEquals(dto.getAuthorUsername(), USERNAME);
-    }
-    
-    @Test
-    public void testAddCommentValidationFail() throws AccessDeniedException, NotFoundException {
-        BindingResult bindingResult = mock(BindingResult.class);
-        
-        when(bindingResult.hasErrors()).thenReturn(true);
-        
-        FailValidationJsonResponse response = (FailValidationJsonResponse)controller
-                .addComment(new CodeReviewCommentDto(), bindingResult, 1L);
-        
-        assertNotNull(response.getResult());
-    }
-    
-    @Test(expectedExceptions=NotFoundException.class)
-    public void testAddCommentReviewNotFound() throws AccessDeniedException, NotFoundException {
-        BindingResult bindingResult = mock(BindingResult.class);
-        
-        when(bindingResult.hasErrors()).thenReturn(false);
-        when(codeReviewService.addComment(anyLong(), anyInt(), anyString()))
-            .thenThrow(new NotFoundException());
-        
-        controller.addComment(new CodeReviewCommentDto(), bindingResult, 1L);
-    }
-    
-    @Test(expectedExceptions=AccessDeniedException.class)
-    public void testAddCommentAccessDenied() throws AccessDeniedException, NotFoundException {
-        BindingResult bindingResult = mock(BindingResult.class);
-        
-        when(bindingResult.hasErrors()).thenReturn(false);
-        when(codeReviewService.addComment(anyLong(), anyInt(), anyString()))
-            .thenThrow(new AccessDeniedException(null));
-        
-        controller.addComment(new CodeReviewCommentDto(), bindingResult, 1L);
-    }
-    
-    
-    
-    
     private Branch createBranch() {
         Branch branch = new Branch("branch name", "branch description");
         branch.setId(BRANCH_ID);
@@ -266,19 +197,6 @@ public class CodeReviewControllerTest {
         dto.setBodyText(TOPIC_CONTENT);
         dto.setTopic(topic);
         return dto;
-    }
-    
-    private CodeReviewComment createComment() {
-        CodeReviewComment comment = new CodeReviewComment();
-        comment.setId(COMMENT_ID);
-        comment.setBody(COMMENT_BODY);
-        comment.setLineNumber(COMMENT_LINE_NUMBER);
-        
-        JCUser user = new JCUser(USERNAME, null, null);
-        user.setId(USER_ID);
-        comment.setAuthor(user);
-        
-        return comment;
     }
     
 }

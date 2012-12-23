@@ -49,7 +49,7 @@
         <property name="defaultEncoding" value="UTF-8"/>
     </bean>
 
-    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+    <bean class="org.jtalks.jcommune.web.exception.PrettyLogExceptionResolver">
         <property name="exceptionMappings">
             <props>
                 <prop key="org.jtalks.jcommune.service.exceptions.NotFoundException">/errors/404</prop>

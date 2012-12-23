@@ -4,7 +4,7 @@
     <parent>
         <artifactId>jcommune</artifactId>
         <groupId>org.jtalks.jcommune</groupId>
-        <version>0.20-SNAPSHOT</version>
+        <version>1.2-SNAPSHOT</version>
     </parent>
     <artifactId>jcommune-model</artifactId>
     <name>${project.artifactId}</name>
@@ -69,6 +69,10 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.hsqldb</groupId>

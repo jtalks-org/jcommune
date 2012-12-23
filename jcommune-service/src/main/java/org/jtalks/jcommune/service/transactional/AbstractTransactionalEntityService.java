@@ -19,6 +19,8 @@ import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.jcommune.service.EntityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
+import java.lang.reflect.ParameterizedType;
+
 /**
  * Generic implementation of all entity based services.
  * Most of the implementations of the methods are basing on straightforward calls
@@ -59,8 +61,14 @@ public abstract class AbstractTransactionalEntityService<T extends Entity, Y ext
     @Override
     public T get(Long id) throws NotFoundException {
         if (!dao.isExist(id)) {
-            throw new NotFoundException("Entity with id: " + id + " not found");
+            throw new NotFoundException(String.format("Entity [%s] with id: %d not found",
+                    getEntityClass().getSimpleName(), id));
         }
         return dao.get(id);
+    }
+
+    private Class getEntityClass() {
+        ParameterizedType parameterizedType = (ParameterizedType) getClass().getGenericSuperclass();
+        return (Class) parameterizedType.getActualTypeArguments()[0];
     }
 }

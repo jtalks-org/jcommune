@@ -129,5 +129,9 @@
         <error-code>405</error-code>
         <location>/errors/redirect/404</location>
     </error-page>
+    <error-page>
+       <exception-type>org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationException</exception-type>
+       <location>/exception/rememberMe</location>
+    </error-page>
 </web-app>
 
