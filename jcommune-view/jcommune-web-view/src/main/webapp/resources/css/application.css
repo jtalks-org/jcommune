@@ -292,6 +292,10 @@ ul.lang-menu li img {
         text-align: center;
         font-size: 11px;
     }
+
+    #topics-table .posts-link-topics {
+        font-size: 15px;
+    }
 }
 
 .post {

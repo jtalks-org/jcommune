@@ -143,7 +143,7 @@
                             <c:if test="${topic.hasPoll}">
                                 <span class="sticky"><spring:message code="label.marked_as_poll"/></span>
                             </c:if>
-                            <a href="${pageContext.request.contextPath}/topics/${topic.id}">
+                            <a class="posts-link-topics" href="${pageContext.request.contextPath}/topics/${topic.id}">
                                 <c:out value="${topic.title}"/>
                             </a>
                             <br/>
