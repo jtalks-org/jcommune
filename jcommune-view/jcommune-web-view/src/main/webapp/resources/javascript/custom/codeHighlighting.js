@@ -35,7 +35,7 @@ $(document).ready(function () {
     prettyPrint(function () {
         var hasCodeReview = $('#has-code-review').val();
         if (hasCodeReview == 'true') {
-        	CodeHighlighting.initializeVariabled();
+        	CodeHighlighting.initializeVariables();
             CodeHighlighting.displayReviewComments();
 
             var branchId = $('#branchId').val();
@@ -57,12 +57,12 @@ CodeHighlighting.addComment = function (comment) {
 }
 
 /**
- * Function to update existing comment
+ * Function to update existing comment. Actually removes existing comment and adds new.
  */
 CodeHighlighting.updateComment = function (comment) {
     var reviewContainer = $('.script-first-post .review-container input[name=id][value=' + comment.id + ']').parent();
-	reviewContainer.find('.review-body').html(CodeHighlighting.htmlEncode(comment.body));
-	reviewContainer.show();
+	reviewContainer.after(CodeHighlighting.getCommentHtml(comment));
+	reviewContainer.remove();
 }
 
 /**
@@ -89,12 +89,12 @@ CodeHighlighting.displayReviewComments = function () {
 /**
  * Initialize variables used in this scope.
  */
-CodeHighlighting.initializeVariabled = function() {
+CodeHighlighting.initializeVariables = function() {
 	CodeHighlighting.branchId = $('#branchId').val();
 	CodeHighlighting.currentUserId = $('#userId').val();
-	CodeHighlighting.canEditOwnPosts = PermissionService.getHasPermission(branchId, 'BRANCH',
+	CodeHighlighting.canEditOwnPosts = PermissionService.getHasPermission(CodeHighlighting.branchId, 'BRANCH',
 	                'BranchPermission.EDIT_OWN_POSTS');
-	CodeHighlighting.canEditOtherPosts = PermissionService.getHasPermission(branchId, 'BRANCH',
+	CodeHighlighting.canEditOtherPosts = PermissionService.getHasPermission(CodeHighlighting.branchId, 'BRANCH',
 	                'BranchPermission.EDIT_OTHERS_POSTS');
 }
 
@@ -227,8 +227,8 @@ CodeHighlighting.setupEditCommentHandlers = function() {
 CodeHighlighting.getCommentHtml = function (comment) {
 	var editButtonHtml = '';
 	if (CodeHighlighting.canEditOtherPosts 
-			|| (CodeHighlighting.currentUserId = comment.authorId 
-					&& Codehighlighting.canEditOwnPosts)) {
+			|| (CodeHighlighting.currentUserId == comment.authorId 
+					&& CodeHighlighting.canEditOwnPosts)) {
 		editButtonHtml = '<a href="" name=edit-review>' + $labelEdit + '</a>';
 	}
     var result =
