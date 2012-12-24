@@ -21,6 +21,7 @@ import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.CodeReviewCommentService;
 import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -45,6 +46,8 @@ public class TransactionalCodeReviewServiceTest {
     private UserService userService;
     @Mock
     private PermissionService permissionService;
+    @Mock
+    CodeReviewCommentService reviewCommentService;
     
     private CodeReviewService codeReviewService;
     
@@ -56,7 +59,8 @@ public class TransactionalCodeReviewServiceTest {
     public void initEnvironmental() {
         initMocks(this);
         
-        codeReviewService = new TransactionalCodeReviewService(dao, userService, permissionService);
+        codeReviewService = new TransactionalCodeReviewService(dao, userService, permissionService,
+                reviewCommentService);
     }
     
     @BeforeMethod 
