@@ -20,59 +20,89 @@ import org.jtalks.jcommune.model.dao.CodeReviewDao;
 import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.service.CodeReviewCommentService;
 import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.security.AclClassName;
 import org.jtalks.jcommune.service.security.PermissionService;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  * The implementation of (@link {@link CodeReviewService}
- * 
+ *
  * @author Vyacheslav Mishcheryakov
  */
-public class TransactionalCodeReviewService extends AbstractTransactionalEntityService<CodeReview, CodeReviewDao> 
+public class TransactionalCodeReviewService extends AbstractTransactionalEntityService<CodeReview, CodeReviewDao>
         implements CodeReviewService {
 
     private UserService userService;
     private PermissionService permissionService;
-    
+    private CodeReviewCommentService reviewCommentService;
+
     /**
      * Create an instance of CodeReview entity based service
-     * @param dao               data access object, which should be able do all CRUD operations with entity. 
-     * @param userService       to get current user
-     * @param permissionService to check permission for current user ({@link org.springframework.security.access.prepost.PreAuthorize} annotation emulation)
+     *
+     * @param dao                  data access object, which should be able do all CRUD operations with entity.
+     * @param userService          to get current user
+     * @param permissionService    to check permission for current user ({@link org.springframework.security.access.prepost.PreAuthorize} annotation emulation)
+     * @param reviewCommentService to get review comment
      */
     public TransactionalCodeReviewService(
-                                    CodeReviewDao dao,
-                                    UserService userService,
-                                    PermissionService permissionService) {
+            CodeReviewDao dao,
+            UserService userService,
+            PermissionService permissionService,
+            CodeReviewCommentService reviewCommentService) {
         super(dao);
         this.userService = userService;
         this.permissionService = permissionService;
+        this.reviewCommentService = reviewCommentService;
     }
-    
+
     @Override
-    public CodeReviewComment addComment(Long reviewId, int lineNumber, String body) 
+    public CodeReviewComment addComment(Long reviewId, int lineNumber, String body)
             throws NotFoundException {
         CodeReview review = get(reviewId);
         JCUser currentUser = userService.getCurrentUser();
-        
+
         permissionService.checkPermission(
-                review.getTopic().getBranch().getId(), 
-                AclClassName.BRANCH, 
+                review.getTopic().getBranch().getId(),
+                AclClassName.BRANCH,
                 BranchPermission.LEAVE_COMMENTS_IN_CODE_REVIEW);
-                
+
         CodeReviewComment comment = new CodeReviewComment();
         comment.setLineNumber(lineNumber);
         comment.setBody(body);
         comment.setCreationDate(new DateTime(System.currentTimeMillis()));
         comment.setAuthor(currentUser);
-        
+
         review.addComment(comment);
         getDao().update(review);
-        
+
         return comment;
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteComment(long id, long codeReviewId) throws NotFoundException {
+        checkPermissionsAndDeleteComment(id, get(codeReviewId));
+    }
+
+    /**
+     * Checks permissions for deletion user posts and review comments and delete comment with defined ID.
+     *
+     * @param id         ID of code review comment
+     * @param codeReview ID of code review where needs to delete comment
+     * @throws NotFoundException
+     */
+    @PreAuthorize("hasPermission(#codeReview.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OWN_POSTS') or " +
+            "hasPermission(#codeReview.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OTHERS_POSTS')")
+    private void checkPermissionsAndDeleteComment(long id, CodeReview codeReview) throws NotFoundException {
+        CodeReviewComment reviewComment = reviewCommentService.get(id);
+        codeReview.getComments().remove(reviewComment);
+        getDao().update(codeReview);
+    }
+
 }
