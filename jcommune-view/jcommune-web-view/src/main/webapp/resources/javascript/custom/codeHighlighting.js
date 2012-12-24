@@ -117,7 +117,7 @@ CodeHighlighting.setupAddCommentFormHandlers = function () {
         if (addCommentForm.length == 0) {
             var index = $(this).index();
 			// display form before first comment
-			CodeHighlighting.showAddCommentForm($(this).find('div:first').prev(), index + 1);
+			CodeHighlighting.showAddCommentForm($(this).find('span:last'), index + 1);
         }
         
     });
