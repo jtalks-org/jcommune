@@ -290,6 +290,7 @@ ul.lang-menu li img {
     #topics-table .posts-views-topics {
         display: table-cell;
         text-align: center;
+        font-size: 11px;
     }
 }
 
