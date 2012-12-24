@@ -28,8 +28,6 @@ $(document).ready(function () {
         if (hasCodeReview == 'true') {
             CodeHighlighting.displayReviewComments().done(CodeHighlighting.setupEditButtons);
 
-			CodeHighlighting.setupGeneralHandlers();
-			
             var branchId = $('#branchId').val();
             PermissionService.hasPermission(branchId, 'BRANCH',
                     'BranchPermission.LEAVE_COMMENTS_IN_CODE_REVIEW',
@@ -44,14 +42,8 @@ $(document).ready(function () {
  * Function to append comment to HTML
  */
 CodeHighlighting.addComment = function (comment) {
-    var nextLine = $('.script-first-post ol.linenums li:nth-child(' + comment.lineNumber + ') ~ li:first');
-    if (nextLine.length > 0) {
-        nextLine.before(CodeHighlighting.getCommentHtml(comment));
-    }
-    else {
-        $('.script-first-post ol.linenums li:nth-child(' + comment.lineNumber + ')')
-                .parent('.linenums').append(CodeHighlighting.getCommentHtml(comment))
-    }
+    $('.script-first-post ol.linenums li:nth-child(' + comment.lineNumber + ')')
+			.append(CodeHighlighting.getCommentHtml(comment));
 }
 
 /**
@@ -60,6 +52,7 @@ CodeHighlighting.addComment = function (comment) {
 CodeHighlighting.updateComment = function (comment) {
     var reviewContainer = $('.script-first-post .review-container input[name=id][value=' + comment.id + ']').parent();
 	reviewContainer.find('.review-body').html(CodeHighlighting.htmlEncode(comment.body));
+	reviewContainer.show();
 }
 
 /**
@@ -84,24 +77,20 @@ CodeHighlighting.displayReviewComments = function () {
 }
 
 /**
- * Initializes general handlers
- */
-CodeHighlighting.setupGeneralHandlers = function() {
-	$('.script-first-post').on('click', 'input:button[name=cancel]', function (event) {
-        event.stopPropagation();
-        CodeHighlighting.removeCommentForm();
-    });
-}
-
-/**
  * Initializes handlers for 'Add comment' action
  */
 CodeHighlighting.setupAddCommentFormHandlers = function () {
+    $('.script-first-post').on('click', 'input:button[name=cancel-add]', function (event) {
+        event.stopPropagation();
+        CodeHighlighting.removeCommentForm();
+    });
+	
     $('.script-first-post').on('click', 'ol.linenums li', function () {
         var addCommentForm = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID);
         if (addCommentForm.length == 0) {
             var index = $(this).index();
-			CodeHighlighting.showAddCommentForm($(this), index + 1);
+			// display form before first comment
+			CodeHighlighting.showAddCommentForm($(this).find('div:first').prev(), index + 1);
         }
         
     });
@@ -147,6 +136,12 @@ CodeHighlighting.setupAddCommentFormHandlers = function () {
  * Initializes handlers for 'Edit comment' actions
  */
 CodeHighlighting.setupEditCommentHandlers = function() {
+    $('.script-first-post').on('click', 'input:button[name=cancel-edit]', function (event) {
+        event.stopPropagation();
+		$('#' + CodeHighlighting.ADD_COMMENT_FORM_ID).prev().show();
+        CodeHighlighting.removeCommentForm();
+    });
+	
 	$('.script-first-post').on('click', 'div.review-container a[name=edit-review]', function() {
 		var addCommentForm = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID);
 		if (addCommentForm.length == 0) {
@@ -178,8 +173,8 @@ CodeHighlighting.setupEditCommentHandlers = function() {
         $.post(baseUrl + '/reviewcomments/edit', data)
                 .success(function (data) {
                     if (data.status == 'Success') {
-                        CodeHighlighting.removeCommentForm();
 						CodeHighlighting.updateComment(data.result);
+						CodeHighlighting.removeCommentForm();
                     }
                     else if (data.reason == 'validation') {
                         CodeHighlighting.displayValidationErrors(data.result);
@@ -249,12 +244,12 @@ CodeHighlighting.getCommentHtml = function (comment) {
 /**
  * Build HTML piece for add comment form
  * @param submitButtonTitle title of submit button
- * @param submitButtonName name of submit button element
+ * @param action name of action (name being added to button names)
  * @param lineNumber number of line where form will be placed
  * @param comment data to fill form if defined
  * @return string with HTML piece for the form
  */
-CodeHighlighting.getCommentForm = function (submitButtonTitle, submitButtonName, lineNumber, comment) {
+CodeHighlighting.getCommentForm = function (submitButtonTitle, action, lineNumber, comment) {
     if (comment === undefined) {
 		comment = {id:0,body:''};
 	}
@@ -266,8 +261,8 @@ CodeHighlighting.getCommentForm = function (submitButtonTitle, submitButtonName,
                     + '<textarea name="body" class="review-container-content">' + comment.body + '</textarea>'
                 + '</div>'
                 + '<div>'
-                    + '<input type=button name="' + submitButtonName + '" value="' + submitButtonTitle + '" class="btn btn-primary review-container-controls-ok"/>'
-                    + '<input type=button name=cancel value="' + $labelCancel + '" class="btn review-container-controls-cancel"/>'
+                    + '<input type=button name="' + action + '" value="' + submitButtonTitle + '" class="btn btn-primary review-container-controls-ok"/>'
+                    + '<input type=button name=cancel-' + action + ' value="' + $labelCancel + '" class="btn review-container-controls-cancel"/>'
                 + '</div>'
                 + '<span class="keymaps-caption">' + $labelKeymapsReview + '</span>'
             + '</div>';
@@ -283,7 +278,7 @@ CodeHighlighting.getCommentForm = function (submitButtonTitle, submitButtonName,
  * @param comment data to fill form if defined
  */
 CodeHighlighting.showCommentForm = function(element, submitButtonTitle, submitButtonName, lineNumber, comment) {
-	element.after(CodeHighlighting.getCommentForm(submitButtonTitle, submitButtonName, lineNumber + 1, comment));
+	element.after(CodeHighlighting.getCommentForm(submitButtonTitle, submitButtonName, lineNumber, comment));
 	var reviewContent = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' textarea');
     reviewContent.keydown(Keymaps.review);
     reviewContent.focus();
@@ -299,12 +294,14 @@ CodeHighlighting.showAddCommentForm = function(element, lineNumber) {
 }
 
 /**
- * Show 'edit comment' form below given element
+ * Show 'edit comment' form at the location of given element. Element will
+ * be hide from the document.
  * @param element jquery element after which show form
  * @param comment data to fill form
  */
 CodeHighlighting.showEditCommentForm = function(element, comment) {
 	CodeHighlighting.showCommentForm(element, $labelEdit, 'edit', 0, comment);
+	element.hide();
 }
 
 /**
