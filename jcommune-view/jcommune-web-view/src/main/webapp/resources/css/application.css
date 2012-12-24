@@ -11,6 +11,11 @@ body {
     width: 32px
 }
 
+.status-img-topics {
+    height: 24px;
+    width: 24px
+}
+
 .dropdown > a.lang-toggle {
     padding: 0;
     margin: 6px 2px 0px 15px;
@@ -135,8 +140,8 @@ ul.lang-menu li img {
 }
 
 #topics-table td {
-    padding-top: 2px;
-    padding-bottom: 3px;
+    padding-top: 4px;
+    padding-bottom: 6px;
 }
 
 #topics-table th {
@@ -148,6 +153,13 @@ ul.lang-menu li img {
     width: 32px;
     max-width: 32px;
     min-width: 32px;
+}
+
+#topics-table .status-col-topics {
+    padding: 0px;
+    width: 24px;
+    max-width: 24px;
+    min-width: 24px;
 }
 
 #topics-table .author-col a {
@@ -273,6 +285,11 @@ ul.lang-menu li img {
 
     #topics-table .posts-views {
         display: table-cell;
+    }
+
+    #topics-table .posts-views-topics {
+        display: table-cell;
+        text-align: center;
     }
 }
 

@@ -111,12 +111,14 @@
                 <thead>
                 <tr>
                     <sec:authorize access="isAuthenticated()">
-                        <th class="status-col"></th>
+                        <th class="status-col-topics"></th>
                     </sec:authorize>
                     <th><spring:message code="label.branch.header.topics"/></th>
                     <th class="author-col shrink-to-fit"><spring:message code="label.branch.header.author"/></th>
-                    <th class="posts-views forum-posts-view-header shrink-to-fit"><spring:message
-                            code="label.branch.header.posts_views"/></th>
+                    <th class="posts-views-topics forum-posts-view-header shrink-to-fit"><spring:message
+                            code="label.branch.header.posts"/></th>
+                    <th class="posts-views-topics forum-posts-view-header shrink-to-fit"><spring:message
+                            code="label.branch.header.views"/></th>
                     <th class="latest-by forum-latest-by-header shrink-to-fit"><spring:message
                             code="label.branch.header.lastMessage"/></th>
                 </tr>
@@ -126,8 +128,8 @@
                     <%-- Topic row --%>
                     <tr>
                         <sec:authorize access="isAuthenticated()">
-                            <td class="status-col">
-                                <jtalks:topicIcon topic="${topic}"/>
+                            <td class="status-col-topics">
+                                <jtalks:topicIconForTopics topic="${topic}"/>
                             </td>
                         </sec:authorize>
                         <td>
@@ -156,10 +158,10 @@
                                 <c:out value="${topic.topicStarter.username}"/>
                             </a>
                         </td>
-                        <td class="posts-views shrink-to-fit">
-                            <spring:message code="label.section.header.messages"/>:
-                            <span class='test-posts-count'><c:out value="${topic.postCount}"/></span><br/>
-                            <spring:message code="label.branch.header.views"/>:
+                        <td class="posts-views-topics shrink-to-fit">
+                            <span class='test-posts-count'><c:out value="${topic.postCount}"/></span>
+                        </td>
+                        <td class="posts-views-topics shrink-to-fit">
                             <span class='test-views'><c:out value="${topic.views}"/></span>
                         </td>
                         <td class="latest-by shrink-to-fit">
@@ -167,12 +169,10 @@
                             <a class="date" href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}">
                                 <jtalks:format value="${topic.lastPost.creationDate}"/>
                             </a>
-
-                            <p><spring:message code="label.topic.last_post_by"/>
-                                <a href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.id}">
-                                    <c:out value="${topic.lastPost.userCreated.username}"/>
-                                </a>
-                            </p>
+                            &gt;&gt;
+                            <a href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.id}">
+                                <c:out value="${topic.lastPost.userCreated.username}"/>
+                            </a>
                         </td>
                     </tr>
                 </c:forEach>
