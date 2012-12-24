@@ -85,6 +85,11 @@ CodeHighlighting.setupAddCommentFormHandlers = function () {
         CodeHighlighting.removeCommentForm();
     });
 	
+	// don't handle clicks on comments
+	$('.script-first-post').on('click', 'ol.linenums li div.review-container', function () {
+		return false;
+	});
+	
     $('.script-first-post').on('click', 'ol.linenums li', function () {
         var addCommentForm = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID);
         if (addCommentForm.length == 0) {
