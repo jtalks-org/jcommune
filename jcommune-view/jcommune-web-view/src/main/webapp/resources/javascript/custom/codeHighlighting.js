@@ -18,6 +18,15 @@ var CodeHighlighting = {}
 
 CodeHighlighting.ADD_COMMENT_FORM_ID = 'add-comment-form';
 
+/** ID of branch where we currently are */
+CodeHighlighting.branchId = 0;
+/** ID of current user */
+CodeHighlighting.currentUserId = 0;
+/** Indicates if current user has EDIT_OWN_POSTS permission */
+CodeHighlighting.canEditOwnPosts = false;
+/** Indicates if current user has EDIT_OTHERS_POSTS permission */
+CodeHighlighting.canEditOtherPosts = false;
+
 /**
  * Called when document rendering is completed. Highlight code and
  * sets up handlers for code review if needed.
@@ -26,7 +35,8 @@ $(document).ready(function () {
     prettyPrint(function () {
         var hasCodeReview = $('#has-code-review').val();
         if (hasCodeReview == 'true') {
-            CodeHighlighting.displayReviewComments().done(CodeHighlighting.setupEditButtons);
+        	CodeHighlighting.initializeVariabled();
+            CodeHighlighting.displayReviewComments();
 
             var branchId = $('#branchId').val();
             PermissionService.hasPermission(branchId, 'BRANCH',
@@ -74,6 +84,18 @@ CodeHighlighting.displayReviewComments = function () {
             bootbox.alert($labelUnexpectedError);
         }
     });
+}
+
+/**
+ * Initialize variables used in this scope.
+ */
+CodeHighlighting.initializeVariabled = function() {
+	CodeHighlighting.branchId = $('#branchId').val();
+	CodeHighlighting.currentUserId = $('#userId').val();
+	CodeHighlighting.canEditOwnPosts = PermissionService.getHasPermission(branchId, 'BRANCH',
+	                'BranchPermission.EDIT_OWN_POSTS');
+	CodeHighlighting.canEditOtherPosts = PermissionService.getHasPermission(branchId, 'BRANCH',
+	                'BranchPermission.EDIT_OTHERS_POSTS');
 }
 
 /**
@@ -198,33 +220,17 @@ CodeHighlighting.setupEditCommentHandlers = function() {
 }
 
 /**
- * Loop through the comments and add edit buttons to those which current user
- * can edit
- */
-CodeHighlighting.setupEditButtons = function() {
-	var branchId = $('#branchId').val();
-	var userId = $('#userId').val();
-	var canEditOwnPosts = PermissionService.getHasPermission(branchId, 'BRANCH',
-                    'BranchPermission.EDIT_OWN_POSTS');
-	var canEditOtherPosts = PermissionService.getHasPermission(branchId, 'BRANCH',
-                    'BranchPermission.EDIT_OTHERS_POSTS');
-	
-	$('.script-first-post div.review-container').each(function() {
-		var authorId = $(this).find('input[name=authorId]').val();
-		if (canEditOtherPosts || (authorId == userId && canEditOwnPosts)) {
-			$(this).find('.review-buttons').append(
-				'<a href="" name=edit-review>' + $labelEdit + '</a>'
-			);
-		}
-	});
-}
-
-/**
  * Build HTML piece for review comment
  * @param comment code review comment
  * @return div (string) with comment data
  */
 CodeHighlighting.getCommentHtml = function (comment) {
+	var editButtonHtml = '';
+	if (CodeHighlighting.canEditOtherPosts 
+			|| (CodeHighlighting.currentUserId = comment.authorId 
+					&& Codehighlighting.canEditOwnPosts)) {
+		editButtonHtml = '<a href="" name=edit-review>' + $labelEdit + '</a>';
+	}
     var result =
             '<div class="review-container"> '
 				+ '<input type=hidden name=id value="' + comment.id + '"/>'
@@ -233,7 +239,9 @@ CodeHighlighting.getCommentHtml = function (comment) {
                     + '<img class="review-avatar-img" src="' + baseUrl + '/users/' + comment.authorId + '/avatar"/>'
                 + '</div>'
                 + '<div class="review-content">'
-				    + '<div class="review-buttons" style="float:right"/>'
+				    + '<div class="review-buttons" style="float:right">'
+				    	+ editButtonHtml
+				    + '</div>'
                     + '<div class="review-header">'
 						+ '<a href="' + baseUrl + '/users/' + comment.authorId + '">' + CodeHighlighting.htmlEncode(comment.authorUsername) + '</a>'
 						+ ' ' + $labelReviewSays + ': '
