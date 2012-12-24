@@ -78,7 +78,12 @@
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
         </dependency>
-        <dependency>
+      <dependency>
+        <groupId>org.mockejb</groupId>
+        <artifactId>mockejb</artifactId>
+      </dependency>
+
+      <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
         </dependency>

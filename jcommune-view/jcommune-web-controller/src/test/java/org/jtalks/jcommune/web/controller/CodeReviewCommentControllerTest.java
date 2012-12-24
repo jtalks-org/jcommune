@@ -24,6 +24,7 @@ import org.jtalks.jcommune.web.dto.json.FailValidationJsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
@@ -45,6 +46,7 @@ public class CodeReviewCommentControllerTest {
     public long BRANCH_ID = 1L;
     
     private long COMMENT_ID = 1L;
+    private long REVIEW_ID = 11L;
     private String COMMENT_BODY = "body";
     private int COMMENT_LINE_NUMBER = 1;
     
@@ -190,6 +192,13 @@ public class CodeReviewCommentControllerTest {
             .thenThrow(new AccessDeniedException(null));
         
         controller.editComment(new CodeReviewCommentDto(), bindingResult, BRANCH_ID);
+    }
+
+    @Test
+    public void deleteCommentTest() throws NotFoundException {
+        JsonResponse jsonResponse = controller.deleteComment(COMMENT_ID, REVIEW_ID);
+        verify(codeReviewService).deleteComment(COMMENT_ID, REVIEW_ID);
+        assertEquals(jsonResponse.getStatus(), JsonResponseStatus.Success);
     }
     
     private CodeReviewComment createComment() {

@@ -48,6 +48,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class CodeReviewCommentController {
 
     public static final String BRANCH_ID = "branchId";
+    public static final String REVIEW_ID = "reviewId";
+    public static final String COMMENT_ID = "commentId";
     public static final String BREADCRUMB_LIST = "breadcrumbList";
     
     private CodeReviewService codeReviewService;
@@ -99,6 +101,25 @@ public class CodeReviewCommentController {
                 reviewId, commentDto.getLineNumber(), commentDto.getBody());
         CodeReviewCommentDto addedCommentDto = new CodeReviewCommentDto(addedComment);
         return new JsonResponse(JsonResponseStatus.Success, addedCommentDto);
+    }
+
+    /**
+     * Deletes CR comment from review
+     *
+     * @param commentId comment review ID
+     * @param reviewId  ID of review where add comment to
+     * @return response with status 'success' if comment
+     *         was deleted or 'fail' with no objects if there were some errors
+     * @throws NotFoundException when no review with <code>reviewId</code>
+     *                           or comment with <code>commentId</code> was found
+     */
+    @RequestMapping(value = "/reviewcomments/delete", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonResponse deleteComment(
+            @RequestParam(COMMENT_ID) Long commentId,
+            @RequestParam(REVIEW_ID) Long reviewId) throws NotFoundException {
+        codeReviewService.deleteComment(commentId, reviewId);
+        return new JsonResponse(JsonResponseStatus.Success);
     }
     
     /**

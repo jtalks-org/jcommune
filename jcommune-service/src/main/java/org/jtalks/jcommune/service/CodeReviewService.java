@@ -21,21 +21,32 @@ import org.springframework.security.access.AccessDeniedException;
 
 /**
  * The interface to manipulate with code reviews
- * 
+ *
  * @author Vyacheslav Mishcheryakov
  */
 public interface CodeReviewService extends EntityService<CodeReview> {
 
     /**
      * Add code review (CR) comment
-     * @param reviewId - ID of code review where add comment to
+     *
+     * @param reviewId   - ID of code review where add comment to
      * @param lineNumber - number of code line for comment
-     * @param body - message body 
+     * @param body       - message body
      * @return created CR comment entity
-     * @throws NotFoundException if CR was not found
+     * @throws NotFoundException     if CR was not found
      * @throws AccessDeniedException when user has no permission to add comment
      */
-    CodeReviewComment addComment(Long reviewId, int lineNumber, String body) 
-        throws NotFoundException;
+    CodeReviewComment addComment(Long reviewId, int lineNumber, String body)
+            throws NotFoundException;
+
+    /**
+     * Removes code review (CR) comment
+     *
+     * @param id       ID of code review comment
+     * @param reviewId ID of code review where needs to delete comment
+     * @throws NotFoundException     if CR was not found
+     * @throws AccessDeniedException when user has no permission to add comment
+     */
+    public void deleteComment(long id, long reviewId) throws NotFoundException;
 
 }
