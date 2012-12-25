@@ -37,6 +37,7 @@ $(document).ready(function () {
         if (hasCodeReview == 'true') {
         	CodeHighlighting.initializeVariables();
             CodeHighlighting.displayReviewComments();
+			CodeHighlighting.setupGeneralHandlers();
 
             var branchId = $('#branchId').val();
             PermissionService.hasPermission(branchId, 'BRANCH',
@@ -96,6 +97,13 @@ CodeHighlighting.initializeVariables = function() {
 	                'BranchPermission.EDIT_OWN_POSTS');
 	CodeHighlighting.canEditOtherPosts = PermissionService.getHasPermission(CodeHighlighting.branchId, 'BRANCH',
 	                'BranchPermission.EDIT_OTHERS_POSTS');
+}
+
+CodeHighlighting.setupGeneralHandlers = function() {
+	// handle links even if they are located on the comment's div (clicks on which we don't handle
+	$('.script-first-post').on('click', 'ol.linenums li a', function () {
+		window.location = $(this).attr('href');
+	});
 }
 
 /**
