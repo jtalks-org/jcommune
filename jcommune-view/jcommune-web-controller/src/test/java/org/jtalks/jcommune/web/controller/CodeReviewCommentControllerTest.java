@@ -20,11 +20,11 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.CodeReviewCommentDto;
+import org.jtalks.jcommune.web.dto.json.FailJsonResponse;
 import org.jtalks.jcommune.web.dto.json.FailValidationJsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
@@ -195,10 +195,28 @@ public class CodeReviewCommentControllerTest {
     }
 
     @Test
-    public void deleteCommentTest() throws NotFoundException {
+    public void testDeleteComment() throws NotFoundException {
         JsonResponse jsonResponse = controller.deleteComment(COMMENT_ID, REVIEW_ID);
         verify(codeReviewService).deleteComment(COMMENT_ID, REVIEW_ID);
         assertEquals(jsonResponse.getStatus(), JsonResponseStatus.Success);
+    }
+    
+    @Test
+    public void testSecurityError() {
+        FailJsonResponse response = controller.securityError();
+        
+        assertEquals(response.getStatus(), JsonResponseStatus.Fail);
+        assertEquals(response.getReason(), "security");
+        assertNull(response.getResult());
+    }
+    
+    @Test
+    public void testEntityNotFoundError() {
+        FailJsonResponse response = controller.entityNotFoundError();
+        
+        assertEquals(response.getStatus(), JsonResponseStatus.Fail);
+        assertEquals(response.getReason(), "entity-not-found");
+        assertNull(response.getResult());
     }
     
     private CodeReviewComment createComment() {

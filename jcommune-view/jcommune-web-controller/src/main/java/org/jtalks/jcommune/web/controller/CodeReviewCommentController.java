@@ -23,14 +23,17 @@ import org.jtalks.jcommune.service.CodeReviewCommentService;
 import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.CodeReviewCommentDto;
+import org.jtalks.jcommune.web.dto.json.FailJsonResponse;
 import org.jtalks.jcommune.web.dto.json.FailValidationJsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,6 +50,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class CodeReviewCommentController {
 
+    private static final String ENTITY_NOT_FOUND_REASON = "entity-not-found";
+    private static final String SECURITY_REASON = "security";
     public static final String BRANCH_ID = "branchId";
     public static final String REVIEW_ID = "reviewId";
     public static final String COMMENT_ID = "commentId";
@@ -146,4 +151,16 @@ public class CodeReviewCommentController {
         return new JsonResponse(JsonResponseStatus.Success, addedCommentDto);
     }
     
+    
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseBody
+    public FailJsonResponse securityError() {
+        return new FailJsonResponse(SECURITY_REASON);
+    }
+    
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseBody
+    public FailJsonResponse entityNotFoundError() {
+        return new FailJsonResponse(ENTITY_NOT_FOUND_REASON);
+    }
 }

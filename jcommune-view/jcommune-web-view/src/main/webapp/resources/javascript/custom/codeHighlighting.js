@@ -101,7 +101,7 @@ CodeHighlighting.initializeVariables = function() {
 
 CodeHighlighting.setupGeneralHandlers = function() {
 	// handle links even if they are located on the comment's div (clicks on which we don't handle
-	$('.script-first-post').on('click', 'ol.linenums li a', function () {
+	$('.script-first-post').on('click', 'ol.linenums li .review-header a', function () {
 		window.location = $(this).attr('href');
 	});
 }
@@ -118,7 +118,7 @@ CodeHighlighting.setupAddCommentFormHandlers = function () {
 	// don't handle clicks on comments
 	$('.script-first-post').on('click', 'ol.linenums li div.review-container', function () {
 		return false;
-	});
+	});	
 	
     $('.script-first-post').on('click', 'ol.linenums li', function () {
         var addCommentForm = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID);
@@ -150,16 +150,18 @@ CodeHighlighting.setupAddCommentFormHandlers = function () {
                     if (data.status == 'Success') {
                         CodeHighlighting.removeCommentForm();
 						CodeHighlighting.addComment(data.result)
-                    }
-                    else if (data.reason == 'validation') {
+                    } else if (data.reason == 'validation') {
                         CodeHighlighting.displayValidationErrors(data.result);
-                    }
-                    else {
+                    } else if (data.reason == 'security'){
+                    	bootbox.alert($labelYouDontHavePermissions);
+                    } else if (data.reason == 'entity-not-found') {
+                    	bootbox.alert($labelTopicWasRemoved);
+                    } else {
                         bootbox.alert($labelUnexpectedError);
                     }
                 })
                 .error(function (data) {
-                    bootbox.alert($labelUnexpectedError);
+                    bootbox.alert($label.topicWasRemovedOrYouDontHavePermissions);
                 })
                 .complete(function () {
                     Antimultipost.enableSubmit(formContainer);
@@ -210,11 +212,13 @@ CodeHighlighting.setupEditCommentHandlers = function() {
                     if (data.status == 'Success') {
 						CodeHighlighting.updateComment(data.result);
 						CodeHighlighting.removeCommentForm();
-                    }
-                    else if (data.reason == 'validation') {
+                    } else if (data.reason == 'validation') {
                         CodeHighlighting.displayValidationErrors(data.result);
-                    }
-                    else {
+                    } else if (data.reason == 'security'){
+                    	bootbox.alert($labelYouDontHavePermissions);
+                    } else if (data.reason == 'entity-not-found') {
+                    	bootbox.alert($labelTopicWasRemoved);
+                    } else {
                         bootbox.alert($labelUnexpectedError);
                     }
                 })
