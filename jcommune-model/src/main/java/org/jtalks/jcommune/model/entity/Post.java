@@ -120,7 +120,6 @@ public class Post extends Entity {
      */
     public DateTime updateModificationDate() {
         this.modificationDate = new DateTime();
-        this.topic.updateModificationDate();
         return this.modificationDate;
     }
 
