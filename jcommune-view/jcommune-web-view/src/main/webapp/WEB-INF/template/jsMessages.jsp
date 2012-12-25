@@ -88,3 +88,5 @@ $labelUnexpectedError = '<spring:message code="label.unexpected.error" htmlEscap
 $labelAdd = '<spring:message code="label.add" htmlEscape="true"/>'
 $labelEdit = '<spring:message code="label.edit" htmlEscape="true"/>'
 $labelKeymapsReview = '<spring:message code="label.keymaps.review" htmlEscape="true"/>'
+$labelTopicWasRemoved = '<spring:message code="label.topicWasRemoved" htmlEscape="true"/>'
+$labelYouDontHavePermissions = '<spring:message code="label.topicYouDontHavePermissions" htmlEscape="true"/>'

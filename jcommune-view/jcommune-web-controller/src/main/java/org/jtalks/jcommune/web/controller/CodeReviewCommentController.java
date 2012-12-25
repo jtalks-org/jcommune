@@ -23,14 +23,17 @@ import org.jtalks.jcommune.service.CodeReviewCommentService;
 import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.CodeReviewCommentDto;
+import org.jtalks.jcommune.web.dto.json.FailJsonResponse;
 import org.jtalks.jcommune.web.dto.json.FailValidationJsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,7 +50,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class CodeReviewCommentController {
 
+    private static final String ENTITY_NOT_FOUND_REASON = "entity-not-found";
+    private static final String SECURITY_REASON = "security";
     public static final String BRANCH_ID = "branchId";
+    public static final String REVIEW_ID = "reviewId";
+    public static final String COMMENT_ID = "commentId";
     public static final String BREADCRUMB_LIST = "breadcrumbList";
     
     private CodeReviewService codeReviewService;
@@ -100,6 +107,25 @@ public class CodeReviewCommentController {
         CodeReviewCommentDto addedCommentDto = new CodeReviewCommentDto(addedComment);
         return new JsonResponse(JsonResponseStatus.Success, addedCommentDto);
     }
+
+    /**
+     * Deletes CR comment from review
+     *
+     * @param commentId comment review ID
+     * @param reviewId  ID of review where add comment to
+     * @return response with status 'success' if comment
+     *         was deleted or 'fail' with no objects if there were some errors
+     * @throws NotFoundException when no review with <code>reviewId</code>
+     *                           or comment with <code>commentId</code> was found
+     */
+    @RequestMapping(value = "/reviewcomments/delete", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonResponse deleteComment(
+            @RequestParam(COMMENT_ID) Long commentId,
+            @RequestParam(REVIEW_ID) Long reviewId) throws NotFoundException {
+        codeReviewService.deleteComment(commentId, reviewId);
+        return new JsonResponse(JsonResponseStatus.Success);
+    }
     
     /**
      * Save CR comment
@@ -125,4 +151,16 @@ public class CodeReviewCommentController {
         return new JsonResponse(JsonResponseStatus.Success, addedCommentDto);
     }
     
+    
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseBody
+    public FailJsonResponse securityError() {
+        return new FailJsonResponse(SECURITY_REASON);
+    }
+    
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseBody
+    public FailJsonResponse entityNotFoundError() {
+        return new FailJsonResponse(ENTITY_NOT_FOUND_REASON);
+    }
 }

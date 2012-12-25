@@ -17,18 +17,15 @@
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-       http://www.springframework.org/schema/aop
-       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
-     ">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
 
-    <bean id="exceptionTranslationInterceptor"
-          class="org.springframework.dao.support.PersistenceExceptionTranslationInterceptor"/>
+  <bean id="exceptionTranslationInterceptor"
+        class="org.springframework.dao.support.PersistenceExceptionTranslationInterceptor"/>
 
-    <!--Declaration of AOP Config -->
-    <aop:config>
+  <!--Declaration of AOP Config -->
+  <aop:config>
         <aop:advisor advice-ref="exceptionTranslationInterceptor"
                      pointcut="execution(* org.jtalks.common.model.dao.ChildRepository+.* (*))"/>
         <aop:advisor advice-ref="exceptionTranslationInterceptor"
@@ -137,7 +134,8 @@
     <property name="targetDataSource">
       <bean class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <property name="driverClass" value="${jdbc.driverClassName}"/>
-        <property name="jdbcUrl" value="${jdbc.url}"/>
+        <!--the properties are set by JndiAwarePropertyPlaceholderConfigurer, see it for details-->
+        <property name="jdbcUrl" value="${JCOMMUNE_DB_CONNECTION_STRING}"/>
         <property name="user" value="${JCOMMUNE_DB_USER:root}"/>
         <property name="password" value="${JCOMMUNE_DB_PASS:root}"/>
         <property name="maxStatements" value="1500"/>
@@ -207,18 +205,16 @@
     <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
-    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="location" value="classpath:/org/jtalks/jcommune/model/datasource.properties"/>
+    <bean class="org.jtalks.jcommune.model.utils.JndiAwarePropertyPlaceholderConfigurer">
+      <property name="location" value="classpath:/org/jtalks/jcommune/model/datasource.properties"/>
     </bean>
 
-    <bean id="hibernateStatisticsMBean" class="org.hibernate.jmx.StatisticsService">
-        <property name="statisticsEnabled" value="true"/>
-        <property name="sessionFactory" ref="sessionFactory"/>
-    </bean>
+  <bean id="hibernateStatisticsMBean" class="org.hibernate.jmx.StatisticsService">
+    <property name="statisticsEnabled" value="true"/>
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
 
-
-
-    <!-- Migrations, todo: 4 beans - that's weird, Ticket has been left for common to move init to one method -->
+  <!-- Migrations, todo: 4 beans - that's weird, Ticket has been left for common to move init to one method -->
 
     <bean id="flyway_common_init" class="org.jtalks.common.util.FlywayWrapper" init-method="smartInit">
         <property name="dataSource" ref="dataSource"/>

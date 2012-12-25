@@ -272,7 +272,14 @@
                 <version>2.2.4</version>
                 <scope>test</scope>
             </dependency>
-            <!--Servlet & JSP-->
+          <!--This dependency has classes to mock JNDI which we need in some tests.-->
+          <dependency>
+            <groupId>org.mockejb</groupId>
+            <artifactId>mockejb</artifactId>
+            <version>0.6-beta2</version>
+            <scope>test</scope>
+          </dependency>
+          <!--Servlet & JSP-->
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>jstl</artifactId>

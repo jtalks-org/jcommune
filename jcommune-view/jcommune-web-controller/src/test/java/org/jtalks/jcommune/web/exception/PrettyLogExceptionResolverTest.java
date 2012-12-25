@@ -18,7 +18,6 @@ package org.jtalks.jcommune.web.exception;
 import org.apache.commons.logging.Log;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.springframework.util.ReflectionUtils;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -32,47 +31,36 @@ import static org.mockito.Mockito.*;
  * @author Vitaliy Kravchenko
  */
 public class PrettyLogExceptionResolverTest {
-
-    private PrettyLogExceptionResolver prettyLogExceptionResolver = new PrettyLogExceptionResolver();
-
-    private Log originalLog;
-
-    private Log mockLog;
+    private PrettyLogExceptionResolver prettyLogExceptionResolver;
 
     @BeforeMethod
     public void setUp() throws Exception {
-        mockLog = mock(Log.class);
-        Field loggerField = getLoggerField();
-        originalLog = (Log) loggerField.get(prettyLogExceptionResolver);
-        ReflectionUtils.setField(loggerField, prettyLogExceptionResolver, mockLog);
-    }
-
-    @AfterMethod
-    public void tearDown() throws Exception {
-        Field field = getLoggerField();
-        ReflectionUtils.setField(field, prettyLogExceptionResolver, originalLog);
+        prettyLogExceptionResolver = new PrettyLogExceptionResolver();
     }
 
     @Test
     public void testLogExceptionWithIncomingNotFoundException() throws Exception {
-        final String exceptionMessage = "Entity not found";
-        NotFoundException notFoundException = new NotFoundException(exceptionMessage);
+        Log mockLog = replaceLoggerWithMock(prettyLogExceptionResolver);
+        NotFoundException notFoundException = new NotFoundException("Entity not found");
         prettyLogExceptionResolver.logException(notFoundException, mock(HttpServletRequest.class));
 
-        verify(mockLog).info(exceptionMessage);
+        verify(mockLog).info("Entity not found");
     }
 
     @Test
     public void testLogExceptionWithoutNotFoundException() throws Exception {
+        Log mockLog = replaceLoggerWithMock(prettyLogExceptionResolver);
         Exception exception = new Exception();
         prettyLogExceptionResolver.logException(exception, mock(HttpServletRequest.class));
 
         verify(mockLog, times(0)).info(anyString());
     }
 
-    private Field getLoggerField() {
+    private Log replaceLoggerWithMock(PrettyLogExceptionResolver resolver) throws Exception {
+        Log mockLog = mock(Log.class);
         Field loggerField = ReflectionUtils.findField(PrettyLogExceptionResolver.class, "logger");
         loggerField.setAccessible(true);
-        return loggerField;
+        loggerField.set(resolver, mockLog);
+        return mockLog;
     }
 }
