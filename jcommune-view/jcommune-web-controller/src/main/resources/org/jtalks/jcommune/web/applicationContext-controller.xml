@@ -57,5 +57,19 @@
             <bean class="org.codehaus.jackson.map.ObjectMapper"/>
         </constructor-arg>
     </bean>
+    
+    <bean id="rememberMeCookieExctracter" 
+          class="org.jtalks.jcommune.web.controller.rememberme.RememberMeCookieExtracter"/>
+          
+    <bean id="rememberMeLogService" 
+          class="org.jtalks.jcommune.web.controller.rememberme.RememberMeLogService">
+          <constructor-arg ref="tokenRepository"/>
+    </bean>
+    
+    <bean id="tokenRepository"
+          class="org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl">
+        <property name="dataSource" ref="dataSource"/>     
+     </bean>
+    
 </beans>
 
