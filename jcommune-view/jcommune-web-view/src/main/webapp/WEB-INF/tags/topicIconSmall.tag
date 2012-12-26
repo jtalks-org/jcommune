@@ -26,7 +26,7 @@
     <c:set var="iconName" value="no-new-posts.png"/>
     <c:set var="titleCode" value="label.topic.no_new_posts"/>
 </c:if>
-<img class="status-img-topics"
+<img class="status-img-small"
      src="${pageContext.request.contextPath}/resources/images/${iconName}"
      title="<spring:message code="${titleCode}"/>"/>
 <c:if test="${topic.hasUpdates}">

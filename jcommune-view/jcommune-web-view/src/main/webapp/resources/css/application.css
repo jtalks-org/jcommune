@@ -11,7 +11,7 @@ body {
     width: 32px
 }
 
-.status-img-topics {
+.status-img-small {
     height: 24px;
     width: 24px
 }
@@ -155,7 +155,7 @@ ul.lang-menu li img {
     min-width: 32px;
 }
 
-#topics-table .status-col-topics {
+#topics-table .status-col-small {
     padding: 0px;
     width: 24px;
     max-width: 24px;
@@ -287,14 +287,14 @@ ul.lang-menu li img {
         display: table-cell;
     }
 
-    #topics-table .posts-views-topics {
+    #topics-table .posts-views-small {
         display: table-cell;
         text-align: center;
         font-size: 11px;
     }
 
-    #topics-table .posts-link-topics {
-        font-size: 15px;
+    #topics-table .posts-td-small {
+        max-width: 90px;
     }
 }
 
