@@ -90,7 +90,7 @@
                                 <c:out value="${topic.topicStarter.username}"/>
                             </a>
                         </td>
-                        <td class="posted-in-col">
+                        <td class="posted-in-col shrink-to-fit">
                             <a href="${pageContext.request.contextPath}/branches/${topic.branch.id}">
                                 <c:out value="${topic.branch.name}"/>
                             </a>
