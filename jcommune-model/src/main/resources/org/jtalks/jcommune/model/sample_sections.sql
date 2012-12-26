@@ -61,6 +61,8 @@ SET @EDIT_OWN_POSTS_MASK := 133;
 SET @EDIT_OTHERS_POSTS_MASK := 17;
 SET @CREATE_ANNOUNCEMENTS_MASK := 18;
 SET @CREATE_STICKED_TOPICS_MASK := 19;
+SET @CREATE_CODE_REVIEW_MASK := 21;
+SET @LEAVE_COMMENTS_IN_CODE_REVIEW_MASK := 22;
 
 /* VIEW_TOPICS FOR registered users */
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
@@ -246,5 +248,24 @@ INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, aud
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (5,2,@registered_group_sid_id,@EDIT_PROFILE_MASK,1,0,0);
 
+/* CREATE_FORUM_FAQ for admins */
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (6,1,@admin_group_sid_id,@CREATE_FORUM_FAQ_MASK,1,0,0);
+                
+/* Create code review and add review comments for registered users */
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (1,21,@registered_group_sid_id,@CREATE_CODE_REVIEW_MASK,1,0,0);
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (2,21,@registered_group_sid_id,@CREATE_CODE_REVIEW_MASK,1,0,0);
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (3,21,@registered_group_sid_id,@CREATE_CODE_REVIEW_MASK,1,0,0);
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (4,21,@registered_group_sid_id,@CREATE_CODE_REVIEW_MASK,1,0,0);
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (1,22,@registered_group_sid_id,@LEAVE_COMMENTS_IN_CODE_REVIEW_MASK,1,0,0);
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (2,22,@registered_group_sid_id,@LEAVE_COMMENTS_IN_CODE_REVIEW_MASK,1,0,0);
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (3,22,@registered_group_sid_id,@LEAVE_COMMENTS_IN_CODE_REVIEW_MASK,1,0,0);
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (4,22,@registered_group_sid_id,@LEAVE_COMMENTS_IN_CODE_REVIEW_MASK,1,0,0);
