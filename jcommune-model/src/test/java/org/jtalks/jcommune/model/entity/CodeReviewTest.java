@@ -14,9 +14,16 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import static org.testng.AssertJUnit.assertEquals;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.jtalks.jcommune.model.ObjectsFactory.getRandomUser;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertFalse;
+import static org.testng.AssertJUnit.assertTrue;
 
 /**
  * 
@@ -37,5 +44,16 @@ public class CodeReviewTest {
         review.addComment(new CodeReviewComment());
         
         assertEquals(review.getComments().size(), 1);
+    }
+
+    @Test
+    public void testIsUserSubscribedToCR() {
+        JCUser subscribedUser = getRandomUser();
+        JCUser unsubscribedUser = getRandomUser();
+        Set<JCUser> subscribers = new HashSet<JCUser>();
+        subscribers.add(subscribedUser);
+        review.setSubscribers(subscribers);
+        assertTrue(review.isUserSubscribed(subscribedUser));
+        assertFalse(review.isUserSubscribed(unsubscribedUser));
     }
 }

@@ -34,5 +34,10 @@
             <key column="CODE_REVIEW_ID" foreign-key="FK_CRC_CODE_REVIEW"/>
             <one-to-many class="CodeReviewComment"/>
         </bag>
+
+        <set name="subscribers" table="CODE_REVIEW_SUBSCRIBER">
+            <key column="CR_ID"/>
+            <many-to-many column="USER_ID" class="JCUser"/>
+        </set>
     </class>
 </hibernate-mapping>
