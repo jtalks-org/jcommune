@@ -23,7 +23,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jtalks.jcommune.web.rememberme.RememberMeCookieExtracter;
-import org.jtalks.jcommune.web.rememberme.RememberMeLogService;
+import org.jtalks.jcommune.web.rememberme.RememberMeCheckService;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
@@ -33,7 +33,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  */
 public class RememberMeCheckFilter extends UsernamePasswordAuthenticationFilter {
     private RememberMeCookieExtracter extracter;
-    private RememberMeLogService rememberMeLogService;
+    private RememberMeCheckService rememberMeCheckService;
     
     protected RememberMeCheckFilter() {
     }
@@ -50,7 +50,7 @@ public class RememberMeCheckFilter extends UsernamePasswordAuthenticationFilter 
             String[] seriesAndToken = extracter.extractSeriesAndToken(rememberMeCookieValue);
             String series = seriesAndToken[0];
             String token = seriesAndToken[1];
-            rememberMeLogService.logPersistentRememberMeToken(series, token);
+            rememberMeCheckService.findAndCheckPersistentRememberMeToken(series, token);
         }
         super.doFilter(req, res, chain);
     }
@@ -59,7 +59,7 @@ public class RememberMeCheckFilter extends UsernamePasswordAuthenticationFilter 
         this.extracter = extracter;
     }
 
-    public void setRememberMeLogService(RememberMeLogService rememberMeLogService) {
-        this.rememberMeLogService = rememberMeLogService;
+    public void setRememberMeLogService(RememberMeCheckService rememberMeCheckService) {
+        this.rememberMeCheckService = rememberMeCheckService;
     }
 }

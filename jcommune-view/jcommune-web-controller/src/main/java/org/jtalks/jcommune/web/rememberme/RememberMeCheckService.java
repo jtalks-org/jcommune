@@ -21,39 +21,51 @@ import org.springframework.security.web.authentication.rememberme.PersistentReme
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 /**
+ * Provides an ability to check remember me data that were 
+ * passed in cookie value.
  * 
  * @author Anuar_Nurmakanov
  *
  */
-public class RememberMeLogService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RememberMeLogService.class);
+public class RememberMeCheckService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RememberMeCheckService.class);
     private static final String NOT_EQUALS_TOKENS_ERROR_TEMPLATE = 
-            "Presented token %s of series %s isn't equal for persistent token %s";
+            "%s presented token %s of series %s isn't equal for persistent token %s";
     
     private PersistentTokenRepository persistentTokenRepository;
     
     /**
+     * Constructs an instance with required fields.
      * 
-     * @param persistentTokenRepository
+     * @param persistentTokenRepository to find token in repository
      */
-    public RememberMeLogService(PersistentTokenRepository persistentTokenRepository) {
+    public RememberMeCheckService(PersistentTokenRepository persistentTokenRepository) {
         this.persistentTokenRepository = persistentTokenRepository;
     }
 
     /**
+     * Find and check found persistent remember me token with presented token
+     * from cookie.
      * 
-     * @param presentedSeries
-     * @param presentedToken
+     * @param presentedSeries presented series from cookie
+     * @param presentedToken presented token from cookie
      */
-    public void logPersistentRememberMeToken(String presentedSeries, String presentedToken) {
+    public boolean findAndCheckPersistentRememberMeToken(String presentedSeries, String presentedToken) {
         PersistentRememberMeToken token = persistentTokenRepository.getTokenForSeries(presentedSeries);
         if (token != null) {
             String persistentToken = token.getTokenValue();
             if (!ObjectUtils.equals(presentedToken, persistentToken)) {
+                String username = token.getUsername();
                 String errorMessage = String.format(
-                        NOT_EQUALS_TOKENS_ERROR_TEMPLATE, presentedToken, presentedSeries, persistentToken);
+                        NOT_EQUALS_TOKENS_ERROR_TEMPLATE,
+                        username,
+                        presentedToken,
+                        presentedSeries,
+                        persistentToken);
                 LOGGER.error(errorMessage);
+                return true;
             }
         }
+        return false;
     }
 }
