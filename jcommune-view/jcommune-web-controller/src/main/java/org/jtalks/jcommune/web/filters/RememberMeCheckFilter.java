@@ -22,8 +22,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import org.jtalks.jcommune.web.controller.rememberme.RememberMeCookieExtracter;
-import org.jtalks.jcommune.web.controller.rememberme.RememberMeLogService;
+import org.jtalks.jcommune.web.rememberme.RememberMeCookieExtracter;
+import org.jtalks.jcommune.web.rememberme.RememberMeLogService;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**

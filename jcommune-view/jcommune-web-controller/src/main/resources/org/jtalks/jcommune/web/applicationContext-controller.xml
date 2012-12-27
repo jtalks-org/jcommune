@@ -59,10 +59,10 @@
     </bean>
     
     <bean id="rememberMeCookieExctracter" 
-          class="org.jtalks.jcommune.web.controller.rememberme.RememberMeCookieExtracter"/>
-          
+          class="org.jtalks.jcommune.web.rememberme.RememberMeCookieExtracter" />
+    
     <bean id="rememberMeLogService" 
-          class="org.jtalks.jcommune.web.controller.rememberme.RememberMeLogService">
+          class="org.jtalks.jcommune.web.rememberme.RememberMeLogService">
           <constructor-arg ref="tokenRepository"/>
     </bean>
     

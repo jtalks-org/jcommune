@@ -25,7 +25,7 @@
     <security:http auto-config="true" use-expressions="true" create-session="ifRequired">
 
         <security:session-management session-authentication-strategy-ref="concurrentSessionControlStrategy"/>
-        <security:custom-filter ref="myFilter" before="FORM_LOGIN_FILTER"/>
+        <security:custom-filter ref="rememberMeCheckFilter" before="FORM_LOGIN_FILTER"/>
 
         <security:intercept-url pattern="/posts/new" access="isAuthenticated()"/>
         <security:intercept-url pattern="/posts/*/delete" method="GET" access="isAuthenticated()"/>
@@ -90,7 +90,7 @@
         <property name="maximumSessions" value="1"/>
     </bean>
 
-    <bean id="myFilter"
+    <bean id="rememberMeCheckFilter"
           class="org.jtalks.jcommune.web.filters.RememberMeCheckFilter">
         <property name="authenticationManager" ref="authenticationManager" />
         <property name="extracter" ref="rememberMeCookieExctracter" />
