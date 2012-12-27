@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.SubscriptionAwareEntity;
 import org.jtalks.jcommune.model.entity.Topic;
 
 /**
@@ -35,6 +36,7 @@ public interface SubscriptionService {
      *
      * @param topic topic to subscribe or unsubscribe current user to
      */
+    //todo may be is needed to replace it to toggleSubscription(SubscriptionAwareEntity entityToSubscribe)
     void toggleTopicSubscription(Topic topic);
 
     /**
@@ -46,7 +48,17 @@ public interface SubscriptionService {
      *
      * @param branch branch to subscribe or unsubscribe current user to
      */
+    //todo may be is needed to replace it to toggleSubscription(SubscriptionAwareEntity entityToSubscribe)
     void toggleBranchSubscription(Branch branch);
+
+    /**
+     * Toggle subscription state for the {@link SubscriptionAwareEntity} given. Thus, if user is subscribed
+     * to the  updates the method call will unsubscribe him and vice versa.
+     * Subscription will be applied to the current user logged in.
+     *
+     * @param entityToSubscribe object to subscribe or unsubscribe current user to
+     */
+    void toggleSubscription(SubscriptionAwareEntity entityToSubscribe);
 
 
 }
