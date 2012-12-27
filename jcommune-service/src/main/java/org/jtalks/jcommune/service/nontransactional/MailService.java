@@ -15,9 +15,12 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.apache.velocity.app.VelocityEngine;
+import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.jtalks.jcommune.model.entity.SubscriptionAwareEntity;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.slf4j.Logger;
@@ -46,6 +49,9 @@ import java.util.Map;
  */
 public class MailService {
 
+    public static final String POSTS = "/posts/";
+    public static final String TOPIC = "Topic";
+    public static final String TOPIC_CR = "Topic (code review)";
     private JavaMailSender mailSender;
     private String from;
     private VelocityEngine velocityEngine;
@@ -115,6 +121,7 @@ public class MailService {
      * @param recipient a person to be notified about updates by email
      * @param topic     topic changed (to include more detailes in email)
      */
+    //todo may be is needed to replace it to sendUpdatesOnSubscription(JCUser recipient, SubscriptionAwareEntity entity)
     public void sendTopicUpdatesOnSubscription(JCUser recipient, Topic topic) {
         try {
             String urlSuffix = "/posts/" + topic.getLastPost().getId();
@@ -131,12 +138,54 @@ public class MailService {
 
     /**
      * Sends update notification to user specified, e.g. when some new
+     * information were added to the subscribed entity. This method won't check if user
+     * is subscribed to the particular notification or not.
+     *
+     * @param recipient a person to be notified about updates by email
+     * @param entity changed subscribed entity.
+     */
+    public void sendUpdatesOnSubscription(JCUser recipient, SubscriptionAwareEntity entity) {
+        String entityDisplayValue = prepareEntityDisplayValue(entity);
+        try {
+            String urlSuffix = prepareUrlSuffix(entity);
+            String url = this.getDeploymentRootUrl() + urlSuffix;
+            Locale locale = recipient.getLanguage().getLocale();
+            Map<String, Object> model = new HashMap<String, Object>();
+            model.put(LINK, url);
+            model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
+            sendEmailOnForumUpdates(recipient, model, locale);
+        } catch (MailingFailedException e) {
+            LOGGER.error(String.format(LOG_TEMPLATE, entityDisplayValue, ((Entity) entity).getId(),
+                    recipient.getUsername()));
+        }
+    }
+
+    private String prepareEntityDisplayValue(SubscriptionAwareEntity entity) {
+        String result = "";
+        if (entity instanceof CodeReview) {
+            result = POSTS;
+        }
+        return result;    }
+
+    private String prepareUrlSuffix(SubscriptionAwareEntity entity) {
+        String result = "";
+        if (entity instanceof CodeReview) {
+            result = TOPIC_CR;
+        }
+        return result;
+    }
+
+
+
+    /**
+     * Sends update notification to user specified, e.g. when some new
      * posts were added to the topic. This method won't check if user
      * is subscribed to the particular notification or not.
      *
      * @param recipient a person to be notified about updates by email
      * @param branch    branch changed (to include more detailes in email)
      */
+    //todo may be is needed to replace it to sendUpdatesOnSubscription(JCUser recipient, SubscriptionAwareEntity entity)
     public void sendBranchUpdatesOnSubscription(JCUser recipient, Branch branch) {
         try {
             String urlSuffix = "/branches/" + branch.getId();
