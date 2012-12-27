@@ -50,7 +50,7 @@ public class RememberMeCheckService {
      * @param presentedSeries presented series from cookie
      * @param presentedToken presented token from cookie
      */
-    public boolean findAndCheckPersistentRememberMeToken(String presentedSeries, String presentedToken) {
+    public boolean checkWithPersistentRememberMeToken(String presentedSeries, String presentedToken) {
         PersistentRememberMeToken token = persistentTokenRepository.getTokenForSeries(presentedSeries);
         if (token != null) {
             String persistentToken = token.getTokenValue();

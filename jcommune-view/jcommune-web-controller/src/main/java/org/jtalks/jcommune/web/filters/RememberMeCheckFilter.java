@@ -50,7 +50,7 @@ public class RememberMeCheckFilter extends UsernamePasswordAuthenticationFilter 
             String[] seriesAndToken = extracter.extractSeriesAndToken(rememberMeCookieValue);
             String series = seriesAndToken[0];
             String token = seriesAndToken[1];
-            rememberMeCheckService.findAndCheckPersistentRememberMeToken(series, token);
+            rememberMeCheckService.checkWithPersistentRememberMeToken(series, token);
         }
         super.doFilter(req, res, chain);
     }
