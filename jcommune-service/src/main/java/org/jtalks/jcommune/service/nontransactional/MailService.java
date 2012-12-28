@@ -160,6 +160,11 @@ public class MailService {
         }
     }
 
+    /**
+     * Prepares log display value for specified entity.
+     * @param entity entity to prepare display value.
+     * @return log display value.
+     */
     private String prepareEntityDisplayValue(SubscriptionAwareEntity entity) {
         String result = "";
         if (entity instanceof CodeReview) {
@@ -167,6 +172,14 @@ public class MailService {
         }
         return result;    }
 
+    /**
+     * Prepares URL suffix for specified entity.
+     * <p>
+     *     For example: "/branches/", "/posts/".
+     * </p>
+     * @param entity entity to prepare URL suffix.
+     * @return URL suffix.
+     */
     private String prepareUrlSuffix(SubscriptionAwareEntity entity) {
         String result = "";
         if (entity instanceof CodeReview) {
