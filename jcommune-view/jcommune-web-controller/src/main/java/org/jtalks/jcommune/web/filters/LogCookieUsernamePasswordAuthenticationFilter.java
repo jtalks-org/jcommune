@@ -22,20 +22,25 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import org.jtalks.jcommune.web.rememberme.RememberMeCookieExtracter;
+import org.jtalks.jcommune.web.rememberme.RememberMeCookieExtractor;
 import org.jtalks.jcommune.web.rememberme.RememberMeCheckService;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
+ * Authentication filter that also logs user's cookies that contain 
+ * remember me data.
  * 
  * @author Anuar_Nurmakanov
  *
  */
-public class RememberMeCheckFilter extends UsernamePasswordAuthenticationFilter {
-    private RememberMeCookieExtracter extracter;
+public class LogCookieUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+    private RememberMeCookieExtractor extractor;
     private RememberMeCheckService rememberMeCheckService;
     
-    protected RememberMeCheckFilter() {
+    /**
+     * Default constructor.
+     */
+    protected LogCookieUsernamePasswordAuthenticationFilter() {
     }
 
     /**
@@ -45,9 +50,9 @@ public class RememberMeCheckFilter extends UsernamePasswordAuthenticationFilter 
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) 
             throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
-        String rememberMeCookieValue = extracter.exctractRememberMeCookieValue(request);
+        String rememberMeCookieValue = extractor.exctractRememberMeCookieValue(request);
         if (rememberMeCookieValue != null) {
-            String[] seriesAndToken = extracter.extractSeriesAndToken(rememberMeCookieValue);
+            String[] seriesAndToken = extractor.extractSeriesAndToken(rememberMeCookieValue);
             String series = seriesAndToken[0];
             String token = seriesAndToken[1];
             rememberMeCheckService.checkWithPersistentRememberMeToken(series, token);
@@ -55,11 +60,21 @@ public class RememberMeCheckFilter extends UsernamePasswordAuthenticationFilter 
         super.doFilter(req, res, chain);
     }
 
-    public void setExtracter(RememberMeCookieExtracter extracter) {
-        this.extracter = extracter;
+    /**
+     * Set extractor of remember me data from cookie.
+     * 
+     * @param extractor extractor of remember me data from cookie
+     */
+    public void setExtractor(RememberMeCookieExtractor extractor) {
+        this.extractor = extractor;
     }
 
-    public void setRememberMeLogService(RememberMeCheckService rememberMeCheckService) {
+    /**
+     * Set remember me check service.
+     * 
+     * @param rememberMeCheckService remember me check service
+     */
+    public void setRememberMeCheckService(RememberMeCheckService rememberMeCheckService) {
         this.rememberMeCheckService = rememberMeCheckService;
     }
 }

@@ -25,8 +25,22 @@ import org.springframework.security.web.authentication.rememberme.InvalidCookieE
  */
 interface RememberMeCookieDecoder {
 
+    /**
+     * Decodes the cookie and splits it into a set of token strings using the ":" delimiter.
+     *
+     * @param cookieValue the value obtained from the submitted cookie
+     * @return the array of tokens.
+     * @throws InvalidCookieException if the cookie was not base64 encoded.
+     */
     String[] decodeCookie(String cookieValue) throws InvalidCookieException;
     
+    /**
+     * Locates the Spring Security remember me cookie in the request and returns its value.
+     * The cookie is searched for by name and also by matching the context path to the cookie path.
+     *
+     * @param request the submitted request which is to be authenticated
+     * @return the cookie value (if present), null otherwise.
+     */
     String extractRememberMeCookie(HttpServletRequest request);
 
 }

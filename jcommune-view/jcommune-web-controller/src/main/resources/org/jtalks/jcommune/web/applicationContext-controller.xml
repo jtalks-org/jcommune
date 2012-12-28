@@ -58,11 +58,11 @@
         </constructor-arg>
     </bean>
     
-    <bean id="rememberMeCookieExctracter" 
-          class="org.jtalks.jcommune.web.rememberme.RememberMeCookieExtracter" />
+    <bean id="rememberMeCookieExctractor" 
+          class="org.jtalks.jcommune.web.rememberme.RememberMeCookieExtractor" />
     
-    <bean id="rememberMeLogService" 
-          class="org.jtalks.jcommune.web.rememberme.RememberMeLogService">
+    <bean id="rememberMeCheckService" 
+          class="org.jtalks.jcommune.web.rememberme.RememberMeCheckService">
           <constructor-arg ref="tokenRepository"/>
     </bean>
     

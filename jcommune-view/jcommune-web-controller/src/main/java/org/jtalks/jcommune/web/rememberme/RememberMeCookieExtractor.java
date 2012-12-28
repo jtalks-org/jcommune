@@ -24,8 +24,23 @@ import org.springframework.security.web.authentication.rememberme.InvalidCookieE
  * @author Anuar_Nurmanakov
  * 
  */
-public class RememberMeCookieExtracter {
+public class RememberMeCookieExtractor {
     private RememberMeCookieDecoder rememberMeCookieDecoder = new RememberMeCookieDecoderImpl();
+
+    /**
+     * Constructs an instance with default algorithm of cookie decoding.
+     */
+    public RememberMeCookieExtractor() {
+    }
+    
+    /**
+     * Constructs an instance with concrete algorithm of cookie decoding.
+     * 
+     * @param rememberMeCookieDecoder provides cookie decoding
+     */
+    public RememberMeCookieExtractor(RememberMeCookieDecoder rememberMeCookieDecoder) {
+        this.rememberMeCookieDecoder = rememberMeCookieDecoder;
+    }
 
     /**
      * Locates the Spring Security remember me cookie in the request and returns its value.
@@ -45,7 +60,6 @@ public class RememberMeCookieExtracter {
      * @return extracted series and token
      */
     public String[] extractSeriesAndToken(String cookieValue) {
-        RememberMeCookieDecoder rememberMeCookieDecoder = new RememberMeCookieDecoderImpl();
         try {
             return rememberMeCookieDecoder.decodeCookie(cookieValue);
         } catch (InvalidCookieException e) {
