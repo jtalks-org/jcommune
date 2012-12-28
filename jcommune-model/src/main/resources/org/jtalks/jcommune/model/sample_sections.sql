@@ -269,3 +269,5 @@ INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, aud
                 VALUES (3,22,@registered_group_sid_id,@LEAVE_COMMENTS_IN_CODE_REVIEW_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (4,22,@registered_group_sid_id,@LEAVE_COMMENTS_IN_CODE_REVIEW_MASK,1,0,0);
+                
+/* Delete permissions for registered users */                

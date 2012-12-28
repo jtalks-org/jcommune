@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.jcommune.model.dao.CodeReviewCommentDao;
+import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.Mock;
@@ -26,14 +26,20 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
 
+/**
+ * 
+ * @author Vyacheslav Mishcheryakov
+ */
 public class TransactionalCodeReviewCommentServiceTest {
+
+    private static final String COMMENT_BODY = "body";
 
     private static final long BRANCH_ID = 1L;
 
     private static final long CR_ID = 1L;
     
     @Mock
-    private CodeReviewCommentDao dao;
+    private ChildRepository<CodeReviewComment> dao;
     
     private TransactionalCodeReviewCommentService codeReviewCommentService;
     
@@ -56,9 +62,9 @@ public class TransactionalCodeReviewCommentServiceTest {
     
     @Test
     public void testUpdateCommentSuccess() throws AccessDeniedException, NotFoundException {
-        CodeReviewComment comment = codeReviewCommentService.updateComment(CR_ID, "body", BRANCH_ID);
+        CodeReviewComment comment = codeReviewCommentService.updateComment(CR_ID, COMMENT_BODY, BRANCH_ID);
         
-        assertEquals(comment.getBody(), "body");
+        assertEquals(comment.getBody(), COMMENT_BODY);
     }
     
     @Test(expectedExceptions=NotFoundException.class)

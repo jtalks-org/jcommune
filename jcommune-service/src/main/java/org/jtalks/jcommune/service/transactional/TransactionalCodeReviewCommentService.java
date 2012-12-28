@@ -14,29 +14,26 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.jcommune.model.dao.CodeReviewCommentDao;
+import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
 import org.jtalks.jcommune.service.CodeReviewCommentService;
-import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
- * The implementation of (@link {@link CodeReviewService}
+ * The implementation of {@link CodeReviewCommentService}
  * 
  * @author Vyacheslav Mishcheryakov
  */
-public class TransactionalCodeReviewCommentService extends AbstractTransactionalEntityService<CodeReviewComment, CodeReviewCommentDao> 
+public class TransactionalCodeReviewCommentService extends AbstractTransactionalEntityService<CodeReviewComment, ChildRepository<CodeReviewComment>> 
         implements CodeReviewCommentService {
 
     /**
      * Create an instance of CodeReview entity based service
      * @param dao               data access object, which should be able do all CRUD operations with entity. 
-     * @param userService       to get current user
-     * @param permissionService to check permission for current user ({@link org.springframework.security.access.prepost.PreAuthorize} annotation emulation)
      */
     public TransactionalCodeReviewCommentService(
-                                    CodeReviewCommentDao dao) {
+                        ChildRepository<CodeReviewComment> dao) {
         super(dao);
     }
  

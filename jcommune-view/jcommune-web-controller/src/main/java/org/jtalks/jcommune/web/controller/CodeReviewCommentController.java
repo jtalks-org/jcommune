@@ -147,17 +147,24 @@ public class CodeReviewCommentController {
         }
         CodeReviewComment editedComment = codeReviewCommentService.updateComment(
                 commentDto.getId(), commentDto.getBody(), branchId);
-        CodeReviewCommentDto addedCommentDto = new CodeReviewCommentDto(editedComment);
-        return new JsonResponse(JsonResponseStatus.Success, addedCommentDto);
+        CodeReviewCommentDto editedCommentDto = new CodeReviewCommentDto(editedComment);
+        return new JsonResponse(JsonResponseStatus.Success, editedCommentDto);
     }
     
-    
+    /**
+     * Returns fail response  when security exception is through
+     * @return fail response with status 'Fail' and reason 'security'
+     */
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseBody
     public FailJsonResponse securityError() {
         return new FailJsonResponse(SECURITY_REASON);
     }
     
+    /**
+     * Returns fail response  when entity with given ID was not found
+     * @return fail response with status 'Fail' and reason 'entity-not-found'
+     */
     @ExceptionHandler(NotFoundException.class)
     @ResponseBody
     public FailJsonResponse entityNotFoundError() {
