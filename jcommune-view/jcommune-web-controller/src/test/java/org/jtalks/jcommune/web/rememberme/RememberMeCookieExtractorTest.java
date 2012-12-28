@@ -21,7 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.mockito.Mock;
 import static org.mockito.Mockito.when;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.testng.Assert;
+import org.springframework.security.web.authentication.rememberme.InvalidCookieException;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -50,11 +51,11 @@ public class RememberMeCookieExtractorTest {
         
         String actualCookieValue = cookieExtractor.exctractRememberMeCookieValue(servletRequest);
         
-        Assert.assertEquals(actualCookieValue, expectedCookieValue);
+        assertEquals(actualCookieValue, expectedCookieValue);
     }
     
     @Test
-    public void extractSeriesAndTokenShoultReturnItFromCookieValue() {
+    public void extractShoultReturnItFromCookieValue() {
         String cookieValue = "cookie value";
         String[] expectedSeriesAndToken = new String[] {"series", "token"};
         when(rememberMeCookieDecoder.decodeCookie(cookieValue))
@@ -62,6 +63,18 @@ public class RememberMeCookieExtractorTest {
         
         String[] actualSeriesAndToken = cookieExtractor.extractSeriesAndToken(cookieValue);
         
-        Assert.assertEquals(actualSeriesAndToken, expectedSeriesAndToken);
+        assertEquals(actualSeriesAndToken, expectedSeriesAndToken);
+    }
+    
+    @Test
+    public void extractWhenCookieInvalidShouldNotReturnSeriesAndToken() {
+        String cookieValue = "cookie value";
+        when(rememberMeCookieDecoder.decodeCookie(cookieValue))
+            .thenThrow(new InvalidCookieException("message"));
+        
+        String[] actualSeriesAndToken = cookieExtractor.extractSeriesAndToken(cookieValue);
+        
+        int emptyResult = 0;
+        assertEquals(actualSeriesAndToken.length, emptyResult);
     }
 }
