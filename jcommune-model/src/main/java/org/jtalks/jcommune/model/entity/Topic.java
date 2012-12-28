@@ -202,7 +202,6 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      */
     public void removePost(Post postToRemove) {
         posts.remove(postToRemove);
-        updateModificationDate();
     }
 
     /**

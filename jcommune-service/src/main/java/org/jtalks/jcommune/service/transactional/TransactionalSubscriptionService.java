@@ -15,9 +15,12 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.jcommune.model.dao.BranchDao;
+import org.jtalks.jcommune.model.dao.CodeReviewDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.SubscriptionAwareEntity;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.UserService;
@@ -38,16 +41,22 @@ public class TransactionalSubscriptionService implements SubscriptionService {
     private UserService userService;
     private BranchDao branchDao;
     private TopicDao topicDao;
+    private CodeReviewDao codeReviewDao;
 
     /**
      * @param userService to determine the current user requested the operation
      * @param branchDao       for branch subscription updates
      * @param topicDao        for topic subscription updates
+     * @param codeReviewDao for code review subscription updates
      */
-    public TransactionalSubscriptionService(UserService userService, BranchDao branchDao, TopicDao topicDao) {
+    public TransactionalSubscriptionService(UserService userService,
+                                            BranchDao branchDao,
+                                            TopicDao topicDao,
+                                            CodeReviewDao codeReviewDao) {
         this.userService = userService;
         this.branchDao = branchDao;
         this.topicDao = topicDao;
+        this.codeReviewDao = codeReviewDao;
     }
 
     /**
@@ -76,5 +85,22 @@ public class TransactionalSubscriptionService implements SubscriptionService {
             branch.getSubscribers().add(current);
         }
         branchDao.update(branch);
+    }
+
+    @Override
+    public void toggleSubscription(SubscriptionAwareEntity entityToSubscribe) {
+        JCUser current = userService.getCurrentUser();
+        if (entityToSubscribe.getSubscribers().contains(current)) {
+            entityToSubscribe.getSubscribers().remove(current);
+        } else {
+            entityToSubscribe.getSubscribers().add(current);
+        }
+        saveChanges(entityToSubscribe);
+    }
+
+    private void saveChanges(SubscriptionAwareEntity entityToSubscribe) {
+        if (entityToSubscribe instanceof CodeReview) {
+            codeReviewDao.update((CodeReview) entityToSubscribe);
+        }
     }
 }

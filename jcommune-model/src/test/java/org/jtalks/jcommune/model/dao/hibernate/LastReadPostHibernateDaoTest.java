@@ -87,13 +87,11 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
     public void testMarkAsReadTopicsToUser() {
         List<Topic> topics = PersistedObjectsFactory.createAndSaveTopicListWithPosts(10);
         JCUser user = PersistedObjectsFactory.getDefaultUser();
-        //records of posts in topics
-        Map<Long, Integer> listCountPostsToTopics = new HashMap<Long, Integer>();
-        //records in database about read topic
-        Map<Long, Integer> actualCountPostsToTopics = new HashMap<Long, Integer>();
 
-        listCountPostsToTopics = markAllTopicsASRead(topics, user);
-        actualCountPostsToTopics = getActualListCountPostsToTopics(topics, user);
+        //records of posts in topics
+        Map<Long, Integer> listCountPostsToTopics = markAllTopicsASRead(topics, user);
+        //records in database about read topic
+        Map<Long, Integer> actualCountPostsToTopics = getActualListCountPostsToTopics(topics, user);
 
         Assert.assertEquals(actualCountPostsToTopics, listCountPostsToTopics);
     }

@@ -24,6 +24,7 @@ import org.jtalks.jcommune.service.CodeReviewCommentService;
 import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.service.security.AclClassName;
 import org.jtalks.jcommune.service.security.PermissionService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,6 +40,7 @@ public class TransactionalCodeReviewService extends AbstractTransactionalEntityS
     private UserService userService;
     private PermissionService permissionService;
     private CodeReviewCommentService reviewCommentService;
+    private NotificationService notificationService;
 
     /**
      * Create an instance of CodeReview entity based service
@@ -47,16 +49,19 @@ public class TransactionalCodeReviewService extends AbstractTransactionalEntityS
      * @param userService          to get current user
      * @param permissionService    to check permission for current user ({@link org.springframework.security.access.prepost.PreAuthorize} annotation emulation)
      * @param reviewCommentService to get review comment
+     * @param notificationService   to send email updates for comment adding subscribers.
      */
     public TransactionalCodeReviewService(
             CodeReviewDao dao,
             UserService userService,
             PermissionService permissionService,
-            CodeReviewCommentService reviewCommentService) {
+            CodeReviewCommentService reviewCommentService,
+            NotificationService notificationService) {
         super(dao);
         this.userService = userService;
         this.permissionService = permissionService;
         this.reviewCommentService = reviewCommentService;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -78,6 +83,7 @@ public class TransactionalCodeReviewService extends AbstractTransactionalEntityS
 
         review.addComment(comment);
         getDao().update(review);
+        notificationService.subscribedEntityChanged(review);
 
         return comment;
     }

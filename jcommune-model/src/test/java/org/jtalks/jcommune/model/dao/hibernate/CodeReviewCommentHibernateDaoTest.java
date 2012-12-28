@@ -20,8 +20,8 @@ import static org.testng.Assert.assertNull;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
-import org.jtalks.jcommune.model.dao.CodeReviewCommentDao;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -39,7 +39,7 @@ public class CodeReviewCommentHibernateDaoTest extends AbstractTransactionalTest
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
-    private CodeReviewCommentDao dao;    
+    private ChildRepository<CodeReviewComment> codeReviewCommentDao;    
     private Session session;
 
     @BeforeMethod
@@ -55,7 +55,7 @@ public class CodeReviewCommentHibernateDaoTest extends AbstractTransactionalTest
         CodeReviewComment review = PersistedObjectsFactory.getDefaultCodeReviewComment();
         session.save(review);
 
-        CodeReviewComment result = dao.get(review.getId());
+        CodeReviewComment result = codeReviewCommentDao.get(review.getId());
 
         assertNotNull(result);
         assertEquals(result.getId(), review.getId());
@@ -67,7 +67,7 @@ public class CodeReviewCommentHibernateDaoTest extends AbstractTransactionalTest
 
     @Test
     public void testGetInvalidId() {
-        CodeReviewComment result = dao.get(-567890L);
+        CodeReviewComment result = codeReviewCommentDao.get(-567890L);
 
         assertNull(result);
     }
@@ -79,7 +79,7 @@ public class CodeReviewCommentHibernateDaoTest extends AbstractTransactionalTest
         session.save(review);
         review.setUuid(newUuid);
 
-        dao.update(review);
+        codeReviewCommentDao.update(review);
         session.evict(review);
         CodeReviewComment result = (CodeReviewComment) session.get(CodeReviewComment.class, review.getId());
 
@@ -92,7 +92,7 @@ public class CodeReviewCommentHibernateDaoTest extends AbstractTransactionalTest
         session.save(review);
         review.setUuid(null);
 
-        dao.update(review);
+        codeReviewCommentDao.update(review);
     }
     
 }

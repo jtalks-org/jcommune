@@ -37,7 +37,23 @@ public class CodeReviewComment extends Entity {
     private DateTime creationDate;
     
     private String body;
-    
+
+    private CodeReview codeReview;
+
+    /**
+     * @return {@link CodeReview} that this comment belong to.
+     */
+    public CodeReview getCodeReview() {
+        return codeReview;
+    }
+
+    /**
+     * @param codeReview the code review.
+     */
+    public void setCodeReview(CodeReview codeReview) {
+        this.codeReview = codeReview;
+    }
+
     /**
      * @return the lineNumber
      */

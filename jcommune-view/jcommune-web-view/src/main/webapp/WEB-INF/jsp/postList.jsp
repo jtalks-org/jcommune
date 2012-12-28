@@ -109,6 +109,7 @@
 
 <%-- Setup indicators --%>
 <c:if test="${topic.codeReview != null}">
+    <%-- Below  hidden properties are used in CR script --%>
     <input type="hidden" id="has-code-review" value="true"/>
     <input type="hidden" id="codeReviewId" value="${topic.codeReview.id}"/>
     <input type="hidden" id="branchId" value="${topic.branch.id}"/>

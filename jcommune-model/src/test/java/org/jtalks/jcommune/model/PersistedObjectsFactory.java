@@ -221,6 +221,7 @@ public final class PersistedObjectsFactory {
         comment1.setBody("Comment1 body");
         comment1.setLineNumber(1);
         comment1.setCreationDate(new DateTime(1));
+        comment1.setCodeReview(review);
         comments.add(comment1);
 
         CodeReviewComment comment2 = new CodeReviewComment();
@@ -228,6 +229,7 @@ public final class PersistedObjectsFactory {
         comment2.setBody("Comment2 body");
         comment2.setLineNumber(2);
         comment2.setCreationDate(new DateTime(2));
+        comment2.setCodeReview(review);
         comments.add(comment2);
 
         review.setComments(comments);
@@ -247,6 +249,7 @@ public final class PersistedObjectsFactory {
         comment.setBody("body");
         comment.setLineNumber(1);
         comment.setCreationDate(new DateTime(1));
+        comment.setCodeReview(getDefaultCodeReview());
 
         persist(comment);
         return comment;

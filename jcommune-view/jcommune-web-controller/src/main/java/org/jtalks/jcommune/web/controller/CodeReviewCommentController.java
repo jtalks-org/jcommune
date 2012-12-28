@@ -14,14 +14,13 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import javax.validation.Valid;
-
 import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.CodeReviewCommentService;
 import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.web.dto.CodeReviewCommentDto;
 import org.jtalks.jcommune.web.dto.json.FailJsonResponse;
 import org.jtalks.jcommune.web.dto.json.FailValidationJsonResponse;
@@ -41,6 +40,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.validation.Valid;
+
 /**
  * Serves code review comment management web requests
  *
@@ -59,16 +60,20 @@ public class CodeReviewCommentController {
     
     private CodeReviewService codeReviewService;
     private CodeReviewCommentService codeReviewCommentService;
+    private NotificationService notificationService;
     
     /**
      * @param codeReviewService        to operate with {@link CodeReview} entities
      * @param codeReviewCommentService to operate with (@link {@link CodeReviewComment} entities
+     * @param notificationService   to send email updates for comment changing subscribers.
      */
     @Autowired
     public CodeReviewCommentController(CodeReviewService codeReviewService,
-                                CodeReviewCommentService codeReviewCommentService) {
+                                CodeReviewCommentService codeReviewCommentService,
+                                NotificationService notificationService) {
         this.codeReviewService = codeReviewService;
         this.codeReviewCommentService = codeReviewCommentService;
+        this.notificationService = notificationService;
     }
     
     /**
@@ -147,17 +152,25 @@ public class CodeReviewCommentController {
         }
         CodeReviewComment editedComment = codeReviewCommentService.updateComment(
                 commentDto.getId(), commentDto.getBody(), branchId);
-        CodeReviewCommentDto addedCommentDto = new CodeReviewCommentDto(editedComment);
-        return new JsonResponse(JsonResponseStatus.Success, addedCommentDto);
+        notificationService.subscribedEntityChanged(editedComment.getCodeReview());
+        CodeReviewCommentDto editedCommentDto = new CodeReviewCommentDto(editedComment);
+        return new JsonResponse(JsonResponseStatus.Success, editedCommentDto);
     }
     
-    
+    /**
+     * Returns fail response  when security exception is through
+     * @return fail response with status 'Fail' and reason 'security'
+     */
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseBody
     public FailJsonResponse securityError() {
         return new FailJsonResponse(SECURITY_REASON);
     }
     
+    /**
+     * Returns fail response  when entity with given ID was not found
+     * @return fail response with status 'Fail' and reason 'entity-not-found'
+     */
     @ExceptionHandler(NotFoundException.class)
     @ResponseBody
     public FailJsonResponse entityNotFoundError() {

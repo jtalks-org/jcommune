@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
-import org.jtalks.jcommune.model.dao.CodeReviewCommentDao;
 import org.jtalks.jcommune.model.dao.CodeReviewDao;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
 
@@ -25,7 +24,6 @@ import org.jtalks.jcommune.model.entity.CodeReviewComment;
  * @author Vyacheslav Mishcheryakov
  *
  */
-public class CodeReviewCommentHibernateDao extends AbstractHibernateChildRepository<CodeReviewComment> 
-        implements CodeReviewCommentDao {
+public class CodeReviewCommentHibernateDao extends AbstractHibernateChildRepository<CodeReviewComment> {
 
 }

@@ -111,13 +111,13 @@
                 <thead>
                 <tr>
                     <sec:authorize access="isAuthenticated()">
-                        <th class="status-col-topics"></th>
+                        <th class="status-col-small"></th>
                     </sec:authorize>
                     <th><spring:message code="label.branch.header.topics"/></th>
                     <th class="author-col shrink-to-fit"><spring:message code="label.branch.header.author"/></th>
-                    <th class="posts-views-topics forum-posts-view-header shrink-to-fit"><spring:message
+                    <th class="posts-views-small forum-posts-view-header shrink-to-fit"><spring:message
                             code="label.branch.header.posts"/></th>
-                    <th class="posts-views-topics forum-posts-view-header shrink-to-fit"><spring:message
+                    <th class="posts-views-small forum-posts-view-header shrink-to-fit"><spring:message
                             code="label.branch.header.views"/></th>
                     <th class="latest-by forum-latest-by-header shrink-to-fit"><spring:message
                             code="label.branch.header.lastMessage"/></th>
@@ -128,11 +128,11 @@
                     <%-- Topic row --%>
                     <tr>
                         <sec:authorize access="isAuthenticated()">
-                            <td class="status-col-topics">
-                                <jtalks:topicIconForTopics topic="${topic}"/>
+                            <td class="status-col-small">
+                                <jtalks:topicIconSmall topic="${topic}"/>
                             </td>
                         </sec:authorize>
-                        <td>
+                        <td class="posts-td-small">
                                 <%--Some topic types should have a special prefix when displayed--%>
                             <c:if test="${topic.announcement=='true'}">
                                 <span class="sticky"><spring:message code="label.marked_as_announcement"/> </span>
@@ -143,7 +143,7 @@
                             <c:if test="${topic.hasPoll}">
                                 <span class="sticky"><spring:message code="label.marked_as_poll"/></span>
                             </c:if>
-                            <a class="posts-link-topics" href="${pageContext.request.contextPath}/topics/${topic.id}">
+                            <a href="${pageContext.request.contextPath}/topics/${topic.id}">
                                 <c:out value="${topic.title}"/>
                             </a>
                             <br/>
@@ -158,10 +158,10 @@
                                 <c:out value="${topic.topicStarter.username}"/>
                             </a>
                         </td>
-                        <td class="posts-views-topics shrink-to-fit">
+                        <td class="posts-views-small shrink-to-fit">
                             <span class='test-posts-count'><c:out value="${topic.postCount}"/></span>
                         </td>
-                        <td class="posts-views-topics shrink-to-fit">
+                        <td class="posts-views-small shrink-to-fit">
                             <span class='test-views'><c:out value="${topic.views}"/></span>
                         </td>
                         <td class="latest-by shrink-to-fit">

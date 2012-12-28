@@ -192,9 +192,7 @@
                 </prop>
                 <prop key="hibernate.cache.use_second_level_cache">${hibernate.use_second_level_cache}</prop>
                 <prop key="hibernate.cache.use_query_cache">${hibernate.use_query_cache}</prop>
-                <prop key="net.sf.ehcache.configurationResourceName">
-                    /org/jtalks/jcommune/model/entity/ehcache.xml
-                </prop>
+                <prop key="net.sf.ehcache.configurationResourceName">${EH_CACHE_CONFIG}</prop>
                 <prop key="hibernate.search.default.directory_provider">
                     ${hibernate.search.default.directory_provider}
                 </prop>
@@ -213,6 +211,10 @@
     <property name="statisticsEnabled" value="true"/>
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
+  <bean class="org.jtalks.jcommune.model.utils.ConfigurationLogger">
+    <property name="ehCacheConfigLocation" value="${EH_CACHE_CONFIG}"/>
+  </bean>
+
 
   <!-- Migrations, todo: 4 beans - that's weird, Ticket has been left for common to move init to one method -->
 

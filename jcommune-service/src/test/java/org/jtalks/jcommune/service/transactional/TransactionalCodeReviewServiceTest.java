@@ -25,6 +25,7 @@ import org.jtalks.jcommune.service.CodeReviewCommentService;
 import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.service.security.AclClassName;
 import org.jtalks.jcommune.service.security.PermissionService;
 import org.mockito.Mock;
@@ -33,11 +34,14 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
-import java.util.List;
 
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 public class TransactionalCodeReviewServiceTest {
 
@@ -52,6 +56,8 @@ public class TransactionalCodeReviewServiceTest {
     private PermissionService permissionService;
     @Mock
     CodeReviewCommentService reviewCommentService;
+    @Mock
+    NotificationService notificationService;
 
     private CodeReviewService codeReviewService;
 
@@ -64,7 +70,7 @@ public class TransactionalCodeReviewServiceTest {
         initMocks(this);
 
         codeReviewService = new TransactionalCodeReviewService(dao, userService, permissionService,
-                reviewCommentService);
+                reviewCommentService, notificationService);
     }
 
     @BeforeMethod

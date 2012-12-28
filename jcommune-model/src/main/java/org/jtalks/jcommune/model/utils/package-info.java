@@ -12,16 +12,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao;
-
-import org.jtalks.common.model.dao.ChildRepository;
-import org.jtalks.jcommune.model.entity.CodeReviewComment;
-
 /**
- * DAO for {@link CodeReviewComment} entity
- * 
- * @author Vyacheslav Mishcheryakov
+ * Includes utilities that do not relate to domain model itself, but just helper classes.
  */
-public interface CodeReviewCommentDao extends ChildRepository<CodeReviewComment> {
-
-}
+package org.jtalks.jcommune.model.utils;

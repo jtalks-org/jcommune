@@ -14,10 +14,11 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import org.jtalks.common.model.entity.Entity;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.jtalks.common.model.entity.Entity;
+import java.util.Set;
 
 /**
  * Represents the code review for the topic. Contains the list of {@link CodeReviewComment}
@@ -25,13 +26,36 @@ import org.jtalks.common.model.entity.Entity;
  *
  * @author Vyacheslav Mishcheryakov
  */
-public class CodeReview extends Entity {
+public class CodeReview extends Entity implements SubscriptionAwareEntity {
 
     private Topic topic;
-    
     private List<CodeReviewComment> comments = new ArrayList<CodeReviewComment>();
 
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    public Set<JCUser> getSubscribers() {
+        return topic.getSubscribers();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSubscribers(Set<JCUser> subscribers) {
+        topic.setSubscribers(subscribers);
+    }
+
+    /**
+     * Check if user subscribed to {@link CodeReview}.
+     *
+     * @param user {@link JCUser} to check.
+     * @return {@code true} if user subscribed to {@link CodeReview} otherwise {@code false}.
+     */
+    public boolean isUserSubscribed(JCUser user) {
+        return topic.userSubscribed(user);
+    }
+
     /**
      * @return the topic
      */

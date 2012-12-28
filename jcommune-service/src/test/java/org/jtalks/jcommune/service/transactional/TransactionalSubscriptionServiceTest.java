@@ -15,8 +15,10 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.jcommune.model.dao.BranchDao;
+import org.jtalks.jcommune.model.dao.CodeReviewDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.UserService;
@@ -41,19 +43,25 @@ public class TransactionalSubscriptionServiceTest {
     private BranchDao branchDao;
     @Mock
     private TopicDao topicDao;
+    @Mock
+    private CodeReviewDao codeReviewDao;
 
     private TransactionalSubscriptionService service;
 
     JCUser user = new JCUser("username", "email", "password");
     Branch branch;
     Topic topic;
+    CodeReview codeReview;
 
     @BeforeMethod
     public void setUp() {
         initMocks(this);
-        service = new TransactionalSubscriptionService(userService, branchDao, topicDao);
+        service = new TransactionalSubscriptionService(userService, branchDao, topicDao, codeReviewDao);
         branch = new Branch("name", "description");
         topic = new Topic(user, "title");
+        codeReview = new CodeReview();
+        topic.setCodeReview(codeReview);
+        codeReview.setTopic(topic);
         when(userService.getCurrentUser()).thenReturn(user);
     }
 
@@ -89,5 +97,20 @@ public class TransactionalSubscriptionServiceTest {
         service.toggleBranchSubscription(branch);
 
         assertFalse(branch.getSubscribers().contains(user));
+    }
+
+    @Test
+    public void testToggleSubscriptionCodeReviewSubscribeCase() {
+        service.toggleSubscription(codeReview);
+        assertTrue(codeReview.getSubscribers().contains(user));
+        verify(codeReviewDao).update(codeReview);
+    }
+
+    @Test
+    public void testToggleSubscriptionCodeReviewUnsubscribeCase() {
+        codeReview.getSubscribers().add(user);
+        service.toggleSubscription(codeReview);
+        assertFalse(codeReview.getSubscribers().contains(user));
+        verify(codeReviewDao).update(codeReview);
     }
 }

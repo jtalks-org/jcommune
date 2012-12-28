@@ -35,17 +35,17 @@
             <dependency>
                 <groupId>org.jtalks.common</groupId>
                 <artifactId>jtalks-common-model</artifactId>
-                <version>0.41</version>
+                <version>${commonVersion}</version>
             </dependency>
             <dependency>
                 <groupId>org.jtalks.common</groupId>
                 <artifactId>jtalks-common-service</artifactId>
-                <version>0.21</version>
+                <version>${commonVersion}</version>
             </dependency>
             <dependency>
                 <groupId>org.jtalks.common</groupId>
                 <artifactId>jtalks-common-security</artifactId>
-                <version>0.24</version>
+                <version>${commonVersion}</version>
             </dependency>
             <!-- Hibernate -->
             <dependency>
@@ -571,5 +571,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <headerBaseDir>${basedir}</headerBaseDir>
         <pathtoHeader>${headerBaseDir}/header.txt</pathtoHeader>
+        <commonVersion>0.41</commonVersion>
     </properties>
 </project>
