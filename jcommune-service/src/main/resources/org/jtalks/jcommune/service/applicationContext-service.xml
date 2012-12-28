@@ -191,6 +191,7 @@
         <constructor-arg ref="userService"/>
         <constructor-arg ref="topicBranchDao"/>
         <constructor-arg ref="topicDao"/>
+        <constructor-arg ref="codeReviewDao"/>
     </bean>
 
     <bean id="securityService"

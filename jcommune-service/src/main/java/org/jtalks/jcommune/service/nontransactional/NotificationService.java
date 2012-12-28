@@ -17,6 +17,7 @@ package org.jtalks.jcommune.service.nontransactional;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.JCommuneProperty;
+import org.jtalks.jcommune.model.entity.SubscriptionAwareEntity;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.UserService;
 
@@ -61,6 +62,7 @@ public class NotificationService {
      *
      * @param topic topic changed
      */
+    //todo may be is needed to replace it to subscribedEntityChanged(SubscriptionAwareEntity entity)
     public void topicChanged(Topic topic) {
         if (notificationsEnabledProperty.booleanValue()) {
             JCUser current = userService.getCurrentUser();
@@ -79,12 +81,31 @@ public class NotificationService {
      *
      * @param branch branch changed
      */
+    //todo may be is needed to replace it to subscribedEntityChanged(SubscriptionAwareEntity entity)
     public void branchChanged(Branch branch) {
         if (notificationsEnabledProperty.booleanValue()) {
             JCUser current = userService.getCurrentUser();
             for (JCUser user : branch.getSubscribers()) {
                 if (!user.equals(current)){ 
                     mailService.sendBranchUpdatesOnSubscription(user, branch);
+                }
+            }
+        }
+    }
+
+    /**
+     * Notifies subscribers about subscribed entity updates by email.
+     * If mailing failed this implementation simply continues
+     * with other subscribers.
+     *
+     * @param entity changed subscribed entity.
+     */
+    public void subscribedEntityChanged(SubscriptionAwareEntity entity) {
+        if (notificationsEnabledProperty.booleanValue()) {
+            JCUser current = userService.getCurrentUser();
+            for (JCUser user : entity.getSubscribers()) {
+                if (!user.equals(current)) {
+                    mailService.sendUpdatesOnSubscription(user, entity);
                 }
             }
         }
