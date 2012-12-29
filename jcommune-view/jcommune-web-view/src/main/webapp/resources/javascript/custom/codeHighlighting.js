@@ -26,6 +26,10 @@ CodeHighlighting.currentUserId = 0;
 CodeHighlighting.canEditOwnPosts = false;
 /** Indicates if current user has EDIT_OTHERS_POSTS permission */
 CodeHighlighting.canEditOtherPosts = false;
+/** Indicates if current user has DELETE_OWN_POSTS permission */
+CodeHighlighting.canDeleteOwnPosts = false;
+/** Indicates if current user has DELETE_OTHERS_POSTS permission */
+CodeHighlighting.canDeleteOtherPosts = false;
 
 /**
  * Called when document rendering is completed. Highlight code and
@@ -97,6 +101,10 @@ CodeHighlighting.initializeVariables = function() {
 	                'BranchPermission.EDIT_OWN_POSTS');
 	CodeHighlighting.canEditOtherPosts = PermissionService.getHasPermission(CodeHighlighting.branchId, 'BRANCH',
 	                'BranchPermission.EDIT_OTHERS_POSTS');
+    CodeHighlighting.canDeleteOwnPosts = PermissionService.getHasPermission(CodeHighlighting.branchId, 'BRANCH',
+        'BranchPermission.DELETE_OWN_POSTS');
+    CodeHighlighting.canDeleteOtherPosts = PermissionService.getHasPermission(CodeHighlighting.branchId, 'BRANCH',
+        'BranchPermission.DELETE_OTHERS_POSTS');
 }
 
 CodeHighlighting.setupGeneralHandlers = function() {
@@ -191,7 +199,27 @@ CodeHighlighting.setupEditCommentHandlers = function() {
 		
 		return false;
 	});
-	
+
+    var deleteComment = function (elementForDeleting, reviewId, commentId) {
+        $.ajax({
+            url:baseUrl + '/reviewcomments/delete?reviewId=' + reviewId + '&commentId=' + commentId,
+            type:"GET",
+            success:function (data) {
+                $(elementForDeleting).remove();
+            },
+            error:function () {
+                bootbox.alert($labelUnexpectedError);
+            }
+        });
+    };
+
+    $('div.review-container').each(function () {
+        var commentId = this.find('input[name=id]').val();
+        var reviewId = $('input[id="codeReviewId"]').val();
+        this.on('click', 'a[name="delete-review"]', deleteComment(this, reviewId, commentId));
+        return false;
+    });
+
 	$('.script-first-post').on('click', "input:button[name=edit]", function (event) {
         event.stopPropagation();
 
@@ -238,11 +266,17 @@ CodeHighlighting.setupEditCommentHandlers = function() {
  */
 CodeHighlighting.getCommentHtml = function (comment) {
 	var editButtonHtml = '';
+    var deleteButtonHtml = '';
 	if (CodeHighlighting.canEditOtherPosts 
 			|| (CodeHighlighting.currentUserId == comment.authorId 
 					&& CodeHighlighting.canEditOwnPosts)) {
-		editButtonHtml = '<a href="" name=edit-review>' + $labelEdit + '</a>';
+		editButtonHtml = '<a href="" name="edit-review">' + $labelEdit + '</a>';
 	}
+    if (CodeHighlighting.canDeleteOtherPosts
+        || (CodeHighlighting.currentUserId == comment.authorId
+        && CodeHighlighting.canDeleteOwnPosts)) {
+        deleteButtonHtml = '<a href="" name="delete-review">' + $labelDelete + '</a>';
+    }
     var result =
             '<div class="review-container"> '
 				+ '<input type=hidden name=id value="' + comment.id + '"/>'
@@ -253,6 +287,8 @@ CodeHighlighting.getCommentHtml = function (comment) {
                 + '<div class="review-content">'
 				    + '<div class="review-buttons" style="float:right">'
 				    	+ editButtonHtml
+                        +'&nbsp;'
+                        + deleteButtonHtml
 				    + '</div>'
                     + '<div class="review-header">'
 						+ '<a href="' + baseUrl + '/users/' + comment.authorId + '">' + CodeHighlighting.htmlEncode(comment.authorUsername) + '</a>'
