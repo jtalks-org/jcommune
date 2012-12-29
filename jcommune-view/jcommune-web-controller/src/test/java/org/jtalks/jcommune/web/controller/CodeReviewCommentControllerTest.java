@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.CodeReviewCommentService;
@@ -63,6 +64,7 @@ public class CodeReviewCommentControllerTest {
     private String USERNAME = "username";
 
     private Branch branch;
+    private CodeReview codeReview = new CodeReview();
 
     @Mock
     private CodeReviewService codeReviewService;
@@ -158,7 +160,7 @@ public class CodeReviewCommentControllerTest {
         when(bindingResult.hasErrors()).thenReturn(false);
         when(codeReviewCommentService.updateComment(anyLong(), anyString(), anyLong()))
             .thenReturn(createComment());
-        
+
         JsonResponse response = controller.editComment(
                 new CodeReviewCommentDto(), bindingResult, BRANCH_ID);
         
@@ -170,6 +172,7 @@ public class CodeReviewCommentControllerTest {
         assertEquals(dto.getLineNumber(), COMMENT_LINE_NUMBER);
         assertEquals(dto.getAuthorId(), USER_ID);
         assertEquals(dto.getAuthorUsername(), USERNAME);
+        verify(notificationService).subscribedEntityChanged(codeReview);
     }
     
     @Test
@@ -236,6 +239,7 @@ public class CodeReviewCommentControllerTest {
         comment.setId(COMMENT_ID);
         comment.setBody(COMMENT_BODY);
         comment.setLineNumber(COMMENT_LINE_NUMBER);
+        comment.setCodeReview(codeReview);
         
         JCUser user = new JCUser(USERNAME, null, null);
         user.setId(USER_ID);
