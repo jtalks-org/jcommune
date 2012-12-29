@@ -49,7 +49,7 @@ import java.util.Map;
  */
 public class MailService {
 
-    public static final String POSTS = "/posts/";
+    public static final String TOPICS = "/topics/";
     public static final String TOPIC = "Topic";
     public static final String TOPIC_CR = "Topic (code review)";
     private JavaMailSender mailSender;
@@ -147,7 +147,7 @@ public class MailService {
     public void sendUpdatesOnSubscription(JCUser recipient, SubscriptionAwareEntity entity) {
         String entityDisplayValue = prepareEntityDisplayValue(entity);
         try {
-            String urlSuffix = prepareUrlSuffix(entity);
+            String urlSuffix = prepareSuffix(entity);
             String url = this.getDeploymentRootUrl() + urlSuffix;
             Locale locale = recipient.getLanguage().getLocale();
             Map<String, Object> model = new HashMap<String, Object>();
@@ -168,7 +168,7 @@ public class MailService {
     private String prepareEntityDisplayValue(SubscriptionAwareEntity entity) {
         String result = "";
         if (entity instanceof CodeReview) {
-            result = POSTS;
+            result = TOPIC_CR;
         }
         return result;    }
 
@@ -180,10 +180,10 @@ public class MailService {
      * @param entity entity to prepare URL suffix.
      * @return URL suffix.
      */
-    private String prepareUrlSuffix(SubscriptionAwareEntity entity) {
+    private String prepareSuffix(SubscriptionAwareEntity entity) {
         String result = "";
         if (entity instanceof CodeReview) {
-            result = TOPIC_CR;
+            result = TOPICS + ((CodeReview) entity).getTopic().getId();
         }
         return result;
     }

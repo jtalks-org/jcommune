@@ -19,13 +19,16 @@ import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.*;
+import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.CodeReviewService;
+import org.jtalks.jcommune.service.LastReadPostService;
+import org.jtalks.jcommune.service.TopicModificationService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.CodeReviewDto;
+import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
-import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.mockito.Mock;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -37,7 +40,8 @@ import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -45,7 +49,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
 import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 /**
  * @author Vyacheslav Mishcheryakov
@@ -125,14 +129,14 @@ public class CodeReviewControllerTest {
 
         //set expectations
         when(branchService.get(BRANCH_ID)).thenReturn(branch);
-        when(topicModificationService.createCodeReview(topic, TOPIC_CONTENT, false))
+        when(topicModificationService.createCodeReview(topic, TOPIC_CONTENT, true))
                 .thenReturn(topic);
 
         //invoke the object under test
         ModelAndView mav = controller.createCodeReview(dto, result, BRANCH_ID);
 
         //check expectations
-        verify(topicModificationService).createCodeReview(topic, TOPIC_CONTENT, false);
+        verify(topicModificationService).createCodeReview(topic, TOPIC_CONTENT, true);
 
         //check result
         assertViewName(mav, "redirect:/topics/1");
