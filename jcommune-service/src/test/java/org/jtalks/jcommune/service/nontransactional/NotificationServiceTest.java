@@ -18,6 +18,7 @@ package org.jtalks.jcommune.service.nontransactional;
 import org.jtalks.common.model.entity.Property;
 import org.jtalks.jcommune.model.dao.PropertyDao;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -29,15 +30,15 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static org.jtalks.jcommune.model.entity.JCommuneProperty.SENDING_NOTIFICATIONS_ENABLED;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.times;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 /**
  * @author Evgeniy Naumenko
@@ -63,6 +64,7 @@ public class NotificationServiceTest {
     
     private Topic topic;
     private Branch branch;
+    private CodeReview codeReview;
 
     @BeforeMethod
     public void setUp() {
@@ -76,9 +78,45 @@ public class NotificationServiceTest {
         topic = new Topic(user1, "title");
         branch = new Branch("name", "description");
         branch.addTopic(topic);
+        codeReview = new CodeReview();
+        topic.setCodeReview(codeReview);
+        codeReview.setTopic(topic);
         
         when(userService.getCurrentUser()).thenReturn(currentUser);
     }
+
+    @Test
+    public void testSubscribedEntityChangedCodeReviewCase() throws MailingFailedException {
+        prepareEnabledProperty();
+        topic.getSubscribers().add(user1);
+        topic.getSubscribers().add(user2);
+        topic.getSubscribers().add(currentUser);
+
+        service.subscribedEntityChanged(codeReview);
+
+        verify(mailService, times(2)).sendUpdatesOnSubscription(any(JCUser.class), eq(codeReview));
+        verify(mailService).sendUpdatesOnSubscription(user1, codeReview);
+        verify(mailService).sendUpdatesOnSubscription(user2, codeReview);
+        assertEquals(topic.getSubscribers().size(), 3);
+    }
+
+    @Test
+    public void testSubscribedEntityChangedCodeReviewCaseWithDisabledNotifications() {
+        prepareDisabledProperty();
+        topic.getSubscribers().add(user1);
+
+        service.subscribedEntityChanged(codeReview);
+
+        verify(mailService, Mockito.never()).sendUpdatesOnSubscription(user1, codeReview);
+    }
+
+    @Test
+    public void testSubscribedEntityChangedCodeReviewCaseNoSubscribers() {
+        prepareEnabledProperty();
+        service.subscribedEntityChanged(codeReview);
+        verifyZeroInteractions(mailService);
+    }
+
 
     @Test
     public void testTopicChanged() throws MailingFailedException {
