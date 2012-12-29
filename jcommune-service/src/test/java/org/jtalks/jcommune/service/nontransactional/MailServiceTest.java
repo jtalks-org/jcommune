@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service.nontransactional;
 
 import org.apache.velocity.app.VelocityEngine;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
@@ -68,6 +69,7 @@ public class MailServiceTest {
 
     private JCUser user = new JCUser(USERNAME, TO, PASSWORD);
     private Topic topic = new Topic(user, "title");
+    private CodeReview codeReview = new CodeReview();
     private Branch branch = new Branch("title", "description");
     private ArgumentCaptor<MimeMessage> captor;
 
@@ -85,6 +87,8 @@ public class MailServiceTest {
         MimeMessage message = new MimeMessage((Session) null);
         when(sender.createMimeMessage()).thenReturn(message);
         captor = ArgumentCaptor.forClass(MimeMessage.class);
+        topic.setCodeReview(codeReview);
+        codeReview.setTopic(topic);
     }
 
     @BeforeMethod
@@ -105,6 +109,15 @@ public class MailServiceTest {
         assertTrue(this.getMimeMailBody().contains(USERNAME));
         assertTrue(this.getMimeMailBody().toString().contains(PASSWORD));
         assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/login"));
+    }
+
+    @Test
+    public void testSendUpdatesOnSubscriptionCodeReviewCase() throws MailingFailedException, IOException, MessagingException {
+        long id = 777;
+        topic.setId(id);
+        service.sendUpdatesOnSubscription(user, codeReview);
+        this.checkMailCredentials();
+        assertTrue(this.getMimeMailBody().toString().contains("http://coolsite.com:1234/forum/topics/" + id));
     }
 
     @Test
