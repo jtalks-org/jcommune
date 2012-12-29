@@ -14,8 +14,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import javax.validation.Valid;
-
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -25,9 +23,9 @@ import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.TopicModificationService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.CodeReviewDto;
+import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
-import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -42,6 +40,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.validation.Valid;
 
 /**
  * Serves code review management web requests
@@ -144,7 +144,7 @@ public class CodeReviewController {
         Topic topic = topicDto.getTopic();
         topic.setBranch(branch);
         Topic createdTopic = topicModificationService.createCodeReview(
-                topic, topicDto.getBodyText(), false);
+                topic, topicDto.getBodyText(), true);
 
         lastReadPostService.markTopicAsRead(createdTopic);
         return new ModelAndView(REDIRECT_URL + createdTopic.getId());
