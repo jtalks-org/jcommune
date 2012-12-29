@@ -83,7 +83,7 @@ $(function () {
                 dataType:"html",
                 success:function (resp) {
                     resp = eval('(' + resp + ')'); // warning: not safe
-                    if (resp.status == "Success") {
+                    if (resp.status == "SUCCESS") {
                         // hide dialog and show success message
                         signupDialog.modal('hide');
                         bootbox.alert($labelRegistrationSuccess);

@@ -51,7 +51,7 @@ public class SecurityControllerTest {
         
         JsonResponse response = securityController.hasPermission(0, null, null);
         
-        assertEquals(response.getStatus(), JsonResponseStatus.Success);
+        assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
     }
     
     @Test
@@ -61,6 +61,6 @@ public class SecurityControllerTest {
         
         JsonResponse response = securityController.hasPermission(0, null, null);
         
-        assertEquals(response.getStatus(), JsonResponseStatus.Fail);
+        assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
     }
 }

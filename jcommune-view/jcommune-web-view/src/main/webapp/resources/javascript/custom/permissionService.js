@@ -27,7 +27,7 @@ PermissionService.hasPermission = function(targetId, targetType, permission, cal
 	$.get(baseUrl + '/security/haspermission',
 		{targetId:targetId, targetType:targetType, permission:permission})
 		.success(function(data) {
-			if (data.status == 'Success') {
+			if (data.status == 'SUCCESS') {
 				callback();
 			}
 		})
@@ -50,7 +50,7 @@ PermissionService.getHasPermission = function(targetId, targetType, permission) 
 		async: false,
 		data: {targetId:targetId, targetType:targetType, permission:permission},
 		success: function(data) {
-			result = (data.status == 'Success');
+			result = (data.status == 'SUCCESS');
 		},
 		error : function() {
 			bootbox.alert($labelUnexpectedError);
