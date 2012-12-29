@@ -23,7 +23,8 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.util.Properties;
 
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.Assert.assertEquals;
+
 
 /** @author stanislav bashkirtsev */
 public class JndiAwarePropertyPlaceholderConfigurerTest {
@@ -50,7 +51,7 @@ public class JndiAwarePropertyPlaceholderConfigurerTest {
     public void shouldNotLookInOtherPlacesIfFoundInJndi() throws Exception {
         //because we need to change System var which a baaad thing, we'll need to make sure that this variable is not
         //used by other tests and thus we name it this way.
-        String propName = "JndiAwarePropertyPlaceholderConfigurerTest-TestPlaceholder";
+        String propName = "JndiAwarePropertyPlaceholderConfigurerTest-TestPlaceholder1";
         Properties properties = new Properties();//properties
         properties.put(propName, "properties");//properties
         System.setProperty(propName, "system");//system
@@ -66,12 +67,11 @@ public class JndiAwarePropertyPlaceholderConfigurerTest {
      */
     @Test
     public void looksInUsualPropertiesIfNotFoundInJndi() throws Exception {
-        String propName = "JndiAwarePropertyPlaceholderConfigurerTest-TestPlaceholder";
+        String propName = "JndiAwarePropertyPlaceholderConfigurerTest-TestPlaceholder2";
         Properties properties = new Properties();//properties
         properties.put(propName, "properties");//properties
-        givenTomcatContextWithProps(propName, "jndi");//jndi
 
-        assertEquals(sut.resolvePlaceholder(propName, properties, 0), "jndi");
+        assertEquals(sut.resolvePlaceholder(propName, properties, 0), "properties");
     }
 
     private void givenTomcatContextWithProps(String placeholder, String value) throws NamingException {

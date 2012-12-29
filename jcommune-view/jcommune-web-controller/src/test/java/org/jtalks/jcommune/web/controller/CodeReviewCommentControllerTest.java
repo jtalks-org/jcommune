@@ -17,8 +17,10 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.service.*;
+import org.jtalks.jcommune.service.CodeReviewCommentService;
+import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.web.dto.CodeReviewCommentDto;
 import org.jtalks.jcommune.web.dto.json.FailJsonResponse;
 import org.jtalks.jcommune.web.dto.json.FailValidationJsonResponse;
@@ -33,12 +35,18 @@ import org.springframework.web.bind.WebDataBinder;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 
 /**
  * @author Vyacheslav Mishcheryakov
@@ -60,6 +68,8 @@ public class CodeReviewCommentControllerTest {
     private CodeReviewService codeReviewService;
     @Mock
     private CodeReviewCommentService codeReviewCommentService;
+    @Mock
+    private NotificationService notificationService;
     
 
     private CodeReviewCommentController controller;
@@ -69,7 +79,8 @@ public class CodeReviewCommentControllerTest {
         initMocks(this);
         controller = new CodeReviewCommentController(
                 codeReviewService,
-                codeReviewCommentService);
+                codeReviewCommentService,
+                notificationService);
     }
 
     @BeforeMethod

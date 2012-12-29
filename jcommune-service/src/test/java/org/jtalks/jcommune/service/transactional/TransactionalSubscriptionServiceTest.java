@@ -60,6 +60,8 @@ public class TransactionalSubscriptionServiceTest {
         branch = new Branch("name", "description");
         topic = new Topic(user, "title");
         codeReview = new CodeReview();
+        topic.setCodeReview(codeReview);
+        codeReview.setTopic(topic);
         when(userService.getCurrentUser()).thenReturn(user);
     }
 
@@ -98,14 +100,14 @@ public class TransactionalSubscriptionServiceTest {
     }
 
     @Test
-    public void testToggleSubsriptionCodeReviewSsubscribeCase() {
+    public void testToggleSubscriptionCodeReviewSubscribeCase() {
         service.toggleSubscription(codeReview);
         assertTrue(codeReview.getSubscribers().contains(user));
         verify(codeReviewDao).update(codeReview);
     }
 
     @Test
-    public void testToggleSubsriptionCodeReviewUnsubscribeCase() {
+    public void testToggleSubscriptionCodeReviewUnsubscribeCase() {
         codeReview.getSubscribers().add(user);
         service.toggleSubscription(codeReview);
         assertFalse(codeReview.getSubscribers().contains(user));

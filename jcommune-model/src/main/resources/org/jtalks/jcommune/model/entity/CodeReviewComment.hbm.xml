@@ -34,5 +34,9 @@
         <many-to-one name="author" column="AUTHOR_ID" class="org.jtalks.jcommune.model.entity.JCUser"
                      lazy="false"
                      not-null="true" foreign-key="FK_CRC_AUTHOR"/>
+
+        <many-to-one name="codeReview" column="CODE_REVIEW_ID" class="org.jtalks.jcommune.model.entity.CodeReview"
+                     lazy="false"
+                     not-null="true" foreign-key="FK_CRC_CODE_REVIEW"/>
     </class>
 </hibernate-mapping>

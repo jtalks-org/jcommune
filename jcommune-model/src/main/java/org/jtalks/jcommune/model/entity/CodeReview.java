@@ -17,7 +17,6 @@ package org.jtalks.jcommune.model.entity;
 import org.jtalks.common.model.entity.Entity;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -31,21 +30,20 @@ public class CodeReview extends Entity implements SubscriptionAwareEntity {
 
     private Topic topic;
     private List<CodeReviewComment> comments = new ArrayList<CodeReviewComment>();
-    private Set<JCUser> subscribers = new HashSet<JCUser>();
 
 
     /**
      * {@inheritDoc}
      */
     public Set<JCUser> getSubscribers() {
-        return subscribers;
+        return topic.getSubscribers();
     }
 
     /**
      * {@inheritDoc}
      */
     public void setSubscribers(Set<JCUser> subscribers) {
-        this.subscribers = subscribers;
+        topic.setSubscribers(subscribers);
     }
 
     /**
@@ -55,7 +53,7 @@ public class CodeReview extends Entity implements SubscriptionAwareEntity {
      * @return {@code true} if user subscribed to {@link CodeReview} otherwise {@code false}.
      */
     public boolean isUserSubscribed(JCUser user) {
-        return subscribers.contains(user);
+        return topic.userSubscribed(user);
     }
 
     /**
