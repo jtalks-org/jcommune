@@ -20,24 +20,23 @@ import org.testng.annotations.Test;
 
 public class FailJsonResponseTest {
     
-    private static final String FAILTURE_REASON = "reason";
     private static final String RESULT = "result";
     
     @Test
     public void testConstructorWithReason() {
-        FailJsonResponse response = new FailJsonResponse(FAILTURE_REASON);
+        FailJsonResponse response = new FailJsonResponse(JsonResponseReason.VALIDATION);
         
-        assertEquals(response.getStatus(), JsonResponseStatus.Fail);
-        assertEquals(response.getReason(), FAILTURE_REASON);
+        assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
+        assertEquals(response.getReason(), JsonResponseReason.VALIDATION);
         assertNull(response.getResult());
     }
     
     @Test
     public void testConstructorWithReasonAndResult() {
-        FailJsonResponse response = new FailJsonResponse(FAILTURE_REASON, RESULT);
+        FailJsonResponse response = new FailJsonResponse(JsonResponseReason.VALIDATION, RESULT);
         
-        assertEquals(response.getStatus(), JsonResponseStatus.Fail);
-        assertEquals(response.getReason(), FAILTURE_REASON);
+        assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
+        assertEquals(response.getReason(), JsonResponseReason.VALIDATION);
         assertEquals(response.getResult(), RESULT);
     }
 

@@ -153,12 +153,12 @@ public class UserController {
     public JsonResponse registerUserAjax(@Valid @ModelAttribute("newUser") RegisterUserDto userDto,
                                          BindingResult result, Locale locale) {
         if (result.hasErrors()) {
-            return new JsonResponse(JsonResponseStatus.Fail, result.getAllErrors());
+            return new JsonResponse(JsonResponseStatus.FAIL, result.getAllErrors());
         }
         JCUser user = userDto.createUser();
         user.setLanguage(Language.byLocale(locale));
         userService.registerUser(user);
-        return new JsonResponse(JsonResponseStatus.Success);
+        return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 
 
@@ -215,9 +215,9 @@ public class UserController {
         boolean rememberMeBoolean = rememberMe.equals(REMEMBER_ME_ON);
         boolean isAuthenticated = userService.loginUser(username, password, rememberMeBoolean, request, response);
         if (isAuthenticated) {
-            return new JsonResponse(JsonResponseStatus.Success);
+            return new JsonResponse(JsonResponseStatus.SUCCESS);
         } else {
-            return new JsonResponse(JsonResponseStatus.Fail);
+            return new JsonResponse(JsonResponseStatus.FAIL);
         }
     }
 }

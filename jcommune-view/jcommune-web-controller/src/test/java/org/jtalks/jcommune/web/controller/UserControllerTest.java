@@ -111,7 +111,7 @@ public class UserControllerTest {
 
         JsonResponse jsonResponse = userController.registerUserAjax(dto, bindingResult, new Locale("ru"));
         
-        assertEquals(jsonResponse.getStatus(), JsonResponseStatus.Success);
+        assertEquals(jsonResponse.getStatus(), JsonResponseStatus.SUCCESS);
         assertNull(jsonResponse.getResult());
         verify(userService).registerUser(any(JCUser.class));
     }
@@ -127,7 +127,7 @@ public class UserControllerTest {
         when(bindingResult.getAllErrors()).thenReturn(errors);
         JsonResponse jsonResponse = userController.registerUserAjax(dto, bindingResult, new Locale("ru"));
         
-        assertEquals(jsonResponse.getStatus(), JsonResponseStatus.Fail);
+        assertEquals(jsonResponse.getStatus(), JsonResponseStatus.FAIL);
         ObjectError objectError = ((List<ObjectError>) jsonResponse.getResult()).get(0);
 		assertEquals(objectError, error);
     }
@@ -214,7 +214,7 @@ public class UserControllerTest {
         .thenReturn(true);
         
         JsonResponse response = userController.loginAjax(null, null, "on", null, null);
-        assertEquals(response.getStatus(), JsonResponseStatus.Success);
+        assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
         verify(userService).loginUser(anyString(), anyString(), eq(true), 
                 any(HttpServletRequest.class), any(HttpServletResponse.class));
     }
@@ -226,7 +226,7 @@ public class UserControllerTest {
         .thenReturn(false);
         
         JsonResponse response = userController.loginAjax(null, null, "off", null, null);
-        assertEquals(response.getStatus(), JsonResponseStatus.Fail);
+        assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
         verify(userService).loginUser(anyString(), anyString(), eq(false), 
                 any(HttpServletRequest.class), any(HttpServletResponse.class));
     }

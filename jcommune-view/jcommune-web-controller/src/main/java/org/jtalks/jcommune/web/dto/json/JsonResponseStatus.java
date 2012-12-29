@@ -21,22 +21,9 @@ package org.jtalks.jcommune.web.dto.json;
  *
  */
 public enum JsonResponseStatus {
-    Success("success"),
-    Fail("fail");
+    /** When requests performed successfully */
+    SUCCESS,
     
-    /** String representation of status (what will be sent to client). */
-    private String status;
-
-    private JsonResponseStatus(String status) {
-        this.status = status;
-    }
-    
-    @Override
-    public String toString() {
-        return status;
-    }
-
-    public String getStatus() {
-        return status;
-    }
+    /** When some error occurred during request */
+    FAIL;
 }

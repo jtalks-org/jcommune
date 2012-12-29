@@ -161,7 +161,7 @@ public class CodeReviewController {
     @ResponseBody
     public JsonResponse getCodeReview(@PathVariable("reviewId") Long reviewId) throws NotFoundException {
         CodeReview review = codeReviewService.get(reviewId);
-        return new JsonResponse(JsonResponseStatus.Success, new CodeReviewDto(review));
+        return new JsonResponse(JsonResponseStatus.SUCCESS, new CodeReviewDto(review));
     }
     
 }

@@ -147,14 +147,14 @@ CodeHighlighting.setupAddCommentFormHandlers = function () {
 		
         $.post(baseUrl + '/reviewcomments/new', data)
                 .success(function (data) {
-                    if (data.status == 'Success') {
+                    if (data.status == 'SUCCESS') {
                         CodeHighlighting.removeCommentForm();
 						CodeHighlighting.addComment(data.result)
-                    } else if (data.reason == 'validation') {
+                    } else if (data.reason == 'VALIDATION') {
                         CodeHighlighting.displayValidationErrors(data.result);
-                    } else if (data.reason == 'security'){
+                    } else if (data.reason == 'SECURITY'){
                     	bootbox.alert($labelYouDontHavePermissions);
-                    } else if (data.reason == 'entity-not-found') {
+                    } else if (data.reason == 'ENTITY_NOT_FOUND') {
                     	bootbox.alert($labelTopicWasRemoved);
                     } else {
                         bootbox.alert($labelUnexpectedError);
@@ -209,14 +209,14 @@ CodeHighlighting.setupEditCommentHandlers = function() {
         
         $.post(baseUrl + '/reviewcomments/edit', data)
                 .success(function (data) {
-                    if (data.status == 'Success') {
+                    if (data.status == 'SUCCESS') {
 						CodeHighlighting.updateComment(data.result);
 						CodeHighlighting.removeCommentForm();
-                    } else if (data.reason == 'validation') {
+                    } else if (data.reason == 'VALIDATION') {
                         CodeHighlighting.displayValidationErrors(data.result);
-                    } else if (data.reason == 'security'){
+                    } else if (data.reason == 'SECURITY'){
                     	bootbox.alert($labelYouDontHavePermissions);
-                    } else if (data.reason == 'entity-not-found') {
+                    } else if (data.reason == 'ENTITY_NOT_FOUND') {
                     	bootbox.alert($labelTopicWasRemoved);
                     } else {
                         bootbox.alert($labelUnexpectedError);

@@ -168,7 +168,7 @@ public class CodeReviewControllerTest {
         
         JsonResponse response = controller.getCodeReview(REVIEW_ID);
         
-        assertEquals(response.getStatus(), JsonResponseStatus.Success);
+        assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
         assertEquals(((CodeReviewDto)response.getResult()).getId(), REVIEW_ID);
     }
     

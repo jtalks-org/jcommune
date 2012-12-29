@@ -25,6 +25,7 @@ import org.jtalks.jcommune.web.dto.CodeReviewCommentDto;
 import org.jtalks.jcommune.web.dto.json.FailJsonResponse;
 import org.jtalks.jcommune.web.dto.json.FailValidationJsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponseReason;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -51,8 +52,6 @@ import javax.validation.Valid;
 @Controller
 public class CodeReviewCommentController {
 
-    private static final String ENTITY_NOT_FOUND_REASON = "entity-not-found";
-    private static final String SECURITY_REASON = "security";
     public static final String BRANCH_ID = "branchId";
     public static final String REVIEW_ID = "reviewId";
     public static final String COMMENT_ID = "commentId";
@@ -110,7 +109,7 @@ public class CodeReviewCommentController {
         CodeReviewComment addedComment = codeReviewService.addComment(
                 reviewId, commentDto.getLineNumber(), commentDto.getBody());
         CodeReviewCommentDto addedCommentDto = new CodeReviewCommentDto(addedComment);
-        return new JsonResponse(JsonResponseStatus.Success, addedCommentDto);
+        return new JsonResponse(JsonResponseStatus.SUCCESS, addedCommentDto);
     }
 
     /**
@@ -129,7 +128,7 @@ public class CodeReviewCommentController {
             @RequestParam(COMMENT_ID) Long commentId,
             @RequestParam(REVIEW_ID) Long reviewId) throws NotFoundException {
         codeReviewService.deleteComment(commentId, reviewId);
-        return new JsonResponse(JsonResponseStatus.Success);
+        return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
     
     /**
@@ -154,7 +153,7 @@ public class CodeReviewCommentController {
                 commentDto.getId(), commentDto.getBody(), branchId);
         notificationService.subscribedEntityChanged(editedComment.getCodeReview());
         CodeReviewCommentDto editedCommentDto = new CodeReviewCommentDto(editedComment);
-        return new JsonResponse(JsonResponseStatus.Success, editedCommentDto);
+        return new JsonResponse(JsonResponseStatus.SUCCESS, editedCommentDto);
     }
     
     /**
@@ -164,7 +163,7 @@ public class CodeReviewCommentController {
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseBody
     public FailJsonResponse securityError() {
-        return new FailJsonResponse(SECURITY_REASON);
+        return new FailJsonResponse(JsonResponseReason.SECURITY);
     }
     
     /**
@@ -174,6 +173,6 @@ public class CodeReviewCommentController {
     @ExceptionHandler(NotFoundException.class)
     @ResponseBody
     public FailJsonResponse entityNotFoundError() {
-        return new FailJsonResponse(ENTITY_NOT_FOUND_REASON);
+        return new FailJsonResponse(JsonResponseReason.ENTITY_NOT_FOUND);
     }
 }

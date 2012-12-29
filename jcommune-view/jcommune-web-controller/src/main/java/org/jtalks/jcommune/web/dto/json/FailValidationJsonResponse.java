@@ -28,8 +28,6 @@ import org.springframework.validation.ObjectError;
  */
 public class FailValidationJsonResponse extends FailJsonResponse {
 
-    public static final String FAIL_REASON_VALIDATION = "validation";
-    
     /**
      * Creates object and add validation error information from bindingResult
      * to JSON result field 
@@ -37,7 +35,7 @@ public class FailValidationJsonResponse extends FailJsonResponse {
      * @param validationErrors list of validation errors. Not null
      */
     public FailValidationJsonResponse(List<ObjectError> validationErrors) {
-        super(FAIL_REASON_VALIDATION);
+        super(JsonResponseReason.VALIDATION);
         
         List<ValidationError> errors = new ArrayList<ValidationError>();
         for (ObjectError error : validationErrors) {

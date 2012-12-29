@@ -25,6 +25,7 @@ import org.jtalks.jcommune.web.dto.CodeReviewCommentDto;
 import org.jtalks.jcommune.web.dto.json.FailJsonResponse;
 import org.jtalks.jcommune.web.dto.json.FailValidationJsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponseReason;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.mockito.Mock;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -108,7 +109,7 @@ public class CodeReviewCommentControllerTest {
         
         CodeReviewCommentDto dto = (CodeReviewCommentDto) response.getResult();
         
-        assertEquals(response.getStatus(), JsonResponseStatus.Success);
+        assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
         assertEquals(dto.getId(), COMMENT_ID);
         assertEquals(dto.getBody(), COMMENT_BODY);
         assertEquals(dto.getLineNumber(), COMMENT_LINE_NUMBER);
@@ -163,7 +164,7 @@ public class CodeReviewCommentControllerTest {
         
         CodeReviewCommentDto dto = (CodeReviewCommentDto) response.getResult();
         
-        assertEquals(response.getStatus(), JsonResponseStatus.Success);
+        assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
         assertEquals(dto.getId(), COMMENT_ID);
         assertEquals(dto.getBody(), COMMENT_BODY);
         assertEquals(dto.getLineNumber(), COMMENT_LINE_NUMBER);
@@ -209,15 +210,15 @@ public class CodeReviewCommentControllerTest {
     public void testDeleteComment() throws NotFoundException {
         JsonResponse jsonResponse = controller.deleteComment(COMMENT_ID, REVIEW_ID);
         verify(codeReviewService).deleteComment(COMMENT_ID, REVIEW_ID);
-        assertEquals(jsonResponse.getStatus(), JsonResponseStatus.Success);
+        assertEquals(jsonResponse.getStatus(), JsonResponseStatus.SUCCESS);
     }
     
     @Test
     public void testSecurityError() {
         FailJsonResponse response = controller.securityError();
         
-        assertEquals(response.getStatus(), JsonResponseStatus.Fail);
-        assertEquals(response.getReason(), "security");
+        assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
+        assertEquals(response.getReason(), JsonResponseReason.SECURITY);
         assertNull(response.getResult());
     }
     
@@ -225,8 +226,8 @@ public class CodeReviewCommentControllerTest {
     public void testEntityNotFoundError() {
         FailJsonResponse response = controller.entityNotFoundError();
         
-        assertEquals(response.getStatus(), JsonResponseStatus.Fail);
-        assertEquals(response.getReason(), "entity-not-found");
+        assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
+        assertEquals(response.getReason(), JsonResponseReason.ENTITY_NOT_FOUND);
         assertNull(response.getResult());
     }
     

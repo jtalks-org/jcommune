@@ -60,9 +60,9 @@ public class SecurityController {
             @RequestParam("targetType") String targetType,
             @RequestParam("permission") String permission) {
         if (permissionService.hasPermission(targetId, targetType, permission)) {
-            return new JsonResponse(JsonResponseStatus.Success);
+            return new JsonResponse(JsonResponseStatus.SUCCESS);
         } else {
-            return new JsonResponse(JsonResponseStatus.Fail);
+            return new JsonResponse(JsonResponseStatus.FAIL);
         }
     }
     
