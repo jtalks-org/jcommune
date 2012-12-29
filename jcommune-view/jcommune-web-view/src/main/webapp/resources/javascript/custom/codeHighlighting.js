@@ -200,23 +200,21 @@ CodeHighlighting.setupEditCommentHandlers = function() {
 		return false;
 	});
 
-    var deleteComment = function (elementForDeleting, reviewId, commentId) {
+    $('.script-first-post').on('click', 'div.review-container a[name=delete-review]', function () {
+        var reviewContainer = $(this).closest('.review-container');
+        var commentId = reviewContainer.find('input[name=id]').val();
+        var reviewId = $('input[id="codeReviewId"]').val();
         $.ajax({
             url:baseUrl + '/reviewcomments/delete?reviewId=' + reviewId + '&commentId=' + commentId,
             type:"GET",
-            success:function (data) {
-                $(elementForDeleting).remove();
+            success:function () {
+                $(reviewContainer).remove();
             },
             error:function () {
                 bootbox.alert($labelUnexpectedError);
             }
         });
-    };
 
-    $('div.review-container').each(function () {
-        var commentId = this.find('input[name=id]').val();
-        var reviewId = $('input[id="codeReviewId"]').val();
-        this.on('click', 'a[name="delete-review"]', deleteComment(this, reviewId, commentId));
         return false;
     });
 
@@ -270,12 +268,12 @@ CodeHighlighting.getCommentHtml = function (comment) {
 	if (CodeHighlighting.canEditOtherPosts 
 			|| (CodeHighlighting.currentUserId == comment.authorId 
 					&& CodeHighlighting.canEditOwnPosts)) {
-		editButtonHtml = '<a href="" name="edit-review">' + $labelEdit + '</a>';
+		editButtonHtml = '<a href="" name=edit-review>' + $labelEdit + '</a>';
 	}
     if (CodeHighlighting.canDeleteOtherPosts
         || (CodeHighlighting.currentUserId == comment.authorId
         && CodeHighlighting.canDeleteOwnPosts)) {
-        deleteButtonHtml = '<a href="" name="delete-review">' + $labelDelete + '</a>';
+        deleteButtonHtml = '<a href="" name=delete-review>' + $labelDelete + '</a>';
     }
     var result =
             '<div class="review-container"> '
