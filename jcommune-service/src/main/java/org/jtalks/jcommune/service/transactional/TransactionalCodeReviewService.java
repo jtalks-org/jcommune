@@ -49,7 +49,7 @@ public class TransactionalCodeReviewService extends AbstractTransactionalEntityS
      * @param userService          to get current user
      * @param permissionService    to check permission for current user ({@link org.springframework.security.access.prepost.PreAuthorize} annotation emulation)
      * @param reviewCommentService to get review comment
-     * @param notificationService   to send email updates for comment adding subscribers.
+     * @param notificationService  to send email updates for comment adding subscribers.
      */
     public TransactionalCodeReviewService(
             CodeReviewDao dao,
@@ -101,7 +101,7 @@ public class TransactionalCodeReviewService extends AbstractTransactionalEntityS
      *
      * @param id         ID of code review comment
      * @param codeReview ID of code review where needs to delete comment
-     * @throws NotFoundException
+     * @throws NotFoundException if comment was not found
      */
     @PreAuthorize("hasPermission(#codeReview.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OWN_POSTS') or " +
             "hasPermission(#codeReview.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OTHERS_POSTS')")

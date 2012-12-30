@@ -115,8 +115,8 @@ public class CodeReviewCommentController {
     /**
      * Deletes CR comment from review
      *
-     * @param commentId comment review ID
-     * @param reviewId  ID of review where add comment to
+     * @param commentId comment ID
+     * @param reviewId  ID of review where delete comment to
      * @return response with status 'success' if comment
      *         was deleted or 'fail' with no objects if there were some errors
      * @throws NotFoundException when no review with <code>reviewId</code>

@@ -44,7 +44,7 @@ public interface CodeReviewService extends EntityService<CodeReview> {
      *
      * @param id       ID of code review comment
      * @param reviewId ID of code review where needs to delete comment
-     * @throws NotFoundException     if CR was not found
+     * @throws NotFoundException     if CR or comment was not found
      * @throws AccessDeniedException when user has no permission to add comment
      */
     public void deleteComment(long id, long reviewId) throws NotFoundException;
