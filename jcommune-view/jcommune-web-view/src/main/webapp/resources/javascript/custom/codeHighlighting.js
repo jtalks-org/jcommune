@@ -200,21 +200,35 @@ CodeHighlighting.setupEditCommentHandlers = function() {
 		return false;
 	});
 
-    $('.script-first-post').on('click', 'div.review-container a[name=delete-review]', function () {
+    $('.script-first-post').on('click', 'div.review-container a[name=delete-review]', function (e) {
+        e.preventDefault();
         var reviewContainer = $(this).closest('.review-container');
         var commentId = reviewContainer.find('input[name=id]').val();
         var reviewId = $('input[id="codeReviewId"]').val();
-        $.ajax({
-            url:baseUrl + '/reviewcomments/delete?reviewId=' + reviewId + '&commentId=' + commentId,
-            type:"GET",
-            success:function () {
-                $(reviewContainer).remove();
-            },
-            error:function () {
-                bootbox.alert($labelUnexpectedError);
-            }
-        });
 
+        // popups to confirm comment deletion
+        $.prompt($(this)[0].rel,
+            {buttons:[
+                {title:$labelOk, value:true},
+                {title:$labelCancel, value:false}
+            ],
+                persistent:false,
+                submit:function (confirmed) {
+                    if (confirmed) {
+                        $.ajax({
+                            url:baseUrl + '/reviewcomments/delete?reviewId=' + reviewId + '&commentId=' + commentId,
+                            type:"GET",
+                            success:function () {
+                                $(reviewContainer).remove();
+                            },
+                            error:function () {
+                                bootbox.alert($labelUnexpectedError);
+                            }
+                        });
+                    }
+                }
+            }
+        );
         return false;
     });
 
@@ -273,7 +287,7 @@ CodeHighlighting.getCommentHtml = function (comment) {
     if (CodeHighlighting.canDeleteOtherPosts
         || (CodeHighlighting.currentUserId == comment.authorId
         && CodeHighlighting.canDeleteOwnPosts)) {
-        deleteButtonHtml = '<a href="" name=delete-review>' + $labelDelete + '</a>';
+        deleteButtonHtml = '<a href="" rel="'+$labelDeleteCommentConfirmation+'" name=delete-review>' + $labelDelete + '</a>';
     }
     var result =
             '<div class="review-container"> '
