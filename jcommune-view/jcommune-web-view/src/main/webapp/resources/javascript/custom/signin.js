@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011  JTalks.org Team
+s * Copyright (C) 2011  JTalks.org Team
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -67,7 +67,7 @@ function sendLoginPost() {
         success:function (resp) {
             resp = eval('(' + resp + ')');
 
-            if (resp.status == "Success") {
+            if (resp.status == "SUCCESS") {
                 location.reload();
             }
             else {
