@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.web.view;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.annotations.Test;
@@ -29,11 +31,12 @@ import static org.testng.Assert.fail;
  * @author Vitaliy Kravchenko
  */
 public class ApplicationContextTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationContextTest.class);
     @Test
     public void applicationContextShouldConstructAllBeans() {
         try
         {
-            ApplicationContext ctx = new ClassPathXmlApplicationContext(
+            new ClassPathXmlApplicationContext(
                     "/org/jtalks/jcommune/model/entity/applicationContext-dao.xml",
                     "/org/jtalks/jcommune/model/entity/applicationContext-properties.xml",
                     "/org/jtalks/jcommune/service/applicationContext-service.xml",
@@ -44,7 +47,8 @@ public class ApplicationContextTest {
             );  
         }
         catch (Exception ex) {
-            fail("Application initialization is failed", ex);
+            LOGGER.error("Application initialization is failed", ex);
+            fail();
         }
     }
 }

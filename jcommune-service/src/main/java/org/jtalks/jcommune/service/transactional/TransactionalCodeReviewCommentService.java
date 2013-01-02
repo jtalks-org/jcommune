@@ -15,10 +15,15 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.CodeReviewCommentService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.jtalks.jcommune.service.security.AclClassName;
+import org.jtalks.jcommune.service.security.PermissionService;
+import org.springframework.security.access.AccessDeniedException;
 
 /**
  * The implementation of {@link CodeReviewCommentService}
@@ -28,27 +33,56 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public class TransactionalCodeReviewCommentService extends AbstractTransactionalEntityService<CodeReviewComment, ChildRepository<CodeReviewComment>> 
         implements CodeReviewCommentService {
 
+    private PermissionService permissionService;
+    
+    private UserService userService;
+    
     /**
      * Create an instance of CodeReview entity based service
-     * @param dao               data access object, which should be able do all CRUD operations with entity. 
+     * @param dao               data access object, which should be able do all CRUD operations with entity.
+     * @param permissionService to check permissions for actions
+     * @param userService       to get current user 
      */
     public TransactionalCodeReviewCommentService(
-                        ChildRepository<CodeReviewComment> dao) {
+                        ChildRepository<CodeReviewComment> dao,
+                        PermissionService permissionService,
+                        UserService userService) {
         super(dao);
+        this.permissionService = permissionService;
+        this.userService = userService;
     }
  
     /**
      * {@inheritDoc}
      */
-    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.EDIT_OWN_POSTS') or "+
-                  "hasPermission(#branchId, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
     @Override
     public CodeReviewComment updateComment(long id, String body, long branchId) throws NotFoundException {
+        
         CodeReviewComment comment = get(id);
+        checkHasUpdatePermission(comment, branchId);
         
         comment.setBody(body);
         getDao().update(comment);
         
         return comment;
+    }
+    
+    /**
+     * Checks if current user can edit review comments
+     * @param comment - comment to check permissions on
+     * @param branchId - ID of branch where review with comment located
+     */
+    private void checkHasUpdatePermission(CodeReviewComment comment, long branchId) {
+        JCUser currentUser = userService.getCurrentUser();
+        boolean canEditOwnPosts = permissionService.hasPermission(branchId, 
+                AclClassName.BRANCH, BranchPermission.EDIT_OWN_POSTS);
+        boolean canEditOthersPosts = permissionService.hasPermission(branchId, 
+                AclClassName.BRANCH, BranchPermission.EDIT_OTHERS_POSTS);
+        
+        if (!canEditOthersPosts 
+             && !(canEditOwnPosts 
+                     && comment.getAuthor().getId() == currentUser.getId())) {
+            throw new AccessDeniedException("No permission to edit review comment");
+        }
     }
 }

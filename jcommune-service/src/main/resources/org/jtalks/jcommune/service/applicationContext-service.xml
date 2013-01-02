@@ -235,6 +235,8 @@
     
     <bean id="codeReviewCommentService" class="org.jtalks.jcommune.service.transactional.TransactionalCodeReviewCommentService">
         <constructor-arg ref="codeReviewCommentDao"/>
+        <constructor-arg ref="permissionService"/>
+        <constructor-arg ref="userService"/>
     </bean>
     
     <bean id="permissionService" class="org.jtalks.jcommune.service.security.TransactionalPermissionService">
