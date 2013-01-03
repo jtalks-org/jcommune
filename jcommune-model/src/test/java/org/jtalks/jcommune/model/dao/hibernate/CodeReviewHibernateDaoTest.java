@@ -20,9 +20,8 @@ import static org.testng.Assert.assertNull;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.jtalks.jcommune.model.ObjectsFactory;
+import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
-import org.jtalks.jcommune.model.dao.CodeReviewDao;
 import org.jtalks.jcommune.model.entity.CodeReview;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -40,7 +39,7 @@ public class CodeReviewHibernateDaoTest extends AbstractTransactionalTestNGSprin
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
-    private CodeReviewDao dao;    
+    private ChildRepository<CodeReview> codeReviewDao;    
     private Session session;
 
     @BeforeMethod
@@ -56,7 +55,7 @@ public class CodeReviewHibernateDaoTest extends AbstractTransactionalTestNGSprin
         CodeReview review = PersistedObjectsFactory.getDefaultCodeReview();
         session.save(review);
 
-        CodeReview result = dao.get(review.getId());
+        CodeReview result = codeReviewDao.get(review.getId());
 
         assertNotNull(result);
         assertEquals(result.getId(), review.getId());
@@ -66,7 +65,7 @@ public class CodeReviewHibernateDaoTest extends AbstractTransactionalTestNGSprin
 
     @Test
     public void testGetInvalidId() {
-        CodeReview result = dao.get(-567890L);
+        CodeReview result = codeReviewDao.get(-567890L);
 
         assertNull(result);
     }
@@ -78,7 +77,7 @@ public class CodeReviewHibernateDaoTest extends AbstractTransactionalTestNGSprin
         session.save(review);
         review.setUuid(newUuid);
 
-        dao.update(review);
+        codeReviewDao.update(review);
         session.evict(review);
         CodeReview result = (CodeReview) session.get(CodeReview.class, review.getId());
 
@@ -91,7 +90,7 @@ public class CodeReviewHibernateDaoTest extends AbstractTransactionalTestNGSprin
         session.save(review);
         review.setUuid(null);
 
-        dao.update(review);
+        codeReviewDao.update(review);
     }
     
     @Test
@@ -99,10 +98,10 @@ public class CodeReviewHibernateDaoTest extends AbstractTransactionalTestNGSprin
         CodeReview review = PersistedObjectsFactory.getDefaultCodeReview();
         
         review.getComments().remove(0);
-        dao.update(review);
+        codeReviewDao.update(review);
         session.evict(review);
         
-        assertEquals(dao.get(review.getId()).getComments().size(), 1);
+        assertEquals(codeReviewDao.get(review.getId()).getComments().size(), 1);
     }
 
 }

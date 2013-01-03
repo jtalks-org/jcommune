@@ -15,8 +15,8 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
+import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.common.model.permissions.BranchPermission;
-import org.jtalks.jcommune.model.dao.CodeReviewDao;
 import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -34,7 +34,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
  *
  * @author Vyacheslav Mishcheryakov
  */
-public class TransactionalCodeReviewService extends AbstractTransactionalEntityService<CodeReview, CodeReviewDao>
+public class TransactionalCodeReviewService extends AbstractTransactionalEntityService<CodeReview, ChildRepository<CodeReview>>
         implements CodeReviewService {
 
     private UserService userService;
@@ -52,7 +52,7 @@ public class TransactionalCodeReviewService extends AbstractTransactionalEntityS
      * @param notificationService  to send email updates for comment adding subscribers.
      */
     public TransactionalCodeReviewService(
-            CodeReviewDao dao,
+            ChildRepository<CodeReview> dao,
             UserService userService,
             PermissionService permissionService,
             CodeReviewCommentService reviewCommentService,

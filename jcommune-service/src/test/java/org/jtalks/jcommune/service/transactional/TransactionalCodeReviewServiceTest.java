@@ -14,8 +14,8 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.common.model.permissions.JtalksPermission;
-import org.jtalks.jcommune.model.dao.CodeReviewDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
@@ -49,7 +49,7 @@ public class TransactionalCodeReviewServiceTest {
     private static final long REVIEW_ID = 1L;
 
     @Mock
-    private CodeReviewDao dao;
+    private ChildRepository<CodeReview> dao;
     @Mock
     private UserService userService;
     @Mock

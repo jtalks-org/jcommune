@@ -14,8 +14,8 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.jcommune.model.dao.BranchDao;
-import org.jtalks.jcommune.model.dao.CodeReviewDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.CodeReview;
@@ -41,7 +41,7 @@ public class TransactionalSubscriptionService implements SubscriptionService {
     private UserService userService;
     private BranchDao branchDao;
     private TopicDao topicDao;
-    private CodeReviewDao codeReviewDao;
+    private ChildRepository<CodeReview> codeReviewDao;
 
     /**
      * @param userService to determine the current user requested the operation
@@ -52,7 +52,7 @@ public class TransactionalSubscriptionService implements SubscriptionService {
     public TransactionalSubscriptionService(UserService userService,
                                             BranchDao branchDao,
                                             TopicDao topicDao,
-                                            CodeReviewDao codeReviewDao) {
+                                            ChildRepository<CodeReview> codeReviewDao) {
         this.userService = userService;
         this.branchDao = branchDao;
         this.topicDao = topicDao;

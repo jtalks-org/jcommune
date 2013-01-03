@@ -14,8 +14,8 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.jcommune.model.dao.BranchDao;
-import org.jtalks.jcommune.model.dao.CodeReviewDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.CodeReview;
@@ -44,7 +44,7 @@ public class TransactionalSubscriptionServiceTest {
     @Mock
     private TopicDao topicDao;
     @Mock
-    private CodeReviewDao codeReviewDao;
+    private ChildRepository<CodeReview> codeReviewDao;
 
     private TransactionalSubscriptionService service;
 
