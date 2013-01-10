@@ -14,7 +14,8 @@
  */
 /**
  *
- * Package for controllers.
+ * Package for controllers and exception handlers. This is the layer that contains Web-related logic, it handles UI
+ * events (HTTP requests), but it doesn't contain any business logic, which is hidden under service layer.
  *
  */
 package org.jtalks.jcommune.web.controller;
