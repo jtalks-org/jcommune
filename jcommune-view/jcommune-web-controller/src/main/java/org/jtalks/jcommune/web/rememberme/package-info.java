@@ -15,7 +15,9 @@
 /**
  * 
  * Provides additional components to work with "Remember Me" functionality. For instance we need a custom logic to
- * handle remember me exceptions, it's kept here.
+ * handle remember me exceptions, it's kept here. <br/>
+ * Note, that since it's Spring Security and Web related logic, it can be described in different config files like
+ * {@code web.xml, xxx-security.xml}.
  *
  */
 package org.jtalks.jcommune.web.rememberme;
