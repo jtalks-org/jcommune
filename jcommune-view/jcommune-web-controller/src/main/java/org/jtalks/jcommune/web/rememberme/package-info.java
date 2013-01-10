@@ -14,8 +14,8 @@
  */
 /**
  * 
- * Provides additional components for working with
- * "Remember Me" functionality.
+ * Provides additional components to work with "Remember Me" functionality. For instance we need a custom logic to
+ * handle remember me exceptions, it's kept here.
  *
  */
 package org.jtalks.jcommune.web.rememberme;
