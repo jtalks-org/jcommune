@@ -16,15 +16,37 @@ package org.jtalks.jcommune.service.jmx;
 
 import java.util.List;
 
-/** Take from <a href="http://www.sureshpw.com/2012/04/dynamic-logging-with-log4j.html">here</a>. */
+/**
+ * Taken from <a href="http://www.sureshpw.com/2012/04/dynamic-logging-with-log4j.html">here</a>, used to expose Log4j
+ * configuration via JMX so that we can change it during runtime without restarting the app.
+ *
+ * @author stanislav bashkirtsev
+ */
 public interface Log4jConfiguratorMXBean {
-    /** list of all the logger names and their levels */
+    /**
+     * Lists all the loggers defined in logger configuration. Only these names can be used to change the logging level.
+     *
+     * @return the list of logger names defined in log4j configuration
+     */
     List<String> getLoggers();
 
-    /** Get the log level for a given logger */
+    /**
+     * Get the level of the logger (INFO, DEBUG, ERROR, etc.). If you don't know the exact logger name, use {@link
+     * #getLoggers()} to list all of them.
+     *
+     * @param logger the name of the logger (from {@link #getLoggers()} to get its current level
+     * @return the level specified logger uses or {@code "unavailable"} if such logger does not exist
+     */
     String getLogLevel(String logger);
 
-    /** Set the log level for a given logger */
+    /**
+     * Change the level of the logger in the runtime if you need to see more (or less) information.
+     *
+     * @param logger the name of the logger to change its level
+     * @param level  the level to change logging to, results in no-op if it's the same as the current one. If a logger
+     *               with the specified name does not exist, it also results in no-op.
+     * @see #getLoggers()
+     */
     void setLogLevel(String logger, String level);
 }
 
