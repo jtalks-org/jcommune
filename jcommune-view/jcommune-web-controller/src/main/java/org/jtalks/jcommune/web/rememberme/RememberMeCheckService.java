@@ -32,7 +32,7 @@ public class RememberMeCheckService {
     private static final String NOT_EQUALS_TOKENS_ERROR_TEMPLATE = 
             "%s presented token %s of series %s isn't equal for persistent token %s";
     
-    private PersistentTokenRepository persistentTokenRepository;
+    private final PersistentTokenRepository persistentTokenRepository;
     
     /**
      * Constructs an instance with required fields.
