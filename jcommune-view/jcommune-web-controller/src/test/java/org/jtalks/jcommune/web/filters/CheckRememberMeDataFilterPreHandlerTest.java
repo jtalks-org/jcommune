@@ -21,18 +21,14 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 
-import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.jtalks.jcommune.web.rememberme.RememberMeCheckService;
-import org.jtalks.jcommune.web.rememberme.RememberMeCookieExtractor;
+import org.jtalks.jcommune.web.rememberme.RememberMeCookieDecoder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -41,51 +37,45 @@ import org.testng.annotations.Test;
  * @author Anuar_Nurmakanov
  *
  */
-public class LogCookieUsernamePasswordAuthenticationFilterTest {
+public class CheckRememberMeDataFilterPreHandlerTest {
     @Mock
-    private RememberMeCookieExtractor extractor;
+    private RememberMeCookieDecoder rememberMeCookieDecoder;
     @Mock
     private RememberMeCheckService rememberMeCheckService;
-    private LogCookieUsernamePasswordAuthenticationFilter filter;
+    private CheckRememberMeDataFilterPreHandler testedPreHandler;
 
     @BeforeTest
     public void init() {
         MockitoAnnotations.initMocks(this);
-        filter = new LogCookieUsernamePasswordAuthenticationFilter();
-        filter.setRememberMeCheckService(rememberMeCheckService);
-        filter.setExtractor(extractor);
+        testedPreHandler = new CheckRememberMeDataFilterPreHandler(rememberMeCookieDecoder, rememberMeCheckService);
     }
 
     @Test
-    public void doFilterWithPassedCookieShouldLogRememberMeData() throws IOException, ServletException {
+    public void passedCookieInRequesyShouldLogRememberMeData() throws IOException, ServletException {
         HttpServletRequest request = new MockHttpServletRequest();
-        HttpServletResponse response = new MockHttpServletResponse();
-        FilterChain filterChain = new MockFilterChain();
         String rememberMeCookieValue = "cookie value";
         String series = "series";
         String token = "token";
         String[] seriesAndToken = new String[] { series, token };
-        when(extractor.exctractRememberMeCookieValue(request))
+        when(rememberMeCookieDecoder.exctractRememberMeCookieValue(request))
             .thenReturn(rememberMeCookieValue);
-        when(extractor.extractSeriesAndToken(rememberMeCookieValue))
+        when(rememberMeCookieDecoder.extractSeriesAndToken(rememberMeCookieValue))
                 .thenReturn(seriesAndToken);
 
-        filter.doFilter(request, response, filterChain);
+        testedPreHandler.handle(request);
 
         verify(rememberMeCheckService).checkWithPersistentRememberMeToken(series, token);
     }
     
     @Test
-    public void doFilterWithNotPassedCookieShouldNotCheckRememberMeData() throws IOException, ServletException {
+    public void notPassedCookieInRequestShouldNotCheckRememberMeData() throws IOException, ServletException {
         HttpServletRequest request = new MockHttpServletRequest();
-        HttpServletResponse response = new MockHttpServletResponse();
-        FilterChain filterChain = new MockFilterChain();
-        when(extractor.exctractRememberMeCookieValue(request))
+        when(rememberMeCookieDecoder.exctractRememberMeCookieValue(request))
             .thenReturn(null);
 
-        filter.doFilter(request, response, filterChain);
+        testedPreHandler.handle(request);
 
-        verify(extractor, never()).extractSeriesAndToken(anyString());
+        verify(rememberMeCookieDecoder, never()).extractSeriesAndToken(anyString());
         verify(rememberMeCheckService, never())
             .checkWithPersistentRememberMeToken(anyString(), anyString());
     }

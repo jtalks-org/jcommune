@@ -58,8 +58,8 @@
         </constructor-arg>
     </bean>
     
-    <bean id="rememberMeCookieExctractor" 
-          class="org.jtalks.jcommune.web.rememberme.RememberMeCookieExtractor" />
+    <bean id="rememberMeCookieDecoder" 
+          class="org.jtalks.jcommune.web.rememberme.RememberMeCookieDecoderImpl" />
     
     <bean id="rememberMeCheckService" 
           class="org.jtalks.jcommune.web.rememberme.RememberMeCheckService">

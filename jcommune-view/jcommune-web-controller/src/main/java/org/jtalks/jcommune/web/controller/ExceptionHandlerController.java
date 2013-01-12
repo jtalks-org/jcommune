@@ -23,9 +23,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * This controller is needed to handle exceptions that occurred during JSP rendering or
- * in servlet filter. Not, that to handle such kind exceptions we must define error-page
- * rule in web.xml file. 
+ * This controller is needed to handle exceptions that occurred during 
+ * servlet filter. Note, that to handle such kind exceptions we must define
+ * error-page rule in web.xml file. 
  * 
  * @author Anuar_Nurmakanov
  *

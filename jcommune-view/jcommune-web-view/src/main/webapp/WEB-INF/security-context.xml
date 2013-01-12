@@ -91,10 +91,13 @@
     </bean>
 
     <bean id="rememberMeCheckFilter"
-          class="org.jtalks.jcommune.web.filters.LogCookieUsernamePasswordAuthenticationFilter">
+          class="org.jtalks.jcommune.web.filters.UsernamePasswordAuthenticationFilter">
+        <constructor-arg ref="checkRememberMeDataFilterPreHandler" />
         <property name="authenticationManager" ref="authenticationManager" />
-        <property name="extractor" ref="rememberMeCookieExctractor" />
-        <property name="rememberMeCheckService" ref="rememberMeCheckService" />
     </bean>
 
+    <bean id="checkRememberMeDataFilterPreHandler" class="org.jtalks.jcommune.web.filters.CheckRememberMeDataFilterPreHandler">
+        <constructor-arg ref="rememberMeCookieDecoder" />
+        <constructor-arg ref="rememberMeCheckService" />
+    </bean>
 </beans>

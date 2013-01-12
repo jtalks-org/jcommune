@@ -27,12 +27,22 @@ import org.springframework.security.web.authentication.rememberme.RememberMeAuth
 /**
  * Special trick implementation of "remember me" service that is needed to
  * decode cookie value. We use this trick to avoid copy-paste from Spring
- * implementation of decode method.
+ * implementation of decode method. But this class is clear violation of
+ * Liskov substitution principle.
  * 
  * @author Anuar_Nurmakanov
  * 
  */
-class RememberMeCookieDecoderImpl extends AbstractRememberMeServices implements RememberMeCookieDecoder {
+public class RememberMeCookieDecoderImpl extends AbstractRememberMeServices implements RememberMeCookieDecoder {
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        //disable all checks, we don't need them, because it's trick implementation
+    }
 
     /**
      * {@inheritDoc}
@@ -41,7 +51,9 @@ class RememberMeCookieDecoderImpl extends AbstractRememberMeServices implements 
     protected void onLoginSuccess(HttpServletRequest request,
             HttpServletResponse response,
             Authentication successfulAuthentication) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException(
+                "We extends from AbstractRememberMeService to take an ability call it help methods," +
+        		"so we don't use this implementation as implementation of AbstractRememberMeServices");
 
     }
 
@@ -53,22 +65,33 @@ class RememberMeCookieDecoderImpl extends AbstractRememberMeServices implements 
             HttpServletRequest request, HttpServletResponse response)
             throws RememberMeAuthenticationException,
             UsernameNotFoundException {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException(
+                "We extends from AbstractRememberMeService to take an ability call it help methods," +
+                "so we don't use this implementation as implementation of AbstractRememberMeServices");
     }
 
     /**
-     * {@inheritDoc}
+     * Locates the Spring Security remember me cookie in the request and returns its value.
+     * The cookie is searched for by name and also by matching the context path to the cookie path.
+     *
+     * @param request the submitted request which is to be authenticated
+     * @return the cookie value (if present), null otherwise.
      */
-    @Override
-    public String[] decodeCookie(String cookieValue) throws InvalidCookieException {
-        return super.decodeCookie(cookieValue);
+    public String exctractRememberMeCookieValue(HttpServletRequest request) {
+        return extractRememberMeCookie(request);
     }
-
+    
     /**
-     * {@inheritDoc}
+     * Extracts remember me data from cookie value.
+     * 
+     * @param cookieValue contains remember me data as series and token
+     * @return extracted series and token
      */
-    @Override
-    public String extractRememberMeCookie(HttpServletRequest request) {
-        return super.extractRememberMeCookie(request);
+    public String[] extractSeriesAndToken(String cookieValue) {
+        try {
+            return decodeCookie(cookieValue);
+        } catch (InvalidCookieException e) {
+            return new String[] {};
+        }
     }
 }

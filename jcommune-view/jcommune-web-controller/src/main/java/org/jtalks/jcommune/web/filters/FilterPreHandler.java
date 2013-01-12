@@ -12,33 +12,16 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.rememberme;
+package org.jtalks.jcommune.web.filters;
 
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Provides an ability to extract, decode values from
- * cookies that holds "remember me" data.
  * 
  * @author Anuar_Nurmakanov
  *
  */
-public interface RememberMeCookieDecoder {
-
-    /**
-     * Locates the Spring Security remember me cookie in the request and returns its value.
-     * The cookie is searched for by name and also by matching the context path to the cookie path.
-     *
-     * @param request the submitted request which is to be authenticated
-     * @return the cookie value (if present), null otherwise.
-     */
-    String exctractRememberMeCookieValue(HttpServletRequest request);
+public interface FilterPreHandler {
     
-    /**
-     * Extracts remember me data from cookie value.
-     * 
-     * @param cookieValue contains remember me data as series and token
-     * @return extracted series and token
-     */
-    String[] extractSeriesAndToken(String cookieValue);
+    void handle(HttpServletRequest request);
 }
