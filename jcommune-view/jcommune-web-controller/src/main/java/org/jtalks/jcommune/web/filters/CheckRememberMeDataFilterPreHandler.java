@@ -56,7 +56,7 @@ public class CheckRememberMeDataFilterPreHandler implements FilterPreHandler {
             String[] seriesAndToken = rememberMeCookieDecoder.extractSeriesAndToken(rememberMeCookieValue);
             String series = seriesAndToken[0];
             String token = seriesAndToken[1];
-            rememberMeCheckService.checkWithPersistentRememberMeToken(series, token);
+            rememberMeCheckService.equalWithPersistentToken(series, token);
         }
     }
 }

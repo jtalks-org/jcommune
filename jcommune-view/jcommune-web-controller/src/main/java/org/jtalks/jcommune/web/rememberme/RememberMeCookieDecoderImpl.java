@@ -91,7 +91,7 @@ public class RememberMeCookieDecoderImpl extends AbstractRememberMeServices impl
         try {
             return decodeCookie(cookieValue);
         } catch (InvalidCookieException e) {
-            return new String[] {};
+            return null;
         }
     }
 }

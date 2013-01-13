@@ -44,42 +44,42 @@ public class RememberMeCheckServiceTest {
     }
     
     @Test
-    public void notExistPersistentTokenShouldNotPassCheck() {
-        PersistentRememberMeToken notExistsPersistentRememberMeToken = null;
+    public void equalForNotExistPersistentTokenShouldReturnTrue() {
         when(persistentTokenRepository.getTokenForSeries(PRESENTED_SERIES))
-            .thenReturn(notExistsPersistentRememberMeToken);
+            .thenReturn(null);//we don't have anything for given series
 
-        boolean isLogged = 
-                rememberMeCheckService.checkWithPersistentRememberMeToken(PRESENTED_SERIES, PRESENTED_TOKEN);
+        boolean isEqual = 
+                rememberMeCheckService.equalWithPersistentToken(PRESENTED_SERIES, PRESENTED_TOKEN);
         
-        Assert.assertFalse(isLogged);
+        Assert.assertTrue(isEqual, 
+                "We didn't find anything in database for given series, so this method must return true");
     }
     
     @Test
-    public void notEqualPersistentTokenShouldNotPassCheck() {
+    public void equalWithTheDifferentPersistentTokenShouldReturnFalse() {
         PersistentRememberMeToken notEqualPersistentRememberMeToken = 
                 new PersistentRememberMeToken("username", PRESENTED_SERIES, BROKED_TOKEN, null);
-        
         when(persistentTokenRepository.getTokenForSeries(PRESENTED_SERIES))
             .thenReturn(notEqualPersistentRememberMeToken);
 
-        boolean isLogged = 
-                rememberMeCheckService.checkWithPersistentRememberMeToken(PRESENTED_SERIES, PRESENTED_TOKEN);
+        boolean isEqual = 
+                rememberMeCheckService.equalWithPersistentToken(PRESENTED_SERIES, PRESENTED_TOKEN);
         
-        Assert.assertTrue(isLogged);
+        Assert.assertFalse(isEqual, 
+                "We found persistent token and it isn't equal to presented, so this method must return false");
     }
     
     @Test
-    public void equalPersistentTokenShouldPassCheck() {
+    public void equalWithTheSamePersistenTokenShouldReturnTrue() {
         PersistentRememberMeToken notEqualPersistentRememberMeToken = 
                 new PersistentRememberMeToken("username", PRESENTED_SERIES, PRESENTED_TOKEN, null);
-        
         when(persistentTokenRepository.getTokenForSeries(PRESENTED_SERIES))
             .thenReturn(notEqualPersistentRememberMeToken);
 
-        boolean isLogged = 
-                rememberMeCheckService.checkWithPersistentRememberMeToken(PRESENTED_SERIES, PRESENTED_TOKEN);
+        boolean isEqual = 
+                rememberMeCheckService.equalWithPersistentToken(PRESENTED_SERIES, PRESENTED_TOKEN);
         
-        Assert.assertFalse(isLogged);
+        Assert.assertTrue(isEqual, 
+                "We found persistent token and it is equal to presented, so this method must return true");
     }
 }

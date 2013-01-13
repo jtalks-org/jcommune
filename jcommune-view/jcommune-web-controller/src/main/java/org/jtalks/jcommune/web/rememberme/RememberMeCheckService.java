@@ -51,23 +51,42 @@ public class RememberMeCheckService {
      * 
      * @param presentedSeries presented series from cookie
      * @param presentedToken presented token from cookie
+     * @return {@code true} if token not exists in database or presented token equals to persistent token,
+     *         {@code false} if token exists in database and it doesn't equals to presented token
      */
-    public boolean checkWithPersistentRememberMeToken(String presentedSeries, String presentedToken) {
+    public boolean equalWithPersistentToken(String presentedSeries, String presentedToken) {
         PersistentRememberMeToken token = persistentTokenRepository.getTokenForSeries(presentedSeries);
         if (token != null) {
             String persistentToken = token.getTokenValue();
             if (!ObjectUtils.equals(presentedToken, persistentToken)) {
-                String username = token.getUsername();
-                String errorMessage = String.format(
-                        NOT_EQUALS_TOKENS_ERROR_TEMPLATE,
-                        username,
-                        presentedToken,
-                        presentedSeries,
-                        persistentToken);
-                LOGGER.error(errorMessage);
-                return true;
+                String logErrorMessage = composeErrorMessageForNotEqualTokens(
+                        token.getUsername(), presentedToken, presentedSeries, persistentToken);
+                LOGGER.error(logErrorMessage);
+                return false;
             }
         }
-        return false;
+        return true;
+    }
+    
+    /**
+     * Compose error message for case when token isn't equal token from database.
+     * 
+     * @param username owner of token, it's given from database
+     * @param presentedToken token from cookie
+     * @param presentedSeries series from cookie
+     * @param persistentToken token from database
+     * @return error message for given token details
+     */
+    private String composeErrorMessageForNotEqualTokens(
+            String username,
+            String presentedToken,
+            String presentedSeries,
+            String persistentToken) {
+        return String.format(
+                NOT_EQUALS_TOKENS_ERROR_TEMPLATE,
+                username,
+                presentedToken,
+                presentedSeries,
+                persistentToken);
     }
 }

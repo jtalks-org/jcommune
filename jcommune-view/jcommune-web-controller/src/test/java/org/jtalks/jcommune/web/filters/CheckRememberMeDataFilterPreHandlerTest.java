@@ -64,7 +64,7 @@ public class CheckRememberMeDataFilterPreHandlerTest {
 
         testedPreHandler.handle(request);
 
-        verify(rememberMeCheckService).checkWithPersistentRememberMeToken(series, token);
+        verify(rememberMeCheckService).equalWithPersistentToken(series, token);
     }
     
     @Test
@@ -77,6 +77,6 @@ public class CheckRememberMeDataFilterPreHandlerTest {
 
         verify(rememberMeCookieDecoder, never()).extractSeriesAndToken(anyString());
         verify(rememberMeCheckService, never())
-            .checkWithPersistentRememberMeToken(anyString(), anyString());
+            .equalWithPersistentToken(anyString(), anyString());
     }
 }

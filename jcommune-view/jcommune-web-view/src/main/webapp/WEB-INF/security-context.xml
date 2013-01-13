@@ -92,7 +92,11 @@
 
     <bean id="rememberMeCheckFilter"
           class="org.jtalks.jcommune.web.filters.UsernamePasswordAuthenticationFilter">
-        <constructor-arg ref="checkRememberMeDataFilterPreHandler" />
+        <constructor-arg >
+            <list>
+                <ref bean="checkRememberMeDataFilterPreHandler"/>
+            </list>
+        </constructor-arg>
         <property name="authenticationManager" ref="authenticationManager" />
     </bean>
 

@@ -38,7 +38,7 @@ public interface RememberMeCookieDecoder {
      * Extracts remember me data from cookie value.
      * 
      * @param cookieValue contains remember me data as series and token
-     * @return extracted series and token
+     * @return extracted series(0 index in returned array) and token (1 index in returned array)
      */
     String[] extractSeriesAndToken(String cookieValue);
 }
