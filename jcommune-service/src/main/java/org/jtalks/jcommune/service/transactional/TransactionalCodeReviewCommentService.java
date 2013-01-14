@@ -80,8 +80,7 @@ public class TransactionalCodeReviewCommentService extends AbstractTransactional
                 AclClassName.BRANCH, BranchPermission.EDIT_OTHERS_POSTS);
         
         if (!canEditOthersPosts 
-             && !(canEditOwnPosts 
-                     && comment.getAuthor().getId() == currentUser.getId())) {
+             && !(canEditOwnPosts && comment.isCreatedBy(currentUser))) {
             throw new AccessDeniedException("No permission to edit review comment");
         }
     }
