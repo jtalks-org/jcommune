@@ -14,11 +14,9 @@
  */
 package org.jtalks.jcommune.service.security;
 
-import java.io.Serializable;
-
+import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
-import org.jtalks.jcommune.service.security.PermissionService;
 import org.mockito.Mock;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -26,9 +24,12 @@ import org.springframework.security.core.context.SecurityContext;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.MockitoAnnotations.initMocks;
+import java.io.Serializable;
+
 import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 public class TransactionalPermissionServiceTest {
 
@@ -36,94 +37,84 @@ public class TransactionalPermissionServiceTest {
     private SecurityContextHolderFacade contextFacade;
     @Mock
     private AclGroupPermissionEvaluator aclEvaluator;
-    
+
     private PermissionService permissionService;
-    
+
     @BeforeMethod
     public void initEnvironmental() {
         initMocks(this);
-        
+
         permissionService = new TransactionalPermissionService(contextFacade, aclEvaluator);
     }
-    
-    @BeforeMethod 
+
+    @BeforeMethod
     public void prepareTestData() {
         Authentication authentication = mock(Authentication.class);
         SecurityContext securityContext = mock(SecurityContext.class);
-        
+
         when(contextFacade.getContext()).thenReturn(securityContext);
         when(securityContext.getAuthentication()).thenReturn(authentication);
     }
-    
+
     @Test
     public void testHasPermissionStringPermissionPermissionGranted() {
-        when(aclEvaluator.hasPermission(
-                any(Authentication.class), 
-                any(Serializable.class), 
-                anyString(), 
-                anyString()))
-        .thenReturn(true);
-        
+        doReturn(true).when(aclEvaluator)
+                .hasPermission(any(Authentication.class), any(Serializable.class), anyString(), anyString());
+
         assertTrue(permissionService.hasPermission(0, null, ""));
     }
-    
+
     @Test
     public void testHasPermissionStringPermissionPermissionNotGranted() {
-        when(aclEvaluator.hasPermission(
-                any(Authentication.class), 
-                any(Serializable.class), 
-                anyString(), 
-                anyString()))
-        .thenReturn(false);
-        
+        doReturn(false).when(aclEvaluator)
+                .hasPermission(any(Authentication.class), any(Serializable.class), anyString(), anyString());
+
         assertFalse(permissionService.hasPermission(0, null, ""));
     }
-    
+
     @Test
     public void testHasPermissionEnumPermissionPermissionGranted() {
-        when(aclEvaluator.hasPermission(
-                any(Authentication.class), 
-                any(Serializable.class), 
-                anyString(), 
-                anyString()))
-        .thenReturn(true);
-        
+        doReturn(true).when(aclEvaluator)
+                .hasPermission(any(Authentication.class), any(Serializable.class), anyString(), anyString());
+
         assertTrue(permissionService.hasPermission(0, AclClassName.BRANCH, GeneralPermission.READ));
     }
-    
+
     @Test
     public void testHasPermissionEnumPermissionPermissionNotGranted() {
-        when(aclEvaluator.hasPermission(
-                any(Authentication.class), 
-                any(Serializable.class), 
-                anyString(), 
-                anyString()))
-        .thenReturn(false);
-        
+        doReturn(false).when(aclEvaluator)
+                .hasPermission(any(Authentication.class), any(Serializable.class), anyString(), anyString());
+
         assertFalse(permissionService.hasPermission(0, AclClassName.BRANCH, GeneralPermission.READ));
     }
-    
+
     @Test
     public void testCheckPermissionPermissionGranted() {
-        when(aclEvaluator.hasPermission(
-                any(Authentication.class), 
-                any(Serializable.class), 
-                anyString(), 
-                anyString()))
-        .thenReturn(true);
-        
+        doReturn(true).when(aclEvaluator)
+                .hasPermission(any(Authentication.class), any(Serializable.class), anyString(), anyString());
+
         permissionService.checkPermission(0, AclClassName.BRANCH, GeneralPermission.READ);
     }
-    
+
     @Test(expectedExceptions=AccessDeniedException.class)
     public void testCheckPermissionPermissionNotGranted() {
-        when(aclEvaluator.hasPermission(
-                any(Authentication.class), 
-                any(Serializable.class), 
-                anyString(), 
-                anyString()))
-        .thenReturn(false);
-        
+        doReturn(false).when(aclEvaluator)
+                .hasPermission(any(Authentication.class), any(Serializable.class), anyString(), anyString());
+
         permissionService.checkPermission(0, AclClassName.BRANCH, GeneralPermission.READ);
+    }
+
+    /**
+     * Tests whether method constructs data that is going to be passed to the evaluator is correct and thus {@link
+     * PermissionService#hasBranchPermission(long, BranchPermission)} will return same result as evaluator.
+     */
+    @Test
+    public void hasBranchPermissionIsTrueIfEvaluatorSaidSo() {
+        doReturn(true).when(aclEvaluator).hasPermission(any(Authentication.class),
+                eq(1L),
+                eq(AclClassName.BRANCH.toString()),
+                eq("BranchPermission.EDIT_OWN_POSTS"));
+
+        permissionService.hasBranchPermission(1L, BranchPermission.EDIT_OWN_POSTS);
     }
 }

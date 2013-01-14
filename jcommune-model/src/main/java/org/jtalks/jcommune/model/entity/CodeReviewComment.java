@@ -16,6 +16,7 @@ package org.jtalks.jcommune.model.entity;
 
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
+import org.springframework.util.ObjectUtils;
 
 /**
  * Represents one comment to one line in code review.
@@ -81,7 +82,21 @@ public class CodeReviewComment extends Entity {
     public void setAuthor(JCUser author) {
         this.author = author;
     }
-    
+
+    /**
+     * Determines whether specified user is the author of this comment.
+     *
+     * @param user a user to define whether she is the author, can be null
+     * @return true if the specified user is the author, or false if the author is null or the specified user is null or
+     *         the specified user is simply not the author
+     */
+    public boolean isCreatedBy(JCUser user) {
+        if (this.getAuthor() == null) {
+            return false;
+        }
+        return ObjectUtils.nullSafeEquals(this.getAuthor(), user);
+    }
+
     /**
      * The time when comment was added
      * @return the creationDate

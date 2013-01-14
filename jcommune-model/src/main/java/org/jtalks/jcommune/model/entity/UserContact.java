@@ -19,11 +19,12 @@ import org.apache.commons.lang.StringUtils;
 import org.jtalks.common.model.entity.Entity;
 
 /**
- * Stores information about the contacts of user.
- * Used as {@code UserDetails}
+ * Stores information about the contacts of user. Each contact can have its type {@link #getType()} which is either one
+ * of predefined types like Email, Skype and has its own validation rule to check its value when user edits its
+ * contacts.
+ * Used in {@code UserDetails} rather than {@link org.jtalks.common.model.entity.User} itself.
  */
 public class UserContact extends Entity {
-
     private String value;
     private JCUser owner;
     private UserContactType type;

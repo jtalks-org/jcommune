@@ -21,7 +21,6 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.CodeReviewCommentService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.security.AclClassName;
 import org.jtalks.jcommune.service.security.PermissionService;
 import org.springframework.security.access.AccessDeniedException;
 
@@ -74,14 +73,12 @@ public class TransactionalCodeReviewCommentService extends AbstractTransactional
      */
     private void checkHasUpdatePermission(CodeReviewComment comment, long branchId) {
         JCUser currentUser = userService.getCurrentUser();
-        boolean canEditOwnPosts = permissionService.hasPermission(branchId, 
-                AclClassName.BRANCH, BranchPermission.EDIT_OWN_POSTS);
-        boolean canEditOthersPosts = permissionService.hasPermission(branchId, 
-                AclClassName.BRANCH, BranchPermission.EDIT_OTHERS_POSTS);
-        
+        boolean canEditOwnPosts = permissionService.hasBranchPermission(branchId, BranchPermission.EDIT_OWN_POSTS);
+        boolean canEditOthersPosts = permissionService
+                .hasBranchPermission(branchId, BranchPermission.EDIT_OTHERS_POSTS);
+
         if (!canEditOthersPosts 
-             && !(canEditOwnPosts 
-                     && comment.getAuthor().getId() == currentUser.getId())) {
+             && !(canEditOwnPosts && comment.isCreatedBy(currentUser))) {
             throw new AccessDeniedException("No permission to edit review comment");
         }
     }
