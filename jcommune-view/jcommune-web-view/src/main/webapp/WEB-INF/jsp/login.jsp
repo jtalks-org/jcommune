@@ -45,7 +45,15 @@
                     <input type="password" name="j_password" id="j_password">
                     <c:if test="${not empty param.login_error}">
                         <span class="help-inline">
-                            <spring:message code="label.login_error"/>
+                        	<c:choose>
+                        		<c:when test="${param.login_error == 1}">
+                        			<spring:message code="label.login_error"/>
+                        		</c:when>
+                        		<c:when test="${param.login_error == 2}">
+                        			<spring:message code="label.login_cookies_were_theft"/>
+                        		</c:when>
+                        	</c:choose>
+                            
                         </span>
                     </c:if>
                 </div>
