@@ -100,11 +100,12 @@ public class TransactionalCodeReviewServiceTest {
     @Test
     public void testDeleteCommentSuccess() throws AccessDeniedException, NotFoundException {
         CodeReview codeReview = new CodeReview();
-        codeReview.setComments(new ArrayList<CodeReviewComment>());
+        ArrayList<CodeReviewComment> codeReviewComments = new ArrayList<CodeReviewComment>();
         CodeReviewComment reviewComment = createCodeReviewComment(String.valueOf(CR_ID));
-        codeReview.getComments().add(reviewComment);
-        codeReview.getComments().add(createCodeReviewComment("134"));
-        codeReview.getComments().add(createCodeReviewComment("1341"));
+        codeReviewComments.add(reviewComment);
+        codeReviewComments.add(createCodeReviewComment("134"));
+        codeReviewComments.add(createCodeReviewComment("1341"));
+        codeReview.setComments(codeReviewComments);
         int oldSize = codeReview.getComments().size();
         when(dao.get(REVIEW_ID)).thenReturn(codeReview);
         when(reviewCommentService.get(CR_ID)).thenReturn(reviewComment);
@@ -117,7 +118,13 @@ public class TransactionalCodeReviewServiceTest {
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testDeleteCommentReviewNotFound() throws AccessDeniedException, NotFoundException {
-        codeReviewService.deleteComment(123L, 123L);
+        when(dao.isExist(REVIEW_ID)).thenReturn(false);
+        codeReviewService.deleteComment(123L, REVIEW_ID);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void testDeleteCommentIfReviewNotFound() throws AccessDeniedException, NotFoundException {
+        codeReviewService.deleteComment(CR_ID, 123L);
     }
 
     @Test(expectedExceptions = NotFoundException.class)
@@ -126,7 +133,7 @@ public class TransactionalCodeReviewServiceTest {
     }
 
     @Test(expectedExceptions = AccessDeniedException.class)
-     public void testAddCommentUserHasNoPermission() throws AccessDeniedException, NotFoundException {
+    public void testAddCommentUserHasNoPermission() throws AccessDeniedException, NotFoundException {
         doThrow(new AccessDeniedException(""))
                 .when(permissionService).checkPermission(anyLong(), any(AclClassName.class), any(JtalksPermission.class));
         codeReviewService.addComment(CR_ID, 0, null);
