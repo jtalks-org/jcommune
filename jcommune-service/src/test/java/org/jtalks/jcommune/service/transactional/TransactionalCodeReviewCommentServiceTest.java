@@ -20,16 +20,16 @@ import org.jtalks.jcommune.model.entity.CodeReviewComment;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.security.AclClassName;
 import org.jtalks.jcommune.service.security.PermissionService;
 import org.mockito.Mock;
 import org.springframework.security.access.AccessDeniedException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 /**
  * 
@@ -40,7 +40,6 @@ public class TransactionalCodeReviewCommentServiceTest {
     private static final String COMMENT_BODY = "body";
     private static final long BRANCH_ID = 1L;
     private static final long CR_ID = 1L;
-    private static final long USER_ID = 1L;
     
     @Mock
     private ChildRepository<CodeReviewComment> dao;
@@ -50,69 +49,69 @@ public class TransactionalCodeReviewCommentServiceTest {
     private UserService userService;
     
     private TransactionalCodeReviewCommentService codeReviewCommentService;
-    
+
     private CodeReviewComment comment;
-    
+
     @BeforeMethod
     public void initEnvironmental() {
         initMocks(this);
-        
-        codeReviewCommentService = new TransactionalCodeReviewCommentService(
-                dao,
-                permissionService,
-                userService);
-        
+        codeReviewCommentService = new TransactionalCodeReviewCommentService(dao, permissionService, userService);
     }
     
     @BeforeMethod 
     public void prepareTestData() {
-        JCUser currentUser = new JCUser("", null, null);
-        currentUser.setId(USER_ID);
-        
+        JCUser currentUser = givenCurrentUser("code-review comment author");
+
         comment = new CodeReviewComment();
         comment.setAuthor(currentUser);
         
         when(dao.get(CR_ID)).thenReturn(comment);
         when(dao.isExist(CR_ID)).thenReturn(true);
-        
-        when(userService.getCurrentUser()).thenReturn(currentUser);
-        
-        when(permissionService.hasPermission(BRANCH_ID, AclClassName.BRANCH, 
-                BranchPermission.EDIT_OTHERS_POSTS)).thenReturn(true);
-        when(permissionService.hasPermission(BRANCH_ID, AclClassName.BRANCH, 
-                BranchPermission.EDIT_OWN_POSTS)).thenReturn(true);
+
+        givenUserHasPermissionToEditOwnPosts(true);
+        givenUserHasPermissionToEditOthersPosts(true);
     }
     
     @Test
-    public void testUpdateCommentSuccess() throws AccessDeniedException, NotFoundException {
+    public void testUpdateCommentSuccess() throws Exception {
+        givenUserHasPermissionToEditOwnPosts(true);
         CodeReviewComment comment = codeReviewCommentService.updateComment(CR_ID, COMMENT_BODY, BRANCH_ID);
         
         assertEquals(comment.getBody(), COMMENT_BODY);
     }
     
     @Test(expectedExceptions=NotFoundException.class)
-    public void testUpdateCommentNotFound() throws AccessDeniedException, NotFoundException {
+    public void testUpdateCommentNotFound() throws Exception {
         codeReviewCommentService.updateComment(123L, null, BRANCH_ID);
     }
     
     @Test(expectedExceptions=AccessDeniedException.class)
     public void testNoPermission() throws NotFoundException {
-        when(permissionService.hasPermission(BRANCH_ID, AclClassName.BRANCH, 
-            BranchPermission.EDIT_OTHERS_POSTS)).thenReturn(false);
-        when(permissionService.hasPermission(BRANCH_ID, AclClassName.BRANCH, 
-            BranchPermission.EDIT_OWN_POSTS)).thenReturn(false);
+        givenUserHasPermissionToEditOwnPosts(false);
+        givenUserHasPermissionToEditOthersPosts(false);
         codeReviewCommentService.updateComment(CR_ID, null, BRANCH_ID);
     }
     
     @Test(expectedExceptions=AccessDeniedException.class)
     public void testNotOwner() throws NotFoundException {
-        JCUser otherCurrentUser = new JCUser("", null, null);
-        when(userService.getCurrentUser()).thenReturn(otherCurrentUser);
-        when(permissionService.hasPermission(BRANCH_ID, AclClassName.BRANCH, 
-            BranchPermission.EDIT_OTHERS_POSTS)).thenReturn(false);
-        when(permissionService.hasPermission(BRANCH_ID, AclClassName.BRANCH, 
-            BranchPermission.EDIT_OWN_POSTS)).thenReturn(true);
+        givenCurrentUser("not-the-author-of-comment");
+        givenUserHasPermissionToEditOthersPosts(false);
+        givenUserHasPermissionToEditOwnPosts(true);
         codeReviewCommentService.updateComment(CR_ID, null, BRANCH_ID);
     }
-    
+
+    private void givenUserHasPermissionToEditOwnPosts(boolean isGranted) {
+        doReturn(isGranted).when(permissionService).hasBranchPermission(BRANCH_ID, BranchPermission.EDIT_OWN_POSTS);
+    }
+
+    private void givenUserHasPermissionToEditOthersPosts(boolean isGranted) {
+        doReturn(isGranted).when(permissionService).hasBranchPermission(BRANCH_ID, BranchPermission.EDIT_OTHERS_POSTS);
+    }
+
+    private JCUser givenCurrentUser(String username) {
+        JCUser currentUser = new JCUser(username, null, null);
+        when(userService.getCurrentUser()).thenReturn(currentUser);
+        return currentUser;
+    }
+
 }

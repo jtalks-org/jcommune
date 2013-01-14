@@ -14,13 +14,15 @@
  */
 package org.jtalks.jcommune.service.security;
 
+import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.springframework.security.access.AccessDeniedException;
 
 /**
- * Service for checking permission like @PreAuthorize('hasPermission(...)') 
- * annotation does. Intended to be used when we can't pass required IDs to 
- * methods (e.g. branch ID in code review addComment method)
+ * Service for checking permission like @PreAuthorize('hasPermission(...)') annotation does. Intended to be used when
+ * we can't pass required IDs to methods (e.g. branch ID in code review addComment method).
+ * <p>See <a href="http://jtalks.org/display/jtalks/Managing+Permissions">Permission Management Vision</a> if you're not
+ * familiar with the concept of how the permissions are granted or restricted.</p>
  * 
  * @author Vyacheslav Mishcheryakov
  *
@@ -55,4 +57,15 @@ public interface PermissionService {
      * @throws AccessDeniedException if current user is not granted with permission
      */
     void checkPermission(long targetId, AclClassName targetClass, JtalksPermission permission);
+
+    /**
+     * Checks whether current user has a specified branch permission for the specified branch. Note, that you can use
+     * other hasXxx() methods, but this one is convenient short-hand.
+     *
+     * @param branchId   the id of the branch to check permission for
+     * @param permission the permission to check whether current user is granted to perform the action
+     * @return true if current user is granted to the permission, false if she either she is not granted, or she is
+     *         restricted from this permission
+     */
+    boolean hasBranchPermission(long branchId, BranchPermission permission);
 }

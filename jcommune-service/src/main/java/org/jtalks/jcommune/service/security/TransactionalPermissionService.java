@@ -14,9 +14,9 @@
  */
 package org.jtalks.jcommune.service.security;
 
+import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
-import org.jtalks.jcommune.service.security.AclGroupPermissionEvaluator;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 
@@ -26,12 +26,12 @@ import org.springframework.security.core.Authentication;
  *
  */
 public class TransactionalPermissionService implements PermissionService {
-
-    /** Pattern to build permission full name */
+    /**
+     * Pattern to build permission full name, here is an example of eventual string:
+     * {@code BranchPermissions.EDIT_OWN_POSTS}
+     */
     private static final String PERMISSION_FULLNAME_PATTERN = "%s.%s";
-    
     private SecurityContextHolderFacade contextFacade;
-    
     private AclGroupPermissionEvaluator aclEvaluator;
     
     /**
@@ -40,7 +40,6 @@ public class TransactionalPermissionService implements PermissionService {
      */
     public TransactionalPermissionService(SecurityContextHolderFacade contextFacade,
             AclGroupPermissionEvaluator aclEvaluator) {
-        super();
         this.contextFacade = contextFacade;
         this.aclEvaluator = aclEvaluator;
     }
@@ -49,8 +48,7 @@ public class TransactionalPermissionService implements PermissionService {
      * {@inheritDoc}
      */
     @Override
-    public boolean hasPermission(long targetId, AclClassName targetClass,
-            JtalksPermission permission) {
+    public boolean hasPermission(long targetId, AclClassName targetClass, JtalksPermission permission) {
         String stringPermission = String.format(PERMISSION_FULLNAME_PATTERN,
                 permission.getClass().getSimpleName(), permission.getName()); 
         return hasPermission(targetId, targetClass.toString(), stringPermission);
@@ -60,12 +58,17 @@ public class TransactionalPermissionService implements PermissionService {
      * {@inheritDoc}
      */
     @Override
-    public boolean hasPermission(long targetId, String targetType,
-            String permission) {
+    public boolean hasPermission(long targetId, String targetType, String permission) {
         Authentication authentication = contextFacade.getContext().getAuthentication();
         return aclEvaluator.hasPermission(authentication, targetId, targetType, permission);
     }
-    
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasBranchPermission(long branchId, BranchPermission permission) {
+        return hasPermission(branchId, AclClassName.BRANCH, permission);
+    }
+
     /**
      * {@inheritDoc}
      */
