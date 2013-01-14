@@ -22,8 +22,9 @@ import org.jtalks.jcommune.web.rememberme.RememberMeCookieDecoder;
 /**
  * Provides an ability to check series and token from cookie and series and
  * token from database. We need this functionality to find more information
- * about cases when user cant' login in application by using "remember me"
+ * about cases when user can't login in application by using "remember me"
  * service.
+ * @see <a href="http://jira.jtalks.org/browse/JC-1185"/>
  * 
  * @author Anuar_Nurmakanov
  *

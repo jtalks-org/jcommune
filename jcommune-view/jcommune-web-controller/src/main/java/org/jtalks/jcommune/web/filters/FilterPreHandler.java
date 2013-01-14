@@ -17,11 +17,20 @@ package org.jtalks.jcommune.web.filters;
 import javax.servlet.http.HttpServletRequest;
 
 /**
+ * Represent the handler that must be called before filter starts
+ * its working. You can implement additional functionality without changing
+ * exist filter. 
  * 
  * @author Anuar_Nurmakanov
  *
  */
 public interface FilterPreHandler {
     
+    /**
+     * Handle incoming request. This method must be invoked before
+     * filter starts handling.
+     * 
+     * @param request incoming http request
+     */
     void handle(HttpServletRequest request);
 }

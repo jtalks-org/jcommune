@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * This controller is needed to handle exceptions that occurred during 
  * servlet filter. Note, that to handle such kind exceptions we must define
  * error-page rule in web.xml file. 
+ * @see <a href="http://jira.jtalks.org/browse/JC-1185"/>
  * 
  * @author Anuar_Nurmakanov
  *
