@@ -17,8 +17,9 @@ package org.jtalks.jcommune.web.rememberme;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Provides an ability to extract, decode values from
- * cookies that holds "remember me" data.
+ * Provides an ability to extract, decode values from cookies that holds "remember me" data. The interface was
+ * introduced because implementation extends Spring Security classes and we don't want to inject object with dozens of
+ * not-actually-needed methods, that's why we separated out only needed methods and moved them into this interface.
  * 
  * @author Anuar_Nurmakanov
  *
