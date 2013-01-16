@@ -121,6 +121,14 @@ public class MailServiceTest {
     }
 
     @Test
+    public void testSendUpdatesOnSubscriptionExceptionCase() {
+        Exception fail = new MailSendException("");
+        doThrow(fail).when(sender).send(Matchers.<MimeMessage>any());
+        service.sendUpdatesOnSubscription(user, codeReview);
+        verify(sender).send(Matchers.<MimeMessage>any());
+    }
+
+    @Test
     public void testSendTopicUpdatesEmail() throws MailingFailedException, IOException, MessagingException {
         Post post = new Post(user, "content");
         post.setId(1);
