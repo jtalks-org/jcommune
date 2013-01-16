@@ -206,29 +206,21 @@ CodeHighlighting.setupEditCommentHandlers = function() {
         var commentId = reviewContainer.find('input[name=id]').val();
         var reviewId = $('input[id="codeReviewId"]').val();
 
-        // popups to confirm comment deletion
-        $.prompt($(this)[0].rel,
-            {buttons:[
-                {title:$labelOk, value:true},
-                {title:$labelCancel, value:false}
-            ],
-                persistent:false,
-                submit:function (confirmed) {
-                    if (confirmed) {
-                        $.ajax({
-                            url:baseUrl + '/reviewcomments/delete?reviewId=' + reviewId + '&commentId=' + commentId,
-                            type:"GET",
-                            success:function () {
-                                $(reviewContainer).remove();
-                            },
-                            error:function () {
-                                bootbox.alert($labelUnexpectedError);
-                            }
-                        });
+        bootbox.confirm($labelDeleteCommentConfirmation, function(result) {
+            if(result){
+                $.ajax({
+                    url:baseUrl + '/reviewcomments/delete?reviewId=' + reviewId + '&commentId=' + commentId,
+                    type:"GET",
+                    success:function () {
+                        $(reviewContainer).remove();
+                    },
+                    error:function () {
+                        bootbox.alert($labelUnexpectedError);
                     }
-                }
+                });
             }
-        );
+        });
+
         return false;
     });
 
