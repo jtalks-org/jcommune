@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.web.filters;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -23,10 +22,13 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.jtalks.jcommune.web.rememberme.RememberMeCheckService;
+import org.jtalks.jcommune.web.rememberme.RememberMeCookieDecoder;
+
 /**
  * This filter performs the same operations as {@link UsernamePasswordAuthenticationFilter}
- * but usage of this filter provides an ability to handle data of filter before this filter
- * starts working with these data.
+ * but usage of this filter provides an ability to check passed in request "remember me" token
+ * with token in database.
  * 
  * @author Anuar_Nurmakanov
  *
@@ -34,16 +36,20 @@ import javax.servlet.http.HttpServletRequest;
 public class UsernamePasswordAuthenticationFilter 
     extends org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter {
     
-    private List<FilterPreHandler> preHandlers;
+    private RememberMeCookieDecoder rememberMeCookieDecoder;
+    private RememberMeCheckService rememberMeCheckService;
     
     /**
-     * Constructs an instance of filter with passed prehandlers.
+     * Constructs an instance with required fields.
      * 
-     * @param preHandlers these handlers must handle data of filter before this filter
-     *                    starts working with its data.
-     */
-    public UsernamePasswordAuthenticationFilter(List<FilterPreHandler> preHandlers) {
-        this.preHandlers = preHandlers;
+     * @param rememberMeCookieDecoder decoder of remember me data from cookie
+     * @param rememberMeCheckService remember me check service
+     */ 
+    public UsernamePasswordAuthenticationFilter(
+            RememberMeCookieDecoder rememberMeCookieDecoder,
+            RememberMeCheckService rememberMeCheckService) {
+        this.rememberMeCookieDecoder = rememberMeCookieDecoder;
+        this.rememberMeCheckService = rememberMeCheckService;
     }
 
     /**
@@ -53,9 +59,23 @@ public class UsernamePasswordAuthenticationFilter
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) 
             throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
-        for (FilterPreHandler preHandler: preHandlers) {
-            preHandler.handle(request);
-        }
+        extractAndCheckRememberMeToken(request);
         super.doFilter(req, res, chain);
+    }
+    
+    /**
+     * Extract "remember me" token from request and if it exists check it with
+     * token from database.
+     * 
+     * @param request incoming http request
+     */
+    private void extractAndCheckRememberMeToken(HttpServletRequest request) {
+        String rememberMeCookieValue = rememberMeCookieDecoder.exctractRememberMeCookieValue(request);
+        if (rememberMeCookieValue != null) {
+            String[] seriesAndToken = rememberMeCookieDecoder.extractSeriesAndToken(rememberMeCookieValue);
+            String series = seriesAndToken[0];
+            String token = seriesAndToken[1];
+            rememberMeCheckService.equalWithPersistentToken(series, token);
+        }
     }
 }

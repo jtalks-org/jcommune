@@ -92,16 +92,8 @@
 
     <bean id="rememberMeCheckFilter"
           class="org.jtalks.jcommune.web.filters.UsernamePasswordAuthenticationFilter">
-        <constructor-arg >
-            <list>
-                <ref bean="checkRememberMeDataFilterPreHandler"/>
-            </list>
-        </constructor-arg>
-        <property name="authenticationManager" ref="authenticationManager" />
-    </bean>
-
-    <bean id="checkRememberMeDataFilterPreHandler" class="org.jtalks.jcommune.web.filters.CheckRememberMeDataFilterPreHandler">
         <constructor-arg ref="rememberMeCookieDecoder" />
         <constructor-arg ref="rememberMeCheckService" />
+        <property name="authenticationManager" ref="authenticationManager" />
     </bean>
 </beans>
