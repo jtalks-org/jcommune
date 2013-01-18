@@ -107,7 +107,7 @@ public class MailServiceTest {
 
         this.checkMailCredentials();
         assertTrue(this.getMimeMailBody().contains(USERNAME));
-        assertTrue(this.getMimeMailBody().toString().contains(PASSWORD));
+        assertTrue(this.getMimeMailBody().contains(PASSWORD));
         assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/login"));
     }
 
@@ -117,7 +117,7 @@ public class MailServiceTest {
         topic.setId(id);
         service.sendUpdatesOnSubscription(user, codeReview);
         this.checkMailCredentials();
-        assertTrue(this.getMimeMailBody().toString().contains("http://coolsite.com:1234/forum/topics/" + id));
+        assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/topics/" + id));
     }
 
     @Test
@@ -137,7 +137,7 @@ public class MailServiceTest {
         service.sendTopicUpdatesOnSubscription(user, topic);
 
         this.checkMailCredentials();
-        assertTrue(this.getMimeMailBody().toString().contains("http://coolsite.com:1234/forum/posts/1"));
+        assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/posts/1"));
     }
 
     @Test
