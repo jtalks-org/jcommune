@@ -14,19 +14,6 @@
  */
 package org.jtalks.jcommune.web.filters;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-
-import java.io.IOException;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.jtalks.jcommune.web.rememberme.RememberMeCheckService;
 import org.jtalks.jcommune.web.rememberme.RememberMeCookieDecoder;
 import org.mockito.Mock;
@@ -35,6 +22,15 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 /**
  * 
@@ -52,14 +48,12 @@ public class UsernamePasswordAuthenticationFilterTest {
     @BeforeMethod
     public void init() {
         initMocks(this);
-        filter = new UsernamePasswordAuthenticationFilter(
-                rememberMeCookieDecoder, rememberMeCheckService);
+        filter = new UsernamePasswordAuthenticationFilter(rememberMeCookieDecoder, rememberMeCheckService);
     }
     
     @Test
     public void passedRememberMeTokenInCookieShouldBeChecked() throws IOException, ServletException {
         HttpServletRequest request = new MockHttpServletRequest();
-        HttpServletResponse responce = new MockHttpServletResponse();
         FilterChain filterChain = new MockFilterChain();
         String rememberMeCookieValue = "cookie value";
         String series = "series";
@@ -70,7 +64,7 @@ public class UsernamePasswordAuthenticationFilterTest {
         when(rememberMeCookieDecoder.extractSeriesAndToken(rememberMeCookieValue))
             .thenReturn(seriesAndToken);
 
-        filter.doFilter(request, responce, filterChain);
+        filter.doFilter(request, new MockHttpServletResponse(), filterChain);
 
         verify(rememberMeCheckService).equalWithPersistentToken(series, token);
     }
@@ -78,12 +72,11 @@ public class UsernamePasswordAuthenticationFilterTest {
     @Test
     public void notPassedRememberMeTokenInShouldNotBeChecked() throws IOException, ServletException {
         HttpServletRequest request = new MockHttpServletRequest();
-        HttpServletResponse responce = new MockHttpServletResponse();
         FilterChain filterChain = new MockFilterChain();
         when(rememberMeCookieDecoder.exctractRememberMeCookieValue(request))
             .thenReturn(null);
 
-        filter.doFilter(request, responce, filterChain);
+        filter.doFilter(request, new MockHttpServletResponse(), filterChain);
 
         verify(rememberMeCookieDecoder, never()).extractSeriesAndToken(anyString());
         verify(rememberMeCheckService, never())

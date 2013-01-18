@@ -14,31 +14,32 @@
  */
 package org.jtalks.jcommune.web.filters;
 
-import java.io.IOException;
+import org.jtalks.jcommune.web.rememberme.RememberMeCheckService;
+import org.jtalks.jcommune.web.rememberme.RememberMeCookieDecoder;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-
-import org.jtalks.jcommune.web.rememberme.RememberMeCheckService;
-import org.jtalks.jcommune.web.rememberme.RememberMeCookieDecoder;
+import java.io.IOException;
 
 /**
  * This filter performs the same operations as {@link UsernamePasswordAuthenticationFilter}
  * but usage of this filter provides an ability to check passed in request "remember me" token
- * with token in database.
+ * with token in database. We log a detailed message about what were the persistent tokens if they don't match with
+ * the ones from user's cookies so that we can investigate this problem in details (that means that cookies were
+ * stolen).
  * 
  * @author Anuar_Nurmakanov
  *
  */
 public class UsernamePasswordAuthenticationFilter 
     extends org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter {
-    
-    private RememberMeCookieDecoder rememberMeCookieDecoder;
-    private RememberMeCheckService rememberMeCheckService;
-    
+
+    private final RememberMeCookieDecoder rememberMeCookieDecoder;
+    private final RememberMeCheckService rememberMeCheckService;
+
     /**
      * Constructs an instance with required fields.
      * 
