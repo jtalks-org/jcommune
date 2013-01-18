@@ -23,6 +23,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.util.Properties;
 
+import static org.mockito.Mockito.spy;
 import static org.testng.Assert.assertEquals;
 
 
