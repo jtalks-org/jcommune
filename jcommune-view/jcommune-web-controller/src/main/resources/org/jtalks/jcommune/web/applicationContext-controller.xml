@@ -69,7 +69,12 @@
     <bean id="tokenRepository"
           class="org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl">
         <property name="dataSource" ref="dataSource"/>     
-     </bean>
+    </bean>
+    
+    <bean id="loggingConfigurationFilter"
+   	      class="org.jtalks.jcommune.web.filters.LoggingConfigurationFilter" >
+        <constructor-arg ref="securityService" />
+    </bean>
     
 </beans>
 
