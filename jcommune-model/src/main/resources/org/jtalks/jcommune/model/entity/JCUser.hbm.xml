@@ -37,6 +37,7 @@
         <property name="avatar" lazy="true">
             <column name="AVATAR" sql-type="blob"/>
         </property>
+        <property column="ENABLED" name="enabled"/>
 
         <bag name="groups" table="GROUP_USER_REF" lazy="false" fetch="select">
             <cache usage="nonstrict-read-write" region="org.jtalks.common.model.entity.User.groups"/>
@@ -61,7 +62,6 @@
             <property column="REGISTRATION_DATE" name="registrationDate"
                       type="org.joda.time.contrib.hibernate.PersistentDateTime" not-null="false"/>
             <property column="POST_COUNT" name="postCount"/>
-            <property column="ENABLED" name="enabled"/>
 
             <set name="contacts" cascade="all-delete-orphan" inverse="true" >
                 <key column="USER_ID" foreign-key="FK_USER"/>
