@@ -14,6 +14,11 @@ INSERT IGNORE INTO USERS (UUID, FIRST_NAME, LAST_NAME, USERNAME, ENCODED_USERNAM
 INSERT IGNORE INTO JC_USER_DETAILS (USER_ID, REGISTRATION_DATE, POST_COUNT)
   select ID, NOW(), 0 from USERS where USERNAME = 'default';
 
+INSERT IGNORE INTO USERS (UUID, FIRST_NAME, LAST_NAME, USERNAME, ENCODED_USERNAME, EMAIL, PASSWORD, ROLE, SALT, REGISTRATION_DATE, ENABLED)
+  VALUES((SELECT UUID() FROM dual), 'banned', 'banned', 'banned', 'banned', 'banned@jtalks.org', MD5('banned'), 'USER_ROLE', '', NOW(), true);
+INSERT IGNORE INTO JC_USER_DETAILS (USER_ID, REGISTRATION_DATE, POST_COUNT)
+  select ID, NOW(), 0 from USERS where USERNAME = 'banned';
+
 SET @admin_group_id := (select GROUP_ID from GROUPS where `NAME`='Administrators');
 SET @registered_group_id := (select GROUP_ID from GROUPS where `NAME`='Registered Users');
 SET @banned_group_id := (select GROUP_ID from GROUPS where `NAME`='Banned Users');
@@ -28,6 +33,8 @@ SET @moderator_group_sid := concat('usergroup:',@moderator_group_id);
 INSERT IGNORE INTO GROUP_USER_REF select @moderator_group_id, ID from USERS where USERNAME = 'default';
 INSERT IGNORE INTO GROUP_USER_REF select @registered_group_id, ID from USERS where USERNAME = 'default';
 INSERT IGNORE INTO GROUP_USER_REF select @admin_group_id, ID from USERS where USERNAME = 'default';
+INSERT IGNORE INTO GROUP_USER_REF select @banned_group_id, ID from USERS where USERNAME = 'banned';
+INSERT IGNORE INTO GROUP_USER_REF select @registered_group_id, ID from USERS where USERNAME = 'banned';
 
 INSERT INTO `acl_class` VALUES (1,'BRANCH');
 INSERT INTO `acl_class` VALUES (2,'GROUP');
