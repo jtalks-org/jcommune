@@ -9,10 +9,10 @@ INSERT INTO BRANCHES (BRANCH_ID, UUID, `NAME`, DESCRIPTION, POSITION, SECTION_ID
 INSERT INTO BRANCHES (BRANCH_ID, UUID, `NAME`, DESCRIPTION, POSITION, SECTION_ID, MODERATORS_GROUP_ID) VALUES(4, (SELECT UUID() FROM dual), 'The last, but not least', 'More information', 1, 2 ,1);
 
 -- Creates a default user with default/default credentials to be able to log in without manual registration
-INSERT IGNORE INTO USERS (UUID, FIRST_NAME, LAST_NAME, USERNAME, ENCODED_USERNAME, EMAIL, PASSWORD, ROLE, SALT, REGISTRATION_DATE)
-  VALUES((SELECT UUID() FROM dual), 'default', 'default', 'default', 'default', 'default@jtalks.org', MD5('default'), 'USER_ROLE', '', NOW());
-INSERT IGNORE INTO JC_USER_DETAILS (USER_ID, REGISTRATION_DATE, POST_COUNT, ENABLED)
-  select ID, NOW(), 0, true from USERS where USERNAME = 'default';
+INSERT IGNORE INTO USERS (UUID, FIRST_NAME, LAST_NAME, USERNAME, ENCODED_USERNAME, EMAIL, PASSWORD, ROLE, SALT, REGISTRATION_DATE, ENABLED)
+  VALUES((SELECT UUID() FROM dual), 'default', 'default', 'default', 'default', 'default@jtalks.org', MD5('default'), 'USER_ROLE', '', NOW(), true);
+INSERT IGNORE INTO JC_USER_DETAILS (USER_ID, REGISTRATION_DATE, POST_COUNT)
+  select ID, NOW(), 0 from USERS where USERNAME = 'default';
 
 SET @admin_group_id := (select GROUP_ID from GROUPS where `NAME`='Administrators');
 SET @registered_group_id := (select GROUP_ID from GROUPS where `NAME`='Registered Users');
@@ -87,53 +87,53 @@ INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, aud
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (1,3,@admin_group_sid_id,@MOVE_TOPICS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (1,4,@moderator_group_sid_id,@MOVE_TOPICS_MASK,0,0,0);
+                VALUES (1,4,@moderator_group_sid_id,@MOVE_TOPICS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (2,3,@admin_group_sid_id,@MOVE_TOPICS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (2,4,@moderator_group_sid_id,@MOVE_TOPICS_MASK,0,0,0);
+                VALUES (2,4,@moderator_group_sid_id,@MOVE_TOPICS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (3,3,@admin_group_sid_id,@MOVE_TOPICS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (3,4,@moderator_group_sid_id,@MOVE_TOPICS_MASK,0,0,0);
+                VALUES (3,4,@moderator_group_sid_id,@MOVE_TOPICS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (4,3,@admin_group_sid_id,@MOVE_TOPICS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (4,4,@moderator_group_sid_id,@MOVE_TOPICS_MASK,0,0,0);
+                VALUES (4,4,@moderator_group_sid_id,@MOVE_TOPICS_MASK,1,0,0);
 
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (1,5,@admin_group_sid_id,@DELETE_OTHERS_POSTS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (1,6,@moderator_group_sid_id,@DELETE_OTHERS_POSTS_MASK,0,0,0);
+                VALUES (1,6,@moderator_group_sid_id,@DELETE_OTHERS_POSTS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (2,5,@admin_group_sid_id,@DELETE_OTHERS_POSTS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (2,6,@moderator_group_sid_id,@DELETE_OTHERS_POSTS_MASK,0,0,0);
+                VALUES (2,6,@moderator_group_sid_id,@DELETE_OTHERS_POSTS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (3,5,@admin_group_sid_id,@DELETE_OTHERS_POSTS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (3,6,@moderator_group_sid_id,@DELETE_OTHERS_POSTS_MASK,0,0,0);
+                VALUES (3,6,@moderator_group_sid_id,@DELETE_OTHERS_POSTS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (4,5,@admin_group_sid_id,@DELETE_OTHERS_POSTS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (4,6,@moderator_group_sid_id,@DELETE_OTHERS_POSTS_MASK,0,0,0);
+                VALUES (4,6,@moderator_group_sid_id,@DELETE_OTHERS_POSTS_MASK,1,0,0);
 
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (1,7,@admin_group_sid_id,@CLOSE_TOPICS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (1,8,@moderator_group_sid_id,@CLOSE_TOPICS_MASK,0,0,0);
+                VALUES (1,8,@moderator_group_sid_id,@CLOSE_TOPICS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (2,7,@admin_group_sid_id,@CLOSE_TOPICS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (2,8,@moderator_group_sid_id,@CLOSE_TOPICS_MASK,0,0,0);
+                VALUES (2,8,@moderator_group_sid_id,@CLOSE_TOPICS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (3,7,@admin_group_sid_id,@CLOSE_TOPICS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (3,8,@moderator_group_sid_id,@CLOSE_TOPICS_MASK,0,0,0);
+                VALUES (3,8,@moderator_group_sid_id,@CLOSE_TOPICS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (4,7,@admin_group_sid_id,@CLOSE_TOPICS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (4,8,@moderator_group_sid_id,@CLOSE_TOPICS_MASK,0,0,0);
+                VALUES (4,8,@moderator_group_sid_id,@CLOSE_TOPICS_MASK,1,0,0);
 
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (1,9,@registered_group_sid_id,@CREATE_POSTS_MASK,1,0,0);
@@ -145,15 +145,6 @@ INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, aud
                 VALUES (4,9,@registered_group_sid_id,@CREATE_POSTS_MASK,1,0,0);
 
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (1,10,@anonymous_sid_id,@CREATE_POSTS_MASK,0,0,0);
-INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (2,10,@anonymous_sid_id,@CREATE_POSTS_MASK,0,0,0);
-INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (3,10,@anonymous_sid_id,@CREATE_POSTS_MASK,0,0,0);
-INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (4,10,@anonymous_sid_id,@CREATE_POSTS_MASK,0,0,0);
-
-INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (1,11,@registered_group_sid_id,@DELETE_OWN_POSTS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (2,11,@registered_group_sid_id,@DELETE_OWN_POSTS_MASK,1,0,0);
@@ -161,15 +152,6 @@ INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, aud
                 VALUES (3,11,@registered_group_sid_id,@DELETE_OWN_POSTS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (4,11,@registered_group_sid_id,@DELETE_OWN_POSTS_MASK,1,0,0);
-
-INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (1,12,@anonymous_sid_id,@DELETE_OWN_POSTS_MASK,0,0,0);
-INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (2,12,@anonymous_sid_id,@DELETE_OWN_POSTS_MASK,0,0,0);
-INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (3,12,@anonymous_sid_id,@DELETE_OWN_POSTS_MASK,0,0,0);
-INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (4,12,@anonymous_sid_id,@DELETE_OWN_POSTS_MASK,0,0,0);
 
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (1,13,@registered_group_sid_id,@EDIT_OWN_POSTS_MASK,1,0,0);
@@ -181,64 +163,55 @@ INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, aud
                 VALUES (4,13,@registered_group_sid_id,@EDIT_OWN_POSTS_MASK,1,0,0);
 
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (1,14,@anonymous_sid_id,@EDIT_OWN_POSTS_MASK,0,0,0);
-INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (2,14,@anonymous_sid_id,@EDIT_OWN_POSTS_MASK,0,0,0);
-INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (3,14,@anonymous_sid_id,@EDIT_OWN_POSTS_MASK,0,0,0);
-INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (4,14,@anonymous_sid_id,@EDIT_OWN_POSTS_MASK,0,0,0);
-
-INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (1,15,@admin_group_sid_id,@EDIT_OTHERS_POSTS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (1,16,@moderator_group_sid_id,@EDIT_OTHERS_POSTS_MASK,0,0,0);
+                VALUES (1,16,@moderator_group_sid_id,@EDIT_OTHERS_POSTS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (2,15,@admin_group_sid_id,@EDIT_OTHERS_POSTS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (2,16,@moderator_group_sid_id,@EDIT_OTHERS_POSTS_MASK,0,0,0);
+                VALUES (2,16,@moderator_group_sid_id,@EDIT_OTHERS_POSTS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (3,15,@admin_group_sid_id,@EDIT_OTHERS_POSTS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (3,16,@moderator_group_sid_id,@EDIT_OTHERS_POSTS_MASK,0,0,0);
+                VALUES (3,16,@moderator_group_sid_id,@EDIT_OTHERS_POSTS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (4,15,@admin_group_sid_id,@EDIT_OTHERS_POSTS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (4,16,@moderator_group_sid_id,@EDIT_OTHERS_POSTS_MASK,0,0,0);
+                VALUES (4,16,@moderator_group_sid_id,@EDIT_OTHERS_POSTS_MASK,1,0,0);
 
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (1,17,@admin_group_sid_id,@CREATE_ANNOUNCEMENTS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (1,18,@moderator_group_sid_id,@CREATE_ANNOUNCEMENTS_MASK,0,0,0);
+                VALUES (1,18,@moderator_group_sid_id,@CREATE_ANNOUNCEMENTS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (2,17,@admin_group_sid_id,@CREATE_ANNOUNCEMENTS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (2,18,@moderator_group_sid_id,@CREATE_ANNOUNCEMENTS_MASK,0,0,0);
+                VALUES (2,18,@moderator_group_sid_id,@CREATE_ANNOUNCEMENTS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (3,17,@admin_group_sid_id,@CREATE_ANNOUNCEMENTS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (3,18,@moderator_group_sid_id,@CREATE_ANNOUNCEMENTS_MASK,0,0,0);
+                VALUES (3,18,@moderator_group_sid_id,@CREATE_ANNOUNCEMENTS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (4,17,@admin_group_sid_id,@CREATE_ANNOUNCEMENTS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (4,18,@moderator_group_sid_id,@CREATE_ANNOUNCEMENTS_MASK,0,0,0);
+                VALUES (4,18,@moderator_group_sid_id,@CREATE_ANNOUNCEMENTS_MASK,1,0,0);
 
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (1,19,@admin_group_sid_id,@CREATE_STICKED_TOPICS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (1,20,@moderator_group_sid_id,@CREATE_STICKED_TOPICS_MASK,0,0,0);
+                VALUES (1,20,@moderator_group_sid_id,@CREATE_STICKED_TOPICS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (2,19,@admin_group_sid_id,@CREATE_STICKED_TOPICS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (2,20,@moderator_group_sid_id,@CREATE_STICKED_TOPICS_MASK,0,0,0);
+                VALUES (2,20,@moderator_group_sid_id,@CREATE_STICKED_TOPICS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (3,19,@admin_group_sid_id,@CREATE_STICKED_TOPICS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (3,20,@moderator_group_sid_id,@CREATE_STICKED_TOPICS_MASK,0,0,0);
+                VALUES (3,20,@moderator_group_sid_id,@CREATE_STICKED_TOPICS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (4,19,@admin_group_sid_id,@CREATE_STICKED_TOPICS_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (4,20,@moderator_group_sid_id,@CREATE_STICKED_TOPICS_MASK,0,0,0);
+                VALUES (4,20,@moderator_group_sid_id,@CREATE_STICKED_TOPICS_MASK,1,0,0);
 
 /* SEND_PRIVATE_MESSAGES for registered users */
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
@@ -269,5 +242,48 @@ INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, aud
                 VALUES (3,22,@registered_group_sid_id,@LEAVE_COMMENTS_IN_CODE_REVIEW_MASK,1,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (4,22,@registered_group_sid_id,@LEAVE_COMMENTS_IN_CODE_REVIEW_MASK,1,0,0);
-                
-/* Delete permissions for registered users */                
+
+/* Delete permissions for banned users */
+
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (1,23,@banned_group_sid_id,@LEAVE_COMMENTS_IN_CODE_REVIEW_MASK,0,0,0);
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (2,23,@banned_group_sid_id,@LEAVE_COMMENTS_IN_CODE_REVIEW_MASK,0,0,0);
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (3,23,@banned_group_sid_id,@LEAVE_COMMENTS_IN_CODE_REVIEW_MASK,0,0,0);
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (4,23,@banned_group_sid_id,@LEAVE_COMMENTS_IN_CODE_REVIEW_MASK,0,0,0);
+
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (5,2,@banned_group_sid_id,@SEND_PRIVATE_MESSAGES_MASK,0,0,0);
+
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (5,3,@banned_group_sid_id,@EDIT_PROFILE_MASK,0,0,0);
+
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (1,24,@banned_group_sid_id,@CREATE_POSTS_MASK,0,0,0);
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (2,24,@banned_group_sid_id,@CREATE_POSTS_MASK,0,0,0);
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (3,24,@banned_group_sid_id,@CREATE_POSTS_MASK,0,0,0);
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (4,24,@banned_group_sid_id,@CREATE_POSTS_MASK,0,0,0);
+
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (1,25,@banned_group_sid_id,@EDIT_OWN_POSTS_MASK,0,0,0);
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (2,25,@banned_group_sid_id,@EDIT_OWN_POSTS_MASK,0,0,0);
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (3,25,@banned_group_sid_id,@EDIT_OWN_POSTS_MASK,0,0,0);
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (4,25,@banned_group_sid_id,@EDIT_OWN_POSTS_MASK,0,0,0);
+
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (1,26,@banned_group_sid_id,@CREATE_CODE_REVIEW_MASK,0,0,0);
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (2,26,@banned_group_sid_id,@CREATE_CODE_REVIEW_MASK,0,0,0);
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (3,26,@banned_group_sid_id,@CREATE_CODE_REVIEW_MASK,0,0,0);
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (4,26,@banned_group_sid_id,@CREATE_CODE_REVIEW_MASK,0,0,0);
+
