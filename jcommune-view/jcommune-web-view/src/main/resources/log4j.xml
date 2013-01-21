@@ -25,7 +25,8 @@
     <param name="DatePattern" value=".yyyy-MM-dd"/>
     <param name="Encoding" value="UTF-8"/>
     <layout class="org.apache.log4j.EnhancedPatternLayout">
-      <param name="ConversionPattern" value="%d{ISO8601} [%-5p][%-16.16t][%X{userName}][%30c] - %m%n"/>
+      <!--The username is set by MDC feature in a web filter-->
+      <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%-5p][%-16.16t][%X{userName}][%30c] - %m%n"/>
     </layout>
   </appender>
 
@@ -35,13 +36,13 @@
     <param name="MaxBackupIndex" value="10"/>
     <param name="Encoding" value="UTF-8"/>
     <layout class="org.apache.log4j.EnhancedPatternLayout">
-      <param name="ConversionPattern" value="%d{ISO8601} [%-5p][%-16.16t][%X{userName}][%30c{-2}] - %m%n"/>
+      <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%-5p][%-16.16t][%X{userName}][%30c{-2}] - %m%n"/>
     </layout>
   </appender>
   <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
     <param name="Encoding" value="UTF-8"/>
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%d{ISO8601} [%-5p][%-16.16t][%X{userName}][%36.60c] - %m%n"/>
+      <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%-5p][%-16.16t][%X{userName}][%36.60c] - %m%n"/>
     </layout>
   </appender>
 
