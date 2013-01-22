@@ -74,14 +74,22 @@
         <security:intercept-url pattern="/search/index/rebuild" access="hasIpAddress('127.0.0.1')"/>
         <security:intercept-url pattern="*" access="permitAll()"/>
         <security:form-login login-page="/login" login-processing-url="/j_spring_security_check"
-                             authentication-failure-url="/login?login_error=1" default-target-url="/"
-                             authentication-success-handler-ref="successAuthHandler"/>
+                             default-target-url="/"
+                             authentication-success-handler-ref="successAuthHandler"
+                             authentication-failure-handler-ref="failureAuthHandler"/>
+
         <security:logout logout-url="/logout" logout-success-url="/" invalidate-session="true"/>
         <security:remember-me data-source-ref="dataSource" key="JTalks" services-alias="rememberMeServices"/>
     </security:http>
 
     <bean id="successAuthHandler" class="org.jtalks.jcommune.web.util.SuccessfulAuthenticationHandler">
         <constructor-arg ref="userService"/>
+    </bean>
+
+    <!--Needed to correct operation "logout". Was added with UsernamePasswordAuthenticationFilter.-->
+    <bean id="failureAuthHandler"
+          class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+        <property name="defaultFailureUrl" value="/login?login_error=1"/>
     </bean>
 
     <bean id="concurrentSessionControlStrategy"
@@ -95,5 +103,7 @@
         <constructor-arg ref="rememberMeCookieDecoder" />
         <constructor-arg ref="rememberMeCheckService" />
         <property name="authenticationManager" ref="authenticationManager" />
+        <!--Needed to correct operation "logout". May be successAuthHandler needed, too-->
+        <property name="authenticationFailureHandler" ref="failureAuthHandler"/>
     </bean>
 </beans>
