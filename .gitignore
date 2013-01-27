@@ -9,6 +9,7 @@
 .metadata
 .mymetadata
 .springBeans
+.gradle
 
 # IntelliJ Idea project files
 .idea

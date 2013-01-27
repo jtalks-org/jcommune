@@ -20,12 +20,11 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
   <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-    <!--todo:  make it configurable -->
-    <property name="host" value="smtp.mail.ru"/>
-    <property name="port" value="25"/>
+    <property name="host" value="${SMTP_HOST:smtp.mail.ru}"/>
+    <property name="port" value="${SMTP_PORT:25}"/>
     <!--the following property should match "from" property in MailSender bean-->
-    <property name="username" value="jtalks@inbox.ru"/>
-    <property name="password" value="javatalks"/>
+    <property name="username" value="${MAIL_USERNAME:jtalks@inbox.ru}"/>
+    <property name="password" value="${MAIL_PASSWORD:javatalks}"/>
     <property name="defaultEncoding" value="UTF-8"/>
     <property name="javaMailProperties">
       <props>
