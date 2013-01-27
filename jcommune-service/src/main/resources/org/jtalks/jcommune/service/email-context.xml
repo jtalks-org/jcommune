@@ -56,7 +56,7 @@
   <bean id="mailService" class="org.jtalks.jcommune.service.nontransactional.MailService">
     <constructor-arg ref="mailSender"/>
     <!--the following argument should match real mailbox we use to send mails-->
-    <constructor-arg name="from" value="jtalks@inbox.ru"/>
+    <constructor-arg name="from" value="${MAIL_FROM:jtalks@inbox.ru}"/>
     <constructor-arg ref="velocityEngine"/>
     <constructor-arg ref="messageSource"/>
   </bean>
