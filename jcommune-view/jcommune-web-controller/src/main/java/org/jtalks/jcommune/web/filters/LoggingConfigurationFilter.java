@@ -25,7 +25,7 @@ import javax.servlet.ServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.jtalks.common.security.SecurityService;
-import org.jtalks.jcommune.web.logging.LoggingMDCService;
+import org.jtalks.jcommune.web.logging.LoggerMdc;
 
 /**
  * This filter provides an ability to register
@@ -36,19 +36,19 @@ import org.jtalks.jcommune.web.logging.LoggingMDCService;
 public class LoggingConfigurationFilter implements Filter {
     
     private SecurityService securityService;
-    private LoggingMDCService loggingMDCService;
+    private LoggerMdc loggerMdc;
     
     /**
      * Constructs an instance with required fields.
      * 
      * @param securityService to get current user for registration in logging context
-     * @param loggingMDCService to register and unregister user in MDC
+     * @param loggerMdc to register and unregister user in MDC
      */
     public LoggingConfigurationFilter(
             SecurityService securityService,
-            LoggingMDCService loggingMDCService) {
+            LoggerMdc loggerMdc) {
         this.securityService = securityService;
-        this.loggingMDCService = loggingMDCService;
+        this.loggerMdc = loggerMdc;
     }
 
     /**
@@ -71,7 +71,7 @@ public class LoggingConfigurationFilter implements Filter {
             chain.doFilter(request, response);
         } finally {
             if (successfulRegistered) {
-                loggingMDCService.unregisterUser();
+                loggerMdc.unregisterUser();
             }
         }
     }
@@ -84,7 +84,7 @@ public class LoggingConfigurationFilter implements Filter {
      */
     private boolean registerCurrentUserName(String userName) {
       if (!StringUtils.isEmpty(userName)) {
-          loggingMDCService.registerUser(userName);
+          loggerMdc.registerUser(userName);
           return true;
       }
       return false;

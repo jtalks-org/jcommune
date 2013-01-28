@@ -75,7 +75,7 @@
    	      class="org.jtalks.jcommune.web.filters.LoggingConfigurationFilter" >
         <constructor-arg ref="securityService" />
         <constructor-arg>
-            <bean class="org.jtalks.jcommune.web.logging.LoggingMDCService"/>
+            <bean class="org.jtalks.jcommune.web.logging.LoggerMdc"/>
         </constructor-arg>
     </bean>
     

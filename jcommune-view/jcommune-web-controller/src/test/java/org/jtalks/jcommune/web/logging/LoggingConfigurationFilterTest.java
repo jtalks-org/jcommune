@@ -42,7 +42,7 @@ public class LoggingConfigurationFilterTest {
     @Mock
     private SecurityService securityService;
     @Mock
-    private LoggingMDCService loggingMDCService;
+    private LoggerMdc loggerMdc;
     //
     private LoggingConfigurationFilter loggingConfigurationFilter;
     
@@ -50,7 +50,7 @@ public class LoggingConfigurationFilterTest {
     public void init() {
         initMocks(this);
         this.loggingConfigurationFilter = new LoggingConfigurationFilter(
-                securityService, loggingMDCService);
+                securityService, loggerMdc);
     }
     
     @Test
@@ -63,8 +63,8 @@ public class LoggingConfigurationFilterTest {
         
         loggingConfigurationFilter.doFilter(request, response, filterChain);
         
-        verify(loggingMDCService).registerUser(userName);
-        verify(loggingMDCService).unregisterUser();
+        verify(loggerMdc).registerUser(userName);
+        verify(loggerMdc).unregisterUser();
     }
     
     @Test
@@ -77,7 +77,7 @@ public class LoggingConfigurationFilterTest {
         
         loggingConfigurationFilter.doFilter(request, response, filterChain);
         
-        verify(loggingMDCService, never()).registerUser(userName);
-        verify(loggingMDCService, never()).unregisterUser();  
+        verify(loggerMdc, never()).registerUser(userName);
+        verify(loggerMdc, never()).unregisterUser();  
     }
 }

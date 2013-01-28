@@ -23,7 +23,7 @@ import org.slf4j.MDC;
  * @author Anuar_Nurmakanov
  *
  */
-public class LoggingMDCService {
+public class LoggerMdc {
     //be careful, value must be the same as in logging pattern
     private final String USER_NAME_KEY = "userName";
     
