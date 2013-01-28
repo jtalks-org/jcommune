@@ -721,7 +721,7 @@ input[type="image"], input[type="checkbox"], input[type="radio"] {
     -webkit-border-radius: 0;
     -moz-border-radius: 0;
     border-radius: 0;
-    border: 0 \9;
+    border: 0  \9;
     /* IE9 and down */
 
 }
@@ -758,7 +758,7 @@ select, input[type="file"] {
 }
 
 input[type="file"] {
-    line-height: 18px \9;
+    line-height: 18px  \9;
 }
 
 select {
@@ -825,7 +825,7 @@ input:focus, textarea:focus {
     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
     outline: 0;
-    outline: thin dotted \9;
+    outline: thin dotted  \9;
     /* IE6-9 */
 
 }
@@ -1258,7 +1258,7 @@ table {
 
 .table th, .table td {
     padding: 8px;
-    line-height: 18px;
+    line-height: 16px;
     text-align: left;
     vertical-align: top;
     border-top: 1px solid #ddd;
@@ -1328,12 +1328,25 @@ table {
     border-radius: 0 0 4px 0;
 }
 
-.table-striped tbody tr:nth-child(odd) td {
+.table-bordered thead tr th {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+.table-bordered tbody tr {
     background-color: #f9f9f9;
 }
 
-.table tbody tr:hover td, .table tbody tr:hover th {
-    background-color: #f5f5f5;
+.table-row tbody tr td {
+    background-color: #f9f9f9;
+}
+
+.table-row tbody tr th {
+    background-color: #333333;
+}
+
+.table-row tbody tr.post-header td {
+    background-color: #e6e6e6;
 }
 
 table .span1 {
@@ -1420,6 +1433,18 @@ table .span12 {
     *margin-right: .3em;
 }
 
+[class^="icon-white-"], [class*=" icon-white-"] {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+    vertical-align: text-top;
+    background-image: url("../images/glyphicons-halflings-white.png");
+    background-position: 14px 14px;
+    background-repeat: no-repeat;
+    *margin-right: .3em;
+}
+
 [class^="icon-"]:last-child, [class*=" icon-"]:last-child {
     *margin-left: 0;
 }
@@ -1457,6 +1482,10 @@ table .span12 {
 }
 
 .icon-user {
+    background-position: -168px 0;
+}
+
+.icon-white-user {
     background-position: -168px 0;
 }
 
@@ -1613,6 +1642,10 @@ table .span12 {
 }
 
 .icon-font {
+    background-position: -144px -48px;
+}
+
+.icon-white-font {
     background-position: -144px -48px;
 }
 
@@ -1861,6 +1894,10 @@ table .span12 {
 }
 
 .icon-calendar {
+    background-position: -192px -120px;
+}
+
+.icon-white-calendar {
     background-position: -192px -120px;
 }
 
@@ -2139,7 +2176,7 @@ table .span12 {
 }
 
 .btn:active, .btn.active {
-    background-color: #cccccc \9;
+    background-color: #cccccc  \9;
 }
 
 .btn:first-child {
@@ -2170,7 +2207,7 @@ table .span12 {
     -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
     background-color: #e6e6e6;
-    background-color: #d9d9d9 \9;
+    background-color: #d9d9d9  \9;
     outline: 0;
 }
 
@@ -2263,7 +2300,7 @@ table .span12 {
 }
 
 .btn-primary:active, .btn-primary.active {
-    background-color: #003399 \9;
+    background-color: #003399  \9;
 }
 
 .btn-warning {
@@ -2290,7 +2327,7 @@ table .span12 {
 }
 
 .btn-warning:active, .btn-warning.active {
-    background-color: #c67605 \9;
+    background-color: #c67605  \9;
 }
 
 .btn-danger {
@@ -2317,7 +2354,7 @@ table .span12 {
 }
 
 .btn-danger:active, .btn-danger.active {
-    background-color: #942a25 \9;
+    background-color: #942a25  \9;
 }
 
 .btn-success {
@@ -2344,7 +2381,7 @@ table .span12 {
 }
 
 .btn-success:active, .btn-success.active {
-    background-color: #408140 \9;
+    background-color: #408140  \9;
 }
 
 .btn-info {
@@ -2371,7 +2408,7 @@ table .span12 {
 }
 
 .btn-info:active, .btn-info.active {
-    background-color: #24748c \9;
+    background-color: #24748c  \9;
 }
 
 .btn-inverse {
@@ -2398,7 +2435,7 @@ table .span12 {
 }
 
 .btn-inverse:active, .btn-inverse.active {
-    background-color: #0c0c0c \9;
+    background-color: #0c0c0c  \9;
 }
 
 button.btn, input[type="submit"].btn {
@@ -3013,7 +3050,7 @@ button.btn.small, input[type="submit"].btn.small {
 }
 
 .btn-navbar:active, .btn-navbar.active {
-    background-color: #080808 \9;
+    background-color: #080808  \9;
 }
 
 .btn-navbar .icon-bar {
@@ -3355,6 +3392,7 @@ button.btn.small, input[type="submit"].btn.small {
 .pagination a {
     float: left;
     padding: 0 14px;
+    background-color: #ffffff;
     line-height: 34px;
     text-decoration: none;
     border: 1px solid #ddd;
@@ -3371,7 +3409,7 @@ button.btn.small, input[type="submit"].btn.small {
 }
 
 .pagination .disabled a, .pagination .disabled a:hover {
-    color: #999999;
+    color: #878a99;
     background-color: transparent;
     cursor: default;
 }
@@ -3855,29 +3893,32 @@ a.thumbnail:hover {
 }
 
 @-webkit-keyframes progress-bar-stripes {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: 40px 0;
-  }
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 40px 0;
+    }
 }
+
 @-moz-keyframes progress-bar-stripes {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: 40px 0;
-  }
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 40px 0;
+    }
 }
+
 @keyframes progress-bar-stripes {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: 40px 0;
-  }
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 40px 0;
+    }
 }
+
 .progress {
     overflow: hidden;
     height: 18px;

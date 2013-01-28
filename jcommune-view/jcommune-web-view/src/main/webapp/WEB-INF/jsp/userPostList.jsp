@@ -44,7 +44,7 @@
 
     <%-- Topics table --%>
     <div class='post'>
-        <table class="table table-striped table-bordered table-condensed">
+        <table class="table table-row table-bordered table-condensed">
             <c:choose>
                 <c:when test="${!(empty postsPage.content)}">
                     <thead>
@@ -78,6 +78,7 @@
                                         <br/>
                                     </c:if>
                                     <br/>
+
                                     <div>
                                         <a class="btn"
                                            href="${pageContext.request.contextPath}/posts/${post.id}">

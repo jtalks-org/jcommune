@@ -62,18 +62,18 @@
 
             <table class="table table-bordered table-condensed">
                 <thead>
-                    <tr>
-                        <th class="pm_header_check">
-                            <input type="checkbox" class="check_all"/></th>
+                <tr>
+                    <th class="pm_header_check">
+                        <input type="checkbox" class="check_all"/></th>
 
-                        <th class="pm_header_info"><i class="icon-user"></i>
-                            <spring:message code="label.sender"/></th>
+                    <th class="pm_header_info"><i class="icon-white-user"></i>
+                        <spring:message code="label.sender"/></th>
 
-                        <th><i class="icon-font"></i> <spring:message code="label.pm.title"/></th>
+                    <th><i class="icon-white-font"></i> <spring:message code="label.pm.title"/></th>
 
-                        <th class="pm_sending_date"><i class="icon-calendar"></i>
-                            <spring:message code="label.sending_date"/></th>
-                    </tr>
+                    <th class="pm_sending_date"><i class="icon-white-calendar"></i>
+                        <spring:message code="label.sending_date"/></th>
+                </tr>
                 </thead>
 
                 <tbody>
@@ -117,23 +117,23 @@
         <!-- /span9 -->
     </div>
     <!-- /row -->
-        <hr/>
-        <%-- Start of pagination --%>
-        <div class="row-fluid upper-pagination forum-pagination-container">
-            <div class="span3">
-                <h2><spring:message code="label.pm_title"/></h2>
-            </div>
+    <hr/>
+    <%-- Start of pagination --%>
+    <div class="row-fluid upper-pagination forum-pagination-container">
+        <div class="span3">
+            <h2><spring:message code="label.pm_title"/></h2>
+        </div>
 
-            <div class="span9">
-                <div class="pagination pull-right forum-pagination">
-                    <ul>
-                        <jtalks:pagination uri="" page="${inboxPage}" numberLink="3"
-                                           pagingEnabled="${true}"/>
-                    </ul>
-                </div>
+        <div class="span9">
+            <div class="pagination pull-right forum-pagination">
+                <ul>
+                    <jtalks:pagination uri="" page="${inboxPage}" numberLink="3"
+                                       pagingEnabled="${true}"/>
+                </ul>
             </div>
         </div>
-        <%-- End of pagination --%>
+    </div>
+    <%-- End of pagination --%>
 </div>
 <!-- /container -->
 

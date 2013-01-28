@@ -37,7 +37,7 @@
 
     <div>
         <div class="post">
-            <table class="table table-striped table-bordered table-condensed">
+            <table class="table table-row table-bordered table-condensed">
                 <tr class="post-content-tr">
                     <td class='post-content-td'>
                         <div>
@@ -49,17 +49,17 @@
         </div>
     </div>
 
-	<sec:authorize access="isAuthenticated()">
-		<sec:authentication property="principal.id" var="userId" />
-	    <jtalks:hasPermission targetId='${userId}' targetType='USER' 
-	            							permission='ProfilePermission.CREATE_FORUM_FAQ'>
-	        <div>
-	            <a class="button" href="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}/edit">
-	                <spring:message code="label.edit"/>
-	            </a>
-	        </div>
-	   </jtalks:hasPermission>
-   </sec:authorize>
+    <sec:authorize access="isAuthenticated()">
+        <sec:authentication property="principal.id" var="userId"/>
+        <jtalks:hasPermission targetId='${userId}' targetType='USER'
+                              permission='ProfilePermission.CREATE_FORUM_FAQ'>
+            <div>
+                <a class="button" href="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}/edit">
+                    <spring:message code="label.edit"/>
+                </a>
+            </div>
+        </jtalks:hasPermission>
+    </sec:authorize>
 </div>
 
 <div class="footer_buffer">

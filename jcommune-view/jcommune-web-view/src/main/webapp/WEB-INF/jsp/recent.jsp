@@ -26,40 +26,43 @@
 </head>
 <body>
 
-    <div class="container">
-        <div class="row-fluid upper-pagination forum-pagination-container">
-            <div class="span3">
-                <h3><spring:message code="label.recent"/></h3>
-            </div>
+<div class="container">
+    <div class="row-fluid upper-pagination forum-pagination-container">
+        <div class="span3">
+            <h3><spring:message code="label.recent"/></h3>
+        </div>
 
-            <div class="span9">
-                <div class="pagination pull-right forum-pagination">
-                    <ul>
-                        <jtalks:pagination uri="${branch.id}" page="${topicsPage}" pagingEnabled="${pagingEnabled}"/>
-                    </ul>
-                </div>
+        <div class="span9">
+            <div class="pagination pull-right forum-pagination">
+                <ul>
+                    <jtalks:pagination uri="${branch.id}" page="${topicsPage}" pagingEnabled="${pagingEnabled}"/>
+                </ul>
             </div>
         </div>
+    </div>
 
 
     <%-- Topics table --%>
-    <table id="topics-table" class="table table-striped table-bordered">
+    <table id="topics-table" class="table table-row table-bordered">
         <c:choose>
             <c:when test="${!(empty topicsPage.content)}">
                 <thead>
-			        <tr>
-                        <sec:authorize access="isAuthenticated()">
-                            <th class="status-col-small"></th>
-                        </sec:authorize>
-			            <th><spring:message code="label.branch.header.topics"/></th>
-			            <th class="author-col shrink-to-fit"><spring:message code="label.branch.header.author"/></th>
-			            <th class="posted-in-col shrink-to-fit"><spring:message code="label.branch.header.branches"/></th>
-			            <th class="posts-views-small forum-posts-view-header shrink-to-fit"><spring:message code="label.branch.header.posts"/></th>
-                        <th class="posts-views-small forum-posts-view-header shrink-to-fit"><spring:message code="label.branch.header.views"/></th>
-			            <th class="latest-by forum-latest-by-header shrink-to-fit"><spring:message code="label.branch.header.lastMessage"/></th>
-			        </tr>
-			    </thead>
-			    <tbody>
+                <tr>
+                    <sec:authorize access="isAuthenticated()">
+                        <th class="status-col-small"></th>
+                    </sec:authorize>
+                    <th><spring:message code="label.branch.header.topics"/></th>
+                    <th class="author-col shrink-to-fit"><spring:message code="label.branch.header.author"/></th>
+                    <th class="posted-in-col shrink-to-fit"><spring:message code="label.branch.header.branches"/></th>
+                    <th class="posts-views-small forum-posts-view-header shrink-to-fit"><spring:message
+                            code="label.branch.header.posts"/></th>
+                    <th class="posts-views-small forum-posts-view-header shrink-to-fit"><spring:message
+                            code="label.branch.header.views"/></th>
+                    <th class="latest-by forum-latest-by-header shrink-to-fit"><spring:message
+                            code="label.branch.header.lastMessage"/></th>
+                </tr>
+                </thead>
+                <tbody>
                 <c:forEach var="topic" items="${topicsPage.content}">
                     <tr>
                         <sec:authorize access="isAuthenticated()">
@@ -86,7 +89,7 @@
 
                         <td class="author-col shrink-to-fit">
                             <a href='${pageContext.request.contextPath}/users/${topic.topicStarter.id}'
-                                title="<spring:message code="label.topic.header.author"/>">
+                               title="<spring:message code="label.topic.header.author"/>">
                                 <c:out value="${topic.topicStarter.username}"/>
                             </a>
                         </td>
@@ -97,7 +100,7 @@
                         </td>
 
                         <td class="posts-views-small shrink-to-fit">
-                            <span class='test-posts-count'><c:out value="${topic.postCount}"/></span><br />
+                            <span class='test-posts-count'><c:out value="${topic.postCount}"/></span><br/>
                         </td>
                         <td class="posts-views-small shrink-to-fit">
                             <span class='test-views'><c:out value="${topic.views}"/></span>
@@ -133,7 +136,7 @@
         <div class="span12">
             <div class="pagination pull-right forum-pagination">
                 <ul>
-                    <jtalks:pagination uri="" page="${topicsPage}" pagingEnabled="${pagingEnabled}" />
+                    <jtalks:pagination uri="" page="${topicsPage}" pagingEnabled="${pagingEnabled}"/>
                 </ul>
             </div>
         </div>

@@ -69,11 +69,11 @@ input.form-check-radio-box[type="radio"] {
 }
 
 .word-wrap {
-    white-space: pre-wrap;       /* css-3 */
-    white-space: -moz-pre-wrap;  /* Mozilla */
-    white-space: -pre-wrap;      /* Opera 4-6 */
-    white-space: -o-pre-wrap;    /* Opera 7 */
-    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    white-space: pre-wrap; /* css-3 */
+    white-space: -moz-pre-wrap; /* Mozilla */
+    white-space: -pre-wrap; /* Opera 4-6 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    word-wrap: break-word; /* Internet Explorer 5.5+ */
 }
 
 .forum-sections-header {
@@ -102,7 +102,7 @@ input.form-check-radio-box[type="radio"] {
 
 .forum-sections-branch-description-container {
     font-style: italic;
-    font-size: 12px;
+    font-size: 10px;
 }
 
 .forum-sections-moderators-container {
@@ -228,7 +228,7 @@ input.form-check-radio-box[type="radio"] {
 }
 
 .pm_unread {
-    background-color: #9bc0de;
+    background-color: #9bc0de !important;
     background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(0.25, rgba(255, 255, 255, 0.15)), color-stop(0.25, transparent), color-stop(0.5, transparent), color-stop(0.5, rgba(255, 255, 255, 0.15)), color-stop(0.75, rgba(255, 255, 255, 0.15)), color-stop(0.75, transparent), to(transparent));
     background-image: -webkit-linear-gradient(-45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
     background-image: -moz-linear-gradient(-45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
@@ -291,12 +291,12 @@ input.form-check-radio-box[type="radio"] {
 }
 
 .search-clear {
-    margin-top:0 !important;
-    font-weight:bold;
+    margin-top: 0 !important;
+    font-weight: bold;
     position: relative;
     left: -30px;
-    border-radius: 12px 12px 12px 12px;    
-    padding: 0px 5px;    
+    border-radius: 12px 12px 12px 12px;
+    padding: 0px 5px;
 }
 
 /* JC-863. Long text in titles, posts, signature. */
@@ -311,6 +311,7 @@ input.form-check-radio-box[type="radio"] {
 h3 {
     word-wrap: break-word;
 }
+
 /* ----------------------------------------------- */
 
 /* JC-918. Long author name in sections list */
@@ -324,8 +325,8 @@ h3 {
 
 .table-with-titles th {
     border: 0px;
-    padding-top: 18px !important;
-    
+    padding-top: 10px !important;
+
     /* Use this styles instead of <h3> tag inside <th>. To fit HTML5 standard*/
     margin: 0;
     font-weight: bold;
@@ -335,8 +336,9 @@ h3 {
     font-size: 18px;
 }
 
-.table-with-titles tbody tr:hover th {
-  background-color: white !important;
+.table-with-titles th a {
+    color: #ffffff !important;
 }
+
 /* ----------------------------------------- */
 

@@ -43,7 +43,7 @@
     </div>
 
     <%-- Topics table --%>
-    <table id="topics-table" class="table table-striped table-bordered">
+    <table id="topics-table" class="table table-row table-bordered">
         <c:choose>
             <c:when test="${!(empty searchResultPage.content)}">
                 <thead>

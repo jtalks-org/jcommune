@@ -43,7 +43,7 @@
     </div>
 
     <%-- Topics table --%>
-    <table id="topics-table" class="table table-striped table-bordered">
+    <table id="topics-table" class="table table-row table-bordered">
         <c:choose>
             <c:when test="${!(empty topicsPage.content)}">
                 <thead>
@@ -117,7 +117,7 @@
                             </a>
                             &gt;&gt;
                             <a href="${pageContext.request.contextPath}/users/${item.lastPost.userCreated.id}">
-                                    <c:out value="${item.lastPost.userCreated.username}"/>
+                                <c:out value="${item.lastPost.userCreated.username}"/>
                             </a>
                         </td>
                     </tr>
