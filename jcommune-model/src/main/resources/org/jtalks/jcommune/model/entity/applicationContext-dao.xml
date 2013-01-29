@@ -188,7 +188,7 @@
                 <prop key="hibernate.connection.charset">${encoding}</prop>
                 <prop key="hibernate.connection.release_mode">auto</prop>
                 <prop key="hibernate.cache.region.factory_class">
-                    ${JCOMMUNE_TEST_CACHE_FACTORY:net.sf.ehcache.hibernate.SingletonEhCacheRegionFactory}
+                    ${HIBERNATE_CACHE_FACTORY:net.sf.ehcache.hibernate.SingletonEhCacheRegionFactory}
                 </prop>
                 <prop key="hibernate.cache.use_second_level_cache">${hibernate.use_second_level_cache}</prop>
                 <prop key="hibernate.cache.use_query_cache">${hibernate.use_query_cache}</prop>
