@@ -70,6 +70,22 @@ public class UsernamePasswordAuthenticationFilterTest {
     }
     
     @Test
+    public void passedIncorrectRememberMeTokenInCookieShouldNotBeChecked() throws IOException, ServletException {
+        HttpServletRequest request = new MockHttpServletRequest();
+        FilterChain filterChain = new MockFilterChain();
+        String rememberMeCookieValue = "cookie value";
+        String[] seriesAndToken = {"it contains only series"};
+        when(rememberMeCookieDecoder.exctractRememberMeCookieValue(request))
+            .thenReturn(rememberMeCookieValue);
+        when(rememberMeCookieDecoder.extractSeriesAndToken(rememberMeCookieValue))
+            .thenReturn(seriesAndToken);
+
+        filter.doFilter(request, new MockHttpServletResponse(), filterChain);
+
+        verify(rememberMeCheckService, never()).equalWithPersistentToken(anyString(), anyString());
+    }
+    
+    @Test
     public void notPassedRememberMeTokenInShouldNotBeChecked() throws IOException, ServletException {
         HttpServletRequest request = new MockHttpServletRequest();
         FilterChain filterChain = new MockFilterChain();

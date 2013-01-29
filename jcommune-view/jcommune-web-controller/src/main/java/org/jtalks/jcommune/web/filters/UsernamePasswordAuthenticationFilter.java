@@ -74,9 +74,12 @@ public class UsernamePasswordAuthenticationFilter
         String rememberMeCookieValue = rememberMeCookieDecoder.exctractRememberMeCookieValue(request);
         if (rememberMeCookieValue != null) {
             String[] seriesAndToken = rememberMeCookieDecoder.extractSeriesAndToken(rememberMeCookieValue);
-            String series = seriesAndToken[0];
-            String token = seriesAndToken[1];
-            rememberMeCheckService.equalWithPersistentToken(series, token);
+            int seriesAndTokenMinLength = 2;
+            if (seriesAndToken.length >= seriesAndTokenMinLength) {
+                String series = seriesAndToken[0];
+                String token = seriesAndToken[1];
+                rememberMeCheckService.equalWithPersistentToken(series, token);
+            }
         }
     }
 }
