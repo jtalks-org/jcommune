@@ -35,6 +35,7 @@
             <legend><spring:message code="label.fillmessage"/></legend>
             <div class="control-group">
                 <span class="reg_info"><spring:message code="label.tip.username"/></span>
+
                 <div class="controls">
                     <form:input path="username" class="reg_input" type="text"/>
                     <br/>
@@ -43,6 +44,7 @@
             </div>
             <div class="control-group">
                 <span class="reg_info"><spring:message code="label.tip.email"/></span>
+
                 <div class="controls">
                     <form:input path="email" class="reg_input" type="text"/>
                     <br/>
@@ -51,6 +53,7 @@
             </div>
             <div class="control-group">
                 <span class="reg_info"><spring:message code="label.tip.password"/></span>
+
                 <div class="controls">
                     <form:input path="password" class="reg_input" type="password"/>
                     <br/>
@@ -59,6 +62,7 @@
             </div>
             <div class="control-group">
                 <span class="reg_info"><spring:message code="label.tip.confirmation"/></span>
+
                 <div class="controls">
                     <form:input path="passwordConfirm" class="reg_input" type="password"/>
                     <br/>
@@ -67,8 +71,9 @@
             </div>
             <div class="control-group">
                 <span class="reg_info"><spring:message code="label.tip.captcha"/></span>
+
                 <div class="controls">
-                    <img id="captcha_img" class="capcha-img src='${pageContext.request.contextPath}/captcha/image' class="captcha"/>
+                    <img id="captcha_img" class="capcha-img" src='${pageContext.request.contextPath}/captcha/image'/>
                     <img id="captcha_refresh" class="capcha-img capcha-reload"
                          src='${pageContext.request.contextPath}/resources/images/captcha-refresh.png'/>
                     <form:input path="captcha" class="capcha-field" type="text" id="captcha"/>
