@@ -22,13 +22,13 @@
 <html>
 <head>
     <title><spring:message code="label.signup"/></title>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/captcha.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/registration.js"
             type="text/javascript"></script>
 </head>
 
 <body>
 
-<div class="container form-login-related">
+<div class="container form-login-related registration-page">
     <form:form id="form" name="form" action='${pageContext.request.contextPath}/user/new'
                modelAttribute="newUser" method="POST" class='form-vertical'>
         <fieldset>
@@ -72,10 +72,14 @@
             <div class="control-group">
                 <span class="reg_info"><spring:message code="label.tip.captcha"/></span>
 
-                <div class="controls">
-                    <img id="captcha_img" class="capcha-img" src='${pageContext.request.contextPath}/captcha/image'/>
-                    <img id="captcha_refresh" class="capcha-img capcha-reload"
+                <div class="controls img-container">
+                    <img id="captcha-img" class="capcha-img" src='${pageContext.request.contextPath}/captcha/image'/>
+                    <img id="captcha-refresh" class="capcha-img capcha-reload"
                          src='${pageContext.request.contextPath}/resources/images/captcha-refresh.png'/>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
                     <form:input path="captcha" class="capcha-field" type="text" id="captcha"/>
                     <br>
                     <form:errors path="captcha" cssClass="help-inline"/>

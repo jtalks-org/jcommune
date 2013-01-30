@@ -25,6 +25,16 @@ $(function () {
         $('#signup-modal-dialog').modal('hide');
     });
 
+    // captcha container on jsp page (if open jsp page)
+    var captchaContainer = $('.registration-page');
+    if (captchaContainer) {
+
+        captchaContainer.find("#captcha-refresh, #captcha-img").click(function (e) {
+            e.preventDefault();
+            refreshCaptcha(captchaContainer);
+        });
+    }
+
     $("#signup").on('click', function (e) {
         e.preventDefault();
 
@@ -32,9 +42,9 @@ $(function () {
 
         // show dialog
         signupDialog.modal({
-            "backdrop":"static",
-            "keyboard":true,
-            "show":true
+            "backdrop": "static",
+            "keyboard": true,
+            "show": true
         });
 
         Utils.resizeDialog(signupDialog);
@@ -77,11 +87,11 @@ $(function () {
             signupDialog.find('*').attr('disabled', true);
             var query = composeQuery(signupDialog);
             $.ajax({
-                type:"POST",
-                url:$root + "/user/new_ajax",
-                data:query,
-                dataType:"html",
-                success:function (resp) {
+                type: "POST",
+                url: $root + "/user/new_ajax",
+                data: query,
+                dataType: "html",
+                success: function (resp) {
                     resp = eval('(' + resp + ')'); // warning: not safe
                     if (resp.status == "SUCCESS") {
                         // hide dialog and show success message
@@ -94,7 +104,7 @@ $(function () {
                         showErrors(signupDialog, resp.result);
                     }
                 },
-                error:function (resp) {
+                error: function (resp) {
                     bootbox.alert($labelRegistrationFailture);
                 }
             });
