@@ -80,7 +80,7 @@
                             </sub>
                         </td>
                         <td class="author-col">
-                            <a href='${pageContext.request.contextPath}/users/${topic.topicStarter.id}"'
+                            <a href='${pageContext.request.contextPath}/users/${topic.topicStarter.id}'
                                title="<spring:message code="label.topic.header.author"/>">
                                 <c:out value="${topic.topicStarter.username}"/>
                             </a>
