@@ -147,4 +147,11 @@ public final class ObjectsFactory {
 
         return review;
     }
+    
+    public static Banner getDefaultBanner() {
+        Banner banner = new Banner();
+        banner.setPositionOnPage(1);
+        banner.setContent("<html></html>");
+        return banner;
+    }
 }

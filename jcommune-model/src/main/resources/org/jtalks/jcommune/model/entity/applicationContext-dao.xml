@@ -97,6 +97,9 @@
     <bean id="codeReviewCommentDao"
           class="org.jtalks.jcommune.model.dao.hibernate.CodeReviewCommentHibernateDao"
           parent="abstractHibernateDao"/>
+   <bean id="bannerDao"
+          class="org.jtalks.jcommune.model.dao.hibernate.BannerHibernateDao"
+          parent="abstractHibernateDao"/>
 
     <!-- Declaration of Hibernate Search DAO beans -->
     <bean id="topicSearchDao" class="org.jtalks.jcommune.model.dao.search.hibernate.TopicHibernateSearchDao">
@@ -175,6 +178,7 @@
                 <value>/org/jtalks/jcommune/model/entity/ViewTopicsBranches.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/CodeReview.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/CodeReviewComment.hbm.xml</value>
+                <value>/org/jtalks/jcommune/model/entity/Banner.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">
