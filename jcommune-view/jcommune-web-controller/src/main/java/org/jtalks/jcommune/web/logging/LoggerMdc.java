@@ -17,28 +17,24 @@ package org.jtalks.jcommune.web.logging;
 import org.slf4j.MDC;
 
 /**
- * Provides an ability to call methods from MDC without
- * calling static methods.
- * 
- * @author Anuar_Nurmakanov
+ * Provides an ability to call methods from MDC without calling static methods.
  *
+ * @author Anuar_Nurmakanov
  */
 public class LoggerMdc {
     //be careful, value must be the same as in logging pattern
     private final String USER_NAME_KEY = "userName";
-    
+
     /**
      * Register user's name in MDC.
-     * 
+     *
      * @param userName user's name
      */
     public void registerUser(String userName) {
-        MDC.put(USER_NAME_KEY, userName); 
+        MDC.put(USER_NAME_KEY, userName);
     }
-    
-    /**
-     * Unregister user.
-     */
+
+    /** Unregister user. */
     public void unregisterUser() {
         MDC.remove(USER_NAME_KEY);
     }
