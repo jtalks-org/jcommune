@@ -22,27 +22,31 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.web.logging.LoggerMdc;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 
 /**
  * This filter provides an ability to register
- * 
- * @author Anuar_Nurmakanov
  *
+ * @author Anuar_Nurmakanov
  */
 public class LoggingConfigurationFilter implements Filter {
-    
+
     private SecurityService securityService;
     private LoggerMdc loggerMdc;
-    
+    private static String ANONYMOUS = "anonymous-";
+    private static Integer SESSION_LENGTH = 4;
+
     /**
      * Constructs an instance with required fields.
-     * 
+     *
      * @param securityService to get current user for registration in logging context
-     * @param loggerMdc to register and unregister user in MDC
+     * @param loggerMdc       to register and unregister user in MDC
      */
     public LoggingConfigurationFilter(
             SecurityService securityService,
@@ -66,7 +70,12 @@ public class LoggingConfigurationFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         String currentUserName = securityService.getCurrentUserUsername();
-        boolean successfulRegistered = registerCurrentUserName(currentUserName);
+        HttpSession httpSession = ((HttpServletRequest) request).getSession();
+        String sessionId = "";
+        if (httpSession != null) {
+            sessionId = ((HttpServletRequest) request).getSession().getId();
+        }
+        boolean successfulRegistered = registerCurrentUserName(currentUserName, sessionId);
         try {
             chain.doFilter(request, response);
         } finally {
@@ -75,19 +84,25 @@ public class LoggingConfigurationFilter implements Filter {
             }
         }
     }
-    
+
     /**
      * Register the user in the MDC under USER_KEY.
-     * 
+     *
      * @param userName the name of current user
      * @return true id the user can be successfully registered
      */
-    private boolean registerCurrentUserName(String userName) {
-      if (!StringUtils.isEmpty(userName)) {
-          loggerMdc.registerUser(userName);
-          return true;
-      }
-      return false;
+    private boolean registerCurrentUserName(String userName, String sessionId) {
+        if (!StringUtils.isEmpty(userName)) {
+            loggerMdc.registerUser(userName);
+            return true;
+        }
+        else if (!sessionId.equals("") && sessionId.length() >= SESSION_LENGTH) {
+            loggerMdc.registerUser(ANONYMOUS + StringUtils.substring(sessionId, sessionId.length() - SESSION_LENGTH));
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     /**
@@ -95,6 +110,6 @@ public class LoggingConfigurationFilter implements Filter {
      */
     @Override
     public void destroy() {
-      //empty  
+        //empty
     }
 }
