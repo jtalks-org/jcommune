@@ -12,39 +12,15 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service;
-
-import java.util.Map;
-
-import org.jtalks.jcommune.model.entity.Banner;
-import org.jtalks.jcommune.model.entity.BannerPosition;
+package org.jtalks.jcommune.model.entity;
 
 /**
  * 
  * @author Anuar_Nurmakanov
  *
  */
-public interface BannerService {
-    /**
-     * Attach banner to position on page.
-     * 
-     * @param positionOnPage position of banner on page
-     * @param content banner content
-     */
-    void attachBannerToPosition(BannerPosition positionOnPage, String content);
-    
-    /**
-     * Get banner by position.
-     * 
-     * @param positionOnPage position of banner on page
-     * @return banner for given position
-     */
-    Banner getBannerByPosition(BannerPosition positionOnPage);
-    
-    /**
-     * Get all banners of the forum.
-     * 
-     * @return all banners of the forum
-     */
-    Map<BannerPosition, Banner> getAllBanners();
+public enum BannerPosition {
+    TOP,
+    BOTTOM,
+    BOTTOM_RIGHT_OF_LICENSE
 }

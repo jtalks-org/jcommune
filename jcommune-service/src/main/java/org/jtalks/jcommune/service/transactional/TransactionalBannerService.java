@@ -14,8 +14,13 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jtalks.jcommune.model.dao.BannerDao;
 import org.jtalks.jcommune.model.entity.Banner;
+import org.jtalks.jcommune.model.entity.BannerPosition;
 import org.jtalks.jcommune.service.BannerService;
 
 /**
@@ -39,7 +44,7 @@ public class TransactionalBannerService implements BannerService {
      * {@inheritDoc}
      */
     @Override
-    public void attachBannerToPosition(int positionOnPage, String bannerContent) {
+    public void attachBannerToPosition(BannerPosition positionOnPage, String bannerContent) {
         Banner banner = getBannerByPosition(positionOnPage);
         if (banner == null) {
             banner = new Banner();
@@ -53,7 +58,20 @@ public class TransactionalBannerService implements BannerService {
      * {@inheritDoc}
      */
     @Override
-    public Banner getBannerByPosition(int positionOnPage) {
+    public Banner getBannerByPosition(BannerPosition positionOnPage) {
         return bannerDao.getByPosition(positionOnPage);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<BannerPosition, Banner> getAllBanners() {
+        Collection<Banner> allBanners = bannerDao.getAll();
+        Map<BannerPosition, Banner> positionAndBannerMap = new HashMap<BannerPosition, Banner>();
+        for (Banner banner: allBanners) {
+            positionAndBannerMap.put(banner.getPositionOnPage(), banner);
+        }
+        return positionAndBannerMap;
     }
 }

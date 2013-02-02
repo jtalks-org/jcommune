@@ -15,18 +15,21 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNotSame;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertFalse;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
+
+import java.util.Collection;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.BannerDao;
 import org.jtalks.jcommune.model.entity.Banner;
+import org.jtalks.jcommune.model.entity.BannerPosition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -122,13 +125,12 @@ public class BannerHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     /*===== Specific methods =====*/
     @Test
     public void existsBannerShouldBeFoundByPosition() {
-        int positionOnPage = 1;
         Banner banner = ObjectsFactory.getDefaultBanner();
-        banner.setPositionOnPage(positionOnPage);
+        banner.setPositionOnPage(BannerPosition.TOP);
         session.save(banner);
         session.evict(banner);
         
-        Banner bannerInDatabase = bannerDao.getByPosition(positionOnPage);
+        Banner bannerInDatabase = bannerDao.getByPosition(BannerPosition.TOP);
         
         assertNotNull(bannerInDatabase, "Banner should be found by position, because it was saved.");
         assertReflectionEquals(banner, bannerInDatabase);
@@ -136,15 +138,37 @@ public class BannerHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     
     @Test
     public void existsBannerShouldNotBeFoundByPosition() {
-        int positionOnPage = 1;
         Banner banner = ObjectsFactory.getDefaultBanner();
-        banner.setPositionOnPage(positionOnPage);
+        banner.setPositionOnPage(BannerPosition.TOP);
         session.save(banner);
         session.evict(banner);
         
-        Banner bannerInDatabase = bannerDao.getByPosition(positionOnPage + 1);
+        Banner bannerInDatabase = bannerDao.getByPosition(BannerPosition.BOTTOM);
         
         assertNull(bannerInDatabase, 
                 "Banner shouldn't be found by position, because different banner was saved.");
+    }
+    
+    @Test
+    public void allBannersShouldBeReturnedWhenGetAllCalled() {
+        Collection<Banner> banners = ObjectsFactory.getBanners();
+        for (Banner banner: banners) {
+            session.save(banner);
+        }
+        
+        Collection<Banner> foundBanners = bannerDao.getAll();
+        
+        assertEquals(foundBanners.size(), banners.size(), 
+                "Incorrect collection of banners were returned from database.");
+        assertEquals(foundBanners, banners, 
+                "Incorrect collection of banners were returned from database.");
+    }
+    
+    @Test
+    public void emptyCollectionShouldBeReturnedWhenBannersDoNotExist() {
+        Collection<Banner> foundBanners = bannerDao.getAll();
+        
+        assertTrue(foundBanners.isEmpty(), 
+                "Incorrect banners were returned, because database doesn't contain any banner");
     }
 }

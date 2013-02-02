@@ -26,12 +26,21 @@
         </id>
 
         <property column="UUID" name="uuid" unique="true" not-null="true"/>
-        <property name="positionOnPage" column="POSITION" not-null="true"/>
+        <property name="positionOnPage" column="POSITION" not-null="true">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.jtalks.jcommune.model.entity.BannerPosition</param>
+                <param name="useNamed">true</param>
+            </type>
+        </property>
         <property name="content" column="CONTENT" not-null="true"/>
 
     </class>
 
     <query name="getByPosition">
         <![CDATA[FROM Banner WHERE positionOnPage = :position]]>
+    </query>
+    
+    <query name="getAll">
+        <![CDATA[FROM Banner]]>
     </query>    
 </hibernate-mapping>

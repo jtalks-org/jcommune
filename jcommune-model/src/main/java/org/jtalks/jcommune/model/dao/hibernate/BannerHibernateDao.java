@@ -14,9 +14,12 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import java.util.Collection;
+
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateParentRepository;
 import org.jtalks.jcommune.model.dao.BannerDao;
 import org.jtalks.jcommune.model.entity.Banner;
+import org.jtalks.jcommune.model.entity.BannerPosition;
 
 /**
  * 
@@ -30,10 +33,21 @@ public class BannerHibernateDao extends AbstractHibernateParentRepository<Banner
      * {@inheritDoc}
      */
     @Override
-    public Banner getByPosition(int positionOnPage) {
+    public Banner getByPosition(BannerPosition positionOnPage) {
         return (Banner) getSession()
                 .getNamedQuery("getByPosition")
                 .setParameter("position", positionOnPage)
                 .uniqueResult();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public Collection<Banner> getAll() {
+        return getSession()
+                .getNamedQuery("getAll")
+                .list();
     }
 }

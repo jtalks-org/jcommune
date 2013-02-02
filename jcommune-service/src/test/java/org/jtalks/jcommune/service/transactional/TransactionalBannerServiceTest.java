@@ -21,6 +21,7 @@ import static org.mockito.Matchers.any;
 
 import org.jtalks.jcommune.model.dao.BannerDao;
 import org.jtalks.jcommune.model.entity.Banner;
+import org.jtalks.jcommune.model.entity.BannerPosition;
 import org.jtalks.jcommune.service.BannerService;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
@@ -44,20 +45,24 @@ public class TransactionalBannerServiceTest {
     
     @Test
     public void newBannerShouldBeSaved() {
-        int positionOnPage = 1;
-        when(bannerDao.getByPosition(positionOnPage)).thenReturn(null);
+        when(bannerDao.getByPosition(BannerPosition.TOP)).thenReturn(null);
         
-        bannerService.attachBannerToPosition(positionOnPage, "<html></html>");
+        bannerService.attachBannerToPosition(BannerPosition.TOP, "<html></html>");
     
         verify(bannerDao).saveOrUpdate(any(Banner.class));
     }
     
     @Test
-    public void bannerShouldBeFindByPositionInRepository() {
-        int positionOnPage = 1;
-        bannerService.getBannerByPosition(positionOnPage);
+    public void bannerShouldBeFoundByPositionInRepository() {
+        bannerService.getBannerByPosition(BannerPosition.TOP);
         
-        verify(bannerDao).getByPosition(positionOnPage);
+        verify(bannerDao).getByPosition(BannerPosition.TOP);
     }
     
+    @Test
+    public void bannersShouldBeFoundFromRepository() {
+       bannerService.getAllBanners();
+       
+       verify(bannerDao).getAll();
+    }
 }

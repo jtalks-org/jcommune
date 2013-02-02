@@ -23,7 +23,7 @@ import org.jtalks.common.model.entity.Entity;
  * 
  */
 public class Banner extends Entity {
-    private int positionOnPage;
+    private BannerPosition positionOnPage;
     private String content;
     
     /**
@@ -39,7 +39,7 @@ public class Banner extends Entity {
      * @param positionOnPage position on page
      * @param content content
      */
-    public Banner(int positionOnPage, String content) {
+    public Banner(BannerPosition positionOnPage, String content) {
         this.positionOnPage = positionOnPage;
         this.content = content;
     }
@@ -49,7 +49,7 @@ public class Banner extends Entity {
      * 
      * @return position of banner on forum page
      */
-    public int getPositionOnPage() {
+    public BannerPosition getPositionOnPage() {
         return positionOnPage;
     }
 
@@ -58,7 +58,7 @@ public class Banner extends Entity {
      * 
      * @param positionOnPage position of banner on forum page
      */
-    public void setPositionOnPage(int positionOnPage) {
+    public void setPositionOnPage(BannerPosition positionOnPage) {
         this.positionOnPage = positionOnPage;
     }
 

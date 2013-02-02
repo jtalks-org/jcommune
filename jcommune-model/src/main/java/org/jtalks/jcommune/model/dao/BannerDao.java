@@ -14,10 +14,15 @@
  */
 package org.jtalks.jcommune.model.dao;
 
+import java.util.Collection;
+
 import org.jtalks.common.model.dao.ParentRepository;
 import org.jtalks.jcommune.model.entity.Banner;
+import org.jtalks.jcommune.model.entity.BannerPosition;
 
 /**
+ * DAO for the {@link Banner}. It provides all CRUD operations
+ * to work with {@link Banner} in repository.
  * 
  * @author Anuar_Nurmakanov
  *
@@ -29,5 +34,12 @@ public interface BannerDao extends ParentRepository<Banner> {
      * @param positionOnPage position of banner on page
      * @return banner
      */
-    Banner getByPosition(int positionOnPage);
+    Banner getByPosition(BannerPosition positionOnPage);
+    
+    /**
+     * Get all banners of the forum.
+     * 
+     * @return all banners of the forum
+     */
+    Collection<Banner> getAll();
 }
