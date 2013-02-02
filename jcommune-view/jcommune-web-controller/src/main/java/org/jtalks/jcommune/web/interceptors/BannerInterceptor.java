@@ -55,8 +55,20 @@ public class BannerInterceptor extends HandlerInterceptorAdapter {
             Object handler,
             ModelAndView modelAndView) throws Exception {
         super.postHandle(request, response, handler, modelAndView);
+        makeBannerPositionValuesVisibleInView(modelAndView);
         //
         Map<BannerPosition, Banner> allBanersOfTheForum = bannerService.getAllBanners();
         modelAndView.addObject("banners", allBanersOfTheForum);
+    }
+    
+    /**
+     * Make all values of {@link BannerPosition} visible in view.
+     * 
+     * @param modelAndView model and view, it put here all values of {@link BannerPosition}
+     */
+    private void makeBannerPositionValuesVisibleInView(ModelAndView modelAndView) {
+        for (BannerPosition position : BannerPosition.values()) {
+            modelAndView.addObject(position.toString(), position);
+        } 
     }
 }

@@ -18,6 +18,7 @@
 <%@ taglib prefix="decorator" uri="http://www.opensymphony.com/sitemesh/decorator" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <fmt:setBundle basename="org.jtalks.jcommune.web.view.messages"/>
 <fmt:setLocale value="en"/>
 <!DOCTYPE HTML>
@@ -102,6 +103,7 @@
 <jsp:include page="../template/topLine.jsp"/>
 <decorator:body/>
 <div class="container">
+	<jtalks:banner banner="${banners[BOTTOM]}"/>
     <footer>
         Powered by JCommune ${project.version}<br/>
         &copy; 2012 <a href="http://jtalks.org">jtalks.org</a><br/>

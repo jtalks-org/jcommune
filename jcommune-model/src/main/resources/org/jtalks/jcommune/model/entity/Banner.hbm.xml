@@ -29,10 +29,11 @@
         <property name="positionOnPage" column="POSITION" not-null="true">
             <type name="org.hibernate.type.EnumType">
                 <param name="enumClass">org.jtalks.jcommune.model.entity.BannerPosition</param>
+                <param name="type">12</param><!-- It's constant from java.sql.Types -->
                 <param name="useNamed">true</param>
             </type>
         </property>
-        <property name="content" column="CONTENT" not-null="true"/>
+        <property name="content" column="CONTENT" type="text" not-null="true"/>
 
     </class>
 
