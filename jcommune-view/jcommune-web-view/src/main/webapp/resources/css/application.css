@@ -491,3 +491,56 @@ div.anchor {
     font-size: 10px;
     font-style: italic;
 }
+
+.cursor-hand {
+    cursor: hand;
+    cursor: pointer;
+}
+
+.modal-body table {
+    width: 100%;
+}
+
+.modal-body .link-url {
+    visibility: hidden;
+    width: 0px;
+    max-width: 0px;
+}
+
+.modal-body .link-title {
+    width: 300px;
+    max-width: 300px;
+}
+
+.modal-body .icon-pencil {
+    max-width: 20px;
+    min-width: 20px;
+    margin-right: 10px;
+}
+
+.modal-body .icon-trash {
+    max-width: 20px;
+    min-width: 20px;
+}
+
+#main-links-editor {
+    width: 400px;
+    max-height: 400px;
+    overflow: hidden !important;
+}
+
+#main-links-editor .modal-body {
+    max-height: 200px;
+    overflow: auto;
+    line-height: 30px;
+}
+
+.edit-links {
+    max-width: 180px;
+    width: 180px;
+}
+
+.remove-links {
+    max-width: 180px;
+    width: 180px;
+}
