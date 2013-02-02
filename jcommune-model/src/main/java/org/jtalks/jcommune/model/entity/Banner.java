@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.model.entity;
 
 import org.jtalks.common.model.entity.Entity;
-
 /**
  * Represent banner that is showed in every page of forum. Banner contains
  * HTML/JS value.

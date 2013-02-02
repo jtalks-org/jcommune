@@ -32,8 +32,8 @@ public class BannerHibernateDao extends AbstractHibernateParentRepository<Banner
     @Override
     public Banner getByPosition(int positionOnPage) {
         return (Banner) getSession()
-                .getNamedQuery("getBannerByPosition")
-                .setInteger("positionOnPage", positionOnPage)
+                .getNamedQuery("getByPosition")
+                .setParameter("position", positionOnPage)
                 .uniqueResult();
     }
 }

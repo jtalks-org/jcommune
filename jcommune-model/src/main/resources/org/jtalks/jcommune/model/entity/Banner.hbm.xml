@@ -18,7 +18,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="org.jtalks.jcommune.model.entity" auto-import="false">
+<hibernate-mapping package="org.jtalks.jcommune.model.entity">
     <class name="Banner" table="BANNER">
         <cache usage="nonstrict-read-write" region="org.jtalks.EHCOMMON"/>
         <id column="BANNER_ID" name="id" unsaved-value="0">
@@ -30,9 +30,8 @@
         <property name="content" column="CONTENT" not-null="true"/>
 
     </class>
-    
-    <query name="getBannerByPosition">
-        <![CDATA[FROM Banner b WHERE positionOnPage = :positionOnPage]]>
-    </query>
-    
+
+    <query name="getByPosition">
+        <![CDATA[FROM Banner WHERE positionOnPage = :position]]>
+    </query>    
 </hibernate-mapping>

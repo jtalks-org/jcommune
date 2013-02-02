@@ -15,15 +15,15 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotSame;
-import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNotSame;
 import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertFalse;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.BannerDao;
 import org.jtalks.jcommune.model.entity.Banner;
@@ -88,9 +88,9 @@ public class BannerHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         //
         bannerDao.saveOrUpdate(banner);
         session.evict(banner);
-        Section result = (Section) session.get(Banner.class, banner.getId());
+        Banner result = (Banner) session.get(Banner.class, banner.getId());
 
-        assertEquals(result.getName(), newContent);
+        assertEquals(result.getContent(), newContent);
     }
     
     @Test(expectedExceptions = {Exception.class})
@@ -116,7 +116,7 @@ public class BannerHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     public void notExistsBannerShouldNotBeDeleted() {
         boolean isDeleted = bannerDao.delete(-1500L);
         
-        assertTrue(isDeleted, "Entity can't be deleted, because it doesn't exist in database.");
+        assertFalse(isDeleted, "Entity can't be deleted, because it doesn't exist in database.");
     }
     
     /*===== Specific methods =====*/
