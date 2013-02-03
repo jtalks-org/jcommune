@@ -13,3 +13,7 @@ So if you want to run the app locally (from binaries or sources), you need to in
  - Download latest version from our [repository](http://repo.jtalks.org/content/repositories/deployment-pipeline/deployment-pipeline/jcommune/), you're interested in *.war files inside of directories.
  - Rename it to `jcommune.war`, put it into your $TOMCAT_HOME$/webapps (don't start Tomcat yet).
  - Now you need to configure DB access and other stuff. It's done via configuration file, the sample can be found [here](jcommune.xml), its name should be the same as the war-file name and it should be placed into `$TOMCAT_HOME/conf/Catalina/localhost`. For more details, read comments inside of the file per se.
+
+####Building from sources
+ - You can download the sources [directly as a zip](https://github.com/jtalks-org/jcommune/archive/master.zip) if you don't have Git and you don't want to install it. This won't allow you to contribute to the project.
+ - Or you can install Git ([linux instructions](linux/git-installation.md), [windows instructions](windows/git-installation.md))
