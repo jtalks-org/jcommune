@@ -138,9 +138,9 @@
       <bean class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <property name="driverClass" value="${jdbc.driverClassName}"/>
         <!--the properties are set by JndiAwarePropertyPlaceholderConfigurer, see it for details-->
-        <property name="jdbcUrl" value="${JCOMMUNE_DB_CONNECTION_STRING}"/>
+        <property name="jdbcUrl" value="${JCOMMUNE_DB_URL}"/>
         <property name="user" value="${JCOMMUNE_DB_USER:root}"/>
-        <property name="password" value="${JCOMMUNE_DB_PASS:root}"/>
+        <property name="password" value="${JCOMMUNE_DB_PASSWORD:root}"/>
         <property name="maxStatements" value="1500"/>
         <property name="maxStatementsPerConnection" value="50"/>
         <!--Should be close to the size of the web server thread pool in order not to let threads wait for connections-->

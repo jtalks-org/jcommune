@@ -68,6 +68,8 @@
             src="${pageContext.request.contextPath}/resources/javascript/custom/keymaps.js"></script>
     <script
             src="${pageContext.request.contextPath}/resources/javascript/custom/registration.js"></script>
+    <script
+            src="${pageContext.request.contextPath}/resources/javascript/custom/mainLinksEditor.js"></script>
     <script src='${pageContext.request.contextPath}/resources/javascript/custom/signin.js'
             type='text/javascript'></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/global.js"

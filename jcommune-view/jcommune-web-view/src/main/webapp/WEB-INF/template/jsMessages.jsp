@@ -92,3 +92,8 @@ $labelEdit = '<spring:message code="label.edit" htmlEscape="true"/>'
 $labelKeymapsReview = '<spring:message code="label.keymaps.review" htmlEscape="true"/>'
 $labelTopicWasRemoved = '<spring:message code="label.topicWasRemoved" htmlEscape="true"/>'
 $labelYouDontHavePermissions = '<spring:message code="label.topicYouDontHavePermissions" htmlEscape="true"/>'
+
+$labelLinksEditor='<spring:message code="label.linksEditor" htmlEscape="true"/>'
+$labelTitle='<spring:message code="label.title" htmlEscape="true"/>'
+$labelSave='<spring:message code="label.save" htmlEscape="true"/>'
+$labelDeleteMainLink='<spring:message code="label.deleteMainLink" htmlEscape="true"/>'
