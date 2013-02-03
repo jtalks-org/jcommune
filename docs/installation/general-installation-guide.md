@@ -14,6 +14,7 @@ So if you want to run the app locally (from binaries or sources), you need to in
  - Rename it to `jcommune.war`, put it into your $TOMCAT_HOME$/webapps (don't start Tomcat yet).
  - Now you need to configure DB access and other stuff. It's done via configuration file, the sample can be found [here](jcommune.xml), its name should be the same as the war-file name and it should be placed into `$TOMCAT_HOME/conf/Catalina/localhost`. For more details, read comments inside of the file per se.
  - What's left is to start the Tomcat which is described in basic environment installation
+ - If you don't want to install [Poulpe](https://github.com/jtalks-org/jcommune) to administrate the forum (create branches, give permissions to user groups), you can use our SQL files that fill DB for you so that you can test it. You'll need to apply [these scripts](https://github.com/jtalks-org/jcommune/blob/master/jcommune-model/src/main/resources/org/jtalks/jcommune/model/sample_sections.sql).
 
 ####Building from sources
  - You'll need to install a dev environment ([linux instructions](linux/dev-environment.md), [windows instructions](windows/dev-environment.md)). Alternatively to Git, you may want to download the sources [directly as a zip](https://github.com/jtalks-org/jcommune/archive/master.zip) if you don't have Git and you don't want to install it. This won't allow you to contribute to the project though.
