@@ -2,9 +2,14 @@ Installation Guide
 ---
 You have 3 choices:
  - If you want just _to see the app_, take a look at one of our environments like [UAT](http://uat.jtalks.org/jcommune). You can register a user, create topics, code review, etc.
- - If you'd like to run it locally, install the project from binaries (war file), see below.
- - If you want to contribute, you may want to build it from sources.
+ - If you'd like to _run it locally_, install the project from binaries (war file), see below.
+ - If you want to _contribute_, you may want to build it from sources.
 
-So if you want to run the app locally, you need to install basic environment:
+So if you want to run the app locally (from binaries or sources), you need to install basic environment:
  - [Instruction for Debian/Ubuntu](linux/basic-environment.md)
  - [Instruction for Windows](windows/basic-environment.md)
+
+####Installing from Binaries
+ - Download latest version from our [repository](http://repo.jtalks.org/content/repositories/deployment-pipeline/deployment-pipeline/jcommune/), you're interested in *.war files inside of directories.
+ - Rename it to `jcommune.war`, put it into your $TOMCAT_HOME$/webapps (don't start Tomcat yet).
+ - Now you need to configure DB access and other stuff. It's done via configuration file, the sample can be found [here](jcommune.xml), its name should be the same as the war-file name and it should be placed into `$TOMCAT_HOME/conf/Catalina/localhost`. For more details, read comments inside of the file per se.
