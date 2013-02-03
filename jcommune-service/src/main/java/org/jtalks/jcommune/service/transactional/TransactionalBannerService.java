@@ -24,6 +24,7 @@ import org.jtalks.jcommune.model.entity.BannerPosition;
 import org.jtalks.jcommune.service.BannerService;
 
 /**
+ * An implementation of {@link BannerService}.
  * 
  * @author Anuar_Nurmakanov
  *

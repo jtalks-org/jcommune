@@ -14,10 +14,10 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.jtalks.jcommune.model.entity.Banner;
 import org.jtalks.jcommune.service.BannerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -25,13 +25,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
+ * Controller that handles all related to working with banners
+ * http requests.
  * 
  * @author Anuar_Nurmakanov
  *
  */
 @Controller
 public class BannerController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(BannerController.class);
     private BannerService bannerService;
 
     /**
@@ -52,9 +53,18 @@ public class BannerController {
      * @return url of requested page, so it will be re-displayed to user
      */
     @RequestMapping(value = "/banners/upload", method = RequestMethod.POST)
-    public String upload(@ModelAttribute Banner uploadedBanner){
-        LOGGER.error(uploadedBanner.getPositionOnPage().toString());
+    public String upload(@ModelAttribute Banner uploadedBanner, HttpServletRequest request){
         bannerService.uploadBanner(uploadedBanner);
-        return "forward:";
+        return "redirect:" + getSourcePageUrl(request);
+    }
+    
+    /**
+     * Get url of source page from which request came.
+     * 
+     * @param request http request
+     * @return url of source page
+     */
+    private String getSourcePageUrl(HttpServletRequest request) {
+        return request.getHeader("referer");
     }
 }

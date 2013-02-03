@@ -20,6 +20,7 @@ import org.jtalks.jcommune.model.entity.Banner;
 import org.jtalks.jcommune.model.entity.BannerPosition;
 
 /**
+ * Provides an API to work with banners.
  * 
  * @author Anuar_Nurmakanov
  *

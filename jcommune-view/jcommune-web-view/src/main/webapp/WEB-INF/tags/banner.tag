@@ -19,18 +19,19 @@
 <%@ attribute name="banner" required="true" type="org.jtalks.jcommune.model.entity.Banner" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt_rt" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <div id="banner">
 	<c:if test="${not empty banner}">
 		${banner.content}
-		<a href="#uploadBannerModal${banner.id}" role="button" class="btn" data-toggle="modal">Change Me</a>
+		<a href="#uploadBannerModal${banner.id}" role="button" class="btn" data-toggle="modal">
+			<fmt:message key="label.banner.upload"/>
+		</a>
 		
 		<!-- Upload banner modal dialog -->
 		<div id="uploadBannerModal${banner.id}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-				<h3 id="myModalLabel">Modal header</h3>
+				<h3 id="myModalLabel"><fmt:message key="label.banner.upload.dialog.header"/></h3>
 			</div>
 			<form:form action="${pageContext.request.contextPath}/banners/upload" modelAttribute="uploadedBanner" method="POST" 
 					   class="well anti-multipost" enctype="multipart/form-data">
@@ -40,8 +41,12 @@
 					 			   style="width:100%;" class="script-confirm-unsaved"/>
 				</div>
 				<div class="modal-footer">
-					<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-					<button class="btn btn-primary">upload</button>
+					<button class="btn" data-dismiss="modal" aria-hidden="true">
+						<fmt:message key="label.banner.upload.dialog.cancel"/>
+					</button>
+					<button class="btn btn-primary">
+						<fmt:message key="label.banner.upload.dialog.upload"/>
+					</button>
 				</div>
 			</form:form>
 		</div>
