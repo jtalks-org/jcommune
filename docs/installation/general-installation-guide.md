@@ -15,5 +15,7 @@ So if you want to run the app locally (from binaries or sources), you need to in
  - Now you need to configure DB access and other stuff. It's done via configuration file, the sample can be found [here](jcommune.xml), its name should be the same as the war-file name and it should be placed into `$TOMCAT_HOME/conf/Catalina/localhost`. For more details, read comments inside of the file per se.
 
 ####Building from sources
- - You can download the sources [directly as a zip](https://github.com/jtalks-org/jcommune/archive/master.zip) if you don't have Git and you don't want to install it. This won't allow you to contribute to the project.
- - Or you can install Git ([linux instructions](linux/git-installation.md), [windows instructions](windows/git-installation.md))
+ - You'll need to install a dev environment ([linux instructions](linux/dev-environment.md), [windows instructions](windows/dev-environment.md)). Alternatively to Git, you may want to download the sources [directly as a zip](https://github.com/jtalks-org/jcommune/archive/master.zip) if you don't have Git and you don't want to install it. This won't allow you to contribute to the project though.
+ - Clone the project: `git@github.com:jtalks-org/jcommune.git`. Now you can work with that project from your IDE.
+ - If you want to deploy it from command line.. Step into the folder and build it: `mvn clean package`
+ - Repeat everything from _Installing from Binaries_ but instead of downloading war-file, just grab it from `jcommune/jcommune-view/jcommunew-web-view/target`
