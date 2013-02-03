@@ -27,7 +27,7 @@ import java.net.URL;
 
 public class ExternalLink extends Entity {
 
-    private URL url;
+    private String url;
     private String title;
     private String hint;
 
@@ -43,7 +43,7 @@ public class ExternalLink extends Entity {
      * @param title  URL title, e.g. 'JTalks'.
      * @param hint URL hint or description, e.g. 'The most powerful forum engine'.
      */
-    public ExternalLink(URL url, String title, String hint) {
+    public ExternalLink(String url, String title, String hint) {
         this.url = url;
         this.title = title;
         this.hint = hint;
@@ -53,7 +53,7 @@ public class ExternalLink extends Entity {
      *
      * @return url
      */
-    public URL getUrl() {
+    public String getUrl() {
         return url;
     }
 
@@ -61,7 +61,7 @@ public class ExternalLink extends Entity {
      *
      * @param url url
      */
-    public void setUrl(URL url) {
+    public void setUrl(String url) {
         this.url = url;
     }
 
@@ -96,4 +96,6 @@ public class ExternalLink extends Entity {
     public void setHint(String hint) {
         this.hint = hint;
     }
+
+
 }

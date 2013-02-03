@@ -12,25 +12,34 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao;
+package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
+import org.jtalks.jcommune.model.dao.ExternalLinkDao;
 import org.jtalks.jcommune.model.entity.ExternalLink;
 
 import java.util.List;
 
 /**
- * Used for CRUD operations with {@link ExternalLink}
+ * DAO for manage {@link ExternalLink} entities.
+ *
  * @author Alexandre Teterin
  *         Date: 03.02.13
  */
 
-public interface ExternalLinkDao extends ChildRepository<ExternalLink> {
+
+public class ExternalLinkHibernateDao extends AbstractHibernateChildRepository<ExternalLink>
+        implements ExternalLinkDao {
 
     /**
-     * Provide a list of all links to external resources.
-     * @return  list of all links to external resources.
+     * {@inheritDoc}
      */
-    List<ExternalLink> getLinks();
+    @Override
+    public List<ExternalLink> getLinks() {
+        return getSession()
+                .createQuery("from ExternalLink")
+                .setCacheable(true)
+                .list();
+    }
 
 }
