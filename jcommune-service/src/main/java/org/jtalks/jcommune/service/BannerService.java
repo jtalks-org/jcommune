@@ -26,20 +26,11 @@ import org.jtalks.jcommune.model.entity.BannerPosition;
  */
 public interface BannerService {
     /**
-     * Attach banner to position on page.
+     * Upload banner.
      * 
-     * @param positionOnPage position of banner on page
-     * @param content banner content
+     * @param banner uploaded attached
      */
-    void attachBannerToPosition(BannerPosition positionOnPage, String content);
-    
-    /**
-     * Get banner by position.
-     * 
-     * @param positionOnPage position of banner on page
-     * @return banner for given position
-     */
-    Banner getBannerByPosition(BannerPosition positionOnPage);
+    void uploadBanner(Banner banner);
     
     /**
      * Get all banners of the forum.

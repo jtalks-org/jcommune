@@ -59,6 +59,7 @@ public class BannerInterceptor extends HandlerInterceptorAdapter {
         //
         Map<BannerPosition, Banner> allBanersOfTheForum = bannerService.getAllBanners();
         modelAndView.addObject("banners", allBanersOfTheForum);
+        modelAndView.addObject("uploadedBanner", new Banner());
     }
     
     /**

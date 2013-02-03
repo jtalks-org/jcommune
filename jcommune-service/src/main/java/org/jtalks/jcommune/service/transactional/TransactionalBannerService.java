@@ -44,22 +44,14 @@ public class TransactionalBannerService implements BannerService {
      * {@inheritDoc}
      */
     @Override
-    public void attachBannerToPosition(BannerPosition positionOnPage, String bannerContent) {
-        Banner banner = getBannerByPosition(positionOnPage);
-        if (banner == null) {
-            banner = new Banner();
-            banner.setPositionOnPage(positionOnPage);
+    public void uploadBanner(Banner uploadedBanner) {
+        Banner existBanner = bannerDao.getByPosition(uploadedBanner.getPositionOnPage());
+        if (existBanner == null) {
+            existBanner = uploadedBanner;
+        } else {
+            existBanner.setContent(uploadedBanner.getContent());
         }
-        banner.setContent(bannerContent);
-        bannerDao.saveOrUpdate(banner);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Banner getBannerByPosition(BannerPosition positionOnPage) {
-        return bannerDao.getByPosition(positionOnPage);
+        bannerDao.saveOrUpdate(existBanner);
     }
 
     /**

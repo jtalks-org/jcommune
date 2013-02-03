@@ -22,5 +22,5 @@ package org.jtalks.jcommune.model.entity;
 public enum BannerPosition {
     TOP,
     BOTTOM,
-    BOTTOM_RIGHT_OF_LICENSE
+    BOTTOM_FOOTER
 }
