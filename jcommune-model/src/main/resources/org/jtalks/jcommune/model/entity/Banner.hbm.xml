@@ -21,7 +21,7 @@
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
     <class name="Banner" table="BANNER">
         <cache usage="nonstrict-read-write" region="org.jtalks.EHCOMMON"/>
-        <id column="BANNER_ID" name="id" unsaved-value="0">
+        <id column="ID" name="id" unsaved-value="0">
             <generator class="native"/>
         </id>
 
