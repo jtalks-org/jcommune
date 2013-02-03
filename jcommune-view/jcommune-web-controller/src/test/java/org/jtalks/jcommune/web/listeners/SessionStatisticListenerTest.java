@@ -28,7 +28,6 @@ import static org.testng.Assert.assertEquals;
  * @author Elena Lepaeva
  */
 public class SessionStatisticListenerTest {
-
     private SessionStatisticListener listener;
     private HttpSessionEvent event;
 

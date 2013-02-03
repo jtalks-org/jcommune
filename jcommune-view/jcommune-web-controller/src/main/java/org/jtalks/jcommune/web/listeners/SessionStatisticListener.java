@@ -16,6 +16,7 @@ package org.jtalks.jcommune.web.listeners;
 
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Custom session listener implementation to track active user sessions
@@ -23,23 +24,22 @@ import javax.servlet.http.HttpSessionListener;
  * @author Elena Lepaeva
  */
 public class SessionStatisticListener implements HttpSessionListener {
+    //It's static because 2 listeners are created - one by web server, one by Spring. We'll need to get rid of this hack.
+    private static volatile AtomicLong totalActiveSessions = new AtomicLong(0);
 
-    
-    private static volatile long totalActiveSessions;
-    
     /**
      * @return active sessions count
      */
     public long getTotalActiveSessions() {
-        return totalActiveSessions;
+        return totalActiveSessions.get();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public synchronized void sessionCreated(HttpSessionEvent se) {
-        totalActiveSessions++;
+    public void sessionCreated(HttpSessionEvent se) {
+        totalActiveSessions.incrementAndGet();
     }
 
     /**
@@ -53,9 +53,8 @@ public class SessionStatisticListener implements HttpSessionListener {
         persisted sessions will expire. This check provides us with a self-correcting facility
         to overcome this problem
          */
-        if (totalActiveSessions > 0) {
-            totalActiveSessions--;
+        if (totalActiveSessions.get() > 0) {
+            totalActiveSessions.decrementAndGet();
         }
     }
-    
 }

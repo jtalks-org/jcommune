@@ -151,7 +151,8 @@ public class TransactionalTopicModificationServiceTest {
         assertEquals(createdPost.getPostContent(), ANSWER_BODY);
         assertEquals(createdPost.getUserCreated(), user);
         assertEquals(user.getPostCount(), 1);
-
+        assertTrue(answeredTopic.userSubscribed(user));
+        
         verify(aclBuilder).grant(GeneralPermission.WRITE);
         verify(aclBuilder).to(user);
         verify(aclBuilder).on(createdPost);
