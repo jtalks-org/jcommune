@@ -103,19 +103,16 @@
 </head>
 <body>
 <jsp:include page="../template/topLine.jsp"/>
-<jtalks:banner banner="${banners[TOP]}"/>
+<div class="container">
+	<jtalks:banner banner="${banners[TOP]}" position="${TOP}"/>
+</div>
 <decorator:body/>
 <div class="container">
-	<jtalks:banner banner="${banners[BOTTOM]}"/>
     <footer>
-    	<div>
-	        Powered by JCommune ${project.version}<br/>
-	        &copy; 2012 <a href="http://jtalks.org">jtalks.org</a><br/>
-	        Design with <a href="http://twitter.github.com/bootstrap">Twitter Bootstrap</a>
-        </div>
-        <div>
-        	<jtalks:banner banner="${banners[BOTTOM_FOOTER]}"/>
-        </div>
+    	<jtalks:banner banner="${banners[BOTTOM]}" position="${BOTTOM}"/>
+        Powered by JCommune ${project.version}<br/>
+        &copy; 2012 <a href="http://jtalks.org">jtalks.org</a><br/>
+        Design with <a href="http://twitter.github.com/bootstrap">Twitter Bootstrap</a>
     </footer>
 </div>
 </body>

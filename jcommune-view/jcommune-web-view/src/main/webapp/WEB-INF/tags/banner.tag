@@ -17,38 +17,43 @@
 <%@ tag language="java" pageEncoding="UTF-8" %>
 <%@ tag body-content="empty" %>
 <%@ attribute name="banner" required="true" type="org.jtalks.jcommune.model.entity.Banner" %>
+<%@ attribute name="position" required="true" type="org.jtalks.jcommune.model.entity.BannerPosition" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt_rt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<div id="banner">
+<div id="banner" class="row banner-wrapper">
 	<c:if test="${not empty banner}">
 		${banner.content}
+	</c:if>
+	<div class="pull-right">
 		<a href="#uploadBannerModal${banner.id}" role="button" class="btn" data-toggle="modal">
 			<fmt:message key="label.banner.upload"/>
 		</a>
-		
-		<!-- Upload banner modal dialog -->
-		<div id="uploadBannerModal${banner.id}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-				<h3 id="myModalLabel"><fmt:message key="label.banner.upload.dialog.header"/></h3>
-			</div>
-			<form:form action="${pageContext.request.contextPath}/banners/upload" modelAttribute="uploadedBanner" method="POST" 
-					   class="well anti-multipost" enctype="multipart/form-data">
-				<form:input type="hidden" path="positionOnPage" value="${banner.positionOnPage}"/>
-				<div class="modal-body">
-					<form:textarea path="content" id="body" name="body" tabindex="200"
-					 			   style="width:100%;" class="script-confirm-unsaved"/>
-				</div>
-				<div class="modal-footer">
-					<button class="btn" data-dismiss="modal" aria-hidden="true">
-						<fmt:message key="label.banner.upload.dialog.cancel"/>
-					</button>
-					<button class="btn btn-primary">
-						<fmt:message key="label.banner.upload.dialog.upload"/>
-					</button>
-				</div>
-			</form:form>
+	</div>
+	<!-- Upload banner modal dialog -->
+	
+	<div id="uploadBannerModal${banner.id}" class="modal hide fade"
+	 	 tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+	 	 style="margin-top: -129.5px;">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3 id="myModalLabel"><fmt:message key="label.banner.upload.dialog.header"/></h3>
 		</div>
-	</c:if>
+		<form:form action="${pageContext.request.contextPath}/banners/upload" modelAttribute="uploadedBanner" method="POST" 
+				   class="well anti-multipost" enctype="multipart/form-data">
+			<form:input type="hidden" path="positionOnPage" value="${position}"/>
+			<div class="modal-body">
+				<form:textarea path="content" id="body" name="body" tabindex="200"
+				 			   style="width:100%;" rows="4" class="script-confirm-unsaved"/>
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">
+					<fmt:message key="label.banner.upload.dialog.cancel"/>
+				</button>
+				<button class="btn btn-primary">
+					<fmt:message key="label.banner.upload.dialog.upload"/>
+				</button>
+			</div>
+		</form:form>
+	</div>
 </div>
