@@ -137,7 +137,6 @@ public class TransactionalTopicModificationServiceTest {
         when(securityContextFacade.getContext()).thenReturn(securityContext);
     }
 
-
     @Test
     public void testReplyToTopic() throws NotFoundException {
         Topic answeredTopic = new Topic(user, "title");
@@ -151,12 +150,24 @@ public class TransactionalTopicModificationServiceTest {
         assertEquals(createdPost.getPostContent(), ANSWER_BODY);
         assertEquals(createdPost.getUserCreated(), user);
         assertEquals(user.getPostCount(), 1);
-        assertTrue(answeredTopic.userSubscribed(user));
-        
+               
         verify(aclBuilder).grant(GeneralPermission.WRITE);
         verify(aclBuilder).to(user);
         verify(aclBuilder).on(createdPost);
         verify(notificationService).topicChanged(answeredTopic);
+    }
+    
+    @Test
+    public void testAutoSubscriptionOnTopicReply() throws NotFoundException {
+        Topic answeredTopic = new Topic(user, "title");
+        answeredTopic.setBranch(new Branch("name", "description"));        
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(answeredTopic);
+        when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
+
+        topicService.replyToTopic(TOPIC_ID, ANSWER_BODY, BRANCH_ID);
+        
+        assertTrue(answeredTopic.userSubscribed(user));
     }
 
     @Test(expectedExceptions = AccessDeniedException.class)
