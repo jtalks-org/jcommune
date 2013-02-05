@@ -26,6 +26,7 @@ import org.jtalks.jcommune.model.entity.BannerPosition;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
+import org.jtalks.jcommune.model.entity.ExternalLink;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.SimplePage;
@@ -40,6 +41,10 @@ import org.jtalks.jcommune.model.entity.UserContactType;
  * @author Eugeny Batov
  */
 public final class ObjectsFactory {
+
+    public static final String EXTERNAL_LINK_URL = "jtalks.org";
+    public static final String EXTERNAL_LINK_TITLE = "Open Source Java Forum";
+    public static final String EXTERNAL_LINK_HINT = "Most powerful forum engine";
 
     private ObjectsFactory() {
     }
@@ -104,6 +109,14 @@ public final class ObjectsFactory {
         type.setDisplayPattern("protocol://" + UserContactType.CONTACT_MASK_PLACEHOLDER);
         type.setValidationPattern("\\d+");
         return type;
+    }
+
+    public static ExternalLink getDefaultExternalLink() {
+        ExternalLink result = new ExternalLink();
+        result.setUrl(EXTERNAL_LINK_URL);
+        result.setTitle(EXTERNAL_LINK_TITLE);
+        result.setHint(EXTERNAL_LINK_HINT);
+        return result;
     }
 
     public static UserContact getDefaultUserContact() {

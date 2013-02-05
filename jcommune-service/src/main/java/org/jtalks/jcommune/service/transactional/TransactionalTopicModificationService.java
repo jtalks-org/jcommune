@@ -31,6 +31,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -115,6 +116,8 @@ public class TransactionalTopicModificationService implements TopicModificationS
 
         Post answer = new Post(currentUser, answerBody);
         topic.addPost(answer);
+        Set<JCUser> topicSubscribers = topic.getSubscribers();
+        topicSubscribers.add(currentUser);
         dao.update(topic);
         
         Branch branch = topic.getBranch();

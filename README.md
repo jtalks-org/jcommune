@@ -7,5 +7,14 @@ JCommune is a part of [JTalks](http://jtalks.org) ecosystem of projects which re
 
 For developers/QA/PMs/Leads:
 * [How to join us](http://jtalks.org/display/jtalks/How+to+join+us)
+* [Sonar](http://sonar.jtalks.org/dashboard/index/1)
+* [Deployment Pipeline](http://ci.jtalks.org/view/JCommune.%20Pipeline)
 * [Stack of Technologies](http://jtalks.org/display/jtalks/Stack+of+technologies)
 * [Code Conventions](http://jtalks.org/display/jtalks/Code+Conventions)
+
+####State of Project
+First the project was connected to Poulpe a lot - everything was administrated via admin panel. Now we think that Poulpe should manage only Users and Groups and thus the project is in transition from "conifugration in Poulpe" state to "configuration in JCommune itself state.
+
+We usually follow 2 directions when we plan next features:
+ - Finishing not-that-finished functionality, like administrating, banners, etc. which should be present in any forum
+ - And developing of new features (like Code Review).

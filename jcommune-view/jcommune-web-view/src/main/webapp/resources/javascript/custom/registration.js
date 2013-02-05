@@ -110,6 +110,8 @@ $(function () {
             });
         });
     });
+
+    clearPageForm();
 });
 
 /**
@@ -214,4 +216,11 @@ function createDialog() {
             </div> \
         </form> \
         ');
+}
+
+//to registration jsp
+function clearPageForm() {
+    if ($('.capcha-field')) {
+        $('.capcha-field').val('');
+    }
 }

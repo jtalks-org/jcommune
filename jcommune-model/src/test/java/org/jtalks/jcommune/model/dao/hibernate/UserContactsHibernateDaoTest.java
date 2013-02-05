@@ -33,6 +33,7 @@ import java.util.List;
 
 import static org.testng.Assert.*;
 import static org.testng.Assert.assertEquals;
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
  * @author Michael Gamov
@@ -104,10 +105,10 @@ public class UserContactsHibernateDaoTest extends AbstractTransactionalTestNGSpr
     public void testGetAvailableContactTypes() {
         UserContactType type = ObjectsFactory.getDefaultUserContactType();
         session.saveOrUpdate(type);
+        session.clear();
 
         List<UserContactType> types = dao.getAvailableContactTypes();
-        assertEquals(types.size(), 1);
-        assertTrue(types.contains(type));
+        assertReflectionEquals(type, types.get(0));
     }
 
     @Test

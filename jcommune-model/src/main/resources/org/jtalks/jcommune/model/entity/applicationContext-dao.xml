@@ -97,8 +97,13 @@
     <bean id="codeReviewCommentDao"
           class="org.jtalks.jcommune.model.dao.hibernate.CodeReviewCommentHibernateDao"
           parent="abstractHibernateDao"/>
+          
    <bean id="bannerDao"
           class="org.jtalks.jcommune.model.dao.hibernate.BannerHibernateDao"
+          parent="abstractHibernateDao"/>
+
+    <bean id="externalLinkDao"
+          class="org.jtalks.jcommune.model.dao.hibernate.ExternalLinkHibernateDao"
           parent="abstractHibernateDao"/>
 
     <!-- Declaration of Hibernate Search DAO beans -->
@@ -179,6 +184,7 @@
                 <value>/org/jtalks/jcommune/model/entity/CodeReview.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/CodeReviewComment.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/Banner.hbm.xml</value>
+                <value>/org/jtalks/jcommune/model/entity/ExternalLink.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">
