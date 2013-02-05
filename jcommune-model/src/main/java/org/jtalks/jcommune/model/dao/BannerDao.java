@@ -32,7 +32,7 @@ public interface BannerDao extends ParentRepository<Banner> {
      * Get banner by position.
      * 
      * @param positionOnPage position of banner on page
-     * @return banner
+     * @return banner that was found by position
      */
     Banner getByPosition(BannerPosition positionOnPage);
     

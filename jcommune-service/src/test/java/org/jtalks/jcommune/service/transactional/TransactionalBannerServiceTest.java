@@ -15,6 +15,8 @@
 package org.jtalks.jcommune.service.transactional;
 
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.jtalks.jcommune.model.dao.BannerDao;
@@ -44,11 +46,25 @@ public class TransactionalBannerServiceTest {
     @Test
     public void newBannerShouldBeSaved() {
         Banner uploadedBanner = new Banner(BannerPosition.TOP, "<html></html>");
+        
         bannerService.uploadBanner(uploadedBanner);
     
         verify(bannerDao).saveOrUpdate(uploadedBanner);
     }
     
+    @Test
+    public void existBannerShoulBeSavedWithNewContent() {
+        String uploadedBannerContent = "<html></html>";
+        Banner uploadedBanner = new Banner(BannerPosition.TOP, uploadedBannerContent);
+        Banner existsBanner = mock(Banner.class);
+        when(bannerDao.getByPosition(BannerPosition.TOP)).thenReturn(existsBanner);
+        
+        bannerService.uploadBanner(uploadedBanner);
+    
+        verify(bannerDao).saveOrUpdate(existsBanner);
+        verify(existsBanner).setContent(uploadedBannerContent);
+    }
+     
     @Test
     public void bannersShouldBeFoundFromRepository() {
        bannerService.getAllBanners();

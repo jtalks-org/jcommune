@@ -22,6 +22,8 @@ import org.jtalks.jcommune.model.entity.Banner;
 import org.jtalks.jcommune.model.entity.BannerPosition;
 
 /**
+ * An implementation of {@link BannerDao} that is based on Hibernate and working
+ * with database.
  * 
  * @author Anuar_Nurmakanov
  *
