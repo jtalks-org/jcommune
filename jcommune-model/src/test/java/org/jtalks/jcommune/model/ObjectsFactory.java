@@ -14,15 +14,25 @@
  */
 package org.jtalks.jcommune.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.math.RandomUtils;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.Section;
-import org.jtalks.jcommune.model.entity.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import org.jtalks.jcommune.model.entity.Banner;
+import org.jtalks.jcommune.model.entity.BannerPosition;
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.CodeReview;
+import org.jtalks.jcommune.model.entity.CodeReviewComment;
+import org.jtalks.jcommune.model.entity.ExternalLink;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.jtalks.jcommune.model.entity.SimplePage;
+import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.UserContact;
+import org.jtalks.jcommune.model.entity.UserContactType;
 
 /**
  * @author Kirill Afonin
@@ -158,5 +168,23 @@ public final class ObjectsFactory {
         review.setComments(comments);
 
         return review;
+    }
+    
+    public static Banner getDefaultBanner() {
+        Banner banner = new Banner();
+        banner.setPositionOnPage(BannerPosition.TOP);
+        banner.setContent("<html></html>");
+        return banner;
+    }
+    
+    public static List<Banner> getBanners() {
+        int bannersCount = 3;
+        List<Banner> banners = new ArrayList<Banner>();
+        for (int i = 0; i < bannersCount; i++) {
+            Banner banner = new Banner();
+            banner.setContent("<html></html>");
+            banner.setPositionOnPage(BannerPosition.TOP);
+        }
+        return banners;
     }
 }
