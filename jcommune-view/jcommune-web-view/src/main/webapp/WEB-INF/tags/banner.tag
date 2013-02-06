@@ -21,7 +21,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt_rt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<div id="banner" class="row banner-wrapper">
+<div class="container">
 	<c:if test="${not empty banner}">
 		${banner.content}
 	</c:if>

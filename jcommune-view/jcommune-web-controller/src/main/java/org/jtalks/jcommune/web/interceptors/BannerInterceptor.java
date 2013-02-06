@@ -34,6 +34,9 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
  * @author Anuar_Nurmakanov
  */
 public class BannerInterceptor extends HandlerInterceptorAdapter {
+    static final String BANNERS_MODEL_PARAM = "banners";
+    static final String UPLOADED_BANNER_MODEL_PARAM = "uploadedBanner";
+    
     private BannerService bannerService;
     
     
