@@ -25,7 +25,6 @@ import static org.testng.Assert.assertEquals;
  * @author Evgeniy Naumenko
  */
 public class BBCodeServiceTest {
-
     private BBCodeService service;
 
     private static final String SOURCE = "source";
@@ -42,6 +41,7 @@ public class BBCodeServiceTest {
         assertEquals(result, "[quote=\"name\"]source[/quote]");
     }
 
+    @Test
     public void testRemoveBBCodes(){
         String incoming = "[bb] lol [code] [/omg]";
         String expected = " lol  ";
