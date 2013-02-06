@@ -217,10 +217,18 @@
         <constructor-arg ref="securityService"/>
     </bean>
 
+	<bean id="bbCodeReviewProcessor" class="org.jtalks.jcommune.service.bb2htmlprocessors.BBCodeReviewProcessor"/>
+	
     <bean id="bbCodeService" class="org.jtalks.jcommune.service.nontransactional.BBCodeService">
         <property name="preprocessors">
             <list>
                 <bean class="org.jtalks.jcommune.service.bb2htmlprocessors.BBCodeListPreprocessor"/>
+                <ref local="bbCodeReviewProcessor"/>
+            </list>
+        </property>
+        <property name="postprocessors">
+            <list>
+                <ref local="bbCodeReviewProcessor"/>
             </list>
         </property>
     </bean>

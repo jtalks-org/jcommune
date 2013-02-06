@@ -19,6 +19,8 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.service.bb2htmlprocessors.TextPostProcessor;
+
 import ru.perm.kefir.bbcode.BBProcessorFactory;
 import ru.perm.kefir.bbcode.TextProcessor;
 
@@ -40,6 +42,11 @@ public class BBCodeService {
      * Preprocessors of BB encoded text used before actual BB2HTML converter
      */
     private List<TextProcessor> preprocessors = new ArrayList<TextProcessor>();
+    
+    /**
+     * Postprocessors of BB encoded text used after actual BB2HTML converter
+     */
+    private List<TextPostProcessor> postprocessors = new ArrayList<TextPostProcessor>();
     
     /**
      * Quotes text given as a valid BB-coded quote.
@@ -68,7 +75,11 @@ public class BBCodeService {
         for (TextProcessor preprocessor : preprocessors) {
             bbEncodedText = preprocessor.process(bbEncodedText);;
         }
-        return processor.process(bbEncodedText);
+        bbEncodedText = processor.process(bbEncodedText);
+        for (TextPostProcessor postpreprocessor : postprocessors) {
+            bbEncodedText = postpreprocessor.postProcess(bbEncodedText);;
+        }
+        return bbEncodedText;
     }
 
     /**
@@ -94,6 +105,20 @@ public class BBCodeService {
      */
     public void setPreprocessors(List<TextProcessor> preprocessors) {
         this.preprocessors = preprocessors;
+    }
+    
+    /**
+     * @return the preprocessors
+     */
+    public List<TextPostProcessor> getPostprocessors() {
+        return postprocessors;
+    }
+
+    /**
+     * @param preprocessors the preprocessors to set
+     */
+    public void setPostprocessors(List<TextPostProcessor> postprocessors) {
+        this.postprocessors = postprocessors;
     }
     
 }

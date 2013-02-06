@@ -130,8 +130,14 @@
 
 <c:set var="postClass" value=""/>
 <c:if test="${isFirstPost}">
-    <c:set var="postClass" value="script-first-post"/>
+    <c:set var="postClass" value="script-first-post"/>       	
 </c:if>
+
+<c:remove var="isCodeReviewPost" scope="request"/>  
+<c:if test="${isFirstPost && (topic.codeReview != null)}">
+	<c:set var="isCodeReviewPost" value="true" scope="request"/>
+</c:if>
+
 <div class="post ${postClass}">
     <div class="anchor">
         <a id="${post.id}">anchor</a>
