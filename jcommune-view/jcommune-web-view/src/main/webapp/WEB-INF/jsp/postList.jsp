@@ -133,6 +133,7 @@
     <c:set var="postClass" value="script-first-post"/>       	
 </c:if>
 
+<%--We need different logic for code review and other posts because CR uses differnet phpBB processing--%>
 <c:remove var="isCodeReviewPost" scope="request"/>  
 <c:if test="${isFirstPost && (topic.codeReview != null)}">
 	<c:set var="isCodeReviewPost" value="true" scope="request"/>

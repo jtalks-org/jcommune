@@ -16,6 +16,11 @@
 
 -->
 
+<!--We use Kefir BB for converting BB codes into HTML tags. This configures what symbols are treated as BB codes.-->
+<!--Also, this file describes encoding of special symbols that are treated by browsers as HTML. For instance, <> are
+valid HTML-related symbols, thus we need to replace them with their encoded equivalent like &amp;lt. Thus we don't
+get XSS attacks.</p>-->
+<!--See more docs on official site: http://kefir-bb.sourceforge.net/-->
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xmlns="http://kefir-bb.sourceforge.net/schemas"
                xsi:schemaLocation="http://kefir-bb.sourceforge.net/schemas http://kefir-bb.sourceforge.net/schemas/kefir-bb-0.5.xsd">

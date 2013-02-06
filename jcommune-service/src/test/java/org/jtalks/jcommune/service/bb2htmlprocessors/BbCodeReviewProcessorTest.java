@@ -30,21 +30,20 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-public class BBCodeReviewProcessorTest {
-
-    private BBCodeReviewProcessor service;
+public class BbCodeReviewProcessorTest {
+    private BbCodeReviewProcessor service;
     @Mock
     private HttpServletRequest request;
     
     @BeforeMethod
     public void setUp() {
-        service = spy(new BBCodeReviewProcessor());
+        service = spy(new BbCodeReviewProcessor());
         MockitoAnnotations.initMocks(this);
         doReturn(request).when(service).getServletRequest();  
     }
     
     @Test(dataProvider="preProcessingPosts")
-    public void testRegularNoneCodeReviewPost(String bbCode, String expectedResult) {
+    public void regularNoneCodeReviewPostIsReturnedAsSameText(String bbCode, String expectedResult) {
         when(request.getAttribute("isCodeReviewPost")).thenReturn(null);
         assertEquals(service.process(bbCode), bbCode);
     }
@@ -66,7 +65,7 @@ public class BBCodeReviewProcessorTest {
     public void testPostProcess() {
         when(request.getAttribute("isCodeReviewPost")).thenReturn("true");
         List<Boolean> replaceHistoryList = new ArrayList<Boolean>();
-        when(request.getAttribute(BBCodeReviewProcessor.RHL_ATTRIBUTE)).thenReturn(replaceHistoryList);
+        when(request.getAttribute(BbCodeReviewProcessor.RHL_ATTRIBUTE)).thenReturn(replaceHistoryList);
 
         replaceHistoryList.add(true);
         assertEquals(service.postProcess("<pre>int good=2;[-code]</pre>"), 
