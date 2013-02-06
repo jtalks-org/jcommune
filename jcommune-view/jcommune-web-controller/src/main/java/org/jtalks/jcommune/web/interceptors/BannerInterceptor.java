@@ -56,9 +56,11 @@ public class BannerInterceptor extends HandlerInterceptorAdapter {
             Object handler,
             ModelAndView modelAndView) throws Exception {
         super.postHandle(request, response, handler, modelAndView);
-        Map<BannerPosition, Banner> allBanersOfTheForum = bannerService.getAllBanners();
-        modelAndView.addObject("banners", convertToMapWithStringKey(allBanersOfTheForum));
-        modelAndView.addObject("uploadedBanner", new Banner());
+        if (modelAndView != null) {
+            Map<BannerPosition, Banner> allBanersOfTheForum = bannerService.getAllBanners();
+            modelAndView.addObject("banners", convertToMapWithStringKey(allBanersOfTheForum));
+            modelAndView.addObject("uploadedBanner", new Banner());
+        }
     }
     
     /**
