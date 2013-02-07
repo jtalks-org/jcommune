@@ -16,17 +16,17 @@
 package org.jtalks.jcommune.service.bb2htmlprocessors;
 
 /**
- * bb2html post processor. It uses for conversion result HTML string before JSP take it.
- * @author Evgeny Kapinos
+ * bb2html post processor. It's applied to the text already converted to HTML if we need additional processing of it.
  *
+ * @author Evgeny Kapinos
  */
 public interface TextPostProcessor {
-    
+
     /**
-     * Process decoded text
+     * Processes HTML text.
      *
-     * @param source the sourcetext
+     * @param source the HTML to be processed
      * @return the result of text processing
      */
-    public String postProcess(String source);
+    String postProcess(String source);
 }
