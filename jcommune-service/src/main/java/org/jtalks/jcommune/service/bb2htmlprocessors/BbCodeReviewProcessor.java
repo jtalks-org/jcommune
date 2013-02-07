@@ -34,19 +34,16 @@ import java.util.regex.Pattern;
 /**
  * Processor for bb2html which saves inner "[/code]" tags in code review posts. This is required because Code Reviews
  * initially have surrounding [code], but user himself also might have put there same string, without this processor all
- * this stuff is treated as bb codes and is replaced with HTML.<br/>
- * Consider such situation: 
- *  <ul> 
- *      <li>User creates code review which itself means that all the text is surrounded with [code]. This results in
- *          {@code [code][-code][/code][/code]}</li> 
- *      <li>We replace internal [/code] with [-code] inside of this pre-processor and place that information inside of
- *          the {@link #REPLACE_HISTORY_LIST_ATTRIBUTE} attribute like this {@code false, true} which means that
- *          internal [-code] is user input and not the work of our pre-processor [/code]</li> 
- *      <li>In the {@link #postProcess(String)} we find this attribute and we know what second [-code] should be 
- *          replaced back to [/code]</li>
- * </ul> 
- * @see <a href="http://jira.jtalks.org/browse/JC-1261">JIRA</a> for high-level details.
+ * this stuff is treated as bb codes and is replaced with HTML.<br/> Consider such situation: <ul> <li>User creates code
+ * review which itself means that all the text is surrounded with [code]. This results in {@code
+ * [code][-code][/code][/code]}</li> <li>We replace internal [/code] with [-code] inside of this pre-processor and place
+ * that information inside of the {@link #REPLACE_HISTORY_LIST_ATTRIBUTE} attribute like this {@code false, true} which
+ * means that internal [-code] is user input and not the work of our pre-processor [/code]</li> <li>In the {@link
+ * #postProcess(String)} we find this attribute and we know what second [-code] should be replaced back to [/code]</li>
+ * </ul>
+ *
  * @author Evgeny Kapinos
+ * @see <a href="http://jira.jtalks.org/browse/JC-1261">JIRA</a> for high-level details.
  */
 public class BbCodeReviewProcessor extends TextProcessorAdapter implements TextProcessor, TextPostProcessor {
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -81,7 +78,7 @@ public class BbCodeReviewProcessor extends TextProcessorAdapter implements TextP
         }
 
         httpServletRequest.setAttribute(REPLACE_HISTORY_LIST_ATTRIBUTE, replaceHistoryList);
-        
+
         return substituteCloseCodeTagsWithTemporaryReplacementInEncodedText(bbEncodedText);
     }
 
@@ -112,12 +109,12 @@ public class BbCodeReviewProcessor extends TextProcessorAdapter implements TextP
         }
 
         @SuppressWarnings("unchecked")
-        List<Boolean> replaceHistoryList = 
-                      (List<Boolean>)httpServletRequest.getAttribute(REPLACE_HISTORY_LIST_ATTRIBUTE);
+        List<Boolean> replaceHistoryList =
+                (List<Boolean>) httpServletRequest.getAttribute(REPLACE_HISTORY_LIST_ATTRIBUTE);
         if (replaceHistoryList == null) {
             return bbDecodedText;
         }
-        
+
         httpServletRequest.removeAttribute(REPLACE_HISTORY_LIST_ATTRIBUTE);
 
         return removeTemporaryReplacementSubstitutionFromDecodedText(bbDecodedText, replaceHistoryList);
@@ -133,23 +130,23 @@ public class BbCodeReviewProcessor extends TextProcessorAdapter implements TextP
         RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
         return ((ServletRequestAttributes) attributes).getRequest();
     }
-    
+
     /**
-     * Checks in current request attributes Code Review token  
+     * Checks in current request attributes Code Review token
      *
      * @return {@code true, false}
      */
-    private boolean isCodeReviewPost(HttpServletRequest httpServletRequest){
+    private boolean isCodeReviewPost(HttpServletRequest httpServletRequest) {
         String isCodeReviewPost = (String) httpServletRequest.getAttribute("isCodeReviewPost");
         return (isCodeReviewPost != null);
     }
-    
+
     /**
-     * Checks regular wrap [code]...[/code] in Code Review text 
+     * Checks regular wrap [code]...[/code] in Code Review text
      *
      * @return {@code true, false}
      */
-    private boolean isValidCodeReviewBbCodeString(String bbEncodedText){      
+    private boolean isValidCodeReviewBbCodeString(String bbEncodedText) {
         if (!bbEncodedText.matches(TopicModificationService.CODE_JAVA_BBCODE_START_PATTERN + ".*"
                 + TopicModificationService.CODE_JAVA_BBCODE_END_PATTERN)) {
             logger.warn("BbCodeReviewProcessor called, but target encoded text \"" + bbEncodedText
@@ -162,25 +159,26 @@ public class BbCodeReviewProcessor extends TextProcessorAdapter implements TextP
     }
 
     /**
-     * Removes regular wrap [code]...[/code] in Code Review text 
+     * Removes regular wrap [code]...[/code] in Code Review text
      *
-     * @return user text from full Code Review with wrap 
+     * @return user text from full Code Review with wrap
      */
-    private String getUserCodeReviewText(String bbEncodedText){      
-        return bbEncodedText.substring(TopicModificationService.CODE_JAVA_BBCODE_START.length(),bbEncodedText.length()-
-                                       TopicModificationService.CODE_JAVA_BBCODE_END.length());
+    private String getUserCodeReviewText(String bbEncodedText) {
+        return bbEncodedText.substring(TopicModificationService.CODE_JAVA_BBCODE_START.length(),
+                bbEncodedText.length() -
+                        TopicModificationService.CODE_JAVA_BBCODE_END.length());
     }
 
     /**
-     * Analyze Code Review text and creates replace history list 
+     * Analyze Code Review text and creates replace history list
      *
-     * @return replace history list 
+     * @return replace history list
      */
-    private List<Boolean> getReplaceHistoryList(String bbEncodedText){      
+    private List<Boolean> getReplaceHistoryList(String bbEncodedText) {
         String textOnly = getUserCodeReviewText(bbEncodedText);
-    
+
         List<Boolean> replaceHistoryList = new ArrayList<Boolean>();
-    
+
         Pattern pattern = Pattern.compile(TopicModificationService.CODE_JAVA_BBCODE_END_PATTERN + "|"
                 + CODE_JAVA_BBCODE_END_REPLACEMENT_PATTERN);
         Matcher matcher = pattern.matcher(textOnly);
@@ -189,26 +187,31 @@ public class BbCodeReviewProcessor extends TextProcessorAdapter implements TextP
         }
         return replaceHistoryList;
     }
-    
+
     /**
      * Creates new BBcode string without [/code] tags in user part (replaced by [-code] tag)
      *
      * @return safety BBcode string with temporary replacements
      */
-    private String substituteCloseCodeTagsWithTemporaryReplacementInEncodedText(String bbEncodedText){      
+    private String substituteCloseCodeTagsWithTemporaryReplacementInEncodedText(String bbEncodedText) {
         return TopicModificationService.CODE_JAVA_BBCODE_START
-            + getUserCodeReviewText(bbEncodedText).replaceAll(TopicModificationService.CODE_JAVA_BBCODE_END_PATTERN,
-            CODE_JAVA_BBCODE_END_REPLACEMENT)
-            + TopicModificationService.CODE_JAVA_BBCODE_END;
+                + getUserCodeReviewText(bbEncodedText).replaceAll(TopicModificationService.CODE_JAVA_BBCODE_END_PATTERN,
+                CODE_JAVA_BBCODE_END_REPLACEMENT)
+                + TopicModificationService.CODE_JAVA_BBCODE_END;
     }
-    
+
     /**
-     * Returns original tags in already processed string. Necessary [-code] tags returns substitute by [/code] tags
+     * Returns back original tags into already processed string. To be precise: [-code] tags are replaced back with
+     * [code] tags
      *
-     * @return BBcode string without temporary replacements 
+     * @param bbDecodedText      the text after it was processed into HTML, it yet contains [-code] tags
+     * @param replaceHistoryList true in the list means that [-code] should be replaced with [/code], false would mean
+     *                           that [-code] is the original text written by user and it shouldn't be replaced with
+     *                           [/code]
+     * @return BBcode string without temporary replacements
      */
-    private String removeTemporaryReplacementSubstitutionFromDecodedText(String bbDecodedText, 
-            List<Boolean> replaceHistoryList){      
+    private String removeTemporaryReplacementSubstitutionFromDecodedText(String bbDecodedText,
+                                                                         List<Boolean> replaceHistoryList) {
         int index = 0;
         Pattern pattern = Pattern.compile(CODE_JAVA_BBCODE_END_REPLACEMENT_PATTERN);
         Matcher matcher = pattern.matcher(bbDecodedText);
