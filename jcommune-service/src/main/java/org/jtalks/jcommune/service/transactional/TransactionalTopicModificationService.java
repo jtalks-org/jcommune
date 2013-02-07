@@ -46,9 +46,6 @@ import java.util.Set;
  */
 public class TransactionalTopicModificationService implements TopicModificationService {
 
-    private static final String CODE_JAVA_BBCODE_START = "[code=java]";
-    private static final String CODE_JAVA_BBCODE_END = "[/code]";
-    
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private TopicDao dao;

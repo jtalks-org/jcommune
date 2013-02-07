@@ -14,36 +14,38 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang.Validate;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.service.bb2htmlprocessors.TextPostProcessor;
 import ru.perm.kefir.bbcode.BBProcessorFactory;
 import ru.perm.kefir.bbcode.TextProcessor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Provides various helper methods for encoding/decoding BB codes
+ * Provides various helper methods for encoding/decoding BB codes. This class is used by our JSTL tags on JSP pages.
  *
  * @author Evgeniy Naumenko
  */
 public class BBCodeService {
-
     private static final String QUOTE_PATEERN = "[quote=\"%s\"]%s[/quote]";
+    /** Processor is thread safe as it's explicitly stated in documentation */
+    private final TextProcessor processor = BBProcessorFactory.getInstance().create();
+
+    /** Preprocessors of BB encoded text used before actual BB2HTML converter */
+    private final List<TextProcessor> preprocessors = new ArrayList<TextProcessor>();
 
     /**
-     * Processor is thread safe as it's explicitly stated in documentation
+     * Postprocessors of BB decoded text used after actual BB2HTML converter. This is needed for instance in case of
+     * Code Reviews when we first change user's input to get rid of extra bb-codes, and then put them back after bb
+     * codes has been processed.
      */
-    private TextProcessor processor = BBProcessorFactory.getInstance().create();
-    
+    private final List<TextPostProcessor> postprocessors = new ArrayList<TextPostProcessor>();
+
     /**
-     * Preprocessors of BB encoded text used before actual BB2HTML converter
-     */
-    private List<TextProcessor> preprocessors = new ArrayList<TextProcessor>();
-    
-    /**
-     * Quotes text given as a valid BB-coded quote.
-     * Such a quotes are rendered automatically in posts or forum messages
+     * Quotes text given as a valid BB-coded quote. Such a quotes are rendered automatically in posts or forum messages.
+     * On UI you can find Quote button near each post.
      *
      * @param source text to quote, not null
      * @param author text author, not null
@@ -56,24 +58,28 @@ public class BBCodeService {
     }
 
     /**
-     * Converts BB-encoded text into HTML-encoded one. Actual transformation result
-     * depend on kefirBB.xml configuration and the CSS styles mentioned in it's patterns.
-     * <p/>
-     * If input text contains no BB-conpatible tags it's returned as is.
+     * <p>Converts BB-encoded text into HTML-encoded one. Actual transformation result depends on kefirBB.xml
+     * configuration and the CSS styles mentioned in it's patterns. Uses pre-processors to do some work on input text,
+     * like closing un-closed tags. Also it uses post-processors e.g. for code reviews to return back [code] tag after
+     * it was removed in the pre-processors.</p> If input text contains <i>no</i> BB-compatible tags it's returned as
+     * is.
      *
      * @param bbEncodedText string with BB-style markup
      * @return the same text with HTML markup to be shown
      */
     public String convertBbToHtml(String bbEncodedText) {
         for (TextProcessor preprocessor : preprocessors) {
-            bbEncodedText = preprocessor.process(bbEncodedText);;
+            bbEncodedText = preprocessor.process(bbEncodedText);
         }
-        return processor.process(bbEncodedText);
+        bbEncodedText = processor.process(bbEncodedText);
+        for (TextPostProcessor postpreprocessor : postprocessors) {
+            bbEncodedText = postpreprocessor.postProcess(bbEncodedText);
+        }
+        return bbEncodedText;
     }
 
     /**
-     * Removes all BB codes from the text given, simply cutting
-     * out all [...]-style tags found
+     * Removes all BB codes from the text given, simply cutting out all [...]-style tags found.
      *
      * @param source text to cleanup
      * @return plain text without BB tags
@@ -82,18 +88,19 @@ public class BBCodeService {
         return source.replaceAll("\\[.*?\\]", "");
     }
 
-    /**
-     * @return the preprocessors
-     */
-    public List<TextProcessor> getPreprocessors() {
-        return preprocessors;
+    /** @param preprocessors objects that process input text from users post before the actual bb-converting is
+     *                       started */
+    public void setPreprocessors(List<TextProcessor> preprocessors) {
+        this.preprocessors.addAll(preprocessors);
     }
 
     /**
-     * @param preprocessors the preprocessors to set
+     * @param postprocessors objects that process input text from users' posts after it was processed by {@link
+     *                       TextProcessor}, this is useful for instance for code reviews when we need to do some
+     *                       clean-up work.
      */
-    public void setPreprocessors(List<TextProcessor> preprocessors) {
-        this.preprocessors = preprocessors;
+    public void setPostprocessors(List<TextPostProcessor> postprocessors) {
+        this.postprocessors.addAll(postprocessors);
     }
-    
+
 }

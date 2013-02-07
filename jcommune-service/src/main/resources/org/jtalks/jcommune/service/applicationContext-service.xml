@@ -217,10 +217,18 @@
         <constructor-arg ref="securityService"/>
     </bean>
 
+	<bean id="bbCodeReviewProcessor" class="org.jtalks.jcommune.service.bb2htmlprocessors.BbCodeReviewProcessor"/>
+	
     <bean id="bbCodeService" class="org.jtalks.jcommune.service.nontransactional.BBCodeService">
         <property name="preprocessors">
             <list>
                 <bean class="org.jtalks.jcommune.service.bb2htmlprocessors.BBCodeListPreprocessor"/>
+                <ref local="bbCodeReviewProcessor"/>
+            </list>
+        </property>
+        <property name="postprocessors">
+            <list>
+                <ref local="bbCodeReviewProcessor"/>
             </list>
         </property>
     </bean>
@@ -242,6 +250,10 @@
     <bean id="permissionService" class="org.jtalks.jcommune.service.security.TransactionalPermissionService">
         <constructor-arg ref="securityContextFacade"/>
         <constructor-arg ref="aclGroupPermissionEvaluator"/>
+    </bean>
+    
+    <bean id="bannerService" class="org.jtalks.jcommune.service.transactional.TransactionalBannerService">
+        <constructor-arg ref="bannerDao"/>
     </bean>
 
     <bean id="externalLinkService" class="org.jtalks.jcommune.service.transactional.ExternalLinkServiceImpl">

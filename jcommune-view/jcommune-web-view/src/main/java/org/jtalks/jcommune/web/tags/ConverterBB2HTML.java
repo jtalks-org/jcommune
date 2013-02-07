@@ -24,25 +24,25 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
 
-
 /**
- * Converts BB-codes into html representation.
- * This tag also replaces newline symbols with html
- * line break tag <br>
+ * Converts BB-codes into html representation. This tag also replaces newline symbols with html line break tag <br>.
+ * Take a look at {@code kefirbb.xml} file that configures what are the bb codes and how they should be replaced with
+ * HTML tags.
+ *
+ * @author Evgeny Kapinos
+ * @see BBCodeService
  */
 public class ConverterBB2HTML extends TagSupport {
-
     private String bbCode;
+    /** We get this from Spring App Context in {@link #setPageContext(PageContext)}. */
     private BBCodeService service;
 
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public int doStartTag() throws JspException {
         try {
-            String html =  service.convertBbToHtml(bbCode);
+            String html = service.convertBbToHtml(bbCode);
             pageContext.getOut().print(html);
             return SKIP_BODY;
         } catch (IOException e) {
@@ -51,7 +51,7 @@ public class ConverterBB2HTML extends TagSupport {
     }
 
     /**
-     * Sets BB-encoded text to be formatted as HTML.
+     * Feeds BB-encoded text from the JSP page to be formatted as HTML.
      *
      * @param bbCode bb-encoded text
      */
@@ -59,9 +59,7 @@ public class ConverterBB2HTML extends TagSupport {
         this.bbCode = bbCode;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public void setPageContext(PageContext pageContext) {
         super.setPageContext(pageContext);

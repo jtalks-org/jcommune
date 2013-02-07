@@ -18,6 +18,7 @@
 <%@ taglib prefix="decorator" uri="http://www.opensymphony.com/sitemesh/decorator" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <fmt:setBundle basename="org.jtalks.jcommune.web.view.messages"/>
 <fmt:setLocale value="en"/>
 <!DOCTYPE HTML>
@@ -102,12 +103,21 @@
 </head>
 <body>
 <jsp:include page="../template/topLine.jsp"/>
+<jtalks:banner banner="${banners['TOP']}" position="${'TOP'}"/>
 <decorator:body/>
 <div class="container">
     <footer>
-        Powered by JCommune ${project.version}<br/>
-        &copy; 2012 <a href="http://jtalks.org">jtalks.org</a><br/>
-        Design with <a href="http://twitter.github.com/bootstrap">Twitter Bootstrap</a>
+    	<jtalks:banner banner="${banners['BOTTOM']}" position="${'BOTTOM'}"/>
+    	<div> 
+	    	<div class="pull-left">
+		        Powered by JCommune ${project.version}<br/>
+		        &copy; 2012 <a href="http://jtalks.org">jtalks.org</a><br/>
+		        Design with <a href="http://twitter.github.com/bootstrap">Twitter Bootstrap</a>
+		    </div>
+		    <div>
+		    	<jtalks:banner banner="${banners['BOTTOM_FOOTER']}" position="${'BOTTOM_FOOTER'}"/>
+		    </div>
+	    </div>
     </footer>
 </div>
 </body>

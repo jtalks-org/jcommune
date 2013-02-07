@@ -30,6 +30,11 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
  */
 public interface TopicModificationService {
 
+    static final String CODE_JAVA_BBCODE_START         = "[code=java]";
+    static final String CODE_JAVA_BBCODE_END           = "[/code]";
+    static final String CODE_JAVA_BBCODE_START_PATTERN = "\\[code=java\\]";
+    static final String CODE_JAVA_BBCODE_END_PATTERN   = "\\[/code\\]";
+    
     /**
      * Add the answer to the topic. Add the specified message to the target topic and save.
      * User should be authorized to answer to the topic. Otherwise {@link IllegalStateException} will be thrown.
