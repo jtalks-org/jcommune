@@ -26,12 +26,12 @@
 		${banner.content}
 	</c:if>
 	<div class="pull-right">
-		<a href="#uploadBannerModal${banner.id}" role="button" class="btn" data-toggle="modal">
+		<a href="#uploadBannerModal${position}" role="button" class="btn" data-toggle="modal">
 			<fmt:message key="label.banner.upload"/>
 		</a>
 	</div>
 	<!-- Upload banner modal dialog -->
-	<div id="uploadBannerModal${banner.id}" class="modal hide fade"
+	<div id="uploadBannerModal${position}" class="modal hide fade"
 	 	 tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
 	 	 style="margin-top: -129.5px;">
 		<div class="modal-header">
