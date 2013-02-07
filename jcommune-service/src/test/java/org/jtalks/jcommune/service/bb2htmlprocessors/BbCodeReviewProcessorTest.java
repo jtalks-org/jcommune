@@ -14,21 +14,18 @@
  */
 package org.jtalks.jcommune.service.bb2htmlprocessors;
 
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.google.common.collect.Lists;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
+import static org.mockito.Mockito.*;
+import static org.testng.Assert.assertEquals;
 
 public class BbCodeReviewProcessorTest {
     private BbCodeReviewProcessor service;
@@ -49,7 +46,7 @@ public class BbCodeReviewProcessorTest {
     }
         
     @Test(dataProvider="preProcessingPosts")
-    public void preprocessorShouldSubstituteСlosingCodeTags(String bbCode, String expectedResult) {
+    public void preprocessorShouldSubstituteClosingCodeTags(String bbCode, String expectedResult) {
         when(request.getAttribute("isCodeReviewPost")).thenReturn("true");
         assertEquals(service.process(bbCode), expectedResult);
     }
@@ -64,9 +61,8 @@ public class BbCodeReviewProcessorTest {
     @Test
     public void postprocessorShouldСorrectlyReturnUserCloseTag() {
         when(request.getAttribute("isCodeReviewPost")).thenReturn("true");
-        List<Boolean> replaceHistoryList = new ArrayList<Boolean>();
+        List<Boolean> replaceHistoryList = Lists.newArrayList(true);
         when(request.getAttribute(BbCodeReviewProcessor.REPLACE_HISTORY_LIST_ATTRIBUTE)).thenReturn(replaceHistoryList);
-        replaceHistoryList.add(true);
         assertEquals(service.postProcess("<pre>int good=2;[-code]</pre>"), 
                                          "<pre>int good=2;[/code]</pre>");       
     }
@@ -74,10 +70,8 @@ public class BbCodeReviewProcessorTest {
     @Test
     public void postprocessorShouldСorrectlyReturnOurSubstitution() {
         when(request.getAttribute("isCodeReviewPost")).thenReturn("true");
-        List<Boolean> replaceHistoryList = new ArrayList<Boolean>();
+        List<Boolean> replaceHistoryList = Lists.newArrayList(false, false);
         when(request.getAttribute(BbCodeReviewProcessor.REPLACE_HISTORY_LIST_ATTRIBUTE)).thenReturn(replaceHistoryList);
-        replaceHistoryList.add(false);
-        replaceHistoryList.add(false);
         assertEquals(service.postProcess("<pre>int good=2;[-code][-code]</pre>"),
                                          "<pre>int good=2;[-code][-code]</pre>");     
     }
@@ -85,11 +79,8 @@ public class BbCodeReviewProcessorTest {
     @Test
     public void postprocessorShouldСorrectlyReturnUserCloseTagAndOurSubstitution() {
         when(request.getAttribute("isCodeReviewPost")).thenReturn("true");
-        List<Boolean> replaceHistoryList = new ArrayList<Boolean>();
+        List<Boolean> replaceHistoryList = Lists.newArrayList(true, false, true);
         when(request.getAttribute(BbCodeReviewProcessor.REPLACE_HISTORY_LIST_ATTRIBUTE)).thenReturn(replaceHistoryList);
-        replaceHistoryList.add(true);
-        replaceHistoryList.add(false);
-        replaceHistoryList.add(true);
         assertEquals(service.postProcess("<pre>int good=2;[-code][-code][-code]</pre>"),
                                          "<pre>int good=2;[/code][-code][/code]</pre>");       
     }
