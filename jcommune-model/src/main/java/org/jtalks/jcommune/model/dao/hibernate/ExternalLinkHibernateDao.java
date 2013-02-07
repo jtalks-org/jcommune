@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
+import org.jtalks.common.model.dao.hibernate.AbstractHibernateParentRepository;
 import org.jtalks.jcommune.model.dao.ExternalLinkDao;
 import org.jtalks.jcommune.model.entity.ExternalLink;
 
@@ -28,14 +29,14 @@ import java.util.List;
  */
 
 
-public class ExternalLinkHibernateDao extends AbstractHibernateChildRepository<ExternalLink>
+public class ExternalLinkHibernateDao extends AbstractHibernateParentRepository<ExternalLink>
         implements ExternalLinkDao {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<ExternalLink> getLinks() {
+    public List<ExternalLink> getAll() {
         return getSession()
                 .createQuery("from ExternalLink")
                 .setCacheable(true)

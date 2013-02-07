@@ -104,7 +104,7 @@ public class ExternalLinkHibernateDaoTest extends AbstractTransactionalTestNGSpr
         session.saveOrUpdate(expected);
         session.clear();
 
-        List<ExternalLink> actual = dao.getLinks();
+        List<ExternalLink> actual = dao.getAll();
         assertReflectionEquals(expected, actual.get(0));
     }
 

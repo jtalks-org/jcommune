@@ -12,26 +12,38 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao;
+package org.jtalks.jcommune.service;
 
-import org.jtalks.common.model.dao.ChildRepository;
-import org.jtalks.common.model.dao.ParentRepository;
 import org.jtalks.jcommune.model.entity.ExternalLink;
 
 import java.util.List;
 
 /**
- * Used for CRUD operations with {@link ExternalLink}
+ * Provide CRUD operations for {@link ExternalLink} entities.
  * @author Alexandre Teterin
  *         Date: 03.02.13
  */
 
-public interface ExternalLinkDao extends ParentRepository<ExternalLink> {
+
+public interface ExternalLinkService extends EntityService<ExternalLink> {
 
     /**
-     * Provide a list of all links to external resources.
-     * @return  list of all links to external resources.
+     * Return list of existing external link.
+     * @return list of existing external link.
      */
-    List<ExternalLink> getAll();
+    List<ExternalLink> getLinks();
 
+    /**
+     * Add link constructed from specified value with predefined format.
+     * @param value value with predefined format.
+     * @return created {@link ExternalLink} instance.
+     */
+    ExternalLink addLink(String value);
+
+    /**
+     * Removes link with specified id.
+     * @param id link id to remove.
+     * @return {@code true} if entity deleted successfully.
+     */
+    boolean removeLink(long id);
 }

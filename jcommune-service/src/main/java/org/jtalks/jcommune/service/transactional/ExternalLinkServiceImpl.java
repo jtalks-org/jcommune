@@ -12,26 +12,45 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao;
+package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.common.model.dao.ChildRepository;
-import org.jtalks.common.model.dao.ParentRepository;
+import org.jtalks.jcommune.model.dao.ExternalLinkDao;
 import org.jtalks.jcommune.model.entity.ExternalLink;
+import org.jtalks.jcommune.service.ExternalLinkService;
 
 import java.util.List;
 
 /**
- * Used for CRUD operations with {@link ExternalLink}
  * @author Alexandre Teterin
  *         Date: 03.02.13
  */
 
-public interface ExternalLinkDao extends ParentRepository<ExternalLink> {
+
+public class ExternalLinkServiceImpl extends AbstractTransactionalEntityService<ExternalLink, ExternalLinkDao>
+        implements ExternalLinkService{
 
     /**
-     * Provide a list of all links to external resources.
-     * @return  list of all links to external resources.
+     * Subclass may use this constructor to store entity DAO or parent
+     * entity DAO if necessary
+     *
+     * @param dao subclass-provided dao object
      */
-    List<ExternalLink> getAll();
+    ExternalLinkServiceImpl(ExternalLinkDao dao) {
+        super(dao);
+    }
 
+    @Override
+    public List<ExternalLink> getLinks() {
+        return getDao().getAll();
+    }
+
+    @Override
+    public ExternalLink addLink(String value) {
+        return null;
+    }
+
+    @Override
+    public boolean removeLink(long id) {
+        return getDao().delete(id);
+    }
 }

@@ -244,6 +244,10 @@
         <constructor-arg ref="aclGroupPermissionEvaluator"/>
     </bean>
 
+    <bean id="externalLinkService" class="org.jtalks.jcommune.service.transactional.ExternalLinkServiceImpl">
+        <constructor-arg ref="externalLinkDao"/>
+    </bean>
+
     <!--
     Cache beans for user related data.
     Now used for storing new private messages count.
