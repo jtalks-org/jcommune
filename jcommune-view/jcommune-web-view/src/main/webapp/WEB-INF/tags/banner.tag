@@ -31,7 +31,6 @@
 		</a>
 	</div>
 	<!-- Upload banner modal dialog -->
-	
 	<div id="uploadBannerModal${banner.id}" class="modal hide fade"
 	 	 tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
 	 	 style="margin-top: -129.5px;">
@@ -43,8 +42,9 @@
 				   class="well anti-multipost" enctype="multipart/form-data">
 			<form:input type="hidden" path="positionOnPage" value="${position}"/>
 			<div class="modal-body">
-				<form:textarea path="content" id="body" name="body" tabindex="200"
-				 			   style="width:100%;" rows="4" class="script-confirm-unsaved"/>
+				<jsp:setProperty name="uploadedBanner" property="content" value="${banner.content}"/>
+				<form:textarea path="content" id="body" name="body" tabindex="200" 
+				 			   style="width:100%;" rows="7" class="script-confirm-unsaved" />
 			</div>
 			<div class="modal-footer">
 				<button class="btn" data-dismiss="modal" aria-hidden="true">
