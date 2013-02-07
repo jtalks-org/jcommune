@@ -45,8 +45,15 @@ public class ExternalLinkServiceImpl extends AbstractTransactionalEntityService<
     }
 
     @Override
-    public ExternalLink addLink(String value) {
-        return null;
+    public void addLink(ExternalLink link) {
+        boolean result = validate(link);
+        if (result) {
+            getDao().saveOrUpdate(link);
+        }
+    }
+
+    private boolean validate(ExternalLink link) {
+        return false;
     }
 
     @Override

@@ -34,11 +34,10 @@ public interface ExternalLinkService extends EntityService<ExternalLink> {
     List<ExternalLink> getLinks();
 
     /**
-     * Add link constructed from specified value with predefined format.
-     * @param value value with predefined format.
-     * @return created {@link ExternalLink} instance.
+     * Persist link to db.
+     * @param link link to persist.
      */
-    ExternalLink addLink(String value);
+    void addLink(ExternalLink link);
 
     /**
      * Removes link with specified id.

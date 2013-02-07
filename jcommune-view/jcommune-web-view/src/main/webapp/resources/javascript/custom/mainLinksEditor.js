@@ -20,6 +20,8 @@
 
 //save id of link to action (delete or edit)
 var actionId = null;
+var baseUrl = $root;
+
 $(function () {
     $('#links_editor').on('click', function (e) {
         e.preventDefault();
@@ -175,8 +177,25 @@ function addLinkVisible(visible) {
                 $('#link-title').val("");
                 $('#link-url').val("");
                 $('.edit-links').show();
-                //save new link
-                $('#add-link').unbind("click").bind('click', function () {
+                $('#save-link').unbind("click").bind('click', function () {
+                    var link = {
+                        linkTitle:$('#link-title')[0].value,
+                        linkUrl:$('#link-url')[0].value
+                    };
+
+                    $.ajax({
+                        url:baseUrl + "/links/add",
+                        type:"POST",
+                        contentType:"application/json",
+                        async: false,
+                        data: JSON.stringify(link),
+                        success: function(data) {
+                            //todo populate links
+                        },
+                        error: function(data) {
+                            //todo highlight errors
+                        }
+                    });
 
                 });
                 $('#cancel-link').unbind("click").bind('click', function () {
@@ -241,6 +260,4 @@ function toAction(typeOfAction) {
 
     }
 }
-
-
 

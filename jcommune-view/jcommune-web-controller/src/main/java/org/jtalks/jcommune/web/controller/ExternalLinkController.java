@@ -18,6 +18,13 @@ import org.jtalks.jcommune.model.entity.ExternalLink;
 import org.jtalks.jcommune.service.ExternalLinkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 /**
  * Handles CRUD operations for {@link ExternalLink}
@@ -34,5 +41,26 @@ public class ExternalLinkController {
     @Autowired
     public ExternalLinkController(ExternalLinkService service) {
         this.service = service;
+    }
+
+    @RequestMapping(value="/links", method = RequestMethod.GET)
+    @ResponseBody
+    public ExternalLink[] getLinks() {
+        List<ExternalLink> links = service.getLinks();
+        return links.toArray(new ExternalLink[links.size()]);
+    }
+
+    @RequestMapping(value = "/links/add", method = RequestMethod.POST)
+    @ResponseBody
+    public ExternalLink addLink(@RequestBody ExternalLink link) {
+        if (link.getUrl() != null) {
+            service.addLink(link);
+        }
+        return link;
+    }
+
+    @RequestMapping(value = "/links/remove/{id}", method = RequestMethod.DELETE)
+    public void removeLink(@PathVariable Long id) {
+        service.removeLink(id);
     }
 }
