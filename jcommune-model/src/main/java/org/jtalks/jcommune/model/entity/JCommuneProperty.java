@@ -53,7 +53,17 @@ public enum JCommuneProperty {
     /**
      * Description of component
      */
-    CMP_DESCRIPTION;
+    CMP_DESCRIPTION,
+
+    /**
+     * JavaSape account ID
+     */
+    CMP_SAPE_ACCOUNT_ID,
+
+    /**
+     * Show javasape content on main page
+     */
+    CMP_SAPE_ON_MAIN_PAGE_ENABLE;
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JCommuneProperty.class);

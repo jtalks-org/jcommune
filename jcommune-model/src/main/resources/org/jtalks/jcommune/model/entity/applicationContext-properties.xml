@@ -62,4 +62,23 @@
         <property name="defaultValue" value=""/>
     </bean>
 
+    <bean id="componentSapeAccountProperty" class="org.jtalks.jcommune.model.entity.JCommuneProperty"
+          factory-method="valueOf">
+        <constructor-arg type="java.lang.String" value="CMP_SAPE_ACCOUNT_ID"/>
+        <property name="componentDao" ref="componentDao"/>
+        <property name="propertyDao" ref="propertyDao"/>
+        <property name="name" value="cmp.sape_account_id"/>
+        <property name="defaultValue" value=""/>
+    </bean>
+
+    <bean id="componentSapeOnMainPageEnableProperty" class="org.jtalks.jcommune.model.entity.JCommuneProperty"
+          factory-method="valueOf">
+        <constructor-arg type="java.lang.String" value="CMP_SAPE_ON_MAIN_PAGE_ENABLE"/>
+        <property name="componentDao" ref="componentDao"/>
+        <property name="propertyDao" ref="propertyDao"/>
+        <property name="name" value="cmp.sape_on_main_page_enable"/>
+        <property name="defaultValue" value=""/>
+    </bean>
+
+
 </beans>

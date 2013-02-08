@@ -299,6 +299,11 @@
             </dependency>
             <!--Others-->
             <dependency>
+                <groupId>ru.sape</groupId>
+                <artifactId>javasape</artifactId>
+                <version>0.2</version>
+            </dependency>
+            <dependency>
                 <groupId>opensymphony</groupId>
                 <artifactId>sitemesh</artifactId>
                 <version>2.4.2</version>

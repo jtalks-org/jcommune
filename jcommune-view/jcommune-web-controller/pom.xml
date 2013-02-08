@@ -74,6 +74,10 @@
             <groupId>com.cj.trim</groupId>
             <artifactId>trim-filter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>ru.sape</groupId>
+            <artifactId>javasape</artifactId>
+        </dependency>
     </dependencies>
 
     <properties>

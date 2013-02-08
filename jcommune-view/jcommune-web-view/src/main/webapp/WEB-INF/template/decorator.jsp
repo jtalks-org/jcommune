@@ -19,6 +19,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <fmt:setBundle basename="org.jtalks.jcommune.web.view.messages"/>
 <fmt:setLocale value="en"/>
 <!DOCTYPE HTML>
@@ -107,8 +109,11 @@
 <decorator:body/>
 <div class="container">
     <footer>
+        <%-- <c:if test="${sapeContent!=null}">
+            <c:out value="${sapeContent}"/>
+        </c:if>--%>
     	<jtalks:banner banner="${banners['BOTTOM']}" position="${'BOTTOM'}"/>
-    	<div> 
+    	<div>
 	    	<div class="pull-left">
 		        Powered by JCommune ${project.version}<br/>
 		        &copy; 2012 <a href="http://jtalks.org">jtalks.org</a><br/>
