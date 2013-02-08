@@ -53,9 +53,7 @@ public class ExternalLinkController {
     @RequestMapping(value = "/links/add", method = RequestMethod.POST)
     @ResponseBody
     public ExternalLink addLink(@RequestBody ExternalLink link) {
-        if (link.getUrl() != null) {
-            service.addLink(link);
-        }
+        service.addLink(link);
         return link;
     }
 

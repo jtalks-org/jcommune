@@ -179,8 +179,9 @@ function addLinkVisible(visible) {
                 $('.edit-links').show();
                 $('#save-link').unbind("click").bind('click', function () {
                     var link = {
-                        linkTitle:$('#link-title')[0].value,
-                        linkUrl:$('#link-url')[0].value
+                        title:$('#link-title')[0].value,
+                        url:$('#link-url')[0].value,
+                        hint: "hint content"
                     };
 
                     $.ajax({
