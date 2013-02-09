@@ -100,7 +100,7 @@
                         <label class="control-label"><spring:message code="label.signature"/></label>
 
                         <div class="controls">
-                            <form:textarea class="input-xlarge" cols="100" path="signature"
+                            <form:textarea class="input-xlarge" path="signature"
                                            value="${editedUser.signature}"/>
                             <br/>
                             <form:errors path="signature" cssClass="help-inline"/>
