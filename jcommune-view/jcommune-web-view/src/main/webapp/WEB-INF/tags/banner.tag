@@ -21,15 +21,19 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt_rt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
+
 <div class="container">
     <c:if test="${not empty banner}">
         ${banner.content}
     </c:if>
-    <div class="pull-right">
-        <a href="#uploadBannerModal${position}" role="button" class="btn" data-toggle="modal">
-            <fmt:message key="label.banner.upload"/>
-        </a>
-    </div>
+    <jtalks:hasPermission targetId="${forumComponentId}" targetType="COMPONENT" permission="GeneralPermission.ADMIN">
+	    <div class="pull-right">
+	        <a href="#uploadBannerModal${position}" role="button" class="btn" data-toggle="modal">
+	            <fmt:message key="label.banner.upload"/>
+	        </a>
+	    </div>
+    </jtalks:hasPermission>
     <!-- Upload banner modal dialog -->
     <div id="uploadBannerModal${position}" class="modal hide fade"
             tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"

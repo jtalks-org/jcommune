@@ -20,6 +20,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.jtalks.jcommune.model.dao.BannerDao;
+import org.jtalks.jcommune.model.dao.ComponentDao;
 import org.jtalks.jcommune.model.entity.Banner;
 import org.jtalks.jcommune.model.entity.BannerPosition;
 import org.jtalks.jcommune.service.BannerService;
@@ -35,12 +36,14 @@ import org.testng.annotations.Test;
 public class TransactionalBannerServiceTest {
     @Mock
     private BannerDao bannerDao;
+    @Mock
+    private ComponentDao componentDao;
     private BannerService bannerService;
     
     @BeforeMethod
     public void init() {
         initMocks(this);
-        bannerService = new TransactionalBannerService(bannerDao);
+        bannerService = new TransactionalBannerService(bannerDao, componentDao);
     }
     
     @Test

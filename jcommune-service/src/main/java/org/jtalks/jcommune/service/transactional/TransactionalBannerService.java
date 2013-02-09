@@ -18,10 +18,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.dao.BannerDao;
+import org.jtalks.jcommune.model.dao.ComponentDao;
 import org.jtalks.jcommune.model.entity.Banner;
 import org.jtalks.jcommune.model.entity.BannerPosition;
 import org.jtalks.jcommune.service.BannerService;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  * An implementation of {@link BannerService}.
@@ -29,16 +32,20 @@ import org.jtalks.jcommune.service.BannerService;
  * @author Anuar_Nurmakanov
  *
  */
-public class TransactionalBannerService implements BannerService {
-    private BannerDao bannerDao;
+public class TransactionalBannerService extends AbstractTransactionalEntityService<Banner, BannerDao> 
+    implements BannerService {
+    
+    private ComponentDao componentDao;
     
     /**
      * Constructs an instance with required fields.
      * 
      * @param bannerDao to working with banner repository(database in our case)
+     * @param componentDao to get component of forum
      */
-    public TransactionalBannerService(BannerDao bannerDao) {
-        this.bannerDao = bannerDao;
+    public TransactionalBannerService(BannerDao bannerDao, ComponentDao componentDao) {
+        super(bannerDao);
+        this.componentDao = componentDao;
     }
 
     /**
@@ -46,13 +53,25 @@ public class TransactionalBannerService implements BannerService {
      */
     @Override
     public void uploadBanner(Banner uploadedBanner) {
-        Banner existBanner = bannerDao.getByPosition(uploadedBanner.getPositionOnPage());
+        Component component = componentDao.getComponent();
+        uploadBanner(uploadedBanner, component.getId());
+    }
+    
+    /**
+     * Check an ability of user to upload banner and upload it if it's possible.
+     * 
+     * @param uploadedBanner banner that will be uploaded
+     * @param componentId an identifier of component to check permissions
+     */
+    @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
+    public void uploadBanner(Banner uploadedBanner, Long componentId) {
+        Banner existBanner = getDao().getByPosition(uploadedBanner.getPositionOnPage());
         if (existBanner == null) {
             existBanner = uploadedBanner;
         } else {
             existBanner.setContent(uploadedBanner.getContent());
         }
-        bannerDao.saveOrUpdate(existBanner);
+        getDao().saveOrUpdate(existBanner);
     }
 
     /**
@@ -60,7 +79,7 @@ public class TransactionalBannerService implements BannerService {
      */
     @Override
     public Map<BannerPosition, Banner> getAllBanners() {
-        Collection<Banner> allBanners = bannerDao.getAll();
+        Collection<Banner> allBanners = getDao().getAll();
         Map<BannerPosition, Banner> positionAndBannerMap = new HashMap<BannerPosition, Banner>();
         for (Banner banner: allBanners) {
             positionAndBannerMap.put(banner.getPositionOnPage(), banner);
