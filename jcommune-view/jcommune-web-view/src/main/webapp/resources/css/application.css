@@ -330,6 +330,10 @@ ul.lang-menu li img {
     font: 11px verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
 }
 
+.signature-conatiner {
+    white-space: normal;
+}
+
 .cursor-pointer {
     cursor: pointer !important;
 }
