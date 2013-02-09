@@ -27,20 +27,20 @@ $(function () {
         e.preventDefault();
 //        elemnts for test ui.
         var elements = [
-            {id: '1', url: 'http://jtalks.org', title: 'JTalks'},
-            {id: '2', url: 'http://jtalks2.org', title: 'JTalks2'},
-            {id: '3', url: 'http://jtalks3.org', title: 'JTalks3'},
-            {id: '4', url: 'http://jtalks4.org', title: 'JTalks4'},
-            {id: '5', url: 'http://jtalks5.org', title: 'JTalks5'},
-            {id: '6', url: 'http://jtalks6.org', title: 'JTalks6'},
-            {id: '7', url: 'http://jtalks7.org', title: 'JTalks7'},
-            {id: '8', url: 'http://jtalks8.org', title: 'JTalks8'},
-            {id: '9', url: 'http://jtalks9.org', title: 'JTalks9'},
-            {id: '10', url: 'http://jtalks10.org', title: 'JTalks10'},
-            {id: '11', url: 'http://jtalks11.org', title: 'JTalks11'},
-            {id: '12', url: 'http://jtalks12.org', title: 'JTalks12'},
-            {id: '13', url: 'http://jtalks13.org', title: 'JTalks13'},
-            {id: '14', url: 'http://jtalks14.org', title: 'JTalks14'}
+            {id: '1', url: 'http://jtalks.org', title: 'JTalks', hint: "hint"},
+            {id: '2', url: 'http://jtalks2.org', title: 'JTalks2', hint: "hint"},
+            {id: '3', url: 'http://jtalks3.org', title: 'JTalks3', hint: "hint"},
+            {id: '4', url: 'http://jtalks4.org', title: 'JTalks4', hint: "hint"},
+            {id: '5', url: 'http://jtalks5.org', title: 'JTalks5', hint: "hint"},
+            {id: '6', url: 'http://jtalks6.org', title: 'JTalks6', hint: "hint"},
+            {id: '7', url: 'http://jtalks7.org', title: 'JTalks7', hint: "hint"},
+            {id: '8', url: 'http://jtalks8.org', title: 'JTalks8', hint: "hint"},
+            {id: '9', url: 'http://jtalks9.org', title: 'JTalks9', hint: "hint"},
+            {id: '10', url: 'http://jtalks10.org', title: 'JTalks10', hint: "hint"},
+            {id: '11', url: 'http://jtalks11.org', title: 'JTalks11', hint: "hint"},
+            {id: '12', url: 'http://jtalks12.org', title: 'JTalks12', hint: "hint"},
+            {id: '13', url: 'http://jtalks13.org', title: 'JTalks13', hint: "hint"},
+            {id: '14', url: 'http://jtalks14.org', title: 'JTalks14', hint: "hint"}
         ];
 
         var linksEditor = createMainLinkEditor(elements);
@@ -97,6 +97,7 @@ function createLinksTable(elements) {
         elementHtml = elementHtml + ' \
                     <tr id="' + element.id + '"> \
                     <td class="link-url">' + element.url + '</td> \
+                    <td class="link-hint">' + element.hint + '</td> \
                     <td class="link-title">' + element.title + '</td> \
                     <td class="icon-pencil cursor-hand" ></td> \
                     <td class="icon-trash cursor-hand" /> \
@@ -118,7 +119,8 @@ function createMainLinkEditor(elements) {
             createLinksTable(elements) + '\
             </table>' +
             createFormElement($labelTitle, 'link-title', 'text', 'edit-links') +
-            createFormElement($labelUrl, 'link-url', 'text', 'edit-links') + ' \
+            createFormElement($labelUrl, 'link-url', 'text', 'edit-links') +
+            createFormElement($labelHint, 'link-hint', 'text', 'edit-links') + ' \
             <span class="confirm-delete-text remove-links"></span>\
             </div> \
             <div class="modal-footer"> \
@@ -153,6 +155,7 @@ function editLinksVisible(visible) {
                 var link = $('#' + actionId);
                 $('#link-title').val(link.children('.link-title').text());
                 $('#link-url').val(link.children('.link-url').text());
+                $('#link-hint').val(link.children('.link-hint').text());
                 $('.edit-links').show();
                 //save edited link
                 $('#save-link').unbind("click").bind('click', function () {
@@ -176,11 +179,13 @@ function addLinkVisible(visible) {
             if (visible) {
                 $('#link-title').val("");
                 $('#link-url').val("");
+                $('#link-hint').val("");
                 $('.edit-links').show();
                 $('#save-link').unbind("click").bind('click', function () {
                     var link = {
                         title:$('#link-title')[0].value,
                         url:$('#link-url')[0].value,
+                        url:$('#link-hint')[0].value,
                         hint: "hint content"
                     };
 
@@ -217,6 +222,7 @@ function confirmRemoveVisible(visible) {
             if (visible) {
                 var link = $('#' + actionId);
                 var linkTitle = $labelDeleteMainLink.replace('{0}', link.children('.link-title').text());
+                var linkHint = $labelDeleteMainLink.replace('{0}', link.children('.link-hint').text());
                 $('.confirm-delete-text').text(linkTitle);
                 $('.remove-links').show();
 

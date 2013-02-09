@@ -512,6 +512,12 @@ div.anchor {
     max-width: 0px;
 }
 
+.modal-body .link-hint {
+    visibility: hidden;
+    width: 0px;
+    max-width: 0px;
+}
+
 .modal-body .link-title {
     width: 300px;
     max-width: 300px;
