@@ -332,12 +332,6 @@ ul.lang-menu li img {
 
 .signature-conatiner {
     white-space: normal;
-    position: relative;
-    width: 100%
-}
-
-.signature-conatiner hr {
-    margin: 18px 5px 10px 0;
 }
 
 .cursor-pointer {
