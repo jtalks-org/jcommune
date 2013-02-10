@@ -21,11 +21,15 @@
 
 <div class="navbar">
     <div class="container-fluid">
+        <c:if test="${not empty externalLinks}">
+            <ul class="nav">
+                <c:forEach var="link" items="${externalLinks}">
+                    <li><a href="${link.url}">
+                        <c:out value="${link.title}"/>
+                    </a></li>
+                </c:forEach>
+            </ul>
+        </c:if>
         <span id="links_editor" class="icon-cog cursor-hand"></span>
-        <ul class="nav">
-            <li><a href="#">Link1</a></li>
-            <li><a href="#about">Link2</a></li>
-            <li><a href="#contact">Link3</a></li>
-        </ul>
     </div>
 </div>
