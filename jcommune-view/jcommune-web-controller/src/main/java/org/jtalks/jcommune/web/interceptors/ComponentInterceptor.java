@@ -31,6 +31,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
  *
  */
 public class ComponentInterceptor extends HandlerInterceptorAdapter {
+    static final String FORUM_COMPONENT_MODEL_PARAM = "forumComponent";
     private ComponentService componentService;
 
     /**
@@ -54,7 +55,7 @@ public class ComponentInterceptor extends HandlerInterceptorAdapter {
         super.postHandle(request, response, handler, modelAndView);
         if (modelAndView != null) {
             Component component = componentService.getComponentOfForum();
-            modelAndView.addObject("forumComponent", component);
+            modelAndView.addObject(FORUM_COMPONENT_MODEL_PARAM, component);
         }
     }
 }
