@@ -330,6 +330,10 @@ ul.lang-menu li img {
     font: 11px verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
 }
 
+.signature-conatiner {
+    white-space: normal;
+}
+
 .cursor-pointer {
     cursor: pointer !important;
 }
@@ -439,6 +443,7 @@ div.anchor {
     font-size: 10px;
     font-style: italic;
     float: right;
+    margin-right: 5px
 }
 
 .review-container {
@@ -502,6 +507,12 @@ div.anchor {
 }
 
 .modal-body .link-url {
+    visibility: hidden;
+    width: 0px;
+    max-width: 0px;
+}
+
+.modal-body .link-hint {
     visibility: hidden;
     width: 0px;
     max-width: 0px;
