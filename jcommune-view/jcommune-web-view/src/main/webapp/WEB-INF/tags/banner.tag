@@ -35,29 +35,26 @@
 	    </div>
     </jtalks:hasPermission>
     <!-- Upload banner modal dialog -->
-    <div id="uploadBannerModal${position}" class="modal hide fade"
-            tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
-            style="margin-top: -129.5px;">
+    <form:form id="uploadBannerModal${position}" action="${pageContext.request.contextPath}/banners/upload"
+                modelAttribute="uploadedBanner" method="POST" enctype="multipart/form-data"  class="modal hide fade"
+                tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-top: -129.5px;">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             <h3 id="myModalLabel"><fmt:message key="label.banner.upload.dialog.header"/></h3>
         </div>
-        <form:form action="${pageContext.request.contextPath}/banners/upload" modelAttribute="uploadedBanner" method="POST" 
-                class="well anti-multipost" enctype="multipart/form-data">
-            <form:input type="hidden" path="positionOnPage" value="${position}"/>
-            <div class="modal-body">
-                <jsp:setProperty name="uploadedBanner" property="content" value="${banner.content}"/>
-                <form:textarea path="content" id="body" name="body" tabindex="200" 
-                                style="width:100%;" rows="7" class="script-confirm-unsaved" />
-            </div>
-            <div class="modal-footer">
-                <button class="btn" data-dismiss="modal" aria-hidden="true">
-                    <fmt:message key="label.banner.upload.dialog.cancel"/>
-                </button>
-                <button class="btn btn-primary">
-                    <fmt:message key="label.banner.upload.dialog.upload"/>
-                </button>
-            </div>
-        </form:form>
-    </div>
+        <form:input type="hidden" path="positionOnPage" value="${position}"/>
+        <div class="modal-body">
+            <jsp:setProperty name="uploadedBanner" property="content" value="${banner.content}"/>
+            <form:textarea path="content" id="body" name="body" tabindex="200" 
+                            style="width:100%;" rows="7" class="script-confirm-unsaved" />
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">
+                <fmt:message key="label.banner.upload.dialog.cancel"/>
+            </button>
+            <button class="btn btn-primary">
+                <fmt:message key="label.banner.upload.dialog.upload"/>
+            </button>
+        </div>
+    </form:form>
 </div>

@@ -23,6 +23,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 /**
+ * Global interceptor that works for all pages of the forum.
+ * It gets component of the forum and put them to the model
+ * that will be displayed page.
  * 
  * @author Anuar_Nurmakanov
  *
@@ -31,8 +34,9 @@ public class ComponentInterceptor extends HandlerInterceptorAdapter {
     private ComponentService componentService;
 
     /**
+     * Constructs an instance with required fields.
      * 
-     * @param componentService
+     * @param componentService to get component of the forum
      */
     public ComponentInterceptor(ComponentService componentService) {
         this.componentService = componentService;
