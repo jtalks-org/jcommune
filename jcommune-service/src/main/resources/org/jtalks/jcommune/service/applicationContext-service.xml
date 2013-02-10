@@ -254,10 +254,15 @@
     
     <bean id="bannerService" class="org.jtalks.jcommune.service.transactional.TransactionalBannerService">
         <constructor-arg ref="bannerDao"/>
+        <constructor-arg ref="componentDao"/>
     </bean>
 
     <bean id="externalLinkService" class="org.jtalks.jcommune.service.transactional.TransactionalLinkService">
         <constructor-arg ref="externalLinkDao"/>
+    </bean>
+    
+    <bean id="componentService" class="org.jtalks.jcommune.service.transactional.TransactionalComponentService">
+        <constructor-arg ref="componentDao"/>
     </bean>
 
     <!--

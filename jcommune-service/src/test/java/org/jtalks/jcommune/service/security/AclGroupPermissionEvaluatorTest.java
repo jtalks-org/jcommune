@@ -14,6 +14,11 @@
  */
 package org.jtalks.jcommune.service.security;
 
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
@@ -28,22 +33,20 @@ import org.jtalks.common.security.acl.sids.UserGroupSid;
 import org.jtalks.common.security.acl.sids.UserSid;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.jdbc.JdbcMutableAclService;
-import org.springframework.security.acls.model.*;
+import org.springframework.security.acls.model.AccessControlEntry;
+import org.springframework.security.acls.model.MutableAcl;
+import org.springframework.security.acls.model.ObjectIdentity;
+import org.springframework.security.acls.model.Sid;
 import org.springframework.security.core.Authentication;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author stanislav bashkirtsev
@@ -251,7 +254,7 @@ public class AclGroupPermissionEvaluatorTest {
         Mockito.when(group.getUsers()).thenReturn(users);
         Mockito.when(groupAce.getGroup(groupDao)).thenReturn(group);
         Mockito.when(groupAce.isGranting()).thenReturn(isGranted);
-        Mockito.when(groupAce.getBranchPermission()).thenReturn(permission);
+        Mockito.when(groupAce.getPermission()).thenReturn(permission);
         return groupAce;
     }
 }
