@@ -54,7 +54,7 @@ public class ComponentInterceptor extends HandlerInterceptorAdapter {
         super.postHandle(request, response, handler, modelAndView);
         if (modelAndView != null) {
             Component component = componentService.getComponentOfForum();
-            modelAndView.addObject("forumComponentId", component.getId());
+            modelAndView.addObject("forumComponent", component);
         }
     }
 }
