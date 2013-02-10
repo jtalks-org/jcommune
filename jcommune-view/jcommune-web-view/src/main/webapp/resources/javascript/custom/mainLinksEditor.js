@@ -22,38 +22,21 @@
 var actionId = null;
 var baseUrl = $root;
 
-/**
- * Namespace for this file.
- */
-var ExternalLink = {};
-
-ExternalLink.links = null; // all external links
-
-ExternalLink.resetVariables = function() {
-    ExternalLink.links = null;
-}
-
 $(function () {
     $('#links_editor').on('click', function (e) {
         e.preventDefault();
 
-//        elemnts for test ui.
-        var elements = [
-            {id: '1', url: 'http://jtalks.org', title: 'JTalks', hint: "hint"},
-            {id: '2', url: 'http://jtalks2.org', title: 'JTalks2', hint: "hint"},
-            {id: '3', url: 'http://jtalks3.org', title: 'JTalks3', hint: "hint"},
-            {id: '4', url: 'http://jtalks4.org', title: 'JTalks4', hint: "hint"},
-            {id: '5', url: 'http://jtalks5.org', title: 'JTalks5', hint: "hint"},
-            {id: '6', url: 'http://jtalks6.org', title: 'JTalks6', hint: "hint"},
-            {id: '7', url: 'http://jtalks7.org', title: 'JTalks7', hint: "hint"},
-            {id: '8', url: 'http://jtalks8.org', title: 'JTalks8', hint: "hint"},
-            {id: '9', url: 'http://jtalks9.org', title: 'JTalks9', hint: "hint"},
-            {id: '10', url: 'http://jtalks10.org', title: 'JTalks10', hint: "hint"},
-            {id: '11', url: 'http://jtalks11.org', title: 'JTalks11', hint: "hint"},
-            {id: '12', url: 'http://jtalks12.org', title: 'JTalks12', hint: "hint"},
-            {id: '13', url: 'http://jtalks13.org', title: 'JTalks13', hint: "hint"},
-            {id: '14', url: 'http://jtalks14.org', title: 'JTalks14', hint: "hint"}
-        ];
+        var elements = [];
+        var element = {};
+
+
+        $('#externalLinks').find('a').each(function(i, elem){
+            element.id = $(elem).attr('id');
+            element.url = $(elem).attr('href');
+            element.title = $(elem).attr('name');
+            element.hint = $(elem).attr('data-original-title');
+            elements[i] = element;
+        });
 
         var linksEditor = createMainLinkEditor(elements);
 
@@ -164,7 +147,7 @@ function editLinksVisible(visible) {
     var intervalID = setInterval(function () {
         if ($('.edit-links')) {
             if (visible) {
-                var link = $('#' + actionId);
+                var link = $('#main-links-editor#' + actionId);
                 $('#link-title').val(link.children('.link-title').text());
                 $('#link-url').val(link.children('.link-url').text());
                 $('#link-hint').val(link.children('.link-hint').text());
@@ -279,12 +262,5 @@ function toAction(typeOfAction) {
 
     }
 }
-
-$(document).ready(function() {
-    $.getJson(baseUrl + "/links", function(json) {
-
-        ExternalLink.links = json;
-    })
-})
 
 

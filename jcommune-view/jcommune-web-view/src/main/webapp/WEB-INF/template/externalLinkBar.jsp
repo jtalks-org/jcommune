@@ -22,14 +22,18 @@
 <div class="navbar">
     <div class="container-fluid">
         <c:if test="${not empty externalLinks}">
-            <ul class="nav">
+            <span id="externalLinks">
                 <c:forEach var="link" items="${externalLinks}">
-                    <li><a href="${link.url}">
+                    <a id="${link.id}" title="${link.hint}" href="${link.url}" name="${link.title}">
                         <c:out value="${link.title}"/>
-                    </a></li>
+                    </a>
                 </c:forEach>
-            </ul>
+                <span> |</span>
+            </span>
         </c:if>
-        <span id="links_editor" class="icon-cog cursor-hand"></span>
+        <jtalks:hasPermission targetId="${forumComponent.id}" targetType="COMPONENT"
+                              permission="GeneralPermission.ADMIN">
+            <span id="links_editor" class="icon-cog cursor-hand"></span>
+        </jtalks:hasPermission>
     </div>
 </div>
