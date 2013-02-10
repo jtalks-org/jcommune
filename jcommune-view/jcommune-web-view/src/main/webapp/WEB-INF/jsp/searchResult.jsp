@@ -71,6 +71,14 @@
                             </td>
                         </sec:authorize>
                         <td class="posts-td-small">
+                        	<%--Some topic types should have a special prefix when displayed--%>
+                        	<c:if test="${topic.announcement=='true'}">
+                            	<span class="sticky"><spring:message code="label.marked_as_announcement"/> </span>
+                        	</c:if>
+                        	<c:if test="${topic.sticked=='true'}">
+                            	<span class="sticky"><spring:message code="label.marked_as_sticked"/></span>
+                   		    </c:if>
+                        
                             <a href="${pageContext.request.contextPath}/topics/${topic.id}">
                                 <c:out value="${topic.title}"/>
                             </a>
