@@ -164,4 +164,3 @@
     </div>
 </div>
 
-<div id="links_editor" class="icon-cog cursor-hand"></div>

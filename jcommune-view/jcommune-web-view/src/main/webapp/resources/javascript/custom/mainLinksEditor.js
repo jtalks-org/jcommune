@@ -22,9 +22,21 @@
 var actionId = null;
 var baseUrl = $root;
 
+/**
+ * Namespace for this file.
+ */
+var ExternalLink = {};
+
+ExternalLink.links = null; // all external links
+
+ExternalLink.resetVariables = function() {
+    ExternalLink.links = null;
+}
+
 $(function () {
     $('#links_editor').on('click', function (e) {
         e.preventDefault();
+
 //        elemnts for test ui.
         var elements = [
             {id: '1', url: 'http://jtalks.org', title: 'JTalks', hint: "hint"},
@@ -267,4 +279,12 @@ function toAction(typeOfAction) {
 
     }
 }
+
+$(document).ready(function() {
+    $.getJson(baseUrl + "/links", function(json) {
+
+        ExternalLink.links = json;
+    })
+})
+
 

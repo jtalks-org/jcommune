@@ -256,7 +256,7 @@
         <constructor-arg ref="bannerDao"/>
     </bean>
 
-    <bean id="externalLinkService" class="org.jtalks.jcommune.service.transactional.ExternalLinkServiceImpl">
+    <bean id="externalLinkService" class="org.jtalks.jcommune.service.transactional.TransactionalLinkService">
         <constructor-arg ref="externalLinkDao"/>
     </bean>
 

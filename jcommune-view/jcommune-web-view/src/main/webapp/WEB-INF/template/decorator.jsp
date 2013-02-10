@@ -105,6 +105,7 @@
 </head>
 <body>
 <jsp:include page="../template/topLine.jsp"/>
+<jsp:include page="../template/externalLinkBar.jsp"/>
 <jtalks:banner banner="${banners['TOP']}" position="${'TOP'}"/>
 <decorator:body/>
 <div class="container">
