@@ -77,8 +77,34 @@
         <property name="componentDao" ref="componentDao"/>
         <property name="propertyDao" ref="propertyDao"/>
         <property name="name" value="cmp.sape_on_main_page_enable"/>
+        <property name="defaultValue" value="false"/>
+    </bean>
+
+    <bean id="componentSapeLinksCountProperty" class="org.jtalks.jcommune.model.entity.JCommuneProperty"
+          factory-method="valueOf">
+        <constructor-arg type="java.lang.String" value="CMP_SAPE_LINKS_COUNT"/>
+        <property name="componentDao" ref="componentDao"/>
+        <property name="propertyDao" ref="propertyDao"/>
+        <property name="name" value="cmp.sape_links_count"/>
+        <property name="defaultValue" value="1"/>
+    </bean>
+
+    <bean id="componentSapeHostProperty" class="org.jtalks.jcommune.model.entity.JCommuneProperty"
+          factory-method="valueOf">
+        <constructor-arg type="java.lang.String" value="CMP_HOST_URL"/>
+        <property name="componentDao" ref="componentDao"/>
+        <property name="propertyDao" ref="propertyDao"/>
+        <property name="name" value="cmp.sape_host_url"/>
         <property name="defaultValue" value=""/>
     </bean>
 
+    <bean id="componentSapeTimeoutProperty" class="org.jtalks.jcommune.model.entity.JCommuneProperty"
+          factory-method="valueOf">
+        <constructor-arg type="java.lang.String" value="CMP_SAPE_TIMEOUT"/>
+        <property name="componentDao" ref="componentDao"/>
+        <property name="propertyDao" ref="propertyDao"/>
+        <property name="name" value="cmp.sape_timeout"/>
+        <property name="defaultValue" value="1000"/>
+    </bean>
 
 </beans>

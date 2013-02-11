@@ -63,7 +63,22 @@ public enum JCommuneProperty {
     /**
      * Show javasape content on main page
      */
-    CMP_SAPE_ON_MAIN_PAGE_ENABLE;
+    CMP_SAPE_ON_MAIN_PAGE_ENABLE,
+
+    /**
+     * Sape links count for one request to Sape service
+     */
+    CMP_SAPE_LINKS_COUNT,
+
+    /**
+     * JCommune host
+     */
+    CMP_HOST_URL,
+
+    /**
+     * Sape service timeout
+     */
+    CMP_SAPE_TIMEOUT;
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JCommuneProperty.class);
@@ -88,12 +103,10 @@ public enum JCommuneProperty {
             Property property = propertyDao.getByName(name);
             if (property != null) {
                 return property.getValue();
-            }
-            else {
+            } else {
                 return getDefaultValue();
             }
-        }
-        else {
+        } else {
             return getDefaultValue();
         }
     }
@@ -111,16 +124,13 @@ public enum JCommuneProperty {
                 Component cmp = componentDao.getComponent();
                 if (cmp != null) {
                     return name.equals("cmp.name") ? cmp.getName() : cmp.getDescription();
-                }
-                else {
+                } else {
                     return getDefaultValue();
                 }
-            }
-            else {
+            } else {
                 return getDefaultValue();
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             return getDefaultValue();
         }
     }

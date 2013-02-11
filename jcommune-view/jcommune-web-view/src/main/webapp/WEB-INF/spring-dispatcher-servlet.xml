@@ -107,18 +107,21 @@
             <mvc:mapping path="/pm/**"/>
             <bean id="clearInterceptor" class="org.jtalks.jcommune.web.interceptors.ClearInterceptor"/>
         </mvc:interceptor>
-        <!--<mvc:interceptor>
-            <mvc:mapping path="/topics/**"/>
+        <mvc:interceptor>
+            <!--<mvc:mapping path="/topics/**"/>
             <mvc:mapping path="/posts/**"/>
             <mvc:mapping path="/users/**"/>
-            <mvc:mapping path="/branches/**"/>
+            <mvc:mapping path="/branches/**"/>-->
             <mvc:mapping path="/sections/**"/>
-            <mvc:mapping path="/pm/**"/>
+            <!--<mvc:mapping path="/pm/**"/>-->
             <bean id="javaSapeInterceptor" class="org.jtalks.jcommune.web.interceptors.JavaSapeInterceptor">
-                <constructor-arg name="componentSapeAccountProperty" ref="componentSapeAccountProperty"/>
-                <constructor-arg name="componentSapeOnMainPageEnableProperty" ref="componentSapeOnMainPageEnableProperty"/>
+                <property name="componentSapeAccountProperty" ref="componentSapeAccountProperty"/>
+                <property name="componentSapeOnMainPageEnableProperty" ref="componentSapeOnMainPageEnableProperty"/>
+                <property name="componentSapeHostProperty" ref="componentSapeHostProperty"/>
+                <property name="componentSapeLinksCountProperty" ref="componentSapeLinksCountProperty"/>
+                <property name="componentSapeTimeoutProperty" ref="componentSapeTimeoutProperty"/>
             </bean>
-        </mvc:interceptor>-->
+        </mvc:interceptor>
     </mvc:interceptors>
 
     <!-- simple pages -->
