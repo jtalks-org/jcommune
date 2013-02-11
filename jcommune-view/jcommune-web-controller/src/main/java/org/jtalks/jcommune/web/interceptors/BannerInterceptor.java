@@ -14,14 +14,12 @@
  */
 package org.jtalks.jcommune.web.interceptors;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jtalks.jcommune.model.entity.Banner;
-import org.jtalks.jcommune.model.entity.BannerPosition;
 import org.jtalks.jcommune.service.BannerService;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -60,23 +58,9 @@ public class BannerInterceptor extends HandlerInterceptorAdapter {
             ModelAndView modelAndView) throws Exception {
         super.postHandle(request, response, handler, modelAndView);
         if (modelAndView != null) {
-            Map<BannerPosition, Banner> allBanersOfTheForum = bannerService.getAllBanners();
-            modelAndView.addObject("banners", convertToMapWithStringKey(allBanersOfTheForum));
+            Map<String, Banner> allBanersOfTheForum = bannerService.getAllBanners();
+            modelAndView.addObject("banners", allBanersOfTheForum);
             modelAndView.addObject("uploadedBanner", new Banner());
         }
-    }
-    
-    /**
-     * Convert banners map to map which has string key.
-     * 
-     * @param sourceBannersMap source map of banners
-     * @return map of banners but with string key
-     */
-    private Map<String, Banner> convertToMapWithStringKey(Map<BannerPosition, Banner> sourceBannersMap) {
-        Map<String, Banner> bannerMapWithStringKey = new HashMap<String, Banner>();
-        for (Map.Entry<BannerPosition, Banner> banner: sourceBannersMap.entrySet()) {
-            bannerMapWithStringKey.put(String.valueOf(banner.getKey()), banner.getValue());
-        }
-        return bannerMapWithStringKey;
     }
 }

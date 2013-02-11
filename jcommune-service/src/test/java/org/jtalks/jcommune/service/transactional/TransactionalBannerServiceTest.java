@@ -14,10 +14,15 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.dao.BannerDao;
@@ -77,8 +82,15 @@ public class TransactionalBannerServiceTest {
      
     @Test
     public void bannersShouldBeFoundFromRepository() {
-       bannerService.getAllBanners();
+        Banner topBanner = new Banner(BannerPosition.TOP, "TOP");
+        Banner bottomBanner = new Banner(BannerPosition.BOTTOM, "BOTTOM");
+        List<Banner> banners = Arrays.asList(topBanner, bottomBanner);
+        when(bannerDao.getAll()).thenReturn(banners);
+        
+        Map<String, Banner> postionToBannerMap = bannerService.getAllBanners();
        
-       verify(bannerDao).getAll();
+        verify(bannerDao).getAll();
+        assertEquals(postionToBannerMap.get(BannerPosition.TOP.toString()), topBanner);
+        assertEquals(postionToBannerMap.get(BannerPosition.BOTTOM.toString()), bottomBanner);
     }
 }

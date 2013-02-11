@@ -15,12 +15,24 @@
 package org.jtalks.jcommune.model.entity;
 
 /**
+ * A position of banner on the page of forum.
  * 
  * @author Anuar_Nurmakanov
  *
  */
 public enum BannerPosition {
+    /**
+     * Banner that is displayed on the top part of every
+     * page of the forum.
+     */
     TOP,
+    /**
+     * Banner that is displayed on the bottom part of every
+     * page of the forum. It's displayed above footer text.
+     */
     BOTTOM,
+    /**
+     * Banner that is displayed in the same line as footer text.
+     */
     BOTTOM_FOOTER
 }

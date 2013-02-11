@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.dao.BannerDao;
 import org.jtalks.jcommune.model.dao.ComponentDao;
@@ -54,7 +55,7 @@ public class TransactionalBannerService extends AbstractTransactionalEntityServi
     @Override
     public void uploadBanner(Banner uploadedBanner) {
         Component component = componentDao.getComponent();
-        uploadBanner(uploadedBanner, component.getId());
+        checkPermissionAndUploadBanner(uploadedBanner, component.getId());
     }
     
     /**
@@ -64,7 +65,7 @@ public class TransactionalBannerService extends AbstractTransactionalEntityServi
      * @param componentId an identifier of component to check permissions
      */
     @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
-    public void uploadBanner(Banner uploadedBanner, Long componentId) {
+    private void checkPermissionAndUploadBanner(Banner uploadedBanner, Long componentId) {
         Banner existBanner = getDao().getByPosition(uploadedBanner.getPositionOnPage());
         if (existBanner == null) {
             existBanner = uploadedBanner;
@@ -78,11 +79,12 @@ public class TransactionalBannerService extends AbstractTransactionalEntityServi
      * {@inheritDoc}
      */
     @Override
-    public Map<BannerPosition, Banner> getAllBanners() {
+    public Map<String, Banner> getAllBanners() {
         Collection<Banner> allBanners = getDao().getAll();
-        Map<BannerPosition, Banner> positionAndBannerMap = new HashMap<BannerPosition, Banner>();
+        Map<String, Banner> positionAndBannerMap = new HashMap<String, Banner>();
         for (Banner banner: allBanners) {
-            positionAndBannerMap.put(banner.getPositionOnPage(), banner);
+            BannerPosition positionOnPage = banner.getPositionOnPage();
+            positionAndBannerMap.put(ObjectUtils.toString(positionOnPage), banner);
         }
         return positionAndBannerMap;
     }
