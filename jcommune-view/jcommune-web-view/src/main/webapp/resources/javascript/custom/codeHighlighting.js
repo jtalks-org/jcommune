@@ -271,14 +271,16 @@ CodeHighlighting.setupEditCommentHandlers = function() {
 CodeHighlighting.getCommentHtml = function (comment) {
 	var editButtonHtml = '';
     var deleteButtonHtml = '';
-	if (CodeHighlighting.canEditOtherPosts 
-			|| (CodeHighlighting.currentUserId == comment.authorId 
-					&& CodeHighlighting.canEditOwnPosts)) {
+	if ((CodeHighlighting.currentUserId != comment.authorId
+			&& CodeHighlighting.canEditOtherPosts) 
+		|| (CodeHighlighting.currentUserId == comment.authorId 
+			&& CodeHighlighting.canEditOwnPosts)) {
 		editButtonHtml = '<a href="" name=edit-review>' + $labelEdit + '</a>';
 	}
-    if (CodeHighlighting.canDeleteOtherPosts
+    if ((CodeHighlighting.currentUserId != comment.authorId 
+    		&& CodeHighlighting.canDeleteOtherPosts)
         || (CodeHighlighting.currentUserId == comment.authorId
-        && CodeHighlighting.canDeleteOwnPosts)) {
+        	&& CodeHighlighting.canDeleteOwnPosts)) {
         deleteButtonHtml = '<a href="" rel="'+$labelDeleteCommentConfirmation+'" name=delete-review>' + $labelDelete + '</a>';
     }
     var result =
