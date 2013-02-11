@@ -21,6 +21,11 @@
 //save id of link to action (delete or edit)
 var actionId = null;
 var baseUrl = $root;
+var idToLinkMap = new Object;
+
+function getLinkById(id) {
+    return idToLinkMap[id];
+}
 
 $(function () {
     $('#links_editor').on('click', function (e) {
@@ -29,12 +34,13 @@ $(function () {
         var elements = [];
         var element = {};
 
-
         $('#externalLinks').find('a').each(function(i, elem){
-            element.id = $(elem).attr('id');
+            var id = $(elem).attr('id');
+            element.id = id;
             element.url = $(elem).attr('href');
             element.title = $(elem).attr('name');
             element.hint = $(elem).attr('data-original-title');
+            idToLinkMap[id] = element;
             elements[i] = element;
         });
 
@@ -147,10 +153,10 @@ function editLinksVisible(visible) {
     var intervalID = setInterval(function () {
         if ($('.edit-links')) {
             if (visible) {
-                var link = $('#main-links-editor#' + actionId);
-                $('#link-title').val(link.children('.link-title').text());
-                $('#link-url').val(link.children('.link-url').text());
-                $('#link-hint').val(link.children('.link-hint').text());
+                var link = getLinkById(actionId);
+                $('#link-title').val(link.title);
+                $('#link-url').val(link.url);
+                $('#link-hint').val(link.hint);
                 $('.edit-links').show();
                 //save edited link
                 $('#save-link').unbind("click").bind('click', function () {
