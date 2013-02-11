@@ -12,27 +12,35 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.entity;
+package org.jtalks.jcommune.service.transactional;
+
+import org.jtalks.common.model.entity.Component;
+import org.jtalks.jcommune.model.dao.ComponentDao;
+import org.jtalks.jcommune.service.ComponentService;
 
 /**
- * A position of banner on the page of forum.
+ * The implementation of {@link ComponentService}.
  * 
  * @author Anuar_Nurmakanov
  *
  */
-public enum BannerPosition {
+public class TransactionalComponentService extends AbstractTransactionalEntityService<Component, ComponentDao> 
+    implements ComponentService {
+
     /**
-     * Banner that is displayed on the top part of every
-     * page of the forum.
+     * Constructs an instance with required fields.
+     * 
+     * @param dao to get component
      */
-    TOP,
+    public TransactionalComponentService(ComponentDao dao) {
+        super(dao);
+    }
+
     /**
-     * Banner that is displayed on the bottom part of every
-     * page of the forum. It's displayed above footer text.
+     * {@inheritDoc}
      */
-    BOTTOM,
-    /**
-     * Banner that is displayed in the same line as footer text.
-     */
-    BOTTOM_FOOTER
+    @Override
+    public Component getComponentOfForum() {
+        return getDao().getComponent();
+    }
 }

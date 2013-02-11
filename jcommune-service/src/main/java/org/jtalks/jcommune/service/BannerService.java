@@ -17,7 +17,6 @@ package org.jtalks.jcommune.service;
 import java.util.Map;
 
 import org.jtalks.jcommune.model.entity.Banner;
-import org.jtalks.jcommune.model.entity.BannerPosition;
 
 /**
  * Provides an API to work with banners.
@@ -36,7 +35,8 @@ public interface BannerService {
     /**
      * Get all banners of the forum.
      * 
-     * @return all banners of the forum
+     * @return all banners of the forum grouped in pairs:
+     *         name of position and banner
      */
-    Map<BannerPosition, Banner> getAllBanners();
+    Map<String, Banner> getAllBanners();
 }

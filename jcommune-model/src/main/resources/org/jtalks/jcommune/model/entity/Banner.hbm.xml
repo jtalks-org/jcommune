@@ -20,7 +20,7 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
     <class name="Banner" table="BANNER">
-        <cache usage="nonstrict-read-write" region="org.jtalks.EHCOMMON"/>
+        <cache usage="nonstrict-read-write"/>
         <id column="ID" name="id" unsaved-value="0">
             <generator class="native"/>
         </id>

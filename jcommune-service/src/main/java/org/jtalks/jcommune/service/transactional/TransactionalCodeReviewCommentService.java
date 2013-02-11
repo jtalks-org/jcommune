@@ -77,7 +77,7 @@ public class TransactionalCodeReviewCommentService extends AbstractTransactional
         boolean canEditOthersPosts = permissionService
                 .hasBranchPermission(branchId, BranchPermission.EDIT_OTHERS_POSTS);
 
-        if (!canEditOthersPosts 
+        if (!(canEditOthersPosts && !comment.isCreatedBy(currentUser)) 
              && !(canEditOwnPosts && comment.isCreatedBy(currentUser))) {
             throw new AccessDeniedException("No permission to edit review comment");
         }

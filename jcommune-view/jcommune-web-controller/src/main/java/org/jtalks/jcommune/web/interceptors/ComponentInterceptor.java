@@ -14,37 +14,33 @@
  */
 package org.jtalks.jcommune.web.interceptors;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jtalks.jcommune.model.entity.Banner;
-import org.jtalks.jcommune.service.BannerService;
+import org.jtalks.common.model.entity.Component;
+import org.jtalks.jcommune.service.ComponentService;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 /**
  * Global interceptor that works for all pages of the forum.
- * It gets all banners of the forum and put them to the model
+ * It gets component of the forum and put them to the model
  * that will be displayed page.
  * 
  * @author Anuar_Nurmakanov
+ *
  */
-public class BannerInterceptor extends HandlerInterceptorAdapter {
-    static final String BANNERS_MODEL_PARAM = "banners";
-    static final String UPLOADED_BANNER_MODEL_PARAM = "uploadedBanner";
-    
-    private BannerService bannerService;
-    
-    
+public class ComponentInterceptor extends HandlerInterceptorAdapter {
+    static final String FORUM_COMPONENT_MODEL_PARAM = "forumComponent";
+    private ComponentService componentService;
+
     /**
      * Constructs an instance with required fields.
      * 
-     * @param bannerService to get all banners
+     * @param componentService to get component of the forum
      */
-    public BannerInterceptor(BannerService bannerService) {
-        this.bannerService = bannerService;
+    public ComponentInterceptor(ComponentService componentService) {
+        this.componentService = componentService;
     }
 
     /**
@@ -58,9 +54,8 @@ public class BannerInterceptor extends HandlerInterceptorAdapter {
             ModelAndView modelAndView) throws Exception {
         super.postHandle(request, response, handler, modelAndView);
         if (modelAndView != null) {
-            Map<String, Banner> allBanersOfTheForum = bannerService.getAllBanners();
-            modelAndView.addObject("banners", allBanersOfTheForum);
-            modelAndView.addObject("uploadedBanner", new Banner());
+            Component component = componentService.getComponentOfForum();
+            modelAndView.addObject(FORUM_COMPONENT_MODEL_PARAM, component);
         }
     }
 }

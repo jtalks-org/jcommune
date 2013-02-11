@@ -49,14 +49,16 @@
                 <thead>
                 <tr>
                     <sec:authorize access="isAuthenticated()">
-                        <th class="status-col"></th>
+                        <th class="status-col-small"></th>
                     </sec:authorize>
                     <th><spring:message code="label.branch.header.topics"/></th>
-                    <th class="author-col"><spring:message code="label.branch.header.author"/></th>
-                    <th class="posted-in-col"><spring:message code="label.branch.header.branches"/></th>
-                    <th class="posts-views forum-posts-view-header"><spring:message
-                            code="label.branch.header.posts_views"/></th>
-                    <th class="latest-by forum-latest-by-header"><spring:message
+                    <th class="author-col shrink-to-fit"><spring:message code="label.branch.header.author"/></th>
+                    <th class="posts-views-small forum-posts-view-header shrink-to-fit"><spring:message code="label.branch.header.branches"/></th>
+                    <th class="posts-views-small forum-posts-view-header shrink-to-fit"><spring:message
+                            code="label.branch.header.posts"/></th>
+                    <th class="posts-views-small forum-posts-view-header shrink-to-fit"><spring:message
+                            code="label.branch.header.views"/></th>
+                    <th class="latest-by forum-latest-by-header shrink-to-fit"><spring:message
                             code="label.branch.header.lastMessage"/></th>
                 </tr>
                 </thead>
@@ -64,11 +66,19 @@
                 <c:forEach var="topic" items="${searchResultPage.content}" varStatus="i">
                     <tr>
                         <sec:authorize access="isAuthenticated()">
-                            <td class="status-col">
-                                <jtalks:topicIcon topic="${topic}"/>
+                            <td class="status-col-small">
+                                <jtalks:topicIconSmall topic="${topic}"/>
                             </td>
                         </sec:authorize>
-                        <td>
+                        <td class="posts-td-small">
+                        	<%--Some topic types should have a special prefix when displayed--%>
+                        	<c:if test="${topic.announcement=='true'}">
+                            	<span class="sticky"><spring:message code="label.marked_as_announcement"/> </span>
+                        	</c:if>
+                        	<c:if test="${topic.sticked=='true'}">
+                            	<span class="sticky"><spring:message code="label.marked_as_sticked"/></span>
+                   		    </c:if>
+                        
                             <a href="${pageContext.request.contextPath}/topics/${topic.id}">
                                 <c:out value="${topic.title}"/>
                             </a>
@@ -79,34 +89,32 @@
                                 </a>
                             </sub>
                         </td>
-                        <td class="author-col">
+                        <td class="author-col shrink-to-fit">
                             <a href='${pageContext.request.contextPath}/users/${topic.topicStarter.id}'
                                title="<spring:message code="label.topic.header.author"/>">
                                 <c:out value="${topic.topicStarter.username}"/>
                             </a>
                         </td>
-                        <td class="posted-in-col">
+                        <td class="posts-views-small shrink-to-fit">
                             <a href="${pageContext.request.contextPath}/branches/${topic.branch.id}">
                                 <c:out value="${topic.branch.name}"/>
                             </a>
                         </td>
-                        <td class="posts-views">
-                            <spring:message code="label.section.header.messages"/>: <span
-                                class='test-posts-count'><c:out value="${topic.postCount}"/></span><br/>
-                            <spring:message code="label.branch.header.views"/>: <span class='test-views'><c:out
-                                value="${topic.views}"/></span></td>
-
-                        <td class="latest-by">
+                        <td class="posts-views-small shrink-to-fit">
+                            <span class='test-posts-count'><c:out value="${topic.postCount}"/></span>
+                        </td>
+                        <td class="posts-views-small shrink-to-fit">
+                            <span class='test-views'><c:out value="${topic.views}"/></span>
+                        </td>
+                        <td class="latest-by shrink-to-fit">
                             <i class="icon-calendar"></i>
                             <a class="date" href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}">
                                 <jtalks:format value="${topic.lastPost.creationDate}"/>
                             </a>
-
-                            <p><spring:message code="label.topic.last_post_by"/>
-                                <a href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.id}">
-                                    <c:out value="${topic.lastPost.userCreated.username}"/>
-                                </a>
-                            </p>
+                            &gt;&gt;
+                            <a href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.id}">
+                                <c:out value="${topic.lastPost.userCreated.username}"/>
+                            </a>
                         </td>
                     </tr>
                 </c:forEach>

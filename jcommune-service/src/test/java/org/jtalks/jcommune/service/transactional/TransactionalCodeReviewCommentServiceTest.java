@@ -86,18 +86,35 @@ public class TransactionalCodeReviewCommentServiceTest {
     }
     
     @Test(expectedExceptions=AccessDeniedException.class)
-    public void testNoPermission() throws NotFoundException {
+    public void testUpdateCommentNoBothPermission() throws NotFoundException {
         givenUserHasPermissionToEditOwnPosts(false);
         givenUserHasPermissionToEditOthersPosts(false);
         codeReviewCommentService.updateComment(CR_ID, null, BRANCH_ID);
     }
     
     @Test(expectedExceptions=AccessDeniedException.class)
-    public void testNotOwner() throws NotFoundException {
+    public void testUpdateCommentNoEditOwnPermission() throws NotFoundException {
+        givenUserHasPermissionToEditOwnPosts(false);
+        givenUserHasPermissionToEditOthersPosts(true);
+        codeReviewCommentService.updateComment(CR_ID, null, BRANCH_ID);
+    }
+    
+    @Test(expectedExceptions=AccessDeniedException.class)
+    public void testUpdateCommentNotOwnerNoEditOthersPermission() throws NotFoundException {
         givenCurrentUser("not-the-author-of-comment");
         givenUserHasPermissionToEditOthersPosts(false);
         givenUserHasPermissionToEditOwnPosts(true);
         codeReviewCommentService.updateComment(CR_ID, null, BRANCH_ID);
+    }
+    
+    @Test
+    public void testUpdateCommentNotOwnerButHasEditOthersPermission() throws NotFoundException {
+        givenCurrentUser("not-the-author-of-comment");
+        givenUserHasPermissionToEditOwnPosts(false);
+        givenUserHasPermissionToEditOthersPosts(true);
+        CodeReviewComment comment = codeReviewCommentService.updateComment(CR_ID, COMMENT_BODY, BRANCH_ID);
+        
+        assertEquals(comment.getBody(), COMMENT_BODY);
     }
 
     private void givenUserHasPermissionToEditOwnPosts(boolean isGranted) {

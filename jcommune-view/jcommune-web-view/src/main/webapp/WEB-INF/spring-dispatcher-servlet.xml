@@ -97,6 +97,12 @@
         <bean id="bannerInterceptor" class="org.jtalks.jcommune.web.interceptors.BannerInterceptor">
             <constructor-arg ref="bannerService" />
         </bean>
+        <bean id="componentInterceptor" class="org.jtalks.jcommune.web.interceptors.ComponentInterceptor">
+            <constructor-arg ref="componentService" />
+        </bean>
+        <bean id="externalLinkInterceptor" class="org.jtalks.jcommune.web.interceptors.ExternalLinkInterceptor">
+            <constructor-arg ref="externalLinkService" />
+        </bean>
         <mvc:interceptor>
             <!--Clear user location when user is about to get a new page-->
             <mvc:mapping path="/topics/**"/>

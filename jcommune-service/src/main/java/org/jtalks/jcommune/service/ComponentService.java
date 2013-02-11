@@ -12,27 +12,21 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.entity;
+package org.jtalks.jcommune.service;
+
+import org.jtalks.common.model.entity.Component;
 
 /**
- * A position of banner on the page of forum.
+ * Provides an ability to work with component of forum.
  * 
  * @author Anuar_Nurmakanov
  *
  */
-public enum BannerPosition {
+public interface ComponentService {
     /**
-     * Banner that is displayed on the top part of every
-     * page of the forum.
+     * Get component of forum.
+     * 
+     * @return component of forum.
      */
-    TOP,
-    /**
-     * Banner that is displayed on the bottom part of every
-     * page of the forum. It's displayed above footer text.
-     */
-    BOTTOM,
-    /**
-     * Banner that is displayed in the same line as footer text.
-     */
-    BOTTOM_FOOTER
+    Component getComponentOfForum();
 }

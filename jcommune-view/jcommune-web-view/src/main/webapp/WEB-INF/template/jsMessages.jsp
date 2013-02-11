@@ -95,5 +95,6 @@ $labelYouDontHavePermissions = '<spring:message code="label.topicYouDontHavePerm
 
 $labelLinksEditor='<spring:message code="label.linksEditor" htmlEscape="true"/>'
 $labelTitle='<spring:message code="label.title" htmlEscape="true"/>'
+$labelHint='<spring:message code="label.hint" htmlEscape="true"/>'
 $labelSave='<spring:message code="label.save" htmlEscape="true"/>'
 $labelDeleteMainLink='<spring:message code="label.deleteMainLink" htmlEscape="true"/>'

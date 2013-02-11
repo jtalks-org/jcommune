@@ -26,7 +26,7 @@ import java.util.List;
  */
 
 
-public class ExternalLinkServiceImpl extends AbstractTransactionalEntityService<ExternalLink, ExternalLinkDao>
+public class TransactionalLinkService extends AbstractTransactionalEntityService<ExternalLink, ExternalLinkDao>
         implements ExternalLinkService{
 
     /**
@@ -35,7 +35,7 @@ public class ExternalLinkServiceImpl extends AbstractTransactionalEntityService<
      *
      * @param dao subclass-provided dao object
      */
-    ExternalLinkServiceImpl(ExternalLinkDao dao) {
+    TransactionalLinkService(ExternalLinkDao dao) {
         super(dao);
     }
 

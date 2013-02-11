@@ -14,6 +14,12 @@
  */
 package org.jtalks.jcommune.service.security;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+
 import org.apache.commons.lang.Validate;
 import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
@@ -28,18 +34,16 @@ import org.jtalks.common.security.acl.GroupAce;
 import org.jtalks.common.security.acl.sids.JtalksSidFactory;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.acls.jdbc.JdbcMutableAclService;
-import org.springframework.security.acls.model.*;
+import org.springframework.security.acls.model.AccessControlEntry;
+import org.springframework.security.acls.model.NotFoundException;
+import org.springframework.security.acls.model.ObjectIdentity;
+import org.springframework.security.acls.model.Permission;
+import org.springframework.security.acls.model.Sid;
 import org.springframework.security.core.Authentication;
-
-import javax.annotation.Nonnull;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This evaluator is used to process the annotations of the Spring Security like {@link
@@ -346,7 +350,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
     private boolean isGrantedForGroup(GroupAce ace, Authentication authentication,
                                       Permission permission, boolean isCheckAllowedGrant) {
         return ace.isGranting() == isCheckAllowedGrant
-                && permission.equals(ace.getBranchPermission())
+                && permission.equals(ace.getPermission())
                 && ace.getGroup(groupDao).getUsers().
                 contains(authentication.getPrincipal());
     }
