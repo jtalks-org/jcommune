@@ -34,24 +34,28 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
 
     private JCommuneProperty componentSapeAccountProperty;
     private JCommuneProperty componentSapeOnMainPageEnableProperty;
+    private JCommuneProperty componentSapeLinksCountProperty;
+    private JCommuneProperty componentSapeHostProperty;
+    private JCommuneProperty componentSapeTimeoutProperty;
 
     private static Sape sape;
+    private static boolean enabledSape;
 
     /**
      * Initializes {@link javasape.Sape} object.
-     *
-     * @param componentSapeAccountProperty JavaSape account ID property
-     * @param componentSapeOnMainPageEnableProperty
-     *                                     Show javasape content on main page property
      */
-    public JavaSapeInterceptor(JCommuneProperty componentSapeAccountProperty,
-                               JCommuneProperty componentSapeOnMainPageEnableProperty) {
-        this.componentSapeAccountProperty = componentSapeAccountProperty;
-        this.componentSapeOnMainPageEnableProperty = componentSapeOnMainPageEnableProperty;
-    }
-
-    private void initSape() {
-        sape = new Sape(componentSapeAccountProperty.getValue(), "javatalks.ru", 1000, 10);
+    private boolean initSape() {
+        String accountId = componentSapeAccountProperty.getValue();
+        String host = componentSapeHostProperty.getValue();
+        if (accountId == null || accountId.trim().isEmpty() ||
+                host == null || host.trim().isEmpty()) {
+            return false;
+        }
+        sape = new Sape(componentSapeAccountProperty.getValue(),
+                componentSapeHostProperty.getValue(),
+                Integer.parseInt(componentSapeTimeoutProperty.getValue()),
+                Integer.parseInt(componentSapeLinksCountProperty.getValue()));
+        return true;
     }
 
     /**
@@ -66,18 +70,112 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         if (sape == null) {
-            initSape();
+            enabledSape = initSape();
         }
-        boolean sapeOnMainPageEnable = false;
-        String sapeOnMainPageEnableValue = componentSapeOnMainPageEnableProperty.getValue();
-        if (sapeOnMainPageEnableValue != null && !sapeOnMainPageEnableValue.trim().isEmpty()) {
-            sapeOnMainPageEnable = Boolean.valueOf(sapeOnMainPageEnableValue);
+        if (enabledSape) {
+            boolean sapeOnMainPageEnable = false;
+            String sapeOnMainPageEnableValue = componentSapeOnMainPageEnableProperty.getValue();
+            if (sapeOnMainPageEnableValue != null && !sapeOnMainPageEnableValue.trim().isEmpty()) {
+                sapeOnMainPageEnable = Boolean.valueOf(sapeOnMainPageEnableValue);
+            }
+            //do not apply to the redirected requests: it's unnecessary and may cause error pages to work incorrectly
+            if ((sapeOnMainPageEnable || !modelAndView.getViewName().equals("/")) &&
+                    !modelAndView.getViewName().contains("redirect:")) {
+                SapePageLinks pageLinks = sape.getPageLinks(request.getRequestURI(), request.getCookies());
+                modelAndView.addObject("sapeContent", pageLinks.render(1));
+            }
         }
-        //do not apply to the redirected requests: it's unnecessary and may cause error pages to work incorrectly
-        if ((sapeOnMainPageEnable || !modelAndView.getViewName().equals("/")) &&
-                !modelAndView.getViewName().contains("redirect:")) {
-            SapePageLinks pageLinks = sape.getPageLinks(request.getRequestURI(), request.getCookies());
-            modelAndView.addObject("sapeContent", pageLinks.render(1));
-        }
+    }
+
+    /**
+     * Gets JavaSape account ID property
+     *
+     * @return account ID
+     */
+    public JCommuneProperty getComponentSapeAccountProperty() {
+        return componentSapeAccountProperty;
+    }
+
+    /**
+     * Sets JavaSape account ID property
+     *
+     * @param componentSapeAccountProperty account ID
+     */
+    public void setComponentSapeAccountProperty(JCommuneProperty componentSapeAccountProperty) {
+        this.componentSapeAccountProperty = componentSapeAccountProperty;
+    }
+
+    /**
+     * Gets flag to show javasape content on main page property
+     *
+     * @return show javasape content on main page property or not
+     */
+    public JCommuneProperty getComponentSapeOnMainPageEnableProperty() {
+        return componentSapeOnMainPageEnableProperty;
+    }
+
+    /**
+     * Sets show javasape content on main page property
+     *
+     * @param componentSapeOnMainPageEnableProperty
+     *         flag value
+     */
+    public void setComponentSapeOnMainPageEnableProperty(JCommuneProperty componentSapeOnMainPageEnableProperty) {
+        this.componentSapeOnMainPageEnableProperty = componentSapeOnMainPageEnableProperty;
+    }
+
+    /**
+     * Gets sape links count for one request to Sape service
+     *
+     * @return links count
+     */
+    public JCommuneProperty getComponentSapeLinksCountProperty() {
+        return componentSapeLinksCountProperty;
+    }
+
+    /**
+     * Sets ape links count for one request to Sape service
+     *
+     * @param componentSapeLinksCountProperty
+     *         links count
+     */
+    public void setComponentSapeLinksCountProperty(JCommuneProperty componentSapeLinksCountProperty) {
+        this.componentSapeLinksCountProperty = componentSapeLinksCountProperty;
+    }
+
+    /**
+     * Gets current instance host
+     *
+     * @return host name
+     */
+    public JCommuneProperty getComponentSapeHostProperty() {
+        return componentSapeHostProperty;
+    }
+
+    /**
+     * Sets current instance host
+     *
+     * @param componentSapeHostProperty host name
+     */
+    public void setComponentSapeHostProperty(JCommuneProperty componentSapeHostProperty) {
+        this.componentSapeHostProperty = componentSapeHostProperty;
+    }
+
+    /**
+     * Gets Sape request timeout
+     *
+     * @return timeout
+     */
+    public JCommuneProperty getComponentSapeTimeoutProperty() {
+        return componentSapeTimeoutProperty;
+    }
+
+    /**
+     * Sets Sape request timeout
+     *
+     * @param componentSapeTimeoutProperty timeout
+     */
+    public void setComponentSapeTimeoutProperty(JCommuneProperty componentSapeTimeoutProperty) {
+        this.componentSapeTimeoutProperty = componentSapeTimeoutProperty;
     }
 }

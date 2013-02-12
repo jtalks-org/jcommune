@@ -93,6 +93,7 @@ public class BbCodeReviewProcessorTest {
                 {"[code=java]int good=2;[/code][/code]", "[code=java]int good=2;[-code][/code]"},
                 {"[code=java][code=js]int good=2;[/code][/code]", "[code=java][code=js]int good=2;[-code][/code]"},
                 {"[code=java][code=js]int good=2;[-code][/code]", "[code=java][code=js]int good=2;[-code][/code]"},
+                {"[code=java]fLn();\nsLn();[/code][/code]", "[code=java]fLn();\nsLn();[-code][/code]"},
                 // invalid code review posts
                 {"[b]int bad = 1;[b]", "[b]int bad = 1;[b]"},
                 {"[code=js]int bad = 2;[/code]", "[code=js]int bad = 2;[/code]"},
