@@ -72,6 +72,8 @@
 
         <security:intercept-url pattern="/poll/**" access="isAuthenticated()"/>
         <security:intercept-url pattern="/search/index/rebuild" access="hasIpAddress('127.0.0.1')"/>
+        <security:intercept-url pattern="/configuration/*" access="isAuthenticated()"/>
+        
         <security:intercept-url pattern="*" access="permitAll()"/>
         <security:form-login login-page="/login" login-processing-url="/j_spring_security_check"
                              default-target-url="/"

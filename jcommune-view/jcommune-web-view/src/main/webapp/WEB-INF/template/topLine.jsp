@@ -18,6 +18,8 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
@@ -47,15 +49,25 @@
                            value='<c:out value="${searchText}"/>'/>
                     <span id='searchClear' class='btn btn-inverse search-clear' style='display:none;'>X</span>
                 </form>
+                
                 <ul class="nav pull-right">
+                    <jtalks:hasPermission permission="GeneralPermission.ADMIN" 
+                            targetId="${forumComponent.id}" targetType="COMPONENT">
+                        <li>
+                            <a href='<c:url value="/configuration/sape"/>'>
+                                <spring:message code="label.sapeConfiguration"/>
+                            </a>
+                        </li>
+                    </jtalks:hasPermission>
+                    
                     <%-- Not logged in block --%>
                     <sec:authorize access="isAnonymous()">
                         <%--Temporary disabled, cause we need more requirements for "newbies" page
-	                        <li>
-	                            <a href="${pageContext.request.contextPath}/pages/for_newbies">
-	                                <fmt:message key="label.newbies"/>
-	                            </a>
-	                        </li>  
+                            <li>
+                                <a href="${pageContext.request.contextPath}/pages/for_newbies">
+                                    <fmt:message key="label.newbies"/>
+                                </a>
+                            </li>  
                         --%>
                         <li>
                             <a id="signup" href="${pageContext.request.contextPath}/user/new">
@@ -97,11 +109,11 @@
                             </a>
                         </li>
                         <%--Temporary disabled, cause we need more requirements for "newbies" page
-	                        <li>
-	                            <a href="${pageContext.request.contextPath}/pages/for_newbies">
-	                                <fmt:message key="label.newbies"/>
-	                            </a>
-	                        </li>
+                            <li>
+                                <a href="${pageContext.request.contextPath}/pages/for_newbies">
+                                    <fmt:message key="label.newbies"/>
+                                </a>
+                            </li>
                         --%>
                         <li class="divider-vertical"></li>
                         <li>
