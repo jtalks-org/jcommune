@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service;
 
 import java.util.Map;
 
+import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.entity.Banner;
 
 /**
@@ -29,8 +30,9 @@ public interface BannerService {
      * Upload banner.
      * 
      * @param banner uploaded attached
+     * @param forumComponent a component of the forum
      */
-    void uploadBanner(Banner banner);
+    void uploadBanner(Banner banner, Component forumComponent);
     
     /**
      * Get all banners of the forum.

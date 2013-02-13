@@ -16,8 +16,10 @@ package org.jtalks.jcommune.web.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.entity.Banner;
 import org.jtalks.jcommune.service.BannerService;
+import org.jtalks.jcommune.service.ComponentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -34,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class BannerController {
     private BannerService bannerService;
+    private ComponentService componentService;
 
     /**
      * Constructs an instance with required fields.
@@ -41,8 +44,9 @@ public class BannerController {
      * @param bannerService to attach banner to concrete position on page
      */
     @Autowired
-    public BannerController(BannerService bannerService) {
+    public BannerController(BannerService bannerService, ComponentService componentService) {
         this.bannerService = bannerService;
+        this.componentService = componentService;
     }
     
     /**
@@ -53,8 +57,9 @@ public class BannerController {
      * @return url of requested page, so it will be re-displayed to user
      */
     @RequestMapping(value = "/banners/upload", method = RequestMethod.POST)
-    public String upload(@ModelAttribute Banner uploadedBanner, HttpServletRequest request){
-        bannerService.uploadBanner(uploadedBanner);
+    public String upload(@ModelAttribute Banner uploadedBanner, HttpServletRequest request) {
+        Component component = componentService.getComponentOfForum();
+        bannerService.uploadBanner(uploadedBanner, component);
         return "redirect:" + getSourcePageUrl(request);
     }
     

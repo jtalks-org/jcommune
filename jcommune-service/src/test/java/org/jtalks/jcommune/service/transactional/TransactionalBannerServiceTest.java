@@ -26,7 +26,6 @@ import java.util.Map;
 
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.dao.BannerDao;
-import org.jtalks.jcommune.model.dao.ComponentDao;
 import org.jtalks.jcommune.model.entity.Banner;
 import org.jtalks.jcommune.model.entity.BannerPosition;
 import org.jtalks.jcommune.service.BannerService;
@@ -42,14 +41,12 @@ import org.testng.annotations.Test;
 public class TransactionalBannerServiceTest {
     @Mock
     private BannerDao bannerDao;
-    @Mock
-    private ComponentDao componentDao;
     private BannerService bannerService;
     
     @BeforeMethod
     public void init() {
         initMocks(this);
-        bannerService = new TransactionalBannerService(bannerDao, componentDao);
+        bannerService = new TransactionalBannerService(bannerDao);
     }
     
     @Test
@@ -57,9 +54,8 @@ public class TransactionalBannerServiceTest {
         Banner uploadedBanner = new Banner(BannerPosition.TOP, "<html></html>");
         Component component = new Component();
         component.setId(1l);
-        when(componentDao.getComponent()).thenReturn(component);
         
-        bannerService.uploadBanner(uploadedBanner);
+        bannerService.uploadBanner(uploadedBanner, component);
     
         verify(bannerDao).saveOrUpdate(uploadedBanner);
     }
@@ -72,9 +68,8 @@ public class TransactionalBannerServiceTest {
         Component component = new Component();
         component.setId(1l);
         when(bannerDao.getByPosition(BannerPosition.TOP)).thenReturn(existsBanner);
-        when(componentDao.getComponent()).thenReturn(component);
         
-        bannerService.uploadBanner(uploadedBanner);
+        bannerService.uploadBanner(uploadedBanner, component);
     
         verify(bannerDao).saveOrUpdate(existsBanner);
         verify(existsBanner).setContent(uploadedBannerContent);

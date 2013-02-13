@@ -14,16 +14,17 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import static org.mockito.MockitoAnnotations.initMocks;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.jtalks.jcommune.model.entity.Banner;
 import org.jtalks.jcommune.service.BannerService;
+import org.jtalks.jcommune.service.ComponentService;
 import org.mockito.Mock;
-import static org.testng.Assert.assertEquals;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -35,13 +36,15 @@ import org.testng.annotations.Test;
 public class BannerControllerTest {
     @Mock
     private BannerService bannerService;
+    @Mock
+    private ComponentService componentService;
     //
     private BannerController bannerController;
     
     @BeforeMethod
     public void init() {
         initMocks(this);
-        bannerController = new BannerController(bannerService);
+        bannerController = new BannerController(bannerService, componentService);
     }
     
     @Test
