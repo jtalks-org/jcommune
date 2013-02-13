@@ -21,10 +21,10 @@
 //save id of link to action (delete or edit)
 var actionId = null;
 var baseUrl = $root;
-var idToLinkMap = new Object;
+var idToExternalLinkMap = new Object;
 
 function getLinkById(id) {
-    return idToLinkMap[id];
+    return idToExternalLinkMap[id];
 }
 
 $(function () {
@@ -32,16 +32,16 @@ $(function () {
         e.preventDefault();
 
         var elements = [];
-        var element = {};
+        var externalLink = {};
 
         $('#externalLinks').find('a').each(function(i, elem){
             var id = $(elem).attr('id');
-            element.id = id;
-            element.url = $(elem).attr('href');
-            element.title = $(elem).attr('name');
-            element.hint = $(elem).attr('data-original-title');
-            idToLinkMap[id] = element;
-            elements[i] = element;
+            externalLink.id = id;
+            externalLink.url = $(elem).attr('href');
+            externalLink.title = $(elem).attr('name');
+            externalLink.hint = $(elem).attr('data-original-title');
+            idToExternalLinkMap[id] = externalLink;
+            elements[i] = externalLink;
         });
 
         var linksEditor = createMainLinkEditor(elements);
@@ -160,6 +160,19 @@ function editLinksVisible(visible) {
                 $('.edit-links').show();
                 //save edited link
                 $('#save-link').unbind("click").bind('click', function () {
+                    $.ajax({
+                        url:baseUrl + "/links/add",
+                        type:"POST",
+                        contentType:"application/json",
+                        async: false,
+                        data: JSON.stringify(link),
+                        success: function(data) {
+                            //todo populate links
+                        },
+                        error: function(data) {
+                            //todo highlight errors
+                        }
+                    });
 
                 });
                 $('#cancel-link').unbind("click").bind('click', function () {
