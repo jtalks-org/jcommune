@@ -31,6 +31,7 @@ import org.jtalks.jcommune.model.dao.BannerDao;
 import org.jtalks.jcommune.model.entity.Banner;
 import org.jtalks.jcommune.model.entity.BannerPosition;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -87,19 +88,22 @@ public class BannerHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         String newContent = "<html><h1>New Header</h1><html>";
         Banner banner = ObjectsFactory.getDefaultBanner();
         session.save(banner);
+        session.flush();
         banner.setContent(newContent);
         //
         bannerDao.saveOrUpdate(banner);
+        session.flush();
         session.evict(banner);
         Banner result = (Banner) session.get(Banner.class, banner.getId());
 
         assertEquals(result.getContent(), newContent);
     }
     
-    @Test(expectedExceptions = {Exception.class})
+    @Test(expectedExceptions = {DataIntegrityViolationException.class})
     public void bannerWithNullContentShoulNotBeUpdated() {
         Banner banner = ObjectsFactory.getDefaultBanner();
         session.save(banner);
+        session.flush();
         banner.setContent(null);
 
         bannerDao.saveOrUpdate(banner);
@@ -109,9 +113,10 @@ public class BannerHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     public void existsBannerShoulBeDeletedIfItIdPassed() {
         Banner banner = ObjectsFactory.getDefaultBanner();
         session.save(banner);
+        session.flush();
 
         boolean isDeleted = bannerDao.delete(banner.getId());
-
+        
         assertTrue(isDeleted, "Entity must be deleted by id.");
     }
     
@@ -128,6 +133,7 @@ public class BannerHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         Banner banner = ObjectsFactory.getDefaultBanner();
         banner.setPositionOnPage(BannerPosition.TOP);
         session.save(banner);
+        session.flush();
         session.evict(banner);
         
         Banner bannerInDatabase = bannerDao.getByPosition(BannerPosition.TOP);
@@ -141,6 +147,7 @@ public class BannerHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         Banner banner = ObjectsFactory.getDefaultBanner();
         banner.setPositionOnPage(BannerPosition.TOP);
         session.save(banner);
+        session.flush();
         session.evict(banner);
         
         Banner bannerInDatabase = bannerDao.getByPosition(BannerPosition.BOTTOM);
@@ -151,17 +158,23 @@ public class BannerHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     
     @Test
     public void allBannersShouldBeReturnedWhenGetAllCalled() {
+        Collection<Banner> persistedBanners = givenPersistedBanners();
+        
+        Collection<Banner> foundBanners = bannerDao.getAll();
+        
+        assertEquals(foundBanners.size(), persistedBanners.size(), 
+                "Incorrect collection of banners were returned from database.");
+        assertEquals(foundBanners, persistedBanners, 
+                "Incorrect collection of banners were returned from database.");
+    }
+    
+    private Collection<Banner> givenPersistedBanners() {
         Collection<Banner> banners = ObjectsFactory.getBanners();
         for (Banner banner: banners) {
             session.save(banner);
         }
-        
-        Collection<Banner> foundBanners = bannerDao.getAll();
-        
-        assertEquals(foundBanners.size(), banners.size(), 
-                "Incorrect collection of banners were returned from database.");
-        assertEquals(foundBanners, banners, 
-                "Incorrect collection of banners were returned from database.");
+        session.flush();
+        return banners;
     }
     
     @Test

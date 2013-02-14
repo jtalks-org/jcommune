@@ -35,7 +35,8 @@ public interface BannerService {
     void uploadBanner(Banner banner, Component forumComponent);
     
     /**
-     * Get all banners of the forum.
+     * Get all banners of the forum. Result contains string keys,
+     * because it's requirement of UI that can't work with enumerations.
      * 
      * @return all banners of the forum grouped in pairs:
      *         name of position and banner

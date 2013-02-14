@@ -29,10 +29,13 @@ import org.jtalks.jcommune.model.entity.BannerPosition;
  */
 public interface BannerDao extends ParentRepository<Banner> {
     /**
-     * Get banner by position.
+     * Get banner by position. By default we don't have banner
+     * for every position on page, so it's possible that you don't
+     * find banner.
      * 
      * @param positionOnPage position of banner on page
-     * @return banner that was found by position
+     * @return banner if it has been attached to concrete position, 
+     *         otherwise null
      */
     Banner getByPosition(BannerPosition positionOnPage);
     

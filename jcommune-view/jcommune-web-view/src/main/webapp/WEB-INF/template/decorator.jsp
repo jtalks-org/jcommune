@@ -117,7 +117,7 @@
     	<div>
 	    	<div class="pull-left">
 		        Powered by JCommune ${project.version}<br/>
-		        &copy; 2012 <a href="http://jtalks.org">jtalks.org</a><br/>
+		        &copy; 2013 <a href="http://jtalks.org">jtalks.org</a><br/>
 		        Design with <a href="http://twitter.github.com/bootstrap">Twitter Bootstrap</a>
 		    </div>
 		    <div>

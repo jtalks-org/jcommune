@@ -17,7 +17,10 @@ package org.jtalks.jcommune.model.entity;
 import org.jtalks.common.model.entity.Entity;
 
 /**
- * Represent banner that is showed in every page of forum. Banner contains HTML/JS content.
+ * Represents banner that is showed in every page of forum. Banner contains HTML/JS content.
+ * We use banners to put combination of pure HTML + JS in concrete piece of page. It may be
+ * useful to administrators of forum who can decide to add(or change) additional information
+ * on all pages of forum.
  *
  * @author Anuar_Nurmakanov
  */
@@ -36,7 +39,7 @@ public class Banner extends Entity {
      * and content.
      * 
      * @param positionOnPage position on page
-     * @param content content
+     * @param content content of banner(combination of pure HTML and JS)
      */
     public Banner(BannerPosition positionOnPage, String content) {
         this.positionOnPage = positionOnPage;
@@ -62,18 +65,18 @@ public class Banner extends Entity {
     }
 
     /**
-     * Get content.
+     * Get content. Content is combination of pure HTML and JS.
      * 
-     * @return content
+     * @return content of this banner
      */
     public String getContent() {
         return content;
     }
 
     /**
-     * Set content.
+     * Set content of banner. Content is combination of pure HTML and JS.
      * 
-     * @param content content
+     * @param content content of banner
      */
     public void setContent(String content) {
         this.content = content;

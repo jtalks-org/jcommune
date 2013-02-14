@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -61,10 +60,10 @@ public class TransactionalBannerServiceTest {
     }
     
     @Test
-    public void existBannerShoulBeSavedWithNewContent() {
+    public void existBannerShouldBeSavedWithNewContent() {
         String uploadedBannerContent = "<html></html>";
         Banner uploadedBanner = new Banner(BannerPosition.TOP, uploadedBannerContent);
-        Banner existsBanner = mock(Banner.class);
+        Banner existsBanner = new Banner(BannerPosition.TOP, "<html>exists banner</html>");
         Component component = new Component();
         component.setId(1l);
         when(bannerDao.getByPosition(BannerPosition.TOP)).thenReturn(existsBanner);
@@ -72,7 +71,7 @@ public class TransactionalBannerServiceTest {
         bannerService.uploadBanner(uploadedBanner, component);
     
         verify(bannerDao).saveOrUpdate(existsBanner);
-        verify(existsBanner).setContent(uploadedBannerContent);
+        assertEquals(existsBanner.getContent(), uploadedBannerContent, "Content of banner must be changed.");
     }
      
     @Test
@@ -84,7 +83,6 @@ public class TransactionalBannerServiceTest {
         
         Map<String, Banner> postionToBannerMap = bannerService.getAllBanners();
        
-        verify(bannerDao).getAll();
         assertEquals(postionToBannerMap.get(BannerPosition.TOP.toString()), topBanner);
         assertEquals(postionToBannerMap.get(BannerPosition.BOTTOM.toString()), bottomBanner);
     }

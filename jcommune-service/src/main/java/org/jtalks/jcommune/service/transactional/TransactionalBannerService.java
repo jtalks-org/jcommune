@@ -27,7 +27,8 @@ import org.jtalks.jcommune.service.BannerService;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
- * An implementation of {@link BannerService}.
+ * An implementation of {@link BannerService} that addresses to 
+ * repository(in our case) to find or fix banners.
  * 
  * @author Anuar_Nurmakanov
  *
@@ -35,11 +36,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public class TransactionalBannerService extends AbstractTransactionalEntityService<Banner, BannerDao> 
     implements BannerService {
     
-    
     /**
-     * Constructs an instance with required fields.
+     * Constructs an instance with given DAO, so it addresses to repository
+     * (in our case database).
      * 
-     * @param bannerDao to working with banner repository(database in our case)
+     * @param bannerDao to search and change banner in database
      */
     public TransactionalBannerService(BannerDao bannerDao) {
         super(bannerDao);
