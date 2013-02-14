@@ -27,7 +27,7 @@ import java.util.List;
 
 
 public class TransactionalLinkService extends AbstractTransactionalEntityService<ExternalLink, ExternalLinkDao>
-        implements ExternalLinkService{
+        implements ExternalLinkService {
 
     /**
      * Subclass may use this constructor to store entity DAO or parent
@@ -46,14 +46,7 @@ public class TransactionalLinkService extends AbstractTransactionalEntityService
 
     @Override
     public void addLink(ExternalLink link) {
-        boolean result = validate(link);
-        if (result) {
-            getDao().saveOrUpdate(link);
-        }
-    }
-
-    private boolean validate(ExternalLink link) {
-        return false;
+        getDao().saveOrUpdate(link);
     }
 
     @Override

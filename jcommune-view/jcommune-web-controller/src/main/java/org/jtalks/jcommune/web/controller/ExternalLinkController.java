@@ -16,6 +16,8 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.ExternalLink;
 import org.jtalks.jcommune.service.ExternalLinkService;
+import org.jtalks.jcommune.web.dto.json.JsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +30,7 @@ import java.util.List;
 
 /**
  * Handles CRUD operations for {@link ExternalLink}
+ *
  * @author Alexandre Teterin
  *         Date: 03.02.13
  */
@@ -43,7 +46,7 @@ public class ExternalLinkController {
         this.service = service;
     }
 
-    @RequestMapping(value="/links", method = RequestMethod.GET)
+    @RequestMapping(value = "/links", method = RequestMethod.GET)
     @ResponseBody
     public ExternalLink[] getLinks() {
         List<ExternalLink> links = service.getLinks();
@@ -52,9 +55,9 @@ public class ExternalLinkController {
 
     @RequestMapping(value = "/links/add", method = RequestMethod.POST)
     @ResponseBody
-    public ExternalLink addLink(@RequestBody ExternalLink link) {
+    public JsonResponse addLink(@RequestBody ExternalLink link) {
         service.addLink(link);
-        return link;
+        return new JsonResponse(JsonResponseStatus.SUCCESS, link);
     }
 
     @RequestMapping(value = "/links/remove/{id}", method = RequestMethod.DELETE)
