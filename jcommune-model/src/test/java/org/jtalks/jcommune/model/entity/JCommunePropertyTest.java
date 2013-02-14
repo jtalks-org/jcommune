@@ -176,6 +176,7 @@ public class JCommunePropertyTest {
     
     @Test
     public void testSetValueComponentDaoIsNull() {
+        jcommuneProperty.setComponentDao(null);
         jcommuneProperty.setValue(null);
     }
     
