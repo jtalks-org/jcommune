@@ -16,6 +16,9 @@ package org.jtalks.jcommune.model;
 
 import org.hibernate.Session;
 import org.joda.time.DateTime;
+import org.jtalks.common.model.entity.Component;
+import org.jtalks.common.model.entity.ComponentType;
+import org.jtalks.common.model.entity.Property;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
@@ -253,6 +256,27 @@ public final class PersistedObjectsFactory {
 
         persist(comment);
         return comment;
+    }
+    
+    public static Component getDefaultComponent() {
+        Component component = new Component();
+        component.setName("component.name");
+        component.setDescription("component.description");
+        component.setComponentType(ComponentType.FORUM);
+
+        List<Property> properties = new ArrayList<Property>();
+        Property property1 = new Property("name1", "value1");
+        property1.setValidationRule("validationRule1");
+        properties.add(property1);
+
+        Property property2 = new Property("name2", "value2");
+        property2.setValidationRule("validationRule2");
+        properties.add(property2);
+
+        component.setProperties(properties);
+
+        persist(component);
+        return component;
     }
 
     public static void createViewUnreadPostsInBranch() {

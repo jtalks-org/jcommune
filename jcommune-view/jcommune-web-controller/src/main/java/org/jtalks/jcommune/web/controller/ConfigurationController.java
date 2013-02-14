@@ -16,7 +16,9 @@ package org.jtalks.jcommune.web.controller;
 
 import javax.validation.Valid;
 
+import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.entity.SapeConfiguration;
+import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.ConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -41,14 +43,19 @@ public class ConfigurationController {
     private static final String PARAM_SAPE_CONFIGURATION = "sapeConfiguration";
 
     private ConfigurationService configurationService;
+    private ComponentService componentService;
     
     
     /**
-     * @param configurationService      service to operate with forum configuration
+     * @param configurationService      to operate with forum configuration
+     * @param componentService          to get component of forum for permission
+     *      checking
      */
     @Autowired
-    public ConfigurationController(ConfigurationService configurationService) {
+    public ConfigurationController(ConfigurationService configurationService,
+                    ComponentService componentService) {
         this.configurationService = configurationService;
+        this.componentService = componentService;
     }
 
     /**
@@ -70,7 +77,9 @@ public class ConfigurationController {
      */
     @RequestMapping(value="/configuration/sape", method=RequestMethod.GET)
     public ModelAndView showSapeConfigurationPage() {
-        SapeConfiguration configuration = configurationService.getSapeConfiguration();
+        Component forumComponent = componentService.getComponentOfForum();
+        SapeConfiguration configuration = configurationService
+                .getSapeConfiguration(forumComponent.getId());
         return new ModelAndView(VIEW_SAPE_CONFIGURATION)
                 .addObject(PARAM_SAPE_CONFIGURATION, configuration);
     }
@@ -86,6 +95,11 @@ public class ConfigurationController {
     public ModelAndView saveSapeConfiguration(
             @ModelAttribute @Valid SapeConfiguration configuration,
             BindingResult result) {
+        if (!result.hasErrors()) {
+            Component forumComponent = componentService.getComponentOfForum();
+            configurationService.updateSapeConfiguration(configuration,
+                    forumComponent.getId());
+        }
         return new ModelAndView(VIEW_SAPE_CONFIGURATION)
             .addObject(PARAM_SAPE_CONFIGURATION, configuration);
     }

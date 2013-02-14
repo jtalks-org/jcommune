@@ -51,14 +51,16 @@
                 </form>
                 
                 <ul class="nav pull-right">
-                    <jtalks:hasPermission permission="GeneralPermission.ADMIN" 
-                            targetId="${forumComponent.id}" targetType="COMPONENT">
-                        <li>
-                            <a href='<c:url value="/configuration/sape"/>'>
-                                <spring:message code="label.sapeConfiguration"/>
-                            </a>
-                        </li>
-                    </jtalks:hasPermission>
+                    <c:if test="${forumComponent != null}">
+                        <jtalks:hasPermission permission="GeneralPermission.ADMIN" 
+                                targetId="${forumComponent.id}" targetType="COMPONENT">
+                            <li>
+                                <a href='<c:url value="/configuration/sape"/>'>
+                                    <spring:message code="label.sapeConfiguration"/>
+                                </a>
+                            </li>
+                        </jtalks:hasPermission>
+                    </c:if>
                     
                     <%-- Not logged in block --%>
                     <sec:authorize access="isAnonymous()">

@@ -25,7 +25,15 @@ public interface ConfigurationService {
 
     /**
      * Return SAPE configuration parameters for the forum
+     * @param componentId ID of forum component for permissions checking
      * @return SAPE configuration
      */
-    SapeConfiguration getSapeConfiguration();
+    SapeConfiguration getSapeConfiguration(long componentId);
+
+    /**
+     * Update SAPE configuration parameters for the forum
+     * @param configuration new configuration 
+     * @param componentId ID of forum component for permissions checking
+     */
+    void updateSapeConfiguration(SapeConfiguration configuration, long componentId);
 }

@@ -14,7 +14,9 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.entity.SapeConfiguration;
+import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.ConfigurationService;
 import org.mockito.Mock;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -30,6 +32,11 @@ import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnMod
 import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
+
 
 /**
  * 
@@ -45,16 +52,20 @@ public class ConfigurationControllerTest {
     
     @Mock
     private ConfigurationService configurationService;
+    @Mock
+    private ComponentService componentService;
     
     private SapeConfiguration sapeConfiguration;
     
     @BeforeMethod
     public void init() {
         initMocks(this);
-        controller = new ConfigurationController(configurationService);
+        controller = new ConfigurationController(configurationService, componentService);
+     
+        when(componentService.getComponentOfForum()).thenReturn(new Component());
         
         sapeConfiguration = new SapeConfiguration();
-        when(configurationService.getSapeConfiguration()).thenReturn(sapeConfiguration);
+        when(configurationService.getSapeConfiguration(anyLong())).thenReturn(sapeConfiguration);
     }
     
     @Test
@@ -69,11 +80,14 @@ public class ConfigurationControllerTest {
     }
     
     @Test
-    public void testSaveSapeConfiguration() {
+    public void testSaveSapeConfigurationValidationSuccess() {
         SapeConfiguration newConfiguration = new SapeConfiguration(); 
         BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(false);
+        
         ModelAndView mav = controller.saveSapeConfiguration(newConfiguration, bindingResult);
         
+        verify(configurationService).updateSapeConfiguration(eq(newConfiguration), anyLong());
         assertViewName(mav, VIEW_SAPE_CONFIGURATION);
         assertModelAttributeAvailable(mav, PARAM_SAPE_CONFIGURATION);
         SapeConfiguration configuration = assertAndReturnModelAttributeOfType(
@@ -81,5 +95,20 @@ public class ConfigurationControllerTest {
         assertEquals(configuration, newConfiguration);
     }
     
+    @Test
+    public void testSaveSapeConfigurationValidationFail() {
+        SapeConfiguration newConfiguration = new SapeConfiguration(); 
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(true);
+        
+        ModelAndView mav = controller.saveSapeConfiguration(newConfiguration, bindingResult);
+        
+        verify(configurationService, never()).updateSapeConfiguration(eq(newConfiguration), anyLong());
+        assertViewName(mav, VIEW_SAPE_CONFIGURATION);
+        assertModelAttributeAvailable(mav, PARAM_SAPE_CONFIGURATION);
+        SapeConfiguration configuration = assertAndReturnModelAttributeOfType(
+                mav, PARAM_SAPE_CONFIGURATION, SapeConfiguration.class);
+        assertEquals(configuration, newConfiguration);
+    }
     
 }

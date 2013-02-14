@@ -29,15 +29,6 @@ import org.jtalks.jcommune.model.dao.ComponentDao;
  */
 public class ComponentHibernateDao extends AbstractHibernateChildRepository<Component> implements ComponentDao {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void update(Component entity) {
-        throw new UnsupportedOperationException("Value of \"Component\" cannot be changed in a forum.");
-    }
-
-
     @Override
     public Component getComponent() {
         return (Component) getSession().getNamedQuery("getForumComponent").uniqueResult();

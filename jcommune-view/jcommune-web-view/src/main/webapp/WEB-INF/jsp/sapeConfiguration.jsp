@@ -26,7 +26,7 @@
 
 <%-- Container --%>
 <div class="container form-login-related">
-    <form:form action='<c:url value="/sapeConfiguration"/>' method="POST" 
+    <form:form action='${pageContext.request.contextPath}/configuration/sape' method="POST" 
         name="sape-configuration-form" id="sape-configuration-form"
         modelAttribute="sapeConfiguration" class="form-vertical">
         <fieldset>

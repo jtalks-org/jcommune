@@ -27,10 +27,15 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+
 /**
  * @author Anuar Nurmakanov
  */
 public class JCommunePropertyTest {
+    private static final String PROPERTY_VALUE = "property.value";
+    private static final String PROPERTY_NAME = "property.name";
     @Mock
     private PropertyDao propertyDao;
     @Mock
@@ -167,6 +172,22 @@ public class JCommunePropertyTest {
         jcommuneComponentProperty.setDefaultValue(expected);
         String actual = jcommuneComponentProperty.getValueOfComponent();
         Assert.assertEquals(actual, expected, "Returned an invalid property value.");
+    }
+    
+    @Test
+    public void testSetValueComponentDaoIsNull() {
+        jcommuneProperty.setValue(null);
+    }
+    
+    @Test
+    public void testSetValue() {
+        when(componentDao.getComponent()).thenReturn(cmp);        
+        jcommuneProperty.setComponentDao(componentDao);
+        jcommuneProperty.setName(PROPERTY_NAME);
+        
+        jcommuneProperty.setValue(PROPERTY_VALUE);
+        
+        verify(cmp).setProperty(PROPERTY_NAME, PROPERTY_VALUE);
     }
 
 }

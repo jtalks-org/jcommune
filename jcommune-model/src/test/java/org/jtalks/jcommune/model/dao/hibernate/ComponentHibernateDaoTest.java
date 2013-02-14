@@ -18,6 +18,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.common.model.entity.ComponentType;
+import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.ComponentDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -29,6 +30,7 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 
 /**
  * @autor masyan
@@ -49,7 +51,66 @@ public class ComponentHibernateDaoTest extends AbstractTransactionalTestNGSpring
     @BeforeMethod
     public void setUp() {
         session = sessionFactory.getCurrentSession();
+        PersistedObjectsFactory.setSession(session);
     }
+    
+    /*===== Common methods =====*/
+
+    @Test
+    public void testGet() {
+        Component component = PersistedObjectsFactory.getDefaultComponent();
+        session.save(component);
+
+        Component result = componentDao.get(component.getId());
+
+        assertNotNull(result);
+        assertEquals(result.getId(), component.getId());
+        assertEquals(result.getProperties().size(), 2);
+    }
+
+
+    @Test
+    public void testGetInvalidId() {
+        Component result = componentDao.get(-567890L);
+
+        assertNull(result);
+    }
+
+    @Test
+    public void testUpdate() {
+        String newUuid = "1234-1231-1231";
+        Component component = PersistedObjectsFactory.getDefaultComponent();
+        session.save(component);
+        component.setUuid(newUuid);
+
+        componentDao.update(component);
+        session.evict(component);
+        Component result = (Component) session.get(Component.class, component.getId());
+
+        assertEquals(result.getUuid(), newUuid);
+    }
+
+    @Test(expectedExceptions = Exception.class)
+    public void testUpdateUuidNotNullViolation() {
+        Component component = PersistedObjectsFactory.getDefaultComponent();
+        session.save(component);
+        component.setUuid(null);
+
+        componentDao.update(component);
+    }
+    
+    @Test
+    public void testOrphanRemoving() {
+        Component component = PersistedObjectsFactory.getDefaultComponent();
+        
+        component.getProperties().remove(0);
+        componentDao.update(component);
+        session.evict(component);
+        
+        assertEquals(componentDao.get(component.getId()).getProperties().size(), 1);
+    }
+    
+    /*===== End of common methods =====*/
 
     @Test
     public void testGetComponent() {

@@ -17,6 +17,7 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.jtalks.jcommune.model.entity.SapeConfiguration;
 import org.jtalks.jcommune.service.ConfigurationService;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  * Implementation of {@link ConfigurationService}
@@ -58,7 +59,8 @@ public class TransactionalConfigurationService implements ConfigurationService {
      * {@inheritDoc}
      */
     @Override
-    public SapeConfiguration getSapeConfiguration() {
+    @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
+    public SapeConfiguration getSapeConfiguration(long componentId) {
         SapeConfiguration configuration = new SapeConfiguration();
         configuration.setAccountId(sapeAccountId.getValue());
         configuration.setTimeout(sapeTimeout.intValue());
@@ -67,4 +69,19 @@ public class TransactionalConfigurationService implements ConfigurationService {
         configuration.setShowOnMainPage(sapeShowOnMainPage.booleanValue());
         return configuration;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
+    public void updateSapeConfiguration(SapeConfiguration configuration, 
+            long componentId) {
+        sapeAccountId.setValue(configuration.getAccountId());
+        sapeTimeout.setValue(String.valueOf(configuration.getTimeout()));
+        sapeHostUrl.setValue(configuration.getHostUrl());
+        sapeNumberOrLinks.setValue(String.valueOf(configuration.getNumberOfLinks()));
+        sapeShowOnMainPage.setValue(String.valueOf(configuration.isShowOnMainPage()));
+    }
+    
 }

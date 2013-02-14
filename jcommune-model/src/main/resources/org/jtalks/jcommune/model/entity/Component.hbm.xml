@@ -33,6 +33,12 @@
                 <param name="type">12</param>
             </type>
         </property>
+        
+        <bag name="properties" cascade="all-delete-orphan" inverse="false" lazy="false">
+            <cache usage="nonstrict-read-write" region="org.jtalks.EHCOMMON"/>
+            <key column="CMP_ID" foreign-key="FK_COMPONENT" />
+            <one-to-many class="org.jtalks.common.model.entity.Property" />
+        </bag>
     </class>
 
     <query name="getForumComponent">

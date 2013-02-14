@@ -14,14 +14,21 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.common.model.entity.Component;
+import org.jtalks.jcommune.model.dao.ComponentDao;
 import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.jtalks.jcommune.model.entity.SapeConfiguration;
 import org.jtalks.jcommune.service.ConfigurationService;
+import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 /**
  * 
@@ -30,6 +37,7 @@ import static org.testng.Assert.assertEquals;
  */
 public class TransactionalConfigurationServiceTest {
 
+    private static final long COMPONENT_ID = 1L;
     private static final String SAPE_ACCOUNT_ID = "accountId";
     private static final int SAPE_TIMEOUT = 100;
     private static final String SAPE_HOST_URL = "http://host.url";
@@ -41,6 +49,8 @@ public class TransactionalConfigurationServiceTest {
     private JCommuneProperty sapeHostUrl = JCommuneProperty.CMP_HOST_URL;
     private JCommuneProperty sapeNumberOrLinks = JCommuneProperty.CMP_SAPE_LINKS_COUNT;
     private JCommuneProperty sapeShowOnMainPage = JCommuneProperty.CMP_SAPE_ON_MAIN_PAGE_ENABLE;
+    @Mock
+    private ComponentDao componentDao;
     
     private ConfigurationService configurationService;
     
@@ -51,23 +61,52 @@ public class TransactionalConfigurationServiceTest {
                 sapeAccountId, sapeTimeout, sapeHostUrl, sapeNumberOrLinks, 
                 sapeShowOnMainPage);
         
+        sapeAccountId.setName("sape.account.id");
+        sapeTimeout.setName("sape.timeout");
+        sapeHostUrl.setName("sape.host.url");
+        sapeNumberOrLinks.setName("sape.number.of.links");
+        sapeShowOnMainPage.setName("sape.show.on.main.page");
+        
         sapeAccountId.setDefaultValue(SAPE_ACCOUNT_ID);
         sapeTimeout.setDefaultValue(String.valueOf(SAPE_TIMEOUT));
         sapeHostUrl.setDefaultValue(SAPE_HOST_URL);
         sapeNumberOrLinks.setDefaultValue(String.valueOf(SAPE_NUMBER_OF_LINKS));
         sapeShowOnMainPage.setDefaultValue(String.valueOf(SAPE_SHOW_ON_MAIN_PAGE));
+        
+        sapeAccountId.setComponentDao(componentDao);
+        sapeTimeout.setComponentDao(componentDao);
+        sapeHostUrl.setComponentDao(componentDao);
+        sapeNumberOrLinks.setComponentDao(componentDao);
+        sapeShowOnMainPage.setComponentDao(componentDao);
     }
     
     @Test
     public void testGetSapeConfiguration() {
-        SapeConfiguration configuration = configurationService.getSapeConfiguration();
+        SapeConfiguration configuration = configurationService.getSapeConfiguration(COMPONENT_ID);
         
         assertEquals(configuration.getAccountId(), SAPE_ACCOUNT_ID);
         assertEquals(configuration.getTimeout(), SAPE_TIMEOUT);
         assertEquals(configuration.getHostUrl(), SAPE_HOST_URL);
         assertEquals(configuration.getNumberOfLinks(), SAPE_NUMBER_OF_LINKS);
         assertEquals(configuration.isShowOnMainPage(), SAPE_SHOW_ON_MAIN_PAGE);
+    }
+    
+    @Test
+    public void testUpdateSapeConfiguration() {
+        SapeConfiguration configuration = new SapeConfiguration();
+        configuration.setAccountId(SAPE_ACCOUNT_ID);
+        configuration.setTimeout(SAPE_TIMEOUT);
+        configuration.setHostUrl(SAPE_HOST_URL);
+        configuration.setNumberOfLinks(SAPE_NUMBER_OF_LINKS);
+        configuration.setShowOnMainPage(SAPE_SHOW_ON_MAIN_PAGE);
         
+        Component component = new Component();
+        when(componentDao.getComponent()).thenReturn(component);
+        
+        configurationService.updateSapeConfiguration(configuration, COMPONENT_ID);
+        
+        verify(componentDao, times(5)).update(any(Component.class));
+        assertEquals(component.getProperties().size(), 5);
     }
     
     

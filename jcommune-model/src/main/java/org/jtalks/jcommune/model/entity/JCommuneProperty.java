@@ -110,6 +110,21 @@ public enum JCommuneProperty {
             return getDefaultValue();
         }
     }
+    
+    /**
+     * Set new value of this property. For this operation <code>componentDao</code>
+     * must be specified. In other case new value will be to stored to DB.
+     * @param value new value of property
+     */
+    public void setValue(String value) {
+        if (componentDao != null) {
+            Component component = componentDao.getComponent();
+            component.setProperty(name, value);
+            componentDao.update(component);
+        } else {
+            LOGGER.warn("Can't set value of property {}. No componentDAO", name);
+        }
+    }
 
     /**
      * Returns a string value of the component property.
@@ -197,4 +212,5 @@ public enum JCommuneProperty {
     public void setComponentDao(ComponentDao componentDao) {
         this.componentDao = componentDao;
     }
+
 }
