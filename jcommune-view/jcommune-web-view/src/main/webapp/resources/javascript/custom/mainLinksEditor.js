@@ -40,8 +40,11 @@ function updateExternalLinkATag(externalLink) {
         if ($(elem).attr('id') == externalLink.id) {
             $(elem).attr('href', externalLink.url);
             $(elem).attr('name', externalLink.title);
-            $(elem).attr('innerText', externalLink.title);
-            $(elem).attr('innerHTML', externalLink.title);
+            $(elem).text(externalLink.title);
+            /*
+             $(elem).attr('innerText', externalLink.title);
+             $(elem).attr('innerHTML', externalLink.title);
+             */
             $(elem).attr('data-original-title', externalLink.hint);
         }
     })
@@ -49,11 +52,7 @@ function updateExternalLinkATag(externalLink) {
 
 
 function updateExternalLinkTable(externalLink) {
-    $('list-of-links').find('tr').each(function (i, elem) {
-        if ($(elem).attr('id') == externalLink.id) {
-            $(elem).attr('innerText', externalLink.title);
-        }
-    })
+    $('.list-of-links').find('#' + externalLink.id + ' .link-title').text(externalLink.title);
 }
 
 
