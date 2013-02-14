@@ -30,6 +30,7 @@ import java.util.List;
 
 /**
  * Handles CRUD operations for {@link ExternalLink}
+ *
  * @author Alexandre Teterin
  *         Date: 03.02.13
  */
@@ -45,7 +46,7 @@ public class ExternalLinkController {
         this.service = service;
     }
 
-    @RequestMapping(value="/links", method = RequestMethod.GET)
+    @RequestMapping(value = "/links", method = RequestMethod.GET)
     @ResponseBody
     public ExternalLink[] getLinks() {
         List<ExternalLink> links = service.getLinks();
@@ -56,7 +57,7 @@ public class ExternalLinkController {
     @ResponseBody
     public JsonResponse addLink(@RequestBody ExternalLink link) {
         service.addLink(link);
-        return new JsonResponse(JsonResponseStatus.SUCCESS);
+        return new JsonResponse(JsonResponseStatus.SUCCESS, link);
     }
 
     @RequestMapping(value = "/links/remove/{id}", method = RequestMethod.DELETE)

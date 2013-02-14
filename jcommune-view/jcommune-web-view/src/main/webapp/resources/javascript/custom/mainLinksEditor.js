@@ -21,11 +21,41 @@
 //save id of link to action (delete or edit)
 var actionId = null;
 var baseUrl = $root;
+var externalLinksId = "#externalLinks";
+var externalLinksTableClass = '.list-of-links';
 var idToExternalLinkMap = new Object;
 
 function getLinkById(id) {
     return idToExternalLinkMap[id];
 }
+
+function updateExternalLink(externalLink) {
+    idToExternalLinkMap[externalLink.id] = externalLink;
+    updateExternalLinkATag(externalLink);
+    updateExternalLinkTable(externalLink);
+}
+
+function updateExternalLinkATag(externalLink) {
+    $(externalLinksId).find('a').each(function (i, elem) {
+        if ($(elem).attr('id') == externalLink.id) {
+            $(elem).attr('href', externalLink.url);
+            $(elem).attr('name', externalLink.title);
+            $(elem).attr('innerText', externalLink.title);
+            $(elem).attr('innerHTML', externalLink.title);
+            $(elem).attr('data-original-title', externalLink.hint);
+        }
+    })
+}
+
+
+function updateExternalLinkTable(externalLink) {
+    $('list-of-links').find('tr').each(function (i, elem) {
+        if ($(elem).attr('id') == externalLink.id) {
+            $(elem).attr('innerText', externalLink.title);
+        }
+    })
+}
+
 
 $(function () {
     $('#links_editor').on('click', function (e) {
@@ -34,7 +64,7 @@ $(function () {
         var elements = [];
         var externalLink = {};
 
-        $('#externalLinks').find('a').each(function(i, elem){
+        $(externalLinksId).find('a').each(function (i, elem) {
             var id = $(elem).attr('id');
             externalLink.id = id;
             externalLink.url = $(elem).attr('href');
@@ -117,11 +147,11 @@ function createMainLinkEditor(elements) {
             </div> \
             <div class="modal-body"> \
             <table cellpadding="0" cellspacing="0" class="list-of-links"> ' +
-            createLinksTable(elements) + '\
+        createLinksTable(elements) + '\
             </table>' +
-            createFormElement($labelTitle, 'link-title', 'text', 'edit-links') +
-            createFormElement($labelUrl, 'link-url', 'text', 'edit-links') +
-            createFormElement($labelHint, 'link-hint', 'text', 'edit-links') + ' \
+        createFormElement($labelTitle, 'link-title', 'text', 'edit-links') +
+        createFormElement($labelUrl, 'link-url', 'text', 'edit-links') +
+        createFormElement($labelHint, 'link-hint', 'text', 'edit-links') + ' \
             <span class="confirm-delete-text remove-links"></span>\
             </div> \
             <div class="modal-footer"> \
@@ -139,10 +169,10 @@ function listOfLinksVisible(visible) {
     var intervalID = setInterval(function () {
         if ($('.edit-links').size() > 1) {
             if (visible) {
-                $('.list-of-links').show();
+                $(externalLinksTableClass).show();
             }
             else {
-                $('.list-of-links').hide();
+                $(externalLinksTableClass).hide();
             }
             clearInterval(intervalID)
         }
@@ -160,17 +190,21 @@ function editLinksVisible(visible) {
                 $('.edit-links').show();
                 //save edited link
                 $('#save-link').unbind("click").bind('click', function () {
+                    link.title = $('#link-title').val();
+                    link.url = $('#link-url').val();
+                    link.hint = $('#link-hint').val();
                     $.ajax({
-                        url:baseUrl + "/links/add",
-                        type:"POST",
-                        contentType:"application/json",
+                        url: baseUrl + "/links/add",
+                        type: "POST",
+                        contentType: "application/json",
                         async: false,
                         data: JSON.stringify(link),
-                        success: function(data) {
-                            //todo populate links
+                        success: function (data) {
+                            updateExternalLink(link);
+                            toAction('list');
                         },
-                        error: function(data) {
-                            //todo highlight errors
+                        error: function (data) {
+                            bootbox.alert($labelErrorLinkSave);
                         }
                     });
 
@@ -197,23 +231,27 @@ function addLinkVisible(visible) {
                 $('.edit-links').show();
                 $('#save-link').unbind("click").bind('click', function () {
                     var link = {
-                        title:$('#link-title')[0].value,
-                        url:$('#link-url')[0].value,
-                        url:$('#link-hint')[0].value,
+                        title: $('#link-title')[0].value,
+                        url: $('#link-url')[0].value,
+                        url: $('#link-hint')[0].value,
                         hint: "hint content"
                     };
 
                     $.ajax({
-                        url:baseUrl + "/links/add",
-                        type:"POST",
-                        contentType:"application/json",
+                        url: baseUrl + "/links/add",
+                        type: "POST",
+                        contentType: "application/json",
                         async: false,
                         data: JSON.stringify(link),
-                        success: function(data) {
-                            //todo populate links
+                        success: function (data) {
+                            data = eval('(' + data + ')'); // warning: not safe
+                            if (data.status == "SUCCESS") {
+                                // hide dialog and show success message
+
+                            }
                         },
-                        error: function(data) {
-                            //todo highlight errors
+                        error: function (data) {
+                            bootbox.alert($labelErrorLinkSave);
                         }
                     });
 
