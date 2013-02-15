@@ -21,7 +21,7 @@
 //save id of link to action (delete or edit)
 var actionId = null;
 var baseUrl = $root;
-var externalLinksId = "#externalLinks";
+var externalLinksTableId = "#externalLinks";
 var externalLinksTableClass = '.list-of-links';
 var idToExternalLinkMap = new Object;
 
@@ -33,28 +33,36 @@ function updateExternalLink(externalLink) {
     idToExternalLinkMap[externalLink.id] = externalLink;
     updateExternalLinkATag(externalLink);
     updateExternalLinkTable(externalLink);
+
+    function updateExternalLinkATag(externalLink) {
+        $(externalLinksTableId).find('a').each(function (i, elem) {
+            if ($(elem).attr('id') == externalLink.id) {
+                $(elem).attr('href', externalLink.url);
+                $(elem).attr('name', externalLink.title);
+                $(elem).text(externalLink.title);
+                $(elem).attr('data-original-title', externalLink.hint);
+            }
+        })
+    }
+
+    function updateExternalLinkTable(externalLink) {
+        $('.list-of-links').find('#' + externalLink.id + ' .link-title').text(externalLink.title);
+    }
 }
 
-function updateExternalLinkATag(externalLink) {
-    $(externalLinksId).find('a').each(function (i, elem) {
-        if ($(elem).attr('id') == externalLink.id) {
-            $(elem).attr('href', externalLink.url);
-            $(elem).attr('name', externalLink.title);
-            $(elem).text(externalLink.title);
-            /*
-             $(elem).attr('innerText', externalLink.title);
-             $(elem).attr('innerHTML', externalLink.title);
-             */
-            $(elem).attr('data-original-title', externalLink.hint);
-        }
-    })
+function addNewExternalLink(externalLink) {
+    idToExternalLinkMap[externalLink.id] = externalLink;
+    addNewExternalLinkRowToLinkTable();
+
+
+    function addNewExternalLinkRowToLinkTable() {
+        var elements = [];
+        elements[0] = externalLink;
+        var tableRow = createLinksTableRows(elements);
+        $(externalLinksTableId).find('tbody').append(tableRow);
+    }
+
 }
-
-
-function updateExternalLinkTable(externalLink) {
-    $('.list-of-links').find('#' + externalLink.id + ' .link-title').text(externalLink.title);
-}
-
 
 $(function () {
     $('#links_editor').on('click', function (e) {
@@ -63,7 +71,7 @@ $(function () {
         var elements = [];
         var externalLink = {};
 
-        $(externalLinksId).find('a').each(function (i, elem) {
+        $(externalLinksTableId).find('a').each(function (i, elem) {
             var id = $(elem).attr('id');
             externalLink.id = id;
             externalLink.url = $(elem).attr('href');
@@ -121,7 +129,7 @@ function createFormElement(label, id, type, cls) {
     return $(elementHtml).html();
 }
 
-function createLinksTable(elements) {
+function createLinksTableRows(elements) {
     var elementHtml = "";
     $.each(elements, function (index, element) {
         elementHtml = elementHtml + ' \
@@ -146,7 +154,7 @@ function createMainLinkEditor(elements) {
             </div> \
             <div class="modal-body"> \
             <table cellpadding="0" cellspacing="0" class="list-of-links"> ' +
-        createLinksTable(elements) + '\
+        createLinksTableRows(elements) + '\
             </table>' +
         createFormElement($labelTitle, 'link-title', 'text', 'edit-links') +
         createFormElement($labelUrl, 'link-url', 'text', 'edit-links') +
@@ -229,13 +237,10 @@ function addLinkVisible(visible) {
                 $('#link-hint').val("");
                 $('.edit-links').show();
                 $('#save-link').unbind("click").bind('click', function () {
-                    var link = {
-                        title: $('#link-title')[0].value,
-                        url: $('#link-url')[0].value,
-                        url: $('#link-hint')[0].value,
-                        hint: "hint content"
-                    };
-
+                    var link = {};
+                    link.title = $('#link-title').val();
+                    link.url = $('#link-url').val();
+                    link.hint = $('#link-hint').val();
                     $.ajax({
                         url: baseUrl + "/links/add",
                         type: "POST",
@@ -243,11 +248,9 @@ function addLinkVisible(visible) {
                         async: false,
                         data: JSON.stringify(link),
                         success: function (data) {
-                            data = eval('(' + data + ')'); // warning: not safe
-                            if (data.status == "SUCCESS") {
-                                // hide dialog and show success message
-
-                            }
+                            link.id = data.result.id;
+                            addNewExternalLink(link);
+                            toAction('list');
                         },
                         error: function (data) {
                             bootbox.alert($labelErrorLinkSave);
