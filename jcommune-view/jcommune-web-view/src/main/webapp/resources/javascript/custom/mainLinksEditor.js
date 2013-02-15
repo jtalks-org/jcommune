@@ -21,7 +21,7 @@
 //save id of link to action (delete or edit)
 var actionId = null;
 var baseUrl = $root;
-var externalLinksTableId = "#externalLinks";
+var externalLinksGroupId = "#externalLinks";
 var externalLinksTableClass = '.list-of-links';
 var idToExternalLinkMap = new Object;
 
@@ -35,7 +35,7 @@ function updateExternalLink(externalLink) {
     updateExternalLinkTable(externalLink);
 
     function updateExternalLinkATag(externalLink) {
-        $(externalLinksTableId).find('a').each(function (i, elem) {
+        $(externalLinksGroupId).find('a').each(function (i, elem) {
             if ($(elem).attr('id') == externalLink.id) {
                 $(elem).attr('href', externalLink.url);
                 $(elem).attr('name', externalLink.title);
@@ -53,13 +53,28 @@ function updateExternalLink(externalLink) {
 function addNewExternalLink(externalLink) {
     idToExternalLinkMap[externalLink.id] = externalLink;
     addNewExternalLinkRowToLinkTable();
+    addNewLinkToExternalLinkGroup(externalLink);
 
 
     function addNewExternalLinkRowToLinkTable() {
         var elements = [];
         elements[0] = externalLink;
         var tableRow = createLinksTableRows(elements);
-        $(externalLinksTableId).find('tbody').append(tableRow);
+        $(externalLinksTableClass).find('tbody').append(tableRow);
+    }
+
+    function addNewLinkToExternalLinkGroup(externalLink) {
+        var aTag = prepareNewLinkATag(externalLink);
+        $(externalLinksGroupId).append(aTag);
+    }
+
+    function prepareNewLinkATag(externalLink) {
+        return result = '<a id="' + externalLink.id + '"'
+            + 'href="' + externalLink.url + '"'
+            + 'name="' + externalLink.title + '"'
+            + 'data-original-title="' + externalLink.hint + '">'
+            + externalLink.title
+            + '</a>';
     }
 
 }
@@ -69,10 +84,9 @@ $(function () {
         e.preventDefault();
 
         var elements = [];
-        var externalLink = {};
-
-        $(externalLinksTableId).find('a').each(function (i, elem) {
+        $(externalLinksGroupId).find('a').each(function (i, elem) {
             var id = $(elem).attr('id');
+            var externalLink = {};
             externalLink.id = id;
             externalLink.url = $(elem).attr('href');
             externalLink.title = $(elem).attr('name');
