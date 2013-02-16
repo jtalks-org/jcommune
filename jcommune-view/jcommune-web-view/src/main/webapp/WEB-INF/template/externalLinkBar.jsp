@@ -28,12 +28,13 @@
                         <c:out value="${link.title}"/>
                     </a>
                 </c:forEach>
-                <span> |</span>
             </span>
         </c:if>
-        <jtalks:hasPermission targetId="${forumComponent.id}" targetType="COMPONENT"
-                              permission="GeneralPermission.ADMIN">
-            <span id="links_editor" class="icon-cog cursor-hand"></span>
-        </jtalks:hasPermission>
+        <c:if test="${not empty forumComponent}">
+            <jtalks:hasPermission targetId="${forumComponent.id}" targetType="COMPONENT"
+                                  permission="GeneralPermission.ADMIN">
+                <span id="links_editor" class="icon-cog cursor-hand"></span>
+            </jtalks:hasPermission>
+        </c:if>
     </div>
 </div>

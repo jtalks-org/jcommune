@@ -20,16 +20,10 @@ import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 /**
- * Handles CRUD operations for {@link ExternalLink}
+ * Handles CRUD operations for {@link ExternalLink}.
  *
  * @author Alexandre Teterin
  *         Date: 03.02.13
@@ -46,13 +40,6 @@ public class ExternalLinkController {
         this.service = service;
     }
 
-    @RequestMapping(value = "/links", method = RequestMethod.GET)
-    @ResponseBody
-    public ExternalLink[] getLinks() {
-        List<ExternalLink> links = service.getLinks();
-        return links.toArray(new ExternalLink[links.size()]);
-    }
-
     @RequestMapping(value = "/links/add", method = RequestMethod.POST)
     @ResponseBody
     public JsonResponse addLink(@RequestBody ExternalLink link) {
@@ -61,7 +48,9 @@ public class ExternalLinkController {
     }
 
     @RequestMapping(value = "/links/remove/{id}", method = RequestMethod.DELETE)
-    public void removeLink(@PathVariable Long id) {
-        service.removeLink(id);
+    @ResponseBody
+    public JsonResponse removeLink(@PathVariable Long id) {
+        boolean result = service.removeLink(id);
+        return new JsonResponse(JsonResponseStatus.SUCCESS, result);
     }
 }

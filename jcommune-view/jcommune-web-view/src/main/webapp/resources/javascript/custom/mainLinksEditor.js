@@ -29,56 +29,6 @@ function getLinkById(id) {
     return idToExternalLinkMap[id];
 }
 
-function updateExternalLink(externalLink) {
-    idToExternalLinkMap[externalLink.id] = externalLink;
-    updateExternalLinkATag(externalLink);
-    updateExternalLinkTable(externalLink);
-
-    function updateExternalLinkATag(externalLink) {
-        $(externalLinksGroupId).find('a').each(function (i, elem) {
-            if ($(elem).attr('id') == externalLink.id) {
-                $(elem).attr('href', externalLink.url);
-                $(elem).attr('name', externalLink.title);
-                $(elem).text(externalLink.title);
-                $(elem).attr('data-original-title', externalLink.hint);
-            }
-        })
-    }
-
-    function updateExternalLinkTable(externalLink) {
-        $('.list-of-links').find('#' + externalLink.id + ' .link-title').text(externalLink.title);
-    }
-}
-
-function addNewExternalLink(externalLink) {
-    idToExternalLinkMap[externalLink.id] = externalLink;
-    addNewExternalLinkRowToLinkTable();
-    addNewLinkToExternalLinkGroup(externalLink);
-
-
-    function addNewExternalLinkRowToLinkTable() {
-        var elements = [];
-        elements[0] = externalLink;
-        var tableRow = createLinksTableRows(elements);
-        $(externalLinksTableClass).find('tbody').append(tableRow);
-    }
-
-    function addNewLinkToExternalLinkGroup(externalLink) {
-        var aTag = prepareNewLinkATag(externalLink);
-        $(externalLinksGroupId).append(aTag);
-    }
-
-    function prepareNewLinkATag(externalLink) {
-        return result = '<a id="' + externalLink.id + '"'
-            + 'href="' + externalLink.url + '"'
-            + 'name="' + externalLink.title + '"'
-            + 'data-original-title="' + externalLink.hint + '">'
-            + externalLink.title
-            + '</a>';
-    }
-
-}
-
 $(function () {
     $('#links_editor').on('click', function (e) {
         e.preventDefault();
@@ -240,6 +190,27 @@ function editLinksVisible(visible) {
             clearInterval(intervalID)
         }
     }, '100');
+
+    function updateExternalLink(externalLink) {
+        idToExternalLinkMap[externalLink.id] = externalLink;
+        updateExternalLinkATag(externalLink);
+        updateExternalLinkTable(externalLink);
+
+        function updateExternalLinkATag(externalLink) {
+            $(externalLinksGroupId).find('a').each(function (i, elem) {
+                if ($(elem).attr('id') == externalLink.id) {
+                    $(elem).attr('href', externalLink.url);
+                    $(elem).attr('name', externalLink.title);
+                    $(elem).text(externalLink.title);
+                    $(elem).attr('data-original-title', externalLink.hint);
+                }
+            })
+        }
+
+        function updateExternalLinkTable(externalLink) {
+            $(externalLinksTableClass).find('#' + externalLink.id + ' .link-title').text(externalLink.title);
+        }
+    }
 }
 
 function addLinkVisible(visible) {
@@ -282,22 +253,66 @@ function addLinkVisible(visible) {
             clearInterval(intervalID)
         }
     }, '100');
+
+    function addNewExternalLink(externalLink) {
+        idToExternalLinkMap[externalLink.id] = externalLink;
+        addNewExternalLinkRowToLinkTable();
+        addNewLinkToExternalLinkGroup(externalLink);
+
+
+        function addNewExternalLinkRowToLinkTable() {
+            var elements = [];
+            elements[0] = externalLink;
+            var tableRow = createLinksTableRows(elements);
+            $(externalLinksTableClass).find('tbody').append(tableRow);
+        }
+
+        function addNewLinkToExternalLinkGroup(externalLink) {
+            var aTag = prepareNewLinkATag(externalLink);
+            $(externalLinksGroupId).append(aTag);
+        }
+
+        function prepareNewLinkATag(externalLink) {
+            return result = '<a id="' + externalLink.id + '"'
+                + 'href="' + externalLink.url + '"'
+                + 'name="' + externalLink.title + '"'
+                + 'data-original-title="' + externalLink.hint + '">'
+                + externalLink.title
+                + '</a>';
+        }
+    }
 }
 
 function confirmRemoveVisible(visible) {
     var intervalID = setInterval(function () {
         if ($('.remove-links')) {
             if (visible) {
-                var link = $('#' + actionId);
-                var linkTitle = $labelDeleteMainLink.replace('{0}', link.children('.link-title').text());
-                var linkHint = $labelDeleteMainLink.replace('{0}', link.children('.link-hint').text());
-                $('.confirm-delete-text').text(linkTitle);
+                var link = getLinkById(actionId);
+                var deleteConfirmationMessage = $labelDeleteMainLink.replace('{0}', link.title);
+                $('.confirm-delete-text').text(deleteConfirmationMessage);
                 $('.remove-links').show();
 
                 //delete link
                 $('#remove-link').unbind("click").bind('click', function () {
-                    link.remove();
-                    toAction('list');
+                    $.ajax({
+                        url: baseUrl + "/links/remove/" + link.id,
+                        type: "DELETE",
+                        contentType: "application/json",
+                        async: false,
+                        success: function (data) {
+                            if (data.result == true) {
+                                $(externalLinksTableClass).find('#' + link.id).remove();
+                                idToExternalLinkMap[link.id] = null;
+                                $(externalLinksGroupId).find('#' + link.id).remove();
+                                toAction('list');
+                            } else {
+                                bootbox.alert($labelErrorLinkDelete);
+                            }
+                        },
+                        error: function () {
+                            bootbox.alert($labelErrorLinkDelete);
+                        }
+                    });
                 });
                 $('#cancel-link').unbind("click").bind('click', function () {
                     toAction('list');
