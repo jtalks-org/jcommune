@@ -40,17 +40,17 @@ public class ExternalLinkController {
         this.service = service;
     }
 
-    @RequestMapping(value = "/links/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/links/save", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResponse addLink(@RequestBody ExternalLink link) {
-        service.addLink(link);
+    public JsonResponse saveLink(@RequestBody ExternalLink link) {
+        service.saveLink(link);
         return new JsonResponse(JsonResponseStatus.SUCCESS, link);
     }
 
-    @RequestMapping(value = "/links/remove/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/links/delete/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    public JsonResponse removeLink(@PathVariable Long id) {
-        boolean result = service.removeLink(id);
+    public JsonResponse deleteLink(@PathVariable Long id) {
+        boolean result = service.deleteLink(id);
         return new JsonResponse(JsonResponseStatus.SUCCESS, result);
     }
 }

@@ -12,18 +12,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service.transactional;
+package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.dao.ExternalLinkDao;
 import org.jtalks.jcommune.model.entity.ExternalLink;
 import org.jtalks.jcommune.service.ExternalLinkService;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 /**
@@ -32,33 +28,36 @@ import static org.mockito.MockitoAnnotations.initMocks;
  */
 
 
-public class TransactionalLinkServiceTest {
+public class ExternalLinkControllerTest {
+
+    private static final long ID = 1L;
+    private static final String TITLE = "title";
+    private static final String URL = "url";
+    private static final String HINT = "hint";
 
     @Mock
-    private ExternalLinkDao dao;
     private ExternalLinkService service;
+    private ExternalLinkController controller;
 
     @BeforeMethod
-    public void setUp() throws Exception {
+    public void setUp() {
         initMocks(this);
-        service = new TransactionalLinkService(dao);
-    }
-
-    @Test
-    public void testGetLinks() throws Exception {
-        service.getLinks();
-        verify(dao).getAll();
+        controller = new ExternalLinkController(service);
     }
 
     @Test
     public void testAddLink() throws Exception {
-        service.saveLink(new ExternalLink());
-        verify(dao).saveOrUpdate(any(ExternalLink.class));
+
     }
 
     @Test
     public void testRemoveLink() throws Exception {
-        service.deleteLink(1L);
-        verify(dao).delete(eq(1L));
+
+    }
+
+    private ExternalLink createLink() {
+        ExternalLink link = new ExternalLink(URL, TITLE, HINT);
+        link.setId(ID);
+        return link;
     }
 }

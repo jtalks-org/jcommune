@@ -15,20 +15,23 @@
 
 package org.jtalks.jcommune.model.entity;
 
+import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.common.model.entity.Entity;
-
-import java.net.URL;
 
 /**
  * Stores information about external link.
+ *
  * @author Alexandre Teterin
  *         Date: 03.02.13
  */
 
 public class ExternalLink extends Entity {
 
+    @NotBlank
     private String url;
+    @NotBlank
     private String title;
+    @NotBlank
     private String hint;
 
     /**
@@ -38,10 +41,9 @@ public class ExternalLink extends Entity {
     }
 
     /**
-     *
-     * @param url target URL, e.g., jtalks.org.
-     * @param title  URL title, e.g. 'JTalks'.
-     * @param hint URL hint or description, e.g. 'The most powerful forum engine'.
+     * @param url   target URL, e.g., jtalks.org.
+     * @param title URL title, e.g. 'JTalks'.
+     * @param hint  URL hint or description, e.g. 'The most powerful forum engine'.
      */
     public ExternalLink(String url, String title, String hint) {
         this.url = url;
@@ -50,7 +52,6 @@ public class ExternalLink extends Entity {
     }
 
     /**
-     *
      * @return url
      */
     public String getUrl() {
@@ -58,7 +59,6 @@ public class ExternalLink extends Entity {
     }
 
     /**
-     *
      * @param url url
      */
     public void setUrl(String url) {
@@ -66,7 +66,6 @@ public class ExternalLink extends Entity {
     }
 
     /**
-     *
      * @return URL title.
      */
     public String getTitle() {
@@ -74,7 +73,6 @@ public class ExternalLink extends Entity {
     }
 
     /**
-     *
      * @param title URL title.
      */
     public void setTitle(String title) {
@@ -82,7 +80,6 @@ public class ExternalLink extends Entity {
     }
 
     /**
-     *
      * @return URL hint.
      */
     public String getHint() {
@@ -90,7 +87,6 @@ public class ExternalLink extends Entity {
     }
 
     /**
-     *
      * @param hint URL hint.
      */
     public void setHint(String hint) {

@@ -45,12 +45,12 @@ public class TransactionalLinkService extends AbstractTransactionalEntityService
     }
 
     @Override
-    public void addLink(ExternalLink link) {
+    public void saveLink(ExternalLink link) {
         getDao().saveOrUpdate(link);
     }
 
     @Override
-    public boolean removeLink(long id) {
+    public boolean deleteLink(long id) {
         return getDao().delete(id);
     }
 }
