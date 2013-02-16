@@ -25,8 +25,8 @@
             <generator class="native"/>
         </id>
         <property name="uuid" column="UUID" unique="true" not-null="true"/>
-        <property name="url" column="URL"/>
-        <property name="title" column="TITLE"/>
-        <property name="hint" column="HINT"/>
+        <property name="url" column="URL" not-null="true"/>
+        <property name="title" column="TITLE" not-null="true"/>
+        <property name="hint" column="HINT" not-null="true"/>
     </class>
 </hibernate-mapping>
