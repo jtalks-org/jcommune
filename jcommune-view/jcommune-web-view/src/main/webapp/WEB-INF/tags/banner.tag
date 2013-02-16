@@ -45,8 +45,8 @@
 		        <form:input type="hidden" path="positionOnPage" value="${position}"/>
 		        <div class="modal-body">
 		            <jsp:setProperty name="uploadedBanner" property="content" value="${banner.content}"/>
-		            <form:textarea path="content" id="body" name="body" tabindex="200" 
-		                            style="width:100%;" rows="7" class="script-confirm-unsaved" />
+		            <form:textarea class="banner-textarea script-confirm-unsaved" path="content" id="body" name="body" tabindex="200" 
+		                            style="width:100%;" rows="7" />
 		        </div>
 		        <div class="modal-footer">
 		            <button class="btn" data-dismiss="modal" aria-hidden="true">
