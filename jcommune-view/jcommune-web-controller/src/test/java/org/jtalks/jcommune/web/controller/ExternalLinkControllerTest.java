@@ -16,11 +16,18 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.ExternalLink;
 import org.jtalks.jcommune.service.ExternalLinkService;
+import org.jtalks.jcommune.web.dto.json.JsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
 
 /**
  * @author Alexandre Teterin
@@ -46,13 +53,26 @@ public class ExternalLinkControllerTest {
     }
 
     @Test
-    public void testAddLink() throws Exception {
-
+    public void testSaveLink() throws Exception {
+        JsonResponse expected = controller.saveLink(createLink());
+        assertEquals(expected.getStatus(), JsonResponseStatus.SUCCESS);
+        ExternalLink expectedLink = (ExternalLink) expected.getResult();
+        assertEquals(ID, expectedLink.getId());
+        assertEquals(TITLE, expectedLink.getTitle());
+        assertEquals(HINT, expectedLink.getHint());
+        assertEquals(URL, expectedLink.getUrl());
+        verify(service).saveLink(any(ExternalLink.class));
     }
 
     @Test
-    public void testRemoveLink() throws Exception {
-
+    public void testDeleteLink() throws Exception {
+        boolean expectedResult = true;
+        when(service.deleteLink(eq(ID))).thenReturn(expectedResult);
+        JsonResponse expected = controller.deleteLink(ID);
+        assertEquals(expected.getStatus(), JsonResponseStatus.SUCCESS);
+        boolean actualResult = (Boolean) expected.getResult();
+        assertEquals(actualResult, expectedResult);
+        verify(service).deleteLink(eq(ID));
     }
 
     private ExternalLink createLink() {

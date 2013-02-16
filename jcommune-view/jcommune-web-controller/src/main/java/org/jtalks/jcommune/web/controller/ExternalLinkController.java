@@ -20,7 +20,12 @@ import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.validation.Valid;
 
 /**
  * Handles CRUD operations for {@link ExternalLink}.
@@ -42,7 +47,7 @@ public class ExternalLinkController {
 
     @RequestMapping(value = "/links/save", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResponse saveLink(@RequestBody ExternalLink link) {
+    public JsonResponse saveLink(@Valid ExternalLink link) {
         service.saveLink(link);
         return new JsonResponse(JsonResponseStatus.SUCCESS, link);
     }

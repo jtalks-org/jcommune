@@ -165,7 +165,7 @@ function editLinksVisible(visible) {
                     link.url = $('#link-url').val();
                     link.hint = $('#link-hint').val();
                     $.ajax({
-                        url: baseUrl + "/links/add",
+                        url: baseUrl + "/links/save",
                         type: "POST",
                         contentType: "application/json",
                         async: false,
@@ -227,7 +227,7 @@ function addLinkVisible(visible) {
                     link.url = $('#link-url').val();
                     link.hint = $('#link-hint').val();
                     $.ajax({
-                        url: baseUrl + "/links/add",
+                        url: baseUrl + "/links/save",
                         type: "POST",
                         contentType: "application/json",
                         async: false,
@@ -295,7 +295,7 @@ function confirmRemoveVisible(visible) {
                 //delete link
                 $('#remove-link').unbind("click").bind('click', function () {
                     $.ajax({
-                        url: baseUrl + "/links/remove/" + link.id,
+                        url: baseUrl + "/links/delete/" + link.id,
                         type: "DELETE",
                         contentType: "application/json",
                         async: false,
