@@ -20,6 +20,7 @@ import java.util.List;
 
 /**
  * Provide CRUD operations for {@link ExternalLink} entities.
+ *
  * @author Alexandre Teterin
  *         Date: 03.02.13
  */
@@ -29,20 +30,23 @@ public interface ExternalLinkService extends EntityService<ExternalLink> {
 
     /**
      * Return list of existing external link.
+     *
      * @return list of existing external link.
      */
     List<ExternalLink> getLinks();
 
     /**
      * Persist link to db.
+     *
      * @param link link to persist.
      */
-    void addLink(ExternalLink link);
+    void saveLink(ExternalLink link);
 
     /**
-     * Removes link with specified id.
+     * Deletes link with specified id.
+     *
      * @param id link id to remove.
      * @return {@code true} if entity deleted successfully.
      */
-    boolean removeLink(long id);
+    boolean deleteLink(long id);
 }

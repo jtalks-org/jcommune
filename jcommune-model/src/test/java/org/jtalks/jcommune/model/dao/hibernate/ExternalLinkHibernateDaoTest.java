@@ -14,12 +14,6 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertNull;
-import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
-
-import java.util.List;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.ObjectsFactory;
@@ -33,6 +27,12 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.List;
+
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertNull;
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
  * @author Alexandre Teterin
@@ -107,4 +107,24 @@ public class ExternalLinkHibernateDaoTest extends AbstractTransactionalTestNGSpr
         assertReflectionEquals(expected, actual.get(0));
     }
 
+    @Test(expectedExceptions = {Exception.class})
+    public void tesShouldNotSaveWithNullTitle() {
+        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
+        link.setTitle(null);
+        session.saveOrUpdate(link);
+    }
+
+    @Test(expectedExceptions = {Exception.class})
+    public void tesShouldNotSaveWithNullUrl() {
+        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
+        link.setUrl(null);
+        session.saveOrUpdate(link);
+    }
+
+    @Test(expectedExceptions = {Exception.class})
+    public void tesShouldNotSaveWithNullHint() {
+        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
+        link.setHint(null);
+        session.saveOrUpdate(link);
+    }
 }
