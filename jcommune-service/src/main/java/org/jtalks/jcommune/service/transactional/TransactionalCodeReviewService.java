@@ -34,12 +34,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
  *
  * @author Vyacheslav Mishcheryakov
  */
-public class TransactionalCodeReviewService extends AbstractTransactionalEntityService<CodeReview, ChildRepository<CodeReview>>
-        implements CodeReviewService {
+public class TransactionalCodeReviewService extends AbstractTransactionalEntityService<CodeReview,
+        ChildRepository<CodeReview>>
+implements CodeReviewService {
 
     private UserService userService;
     private PermissionService permissionService;
-    private CodeReviewCommentService reviewCommentService;
     private NotificationService notificationService;
 
     /**
@@ -47,20 +47,19 @@ public class TransactionalCodeReviewService extends AbstractTransactionalEntityS
      *
      * @param dao                  data access object, which should be able do all CRUD operations with entity.
      * @param userService          to get current user
-     * @param permissionService    to check permission for current user ({@link org.springframework.security.access.prepost.PreAuthorize} annotation emulation)
-     * @param reviewCommentService to get review comment
+     * @param permissionService    to check permission for current user ({@link org.springframework.security.access
+     * .prepost.PreAuthorize}
+     *                             annotation emulation)
      * @param notificationService  to send email updates for comment adding subscribers.
      */
     public TransactionalCodeReviewService(
             ChildRepository<CodeReview> dao,
             UserService userService,
             PermissionService permissionService,
-            CodeReviewCommentService reviewCommentService,
             NotificationService notificationService) {
         super(dao);
         this.userService = userService;
         this.permissionService = permissionService;
-        this.reviewCommentService = reviewCommentService;
         this.notificationService = notificationService;
     }
 
@@ -92,11 +91,13 @@ public class TransactionalCodeReviewService extends AbstractTransactionalEntityS
      * Checks permissions for deletion user posts and review comments and delete comment with defined ID.
      *
      * @param reviewComment ID of code review comment
-     * @param codeReview ID of code review where needs to delete comment
-     * @throws NotFoundException if comment was not found
+     * @param codeReview    ID of code review where needs to delete comment
      */
-    @PreAuthorize("(hasPermission(#codeReview.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OWN_POSTS') and #reviewComment.author.username == principal.username) or " +
-            "(hasPermission(#codeReview.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OTHERS_POSTS') and #reviewComment.author.username != principal.username)")
+    @PreAuthorize("(hasPermission(#codeReview.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OWN_POSTS') and " +
+            "#reviewComment.author.username == principal.username) or " +
+
+            "(hasPermission(#codeReview.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OTHERS_POSTS') and " +
+            "#reviewComment.author.username != principal.username)")
     public void deleteComment(CodeReviewComment reviewComment, CodeReview codeReview) {
         codeReview.getComments().remove(reviewComment);
         getDao().update(codeReview);
