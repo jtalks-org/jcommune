@@ -107,24 +107,11 @@ public class TransactionalCodeReviewServiceTest {
         codeReviewComments.add(createCodeReviewComment("1341"));
         codeReview.setComments(codeReviewComments);
         int oldSize = codeReview.getComments().size();
-        when(dao.get(REVIEW_ID)).thenReturn(codeReview);
-        when(reviewCommentService.get(CR_ID)).thenReturn(reviewComment);
 
-        codeReviewService.deleteComment(CR_ID, REVIEW_ID);
+        codeReviewService.deleteComment(reviewComment, codeReview);
 
         verify(dao).update(codeReview);
         assertEquals(codeReview.getComments().size(), oldSize - 1);
-    }
-
-    @Test(expectedExceptions = NotFoundException.class)
-    public void testDeleteCommentReviewNotFound() throws AccessDeniedException, NotFoundException {
-        when(dao.isExist(REVIEW_ID)).thenReturn(false);
-        codeReviewService.deleteComment(123L, REVIEW_ID);
-    }
-
-    @Test(expectedExceptions = NotFoundException.class)
-    public void testDeleteCommentIfReviewNotFound() throws AccessDeniedException, NotFoundException {
-        codeReviewService.deleteComment(CR_ID, 123L);
     }
 
     @Test(expectedExceptions = NotFoundException.class)

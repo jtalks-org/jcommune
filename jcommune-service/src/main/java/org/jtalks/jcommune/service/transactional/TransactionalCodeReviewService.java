@@ -89,24 +89,15 @@ public class TransactionalCodeReviewService extends AbstractTransactionalEntityS
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void deleteComment(long id, long codeReviewId) throws NotFoundException {
-        checkPermissionsAndDeleteComment(id, get(codeReviewId));
-    }
-
-    /**
      * Checks permissions for deletion user posts and review comments and delete comment with defined ID.
      *
-     * @param id         ID of code review comment
+     * @param reviewComment ID of code review comment
      * @param codeReview ID of code review where needs to delete comment
      * @throws NotFoundException if comment was not found
      */
-    @PreAuthorize("hasPermission(#codeReview.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OWN_POSTS') or " +
-            "hasPermission(#codeReview.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OTHERS_POSTS')")
-    private void checkPermissionsAndDeleteComment(long id, CodeReview codeReview) throws NotFoundException {
-        CodeReviewComment reviewComment = reviewCommentService.get(id);
+    @PreAuthorize("(hasPermission(#codeReview.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OWN_POSTS') and #reviewComment.author.username == principal.username) or " +
+            "(hasPermission(#codeReview.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OTHERS_POSTS') and #reviewComment.author.username != principal.username)")
+    public void deleteComment(CodeReviewComment reviewComment, CodeReview codeReview) {
         codeReview.getComments().remove(reviewComment);
         getDao().update(codeReview);
     }
