@@ -15,8 +15,6 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.search.InvalidCharactersFilter;
-import org.jtalks.jcommune.model.search.SearchRequestFilter;
 import org.jtalks.jcommune.service.TopicFetchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -105,8 +103,6 @@ public class TopicSearchController {
      */
     private ModelAndView search(String searchText, int page) {
         Page<Topic> searchResultPage = topicSearchService.searchByTitleAndContent(searchText, page);
-        SearchRequestFilter searchRequestFilter = new InvalidCharactersFilter();
-        searchText = searchRequestFilter.filter(searchText);
         return new ModelAndView(SEARCH_RESULT_VIEW_NAME).
                 addObject(SEARCH_RESULT_ATTRIBUTE_NAME, searchResultPage).
                 addObject(URI_ATTRIBUTE_NAME, searchText).
