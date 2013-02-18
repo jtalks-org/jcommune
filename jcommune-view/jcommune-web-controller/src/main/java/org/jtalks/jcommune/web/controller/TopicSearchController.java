@@ -20,19 +20,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-
 
 /**
  * The controller for the full-text search topics.
- * 
- * @author Anuar Nurmakanov
  *
+ * @author Anuar Nurmakanov
  */
 @Controller
 public class TopicSearchController {
@@ -49,24 +43,23 @@ public class TopicSearchController {
      * The name attribute for the search text.
      */
     public static final String SEARCH_TEXT_ATTRIBUTE_NAME = "searchText";
-    
+
     public static final String PAGING_ENABLED = "pagingEnabled";
-    
+
     private static final String SEARCH_RESULT_VIEW_NAME = "searchResult";
 
     private TopicFetchService topicSearchService;
 
-    
     /**
      * Constructor for controller instantiating, dependencies injected via autowiring.
-     * 
+     *
      * @param topicSearchService {@link TopicFetchService} to perform actual search
      */
     @Autowired
     public TopicSearchController(TopicFetchService topicSearchService) {
         this.topicSearchService = topicSearchService;
     }
-    
+
     /**
      * This method performs a indexing the data from the database.
      */
@@ -75,24 +68,24 @@ public class TopicSearchController {
     public void rebuildIndexes() {
         topicSearchService.rebuildSearchIndex();
     }
-    
+
     /**
      * Full-text search for topics. It needed to start the search.
-     * 
+     *
      * @param searchText search text
      * @return redirect to the answer page
      */
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     public ModelAndView initSearch(@RequestParam String searchText) {
-        int firstPage = 1; 
+        int firstPage = 1;
         return search(searchText, firstPage);
     }
-    
+
     /**
      * Full-text search for topics. It needed to continue the search.
-     * 
+     *
      * @param searchText search text
-     * @param page page number
+     * @param page       page number
      * @return redirect to answer page
      */
     @RequestMapping(value = "/search/{searchText}", method = RequestMethod.GET)
@@ -100,12 +93,12 @@ public class TopicSearchController {
             @RequestParam(value = "page", defaultValue = "1", required = true) Integer page) {
         return search(searchText, page);
     }
-    
+
     /**
      * Contains a common logic for searching the text.
-     * 
+     *
      * @param searchText search text
-     * @param page page number
+     * @param page       page number
      * @return result of the search
      */
     private ModelAndView search(String searchText, int page) {

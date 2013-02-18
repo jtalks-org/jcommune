@@ -23,27 +23,27 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 
 <c:if test="${pagingEnabled}">
-	<%--Set default value for numberLink attribute, if it it wasn't passed.--%>
-	<c:if test="${empty numberLink}" >
-		<c:set var="numberLink" value="7" />
-	</c:if>
-	
-	<c:forEach var="i" begin="1" step="1" end="${numberLink}">
-		<%--JSTL doesn't have reverse for-each, therefore this trick used.--%>
-	 	<c:set var="j" value="${numberLink - i + 1}" />
-	 	<c:if test="${page.number > j}">
-	 		<li><a href='${uri}?page=${page.number - j}'>${page.number - j}</a></li>
-	 	</c:if>
-	</c:forEach>
-	
-	<%--Link to current page is disabled.--%>
-	<c:if test="${page.totalPages > 1}">
-		<li class='active'><a href='#'><c:out value="${page.number}"/></a></li>
-	</c:if>
-	
-	<c:forEach var="i" begin="0" step="1" end="${numberLink - 1}">
-		<c:if test="${page.number + i < page.totalPages}">
-			<li><a href='${uri}?page=${page.number + i + 1}'>${page.number + i + 1}</a></li>
-		</c:if>
-	</c:forEach>
+    <%--Set default value for numberLink attribute, if it it wasn't passed.--%>
+    <c:if test="${empty numberLink}">
+        <c:set var="numberLink" value="7"/>
+    </c:if>
+
+    <c:forEach var="i" begin="1" step="1" end="${numberLink}">
+        <%--JSTL doesn't have reverse for-each, therefore this trick used.--%>
+        <c:set var="j" value="${numberLink - i + 1}"/>
+        <c:if test="${page.number > j}">
+            <li><a href="<c:out value="${uri}"/>?page=${page.number - j}">${page.number - j}</a></li>
+        </c:if>
+    </c:forEach>
+
+    <%--Link to current page is disabled.--%>
+    <c:if test="${page.totalPages > 1}">
+        <li class='active'><a href='#'><c:out value="${page.number}"/></a></li>
+    </c:if>
+
+    <c:forEach var="i" begin="0" step="1" end="${numberLink - 1}">
+        <c:if test="${page.number + i < page.totalPages}">
+            <li><a href="<c:out value="${uri}"/>?page=${page.number + i + 1}">${page.number + i + 1}</a></li>
+        </c:if>
+    </c:forEach>
 </c:if>
