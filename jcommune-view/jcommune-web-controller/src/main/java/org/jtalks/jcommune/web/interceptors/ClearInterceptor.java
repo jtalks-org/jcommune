@@ -54,9 +54,13 @@ public class ClearInterceptor extends HandlerInterceptorAdapter {
      */
     @Override
     public boolean preHandle(HttpServletRequest request,
-                             HttpServletResponse response, Object handler) {
+            HttpServletResponse response, Object handler) {
         try {
-            locationService.clearUserLocation();
+            if (request.getQueryString().contains("/avatar")) {
+                // do not clear location
+            } else {
+                locationService.clearUserLocation();
+            }
         } catch (Exception e) {
             // failure here should not cause all the web processing chain to be broken
             LOGGER.error("Failed to clear current user's location", e);
