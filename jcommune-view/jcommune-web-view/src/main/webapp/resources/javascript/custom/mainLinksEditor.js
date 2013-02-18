@@ -77,7 +77,6 @@ $(function () {
         });
 
         Utils.resizeDialog(linksEditor);
-
     });
 
 });
@@ -86,7 +85,7 @@ function createFormElement(label, id, type, cls) {
     var elementHtml = ' \
         <div class="control-group"> \
             <div class="controls"> \
-                <input type="' + type + '" id="' + id + '" name="' + id + '" placeholder="' + label + '" class="input-xlarge ' + cls + '" /> \
+                <input type="' + type + '" id="' + id + '" name="' + id + '" placeholder="' + label + '" class="input-xlarge hide-element ' + cls + '" /> \
             </div> \
         </div> \
     ';
@@ -117,19 +116,19 @@ function createMainLinkEditor(elements) {
                 <h3>' + $labelLinksEditor + '</h3> \
             </div> \
             <div class="modal-body"> \
-            <table cellpadding="0" cellspacing="0" class="list-of-links"> ' +
-        createLinksTableRows(elements) + '\
-            </table>' +
-        createFormElement($labelTitle, 'link-title', 'text', 'edit-links') +
-        createFormElement($labelUrl, 'link-url', 'text', 'edit-links') +
-        createFormElement($labelHint, 'link-hint', 'text', 'edit-links') + ' \
+            <table cellpadding="0" cellspacing="0" class="list-of-links"> <tbody>' +
+            createLinksTableRows(elements) + '\
+            </tbody></table>' +
+            createFormElement($labelTitle, 'link-title', 'text', 'edit-links') +
+            createFormElement($labelUrl, 'link-url', 'text', 'edit-links') +
+            createFormElement($labelHint, 'link-hint', 'text', 'edit-links') + ' \
             <span class="confirm-delete-text remove-links"></span>\
             </div> \
             <div class="modal-footer"> \
-                <button id="add-main-link" class="btn btn-block list-of-links">' + $labelAdd + '</button> \
-                <button id="cancel-link" class="btn  edit-links remove-links">' + $labelCancel + '</button> \
-                <button id="save-link" class="btn btn-primary  edit-links">' + $labelSave + '</button> \
-                <button id="remove-link" class="btn btn-primary  remove-links">' + $labelDelete + '</button> \
+                <button id="add-main-link" class="btn btn-block list-of-links hide-element">' + $labelAdd + '</button> \
+                <button id="cancel-link" class="btn  edit-links remove-links hide-element">' + $labelCancel + '</button> \
+                <button id="save-link" class="btn btn-primary  edit-links hide-element">' + $labelSave + '</button> \
+                <button id="remove-link" class="btn btn-primary  remove-links hide-element">' + $labelDelete + '</button> \
             </div> \
         </div> \
         ');
@@ -140,10 +139,10 @@ function listOfLinksVisible(visible) {
     var intervalID = setInterval(function () {
         if ($('.edit-links').size() > 1) {
             if (visible) {
-                $(externalLinksTableClass).show();
+                $(externalLinksTableClass).removeClass("hide-element");
             }
             else {
-                $(externalLinksTableClass).hide();
+                $(externalLinksTableClass).addClass("hide-element");
             }
             clearInterval(intervalID)
         }
@@ -158,7 +157,7 @@ function editLinksVisible(visible) {
                 $('#link-title').val(link.title);
                 $('#link-url').val(link.url);
                 $('#link-hint').val(link.hint);
-                $('.edit-links').show();
+                $('.edit-links').removeClass("hide-element");
                 //save edited link
                 $('#save-link').unbind("click").bind('click', function () {
                     link.title = $('#link-title').val();
@@ -185,7 +184,7 @@ function editLinksVisible(visible) {
                 });
             }
             else {
-                $('.edit-links').hide();
+                $('.edit-links').addClass("hide-element");
             }
             clearInterval(intervalID)
         }
@@ -208,7 +207,7 @@ function editLinksVisible(visible) {
         }
 
         function updateExternalLinkTable(externalLink) {
-            $(externalLinksTableClass).find('#' + externalLink.id + ' .link-title').text(externalLink.title);
+            $(externalLinksTableClass).find('#' + externalLink.id + ' .link-title').text(externalLink.title + " ");
         }
     }
 }
@@ -220,7 +219,7 @@ function addLinkVisible(visible) {
                 $('#link-title').val("");
                 $('#link-url').val("");
                 $('#link-hint').val("");
-                $('.edit-links').show();
+                $('.edit-links').removeClass("hide-element");
                 $('#save-link').unbind("click").bind('click', function () {
                     var link = {};
                     link.title = $('#link-title').val();
@@ -248,7 +247,7 @@ function addLinkVisible(visible) {
                 });
             }
             else {
-                $('.edit-links').hide();
+                $('.edit-links').addClass("hide-element");
             }
             clearInterval(intervalID)
         }
@@ -274,11 +273,11 @@ function addLinkVisible(visible) {
 
         function prepareNewLinkATag(externalLink) {
             return result = '<a id="' + externalLink.id + '"'
-                + 'href="' + externalLink.url + '"'
-                + 'name="' + externalLink.title + '"'
-                + 'data-original-title="' + externalLink.hint + '">'
-                + externalLink.title
-                + '</a>';
+                    + 'href="' + externalLink.url + '"'
+                    + 'name="' + externalLink.title + '"'
+                    + 'data-original-title="' + externalLink.hint + '">'
+                    + externalLink.title + " "
+                    + '</a>';
         }
     }
 }
@@ -290,7 +289,7 @@ function confirmRemoveVisible(visible) {
                 var link = getLinkById(actionId);
                 var deleteConfirmationMessage = $labelDeleteMainLink.replace('{0}', link.title);
                 $('.confirm-delete-text').text(deleteConfirmationMessage);
-                $('.remove-links').show();
+                $('.remove-links').removeClass("hide-element");
 
                 //delete link
                 $('#remove-link').unbind("click").bind('click', function () {
@@ -305,7 +304,8 @@ function confirmRemoveVisible(visible) {
                                 idToExternalLinkMap[link.id] = null;
                                 $(externalLinksGroupId).find('#' + link.id).remove();
                                 toAction('list');
-                            } else {
+                            }
+                            else {
                                 bootbox.alert($labelErrorLinkDelete);
                             }
                         },
@@ -319,7 +319,7 @@ function confirmRemoveVisible(visible) {
                 });
             }
             else {
-                $('.remove-links').hide();
+                $('.remove-links').addClass("hide-element");
             }
             clearInterval(intervalID)
         }

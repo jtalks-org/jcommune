@@ -556,7 +556,11 @@ div.anchor {
     width: 180px;
 }
 
+.hide-element {
+    display: none !important;
+}
+
 .banner-textarea {
-    padding: 0 !Important;
-    margin: 0 !Important;
+    padding: 0 !important;
+    margin: 0 !important;
 }
