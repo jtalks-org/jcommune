@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.jtalks.jcommune</groupId>
@@ -272,14 +273,14 @@
                 <version>2.2.4</version>
                 <scope>test</scope>
             </dependency>
-          <!--This dependency has classes to mock JNDI which we need in some tests.-->
-          <dependency>
-            <groupId>org.mockejb</groupId>
-            <artifactId>mockejb</artifactId>
-            <version>0.6-beta2</version>
-            <scope>test</scope>
-          </dependency>
-          <!--Servlet & JSP-->
+            <!--This dependency has classes to mock JNDI which we need in some tests.-->
+            <dependency>
+                <groupId>org.mockejb</groupId>
+                <artifactId>mockejb</artifactId>
+                <version>0.6-beta2</version>
+                <scope>test</scope>
+            </dependency>
+            <!--Servlet & JSP-->
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>jstl</artifactId>
@@ -467,11 +468,11 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>sonar-maven-plugin</artifactId>
-            <version>2.0</version>
-          </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>2.0</version>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>native2ascii-maven-plugin</artifactId>
@@ -572,7 +573,7 @@
 
     <properties>
         <hibernateVersion>3.6.6.Final</hibernateVersion>
-        <springVersion>3.1.2.RELEASE</springVersion>
+        <springVersion>3.2.1.RELEASE</springVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <headerBaseDir>${basedir}</headerBaseDir>
         <pathtoHeader>${headerBaseDir}/header.txt</pathtoHeader>
