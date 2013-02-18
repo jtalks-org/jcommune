@@ -32,7 +32,6 @@
         <%--JSTL doesn't have reverse for-each, therefore this trick used.--%>
         <c:set var="j" value="${numberLink - i + 1}"/>
         <c:if test="${page.number > j}">
-
             <li><a href="<c:out value="${uri}"/>?page=${page.number - j}">${page.number - j}</a></li>
         </c:if>
     </c:forEach>
