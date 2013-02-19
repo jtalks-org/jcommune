@@ -191,6 +191,12 @@
                                     <c:set var="isEditButtonAvailable" value="true"/>
                                 </jtalks:hasPermission>
                             </c:if>
+                            <c:if test='${topic.codeReview == null}'>
+                                <jtalks:hasPermission targetId="${topic.branch.id}" targetType="BRANCH"
+                                                      permission="BranchPermission.CLOSE_TOPICS">
+                                    <c:set var="hasCloseTopicPermission" value="true"/>
+                                </jtalks:hasPermission>
+                            </c:if>
                             <c:if test="${isEditButtonAvailable}">
                                 <a id="edit_button" href="${edit_url}" rel="${topic.branch.id}"
                                    class="btn btn-mini" title="<spring:message code='label.tips.edit_post'/>">
@@ -252,7 +258,7 @@
                            href="${pageContext.request.contextPath}/posts/${post.id}">
                             <i class="icon-link"></i>
                         </a>
-                        <c:if test='${topic.codeReview == null}'>
+                        <c:if test='${(!topic.closed || hasCloseTopicPermission) && topic.codeReview == null}'>
                             <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
                                                   permission='BranchPermission.CREATE_POSTS'>
                                 <a class="btn btn-mini" href='javascript:quote(${post.id},${topic.branch.id});'
