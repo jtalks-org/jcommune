@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /user/new
+Disallow: /login
+Disallow: /search/
+Disallow: /topics/recent.rss
+Disallow: http://twitter.github.com/bootstrap
