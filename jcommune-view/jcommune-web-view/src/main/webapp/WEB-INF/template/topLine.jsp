@@ -49,11 +49,12 @@
                            value='<c:out value="${searchText}"/>'/>
                     <span id='searchClear' class='btn btn-inverse search-clear' style='display:none;'>X</span>
                 </form>
-                
+
                 <ul class="nav pull-right">
-                    <c:if test="${forumComponent != null}">
-                        <jtalks:hasPermission permission="GeneralPermission.ADMIN" 
-                                targetId="${forumComponent.id}" targetType="COMPONENT">
+                    <%--<c:if test="${forumComponent != null}">--%>
+                    <c:if test="${not empty forumComponent}">
+                        <jtalks:hasPermission permission="GeneralPermission.ADMIN"
+                                              targetId="${forumComponent.id}" targetType="COMPONENT">
                             <li>
                                 <a href='<c:url value="/configuration/sape"/>'>
                                     <spring:message code="label.sapeConfiguration"/>
@@ -61,7 +62,7 @@
                             </li>
                         </jtalks:hasPermission>
                     </c:if>
-                    
+
                     <%-- Not logged in block --%>
                     <sec:authorize access="isAnonymous()">
                         <%--Temporary disabled, cause we need more requirements for "newbies" page

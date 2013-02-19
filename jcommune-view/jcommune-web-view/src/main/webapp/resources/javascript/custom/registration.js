@@ -159,10 +159,10 @@ function showErrors(signupDialog, errors) {
  */
 function composeQuery(signupDialog) {
     return "username=" + encodeURIComponent(signupDialog.find('#username').val()) +
-            "&password=" + encodeURIComponent(signupDialog.find('#password').val()) +
-            "&passwordConfirm=" + encodeURIComponent(signupDialog.find('#passwordConfirm').val()) +
-            "&email=" + encodeURIComponent(signupDialog.find('#email').val()) +
-            "&captcha=" + encodeURIComponent(signupDialog.find('#captcha').val());
+        "&password=" + encodeURIComponent(signupDialog.find('#password').val()) +
+        "&passwordConfirm=" + encodeURIComponent(signupDialog.find('#passwordConfirm').val()) +
+        "&email=" + encodeURIComponent(signupDialog.find('#email').val()) +
+        "&captcha=" + encodeURIComponent(signupDialog.find('#captcha').val());
 }
 
 /**
@@ -186,7 +186,6 @@ function createCaptchaElements() {
  * Create form field with given label(placeholder), id, type
  */
 function createFormElement(label, id, type, cls) {
-    console.log('ds');
     var elementHtml = ' \
         <div class="control-group"> \
             <div class="controls"> \
@@ -206,11 +205,11 @@ function createDialog() {
                 <h3>' + $labelRegistration + '</h3> \
             </div> \
             <div class="modal-body">' +
-            createFormElement($labelUsername, 'username', 'text') +
-            createFormElement($labelEmail, 'email', 'text') +
-            createFormElement($labelPassword, 'password', 'password') +
-            createFormElement($labelPasswordConfirmation, 'passwordConfirm', 'password') +
-            createCaptchaElements() + ' \
+        createFormElement($labelUsername, 'username', 'text') +
+        createFormElement($labelEmail, 'email', 'text') +
+        createFormElement($labelPassword, 'password', 'password') +
+        createFormElement($labelPasswordConfirmation, 'passwordConfirm', 'password') +
+        createCaptchaElements() + ' \
             </div> \
             <div class="modal-footer"> \
                 <button id="signup-submit-button" class="btn btn-primary btn-block" name="commit" type="submit">' + $signupButtonLabel + '</button> \
