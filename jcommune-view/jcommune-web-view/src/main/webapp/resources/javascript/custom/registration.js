@@ -185,11 +185,12 @@ function createCaptchaElements() {
 /**
  * Create form field with given label(placeholder), id, type
  */
-function createFormElement(label, id, type) {
+function createFormElement(label, id, type, cls) {
+    console.log('ds');
     var elementHtml = ' \
         <div class="control-group"> \
             <div class="controls"> \
-                <input type="' + type + '" id="' + id + '" name="' + id + '" placeholder="' + label + '" class="input-xlarge" /> \
+                <input type="' + type + '" id="' + id + '" name="' + id + '" placeholder="' + label + '" class="input-xlarge ' + cls + '" /> \
             </div> \
         </div> \
     ';

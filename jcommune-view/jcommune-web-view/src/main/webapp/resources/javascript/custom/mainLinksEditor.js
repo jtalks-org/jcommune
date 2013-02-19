@@ -81,16 +81,6 @@ $(function () {
 
 });
 
-function createFormElement(label, id, type, cls) {
-    var elementHtml = ' \
-        <div class="control-group"> \
-            <div class="controls"> \
-                <input type="' + type + '" id="' + id + '" name="' + id + '" placeholder="' + label + '" class="input-xlarge hide-element ' + cls + '" /> \
-            </div> \
-        </div> \
-    ';
-    return $(elementHtml).html();
-}
 
 function createLinksTableRows(elements) {
     var elementHtml = "";
@@ -119,9 +109,9 @@ function createMainLinkEditor(elements) {
             <table cellpadding="0" cellspacing="0" class="list-of-links"> <tbody>' +
             createLinksTableRows(elements) + '\
             </tbody></table>' +
-            createFormElement($labelTitle, 'link-title', 'text', 'edit-links') +
-            createFormElement($labelUrl, 'link-url', 'text', 'edit-links') +
-            createFormElement($labelHint, 'link-hint', 'text', 'edit-links') + ' \
+            createFormElement($labelTitle, 'link-title', 'text', 'hide-element edit-links') +
+            createFormElement($labelUrl, 'link-url', 'text', 'hide-element edit-links') +
+            createFormElement($labelHint, 'link-hint', 'text', 'hide-element edit-links') + ' \
             <span class="confirm-delete-text remove-links"></span>\
             </div> \
             <div class="modal-footer"> \
