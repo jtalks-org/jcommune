@@ -237,7 +237,6 @@
         <constructor-arg ref="codeReviewDao"/>
         <constructor-arg ref="userService"/>
         <constructor-arg ref="permissionService"/>
-        <constructor-arg ref="codeReviewCommentService"/>
         <constructor-arg ref="notificationService"/>
     </bean>
     

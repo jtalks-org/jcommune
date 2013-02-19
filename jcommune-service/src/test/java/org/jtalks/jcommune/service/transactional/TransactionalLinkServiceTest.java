@@ -17,40 +17,48 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.jcommune.model.dao.ExternalLinkDao;
 import org.jtalks.jcommune.model.entity.ExternalLink;
 import org.jtalks.jcommune.service.ExternalLinkService;
+import org.mockito.Mock;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
-import java.util.List;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 /**
  * @author Alexandre Teterin
- *         Date: 03.02.13
+ *         Date: 16.02.13
  */
 
 
-public class TransactionalLinkService extends AbstractTransactionalEntityService<ExternalLink, ExternalLinkDao>
-        implements ExternalLinkService {
+public class TransactionalLinkServiceTest {
 
-    /**
-     * Subclass may use this constructor to store entity DAO or parent
-     * entity DAO if necessary
-     *
-     * @param dao subclass-provided dao object
-     */
-    TransactionalLinkService(ExternalLinkDao dao) {
-        super(dao);
+    @Mock
+    private ExternalLinkDao dao;
+    private ExternalLinkService service;
+
+    @BeforeMethod
+    public void setUp() throws Exception {
+        initMocks(this);
+        service = new TransactionalLinkService(dao);
     }
 
-    @Override
-    public List<ExternalLink> getLinks() {
-        return getDao().getAll();
+    @Test
+    public void testGetLinks() throws Exception {
+        service.getLinks();
+        verify(dao).getAll();
     }
 
-    @Override
-    public void saveLink(ExternalLink link) {
-        getDao().saveOrUpdate(link);
+    @Test
+    public void testAddLink() throws Exception {
+        service.saveLink(new ExternalLink());
+        verify(dao).saveOrUpdate(any(ExternalLink.class));
     }
 
-    @Override
-    public boolean deleteLink(long id) {
-        return getDao().delete(id);
+    @Test
+    public void testRemoveLink() throws Exception {
+        service.deleteLink(1L);
+        verify(dao).delete(eq(1L));
     }
 }

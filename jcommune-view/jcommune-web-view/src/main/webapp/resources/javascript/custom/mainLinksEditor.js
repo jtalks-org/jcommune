@@ -21,10 +21,12 @@
 //save id of link to action (delete or edit)
 var actionId = null;
 var baseUrl = $root;
-var idToLinkMap = new Object;
+var externalLinksGroupId = "#externalLinks";
+var externalLinksTableClass = '.list-of-links';
+var idToExternalLinkMap = new Object;
 
 function getLinkById(id) {
-    return idToLinkMap[id];
+    return idToExternalLinkMap[id];
 }
 
 $(function () {
@@ -32,16 +34,15 @@ $(function () {
         e.preventDefault();
 
         var elements = [];
-        var element = {};
-
-        $('#externalLinks').find('a').each(function(i, elem){
+        $(externalLinksGroupId).find('a').each(function (i, elem) {
             var id = $(elem).attr('id');
-            element.id = id;
-            element.url = $(elem).attr('href');
-            element.title = $(elem).attr('name');
-            element.hint = $(elem).attr('data-original-title');
-            idToLinkMap[id] = element;
-            elements[i] = element;
+            var externalLink = {};
+            externalLink.id = id;
+            externalLink.url = $(elem).attr('href');
+            externalLink.title = $(elem).attr('name');
+            externalLink.hint = $(elem).attr('data-original-title');
+            idToExternalLinkMap[id] = externalLink;
+            elements[i] = externalLink;
         });
 
         var linksEditor = createMainLinkEditor(elements);
@@ -76,7 +77,6 @@ $(function () {
         });
 
         Utils.resizeDialog(linksEditor);
-
     });
 
 });
@@ -85,14 +85,14 @@ function createFormElement(label, id, type, cls) {
     var elementHtml = ' \
         <div class="control-group"> \
             <div class="controls"> \
-                <input type="' + type + '" id="' + id + '" name="' + id + '" placeholder="' + label + '" class="input-xlarge ' + cls + '" /> \
+                <input type="' + type + '" id="' + id + '" name="' + id + '" placeholder="' + label + '" class="input-xlarge hide-element ' + cls + '" /> \
             </div> \
         </div> \
     ';
     return $(elementHtml).html();
 }
 
-function createLinksTable(elements) {
+function createLinksTableRows(elements) {
     var elementHtml = "";
     $.each(elements, function (index, element) {
         elementHtml = elementHtml + ' \
@@ -116,19 +116,19 @@ function createMainLinkEditor(elements) {
                 <h3>' + $labelLinksEditor + '</h3> \
             </div> \
             <div class="modal-body"> \
-            <table cellpadding="0" cellspacing="0" class="list-of-links"> ' +
-            createLinksTable(elements) + '\
-            </table>' +
+            <table cellpadding="0" cellspacing="0" class="list-of-links"> <tbody>' +
+            createLinksTableRows(elements) + '\
+            </tbody></table>' +
             createFormElement($labelTitle, 'link-title', 'text', 'edit-links') +
             createFormElement($labelUrl, 'link-url', 'text', 'edit-links') +
             createFormElement($labelHint, 'link-hint', 'text', 'edit-links') + ' \
             <span class="confirm-delete-text remove-links"></span>\
             </div> \
             <div class="modal-footer"> \
-                <button id="add-main-link" class="btn btn-block list-of-links">' + $labelAdd + '</button> \
-                <button id="cancel-link" class="btn  edit-links remove-links">' + $labelCancel + '</button> \
-                <button id="save-link" class="btn btn-primary  edit-links">' + $labelSave + '</button> \
-                <button id="remove-link" class="btn btn-primary  remove-links">' + $labelDelete + '</button> \
+                <button id="add-main-link" class="btn btn-block list-of-links hide-element">' + $labelAdd + '</button> \
+                <button id="cancel-link" class="btn  edit-links remove-links hide-element">' + $labelCancel + '</button> \
+                <button id="save-link" class="btn btn-primary  edit-links hide-element">' + $labelSave + '</button> \
+                <button id="remove-link" class="btn btn-primary  remove-links hide-element">' + $labelDelete + '</button> \
             </div> \
         </div> \
         ');
@@ -139,10 +139,10 @@ function listOfLinksVisible(visible) {
     var intervalID = setInterval(function () {
         if ($('.edit-links').size() > 1) {
             if (visible) {
-                $('.list-of-links').show();
+                $(externalLinksTableClass).removeClass("hide-element");
             }
             else {
-                $('.list-of-links').hide();
+                $(externalLinksTableClass).addClass("hide-element");
             }
             clearInterval(intervalID)
         }
@@ -157,50 +157,24 @@ function editLinksVisible(visible) {
                 $('#link-title').val(link.title);
                 $('#link-url').val(link.url);
                 $('#link-hint').val(link.hint);
-                $('.edit-links').show();
+                $('.edit-links').removeClass("hide-element");
                 //save edited link
                 $('#save-link').unbind("click").bind('click', function () {
-
-                });
-                $('#cancel-link').unbind("click").bind('click', function () {
-                    toAction('list');
-                });
-            }
-            else {
-                $('.edit-links').hide();
-            }
-            clearInterval(intervalID)
-        }
-    }, '100');
-}
-
-function addLinkVisible(visible) {
-    var intervalID = setInterval(function () {
-        if ($('.edit-links')) {
-            if (visible) {
-                $('#link-title').val("");
-                $('#link-url').val("");
-                $('#link-hint').val("");
-                $('.edit-links').show();
-                $('#save-link').unbind("click").bind('click', function () {
-                    var link = {
-                        title:$('#link-title')[0].value,
-                        url:$('#link-url')[0].value,
-                        url:$('#link-hint')[0].value,
-                        hint: "hint content"
-                    };
-
+                    link.title = $('#link-title').val();
+                    link.url = $('#link-url').val();
+                    link.hint = $('#link-hint').val();
                     $.ajax({
-                        url:baseUrl + "/links/add",
-                        type:"POST",
-                        contentType:"application/json",
+                        url: baseUrl + "/links/save",
+                        type: "POST",
+                        contentType: "application/json",
                         async: false,
                         data: JSON.stringify(link),
-                        success: function(data) {
-                            //todo populate links
+                        success: function (data) {
+                            updateExternalLink(link);
+                            toAction('list');
                         },
-                        error: function(data) {
-                            //todo highlight errors
+                        error: function (data) {
+                            bootbox.alert($labelErrorLinkSave);
                         }
                     });
 
@@ -210,34 +184,142 @@ function addLinkVisible(visible) {
                 });
             }
             else {
-                $('.edit-links').hide();
+                $('.edit-links').addClass("hide-element");
             }
             clearInterval(intervalID)
         }
     }, '100');
+
+    function updateExternalLink(externalLink) {
+        idToExternalLinkMap[externalLink.id] = externalLink;
+        updateExternalLinkATag(externalLink);
+        updateExternalLinkTable(externalLink);
+
+        function updateExternalLinkATag(externalLink) {
+            $(externalLinksGroupId).find('a').each(function (i, elem) {
+                if ($(elem).attr('id') == externalLink.id) {
+                    $(elem).attr('href', externalLink.url);
+                    $(elem).attr('name', externalLink.title);
+                    $(elem).text(externalLink.title);
+                    $(elem).attr('data-original-title', externalLink.hint);
+                }
+            })
+        }
+
+        function updateExternalLinkTable(externalLink) {
+            $(externalLinksTableClass).find('#' + externalLink.id + ' .link-title').text(externalLink.title + " ");
+        }
+    }
 }
 
-function confirmRemoveVisible(visible) {
+function addLinkVisible(visible) {
     var intervalID = setInterval(function () {
-        if ($('.remove-links')) {
+        if ($('.edit-links')) {
             if (visible) {
-                var link = $('#' + actionId);
-                var linkTitle = $labelDeleteMainLink.replace('{0}', link.children('.link-title').text());
-                var linkHint = $labelDeleteMainLink.replace('{0}', link.children('.link-hint').text());
-                $('.confirm-delete-text').text(linkTitle);
-                $('.remove-links').show();
+                $('#link-title').val("");
+                $('#link-url').val("");
+                $('#link-hint').val("");
+                $('.edit-links').removeClass("hide-element");
+                $('#save-link').unbind("click").bind('click', function () {
+                    var link = {};
+                    link.title = $('#link-title').val();
+                    link.url = $('#link-url').val();
+                    link.hint = $('#link-hint').val();
+                    $.ajax({
+                        url: baseUrl + "/links/save",
+                        type: "POST",
+                        contentType: "application/json",
+                        async: false,
+                        data: JSON.stringify(link),
+                        success: function (data) {
+                            link.id = data.result.id;
+                            addNewExternalLink(link);
+                            toAction('list');
+                        },
+                        error: function (data) {
+                            bootbox.alert($labelErrorLinkSave);
+                        }
+                    });
 
-                //delete link
-                $('#remove-link').unbind("click").bind('click', function () {
-                    link.remove();
-                    toAction('list');
                 });
                 $('#cancel-link').unbind("click").bind('click', function () {
                     toAction('list');
                 });
             }
             else {
-                $('.remove-links').hide();
+                $('.edit-links').addClass("hide-element");
+            }
+            clearInterval(intervalID)
+        }
+    }, '100');
+
+    function addNewExternalLink(externalLink) {
+        idToExternalLinkMap[externalLink.id] = externalLink;
+        addNewExternalLinkRowToLinkTable();
+        addNewLinkToExternalLinkGroup(externalLink);
+
+
+        function addNewExternalLinkRowToLinkTable() {
+            var elements = [];
+            elements[0] = externalLink;
+            var tableRow = createLinksTableRows(elements);
+            $(externalLinksTableClass).find('tbody').append(tableRow);
+        }
+
+        function addNewLinkToExternalLinkGroup(externalLink) {
+            var aTag = prepareNewLinkATag(externalLink);
+            $(externalLinksGroupId).append(aTag);
+        }
+
+        function prepareNewLinkATag(externalLink) {
+            return result = '<a id="' + externalLink.id + '"'
+                    + 'href="' + externalLink.url + '"'
+                    + 'name="' + externalLink.title + '"'
+                    + 'data-original-title="' + externalLink.hint + '">'
+                    + externalLink.title + " "
+                    + '</a>';
+        }
+    }
+}
+
+function confirmRemoveVisible(visible) {
+    var intervalID = setInterval(function () {
+        if ($('.remove-links')) {
+            if (visible) {
+                var link = getLinkById(actionId);
+                var deleteConfirmationMessage = $labelDeleteMainLink.replace('{0}', link.title);
+                $('.confirm-delete-text').text(deleteConfirmationMessage);
+                $('.remove-links').removeClass("hide-element");
+
+                //delete link
+                $('#remove-link').unbind("click").bind('click', function () {
+                    $.ajax({
+                        url: baseUrl + "/links/delete/" + link.id,
+                        type: "DELETE",
+                        contentType: "application/json",
+                        async: false,
+                        success: function (data) {
+                            if (data.result == true) {
+                                $(externalLinksTableClass).find('#' + link.id).remove();
+                                idToExternalLinkMap[link.id] = null;
+                                $(externalLinksGroupId).find('#' + link.id).remove();
+                                toAction('list');
+                            }
+                            else {
+                                bootbox.alert($labelErrorLinkDelete);
+                            }
+                        },
+                        error: function () {
+                            bootbox.alert($labelErrorLinkDelete);
+                        }
+                    });
+                });
+                $('#cancel-link').unbind("click").bind('click', function () {
+                    toAction('list');
+                });
+            }
+            else {
+                $('.remove-links').addClass("hide-element");
             }
             clearInterval(intervalID)
         }

@@ -209,14 +209,26 @@ public class CodeReviewCommentControllerTest {
 
     @Test
     public void testDeleteComment() throws NotFoundException {
+        CodeReview cr = new CodeReview();
+        CodeReviewComment crc = new CodeReviewComment();
+
+        when(codeReviewService.get(REVIEW_ID)).thenReturn(cr);
+        when(codeReviewCommentService.get(COMMENT_ID)).thenReturn(crc);
         JsonResponse jsonResponse = controller.deleteComment(COMMENT_ID, REVIEW_ID);
-        verify(codeReviewService).deleteComment(COMMENT_ID, REVIEW_ID);
+
+        verify(codeReviewService).deleteComment(crc, cr);
         assertEquals(jsonResponse.getStatus(), JsonResponseStatus.SUCCESS);
     }
 
     @Test(expectedExceptions = NotFoundException.class)
-    public void testDeleteCommentNotFound() throws NotFoundException {
-        doThrow(new NotFoundException()).when(codeReviewService).deleteComment(anyLong(), anyLong());
+    public void testDeleteCommentReviewNotFound() throws NotFoundException {
+        doThrow(new NotFoundException()).when(codeReviewService).get(anyLong());
+        controller.deleteComment(COMMENT_ID, REVIEW_ID);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void testDeleteCommentCommentNotFound() throws NotFoundException {
+        doThrow(new NotFoundException()).when(codeReviewCommentService).get(anyLong());
         controller.deleteComment(COMMENT_ID, REVIEW_ID);
     }
 

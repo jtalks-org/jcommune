@@ -18,6 +18,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 
 <div class="navbar">
     <div class="container-fluid">
@@ -28,12 +29,14 @@
                         <c:out value="${link.title}"/>
                     </a>
                 </c:forEach>
-                <span> |</span>
             </span>
         </c:if>
-        <jtalks:hasPermission targetId="${forumComponent.id}" targetType="COMPONENT"
-                              permission="GeneralPermission.ADMIN">
-            <span id="links_editor" class="icon-cog cursor-hand"></span>
-        </jtalks:hasPermission>
+        <c:if test="${not empty forumComponent}">
+            <jtalks:hasPermission targetId="${forumComponent.id}" targetType="COMPONENT"
+                                  permission="GeneralPermission.ADMIN">
+                <span id="links_editor" title='<fmt:message key="label.linksEditor"/>'
+                      class="icon-cog cursor-hand"></span>
+            </jtalks:hasPermission>
+        </c:if>
     </div>
 </div>

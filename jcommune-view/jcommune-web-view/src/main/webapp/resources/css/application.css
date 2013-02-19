@@ -555,3 +555,12 @@ div.anchor {
     max-width: 180px;
     width: 180px;
 }
+
+.hide-element {
+    display: none !important;
+}
+
+.banner-textarea {
+    padding: 0 !important;
+    margin: 0 !important;
+}

@@ -16,12 +16,7 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.common.model.permissions.JtalksPermission;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.CodeReview;
-import org.jtalks.jcommune.model.entity.CodeReviewComment;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.CodeReviewCommentService;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -35,18 +30,12 @@ import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 
 public class TransactionalCodeReviewServiceTest {
-
     private static final long CR_ID = 1L;
-    private static final long REVIEW_ID = 1L;
 
     @Mock
     private ChildRepository<CodeReview> dao;
@@ -54,8 +43,6 @@ public class TransactionalCodeReviewServiceTest {
     private UserService userService;
     @Mock
     private PermissionService permissionService;
-    @Mock
-    CodeReviewCommentService reviewCommentService;
     @Mock
     NotificationService notificationService;
 
@@ -68,9 +55,8 @@ public class TransactionalCodeReviewServiceTest {
     @BeforeMethod
     public void initEnvironmental() {
         initMocks(this);
-
-        codeReviewService = new TransactionalCodeReviewService(dao, userService, permissionService,
-                reviewCommentService, notificationService);
+        codeReviewService = new TransactionalCodeReviewService(
+                dao, userService, permissionService, notificationService);
     }
 
     @BeforeMethod
@@ -107,24 +93,11 @@ public class TransactionalCodeReviewServiceTest {
         codeReviewComments.add(createCodeReviewComment("1341"));
         codeReview.setComments(codeReviewComments);
         int oldSize = codeReview.getComments().size();
-        when(dao.get(REVIEW_ID)).thenReturn(codeReview);
-        when(reviewCommentService.get(CR_ID)).thenReturn(reviewComment);
 
-        codeReviewService.deleteComment(CR_ID, REVIEW_ID);
+        codeReviewService.deleteComment(reviewComment, codeReview);
 
         verify(dao).update(codeReview);
         assertEquals(codeReview.getComments().size(), oldSize - 1);
-    }
-
-    @Test(expectedExceptions = NotFoundException.class)
-    public void testDeleteCommentReviewNotFound() throws AccessDeniedException, NotFoundException {
-        when(dao.isExist(REVIEW_ID)).thenReturn(false);
-        codeReviewService.deleteComment(123L, REVIEW_ID);
-    }
-
-    @Test(expectedExceptions = NotFoundException.class)
-    public void testDeleteCommentIfReviewNotFound() throws AccessDeniedException, NotFoundException {
-        codeReviewService.deleteComment(CR_ID, 123L);
     }
 
     @Test(expectedExceptions = NotFoundException.class)

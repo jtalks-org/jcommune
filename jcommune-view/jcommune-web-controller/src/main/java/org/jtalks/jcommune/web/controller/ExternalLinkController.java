@@ -16,18 +16,15 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.ExternalLink;
 import org.jtalks.jcommune.service.ExternalLinkService;
+import org.jtalks.jcommune.web.dto.json.JsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 /**
- * Handles CRUD operations for {@link ExternalLink}
+ * Handles CRUD operations for {@link ExternalLink}.
+ *
  * @author Alexandre Teterin
  *         Date: 03.02.13
  */
@@ -43,22 +40,17 @@ public class ExternalLinkController {
         this.service = service;
     }
 
-    @RequestMapping(value="/links", method = RequestMethod.GET)
+    @RequestMapping(value = "/links/save", method = RequestMethod.POST)
     @ResponseBody
-    public ExternalLink[] getLinks() {
-        List<ExternalLink> links = service.getLinks();
-        return links.toArray(new ExternalLink[links.size()]);
+    public JsonResponse saveLink(@RequestBody ExternalLink link) {
+        service.saveLink(link);
+        return new JsonResponse(JsonResponseStatus.SUCCESS, link);
     }
 
-    @RequestMapping(value = "/links/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/links/delete/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    public ExternalLink addLink(@RequestBody ExternalLink link) {
-        service.addLink(link);
-        return link;
-    }
-
-    @RequestMapping(value = "/links/remove/{id}", method = RequestMethod.DELETE)
-    public void removeLink(@PathVariable Long id) {
-        service.removeLink(id);
+    public JsonResponse deleteLink(@PathVariable Long id) {
+        boolean result = service.deleteLink(id);
+        return new JsonResponse(JsonResponseStatus.SUCCESS, result);
     }
 }
