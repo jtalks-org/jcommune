@@ -130,13 +130,13 @@
 
 <c:set var="postClass" value=""/>
 <c:if test="${isFirstPost}">
-    <c:set var="postClass" value="script-first-post"/>       	
+    <c:set var="postClass" value="script-first-post"/>
 </c:if>
 
 <%--We need different logic for code review and other posts because CR uses differnet phpBB processing--%>
 <c:remove var="isCodeReviewPost" scope="request"/>  
 <c:if test="${isFirstPost && (topic.codeReview != null)}">
-	<c:set var="isCodeReviewPost" value="true" scope="request"/>
+    <c:set var="isCodeReviewPost" value="true" scope="request"/>
 </c:if>
 
 <div class="post ${postClass}">
@@ -184,7 +184,7 @@
                                 </jtalks:hasPermission>
                             </c:if>
                             <%--  An ability to edit posts for administrators and branch moderators --%>
-                            <c:if test='${topic.codeReview == null}'>
+                            <c:if test='${userId != post.userCreated.id && topic.codeReview == null}'>
                                 <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
                                                       permission='BranchPermission.EDIT_OTHERS_POSTS'>
 
