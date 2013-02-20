@@ -16,12 +16,7 @@ package org.jtalks.jcommune.service.nontransactional;
 
 import org.apache.velocity.app.VelocityEngine;
 import org.jtalks.common.model.entity.Entity;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.CodeReview;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.PrivateMessage;
-import org.jtalks.jcommune.model.entity.SubscriptionAwareEntity;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,17 +65,16 @@ public class MailService {
     private static final String RECIPIENT_LOCALE = "locale";
     private static final String NO_ARGS = "noArgs";
 
-
     /**
      * Creates a mailing service with a default template message autowired.
      * "From" property is essential. Please note, that this address should be valid email address
      * as most e-mail servers will reject e-mail if sender is not really correlated with
      * the letter's "from" value.
      *
-     * @param sender        spring mailing tool
-     * @param from          blank message with "from" filed preset
-     * @param engine        engine for templating email notifications
-     * @param source        for resolving internationalization messages
+     * @param sender spring mailing tool
+     * @param from   blank message with "from" filed preset
+     * @param engine engine for templating email notifications
+     * @param source for resolving internationalization messages
      */
     public MailService(JavaMailSender sender, String from, VelocityEngine engine, MessageSource source) {
         this.mailSender = sender;
@@ -130,7 +124,7 @@ public class MailService {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(LINK, url);
             model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
-            sendEmailOnForumUpdates(recipient, model, locale);
+            sendEmailOnForumUpdates(recipient, model, locale, topic);
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, "Topic", topic.getId(), recipient.getUsername()));
         }
@@ -142,7 +136,7 @@ public class MailService {
      * is subscribed to the particular notification or not.
      *
      * @param recipient a person to be notified about updates by email
-     * @param entity changed subscribed entity.
+     * @param entity    changed subscribed entity.
      */
     public void sendUpdatesOnSubscription(JCUser recipient, SubscriptionAwareEntity entity) {
         String entityDisplayValue = prepareEntityDisplayValue(entity);
@@ -153,7 +147,7 @@ public class MailService {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(LINK, url);
             model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
-            sendEmailOnForumUpdates(recipient, model, locale);
+            sendEmailOnForumUpdates(recipient, model, locale, null);
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, entityDisplayValue, ((Entity) entity).getId(),
                     recipient.getUsername()));
@@ -162,6 +156,7 @@ public class MailService {
 
     /**
      * Prepares log display value for specified entity.
+     *
      * @param entity entity to prepare display value.
      * @return log display value.
      */
@@ -170,13 +165,15 @@ public class MailService {
         if (entity instanceof CodeReview) {
             result = TOPIC_CR;
         }
-        return result;    }
+        return result;
+    }
 
     /**
      * Prepares URL suffix for specified entity.
      * <p>
-     *     For example: "/branches/", "/posts/".
+     * For example: "/branches/", "/posts/".
      * </p>
+     *
      * @param entity entity to prepare URL suffix.
      * @return URL suffix.
      */
@@ -187,8 +184,6 @@ public class MailService {
         }
         return result;
     }
-
-
 
     /**
      * Sends update notification to user specified, e.g. when some new
@@ -207,7 +202,7 @@ public class MailService {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(LINK, url);
             model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
-            sendEmailOnForumUpdates(recipient, model, locale);
+            sendEmailOnForumUpdates(recipient, model, locale, branch);
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, "Branch", branch.getId(), recipient.getUsername()));
         }
@@ -221,12 +216,13 @@ public class MailService {
      * @param locale    recipient locale
      * @throws MailingFailedException when mailing failed
      */
-    private void sendEmailOnForumUpdates(JCUser recipient, Map<String, Object> model, Locale locale)
+    private void sendEmailOnForumUpdates(JCUser recipient, Map<String, Object> model, Locale locale, Entity entity)
             throws MailingFailedException {
         model.put(USER, recipient);
         model.put(RECIPIENT_LOCALE, locale);
+        String titleEntity = this.getTitleName(entity);
         this.sendEmail(recipient.getEmail(), messageSource.getMessage("subscriptionNotification.subject",
-                new Object[]{}, locale), model, "subscriptionNotification.vm");
+                new Object[]{}, locale) + titleEntity, model, "subscriptionNotification.vm");
     }
 
     /**
@@ -279,9 +275,9 @@ public class MailService {
      * Sends email to topic starter that his or her topic was moved
      *
      * @param recipient user to send notification
-     * @param topicId  id of relocated topic
+     * @param topicId   id of relocated topic
      */
-    public void sendTopicMovedMail(JCUser recipient, long topicId){
+    public void sendTopicMovedMail(JCUser recipient, long topicId) {
         String urlSuffix = "/topics/" + topicId;
         String url = this.getDeploymentRootUrl() + urlSuffix;
         Locale locale = recipient.getLanguage().getLocale();
@@ -354,7 +350,6 @@ public class MailService {
         return VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, path, model);
     }
 
-
     /**
      * @return current deployment root, e.g. "http://myhost.com:1234/mycoolforum"
      */
@@ -384,5 +379,17 @@ public class MailService {
     private HttpServletRequest getServletRequest() {
         RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
         return ((ServletRequestAttributes) attributes).getRequest();
+    }
+
+    private String getTitleName(Entity entity) {
+        if (entity instanceof Topic) {
+            Topic topic = (Topic) entity;
+            return ": " + topic.getTitle();
+        } else if (entity instanceof Branch) {
+            Branch branch = (Branch) entity;
+            return ": " + branch.getName();
+        } else {
+            return "";
+        }
     }
 }
