@@ -175,13 +175,10 @@ public class TransactionalPostServiceTest {
         Branch branch = new Branch("branch", "branch description");
         topic.setBranch(branch);
         user.setPostCount(2);
-        when(postDao.isExist(POST_ID)).thenReturn(true);
-        when(postDao.get(POST_ID)).thenReturn(postForDelete);
 
-        postService.deletePost(POST_ID, BRANCH_ID);
+        postService.deletePost(postForDelete);
 
         assertEquals(user.getPostCount(), 1);
-        verify(postDao).get(POST_ID);
         verify(topicDao).update(topic);
         verify(securityService).deleteFromAcl(postForDelete);
         verify(notificationService).topicChanged(topic);
@@ -199,10 +196,8 @@ public class TransactionalPostServiceTest {
         Branch branch = new Branch("branch", "branch description");
         topic.setBranch(branch);
         branch.setLastPost(postForDelete);
-        when(postDao.isExist(POST_ID)).thenReturn(true);
-        when(postDao.get(POST_ID)).thenReturn(postForDelete);
 
-        postService.deletePost(POST_ID, BRANCH_ID);
+        postService.deletePost(postForDelete);
 
         verify(branchLastPostService).refreshLastPostInBranch(branch);
     }
@@ -219,19 +214,10 @@ public class TransactionalPostServiceTest {
         Branch branch = new Branch("branch", "branch description");
         topic.setBranch(branch);
         branch.setLastPost(post);
-        when(postDao.isExist(POST_ID)).thenReturn(true);
-        when(postDao.get(POST_ID)).thenReturn(postForDelete);
 
-        postService.deletePost(POST_ID, BRANCH_ID);
+        postService.deletePost(postForDelete);
 
         verify(branchLastPostService, Mockito.never()).refreshLastPostInBranch(branch);
-    }
-
-    @Test(expectedExceptions = {NotFoundException.class})
-    public void testDeleteNonExistentPost() throws NotFoundException {
-        when(postDao.isExist(POST_ID)).thenReturn(false);
-
-        postService.deletePost(POST_ID, BRANCH_ID);
     }
 
     @Test

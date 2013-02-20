@@ -135,7 +135,7 @@ public class PostControllerTest {
         String view = controller.delete(POST_ID);
 
         //check expectations
-        verify(postService).deletePost(POST_ID, BRANCH_ID);
+        verify(postService).deletePost(post);
 
         //check result
         assertEquals(view, "redirect:/topics/" + TOPIC_ID);
@@ -143,7 +143,7 @@ public class PostControllerTest {
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testDeleteUnexistingPost() throws NotFoundException {
-        doThrow(new NotFoundException()).when(postService).deletePost(anyLong(), anyLong());
+        doThrow(new NotFoundException()).when(postService).get(anyLong());
         controller.delete(POST_ID);
     }
 

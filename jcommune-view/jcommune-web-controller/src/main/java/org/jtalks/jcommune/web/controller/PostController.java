@@ -101,12 +101,12 @@ public class PostController {
      *
      * @param postId post
      * @return redirect to topic page
-     * @throws NotFoundException when topic or post not found
+     * @throws NotFoundException when post was not found
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/posts/{postId}")
     public String delete(@PathVariable(POST_ID) Long postId) throws NotFoundException {
         Post post = postService.get(postId);
-        postService.deletePost(postId, post.getTopic().getBranch().getId());
+        postService.deletePost(post);
         return "redirect:/topics/" + post.getTopic().getId();
     }
 

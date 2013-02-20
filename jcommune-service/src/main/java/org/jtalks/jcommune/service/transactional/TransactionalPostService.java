@@ -111,10 +111,12 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.DELETE_OWN_POSTS') or " +
-            "hasPermission(#branchId, 'BRANCH', 'BranchPermission.DELETE_OTHERS_POSTS')")
-    public void deletePost(long postId, long branchId) throws NotFoundException {
-        Post post = get(postId);
+    @PreAuthorize("(hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OWN_POSTS') and " +
+                  "#post.userCreated.username == principal.username) or " +
+
+                  "(hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OTHERS_POSTS') and " +
+                  "#post.userCreated.username != principal.username)")
+    public void deletePost(Post post) {
         JCUser user = post.getUserCreated();
         user.setPostCount(user.getPostCount() - 1);
         Topic topic = post.getTopic();
@@ -134,7 +136,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
             branchLastPostService.refreshLastPostInBranch(branch);
         }
 
-        logger.debug("Deleted post id={}", postId);
+        logger.debug("Deleted post id={}", post.getId());
     }
 
     /**
