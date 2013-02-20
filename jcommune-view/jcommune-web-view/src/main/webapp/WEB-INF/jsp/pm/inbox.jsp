@@ -28,11 +28,7 @@
 <div class="container">
     <%-- Start of pagination --%>
     <div class="row-fluid upper-pagination forum-pagination-container">
-        <div class="span3">
-            <h2><spring:message code="label.pm_title"/></h2>
-        </div>
-
-        <div class="span9">
+        <div class="span11">
             <div class="pagination pull-right forum-pagination">
                 <ul>
                     <jtalks:pagination uri="" page="${inboxPage}" numberLink="3"
@@ -120,11 +116,7 @@
     <hr/>
     <%-- Start of pagination --%>
     <div class="row-fluid upper-pagination forum-pagination-container">
-        <div class="span3">
-            <h2><spring:message code="label.pm_title"/></h2>
-        </div>
-
-        <div class="span9">
+        <div class="span11">
             <div class="pagination pull-right forum-pagination">
                 <ul>
                     <jtalks:pagination uri="" page="${inboxPage}" numberLink="3"

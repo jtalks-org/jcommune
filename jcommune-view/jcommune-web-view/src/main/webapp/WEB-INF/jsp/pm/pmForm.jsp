@@ -35,8 +35,6 @@
 
 
 <div class="container">
-    <h2><spring:message code="label.pm_title"/></h2>
-    <hr/>
     <div class="row">
         <div class="span2">
             <jsp:include page="../../template/newPrivateMessage.jsp"/>
