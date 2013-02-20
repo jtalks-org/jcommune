@@ -34,8 +34,9 @@
         <c:if test="${not empty forumComponent}">
             <jtalks:hasPermission targetId="${forumComponent.id}" targetType="COMPONENT"
                                   permission="GeneralPermission.ADMIN">
+                <span id="externalLinks"></span>
                 <span id="links_editor" title='<fmt:message key="label.linksEditor"/>'
-                      class="icon-cog cursor-hand"></span>
+                      class="icon-cog cursor-hand links_editor"></span>
             </jtalks:hasPermission>
         </c:if>
     </div>

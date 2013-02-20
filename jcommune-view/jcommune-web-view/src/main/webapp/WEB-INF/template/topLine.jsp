@@ -51,7 +51,31 @@
                 </form>
 
                 <ul class="nav pull-right">
-                    <%--<c:if test="${forumComponent != null}">--%>
+                    <%--External links start--%>
+                    <li class="dropdown top-line-links">
+                        <span id="links-toggle" class="dropdown-toggle topline-links links-selector-container"
+                              data-toggle="dropdown"
+                              title='<fmt:message key="label.links"/>'>
+                            <fmt:message key="label.links"/>
+                            <c:if test="${not empty forumComponent}">
+                                <jtalks:hasPermission targetId="${forumComponent.id}" targetType="COMPONENT"
+                                                      permission="GeneralPermission.ADMIN">
+                                   <span id="links_editor_top" title='<fmt:message key="label.linksEditor"/>'
+                                         class="icon-white-cog cursor-hand links_editor"></span>
+                                </jtalks:hasPermission>
+                            </c:if>
+                        </span>
+                        <ul class="dropdown-menu links-menu">
+                            <c:if test="${not empty externalLinks}">
+                                <c:forEach var="link" items="${externalLinks}">
+                                    <li><a id="${link.id}" title="${link.hint}" href="${link.url}" name="${link.title}">
+                                        <c:out value="${link.title}"/>
+                                    </a></li>
+                                </c:forEach>
+                            </c:if>
+                        </ul>
+                    </li>
+                    <%--External links end--%>
                     <c:if test="${not empty forumComponent}">
                         <jtalks:hasPermission permission="GeneralPermission.ADMIN"
                                               targetId="${forumComponent.id}" targetType="COMPONENT">
@@ -81,7 +105,6 @@
                         <li>
                             <a id="signin" href="${pageContext.request.contextPath}/login">
                                 <fmt:message key="label.signin"/>
-                                <strong class="caret"></strong>
                             </a>
                         </li>
                     </sec:authorize>
@@ -172,10 +195,10 @@
                         </ul>
                     </li>
                     <%-- END OF Language chooser --%>
-
                 </ul>
             </div>
         </div>
     </div>
 </div>
+
 

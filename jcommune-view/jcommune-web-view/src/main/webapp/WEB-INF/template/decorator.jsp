@@ -57,6 +57,8 @@
     <script
             src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-1.7.min.js"></script>
     <script
+            src="${pageContext.request.contextPath}/resources/javascript/custom/keymaps.js"></script>
+    <script
             src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery.prettyPhoto.js"></script>
     <script
             src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery.truncate.js"></script>
@@ -66,8 +68,6 @@
             src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery.offtmp.js"></script>
     <script
             src="${pageContext.request.contextPath}/resources/javascript/custom/URLBuilder.js"></script>
-    <script
-            src="${pageContext.request.contextPath}/resources/javascript/custom/keymaps.js"></script>
     <script
             src="${pageContext.request.contextPath}/resources/javascript/custom/registration.js"></script>
     <script
@@ -113,17 +113,17 @@
         <%-- <c:if test="${sapeContent!=null}">
             <c:out value="${sapeContent}"/>
         </c:if>--%>
-    	<jtalks:banner banner="${banners['BOTTOM']}" position="${'BOTTOM'}"/>
-    	<div>
-	    	<div class="pull-left">
-		        Powered by JCommune ${project.version}<br/>
-		        &copy; 2013 <a href="http://jtalks.org">jtalks.org</a><br/>
-		        Design with <a href="http://twitter.github.com/bootstrap">Twitter Bootstrap</a>
-		    </div>
-		    <div>
-		    	<jtalks:banner banner="${banners['BOTTOM_FOOTER']}" position="${'BOTTOM_FOOTER'}"/>
-		    </div>
-	    </div>
+        <jtalks:banner banner="${banners['BOTTOM']}" position="${'BOTTOM'}"/>
+        <div>
+            <div class="pull-left">
+                Powered by JCommune ${project.version}<br/>
+                &copy; 2013 <a href="http://jtalks.org">jtalks.org</a><br/>
+                Design with <a href="http://twitter.github.com/bootstrap">Twitter Bootstrap</a>
+            </div>
+            <div>
+                <jtalks:banner banner="${banners['BOTTOM_FOOTER']}" position="${'BOTTOM_FOOTER'}"/>
+            </div>
+        </div>
     </footer>
 </div>
 </body>

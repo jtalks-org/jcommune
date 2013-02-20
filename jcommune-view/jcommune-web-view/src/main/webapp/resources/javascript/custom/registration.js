@@ -60,20 +60,10 @@ $(function () {
         var submitButton = signupDialog.find('#signup-submit-button');
 
         // returns focus back to uername field
-        submitButton.keydown(function (e) {
-            if ((e.keyCode || e.charCode) == 9) { //TAB key
-                e.preventDefault();
-                signupDialog.find("#username").focus();
-            }
-        });
+        submitButton.keydown(Keymaps.registrationSubmit);
 
         // skip captcha image and refresh and go to captcha input
-        signupDialog.find('#passwordConfirm').keydown(function (e) {
-            if ((e.keyCode || e.charCode) == 9) { //TAB key
-                e.preventDefault();
-                signupDialog.find("#captcha").focus();
-            }
-        });
+        signupDialog.find('#passwordConfirm').keydown(Keymaps.registrationPassConfirm);
 
         // remove dialog from DOM on hide
         signupDialog.bind("hide", function (e) {
