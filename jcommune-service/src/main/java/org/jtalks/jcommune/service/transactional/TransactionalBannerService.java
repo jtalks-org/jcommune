@@ -14,10 +14,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.lang.ObjectUtils;
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.dao.BannerDao;
@@ -26,20 +22,17 @@ import org.jtalks.jcommune.model.entity.BannerPosition;
 import org.jtalks.jcommune.service.BannerService;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-/**
- * An implementation of {@link BannerService} that addresses to 
- * repository(in our case) to find or fix banners.
- * 
- * @author Anuar_Nurmakanov
- *
- */
-public class TransactionalBannerService extends AbstractTransactionalEntityService<Banner, BannerDao> 
-    implements BannerService {
-    
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+/** @author Anuar_Nurmakanov */
+public class TransactionalBannerService extends AbstractTransactionalEntityService<Banner, BannerDao>
+        implements BannerService {
+
     /**
-     * Constructs an instance with given DAO, so it addresses to repository
-     * (in our case database).
-     * 
+     * Constructs an instance with given DAO, so it addresses to repository (in our case database).
+     *
      * @param bannerDao to search and change banner in database
      */
     public TransactionalBannerService(BannerDao bannerDao) {
@@ -48,6 +41,9 @@ public class TransactionalBannerService extends AbstractTransactionalEntityServi
 
     /**
      * {@inheritDoc}
+     *
+     * @param forumComponent this one is passed only to check whether current user has admin permissions for the
+     *                       component and thus is allowed to upload banners
      */
     @Override
     @PreAuthorize("hasPermission(#forumComponent.id, 'COMPONENT', 'GeneralPermission.ADMIN')")
@@ -61,14 +57,12 @@ public class TransactionalBannerService extends AbstractTransactionalEntityServi
         getDao().saveOrUpdate(existBanner);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public Map<String, Banner> getAllBanners() {
         Collection<Banner> allBanners = getDao().getAll();
         Map<String, Banner> positionAndBannerMap = new HashMap<String, Banner>();
-        for (Banner banner: allBanners) {
+        for (Banner banner : allBanners) {
             BannerPosition positionOnPage = banner.getPositionOnPage();
             positionAndBannerMap.put(ObjectUtils.toString(positionOnPage), banner);
         }

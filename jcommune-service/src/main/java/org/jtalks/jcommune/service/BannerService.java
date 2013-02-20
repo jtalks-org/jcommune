@@ -14,32 +14,33 @@
  */
 package org.jtalks.jcommune.service;
 
-import java.util.Map;
-
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.entity.Banner;
 
+import java.util.Map;
+
 /**
- * Provides an API to work with banners.
- * 
- * @author Anuar_Nurmakanov
+ * Provides an API to work with banners. Note, that there is no such method as "delete" banner, if user actually wants
+ * to remove one, she uploads an empty banner.
  *
+ * @author Anuar_Nurmakanov
  */
 public interface BannerService {
     /**
-     * Upload banner.
-     * 
-     * @param banner uploaded attached
+     * Adds a banner to the page. If a banner with such position ({@link org.jtalks.jcommune.model.entity
+     * .BannerPosition}) already exists, then content is just updated. Empty banner means user removed it.
+     *
+     * @param banner         a banner uploaded by a user
      * @param forumComponent a component of the forum
      */
     void uploadBanner(Banner banner, Component forumComponent);
-    
+
     /**
-     * Get all banners of the forum. Result contains string keys,
-     * because it's requirement of UI that can't work with enumerations.
-     * 
-     * @return all banners of the forum grouped in pairs:
-     *         name of position and banner
+     * Get all banners of the forum. Result contains string keys, because it's requirement of UI that can't work with
+     * enumerations.
+     *
+     * @return all banners of the forum grouped in pairs: name of position and banner
+     * @see org.jtalks.jcommune.model.entity.BannerPosition
      */
     Map<String, Banner> getAllBanners();
 }

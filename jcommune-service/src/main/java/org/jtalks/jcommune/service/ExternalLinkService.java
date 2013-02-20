@@ -18,35 +18,28 @@ import org.jtalks.jcommune.model.entity.ExternalLink;
 
 import java.util.List;
 
-/**
- * Provide CRUD operations for {@link ExternalLink} entities.
- *
- * @author Alexandre Teterin
- *         Date: 03.02.13
- */
-
-
+/** @author Alexandre Teterin */
 public interface ExternalLinkService extends EntityService<ExternalLink> {
 
     /**
-     * Return list of existing external link.
+     * Return list of all existing external link.
      *
-     * @return list of existing external link.
+     * @return list of all existing external link.
      */
     List<ExternalLink> getLinks();
 
     /**
-     * Persist link to db.
+     * Persists link to db.
      *
-     * @param link link to persist.
+     * @param link link to persist
      */
     void saveLink(ExternalLink link);
 
     /**
-     * Deletes link with specified id.
+     * Deletes link with specified id, does nothing if there is no such link.
      *
-     * @param id link id to remove.
-     * @return {@code true} if entity deleted successfully.
+     * @param id link id to remove
+     * @return {@code true} if entity deleted successfully
      */
     boolean deleteLink(long id);
 }
