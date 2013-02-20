@@ -17,13 +17,13 @@ $(document).ready(function () {
     //Sets timezone cookie for the server to show all the dates in a client timezone
     document.cookie = "GMT=" + new Date().getTimezoneOffset() + "; path=/";
     // Initializes image previewing
-    $("a[rel^='prettyPhoto']").prettyPhoto({social_tools:false});
+    $("a[rel^='prettyPhoto']").prettyPhoto({social_tools: false});
     // popups for individual post links
     $("a.postLink").each(function () {
         $(this).click(function (e) {
             e.preventDefault();
             var path = window.location.protocol + "//" + window.location.host;
-            $.prompt(path + $(this).attr("href"), {buttons:{}, persistent:false});
+            $.prompt(path + $(this).attr("href"), {buttons: {}, persistent: false});
         })
     })
     // popups to confirm post/topic/pm deletion
@@ -32,12 +32,12 @@ $(document).ready(function () {
             e.preventDefault();
             deletePath = $(this)[0].href;
             $.prompt($(this)[0].rel,
-                {buttons:[
-                    {title:$labelOk, value:true},
-                    {title:$labelCancel, value:false}
+                {buttons: [
+                    {title: $labelOk, value: true},
+                    {title: $labelCancel, value: false}
                 ],
-                    persistent:false,
-                    submit:function (confirmed) {
+                    persistent: false,
+                    submit: function (confirmed) {
                         if (confirmed) {
                             var deleteForm = $('#deleteForm')[0];
                             deleteForm.action = deletePath;
@@ -52,9 +52,17 @@ $(document).ready(function () {
     /** Handler to prevent multiposting. */
     $('form.anti-multipost').submit(function () {
         if (Antimultipost.beingSubmitted($(this))) {
-        	return false;
+            return false;
         }
-       Antimultipost.disableSubmit($(this));
+        Antimultipost.disableSubmit($(this));
     });
+
+    //for change externalLinks position (top line or main page)
+    $(window).resize(function (e) {
+        e.preventDefault();
+        $('.btn-navbar').trigger('mainLinksPosition');
+    });
+
+    $(window).resize();
 });
 

@@ -60,11 +60,11 @@ function sendLoginPost() {
     }
 
     $.ajax({
-        type:"POST",
-        url:$root + "/login_ajax",
-        data:query,
-        dataType:"html",
-        success:function (resp) {
+        type: "POST",
+        url: $root + "/login_ajax",
+        data: query,
+        dataType: "html",
+        success: function (resp) {
             resp = eval('(' + resp + ')');
 
             if (resp.status == "SUCCESS") {
@@ -82,7 +82,7 @@ function sendLoginPost() {
                 Utils.resizeDialog(dialog);
             }
         },
-        error:function (data) {
+        error: function (data) {
             bootbox.alert($labelError500Detail);
         }
     });
@@ -154,12 +154,7 @@ function showSigninDialog() {
     });
 
     // returns focus back to uername field
-    submitButton.keydown(function (e) {
-        if ((e.keyCode || e.charCode) == 9) { //TAB key
-            e.preventDefault();
-            signinDialog.find("#j_username").focus();
-        }
-    });
+    submitButton.keydown(Keymaps.signinSubmit);
 
     // remove dialog from DOM on hide
     signinDialog.bind("hide", function (e) {
@@ -169,9 +164,9 @@ function showSigninDialog() {
 
     // show dialog
     signinDialog.modal({
-        "backdrop":"static",
-        "keyboard":true,
-        "show":true
+        "backdrop": "static",
+        "keyboard": true,
+        "show": true
     });
 
     signinDialog.find("#j_username").focus();

@@ -100,3 +100,5 @@ $labelSave='<spring:message code="label.save" htmlEscape="true"/>'
 $labelDeleteMainLink='<spring:message code="label.deleteMainLink" htmlEscape="true"/>'
 $labelErrorLinkSave = '<spring:message code="label.link.error.save" htmlEscape="true"/>';
 $labelErrorLinkDelete = '<spring:message code="label.link.error.save" htmlEscape="true"/>';
+$linksEditIcon = '<spring:message code="label.linksEditIcon" htmlEscape="true"/>';
+$linksRemoveIcon = '<spring:message code="label.linksRemoveIcon" htmlEscape="true"/>';

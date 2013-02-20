@@ -564,3 +564,8 @@ div.anchor {
     padding: 0 !important;
     margin: 0 !important;
 }
+
+.topline-links {
+    font-weight: bold;
+    color: #999999;
+}

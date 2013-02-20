@@ -17,6 +17,7 @@ var Keymaps = {};
 
 var escCode = 27;
 var enterCode = 13;
+var tabCode = 9;
 
 Keymaps.review = function (e) {
     if (e.ctrlKey && e.keyCode == enterCode) {
@@ -28,3 +29,74 @@ Keymaps.review = function (e) {
         $(".review-container-controls-cancel").click();
     }
 };
+
+Keymaps.registrationSubmit = function (e) {
+    if ((e.keyCode || e.charCode) == tabCode) {
+        e.preventDefault();
+        $('#signup-modal-dialog').find("#username").focus();
+    }
+}
+
+Keymaps.registrationPassConfirm = function (e) {
+    if ((e.keyCode || e.charCode) == tabCode) {
+        e.preventDefault();
+        $('#signup-modal-dialog').find("#captcha").focus();
+    }
+}
+
+Keymaps.signinSubmit = function (e) {
+    if ((e.keyCode || e.charCode) == tabCode) {
+        e.preventDefault();
+        $('#signin-modal-dialog').find("#j_username").focus();
+    }
+}
+
+Keymaps.linksEditor = function (e) {
+    if ((e.keyCode || e.charCode) == enterCode) {
+        var but = $('#main-links-editor  #save-link:visible')[0]
+        if (but && $(e.target).attr('id') != 'cancel-link') {
+            e.preventDefault();
+            but.click();
+        }
+    }
+
+    if ((e.keyCode || e.charCode) == escCode) {
+        var but = $('#main-links-editor #cancel-link:visible')[0]
+        if (but) {
+            e.preventDefault();
+            but.click();
+        }
+    }
+}
+
+Keymaps.linksEditorRemoveButton = function (e) {
+    if ((e.keyCode || e.charCode) == tabCode) {
+        e.preventDefault();
+        $('#main-links-editor #cancel-link').focus();
+    }
+}
+
+Keymaps.linksEditorCancelButton = function (e) {
+    if ((e.keyCode || e.charCode) == tabCode) {
+        e.preventDefault();
+        if ($('#main-links-editor #remove-link:visible')[0]) {
+            $('#main-links-editor #remove-link').focus();
+        } else {
+            $('#main-links-editor #link-title').focus();
+        }
+    }
+}
+
+Keymaps.linksEditorHintInput = function (e) {
+    if ((e.keyCode || e.charCode) == tabCode) {
+        e.preventDefault();
+        $('#main-links-editor #save-link').focus();
+    }
+}
+
+Keymaps.linksEditorSaveButton = function (e) {
+    if ((e.keyCode || e.charCode) == tabCode) {
+        e.preventDefault();
+        $('#main-links-editor #cancel-link').focus();
+    }
+}
