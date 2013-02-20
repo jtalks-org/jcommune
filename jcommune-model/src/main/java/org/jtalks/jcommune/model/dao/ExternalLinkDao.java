@@ -14,23 +14,20 @@
  */
 package org.jtalks.jcommune.model.dao;
 
-import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.common.model.dao.ParentRepository;
 import org.jtalks.jcommune.model.entity.ExternalLink;
 
 import java.util.List;
 
 /**
- * Used for CRUD operations with {@link ExternalLink}
  * @author Alexandre Teterin
- *         Date: 03.02.13
  */
-
 public interface ExternalLinkDao extends ParentRepository<ExternalLink> {
 
     /**
      * Provide a list of all links to external resources.
-     * @return  list of all links to external resources.
+     *
+     * @return list of all links to external resources.
      */
     List<ExternalLink> getAll();
 

@@ -26,14 +26,8 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-/**
- * @author Alexandre Teterin
- *         Date: 16.02.13
- */
-
-
+/** @author Alexandre Teterin */
 public class TransactionalLinkServiceTest {
-
     @Mock
     private ExternalLinkDao dao;
     private ExternalLinkService service;
@@ -52,8 +46,9 @@ public class TransactionalLinkServiceTest {
 
     @Test
     public void testAddLink() throws Exception {
-        service.saveLink(new ExternalLink());
-        verify(dao).saveOrUpdate(any(ExternalLink.class));
+        ExternalLink linkToSave = new ExternalLink();
+        service.saveLink(linkToSave);
+        verify(dao).saveOrUpdate(linkToSave);
     }
 
     @Test

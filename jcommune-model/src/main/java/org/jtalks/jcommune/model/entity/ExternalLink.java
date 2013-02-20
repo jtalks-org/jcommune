@@ -19,14 +19,12 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.common.model.entity.Entity;
 
 /**
- * Stores information about external link.
+ * Stores information about external link. Such links are shown on every page of forum at the top of it.
  *
  * @author Alexandre Teterin
  *         Date: 03.02.13
  */
-
 public class ExternalLink extends Entity {
-
     @NotBlank
     private String url;
     @NotBlank
@@ -41,9 +39,9 @@ public class ExternalLink extends Entity {
     }
 
     /**
-     * @param url   target URL, e.g., jtalks.org.
-     * @param title URL title, e.g. 'JTalks'.
-     * @param hint  URL hint or description, e.g. 'The most powerful forum engine'.
+     * @param url   target URL, e.g., jtalks.org the link will lead to
+     * @param title URL title, e.g. 'JTalks' that's going to be shown to user
+     * @param hint  URL hint or description, e.g. 'The most powerful forum engine', this hint is shown
      */
     public ExternalLink(String url, String title, String hint) {
         this.url = url;
@@ -52,42 +50,42 @@ public class ExternalLink extends Entity {
     }
 
     /**
-     * @return url
+     * @return url target URL, e.g., jtalks.org the link will lead to
      */
     public String getUrl() {
         return url;
     }
 
     /**
-     * @param url url
+     * @param url target URL, e.g., jtalks.org the link will lead to
      */
     public void setUrl(String url) {
         this.url = url;
     }
 
     /**
-     * @return URL title.
+     * @return URL URL title, e.g. 'JTalks' that's going to be shown to user
      */
     public String getTitle() {
         return title;
     }
 
     /**
-     * @param title URL title.
+     * @param title URL title, e.g. 'JTalks' that's going to be shown to user
      */
     public void setTitle(String title) {
         this.title = title;
     }
 
     /**
-     * @return URL hint.
+     * @return URL hint or description, e.g. 'The most powerful forum engine', this hint is shown
      */
     public String getHint() {
         return hint;
     }
 
     /**
-     * @param hint URL hint.
+     * @param hint hint or description, e.g. 'The most powerful forum engine', this hint is shown
      */
     public void setHint(String hint) {
         this.hint = hint;

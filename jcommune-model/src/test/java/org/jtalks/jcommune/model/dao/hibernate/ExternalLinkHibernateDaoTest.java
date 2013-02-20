@@ -28,9 +28,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 
-import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertNull;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
@@ -64,11 +64,9 @@ public class ExternalLinkHibernateDaoTest extends AbstractTransactionalTestNGSpr
         expected.setId(id);
         session.save(expected);
         session.evict(expected);
+
         ExternalLink actual = (ExternalLink) session.get(ExternalLink.class, expected.getId());
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getTitle(), actual.getTitle());
-        assertEquals(expected.getUrl(), actual.getUrl());
-        assertEquals(expected.getHint(), actual.getHint());
+        assertReflectionEquals(expected, actual);
     }
 
     @Test
@@ -78,51 +76,48 @@ public class ExternalLinkHibernateDaoTest extends AbstractTransactionalTestNGSpr
 
     @Test
     public void testUpdate() throws Exception {
-        long id = 1L;
-        ExternalLink expected = ObjectsFactory.getDefaultExternalLink();
-        expected.setId(id);
-        session.save(expected);
-        session.evict(expected);
-        expected = (ExternalLink) session.get(ExternalLink.class, expected.getId());
-        expected.setTitle("New title");
-        expected.setUrl("New url");
-        expected.setHint("New hint");
+        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
+        dao.saveOrUpdate(link);
+        session.evict(link);
 
-        dao.update(expected);
-        session.evict(expected);
-        ExternalLink actual = (ExternalLink) session.get(ExternalLink.class, expected.getId());
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getTitle(), actual.getTitle());
-        assertEquals(expected.getUrl(), actual.getUrl());
-        assertEquals(expected.getHint(), actual.getHint());
+        link = (ExternalLink) session.get(ExternalLink.class, link.getId());
+        link.setTitle("New title");
+        link.setUrl("New url");
+        link.setHint("New hint");
+
+        dao.update(link);
+        session.clear();
+
+        ExternalLink actual = (ExternalLink) session.get(ExternalLink.class, link.getId());
+        assertReflectionEquals(link, actual);
     }
 
     @Test
     public void testGetLinks() throws Exception {
-        ExternalLink expected = ObjectsFactory.getDefaultExternalLink();
-        session.saveOrUpdate(expected);
+        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
+        session.saveOrUpdate(link);
         session.clear();
 
         List<ExternalLink> actual = dao.getAll();
-        assertReflectionEquals(expected, actual.get(0));
+        assertReflectionEquals(link, actual.get(0));
     }
 
-    @Test(expectedExceptions = {Exception.class})
-    public void tesShouldNotSaveWithNullTitle() {
+    @Test(expectedExceptions = ConstraintViolationException.class)
+    public void shouldFailWithNullTitle() {
         ExternalLink link = ObjectsFactory.getDefaultExternalLink();
         link.setTitle(null);
         session.saveOrUpdate(link);
     }
 
-    @Test(expectedExceptions = {Exception.class})
-    public void tesShouldNotSaveWithNullUrl() {
+    @Test(expectedExceptions = ConstraintViolationException.class)
+    public void shouldFailWithNullUrl() {
         ExternalLink link = ObjectsFactory.getDefaultExternalLink();
         link.setUrl(null);
         session.saveOrUpdate(link);
     }
 
-    @Test(expectedExceptions = {Exception.class})
-    public void tesShouldNotSaveWithNullHint() {
+    @Test(expectedExceptions = ConstraintViolationException.class)
+    public void shouldFailWithNullHint() {
         ExternalLink link = ObjectsFactory.getDefaultExternalLink();
         link.setHint(null);
         session.saveOrUpdate(link);
