@@ -119,7 +119,7 @@
             <mvc:mapping path="/posts/**"/>
             <mvc:mapping path="/users/**"/>
             <mvc:mapping path="/branches/**"/>-->
-            <mvc:mapping path="/sections/**"/>
+            <!--<mvc:mapping path="/sections/**"/>-->
             <!--<mvc:mapping path="/pm/**"/>-->
             <bean id="javaSapeInterceptor" class="org.jtalks.jcommune.web.interceptors.JavaSapeInterceptor">
                 <property name="componentSapeAccountProperty" ref="componentSapeAccountProperty"/>
