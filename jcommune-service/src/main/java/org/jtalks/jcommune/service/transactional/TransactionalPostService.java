@@ -88,9 +88,10 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * @throws AccessDeniedException if user tries to update the first post of code review which should be impossible,
      *         see <a href="http://jtalks.org/display/jcommune/1.1+Larks">Requirements</a> for details
      */
-    @PreAuthorize("hasPermission(#post.id, 'POST', 'GeneralPermission.WRITE') and " +
-            "hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OWN_POSTS') or "+
-            "hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS')")
+    @PreAuthorize("(hasPermission(#post.id, 'POST', 'GeneralPermission.WRITE') and " +
+            "hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OWN_POSTS')) or "+
+            "(hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS') and " +
+            "#post.userCreated.username != principal.username)")
     @Override
     public void updatePost(Post post, String postContent) {
         Topic postTopic = post.getTopic();
