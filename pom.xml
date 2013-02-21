@@ -530,9 +530,9 @@
         </plugins>
     </build>
     <scm>
-        <connection>scm:git:git@jtalks.org:jcommune</connection>
-        <developerConnection>scm:git:git@jtalks.org:jcommune</developerConnection>
-        <url>scm:git:git@jtalks.org:jcommune</url>
+        <connection>scm:git:git@github.com:jtalks-org/jcommune.git</connection>
+        <developerConnection>scm:git:git@github.com:jtalks-org/jcommune.git</developerConnection>
+        <url>scm:git:git@github.com:jtalks-org/jcommune.git</url>
     </scm>
     <repositories>
         <repository>
@@ -544,10 +544,6 @@
                 <updatePolicy>always</updatePolicy>
                 <enabled>true</enabled>
             </snapshots>
-        </repository>
-        <repository>
-            <id>codehaus</id>
-            <url>http://repository.codehaus.org</url>
         </repository>
         <repository>
             <id>terracotta-releases</id>
