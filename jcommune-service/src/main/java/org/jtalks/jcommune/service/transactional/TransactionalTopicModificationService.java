@@ -238,10 +238,10 @@ public class TransactionalTopicModificationService implements TopicModificationS
      *         <a href="http://jtalks.org/display/jcommune/1.1+Larks">here</a>.
      */
     @Override
-    @PreAuthorize("hasPermission(#topic.id, 'TOPIC', 'GeneralPermission.WRITE') and " +
-            "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OWN_POSTS') or " +
-            "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS') and " +
-            "#topic.topicStarter.username != principal.username")
+    @PreAuthorize("(hasPermission(#topic.id, 'TOPIC', 'GeneralPermission.WRITE') and " +
+            "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OWN_POSTS')) or " +
+            "(not hasPermission(#topic.id, 'TOPIC', 'GeneralPermission.WRITE') and " +
+            "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS'))")
     public void updateTopic(Topic topic, Poll poll, boolean notifyOnAnswers) {
         if (topic.getCodeReview() != null) {
             throw new AccessDeniedException("It is not allowed to edit Code Review!");

@@ -26,7 +26,6 @@ import org.jtalks.jcommune.service.BranchLastPostService;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,9 +88,9 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      *         see <a href="http://jtalks.org/display/jcommune/1.1+Larks">Requirements</a> for details
      */
     @PreAuthorize("(hasPermission(#post.id, 'POST', 'GeneralPermission.WRITE') and " +
-            "hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OWN_POSTS')) or "+
-            "(hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS') and " +
-            "#post.userCreated.username != principal.username)")
+            "hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OWN_POSTS')) or " +
+            "(not hasPermission(#post.id, 'POST', 'GeneralPermission.WRITE') and " +
+            "hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS'))")
     @Override
     public void updatePost(Post post, String postContent) {
         Topic postTopic = post.getTopic();
