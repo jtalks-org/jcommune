@@ -15,12 +15,7 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.apache.velocity.app.VelocityEngine;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.CodeReview;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.PrivateMessage;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.ArgumentCaptor;
@@ -44,9 +39,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.io.IOException;
 
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -68,9 +61,9 @@ public class MailServiceTest {
     private static final String PASSWORD = "new_password";
 
     private JCUser user = new JCUser(USERNAME, TO, PASSWORD);
-    private Topic topic = new Topic(user, "title");
+    private Topic topic = new Topic(user, "title Topic");
     private CodeReview codeReview = new CodeReview();
-    private Branch branch = new Branch("title", "description");
+    private Branch branch = new Branch("title Branch", "description");
     private ArgumentCaptor<MimeMessage> captor;
 
     @BeforeMethod
@@ -141,6 +134,18 @@ public class MailServiceTest {
     }
 
     @Test
+    public void testSendTopicUpdateEmail_CheckTitleInSubject() throws MessagingException, IOException {
+        Post post = new Post(user, "content");
+        post.setId(1);
+        topic.addPost(post);
+
+        service.sendTopicUpdatesOnSubscription(user, topic);
+
+        this.checkMailCredentials();
+        assertTrue(this.getMimeMailSubject().contains("title Topic"));
+    }
+
+    @Test
     public void testSendBranchUpdateEmail() throws MailingFailedException, IOException, MessagingException {
         branch.setId(1);
 
@@ -148,6 +153,14 @@ public class MailServiceTest {
 
         this.checkMailCredentials();
         assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/branches/1"));
+    }
+
+    @Test
+    public void testSendBranchUpdateEmail_CheckTitleInSubject() throws MessagingException, IOException {
+        branch.setId(1);
+        service.sendBranchUpdatesOnSubscription(user, branch);
+        this.checkMailCredentials();
+        assertTrue(this.getMimeMailSubject().contains("title Branch"));
     }
 
     @Test
@@ -235,6 +248,10 @@ public class MailServiceTest {
         return ((MimeMultipart) ((MimeMultipart) ((MimeMultipart) captor.getValue().getContent()).getBodyPart(0).
                 getDataHandler().getContent()).getBodyPart(0).getDataHandler().getContent()).getBodyPart(0).
                 getDataHandler().getContent().toString();//sorry
+    }
+
+    private String getMimeMailSubject() throws IOException, MessagingException {
+        return captor.getValue().getSubject();
     }
 
     private void checkMailCredentials() throws MessagingException {

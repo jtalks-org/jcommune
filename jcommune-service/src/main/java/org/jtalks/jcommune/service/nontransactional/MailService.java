@@ -381,6 +381,10 @@ public class MailService {
         return ((ServletRequestAttributes) attributes).getRequest();
     }
 
+    /**
+     * @param entity entity like "Branch/Topics"
+     * @return title for Topic/Branch or "" if entity is not instanceof Topic/Branch
+     */
     private String getTitleName(Entity entity) {
         if (entity instanceof Topic) {
             Topic topic = (Topic) entity;
