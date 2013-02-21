@@ -89,7 +89,7 @@ public class UserControllerTest {
 
         ModelAndView mav = userController.registerUser(dto, bindingResult, new Locale("ru"));
 
-        assertViewName(mav, "redirect:/");
+        assertViewName(mav, "afterRegistration");
         verify(userService).registerUser(any(JCUser.class));
     }
 

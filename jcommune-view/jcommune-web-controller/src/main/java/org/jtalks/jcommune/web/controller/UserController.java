@@ -54,8 +54,8 @@ import org.springframework.web.servlet.ModelAndView;
 public class UserController {
 
     public static final String REGISTRATION = "registration";
-
     public static final String LOGIN = "login";
+    public static final String AFTER_REGISTRATION = "afterRegistration";
 
     private static final String REMEMBER_ME_ON = "on";
 
@@ -136,7 +136,7 @@ public class UserController {
         JCUser user = userDto.createUser();
         user.setLanguage(Language.byLocale(locale));
         userService.registerUser(user);
-        return new ModelAndView("redirect:/");
+        return new ModelAndView(AFTER_REGISTRATION);
     }
 
     /**
@@ -220,4 +220,5 @@ public class UserController {
             return new JsonResponse(JsonResponseStatus.FAIL);
         }
     }
+    
 }
