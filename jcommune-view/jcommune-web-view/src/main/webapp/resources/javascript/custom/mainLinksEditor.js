@@ -63,7 +63,7 @@ $(function () {
             idToExternalLinkMap[id] = externalLink;
             elements[i] = externalLink;
         });
-
+        console.log(elements);
         var linksEditor = createMainLinkEditor(elements);
 
         linksEditor.modal({
@@ -164,6 +164,7 @@ function listOfLinksVisible(visible) {
 
     var intervalID = setInterval(function () {
         if ($('.edit-links').size() > 1) {
+
             if (visible) {
                 $(externalLinksTableClass).removeClass("hide-element");
             }
@@ -299,12 +300,12 @@ function addLinkVisible(visible) {
         $(externalLinksGroupInTopLine).append('<li>' + aTag + "</li>")
 
         function prepareNewLinkATag(externalLink) {
-            return result = '<a id="' + externalLink.id + '"'
+            return result = '<span><a id="' + externalLink.id + '"'
                 + 'href="' + externalLink.url + '"'
                 + 'name="' + externalLink.title + '"'
                 + 'data-original-title="' + externalLink.hint + '">'
                 + externalLink.title + " "
-                + '</a>';
+                + '</a></span>';
         }
     }
 }
@@ -332,7 +333,7 @@ function confirmRemoveVisible(visible) {
                                 //remove from popup editor
                                 $(externalLinksTableClass).find('#' + link.id).remove();
                                 //remove from main page
-                                $(externalLinksGroupId).find('#' + link.id).remove();
+                                $(externalLinksGroupId).find('#' + link.id).parent('span').remove();
                                 //remove from top line dropdown
                                 $(externalLinksGroupInTopLine).find('#' + link.id).parent('li').remove();
                                 toAction('list');
@@ -381,6 +382,7 @@ function toAction(typeOfAction) {
             break;
 
     }
+    Utils.resizeDialog($('#main-links-editor'));
 }
 
 

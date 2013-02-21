@@ -20,24 +20,31 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 
-<div class="navbar">
-    <div class="container-fluid">
-        <c:if test="${not empty externalLinks}">
-            <span id="externalLinks">
-                <c:forEach var="link" items="${externalLinks}">
-                    <a id="${link.id}" title="${link.hint}" href="${link.url}" name="${link.title}">
-                        <c:out value="${link.title}"/>
-                    </a>
-                </c:forEach>
-            </span>
-        </c:if>
+<div class="external-links-bar">
+    <div class="external-links-container">
         <c:if test="${not empty forumComponent}">
             <jtalks:hasPermission targetId="${forumComponent.id}" targetType="COMPONENT"
                                   permission="GeneralPermission.ADMIN">
-                <span id="externalLinks"></span>
-                <span id="links_editor" title='<fmt:message key="label.linksEditor"/>'
-                      class="icon-cog cursor-hand links_editor"></span>
+                       <span id="links_editor" title='<fmt:message key="label.linksEditor"/>'
+                             class="icon-cog cursor-hand links_editor"></span>
             </jtalks:hasPermission>
         </c:if>
+        <c:choose>
+            <c:when test="${not empty externalLinks}">
+            <span id="externalLinks">
+                <c:forEach var="link" items="${externalLinks}">
+                    <span>
+                    <a id="${link.id}" title="${link.hint}" href="${link.url}" name="${link.title}">
+                        <c:out value="${link.title}"/>
+                    </a>
+                    </span>
+                </c:forEach>
+            </span>
+
+            </c:when>
+            <c:otherwise>
+                <span id="externalLinks"></span>
+            </c:otherwise>
+        </c:choose>
     </div>
 </div>
