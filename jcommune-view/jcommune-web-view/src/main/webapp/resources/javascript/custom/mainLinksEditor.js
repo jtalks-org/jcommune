@@ -300,6 +300,7 @@ function addLinkVisible(visible) {
         $(externalLinksGroupInTopLine).append('<li>' + aTag + "</li>")
 
         function prepareNewLinkATag(externalLink) {
+            console.log(externalLink.url);
             return result = '<span><a id="' + externalLink.id + '"'
                 + 'href="' + externalLink.url + '"'
                 + 'name="' + externalLink.title + '"'

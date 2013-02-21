@@ -14,9 +14,11 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.dao.ExternalLinkDao;
 import org.jtalks.jcommune.model.entity.ExternalLink;
 import org.jtalks.jcommune.service.ExternalLinkService;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -43,12 +45,14 @@ public class TransactionalLinkService extends AbstractTransactionalEntityService
     }
 
     @Override
-    public void saveLink(ExternalLink link) {
+    @PreAuthorize("hasPermission(#forumComponent.id, 'COMPONENT', 'GeneralPermission.ADMIN')")
+    public void saveLink(ExternalLink link, Component forumComponent) {
         getDao().saveOrUpdate(link);
     }
 
     @Override
-    public boolean deleteLink(long id) {
+    @PreAuthorize("hasPermission(#forumComponent.id, 'COMPONENT', 'GeneralPermission.ADMIN')")
+    public boolean deleteLink(long id, Component forumComponent) {
         return getDao().delete(id);
     }
 }

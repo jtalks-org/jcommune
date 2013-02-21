@@ -14,7 +14,9 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.entity.ExternalLink;
+import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.ExternalLinkService;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
@@ -32,25 +34,28 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class ExternalLinkController {
-
+    private ComponentService componentService;
     private ExternalLinkService service;
 
     @Autowired
-    public ExternalLinkController(ExternalLinkService service) {
+    public ExternalLinkController(ExternalLinkService service, ComponentService componentService) {
+        this.componentService = componentService;
         this.service = service;
     }
 
     @RequestMapping(value = "/links/save", method = RequestMethod.POST)
     @ResponseBody
     public JsonResponse saveLink(@RequestBody ExternalLink link) {
-        service.saveLink(link);
+        Component component = componentService.getComponentOfForum();
+        service.saveLink(link, component);
         return new JsonResponse(JsonResponseStatus.SUCCESS, link);
     }
 
     @RequestMapping(value = "/links/delete/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     public JsonResponse deleteLink(@PathVariable Long id) {
-        boolean result = service.deleteLink(id);
+        Component component = componentService.getComponentOfForum();
+        boolean result = service.deleteLink(id, component);
         return new JsonResponse(JsonResponseStatus.SUCCESS, result);
     }
 }

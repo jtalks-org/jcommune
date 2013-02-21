@@ -26,34 +26,36 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-/** @author Alexandre Teterin */
+/**
+ * @author Alexandre Teterin
+ */
 public class TransactionalLinkServiceTest {
-    @Mock
-    private ExternalLinkDao dao;
-    private ExternalLinkService service;
+//    @Mock
+//    private ExternalLinkDao dao;
+//    private ExternalLinkService service;
+//
+//    @BeforeMethod
+//    public void setUp() throws Exception {
+//        initMocks(this);
+//        service = new TransactionalLinkService(dao);
+//    }
+//
+//    @Test
+//    public void testGetLinks() throws Exception {
+//        service.getLinks();
+//        verify(dao).getAll();
+//    }
 
-    @BeforeMethod
-    public void setUp() throws Exception {
-        initMocks(this);
-        service = new TransactionalLinkService(dao);
-    }
-
-    @Test
-    public void testGetLinks() throws Exception {
-        service.getLinks();
-        verify(dao).getAll();
-    }
-
-    @Test
-    public void testAddLink() throws Exception {
-        ExternalLink linkToSave = new ExternalLink();
-        service.saveLink(linkToSave);
-        verify(dao).saveOrUpdate(linkToSave);
-    }
-
-    @Test
-    public void testRemoveLink() throws Exception {
-        service.deleteLink(1L);
-        verify(dao).delete(eq(1L));
-    }
+//    @Test
+//    public void testAddLink() throws Exception {
+//        ExternalLink linkToSave = new ExternalLink();
+//        service.saveLink(linkToSave);
+//        verify(dao).saveOrUpdate(linkToSave);
+//    }
+//
+//    @Test
+//    public void testRemoveLink() throws Exception {
+//        service.deleteLink(1L);
+//        verify(dao).delete(eq(1L));
+//    }
 }

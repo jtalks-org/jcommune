@@ -14,11 +14,14 @@
  */
 package org.jtalks.jcommune.service;
 
+import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.entity.ExternalLink;
 
 import java.util.List;
 
-/** @author Alexandre Teterin */
+/**
+ * @author Alexandre Teterin
+ */
 public interface ExternalLinkService extends EntityService<ExternalLink> {
 
     /**
@@ -33,7 +36,7 @@ public interface ExternalLinkService extends EntityService<ExternalLink> {
      *
      * @param link link to persist
      */
-    void saveLink(ExternalLink link);
+    void saveLink(ExternalLink link, Component forumComponent);
 
     /**
      * Deletes link with specified id, does nothing if there is no such link.
@@ -41,5 +44,5 @@ public interface ExternalLinkService extends EntityService<ExternalLink> {
      * @param id link id to remove
      * @return {@code true} if entity deleted successfully
      */
-    boolean deleteLink(long id);
+    boolean deleteLink(long id, Component forumComponent);
 }
