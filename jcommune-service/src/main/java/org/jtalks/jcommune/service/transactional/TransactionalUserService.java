@@ -161,9 +161,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         this.getDao().saveOrUpdate(user);
         mailService.sendAccountActivationMail(user);
         LOGGER.info("JCUser registered: {}", user.getUsername());
-        Group group = groupDao.getGroupByName(AdministrationGroup.USER.getName());
-        group.getUsers().add(user);
-        groupDao.update(group);
 
         return user;
     }
@@ -249,9 +246,14 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         JCUser user = this.getDao().getByUuid(uuid);
         if (user == null) {
             throw new NotFoundException();
+        } else if (!user.isEnabled()) {
+            Group group = groupDao.getGroupByName(AdministrationGroup.USER.getName());
+            group.getUsers().add(user);
+            groupDao.update(group);
+            
+            user.setEnabled(true);
+            this.getDao().saveOrUpdate(user);
         }
-        user.setEnabled(true);
-        this.getDao().saveOrUpdate(user);
     }
 
     /**

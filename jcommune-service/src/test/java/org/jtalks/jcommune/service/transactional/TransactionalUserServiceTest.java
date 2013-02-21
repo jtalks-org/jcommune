@@ -163,8 +163,7 @@ public class TransactionalUserServiceTest {
     public void testRegisterUser() throws Exception {
         JCUser user = getUser(USERNAME);
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
-        Group group = new Group();
-        when(groupDao.getGroupByName(AdministrationGroup.USER.getName())).thenReturn(group);
+        
 
         JCUser registeredUser = userService.registerUser(user);
         DateTime now = new DateTime();
@@ -175,7 +174,6 @@ public class TransactionalUserServiceTest {
         assertTrue(new Interval(registeredUser.getRegistrationDate(), now)
                 .toDuration().getMillis() <= MAX_REGISTRATION_TIMEOUT);
         verify(userDao).saveOrUpdate(user);
-        verify(groupDao).update(group);
     }
 
 
@@ -312,20 +310,39 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
-    public void activateAccountTest() throws NotFoundException {
+    public void testActivateAccountTest() throws NotFoundException {
         JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);
         when(userDao.getByUuid(user.getUuid())).thenReturn(user);
+        Group group = new Group();
+        when(groupDao.getGroupByName(AdministrationGroup.USER.getName())).thenReturn(group);
 
         userService.activateAccount(user.getUuid());
 
         assertTrue(user.isEnabled());
+        verify(groupDao).update(group);
+        assertTrue(group.getUsers().contains(user));
     }
 
     @Test(expectedExceptions = NotFoundException.class)
-    public void activateNotFoundAccountTest() throws NotFoundException {
+    public void testActivateNotFoundAccountTest() throws NotFoundException {
         when(userDao.getByUsername(USERNAME)).thenReturn(null);
 
         userService.activateAccount(USERNAME);
+    }
+    
+    @Test
+    public void testActivateAccountAlreadyEnabled() throws NotFoundException {
+        JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);
+        user.setEnabled(true);
+        when(userDao.getByUuid(user.getUuid())).thenReturn(user);
+        Group group = new Group();
+        when(groupDao.getGroupByName(AdministrationGroup.USER.getName())).thenReturn(group);
+
+        userService.activateAccount(user.getUuid());
+
+        assertTrue(user.isEnabled());
+        verify(groupDao, never()).update(any(Group.class));
+        assertFalse(group.getUsers().contains(user));
     }
 
     @Test
