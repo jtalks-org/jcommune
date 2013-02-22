@@ -63,4 +63,9 @@ public @interface Unique {
      * Field to be checked
      */
     String field();
+    
+    /**
+     * Ignore case or not when checking for uniqueness
+     */
+    boolean ignoreCase() default false;
 }

@@ -47,7 +47,7 @@ public class PrivateMessageDto {
     private String body;
 
     @NotMe(message = "{validation.username.notMe}")
-    @Exists(entity = JCUser.class, field = "username", message = "{validation.wrong_recipient}")
+    @Exists(entity = JCUser.class, field = "username", message = "{validation.wrong_recipient}", ignoreCase=true)
     private String recipient;
 
     private long id;

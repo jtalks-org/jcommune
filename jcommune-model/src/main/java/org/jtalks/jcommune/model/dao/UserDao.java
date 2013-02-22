@@ -30,7 +30,7 @@ import java.util.Collection;
 public interface UserDao extends org.jtalks.common.model.dao.UserDao<JCUser> {
 
     /**
-     * Get {@link JCUser} with corresponding username.
+     * Get {@link JCUser} with corresponding username ignoring case.
      *
      * @param username name of requested user
      * @return {@link JCUser} with given username or null if not found

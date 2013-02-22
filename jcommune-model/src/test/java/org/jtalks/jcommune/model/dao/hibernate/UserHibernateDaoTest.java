@@ -143,7 +143,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     /*===== UserDao specific methods =====*/
 
     @Test
-    public void testGetByUsername() {
+    public void testGetByUsernameSameCase() {
         JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
 
@@ -152,7 +152,50 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         assertNotNull(result);
         assertReflectionEquals(user, result);
     }
+    
+    @Test
+    public void testGetByUsernameDifferentCases() {
+        JCUser user = ObjectsFactory.getDefaultUser();
+        session.save(user);
 
+        JCUser result = dao.getByUsername(user.getUsername().toUpperCase());
+
+        assertNotNull(result);
+        assertReflectionEquals(user, result);
+    }
+    
+    @Test
+    public void testGetByUsernameMultipleUsersWithSameNameWhenIgnoringCase() {
+        JCUser user = ObjectsFactory.getUser("usernamE", "username@mail.com");
+        session.save(user);
+        session.save(ObjectsFactory.getUser("Username", "Username@mail.com"));
+        
+        JCUser result = dao.getByUsername("usernamE");
+        
+        assertNotNull(result);
+        assertReflectionEquals(user, result);
+    }
+    
+    @Test
+    public void testGetByUsernameNotExist() {
+        JCUser user = ObjectsFactory.getDefaultUser();
+        session.save(user);
+        
+        JCUser result = dao.getByUsername("Name");
+        
+        assertNull(result);
+    }
+    
+    @Test
+    public void testGetByUsernameNotFoundWhenMultipleUsersWithSameNameWhenIgnoringCase() {
+        session.save(ObjectsFactory.getUser("usernamE", "username@mail.com"));
+        session.save(ObjectsFactory.getUser("Username", "Username@mail.com"));
+        
+        JCUser result = dao.getByUsername("username");
+        
+        assertNull(result);
+    }
+    
     @Test
     public void getCommonUserByUsernameShouldFindOne() {
         User expected = givenCommonUserWithUsernameStoredInDb("username");
@@ -174,16 +217,6 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     public void getCommonUserByUsernameShouldNotFindInEmptyDb() {
         User actual = dao.getCommonUserByUsername("username");
         assertNull(actual);
-    }
-
-    @Test
-    public void testGetByUsernameNotExist() {
-        JCUser user = ObjectsFactory.getDefaultUser();
-        session.save(user);
-
-        JCUser result = dao.getByUsername("Name");
-
-        assertNull(result);
     }
 
     @Test
