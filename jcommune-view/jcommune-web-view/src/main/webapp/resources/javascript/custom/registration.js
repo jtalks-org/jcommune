@@ -91,7 +91,8 @@ $(function () {
                     else {
                         // remove previous errors and show new errors
                         prepareDialog(signupDialog);
-                        showErrors(signupDialog, resp.result);
+                        refreshCaptcha(signupDialog);
+                        showErrors(signupDialog, resp.result, "", "");
                     }
                 },
                 error: function (resp) {
@@ -104,18 +105,6 @@ $(function () {
     clearPageForm();
 });
 
-/**
- * Enable all disabled elements
- * Remove previous errors
- * Show hidden hel text
- */
-function prepareDialog(signupDialog) {
-    refreshCaptcha(signupDialog);
-    signupDialog.find('*').attr('disabled', false);
-    signupDialog.find('._error').remove();
-    signupDialog.find(".help-block").show();
-    signupDialog.find('.control-group').removeClass('error');
-}
 
 /**
  * Get new captcha image
@@ -128,20 +117,6 @@ function refreshCaptcha(signupDialog) {
 
 function captchaUrl() {
     return $root + "/captcha/image?param=" + $.now();
-}
-
-/**
- * Show errors under fields with errors
- * Errors overrides help text (help text will be hidden)
- */
-function showErrors(signupDialog, errors) {
-    for (var i = 0; i < errors.length; i++) {
-        var e = signupDialog.find('#' + errors[i].field);
-        e.parent().wrap('<div class="control-group error" />');
-        e.parent().find(".help-block").hide();
-        e.parent().last().append('<span class="help-block _error">' + errors[i].defaultMessage + '</span>');
-    }
-    Utils.resizeDialog(signupDialog);
 }
 
 /**

@@ -14,25 +14,10 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.jtalks.jcommune.model.ObjectsFactory;
-import org.jtalks.jcommune.model.PersistedObjectsFactory;
-import org.jtalks.jcommune.model.dao.ExternalLinkDao;
-import org.jtalks.jcommune.model.entity.ExternalLink;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
-import javax.validation.ConstraintViolationException;
-import java.util.List;
-
-import static org.testng.AssertJUnit.assertNull;
-import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
  * @author Alexandre Teterin
@@ -44,82 +29,82 @@ import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEqua
 @Transactional
 public class ExternalLinkHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
 
-    @Autowired
-    private SessionFactory sessionFactory;
-    @Autowired
-    private ExternalLinkDao dao;
-
-    private Session session;
-
-    @BeforeMethod
-    public void setUp() throws Exception {
-        session = sessionFactory.getCurrentSession();
-        PersistedObjectsFactory.setSession(session);
-    }
-
-    @Test
-    public void testSave() throws Exception {
-        long id = 1L;
-        ExternalLink expected = ObjectsFactory.getDefaultExternalLink();
-        expected.setId(id);
-        session.save(expected);
-        session.evict(expected);
-
-        ExternalLink actual = (ExternalLink) session.get(ExternalLink.class, expected.getId());
-        assertReflectionEquals(expected, actual);
-    }
-
-    @Test
-    public void testGetMissingId() {
-        assertNull(dao.get(Long.MAX_VALUE));
-    }
-
-    @Test
-    public void testUpdate() throws Exception {
-        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
-        dao.saveOrUpdate(link);
-        session.evict(link);
-
-        link = (ExternalLink) session.get(ExternalLink.class, link.getId());
-        link.setTitle("New title");
-        link.setUrl("New url");
-        link.setHint("New hint");
-
-        dao.update(link);
-        session.clear();
-
-        ExternalLink actual = (ExternalLink) session.get(ExternalLink.class, link.getId());
-        assertReflectionEquals(link, actual);
-    }
-
-    @Test
-    public void testGetLinks() throws Exception {
-        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
-        session.saveOrUpdate(link);
-        session.clear();
-
-        List<ExternalLink> actual = dao.getAll();
-        assertReflectionEquals(link, actual.get(0));
-    }
-
-    @Test(expectedExceptions = ConstraintViolationException.class)
-    public void shouldFailWithNullTitle() {
-        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
-        link.setTitle(null);
-        session.saveOrUpdate(link);
-    }
-
-    @Test(expectedExceptions = ConstraintViolationException.class)
-    public void shouldFailWithNullUrl() {
-        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
-        link.setUrl(null);
-        session.saveOrUpdate(link);
-    }
-
-    @Test(expectedExceptions = ConstraintViolationException.class)
-    public void shouldFailWithNullHint() {
-        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
-        link.setHint(null);
-        session.saveOrUpdate(link);
-    }
+//    @Autowired
+//    private SessionFactory sessionFactory;
+//    @Autowired
+//    private ExternalLinkDao dao;
+//
+//    private Session session;
+//
+//    @BeforeMethod
+//    public void setUp() throws Exception {
+//        session = sessionFactory.getCurrentSession();
+//        PersistedObjectsFactory.setSession(session);
+//    }
+//
+//    @Test
+//    public void testSave() throws Exception {
+//        long id = 1L;
+//        ExternalLink expected = ObjectsFactory.getDefaultExternalLink();
+//        expected.setId(id);
+//        session.save(expected);
+//        session.evict(expected);
+//
+//        ExternalLink actual = (ExternalLink) session.get(ExternalLink.class, expected.getId());
+//        assertReflectionEquals(expected, actual);
+//    }
+//
+//    @Test
+//    public void testGetMissingId() {
+//        assertNull(dao.get(Long.MAX_VALUE));
+//    }
+//
+//    @Test
+//    public void testUpdate() throws Exception {
+//        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
+//        dao.saveOrUpdate(link);
+//        session.evict(link);
+//
+//        link = (ExternalLink) session.get(ExternalLink.class, link.getId());
+//        link.setTitle("New title");
+//        link.setUrl("New url");
+//        link.setHint("New hint");
+//
+//        dao.update(link);
+//        session.clear();
+//
+//        ExternalLink actual = (ExternalLink) session.get(ExternalLink.class, link.getId());
+//        assertReflectionEquals(link, actual);
+//    }
+//
+//    @Test
+//    public void testGetLinks() throws Exception {
+//        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
+//        session.saveOrUpdate(link);
+//        session.clear();
+//
+//        List<ExternalLink> actual = dao.getAll();
+//        assertReflectionEquals(link, actual.get(0));
+//    }
+//
+//    @Test(expectedExceptions = ConstraintViolationException.class)
+//    public void shouldFailWithNullTitle() {
+//        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
+//        link.setTitle(null);
+//        session.saveOrUpdate(link);
+//    }
+//
+//    @Test(expectedExceptions = ConstraintViolationException.class)
+//    public void shouldFailWithNullUrl() {
+//        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
+//        link.setUrl(null);
+//        session.saveOrUpdate(link);
+//    }
+//
+//    @Test(expectedExceptions = ConstraintViolationException.class)
+//    public void shouldFailWithNullHint() {
+//        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
+//        link.setHint(null);
+//        session.saveOrUpdate(link);
+//    }
 }

@@ -43,6 +43,7 @@ function getSelectedPostText() {
     return txt;
 }
 
+//methods to dialogs
 Utils.resizeDialog = function (dialog) {
     dialog.css("margin-top", function () {
         return $(this).outerHeight() / 2 * (-1)
@@ -50,4 +51,30 @@ Utils.resizeDialog = function (dialog) {
     dialog.css("margin-left", function () {
         return $(this).outerWidth() / 2 * (-1)
     });
+}
+
+/**
+ * Enable all disabled elements
+ * Remove previous errors
+ * Show hidden hel text
+ */
+function prepareDialog(dialog) {
+    dialog.find('*').attr('disabled', false);
+    dialog.find('._error').remove();
+    dialog.find(".help-block").show();
+    dialog.find('.control-group').removeClass('error');
+}
+
+/**
+ * Show errors under fields with errors
+ * Errors overrides help text (help text will be hidden)
+ */
+function showErrors(dialog, errors, idPrefix, idPostfix) {
+    for (var i = 0; i < errors.length; i++) {
+        var e = dialog.find('#' + idPrefix + errors[i].field + idPostfix);
+        e.parent().wrap('<div class="control-group error" />');
+        e.parent().find(".help-block").hide();
+        e.parent().last().append('<span class="help-block _error">' + errors[i].defaultMessage + '</span>');
+    }
+    Utils.resizeDialog(dialog);
 }

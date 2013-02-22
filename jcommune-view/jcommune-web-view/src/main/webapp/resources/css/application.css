@@ -560,6 +560,10 @@ div.anchor {
     width: 180px;
 }
 
+.modal-body .help-block {
+    line-height: 15px !important;
+}
+
 #externalLinks a {
     color: #000000;
     font-size: 14px;
