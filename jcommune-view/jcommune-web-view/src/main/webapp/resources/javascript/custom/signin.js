@@ -71,9 +71,8 @@ function sendLoginPost() {
                 location.reload();
             }
             else {
-                dialog.find('*').attr('disabled', false);
-                dialog.find('.control-group').removeClass('error');
-                dialog.find('._error').remove();
+                var signInDialog = $('#signin-modal-dialog');
+                prepareDialog(signInDialog);
 
                 ErrorUtils.addErrorStyles("#j_username");
                 ErrorUtils.addErrorStyles("#j_password");

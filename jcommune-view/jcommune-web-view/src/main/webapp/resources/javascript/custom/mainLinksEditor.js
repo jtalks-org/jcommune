@@ -25,6 +25,7 @@ var externalLinksGroupInTopLine = "ul .links-menu";
 var externalLinksGroupId = "#externalLinks";
 var externalLinksTableClass = '.list-of-links';
 var idToExternalLinkMap = new Object;
+var linksEditor;
 
 function getLinkById(id) {
     return idToExternalLinkMap[id];
@@ -63,8 +64,7 @@ $(function () {
             idToExternalLinkMap[id] = externalLink;
             elements[i] = externalLink;
         });
-        console.log(elements);
-        var linksEditor = createMainLinkEditor(elements);
+        linksEditor = createMainLinkEditor(elements);
 
         linksEditor.modal({
             "backdrop": "static",
@@ -197,11 +197,17 @@ function editLinksVisible(visible) {
                         contentType: "application/json",
                         async: false,
                         data: JSON.stringify(link),
-                        success: function (data) {
-                            updateExternalLink(link);
-                            toAction('list');
+                        success: function (resp) {
+                            if (resp.status == "SUCCESS") {
+                                updateExternalLink(link);
+                                toAction('list');
+                            } else {
+                                // remove previous errors and show new errors
+                                prepareDialog(linksEditor);
+                                showErrors(linksEditor, resp.result, "link-", "");
+                            }
                         },
-                        error: function (data) {
+                        error: function (resp) {
                             bootbox.alert($labelErrorLinkSave);
                         }
                     });
@@ -261,12 +267,18 @@ function addLinkVisible(visible) {
                         contentType: "application/json",
                         async: false,
                         data: JSON.stringify(link),
-                        success: function (data) {
-                            link.id = data.result.id;
-                            addNewExternalLink(link);
-                            toAction('list');
+                        success: function (resp) {
+                            if (resp.status == "SUCCESS") {
+                                link.id = resp.result.id;
+                                addNewExternalLink(link);
+                                toAction('list');
+                            } else {
+                                // remove previous errors and show new errors
+                                prepareDialog(linksEditor);
+                                showErrors(linksEditor, resp.result, "link-", "");
+                            }
                         },
-                        error: function (data) {
+                        error: function (resp) {
                             bootbox.alert($labelErrorLinkSave);
                         }
                     });
@@ -300,7 +312,6 @@ function addLinkVisible(visible) {
         $(externalLinksGroupInTopLine).append('<li>' + aTag + "</li>")
 
         function prepareNewLinkATag(externalLink) {
-            console.log(externalLink.url);
             return result = '<span><a id="' + externalLink.id + '"'
                 + 'href="' + externalLink.url + '"'
                 + 'name="' + externalLink.title + '"'
@@ -367,6 +378,7 @@ function toAction(typeOfAction) {
     listOfLinksVisible(false);
     switch (typeOfAction) {
         case "list":
+            prepareDialog(linksEditor)
             listOfLinksVisible(true);
             break;
         case "add":
@@ -385,5 +397,4 @@ function toAction(typeOfAction) {
     }
     Utils.resizeDialog($('#main-links-editor'));
 }
-
 

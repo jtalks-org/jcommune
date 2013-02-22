@@ -22,7 +22,10 @@ import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 /**
  * Handles CRUD operations for {@link ExternalLink}.
@@ -45,7 +48,10 @@ public class ExternalLinkController {
 
     @RequestMapping(value = "/links/save", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResponse saveLink(@RequestBody ExternalLink link) {
+    public JsonResponse saveLink(@Valid @RequestBody ExternalLink link, BindingResult result) {
+        if (result.hasErrors()) {
+            return new JsonResponse(JsonResponseStatus.FAIL, result.getAllErrors());
+        }
         Component component = componentService.getComponentOfForum();
         service.saveLink(link, component);
         return new JsonResponse(JsonResponseStatus.SUCCESS, link);

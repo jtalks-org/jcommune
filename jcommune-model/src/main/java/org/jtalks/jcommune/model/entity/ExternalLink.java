@@ -16,7 +16,10 @@
 package org.jtalks.jcommune.model.entity;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.URL;
 import org.jtalks.common.model.entity.Entity;
+
+import javax.validation.constraints.Size;
 
 /**
  * Stores information about external link. Such links are shown on every page of forum at the top of it.
@@ -26,10 +29,13 @@ import org.jtalks.common.model.entity.Entity;
  */
 public class ExternalLink extends Entity {
     @NotBlank
+    @URL
+    @Size(max = 512, min = 10, message = "{validation.links.url.length}")
     private String url;
     @NotBlank
+    @Size(max = 30, min = 1, message = "{validation.links.title.length}")
     private String title;
-    @NotBlank
+    @Size(max = 128, message = "{validation.links.hint.length}")
     private String hint;
 
     /**
