@@ -14,19 +14,28 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.entity.ExternalLink;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.ExternalLinkService;
+import org.jtalks.jcommune.service.dto.UserInfoContainer;
+import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
+import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -37,47 +46,58 @@ import static org.testng.Assert.assertEquals;
 
 public class ExternalLinkControllerTest {
 
-//    private static final long ID = 1L;
-//    private static final String TITLE = "title";
-//    private static final String URL = "url";
-//    private static final String HINT = "hint";
-//
-//    @Mock
-//    private ExternalLinkService service;
-//    private ExternalLinkController controller;
+    private static final long ID = 1L;
+    private static final String TITLE = "title";
+    private static final String URL = "url";
+    private static final String HINT = "hint";
 
-//    @BeforeMethod
-//    public void setUp() {
-//        initMocks(this);
-//        controller = new ExternalLinkController(service);
-//    }
+    @Mock
+    private ExternalLinkService service;
+    @Mock
+    private ComponentService componentService;
+    @Mock
+    BindingResult bindingResult;
 
-//    @Test
-//    public void testSaveLink() throws Exception {
-//        JsonResponse expected = controller.saveLink(createLink());
-//        assertEquals(expected.getStatus(), JsonResponseStatus.SUCCESS);
-//        ExternalLink expectedLink = (ExternalLink) expected.getResult();
-//        assertEquals(ID, expectedLink.getId());
-//        assertEquals(TITLE, expectedLink.getTitle());
-//        assertEquals(HINT, expectedLink.getHint());
-//        assertEquals(URL, expectedLink.getUrl());
-//        verify(service).saveLink(any(ExternalLink.class));
-//    }
-//
-//    @Test
-//    public void testDeleteLink() throws Exception {
-//        boolean expectedResult = true;
-//        when(service.deleteLink(eq(ID))).thenReturn(expectedResult);
-//        JsonResponse expected = controller.deleteLink(ID);
-//        assertEquals(expected.getStatus(), JsonResponseStatus.SUCCESS);
-//        boolean actualResult = (Boolean) expected.getResult();
-//        assertEquals(actualResult, expectedResult);
-//        verify(service).deleteLink(eq(ID));
-//    }
+    private ExternalLinkController controller;
 
-//    private ExternalLink createLink() {
-//        ExternalLink link = new ExternalLink(URL, TITLE, HINT);
-//        link.setId(ID);
-//        return link;
-//    }
+    @BeforeMethod
+    public void setUp() {
+        initMocks(this);
+        controller = new ExternalLinkController(service, componentService);
+    }
+
+    @Test
+    public void testSaveLink() throws Exception {
+        when(bindingResult.hasErrors()).thenReturn(false);
+
+        JsonResponse expected = controller.saveLink(createLink(), bindingResult);
+
+        assertEquals(expected.getStatus(), JsonResponseStatus.SUCCESS);
+        verify(service).saveLink(any(ExternalLink.class), any(Component.class));
+    }
+
+    @Test
+    public void testFailValidationSaveLink() throws Exception {
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        JsonResponse expected = controller.saveLink(createLink(), bindingResult);
+
+        assertEquals(expected.getStatus(), JsonResponseStatus.FAIL);
+        verify(service, never()).saveLink(any(ExternalLink.class), any(Component.class));
+    }
+
+    @Test
+    public void testDeleteLink() throws Exception {
+        boolean expectedResult = true;
+        when(service.deleteLink(eq(ID), any(Component.class))).thenReturn(expectedResult);
+        JsonResponse expected = controller.deleteLink(ID);
+        assertEquals(expected.getStatus(), JsonResponseStatus.SUCCESS);
+        verify(service).deleteLink(eq(ID), any(Component.class));
+    }
+
+    private ExternalLink createLink() {
+        ExternalLink link = new ExternalLink(URL, TITLE, HINT);
+        link.setId(ID);
+        return link;
+    }
 }

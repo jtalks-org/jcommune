@@ -42,7 +42,7 @@ import org.jtalks.jcommune.model.entity.UserContactType;
  */
 public final class ObjectsFactory {
 
-    public static final String EXTERNAL_LINK_URL = "jtalks.org";
+    public static final String EXTERNAL_LINK_URL = "http://jtalks.org";
     public static final String EXTERNAL_LINK_TITLE = "Open Source Java Forum";
     public static final String EXTERNAL_LINK_HINT = "Most powerful forum engine";
 
@@ -169,14 +169,14 @@ public final class ObjectsFactory {
 
         return review;
     }
-    
+
     public static Banner getDefaultBanner() {
         Banner banner = new Banner();
         banner.setPositionOnPage(BannerPosition.TOP);
         banner.setContent("<html></html>");
         return banner;
     }
-    
+
     public static List<Banner> getBanners() {
         int bannersCount = 3;
         List<Banner> banners = new ArrayList<Banner>();

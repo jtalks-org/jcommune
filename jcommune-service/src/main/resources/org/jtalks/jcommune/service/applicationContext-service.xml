@@ -153,9 +153,9 @@
         <constructor-arg ref="topicModificationService"/>
         <constructor-arg ref="userService"/>
     </bean>
-    
-    <bean id="branchLastPostService" 
-            class="org.jtalks.jcommune.service.transactional.TransactionalBranchLastPostService" >
+
+    <bean id="branchLastPostService"
+          class="org.jtalks.jcommune.service.transactional.TransactionalBranchLastPostService">
         <constructor-arg ref="postDao"/>
         <constructor-arg ref="topicBranchDao"/>
     </bean>
@@ -217,8 +217,8 @@
         <constructor-arg ref="securityService"/>
     </bean>
 
-	<bean id="bbCodeReviewProcessor" class="org.jtalks.jcommune.service.bb2htmlprocessors.BbCodeReviewProcessor"/>
-	
+    <bean id="bbCodeReviewProcessor" class="org.jtalks.jcommune.service.bb2htmlprocessors.BbCodeReviewProcessor"/>
+
     <bean id="bbCodeService" class="org.jtalks.jcommune.service.nontransactional.BBCodeService">
         <property name="preprocessors">
             <list>
@@ -232,37 +232,38 @@
             </list>
         </property>
     </bean>
-    
+
     <bean id="codeReviewService" class="org.jtalks.jcommune.service.transactional.TransactionalCodeReviewService">
         <constructor-arg ref="codeReviewDao"/>
         <constructor-arg ref="userService"/>
         <constructor-arg ref="permissionService"/>
         <constructor-arg ref="notificationService"/>
     </bean>
-    
-    <bean id="codeReviewCommentService" class="org.jtalks.jcommune.service.transactional.TransactionalCodeReviewCommentService">
+
+    <bean id="codeReviewCommentService"
+          class="org.jtalks.jcommune.service.transactional.TransactionalCodeReviewCommentService">
         <constructor-arg ref="codeReviewCommentDao"/>
         <constructor-arg ref="permissionService"/>
         <constructor-arg ref="userService"/>
     </bean>
-    
+
     <bean id="permissionService" class="org.jtalks.jcommune.service.security.TransactionalPermissionService">
         <constructor-arg ref="securityContextFacade"/>
         <constructor-arg ref="aclGroupPermissionEvaluator"/>
     </bean>
-    
+
     <bean id="bannerService" class="org.jtalks.jcommune.service.transactional.TransactionalBannerService">
         <constructor-arg ref="bannerDao"/>
     </bean>
 
-    <bean id="externalLinkService" class="org.jtalks.jcommune.service.transactional.TransactionalLinkService">
+    <bean id="externalLinkService" class="org.jtalks.jcommune.service.transactional.TransactionalExternalLinkService">
         <constructor-arg ref="externalLinkDao"/>
     </bean>
-    
+
     <bean id="componentService" class="org.jtalks.jcommune.service.transactional.TransactionalComponentService">
         <constructor-arg ref="componentDao"/>
     </bean>
-    
+
     <bean id="configurationService" class="org.jtalks.jcommune.service.transactional.TransactionalConfigurationService">
         <constructor-arg ref="componentSapeAccountProperty"/>
         <constructor-arg ref="componentSapeTimeoutProperty"/>
