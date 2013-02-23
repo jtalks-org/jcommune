@@ -19,6 +19,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.URL;
 import org.jtalks.common.model.entity.Entity;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -28,14 +29,21 @@ import javax.validation.constraints.Size;
  *         Date: 03.02.13
  */
 public class ExternalLink extends Entity {
+    public static final int TITLE_MAX_SIZE = 30;
+    public static final int TITLE_MIN_SIZE = 1;
+    public static final int URL_MAX_SIZE = 512;
+    public static final int URL_MIN_SIZE = 10;
+    public static final int HINT_MAX_SIZE = 128;
+
     @NotBlank
     @URL
-    @Size(max = 512, min = 10, message = "{validation.links.url.length}")
+    @Size(max = URL_MAX_SIZE, min = URL_MIN_SIZE, message = "{validation.links.url.length}")
     private String url;
     @NotBlank
-    @Size(max = 30, min = 1, message = "{validation.links.title.length}")
+    @Size(max = TITLE_MAX_SIZE, min = TITLE_MIN_SIZE, message = "{validation.links.title.length}")
     private String title;
-    @Size(max = 128, message = "{validation.links.hint.length}")
+    @NotNull
+    @Size(max = HINT_MAX_SIZE, message = "{validation.links.hint.length}")
     private String hint;
 
     /**

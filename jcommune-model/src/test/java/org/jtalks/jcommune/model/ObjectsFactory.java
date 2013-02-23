@@ -17,6 +17,7 @@ package org.jtalks.jcommune.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.math.RandomUtils;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Group;
@@ -116,6 +117,14 @@ public final class ObjectsFactory {
         result.setUrl(EXTERNAL_LINK_URL);
         result.setTitle(EXTERNAL_LINK_TITLE);
         result.setHint(EXTERNAL_LINK_HINT);
+        return result;
+    }
+
+    public static List<ExternalLink> getExternalLinks(int size) {
+        List<ExternalLink> result = new ArrayList();
+        for (int i = 0; i < size; i++) {
+            result.add(getDefaultExternalLink());
+        }
         return result;
     }
 

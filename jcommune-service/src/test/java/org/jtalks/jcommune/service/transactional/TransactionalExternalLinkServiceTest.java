@@ -33,8 +33,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class TransactionalExternalLinkServiceTest {
     @Mock
     private ExternalLinkDao dao;
-    @Mock
-    private Component forumComponent;
     private ExternalLinkService service;
 
     @BeforeMethod
@@ -52,13 +50,15 @@ public class TransactionalExternalLinkServiceTest {
     @Test
     public void testAddLink() throws Exception {
         ExternalLink linkToSave = new ExternalLink();
-        service.saveLink(linkToSave, forumComponent);
+        Component component = new Component();
+        service.saveLink(linkToSave, component);
         verify(dao).saveOrUpdate(linkToSave);
     }
 
     @Test
     public void testRemoveLink() throws Exception {
-        service.deleteLink(1L, forumComponent);
+        Component component = new Component();
+        service.deleteLink(1L, component);
         verify(dao).delete(eq(1L));
     }
 }

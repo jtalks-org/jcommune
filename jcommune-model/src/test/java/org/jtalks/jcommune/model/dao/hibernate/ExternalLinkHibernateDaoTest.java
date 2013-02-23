@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
 
@@ -39,6 +40,7 @@ import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEqua
 
 /**
  * @author Alexandre Teterin
+ * @author Maksim Reshetov
  *         Date: 03.02.13
  */
 
@@ -53,16 +55,10 @@ public class ExternalLinkHibernateDaoTest extends AbstractTransactionalTestNGSpr
     private ExternalLinkDao dao;
 
     private Session session;
-    private static final int TITLE_MAX_SIZE = 30;
-    private static final int TITLE_MIN_SIZE = 1;
-    private static final int URL_MAX_SIZE = 512;
-    private static final int URL_MIN_SIZE = 10;
-    private static final int HINT_MAX_SIZE = 128;
 
     @BeforeMethod
     public void setUp() throws Exception {
         session = sessionFactory.getCurrentSession();
-        PersistedObjectsFactory.setSession(session);
     }
 
     @Test
@@ -71,7 +67,7 @@ public class ExternalLinkHibernateDaoTest extends AbstractTransactionalTestNGSpr
         ExternalLink expected = ObjectsFactory.getDefaultExternalLink();
         expected.setId(id);
         session.save(expected);
-        session.evict(expected);
+        session.clear();
 
         ExternalLink actual = (ExternalLink) session.get(ExternalLink.class, expected.getId());
         assertReflectionEquals(expected, actual);
@@ -86,12 +82,10 @@ public class ExternalLinkHibernateDaoTest extends AbstractTransactionalTestNGSpr
     public void testUpdate() throws Exception {
         ExternalLink link = ObjectsFactory.getDefaultExternalLink();
         dao.saveOrUpdate(link);
-        session.evict(link);
+        session.clear();
 
         link = (ExternalLink) session.get(ExternalLink.class, link.getId());
-        link.setTitle("New title");
-        link.setUrl("http://jtalks.org");
-        link.setHint("New hint");
+        fillFieldsRandomly(link);
 
         dao.update(link);
         session.clear();
@@ -102,61 +96,79 @@ public class ExternalLinkHibernateDaoTest extends AbstractTransactionalTestNGSpr
 
     @Test
     public void testGetLinks() throws Exception {
-        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
-        session.saveOrUpdate(link);
+        List<ExternalLink> link = ObjectsFactory.getExternalLinks(3);
+        for (ExternalLink externalLink : link) {
+            session.saveOrUpdate(externalLink);
+        }
         session.clear();
 
         List<ExternalLink> actual = dao.getAll();
-        assertReflectionEquals(link, actual.get(0));
+        assertReflectionEquals(link.get(0), actual.get(0));
+        assertEquals(actual.size(), 3);
     }
 
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void shouldFailWithEmptyTitle() {
         ExternalLink link = ObjectsFactory.getDefaultExternalLink();
         link.setTitle("");
-        session.saveOrUpdate(link);
+        dao.saveOrUpdate(link);
     }
+
+    @Test(expectedExceptions = ConstraintViolationException.class)
+    public void shouldFailWithNullTitle() {
+        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
+        link.setTitle(null);
+        dao.saveOrUpdate(link);
+    }
+
 
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void shouldFailWithLongTitle() {
         ExternalLink link = ObjectsFactory.getDefaultExternalLink();
-        link.setTitle(RandomStringUtils.random(TITLE_MAX_SIZE + 1));
-        session.saveOrUpdate(link);
+        link.setTitle(RandomStringUtils.random(ExternalLink.TITLE_MAX_SIZE + 1));
+        dao.saveOrUpdate(link);
     }
 
     @Test
     public void shouldSuccessWithMaxLengthTitle() {
         ExternalLink link = ObjectsFactory.getDefaultExternalLink();
-        link.setTitle(RandomStringUtils.random(TITLE_MAX_SIZE));
-        session.saveOrUpdate(link);
+        link.setTitle(RandomStringUtils.random(ExternalLink.TITLE_MAX_SIZE));
+        dao.saveOrUpdate(link);
     }
 
     @Test
     public void shouldSuccessWithMinLengthTitle() {
         ExternalLink link = ObjectsFactory.getDefaultExternalLink();
-        link.setTitle(RandomStringUtils.random(TITLE_MIN_SIZE));
-        session.saveOrUpdate(link);
+        link.setTitle(RandomStringUtils.random(ExternalLink.TITLE_MIN_SIZE));
+        dao.saveOrUpdate(link);
     }
 
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void shouldFailWithEmptyUrl() {
         ExternalLink link = ObjectsFactory.getDefaultExternalLink();
         link.setUrl("");
-        session.saveOrUpdate(link);
+        dao.saveOrUpdate(link);
+    }
+
+    @Test(expectedExceptions = ConstraintViolationException.class)
+    public void shouldFailWithNullUrl() {
+        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
+        link.setUrl(null);
+        dao.saveOrUpdate(link);
     }
 
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void shouldFailWithNotValidUrl() {
         ExternalLink link = ObjectsFactory.getDefaultExternalLink();
         link.setUrl("jtalks.org");
-        session.saveOrUpdate(link);
+        dao.saveOrUpdate(link);
     }
 
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void shouldFailWithLongUrl() {
         ExternalLink link = ObjectsFactory.getDefaultExternalLink();
         //-10 = protocol + domen
-        link.setUrl("http://" + RandomStringUtils.random(URL_MAX_SIZE - 10) + ".org");
+        link.setUrl("http://" + RandomStringUtils.random(ExternalLink.URL_MAX_SIZE - 10) + ".org");
         session.saveOrUpdate(link);
     }
 
@@ -164,29 +176,49 @@ public class ExternalLinkHibernateDaoTest extends AbstractTransactionalTestNGSpr
     public void shouldSuccessWithMaxLengthUrl() {
         ExternalLink link = ObjectsFactory.getDefaultExternalLink();
         //-10 = protocol + domen
-        link.setUrl("http://" + RandomStringUtils.random(URL_MAX_SIZE - 11) + ".org");
-        session.saveOrUpdate(link);
+        link.setUrl("http://" + RandomStringUtils.random(ExternalLink.URL_MAX_SIZE - 11) + ".org");
+        dao.saveOrUpdate(link);
+    }
+
+    @Test(expectedExceptions = ConstraintViolationException.class)
+    public void shouldFailWithShortUrl() {
+        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
+        link.setUrl("http://az");
+        dao.saveOrUpdate(link);
     }
 
     @Test
-    public void shouldSuccessWithNullHint() {
+    public void shouldSuccessWithEmptyHint() {
         ExternalLink link = ObjectsFactory.getDefaultExternalLink();
         link.setHint("");
-        session.saveOrUpdate(link);
+        dao.saveOrUpdate(link);
         assertEquals(link.getHint(), "");
+    }
+
+    @Test(expectedExceptions = ConstraintViolationException.class)
+    public void shouldSuccessWithNullHint() {
+        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
+        link.setHint(null);
+        session.saveOrUpdate(link);
     }
 
     @Test
     public void shouldSuccessWithMaxLengthHint() {
         ExternalLink link = ObjectsFactory.getDefaultExternalLink();
-        link.setHint(RandomStringUtils.random(HINT_MAX_SIZE));
-        session.saveOrUpdate(link);
+        link.setHint(RandomStringUtils.random(ExternalLink.HINT_MAX_SIZE));
+        dao.saveOrUpdate(link);
     }
 
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void shouldFailWithLongHint() {
         ExternalLink link = ObjectsFactory.getDefaultExternalLink();
-        link.setHint(RandomStringUtils.random(HINT_MAX_SIZE + 1));
-        session.saveOrUpdate(link);
+        link.setHint(RandomStringUtils.random(ExternalLink.HINT_MAX_SIZE + 1));
+        dao.saveOrUpdate(link);
+    }
+
+    private void fillFieldsRandomly(ExternalLink link) {
+        link.setTitle("New title");
+        link.setUrl(StringEscapeUtils.escapeJava("http://jtalks.org"));
+        link.setHint("New hint");
     }
 }
