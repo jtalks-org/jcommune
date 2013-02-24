@@ -39,8 +39,8 @@ public class RegisterUserDto {
     @Unique(entity = JCUser.class, field = "username", message = "{validation.duplicateuser}")
     private String username;
 
-    @NotBlank(message = "{validation.email.not_empty}")
-    @NotNull(message = "{validation.email.not_empty}")
+    @NotBlank(message = "{validation.not_null}")
+    @NotNull(message = "{validation.not_null}")
     @Size(max = User.EMAIL_MAX_LENGTH, message = "{validation.email.length}")
     @Email(message = "{validation.email.wrong.format}")
     @Unique(entity = JCUser.class, field = "email", message = "{validation.duplicateemail}")

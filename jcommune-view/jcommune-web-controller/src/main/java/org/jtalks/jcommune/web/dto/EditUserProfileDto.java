@@ -37,8 +37,8 @@ import javax.validation.constraints.Size;
 @ChangedPassword
 public class EditUserProfileDto {
 
-    @NotBlank(message = "{validation.email.not_empty}")
-    @NotNull(message = "{validation.email.not_empty}")
+    @NotBlank(message = "{validation.not_null}")
+    @NotNull(message = "{validation.not_null}")
     @Size(max = User.EMAIL_MAX_LENGTH, message = "{validation.email.length}")
     @Email(message = "{validation.email.wrong.format}")
     @ChangedEmail
