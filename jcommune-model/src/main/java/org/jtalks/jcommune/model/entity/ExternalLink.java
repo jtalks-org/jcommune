@@ -35,11 +35,11 @@ public class ExternalLink extends Entity {
     public static final int URL_MIN_SIZE = 10;
     public static final int HINT_MAX_SIZE = 128;
 
-    @NotBlank
+    @NotNull
     @URL
     @Size(max = URL_MAX_SIZE, min = URL_MIN_SIZE, message = "{validation.links.url.length}")
     private String url;
-    @NotBlank
+    @NotNull
     @Size(max = TITLE_MAX_SIZE, min = TITLE_MIN_SIZE, message = "{validation.links.title.length}")
     private String title;
     @NotNull
