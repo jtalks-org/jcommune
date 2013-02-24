@@ -510,12 +510,14 @@ div.anchor {
     visibility: hidden;
     width: 0px;
     max-width: 0px;
+    white-space: nowrap;
 }
 
 .modal-body .link-hint {
     visibility: hidden;
     width: 0px;
     max-width: 0px;
+    white-space: nowrap;
 }
 
 .modal-body .link-title {
