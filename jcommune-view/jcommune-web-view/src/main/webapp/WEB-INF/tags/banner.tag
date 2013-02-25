@@ -49,7 +49,7 @@
 		                            style="width:100%;" rows="7" />
 		        </div>
 		        <div class="modal-footer">
-		            <button class="btn" data-dismiss="modal" aria-hidden="true">
+		            <button class="btn cancel" data-dismiss="modal" aria-hidden="true">
 		                <fmt:message key="label.banner.upload.dialog.cancel"/>
 		            </button>
 		            <button class="btn btn-primary">

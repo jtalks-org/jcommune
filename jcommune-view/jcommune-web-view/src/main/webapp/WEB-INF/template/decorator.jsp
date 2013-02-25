@@ -100,6 +100,8 @@
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/componentClickEventDisabler.js"
             type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/banner.js"
+            type="text/javascript"></script>
     <decorator:head/>
     <title><decorator:title/></title>
 </head>
