@@ -30,7 +30,9 @@ import java.util.Collection;
 public interface UserDao extends org.jtalks.common.model.dao.UserDao<JCUser> {
 
     /**
-     * Get {@link JCUser} with corresponding username ignoring case.
+     * Get {@link JCUser} with corresponding username ignoring case. If there are
+     * several 'ignore case' usernames we don't ignore case and check exact match
+     * among them. See http://jira.jtalks.org/browse/JC-1163 for details.
      *
      * @param username name of requested user
      * @return {@link JCUser} with given username or null if not found
