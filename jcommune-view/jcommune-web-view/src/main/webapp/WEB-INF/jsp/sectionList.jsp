@@ -22,6 +22,7 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <head>
+    <meta name="description" content="${cmpDescription}">
     <title><c:out value="${cmpDescription}"/></title>
 </head>
 <body>

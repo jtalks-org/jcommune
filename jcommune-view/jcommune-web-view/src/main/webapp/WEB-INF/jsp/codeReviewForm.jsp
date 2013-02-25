@@ -20,7 +20,7 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <head>
-    <title><spring:message code="h.new_topic"/></title>
+    <title><c:out value="${topicDto.topic.title}"/> - <spring:message code="h.new_topic"/></title>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-ui.min.js"
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/leaveConfirm.js"

@@ -23,6 +23,7 @@
 <%@ taglib prefix="fmt" uri="http://www.springframework.org/tags" %>
 <sec:authentication property="principal.username" var="auth" scope="request"/>
 <head>
+    <meta name="description" content="${label.user}">
     <title><spring:message code="label.user"/> - "${auth}"</title>
     <script type="text/javascript"
             src="${pageContext.request.contextPath}/resources/javascript/licensed/fileuploader.js"></script>

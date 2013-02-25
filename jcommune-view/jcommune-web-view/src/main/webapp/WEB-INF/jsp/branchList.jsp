@@ -22,7 +22,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <head>
-    <title><c:out value="${cmpDescription}"/></title>
+    <meta name="description" content="${section.name}">
+    <title><c:out value="${section.name}"/> - <c:out value="${cmpDescription}"/></title>
 </head>
 <body>
 
