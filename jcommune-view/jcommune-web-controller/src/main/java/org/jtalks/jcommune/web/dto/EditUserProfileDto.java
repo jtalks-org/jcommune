@@ -24,7 +24,6 @@ import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.web.validation.annotations.*;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -38,7 +37,6 @@ import javax.validation.constraints.Size;
 public class EditUserProfileDto {
 
     @NotBlank(message = "{validation.not_null}")
-    @NotNull(message = "{validation.not_null}")
     @Size(max = User.EMAIL_MAX_LENGTH, message = "{validation.email.length}")
     @Email(message = "{validation.email.wrong.format}")
     @ChangedEmail
