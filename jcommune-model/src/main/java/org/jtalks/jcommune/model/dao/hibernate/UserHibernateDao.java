@@ -21,6 +21,7 @@ import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Hibernate implementation of UserDao.
@@ -45,14 +46,24 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser>
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     @Override
     public JCUser getByUsername(String username) {
-        JCUser user = (JCUser) getSession()
+        List<JCUser> users = getSession()
                 .createCriteria(JCUser.class)
-                .add(Restrictions.eq("username", username))
+                .add(Restrictions.eq("username", username).ignoreCase())
                 .setCacheable(true)
-                .uniqueResult();
-        return user;
+                .list();
+        if (users.size() == 1) {
+            return users.get(0);
+        } else {
+            for (JCUser user : users) {
+                if (user.getUsername().equals(username)) {
+                    return user;
+                }
+            }
+            return null;
+        }
     }
 
     /**
@@ -70,6 +81,7 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser>
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     @Override
     public Collection<JCUser> getNonActivatedUsers() {
         return getSession()

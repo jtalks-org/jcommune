@@ -63,4 +63,9 @@ public @interface Exists {
      * Field to be checked
      */
     String field();
+    
+    /**
+     * Ignore case or not when checking for existence
+     */
+    boolean ignoreCase() default false;
 }

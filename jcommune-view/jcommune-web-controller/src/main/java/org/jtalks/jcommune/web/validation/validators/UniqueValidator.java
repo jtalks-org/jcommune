@@ -32,6 +32,7 @@ public class UniqueValidator implements ConstraintValidator<Unique, String> {
 
     private Class<? extends Entity> entity;
     private String field;
+    private boolean ignoreCase;
 
     private ValidatorDao<String> dao;
 
@@ -50,6 +51,7 @@ public class UniqueValidator implements ConstraintValidator<Unique, String> {
     public void initialize(Unique annotation) {
         this.entity = annotation.entity();
         this.field = annotation.field();
+        this.ignoreCase = annotation.ignoreCase();
     }
 
     /**
@@ -57,6 +59,6 @@ public class UniqueValidator implements ConstraintValidator<Unique, String> {
      */
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return (value != null) && dao.isResultSetEmpty(entity, field, value);
+        return (value != null) && dao.isResultSetEmpty(entity, field, value, ignoreCase);
     }
 }

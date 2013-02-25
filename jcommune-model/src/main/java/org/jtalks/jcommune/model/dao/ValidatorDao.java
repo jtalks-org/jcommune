@@ -33,7 +33,23 @@ public interface ValidatorDao<T> {
      * @param entity entity we want to check
      * @param field  entity field we want to check
      * @param param parameter for the query
+     * @param ignoreCase ignore case or not when checking
      * @return true if result set returned have at least one row
      */
-    boolean isResultSetEmpty(Class<? extends Entity> entity, String field, T param);
+    boolean isResultSetEmpty(Class<? extends Entity> entity, String field, 
+            T param, boolean ignoreCase);
+
+    /**
+     * Checks if entity with specified value of field exists. If <code>
+     * ignoreCase</code> is true and multiple entities with same 'ignore case' 
+     * data exists, they will be checked in case sensitive mode.
+     * 
+     * @param entity entity we want to check
+     * @param field entity field we want to check
+     * @param value value of the field
+     * @param ignoreCase ignore case or not when checking
+     * @return true if there is at least one entity with specified value of field 
+     */
+    boolean isExists(Class<? extends Entity> entity, String field,
+            T value, boolean ignoreCase);
 }

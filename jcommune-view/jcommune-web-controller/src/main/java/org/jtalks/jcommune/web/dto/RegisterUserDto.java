@@ -36,7 +36,7 @@ import javax.validation.constraints.Size;
 public class RegisterUserDto {
 
     @Size(min = User.USERNAME_MIN_LENGTH, max = User.USERNAME_MAX_LENGTH, message = "{validation.username.length}")
-    @Unique(entity = JCUser.class, field = "username", message = "{validation.duplicateuser}")
+    @Unique(entity = JCUser.class, field = "username", message = "{validation.duplicateuser}", ignoreCase=true)
     private String username;
 
     @NotBlank(message = "{validation.not_null}")

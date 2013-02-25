@@ -42,15 +42,78 @@ public class ValidatorHibernateDaoTest extends AbstractTransactionalTestNGSpring
     ValidatorDao<String> dao;
 
     @Test
-    public void testResultSetisEmpty() {
-        assertTrue(dao.isResultSetEmpty(JCUser.class, "username", "lol"));
+    public void testResultSetisEmptyNoField() {
+        assertTrue(dao.isResultSetEmpty(JCUser.class, "username", "lol", false));
+    }
+    
+    @Test
+    public void testResultSetIsEmptyDifferentCases() {
+        String realname = ObjectsFactory.getDefaultUser().getUsername().toUpperCase();
+        sessionFactory.getCurrentSession().saveOrUpdate(ObjectsFactory.getDefaultUser());
+
+        assertTrue(dao.isResultSetEmpty(JCUser.class, "username", realname, false));
     }
 
     @Test
-    public void testResultSetIsNotEmpty() {
+    public void testResultSetIsNotEmptyCaseSensitive() {
         String realname = ObjectsFactory.getDefaultUser().getUsername();
         sessionFactory.getCurrentSession().saveOrUpdate(ObjectsFactory.getDefaultUser());
 
-        assertFalse(dao.isResultSetEmpty(JCUser.class, "username", realname));
+        assertFalse(dao.isResultSetEmpty(JCUser.class, "username", realname, false));
+    }
+    
+    @Test
+    public void testResultSetIsNotEmptyIgnoreCase() {
+        String realname = ObjectsFactory.getDefaultUser().getUsername().toUpperCase();
+        sessionFactory.getCurrentSession().saveOrUpdate(ObjectsFactory.getDefaultUser());
+
+        assertFalse(dao.isResultSetEmpty(JCUser.class, "username", realname, true));
+    }
+    
+    @Test
+    public void testIsExistsNoField() {
+        assertFalse(dao.isExists(JCUser.class, "username", "lol", false));
+    }
+    
+    @Test
+    public void testIsExistsDifferentCases() {
+        String realname = ObjectsFactory.getDefaultUser().getUsername().toUpperCase();
+        sessionFactory.getCurrentSession().saveOrUpdate(ObjectsFactory.getDefaultUser());
+
+        assertFalse(dao.isExists(JCUser.class, "username", realname, false));
+    }
+
+    @Test
+    public void testIsExistsExistCaseSensitive() {
+        String realname = ObjectsFactory.getDefaultUser().getUsername();
+        sessionFactory.getCurrentSession().saveOrUpdate(ObjectsFactory.getDefaultUser());
+
+        assertTrue(dao.isExists(JCUser.class, "username", realname, false));
+    }
+    
+    @Test
+    public void testIsExistsExistIgnoreCase() {
+        String realname = ObjectsFactory.getDefaultUser().getUsername().toUpperCase();
+        sessionFactory.getCurrentSession().saveOrUpdate(ObjectsFactory.getDefaultUser());
+
+        assertTrue(dao.isExists(JCUser.class, "username", realname, true));
+    }
+    
+    @Test
+    public void testIsExistsSameIgnoreCaseValuesNotExists() {
+        sessionFactory.getCurrentSession().saveOrUpdate(ObjectsFactory.getUser("Username", "Username@mail.com"));
+        sessionFactory.getCurrentSession().saveOrUpdate(ObjectsFactory.getUser("uSername", "uSername@mail.com"));
+
+        assertFalse(dao.isExists(JCUser.class, "username", "USERNAME", true));
+    }
+    
+    @Test
+    public void testIsExistsSameIgnoreCaseValuesExists() {
+        JCUser expectedUser = ObjectsFactory.getUser("Username", "Username@mail.com");
+        String expectedUsername = expectedUser.getUsername(); 
+        sessionFactory.getCurrentSession().saveOrUpdate(expectedUser);
+        sessionFactory.getCurrentSession().saveOrUpdate(ObjectsFactory.getUser("uSername", "uSername@mail.com"));
+
+        assertTrue(dao.isExists(JCUser.class, "username", expectedUsername, true));
     }
 }

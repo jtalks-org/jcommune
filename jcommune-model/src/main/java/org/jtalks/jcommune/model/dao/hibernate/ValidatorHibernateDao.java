@@ -14,8 +14,11 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import java.util.List;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.SimpleExpression;
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.dao.ValidatorDao;
 
@@ -40,13 +43,45 @@ public class ValidatorHibernateDao implements ValidatorDao<String> {
      * {@inheritDoc}
      */
     @Override
-    public boolean isResultSetEmpty(Class<? extends Entity> entity, String field, String param) {
-        return sessionFactory
+    public boolean isResultSetEmpty(Class<? extends Entity> entity, String field, 
+            String param, boolean ignoreCase) {
+        return getResultSet(entity, field, param, ignoreCase).isEmpty();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isExists(Class<? extends Entity> entity, String field, 
+            String param, boolean ignoreCase) {
+        List<?> resultSet = getResultSet(entity, field, param, ignoreCase);
+        
+        if (resultSet.isEmpty()) {
+            return false;
+        } else if (resultSet.size() == 1 || !ignoreCase) {
+            return true;
+        } else {
+            return !sessionFactory
                 .getCurrentSession()
                 .createCriteria(entity)
                 .add(Restrictions.eq(field, param))
                 .setCacheable(true)
                 .list()
                 .isEmpty();
+        }
+    }
+    
+    private List<?> getResultSet(Class<? extends Entity> entity, String field, 
+            String param, boolean ignoreCase) {
+        SimpleExpression fieldRestriction = Restrictions.eq(field, param);
+        if (ignoreCase) {
+            fieldRestriction = fieldRestriction.ignoreCase();
+        }
+        return sessionFactory
+            .getCurrentSession()
+            .createCriteria(entity)
+            .add(fieldRestriction)
+            .setCacheable(true)
+            .list();
     }
 }

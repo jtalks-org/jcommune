@@ -23,6 +23,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertFalse;
@@ -45,14 +46,14 @@ public class UniqueValidatorTest {
 
     @Test
     public void testValueExists() {
-        when(dao.isResultSetEmpty(Matchers.<Class<Entity>>any(), anyString(), anyString())).thenReturn(true);
+        when(dao.isResultSetEmpty(Matchers.<Class<Entity>>any(), anyString(), anyString(), anyBoolean())).thenReturn(true);
 
         assertTrue(validator.isValid("value", null));
     }
 
     @Test
     public void testValueDoesntExist() {
-        when(dao.isResultSetEmpty(Matchers.<Class<Entity>>any(), anyString(), anyString())).thenReturn(false);
+        when(dao.isResultSetEmpty(Matchers.<Class<Entity>>any(), anyString(), anyString(), anyBoolean())).thenReturn(false);
 
         assertFalse(validator.isValid("value", null));
     }

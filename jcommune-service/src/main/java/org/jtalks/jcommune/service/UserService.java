@@ -31,7 +31,9 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
  */
 public interface UserService extends EntityService<JCUser> {
     /**
-     * Get {@link JCUser} by username.
+     * Get {@link JCUser} with corresponding username ignoring case. If there are
+     * several 'ignore case' usernames we don't ignore case and check exact match
+     * among them. See http://jira.jtalks.org/browse/JC-1163 for details.
      *
      * @param username username of User
      * @return {@link JCUser} with given username
