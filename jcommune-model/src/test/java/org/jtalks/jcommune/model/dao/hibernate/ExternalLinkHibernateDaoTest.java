@@ -125,21 +125,21 @@ public class ExternalLinkHibernateDaoTest extends AbstractTransactionalTestNGSpr
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void shouldFailWithLongTitle() {
         ExternalLink link = ObjectsFactory.getDefaultExternalLink();
-        link.setTitle(RandomStringUtils.random(ExternalLink.TITLE_MAX_SIZE + 1));
+        link.setTitle(RandomStringUtils.random(ExternalLink.TITLE_MAX_SIZE + 1, true, false));
         dao.saveOrUpdate(link);
     }
 
     @Test
     public void shouldSuccessWithMaxLengthTitle() {
         ExternalLink link = ObjectsFactory.getDefaultExternalLink();
-        link.setTitle(RandomStringUtils.random(ExternalLink.TITLE_MAX_SIZE));
+        link.setTitle(RandomStringUtils.random(ExternalLink.TITLE_MAX_SIZE, true, false));
         dao.saveOrUpdate(link);
     }
 
     @Test
     public void shouldSuccessWithMinLengthTitle() {
         ExternalLink link = ObjectsFactory.getDefaultExternalLink();
-        link.setTitle(RandomStringUtils.random(ExternalLink.TITLE_MIN_SIZE));
+        link.setTitle(RandomStringUtils.random(ExternalLink.TITLE_MIN_SIZE, true, false));
         dao.saveOrUpdate(link);
     }
 
@@ -168,7 +168,7 @@ public class ExternalLinkHibernateDaoTest extends AbstractTransactionalTestNGSpr
     public void shouldFailWithLongUrl() {
         ExternalLink link = ObjectsFactory.getDefaultExternalLink();
         //-10 = protocol + domen
-        link.setUrl("http://" + RandomStringUtils.random(ExternalLink.URL_MAX_SIZE - 10) + ".org");
+        link.setUrl("http://" + RandomStringUtils.random(ExternalLink.URL_MAX_SIZE - 10, true, false) + ".org");
         session.saveOrUpdate(link);
     }
 
@@ -176,7 +176,7 @@ public class ExternalLinkHibernateDaoTest extends AbstractTransactionalTestNGSpr
     public void shouldSuccessWithMaxLengthUrl() {
         ExternalLink link = ObjectsFactory.getDefaultExternalLink();
         //-10 = protocol + domen
-        link.setUrl("http://" + RandomStringUtils.random(ExternalLink.URL_MAX_SIZE - 11) + ".org");
+        link.setUrl("http://" + RandomStringUtils.random(ExternalLink.URL_MAX_SIZE - 11, true, false) + ".org");
         dao.saveOrUpdate(link);
     }
 
@@ -205,14 +205,14 @@ public class ExternalLinkHibernateDaoTest extends AbstractTransactionalTestNGSpr
     @Test
     public void shouldSuccessWithMaxLengthHint() {
         ExternalLink link = ObjectsFactory.getDefaultExternalLink();
-        link.setHint(RandomStringUtils.random(ExternalLink.HINT_MAX_SIZE));
+        link.setHint(RandomStringUtils.random(ExternalLink.HINT_MAX_SIZE, true, false));
         dao.saveOrUpdate(link);
     }
 
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void shouldFailWithLongHint() {
         ExternalLink link = ObjectsFactory.getDefaultExternalLink();
-        link.setHint(RandomStringUtils.random(ExternalLink.HINT_MAX_SIZE + 1));
+        link.setHint(RandomStringUtils.random(ExternalLink.HINT_MAX_SIZE + 1, true, false));
         dao.saveOrUpdate(link);
     }
 
