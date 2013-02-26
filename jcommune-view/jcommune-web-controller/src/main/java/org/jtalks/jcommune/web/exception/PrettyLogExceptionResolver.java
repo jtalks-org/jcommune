@@ -15,9 +15,11 @@
 package org.jtalks.jcommune.web.exception;
 
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 
 /**
  * Catches all the exceptions thrown in controllers, logs them and directs to the error pages. The standard
@@ -27,6 +29,11 @@ import javax.servlet.http.HttpServletRequest;
  * @author Vitaliy Kravchenko
  */
 public class PrettyLogExceptionResolver extends SimpleMappingExceptionResolver {
+    /** Template message for logging AccessDeniedException */
+    private static final String ACCESS_DENIED_MESSAGE = "Access was denied for user [%s] trying to %s %s";
+    /** Constant for anonymous user */
+    private static final String NOT_AUTHORIZED_USERNAME = "not authorized";
+
     /**
      * {@inheritDoc}
      */
@@ -34,6 +41,12 @@ public class PrettyLogExceptionResolver extends SimpleMappingExceptionResolver {
     protected void logException(Exception ex, HttpServletRequest request) {
         if (ex instanceof NotFoundException) {
             logger.info(ex.getMessage());
+        } else if (ex instanceof AccessDeniedException) {
+            String url = request.getRequestURL().toString();
+            Principal principal = request.getUserPrincipal();
+            String user = principal != null ? principal.getName() : NOT_AUTHORIZED_USERNAME;
+            String accessDeniedMessage = String.format(ACCESS_DENIED_MESSAGE, user, request.getMethod(), url);
+            logger.info(accessDeniedMessage);
         } else {
             super.logException(ex, request);
         }
