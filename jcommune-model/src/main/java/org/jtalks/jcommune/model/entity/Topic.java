@@ -34,6 +34,8 @@ import org.hibernate.search.annotations.TokenizerDef;
 import org.hibernate.validator.constraints.NotBlank;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
@@ -126,6 +128,8 @@ import java.util.Set;
 @Indexed
 public class Topic extends Entity implements SubscriptionAwareEntity {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(Topic.class);
+    
     private DateTime creationDate;
     private DateTime modificationDate;
     private JCUser topicStarter;
@@ -444,8 +448,9 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      *              (0 means first post is the last read one)
      */
     public void setLastReadPostIndex(int index) {
-        Validate.isTrue(index < posts.size(), "Last read post index is bigger than post count in the topic");
-        lastReadPostIndex = index;
+        LOGGER.warn("Last read post index ({}) is bigger than post count in the topic (TOPID ID: {})",
+                index, getId());
+        lastReadPostIndex = (index < posts.size()) ? index : posts.size() - 1;
     }
 
     /**
