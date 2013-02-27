@@ -17,9 +17,11 @@ package org.jtalks.jcommune.web.exception;
 
 import org.apache.commons.logging.Log;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.util.ReflectionUtils;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import sun.security.acl.PrincipalImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
@@ -45,6 +47,22 @@ public class PrettyLogExceptionResolverTest {
         prettyLogExceptionResolver.logException(notFoundException, mock(HttpServletRequest.class));
 
         verify(mockLog).info("Entity not found");
+    }
+
+    @Test
+    public void testLogExceptionWithIncomingAccessDeniedException() throws Exception {
+        Log mockLog = replaceLoggerWithMock(prettyLogExceptionResolver);
+        AccessDeniedException accessDeniedException = new AccessDeniedException("Access denied");
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getMethod()).thenReturn("POST");
+        when(request.getUserPrincipal()).thenReturn(new PrincipalImpl("test user"));
+        String url = "http://testserver.com/testing/url/42";
+        when(request.getRequestURL()).thenReturn(new StringBuffer(url));
+
+        prettyLogExceptionResolver.logException(accessDeniedException, request);
+
+        verify(mockLog).info("Access was denied for user [test user] trying to POST http://testserver.com/testing/url/42");
     }
 
     @Test

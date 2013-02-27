@@ -32,7 +32,7 @@ public class PrettyLogExceptionResolver extends SimpleMappingExceptionResolver {
     /** Template message for logging AccessDeniedException */
     private static final String ACCESS_DENIED_MESSAGE = "Access was denied for user [%s] trying to %s %s";
     /** Constant for anonymous user */
-    private static final String NOT_AUTHORIZED_USERNAME = "not authorized";
+    private static final String NOT_AUTHORIZED_USERNAME = "anonymousUser";
 
     /**
      * {@inheritDoc}
