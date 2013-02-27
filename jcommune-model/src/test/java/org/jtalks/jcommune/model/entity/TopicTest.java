@@ -104,9 +104,10 @@ public class TopicTest {
         assertEquals(post1.getId(), id);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test
     public void testSetLastReadPostIndexWrongValue() {
         topic.setLastReadPostIndex(100500);
+        assertFalse(topic.isHasUpdates());
     }
 
     @Test

@@ -126,9 +126,22 @@ public class TransactionalLastReadPostTest {
     }
 
     @Test
-    public void testMarkTopicAsReadUpdateExistingDbRecord() {
+    public void testMarkTopicPageAsReadUpdateExistingDbRecord() {
         final Topic topic = this.createTestTopic();
         LastReadPost post = new LastReadPost(user, topic, 0);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
+
+        lastReadPostService.markTopicPageAsRead(topic, 1, false);
+
+        verify(lastReadPostDao).update(argThat(
+                new LastReadPostMatcher(topic, topic.getPostCount() - 1)));
+    }
+    
+    @Test
+    public void testMarkTopicPageAsReadUpdateExistingDbRecordWithWrongPostIndex() {
+        final Topic topic = this.createTestTopic();
+        LastReadPost post = new LastReadPost(user, topic, 1000);
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
 
@@ -178,6 +191,32 @@ public class TransactionalLastReadPostTest {
 
         lastReadPostService.markTopicAsRead(topic);
         verifyZeroInteractions(lastReadPostDao);
+    }
+    
+    @Test
+    public void testMarkTopicAsReadUpdateExistingDbRecord() {
+        final Topic topic = this.createTestTopic();
+        LastReadPost post = new LastReadPost(user, topic, 0);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
+
+        lastReadPostService.markTopicAsRead(topic);
+
+        verify(lastReadPostDao).update(argThat(
+                new LastReadPostMatcher(topic, topic.getPostCount() - 1)));
+    }
+    
+    @Test
+    public void testMarkTopicReadUpdateExistingDbRecordWithWrongPostIndex() {
+        final Topic topic = this.createTestTopic();
+        LastReadPost post = new LastReadPost(user, topic, 1000);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
+
+        lastReadPostService.markTopicAsRead(topic);
+
+        verify(lastReadPostDao).update(argThat(
+                new LastReadPostMatcher(topic, topic.getPostCount() - 1)));
     }
 
     @Test

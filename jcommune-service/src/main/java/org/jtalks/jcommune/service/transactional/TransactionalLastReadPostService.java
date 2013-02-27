@@ -150,7 +150,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
             post = new LastReadPost(user, topic, postIndex);
         }
         else {
-            post.setPostIndex(Math.max(post.getPostIndex(), postIndex));
+            post.setPostIndex(Math.max(Math.min(topic.getPostCount() - 1, post.getPostIndex()), postIndex));
         }
         lastReadPostDao.update(post);
     }
