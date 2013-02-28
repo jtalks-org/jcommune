@@ -53,6 +53,7 @@ public class RssViewerTest {
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
         rssViewer = new RssViewer();
+        rssViewer.setContentType("application/rss+xml;charset=UTF-8");
         rssViewerMock = mock(RssViewer.class);
         channel = new Channel();
         model = new HashMap<String, Object>();
@@ -74,6 +75,7 @@ public class RssViewerTest {
         List<Item> items = rssViewer.buildFeedItems(model, request, response);
         assertEquals(items.get(0).getAuthor(), "username");
         assertEquals(items.get(0).getComments(), "Signature");
+        assertEquals(response.getContentType(), rssViewer.getContentType());
     }
 
     @Test

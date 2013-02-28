@@ -79,6 +79,7 @@ public class RssViewer extends AbstractRssFeedView {
             items.add(createFeedItem(topic, url));
         }
 
+        response.setContentType(getContentType());
         return items;
     }
 
