@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.exception;
 
 import org.apache.commons.logging.Log;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.util.ReflectionUtils;
 import org.testng.annotations.BeforeMethod;
@@ -54,15 +55,14 @@ public class PrettyLogExceptionResolverTest {
         Log mockLog = replaceLoggerWithMock(prettyLogExceptionResolver);
         AccessDeniedException accessDeniedException = new AccessDeniedException("Access denied");
 
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getMethod()).thenReturn("POST");
-        when(request.getUserPrincipal()).thenReturn(new PrincipalImpl("test user"));
-        String url = "http://testserver.com/testing/url/42";
-        when(request.getRequestURL()).thenReturn(new StringBuffer(url));
+        MockHttpServletRequest request = new MockHttpServletRequest("POST", "/testing/url/42");
+        request.setServerName("testserver.com");
+        request.setServerPort(8080);
+        request.setUserPrincipal(new PrincipalImpl("test user"));
 
         prettyLogExceptionResolver.logException(accessDeniedException, request);
 
-        verify(mockLog).info("Access was denied for user [test user] trying to POST http://testserver.com/testing/url/42");
+        verify(mockLog).info("Access was denied for user [test user] trying to POST http://testserver.com:8080/testing/url/42");
     }
 
     @Test
