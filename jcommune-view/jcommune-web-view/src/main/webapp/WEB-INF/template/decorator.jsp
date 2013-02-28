@@ -112,6 +112,20 @@
 <decorator:body/>
 <div class="container">
     <footer>
+        <div class="well sapeLinks">
+            <div class="sapaLinkRow">
+                <a href="http://www.dilijans.org/zimnie_shiny/Nokian.html" target="_blank">
+                    продажа зимних шин нокиан</a> с доставкой
+            </div>
+            <div class="sapaLinkRow">
+                <a href="http://www.dilijans.org/zimnie_shiny/Nokian.html" target="_blank">
+                    продажа зимних шин нокиан</a> с доставкой
+            </div>
+            <div class="sapaLinkRow">
+                <a href="http://www.dilijans.org/zimnie_shiny/Nokian.html" target="_blank">
+                    продажа зимних шин нокиан</a> с доставкой
+            </div>
+        </div>
         <%-- <c:if test="${sapeContent!=null}">
             <c:out value="${sapeContent}"/>
         </c:if>--%>
