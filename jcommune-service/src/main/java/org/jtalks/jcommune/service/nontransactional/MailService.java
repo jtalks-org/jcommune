@@ -131,13 +131,14 @@ public class MailService {
     }
 
     /**
-     * Sends update notification to user specified, e.g. when some new
+     * Sends update notification to user specified if code review subscription was update, e.g. when some new
      * information were added to the subscribed entity. This method won't check if user
      * is subscribed to the particular notification or not.
      *
      * @param recipient a person to be notified about updates by email
      * @param entity    changed subscribed entity.
      */
+    //todo may need to rename the method to sendUpdatesOnSubscriptionCodeReview
     public void sendUpdatesOnSubscription(JCUser recipient, SubscriptionAwareEntity entity) {
         String entityDisplayValue = prepareEntityDisplayValue(entity);
         try {
@@ -147,7 +148,7 @@ public class MailService {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(LINK, url);
             model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
-            sendEmailOnForumUpdates(recipient, model, locale, null);
+            sendEmailOnForumUpdates(recipient, model, locale, (CodeReview) entity);
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, entityDisplayValue, ((Entity) entity).getId(),
                     recipient.getUsername()));
@@ -392,6 +393,9 @@ public class MailService {
         } else if (entity instanceof Branch) {
             Branch branch = (Branch) entity;
             return ": " + branch.getName();
+        } else if (entity instanceof CodeReview) {
+            CodeReview codeReview = (CodeReview) entity;
+            return ": " + codeReview.getTopic().getTitle();
         } else {
             return "";
         }
