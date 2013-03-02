@@ -527,6 +527,15 @@
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-maven</artifactId>
+                <version>0.29</version>
+                <configuration>
+                    <timestampedReports>false</timestampedReports>
+                    <verbose>true</verbose>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <scm>
