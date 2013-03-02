@@ -114,6 +114,15 @@ public class MailServiceTest {
     }
 
     @Test
+    public void testSendUpdatesOnSubscriptionCodeReview_CheckTitleInSubject() throws MailingFailedException, IOException, MessagingException {
+        long id = 777;
+        topic.setId(id);
+        service.sendUpdatesOnSubscription(user, codeReview);
+        this.checkMailCredentials();
+        assertTrue(this.getMimeMailSubject().contains("title Topic"));
+    }
+
+    @Test
     public void testSendUpdatesOnSubscriptionExceptionCase() {
         Exception fail = new MailSendException("");
         doThrow(fail).when(sender).send(Matchers.<MimeMessage>any());

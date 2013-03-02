@@ -593,3 +593,29 @@ div.anchor {
     font-weight: bold;
     color: #999999;
 }
+
+
+
+.sapeLinks {
+    min-height: 10px;
+    padding: 5px;
+    margin-bottom: 25px;
+    max-height: 100px;
+    overflow: hidden;
+    text-align: justify;
+    background-color: rgb(247, 247, 247);
+    background-image: url("../images/solid.png");
+}
+
+.sapaLinkRow {
+    font-family: Georgia, serif;
+    /*font-size: 0.85em;*/
+    font-style: italic;
+    display: inline-block;
+    margin-bottom: 5px;
+    padding: 10px 10px 10px 10px;
+    max-width: 200px;
+    min-height: 100px;
+    max-height: 50px;
+    vertical-align: top;
+}

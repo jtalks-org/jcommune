@@ -14,6 +14,8 @@
  */
 
 $(document).ready(function () {
+
+    $(".sapaLinkRow").dotdotdot();
     //Sets timezone cookie for the server to show all the dates in a client timezone
     document.cookie = "GMT=" + new Date().getTimezoneOffset() + "; path=/";
     // Initializes image previewing
