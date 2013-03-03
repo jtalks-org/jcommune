@@ -534,6 +534,9 @@
                 <configuration>
                     <timestampedReports>false</timestampedReports>
                     <verbose>true</verbose>
+                    <outputFormats>
+                        <outputFormat>XML</outputFormat>
+                    </outputFormats>
                 </configuration>
             </plugin>
         </plugins>
