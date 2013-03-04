@@ -30,6 +30,8 @@ public class SapeConfiguration {
     private String hostUrl;
     private int numberOfLinks;
     private boolean showOnMainPage;
+    private boolean showDummyLinks;
+    
     /**
      * @return the accoundId
      */
@@ -89,6 +91,18 @@ public class SapeConfiguration {
      */
     public void setShowOnMainPage(boolean showOnMainPage) {
         this.showOnMainPage = showOnMainPage;
+    }
+    /**
+     * @return the showDummyLinks
+     */
+    public boolean isShowDummyLinks() {
+        return showDummyLinks;
+    }
+    /**
+     * @param showDummyLinks the showDummyLinks to set
+     */
+    public void setShowDummyLinks(boolean showDummyLinks) {
+        this.showDummyLinks = showDummyLinks;
     }
     
 }

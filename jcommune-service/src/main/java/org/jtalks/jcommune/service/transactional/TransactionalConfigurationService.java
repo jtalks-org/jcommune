@@ -31,6 +31,8 @@ public class TransactionalConfigurationService implements ConfigurationService {
     private JCommuneProperty sapeHostUrl;
     private JCommuneProperty sapeNumberOrLinks;
     private JCommuneProperty sapeShowOnMainPage;
+    private JCommuneProperty sapeShowDummyLinks;
+    
 
     /**
      * 
@@ -39,18 +41,21 @@ public class TransactionalConfigurationService implements ConfigurationService {
      * @param sapeHostUrl           property to read SAPE host URL
      * @param sapeNumberOrLinks     property to read SAPE number of link to return
      * @param sapeShowOnMainPage    property to read SAPE show on main page value
+     * @param sapeShowDummyLinks    property to read SAP show dummy links value
      */
     public TransactionalConfigurationService(
             JCommuneProperty sapeAccountId,
             JCommuneProperty sapeTimeout, 
             JCommuneProperty sapeHostUrl,
             JCommuneProperty sapeNumberOrLinks,
-            JCommuneProperty sapeShowOnMainPage) {
+            JCommuneProperty sapeShowOnMainPage,
+            JCommuneProperty sapeShowDummyLinks) {
         this.sapeAccountId = sapeAccountId;
         this.sapeTimeout = sapeTimeout;
         this.sapeHostUrl = sapeHostUrl;
         this.sapeNumberOrLinks = sapeNumberOrLinks;
         this.sapeShowOnMainPage = sapeShowOnMainPage;
+        this.sapeShowDummyLinks = sapeShowDummyLinks;
     }
 
 
@@ -67,6 +72,7 @@ public class TransactionalConfigurationService implements ConfigurationService {
         configuration.setHostUrl(sapeHostUrl.getValue());
         configuration.setNumberOfLinks(sapeNumberOrLinks.intValue());
         configuration.setShowOnMainPage(sapeShowOnMainPage.booleanValue());
+        configuration.setShowDummyLinks(sapeShowDummyLinks.booleanValue());
         return configuration;
     }
     
@@ -82,6 +88,7 @@ public class TransactionalConfigurationService implements ConfigurationService {
         sapeHostUrl.setValue(configuration.getHostUrl());
         sapeNumberOrLinks.setValue(String.valueOf(configuration.getNumberOfLinks()));
         sapeShowOnMainPage.setValue(String.valueOf(configuration.isShowOnMainPage()));
+        sapeShowDummyLinks.setValue(String.valueOf(configuration.isShowDummyLinks()));
     }
     
 }

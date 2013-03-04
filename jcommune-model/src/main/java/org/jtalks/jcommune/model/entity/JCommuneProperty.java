@@ -78,7 +78,12 @@ public enum JCommuneProperty {
     /**
      * Sape service timeout
      */
-    CMP_SAPE_TIMEOUT;
+    CMP_SAPE_TIMEOUT,
+    
+    /**
+     * Whether show dummy links for SAPE
+     */
+    CMP_SAPE_SHOW_DUMMY_LINKS;
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JCommuneProperty.class);

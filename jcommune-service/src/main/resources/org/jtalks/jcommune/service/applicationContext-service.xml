@@ -270,6 +270,7 @@
         <constructor-arg ref="componentSapeHostProperty"/>
         <constructor-arg ref="componentSapeLinksCountProperty"/>
         <constructor-arg ref="componentSapeOnMainPageEnableProperty"/>
+        <constructor-arg ref="componentSapeShowDummyLinksProperty"/>
     </bean>
 
     <!--

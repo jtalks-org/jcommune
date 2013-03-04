@@ -23,24 +23,33 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Sets forum name and descriptions to be shown on all the pages.
- * These properties are set in Poulpe and are stored in a database.
+ * Injects different JCommune properties into pages so that they can be 
+ * accessed from JSP code.
+ * These properties are in a database.
  *
  * @author masyan
  * @author Evgeniy Naumenko
  */
 public class PropertiesInterceptor extends HandlerInterceptorAdapter {
+    private static final String PARAM_CMP_NAME = "cmpName";
+    private static final String PARAM_CMP_DESCRIPTION = "cmpDescription";
+    private static final String PARAM_SHOW_DUMMY_LINKS = "sapeShowDummyLinks";
+    
     private JCommuneProperty componentNameProperty;
     private JCommuneProperty componentDescriptionProperty;
+    private JCommuneProperty sapeShowDummyLinksProperty;
 
     /**
      * @param componentDescriptionProperty component description property
      * @param componentNameProperty        component name property
+     * @param sapeShowDummyLinksProperty   show dummy links for SAPE on not 
      */
     public PropertiesInterceptor(JCommuneProperty componentNameProperty,
-                                 JCommuneProperty componentDescriptionProperty) {
+                                 JCommuneProperty componentDescriptionProperty,
+                                 JCommuneProperty sapeShowDummyLinksProperty) {
         this.componentDescriptionProperty = componentDescriptionProperty;
         this.componentNameProperty = componentNameProperty;
+        this.sapeShowDummyLinksProperty = sapeShowDummyLinksProperty;
     }
 
     /**
@@ -57,8 +66,9 @@ public class PropertiesInterceptor extends HandlerInterceptorAdapter {
                            ModelAndView modelAndView) {
         //do not apply to the redirected requests: it's unnecessary and may cause error pages to work incorrectly
         if (modelAndView != null && !modelAndView.getViewName().contains("redirect:")) {
-            modelAndView.addObject("cmpName", componentNameProperty.getValueOfComponent());
-            modelAndView.addObject("cmpDescription", componentDescriptionProperty.getValueOfComponent());
+            modelAndView.addObject(PARAM_CMP_NAME, componentNameProperty.getValueOfComponent());
+            modelAndView.addObject(PARAM_CMP_DESCRIPTION, componentDescriptionProperty.getValueOfComponent());
+            modelAndView.addObject(PARAM_SHOW_DUMMY_LINKS, sapeShowDummyLinksProperty.booleanValue());
         }
     }
 }
