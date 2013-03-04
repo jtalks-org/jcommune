@@ -34,7 +34,7 @@ import java.util.List;
 
 
 public class ExternalLinkInterceptor extends HandlerInterceptorAdapter {
-    final static String EXTERNAL_LINKS_MODEL_PARAM = "externalLinks";
+    static final String EXTERNAL_LINKS_MODEL_PARAM = "externalLinks";
 
     private ExternalLinkService externalLinkService;
 

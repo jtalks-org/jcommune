@@ -15,7 +15,6 @@
 
 package org.jtalks.jcommune.model.entity;
 
-import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.URL;
 import org.jtalks.common.model.entity.Entity;
 
