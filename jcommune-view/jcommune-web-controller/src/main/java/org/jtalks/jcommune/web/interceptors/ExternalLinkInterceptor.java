@@ -47,8 +47,14 @@ public class ExternalLinkInterceptor extends HandlerInterceptorAdapter {
         this.externalLinkService = service;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+    public void postHandle(HttpServletRequest request,
+                           HttpServletResponse response,
+                           Object handler,
+                           ModelAndView modelAndView) throws Exception {
         super.postHandle(request, response, handler, modelAndView);
         if (modelAndView != null) {
             List<ExternalLink> links = externalLinkService.getLinks();
