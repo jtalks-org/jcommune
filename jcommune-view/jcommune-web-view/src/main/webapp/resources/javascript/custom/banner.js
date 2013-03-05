@@ -21,6 +21,7 @@ $(document).ready(function () {
     $('form[id^="uploadBannerModal"]').find('button.cancel').click(function (e) {
         resetBannersForm();
     });
+    $('form[id^="uploadBannerModal"]').find('button.cancel').keydown(Keymaps.uploadBannerCancelButton)
 
     $('form[id^="uploadBannerModal"]').find('.close').click(function (e) {
         resetBannersForm();
