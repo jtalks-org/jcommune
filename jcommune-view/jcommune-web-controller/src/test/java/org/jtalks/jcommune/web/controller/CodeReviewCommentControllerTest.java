@@ -14,10 +14,28 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
+
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.CodeReviewCommentService;
 import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -29,23 +47,14 @@ import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseReason;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
 
 /**
  * @author Vyacheslav Mishcheryakov
@@ -71,7 +80,6 @@ public class CodeReviewCommentControllerTest {
     @Mock
     private NotificationService notificationService;
 
-
     private CodeReviewCommentController controller;
 
     @BeforeMethod
@@ -79,8 +87,7 @@ public class CodeReviewCommentControllerTest {
         initMocks(this);
         controller = new CodeReviewCommentController(
                 codeReviewService,
-                codeReviewCommentService,
-                notificationService);
+                codeReviewCommentService);
     }
 
     @BeforeMethod
@@ -117,6 +124,38 @@ public class CodeReviewCommentControllerTest {
         assertEquals(dto.getAuthorUsername(), USERNAME);
     }
 
+	@Test
+	public void testSubscriberNotGetNotificationAboutEditingCommentJustAfterAddingIt()
+			throws Exception {
+		BindingResult bindingResult = mock(BindingResult.class);
+
+		when(bindingResult.hasErrors()).thenReturn(false);
+		final CodeReviewComment comment = createComment();
+		
+		when(codeReviewService.addComment(anyLong(), anyInt(), anyString())).thenAnswer(new Answer<CodeReviewComment>() {
+
+			@Override
+			public CodeReviewComment answer(InvocationOnMock invocation) throws Throwable {
+				notificationService.subscribedEntityChanged(comment.getCodeReview());
+				return comment;
+			}
+		
+		});
+		when(codeReviewCommentService.updateComment(anyLong(), anyString(),anyLong())).thenReturn(comment);
+
+	    JCUser user1 = currentUser();
+		Topic topic = new Topic(user1 , "title");
+        branch.addTopic(topic);
+        
+		topic.getSubscribers().add(user1);
+		CodeReviewCommentDto commentDto = new CodeReviewCommentDto();
+		controller.addComment(commentDto, bindingResult, 1L);
+		controller.editComment(commentDto, bindingResult,  branch.getId());
+		
+		verify(notificationService, times(1)).subscribedEntityChanged(codeReview);
+		verifyNoMoreInteractions(notificationService);
+	}
+    
     @Test
     public void testAddCommentValidationFail() throws AccessDeniedException, NotFoundException {
         BindingResult bindingResult = mock(BindingResult.class);
@@ -170,7 +209,7 @@ public class CodeReviewCommentControllerTest {
         assertEquals(dto.getLineNumber(), COMMENT_LINE_NUMBER);
         assertEquals(dto.getAuthorId(), USER_ID);
         assertEquals(dto.getAuthorUsername(), USERNAME);
-        verify(notificationService).subscribedEntityChanged(codeReview);
+        verifyZeroInteractions(notificationService);
     }
 
     @Test
@@ -257,11 +296,16 @@ public class CodeReviewCommentControllerTest {
         comment.setLineNumber(COMMENT_LINE_NUMBER);
         comment.setCodeReview(codeReview);
 
-        JCUser user = new JCUser(USERNAME, null, null);
-        user.setId(USER_ID);
+        JCUser user = currentUser();
         comment.setAuthor(user);
 
         return comment;
     }
+
+	private JCUser currentUser() {
+		JCUser user = new JCUser(USERNAME, null, null);
+        user.setId(USER_ID);
+		return user;
+	}
 
 }

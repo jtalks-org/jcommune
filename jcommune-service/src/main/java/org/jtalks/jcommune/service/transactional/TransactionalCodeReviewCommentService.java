@@ -21,6 +21,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.CodeReviewCommentService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.service.security.PermissionService;
 import org.springframework.security.access.AccessDeniedException;
 
@@ -33,22 +34,25 @@ public class TransactionalCodeReviewCommentService extends AbstractTransactional
         implements CodeReviewCommentService {
 
     private PermissionService permissionService;
-    
     private UserService userService;
+    private NotificationService notificationService;
     
     /**
      * Create an instance of CodeReview entity based service
      * @param dao               data access object, which should be able do all CRUD operations with entity.
      * @param permissionService to check permissions for actions
      * @param userService       to get current user 
+     * @param notificationService  to send email updates for comment adding subscribers.
      */
     public TransactionalCodeReviewCommentService(
                         ChildRepository<CodeReviewComment> dao,
                         PermissionService permissionService,
-                        UserService userService) {
+                        UserService userService, 
+                        NotificationService notificationService) {
         super(dao);
         this.permissionService = permissionService;
         this.userService = userService;
+        this.notificationService = notificationService;
     }
  
     /**
@@ -63,10 +67,19 @@ public class TransactionalCodeReviewCommentService extends AbstractTransactional
         comment.setBody(body);
         getDao().update(comment);
         
+        if (commentUpdatingByItsAuthor(comment)) {
+        	notificationService.subscribedEntityChanged(comment.getCodeReview());
+        }
+        
         return comment;
     }
     
-    /**
+    private boolean commentUpdatingByItsAuthor(CodeReviewComment comment) {
+        JCUser currentUser = userService.getCurrentUser();
+        return comment.getAuthor().equals(currentUser);
+	}
+
+	/**
      * Checks if current user can edit review comments
      * @param comment - comment to check permissions on
      * @param branchId - ID of branch where review with comment located

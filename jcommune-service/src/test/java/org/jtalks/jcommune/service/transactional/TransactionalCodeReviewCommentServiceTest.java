@@ -20,6 +20,7 @@ import org.jtalks.jcommune.model.entity.CodeReviewComment;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.service.security.PermissionService;
 import org.mockito.Mock;
 import org.springframework.security.access.AccessDeniedException;
@@ -47,6 +48,8 @@ public class TransactionalCodeReviewCommentServiceTest {
     private PermissionService permissionService;
     @Mock
     private UserService userService;
+    @Mock
+    NotificationService notificationService;
     
     private TransactionalCodeReviewCommentService codeReviewCommentService;
 
@@ -55,7 +58,8 @@ public class TransactionalCodeReviewCommentServiceTest {
     @BeforeMethod
     public void initEnvironmental() {
         initMocks(this);
-        codeReviewCommentService = new TransactionalCodeReviewCommentService(dao, permissionService, userService);
+        codeReviewCommentService = new TransactionalCodeReviewCommentService(dao, 
+        		permissionService, userService, notificationService);
     }
     
     @BeforeMethod 
