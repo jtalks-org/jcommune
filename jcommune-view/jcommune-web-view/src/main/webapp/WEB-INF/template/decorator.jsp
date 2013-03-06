@@ -114,6 +114,15 @@
 <decorator:body/>
 <div class="container">
     <footer>
+        <c:if test="${!sapeShowDummyLinks && sapeLinks!=null && (not empty sapeLinks)}">
+            <div class="well sapeLinks">
+                <c:forEach items="sapeLinks" var="link">
+                    <div class="sapaLinkRow">
+                        <c:out value="${link}"/>
+                    </div>
+                </c:forEach>
+            </div>
+        </c:if>
         <c:if test="${sapeShowDummyLinks}">
 	        <div class="well sapeLinks">
 	            <%--Need to add all text to tooltip--%>
@@ -158,9 +167,6 @@
 	            </div>
 	        </div>
         </c:if>
-        <%-- <c:if test="${sapeContent!=null}">
-            <c:out value="${sapeContent}"/>
-        </c:if>--%>
         <jtalks:banner banner="${banners['BOTTOM']}" position="${'BOTTOM'}"/>
         <div>
             <div class="pull-left">

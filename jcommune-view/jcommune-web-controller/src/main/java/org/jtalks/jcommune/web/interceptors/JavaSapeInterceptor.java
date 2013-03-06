@@ -22,6 +22,8 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Initializes {@link javasape.Sape} object on application start.
@@ -37,6 +39,7 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
     private JCommuneProperty componentSapeLinksCountProperty;
     private JCommuneProperty componentSapeHostProperty;
     private JCommuneProperty componentSapeTimeoutProperty;
+    private JCommuneProperty componentSapeShowDummyLinksProperty;
 
     private static Sape sape;
     private static boolean enabledSape;
@@ -47,7 +50,7 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
     private boolean initSape() {
         String accountId = componentSapeAccountProperty.getValue();
         String host = componentSapeHostProperty.getValue();
-        if (accountId == null || accountId.trim().isEmpty() ||
+        if (componentSapeShowDummyLinksProperty.booleanValue() || accountId == null || accountId.trim().isEmpty() ||
                 host == null || host.trim().isEmpty()) {
             return false;
         }
@@ -82,7 +85,11 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
             if ((sapeOnMainPageEnable || !modelAndView.getViewName().equals("/")) &&
                     !modelAndView.getViewName().contains("redirect:")) {
                 SapePageLinks pageLinks = sape.getPageLinks(request.getRequestURI(), request.getCookies());
-                modelAndView.addObject("sapeContent", pageLinks.render(1));
+                List<String> sapeLinks = new ArrayList<String>();
+                for (int i = 1; i <= componentSapeLinksCountProperty.intValue(); i++) {
+                    sapeLinks.add(pageLinks.render(1));
+                }
+                modelAndView.addObject("sapeLinks", sapeLinks);
             }
         }
     }
@@ -177,5 +184,24 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
      */
     public void setComponentSapeTimeoutProperty(JCommuneProperty componentSapeTimeoutProperty) {
         this.componentSapeTimeoutProperty = componentSapeTimeoutProperty;
+    }
+
+    /**
+     * Gets flag whether show dummy links for SAPE
+     *
+     * @return show dummy links
+     */
+    public JCommuneProperty getComponentSapeShowDummyLinksProperty() {
+        return componentSapeShowDummyLinksProperty;
+    }
+
+    /**
+     * Sets flag whether show dummy links for SAPE
+     *
+     * @param componentSapeShowDummyLinksProperty
+     *         timeout
+     */
+    public void setComponentSapeShowDummyLinksProperty(JCommuneProperty componentSapeShowDummyLinksProperty) {
+        this.componentSapeShowDummyLinksProperty = componentSapeShowDummyLinksProperty;
     }
 }

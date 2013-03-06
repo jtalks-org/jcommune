@@ -113,7 +113,7 @@
         <property name="componentDao" ref="componentDao"/>
         <property name="propertyDao" ref="propertyDao"/>
         <property name="name" value="cmp.sape_show_dummy_links"/>
-        <property name="defaultValue" value="false"/>
+        <property name="defaultValue" value="true"/>
     </bean>
 
 </beans>
