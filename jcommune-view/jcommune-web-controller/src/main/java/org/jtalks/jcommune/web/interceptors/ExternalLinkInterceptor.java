@@ -34,7 +34,7 @@ import java.util.List;
 
 
 public class ExternalLinkInterceptor extends HandlerInterceptorAdapter {
-    final static String EXTERNAL_LINKS_MODEL_PARAM = "externalLinks";
+    static final String EXTERNAL_LINKS_MODEL_PARAM = "externalLinks";
 
     private ExternalLinkService externalLinkService;
 
@@ -47,8 +47,14 @@ public class ExternalLinkInterceptor extends HandlerInterceptorAdapter {
         this.externalLinkService = service;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+    public void postHandle(HttpServletRequest request,
+                           HttpServletResponse response,
+                           Object handler,
+                           ModelAndView modelAndView) throws Exception {
         super.postHandle(request, response, handler, modelAndView);
         if (modelAndView != null) {
             List<ExternalLink> links = externalLinkService.getLinks();

@@ -100,3 +100,11 @@ Keymaps.linksEditorSaveButton = function (e) {
         $('#main-links-editor #cancel-link').focus();
     }
 }
+
+Keymaps.uploadBannerCancelButton = function (e) {
+    if ((e.keyCode || e.charCode) == tabCode) {
+        e.preventDefault();
+        $(this).closest("form[id^=uploadBannerModal]").find('#body').focus();
+    }
+}
+

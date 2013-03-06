@@ -67,14 +67,14 @@ public class TransactionalCodeReviewCommentService extends AbstractTransactional
         comment.setBody(body);
         getDao().update(comment);
         
-        if (commentUpdatingByItsAuthor(comment)) {
+        if (!commentInitiallyCreatedByCurrentUser(comment)) {
         	notificationService.subscribedEntityChanged(comment.getCodeReview());
         }
         
         return comment;
     }
     
-    private boolean commentUpdatingByItsAuthor(CodeReviewComment comment) {
+    private boolean commentInitiallyCreatedByCurrentUser(CodeReviewComment comment) {
         JCUser currentUser = userService.getCurrentUser();
         return comment.getAuthor().equals(currentUser);
 	}

@@ -23,7 +23,11 @@ import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
 
@@ -33,19 +37,28 @@ import javax.validation.Valid;
  * @author Alexandre Teterin
  *         Date: 03.02.13
  */
-
-
 @Controller
 public class ExternalLinkController {
     private ComponentService componentService;
     private ExternalLinkService service;
 
+    /**
+     * @param service          {@link ExternalLinkService} for link CRUD operations.
+     * @param componentService {@link ComponentService} for authorization check purpose.
+     */
     @Autowired
     public ExternalLinkController(ExternalLinkService service, ComponentService componentService) {
         this.componentService = componentService;
         this.service = service;
     }
 
+    /**
+     * Create new or save existing {@link ExternalLink}.
+     *
+     * @param link   {@link ExternalLink} for saving.
+     * @param result link validation result.
+     * @return response with SUCCESS status and saved link.
+     */
     @RequestMapping(value = "/links/save", method = RequestMethod.POST)
     @ResponseBody
     public JsonResponse saveLink(@Valid @RequestBody ExternalLink link, BindingResult result) {
@@ -57,6 +70,12 @@ public class ExternalLinkController {
         return new JsonResponse(JsonResponseStatus.SUCCESS, link);
     }
 
+    /**
+     * Delete {@link ExternalLink} with specified id.
+     *
+     * @param id link id to deletion.
+     * @return {@code true} if link was successfully deleted.
+     */
     @RequestMapping(value = "/links/delete/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     public JsonResponse deleteLink(@PathVariable Long id) {

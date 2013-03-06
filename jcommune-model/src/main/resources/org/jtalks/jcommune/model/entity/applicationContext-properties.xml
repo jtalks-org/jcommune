@@ -106,5 +106,14 @@
         <property name="name" value="cmp.sape_timeout"/>
         <property name="defaultValue" value="1000"/>
     </bean>
+    
+    <bean id="componentSapeShowDummyLinksProperty" class="org.jtalks.jcommune.model.entity.JCommuneProperty"
+          factory-method="valueOf">
+        <constructor-arg type="java.lang.String" value="CMP_SAPE_SHOW_DUMMY_LINKS"/>
+        <property name="componentDao" ref="componentDao"/>
+        <property name="propertyDao" ref="propertyDao"/>
+        <property name="name" value="cmp.sape_show_dummy_links"/>
+        <property name="defaultValue" value="true"/>
+    </bean>
 
 </beans>

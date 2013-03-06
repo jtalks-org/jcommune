@@ -39,17 +39,26 @@ public class TransactionalExternalLinkService extends AbstractTransactionalEntit
         super(dao);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<ExternalLink> getLinks() {
         return getDao().getAll();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @PreAuthorize("hasPermission(#forumComponent.id, 'COMPONENT', 'GeneralPermission.ADMIN')")
     public void saveLink(ExternalLink link, Component forumComponent) {
         getDao().saveOrUpdate(link);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @PreAuthorize("hasPermission(#forumComponent.id, 'COMPONENT', 'GeneralPermission.ADMIN')")
     public boolean deleteLink(long id, Component forumComponent) {

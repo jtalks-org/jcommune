@@ -18,16 +18,25 @@ import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.service.security.PermissionService;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.security.access.AccessDeniedException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
@@ -41,6 +50,7 @@ public class TransactionalCodeReviewCommentServiceTest {
     private static final String COMMENT_BODY = "body";
     private static final long BRANCH_ID = 1L;
     private static final long CR_ID = 1L;
+	private static final int COMMENT_LINE = 0;
     
     @Mock
     private ChildRepository<CodeReviewComment> dao;
@@ -50,11 +60,14 @@ public class TransactionalCodeReviewCommentServiceTest {
     private UserService userService;
     @Mock
     NotificationService notificationService;
+    @Mock
+    private CodeReviewService codeReviewService;
     
     private TransactionalCodeReviewCommentService codeReviewCommentService;
 
     private CodeReviewComment comment;
-
+    private JCUser currentUser;
+    
     @BeforeMethod
     public void initEnvironmental() {
         initMocks(this);
@@ -64,8 +77,8 @@ public class TransactionalCodeReviewCommentServiceTest {
     
     @BeforeMethod 
     public void prepareTestData() {
-        JCUser currentUser = givenCurrentUser("code-review comment author");
 
+    	currentUser = givenCurrentUser("code-review comment author");
         comment = new CodeReviewComment();
         comment.setAuthor(currentUser);
         
@@ -121,6 +134,26 @@ public class TransactionalCodeReviewCommentServiceTest {
         assertEquals(comment.getBody(), COMMENT_BODY);
     }
 
+	@Test
+	public void testSubscriberNotGetNotificationAboutEditingCommentJustAfterAddingIt()
+			throws Exception {
+		when(codeReviewCommentService.get(CR_ID)).thenReturn(comment);
+		when(codeReviewService.addComment(anyLong(), anyInt(), anyString()))
+			.thenAnswer(new Answer<CodeReviewComment>() {
+
+			@Override
+			public CodeReviewComment answer(InvocationOnMock invocation) throws Throwable {
+				notificationService.subscribedEntityChanged(comment.getCodeReview());
+				return comment;
+			}
+		
+		});
+		codeReviewService.addComment(  CR_ID, COMMENT_LINE, COMMENT_BODY);
+		codeReviewCommentService.updateComment( CR_ID, COMMENT_BODY + "updated", BRANCH_ID);
+		
+		verify(notificationService, times(1)).subscribedEntityChanged(comment.getCodeReview());
+		verifyNoMoreInteractions(notificationService);
+	}
     private void givenUserHasPermissionToEditOwnPosts(boolean isGranted) {
         doReturn(isGranted).when(permissionService).hasBranchPermission(BRANCH_ID, BranchPermission.EDIT_OWN_POSTS);
     }

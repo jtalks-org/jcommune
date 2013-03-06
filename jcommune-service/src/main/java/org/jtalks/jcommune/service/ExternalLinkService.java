@@ -20,6 +20,8 @@ import org.jtalks.jcommune.model.entity.ExternalLink;
 import java.util.List;
 
 /**
+ * Provides CRUD API for {@link ExternalLink}.
+ *
  * @author Alexandre Teterin
  */
 public interface ExternalLinkService extends EntityService<ExternalLink> {

@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (C) 2011  JTalks.org Team
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -12,24 +12,28 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+package org.jtalks.jcommune.model.entity;
 
-$(document).ready(function () {
-    $('.modal-backdrop').live('click', function (e) {
-        resetBannersForm();
-    });
+import org.testng.annotations.Test;
 
-    $('form[id^="uploadBannerModal"]').find('button.cancel').click(function (e) {
-        resetBannersForm();
-    });
-    $('form[id^="uploadBannerModal"]').find('button.cancel').keydown(Keymaps.uploadBannerCancelButton)
+import static org.testng.AssertJUnit.assertEquals;
 
-    $('form[id^="uploadBannerModal"]').find('.close').click(function (e) {
-        resetBannersForm();
-    });
+/**
+ * @author Alexandre Teterin
+ *         Date: 04.03.13
+ */
 
-    function resetBannersForm() {
-        $('form[id^="uploadBannerModal"]').each(function (ind, el) {
-            el.reset()
-        });
+
+public class ExternalLinkTest {
+
+    @Test
+    public void testThreeArgsConstructorAndGetters() throws Exception {
+        String url = "http://javatalks.ru";
+        String title = "title";
+        String hint = "hint";
+        ExternalLink externalLink = new ExternalLink(url, title, hint);
+        assertEquals(url, externalLink.getUrl());
+        assertEquals(title, externalLink.getTitle());
+        assertEquals(hint, externalLink.getHint());
     }
-})
+}

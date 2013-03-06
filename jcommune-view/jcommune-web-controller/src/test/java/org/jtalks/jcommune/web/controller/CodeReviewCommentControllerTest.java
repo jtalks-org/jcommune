@@ -21,9 +21,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -35,7 +33,6 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.CodeReviewCommentService;
 import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -47,8 +44,6 @@ import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseReason;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
@@ -124,38 +119,6 @@ public class CodeReviewCommentControllerTest {
         assertEquals(dto.getAuthorUsername(), USERNAME);
     }
 
-	@Test
-	public void testSubscriberNotGetNotificationAboutEditingCommentJustAfterAddingIt()
-			throws Exception {
-		BindingResult bindingResult = mock(BindingResult.class);
-
-		when(bindingResult.hasErrors()).thenReturn(false);
-		final CodeReviewComment comment = createComment();
-		
-		when(codeReviewService.addComment(anyLong(), anyInt(), anyString())).thenAnswer(new Answer<CodeReviewComment>() {
-
-			@Override
-			public CodeReviewComment answer(InvocationOnMock invocation) throws Throwable {
-				notificationService.subscribedEntityChanged(comment.getCodeReview());
-				return comment;
-			}
-		
-		});
-		when(codeReviewCommentService.updateComment(anyLong(), anyString(),anyLong())).thenReturn(comment);
-
-	    JCUser user1 = currentUser();
-		Topic topic = new Topic(user1 , "title");
-        branch.addTopic(topic);
-        
-		topic.getSubscribers().add(user1);
-		CodeReviewCommentDto commentDto = new CodeReviewCommentDto();
-		controller.addComment(commentDto, bindingResult, 1L);
-		controller.editComment(commentDto, bindingResult,  branch.getId());
-		
-		verify(notificationService, times(1)).subscribedEntityChanged(codeReview);
-		verifyNoMoreInteractions(notificationService);
-	}
-    
     @Test
     public void testAddCommentValidationFail() throws AccessDeniedException, NotFoundException {
         BindingResult bindingResult = mock(BindingResult.class);

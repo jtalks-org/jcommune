@@ -28,7 +28,7 @@ public class PollTest {
 
     @BeforeMethod
     public void init() {
-        poll = new Poll("It's one of the bost polls in history.");
+        poll = new Poll("It's one of the best polls in history.");
     }
 
     @Test
@@ -46,7 +46,7 @@ public class PollTest {
         int totalVotesCount = poll.getTotalVotesCount();
 
         Assert.assertEquals(totalVotesCount, firstOptionVotesCount + secondOptionVotesCount,
-                "The total count of votes calculats wrong.");
+                "The total count of votes calculates wrong.");
 
     }
 

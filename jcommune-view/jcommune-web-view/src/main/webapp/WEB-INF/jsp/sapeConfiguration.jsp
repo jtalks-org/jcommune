@@ -77,6 +77,11 @@
                 <label class="string optional"><spring:message code="label.showOnMainPage"/></label>
             </div>
             
+            <div class="control-group">
+                <form:checkbox path="showDummyLinks" class="form-check-radio-box"/>
+                <label class="string optional"><spring:message code="label.showDummyLinks"/></label>
+            </div>
+            
             <div class="form-actions">
                 <input type="submit" class="btn btn-primary" value="<spring:message code="label.save"/>"/>
                 <a class='btn' href='<c:url value="/"/>'><spring:message code="label.cancel"/></a>
