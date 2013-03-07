@@ -34,7 +34,7 @@
             <span id="externalLinks">
                 <c:forEach var="link" items="${externalLinks}">
                     <span>
-                    <a title="${link.hint}" href="${link.url}" id="${link.id}">
+                    <a title="${link.hint}" href="${link.url}" id="big-screen-external-link-${link.id}">
                         <c:out value="${link.title}"/>
                     </a>
                     </span>

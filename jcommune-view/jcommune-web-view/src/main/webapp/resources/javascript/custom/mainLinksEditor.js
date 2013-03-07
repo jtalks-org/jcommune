@@ -55,11 +55,12 @@ $(function () {
 
         var elements = [];
         $(externalLinksGroupId).find('a').each(function (i, elem) {
-            var id = $(elem).attr('id');
+            var fullId = $(elem).attr('id');
+        	var id = extractExternalLinkIdFrom(fullId);
             var externalLink = {};
             externalLink.id = id;
             externalLink.url = $(elem).attr('href');
-            externalLink.title = $(elem).attr('name');
+            externalLink.title = $(elem).text();
             externalLink.hint = $(elem).attr('data-original-title');
             idToExternalLinkMap[id] = externalLink;
             elements[i] = externalLink;
@@ -116,6 +117,14 @@ $(function () {
     });
 
 });
+
+function extractExternalLinkIdFrom(fullId) {
+	if (fullId.indexOf("big-screen-external-link-") !== -1) {
+		return fullId.replace("big-screen-external-link-", "");
+	} else if(fullId.indexOf("small-screen-external-link-") !== -1) {
+		return fullId.replace("small-screen-external-link-", "");
+	}
+}
 
 
 function createLinksTableRows(elements) {
