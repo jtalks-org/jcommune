@@ -131,6 +131,7 @@
                 <property name="componentSapeLinksCountProperty" ref="componentSapeLinksCountProperty"/>
                 <property name="componentSapeTimeoutProperty" ref="componentSapeTimeoutProperty"/>
                 <property name="componentSapeShowDummyLinksProperty" ref="componentSapeShowDummyLinksProperty"/>
+                <property name="componentSapeEnableServiceProperty" ref="componentSapeEnableServiceProperty"/>
             </bean>
         </mvc:interceptor>
     </mvc:interceptors>

@@ -32,6 +32,7 @@ public class TransactionalConfigurationService implements ConfigurationService {
     private JCommuneProperty sapeNumberOrLinks;
     private JCommuneProperty sapeShowOnMainPage;
     private JCommuneProperty sapeShowDummyLinks;
+    private JCommuneProperty sapeEnableService;
     
 
     /**
@@ -42,6 +43,7 @@ public class TransactionalConfigurationService implements ConfigurationService {
      * @param sapeNumberOrLinks     property to read SAPE number of link to return
      * @param sapeShowOnMainPage    property to read SAPE show on main page value
      * @param sapeShowDummyLinks    property to read SAP show dummy links value
+     * @param sapeEnableService     property to read SAP enable service
      */
     public TransactionalConfigurationService(
             JCommuneProperty sapeAccountId,
@@ -49,13 +51,15 @@ public class TransactionalConfigurationService implements ConfigurationService {
             JCommuneProperty sapeHostUrl,
             JCommuneProperty sapeNumberOrLinks,
             JCommuneProperty sapeShowOnMainPage,
-            JCommuneProperty sapeShowDummyLinks) {
+            JCommuneProperty sapeShowDummyLinks,
+            JCommuneProperty sapeEnableService) {
         this.sapeAccountId = sapeAccountId;
         this.sapeTimeout = sapeTimeout;
         this.sapeHostUrl = sapeHostUrl;
         this.sapeNumberOrLinks = sapeNumberOrLinks;
         this.sapeShowOnMainPage = sapeShowOnMainPage;
         this.sapeShowDummyLinks = sapeShowDummyLinks;
+        this.sapeEnableService = sapeEnableService;
     }
 
 
@@ -73,6 +77,7 @@ public class TransactionalConfigurationService implements ConfigurationService {
         configuration.setNumberOfLinks(sapeNumberOrLinks.intValue());
         configuration.setShowOnMainPage(sapeShowOnMainPage.booleanValue());
         configuration.setShowDummyLinks(sapeShowDummyLinks.booleanValue());
+        configuration.setEnableSape(sapeEnableService.booleanValue());
         return configuration;
     }
     
@@ -89,6 +94,7 @@ public class TransactionalConfigurationService implements ConfigurationService {
         sapeNumberOrLinks.setValue(String.valueOf(configuration.getNumberOfLinks()));
         sapeShowOnMainPage.setValue(String.valueOf(configuration.isShowOnMainPage()));
         sapeShowDummyLinks.setValue(String.valueOf(configuration.isShowDummyLinks()));
+        sapeEnableService.setValue(String.valueOf(configuration.isEnableSape()));
     }
     
 }

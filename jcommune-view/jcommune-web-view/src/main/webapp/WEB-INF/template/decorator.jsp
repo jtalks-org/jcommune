@@ -114,58 +114,14 @@
 <decorator:body/>
 <div class="container">
     <footer>
-        <c:if test="${!sapeShowDummyLinks && sapeLinks!=null && (not empty sapeLinks)}">
+        <c:if test="${sapeLinks != null && (not empty sapeLinks)}">
             <div class="well sapeLinks">
-                <c:forEach items="sapeLinks" var="link">
+                <c:forEach items="${sapeLinks}" var="link">
                     <div class="sapaLinkRow">
-                        <c:out value="${link}"/>
+                        ${link}
                     </div>
                 </c:forEach>
             </div>
-        </c:if>
-        <c:if test="${sapeShowDummyLinks}">
-	        <div class="well sapeLinks">
-	            <%--Need to add all text to tooltip--%>
-	            <div class="sapaLinkRow">
-	                <a href="http://www.dilijans.org/zimnie_shiny/Nokian.html" target="_blank">
-	                    продажа зимних шин нокиан</a></br> с доставкой
-	            </div>
-	            <div class="sapaLinkRow">
-	                <a href="http://www.dilijans.org/zimnie_shiny/Nokian.html" target="_blank">
-	                    продаю что-то</a></br>налетай. какой то очень длинный текст, для проверки отображения ссылок. И еще
-	                какой то текст длинный длинный
-	            </div>
-	            <div class="sapaLinkRow">
-	                <a href="http://www.dilijans.org/zimnie_shiny/Nokian.html" target="_blank">
-	                    какая то другая ссылка</a></br> на что-то другое
-	            </div>
-	            <div class="sapaLinkRow">
-	                <a href="http://www.dilijans.org/zimnie_shiny/Nokian.html" target="_blank">
-	                    продажа зимних шин нокиан</a></br> с доставкой
-	            </div>
-	            <div class="sapaLinkRow">
-	                <a href="http://www.dilijans.org/zimnie_shiny/Nokian.html" target="_blank">
-	                    продаю что-то</a></br>налетай. какой то очень длинный текст, для проверки отображения ссылок. И еще
-	                какой то текст
-	            </div>
-	            <div class="sapaLinkRow">
-	                <a href="http://www.dilijans.org/zimnie_shiny/Nokian.html" target="_blank">
-	                    какая то другая ссылка</a></br> на что-то другое
-	            </div>
-	            <div class="sapaLinkRow">
-	                <a href="http://www.dilijans.org/zimnie_shiny/Nokian.html" target="_blank">
-	                    продажа зимних шин нокиан</a></br> с доставкой
-	            </div>
-	            <div class="sapaLinkRow">
-	                <a href="http://www.dilijans.org/zimnie_shiny/Nokian.html" target="_blank">
-	                    продаю что-то</a></br>налетай. какой то очень длинный текст, для проверки отображения ссылок. И еще
-	                какой то текст
-	            </div>
-	            <div class="sapaLinkRow">
-	                <a href="http://www.dilijans.org/zimnie_shiny/Nokian.html" target="_blank">
-	                    какая то другая ссылка</a></br> на что-то другое
-	            </div>
-	        </div>
         </c:if>
         <jtalks:banner banner="${banners['BOTTOM']}" position="${'BOTTOM'}"/>
         <div>

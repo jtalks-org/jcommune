@@ -93,7 +93,7 @@ public class ConfigurationController {
      */
     @RequestMapping(value="/configuration/sape", method=RequestMethod.POST)
     public ModelAndView saveSapeConfiguration(
-            @ModelAttribute @Valid SapeConfiguration configuration,
+            @ModelAttribute SapeConfiguration configuration,
             BindingResult result) {
         if (!result.hasErrors()) {
             Component forumComponent = componentService.getComponentOfForum();

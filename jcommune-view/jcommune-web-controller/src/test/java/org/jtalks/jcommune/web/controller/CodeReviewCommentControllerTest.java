@@ -14,6 +14,21 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
+
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
@@ -35,17 +50,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
 
 /**
  * @author Vyacheslav Mishcheryakov
@@ -71,7 +75,6 @@ public class CodeReviewCommentControllerTest {
     @Mock
     private NotificationService notificationService;
 
-
     private CodeReviewCommentController controller;
 
     @BeforeMethod
@@ -79,8 +82,7 @@ public class CodeReviewCommentControllerTest {
         initMocks(this);
         controller = new CodeReviewCommentController(
                 codeReviewService,
-                codeReviewCommentService,
-                notificationService);
+                codeReviewCommentService);
     }
 
     @BeforeMethod
@@ -170,7 +172,7 @@ public class CodeReviewCommentControllerTest {
         assertEquals(dto.getLineNumber(), COMMENT_LINE_NUMBER);
         assertEquals(dto.getAuthorId(), USER_ID);
         assertEquals(dto.getAuthorUsername(), USERNAME);
-        verify(notificationService).subscribedEntityChanged(codeReview);
+        verifyZeroInteractions(notificationService);
     }
 
     @Test
@@ -257,11 +259,16 @@ public class CodeReviewCommentControllerTest {
         comment.setLineNumber(COMMENT_LINE_NUMBER);
         comment.setCodeReview(codeReview);
 
-        JCUser user = new JCUser(USERNAME, null, null);
-        user.setId(USER_ID);
+        JCUser user = currentUser();
         comment.setAuthor(user);
 
         return comment;
     }
+
+	private JCUser currentUser() {
+		JCUser user = new JCUser(USERNAME, null, null);
+        user.setId(USER_ID);
+		return user;
+	}
 
 }

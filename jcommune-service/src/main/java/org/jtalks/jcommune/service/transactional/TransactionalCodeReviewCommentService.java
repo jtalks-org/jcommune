@@ -29,47 +29,52 @@ import org.springframework.security.access.AccessDeniedException;
  * 
  * @author Vyacheslav Mishcheryakov
  */
-public class TransactionalCodeReviewCommentService extends AbstractTransactionalEntityService<CodeReviewComment, ChildRepository<CodeReviewComment>> 
-        implements CodeReviewCommentService {
+public class TransactionalCodeReviewCommentService extends
+        AbstractTransactionalEntityService<CodeReviewComment, ChildRepository<CodeReviewComment>> implements
+        CodeReviewCommentService {
 
     private PermissionService permissionService;
-    
     private UserService userService;
-    
+
     /**
      * Create an instance of CodeReview entity based service
-     * @param dao               data access object, which should be able do all CRUD operations with entity.
-     * @param permissionService to check permissions for actions
-     * @param userService       to get current user 
+     * 
+     * @param dao
+     *            data access object, which should be able do all CRUD operations with entity.
+     * @param permissionService
+     *            to check permissions for actions
+     * @param userService
+     *            to get current user
      */
-    public TransactionalCodeReviewCommentService(
-                        ChildRepository<CodeReviewComment> dao,
-                        PermissionService permissionService,
-                        UserService userService) {
+    public TransactionalCodeReviewCommentService(ChildRepository<CodeReviewComment> dao,
+            PermissionService permissionService, UserService userService) {
         super(dao);
         this.permissionService = permissionService;
         this.userService = userService;
     }
- 
+
     /**
      * {@inheritDoc}
      */
     @Override
     public CodeReviewComment updateComment(long id, String body, long branchId) throws NotFoundException {
-        
+
         CodeReviewComment comment = get(id);
         checkHasUpdatePermission(comment, branchId);
-        
+
         comment.setBody(body);
         getDao().update(comment);
-        
+
         return comment;
     }
-    
+
     /**
      * Checks if current user can edit review comments
-     * @param comment - comment to check permissions on
-     * @param branchId - ID of branch where review with comment located
+     * 
+     * @param comment
+     *            - comment to check permissions on
+     * @param branchId
+     *            - ID of branch where review with comment located
      */
     private void checkHasUpdatePermission(CodeReviewComment comment, long branchId) {
         JCUser currentUser = userService.getCurrentUser();
@@ -77,8 +82,8 @@ public class TransactionalCodeReviewCommentService extends AbstractTransactional
         boolean canEditOthersPosts = permissionService
                 .hasBranchPermission(branchId, BranchPermission.EDIT_OTHERS_POSTS);
 
-        if (!(canEditOthersPosts && !comment.isCreatedBy(currentUser)) 
-             && !(canEditOwnPosts && comment.isCreatedBy(currentUser))) {
+        if (!(canEditOthersPosts && !comment.isCreatedBy(currentUser))
+                && !(canEditOwnPosts && comment.isCreatedBy(currentUser))) {
             throw new AccessDeniedException("No permission to edit review comment");
         }
     }

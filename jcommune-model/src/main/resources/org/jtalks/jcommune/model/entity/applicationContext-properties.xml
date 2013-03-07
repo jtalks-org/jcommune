@@ -86,7 +86,7 @@
         <property name="componentDao" ref="componentDao"/>
         <property name="propertyDao" ref="propertyDao"/>
         <property name="name" value="cmp.sape_links_count"/>
-        <property name="defaultValue" value="1"/>
+        <property name="defaultValue" value="6"/>
     </bean>
 
     <bean id="componentSapeHostProperty" class="org.jtalks.jcommune.model.entity.JCommuneProperty"
@@ -113,7 +113,16 @@
         <property name="componentDao" ref="componentDao"/>
         <property name="propertyDao" ref="propertyDao"/>
         <property name="name" value="cmp.sape_show_dummy_links"/>
-        <property name="defaultValue" value="true"/>
+        <property name="defaultValue" value="false"/>
+    </bean>
+
+    <bean id="componentSapeEnableServiceProperty" class="org.jtalks.jcommune.model.entity.JCommuneProperty"
+          factory-method="valueOf">
+        <constructor-arg type="java.lang.String" value="CMP_SAPE_ENABLED"/>
+        <property name="componentDao" ref="componentDao"/>
+        <property name="propertyDao" ref="propertyDao"/>
+        <property name="name" value="cmp.sape_enable_service"/>
+        <property name="defaultValue" value="false"/>
     </bean>
 
 </beans>

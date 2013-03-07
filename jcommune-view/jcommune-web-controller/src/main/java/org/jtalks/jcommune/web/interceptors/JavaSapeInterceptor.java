@@ -40,18 +40,39 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
     private JCommuneProperty componentSapeHostProperty;
     private JCommuneProperty componentSapeTimeoutProperty;
     private JCommuneProperty componentSapeShowDummyLinksProperty;
+    private JCommuneProperty componentSapeEnableServiceProperty;
 
     private static Sape sape;
-    private static boolean enabledSape;
+
+    private static List<String> dummyLinks;
+
+    static {
+        dummyLinks = new ArrayList<String>();
+        dummyLinks.add("<a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
+                "продажа зимних шин нокиан</a></br> с доставкой");
+        dummyLinks.add("<a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
+                "продаю что-то</a></br>налетай. какой то очень длинный текст, для проверки отображения ссылок. " +
+                "И еще какой то текст длинный длинный");
+        dummyLinks.add("<a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
+                "какая то другая ссылка</a></br> на что-то другое");
+        dummyLinks.add("<a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
+                "продажа зимних шин нокиан</a></br> с доставкой");
+        dummyLinks.add(" <a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
+                "какая то другая ссылка</a></br> на что-то другое");
+        dummyLinks.add(" <a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
+                "какая то другая ссылка</a></br> на что-то другое");
+    }
 
     /**
      * Initializes {@link javasape.Sape} object.
      */
     private boolean initSape() {
+        if (sape != null) {
+            return true;
+        }
         String accountId = componentSapeAccountProperty.getValue();
         String host = componentSapeHostProperty.getValue();
-        if (componentSapeShowDummyLinksProperty.booleanValue() || accountId == null || accountId.trim().isEmpty() ||
-                host == null || host.trim().isEmpty()) {
+        if (accountId == null || accountId.trim().isEmpty() || host == null || host.trim().isEmpty()) {
             return false;
         }
         sape = new Sape(componentSapeAccountProperty.getValue(),
@@ -71,26 +92,27 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
      *                     (can also be {@code null})
      */
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        if (sape == null) {
-            enabledSape = initSape();
+    public void postHandle(HttpServletRequest request, HttpServletResponse response,
+                           Object handler, ModelAndView modelAndView) throws Exception {
+        if (!componentSapeEnableServiceProperty.booleanValue() ||
+                //do not apply to the redirected requests: it's unnecessary and may cause error pages to work incorrectly
+                (!componentSapeOnMainPageEnableProperty.booleanValue() && modelAndView.getViewName().equals("sectionList")) ||
+                modelAndView.getViewName().contains("redirect:")) {
+            return;
         }
-        if (enabledSape) {
-            boolean sapeOnMainPageEnable = false;
-            String sapeOnMainPageEnableValue = componentSapeOnMainPageEnableProperty.getValue();
-            if (sapeOnMainPageEnableValue != null && !sapeOnMainPageEnableValue.trim().isEmpty()) {
-                sapeOnMainPageEnable = Boolean.valueOf(sapeOnMainPageEnableValue);
+
+        if (componentSapeShowDummyLinksProperty.booleanValue()) {
+            modelAndView.addObject("sapeLinks", dummyLinks);
+            return;
+        }
+
+        if (initSape()) {
+            SapePageLinks pageLinks = sape.getPageLinks(request.getRequestURI(), request.getCookies());
+            List<String> sapeLinks = new ArrayList<String>();
+            for (int i = 1; i <= componentSapeLinksCountProperty.intValue(); i++) {
+                sapeLinks.add(pageLinks.render(1));
             }
-            //do not apply to the redirected requests: it's unnecessary and may cause error pages to work incorrectly
-            if ((sapeOnMainPageEnable || !modelAndView.getViewName().equals("/")) &&
-                    !modelAndView.getViewName().contains("redirect:")) {
-                SapePageLinks pageLinks = sape.getPageLinks(request.getRequestURI(), request.getCookies());
-                List<String> sapeLinks = new ArrayList<String>();
-                for (int i = 1; i <= componentSapeLinksCountProperty.intValue(); i++) {
-                    sapeLinks.add(pageLinks.render(1));
-                }
-                modelAndView.addObject("sapeLinks", sapeLinks);
-            }
+            modelAndView.addObject("sapeLinks", sapeLinks);
         }
     }
 
@@ -203,5 +225,24 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
      */
     public void setComponentSapeShowDummyLinksProperty(JCommuneProperty componentSapeShowDummyLinksProperty) {
         this.componentSapeShowDummyLinksProperty = componentSapeShowDummyLinksProperty;
+    }
+
+    /**
+     * Gets flag whether enable SAPE service
+     *
+     * @return enable SAPE service flag
+     */
+    public JCommuneProperty getComponentSapeEnableServiceProperty() {
+        return componentSapeEnableServiceProperty;
+    }
+
+    /**
+     * Sets flag whether enable SAPE service
+     *
+     * @param componentSapeEnableServiceProperty
+     *         enable SAPE service flag
+     */
+    public void setComponentSapeEnableServiceProperty(JCommuneProperty componentSapeEnableServiceProperty) {
+        this.componentSapeEnableServiceProperty = componentSapeEnableServiceProperty;
     }
 }
