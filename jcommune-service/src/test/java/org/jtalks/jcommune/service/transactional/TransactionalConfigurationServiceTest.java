@@ -51,6 +51,7 @@ public class TransactionalConfigurationServiceTest {
     private JCommuneProperty sapeNumberOrLinks = JCommuneProperty.CMP_SAPE_LINKS_COUNT;
     private JCommuneProperty sapeShowOnMainPage = JCommuneProperty.CMP_SAPE_ON_MAIN_PAGE_ENABLE;
     private JCommuneProperty sapeShowDummyLinks = JCommuneProperty.CMP_SAPE_SHOW_DUMMY_LINKS;
+    private JCommuneProperty sapeEnabled = JCommuneProperty.CMP_SAPE_ENABLED;
     @Mock
     private ComponentDao componentDao;
     
@@ -61,7 +62,7 @@ public class TransactionalConfigurationServiceTest {
         initMocks(this);
         configurationService = new TransactionalConfigurationService(
                 sapeAccountId, sapeTimeout, sapeHostUrl, sapeNumberOrLinks, 
-                sapeShowOnMainPage, sapeShowDummyLinks);
+                sapeShowOnMainPage, sapeShowDummyLinks,sapeEnabled);
         
         sapeAccountId.setName("sape.account.id");
         sapeTimeout.setName("sape.timeout");

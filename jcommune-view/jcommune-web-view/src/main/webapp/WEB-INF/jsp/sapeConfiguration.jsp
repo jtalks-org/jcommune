@@ -31,6 +31,11 @@
         modelAttribute="sapeConfiguration" class="form-vertical">
         <fieldset>
             <legend><spring:message code="label.sapeConfiguration"/></legend>
+
+            <div class="control-group">
+                <form:checkbox path="enableSape" class="form-check-radio-box"/>
+                <label class="string optional"><spring:message code="label.enableSape"/></label>
+            </div>
             
             <div class="control-group">
                 <label for="accountId" class="control-label"><spring:message code="label.accountId"/> </label>

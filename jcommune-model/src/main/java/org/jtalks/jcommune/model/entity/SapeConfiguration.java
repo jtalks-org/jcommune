@@ -23,14 +23,13 @@ import org.hibernate.validator.constraints.NotBlank;
  *
  */
 public class SapeConfiguration {
-    @NotBlank
     private String accountId;
     private int timeout;
-    @NotBlank
     private String hostUrl;
     private int numberOfLinks;
     private boolean showOnMainPage;
     private boolean showDummyLinks;
+    private boolean enableSape;
     
     /**
      * @return the accoundId
@@ -104,5 +103,18 @@ public class SapeConfiguration {
     public void setShowDummyLinks(boolean showDummyLinks) {
         this.showDummyLinks = showDummyLinks;
     }
-    
+
+    /**
+     * @return the enableSape flag
+     */
+    public boolean isEnableSape() {
+        return enableSape;
+    }
+
+    /**
+     * @param enableSape the enableSape to set
+     */
+    public void setEnableSape(boolean enableSape) {
+        this.enableSape = enableSape;
+    }
 }
