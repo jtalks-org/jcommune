@@ -68,7 +68,7 @@
                         <ul class="dropdown-menu links-menu">
                             <c:if test="${not empty externalLinks}">
                                 <c:forEach var="link" items="${externalLinks}">
-                                    <li><a id="${link.id}" title="${link.hint}" href="${link.url}" name="${link.title}">
+                                    <li><a id="${link.id}" title="${link.hint}" href="${link.url}">
                                         <c:out value="${link.title}"/>
                                     </a></li>
                                 </c:forEach>
