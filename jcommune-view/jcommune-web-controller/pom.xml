@@ -4,7 +4,7 @@
     <parent>
         <artifactId>jcommune-view</artifactId>
         <groupId>org.jtalks.jcommune</groupId>
-        <version>1.3</version>
+        <version>1.4-SNAPSHOT</version>
     </parent>
     <artifactId>jcommune-web-controller</artifactId>
     <name>${project.artifactId}</name>
