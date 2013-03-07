@@ -43,7 +43,7 @@ public class TransactionalCodeReviewCommentServiceTest {
     private static final String COMMENT_BODY = "body";
     private static final long BRANCH_ID = 1L;
     private static final long CR_ID = 1L;
-    
+
     @Mock
     private ChildRepository<CodeReviewComment> dao;
     @Mock
@@ -54,86 +54,83 @@ public class TransactionalCodeReviewCommentServiceTest {
     NotificationService notificationService;
     @Mock
     private CodeReviewService codeReviewService;
-    
+
     private TransactionalCodeReviewCommentService codeReviewCommentService;
 
     private CodeReviewComment comment;
     private JCUser currentUser;
-    
+
     @BeforeMethod
     public void initEnvironmental() {
         initMocks(this);
-        codeReviewCommentService = new TransactionalCodeReviewCommentService(dao, 
-        		permissionService, userService);
+        codeReviewCommentService = new TransactionalCodeReviewCommentService(dao, permissionService, userService);
     }
-    
-    @BeforeMethod 
+
+    @BeforeMethod
     public void prepareTestData() {
 
-    	currentUser = givenCurrentUser("code-review comment author");
+        currentUser = givenCurrentUser("code-review comment author");
         comment = new CodeReviewComment();
         comment.setAuthor(currentUser);
-        
+
         when(dao.get(CR_ID)).thenReturn(comment);
         when(dao.isExist(CR_ID)).thenReturn(true);
 
         givenUserHasPermissionToEditOwnPosts(true);
         givenUserHasPermissionToEditOthersPosts(true);
     }
-    
+
     @Test
     public void testUpdateCommentSuccess() throws Exception {
         givenUserHasPermissionToEditOwnPosts(true);
         CodeReviewComment comment = codeReviewCommentService.updateComment(CR_ID, COMMENT_BODY, BRANCH_ID);
-        
+
         assertEquals(comment.getBody(), COMMENT_BODY);
     }
-    
-    @Test(expectedExceptions=NotFoundException.class)
+
+    @Test(expectedExceptions = NotFoundException.class)
     public void testUpdateCommentNotFound() throws Exception {
         codeReviewCommentService.updateComment(123L, null, BRANCH_ID);
     }
-    
-    @Test(expectedExceptions=AccessDeniedException.class)
+
+    @Test(expectedExceptions = AccessDeniedException.class)
     public void testUpdateCommentNoBothPermission() throws NotFoundException {
         givenUserHasPermissionToEditOwnPosts(false);
         givenUserHasPermissionToEditOthersPosts(false);
         codeReviewCommentService.updateComment(CR_ID, null, BRANCH_ID);
     }
-    
-    @Test(expectedExceptions=AccessDeniedException.class)
+
+    @Test(expectedExceptions = AccessDeniedException.class)
     public void testUpdateCommentNoEditOwnPermission() throws NotFoundException {
         givenUserHasPermissionToEditOwnPosts(false);
         givenUserHasPermissionToEditOthersPosts(true);
         codeReviewCommentService.updateComment(CR_ID, null, BRANCH_ID);
     }
-    
-    @Test(expectedExceptions=AccessDeniedException.class)
+
+    @Test(expectedExceptions = AccessDeniedException.class)
     public void testUpdateCommentNotOwnerNoEditOthersPermission() throws NotFoundException {
         givenCurrentUser("not-the-author-of-comment");
         givenUserHasPermissionToEditOthersPosts(false);
         givenUserHasPermissionToEditOwnPosts(true);
         codeReviewCommentService.updateComment(CR_ID, null, BRANCH_ID);
     }
-    
+
     @Test
     public void testUpdateCommentNotOwnerButHasEditOthersPermission() throws NotFoundException {
         givenCurrentUser("not-the-author-of-comment");
         givenUserHasPermissionToEditOwnPosts(false);
         givenUserHasPermissionToEditOthersPosts(true);
         CodeReviewComment comment = codeReviewCommentService.updateComment(CR_ID, COMMENT_BODY, BRANCH_ID);
-        
+
         assertEquals(comment.getBody(), COMMENT_BODY);
     }
 
-	@Test
-	public void testSubscriberNotGetNotificationAboutEditingComment()
-			throws Exception {
+    @Test
+    public void testSubscriberNotGetNotificationAboutEditingComment() throws Exception {
+        codeReviewCommentService.updateComment(CR_ID, COMMENT_BODY + "updated", BRANCH_ID);
+        verifyZeroInteractions(notificationService);
+    }
 
-		codeReviewCommentService.updateComment( CR_ID, COMMENT_BODY + "updated", BRANCH_ID);
-		
-		verifyZeroInteractions(notificationService);
-	}
     private void givenUserHasPermissionToEditOwnPosts(boolean isGranted) {
         doReturn(isGranted).when(permissionService).hasBranchPermission(BRANCH_ID, BranchPermission.EDIT_OWN_POSTS);
     }
