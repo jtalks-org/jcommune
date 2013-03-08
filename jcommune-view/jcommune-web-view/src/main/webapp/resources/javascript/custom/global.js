@@ -69,7 +69,9 @@ $(document).ready(function () {
 
     //disable or enable sape configuration inputs of form
     $('#enableSape1').bind('change', function(e){
-        $('#sape-configuration-form input:not(#enableSape1, .btn)').attr('readonly', !e.target.checked);
+        $('#sape-configuration-form input:not(#enableSape1, .btn, input[type="checkbox"])').attr('readonly', !e.target.checked);
+        $('#sape-configuration-form input[type="checkbox"]:not(#enableSape1)').attr('onclick', 'return ' + e.target.checked);
+        $('#sape-configuration-form input[type="checkbox"]:not(#enableSape1)').attr('onckeydown', 'return ' + e.target.checked);
     })
 
     $(window).resize();
