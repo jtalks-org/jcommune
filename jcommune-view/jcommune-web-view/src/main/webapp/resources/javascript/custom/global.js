@@ -69,7 +69,7 @@ $(document).ready(function () {
 
     //disable or enable sape configuration inputs of form
     $('#enableSape1').bind('change', function(e){
-        $('#sape-configuration-form input:not(#enableSape1, .btn)').attr('disabled', !e.target.checked)
+        $('#sape-configuration-form input:not(#enableSape1, .btn)').attr('readonly', !e.target.checked);
     })
 
     $(window).resize();
