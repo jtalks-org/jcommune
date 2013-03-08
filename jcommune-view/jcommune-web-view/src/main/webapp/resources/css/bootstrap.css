@@ -1330,7 +1330,7 @@ table {
 }
 
 .table-bordered thead tr th {
-    background-color: #333333;
+    background-color: #444444;
     color: #ffffff;
 }
 
@@ -1343,11 +1343,11 @@ table {
 }
 
 .table-row tbody tr th {
-    background-color: #333333;
+    background-color: #444444;
 }
 
 .table-row tbody tr.post-header td {
-    background-color: #e6e6e6;
+    background-color: transparent;
 }
 
 table .span1 {
