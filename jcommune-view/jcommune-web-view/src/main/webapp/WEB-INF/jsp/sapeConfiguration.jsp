@@ -21,6 +21,11 @@
 <html>
 <head>
     <title><spring:message code="label.sapeConfiguration"/></title>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#enableSape1').change();
+        })
+    </script>
 </head>
 <body>
 
