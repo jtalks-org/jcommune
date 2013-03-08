@@ -31,7 +31,15 @@
         <jtalks:hasPermission targetId="${forumComponent.id}" targetType="COMPONENT" permission="GeneralPermission.ADMIN">
             <div class="pull-right">
                 <a href="#uploadBannerModal${position}" role="button" class="btn" data-toggle="modal">
-                    <fmt:message key="label.banner.upload"/>
+                    <c:choose>
+                        <c:when test="${not empty banner}">
+                            <fmt:message key="label.banner.edit"/>
+                        </c:when>
+                        <c:otherwise>
+                            <fmt:message key="label.banner.add"/>
+                        </c:otherwise>
+                    </c:choose>
+                    
                 </a>
             </div>
             <!-- Upload banner modal dialog -->
@@ -53,7 +61,7 @@
                         <fmt:message key="label.banner.upload.dialog.cancel" />
                     </button>
                     <button class="btn btn-primary" tabindex="2">
-                        <fmt:message key="label.banner.upload.dialog.upload" />
+                        <fmt:message key="label.banner.upload.dialog.save" />
                     </button>
                 </div>
             </form:form>
