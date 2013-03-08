@@ -1,3 +1,5 @@
+INSERT INTO COMPONENTS (CMP_ID, COMPONENT_TYPE, UUID, `NAME`, DESCRIPTION) VALUES (1, 'FORUM', (SELECT UUID() FROM dual), 'JTalks', '');
+
 INSERT INTO SECTIONS (SECTION_ID, UUID, `NAME`, DESCRIPTION, POSITION, COMPONENT_ID) VALUES (1,(SELECT UUID() FROM dual),'Sample section', 'Some description here', 1, 1);
 INSERT INTO SECTIONS (SECTION_ID, UUID, `NAME`, DESCRIPTION, POSITION, COMPONENT_ID) VALUES (2,(SELECT UUID() FROM dual),'Another section', 'Whatever else', 2,  1);
 
@@ -38,6 +40,7 @@ INSERT IGNORE INTO GROUP_USER_REF select @registered_group_id, ID from USERS whe
 
 INSERT INTO `acl_class` VALUES (1,'BRANCH');
 INSERT INTO `acl_class` VALUES (2,'GROUP');
+INSERT INTO `acl_class` VALUES (3,'COMPONENT');
 
 INSERT INTO `acl_sid` VALUES (5,0,@moderator_group_sid);
 
@@ -53,6 +56,7 @@ INSERT INTO `acl_object_identity` VALUES (3,1,3,NULL,1,1);
 INSERT INTO `acl_object_identity` VALUES (4,1,4,NULL,1,1);
 INSERT INTO `acl_object_identity` VALUES (5,2,@registered_group_id,NULL,1,1);
 INSERT INTO `acl_object_identity` VALUES (6,2,@admin_group_id,NULL,1,1);
+INSERT INTO `acl_object_identity` VALUES (7,3,1,NULL,1,1);
 
 SET @SEND_PRIVATE_MESSAGES_MASK := 14;
 SET @CREATE_FORUM_FAQ_MASK := 20;
@@ -70,6 +74,8 @@ SET @CREATE_ANNOUNCEMENTS_MASK := 18;
 SET @CREATE_STICKED_TOPICS_MASK := 19;
 SET @CREATE_CODE_REVIEW_MASK := 21;
 SET @LEAVE_COMMENTS_IN_CODE_REVIEW_MASK := 22;
+
+SET @ADMIN_MASK := 16;
 
 /* VIEW_TOPICS FOR registered users */
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
@@ -293,4 +299,7 @@ INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, aud
                 VALUES (3,26,@banned_group_sid_id,@CREATE_CODE_REVIEW_MASK,0,0,0);
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (4,26,@banned_group_sid_id,@CREATE_CODE_REVIEW_MASK,0,0,0);
+
+INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+                VALUES (7,1,@admin_group_sid_id,@ADMIN_MASK,1,0,0);
 
