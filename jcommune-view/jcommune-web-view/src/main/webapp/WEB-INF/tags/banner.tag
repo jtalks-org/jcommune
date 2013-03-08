@@ -32,11 +32,14 @@
             <div class="pull-right">
                 <a href="#uploadBannerModal${position}" role="button" class="btn" data-toggle="modal">
                     <c:choose>
-                        <c:when test="${not empty banner}">
-                            <fmt:message key="label.banner.edit"/>
+                        <c:when test="${empty banner}">
+                            <fmt:message key="label.banner.add"/>
+                        </c:when>
+                        <c:when test="${empty banner.content}">
+                            <fmt:message key="label.banner.add"/>
                         </c:when>
                         <c:otherwise>
-                            <fmt:message key="label.banner.add"/>
+                            <fmt:message key="label.banner.edit"/>
                         </c:otherwise>
                     </c:choose>
                     
