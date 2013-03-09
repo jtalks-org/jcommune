@@ -135,6 +135,7 @@ public class TopicController {
     public ModelAndView showNewTopicPage(@RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
         Branch branch = branchService.get(branchId);
         Topic topic = new Topic();
+        topic.setBranch(branch);
         topic.setPoll(new Poll());
         TopicDto dto = new TopicDto(topic);
         dto.setNotifyOnAnswers(true);
