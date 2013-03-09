@@ -117,6 +117,8 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
                   "(hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OTHERS_POSTS') and " +
                   "#post.userCreated.username != principal.username)")
     public void deletePost(Post post) {
+        lastReadPostService.updateLastReadPostsWhenPostIsDeleted(post);
+        
         JCUser user = post.getUserCreated();
         user.setPostCount(user.getPostCount() - 1);
         Topic topic = post.getTopic();
@@ -131,7 +133,6 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         topicDao.update(topic);
         securityService.deleteFromAcl(post);
         notificationService.topicChanged(topic);
-        lastReadPostService.updateLastReadPostsWhenPostIsDeleted(post);
         if (deletedPostIsLastPostInBranch) {
             branchLastPostService.refreshLastPostInBranch(branch);
         }
