@@ -326,12 +326,15 @@ h3 {
 .table-with-titles th {
     border: 0px;
     border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -o-border-radius: 4px;
     padding-top: 10px !important;
 
     /* Use this styles instead of <h3> tag inside <th>. To fit HTML5 standard*/
     margin: 0;
     font-weight: bold;
-    color: #444444;
+    color: #444;
     text-rendering: optimizelegibility;
     line-height: 27px;
     font-size: 18px;
