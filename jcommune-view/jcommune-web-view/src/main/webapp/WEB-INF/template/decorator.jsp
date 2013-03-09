@@ -91,9 +91,8 @@
     <c:if test="${sapeLinks != null && (not empty sapeLinks)}">
       <div class="well sapeLinks">
         <c:forEach items="${sapeLinks}" var="link">
-          <div class="sapaLinkRow">
-            <c:out value='${link}'/>
-          </div>
+          <%--this shouldn't be escaped because we receive HTML elements from SAPE which should be shown as is--%>
+          <div class="sapaLinkRow">${link}</div>
         </c:forEach>
       </div>
     </c:if>
