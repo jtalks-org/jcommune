@@ -94,7 +94,7 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response,
                            Object handler, ModelAndView modelAndView) throws Exception {
-        if (!componentSapeEnableServiceProperty.booleanValue() ||
+        if (!componentSapeEnableServiceProperty.booleanValue() || modelAndView == null || modelAndView.getViewName() == null ||
                 //do not apply to the redirected requests: it's unnecessary and may cause error pages to work incorrectly
                 (!componentSapeOnMainPageEnableProperty.booleanValue() && modelAndView.getViewName().equals("sectionList")) ||
                 modelAndView.getViewName().contains("redirect:")) {
