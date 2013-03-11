@@ -50,4 +50,22 @@ public class PostTest {
 
         assertTrue(post.getModificationDate().isAfter(prevDate));
     }
+    
+    @Test
+    public void testGetLastTouchedDatePostWasNotModified() {
+        DateTime createdDate = new DateTime();
+        post.setCreationDate(createdDate);
+        post.setModificationDate(null);
+        
+        assertEquals(post.getLastTouchedDate(), createdDate);
+    }
+    
+    @Test
+    public void testGetLastTouchedDatePostWasModified() {
+        DateTime modifiedDate = new DateTime();
+        post.setCreationDate(modifiedDate.minusDays(1));
+        post.setModificationDate(modifiedDate);
+        
+        assertEquals(post.getLastTouchedDate(), modifiedDate);
+    }
 }

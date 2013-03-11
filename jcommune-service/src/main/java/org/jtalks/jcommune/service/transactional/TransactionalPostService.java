@@ -129,6 +129,10 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
             branch.clearLastPost();
         }
         
+        if (post.getLastTouchedDate().equals(topic.getModificationDate())) {
+            topic.recalculateModificationDate();
+        }
+        
         // todo: event API?
         topicDao.update(topic);
         securityService.deleteFromAcl(post);

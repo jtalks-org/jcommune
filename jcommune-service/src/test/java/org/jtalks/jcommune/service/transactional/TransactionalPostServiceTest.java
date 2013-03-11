@@ -164,14 +164,17 @@ public class TransactionalPostServiceTest {
     }
 
     @Test
-    public void testDeletePost() throws NotFoundException {
+    public void testDeletePostDeletedPostIsLastModified() throws NotFoundException {
         Topic topic = new Topic(user, "title");
         Post post = new Post(user, "content");
         post.setId(1L);
+        post.updateModificationDate();
         Post postForDelete = new Post(user, "content");
         postForDelete.setId(POST_ID);
+        postForDelete.updateModificationDate();
         topic.addPost(post);
         topic.addPost(postForDelete);
+        topic.recalculateModificationDate();
         Branch branch = new Branch("branch", "branch description");
         topic.setBranch(branch);
         user.setPostCount(2);
@@ -179,9 +182,39 @@ public class TransactionalPostServiceTest {
         postService.deletePost(postForDelete);
 
         assertEquals(user.getPostCount(), 1);
+        assertEquals(topic.getModificationDate(), topic.getFirstPost().getModificationDate());
         verify(topicDao).update(topic);
         verify(securityService).deleteFromAcl(postForDelete);
         verify(notificationService).topicChanged(topic);
+    }
+    
+    @Test
+    public void testDeletePostFirstPostIsLastModified() throws NotFoundException {
+        Topic topic = new Topic(user, "title");
+        Post post = new Post(user, "content");
+        post.setId(1L);
+        Post postForDelete = new Post(user, "content");
+        postForDelete.setId(POST_ID);
+        
+        topic.addPost(post);
+        topic.addPost(postForDelete);
+        
+        postForDelete.updateModificationDate();
+        post.updateModificationDate();        
+        topic.recalculateModificationDate();
+        
+        Branch branch = new Branch("branch", "branch description");
+        topic.setBranch(branch);
+        user.setPostCount(2);
+
+        postService.deletePost(postForDelete);
+
+        assertEquals(user.getPostCount(), 1);
+        assertEquals(topic.getModificationDate(), topic.getFirstPost().getModificationDate());
+        verify(topicDao).update(topic);
+        verify(securityService).deleteFromAcl(postForDelete);
+        verify(notificationService).topicChanged(topic);
+        
     }
     
     @Test
@@ -189,16 +222,20 @@ public class TransactionalPostServiceTest {
         Topic topic = new Topic(user, "title");
         Post post = new Post(user, "content");
         post.setId(1L);
+        post.updateModificationDate();
         Post postForDelete = new Post(user, "content");
         postForDelete.setId(POST_ID);
+        postForDelete.updateModificationDate();
         topic.addPost(post);
         topic.addPost(postForDelete);
+        topic.recalculateModificationDate();
         Branch branch = new Branch("branch", "branch description");
         topic.setBranch(branch);
         branch.setLastPost(postForDelete);
 
         postService.deletePost(postForDelete);
 
+        assertEquals(topic.getModificationDate(), topic.getFirstPost().getModificationDate());
         verify(branchLastPostService).refreshLastPostInBranch(branch);
     }
     
@@ -207,16 +244,20 @@ public class TransactionalPostServiceTest {
         Topic topic = new Topic(user, "title");
         Post post = new Post(user, "content");
         post.setId(1L);
+        post.updateModificationDate();
         Post postForDelete = new Post(user, "content");
         postForDelete.setId(POST_ID);
+        postForDelete.updateModificationDate();
         topic.addPost(post);
         topic.addPost(postForDelete);
+        topic.recalculateModificationDate();
         Branch branch = new Branch("branch", "branch description");
         topic.setBranch(branch);
         branch.setLastPost(post);
 
         postService.deletePost(postForDelete);
 
+        assertEquals(topic.getModificationDate(), topic.getFirstPost().getModificationDate());
         verify(branchLastPostService, Mockito.never()).refreshLastPostInBranch(branch);
     }
 
