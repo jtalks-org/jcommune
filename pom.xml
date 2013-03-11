@@ -531,6 +531,10 @@
                 <artifactId>pitest-maven</artifactId>
                 <version>0.29</version>
                 <configuration>
+                    <excludedClasses>
+                        <param>org.jtalks.jcommune.model.dao.hibernate*</param>
+                        <param>org.jtalks.jcommune.model.dao.search.hibernate*</param>
+                    </excludedClasses>
                     <timestampedReports>false</timestampedReports>
                     <verbose>true</verbose>
                     <outputFormats>
