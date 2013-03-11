@@ -133,15 +133,16 @@ function extractExternalLinkIdFrom(fullId) {
 function createLinksTableRows(elements) {
     var elementHtml = "";
     $.each(elements, function (index, element) {
-        elementHtml = elementHtml + ' \
-                    <tr id="' + element.id + '"> \
-                    <td class="link-url">' + element.url + '</td> \
-                    <td class="link-hint">' + element.hint + '</td> \
-                    <td class="link-title">' + element.title + '</td> \
-                    <td class="icon-pencil cursor-hand" title="' + $linksEditIcon + '"></td> \
-                    <td class="icon-trash cursor-hand" title="' + $linksRemoveIcon + '"/> \
-                    </tr> \
-            ';
+        var tr =
+            $("<tbody/>")//this one is needed because html() returns INNER elements
+                .append($("<tr/>").attr("id", element.id)
+                    .append($("<td/>").addClass("link-url").text(element.url))
+                    .append($("<td/>").addClass("link-hint").text(element.hint))
+                    .append($("<td/>").addClass("link-title").text(element.title))
+                    .append($("<td/>").addClass("icon-pencil cursor-hand").attr("title", $linksEditIcon))
+                    .append($("<td/>").addClass("icon-trash cursor-hand").attr("title", $linksRemoveIcon))
+                );
+        elementHtml += tr.html();
     })
     return elementHtml;
 }

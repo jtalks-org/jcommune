@@ -15,6 +15,7 @@
 
 package org.jtalks.jcommune.model.entity;
 
+import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.URL;
 import org.jtalks.common.model.entity.Entity;
 
@@ -39,7 +40,8 @@ public class ExternalLink extends Entity {
     @Size(max = URL_MAX_SIZE, min = URL_MIN_SIZE, message = "{validation.links.url.length}")
     private String url;
     @NotNull(message = "{validation.not_null}")
-    @Size(max = TITLE_MAX_SIZE, min = TITLE_MIN_SIZE, message = "{validation.links.title.length}")
+    @Size(max = TITLE_MAX_SIZE, message = "{validation.links.title.length}")
+    @NotBlank(message = "{validation.links.title.not_blank}")
     private String title;
     @NotNull(message = "{validation.not_null}")
     @Size(max = HINT_MAX_SIZE, message = "{validation.links.hint.length}")

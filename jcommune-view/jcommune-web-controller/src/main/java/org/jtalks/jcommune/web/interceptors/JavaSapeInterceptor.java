@@ -49,18 +49,18 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
     static {
         dummyLinks = new ArrayList<String>();
         dummyLinks.add("<a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
-                "продажа зимних шин нокиан</a></br> с доставкой");
+                "продажа зимних шин нокиан</a><br/> с доставкой");
         dummyLinks.add("<a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
-                "продаю что-то</a></br>налетай. какой то очень длинный текст, для проверки отображения ссылок. " +
+                "продаю что-то</a><br/>налетай. какой то очень длинный текст, для проверки отображения ссылок. " +
                 "И еще какой то текст длинный длинный");
         dummyLinks.add("<a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
-                "какая то другая ссылка</a></br> на что-то другое");
+                "какая то другая ссылка</a><br/> на что-то другое");
         dummyLinks.add("<a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
-                "продажа зимних шин нокиан</a></br> с доставкой");
+                "продажа зимних шин нокиан</a><br/> с доставкой");
         dummyLinks.add(" <a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
-                "какая то другая ссылка</a></br> на что-то другое");
+                "какая то другая ссылка</a><br/> на что-то другое");
         dummyLinks.add(" <a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
-                "какая то другая ссылка</a></br> на что-то другое");
+                "какая то другая ссылка</a><br/> на что-то другое");
     }
 
     /**

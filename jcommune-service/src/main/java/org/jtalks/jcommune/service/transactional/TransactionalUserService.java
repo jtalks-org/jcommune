@@ -309,7 +309,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
                 if (rememberMe) {
                     rememberMeServices.loginSuccess(request, response, auth);
                 }
-                
+                user.updateLastLoginTime();
                 result = true;
             }
         } catch (NotFoundException e) {
