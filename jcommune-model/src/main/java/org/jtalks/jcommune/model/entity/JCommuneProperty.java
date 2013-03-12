@@ -83,7 +83,12 @@ public enum JCommuneProperty {
     /**
      * Whether show dummy links for SAPE
      */
-    CMP_SAPE_SHOW_DUMMY_LINKS;
+    CMP_SAPE_SHOW_DUMMY_LINKS,
+
+    /**
+     * Whether enable SAPE service
+     */
+    CMP_SAPE_ENABLED;
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JCommuneProperty.class);

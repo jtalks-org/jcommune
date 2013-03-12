@@ -4,7 +4,7 @@
     <parent>
         <artifactId>jcommune-view</artifactId>
         <groupId>org.jtalks.jcommune</groupId>
-        <version>1.3-SNAPSHOT</version>
+        <version>1.4-SNAPSHOT</version>
     </parent>
     <artifactId>jcommune-web-controller</artifactId>
     <name>${project.artifactId}</name>
@@ -33,6 +33,12 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>

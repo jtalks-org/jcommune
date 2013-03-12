@@ -20,7 +20,6 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.CodeReviewCommentService;
 import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.web.dto.CodeReviewCommentDto;
 import org.jtalks.jcommune.web.dto.json.FailJsonResponse;
 import org.jtalks.jcommune.web.dto.json.FailValidationJsonResponse;
@@ -59,20 +58,16 @@ public class CodeReviewCommentController {
     
     private CodeReviewService codeReviewService;
     private CodeReviewCommentService codeReviewCommentService;
-    private NotificationService notificationService;
     
     /**
      * @param codeReviewService        to operate with {@link CodeReview} entities
      * @param codeReviewCommentService to operate with (@link {@link CodeReviewComment} entities
-     * @param notificationService   to send email updates for comment changing subscribers.
      */
     @Autowired
     public CodeReviewCommentController(CodeReviewService codeReviewService,
-                                CodeReviewCommentService codeReviewCommentService,
-                                NotificationService notificationService) {
+                                CodeReviewCommentService codeReviewCommentService) {
         this.codeReviewService = codeReviewService;
         this.codeReviewCommentService = codeReviewCommentService;
-        this.notificationService = notificationService;
     }
     
     /**
@@ -151,7 +146,6 @@ public class CodeReviewCommentController {
         }
         CodeReviewComment editedComment = codeReviewCommentService.updateComment(
                 commentDto.getId(), commentDto.getBody(), branchId);
-        notificationService.subscribedEntityChanged(editedComment.getCodeReview());
         CodeReviewCommentDto editedCommentDto = new CodeReviewCommentDto(editedComment);
         return new JsonResponse(JsonResponseStatus.SUCCESS, editedCommentDto);
     }

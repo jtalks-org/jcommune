@@ -15,7 +15,9 @@
 
 $(document).ready(function () {
 
-    $(".sapaLinkRow").dotdotdot();
+    if($(".sapaLinkRow").length > 0){
+        $(".sapaLinkRow").dotdotdot();
+    }
     //Sets timezone cookie for the server to show all the dates in a client timezone
     document.cookie = "GMT=" + new Date().getTimezoneOffset() + "; path=/";
     // Initializes image previewing
@@ -64,6 +66,17 @@ $(document).ready(function () {
         e.preventDefault();
         $('.btn-navbar').trigger('mainLinksPosition');
     });
+
+    //disable or enable sape configuration inputs of form
+    $('#enableSape1').bind('change', function(e){
+        var elements = $('#sape-configuration-form input:not(#enableSape1, input[name="_enableSape"],' +
+            ' .btn, input[type="checkbox"])').parents('.control-group');
+        if(e.target.checked){
+            elements.show();
+        }else{
+            elements.hide();
+        }
+    })
 
     $(window).resize();
 });

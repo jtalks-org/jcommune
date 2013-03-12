@@ -111,6 +111,7 @@ public class CodeReviewController {
     public ModelAndView showNewCodeReviewPage(@RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
         Branch branch = branchService.get(branchId);
         Topic topic = new Topic();
+        topic.setBranch(branch);
         TopicDto dto = new TopicDto(topic);
         dto.setNotifyOnAnswers(true);
         return new ModelAndView(CODE_REVIEW_VIEW)

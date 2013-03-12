@@ -44,7 +44,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
@@ -93,6 +92,8 @@ public class TransactionalUserServiceTest {
     private UserService userService;
     @Mock
     private UserDao userDao;
+    @Mock
+    private JCUser user;
     @Mock
     private GroupDao groupDao;
     @Mock
@@ -402,8 +403,8 @@ public class TransactionalUserServiceTest {
     @Test
     public void testLoginSuccess() throws Exception {
         String username = "username";
-        when(userDao.getByUsername(username)).thenReturn(new JCUser(username, null, null));
-        
+        when(userDao.getByUsername(username)).thenReturn(user);
+
         HttpServletRequest httpRequest = new MockHttpServletRequest();
         HttpServletResponse httpResponse = new MockHttpServletResponse();
         UsernamePasswordAuthenticationToken expectedToken = mock(UsernamePasswordAuthenticationToken.class);
@@ -414,6 +415,7 @@ public class TransactionalUserServiceTest {
                 PASSWORD, false, httpRequest, httpResponse);
         
         assertTrue(isAuthenticated);
+        verify(user, atLeastOnce()).updateLastLoginTime();
         verify(userDao).getByUsername(username);
         verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
         verify(securityContext).setAuthentication(expectedToken);

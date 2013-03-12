@@ -26,6 +26,9 @@ var externalLinksGroupId = "#externalLinks";
 var externalLinksTableClass = '.list-of-links';
 var idToExternalLinkMap = new Object;
 var linksEditor;
+var bigScreenExternalLinkIdPrefix = "big-screen-external-link-";
+var smallScreenExternalLinkIdPrefix = "small-screen-external-link-";
+
 
 function getLinkById(id) {
     return idToExternalLinkMap[id];
@@ -55,11 +58,12 @@ $(function () {
 
         var elements = [];
         $(externalLinksGroupId).find('a').each(function (i, elem) {
-            var id = $(elem).attr('id');
+            var fullId = $(elem).attr('id');
+        	var id = extractExternalLinkIdFrom(fullId);
             var externalLink = {};
             externalLink.id = id;
             externalLink.url = $(elem).attr('href');
-            externalLink.title = $(elem).attr('name');
+            externalLink.title = $(elem).text();
             externalLink.hint = $(elem).attr('data-original-title');
             idToExternalLinkMap[id] = externalLink;
             elements[i] = externalLink;
@@ -117,19 +121,28 @@ $(function () {
 
 });
 
+function extractExternalLinkIdFrom(fullId) {
+	if (fullId.indexOf(bigScreenExternalLinkIdPrefix) !== -1) {
+		return fullId.replace(bigScreenExternalLinkIdPrefix, "");
+	} else if(fullId.indexOf(smallScreenExternalLinkIdPrefix) !== -1) {
+		return fullId.replace(smallScreenExternalLinkIdPrefix, "");
+	}
+}
+
 
 function createLinksTableRows(elements) {
     var elementHtml = "";
     $.each(elements, function (index, element) {
-        elementHtml = elementHtml + ' \
-                    <tr id="' + element.id + '"> \
-                    <td class="link-url">' + element.url + '</td> \
-                    <td class="link-hint">' + element.hint + '</td> \
-                    <td class="link-title">' + element.title + '</td> \
-                    <td class="icon-pencil cursor-hand" title="' + $linksEditIcon + '"></td> \
-                    <td class="icon-trash cursor-hand" title="' + $linksRemoveIcon + '"/> \
-                    </tr> \
-            ';
+        var tr =
+            $("<tbody/>")//this one is needed because html() returns INNER elements
+                .append($("<tr/>").attr("id", element.id)
+                    .append($("<td/>").addClass("link-url").text(element.url))
+                    .append($("<td/>").addClass("link-hint").text(element.hint))
+                    .append($("<td/>").addClass("link-title").text(element.title))
+                    .append($("<td/>").addClass("icon-pencil cursor-hand").attr("title", $linksEditIcon))
+                    .append($("<td/>").addClass("icon-trash cursor-hand").attr("title", $linksRemoveIcon))
+                );
+        elementHtml += tr.html();
     })
     return elementHtml;
 }
@@ -199,7 +212,8 @@ function editLinksVisible(visible) {
                         data: JSON.stringify(link),
                         success: function (resp) {
                             if (resp.status == "SUCCESS") {
-                                updateExternalLink(link);
+                                updateExternalLink(link, bigScreenExternalLinkIdPrefix);
+                                updateExternalLink(link, smallScreenExternalLinkIdPrefix);
                                 toAction('list');
                             } else {
                                 // remove previous errors and show new errors
@@ -224,11 +238,11 @@ function editLinksVisible(visible) {
         }
     }, '100');
 
-    function updateExternalLink(externalLink) {
+    function updateExternalLink(externalLink, externalLinkIdPrefix) {
         idToExternalLinkMap[externalLink.id] = externalLink;
 
         //update in main page
-        var link = $(externalLinksGroupId).find('a#' + externalLink.id);
+        var link = $(externalLinksGroupId).find('a#' + externalLinkIdPrefix + externalLink.id);
         link.attr('href', externalLink.url);
         link.attr('name', externalLink.title);
         link.text(externalLink.title);
@@ -304,17 +318,17 @@ function addLinkVisible(visible) {
         var tableRow = createLinksTableRows(elements);
         $(externalLinksTableClass).find('tbody').append(tableRow);
 
-        var aTag = prepareNewLinkATag(externalLink);
         //add to main page
-        $(externalLinksGroupId).append(aTag);
+        var bigScreenATag = prepareNewLinkATag(externalLink, bigScreenExternalLinkIdPrefix);
+        $(externalLinksGroupId).append(bigScreenATag);
 
         //add to top line dropdown
-        $(externalLinksGroupInTopLine).append('<li>' + aTag + "</li>")
+        var smallScreenATag = prepareNewLinkATag(externalLink, smallScreenExternalLinkIdPrefix);
+        $(externalLinksGroupInTopLine).append('<li>' + smallScreenATag + "</li>");
 
-        function prepareNewLinkATag(externalLink) {
-            return result = '<span><a id="' + externalLink.id + '"'
+        function prepareNewLinkATag(externalLink, externalLinkIdPrefix) {
+            return result = '<span><a id="' + externalLinkIdPrefix + externalLink.id + '"'
                 + 'href="' + externalLink.url + '"'
-                + 'name="' + externalLink.title + '"'
                 + 'data-original-title="' + externalLink.hint + '">'
                 + externalLink.title + " "
                 + '</a></span>';
@@ -345,9 +359,9 @@ function confirmRemoveVisible(visible) {
                                 //remove from popup editor
                                 $(externalLinksTableClass).find('#' + link.id).remove();
                                 //remove from main page
-                                $(externalLinksGroupId).find('#' + link.id).parent('span').remove();
+                                $(externalLinksGroupId).find('#' + bigScreenExternalLinkIdPrefix + link.id).parent('span').remove();
                                 //remove from top line dropdown
-                                $(externalLinksGroupInTopLine).find('#' + link.id).parent('li').remove();
+                                $(externalLinksGroupInTopLine).find('#' + smallScreenExternalLinkIdPrefix + link.id).parent('li').remove();
                                 toAction('list');
                             }
                             else {
