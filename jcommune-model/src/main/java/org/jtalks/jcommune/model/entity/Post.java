@@ -122,6 +122,13 @@ public class Post extends Entity {
         this.modificationDate = new DateTime();
         return this.modificationDate;
     }
+    
+    /**
+     * @return date and time where post what last time modified or created otherwise
+     */
+    public DateTime getLastTouchedDate() {
+        return modificationDate == null ? creationDate : modificationDate;
+    }
 
     /**
      * @return the userCreated

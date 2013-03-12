@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import org.apache.commons.lang.Validate;
 import org.apache.solr.analysis.LowerCaseFilterFactory;
 import org.apache.solr.analysis.SnowballPorterFilterFactory;
 import org.apache.solr.analysis.StandardFilterFactory;
@@ -353,6 +352,20 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     public DateTime updateModificationDate() {
         this.modificationDate = new DateTime();
         return this.modificationDate;
+    }
+    
+    /**
+     * Calculates modification date of topic taking it as last modification
+     * date among its posts.
+     */
+    public void recalculateModificationDate() {
+        DateTime newTopicModificationDate = getFirstPost().getLastTouchedDate();
+        for (Post post : posts) {
+            if (post.getLastTouchedDate().isAfter(newTopicModificationDate.toInstant())) {
+                newTopicModificationDate = post.getLastTouchedDate();
+            }
+        }
+        modificationDate = newTopicModificationDate;
     }
 
     /**

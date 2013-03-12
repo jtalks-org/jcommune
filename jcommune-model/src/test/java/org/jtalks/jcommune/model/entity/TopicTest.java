@@ -70,6 +70,23 @@ public class TopicTest {
 
         assertNotSame(modDate, prevDate);
     }
+    
+    @Test
+    public void testRecalculateModificationDate() {
+        DateTime lastModificationDate = new DateTime();
+        
+        topic.getFirstPost().setModificationDate(lastModificationDate.minusDays(1));
+        topic.getPosts().get(1).setModificationDate(lastModificationDate);
+        Post post3 = new Post();
+        post3.setModificationDate(lastModificationDate.minusDays(2));
+        
+        topic.addPost(post3);
+        
+        topic.updateModificationDate();
+        topic.recalculateModificationDate();
+        
+        assertEquals(topic.getModificationDate(), lastModificationDate);
+    }
 
     @Test
     public void testHasUpdatesDefault() {
