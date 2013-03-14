@@ -4,3 +4,21 @@ Disallow: /login
 Disallow: /search/
 Disallow: /topics/recent.rss
 Disallow: http://twitter.github.com/bootstrap
+
+User-agent: Slurp
+Crawl-delay: 120
+
+User-agent: msnbot
+Crawl-delay: 120
+
+User-agent: gigabot
+Crawl-delay: 120
+
+User-agent: teoma
+Crawl-delay: 120
+
+User-agent: ia_archiver
+Crawl-delay: 120
+
+User-agent: Webalta
+Crawl-delay: 120
