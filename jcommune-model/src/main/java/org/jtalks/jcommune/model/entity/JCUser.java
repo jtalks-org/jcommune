@@ -50,6 +50,8 @@ public class JCUser extends User {
     private Set<UserContact> contacts = new HashSet<UserContact>();
     
     private DateTime avatarLastModificationTime = new DateTime(System.currentTimeMillis());
+    
+    private DateTime allForumMarkedAsReadTime;
 
     /**
      * Only for hibernate usage.
@@ -239,6 +241,23 @@ public class JCUser extends User {
     public void setAvatarLastModificationTime(DateTime avatarLastModificationTime) {
         this.avatarLastModificationTime = avatarLastModificationTime;
     }
-    
-    
+
+    /**
+     * Get the time when forum was marked as all read for this user.
+     * 
+     * @return if forum was marked as all read for this user it returns time of this action,
+     *         if forum was never marked as all read it returns null
+     */
+    public DateTime getAllForumMarkedAsReadTime() {
+        return allForumMarkedAsReadTime;
+    }
+
+    /**
+     * Set the time when forum was marked as all read for this user.
+     * 
+     * @param allForumMarkedAsReadTime the time when forum was marked as all read for this user
+     */
+    public void setAllForumMarkedAsReadTime(DateTime forumMarkedAsAllReadTime) {
+        this.allForumMarkedAsReadTime = forumMarkedAsAllReadTime;
+    }
 }

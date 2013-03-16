@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.hibernate.TransientObjectException;
 import org.jtalks.jcommune.model.dao.LastReadPostDao;
+import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.UserService;
 import org.mockito.ArgumentMatcher;
@@ -48,12 +49,14 @@ public class TransactionalLastReadPostTest {
     @Mock
     private LastReadPostDao lastReadPostDao;
     @Mock
-    UserService userService;
+    private UserService userService;
+    @Mock
+    private UserDao userDao;
 
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
-        lastReadPostService = new TransactionalLastReadPostService(userService, lastReadPostDao);
+        lastReadPostService = new TransactionalLastReadPostService(userService, lastReadPostDao, userDao);
     }
 
     @Test

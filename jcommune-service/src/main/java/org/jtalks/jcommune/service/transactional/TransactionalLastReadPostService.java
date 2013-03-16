@@ -14,7 +14,9 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.LastReadPostDao;
+import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.LastReadPost;
@@ -36,14 +38,19 @@ public class TransactionalLastReadPostService implements LastReadPostService {
 
     private UserService userService;
     private LastReadPostDao lastReadPostDao;
+    private UserDao userDao;
 
     /**
      * @param userService     to figure out the current user logged in
      * @param lastReadPostDao to save/read last read post information from a database
      */
-    public TransactionalLastReadPostService(UserService userService, LastReadPostDao lastReadPostDao) {
+    public TransactionalLastReadPostService(
+            UserService userService,
+            LastReadPostDao lastReadPostDao,
+            UserDao userDao) {
         this.userService = userService;
         this.lastReadPostDao = lastReadPostDao;
+        this.userDao = userDao;
     }
 
     /**
@@ -112,6 +119,19 @@ public class TransactionalLastReadPostService implements LastReadPostService {
         if (!user.isAnonymous()) {
             lastReadPostDao.markAllRead(user, branch);
         }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void markAllForumAsReadForCurrentUser() {
+        JCUser currentUser = userService.getCurrentUser();
+        
+        currentUser.setAllForumMarkedAsReadTime(new DateTime());
+        userDao.saveOrUpdate(currentUser);
+        
+        lastReadPostDao.deleteLastReadPostsFor(currentUser);
     }
 
     /**

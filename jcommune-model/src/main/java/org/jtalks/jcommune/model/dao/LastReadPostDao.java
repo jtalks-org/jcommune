@@ -52,5 +52,13 @@ public interface LastReadPostDao extends ChildRepository<LastReadPost> {
      * @param branch branch contained topics to mark
      */
     void markAllRead(JCUser forWho, Branch branch);
+    
+    /**
+     * Delete all last read post records for given user.
+     * 
+     * @param user for this user we delete all records that contain
+     *        an information about last read post
+     */
+    void deleteLastReadPostsFor(JCUser user);
 
 }

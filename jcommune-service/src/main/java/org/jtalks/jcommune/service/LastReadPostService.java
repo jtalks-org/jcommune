@@ -58,8 +58,13 @@ public interface LastReadPostService {
      * @param branch branch to update topics
      */
     void markAllTopicsAsRead(Branch branch);
+    
+    /**
+     * Mark all forum as read for current user.
+     */
+    void markAllForumAsReadForCurrentUser();
 
-        /**
+    /**
      * Fills topics with last read post information based
      * on the current user set. No data will be set
      * for anonymous users.

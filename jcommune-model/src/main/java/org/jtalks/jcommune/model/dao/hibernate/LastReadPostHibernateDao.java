@@ -90,4 +90,14 @@ public class LastReadPostHibernateDao extends AbstractHibernateChildRepository<L
 
         session.flush();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteLastReadPostsFor(JCUser user) {
+        getSession().getNamedQuery("deleteAllForUser")
+            .setParameter("user", user)
+            .executeUpdate();
+    }
 }

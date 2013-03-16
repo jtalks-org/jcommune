@@ -29,4 +29,8 @@
         <many-to-one name="topic" column="TOPIC_ID" class="Topic"/>
         <property name="postIndex" column="LAST_READ_POST_INDEX" not-null="true"/>
     </class>
+    
+    <query name="deleteAllForUser">
+        <![CDATA[DELETE FROM LastReadPost WHERE user = :user]]>
+    </query>
 </hibernate-mapping>
