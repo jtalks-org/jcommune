@@ -78,6 +78,11 @@ $(document).ready(function () {
         }
     })
 
+    //keyamaps to html forms
+    $('#postDto').bind('keydown', Keymaps.post);
+    $('#topicDto').bind('keydown', Keymaps.post);
+    $('#privateMessageDto').bind('keydown', Keymaps.post);
+
     $(window).resize();
 });
 

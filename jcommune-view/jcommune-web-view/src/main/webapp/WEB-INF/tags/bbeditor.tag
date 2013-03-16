@@ -88,7 +88,7 @@
             <span class="caret"></span>
         </a>
         <ul class="dropdown-menu" id='select_size'>
-        	<li><a href="#" value='7'><spring:message code="label.answer.font_size.tiny"/></a></li>
+            <li><a href="#" value='7'><spring:message code="label.answer.font_size.tiny"/></a></li>
             <li><a href="#" value='9'><spring:message code="label.answer.font_size.small"/></a></li>
             <li><a href="#" value='12'><spring:message code="label.answer.font_size.normal"/></a></li>
             <li><a href="#" value='18'><spring:message code="label.answer.font_size.large"/></a></li>
@@ -157,6 +157,8 @@
                           placeholder="${placeholderEditorContent}" class="script-confirm-unsaved"><c:out
                         value="${postText}"/></textarea>
             </span>
+    <br>
+    <span class="keymaps-caption"><spring:message code="label.keymaps.post"/></span>
     <br>
     <form:errors path="${bodyParameterName}" cssClass="help-inline"/>
 </div>

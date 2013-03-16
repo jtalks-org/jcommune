@@ -108,3 +108,10 @@ Keymaps.uploadBannerCancelButton = function (e) {
     }
 }
 
+Keymaps.post = function (e) {
+    if (e.ctrlKey && e.keyCode == enterCode) {
+        e.preventDefault();
+        $('input[type="submit"]').click();
+    }
+};
+
