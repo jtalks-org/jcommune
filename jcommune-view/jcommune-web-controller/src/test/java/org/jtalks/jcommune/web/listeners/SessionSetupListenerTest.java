@@ -79,7 +79,7 @@ public class SessionSetupListenerTest {
         
         listener.sessionCreated(event);
 
-        int expireTime = (int) TimeUnit.SECONDS.convert(sessionTimeoutProperty.intValue(), TimeUnit.HOURS);
+        int expireTime = (int) TimeUnit.SECONDS.convert(sessionTimeoutProperty.intValue(), TimeUnit.MINUTES);
         assertEquals(session.getMaxInactiveInterval(), expireTime);
     }
 

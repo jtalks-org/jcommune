@@ -42,7 +42,7 @@ public class SessionSetupListener implements HttpSessionListener {
         ServletContext servletContext = se.getSession().getServletContext();
         ApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
         JCommuneProperty property = (JCommuneProperty) ctx.getBean("sessionTimeoutProperty");
-        int timeoutInSeconds = (int) TimeUnit.SECONDS.convert(property.intValue(), TimeUnit.HOURS);
+        int timeoutInSeconds = (int) TimeUnit.SECONDS.convert(property.intValue(), TimeUnit.MINUTES);
         if (timeoutInSeconds > 0) {
             se.getSession().setMaxInactiveInterval(timeoutInSeconds);
         } else {

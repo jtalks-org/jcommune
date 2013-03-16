@@ -32,7 +32,7 @@
         <constructor-arg type="java.lang.String" value="SESSION_TIMEOUT"/>
         <property name="propertyDao" ref="propertyDao"/>
         <property name="name" value="jcommune.session_timeout"/>
-        <property name="defaultValue" value="24"/>
+        <property name="defaultValue" value="30"/>
     </bean>
 
     <bean id="avatarMaxSizeProperty" class="org.jtalks.jcommune.model.entity.JCommuneProperty"
