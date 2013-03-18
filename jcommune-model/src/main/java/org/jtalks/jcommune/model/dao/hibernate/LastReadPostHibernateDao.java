@@ -36,6 +36,7 @@ public class LastReadPostHibernateDao extends AbstractHibernateChildRepository<L
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public List<LastReadPost> listLastReadPostsForTopic(Topic topic) {
         return (List<LastReadPost>) getSession().createQuery("FROM LastReadPost p where p.topic=:topic")
                 .setParameter("topic", topic)
@@ -70,6 +71,7 @@ public class LastReadPostHibernateDao extends AbstractHibernateChildRepository<L
                 .setCacheable(false)
                 .executeUpdate();
 
+        @SuppressWarnings("unchecked")
         List<Object[]> topicsOfBranch = session.getNamedQuery("getTopicAndCountOfPostsInBranch")
                 .setParameter("branch", branch.getId())
                 .setCacheable(false)

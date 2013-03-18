@@ -27,6 +27,20 @@
 <body>
 
 <div class="container">
+    
+    <%-- Branch header --%>
+    <div id="branch-header">
+        <div id="right-block">
+	        <sec:authorize access="isAuthenticated()">
+	            <span id="mark-all-viewed">
+	                <i class="icon-check"></i>
+	                <a href="${pageContext.request.contextPath}/forum/markread">
+	                    <spring:message code="label.mark_all_topics"/>
+	                </a>
+                </span>
+            </sec:authorize>
+        </div>
+    </div>
     <div class="row-fluid upper-pagination forum-pagination-container">
         <div class="span3">
             <h3><spring:message code="label.recent"/></h3>

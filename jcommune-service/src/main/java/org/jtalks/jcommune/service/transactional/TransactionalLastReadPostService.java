@@ -43,6 +43,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
     /**
      * @param userService     to figure out the current user logged in
      * @param lastReadPostDao to save/read last read post information from a database
+     * @param userDao         to save an information about user of forum
      */
     public TransactionalLastReadPostService(
             UserService userService,

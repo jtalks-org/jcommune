@@ -38,7 +38,7 @@ import static org.testng.Assert.*;
 /**
  * @author Evgeniy Naumenko
  */
-public class TransactionalLastReadPostTest {
+public class TransactionalLastReadPostServiceTest {
 
     private String BRANCH_NAME = "branch name";
     private String BRANCH_DESCRIPTION = "branch description";
@@ -56,7 +56,10 @@ public class TransactionalLastReadPostTest {
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
-        lastReadPostService = new TransactionalLastReadPostService(userService, lastReadPostDao, userDao);
+        lastReadPostService = new TransactionalLastReadPostService(
+                userService,
+                lastReadPostDao,
+                userDao);
     }
 
     @Test
@@ -282,6 +285,19 @@ public class TransactionalLastReadPostTest {
 
         verify(lastReadPostDao, never()).update(lastReadPost);
         assertEquals(lastReadPost.getPostIndex(), postIndex, "The index shouldn't be reduced.");
+    }
+    
+    @Test
+    public void markAllForumAsReadShouldRememberMarkDateAndClearLastReadPostsForUser() {
+       JCUser user = new JCUser("user", "use@gmail.com", "gangam-style-password");
+       when(userService.getCurrentUser()).thenReturn(user);
+       
+       lastReadPostService.markAllForumAsReadForCurrentUser();
+       
+       assertNotNull(user.getAllForumMarkedAsReadTime(), "Mark date should be remembered for user.");
+       verify(userDao).saveOrUpdate(user);
+       verify(lastReadPostDao).deleteLastReadPostsFor(user);
+       
     }
 
     private Topic createTestTopic() {

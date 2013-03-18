@@ -42,8 +42,9 @@ public class ReadPostsController {
     /**
      * Mark all forum as read for current user.
      */
-    @RequestMapping(value = "/forum/mark_as_read", method = RequestMethod.POST)
-    public void markAllForumAsReadForCurrentUser() {
+    @RequestMapping(value = "/forum/markread", method = RequestMethod.GET)
+    public String markAllForumAsReadForCurrentUser() {
         lastReadPostService.markAllForumAsReadForCurrentUser();
+        return "redirect:/topics/recent";
     }
 }

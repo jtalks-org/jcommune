@@ -33,4 +33,8 @@
     <query name="deleteAllForUser">
         <![CDATA[DELETE FROM LastReadPost WHERE user = :user]]>
     </query>
+    
+    <query name="getAllOfUser">
+        <![CDATA[FROM LastReadPost WHERE user = :user]]>
+    </query>
 </hibernate-mapping>
