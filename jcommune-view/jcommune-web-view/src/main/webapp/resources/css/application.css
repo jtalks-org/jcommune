@@ -619,3 +619,9 @@ div.anchor {
     max-height: 50px;
     vertical-align: top;
 }
+
+#move-topic-editor {
+    min-width: 600px;
+    max-height: 400px;
+    overflow: hidden !important;
+}

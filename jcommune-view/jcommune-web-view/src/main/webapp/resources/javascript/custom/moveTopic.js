@@ -13,173 +13,192 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
 /**
  * Application base path with trailing slash. Must be defined somewhere within the global scope.
  */
 var baseUrl = $root;
 
-/**
- * "Move topic" button handler.
- */
-$(document).ready(function () {
-    $("[name=move_topic]").click(function () {
-        $.getJSON(baseUrl + "/sections/json", function (sections) {
-            var htmlTemplate = prepareHtmlTemplateForModalWindow(sections);
-            var eliminatedBranchId = $("#edit_button").attr("rel");
-            displayAllBranches(eliminatedBranchId);
-            showMoveTopicModalWindow(htmlTemplate);
+var moveTopicEditor;
+var branchId;
+var sectionId;
+var topicId;
+
+$(function () {
+
+    $('.modal-backdrop').live('click', function (e) {
+        $('#move-topic-editor').find('.close').click();
+    });
+
+    $('#move-button-cancel').live('click', function (e) {
+        $('#move-topic-editor').find('.close').click();
+    });
+
+    $('#move-button-save').live('click', function (e) {
+        $.ajax({
+            url: baseUrl + '/topics/move/json/' + topicId,
+            type: "POST",
+            data: {"branchId": branchId},
+            success: function () {
+                document.location = baseUrl + '/topics/' + topicId;
+            },
+            error: function () {
+                $.prompt($labelError500Detail);
+            }
         });
     });
-});
 
-/**
- * Prepares and returns html code for "Move topic" modal window in string representation.
- *
- * @param sections list of sections
- * @return html template for "Move topic" modal window
- */
-function prepareHtmlTemplateForModalWindow(sections) {
-    var htmlTemplate = '<b>' + $labelTopicMoveFull + '</b><br/>' +
-        '<select style="width: 45%" name="section_name" id="section_name" size="10">' +
-        '<option value="all">All sections</option>';
-
-    $.each(sections, function (i, section) {
-        htmlTemplate += '<option value="' + section.id + '">' + section.name + '</option>';
+    $("#branch_name").live('change', function () {
+        disableMoveButton(false);
+        branchId = $(this).val();
     });
 
-    htmlTemplate += '</select>' +
-        '<select style="margin-left:30px; width: 45%" name="branch_name" id="branch_name" size="10">' +
-        '<option value="' + 0 + '"></option>' +
-        '</select>';
 
-    return htmlTemplate;
-}
+    /**
+     * "Move topic" button handler.
+     */
+    $("[name=move_topic]").on('click', function () {
+        $.getJSON(baseUrl + "/sections/json", function (sections) {
 
-/**
- * Shows "Move topic" modal window.
- *
- * @param htmlTemplate string representation of modal window html code
- */
-function showMoveTopicModalWindow(htmlTemplate) {
-    var branchId;
-    var eliminatedBranchId = $("#edit_button").attr("rel");
-    var topicId = $(".topicId").attr('id');
-    $.prompt(htmlTemplate, {
-        buttons:[
-            {title:$labelTopicMove, value:true, id:'buttonMove'},
-            {title:$labelCancel, value:false}
-        ],
-        loaded:function () {
-            displayBranches(eliminatedBranchId);
-            $("#branch_name").change(function () {
-                $(".jqidefaultbutton").removeAttr("disabled");
-                $(".jqidefaultbutton").css({'color':'#262626'})
-                branchId = $(this).val();
+            topicId = $(".topicId").attr('id');
+
+            moveTopicEditor = createMoveTopicEditor(sections);
+
+            moveTopicEditor.unbind();
+
+            moveTopicEditor.find('.close').on('click', function (e) {
+                moveTopicEditor.modal('hide');
+                moveTopicEditor.remove();
             });
-        },
-        callback:function (value) {
-            if (value != undefined && value) {
-                moveTopic(topicId, branchId);
-            }
-        }
-    });
-    disableMoveButton();
-}
 
-/**
- * Displays branches accordingly option chosen in section select element.
- * It may be "All sections" or particular section.
- */
-function displayBranches(eliminatedBranchId) {
-    $("#section_name").change(function () {
-        var sectionId = $(this).val();
-        if (sectionId == "all") {
+            var eliminatedBranchId = $("#edit_button").attr("rel");
+
             displayAllBranches(eliminatedBranchId);
-        } else {
-            displayBranchesFromSection(sectionId, eliminatedBranchId);
-        }
+
+            moveTopicEditor.modal({
+                "backdrop": "static",
+                "keyboard": true,
+                "show": true
+            });
+
+            Utils.resizeDialog(moveTopicEditor);
+
+            displayBranches(eliminatedBranchId);
+        });
     });
-    $("#section_name").val("all");
-}
 
-/**
- *Displays all branches from section with given sectionId.
- */
-function displayBranchesFromSection(sectionId, eliminatedBranchId) {
-    $.ajax({
-        url:baseUrl + '/branches/json/' + sectionId,
-        success:function (branches) {
-            rebuildBranchesList(branches, eliminatedBranchId);
-        }
-    });
-}
-
-/**
- * Displays all existing branches.
- */
-function displayAllBranches(eliminatedBranchId) {
-    $.ajax({
-        url:baseUrl + '/branches/json',
-        success:function (branches) {
-            rebuildBranchesList(branches, eliminatedBranchId);
-        }
-    });
-}
-
-/**
- * Clears branches select element and inserts new values.
- *
- * @param branches list of branches to present
- */
-function rebuildBranchesList(branches, eliminatedBranchId) {
-    disableMoveButton();
-    $("#branch_name").children().remove();
-    $("#branch_name").append(getBranchItemHtml(branches, eliminatedBranchId));
-}
-
-/**
- * Returns HTML code for options in branches select element.
- *
- * @param branches list of branches to present
- * @return html template of options in select
- */
-function getBranchItemHtml(branches, eliminatedBranchId) {
-    var template = '';
-    $.each(branches, function (i, branch) {
-        if (eliminatedBranchId != branch.id) {
-            template += '<option value="' + branch.id + '">' + branch.name + '</option>';
-        }
-    });
-    return template;
-}
-
-/**
- * Executes request to move the topic, and redirects to topic's updated location page.
- *
- * @param topicId it of topic which will move
- * @param targetBranchId id of branch which topic will move in
- */
-function moveTopic(topicId, targetBranchId) {
-    $.ajax({
-        url:baseUrl + '/topics/move/json/' + topicId,
-        type:"POST",
-        data:{"branchId":targetBranchId},
-        success:function () {
-            document.location = baseUrl + '/topics/' + topicId;
-        },
-        error:function() {
-        	$.prompt($labelError500Detail);
-        }
-    });
-}
+    function createMoveTopicEditor(sections) {
+        return $(' \
+        <div class="modal" id="move-topic-editor" align="center"> \
+            <div class="modal-header"> \
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> \
+                <h3>' + $labelTopicMoveFull + '</h3> \
+            </div> \
+            <div class="modal-body"> ' +
+            createSectionsForModalWindow(sections) + ' \
+            </div> \
+            <div class="modal-footer"> \
+                <button id="move-button-cancel" class="btn">' + $labelCancel + '</button> \
+                <button id="move-button-save" class="btn btn-primary">' + $labelTopicMove + '</button> \
+            </div> \
+        </div> \
+        ');
+    }
 
 
-/**
- * Disables Move button in "Move topic" modal window
- */
-function disableMoveButton() {
-    $(".jqidefaultbutton").attr('disabled', 'disabled');
-    $(".jqidefaultbutton").css({'color':'grey'});
-}
+    /**
+     * Prepares and returns html code for "Move topic" modal window in string representation.
+     *
+     * @param sections list of sections
+     * @return html template for "Move topic" modal window
+     */
+    function createSectionsForModalWindow(sections) {
+        var sectionsHTML = '<select style="width: 45%" name="section_name" id="section_name" size="10">' +
+            '<option value="all">All sections</option>';
+
+        $.each(sections, function (i, section) {
+            sectionsHTML += '<option value="' + section.id + '">' + section.name + '</option>';
+        });
+
+        sectionsHTML += '</select>' +
+            '<select style="margin-left:30px; width: 45%" name="branch_name" id="branch_name" size="10">' +
+            '<option value="' + 0 + '"></option>' +
+            '</select>';
+
+        return sectionsHTML;
+    }
+
+    /**
+     * Displays branches accordingly option chosen in section select element.
+     * It may be "All sections" or particular section.
+     */
+    function displayBranches(eliminatedBranchId) {
+        $("#section_name").on('change', function () {
+            sectionId = $(this).val();
+            if (sectionId == "all") {
+                displayAllBranches(eliminatedBranchId);
+            } else {
+                displayBranchesFromSection(sectionId, eliminatedBranchId);
+            }
+        });
+        $("#section_name").val("all");
+    }
+
+    /**
+     *Displays all branches from section with given sectionId.
+     */
+    function displayBranchesFromSection(sectionId, eliminatedBranchId) {
+        $.ajax({
+            url: baseUrl + '/branches/json/' + sectionId,
+            success: function (branches) {
+                rebuildBranchesList(branches, eliminatedBranchId);
+            }
+        });
+    }
+
+    /**
+     * Displays all existing branches.
+     */
+    function displayAllBranches(eliminatedBranchId) {
+        $.ajax({
+            url: baseUrl + '/branches/json',
+            success: function (branches) {
+                rebuildBranchesList(branches, eliminatedBranchId);
+            }
+        });
+    }
+
+    /**
+     * Clears branches select element and inserts new values.
+     *
+     * @param branches list of branches to present
+     */
+    function rebuildBranchesList(branches, eliminatedBranchId) {
+        disableMoveButton(true);
+        $("#branch_name").children().remove();
+        $("#branch_name").append(getBranchItemHtml(branches, eliminatedBranchId));
+    }
+
+    /**
+     * Returns HTML code for options in branches select element.
+     *
+     * @param branches list of branches to present
+     * @return html template of options in select
+     */
+    function getBranchItemHtml(branches, eliminatedBranchId) {
+        var template = '';
+        $.each(branches, function (i, branch) {
+            if (eliminatedBranchId != branch.id) {
+                template += '<option value="' + branch.id + '">' + branch.name + '</option>';
+            }
+        });
+        return template;
+    }
+
+    /**
+     * Disables Move button in "Move topic" modal window
+     */
+    function disableMoveButton(action) {
+        $("#move-button-save").attr('disabled', action);
+    }
+})
 
