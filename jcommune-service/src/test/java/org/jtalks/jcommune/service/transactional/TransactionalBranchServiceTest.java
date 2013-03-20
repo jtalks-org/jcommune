@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
@@ -99,8 +100,12 @@ public class TransactionalBranchServiceTest {
     @Test
     public void testGetBranchesInSection() throws NotFoundException {
         List<Branch> list = Collections.singletonList(new Branch(BRANCH_NAME, BRANCH_DESCRIPTION));
-        when(sectionDao.isExist(Matchers.<Long>any())).thenReturn(true);
-        when(branchDao.getBranchesInSection(anyLong())).thenReturn(list);
+        Section section = new Section("section");
+        for (Branch branch : list) {
+            section.addOrUpdateBranch(branch);
+        }
+        when(sectionDao.isExist(Matchers.anyLong())).thenReturn(true);
+        when(sectionDao.get(Matchers.anyLong())).thenReturn(section);
 
         List<Branch> result = branchService.getBranchesInSection(BRANCH_ID);
         assertEquals(list, result);

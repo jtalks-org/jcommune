@@ -17,6 +17,7 @@ package org.jtalks.jcommune.service.transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
@@ -85,7 +86,12 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
             throw new NotFoundException("Section with id: " + sectionId + " not found");
         }
 
-        return this.getDao().getBranchesInSection(sectionId);
+        Section section = sectionDao.get(sectionId);
+        List<Branch> jcommuneBranches = new ArrayList<Branch>();
+        for (org.jtalks.common.model.entity.Branch commonBranch : section.getBranches()) {
+            jcommuneBranches.add((Branch) commonBranch);
+        }
+        return jcommuneBranches;
     }
 
     /**

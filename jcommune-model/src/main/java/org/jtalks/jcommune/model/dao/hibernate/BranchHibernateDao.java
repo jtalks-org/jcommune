@@ -48,20 +48,6 @@ public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch>
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<Branch> getBranchesInSection(Long sectionId) {
-        List<Branch> branches = getSession()
-                .createQuery("from org.jtalks.jcommune.model.entity.Branch b where b.section = ?")
-                .setCacheable(true)
-                .setLong(0, sectionId)
-                .list();
-        return branches;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getCountPostsInBranch(Branch branch) {
         Number count = (Number) getSession()
