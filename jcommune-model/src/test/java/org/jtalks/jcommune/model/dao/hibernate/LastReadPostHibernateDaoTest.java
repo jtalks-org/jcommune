@@ -14,6 +14,11 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -30,11 +35,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * @author Evgeniy Naumenko
@@ -165,7 +165,7 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
         LastReadPost post = PersistedObjectsFactory.getDefaultLastReadPost();
         session.save(post);
 
-        List<LastReadPost> lastReadPosts = lastReadPostDao.listLastReadPostsForTopic(post.getTopic());
+        List<LastReadPost> lastReadPosts = lastReadPostDao.getLastReadPostsInTopic(post.getTopic());
 
         Assert.assertTrue(lastReadPosts.size() == 1, "Result list has incorrect size");
         Assert.assertEquals(lastReadPosts.get(0).getId(), post.getId(),
@@ -181,6 +181,19 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
 
         Assert.assertEquals(actual.getId(), expected.getId(),
                 "Found incorrect last read post.");
+    }
+    
+    @Test
+    public void getLastReadPostsForUserInTopicsShouldReturnThem() {
+        int topicsSize = 10;
+        JCUser user = PersistedObjectsFactory.getDefaultUser();
+        List<Topic> userTopics = PersistedObjectsFactory.createAndSaveTopicListWithPosts(topicsSize);
+        markAllTopicsASRead(userTopics, user);
+        
+        List<LastReadPost> lastReadPosts = lastReadPostDao.getLastReadPosts(user, userTopics);
+        
+        Assert.assertEquals(lastReadPosts.size(), topicsSize);
+        
     }
     
     @Test

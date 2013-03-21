@@ -14,6 +14,12 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.commons.collections.ListUtils;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.LastReadPostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
@@ -25,8 +31,6 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
-
-import java.util.List;
 
 /**
  * Performs last read posts management to track topic updates
@@ -56,6 +60,15 @@ public class TransactionalLastReadPostService implements LastReadPostService {
         this.lastReadPostDao = lastReadPostDao;
         this.userDao = userDao;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Integer getLastReadPostForTopic(Topic topic) {
+        Topic withFilledIndex = fillLastReadPostForTopics(Arrays.asList(topic)).get(0);
+        return withFilledIndex.getLastReadPostIndex();
+    }
 
     /**
      * {@inheritDoc}
@@ -64,49 +77,65 @@ public class TransactionalLastReadPostService implements LastReadPostService {
     public List<Topic> fillLastReadPostForTopics(List<Topic> topics) {
         JCUser currentUser = userService.getCurrentUser();
         if (!currentUser.isAnonymous()) {
-            for (Topic topic : topics) {
-                Integer lastReadPostIndex = getLastReadPostIndex(topic, currentUser);
-                if (lastReadPostIndex != null) {
-                    topic.setLastReadPostIndex(lastReadPostIndex);
+            DateTime forumMarkedAsReadDate = currentUser.getAllForumMarkedAsReadTime();
+            List<Topic> notModifiedAfterMarkTopics = Collections.emptyList();
+            if (forumMarkedAsReadDate != null) {
+                notModifiedAfterMarkTopics = extractTopicsWithModificationAfterForumMarkReadDate(
+                        forumMarkedAsReadDate, topics);
+                for (Topic topic: notModifiedAfterMarkTopics) {
+                    topic.setLastReadPostIndex(topic.getPostCount() - 1);
+                }
+            }
+            //
+            @SuppressWarnings("unchecked")
+            List<Topic> modifiedAfterMarkTopics = ListUtils.removeAll(topics, notModifiedAfterMarkTopics);
+            List<LastReadPost> lastReadPosts = 
+                    lastReadPostDao.getLastReadPosts(currentUser, modifiedAfterMarkTopics);
+            for (Topic topic: modifiedAfterMarkTopics) {
+                LastReadPost lastReadPost = findLastReadPost(lastReadPosts, topic.getId());
+                if (lastReadPost != null) {
+                    topic.setLastReadPostIndex(lastReadPost.getPostIndex());
                 }
             }
         }
         return topics;
     }
-    
+
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Integer getLastReadPostForTopic(Topic topic) {
-        JCUser currentUser = userService.getCurrentUser();
-        if (currentUser.isAnonymous()) {
-            return null;
-        } else {
-            return getLastReadPostIndex(topic, currentUser);
-        }
-    }
-    
-    /**
-     * Get last read post index for given topic.
+     * Find last read post in the list for given topic.
      * 
-     * @param topic for this topic we must find last read post index
-     * @param currentUser current user for who we find last read post index in topic
+     * @param lastReadPosts the list of last read posts where we are going to search
+     * @param topicId an identifier of topic for which we find last read post in list
+     * @return last read post for given topic
      */
-    private Integer getLastReadPostIndex(Topic topic, JCUser currentUser) {
-        DateTime forumMarkedAsReadDate = currentUser.getAllForumMarkedAsReadTime();
-        DateTime topicModificationDate = topic.getModificationDate(); 
-        Integer lastReadPostIndex = null;
-        if (forumMarkedAsReadDate != null && topicModificationDate.isBefore(forumMarkedAsReadDate)) {
-            lastReadPostIndex = topic.getPostCount() - 1;
-        } else {
-            LastReadPost post = lastReadPostDao.getLastReadPost(currentUser, topic);
-            if (post != null) {
-                lastReadPostIndex = post.getPostIndex();
+    private LastReadPost findLastReadPost(List<LastReadPost> lastReadPosts, long topicId) {
+        for(LastReadPost lastReadPost: lastReadPosts) {
+            if (lastReadPost.getTopic().getId() == topicId) {
+                return lastReadPost;
             }
         }
-        return lastReadPostIndex;
+        return null;
     }
+    
+    /**
+     * Extract topics that have modification after marking all forum as read.
+     * 
+     * @param forumMarkAsReadDate the date when user marked all forum as read
+     * @param sourceTopics the list of topics that must be processed
+     * @return topics that have modification after marking all forum as read
+     */
+    private List<Topic> extractTopicsWithModificationAfterForumMarkReadDate(
+            DateTime forumMarkAsReadDate,
+            List<Topic> sourceTopics) {
+        List<Topic> topics = new ArrayList<Topic>();
+        for (Topic topic: sourceTopics) {
+            if (topic.getModificationDate().isBefore(forumMarkAsReadDate)) {
+                topics.add(topic);
+            }
+        }
+        return topics;
+    }
+    
 
     /**
      * {@inheritDoc}
@@ -203,7 +232,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
     @Override
     @PreAuthorize("hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.VIEW_TOPICS')")
     public void updateLastReadPostsWhenPostIsDeleted(Post post) {
-        List<LastReadPost> lastReadPosts = lastReadPostDao.listLastReadPostsForTopic(post.getTopic());
+        List<LastReadPost> lastReadPosts = lastReadPostDao.getLastReadPostsInTopic(post.getTopic());
         for (LastReadPost lastReadPost : lastReadPosts) {
             int index = lastReadPost.getPostIndex();
             if (index >= post.getPostIndexInTopic()) {

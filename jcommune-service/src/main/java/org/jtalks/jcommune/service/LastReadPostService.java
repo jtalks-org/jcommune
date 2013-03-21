@@ -63,17 +63,7 @@ public interface LastReadPostService {
      * Mark all forum as read for current user.
      */
     void markAllForumAsReadForCurrentUser();
-
-    /**
-     * Fills topics with last read post information based
-     * on the current user set. No data will be set
-     * for anonymous users.
-     *
-     * @param topics topics to get last read post for
-     * @return topic collection with last read posts data set
-     */
-    List<Topic> fillLastReadPostForTopics(List<Topic> topics);
-
+    
     /**
      * Returns last read post index for topic or null, if there is no
      * last read post for the current user and topic given.
@@ -84,6 +74,16 @@ public interface LastReadPostService {
      * @return last read post index for these topics and current user
      */
     Integer getLastReadPostForTopic(Topic topic);
+    
+    /**
+     * Fills topics with last read post information based
+     * on the current user set. No data will be set
+     * for anonymous users.
+     *
+     * @param topics topics to get last read post for
+     * @return topic collection with last read posts data set
+     */
+    List<Topic> fillLastReadPostForTopics(List<Topic> topics);
 
     /**
      * Updates last read post number to be correct when post is deleted.

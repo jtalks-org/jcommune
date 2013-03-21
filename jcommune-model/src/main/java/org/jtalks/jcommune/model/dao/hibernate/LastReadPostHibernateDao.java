@@ -14,6 +14,9 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import java.util.List;
+import java.util.UUID;
+
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
@@ -23,11 +26,9 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Topic;
 
-import java.util.List;
-import java.util.UUID;
-
 /**
  * @author Evgeniy Naumenko
+ * @author Anuar_Nurmakanov
  */
 public class LastReadPostHibernateDao extends AbstractHibernateChildRepository<LastReadPost>
         implements LastReadPostDao {
@@ -37,8 +38,8 @@ public class LastReadPostHibernateDao extends AbstractHibernateChildRepository<L
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<LastReadPost> listLastReadPostsForTopic(Topic topic) {
-        return (List<LastReadPost>) getSession().createQuery("FROM LastReadPost p where p.topic=:topic")
+    public List<LastReadPost> getLastReadPostsInTopic(Topic topic) {
+        return (List<LastReadPost>) getSession().getNamedQuery("getLastReadPostInTopicForAllUsers")
                 .setParameter("topic", topic)
                 .list();
     }
@@ -48,12 +49,24 @@ public class LastReadPostHibernateDao extends AbstractHibernateChildRepository<L
      */
     @Override
     public LastReadPost getLastReadPost(JCUser forWho, Topic topic) {
-        return (LastReadPost) getSession().createQuery("FROM LastReadPost p WHERE p.topic = ? and p.user = ?")
-                .setParameter(0, topic)
-                .setParameter(1, forWho)
+        return (LastReadPost) getSession().getNamedQuery("getLastReadPostInTopicForUser")
+                .setParameter("topic", topic)
+                .setParameter("user", forWho)
                 .setCacheable(false)
                 .uniqueResult();
-
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<LastReadPost> getLastReadPosts(JCUser forWho, List<Topic> sourceTopics) {
+        return (List<LastReadPost>) getSession().getNamedQuery("getLastReadPostsInTopicsForUser")
+                .setParameterList("sourceTopics", sourceTopics)
+                .setParameter("user", forWho)
+                .setCacheable(false)
+                .list();
     }
 
     /**
@@ -98,7 +111,7 @@ public class LastReadPostHibernateDao extends AbstractHibernateChildRepository<L
      */
     @Override
     public void deleteLastReadPostsFor(JCUser user) {
-        getSession().getNamedQuery("deleteAllForUser")
+        getSession().getNamedQuery("deleteAllLastReadPostsOfUser")
             .setParameter("user", user)
             .executeUpdate();
     }

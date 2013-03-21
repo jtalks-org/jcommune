@@ -30,7 +30,19 @@
         <property name="postIndex" column="LAST_READ_POST_INDEX" not-null="true"/>
     </class>
     
-    <query name="deleteAllForUser">
+    <query name="getLastReadPostInTopicForAllUsers">
+        <![CDATA[FROM LastReadPost p where p.topic = :topic]]>
+    </query>
+    
+    <query name="getLastReadPostsInTopicsForUser">
+        <![CDATA[FROM LastReadPost p WHERE p.topic IN (:sourceTopics) and p.user = :user]]>
+    </query>
+    
+    <query name="getLastReadPostInTopicForUser">
+        <![CDATA[FROM LastReadPost p WHERE p.topic = :topic and p.user = :user]]>
+    </query>
+    
+    <query name="deleteAllLastReadPostsOfUser">
         <![CDATA[DELETE FROM LastReadPost WHERE user = :user]]>
     </query>
     

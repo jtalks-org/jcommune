@@ -24,6 +24,7 @@ import java.util.List;
 
 /**
  * @author Evgeniy Naumenko
+ * @author Anuar_Nurmakanov
  */
 public interface LastReadPostDao extends ChildRepository<LastReadPost> {
 
@@ -34,7 +35,7 @@ public interface LastReadPostDao extends ChildRepository<LastReadPost> {
      * @param topic topic to find last read posts for
      * @return last read post data for all the users
      */
-    List<LastReadPost> listLastReadPostsForTopic(Topic topic);
+    List<LastReadPost> getLastReadPostsInTopic(Topic topic);
 
     /**
      * Fetches last read post information for particular user and topic.
@@ -44,6 +45,15 @@ public interface LastReadPostDao extends ChildRepository<LastReadPost> {
      * @return last read post for the particular topic or null if user had never opened this topic
      */
     LastReadPost getLastReadPost(JCUser forWho, Topic topic);
+    
+    /**
+     * Get last read posts of user in the list of topics.
+     * 
+     * @param forWho for this user it founds the list of last read posts
+     * @param sourceTopics in this list of topics we need to find last read posts
+     * @return last read posts of user in the list of topics
+     */
+    List<LastReadPost> getLastReadPosts(JCUser forWho, List<Topic> sourceTopics);
 
     /**
      * Mark all topics as read.
