@@ -33,6 +33,7 @@ import java.util.List;
  * since user's last visit.
  *
  * @author Evgeniy Naumenko
+ * @author Anuar_Nurmakanov
  */
 public class TransactionalLastReadPostService implements LastReadPostService {
 
@@ -41,6 +42,8 @@ public class TransactionalLastReadPostService implements LastReadPostService {
     private UserDao userDao;
 
     /**
+     * Constructs an instance with required fields.
+     * 
      * @param userService     to figure out the current user logged in
      * @param lastReadPostDao to save/read last read post information from a database
      * @param userDao         to save an information about user of forum
@@ -59,32 +62,50 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      */
     @Override
     public List<Topic> fillLastReadPostForTopics(List<Topic> topics) {
-        JCUser current = userService.getCurrentUser();
-        if (!current.isAnonymous()) {
+        JCUser currentUser = userService.getCurrentUser();
+        if (!currentUser.isAnonymous()) {
             for (Topic topic : topics) {
-                // todo: find more efficient solution not to perform queries in loop
-                LastReadPost post = lastReadPostDao.getLastReadPost(current, topic);
-                if (post != null) {
-                    topic.setLastReadPostIndex(post.getPostIndex());
+                Integer lastReadPostIndex = getLastReadPostIndex(topic, currentUser);
+                if (lastReadPostIndex != null) {
+                    topic.setLastReadPostIndex(lastReadPostIndex);
                 }
             }
         }
         return topics;
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
     public Integer getLastReadPostForTopic(Topic topic) {
-        JCUser current = userService.getCurrentUser();
-        if (current.isAnonymous()) {
+        JCUser currentUser = userService.getCurrentUser();
+        if (currentUser.isAnonymous()) {
             return null;
+        } else {
+            return getLastReadPostIndex(topic, currentUser);
         }
-        else {
-            LastReadPost post = lastReadPostDao.getLastReadPost(current, topic);
-            return (post == null) ? null : post.getPostIndex();
+    }
+    
+    /**
+     * Get last read post index for given topic.
+     * 
+     * @param topic for this topic we must find last read post index
+     * @param currentUser current user for who we find last read post index in topic
+     */
+    private Integer getLastReadPostIndex(Topic topic, JCUser currentUser) {
+        DateTime forumMarkedAsReadDate = currentUser.getAllForumMarkedAsReadTime();
+        DateTime topicModificationDate = topic.getModificationDate(); 
+        Integer lastReadPostIndex = null;
+        if (forumMarkedAsReadDate != null && topicModificationDate.isBefore(forumMarkedAsReadDate)) {
+            lastReadPostIndex = topic.getPostCount() - 1;
+        } else {
+            LastReadPost post = lastReadPostDao.getLastReadPost(currentUser, topic);
+            if (post != null) {
+                lastReadPostIndex = post.getPostIndex();
+            }
         }
+        return lastReadPostIndex;
     }
 
     /**

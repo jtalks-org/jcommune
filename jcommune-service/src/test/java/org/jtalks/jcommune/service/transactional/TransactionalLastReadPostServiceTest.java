@@ -40,11 +40,9 @@ import static org.testng.Assert.*;
  */
 public class TransactionalLastReadPostServiceTest {
 
-    private String BRANCH_NAME = "branch name";
-    private String BRANCH_DESCRIPTION = "branch description";
+    private static final String BRANCH_NAME = "branch name";
+    private static final String BRANCH_DESCRIPTION = "branch description";
     private JCUser user = new JCUser("username", "email@mail.com", "password");
-
-    private TransactionalLastReadPostService lastReadPostService;
 
     @Mock
     private LastReadPostDao lastReadPostDao;
@@ -52,6 +50,9 @@ public class TransactionalLastReadPostServiceTest {
     private UserService userService;
     @Mock
     private UserDao userDao;
+    //
+    private TransactionalLastReadPostService lastReadPostService;
+    
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -63,7 +64,7 @@ public class TransactionalLastReadPostServiceTest {
     }
 
     @Test
-    public void testFillLastReadPostsForTopics() {
+    public void authenticatedUserShouldSeeReadTopicAsTopicWithoutUpdates() {
         Topic topic = new Topic(user, "title");
         topic.addPost(new Post(user, "content"));
         LastReadPost post = new LastReadPost(user, topic, 0);
@@ -78,7 +79,7 @@ public class TransactionalLastReadPostServiceTest {
     }
 
     @Test
-    public void testFillLastReadPostsForTopicsAnonymous() {
+    public void anonymousUserShouldSeeAllTopicsAsNotRead() {
         when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
 
         lastReadPostService.fillLastReadPostForTopics(new ArrayList<Topic>());
@@ -87,7 +88,7 @@ public class TransactionalLastReadPostServiceTest {
     }
 
     @Test
-    public void testFillLastReadPostsForTopicsNoLastReadPostRecordExists() {
+    public void authenticatedUserShouldSeeNotReadTopicAsTopicWithUpdates() {
         Topic topic = new Topic(user, "title");
         when(userService.getCurrentUser()).thenReturn(user);
 
@@ -99,7 +100,7 @@ public class TransactionalLastReadPostServiceTest {
     }
 
     @Test
-    public void testMarkTopicPageAsReadAnonymous() {
+    public void anonymousUserShouldNotMarkTopicsAsRead() {
         when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
 
         Topic topic = this.createTestTopic();
@@ -109,7 +110,7 @@ public class TransactionalLastReadPostServiceTest {
     }
 
     @Test
-    public void testMarkTopicPageAsReadLoggedIn() {
+    public void authenticatedUserShouldHaveAbilityToMarkTopicPageAsRead() {
         final Topic topic = this.createTestTopic();
         when(userService.getCurrentUser()).thenReturn(user);
 
@@ -226,7 +227,7 @@ public class TransactionalLastReadPostServiceTest {
     }
 
     @Test
-    public void testGetLastReadPostInTopic() {
+    public void getLastReadPostInTopicShouldReturnLastReadByUser() {
         Topic topic = this.createTestTopic();
         LastReadPost post = new LastReadPost(user, topic, 1);
         when(userService.getCurrentUser()).thenReturn(user);
@@ -238,7 +239,7 @@ public class TransactionalLastReadPostServiceTest {
     }
 
     @Test
-    public void testGetLastReadPostInTopicNoRecord() {
+    public void getLastReadPostInTopicShouldReturnNullWhenUserDidNotReadTopic() {
         Topic topic = this.createTestTopic();
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(null);
@@ -247,7 +248,7 @@ public class TransactionalLastReadPostServiceTest {
     }
 
     @Test
-    public void testGetLastReadPostInTopicForAnonymous() {
+    public void getLastReadPostInTopicShouldReturnNullForAnonymousUser() {
         Topic topic = this.createTestTopic();
         JCUser anonymous = new AnonymousUser();
         when(userService.getCurrentUser()).thenReturn(anonymous);
