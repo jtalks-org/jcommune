@@ -34,7 +34,8 @@ import java.util.List;
 public interface BranchDao extends ChildRepository<Branch> {
 
     /**
-     * Get all existing branches.
+     * Get all existing branches sorted by section position as primary order and
+     * branch position and secondary order
      *
      * @return list of {@code Branch} objects
      */

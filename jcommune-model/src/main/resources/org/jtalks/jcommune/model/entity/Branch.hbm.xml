@@ -35,6 +35,7 @@
         <property column="UUID" name="uuid" unique="true" not-null="true"/>
         <property name="name" column="NAME" not-null="true"/>
         <property name="description" column="DESCRIPTION"/>
+        <property name="position" column="POSITION"/>
 
         <many-to-one name="moderatorsGroup" column="MODERATORS_GROUP_ID" class="org.jtalks.common.model.entity.Group"
                      not-null="false"/>
@@ -73,4 +74,8 @@
         c.TOPIC_ID=lrp.TOPIC_ID and lrp.USER_ID=:user
         where c.BRANCH_ID=:branch and (lrp.ID is NULL or lrp.LAST_READ_POST_INDEX &lt; c.POSTS_COUNT)
     </sql-query>
+
+    <query name="getAllBranches">
+        <![CDATA[FROM org.jtalks.jcommune.model.entity.Branch b ORDER BY b.section.position ASC, b.position ASC]]>
+    </query>
 </hibernate-mapping>

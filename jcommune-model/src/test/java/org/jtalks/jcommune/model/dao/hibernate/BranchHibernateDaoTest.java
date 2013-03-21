@@ -169,26 +169,39 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         return ((Number) session.createQuery(hql).uniqueResult()).intValue();
     }
 
-    private List<Branch> createAndSaveBranchList(int size) {
+    private List<Branch> createAndSaveBranchList(int size, int sectionPosition) {
         List<Branch> branches = new ArrayList<Branch>();
         Section section = ObjectsFactory.getDefaultSection();
+        section.setPosition(sectionPosition);
         for (int i = 0; i < size; i++) {
             Branch newBranch = new Branch("Branch #" + i, "Branch #" + i);
+            newBranch.setPosition(size - i - 1);
             section.addOrUpdateBranch(newBranch);
             newBranch.setSection(section);
             branches.add(newBranch);
-        }
+        }   
         session.save(section);
         return branches;
     }
 
     @Test
     public void testGetAllBranches() {
-        List<Branch> persistedBranches = createAndSaveBranchList(5);
+        int sectionSize = 5;
+        createAndSaveBranchList(sectionSize, 1);
+        createAndSaveBranchList(sectionSize, 0);
 
         List<Branch> branches = dao.getAllBranches();
 
-        assertEquals(persistedBranches.size(), branches.size());
+        assertEquals(sectionSize * 2, branches.size());
+        Branch lastBranch = null;
+        for (Branch branch : branches) {
+            if (lastBranch != null) {
+//                assertTrue(branch.getPosition() >= lastBranch.getPosition()
+//                        || branch.getSection().getPosition() > lastBranch.getSection().getPosition());
+                assertTrue(branch.getSection().getPosition() >= lastBranch.getSection().getPosition());
+            }
+            lastBranch = branch;
+        }
     }
 
     @Test

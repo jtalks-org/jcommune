@@ -30,7 +30,8 @@ import java.util.List;
  * @author Anuar Nurmakanov
  * @author masyan
  */
-public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch> implements BranchDao {
+public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch> 
+        implements BranchDao {
 
     /**
      * {@inheritDoc}
@@ -39,8 +40,7 @@ public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch>
     @Override
     public List<Branch> getAllBranches() {
         List<Branch> branches = getSession()
-                .createCriteria(Branch.class)
-                .setCacheable(true)
+                .getNamedQuery("getAllBranches")
                 .list();
         return branches;
     }
