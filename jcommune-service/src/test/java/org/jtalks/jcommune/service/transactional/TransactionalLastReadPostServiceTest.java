@@ -115,7 +115,7 @@ public class TransactionalLastReadPostServiceTest {
 
     @Test
     public void authenticatedUserShouldHaveAbilityToMarkTopicPageAsRead() {
-        final Topic topic = this.createTestTopic();
+        Topic topic = this.createTestTopic();
         when(userService.getCurrentUser()).thenReturn(user);
 
         lastReadPostService.markTopicPageAsRead(topic, 1, false);
@@ -126,7 +126,7 @@ public class TransactionalLastReadPostServiceTest {
 
     @Test
     public void testMarkTopicPageAsReadPagingEnabled() {
-        final Topic topic = this.createTestTopic();
+        Topic topic = this.createTestTopic();
         user.setPageSize(3);
         when(userService.getCurrentUser()).thenReturn(user);
 
@@ -138,7 +138,7 @@ public class TransactionalLastReadPostServiceTest {
 
     @Test
     public void markTopicPageAsReadShouldReupdateLastReadPostInRepository() {
-        final Topic topic = this.createTestTopic();
+        Topic topic = this.createTestTopic();
         LastReadPost post = new LastReadPost(user, topic, 0);
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
@@ -151,7 +151,7 @@ public class TransactionalLastReadPostServiceTest {
     
     @Test
     public void testMarkTopicPageAsReadUpdateExistingDbRecordWithWrongPostIndex() {
-        final Topic topic = this.createTestTopic();
+        Topic topic = this.createTestTopic();
         LastReadPost post = new LastReadPost(user, topic, 1000);
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
@@ -185,7 +185,7 @@ public class TransactionalLastReadPostServiceTest {
 
     @Test
     public void authenticatedUserShouldHaveAbilityToMarkTopicAsRead() {
-        final Topic topic = this.createTestTopic();
+        Topic topic = this.createTestTopic();
         when(userService.getCurrentUser()).thenReturn(user);
 
         lastReadPostService.markTopicAsRead(topic);
@@ -206,7 +206,7 @@ public class TransactionalLastReadPostServiceTest {
     
     @Test
     public void markTopicAsReadShouldReupdateLastReadPostInRepository() {
-        final Topic topic = this.createTestTopic();
+        Topic topic = this.createTestTopic();
         LastReadPost post = new LastReadPost(user, topic, 0);
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
@@ -219,7 +219,7 @@ public class TransactionalLastReadPostServiceTest {
     
     @Test
     public void testMarkTopicReadUpdateExistingDbRecordWithWrongPostIndex() {
-        final Topic topic = this.createTestTopic();
+        Topic topic = this.createTestTopic();
         LastReadPost post = new LastReadPost(user, topic, 1000);
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
@@ -265,30 +265,29 @@ public class TransactionalLastReadPostServiceTest {
     }
 
     @Test
-    public void testUpdateLastReadPostsWhenPostIsDeletedIndexChanged() {
-        Topic topic = this.createTestTopic();
+    public void updateAfterPostDeletingShouldUpdateLastReadPostWhenIndexChanged() {
+        Topic topic = createTestTopic();
         int postIndex = 1;
         LastReadPost lastReadPost = new LastReadPost(user, topic, postIndex);
         List<LastReadPost> lastReadPosts = Arrays.asList(lastReadPost);
 
         when(lastReadPostDao.getLastReadPostsInTopic(topic)).thenReturn(lastReadPosts);
 
-        lastReadPostService.updateLastReadPostsWhenPostIsDeleted(topic.getFirstPost());
+        lastReadPostService.updateLastReadPostsWhenPostDeleted(topic.getFirstPost());
 
         verify(lastReadPostDao).update(lastReadPost);
         assertEquals(lastReadPost.getPostIndex(), postIndex - 1, "The index should be reduced.");
     }
 
     @Test
-    public void testUpdateLastReadPostsWhenPostIsDeletedIndexNotChanged() {
-        Topic topic = this.createTestTopic();
+    public void updateAfterPostDeletingShouldNotUpdateLastReadPostWhenIndexNotChanged() {
+        Topic topic = createTestTopic();
         int postIndex = 0;
         LastReadPost lastReadPost = new LastReadPost(user, topic, postIndex);
         List<LastReadPost> lastReadPosts = Arrays.asList(lastReadPost);
-
         when(lastReadPostDao.getLastReadPostsInTopic(topic)).thenReturn(lastReadPosts);
 
-        lastReadPostService.updateLastReadPostsWhenPostIsDeleted(topic.getLastPost());
+        lastReadPostService.updateLastReadPostsWhenPostDeleted(topic.getLastPost());
 
         verify(lastReadPostDao, never()).update(lastReadPost);
         assertEquals(lastReadPost.getPostIndex(), postIndex, "The index shouldn't be reduced.");

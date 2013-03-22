@@ -92,5 +92,5 @@ public interface LastReadPostService {
      *
      * @param post post we're trying to delete
      */
-    void updateLastReadPostsWhenPostIsDeleted(Post post);
+    void updateLastReadPostsWhenPostDeleted(Post post);
 }

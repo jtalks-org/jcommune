@@ -231,7 +231,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      */
     @Override
     @PreAuthorize("hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.VIEW_TOPICS')")
-    public void updateLastReadPostsWhenPostIsDeleted(Post post) {
+    public void updateLastReadPostsWhenPostDeleted(Post post) {
         List<LastReadPost> lastReadPosts = lastReadPostDao.getLastReadPostsInTopic(post.getTopic());
         for (LastReadPost lastReadPost : lastReadPosts) {
             int index = lastReadPost.getPostIndex();
