@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.hibernate.TransientObjectException;
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.LastReadPostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.*;
@@ -63,6 +64,42 @@ public class TransactionalLastReadPostServiceTest {
                 lastReadPostDao,
                 userDao);
     }
+    
+    @Test
+    public void userShouldNotSeeUpdatesWhenForumMarkedAsAllReadAndTopicsDoNotHaveModificationsAfter() {
+        Topic topic = new Topic(user, "title");
+        topic.addPost(new Post(user, "content"));
+        List<Topic> topicList = Collections.singletonList(topic);
+        when(lastReadPostDao.getLastReadPosts(user, Collections.<Topic> emptyList()))
+            .thenReturn(Collections.<LastReadPost> emptyList());
+        DateTime forumMarkedAsReadDate = new DateTime().plusYears(1);
+        user.setAllForumMarkedAsReadTime(forumMarkedAsReadDate);
+        when(userService.getCurrentUser()).thenReturn(user);
+        
+        List<Topic> result
+            = lastReadPostService.fillLastReadPostForTopics(topicList);
+        
+        assertEquals(1, result.size());
+        assertFalse(result.get(0).isHasUpdates());
+    }
+    
+    @Test
+    public void userShouldSeeUpdatesWhenForumMarkedAsAllReadAndTopicsHaveModificationsAfter() {
+        DateTime forumMarkedAsReadDate = new DateTime().minusYears(1);
+        user.setAllForumMarkedAsReadTime(forumMarkedAsReadDate);
+        when(userService.getCurrentUser()).thenReturn(user);
+        Topic topic = new Topic(user, "title");
+        topic.addPost(new Post(user, "content"));
+        List<Topic> topicList = Collections.singletonList(topic);
+        when(lastReadPostDao.getLastReadPosts(user, Collections.<Topic> emptyList()))
+            .thenReturn(Collections.<LastReadPost> emptyList());
+        
+        List<Topic> result
+            = lastReadPostService.fillLastReadPostForTopics(topicList);
+        
+        assertEquals(1, result.size());
+        assertTrue(result.get(0).isHasUpdates());
+    }
 
     @Test
     public void authenticatedUserShouldSeeReadTopicAsTopicWithoutUpdates() {
@@ -71,7 +108,8 @@ public class TransactionalLastReadPostServiceTest {
         List<Topic> topicList = Collections.singletonList(topic);
         LastReadPost post = new LastReadPost(user, topic, 0);
         when(userService.getCurrentUser()).thenReturn(user);
-        when(lastReadPostDao.getLastReadPosts(user, topicList)).thenReturn(Collections.singletonList(post));
+        when(lastReadPostDao.getLastReadPosts(user, topicList))
+            .thenReturn(Collections.singletonList(post));
 
         List<Topic> result
                 = lastReadPostService.fillLastReadPostForTopics(topicList);
