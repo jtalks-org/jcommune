@@ -34,19 +34,12 @@ import java.util.List;
 public interface BranchDao extends ChildRepository<Branch> {
 
     /**
-     * Get all existing branches.
+     * Get all existing branches sorted by section position as primary order and
+     * branch position and secondary order
      *
      * @return list of {@code Branch} objects
      */
     List<Branch> getAllBranches();
-
-    /**
-     * Get branches from section.
-     *
-     * @param sectionId section id from which we obtain branches
-     * @return list of {@code Branch} objects
-     */
-    List<Branch> getBranchesInSection(Long sectionId);
 
     /**
      * Get count of posts in the branch.
