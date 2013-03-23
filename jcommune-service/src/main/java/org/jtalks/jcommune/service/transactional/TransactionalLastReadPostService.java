@@ -196,7 +196,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      * @return new last post index, counting from 0
      */
     @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.VIEW_TOPICS')")
-    private int calculatePostIndex(JCUser user, Topic topic, int pageNum, boolean pagingEnabled) {
+    int calculatePostIndex(JCUser user, Topic topic, int pageNum, boolean pagingEnabled) {
         if (pagingEnabled) {  // last post on the page given
             int maxPostIndex = user.getPageSize() * pageNum - 1;
             return Math.min(topic.getPostCount() - 1, maxPostIndex);
@@ -215,7 +215,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      * @param postIndex actual post index, starting from 0
      */
     @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.VIEW_TOPICS')")
-    private void saveLastReadPost(JCUser user, Topic topic, int postIndex) {
+    void saveLastReadPost(JCUser user, Topic topic, int postIndex) {
         LastReadPost post = lastReadPostDao.getLastReadPost(user, topic);
         if (post == null) {
             post = new LastReadPost(user, topic, postIndex);
