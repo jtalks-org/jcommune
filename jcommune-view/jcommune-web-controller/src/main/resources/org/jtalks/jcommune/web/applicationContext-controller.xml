@@ -41,7 +41,7 @@
                                 <props>
                                         <prop key="kaptcha.image.width">100</prop>
                                         <prop key="kaptcha.image.height">50</prop>
-                                        <prop key="kaptcha.textproducer.char.string">0123456789</prop>
+                                        <prop key="kaptcha.textproducer.char.string">${CAPTCHA_POSSIBLE_SYMBOLS:0123456789}</prop>
                                         <prop key="kaptcha.textproducer.char.length">4</prop>
                                 </props>
                         </constructor-arg>
