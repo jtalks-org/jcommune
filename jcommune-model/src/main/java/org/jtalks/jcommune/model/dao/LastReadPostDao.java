@@ -14,15 +14,18 @@
  */
 package org.jtalks.jcommune.model.dao;
 
+import java.util.List;
+
 import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Topic;
 
-import java.util.List;
-
 /**
+ * Interface allows to make basic CRUD operations with the
+ * {@link LastReadPost} objects.
+ * 
  * @author Evgeniy Naumenko
  * @author Anuar_Nurmakanov
  */
@@ -70,5 +73,4 @@ public interface LastReadPostDao extends ChildRepository<LastReadPost> {
      *        an information about last read post
      */
     void deleteLastReadPostsFor(JCUser user);
-
 }

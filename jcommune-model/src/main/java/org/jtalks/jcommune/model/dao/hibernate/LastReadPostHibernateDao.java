@@ -27,6 +27,10 @@ import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Topic;
 
 /**
+ * The implementation of {@link LastReadPostDao} based on Hibernate ORM.
+ * The class is responsible for loading {@link LastReadPost} objects from database,
+ * save, update and delete them.
+ * 
  * @author Evgeniy Naumenko
  * @author Anuar_Nurmakanov
  */
