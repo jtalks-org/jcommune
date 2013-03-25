@@ -465,6 +465,10 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
                 index, getId());
         lastReadPostIndex = (index < posts.size()) ? index : posts.size() - 1;
     }
+    
+    public Integer getLastReadPostIndex() {
+        return lastReadPostIndex;
+    }
 
     /**
      * Returns first unread post for current user. If no unread post

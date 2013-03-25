@@ -58,17 +58,12 @@ public interface LastReadPostService {
      * @param branch branch to update topics
      */
     void markAllTopicsAsRead(Branch branch);
-
-        /**
-     * Fills topics with last read post information based
-     * on the current user set. No data will be set
-     * for anonymous users.
-     *
-     * @param topics topics to get last read post for
-     * @return topic collection with last read posts data set
+    
+    /**
+     * Mark all forum as read for current user.
      */
-    List<Topic> fillLastReadPostForTopics(List<Topic> topics);
-
+    void markAllForumAsReadForCurrentUser();
+    
     /**
      * Returns last read post index for topic or null, if there is no
      * last read post for the current user and topic given.
@@ -79,6 +74,16 @@ public interface LastReadPostService {
      * @return last read post index for these topics and current user
      */
     Integer getLastReadPostForTopic(Topic topic);
+    
+    /**
+     * Fills topics with last read post information based
+     * on the current user set. No data will be set
+     * for anonymous users.
+     *
+     * @param topics topics to get last read post for
+     * @return topic collection with last read posts data set
+     */
+    List<Topic> fillLastReadPostForTopics(List<Topic> topics);
 
     /**
      * Updates last read post number to be correct when post is deleted.
@@ -87,5 +92,5 @@ public interface LastReadPostService {
      *
      * @param post post we're trying to delete
      */
-    void updateLastReadPostsWhenPostIsDeleted(Post post);
+    void updateLastReadPostsWhenPostDeleted(Post post);
 }

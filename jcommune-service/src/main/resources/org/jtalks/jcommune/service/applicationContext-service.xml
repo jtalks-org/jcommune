@@ -208,6 +208,7 @@
     <bean id="lastReadPostService" class="org.jtalks.jcommune.service.transactional.TransactionalLastReadPostService">
         <constructor-arg ref="userService"/>
         <constructor-arg ref="lastReadPostHibernateDao"/>
+        <constructor-arg ref="userDao"/>
     </bean>
 
     <bean id="simplePageService"

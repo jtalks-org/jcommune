@@ -15,7 +15,9 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.hibernate.TransientObjectException;
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.LastReadPostDao;
+import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.UserService;
 import org.mockito.ArgumentMatcher;
@@ -36,55 +38,102 @@ import static org.testng.Assert.*;
 
 /**
  * @author Evgeniy Naumenko
+ * @author Anuar_Nurmakanov
  */
-public class TransactionalLastReadPostTest {
+public class TransactionalLastReadPostServiceTest {
 
-    private String BRANCH_NAME = "branch name";
-    private String BRANCH_DESCRIPTION = "branch description";
+    private static final String BRANCH_NAME = "branch name";
+    private static final String BRANCH_DESCRIPTION = "branch description";
     private JCUser user = new JCUser("username", "email@mail.com", "password");
-
-    private TransactionalLastReadPostService lastReadPostService;
 
     @Mock
     private LastReadPostDao lastReadPostDao;
     @Mock
-    UserService userService;
+    private UserService userService;
+    @Mock
+    private UserDao userDao;
+    //
+    private TransactionalLastReadPostService lastReadPostService;
+    
 
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
-        lastReadPostService = new TransactionalLastReadPostService(userService, lastReadPostDao);
+        lastReadPostService = new TransactionalLastReadPostService(
+                userService,
+                lastReadPostDao,
+                userDao);
+    }
+    
+    @Test
+    public void userShouldNotSeeUpdatesWhenForumMarkedAsAllReadAndTopicsDoNotHaveModificationsAfter() {
+        Topic topic = new Topic(user, "title");
+        topic.addPost(new Post(user, "content"));
+        List<Topic> topicList = Collections.singletonList(topic);
+        when(lastReadPostDao.getLastReadPosts(user, Collections.<Topic> emptyList()))
+            .thenReturn(Collections.<LastReadPost> emptyList());
+        DateTime forumMarkedAsReadDate = new DateTime().plusYears(1);
+        user.setAllForumMarkedAsReadTime(forumMarkedAsReadDate);
+        when(userService.getCurrentUser()).thenReturn(user);
+        
+        List<Topic> result
+            = lastReadPostService.fillLastReadPostForTopics(topicList);
+        
+        assertEquals(1, result.size());
+        assertFalse(result.get(0).isHasUpdates());
+    }
+    
+    @Test
+    public void userShouldSeeUpdatesWhenForumMarkedAsAllReadAndTopicsHaveModificationsAfter() {
+        DateTime forumMarkedAsReadDate = new DateTime().minusYears(1);
+        user.setAllForumMarkedAsReadTime(forumMarkedAsReadDate);
+        when(userService.getCurrentUser()).thenReturn(user);
+        Topic topic = new Topic(user, "title");
+        topic.addPost(new Post(user, "content"));
+        List<Topic> topicList = Collections.singletonList(topic);
+        when(lastReadPostDao.getLastReadPosts(user, Collections.<Topic> emptyList()))
+            .thenReturn(Collections.<LastReadPost> emptyList());
+        
+        List<Topic> result
+            = lastReadPostService.fillLastReadPostForTopics(topicList);
+        
+        assertEquals(1, result.size());
+        assertTrue(result.get(0).isHasUpdates());
     }
 
     @Test
-    public void testFillLastReadPostsForTopics() {
+    public void authenticatedUserShouldSeeReadTopicAsTopicWithoutUpdates() {
         Topic topic = new Topic(user, "title");
         topic.addPost(new Post(user, "content"));
+        List<Topic> topicList = Collections.singletonList(topic);
         LastReadPost post = new LastReadPost(user, topic, 0);
         when(userService.getCurrentUser()).thenReturn(user);
-        when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
+        when(lastReadPostDao.getLastReadPosts(user, topicList))
+            .thenReturn(Collections.singletonList(post));
 
         List<Topic> result
-                = lastReadPostService.fillLastReadPostForTopics(Collections.singletonList(topic));
+                = lastReadPostService.fillLastReadPostForTopics(topicList);
 
         assertEquals(1, result.size());
         assertFalse(result.get(0).isHasUpdates());
     }
 
     @Test
-    public void testFillLastReadPostsForTopicsAnonymous() {
+    public void anonymousUserShouldSeeAllTopicsAsNotRead() {
         when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
 
         lastReadPostService.fillLastReadPostForTopics(new ArrayList<Topic>());
 
-        verify(lastReadPostDao, never()).getLastReadPost(Matchers.<JCUser>any(), Matchers.<Topic>any());
+        verify(lastReadPostDao, never()).getLastReadPosts(Matchers.<JCUser> any(), Matchers.<List<Topic>> any());
     }
 
     @Test
-    public void testFillLastReadPostsForTopicsNoLastReadPostRecordExists() {
+    public void authenticatedUserShouldSeeNotReadTopicAsTopicWithUpdates() {
         Topic topic = new Topic(user, "title");
+        List<Topic> topicList = Collections.singletonList(topic);
         when(userService.getCurrentUser()).thenReturn(user);
-
+        when(lastReadPostDao.getLastReadPosts(user, topicList)).thenReturn(Collections.<LastReadPost> emptyList());
+        
         List<Topic> result
                 = lastReadPostService.fillLastReadPostForTopics(Collections.singletonList(topic));
 
@@ -93,7 +142,7 @@ public class TransactionalLastReadPostTest {
     }
 
     @Test
-    public void testMarkTopicPageAsReadAnonymous() {
+    public void anonymousUserShouldNotMarkTopicPageAsRead() {
         when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
 
         Topic topic = this.createTestTopic();
@@ -103,8 +152,8 @@ public class TransactionalLastReadPostTest {
     }
 
     @Test
-    public void testMarkTopicPageAsReadLoggedIn() {
-        final Topic topic = this.createTestTopic();
+    public void authenticatedUserShouldHaveAbilityToMarkTopicPageAsRead() {
+        Topic topic = this.createTestTopic();
         when(userService.getCurrentUser()).thenReturn(user);
 
         lastReadPostService.markTopicPageAsRead(topic, 1, false);
@@ -115,7 +164,7 @@ public class TransactionalLastReadPostTest {
 
     @Test
     public void testMarkTopicPageAsReadPagingEnabled() {
-        final Topic topic = this.createTestTopic();
+        Topic topic = this.createTestTopic();
         user.setPageSize(3);
         when(userService.getCurrentUser()).thenReturn(user);
 
@@ -126,8 +175,8 @@ public class TransactionalLastReadPostTest {
     }
 
     @Test
-    public void testMarkTopicPageAsReadUpdateExistingDbRecord() {
-        final Topic topic = this.createTestTopic();
+    public void markTopicPageAsReadShouldReupdateLastReadPostInRepository() {
+        Topic topic = this.createTestTopic();
         LastReadPost post = new LastReadPost(user, topic, 0);
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
@@ -140,7 +189,7 @@ public class TransactionalLastReadPostTest {
     
     @Test
     public void testMarkTopicPageAsReadUpdateExistingDbRecordWithWrongPostIndex() {
-        final Topic topic = this.createTestTopic();
+        Topic topic = this.createTestTopic();
         LastReadPost post = new LastReadPost(user, topic, 1000);
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
@@ -152,7 +201,7 @@ public class TransactionalLastReadPostTest {
     }
 
     @Test
-    public void testMarkAllTopicReadAnonymous() {
+    public void anonymousUserShouldNotMarkAllTopicsInBranchAsRead() {
         when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
         Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
 
@@ -162,7 +211,7 @@ public class TransactionalLastReadPostTest {
     }
 
     @Test
-    public void testMarkAllTopicsAsRead() throws Exception {
+    public void authenticatedUserShouldHaveAbilityToMarkAllTopicsInBranchAsRead() throws Exception {
         Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
         when(userService.getCurrentUser()).thenReturn(user);
 
@@ -173,8 +222,8 @@ public class TransactionalLastReadPostTest {
     }
 
     @Test
-    public void testMarkTopicAsRead() {
-        final Topic topic = this.createTestTopic();
+    public void authenticatedUserShouldHaveAbilityToMarkTopicAsRead() {
+        Topic topic = this.createTestTopic();
         when(userService.getCurrentUser()).thenReturn(user);
 
         lastReadPostService.markTopicAsRead(topic);
@@ -184,7 +233,7 @@ public class TransactionalLastReadPostTest {
     }
 
     @Test
-    public void testMarkTopicAsReadAnonymous() {
+    public void anonymousUserShouldNotHaveAbilityToMarkTopicAsRead() {
         when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
 
         Topic topic = this.createTestTopic();
@@ -194,8 +243,8 @@ public class TransactionalLastReadPostTest {
     }
     
     @Test
-    public void testMarkTopicAsReadUpdateExistingDbRecord() {
-        final Topic topic = this.createTestTopic();
+    public void markTopicAsReadShouldReupdateLastReadPostInRepository() {
+        Topic topic = this.createTestTopic();
         LastReadPost post = new LastReadPost(user, topic, 0);
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
@@ -208,7 +257,7 @@ public class TransactionalLastReadPostTest {
     
     @Test
     public void testMarkTopicReadUpdateExistingDbRecordWithWrongPostIndex() {
-        final Topic topic = this.createTestTopic();
+        Topic topic = this.createTestTopic();
         LastReadPost post = new LastReadPost(user, topic, 1000);
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
@@ -220,11 +269,12 @@ public class TransactionalLastReadPostTest {
     }
 
     @Test
-    public void testGetLastReadPostInTopic() {
+    public void getLastReadPostInTopicShouldReturnLastReadByUser() {
         Topic topic = this.createTestTopic();
         LastReadPost post = new LastReadPost(user, topic, 1);
         when(userService.getCurrentUser()).thenReturn(user);
-        when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
+        when(lastReadPostDao.getLastReadPosts(user, Arrays.asList(topic)))
+            .thenReturn(Collections.singletonList(post));
 
         int actual = lastReadPostService.getLastReadPostForTopic(topic);
 
@@ -232,16 +282,17 @@ public class TransactionalLastReadPostTest {
     }
 
     @Test
-    public void testGetLastReadPostInTopicNoRecord() {
-        Topic topic = this.createTestTopic();
+    public void getLastReadPostInTopicShouldReturnNullWhenUserDidNotReadTopic() {
+        Topic topic = createTestTopic();
         when(userService.getCurrentUser()).thenReturn(user);
-        when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(null);
+        when(lastReadPostDao.getLastReadPosts(user, Arrays.asList(topic)))
+            .thenReturn(Collections.<LastReadPost> emptyList());
 
         assertNull(lastReadPostService.getLastReadPostForTopic(topic));
     }
 
     @Test
-    public void testGetLastReadPostInTopicForAnonymous() {
+    public void getLastReadPostInTopicShouldReturnNullForAnonymousUser() {
         Topic topic = this.createTestTopic();
         JCUser anonymous = new AnonymousUser();
         when(userService.getCurrentUser()).thenReturn(anonymous);
@@ -252,33 +303,45 @@ public class TransactionalLastReadPostTest {
     }
 
     @Test
-    public void testUpdateLastReadPostsWhenPostIsDeletedIndexChanged() {
-        Topic topic = this.createTestTopic();
+    public void updateAfterPostDeletingShouldUpdateLastReadPostWhenIndexChanged() {
+        Topic topic = createTestTopic();
         int postIndex = 1;
         LastReadPost lastReadPost = new LastReadPost(user, topic, postIndex);
         List<LastReadPost> lastReadPosts = Arrays.asList(lastReadPost);
 
-        when(lastReadPostDao.listLastReadPostsForTopic(topic)).thenReturn(lastReadPosts);
+        when(lastReadPostDao.getLastReadPostsInTopic(topic)).thenReturn(lastReadPosts);
 
-        lastReadPostService.updateLastReadPostsWhenPostIsDeleted(topic.getFirstPost());
+        lastReadPostService.updateLastReadPostsWhenPostDeleted(topic.getFirstPost());
 
         verify(lastReadPostDao).update(lastReadPost);
         assertEquals(lastReadPost.getPostIndex(), postIndex - 1, "The index should be reduced.");
     }
 
     @Test
-    public void testUpdateLastReadPostsWhenPostIsDeletedIndexNotChanged() {
-        Topic topic = this.createTestTopic();
+    public void updateAfterPostDeletingShouldNotUpdateLastReadPostWhenIndexNotChanged() {
+        Topic topic = createTestTopic();
         int postIndex = 0;
         LastReadPost lastReadPost = new LastReadPost(user, topic, postIndex);
         List<LastReadPost> lastReadPosts = Arrays.asList(lastReadPost);
+        when(lastReadPostDao.getLastReadPostsInTopic(topic)).thenReturn(lastReadPosts);
 
-        when(lastReadPostDao.listLastReadPostsForTopic(topic)).thenReturn(lastReadPosts);
-
-        lastReadPostService.updateLastReadPostsWhenPostIsDeleted(topic.getLastPost());
+        lastReadPostService.updateLastReadPostsWhenPostDeleted(topic.getLastPost());
 
         verify(lastReadPostDao, never()).update(lastReadPost);
         assertEquals(lastReadPost.getPostIndex(), postIndex, "The index shouldn't be reduced.");
+    }
+    
+    @Test
+    public void markAllForumAsReadShouldRememberMarkDateAndClearLastReadPostsForUser() {
+       JCUser user = new JCUser("user", "use@gmail.com", "gangam-style-password");
+       when(userService.getCurrentUser()).thenReturn(user);
+       
+       lastReadPostService.markAllForumAsReadForCurrentUser();
+       
+       assertNotNull(user.getAllForumMarkedAsReadTime(), "Mark date should be remembered for user.");
+       verify(userDao).saveOrUpdate(user);
+       verify(lastReadPostDao).deleteLastReadPostsFor(user);
+       
     }
 
     private Topic createTestTopic() {
