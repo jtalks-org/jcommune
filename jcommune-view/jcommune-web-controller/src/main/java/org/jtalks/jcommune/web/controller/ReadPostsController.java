@@ -21,6 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
+ * Handles all "mark all read" requests that aren't related to the list
+ * of topics or to concrete branch. So it's handles specific "mark all read"
+ * requests, for example "mark all forum as read from recent activity" and
+ * "mark all forum as read from main page". 
  * 
  * @author Anuar_Nurmakanov
  *
@@ -40,11 +44,20 @@ public class ReadPostsController {
     }
 
     /**
-     * Mark all forum as read for current user.
+     * Mark all forum as read for current user from "recent activity" page.
      */
-    @RequestMapping(value = "/forum/markread", method = RequestMethod.GET)
-    public String markAllForumAsReadForCurrentUser() {
+    @RequestMapping(value = "/recent/forum/markread", method = RequestMethod.GET)
+    public String markAllForumAsReadFromRecentActivity() {
         lastReadPostService.markAllForumAsReadForCurrentUser();
         return "redirect:/topics/recent";
+    }
+    
+    /**
+     * Mark all forum as read for current user from "main page" page.
+     */
+    @RequestMapping(value = "/main/forum/markread", method = RequestMethod.GET)
+    public String markAllForumAsReadFromMainPage() {
+        lastReadPostService.markAllForumAsReadForCurrentUser();
+        return "redirect:/sections";
     }
 }

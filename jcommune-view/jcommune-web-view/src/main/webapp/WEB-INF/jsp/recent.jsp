@@ -34,7 +34,7 @@
 	        <sec:authorize access="isAuthenticated()">
 	            <span id="mark-all-viewed">
 	                <i class="icon-check"></i>
-	                <a href="${pageContext.request.contextPath}/forum/markread">
+	                <a href="${pageContext.request.contextPath}/recent/forum/markread">
 	                    <spring:message code="label.mark_all_topics"/>
 	                </a>
                 </span>
