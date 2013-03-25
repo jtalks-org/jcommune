@@ -175,12 +175,21 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         section.setPosition(sectionPosition);
         for (int i = 0; i < size; i++) {
             Branch newBranch = new Branch("Branch #" + i, "Branch #" + i);
-            newBranch.setPosition(size - i - 1);
             section.addOrUpdateBranch(newBranch);
             newBranch.setSection(section);
             branches.add(newBranch);
         }   
         session.save(section);
+        session.flush();
+        
+        // update branch positions since during saving them as part of section
+        // their position will be updates to position in the list
+        for (int i = 0; i < size; i++) {
+            Branch branch = (Branch) section.getBranches().get(i); 
+            branch.setPosition(size - i - 1);
+            session.update(branch);
+        }
+        session.flush();
         return branches;
     }
 
@@ -196,8 +205,8 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         Branch lastBranch = null;
         for (Branch branch : branches) {
             if (lastBranch != null) {
-//                assertTrue(branch.getPosition() >= lastBranch.getPosition()
-//                        || branch.getSection().getPosition() > lastBranch.getSection().getPosition());
+                assertTrue(branch.getPosition() >= lastBranch.getPosition()
+                        || branch.getSection().getPosition() > lastBranch.getSection().getPosition());
                 assertTrue(branch.getSection().getPosition() >= lastBranch.getSection().getPosition());
             }
             lastBranch = branch;
