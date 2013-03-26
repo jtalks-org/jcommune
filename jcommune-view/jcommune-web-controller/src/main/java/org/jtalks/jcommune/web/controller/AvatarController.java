@@ -281,7 +281,8 @@ public class AvatarController {
     @ExceptionHandler(value = ImageFormatException.class)
     @ResponseBody
     public OperationResultDto handleImageFormatException(ImageFormatException e, Locale locale) {
-        String errorMessage = messageSource.getMessage(WRONG_FORMAT_RESOURCE_MESSAGE, null, locale);
+        Object[] parameters = new Object[]{e.getValidImageTypes()};
+        String errorMessage = messageSource.getMessage(WRONG_FORMAT_RESOURCE_MESSAGE, parameters, locale);
         return new OperationResultDto(errorMessage);
     }
 

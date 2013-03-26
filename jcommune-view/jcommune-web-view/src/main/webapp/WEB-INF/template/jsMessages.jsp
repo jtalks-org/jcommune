@@ -60,8 +60,8 @@ $labelUnsubscribeTooltip = '<spring:message code="label.unsubscribe.tooltip" htm
 
 $labelErrorsNotEmpty = '<spring:message code="label.errors.not_empty" htmlEscape="true"/>';
 $labelDeleteAvatarConfirmation = '<spring:message code="label.deleteAvatarConfirmation" htmlEscape="true"/>';
-$labelImageWrongFormatJs = '<spring:message code="image.wrong.format.js" htmlEscape="true"/>';
 $labelImageWrongSizeJs = '<spring:message code="image.wrong.size.js" htmlEscape="true"/>';
+$fileIsEmpty = '<spring:message code="image.wrong.empty" htmlEscape="true"/>';
 
 $labelNotSpecified = '<spring:message code="label.not.specified" htmlEscape="true"/>';
 

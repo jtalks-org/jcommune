@@ -22,11 +22,24 @@ package org.jtalks.jcommune.service.exceptions;
  */
 public class ImageFormatException extends ImageProcessException {
 
+    /** Information about extensions which are allowed for the image file */
+    private String validImageTypes;
 
     /**
      * Constructors with <code>null</code> as its detail message.
      */
-    public ImageFormatException() {
+    public ImageFormatException(String validImageTypes) {
         super();
+        this.validImageTypes = validImageTypes;
+    }
+
+    /** Gets information about allowed extensions */
+    public String getValidImageTypes() {
+        return validImageTypes;
+    }
+
+    /** Sets information about allowed extensions */
+    public void setValidImageTypes(String validImageTypes) {
+        this.validImageTypes = validImageTypes;
     }
 }
