@@ -35,7 +35,11 @@
         <property column="UUID" name="uuid" unique="true" not-null="true"/>
         <property name="name" column="NAME" not-null="true"/>
         <property name="description" column="DESCRIPTION"/>
-        <property name="position" column="POSITION"/>
+        <!-- 
+            Access="noop" means that we does not have such field in out POJO, buy
+            can use this property in HQLs 
+        -->
+        <property name="position" column="POSITION" type="integer" access="noop" insert="false" update="false"/>
 
         <many-to-one name="moderatorsGroup" column="MODERATORS_GROUP_ID" class="org.jtalks.common.model.entity.Group"
                      not-null="false"/>
