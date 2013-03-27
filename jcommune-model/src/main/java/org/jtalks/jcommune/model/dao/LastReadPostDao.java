@@ -14,16 +14,20 @@
  */
 package org.jtalks.jcommune.model.dao;
 
+import java.util.List;
+
 import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Topic;
 
-import java.util.List;
-
 /**
+ * Interface allows to make basic CRUD operations with the
+ * {@link LastReadPost} objects.
+ * 
  * @author Evgeniy Naumenko
+ * @author Anuar_Nurmakanov
  */
 public interface LastReadPostDao extends ChildRepository<LastReadPost> {
 
@@ -34,7 +38,7 @@ public interface LastReadPostDao extends ChildRepository<LastReadPost> {
      * @param topic topic to find last read posts for
      * @return last read post data for all the users
      */
-    List<LastReadPost> listLastReadPostsForTopic(Topic topic);
+    List<LastReadPost> getLastReadPostsInTopic(Topic topic);
 
     /**
      * Fetches last read post information for particular user and topic.
@@ -44,6 +48,15 @@ public interface LastReadPostDao extends ChildRepository<LastReadPost> {
      * @return last read post for the particular topic or null if user had never opened this topic
      */
     LastReadPost getLastReadPost(JCUser forWho, Topic topic);
+    
+    /**
+     * Get last read posts of user in the list of topics.
+     * 
+     * @param forWho for this user it founds the list of last read posts
+     * @param sourceTopics in this list of topics we need to find last read posts
+     * @return last read posts of user in the list of topics
+     */
+    List<LastReadPost> getLastReadPosts(JCUser forWho, List<Topic> sourceTopics);
 
     /**
      * Mark all topics as read.
@@ -52,5 +65,12 @@ public interface LastReadPostDao extends ChildRepository<LastReadPost> {
      * @param branch branch contained topics to mark
      */
     void markAllRead(JCUser forWho, Branch branch);
-
+    
+    /**
+     * Delete all last read post records for given user.
+     * 
+     * @param user for this user we delete all records that contain
+     *        an information about last read post
+     */
+    void deleteLastReadPostsFor(JCUser user);
 }

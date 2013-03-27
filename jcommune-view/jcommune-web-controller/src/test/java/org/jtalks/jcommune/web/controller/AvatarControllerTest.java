@@ -38,6 +38,7 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.exceptions.ImageFormatException;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.jtalks.jcommune.service.exceptions.ImageSizeException;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
@@ -270,15 +271,16 @@ public class AvatarControllerTest {
     public void testHandleImageFormatException() {
         Locale locale = Locale.ENGLISH;//it's not matter
         String expectedMessage = "a message";
+        String validTypes = "*.png";
         boolean expectedSuccess = false;
         //
         when(messageSource.getMessage(
                 AvatarController.WRONG_FORMAT_RESOURCE_MESSAGE,
-                null,
+                new Object[]{validTypes},
                 locale)
                 ).thenReturn(expectedMessage);
         //
-        OperationResultDto result = avatarController.handleImageFormatException(null, locale);
+        OperationResultDto result = avatarController.handleImageFormatException(new ImageFormatException(validTypes), locale);
         //
         assertEquals(result.isSuccess(), expectedSuccess, "We have an exception, so we should get false value.");
         assertEquals(result.getMessage(), expectedMessage, "Result contains incorrect message.");

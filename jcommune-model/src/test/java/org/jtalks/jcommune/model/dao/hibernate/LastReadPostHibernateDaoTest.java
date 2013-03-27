@@ -14,6 +14,11 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -27,14 +32,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-import org.testng.Assert;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertNotNull;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * @author Evgeniy Naumenko
@@ -64,8 +66,8 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
 
         LastReadPost actual = lastReadPostDao.get(expected.getId());
 
-        Assert.assertNotNull(actual, "Get returns null.");
-        Assert.assertEquals(actual.getId(), expected.getId(),
+        assertNotNull(actual, "Get returns null.");
+        assertEquals(actual.getId(), expected.getId(),
                 "Get return incorrect object");
     }
 
@@ -79,7 +81,7 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
         lastReadPostDao.update(post);
         LastReadPost updatedPost = (LastReadPost) session.get(LastReadPost.class, post.getId());
 
-        Assert.assertEquals(updatedPost.getPostIndex(), newPostIndex,
+        assertEquals(updatedPost.getPostIndex(), newPostIndex,
                 "Update doesn't work, because field value didn't change.");
     }
 
@@ -93,7 +95,7 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
         //records in database about read topic
         Map<Long, Integer> actualCountPostsToTopics = getActualListCountPostsToTopics(topics, user);
 
-        Assert.assertEquals(actualCountPostsToTopics, listCountPostsToTopics);
+        assertEquals(actualCountPostsToTopics, listCountPostsToTopics);
     }
 
     @Test
@@ -113,7 +115,7 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
         checkDelete.setParameter("user", user.getId());
         checkDelete.setParameter("branch", topics.get(0).getBranch().getId());
         //check delete record about read posts for user
-        Assert.assertTrue(checkDelete.list().isEmpty());
+        assertTrue(checkDelete.list().isEmpty());
     }
 
     @Test
@@ -122,6 +124,7 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
         //records of posts in topics
         Map<Long, Integer> actualCountOfPosts = getTopicAndCountOfPostsInBranch(topics);
         Map<Long, Integer> resultOfGetTopics = new HashMap<Long, Integer>();
+        @SuppressWarnings("unchecked")
         List<Object[]> resultCheckGetTopics = session.getNamedQuery("getTopicAndCountOfPostsInBranch")
                 .setParameter("branch", topics.get(0).getBranch().getId())
                 .setCacheable(false)
@@ -131,7 +134,7 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
             resultOfGetTopics.put(new Long(record[0].toString()), new Integer(record[1].toString()));
         }
 
-        Assert.assertEquals(resultOfGetTopics, actualCountOfPosts);
+        assertEquals(resultOfGetTopics, actualCountOfPosts);
     }
 
     @Test
@@ -155,7 +158,7 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
         listCountPostsToTopicsInFBranch.putAll(listCountPostsToTopicsInSBranch);
         actualCountPostsToTopicsInFBranch.putAll(actualCountPostsToTopicsInSBranch);
 
-        Assert.assertEquals(listCountPostsToTopicsInFBranch, actualCountPostsToTopicsInFBranch);
+        assertEquals(listCountPostsToTopicsInFBranch, actualCountPostsToTopicsInFBranch);
     }
 
     /*===== Specific methods =====*/
@@ -164,10 +167,10 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
         LastReadPost post = PersistedObjectsFactory.getDefaultLastReadPost();
         session.save(post);
 
-        List<LastReadPost> lastReadPosts = lastReadPostDao.listLastReadPostsForTopic(post.getTopic());
+        List<LastReadPost> lastReadPosts = lastReadPostDao.getLastReadPostsInTopic(post.getTopic());
 
-        Assert.assertTrue(lastReadPosts.size() == 1, "Result list has incorrect size");
-        Assert.assertEquals(lastReadPosts.get(0).getId(), post.getId(),
+        assertTrue(lastReadPosts.size() == 1, "Result list has incorrect size");
+        assertEquals(lastReadPosts.get(0).getId(), post.getId(),
                 "Results contains invalid data.");
     }
 
@@ -178,8 +181,36 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
 
         LastReadPost actual = lastReadPostDao.getLastReadPost(expected.getUser(), expected.getTopic());
 
-        Assert.assertEquals(actual.getId(), expected.getId(),
+        assertEquals(actual.getId(), expected.getId(),
                 "Found incorrect last read post.");
+    }
+    
+    @Test
+    public void getLastReadPostsForUserInTopicsShouldReturnThem() {
+        int topicsSize = 10;
+        JCUser user = PersistedObjectsFactory.getDefaultUser();
+        List<Topic> userTopics = PersistedObjectsFactory.createAndSaveTopicListWithPosts(topicsSize);
+        markAllTopicsASRead(userTopics, user);
+        
+        List<LastReadPost> lastReadPosts = lastReadPostDao.getLastReadPosts(user, userTopics);
+        
+        assertEquals(lastReadPosts.size(), topicsSize);
+        
+    }
+    
+    @Test
+    public void deleteLastReadPostsShouldDeleteAllRecodrsForGivenUser() {
+        List<Topic> topics = PersistedObjectsFactory.createAndSaveTopicListWithPosts(10);
+        JCUser user = PersistedObjectsFactory.getDefaultUser();
+        markAllTopicsASRead(topics, user);
+        
+        lastReadPostDao.deleteLastReadPostsFor(user);
+    
+        @SuppressWarnings("unchecked")
+        List<LastReadPost> lastReadPostsOfUser = session.getNamedQuery("getAllOfUser")
+            .setParameter("user", user).list();
+        assertTrue(lastReadPostsOfUser.isEmpty(), "User shouldn't have any records, because they were cleared");
+        
     }
 
     /**
@@ -221,6 +252,7 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
                 "BRANCH_ID=:branch) and USER_ID = :user");
         checkInsert.setParameter("user", user.getId());
         checkInsert.setParameter("branch", topics.get(0).getBranch().getId());
+        @SuppressWarnings("unchecked")
         List<Object[]> resultCheckInsert = checkInsert.list();
 
         for (Object[] record : resultCheckInsert) {

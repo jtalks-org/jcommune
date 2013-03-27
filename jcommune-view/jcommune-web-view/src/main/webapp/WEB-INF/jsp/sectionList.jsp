@@ -27,7 +27,6 @@
 </head>
 <body>
 <div class="container">
-
     <div class="row forum-sections-header">
         <h1 class="pull-left logo-text">
             <c:out value="${cmpDescription}"/>
