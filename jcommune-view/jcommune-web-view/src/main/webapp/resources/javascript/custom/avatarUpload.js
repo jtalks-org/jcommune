@@ -67,7 +67,7 @@ $(document).ready(function () {
         encoding: encoding,
         //is multiple file upload available
         multiple:false,
-        allowedExtensions:['jpg', 'jpeg', 'png', 'gif'],
+        //allowedExtensions:['jpg', 'jpeg', 'png', 'gif'],
         // max uploaded file size (bytes)
         sizeLimit:4194304,
         onSubmit:function (id, filename) {},
@@ -87,20 +87,14 @@ $(document).ready(function () {
                 //
                 $('#avatar').attr('value', responseJSON.srcImage);
             } else {
-                //if server side avatar uploading error occurred instead image an error message displayed
-            	$('#avatarPreview').attr('src', 'none');
-                $('#avatarPreview').attr('alt', responseJSON.message);
-                
-                //Chrome's engine WebKit has bug of displaying alternative text, when image is not loaded.
-                //So we remove picture, and put plain text instead.
-                addShowAlt('#avatarPreview');
+                alert(responseJSON.message);
             }
 
         },
         debug:false,
 		messages: {
-			typeError: $labelImageWrongFormatJs,
-			sizeError: $labelImageWrongSizeJs
+			sizeError: $labelImageWrongSizeJs,
+            emptyError: $fileIsEmpty
 		}
     });
 

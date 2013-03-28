@@ -50,12 +50,11 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import static org.mockito.Matchers.any;
@@ -159,12 +158,10 @@ public class TransactionalUserServiceTest {
         userService.getByUsername(USERNAME);
     }
 
-
     @Test
     public void testRegisterUser() throws Exception {
         JCUser user = getUser(USERNAME);
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
-        
 
         JCUser registeredUser = userService.registerUser(user);
         DateTime now = new DateTime();
@@ -176,7 +173,6 @@ public class TransactionalUserServiceTest {
                 .toDuration().getMillis() <= MAX_REGISTRATION_TIMEOUT);
         verify(userDao).saveOrUpdate(user);
     }
-
 
     @Test
     public void testEditUserProfile() throws Exception {
@@ -190,7 +186,7 @@ public class TransactionalUserServiceTest {
         String newAvatar = new String(new byte[12]);
 
         JCUser editedUser = userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, 
+                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE,
                 LOCATION));
 
         verify(userDao).saveOrUpdate(user);
@@ -208,7 +204,7 @@ public class TransactionalUserServiceTest {
         String newAvatar = new String(new byte[12]);
         String newPassword = null;
         UserInfoContainer userInfo = new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, newPassword, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, 
+                PASSWORD, newPassword, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE,
                 LOCATION);
         JCUser editedUser = userService.editUserProfile(userInfo);
         assertEquals(editedUser.getPassword(), user.getPassword());
@@ -224,7 +220,7 @@ public class TransactionalUserServiceTest {
         String newAvatar = new String(new byte[0]);
 
         JCUser editedUser = userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, 
+                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE,
                 LOCATION));
 
         verify(userDao).saveOrUpdate(user);
@@ -330,7 +326,7 @@ public class TransactionalUserServiceTest {
 
         userService.activateAccount(USERNAME);
     }
-    
+
     @Test
     public void testActivateAccountAlreadyEnabled() throws NotFoundException {
         JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);
@@ -368,7 +364,7 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
-    public void testGetCurrentUser(){
+    public void testGetCurrentUser() {
         JCUser expected = getUser(USERNAME);
         when(securityService.getCurrentUserUsername()).thenReturn(USERNAME);
         when(userDao.getByUsername(USERNAME)).thenReturn(expected);
@@ -387,6 +383,91 @@ public class TransactionalUserServiceTest {
         assertTrue(user instanceof AnonymousUser);
     }
 
+    @Test
+    public void testLoginSuccess() throws Exception {
+        String username = "username";
+        when(userDao.getByUsername(username)).thenReturn(user);
+
+        HttpServletRequest httpRequest = new MockHttpServletRequest();
+        HttpServletResponse httpResponse = new MockHttpServletResponse();
+        UsernamePasswordAuthenticationToken expectedToken = mock(UsernamePasswordAuthenticationToken.class);
+        when(expectedToken.isAuthenticated()).thenReturn(true);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(expectedToken);
+
+        boolean isAuthenticated = userService.loginUser(username,
+                PASSWORD, false, httpRequest, httpResponse);
+
+        assertTrue(isAuthenticated);
+        verify(user, atLeastOnce()).updateLastLoginTime();
+        verify(userDao).getByUsername(username);
+        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(securityContext).setAuthentication(expectedToken);
+        verify(rememberMeServices, never()).loginSuccess(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Authentication.class));
+        verify(sessionStrategy).onAuthentication(any(Authentication.class),
+                any(HttpServletRequest.class), any(HttpServletResponse.class));
+    }
+
+    @Test
+    public void testLoginSuccessWithRememberMe() throws Exception {
+        String username = "username";
+        when(userDao.getByUsername(username)).thenReturn(new JCUser(username, null, null));
+
+        HttpServletRequest httpRequest = new MockHttpServletRequest();
+        HttpServletResponse httpResponse = new MockHttpServletResponse();
+        UsernamePasswordAuthenticationToken expectedToken = mock(UsernamePasswordAuthenticationToken.class);
+        when(expectedToken.isAuthenticated()).thenReturn(true);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(expectedToken);
+
+        boolean isAuthenticated = userService.loginUser(username,
+                PASSWORD, true, httpRequest, httpResponse);
+
+        assertTrue(isAuthenticated);
+        verify(userDao).getByUsername(username);
+        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(securityContext).setAuthentication(expectedToken);
+        verify(rememberMeServices).loginSuccess(eq(httpRequest), eq(httpResponse), any(UsernamePasswordAuthenticationToken.class));
+        verify(sessionStrategy).onAuthentication(any(Authentication.class),
+                any(HttpServletRequest.class), any(HttpServletResponse.class));
+    }
+
+    @Test
+    public void testLoginFailIncorrectPassword() throws Exception {
+        String username = "username";
+        when(userDao.getByUsername(username)).thenReturn(new JCUser(username, null, null));
+
+        HttpServletRequest httpRequest = new MockHttpServletRequest();
+        HttpServletResponse httpResponse = new MockHttpServletResponse();
+        UsernamePasswordAuthenticationToken expectedToken = mock(UsernamePasswordAuthenticationToken.class);
+        when(expectedToken.isAuthenticated()).thenReturn(false);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenThrow(new BadCredentialsException(null));
+
+        boolean isAuthenticated = userService.loginUser(username,
+                PASSWORD, true, httpRequest, httpResponse);
+
+        assertFalse(isAuthenticated);
+        verify(userDao).getByUsername(username);
+        verify(rememberMeServices, never()).loginSuccess(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Authentication.class));
+    }
+
+    @Test
+    public void testLoginFailUserNotFound() throws Exception {
+        String username = "username";
+
+        HttpServletRequest httpRequest = new MockHttpServletRequest();
+        HttpServletResponse httpResponse = new MockHttpServletResponse();
+
+        boolean isAuthenticated = userService.loginUser(username,
+                PASSWORD, true, httpRequest, httpResponse);
+
+        assertFalse(isAuthenticated);
+        verify(userDao).getByUsername(username);
+        verify(rememberMeServices, never()).loginSuccess(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Authentication.class));
+    }
+    // ===================================================================================================================
+    // = Implementation
+    // ===================================================================================================================
+
     /**
      * @param username username
      * @return create and return {@link JCUser} with default username, encodedUsername,
@@ -398,89 +479,5 @@ public class TransactionalUserServiceTest {
         user.setLastName(LAST_NAME);
         user.setAvatar(avatar);
         return user;
-    }
-    
-    @Test
-    public void testLoginSuccess() throws Exception {
-        String username = "username";
-        when(userDao.getByUsername(username)).thenReturn(user);
-
-        HttpServletRequest httpRequest = new MockHttpServletRequest();
-        HttpServletResponse httpResponse = new MockHttpServletResponse();
-        UsernamePasswordAuthenticationToken expectedToken = mock(UsernamePasswordAuthenticationToken.class);
-        when(expectedToken.isAuthenticated()).thenReturn(true);
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(expectedToken);
-        
-        boolean isAuthenticated = userService.loginUser(username, 
-                PASSWORD, false, httpRequest, httpResponse);
-        
-        assertTrue(isAuthenticated);
-        verify(user, atLeastOnce()).updateLastLoginTime();
-        verify(userDao).getByUsername(username);
-        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
-        verify(securityContext).setAuthentication(expectedToken);
-        verify(rememberMeServices, never()).loginSuccess(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Authentication.class));
-        verify(sessionStrategy).onAuthentication(any(Authentication.class), 
-                any(HttpServletRequest.class), any(HttpServletResponse.class));
-    }
-    
-    @Test
-    public void testLoginSuccessWithRememberMe() throws Exception {
-        String username = "username";
-        when(userDao.getByUsername(username)).thenReturn(new JCUser(username, null, null));
-        
-        HttpServletRequest httpRequest = new MockHttpServletRequest();
-        HttpServletResponse httpResponse = new MockHttpServletResponse();
-        UsernamePasswordAuthenticationToken expectedToken = mock(UsernamePasswordAuthenticationToken.class);
-        when(expectedToken.isAuthenticated()).thenReturn(true);
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(expectedToken);
-        
-        boolean isAuthenticated = userService.loginUser(username, 
-                PASSWORD, true, httpRequest, httpResponse);
-        
-        assertTrue(isAuthenticated);
-        verify(userDao).getByUsername(username);
-        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
-        verify(securityContext).setAuthentication(expectedToken);
-        verify(rememberMeServices).loginSuccess(eq(httpRequest), eq(httpResponse), any(UsernamePasswordAuthenticationToken.class));
-        verify(sessionStrategy).onAuthentication(any(Authentication.class), 
-                any(HttpServletRequest.class), any(HttpServletResponse.class));
-    }
-    
-    @Test
-    public void testLoginFailIncorrectPassword() throws Exception {
-        String username = "username";
-        when(userDao.getByUsername(username)).thenReturn(new JCUser(username, null, null));
-        
-        HttpServletRequest httpRequest = new MockHttpServletRequest();
-        HttpServletResponse httpResponse = new MockHttpServletResponse();
-        UsernamePasswordAuthenticationToken expectedToken = mock(UsernamePasswordAuthenticationToken.class);
-        when(expectedToken.isAuthenticated()).thenReturn(false);
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-        .thenThrow(new BadCredentialsException(null));
-                
-            
-        
-        boolean isAuthenticated = userService.loginUser(username, 
-                PASSWORD, true, httpRequest, httpResponse);
-        
-        assertFalse(isAuthenticated);
-        verify(userDao).getByUsername(username);
-        verify(rememberMeServices, never()).loginSuccess(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Authentication.class));
-    }
-    
-    @Test
-    public void testLoginFailUserNotFound() throws Exception {
-        String username = "username";
-        
-        HttpServletRequest httpRequest = new MockHttpServletRequest();
-        HttpServletResponse httpResponse = new MockHttpServletResponse();
-        
-        boolean isAuthenticated = userService.loginUser(username, 
-                PASSWORD, true, httpRequest, httpResponse);
-        
-        assertFalse(isAuthenticated);
-        verify(userDao).getByUsername(username);
-        verify(rememberMeServices, never()).loginSuccess(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Authentication.class));
     }
 }

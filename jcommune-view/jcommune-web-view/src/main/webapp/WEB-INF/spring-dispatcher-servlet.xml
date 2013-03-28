@@ -148,12 +148,23 @@
 
     <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
         <property name="order" value="1"/>
-        <property name="mediaTypes">
-            <map>
-                <entry key="json" value="application/json"/>
-                <entry key="xml" value="application/xml"/>
-                <entry key="rss" value="application/rss+xml"/>
-            </map>
+        <property name="contentNegotiationManager">
+            <bean class="org.springframework.web.accept.ContentNegotiationManager">
+                <constructor-arg>
+                    <list>
+                        <bean class="org.springframework.web.accept.PathExtensionContentNegotiationStrategy">
+                            <constructor-arg>
+                                <map>
+                                    <entry key="json" value="application/json"/>
+                                    <entry key="xml" value="application/xml"/>
+                                    <entry key="rss" value="application/rss+xml"/>
+                                </map>
+                            </constructor-arg>
+                        </bean>
+                        <bean class="org.springframework.web.accept.HeaderContentNegotiationStrategy"/>
+                    </list>
+                </constructor-arg>
+            </bean>
         </property>
 
         <property name="defaultViews">
@@ -164,8 +175,6 @@
                 </bean>
             </list>
         </property>
-        <property name="ignoreAcceptHeader" value="true"/>
-
     </bean>
 
     <bean class="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver">
@@ -174,7 +183,7 @@
                 <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>
                 <bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
                 <bean class="org.springframework.http.converter.xml.SourceHttpMessageConverter"/>
-                <bean class="org.springframework.http.converter.xml.XmlAwareFormHttpMessageConverter"/>
+                <bean class="org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter"/>
                 <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"/>
             </list>
         </property>

@@ -35,7 +35,14 @@
         <property column="UUID" name="uuid" unique="true" not-null="true"/>
         <property name="name" column="NAME" not-null="true"/>
         <property name="description" column="DESCRIPTION"/>
-        <property name="position" column="POSITION"/>
+        <!-- 
+            access="noop" means that we don't have that field in POJO and 
+            nothing will be filled with data from DB, but we still can use 
+            this 'field' in queries. We need this to be able to sort branches 
+            by position, e.g. in Move Topic dialog where we show branches 
+            without encompassing sections. 
+        -->
+        <property name="position" column="POSITION" type="integer" access="noop" insert="false" update="false"/>
 
         <many-to-one name="moderatorsGroup" column="MODERATORS_GROUP_ID" class="org.jtalks.common.model.entity.Group"
                      not-null="false"/>
