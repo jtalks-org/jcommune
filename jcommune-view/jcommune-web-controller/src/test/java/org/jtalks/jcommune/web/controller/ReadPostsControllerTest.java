@@ -16,11 +16,16 @@ package org.jtalks.jcommune.web.controller;
 
 import static org.testng.Assert.assertEquals;
 
+
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.LastReadPostService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.Mock;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -31,13 +36,15 @@ import org.testng.annotations.Test;
  */
 public class ReadPostsControllerTest {
     @Mock
+    private BranchService branchService;
+    @Mock
     private LastReadPostService lastReadPostService;
     private ReadPostsController controller;
     
     @BeforeMethod
     public void init() {
         initMocks(this);
-        controller = new ReadPostsController(lastReadPostService);
+        controller = new ReadPostsController(branchService, lastReadPostService);
     }
     
     @Test
@@ -54,5 +61,17 @@ public class ReadPostsControllerTest {
         
         assertEquals(redirectUrl, "redirect:/sections");
         verify(lastReadPostService).markAllForumAsReadForCurrentUser();
+    }
+    
+    @Test
+    public void markAllTopicsAsReadShouldMarkThemAndUpdatePage() throws NotFoundException {
+        Long markedBranchId = 1L;
+        Branch willBeMarkedBranch = new Branch("branch", "new branch");
+        when(branchService.get(markedBranchId)).thenReturn(willBeMarkedBranch);
+        
+        String result = controller.markAllTopicsAsRead(markedBranchId);
+        
+        assertEquals(result, "redirect:/branches/" + String.valueOf(markedBranchId));
+        verify(lastReadPostService).markAllTopicsAsRead(willBeMarkedBranch);
     }
 }

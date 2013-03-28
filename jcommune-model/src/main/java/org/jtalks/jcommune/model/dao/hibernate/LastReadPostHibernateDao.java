@@ -56,7 +56,6 @@ public class LastReadPostHibernateDao extends AbstractHibernateChildRepository<L
         return (LastReadPost) getSession().getNamedQuery("getLastReadPostInTopicForUser")
                 .setParameter("topic", topic)
                 .setParameter("user", forWho)
-                .setCacheable(false)
                 .uniqueResult();
     }
     
@@ -69,7 +68,6 @@ public class LastReadPostHibernateDao extends AbstractHibernateChildRepository<L
         return (List<LastReadPost>) getSession().getNamedQuery("getLastReadPostsInTopicsForUser")
                 .setParameterList("sourceTopics", sourceTopics)
                 .setParameter("user", forWho)
-                .setCacheable(false)
                 .list();
     }
 
@@ -85,19 +83,16 @@ public class LastReadPostHibernateDao extends AbstractHibernateChildRepository<L
                 .addSynchronizedEntityClass(LastReadPost.class)
                 .setParameter("user", forWho.getId())
                 .setParameter("branch", branch.getId())
-                .setCacheable(false)
                 .executeUpdate();
 
         @SuppressWarnings("unchecked")
         List<Object[]> topicsOfBranch = session.getNamedQuery("getTopicAndCountOfPostsInBranch")
                 .setParameter("branch", branch.getId())
-                .setCacheable(false)
                 .list();
 
         SQLQuery insertQuery = (SQLQuery) session.getNamedQuery("markAllTopicsRead");
         insertQuery
-                .addSynchronizedEntityClass(LastReadPost.class)
-                .setCacheable(false);
+                .addSynchronizedEntityClass(LastReadPost.class);
 
         for (Object[] o : topicsOfBranch) {
             insertQuery.setParameter("uuid", UUID.randomUUID().toString())

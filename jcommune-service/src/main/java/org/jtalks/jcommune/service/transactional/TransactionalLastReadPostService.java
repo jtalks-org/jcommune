@@ -80,7 +80,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
             DateTime forumMarkedAsReadDate = currentUser.getAllForumMarkedAsReadTime();
             List<Topic> notModifiedAfterMarkTopics = Collections.emptyList();
             if (forumMarkedAsReadDate != null) {
-                notModifiedAfterMarkTopics = extractTopicsWithModificationAfterForumMarkReadDate(
+                notModifiedAfterMarkTopics = extractNotModifiedTopicsAfterForumMarkReadDate(
                         forumMarkedAsReadDate, topics);
                 for (Topic topic: notModifiedAfterMarkTopics) {
                     topic.setLastReadPostIndex(topic.getPostCount() - 1);
@@ -120,13 +120,13 @@ public class TransactionalLastReadPostService implements LastReadPostService {
     }
     
     /**
-     * Extract topics that have modification after marking all forum as read.
+     * Extract topics that don't have modifications after marking all forum as read.
      * 
      * @param forumMarkAsReadDate the date when user marked all forum as read
      * @param sourceTopics the list of topics that must be processed
-     * @return topics that have modification after marking all forum as read
+     * @return topics that don't have modification after marking all forum as read
      */
-    private List<Topic> extractTopicsWithModificationAfterForumMarkReadDate(
+    private List<Topic> extractNotModifiedTopicsAfterForumMarkReadDate(
             DateTime forumMarkAsReadDate,
             List<Topic> sourceTopics) {
         List<Topic> topics = new ArrayList<Topic>();
