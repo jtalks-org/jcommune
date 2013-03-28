@@ -156,21 +156,6 @@ public class BranchController {
     }
 
     /**
-     * Marks all topics in branch as read regardless
-     * of pagination settings or whatever else.
-     *
-     * @param id branch id to find the appropriate topics
-     * @return redirect to the same branch page
-     * @throws NotFoundException if no branch matches id given
-     */
-    @RequestMapping("/branches/{id}/markread")
-    public String markAllTopicsAsRead(@PathVariable long id) throws NotFoundException {
-        Branch branch = branchService.get(id);
-        lastReadPostService.markAllTopicsAsRead(branch);
-        return "redirect:/branches/" + id;
-    }
-
-    /**
      * Provides all branches from section with given sectionId as JSON array.
      *
      * @param sectionId id of section

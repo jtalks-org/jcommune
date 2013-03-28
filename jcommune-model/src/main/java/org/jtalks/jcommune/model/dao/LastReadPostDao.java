@@ -43,28 +43,28 @@ public interface LastReadPostDao extends ChildRepository<LastReadPost> {
     /**
      * Fetches last read post information for particular user and topic.
      *
-     * @param forWho user to find last read post for
+     * @param forWhom user to find last read post for
      * @param topic  topic we're interesting in
      * @return last read post for the particular topic or null if user had never opened this topic
      */
-    LastReadPost getLastReadPost(JCUser forWho, Topic topic);
+    LastReadPost getLastReadPost(JCUser forWhom, Topic topic);
     
     /**
      * Get last read posts of user in the list of topics.
      * 
-     * @param forWho for this user it founds the list of last read posts
+     * @param forWhom for this user it founds the list of last read posts
      * @param sourceTopics in this list of topics we need to find last read posts
      * @return last read posts of user in the list of topics
      */
-    List<LastReadPost> getLastReadPosts(JCUser forWho, List<Topic> sourceTopics);
+    List<LastReadPost> getLastReadPosts(JCUser forWhom, List<Topic> sourceTopics);
 
     /**
      * Mark all topics as read.
      *
-     * @param forWho user to find last read post for
+     * @param forWhom user to find last read post for
      * @param branch branch contained topics to mark
      */
-    void markAllRead(JCUser forWho, Branch branch);
+    void markAllRead(JCUser forWhom, Branch branch);
     
     /**
      * Delete all last read post records for given user.

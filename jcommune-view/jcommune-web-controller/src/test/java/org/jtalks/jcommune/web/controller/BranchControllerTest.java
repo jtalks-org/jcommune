@@ -208,11 +208,4 @@ public class BranchControllerTest {
         assertEquals(branchDtoArray[0].getId(), branch.getId());
         assertEquals(branchDtoArray[0].getName(), branch.getName());
     }
-
-    @Test
-    public void testMarkAllTopicsAsRead() throws NotFoundException {
-        Long id = 1L;
-        String result = controller.markAllTopicsAsRead(id);
-        assertEquals(result, "redirect:/branches/" + String.valueOf(id));
-    }
 }
