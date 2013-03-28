@@ -50,9 +50,10 @@ import org.testng.annotations.Test;
  * @author Kirill Afonin
  */
 public class TransactionalBranchServiceTest {
-    private long BRANCH_ID = 1L;
-    final String BRANCH_NAME = "branch name";
-    final String BRANCH_DESCRIPTION = "branch description";
+    private static final long BRANCH_ID = 1L;
+    private static final String BRANCH_NAME = "branch name";
+    private static final String BRANCH_DESCRIPTION = "branch description";
+    private static final long SECTION_ID = 1L;
 
     @Mock
     private BranchDao branchDao;
@@ -107,7 +108,7 @@ public class TransactionalBranchServiceTest {
         when(sectionDao.isExist(Matchers.anyLong())).thenReturn(true);
         when(sectionDao.get(Matchers.anyLong())).thenReturn(section);
 
-        List<Branch> result = branchService.getBranchesInSection(BRANCH_ID);
+        List<Branch> result = branchService.getBranchesInSection(SECTION_ID);
         assertEquals(list, result);
     }
 

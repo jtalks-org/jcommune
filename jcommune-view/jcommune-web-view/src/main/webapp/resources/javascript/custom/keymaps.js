@@ -115,3 +115,13 @@ Keymaps.post = function (e) {
     }
 };
 
+Keymaps.moveTopicEditor = function (e) {
+    if ((e.keyCode || e.charCode) == escCode) {
+        var but = $('#move-topic-editor .close:visible')[0]
+        if (but) {
+            e.preventDefault();
+            but.click();
+        }
+    }
+}
+

@@ -80,9 +80,13 @@ $(function () {
                 "show": true
             });
 
+            moveTopicEditor.keydown(Keymaps.moveTopicEditor);
+
             Utils.resizeDialog(moveTopicEditor);
 
             displayBranches(eliminatedBranchId);
+
+            moveTopicEditor.find('select:first').focus()
         });
     });
 
