@@ -184,21 +184,26 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     }
 
     @Test
+    public void shouldReturnNoBranchesWhenDbIsEmpty() {
+        Section emptySection = ObjectsFactory.getDefaultSection();
+        session.save(emptySection);
+        List<Branch> selectedBranches = dao.getAllBranches();
+        assertTrue(selectedBranches.isEmpty());
+    }
+    
+    @Test
     public void testGetAllBranches() {
         int sectionSize = 5;
         List<Branch> branchesOfFirstSection = createAndSaveBranchList(sectionSize, 1);
         List<Branch> branchesOfSecondSection = createAndSaveBranchList(sectionSize, 0);
         
         // build desired order
-        List<Branch> createdBranches = branchesOfSecondSection;
+        List<Branch> createdBranches = new ArrayList<Branch>(branchesOfSecondSection);
         createdBranches.addAll(branchesOfFirstSection);
 
         List<Branch> selectedBranches = dao.getAllBranches();
 
-        assertEquals(sectionSize * 2, selectedBranches.size());
-        for (int i = 0; i < selectedBranches.size(); i++) {
-            assertReflectionEquals(createdBranches.get(i), selectedBranches.get(i));
-        }
+        assertEquals(createdBranches, selectedBranches);//checking the order
     }
 
     @Test
