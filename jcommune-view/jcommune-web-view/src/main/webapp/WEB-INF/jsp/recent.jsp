@@ -35,7 +35,7 @@
 	            <span id="mark-all-viewed">
 	                <i class="icon-check"></i>
 	                <a href="${pageContext.request.contextPath}/recent/forum/markread">
-	                    <spring:message code="label.mark_all_topics"/>
+	                    <spring:message code="label.mark_all_topics_read"/>
 	                </a>
                 </span>
             </sec:authorize>

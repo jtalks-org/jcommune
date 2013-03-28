@@ -39,7 +39,7 @@
             <span id="mark-all-viewed">
                 <i class="icon-check"></i>
                 <a href="${pageContext.request.contextPath}/branches/${branch.id}/markread">
-                    <spring:message code="label.mark_all_topics"/>
+                    <spring:message code="label.mark_all_topics_read"/>
                 </a>
             </span>
             
