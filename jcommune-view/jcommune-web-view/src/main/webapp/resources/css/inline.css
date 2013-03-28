@@ -291,12 +291,20 @@ input.form-check-radio-box[type="radio"] {
 }
 
 .search-clear {
-    margin-top: 0 !important;
+    margin-top: 5px !important;
     font-weight: bold;
     position: relative;
+    cursor: pointer;
+    background-size: 100%;
+    text-align: center;
+    background-color: transparent;
     left: -30px;
-    border-radius: 12px 12px 12px 12px;
-    padding: 0px 5px;
+    border-radius: 0 4px 4px 0;
+    padding: 0 5px;
+}
+
+.search-query {
+    border-radius: 4px !important;
 }
 
 /* JC-863. Long text in titles, posts, signature. */
