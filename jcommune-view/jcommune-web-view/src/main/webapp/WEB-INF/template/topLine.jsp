@@ -48,8 +48,6 @@
                            placeholder='<fmt:message key="label.search"/>' maxlength="50"
                            value='<c:out value="${searchText}"/>'/>
                     <span id='searchClear' class='search-clear'>×</span>
-                    <%--<button id='searchClear' class='search-clear'></button>--%>
-                    <%--<button type="button" id='searchClear' class="">×</button>--%>
                 </form>
 
                 <ul class="nav pull-right">
