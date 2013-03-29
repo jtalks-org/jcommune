@@ -80,9 +80,13 @@ $(function () {
                 "show": true
             });
 
+            moveTopicEditor.keydown(Keymaps.moveTopicEditor);
+
             Utils.resizeDialog(moveTopicEditor);
 
             displayBranches(eliminatedBranchId);
+
+            moveTopicEditor.find('select:first').focus()
         });
     });
 
@@ -188,7 +192,7 @@ $(function () {
         var template = '';
         $.each(branches, function (i, branch) {
             if (eliminatedBranchId != branch.id) {
-                template += '<option value="' + branch.id + '">' + branch.name + '</option>';
+                template += '<option value="' + branch.id + '">' + Utils.htmlEncode(branch.name) + '</option>';
             }
         });
         return template;

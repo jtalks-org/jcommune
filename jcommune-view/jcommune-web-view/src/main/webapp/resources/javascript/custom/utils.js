@@ -78,3 +78,16 @@ function showErrors(dialog, errors, idPrefix, idPostfix) {
     }
     Utils.resizeDialog(dialog);
 }
+
+/**
+ * Encodes given string by escaping special HTML characters
+ * 
+ * @param s string to be encoded
+ */
+Utils.htmlEncode = function(s)
+{
+  var el = document.createElement("div");
+  el.innerText = el.textContent = s;
+  s = el.innerHTML;
+  return s;
+}
