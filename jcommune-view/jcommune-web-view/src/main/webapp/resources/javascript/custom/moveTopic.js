@@ -192,7 +192,7 @@ $(function () {
         var template = '';
         $.each(branches, function (i, branch) {
             if (eliminatedBranchId != branch.id) {
-                template += '<option value="' + branch.id + '">' + branch.name + '</option>';
+                template += '<option value="' + branch.id + '">' + Utils.htmlEncode(branch.name) + '</option>';
             }
         });
         return template;

@@ -297,11 +297,11 @@ CodeHighlighting.getCommentHtml = function (comment) {
                         + deleteButtonHtml
 				    + '</div>'
                     + '<div class="review-header">'
-						+ '<a href="' + baseUrl + '/users/' + comment.authorId + '">' + CodeHighlighting.htmlEncode(comment.authorUsername) + '</a>'
+						+ '<a href="' + baseUrl + '/users/' + comment.authorId + '">' + Utils.htmlEncode(comment.authorUsername) + '</a>'
 						+ ' ' + $labelReviewSays + ': '
                     + '</div>'
                     + '<div class="review-body">'
-						+ CodeHighlighting.htmlEncode(comment.body)
+						+ Utils.htmlEncode(comment.body)
                     + '</div>'
                 + '</div>'
             + '</div>';
@@ -396,17 +396,4 @@ CodeHighlighting.displayValidationErrors = function (errors) {
             errorsContainer.append(errors[i].message + '<br/>');
         }
     }
-}
-
-/**
- * Encodes given string by escaping special HTML characters
- * 
- * @param s string to be encoded
- */
-CodeHighlighting.htmlEncode = function(s)
-{
-  var el = document.createElement("div");
-  el.innerText = el.textContent = s;
-  s = el.innerHTML;
-  return s;
 }
