@@ -47,6 +47,33 @@ ul.lang-menu li img {
     color: rgb(85, 85, 85);
 }
 
+#recent-topics-header {
+    line-height: 3.2em;
+    overflow: hidden;
+}
+
+#recent-topics-header #right-block {
+    float: right;
+    overflow: hidden;
+}
+
+#recent-topics-header #right-block a {
+    font-weight: bold;
+    padding-left: 2px;
+    color: rgb(85, 85, 85);
+}
+
+.span9 #right-block {
+    float: right;
+    overflow: hidden;
+}
+
+.span9 #right-block a {
+    font-weight: bold;
+    padding-left: 2px;
+    color: rgb(85, 85, 85);
+}
+
 #mark-all-viewed {
     font-weight: bold;
     padding-right: 20px
