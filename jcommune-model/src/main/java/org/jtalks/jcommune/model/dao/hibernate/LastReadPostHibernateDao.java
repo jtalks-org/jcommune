@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -65,10 +66,13 @@ public class LastReadPostHibernateDao extends AbstractHibernateChildRepository<L
     @Override
     @SuppressWarnings("unchecked")
     public List<LastReadPost> getLastReadPosts(JCUser forWho, List<Topic> sourceTopics) {
-        return (List<LastReadPost>) getSession().getNamedQuery("getLastReadPostsInTopicsForUser")
-                .setParameterList("sourceTopics", sourceTopics)
-                .setParameter("user", forWho)
-                .list();
+        if (!sourceTopics.isEmpty()) {
+            return (List<LastReadPost>) getSession().getNamedQuery("getLastReadPostsInTopicsForUser")
+                    .setParameterList("sourceTopics", sourceTopics)
+                    .setParameter("user", forWho)
+                    .list();
+        }
+        return Collections.emptyList();
     }
 
     /**

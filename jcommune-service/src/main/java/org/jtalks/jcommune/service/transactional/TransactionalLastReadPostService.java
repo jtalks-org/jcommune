@@ -16,7 +16,6 @@ package org.jtalks.jcommune.service.transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.collections.ListUtils;
@@ -78,45 +77,18 @@ public class TransactionalLastReadPostService implements LastReadPostService {
         JCUser currentUser = userService.getCurrentUser();
         if (!currentUser.isAnonymous()) {
             DateTime forumMarkedAsReadDate = currentUser.getAllForumMarkedAsReadTime();
-            List<Topic> notModifiedAfterMarkTopics = Collections.emptyList();
-            if (forumMarkedAsReadDate != null) {
-                notModifiedAfterMarkTopics = extractNotModifiedTopicsAfterForumMarkReadDate(
+            List<Topic> notModifiedTopics = extractNotModifiedTopicsSinceForumMarkedAsRead(
                         forumMarkedAsReadDate, topics);
-                for (Topic topic: notModifiedAfterMarkTopics) {
-                    topic.setLastReadPostIndex(topic.getPostCount() - 1);
-                }
+            for (Topic notModifiedTopic: notModifiedTopics) {
+                int lastPostIndex = notModifiedTopic.getPostCount() - 1;
+                notModifiedTopic.setLastReadPostIndex(lastPostIndex);
             }
             //
             @SuppressWarnings("unchecked")
-            List<Topic> modifiedAfterMarkTopics = ListUtils.removeAll(topics, notModifiedAfterMarkTopics);
-            if (!modifiedAfterMarkTopics.isEmpty()) {
-                List<LastReadPost> lastReadPosts = 
-                        lastReadPostDao.getLastReadPosts(currentUser, modifiedAfterMarkTopics);
-                for (Topic topic: modifiedAfterMarkTopics) {
-                    LastReadPost lastReadPost = findLastReadPost(lastReadPosts, topic.getId());
-                    if (lastReadPost != null) {
-                        topic.setLastReadPostIndex(lastReadPost.getPostIndex());
-                    }
-                }
-            }
+            List<Topic> modifiedTopics = ListUtils.removeAll(topics, notModifiedTopics);
+            fillLastReadPostsForModifiedTopics(modifiedTopics, currentUser);
         }
         return topics;
-    }
-
-    /**
-     * Find last read post in the list for given topic.
-     * 
-     * @param lastReadPosts the list of last read posts where we are going to search
-     * @param topicId an identifier of topic for which we find last read post in list
-     * @return last read post for given topic
-     */
-    private LastReadPost findLastReadPost(List<LastReadPost> lastReadPosts, long topicId) {
-        for(LastReadPost lastReadPost: lastReadPosts) {
-            if (lastReadPost.getTopic().getId() == topicId) {
-                return lastReadPost;
-            }
-        }
-        return null;
     }
     
     /**
@@ -126,18 +98,52 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      * @param sourceTopics the list of topics that must be processed
      * @return topics that don't have modification after marking all forum as read
      */
-    private List<Topic> extractNotModifiedTopicsAfterForumMarkReadDate(
+    private List<Topic> extractNotModifiedTopicsSinceForumMarkedAsRead(
             DateTime forumMarkAsReadDate,
             List<Topic> sourceTopics) {
         List<Topic> topics = new ArrayList<Topic>();
-        for (Topic topic: sourceTopics) {
-            if (topic.getModificationDate().isBefore(forumMarkAsReadDate)) {
-                topics.add(topic);
+        if (forumMarkAsReadDate != null) {
+            for (Topic topic: sourceTopics) {
+                if (topic.getModificationDate().isBefore(forumMarkAsReadDate)) {
+                    topics.add(topic);
+                }
             }
         }
         return topics;
     }
     
+    /**
+     * For topics modified since forum was marked as all read we need to calculate 
+     * last read posts from data that were saved in repository.
+     * 
+     * @param modifiedTopics the list of modified topics 
+     * @param currentUser the current user of application
+     */
+    private void fillLastReadPostsForModifiedTopics(List<Topic> modifiedTopics, JCUser currentUser) {
+        List<LastReadPost> lastReadPosts = lastReadPostDao.getLastReadPosts(currentUser, modifiedTopics);
+        for (Topic topic: modifiedTopics) {
+            LastReadPost lastReadPost = findLastReadPost(lastReadPosts, topic.getId());
+            if (lastReadPost != null) {
+                topic.setLastReadPostIndex(lastReadPost.getPostIndex());
+            }
+        }
+    }
+    
+    /**
+     * Find last read post in the list for given topic.
+     * 
+     * @param lastReadPosts the list of last read posts where we are going to search
+     * @param topicId an identifier of topic for which we find last read post in list
+     * @return last read post for given topic
+     */
+    private LastReadPost findLastReadPost(List<LastReadPost> lastReadPosts, long topicId) {
+        for (LastReadPost lastReadPost: lastReadPosts) {
+            if (lastReadPost.getTopic().getId() == topicId) {
+                return lastReadPost;
+            }
+        }
+        return null;
+    }
 
     /**
      * {@inheritDoc}

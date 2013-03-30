@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -194,7 +195,19 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
         
         List<LastReadPost> lastReadPosts = lastReadPostDao.getLastReadPosts(user, userTopics);
         
-        assertEquals(lastReadPosts.size(), topicsSize);
+        assertEquals(lastReadPosts.size(), topicsSize, 
+                "For every passed topic it should return last read post.");
+        
+    }
+    
+    @Test
+    public void getLastReadPostsForUserShouldReturnEmptyListForEmptyListOfTopics() {
+        List<Topic> userTopics = Collections.emptyList();
+        JCUser user = new JCUser("user", "user@gmail.com", "password");
+        
+        List<LastReadPost> lastReadPosts = lastReadPostDao.getLastReadPosts(user, userTopics);
+        
+        assertTrue(lastReadPosts.isEmpty(), "For passed empty list of topics it should return empty list.");
         
     }
     
