@@ -91,3 +91,13 @@ Utils.htmlEncode = function(s)
   s = el.innerHTML;
   return s;
 }
+
+/**
+ * Do focus to element
+ *
+ * @param target selector of element to focus
+ */
+Utils.focusFirstEl = function(target)
+{
+    $(target).focus();
+}

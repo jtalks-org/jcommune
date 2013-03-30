@@ -49,4 +49,7 @@
             <spring:message code="label.back"/>
         </a>
     </div>
+    <script>
+        Utils.focusFirstEl('#tbMsg');
+    </script>
 </body>

@@ -47,7 +47,6 @@
 
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/bbeditorEffects.js"
             type="text/javascript"></script>
-
 </head>
 <body>
 <div class="container">
@@ -158,4 +157,7 @@
         <spring:message code="label.back"/>
     </a>
 </div>
+<script>
+    Utils.focusFirstEl('#subject');
+</script>
 </body>
