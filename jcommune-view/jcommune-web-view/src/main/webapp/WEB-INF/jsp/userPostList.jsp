@@ -21,7 +21,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <head>
-    <meta name="description" content="${user.username}">
+    <meta name="description" content="<c:out value="${user.username}"/>">
     <title><spring:message code="label.postListOfUser"/> <c:out value="${user.username}"/></title>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/codeHighlighting.js"
             type="text/javascript"></script>

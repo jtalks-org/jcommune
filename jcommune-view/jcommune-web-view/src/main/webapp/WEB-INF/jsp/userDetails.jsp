@@ -22,7 +22,7 @@
     uri="http://www.springframework.org/security/tags"%>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags"%>
 <head>
-    <meta name="description" content="${user.username}">
+    <meta name="description" content="<c:out value="${user.username}"/>">
 <title><spring:message code="label.user" /> - ${user.username}</title>
 <script
     src="${pageContext.request.contextPath}/resources/javascript/licensed/json2.js"

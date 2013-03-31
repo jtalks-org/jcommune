@@ -22,7 +22,7 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 
 <head>
-    <meta name="description" content="${topic.title}">
+    <meta name="description" content="<c:out value="${topic.title}"/>">
     <title><c:out value="${topic.title}"/></title>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/utils.js"
             type="text/javascript"></script>

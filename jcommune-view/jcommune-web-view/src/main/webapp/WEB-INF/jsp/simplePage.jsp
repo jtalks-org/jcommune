@@ -21,7 +21,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <head>
-    <meta name="description" content="${simplePageDto.nameText}">
+    <meta name="description" content="<c:out value="${simplePageDto.nameText}"/>">
     <title>
         <c:out value="${simplePageDto.nameText}"/>
     </title>

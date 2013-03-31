@@ -20,7 +20,7 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <head>
-    <meta name="description" content="${topicTitle}">
+    <meta name="description" content="<c:out value="${topicTitle}"/>">
     <title><spring:message code="label.answer_to"/>: <c:out value="${topicTitle}"/></title>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
             type="text/javascript"></script>
