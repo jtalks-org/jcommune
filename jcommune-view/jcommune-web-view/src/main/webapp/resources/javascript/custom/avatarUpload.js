@@ -67,7 +67,6 @@ $(document).ready(function () {
         encoding: encoding,
         //is multiple file upload available
         multiple:false,
-        //allowedExtensions:['jpg', 'jpeg', 'png', 'gif'],
         // max uploaded file size (bytes)
         sizeLimit:4194304,
         onSubmit:function (id, filename) {},

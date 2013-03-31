@@ -35,6 +35,8 @@ import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.jtalks.jcommune.web.dto.OperationResultDto;
 import org.jtalks.jcommune.web.util.JSONUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
@@ -73,6 +75,7 @@ public class AvatarController {
     private MessageSource messageSource;
     private JSONUtils jsonUtils;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AvatarController.class);
 
     /**
      * Constructor for controller instantiating, dependencies injected via autowiring.
@@ -268,6 +271,7 @@ public class AvatarController {
     public OperationResultDto handleImageSizeException(ImageSizeException e, Locale locale) {
         Object[] parameters = new Object[]{e.getMaxSize()};
         String errorMessage = messageSource.getMessage(WRONG_SIZE_RESOURCE_MESSAGE, parameters, locale);
+        LOGGER.error("Avatar image size is not valid.", e);
         return new OperationResultDto(errorMessage);
     }
 
@@ -281,8 +285,9 @@ public class AvatarController {
     @ExceptionHandler(value = ImageFormatException.class)
     @ResponseBody
     public OperationResultDto handleImageFormatException(ImageFormatException e, Locale locale) {
-        Object[] parameters = new Object[]{e.getValidImageTypes()};
-        String errorMessage = messageSource.getMessage(WRONG_FORMAT_RESOURCE_MESSAGE, parameters, locale);
+        Object[] validImageTypes = new Object[]{e.getValidImageTypes()};
+        String errorMessage = messageSource.getMessage(WRONG_FORMAT_RESOURCE_MESSAGE, validImageTypes, locale);
+        LOGGER.error("Avatar image format is not valid.", e);
         return new OperationResultDto(errorMessage);
     }
 
@@ -297,6 +302,7 @@ public class AvatarController {
     @ResponseBody
     public OperationResultDto handleImageProcessException(ImageProcessException e, Locale locale) {
         String errorMessage = messageSource.getMessage(COMMON_ERROR_RESOURCE_MESSAGE, null, locale);
+        LOGGER.error("Error while avatar image processing.", e);
         return new OperationResultDto(errorMessage);
     }
 }

@@ -45,7 +45,7 @@ public class AvatarService {
 
     private static final List<String> VALID_IMAGE_TYPES = Arrays.asList("image/jpeg", "image/png", "image/gif");
     /** user-friendly string with all valid image types */
-    private static final String VALID_IMAGE_TYPES_STRING = "*.jpeg, *.jpg, *.gif, *.png";
+    private static final String VALID_IMAGE_EXTENSIONS = "*.jpeg, *.jpg, *.gif, *.png";
     public static final String HTTP_HEADER_DATETIME_PATTERN = "E, dd MMM yyyy HH:mm:ss z";
     
     private ImageUtils imageUtils;
@@ -100,7 +100,7 @@ public class AvatarService {
     public void validateAvatarFormat(MultipartFile file) throws ImageFormatException {
         Validate.notNull(file, "file argument array cannot be null");
         if (!VALID_IMAGE_TYPES.contains(file.getContentType())) {
-            throw new ImageFormatException(VALID_IMAGE_TYPES_STRING);
+            throw new ImageFormatException(VALID_IMAGE_EXTENSIONS);
         }
     }
 
@@ -117,7 +117,7 @@ public class AvatarService {
         try {
             String type = tika.detect(input);
             if (!VALID_IMAGE_TYPES.contains(type)) {
-                throw new ImageFormatException(VALID_IMAGE_TYPES_STRING);
+                throw new ImageFormatException(VALID_IMAGE_EXTENSIONS);
             }
         } catch (IOException e) {
             LOGGER.error("Failed to handle avatar ByteArrayInputStream", e);
