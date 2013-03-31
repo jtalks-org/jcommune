@@ -25,10 +25,9 @@
     <%-- Determination of whether the user can vote in the topic. --%>
     <c:set var="votingAvailable" value="false" scope="request"/>
     <sec:authorize access="isAuthenticated()">
-        <c:set var="votingAvailable" value="true" scope="request"/>
         <jtalks:hasPermission targetId="${poll.id}" targetType="POLL"
                               permission="GeneralPermission.WRITE">
-            <c:set var="votingAvailable" value="false" scope="request"/>
+            <c:set var="votingAvailable" value="true" scope="request"/>
         </jtalks:hasPermission>
     </sec:authorize>
     <%-- General form. --%>
