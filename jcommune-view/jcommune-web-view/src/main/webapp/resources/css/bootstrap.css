@@ -1153,12 +1153,9 @@ input:focus:required:invalid:focus, textarea:focus:required:invalid:focus, selec
 }
 
 .search-query {
-    padding-left: 14px;
-    padding-right: 14px;
-    margin-bottom: 0;
-    -webkit-border-radius: 14px;
-    -moz-border-radius: 14px;
-    border-radius: 14px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
 }
 
 .form-search input,
@@ -3163,19 +3160,9 @@ button.btn.small, input[type="submit"].btn.small {
     font-size: 13px;
     font-weight: normal;
     line-height: 1;
-    color: #ffffff;
-    color: rgba(255, 255, 255, 0.75);
-    background: #666;
-    background: rgba(255, 255, 255, 0.3);
+    color: #000;
     border: 1px solid #111;
-    -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 0px rgba(255, 255, 255, 0.15);
-    -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 0px rgba(255, 255, 255, 0.15);
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 0px rgba(255, 255, 255, 0.15);
-    -webkit-transition: none;
-    -moz-transition: none;
-    -ms-transition: none;
-    -o-transition: none;
-    transition: none;
+    background-color: #fff
 }
 
 .navbar-search .search-query :-moz-placeholder {
@@ -3186,22 +3173,15 @@ button.btn.small, input[type="submit"].btn.small {
     color: #eeeeee;
 }
 
-.navbar-search .search-query:hover {
-    color: #ffffff;
-    background-color: #999999;
-    background-color: rgba(255, 255, 255, 0.5);
-}
-
 .navbar-search .search-query:focus, .navbar-search .search-query.focused {
     padding: 5px 25px 5px 10px;
-    color: #333333;
-    text-shadow: 0 1px 0 #ffffff;
-    background-color: #ffffff;
-    border: 0;
-    -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
-    -moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
-    outline: 0;
+    font-family: Tahoma, Calibri, Verdana, Geneva, sans-serif;
+    font-size: 13px;
+    font-weight: normal;
+    line-height: 1;
+    color: #000;
+    background-color: #fff;
+    border: 1px solid #111;
 }
 
 .navbar-fixed-top {

@@ -300,13 +300,9 @@ input.form-check-radio-box[type="radio"] {
     text-align: center;
     background-color: transparent;
     left: -30px;
-    top: 2px;
+    bottom: 2px;
     border-radius: 0 4px 4px 0;
     padding: 0 5px;
-}
-
-.search-query {
-    border-radius: 4px !important;
 }
 
 /* JC-863. Long text in titles, posts, signature. */
