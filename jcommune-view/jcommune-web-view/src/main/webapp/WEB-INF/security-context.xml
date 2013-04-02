@@ -60,9 +60,9 @@
         <security:intercept-url pattern="/reviews/new" access="isAuthenticated()"/>
 
         <!-- Since DELETE method is actually POST with _method=DELETE parameter -->
-        <security:intercept-url pattern="/branches/*" method="DELETE" access="hasIpAddress('127.0.0.1')"/>
-        <security:intercept-url pattern="/sections/*" method="DELETE" access="hasIpAddress('127.0.0.1')"/>
-        <security:intercept-url pattern="/component" method="DELETE" access="hasIpAddress('127.0.0.1')"/>
+        <security:intercept-url pattern="/branches/*" method="DELETE" />
+        <security:intercept-url pattern="/sections/*" method="DELETE" />
+        <security:intercept-url pattern="/component" method="DELETE" />
 
         <security:intercept-url pattern="/branches/*/subscribe" access="isAuthenticated()"/>
         <security:intercept-url pattern="/branches/*/unsubscribe" access="isAuthenticated()"/>
