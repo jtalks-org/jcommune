@@ -149,6 +149,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      * {@inheritDoc}
      */
     @Override
+    @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.VIEW_TOPICS')")
     public void markTopicPageAsRead(Topic topic, int pageNum, boolean pagingEnabled) {
         JCUser current = userService.getCurrentUser();
         if (!current.isAnonymous()) { // topics are always unread for anonymous users
@@ -167,8 +168,6 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      * @param pagingEnabled if paging is enabled on page. If so, last post index in topic is returned
      * @return new last post index, counting from 0
      */
-    //TODO annotation doesn't work on private method
-    @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.VIEW_TOPICS')")
     private int calculatePostIndex(JCUser user, Topic topic, int pageNum, boolean pagingEnabled) {
         if (pagingEnabled) {  // last post on the page given
             int maxPostIndex = user.getPageSize() * pageNum - 1;
@@ -182,6 +181,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      * {@inheritDoc}
      */
     @Override
+    @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.VIEW_TOPICS')")
     public void markTopicAsRead(Topic topic) {
         JCUser current = userService.getCurrentUser();
         if (!current.isAnonymous()) { // topics are always unread for anonymous users
@@ -197,8 +197,6 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      * @param topic     topic to store info for
      * @param postIndex actual post index, starting from 0
      */
-    @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.VIEW_TOPICS')")
-    //TODO annotation doesn't work on private method
     private void saveLastReadPost(JCUser user, Topic topic, int postIndex) {
         LastReadPost post = lastReadPostDao.getLastReadPost(user, topic);
         if (post == null) {

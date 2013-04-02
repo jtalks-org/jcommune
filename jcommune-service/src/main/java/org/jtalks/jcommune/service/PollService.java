@@ -31,10 +31,10 @@ public interface PollService extends EntityService<Poll> {
      * Adds one vote for all selected options of poll.
      *
      * @param pollId        id of a poll
-     * @param pollOptionIds id of a option of a poll
+     * @param selectedOptionsIds id of selected options of a poll
      * @return changed poll
      */
-    Poll vote(Long pollId, List<Long> pollOptionIds);
+    Poll vote(Long pollId, List<Long> selectedOptionsIds);
 
     /**
      * Save {@link org.jtalks.jcommune.model.entity.Poll} to database.

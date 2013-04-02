@@ -14,6 +14,9 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.service.PollService;
@@ -22,6 +25,8 @@ import org.jtalks.jcommune.web.dto.PollOptionDto;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -79,6 +84,15 @@ public class PollControllerTest {
                 "The id must be the same");
 
     }
+    
+    @Test
+    public void testHandleAllExceptions() {
+        Exception exception = new Exception("Some message");
+        ModelAndView mav = pollController.handleAllExceptions(exception);
+
+        assertTrue(mav.getView() instanceof MappingJacksonJsonView);
+        assertEquals(mav.getModel().get("errorMessage"), exception.getMessage());
+    }
 
     private Poll createPoll(long pollId, List<Long> pollOptionIds) {
         Poll poll = new Poll("New poll");
@@ -97,4 +111,5 @@ public class PollControllerTest {
         option.setId(id);
         return option;
     }
+    
 }

@@ -19,7 +19,6 @@ import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.SecurityService;
-import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.service.PollService;
@@ -73,26 +72,13 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public Poll vote(Long pollId, List<Long> pollOptionIds) {
+    @PreAuthorize("hasPermission(#pollId, 'POLL', 'GeneralPermission.WRITE')")
+    public Poll vote(Long pollId, List<Long> selectedOptionsIds) {
         Poll poll = getDao().get(pollId);
-        Branch branch = poll.getTopic().getBranch();
-        return this.vote(poll, pollOptionIds, branch.getId());
-    }
-
-    /**
-     * Performs actual voting with permission check
-     *
-     * @param poll              poll we're voting in
-     * @param selectedOptionIds voting options, selected by user
-     * @param branchId          used for annotation permission check only
-     * @return poll updated with new votes
-     */
-    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.CREATE_POSTS')")
-    private Poll vote(Poll poll, List<Long> selectedOptionIds, long branchId) {
         if (poll.isActive()) {
             prohibitRevote(poll);
             for (PollItem option : poll.getPollItems()) {
-                if (selectedOptionIds.contains(option.getId())) {
+                if (selectedOptionsIds.contains(option.getId())) {
                     option.increaseVotesCount();
                     pollOptionDao.update(option);
                 }

@@ -18,13 +18,19 @@ import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.web.dto.PollDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 
 import java.util.Collections;
 
@@ -35,6 +41,8 @@ import java.util.Collections;
  */
 @Controller
 public class PollController {
+    private static final String ERROR_MESSAGE_PARAMETER = "errorMessage";
+    
     private PollService pollService;
 
     /**
@@ -76,5 +84,14 @@ public class PollController {
     public PollDto addMultipleVote(@PathVariable Long pollId, @RequestBody PollDto pollDto) {
         Poll poll = pollService.vote(pollId, pollDto.getPollOptionIds());
         return new PollDto(poll);
+    }
+    
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ModelAndView handleAllExceptions(Exception exception) {
+        MappingJacksonJsonView jsonView = new MappingJacksonJsonView();
+        ModelAndView mav = new ModelAndView(jsonView);
+        mav.addObject(ERROR_MESSAGE_PARAMETER, exception.getMessage());
+        return mav;
     }
 }

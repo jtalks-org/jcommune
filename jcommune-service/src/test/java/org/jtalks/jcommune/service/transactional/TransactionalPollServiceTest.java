@@ -158,10 +158,6 @@ public class TransactionalPollServiceTest {
             option.setVotesCount(initialVoteCount);
             poll.addPollOptions(option);
         }
-        Branch branch = new Branch("name", "description");
-        Topic topic = new Topic(null, "title");
-        branch.addTopic(topic);
-        poll.setTopic(topic);
         return poll;
     }
 }
