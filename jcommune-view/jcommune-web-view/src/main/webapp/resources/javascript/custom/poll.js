@@ -140,7 +140,8 @@ function addSingleVote(pollOptionId, pollId) {
         data:{"pollOptionId":pollOptionId},
         success:function (poll) {
             applyPollResult(poll);
-        }
+        },
+        error: processVotingError
     });
 }
 
@@ -159,6 +160,15 @@ function addMultipleVote(pollDto, pollId) {
         data:JSON.stringify(pollDto),
         success:function (poll) {
             applyPollResult(poll);
-        }
+        },
+        error: processVotingError
     });
+}
+
+/**
+ * Handles error during voting
+ */
+function processVotingError() {
+	bootbox.alert($labelUnexpectedError);
+	$("#pollAjaxLoader").hide(); //hide the ajax loader again
 }
