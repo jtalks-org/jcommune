@@ -34,10 +34,9 @@ public class ExternalLink extends Entity {
     public static final int URL_MAX_SIZE = 512;
     public static final int URL_MIN_SIZE = 10;
     public static final int HINT_MAX_SIZE = 128;
+    public static final String HTTP_PROTOCOL_PREFIX = "http://";
+    public static final String PROTOCOL_SEPARATOR = "://";
 
-    @NotNull(message = "{validation.not_null}")
-    @URL
-    @Size(max = URL_MAX_SIZE, min = URL_MIN_SIZE, message = "{validation.links.url.length}")
     private String url;
     @NotNull(message = "{validation.not_null}")
     @Size(max = TITLE_MAX_SIZE, message = "{validation.links.title.length}")
@@ -59,7 +58,7 @@ public class ExternalLink extends Entity {
      * @param hint  URL hint or description, e.g. 'The most powerful forum engine', this hint is shown
      */
     public ExternalLink(String url, String title, String hint) {
-        this.url = url;
+        setUrl(url);
         this.title = title;
         this.hint = hint;
     }
@@ -67,6 +66,9 @@ public class ExternalLink extends Entity {
     /**
      * @return url target URL, e.g., jtalks.org the link will lead to
      */
+    @NotNull(message = "{validation.not_null}")
+    @URL
+    @Size(max = URL_MAX_SIZE, min = URL_MIN_SIZE, message = "{validation.links.url.length}")
     public String getUrl() {
         return url;
     }
@@ -75,6 +77,9 @@ public class ExternalLink extends Entity {
      * @param url target URL, e.g., jtalks.org the link will lead to
      */
     public void setUrl(String url) {
+        if (url != null && !url.isEmpty() && !url.contains(PROTOCOL_SEPARATOR)) {
+            url = HTTP_PROTOCOL_PREFIX + url;
+        }
         this.url = url;
     }
 

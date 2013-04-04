@@ -212,6 +212,7 @@ function editLinksVisible(visible) {
                         data: JSON.stringify(link),
                         success: function (resp) {
                             if (resp.status == "SUCCESS") {
+                                link.url = resp.result.url; //server can correct the url
                                 updateExternalLink(link, bigScreenExternalLinkIdPrefix);
                                 updateExternalLink(link, smallScreenExternalLinkIdPrefix);
                                 toAction('list');

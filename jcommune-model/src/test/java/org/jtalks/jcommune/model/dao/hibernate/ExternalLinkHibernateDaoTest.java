@@ -160,7 +160,7 @@ public class ExternalLinkHibernateDaoTest extends AbstractTransactionalTestNGSpr
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void shouldFailWithNotValidUrl() {
         ExternalLink link = ObjectsFactory.getDefaultExternalLink();
-        link.setUrl("jtalks.org");
+        link.setUrl("://jtalks.org");
         dao.saveOrUpdate(link);
     }
 

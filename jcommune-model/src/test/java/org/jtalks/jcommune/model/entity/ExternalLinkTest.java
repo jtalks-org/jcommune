@@ -36,4 +36,26 @@ public class ExternalLinkTest {
         assertEquals(title, externalLink.getTitle());
         assertEquals(hint, externalLink.getHint());
     }
+
+    @Test
+    public void testLinkWithNoProtocol() {
+        String url = "javatalks.ru";
+        String title = "title";
+        String hint = "hint";
+        ExternalLink externalLink = new ExternalLink(url, title, hint);
+        assertEquals("http://" + url, externalLink.getUrl());
+        assertEquals(title, externalLink.getTitle());
+        assertEquals(hint, externalLink.getHint());
+    }
+
+    @Test
+    public void testEmptyLink() {
+        String url = "";
+        String title = "title";
+        String hint = "hint";
+        ExternalLink externalLink = new ExternalLink(url, title, hint);
+        assertEquals(url, externalLink.getUrl());
+        assertEquals(title, externalLink.getTitle());
+        assertEquals(hint, externalLink.getHint());
+    }
 }
