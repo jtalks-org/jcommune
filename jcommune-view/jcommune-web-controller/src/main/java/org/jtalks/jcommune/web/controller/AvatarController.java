@@ -271,7 +271,6 @@ public class AvatarController {
     public OperationResultDto handleImageSizeException(ImageSizeException e, Locale locale) {
         Object[] parameters = new Object[]{e.getMaxSize()};
         String errorMessage = messageSource.getMessage(WRONG_SIZE_RESOURCE_MESSAGE, parameters, locale);
-        LOGGER.error("Avatar image size is not valid.", e);
         return new OperationResultDto(errorMessage);
     }
 
@@ -287,7 +286,6 @@ public class AvatarController {
     public OperationResultDto handleImageFormatException(ImageFormatException e, Locale locale) {
         Object[] validImageTypes = new Object[]{e.getValidImageTypes()};
         String errorMessage = messageSource.getMessage(WRONG_FORMAT_RESOURCE_MESSAGE, validImageTypes, locale);
-        LOGGER.error("Avatar image format is not valid.", e);
         return new OperationResultDto(errorMessage);
     }
 
@@ -302,7 +300,6 @@ public class AvatarController {
     @ResponseBody
     public OperationResultDto handleImageProcessException(ImageProcessException e, Locale locale) {
         String errorMessage = messageSource.getMessage(COMMON_ERROR_RESOURCE_MESSAGE, null, locale);
-        LOGGER.error("Error while avatar image processing.", e);
         return new OperationResultDto(errorMessage);
     }
 }

@@ -268,7 +268,7 @@ public class AvatarControllerTest {
     }
     
     @Test
-    public void ImageFormatExceptionShouldProduceNotSuccessOperationResultWithMessageAboutValidImageTypes() {
+    public void imageFormatExceptionShouldProduceNotSuccessOperationResultWithMessageAboutValidImageTypes() {
         Locale locale = Locale.ENGLISH;//it's not matter
         String expectedMessage = "a message";
         String validTypes = "*.png";

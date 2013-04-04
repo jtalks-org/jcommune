@@ -172,7 +172,7 @@ public class AvatarService {
                         Locale.US); 
                 ifModifiedSinceDate = dateFormat.parse(ifModifiedSinceHeader);
             } catch (ParseException e) {
-                // in case date is wrong or not specified date will be Jan 1, 1970.
+                LOGGER.error("Failed to parse value of 'If-Modified-Since' header from string form.", e);
             }
         }
         

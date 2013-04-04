@@ -33,7 +33,9 @@ public class ImageFormatException extends ImageProcessException {
         this.validImageTypes = validImageTypes;
     }
 
-    /** Gets information about allowed extensions */
+    /** Gets information about allowed extensions
+     * @return information about allowed image extensions
+     * */
     public String getValidImageTypes() {
         return validImageTypes;
     }
