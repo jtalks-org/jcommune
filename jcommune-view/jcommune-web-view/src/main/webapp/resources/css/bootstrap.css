@@ -3160,9 +3160,18 @@ button.btn.small, input[type="submit"].btn.small {
     font-size: 13px;
     font-weight: normal;
     line-height: 1;
+}
+
+.navbar-search .search-query-focus {
     color: #000;
     border: 1px solid #111;
-    background-color: #fff
+    background-color: #fff;
+}
+
+.navbar-search .search-query-focusout {
+    color: #000;
+    border: 1px solid #111;
+    background-color: #a3a3a3;
 }
 
 .navbar-search .search-query :-moz-placeholder {
@@ -3171,17 +3180,6 @@ button.btn.small, input[type="submit"].btn.small {
 
 .navbar-search .search-query::-webkit-input-placeholder {
     color: #eeeeee;
-}
-
-.navbar-search .search-query:focus, .navbar-search .search-query.focused {
-    padding: 5px 25px 5px 10px;
-    font-family: Tahoma, Calibri, Verdana, Geneva, sans-serif;
-    font-size: 13px;
-    font-weight: normal;
-    line-height: 1;
-    color: #000;
-    background-color: #fff;
-    border: 1px solid #111;
 }
 
 .navbar-fixed-top {

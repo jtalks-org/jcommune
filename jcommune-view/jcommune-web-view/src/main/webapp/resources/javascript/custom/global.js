@@ -15,8 +15,8 @@
 
 $(document).ready(function () {
 
-    if($(".sapaLinkRow").length > 0){
-        $(".sapaLinkRow").dotdotdot();
+    if($('.sapaLinkRow').length > 0){
+        $('.sapaLinkRow').dotdotdot();
     }
     //Sets timezone cookie for the server to show all the dates in a client timezone
     document.cookie = "GMT=" + new Date().getTimezoneOffset() + "; path=/";
@@ -68,12 +68,12 @@ $(document).ready(function () {
     });
 
     //disable or enable sape configuration inputs of form
-    $('#enableSape1').bind('change', function(e){
+    $('#enableSape1').bind('change', function (e) {
         var elements = $('#sape-configuration-form input:not(#enableSape1, input[name="_enableSape"],' +
             ' .btn, input[type="checkbox"])').parents('.control-group');
-        if(e.target.checked){
+        if (e.target.checked) {
             elements.show();
-        }else{
+        } else {
             elements.hide();
         }
     })
@@ -82,6 +82,25 @@ $(document).ready(function () {
     $('#postDto').bind('keydown', Keymaps.post);
     $('#topicDto').bind('keydown', Keymaps.post);
     $('#privateMessageDto').bind('keydown', Keymaps.post);
+
+    var searchInput = $('#searchText');
+    searchInput.on('focus', function (e) {
+        e.preventDefault();
+        $(e.target).addClass('search-query-focus');
+        $(e.target).removeClass('search-query-focusout');
+    });
+
+    searchInput.on('focusout', function (e) {
+        e.preventDefault();
+        if ($(e.target).val() == '') {
+            $(e.target).addClass('search-query-focusout');
+            $(e.target).removeClass('search-query-focus');
+        }
+    });
+
+    if(searchInput.val() == ''){
+        searchInput.addClass('search-query-focusout');
+    }
 
     $(window).resize();
 });

@@ -42,6 +42,6 @@ $().ready(function() {
 	$(Search.searchClearSelector).click(function() {
 		$(Search.searchInputSelector).val('');
 		$(Search.searchClearSelector).hide();
-		$(Search.searchInputSelector).focus();
+		$(Search.searchInputSelector).focusout();
 	});
 });
