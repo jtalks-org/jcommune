@@ -461,9 +461,13 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      *              (0 means first post is the last read one)
      */
     public void setLastReadPostIndex(int index) {
-        LOGGER.warn("Last read post index ({}) is bigger than post count in the topic (TOPID ID: {})",
-                index, getId());
-        lastReadPostIndex = (index < posts.size()) ? index : posts.size() - 1;
+        if (index < posts.size()) {
+            lastReadPostIndex = index;
+        } else {
+            LOGGER.warn("Last read post index ({}) is bigger than last post index ({}) in the topic (TOPID ID: {})",
+                new Object[] {index, posts.size() - 1, getId()});
+            lastReadPostIndex = posts.size() - 1;
+        }
     }
     
     public Integer getLastReadPostIndex() {

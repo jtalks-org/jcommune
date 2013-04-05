@@ -122,8 +122,16 @@ public class TopicTest {
     }
 
     @Test
-    public void testSetLastReadPostIndexWrongValue() {
-        topic.setLastReadPostIndex(100500);
+    public void testSetLastReadPostIndexCorrectValue() {
+        topic.setLastReadPostIndex(1);
+        assertEquals(topic.getLastReadPostIndex().intValue(), 1);
+        assertFalse(topic.isHasUpdates());
+    }
+    
+    @Test
+    public void testSetLastReadPostIndexTooBigValue() {
+        topic.setLastReadPostIndex(10);
+        assertEquals(topic.getLastReadPostIndex().intValue(), topic.getPostCount() - 1);
         assertFalse(topic.isHasUpdates());
     }
 
