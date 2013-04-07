@@ -23,8 +23,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -53,14 +51,16 @@ import org.testng.annotations.Test;
 public class AvatarServiceTest {
     private static final String PROPERTY_NAME = "property";
     private static final int AVATAR_MAX_SIZE = 1000;
-    private AvatarService avatarService;
+    private JCommuneProperty avatarSizeProperty = JCommuneProperty.AVATAR_MAX_SIZE;
     @Mock
     private ImageUtils imageUtils;
     @Mock
     private Base64Wrapper base64Wrapper;
     @Mock
     private PropertyDao propertyDao;
-    private JCommuneProperty avatarSizeProperty = JCommuneProperty.AVATAR_MAX_SIZE;
+    //
+    private AvatarService avatarService;
+    
 
     @BeforeMethod
     public void setUp() {
@@ -77,94 +77,25 @@ public class AvatarServiceTest {
     }
 
     @Test(dataProvider = "validImageBytesValues")
-    public void shouldNormalProcessConvertAvatarToBase64String(byte[] originalImageBytes,
-                                                               BufferedImage inputImage,
-                                                               byte[] processedImageBytes,
-                                                               String expectedBase64String) throws Exception {
-        //set expectations
+    public void convertBytesToBase64StringShouldNormalConvertAvatar(
+            byte[] originalImageBytes, 
+            BufferedImage inputImage,
+            byte[] processedImageBytes, 
+            String expectedBase64String) throws ImageProcessException {
         when(imageUtils.convertByteArrayToImage(originalImageBytes)).thenReturn(inputImage);
         when(imageUtils.preprocessImage(inputImage)).thenReturn(processedImageBytes);
         when(base64Wrapper.encodeB64Bytes(processedImageBytes)).thenReturn(expectedBase64String);
 
-        //invoke object under test
         String resultBase64String = avatarService.convertBytesToBase64String(originalImageBytes);
 
-        //check expectations
         verify(imageUtils).convertByteArrayToImage(originalImageBytes);
         verify(imageUtils).preprocessImage(inputImage);
         verify(base64Wrapper).encodeB64Bytes(processedImageBytes);
-
-        //check result
         assertEquals(resultBase64String, expectedBase64String);
-
     }
-
-    @Test(expectedExceptions = ImageProcessException.class, dataProvider = "invalidImageBytesValues")
-    public void inputDataForProcessConvertAvatarToBase64StringIsInvalid(byte[] originalImageBytes,
-                                                                        BufferedImage inputImage) throws Exception {
-        //set expectations
-        when(imageUtils.convertByteArrayToImage(originalImageBytes)).thenReturn(inputImage);
-
-        //invoke object under test
-        avatarService.convertBytesToBase64String(originalImageBytes);
-
-        //check expectations
-        verify(imageUtils).convertByteArrayToImage(originalImageBytes);
-    }
-
-    @Test
-    public void testGetDefaultAvatar() {
-        byte[] avatar = avatarService.getDefaultAvatar();
-
-        assertTrue(avatar.length > 0);
-    }
-
-
-    @Test(expectedExceptions = ImageFormatException.class, dataProvider = "invalidFormatValues")
-    public void inputDataForValidateAvatarFormatIsInvalid(MultipartFile file) throws Exception {
-        //invoke object under test
-        avatarService.validateAvatarFormat(file);
-    }
-
-    @Test(dataProvider = "validFormatValues")
-    public void inputDataForValidateAvatarFormatFromOperaIEIsValid(MultipartFile file) throws Exception {
-        //invoke object under test
-        avatarService.validateAvatarFormat(file);
-    }
-
-    @Test(dataProvider = "validFormatValuesForChromeFF")
-    public void inputDataForValidateAvatarFormatFromChromeFFIsValid(byte[] bytes) throws ImageFormatException {
-        avatarService.validateAvatarFormat(bytes);
-    }
-
-
-
-    @Test(dataProvider = "invalidFormatValuesForChromeFF", expectedExceptions = ImageFormatException.class)
-    public void inputDataForValidateAvatarFormatFromChromeFFIsInvalid(byte[] bytes) throws ImageFormatException {
-        avatarService.validateAvatarFormat(bytes);
-    }
-
-    @Test(expectedExceptions = ImageSizeException.class)
-    public void inputDataForValidateAvatarSizeIsInvalid() throws Exception {
-        byte[] bytes = new byte[AVATAR_MAX_SIZE * 2];
-        //invoke object under test
-        avatarService.validateAvatarSize(bytes);
-    }
-
     
-    @Test
-    public void inputDataForValidateAvatarSizeIsValid() {
-    	byte[] bytes = new byte[AVATAR_MAX_SIZE];
-    	try {
-			avatarService.validateAvatarSize(bytes);
-		} catch (ImageSizeException e) {
-			assertTrue(true, "The correct picture is not passed the test.");
-		}
-    }
-
-
     @DataProvider
-    private Object[][] validImageBytesValues() throws IOException, ImageProcessException {
+    public Object[][] validImageBytesValues() throws IOException, ImageProcessException {
         byte[] originalImageBytes = new byte[]{-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0,
                 0, 5, 0, 0, 0, 5, 8, 2, 0, 0, 0, 2, 13, -79, -78, 0, 0, 0, 9, 112, 72, 89, 115, 0, 0, 1, -118, 0,
                 0, 1, -118, 1, 51, -105, 48, 88, 0, 0, 0, 32, 99, 72, 82, 77, 0, 0, 122, 37, 0, 0, -128, -125,
@@ -185,19 +116,33 @@ public class AvatarServiceTest {
         };
     }
 
-    @DataProvider
-    private Object[][] invalidImageBytesValues() throws Exception {
-        ImageUtils imageUtils = new ImageUtils(new Base64Wrapper());
+    @Test(expectedExceptions = ImageProcessException.class)
+    public void convertBytesToBase64StringShouldNotContinueWhenPassedImageByteArrayIsIncorrect() throws ImageProcessException {
+        byte[] imageBytes = {8, 2};
+        when(imageUtils.convertByteArrayToImage(imageBytes)).thenReturn(null);
 
-        byte[] originalImageBytes = new byte[]{96, -126};
+        avatarService.convertBytesToBase64String(imageBytes);
 
-        BufferedImage inputImage = imageUtils.convertByteArrayToImage(originalImageBytes);
-
-        return new Object[][]{
-                {originalImageBytes, inputImage},
-        };
+        verify(imageUtils).convertByteArrayToImage(imageBytes);
+    }
+    
+    @Test(expectedExceptions = {IllegalArgumentException.class})
+    public void convertBytesToBase64StringShouldNotWorkWithPassedNull() throws ImageProcessException {
+        avatarService.convertBytesToBase64String(null);
     }
 
+    @Test
+    public void getDefaultAvatarShouldReturnNotEmptyAvatar() {
+        byte[] avatar = avatarService.getDefaultAvatar();
+
+        assertTrue(avatar.length > 0);
+    }
+
+    @Test(expectedExceptions = ImageFormatException.class, dataProvider = "invalidFormatValues")
+    public void validateAvatarFormatShouldNotConsiderIncorrectFormatsAsValid(MultipartFile file) throws ImageFormatException {
+        avatarService.validateAvatarFormat(file);
+    }
+    
     @DataProvider
     public Object[][] invalidFormatValues() {
         return new Object[][]{
@@ -212,8 +157,14 @@ public class AvatarServiceTest {
         };
     }
 
+    @Test(dataProvider = "validFormatValues")
+    public void validateAvatarFormatShouldConsiderCorrectFormatsFromOperaAndIEAsValid(MultipartFile file) 
+            throws ImageFormatException {
+        avatarService.validateAvatarFormat(file);
+    }
+    
     @DataProvider
-    Object[][] validFormatValues() {
+    public Object[][] validFormatValues() {
         Set<String> validFormats = new HashSet<String>();
         validFormats.add("image/jpeg");
         validFormats.add("image/png");
@@ -228,11 +179,27 @@ public class AvatarServiceTest {
         }
 
         return result;
-
+    }
+    
+    @Test(expectedExceptions = {IllegalArgumentException.class})
+    public void validateAvatarFormatInFileShouldNotWorkWithPassedNull() throws ImageFormatException {
+        MultipartFile nullMultipartFile = null;
+        avatarService.validateAvatarFormat(nullMultipartFile);
+    }
+    
+    @Test(expectedExceptions = {IllegalArgumentException.class})
+    public void validateAvatarFormatInByteArrayShouldNotWorkWithPassedNull() throws ImageFormatException {
+        byte[] nullByteArray = null;
+        avatarService.validateAvatarFormat(nullByteArray);
     }
 
+    @Test(dataProvider = "validFormatValuesForChromeFF")
+    public void validateAvatarFormatShouldProcessValidValuesForChromeFF(byte[] bytes) throws ImageFormatException {
+        avatarService.validateAvatarFormat(bytes);
+    }
+    
     @DataProvider
-    Object[][] validFormatValuesForChromeFF() throws Exception {
+    public Object[][] validFormatValuesForChromeFF() throws IOException {
         String root = "/org/jtalks/jcommune/service/testdata/avatar/valid/format/";
         Object[][] result = new Object[3][];
         result[0] = new Object[]{IOUtils.toByteArray(this.getClass().getResourceAsStream(root + "avatar.gif"))};
@@ -241,8 +208,13 @@ public class AvatarServiceTest {
         return result;
     }
 
+    @Test(dataProvider = "invalidFormatValuesForChromeFF", expectedExceptions = ImageFormatException.class)
+    public void validateAvatarFormatShouldNotProcessInvalidValuesForChromeFF(byte[] bytes) throws ImageFormatException {
+        avatarService.validateAvatarFormat(bytes);
+    }
+
     @DataProvider
-    Object[][] invalidFormatValuesForChromeFF() throws Exception {
+    public Object[][] invalidFormatValuesForChromeFF() throws Exception {
         String root = "/org/jtalks/jcommune/service/testdata/avatar/invalid/format/";
         Object[][] result = new Object[4][];
         result[0] = new Object[]{IOUtils.toByteArray(this.getClass().getResourceAsStream(root + "avatar.bmp"))};
@@ -251,13 +223,24 @@ public class AvatarServiceTest {
         result[3] = new Object[]{IOUtils.toByteArray(this.getClass().getResourceAsStream(root + "avatar.tif"))};
         return result;
     }
+    
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void validateAvatarSizeSholdNotContinueWithPassedNullValue() throws ImageSizeException {
+        avatarService.validateAvatarSize(null);
+    }
 
-    @DataProvider
-    Object[][] validSizeValues() {
-        return new Object[][]{
-                {new byte[AVATAR_MAX_SIZE]},
-                {new byte[Math.round(AVATAR_MAX_SIZE / 2)]}
-        };
+    @Test(expectedExceptions = ImageSizeException.class)
+    public void validateAvatarSizeShouldNotConsiderAvatarWithIncorrectSizeAsValid() throws Exception {
+        byte[] bytes = new byte[AVATAR_MAX_SIZE * 2];
+        
+        avatarService.validateAvatarSize(bytes);
+    }
+    
+    @Test
+    public void validateAvatarSizeShouldConsiderAvatarWithCorrectSizeAsValid() throws ImageSizeException {
+    	byte[] bytes = new byte[AVATAR_MAX_SIZE];
+		
+    	avatarService.validateAvatarSize(bytes);
     }
     
     @Test
@@ -280,5 +263,4 @@ public class AvatarServiceTest {
         
         assertEquals(result, new Date(0));
     }
-
 }

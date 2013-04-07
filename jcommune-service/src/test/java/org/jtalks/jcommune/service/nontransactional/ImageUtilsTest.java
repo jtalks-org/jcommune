@@ -14,17 +14,10 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
-import org.apache.commons.codec.binary.Base64;
-import org.jtalks.jcommune.service.exceptions.ImageProcessException;
-import org.mockito.Matchers;
-import org.mockito.Mock;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
 
-import javax.imageio.ImageIO;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
@@ -33,9 +26,16 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
+import javax.imageio.ImageIO;
+
+import org.apache.commons.codec.binary.Base64;
+import org.jtalks.jcommune.service.exceptions.ImageProcessException;
+import org.mockito.Matchers;
+import org.mockito.Mock;
+import org.springframework.mock.web.MockMultipartFile;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
 /**
  * @author Eugeny Batov
@@ -53,8 +53,6 @@ public class ImageUtilsTest {
     public void init() throws IOException {
         initMocks(this);
         imageUtils = new ImageUtils(base64);
-        MultipartFile multipartFile = new MockMultipartFile("test_avatar.png", "test_avatar.png", "image/png",
-                originalImageByteArray);
     }
 
     @Test(dataProvider = "validDataForImageToByteArrayTest")
@@ -71,6 +69,11 @@ public class ImageUtilsTest {
         byte[] expectedResult = imageUtils.convertImageToByteArray(expected);
 
         assertEquals(actualResult, expectedResult);
+    }
+    
+    @Test(expectedExceptions = {IllegalArgumentException.class})
+    public void convertImageToByteArrayShouldNotWorkWithPassedNull() throws ImageProcessException {
+        imageUtils.convertImageToByteArray(null);
     }
 
     @Test(dataProvider = "parameterResizeImage")

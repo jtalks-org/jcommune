@@ -35,8 +35,6 @@ import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.jtalks.jcommune.web.dto.OperationResultDto;
 import org.jtalks.jcommune.web.util.JSONUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
@@ -64,7 +62,10 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 public class AvatarController {
 
-    public static final String RESULT = "success";
+    static final String RESULT = "success";
+    static final String SRC_PREFIX = "srcPrefix";
+    static final String SRC_IMAGE = "srcImage";
+    
     static final String WRONG_FORMAT_RESOURCE_MESSAGE = "image.wrong.format";
     static final String WRONG_SIZE_RESOURCE_MESSAGE = "image.wrong.size";
     static final String COMMON_ERROR_RESOURCE_MESSAGE = "avatar.500.common.error";
@@ -74,8 +75,6 @@ public class AvatarController {
     private UserService userService;
     private MessageSource messageSource;
     private JSONUtils jsonUtils;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AvatarController.class);
 
     /**
      * Constructor for controller instantiating, dependencies injected via autowiring.
@@ -215,10 +214,10 @@ public class AvatarController {
      * @throws IOException           defined in the JsonFactory implementation, caller must implement exception processing
      * @throws ImageProcessException if error occurred while image processing
      */
-    private ResponseEntity<String> prepareResponse(MultipartFile file,
-                                                   HttpHeaders responseHeaders,
-                                                   Map<String, String> responseContent)
-            throws IOException, ImageProcessException {
+    private ResponseEntity<String> prepareResponse(
+            MultipartFile file,
+            HttpHeaders responseHeaders,
+            Map<String, String> responseContent) throws IOException, ImageProcessException {
         avatarService.validateAvatarFormat(file);
         byte[] bytes = file.getBytes();
         avatarService.validateAvatarSize(bytes);
@@ -255,8 +254,8 @@ public class AvatarController {
                                        Map<String, String> responseContent) throws ImageProcessException {
         String srcImage = avatarService.convertBytesToBase64String(bytes);
         responseContent.put(RESULT, "true");
-        responseContent.put("srcPrefix", ImageUtils.HTML_SRC_TAG_PREFIX);
-        responseContent.put("srcImage", srcImage);
+        responseContent.put(SRC_PREFIX, ImageUtils.HTML_SRC_TAG_PREFIX);
+        responseContent.put(SRC_IMAGE, srcImage);
     }
 
     /**

@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.Validate;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.springframework.stereotype.Component;
@@ -101,6 +102,8 @@ public class ImageUtils {
             result = ImageIO.read(bis);
         } catch (IOException e) {
             throw new ImageProcessException(e);
+        } finally {
+            IOUtils.closeQuietly(bis);
         }
         return result;
     }
