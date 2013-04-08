@@ -115,6 +115,28 @@ public class AvatarController {
         Map<String, String> responseContent = new HashMap<String, String>();
         return prepareResponse(file, responseHeaders, responseContent);
     }
+    
+    /**
+     * Prepare valid response after avatar processing
+     *
+     * @param file            file, that contains uploaded image
+     * @param responseHeaders response HTTP headers
+     * @param responseContent response content
+     * @return ResponseEntity with avatar processing results
+     * @throws IOException           defined in the JsonFactory implementation, caller must implement exception processing
+     * @throws ImageProcessException if error occurred while image processing
+     */
+    private ResponseEntity<String> prepareResponse(
+            MultipartFile file,
+            HttpHeaders responseHeaders,
+            Map<String, String> responseContent) throws IOException, ImageProcessException {
+        avatarService.validateAvatarFormat(file);
+        byte[] bytes = file.getBytes();
+        avatarService.validateAvatarSize(bytes);
+        prepareNormalResponse(bytes, responseContent);
+        String body = jsonUtils.prepareJSONString(responseContent);
+        return new ResponseEntity<String>(body, responseHeaders, HttpStatus.OK);
+    }
 
     /**
      * Process avatar file from request and return avatar preview in response.
@@ -132,6 +154,23 @@ public class AvatarController {
         Map<String, String> responseContent = new HashMap<String, String>();
         prepareResponse(bytes, response, responseContent);
         return responseContent;
+    }
+    
+    /**
+     * Prepare valid response after avatar processing
+     *
+     * @param bytes           input avatar data
+     * @param response        resulting response
+     * @param responseContent with avatar processing results
+     * @throws ImageProcessException if it's impossible to form correct image response
+     */
+    private void prepareResponse(byte[] bytes,
+                                 HttpServletResponse response,
+                                 Map<String, String> responseContent) throws ImageProcessException {
+        avatarService.validateAvatarFormat(bytes);
+        avatarService.validateAvatarSize(bytes);
+        prepareNormalResponse(bytes, responseContent);
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 
     /**
@@ -202,45 +241,6 @@ public class AvatarController {
         Map<String, String> responseContent = new HashMap<String, String>();
         prepareNormalResponse(avatarService.getDefaultAvatar(), responseContent);
         return jsonUtils.prepareJSONString(responseContent);
-    }
-
-    /**
-     * Prepare valid response after avatar processing
-     *
-     * @param file            file, that contains uploaded image
-     * @param responseHeaders response HTTP headers
-     * @param responseContent response content
-     * @return ResponseEntity with avatar processing results
-     * @throws IOException           defined in the JsonFactory implementation, caller must implement exception processing
-     * @throws ImageProcessException if error occurred while image processing
-     */
-    private ResponseEntity<String> prepareResponse(
-            MultipartFile file,
-            HttpHeaders responseHeaders,
-            Map<String, String> responseContent) throws IOException, ImageProcessException {
-        avatarService.validateAvatarFormat(file);
-        byte[] bytes = file.getBytes();
-        avatarService.validateAvatarSize(bytes);
-        prepareNormalResponse(bytes, responseContent);
-        String body = jsonUtils.prepareJSONString(responseContent);
-        return new ResponseEntity<String>(body, responseHeaders, HttpStatus.OK);
-    }
-
-    /**
-     * Prepare valid response after avatar processing
-     *
-     * @param bytes           input avatar data
-     * @param response        resulting response
-     * @param responseContent with avatar processing results
-     * @throws ImageProcessException if it's impossible to form correct image response
-     */
-    private void prepareResponse(byte[] bytes,
-                                 HttpServletResponse response,
-                                 Map<String, String> responseContent) throws ImageProcessException {
-        avatarService.validateAvatarFormat(bytes);
-        avatarService.validateAvatarSize(bytes);
-        prepareNormalResponse(bytes, responseContent);
-        response.setStatus(HttpServletResponse.SC_OK);
     }
 
     /**

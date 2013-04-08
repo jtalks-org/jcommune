@@ -107,6 +107,8 @@ public class AvatarControllerTest {
 
         ResponseEntity<String> actualResponseEntity = avatarController.uploadAvatar(file);
 
+        verify(avatarService).validateAvatarFormat(file);
+        verify(avatarService).validateAvatarSize(file.getBytes());
         assertEquals(actualResponseEntity.getStatusCode(), HttpStatus.OK);
         assertEquals(actualResponseEntity.getBody(), expectedBody);
         HttpHeaders headers = actualResponseEntity.getHeaders();
@@ -116,13 +118,16 @@ public class AvatarControllerTest {
     @Test
     public void uploadAvatarForChromeAndFFShouldReturnPreviewInResponce() throws ImageProcessException {
         when(avatarService.convertBytesToBase64String(validAvatar)).thenReturn(IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
-        HttpServletResponse response = new MockHttpServletResponse();
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         Map<String, String> actualResponce = avatarController.uploadAvatar(validAvatar, response);
 
+        verify(avatarService).validateAvatarFormat(validAvatar);
+        verify(avatarService).validateAvatarSize(validAvatar);
         assertEquals(actualResponce.get(AvatarController.RESULT), "true");
         assertEquals(actualResponce.get(AvatarController.SRC_PREFIX), ImageUtils.HTML_SRC_TAG_PREFIX);
         assertEquals(actualResponce.get(AvatarController.SRC_IMAGE), IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
+        assertEquals(response.getStatus(), HttpServletResponse.SC_OK);
     }
     
     @Test
@@ -189,7 +194,6 @@ public class AvatarControllerTest {
         String actualJSON = avatarController.getDefaultAvatar();
 
         verify(avatarService).getDefaultAvatar();
-        verify(jsonUtils).prepareJSONString(Matchers.anyMap());
         assertEquals(actualJSON, expectedJSON);
     }
 

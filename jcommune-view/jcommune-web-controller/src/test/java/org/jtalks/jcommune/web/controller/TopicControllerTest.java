@@ -66,6 +66,9 @@ import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnMod
 import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertFalse;
 
 /**
  * @author Teterin Alexandre
@@ -143,171 +146,155 @@ public class TopicControllerTest {
     }
 
     @Test
-    public void showTopicPage() throws NotFoundException {
+    public void showTopicPageShouldShowListOfPostsWithUpdatedInfoAboutLastReadPosts() throws NotFoundException {
         int page = 2;
         boolean pagingEnabled = true;
         Topic topic = new Topic(null, null);
         branch.addTopic(topic);
         Page<Post> postsPage = new PageImpl<Post>(Collections.<Post>emptyList());
-
-        //set expectations
+        //
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
         when(postService.getPosts(topic, page, pagingEnabled)).thenReturn(postsPage);
 
-        //invoke the object under test
         ModelAndView mav = controller.showTopicPage(TOPIC_ID, page, pagingEnabled);
 
-
-        //check expectations
         verify(topicFetchService).get(TOPIC_ID);
         verify(topicFetchService).checkViewTopicPermission(branch.getId());
         verify(breadcrumbBuilder).getForumBreadcrumb(topic);
-
-
-        //check result
+        verify(lastReadPostService).markTopicPageAsRead(topic, page, pagingEnabled);
+        //
         assertViewName(mav, "postList");
         assertAndReturnModelAttributeOfType(mav, "postsPage", Page.class);
-
+        //
         Topic actualTopic = assertAndReturnModelAttributeOfType(mav, "topic", Topic.class);
         assertEquals(actualTopic, topic);
-
         assertModelAttributeAvailable(mav, "breadcrumbList");
     }
 
     @Test
-    public void testCreateValidationPass() throws Exception {
+    public void createTopicShouldPassAndRedirectToNewTopicIfItIsValid() throws Exception {
         Branch branch = createBranch();
         Topic topic = createTopic();
         TopicDto dto = getDto();
         BindingResult result = mock(BindingResult.class);
-
-        //set expectations
         when(branchService.get(BRANCH_ID)).thenReturn(branch);
         when(topicModificationService.createTopic(topic, TOPIC_CONTENT, false)).thenReturn(topic);
 
-        //invoke the object under test
         ModelAndView mav = controller.createTopic(dto, result, BRANCH_ID);
 
-        //check expectations
+        verify(lastReadPostService).markTopicAsRead(topic);
         verify(topicModificationService).createTopic(topic, TOPIC_CONTENT, false);
-
-        //check result
+        //
         assertViewName(mav, "redirect:/topics/1");
     }
 
     @Test
-    public void testCreateValidationFail() throws Exception {
+    public void createTopicShouldNotPassAndMustShowTopicErrorIfItIsInvalid() throws NotFoundException {
         BindingResult result = mock(BindingResult.class);
-
-        //set expectations
         when(result.hasErrors()).thenReturn(true);
         when(branchService.get(BRANCH_ID)).thenReturn(branch);
         when(breadcrumbBuilder.getForumBreadcrumb(branch)).thenReturn(new ArrayList<Breadcrumb>());
 
-        //invoke the object under test
         ModelAndView mav = controller.createTopic(getDto(), result, BRANCH_ID);
 
-        //check expectations
         verify(branchService).get(BRANCH_ID);
         verify(breadcrumbBuilder).getForumBreadcrumb(branch);
-        //check result
+        //
         assertViewName(mav, "topicForm");
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         assertEquals(branchId, BRANCH_ID);
     }
 
     @Test
-    public void testCreatePage() throws NotFoundException {
-
-        //set expectations
+    public void showNewTopicPageShouldReturnTemplateForNewTopic() throws NotFoundException {
         when(branchService.get(BRANCH_ID)).thenReturn(branch);
         when(breadcrumbBuilder.getNewTopicBreadcrumb(branch)).thenReturn(new ArrayList<Breadcrumb>());
 
-        //invoke the object under test
         ModelAndView mav = controller.showNewTopicPage(BRANCH_ID);
 
-        //check expectations
         verify(branchService).get(BRANCH_ID);
         verify(breadcrumbBuilder).getNewTopicBreadcrumb(branch);
-
-        //check result
+        //
         assertViewName(mav, "topicForm");
-        assertModelAttributeAvailable(mav, "topicDto");
+        //
+        TopicDto topicDto = assertAndReturnModelAttributeOfType(mav, "topicDto", TopicDto.class);
+        Topic actualTopic = topicDto.getTopic();
+        Branch actualTopicBranch = actualTopic.getBranch();
+        assertEquals(actualTopicBranch, branch, "Topic template should be attached to branch where user creates branch.");
+        assertNotNull(actualTopic.getPoll(), "Topic template should contain poll template.");
+        assertTrue(topicDto.isNotifyOnAnswers(), "Topic template should be notifiable by default");
+        //
+        long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
+        assertEquals(branchId, BRANCH_ID, 
+                "Topic template should be returned with the same branch id as passed to create new topic.");
+        assertModelAttributeAvailable(mav, "breadcrumbList");
+    }
+
+    @Test
+    public void editTopicPageShouldOpenEditFormAndNotEnableNotificationsIfUserNotSubcribed() throws NotFoundException {
+        Topic topic = this.createTopic();
+        Post post = new Post(user, "content");
+        topic.addPost(post);
+        //
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
+        when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
+        when(userService.getCurrentUser()).thenReturn(user);
+
+        ModelAndView mav = controller.editTopicPage(TOPIC_ID);
+
+        verify(topicFetchService).get(TOPIC_ID);
+        verify(breadcrumbBuilder).getForumBreadcrumb(topic);
+        //
+        assertViewName(mav, "topicForm");
+        //
+        TopicDto dto = assertAndReturnModelAttributeOfType(mav, "topicDto", TopicDto.class);
+        assertEquals(dto.getTopic().getId(), TOPIC_ID);
+        assertFalse(dto.isNotifyOnAnswers());
+        //
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         assertEquals(branchId, BRANCH_ID);
         assertModelAttributeAvailable(mav, "breadcrumbList");
     }
 
     @Test
-    public void editTopicPageNotSubscribedUser() throws NotFoundException {
-        Topic topic = this.createTopic();
-        Post post = new Post(user, "content");
-        topic.addPost(post);
-
-        editTopicStubs(topic);
-
-        //invoke the object under test
-        ModelAndView mav = controller.editTopicPage(TOPIC_ID);
-
-        editTopicVerification(topic);
-
-        editTopicAssertions(mav);
-    }
-
-    @Test
-    public void editTopicPageSubscribedUser() throws NotFoundException {
+    public void editTopicPageShouldOpenEditFormAndEnableNotificationsIfUserSubcribed() throws NotFoundException {
         Topic topic = this.createTopic();
         Set<JCUser> subscribers = new HashSet<JCUser>();
         subscribers.add(user);
         topic.setSubscribers(subscribers);
         Post post = new Post(user, "content");
         topic.addPost(post);
-
-        editTopicStubs(topic);
-
-        //invoke the object under test
-        ModelAndView mav = controller.editTopicPage(TOPIC_ID);
-
-        editTopicVerification(topic);
-
-        editTopicAssertions(mav);
-    }
-    
-    @Test(expectedExceptions=AccessDeniedException.class)
-    public void editTopicPageForCodeReview() throws NotFoundException {
-        Topic topic = this.createTopic();
-        topic.setCodeReview(new CodeReview());
-
-        editTopicStubs(topic);
-        
-        controller.editTopicPage(TOPIC_ID);
-    }
-
-    private void editTopicStubs(Topic topic) throws NotFoundException {
-        //set expectations
+        //
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
         when(userService.getCurrentUser()).thenReturn(user);
-    }
 
-    private void editTopicVerification(Topic topic) throws NotFoundException {
-        //check expectations
+        ModelAndView mav = controller.editTopicPage(TOPIC_ID);
+
         verify(topicFetchService).get(TOPIC_ID);
         verify(breadcrumbBuilder).getForumBreadcrumb(topic);
-    }
-
-    private void editTopicAssertions(ModelAndView mav) {
-        //check result
+        //
         assertViewName(mav, "topicForm");
-
+        //
         TopicDto dto = assertAndReturnModelAttributeOfType(mav, "topicDto", TopicDto.class);
         assertEquals(dto.getTopic().getId(), TOPIC_ID);
-
+        assertTrue(dto.isNotifyOnAnswers());
+        //
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         assertEquals(branchId, BRANCH_ID);
-
         assertModelAttributeAvailable(mav, "breadcrumbList");
+    }
+    
+    @Test(expectedExceptions=AccessDeniedException.class)
+    public void editTopicPageShouldNotBePossibleForCodeReview() throws NotFoundException {
+        Topic topic = this.createTopic();
+        topic.setCodeReview(new CodeReview());
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
+        when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
+        when(userService.getCurrentUser()).thenReturn(user);
+        
+        controller.editTopicPage(TOPIC_ID);
     }
 
     @Test
