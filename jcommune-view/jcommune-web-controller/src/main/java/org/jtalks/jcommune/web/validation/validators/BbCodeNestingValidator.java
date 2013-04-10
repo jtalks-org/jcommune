@@ -31,6 +31,8 @@ import java.util.regex.Pattern;
  * whether the nesting of BB-codes is not too deep.
  */
 public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting, String> {
+    private static final String TAG_LIST_ITEM = "[*]";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(BbCodeNestingValidator.class);
     private UserService userService;
     private int maxNestingValue;
@@ -81,10 +83,10 @@ public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting
         int count = 0;
         while (matcher.find()) {
             String tag = matcher.group();
-            if (tag.isEmpty() || tag.equals("[*]")) {
+            if (tag.isEmpty() || tag.equals(TAG_LIST_ITEM)) {
                 continue;
             }
-            if (tag.contains("/")) {
+            if (tag.length() > 1 && tag.charAt(1) == '/') {
                 count--;
             } else {
                 count++;

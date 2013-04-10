@@ -87,7 +87,8 @@ public class BbCodeNestingValidatorTest {
                 {"[quote="+repeat("[/b]",49)+"]text[/quote]"},
                 {repeat("[quote=]text[/quote]",51)},
                 {repeat("[quote][/quote]",100)},
-                {"[quote="+repeat("[b]",50)+"]text[/quote]"}
+                {"[quote="+repeat("[b]",50)+"]text[/quote]"},
+                {repeat("[url=http://javatalks.ru/ftopic14473.php]text[/url]", 100)}
         };
     }
 
