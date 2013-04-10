@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.TopicFetchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -49,15 +50,20 @@ public class TopicSearchController {
     private static final String SEARCH_RESULT_VIEW_NAME = "searchResult";
 
     private TopicFetchService topicSearchService;
+    
+    private LastReadPostService lastReadPostService;
 
     /**
      * Constructor for controller instantiating, dependencies injected via autowiring.
      *
      * @param topicSearchService {@link TopicFetchService} to perform actual search
+     * @param lastReadPostService {@link LastReadPostService} to fill info about topic updates  
      */
     @Autowired
-    public TopicSearchController(TopicFetchService topicSearchService) {
+    public TopicSearchController(TopicFetchService topicSearchService,
+                                 LastReadPostService lastReadPostService) {
         this.topicSearchService = topicSearchService;
+        this.lastReadPostService = lastReadPostService;
     }
 
     /**
@@ -103,6 +109,7 @@ public class TopicSearchController {
      */
     private ModelAndView search(String searchText, int page) {
         Page<Topic> searchResultPage = topicSearchService.searchByTitleAndContent(searchText, page);
+        lastReadPostService.fillLastReadPostForTopics(searchResultPage.getContent());
         return new ModelAndView(SEARCH_RESULT_VIEW_NAME).
                 addObject(SEARCH_RESULT_ATTRIBUTE_NAME, searchResultPage).
                 addObject(URI_ATTRIBUTE_NAME, searchText).
