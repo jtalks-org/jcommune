@@ -75,17 +75,7 @@
                             </c:if>
                         </ul>
                     </li>
-                    <%--External links end--%>
-                    <c:if test="${not empty forumComponent}">
-                        <jtalks:hasPermission permission="GeneralPermission.ADMIN"
-                                              targetId="${forumComponent.id}" targetType="COMPONENT">
-                            <li>
-                                <a href='<c:url value="/configuration/sape"/>'>
-                                    <spring:message code="label.sapeConfiguration"/>
-                                </a>
-                            </li>
-                        </jtalks:hasPermission>
-                    </c:if>
+                    
 
                     <%-- Not logged in block --%>
                     <sec:authorize access="isAnonymous()">
@@ -112,49 +102,73 @@
 
                     <%-- Logged in block --%>
                     <sec:authorize access="isAuthenticated()">
-                        <li>
-                            <a href="${pageContext.request.contextPath}/user">
-                                <fmt:message key="label.profile"/>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="${pageContext.request.contextPath}/inbox">
-                                <fmt:message key="label.pm"/>
-                                <c:if test="${newPmCount != null}">
-                                <span id="new-pm-count" title="
-                                    <fmt:message key='label.tips.pm_count'>
-                                        <fmt:param>${newPmCount}</fmt:param>
-                                    </fmt:message>
-                                    ">
-                                    (
-                                    <i class="icon-envelope icon-white" style="vertical-align:middle;"></i>
-                                    <span class='test-pm-count'>${newPmCount}</span>
-                                    )
-                                </span>
-                                </c:if>
-                            </a>
-                        </li>
-                        <%--Temporary disabled, cause we need more requirements for "newbies" page
-                            <li>
-                                <a href="${pageContext.request.contextPath}/pages/for_newbies">
-                                    <fmt:message key="label.newbies"/>
+                        <sec:authentication property="principal.username" var="username" scope="request" />
+                        <li class="dropdown">
+                            <div class="dropdown-toggle topline-dropdown-menu" data-toggle="dropdown">
+                                <a href="#">
+                                    <c:out value="${username}"/>
+                                    <c:if test="${newPmCount != null}">
+                                        (
+                                        <i class="icon-envelope icon-white" style="vertical-align:middle;"></i>
+                                        <span class='test-pm-count'>${newPmCount}</span>
+                                        )
+                                    </c:if>
                                 </a>
-                            </li>
-                        --%>
-                        <li class="divider-vertical"></li>
-                        <li>
-                            <div>
-                                <a class='btn btn-inverse btn-small' href="${pageContext.request.contextPath}/logout">
-                                    <fmt:message key="label.logout"/>
-                                </a>
+                                <b class="caret"></b>                               
                             </div>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="${pageContext.request.contextPath}/user">
+                                        <fmt:message key="label.profile"/>
+                                    </a>
+                                </li>                           
+                            <%--External links end--%>
+                            <c:if test="${not empty forumComponent}">
+                                <jtalks:hasPermission permission="GeneralPermission.ADMIN"
+                                              targetId="${forumComponent.id}" targetType="COMPONENT">                                   
+                                    <li>
+                                        <a href='<c:url value="/configuration/sape"/>'>
+                                            <spring:message code="label.sapeConfiguration"/>
+                                        </a>
+                                    </li>
+                                </jtalks:hasPermission>
+                            </c:if>                         
+                                <li>
+                                <a href="${pageContext.request.contextPath}/inbox">
+                                    <fmt:message key="label.pm"/>
+                                    <c:if test="${newPmCount != null}">
+                                    <span id="new-pm-count" title="
+                                        <fmt:message key='label.tips.pm_count'>
+                                            <fmt:param>${newPmCount}</fmt:param>
+                                        </fmt:message>
+                                        ">
+                                        (                                       
+                                        <span class='test-pm-count'>${newPmCount}</span>
+                                        )
+                                    </span>
+                                    </c:if>
+                                </a>
+                                </li>
+                            <%--Temporary disabled, cause we need more requirements for "newbies" page
+                                <li>
+                                    <a href="${pageContext.request.contextPath}/pages/for_newbies">
+                                        <fmt:message key="label.newbies"/>
+                                    </a>
+                                </li>
+                            --%>
+                                <li>
+                                    <a href="${pageContext.request.contextPath}/logout">
+                                        <fmt:message key="label.logout"/>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     </sec:authorize>
                     <%-- END OF Logged in block --%>
 
                     <%-- Language chooser --%>
                     <li class="dropdown">
-                        <div id="lang-selector-toggle" class="dropdown-toggle language-selector-container"
+                        <div id="lang-selector-toggle" class="dropdown-toggle topline-dropdown-menu"
                              data-toggle="dropdown"
                              title="<fmt:message key='label.click_language'/>">
                             <a href="#">

@@ -3215,7 +3215,7 @@ button.btn.small, input[type="submit"].btn.small {
     float: left;
 }
 
-.navbar .nav > li > a {
+.navbar .nav > li > a, .dropdown-toggle  > a {
     float: none;
     padding: 10px 10px 11px;
     line-height: 19px;
@@ -3224,7 +3224,11 @@ button.btn.small, input[type="submit"].btn.small {
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
 
-.navbar .nav > li > a:hover {
+.dropdown-toggle > a {
+    padding: 0;
+}
+
+.navbar .nav > li > a:hover, .dropdown-toggle > a:hover {
     background-color: transparent;
     color: #ffffff;
     text-decoration: none;

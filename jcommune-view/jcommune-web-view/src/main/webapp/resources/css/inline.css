@@ -132,11 +132,6 @@ input.form-check-radio-box[type="radio"] {
     padding: 0 4px 0 4px;
 }
 
-.language-selector-container {
-    padding: 0px;
-    margin: 6px 2px 0px 15px;
-}
-
 .user-posts-date-title {
     float: left;
 }
@@ -358,3 +353,6 @@ h3 {
 
 /* ----------------------------------------- */
 
+.topline-dropdown-menu {
+    margin: 10px 0 2px 15px;
+}
