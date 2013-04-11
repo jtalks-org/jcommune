@@ -101,3 +101,21 @@ Utils.focusFirstEl = function(target)
 {
     $(target).focus();
 }
+
+/**
+ * Replaces all \n characters by <br> tags. Used for review comments.
+ * 
+ * @param s string where perform replacing
+ */
+Utils.lf2br = function(s) {
+	return s.replace("\n", "<br>");
+}
+
+/**
+ * Replaces all \<br> tags by \n characters. Used for review comments.
+ * 
+ * @param s string where perform replacing
+ */
+Utils.br2lf = function(s) {
+	return s.replace("<br>", "\n");
+}
