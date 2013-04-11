@@ -73,6 +73,8 @@
             
             <property column="ALL_FORUM_MARKED_AS_READ_TIME" name="allForumMarkedAsReadTime" 
                     type="org.joda.time.contrib.hibernate.PersistentDateTime" not-null="false"/>
+
+            <property column="AUTOSUBSCRIBE" name="autosubscribe"/>
         </joined-subclass>
     </class>
 

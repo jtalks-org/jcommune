@@ -56,6 +56,7 @@ public class UserController {
     public static final String REGISTRATION = "registration";
     public static final String LOGIN = "login";
     public static final String AFTER_REGISTRATION = "afterRegistration";
+    public static final boolean DEFAULT_AUTOSUBSCRIBE = true;
 
     private static final String REMEMBER_ME_ON = "on";
 
@@ -135,6 +136,7 @@ public class UserController {
         }
         JCUser user = userDto.createUser();
         user.setLanguage(Language.byLocale(locale));
+        user.setAutosubscribe(DEFAULT_AUTOSUBSCRIBE);
         userService.registerUser(user);
         return new ModelAndView(AFTER_REGISTRATION);
     }
@@ -157,6 +159,7 @@ public class UserController {
         }
         JCUser user = userDto.createUser();
         user.setLanguage(Language.byLocale(locale));
+        user.setAutosubscribe(DEFAULT_AUTOSUBSCRIBE);
         userService.registerUser(user);
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }

@@ -34,6 +34,7 @@ public class UserInfoContainer {
     private String b64EncodedAvatar;
     private Language language;
     private int pageSize;
+    private boolean autosubscribe;
     private String location;
 
 
@@ -49,11 +50,12 @@ public class UserInfoContainer {
      * @param avatar          B64 encoded avatar
      * @param language        preferred language
      * @param pageSize        page size chosen
+     * @param autosubscribe   autosubscribe to topic/post flag
      * @param location        geographic user location
      */
     public UserInfoContainer(String firstName, String lastName, String email, String currentPassword,
                              String newPassword, String signature, String avatar, Language language,
-                             int pageSize, String location) {
+                             int pageSize, boolean autosubscribe, String location) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -63,6 +65,7 @@ public class UserInfoContainer {
         this.b64EncodedAvatar = avatar;
         this.language = language;
         this.pageSize = pageSize;
+        this.autosubscribe = autosubscribe;
         this.location = location;
     }
 
@@ -124,6 +127,24 @@ public class UserInfoContainer {
      */
     public int getPageSize() {
         return pageSize;
+    }
+
+    /**
+     * Get autosubscribe flag to user
+     *
+     * @return - autosubscribe
+     */
+    public boolean isAutosubscribe() {
+        return autosubscribe;
+    }
+
+    /**
+     * Set autosubscribe flag to user.
+     *
+     * @param autosubscribe
+     */
+    public void setAutosubscribe(boolean autosubscribe) {
+        this.autosubscribe = autosubscribe;
     }
 
     /**

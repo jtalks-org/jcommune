@@ -147,6 +147,14 @@
                     </div>
 
                     <div class="control-group">
+                        <label class="control-label"><spring:message code="label.autosubscribe"/></label>
+                        <div class="controls padding-top-profile">
+                            <form:checkbox path="autosubscribe" value="${editedUser.autosubscribe}"
+                                         class="form-check-radio-box"/>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
                         <label class="control-label"><spring:message code="label.location"/></label>
 
                         <div class="controls">

@@ -57,7 +57,7 @@
             <div class="clearfix"></div>
             <div class="user-profile-top-buttons">
                 <c:if test="${user.username != auth}">
-                    <jtalks:hasPermission targetId='${userId}' targetType='USER' 
+                    <jtalks:hasPermission targetId='${userId}' targetType='USER'
                                         permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
                         <div class="user-profile-buttons-send">
                             <a class="btn btn-mini btn-info"
@@ -113,41 +113,77 @@
                             </div>
                         </div>
 
-                        <c:choose>
-                            <%--Do not show my email to other users--%>
-                            <c:when test="${user.username == auth}">
-                                <div class="control-group">
-                                    <label class="control-label"> <spring:message
-                                            code="label.email" />
+                        <%--Do not show my email to other users without permissions--%>
+                        <c:set var="isEditButtonAvailable" value="false"/>
+                        <c:set var="isShowAllFields" value="false"/>
+                        <c:if test="${user.username != auth}">
+                            <jtalks:hasPermission targetId='${userId}' targetType='USER'
+                                                  permission='ProfilePermission.EDIT_OTHERS_PROFILE'>
+                                <c:set var="isEditButtonAvailable" value="true"/>
+                                <c:set var="isShowAllFields" value="true"/>
+                            </jtalks:hasPermission>
+                        </c:if>
+                        <c:if test="${user.username == auth}">
+                            <jtalks:hasPermission targetId='${userId}' targetType='USER'
+                                                  permission='ProfilePermission.EDIT_OWN_PROFILE'>
+                                <c:set var="isEditButtonAvailable" value="true"/>
+                                <c:set var="isShowAllFields" value="true"/>
+                            </jtalks:hasPermission>
+                        </c:if>
+
+                        <c:if test="${isShowAllFields eq true}">
+                            <div class="control-group">
+                                <label class="control-label"> <spring:message
+                                        code="label.email"/>
+                                </label>
+
+                                <div class="controls">
+                                    <label class="input-xlarge box-label test-mail"> <c:out
+                                            value='${user.email}'/>
                                     </label>
-                                    <div class="controls">
-                                        <label class="input-xlarge box-label test-mail"> <c:out
-                                                value='${user.email}' />
-                                        </label>
-                                    </div>
                                 </div>
-                                <div class="control-group">
-                                    <label class="control-label"> <spring:message
-                                            code="label.language" />
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label"> <spring:message
+                                        code="label.language"/>
+                                </label>
+
+                                <div class="controls">
+                                    <label class="input-xlarge box-label test-language"> <spring:message
+                                            code='${language.languageNameLabel}'/>
                                     </label>
-                                    <div class="controls">
-                                        <label class="input-xlarge box-label test-language"> <spring:message
-                                                code='${language.languageNameLabel}' />
-                                        </label>
-                                    </div>
                                 </div>
-                                <div class="control-group">
-                                    <label class="control-label"> <spring:message
-                                            code="label.pageSize" />
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label"> <spring:message
+                                        code="label.pageSize"/>
+                                </label>
+
+                                <div class="controls">
+                                    <label class="input-xlarge box-label test-pagesize"> <c:out
+                                            value='${user.pageSize}'/>
                                     </label>
-                                    <div class="controls">
-                                        <label class="input-xlarge box-label test-pagesize"> <c:out
-                                                value='${user.pageSize}' />
-                                        </label>
-                                    </div>
                                 </div>
-                            </c:when>
-                        </c:choose>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label"> <spring:message
+                                        code="label.autosubscribe"/>
+                                </label>
+
+                                <div class="controls">
+                                    <label class="input-xlarge box-label test-autosubscribe">
+                                        <c:choose>
+                                            <c:when test="${user.autosubscribe}">
+                                                <spring:message code="label.enabled"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <spring:message code="label.disabled"/>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </label>
+                                </div>
+                            </div>
+                        </c:if>
                         <div class="control-group">
                             <label class="control-label"> <spring:message
                                     code="label.location" />
@@ -209,16 +245,13 @@
                             </ul>
                         </c:if>
 
-                        <c:if test="${user.username == auth}">
-                            <jtalks:hasPermission targetId='${userId}' targetType='USER' 
-                                        permission='ProfilePermission.EDIT_OWN_PROFILE'>
-                                <div class="user-profile-buttons-form-actions">
-                                    <a class="btn btn-primary"
-                                        href="${pageContext.request.contextPath}/users/edit"> <spring:message
-                                            code="label.edit_profile" />
-                                    </a>
-                                </div>
-                            </jtalks:hasPermission>
+                        <c:if test="${isEditButtonAvailable eq true}">
+                               <div class="user-profile-buttons-form-actions">
+                                   <a class="btn btn-primary"
+                                      href="${pageContext.request.contextPath}/users/edit"> <spring:message
+                                           code="label.edit_profile"/>
+                                   </a>
+                               </div>
                         </c:if>
                     </fieldset>
                 </form>

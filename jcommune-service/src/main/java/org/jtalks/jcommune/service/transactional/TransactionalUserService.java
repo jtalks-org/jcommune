@@ -215,6 +215,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         currentUser.setLastName(info.getLastName());
         currentUser.setLanguage(info.getLanguage());
         currentUser.setPageSize(info.getPageSize());
+        currentUser.setAutosubscribe(info.isAutosubscribe());
         currentUser.setLocation(info.getLocation());
 
         this.getDao().saveOrUpdate(currentUser);
