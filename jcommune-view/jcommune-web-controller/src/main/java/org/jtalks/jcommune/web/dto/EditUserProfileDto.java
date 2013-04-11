@@ -35,7 +35,8 @@ import javax.validation.constraints.Size;
 @Matches(field = "newUserPassword", verifyField = "newUserPasswordConfirm", message = "{password_not_matches}")
 @ChangedPassword
 public class EditUserProfileDto {
-
+    private String username;
+    
     @NotBlank(message = "{validation.not_null}")
     @Size(max = User.EMAIL_MAX_LENGTH, message = "{validation.email.length}")
     @Email(message = "{validation.email.wrong.format}")
@@ -83,6 +84,7 @@ public class EditUserProfileDto {
      * @param user copying source
      */
     public EditUserProfileDto(JCUser user) {
+        username = user.getUsername();
         firstName = user.getFirstName();
         lastName = user.getLastName();
         email = user.getEmail();
@@ -204,6 +206,24 @@ public class EditUserProfileDto {
      */
     public Language[] getLanguagesAvailable() {
         return Language.values();
+    }
+
+    /**
+     * Get user's name(login).
+     * 
+     * @return user's name(login)
+     */
+    public String getUsername() {
+        return username;
+    }
+
+    /**
+     * Set user's name(login).
+     * 
+     * @param username user's name
+     */
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     /**

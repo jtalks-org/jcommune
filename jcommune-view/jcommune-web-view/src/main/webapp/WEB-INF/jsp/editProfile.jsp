@@ -155,16 +155,18 @@
                             <form:errors path="location" cssClass="help-inline"/>
                         </div>
                     </div>
-
-                    <div class="control-group">
-                        <label class="control-label"><spring:message code="label.currentPassword"/></label>
-
-                        <div class="controls">
-                            <form:input class="input-xlarge" type="password" path="currentUserPassword"/>
-                            <br/>
-                            <form:errors path="currentUserPassword" cssClass="help-inline"/>
-                        </div>
-                    </div>
+                    
+                    <c:if test="${auth == editedUser.username}">
+	                    <div class="control-group">
+	                        <label class="control-label"><spring:message code="label.currentPassword"/></label>
+	
+	                        <div class="controls">
+	                            <form:input class="input-xlarge" type="password" path="currentUserPassword"/>
+	                            <br/>
+	                            <form:errors path="currentUserPassword" cssClass="help-inline"/>
+	                        </div>
+	                    </div>
+                    </c:if>
 
                     <div class="control-group">
                         <label class="control-label"><spring:message code="label.newPassword"/></label>
