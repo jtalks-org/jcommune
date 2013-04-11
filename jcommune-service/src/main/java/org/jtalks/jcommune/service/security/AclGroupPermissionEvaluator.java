@@ -121,7 +121,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
             controlEntries = new ArrayList<GroupAce>();
         }
 
-        if (permission == ProfilePermission.EDIT_PROFILE &&
+        if (permission == ProfilePermission.EDIT_OWN_PROFILE &&
                 ((JCUser) authentication.getPrincipal()).getId() != id) {
             return false;
         }

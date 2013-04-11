@@ -275,7 +275,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#userId, 'USER', 'ProfilePermission.EDIT_PROFILE')")
+    @PreAuthorize("hasPermission(#userId, 'USER', 'ProfilePermission.EDIT_OWN_PROFILE')")
     public void checkPermissionsToEditProfile(Long userId) {
         LOGGER.debug("Check permission to edit profile for user - " + userId);
     }

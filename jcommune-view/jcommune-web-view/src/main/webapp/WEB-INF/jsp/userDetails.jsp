@@ -211,7 +211,7 @@
 
                         <c:if test="${user.username == auth}">
                             <jtalks:hasPermission targetId='${userId}' targetType='USER' 
-                                        permission='ProfilePermission.EDIT_PROFILE'>
+                                        permission='ProfilePermission.EDIT_OWN_PROFILE'>
                                 <div class="user-profile-buttons-form-actions">
                                     <a class="btn btn-primary"
                                         href="${pageContext.request.contextPath}/users/edit"> <spring:message
