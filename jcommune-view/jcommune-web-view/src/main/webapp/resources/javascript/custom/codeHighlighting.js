@@ -108,7 +108,7 @@ CodeHighlighting.initializeVariables = function() {
 }
 
 CodeHighlighting.setupGeneralHandlers = function() {
-	// handle links even if they are located on the comment's div (clicks on which we don't handle
+	// handle links even if they are located on the comment's div (clicks on which we don't handle)
 	$('.script-first-post').on('click', 'ol.linenums li .review-header a', function () {
 		window.location = $(this).attr('href');
 	});
@@ -193,7 +193,7 @@ CodeHighlighting.setupEditCommentHandlers = function() {
 			var reviewContainer = $(this).closest('.review-container');
 			var comment = {};
 			comment.id = reviewContainer.find('input[name=id]').val();
-			comment.body = reviewContainer.find('.review-body').html();
+			comment.body = Utils.br2lf(reviewContainer.find('.review-body').html());
 			CodeHighlighting.showEditCommentForm(reviewContainer, comment);
         }
 		
@@ -301,7 +301,7 @@ CodeHighlighting.getCommentHtml = function (comment) {
 						+ ' ' + $labelReviewSays + ': '
                     + '</div>'
                     + '<div class="review-body">'
-						+ Utils.htmlEncode(comment.body)
+						+ Utils.lf2br(Utils.htmlEncode(comment.body));
                     + '</div>'
                 + '</div>'
             + '</div>';
