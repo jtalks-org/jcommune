@@ -83,6 +83,7 @@ public class TransactionalUserServiceTest {
     private static final String NEW_PASSWORD_MD5_HASH = "14a88b9d2f52c55b5fbcf9c5d9c11875";
     private static final Language LANGUAGE = Language.ENGLISH;
     private static final int PAGE_SIZE = 50;
+    private static final boolean AUTOSUBSCRIBE = true;
     private static final String LOCATION = "location";
     private byte[] avatar = new byte[10];
     private static final Long USER_ID = 999L;
@@ -186,7 +187,7 @@ public class TransactionalUserServiceTest {
         String newAvatar = new String(new byte[12]);
 
         JCUser editedUser = userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE,
+                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE,
                 LOCATION));
 
         verify(userDao).saveOrUpdate(user);
@@ -204,7 +205,7 @@ public class TransactionalUserServiceTest {
         String newAvatar = new String(new byte[12]);
         String newPassword = null;
         UserInfoContainer userInfo = new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, newPassword, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE,
+                PASSWORD, newPassword, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE,
                 LOCATION);
         JCUser editedUser = userService.editUserProfile(userInfo);
         assertEquals(editedUser.getPassword(), user.getPassword());
@@ -220,7 +221,7 @@ public class TransactionalUserServiceTest {
         String newAvatar = new String(new byte[0]);
 
         JCUser editedUser = userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE,
+                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE,
                 LOCATION));
 
         verify(userDao).saveOrUpdate(user);

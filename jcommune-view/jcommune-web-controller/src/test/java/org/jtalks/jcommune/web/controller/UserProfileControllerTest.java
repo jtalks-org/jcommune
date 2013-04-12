@@ -165,7 +165,7 @@ public class UserProfileControllerTest {
         verify(userService).editUserProfile(new UserInfoContainer(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
                 userDto.getNewUserPassword(), anyString(),
-                SIGNATURE, LANGUAGE, PAGE_SIZE, LOCATION));
+                SIGNATURE, LANGUAGE, PAGE_SIZE, userDto.isAutosubscribe(), LOCATION));
     }
 
     @Test

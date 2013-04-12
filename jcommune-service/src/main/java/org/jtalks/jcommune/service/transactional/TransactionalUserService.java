@@ -215,6 +215,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         currentUser.setLastName(info.getLastName());
         currentUser.setLanguage(info.getLanguage());
         currentUser.setPageSize(info.getPageSize());
+        currentUser.setAutosubscribe(info.isAutosubscribe());
         currentUser.setLocation(info.getLocation());
 
         this.getDao().saveOrUpdate(currentUser);
@@ -275,7 +276,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#userId, 'USER', 'ProfilePermission.EDIT_PROFILE')")
+    @PreAuthorize("hasPermission(#userId, 'USER', 'ProfilePermission.EDIT_OWN_PROFILE')")
     public void checkPermissionsToEditProfile(Long userId) {
         LOGGER.debug("Check permission to edit profile for user - " + userId);
     }

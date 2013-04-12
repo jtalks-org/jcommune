@@ -652,3 +652,7 @@ div.anchor {
     max-height: 400px;
     overflow: hidden !important;
 }
+
+.padding-top-profile {
+    padding-top: 5px;
+}

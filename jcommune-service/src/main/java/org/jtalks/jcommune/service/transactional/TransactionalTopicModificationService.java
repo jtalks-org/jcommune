@@ -113,8 +113,10 @@ public class TransactionalTopicModificationService implements TopicModificationS
 
         Post answer = new Post(currentUser, answerBody);
         topic.addPost(answer);
-        Set<JCUser> topicSubscribers = topic.getSubscribers();
-        topicSubscribers.add(currentUser);
+        if(currentUser.isAutosubscribe()){
+         Set<JCUser> topicSubscribers = topic.getSubscribers();
+         topicSubscribers.add(currentUser);
+        }
         dao.update(topic);
         
         Branch branch = topic.getBranch();
@@ -282,6 +284,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
 
     /**
      * Subscribes topic starter on created topic if notifications enabled("Notify me about the answer" checkbox).
+     * Subscribes and unsubscribes do if notifyOfAnsers ans autoSubscribe enabled
      *
      * @param notifyOnAnswers flag that indicates notifications state(enabled or disabled)
      * @param topic           topic to subscription
@@ -289,7 +292,8 @@ public class TransactionalTopicModificationService implements TopicModificationS
      */
     private void subscribeOnTopicIfNotificationsEnabled(boolean notifyOnAnswers, Topic topic, JCUser currentUser) {
         boolean subscribed = topic.userSubscribed(currentUser);
-        if (notifyOnAnswers ^ subscribed) {
+        boolean autoSubscribe = currentUser.isAutosubscribe();
+        if ((notifyOnAnswers && autoSubscribe) ^ subscribed) {
             subscriptionService.toggleTopicSubscription(topic);
         }
     }

@@ -111,7 +111,7 @@ public class AclGroupPermissionEvaluatorTest {
     public void testHasPermissionForUserSidSuccessTest() throws Exception {
         List<AccessControlEntry> aces = new ArrayList<AccessControlEntry>();
         aces.add(createAccessControlEntry(generalPermission, true, userSid));
-        aces.add(createAccessControlEntry(ProfilePermission.EDIT_PROFILE, true, userSid));
+        aces.add(createAccessControlEntry(ProfilePermission.EDIT_OWN_PROFILE, true, userSid));
         aces.add(createAccessControlEntry(BranchPermission.CLOSE_TOPICS, true, userSid));
         Mockito.when(acl.getEntries()).thenReturn(aces);
         Mockito.when(aclUtil.getAclFor(objectIdentity)).thenReturn(mutableAcl);
@@ -122,7 +122,7 @@ public class AclGroupPermissionEvaluatorTest {
         String targetIdString = "1";
         Assert.assertTrue(evaluator.hasPermission(authentication, targetIdString, targetType, permission));
         Assert.assertTrue(evaluator.hasPermission(authentication, targetId, targetType, permission));
-        Assert.assertTrue(evaluator.hasPermission(authentication, targetId, targetType, "ProfilePermission.EDIT_PROFILE"));
+        Assert.assertTrue(evaluator.hasPermission(authentication, targetId, targetType, "ProfilePermission.EDIT_OWN_PROFILE"));
         Assert.assertTrue(evaluator.hasPermission(authentication, targetId, targetType, "BranchPermission.CLOSE_TOPICS"));
         Assert.assertFalse(evaluator.hasPermission(authentication, targetId, targetType, "GeneralPermission.READ"));
     }

@@ -60,7 +60,7 @@ INSERT INTO `acl_object_identity` VALUES (7,3,1,NULL,1,1);
 
 SET @SEND_PRIVATE_MESSAGES_MASK := 14;
 SET @CREATE_FORUM_FAQ_MASK := 20;
-SET @EDIT_PROFILE_MASK := 15;
+SET @EDIT_OWN_PROFILE_MASK := 15;
 
 SET @VIEW_TOPICS_MASK := 6;
 SET @MOVE_TOPICS_MASK := 8;
@@ -230,9 +230,9 @@ INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, aud
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (5,1,@registered_group_sid_id,@SEND_PRIVATE_MESSAGES_MASK,1,0,0);
 
-/* EDIT_PROFILE for registered users */
+/* EDIT_OWN_PROFILE for registered users */
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (5,2,@registered_group_sid_id,@EDIT_PROFILE_MASK,1,0,0);
+                VALUES (5,2,@registered_group_sid_id,@EDIT_OWN_PROFILE_MASK,1,0,0);
 
 /* CREATE_FORUM_FAQ for admins */
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
@@ -271,7 +271,7 @@ INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, aud
                 VALUES (5,2,@banned_group_sid_id,@SEND_PRIVATE_MESSAGES_MASK,0,0,0);
 
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-                VALUES (5,3,@banned_group_sid_id,@EDIT_PROFILE_MASK,0,0,0);
+                VALUES (5,3,@banned_group_sid_id,@EDIT_OWN_PROFILE_MASK,0,0,0);
 
 INSERT INTO `acl_entry`(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
                 VALUES (1,24,@banned_group_sid_id,@CREATE_POSTS_MASK,0,0,0);
