@@ -63,6 +63,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import static org.mockito.Mockito.spy;
 
 /**
  * This test cover {@code TransactionalTopicModificationService} logic validation.
@@ -84,6 +85,7 @@ public class TransactionalTopicModificationServiceTest {
     private final String BRANCH_DESCRIPTION = "branch description";
     private static final String USERNAME = "username";
     private JCUser user;
+    private JCUser userSpy;
     private final String ANSWER_BODY = "Test Answer Body";
     private final String CODE_REVIEW_PATTERN = "[code=java]%s[/code]";
 
@@ -134,6 +136,7 @@ public class TransactionalTopicModificationServiceTest {
                 branchLastPostService);
 
         user = new JCUser(USERNAME, "email@mail.com", "password");
+        userSpy = spy(user);
         when(securityContextFacade.getContext()).thenReturn(securityContext);
     }
 
@@ -157,18 +160,33 @@ public class TransactionalTopicModificationServiceTest {
         verify(notificationService).topicChanged(answeredTopic);
     }
     
-//    @Test
-//    public void testAutoSubscriptionOnTopicReply() throws NotFoundException {
-//        Topic answeredTopic = new Topic(user, "title");
-//        answeredTopic.setBranch(new Branch("name", "description"));
-//        when(userService.getCurrentUser()).thenReturn(user);
-//        when(topicFetchService.get(TOPIC_ID)).thenReturn(answeredTopic);
-//        when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
-//
-//        topicService.replyToTopic(TOPIC_ID, ANSWER_BODY, BRANCH_ID);
-//
-//        assertTrue(answeredTopic.userSubscribed(user));
-//    }
+    @Test
+    public void testAutoSubscriptionOnTopicReplyIfAutosubscribeEnabled() throws NotFoundException {
+        Topic answeredTopic = new Topic(userSpy, "title");
+        answeredTopic.setBranch(new Branch("name", "description"));
+        when(userService.getCurrentUser()).thenReturn(userSpy);
+        when(userSpy.isAutosubscribe()).thenReturn(true);
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(answeredTopic);
+        when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
+
+        topicService.replyToTopic(TOPIC_ID, ANSWER_BODY, BRANCH_ID);
+
+        assertTrue(answeredTopic.userSubscribed(userSpy));
+    }
+
+    @Test
+    public void testAutoSubscriptionOnTopicReplyIfAutosubscribeDisabled() throws NotFoundException {
+        Topic answeredTopic = new Topic(userSpy, "title");
+        answeredTopic.setBranch(new Branch("name", "description"));
+        when(userService.getCurrentUser()).thenReturn(userSpy);
+        when(userSpy.isAutosubscribe()).thenReturn(false);
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(answeredTopic);
+        when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
+
+        topicService.replyToTopic(TOPIC_ID, ANSWER_BODY, BRANCH_ID);
+
+        assertFalse(answeredTopic.userSubscribed(userSpy));
+    }
 
     @Test(expectedExceptions = AccessDeniedException.class)
     public void testReplyToClosedTopic() throws NotFoundException {
@@ -204,99 +222,177 @@ public class TransactionalTopicModificationServiceTest {
         verify(notificationService).topicChanged(answeredTopic);
     }
 
-//    @Test
-//    public void testCreateTopicWithSubscription() throws NotFoundException {
-//        Branch branch = createBranch();
-//
-//        createTopicStubs(branch);
-//        Topic dto = createTopic();
-//        Topic createdTopic = topicService.createTopic(dto, ANSWER_BODY, true);
-//        Post createdPost = createdTopic.getFirstPost();
-//
-//        createTopicAssertions(branch, createdTopic, createdPost);
-//        createTopicVerifications(branch);
-//        verify(subscriptionService).toggleTopicSubscription(createdTopic);
-//    }
-    
-//    @Test
-//    public void testCreateCodeReviewWithSubscription() throws NotFoundException {
-//        Branch branch = createBranch();
-//
-//        createTopicStubs(branch);
-//        Topic dto = createTopic();
-//        dto.setAnnouncement(true);
-//        dto.setSticked(true);
-//        Topic createdTopic = topicService.createCodeReview(dto, ANSWER_BODY, true);
-//        Post createdPost = createdTopic.getFirstPost();
-//
-//        createCodeReviewAssertions(branch, createdTopic, createdPost);
-//        createTopicVerifications(branch);
-//        verify(subscriptionService).toggleTopicSubscription(createdTopic);
-//    }
+    @Test
+    //all parameters : Forum flag "notifyOnAnswers", User parameters from profile "autosubscribe"
+    public void testRunSubscriptionByCreateTopicWhenAllParametersTrue() throws NotFoundException {
+        Branch branch = createBranch();
+        when(userService.getCurrentUser()).thenReturn(userSpy);
+        when(userSpy.isAutosubscribe()).thenReturn(true);
+        createTopicStubs(branch, true);
+        Topic dto = createTopic(true);
+        Topic createdTopic = topicService.createTopic(dto, ANSWER_BODY, true);
+        Post createdPost = createdTopic.getFirstPost();
+
+        createTopicAssertions(branch, createdTopic, createdPost, true);
+        createTopicVerifications(branch);
+        verify(subscriptionService).toggleTopicSubscription(createdTopic);
+    }
 
     @Test
-    public void testCreateTopicWithoutSubscription() throws NotFoundException {
+    //all parameters : Forum flag "notifyOnAnswers", User parameters from profile "autosubscribe"
+    public void testNotRunSubscriptionByCreateTopicWhenOnlyUserTrue() throws NotFoundException {
         Branch branch = createBranch();
-        createTopicStubs(branch);
-        Topic dto = createTopic();
+        when(userService.getCurrentUser()).thenReturn(userSpy);
+        when(userSpy.isAutosubscribe()).thenReturn(true);
+        createTopicStubs(branch, true);
+        Topic dto = createTopic(true);
         Topic createdTopic = topicService.createTopic(dto, ANSWER_BODY, false);
         Post createdPost = createdTopic.getFirstPost();
 
-        createTopicAssertions(branch, createdTopic, createdPost);
+        createTopicAssertions(branch, createdTopic, createdPost, true);
+        createTopicVerifications(branch);
+        verify(subscriptionService, never()).toggleTopicSubscription(createdTopic);
+    }
+
+    @Test
+    //all parameters : Forum flag "notifyOnAnswers", User parameters from profile "autosubscribe"
+    public void testNotRunSubscriptionByCreateTopicWhenOnlyForumTrue() throws NotFoundException {
+        Branch branch = createBranch();
+        when(userService.getCurrentUser()).thenReturn(userSpy);
+        when(userSpy.isAutosubscribe()).thenReturn(false);
+        createTopicStubs(branch, true);
+        Topic dto = createTopic(true);
+        Topic createdTopic = topicService.createTopic(dto, ANSWER_BODY, true);
+        Post createdPost = createdTopic.getFirstPost();
+
+        createTopicAssertions(branch, createdTopic, createdPost, true);
+        createTopicVerifications(branch);
+        verify(subscriptionService, never()).toggleTopicSubscription(createdTopic);
+    }
+
+    @Test
+    //all parameters : Forum flag "notifyOnAnswers", User parameters from profile "autosubscribe"
+    public void testNotRunSubscriptionByCreateTopicWhenAllParametersFalse() throws NotFoundException {
+        Branch branch = createBranch();
+        when(userService.getCurrentUser()).thenReturn(userSpy);
+        when(userSpy.isAutosubscribe()).thenReturn(false);
+        createTopicStubs(branch, true);
+        Topic dto = createTopic(true);
+        Topic createdTopic = topicService.createTopic(dto, ANSWER_BODY, false);
+        Post createdPost = createdTopic.getFirstPost();
+
+        createTopicAssertions(branch, createdTopic, createdPost, true);
         createTopicVerifications(branch);
         verify(subscriptionService, never()).toggleTopicSubscription(createdTopic);
     }
     
     @Test
-    public void testCreateCodeReviewWithoutSubscription() throws NotFoundException {
+    public void testRunSubscriptionByCreateReviewWhenAllParametersTrue() throws NotFoundException {
         Branch branch = createBranch();
-        createTopicStubs(branch);
-        Topic dto = createTopic();
+        when(userService.getCurrentUser()).thenReturn(userSpy);
+        when(userSpy.isAutosubscribe()).thenReturn(true);
+
+        createTopicStubs(branch, true);
+        Topic dto = createTopic(true);
+        dto.setAnnouncement(true);
+        dto.setSticked(true);
+        Topic createdTopic = topicService.createCodeReview(dto, ANSWER_BODY, true);
+        Post createdPost = createdTopic.getFirstPost();
+
+        createCodeReviewAssertions(branch, createdTopic, createdPost, true);
+        createTopicVerifications(branch);
+        verify(subscriptionService).toggleTopicSubscription(createdTopic);
+    }
+
+    @Test
+    public void testNotRunSubscriptionByCreateReviewWhenOnlyForumTrue() throws NotFoundException {
+        Branch branch = createBranch();
+        when(userService.getCurrentUser()).thenReturn(userSpy);
+        when(userSpy.isAutosubscribe()).thenReturn(true);
+
+        createTopicStubs(branch, true);
+        Topic dto = createTopic(true);
         dto.setAnnouncement(true);
         dto.setSticked(true);
         Topic createdTopic = topicService.createCodeReview(dto, ANSWER_BODY, false);
         Post createdPost = createdTopic.getFirstPost();
 
-        createCodeReviewAssertions(branch, createdTopic, createdPost);
-        createTopicVerifications(branch);        
+        createCodeReviewAssertions(branch, createdTopic, createdPost, true);
+        createTopicVerifications(branch);
         verify(subscriptionService, never()).toggleTopicSubscription(createdTopic);
     }
-    
+
+    @Test
+    public void testNotRunSubscriptionByCreateReviewWhenOnlyUserTrue() throws NotFoundException {
+        Branch branch = createBranch();
+        when(userService.getCurrentUser()).thenReturn(userSpy);
+        when(userSpy.isAutosubscribe()).thenReturn(true);
+
+        createTopicStubs(branch, true);
+        Topic dto = createTopic(true);
+        dto.setAnnouncement(true);
+        dto.setSticked(true);
+        Topic createdTopic = topicService.createCodeReview(dto, ANSWER_BODY, false);
+        Post createdPost = createdTopic.getFirstPost();
+
+        createCodeReviewAssertions(branch, createdTopic, createdPost, true);
+        createTopicVerifications(branch);
+        verify(subscriptionService, never()).toggleTopicSubscription(createdTopic);
+    }
+
+    @Test
+    public void testNotRunSubscriptionByCreateReviewWhenAllParametersFalse() throws NotFoundException {
+        Branch branch = createBranch();
+        when(userService.getCurrentUser()).thenReturn(userSpy);
+        when(userSpy.isAutosubscribe()).thenReturn(false);
+
+        createTopicStubs(branch, true);
+        Topic dto = createTopic(true);
+        dto.setAnnouncement(true);
+        dto.setSticked(true);
+        Topic createdTopic = topicService.createCodeReview(dto, ANSWER_BODY, false);
+        Post createdPost = createdTopic.getFirstPost();
+
+        createCodeReviewAssertions(branch, createdTopic, createdPost, true);
+        createTopicVerifications(branch);
+        verify(subscriptionService, never()).toggleTopicSubscription(createdTopic);
+    }
+
     @Test
     public void testCreateCodeReviewWithWrappedBBCode() throws NotFoundException {
         Branch branch = createBranch();
-        createTopicStubs(branch);
-        Topic dto = createTopic();
+        createTopicStubs(branch, false);
+        Topic dto = createTopic(false);
         Topic createdTopic = topicService.createCodeReview(
                 dto, String.format(CODE_REVIEW_PATTERN, ANSWER_BODY), false);
         Post createdPost = createdTopic.getFirstPost();
 
-        createCodeReviewAssertions(branch, createdTopic, createdPost);
-        createTopicVerifications(branch);        
+        createCodeReviewAssertions(branch, createdTopic, createdPost, false);
+        createTopicVerifications(branch);
     }
     
-    private void createTopicStubs(Branch branch) throws NotFoundException {
-        when(userService.getCurrentUser()).thenReturn(user);
+    private void createTopicStubs(Branch branch, boolean spy) throws NotFoundException {
+        when(userService.getCurrentUser()).thenReturn(spy ? userSpy : user);
         when(branchDao.get(BRANCH_ID)).thenReturn(branch);
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
     }
 
-    private void createTopicAssertions(Branch branch, Topic createdTopic, Post createdPost) {
+    private void createTopicAssertions(Branch branch, Topic createdTopic, Post createdPost, boolean spy) {
         assertEquals(createdTopic.getTitle(), TOPIC_TITLE);
-        assertEquals(createdTopic.getTopicStarter(), user);
+        assertEquals(createdTopic.getTopicStarter(), spy ? userSpy :user);
         assertEquals(createdTopic.getBranch(), branch);
-        assertEquals(createdPost.getUserCreated(), user);
+        assertEquals(createdPost.getUserCreated(), spy ? userSpy : user);
         assertEquals(createdPost.getPostContent(), ANSWER_BODY);
-        assertEquals(user.getPostCount(), 1);
+        assertEquals(spy ? userSpy.getPostCount() : user.getPostCount(), 1);
     }
     
-    private void createCodeReviewAssertions(Branch branch, Topic createdTopic, Post createdPost) {
+    private void createCodeReviewAssertions(Branch branch, Topic createdTopic, Post createdPost, boolean spy) {
         assertEquals(createdTopic.getTitle(), TOPIC_TITLE);
-        assertEquals(createdTopic.getTopicStarter(), user);
+        assertEquals(createdTopic.getTopicStarter(), spy ? userSpy : user);
         assertEquals(createdTopic.getBranch(), branch);
-        assertEquals(createdPost.getUserCreated(), user);
+        assertEquals(createdPost.getUserCreated(), spy ? userSpy : user);
         assertEquals(createdPost.getPostContent(), "[code=java]" + ANSWER_BODY + "[/code]");
-        assertEquals(user.getPostCount(), 1);
+        assertEquals(spy ? userSpy.getPostCount() : user.getPostCount(), 1);
         assertFalse(createdTopic.isAnnouncement());
         assertFalse(createdTopic.isSticked());
         assertNotNull(createdTopic.getCodeReview());
@@ -408,26 +504,32 @@ public class TransactionalTopicModificationServiceTest {
         topicService.deleteTopicSilent(TOPIC_ID);
     }
 
-//    @Test
-//    void testUpdateTopicWithSubscribe() throws NotFoundException {
-//        Topic topic = createTopic();
-//        Post post = createPost();
-//        topic.addPost(post);
-//        when(userService.getCurrentUser()).thenReturn(user);
-//
-//        topicService.updateTopic(topic, null, true);
-//
-//        verify(notificationService).topicChanged(topic);
-//        verify(subscriptionService).toggleTopicSubscription(topic);
-//    }
+    @Test
+    void testUpdateTopicWithSubscribe() throws NotFoundException {
+        when(userService.getCurrentUser()).thenReturn(userSpy);
+        when(userSpy.isAutosubscribe()).thenReturn(true);
+
+        Topic topic = createTopic(true);
+        Post post = createPost(true);
+        topic.addPost(post);
+        when(userService.getCurrentUser()).thenReturn(userSpy);
+
+        topicService.updateTopic(topic, null, true);
+
+        verify(notificationService).topicChanged(topic);
+        verify(subscriptionService).toggleTopicSubscription(topic);
+    }
 
     @Test
     void testUpdateTopicWithRepeatedSubscribe() throws NotFoundException {
-        Topic topic = createTopic();
-        Post post = createPost();
+        when(userService.getCurrentUser()).thenReturn(userSpy);
+        when(userSpy.isAutosubscribe()).thenReturn(true);
+
+        Topic topic = createTopic(true);
+        Post post = createPost(true);
         topic.addPost(post);
-        subscribeUserOnTopic(user, topic);
-        when(userService.getCurrentUser()).thenReturn(user);
+        subscribeUserOnTopic(userSpy, topic);
+        when(userService.getCurrentUser()).thenReturn(userSpy);
 
         topicService.updateTopic(topic, null, false);
 
@@ -436,11 +538,14 @@ public class TransactionalTopicModificationServiceTest {
 
     @Test
     void testUpdateTopicWithUnsubscribe() throws NotFoundException {
-        Topic topic = createTopic();
-        Post post = createPost();
+        when(userService.getCurrentUser()).thenReturn(userSpy);
+        when(userSpy.isAutosubscribe()).thenReturn(true);
+
+        Topic topic = createTopic(true);
+        Post post = createPost(true);
         topic.addPost(post);
-        subscribeUserOnTopic(user, topic);
-        when(userService.getCurrentUser()).thenReturn(user);
+        subscribeUserOnTopic(userSpy, topic);
+        when(userService.getCurrentUser()).thenReturn(userSpy);
 
         topicService.updateTopic(topic, null, false);
 
@@ -450,30 +555,35 @@ public class TransactionalTopicModificationServiceTest {
 
     @Test
     void testUpdateTopicWithRepeatedUnsubscribe() throws NotFoundException {
-        Topic topic = createTopic();
-        Post post = createPost();
+        when(userService.getCurrentUser()).thenReturn(userSpy);
+        when(userSpy.isAutosubscribe()).thenReturn(true);
+
+        Topic topic = createTopic(true);
+        Post post = createPost(true);
         topic.addPost(post);
-        when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.getCurrentUser()).thenReturn(userSpy);
 
         topicService.updateTopic(topic, null, false);
 
         verify(notificationService).topicChanged(topic);
     }
 
+    @Test
+    void testUpdateTopicSimple() throws NotFoundException {
+        when(userService.getCurrentUser()).thenReturn(userSpy);
+        when(userSpy.isAutosubscribe()).thenReturn(true);
 
-//    @Test
-//    void testUpdateTopicSimple() throws NotFoundException {
-//        Topic topic = new Topic(user, "title");
-//        topic.setId(TOPIC_ID);
-//        topic.setTitle("title");
-//        Post post = new Post(user, "content");
-//        topic.addPost(post);
-//
-//        topicService.updateTopic(topic, null, false);
-//
-//        verify(topicDao).update(topic);
-//        verify(notificationService).topicChanged(topic);
-//    }
+        Topic topic = new Topic(userSpy, "title");
+        topic.setId(TOPIC_ID);
+        topic.setTitle("title");
+        Post post = new Post(userSpy, "content");
+        topic.addPost(post);
+
+        topicService.updateTopic(topic, null, false);
+
+        verify(topicDao).update(topic);
+        verify(notificationService).topicChanged(topic);
+    }
     
     @Test(expectedExceptions=AccessDeniedException.class)
     void shouldBeImpossibleToUpdateCodeReview() throws NotFoundException {
@@ -545,7 +655,7 @@ public class TransactionalTopicModificationServiceTest {
 
     @Test
     public void testCloseTopic() {
-        Topic topic = this.createTopic();
+        Topic topic = this.createTopic(false);
         topicService.closeTopic(topic);
         
         assertTrue(topic.isClosed());
@@ -554,14 +664,14 @@ public class TransactionalTopicModificationServiceTest {
     
     @Test(expectedExceptions=AccessDeniedException.class)
     public void testCloseCodeReviewTopic() {
-        Topic topic = this.createTopic();
+        Topic topic = this.createTopic(false);
         topic.setCodeReview(new CodeReview());
         topicService.closeTopic(topic);
     }
 
     @Test
     public void testOpenTopic() {
-        Topic topic = this.createTopic();
+        Topic topic = this.createTopic(false);
         topic.setClosed(true);
         topicService.openTopic(topic);
 
@@ -576,16 +686,16 @@ public class TransactionalTopicModificationServiceTest {
         return branch;
     }
 
-    private Topic createTopic() {
-        Topic topic = new Topic(user, TOPIC_TITLE);
+    private Topic createTopic(boolean spy) {
+        Topic topic = new Topic(spy ? userSpy : user, TOPIC_TITLE);
         topic.setId(TOPIC_ID);
         Branch branch = createBranch();
         topic.setBranch(branch);
         return topic;
     }
 
-    private Post createPost() {
-        Post post = new Post(user, "content");
+    private Post createPost(boolean spy) {
+        Post post = new Post(spy ? userSpy : user, "content");
         post.setId(POST_ID);
         return post;
     }
