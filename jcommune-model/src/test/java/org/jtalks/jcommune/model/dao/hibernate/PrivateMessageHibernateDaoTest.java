@@ -50,6 +50,8 @@ import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEqua
 @Transactional
 public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
 
+    private static final int PAGE_NUMBER_TOO_BIG = 1000;
+    private static final int PAGE_NUMBER_TOO_LOW = 0;
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
@@ -163,6 +165,50 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         assertEquals(messagePage.getTotalElements(), totalSize, "Incorrect total count.");
         assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
     }
+    
+    @Test
+    public void testGetAllFromUserCommonCasePageTooLow() {
+        int totalSize = 50;
+        int pageCount = 2;
+        int pageSize = totalSize/pageCount;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(PAGE_NUMBER_TOO_LOW, pageSize);
+        PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getAllFromUser(userFrom, pageRequest);
+
+        for (PrivateMessage message : messagePage.getContent()) {
+            assertTrue(message.getStatus().equals(PrivateMessageStatus.SENT)
+                    || message.getStatus().equals(PrivateMessageStatus.NEW));
+        }
+        assertEquals(messagePage.getContent().size(), pageSize, "Incorrect count of message in one page.");
+        assertEquals(messagePage.getTotalElements(), totalSize, "Incorrect total count.");
+        assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
+        assertEquals(messagePage.getNumber(), 1, "Incorrect page number");
+    }
+    
+    @Test
+    public void testGetAllFromUserCommonCasePageTooBig() {
+        int totalSize = 50;
+        int pageCount = 2;
+        int pageSize = totalSize/pageCount;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(PAGE_NUMBER_TOO_BIG, pageSize);
+        PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getAllFromUser(userFrom, pageRequest);
+
+        for (PrivateMessage message : messagePage.getContent()) {
+            assertTrue(message.getStatus().equals(PrivateMessageStatus.SENT)
+                    || message.getStatus().equals(PrivateMessageStatus.NEW));
+        }
+        assertEquals(messagePage.getContent().size(), pageSize, "Incorrect count of message in one page.");
+        assertEquals(messagePage.getTotalElements(), totalSize, "Incorrect total count.");
+        assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
+        assertEquals(messagePage.getNumber(), pageCount, "Incorrect page number");
+    }
 
     @Test
     public void testGetAllFromUserOneMessageCase() {
@@ -206,6 +252,50 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         assertEquals(messagePage.getTotalElements(), totalSize, "Incorrect total count.");
         assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
     }
+    
+    @Test
+    public void testGetAllToUserCommonCasePageTooLoww() {
+        int totalSize = 50;
+        int pageCount = 2;
+        int itemsOnPage = totalSize/pageCount;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(PAGE_NUMBER_TOO_LOW, itemsOnPage);
+        PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getAllForUser(userTo, pageRequest);
+        for (PrivateMessage message : messagePage.getContent()) {
+            assertTrue(message.getStatus().equals(PrivateMessageStatus.SENT)
+                    || message.getStatus().equals(PrivateMessageStatus.NEW));
+        }
+        assertEquals(messagePage.getContent().size(), itemsOnPage, "Incorrect count of message in one page.");
+        assertEquals(messagePage.getTotalElements(), totalSize, "Incorrect total count.");
+        assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
+        assertEquals(messagePage.getNumber(), 1, "Incorrect page number.");
+    }
+    
+    @Test
+    public void testGetAllToUserCommonCasePageTooBig() {
+        int totalSize = 50;
+        int pageCount = 2;
+        int itemsOnPage = totalSize/pageCount;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(PAGE_NUMBER_TOO_BIG, itemsOnPage);
+        PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getAllForUser(userTo, pageRequest);
+        for (PrivateMessage message : messagePage.getContent()) {
+            assertTrue(message.getStatus().equals(PrivateMessageStatus.SENT)
+                    || message.getStatus().equals(PrivateMessageStatus.NEW));
+        }
+        assertEquals(messagePage.getContent().size(), itemsOnPage, "Incorrect count of message in one page.");
+        assertEquals(messagePage.getTotalElements(), totalSize, "Incorrect total count.");
+        assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
+        assertEquals(messagePage.getNumber(), pageCount, "Incorrect page number.");
+    }
 
     @Test
     public void testGetAllToUserOneMessageCase() {
@@ -247,6 +337,48 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         assertEquals(messagePage.getContent().size(), itemsOnPage, "Incorrect count of message in one page.");
         assertEquals(messagePage.getTotalElements(), totalSize, "Incorrect total count.");
         assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
+    }
+    
+    @Test
+    public void testGetDraftsFromUserCommonCasePageTooLow() {
+        int totalSize = 50;
+        int pageCount = 2;
+        int itemsOnPage = totalSize/pageCount;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(PAGE_NUMBER_TOO_LOW, itemsOnPage);
+        PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getDraftsForUser(userFrom, pageRequest);
+        for (PrivateMessage message : messagePage.getContent()) {
+            assertTrue(message.getStatus().equals(PrivateMessageStatus.DRAFT));
+        }
+        assertEquals(messagePage.getContent().size(), itemsOnPage, "Incorrect count of message in one page.");
+        assertEquals(messagePage.getTotalElements(), totalSize, "Incorrect total count.");
+        assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
+        assertEquals(messagePage.getNumber(), 1, "Incorrect page number");
+    }
+    
+    @Test
+    public void testGetDraftsFromUserCommonCasePageTooBig() {
+        int totalSize = 50;
+        int pageCount = 2;
+        int itemsOnPage = totalSize/pageCount;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(PAGE_NUMBER_TOO_BIG, itemsOnPage);
+        PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getDraftsForUser(userFrom, pageRequest);
+        for (PrivateMessage message : messagePage.getContent()) {
+            assertTrue(message.getStatus().equals(PrivateMessageStatus.DRAFT));
+        }
+        assertEquals(messagePage.getContent().size(), itemsOnPage, "Incorrect count of message in one page.");
+        assertEquals(messagePage.getTotalElements(), totalSize, "Incorrect total count.");
+        assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
+        assertEquals(messagePage.getNumber(), pageCount, "Incorrect page number");
     }
 
 

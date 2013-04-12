@@ -27,6 +27,8 @@ import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
+import org.jtalks.common.model.entity.Group;
+import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.TopicDao;
@@ -57,6 +59,8 @@ import org.testng.annotations.Test;
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
 public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
+    private static final int PAGE_NUMBER_TOO_BIG = 1000;
+    private static final int PAGE_NUMBER_TOO_LOW = 0;
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
@@ -167,6 +171,43 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
         assertThat("Topics should be paginated for registered users", page , hasPages());
     }
+    
+    @Test
+    public void testGetUpdateTopicsUpdatedSinceWithPagingAndRegisteredUserPageTooLow() {
+        int listSize = 5;
+        int pageSize = 2;
+        List<Topic> createdTopicList = createAndSaveTopicList(listSize);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(PAGE_NUMBER_TOO_LOW, pageSize);
+        DateTime lastLogin = new DateTime().minusDays(1);
+
+        JCUser user = new JCUser("Current", null, null);
+        user.setGroups(ObjectsFactory.getDefaultGroupList());
+        createAndSaveViewTopicsBranchesEntity(createdTopicList.get(0).getBranch().getId(),
+                String.valueOf(user.getGroups().get(0).getId()), true);
+        Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest, user);
+
+        assertThat("Topics should be paginated for registered users", page , hasPages());
+        assertEquals(page.getNumber(), 1);
+    }
+    
+    @Test
+    public void testGetUpdateTopicsUpdatedSinceWithPagingAndRegisteredUserPageTooBig() {
+        int listSize = 5;
+        int pageSize = 2;
+        int lastPage = 3;
+        List<Topic> createdTopicList = createAndSaveTopicList(listSize);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(PAGE_NUMBER_TOO_BIG, pageSize);
+        DateTime lastLogin = new DateTime().minusDays(1);
+
+        JCUser user = new JCUser("Current", null, null);
+        user.setGroups(ObjectsFactory.getDefaultGroupList());
+        createAndSaveViewTopicsBranchesEntity(createdTopicList.get(0).getBranch().getId(),
+                String.valueOf(user.getGroups().get(0).getId()), true);
+        Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest, user);
+
+        assertThat("Topics should be paginated for registered users", page , hasPages());
+        assertEquals(page.getNumber(), lastPage);
+    }
 
     @Test
     public void testGetUpdateTopicsUpdatedSinceWithPagingAndAnonymousUser(){
@@ -181,6 +222,37 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest, new AnonymousUser());
 
         assertThat("Topics should be paginated for anonymous group", page , hasPages());
+    }
+    
+    @Test
+    public void testGetUpdateTopicsUpdatedSinceWithPagingAndAnonymousUserPageTooLow(){
+        int listSize = 5;
+        int pageSize = 2;
+        List<Topic> createdTopicList = createAndSaveTopicList(listSize);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(PAGE_NUMBER_TOO_LOW, pageSize);
+        DateTime lastLogin = new DateTime().minusDays(1);
+
+        createAndSaveViewTopicsBranchesEntity(createdTopicList.get(0).getBranch().getId(), "anonymousUser", true);
+        Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest, new AnonymousUser());
+
+        assertThat("Topics should be paginated for anonymous group", page , hasPages());
+        assertEquals(page.getNumber(), 1);
+    }
+    
+    @Test
+    public void testGetUpdateTopicsUpdatedSinceWithPagingAndAnonymousUserPageTooBig(){
+        int listSize = 5;
+        int pageSize = 2;
+        int lastPage = 3;
+        List<Topic> createdTopicList = createAndSaveTopicList(listSize);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(PAGE_NUMBER_TOO_BIG, pageSize);
+        DateTime lastLogin = new DateTime().minusDays(1);
+
+        createAndSaveViewTopicsBranchesEntity(createdTopicList.get(0).getBranch().getId(), "anonymousUser", true);
+        Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest, new AnonymousUser());
+
+        assertThat("Topics should be paginated for anonymous group", page , hasPages());
+        assertEquals(page.getNumber(), lastPage);
     }
     
     @Test
@@ -199,31 +271,63 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     }
 
     @Test
-    public void testGetUnansweredTopics() {
+    public void testGetUnansweredTopicsForRegisteredUsers() {
+        JCUser user = createAndSaveTopicsWithUnansweredTopics();
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, 2);
+
+        Page<Topic> result = dao.getUnansweredTopics(pageRequest, user);
+        assertEquals(result.getContent().size(), 2);
+        assertEquals(result.getTotalElements(), 2);
+    }
+    
+    @Test
+    public void testGetUnansweredTopicsForAnonymousUsers() {
         createAndSaveTopicsWithUnansweredTopics();
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, 2);
 
-        JCUser user = new JCUser("Current", null, null);
-        user.setGroups(ObjectsFactory.getDefaultGroupList());
-
-        Page<Topic> result = dao.getUnansweredTopics(pageRequest, user);
-        assertEquals(result.getContent().size(), 0);
-
-        result = dao.getUnansweredTopics(pageRequest, new AnonymousUser());
-        assertEquals(result.getContent().size(), 0);
+        Page<Topic> result = dao.getUnansweredTopics(pageRequest, new AnonymousUser());
+        assertEquals(result.getContent().size(), 2);
+        assertEquals(result.getTotalElements(), 2);
     }
     
     @Test
     public void testGetUnansweredTopicsWithPaging() {
-        createAndSaveTopicsWithUnansweredTopics();
+        JCUser user = createAndSaveTopicsWithUnansweredTopics();
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(2, 1);
-        Page<Topic> result = dao.getUnansweredTopics(pageRequest,ObjectsFactory.getDefaultUser());
-        assertEquals(result.getContent().size(), 0);
+        Page<Topic> result = dao.getUnansweredTopics(pageRequest, user);
+        assertEquals(result.getContent().size(), 1);
+        assertEquals(result.getTotalElements(), 2);
+    }
+    
+    @Test
+    public void testGetUnansweredTopicsWithPagingPageTooLow() {
+        JCUser user = createAndSaveTopicsWithUnansweredTopics();
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(PAGE_NUMBER_TOO_LOW, 1);
+        Page<Topic> result = dao.getUnansweredTopics(pageRequest, user);
+        assertEquals(result.getContent().size(), 1);
+        assertEquals(result.getTotalElements(), 2);
+        assertEquals(result.getNumber(), 1);
+    }
+    
+    @Test
+    public void testGetUnansweredTopicsWithPagingPageTooBig() {
+        JCUser user = createAndSaveTopicsWithUnansweredTopics();
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(PAGE_NUMBER_TOO_BIG, 1);
+        Page<Topic> result = dao.getUnansweredTopics(pageRequest, user);
+        assertEquals(result.getContent().size(), 1);
+        assertEquals(result.getTotalElements(), 2);
+        assertEquals(result.getNumber(), 2);
     }
 
-    private void createAndSaveTopicsWithUnansweredTopics() {
+    private JCUser createAndSaveTopicsWithUnansweredTopics() {
+        List<Group> groups = ObjectsFactory.getDefaultGroupList();
+        for (Group group : groups) {
+            session.save(group);
+        }
         JCUser author = ObjectsFactory.getDefaultUser();
+        author.setGroups(groups);
         session.save(author);
+        
         Topic firstTopic = new Topic(author, "firstTopic");
         firstTopic.addPost(new Post(author, "first topic initial post"));
         Topic secondTopic = new Topic(author, "secondTopic");
@@ -231,9 +335,25 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         Topic thirdTopic = new Topic(author, "thirdTopic");
         thirdTopic.addPost(new Post(author, "third topic initial post"));
         thirdTopic.addPost(new Post(author, "another post"));
-        session.save(firstTopic);
-        session.save(secondTopic);
-        session.save(thirdTopic);
+        
+        Branch branch = ObjectsFactory.getDefaultBranch();
+        branch.addTopic(firstTopic);
+        branch.addTopic(secondTopic);
+        branch.addTopic(thirdTopic);
+        session.save(branch);
+        
+        ViewTopicsBranches viewTopicsBranches = new ViewTopicsBranches();
+        viewTopicsBranches.setBranchId(branch.getId());
+        viewTopicsBranches.setGranting(true);
+        viewTopicsBranches.setSid(String.valueOf(groups.get(0).getId()));
+        session.save(viewTopicsBranches);        
+        ViewTopicsBranches viewTopicsBranchesForAnonymous = new ViewTopicsBranches();
+        viewTopicsBranchesForAnonymous.setBranchId(branch.getId());
+        viewTopicsBranchesForAnonymous.setGranting(true);
+        viewTopicsBranchesForAnonymous.setSid("anonymousUser");
+        session.save(viewTopicsBranchesForAnonymous);
+        
+        return author;
     }
 
 
@@ -305,6 +425,36 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         Page<Topic> topicsPage = dao.getTopics(branch, pageRequest);
 
         assertThat("Incorrect pagination", topicsPage , hasPages());
+    }
+    
+    @Test
+    public void testGetTopicsWithEnabledPagingPageTooLow() {
+        int totalSize = 50;
+        int pageCount = 2;
+        int pageSize = totalSize/pageCount;
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(PAGE_NUMBER_TOO_LOW, pageSize);
+        List<Topic> topicList = PersistedObjectsFactory.createAndSaveTopicList(totalSize);
+        Branch branch = topicList.get(0).getBranch();
+        
+        Page<Topic> topicsPage = dao.getTopics(branch, pageRequest);
+
+        assertThat("Incorrect pagination", topicsPage , hasPages());
+        assertEquals(topicsPage.getNumber(), 1);
+    }
+    
+    @Test
+    public void testGetTopicsWithEnabledPagingTooBigg() {
+        int totalSize = 50;
+        int pageCount = 2;
+        int pageSize = totalSize/pageCount;
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(PAGE_NUMBER_TOO_BIG, pageSize);
+        List<Topic> topicList = PersistedObjectsFactory.createAndSaveTopicList(totalSize);
+        Branch branch = topicList.get(0).getBranch();
+        
+        Page<Topic> topicsPage = dao.getTopics(branch, pageRequest);
+
+        assertThat("Incorrect pagination", topicsPage , hasPages());
+        assertEquals(topicsPage.getNumber(), pageCount);
     }
     
     @Test

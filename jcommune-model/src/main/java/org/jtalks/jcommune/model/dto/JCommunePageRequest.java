@@ -14,7 +14,8 @@
  */
 package org.jtalks.jcommune.model.dto;
 
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 /**
  * Data transfer object that needed for pagination in JCommune.
@@ -23,53 +24,87 @@ import org.springframework.data.domain.PageRequest;
  * 
  * @author Anuar Nurmakanov
  */
-public class JCommunePageRequest extends PageRequest {
+public class JCommunePageRequest implements Pageable {
     private static final long serialVersionUID = -9054794147449741044L;
+    
+    private int pageNumber;
+    private int pageSize;
     private boolean pagingEnabled;
     
     /**
      * Creates a new {@link JCommunePageRequest}. 
      * 
-     * @param size size of page
-     * @param page page number
+     * @param pageSize size of page
+     * @param pageNumber page number
      * @param pagingEnabled true if pagination is enabled, false if pagination is disabled
      */
-    public JCommunePageRequest(int page, int size, boolean pagingEnabled) {
-        super(page, size);
+    public JCommunePageRequest(int pageNumber, int pageSize, boolean pagingEnabled) {
+        if (pageSize <= 0) {
+            throw new IllegalArgumentException("Page size must not be less than or equal to zero!");
+        }
+        
+        if (pageNumber > 0) {
+            this.pageNumber = pageNumber;
+        } else { 
+            this.pageNumber = 1;
+        }
+        this.pageSize = pageSize;
         this.pagingEnabled = pagingEnabled;
+        
     }
     
     /**
      * Create an instance of {@link JCommunePageRequest} with enabled paging.
      *
-     * @param page page number
-     * @param size size of page
+     * @param pageNumber page number
+     * @param pageSize size of page
      * @return an instance of {@link JCommunePageRequest} with enabled paging
      */
-    public static JCommunePageRequest createWithPagingEnabled(int page, int size) {
-        return new JCommunePageRequest(page, size, true);
+    public static JCommunePageRequest createWithPagingEnabled(int pageNumber, int pageSize) {
+        return new JCommunePageRequest(pageNumber, pageSize, true);
     }
     
     /**
      * Create an instance of {@link JCommunePageRequest} with disabled paging.
      * 
-     * @param size size of page
-     * @param page page number
+     * @param pageSize size of page
+     * @param pageNumber page number
      * @return an instance of {@link JCommunePageRequest} with disabled paging.
      */
-    public static JCommunePageRequest createWithPagingDisabled(int page, int size) {
-        return new JCommunePageRequest(page, size, false);
+    public static JCommunePageRequest createWithPagingDisabled(int pageNumber, int pageSize) {
+        return new JCommunePageRequest(pageNumber, pageSize, false);
     }
     
     /**
-     * Get an index for first element in the page.
-     * 
-     * @return an index for first element in the page
+     * {@inheritDoc}
      */
-    public int getIndexOfFirstItem() {
-        return(getPageNumber() - 1) * getPageSize();
+    @Override
+    public int getPageNumber() {
+        return pageNumber;
+    }
+    
+    /**
+     * @param pageNumber the pageNumber to set
+     */
+    public void setPageNumber(int pageNumber) {
+        this.pageNumber = pageNumber;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getPageSize() {
+        return pageSize;
+    }
+    
+    /**
+     * @param pageSize the pageSize to set
+     */
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
+    
     /**
      * Get the flag, which is an indicator of enabling/disabling pagination.
      * 
@@ -78,4 +113,67 @@ public class JCommunePageRequest extends PageRequest {
     public boolean isPagingEnabled() {
         return pagingEnabled;
     }
+    
+    /**
+     * @param pagingEnabled the pagingEnabled to set
+     */
+    public void setPagingEnabled(boolean pagingEnabled) {
+        this.pagingEnabled = pagingEnabled;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getOffset() {
+        return getOffset(pageNumber);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Sort getSort() {
+        return null;
+    }
+    
+    /**
+     * Get number of page for element with given index
+     * @param index index of element starting with 0
+     * @return number of page for element
+     */
+    private int getPageNumber(int index) {
+        if (index > 0) {
+            return index / pageSize + 1;
+        } else {
+            return 1;
+        }
+    }
+    
+    /**
+     * Get index of first item for given page
+     * @param pageNumber number of page 
+     * @return index of first item
+     */
+    private int getOffset(int pageNumber) {
+        if (pageNumber > 0) {
+            return (pageNumber - 1) * pageSize;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Sets page number to valid value based on total count of items (to 1 if 
+     * page number <= 1 and to last page if it is too big).
+     * @param totalCount total count of items
+     */
+    public void adjustPageNumber(int totalCount) {
+        if (pageNumber <= 1) {
+            pageNumber = 1;
+        } else if (getOffset() > totalCount) {
+            pageNumber = getPageNumber(totalCount - 1);
+        }
+    }
+
 }

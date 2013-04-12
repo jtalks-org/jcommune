@@ -104,7 +104,7 @@ public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
                 matching(searchText).
                 createQuery();
         FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery);
-        query.setFirstResult(pageRequest.getIndexOfFirstItem());
+        query.setFirstResult(pageRequest.getOffset());
         query.setMaxResults(pageRequest.getPageSize());
         return query;
     }

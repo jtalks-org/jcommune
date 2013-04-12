@@ -42,6 +42,7 @@ public class PrivateMessageHibernateDao extends
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     @Override
     public Page<PrivateMessage> getAllFromUser(JCUser userFrom, JCommunePageRequest pageRequest) {
         PrivateMessageStatus[] statuses = PrivateMessageStatus.getInboxOutboxStatus();
@@ -50,12 +51,13 @@ public class PrivateMessageHibernateDao extends
                 .setParameter("userFrom", userFrom)
                 .setParameterList(STATUSES, statuses)
                 .uniqueResult();
+        pageRequest.adjustPageNumber(totalCount.intValue());
 
         Query query = getSession().getNamedQuery("getAllFromUser")
                 .setParameterList(STATUSES, statuses)
                 .setEntity("user", userFrom);
 
-        query.setFirstResult(pageRequest.getIndexOfFirstItem());
+        query.setFirstResult(pageRequest.getOffset());
         query.setMaxResults(pageRequest.getPageSize());
 
         List<PrivateMessage> messages = (List<PrivateMessage>) query.list();
@@ -66,6 +68,7 @@ public class PrivateMessageHibernateDao extends
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     @Override
     public Page<PrivateMessage> getAllForUser(JCUser userTo, JCommunePageRequest pageRequest) {
         PrivateMessageStatus[] statuses = PrivateMessageStatus.getInboxOutboxStatus();
@@ -74,10 +77,11 @@ public class PrivateMessageHibernateDao extends
                 .setParameter("userTo", userTo)
                 .setParameterList(STATUSES, statuses)
                 .uniqueResult();
+        pageRequest.adjustPageNumber(totalCount.intValue());
         Query query = getSession().getNamedQuery("getAllToUser")
                 .setParameterList(STATUSES, statuses)
                 .setEntity("user", userTo);
-        query.setFirstResult(pageRequest.getIndexOfFirstItem());
+        query.setFirstResult(pageRequest.getOffset());
         query.setMaxResults(pageRequest.getPageSize());
         List<PrivateMessage> messages = (List<PrivateMessage>) query.list();
         return new PageImpl<PrivateMessage>(messages, pageRequest, totalCount.intValue());
@@ -86,6 +90,7 @@ public class PrivateMessageHibernateDao extends
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     @Override
     public Page<PrivateMessage> getDraftsForUser(JCUser user, JCommunePageRequest pageRequest) {
         Number totalCount = (Number) getSession()
@@ -93,10 +98,11 @@ public class PrivateMessageHibernateDao extends
                 .setParameter("userFrom", user)
                 .setParameter(STATUS, PrivateMessageStatus.DRAFT)
                 .uniqueResult();
+        pageRequest.adjustPageNumber(totalCount.intValue());
         Query query = getSession().getNamedQuery("getDraftsFromUser")
                 .setParameter(STATUS, PrivateMessageStatus.DRAFT)
                 .setParameter("user", user);
-        query.setFirstResult(pageRequest.getIndexOfFirstItem());
+        query.setFirstResult(pageRequest.getOffset());
         query.setMaxResults(pageRequest.getPageSize());
         List<PrivateMessage> messages = (List<PrivateMessage>) query.list();
         return new PageImpl<PrivateMessage>(messages, pageRequest, totalCount.intValue());

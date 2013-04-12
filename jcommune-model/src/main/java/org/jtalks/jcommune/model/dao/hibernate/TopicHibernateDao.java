@@ -100,14 +100,16 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
             Query query = getSession().getNamedQuery("getCountUnansweredTopicsByGroups");
             query.setParameterList(GROUP_IDS, groupIds);
             Number totalCount = (Number) query.uniqueResult();
+            pageRequest.adjustPageNumber(totalCount.intValue());
+            
             query = getSession().getNamedQuery("getUnansweredTopicsByGroups");
             query.setParameterList(GROUP_IDS, groupIds);
-            query.setFirstResult(pageRequest.getIndexOfFirstItem()).setMaxResults(pageRequest.getPageSize());
+            query.setFirstResult(pageRequest.getOffset()).setMaxResults(pageRequest.getPageSize());
             @SuppressWarnings(UNCHECKED)
             List<Topic> unansweredTopics = (List<Topic>) query.list();
             return new PageImpl<Topic>(unansweredTopics, pageRequest, totalCount.intValue());
         }
-        return new PageImpl(new ArrayList(), pageRequest, 0);
+        return new PageImpl<Topic>(new ArrayList<Topic>(), pageRequest, 0);
     }
 
     /**
@@ -119,8 +121,10 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
     private PageImpl<Topic> getUnansweredTopicsForAnonymousUser(JCommunePageRequest pageRequest) {
         Query query = getSession().getNamedQuery("getCountUnansweredTopicsForAnonymousUser");
         Number totalCount = (Number) query.uniqueResult();
+        pageRequest.adjustPageNumber(totalCount.intValue());
+        
         query = getSession().getNamedQuery("getUnansweredTopicsForAnonymousUser");
-        query.setFirstResult(pageRequest.getIndexOfFirstItem()).setMaxResults(pageRequest.getPageSize());
+        query.setFirstResult(pageRequest.getOffset()).setMaxResults(pageRequest.getPageSize());
         @SuppressWarnings(UNCHECKED)
         List<Topic> unansweredTopics = (List<Topic>) query.list();
         return new PageImpl<Topic>(unansweredTopics, pageRequest, totalCount.intValue());
@@ -141,15 +145,17 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
             query.setParameter(MAX_MOD_DATE, timeStamp);
             query.setParameterList(GROUP_IDS, groupIds);
             Number totalCount = (Number) query.uniqueResult();
+            pageRequest.adjustPageNumber(totalCount.intValue());
+            
             query = getSession().getNamedQuery("getRecentTopicsByGroups");
             query.setParameter(MAX_MOD_DATE, timeStamp);
             query.setParameterList(GROUP_IDS, groupIds);
-            query.setFirstResult(pageRequest.getIndexOfFirstItem()).setMaxResults(pageRequest.getPageSize());
+            query.setFirstResult(pageRequest.getOffset()).setMaxResults(pageRequest.getPageSize());
             @SuppressWarnings(UNCHECKED)
             List<Topic> recentTopics = (List<Topic>) query.list();
             return new PageImpl<Topic>(recentTopics, pageRequest, totalCount.intValue());
         }
-        return new PageImpl(new ArrayList(), pageRequest, 0);
+        return new PageImpl<Topic>(new ArrayList<Topic>(), pageRequest, 0);
     }
 
     /**
@@ -163,9 +169,11 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
         Query query = getSession().getNamedQuery("getCountRecentTopicsForAnonymousUser");
         query.setParameter(MAX_MOD_DATE, timeStamp);
         Number totalCount = (Number) query.uniqueResult();
+        pageRequest.adjustPageNumber(totalCount.intValue());
+        
         query = getSession().getNamedQuery("getRecentTopicsForAnonymousUser");
         query.setParameter(MAX_MOD_DATE, timeStamp);
-        query.setFirstResult(pageRequest.getIndexOfFirstItem()).setMaxResults(pageRequest.getPageSize());
+        query.setFirstResult(pageRequest.getOffset()).setMaxResults(pageRequest.getPageSize());
         @SuppressWarnings(UNCHECKED)
         List<Topic> recentTopics = (List<Topic>) query.list();
         return new PageImpl<Topic>(recentTopics, pageRequest, totalCount.intValue());
@@ -203,7 +211,8 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
         Query query = getSession().getNamedQuery("getTopicsInBranch")
                 .setParameter(BRANCH, branch);
         if (pageRequest.isPagingEnabled()) {
-            query = query.setFirstResult(pageRequest.getIndexOfFirstItem())
+            pageRequest.adjustPageNumber(totalCount);
+            query = query.setFirstResult(pageRequest.getOffset())
                     .setMaxResults(pageRequest.getPageSize());
         }
         @SuppressWarnings(UNCHECKED)

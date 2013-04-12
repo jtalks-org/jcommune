@@ -55,7 +55,8 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
                 .getNamedQuery("getPostsOfUser")
                 .setParameter("userCreated", author);
         if (pageRequest.isPagingEnabled()) {
-            query.setFirstResult(pageRequest.getIndexOfFirstItem());
+            pageRequest.adjustPageNumber(totalCount.intValue());
+            query.setFirstResult(pageRequest.getOffset());
             query.setMaxResults(pageRequest.getPageSize());
         }
         @SuppressWarnings("unchecked")
@@ -76,7 +77,8 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
                 .getNamedQuery("getPostsInTopic")
                 .setParameter(TOPIC_PARAMETER_NAME, topic);
         if (pageRequest.isPagingEnabled()) {
-            query.setFirstResult(pageRequest.getIndexOfFirstItem());
+            pageRequest.adjustPageNumber(totalCount.intValue());
+            query.setFirstResult(pageRequest.getOffset());
             query.setMaxResults(pageRequest.getPageSize());
         }
         @SuppressWarnings("unchecked")
