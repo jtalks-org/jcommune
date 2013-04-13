@@ -125,17 +125,21 @@ public class UserProfileController {
      * @return edit user profile page
      * @throws NotFoundException throws if current logged in user was not found
      */
-    @RequestMapping(value = "/users/edit", method = RequestMethod.GET)
-    public ModelAndView editProfilePage() throws NotFoundException {
-        JCUser user = userService.getCurrentUser();
-        userService.checkPermissionsToEditProfile(user.getId());
-        EditUserProfileDto editedUser = new EditUserProfileDto(user);
-        byte[] avatar = user.getAvatar();
-        editedUser.setAvatar(imageUtils.prepareHtmlImgSrc(avatar));
-        
-        ModelAndView mav = new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUser);
-        mav.addObject("contacts", user.getUserContacts());
+    @RequestMapping(value = "/users/edit/{editedUserId}", method = RequestMethod.GET)
+    public ModelAndView editAnotherUserProfile(@PathVariable Long editedUserId) throws NotFoundException {
+        checkPermissionsToEditProfile();
+        JCUser editedUser = userService.get(editedUserId);
+        EditUserProfileDto editedUserDto = convertUserToDto(editedUser);
+        ModelAndView mav = new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUserDto);
+        mav.addObject("contacts", editedUser.getUserContacts());
         return mav;
+    }
+    
+    private EditUserProfileDto convertUserToDto(JCUser user) {
+        EditUserProfileDto editUserProfileDto = new EditUserProfileDto(user);
+        byte[] avatar = user.getAvatar();
+        editUserProfileDto.setAvatar(imageUtils.prepareHtmlImgSrc(avatar));
+        return editUserProfileDto;
     }
 
     /**
@@ -147,16 +151,16 @@ public class UserProfileController {
      * @param result   binding result which contains the validation result
      * @param response http servlet response
      * @return in case of errors return back to edit profile page, in another case return to user details page
+     * @throws NotFoundException if edited user doesn't exist in system
      */
     @RequestMapping(value = "/users/edit", method = RequestMethod.POST)
     public ModelAndView editProfile(@Valid @ModelAttribute(EDITED_USER) EditUserProfileDto userDto,
-                                    BindingResult result, HttpServletResponse response) {
+                                    BindingResult result, HttpServletResponse response) throws NotFoundException {
         if (result.hasErrors()) {
             return new ModelAndView(EDIT_PROFILE, EDITED_USER, userDto);
         }
-        JCUser currentUser = userService.getCurrentUser();
-        userService.checkPermissionsToEditProfile(currentUser.getId());
-        JCUser user = userService.editUserProfile(userDto.getUserInfoContainer());
+        checkPermissionsToEditProfile();
+        JCUser user = userService.editUserProfile(userDto.getUserId(), userDto.getUserInfoContainer());
         // apply language changes immediately
         String code = userDto.getLanguage().getLanguageCode();
         Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, code);
@@ -164,6 +168,15 @@ public class UserProfileController {
         response.addCookie(cookie);
         //redirect to the view profile page
         return new ModelAndView("redirect:/users/" + user.getId());
+    }
+    
+    /**
+     * User must have permissions to edit own or other profiles.
+     * So we must check them for users, who try to edit profiles.
+     */
+    private void checkPermissionsToEditProfile() {
+        JCUser editorUser = userService.getCurrentUser();
+        userService.checkPermissionsToEditProfiles(editorUser.getId());
     }
 
     /**

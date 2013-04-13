@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.web.dto;
 
+import javax.validation.constraints.Size;
+
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
@@ -22,9 +24,11 @@ import org.jtalks.common.validation.annotations.Email;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
-import org.jtalks.jcommune.web.validation.annotations.*;
-
-import javax.validation.constraints.Size;
+import org.jtalks.jcommune.web.validation.annotations.BbCodeNesting;
+import org.jtalks.jcommune.web.validation.annotations.ChangedEmail;
+import org.jtalks.jcommune.web.validation.annotations.ChangedPassword;
+import org.jtalks.jcommune.web.validation.annotations.Matches;
+import org.jtalks.jcommune.web.validation.annotations.PageSize;
 
 /**
  * This dto used for transferring data in edit {@link org.jtalks.jcommune.model.entity.JCUser} profile operation.
@@ -35,6 +39,7 @@ import javax.validation.constraints.Size;
 @Matches(field = "newUserPassword", verifyField = "newUserPasswordConfirm", message = "{password_not_matches}")
 @ChangedPassword
 public class EditUserProfileDto {
+    private long userId;
     private String username;
     
     @NotBlank(message = "{validation.not_null}")
@@ -84,14 +89,15 @@ public class EditUserProfileDto {
      * @param user copying source
      */
     public EditUserProfileDto(JCUser user) {
-        username = user.getUsername();
-        firstName = user.getFirstName();
-        lastName = user.getLastName();
-        email = user.getEmail();
-        signature = user.getSignature();
-        language = user.getLanguage();
-        pageSize = user.getPageSize();
-        location = user.getLocation();
+        this.userId = user.getId();
+        this.username = user.getUsername();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.email = user.getEmail();
+        this.signature = user.getSignature();
+        this.language = user.getLanguage();
+        this.pageSize = user.getPageSize();
+        this.location = user.getLocation();
     }
 
     /**
@@ -104,6 +110,24 @@ public class EditUserProfileDto {
         return new UserInfoContainer(this.getFirstName(), this.getLastName(), this.getEmail(),
                 this.getCurrentUserPassword(), this.getNewUserPassword(), this.getSignature(),
                 this.getAvatar(), this.getLanguage(), this.getPageSize(), this.getLocation());
+    }
+    
+    /**
+     * Get the primary id of the user.
+     *
+     * @return the id
+     */
+    public long getUserId() {
+        return userId;
+    }
+
+    /**
+     * Set the primary id of the user.
+     * 
+     * @param userId the id
+     */
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     /**

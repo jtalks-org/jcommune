@@ -192,34 +192,34 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public JCUser editUserProfile(UserInfoContainer info) {
+    public JCUser editUserProfile(long editedUserId, UserInfoContainer info) throws NotFoundException {
 
-        JCUser currentUser = this.getCurrentUser();
+        JCUser editedUser = this.get(editedUserId);
         byte[] decodedAvatar = base64Wrapper.decodeB64Bytes(info.getB64EncodedAvatar());
 
         String newPassword = info.getNewPassword();
         if (newPassword != null) {
             String encryptedPassword = encryptionService.encryptPassword(newPassword);
-            currentUser.setPassword(encryptedPassword);
+            editedUser.setPassword(encryptedPassword);
         }
-        currentUser.setEmail(info.getEmail());
+        editedUser.setEmail(info.getEmail());
 
-        if (!Arrays.equals(currentUser.getAvatar(), decodedAvatar)) {
-            currentUser.setAvatarLastModificationTime(new DateTime(
+        if (!Arrays.equals(editedUser.getAvatar(), decodedAvatar)) {
+            editedUser.setAvatarLastModificationTime(new DateTime(
                     System.currentTimeMillis()));
         }
-        currentUser.setAvatar(decodedAvatar);
+        editedUser.setAvatar(decodedAvatar);
 
-        currentUser.setSignature(info.getSignature());
-        currentUser.setFirstName(info.getFirstName());
-        currentUser.setLastName(info.getLastName());
-        currentUser.setLanguage(info.getLanguage());
-        currentUser.setPageSize(info.getPageSize());
-        currentUser.setLocation(info.getLocation());
+        editedUser.setSignature(info.getSignature());
+        editedUser.setFirstName(info.getFirstName());
+        editedUser.setLastName(info.getLastName());
+        editedUser.setLanguage(info.getLanguage());
+        editedUser.setPageSize(info.getPageSize());
+        editedUser.setLocation(info.getLocation());
 
-        this.getDao().saveOrUpdate(currentUser);
-        LOGGER.info("Updated user profile. Username: {}", currentUser.getUsername());
-        return currentUser;
+        this.getDao().saveOrUpdate(editedUser);
+        LOGGER.info("Updated user profile. Username: {}", editedUser.getUsername());
+        return editedUser;
     }
 
     /**
@@ -270,13 +270,14 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
             }
         }
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#userId, 'USER', 'ProfilePermission.EDIT_OWN_PROFILE')")
-    public void checkPermissionsToEditProfile(Long userId) {
+    @PreAuthorize("hasPermission(#userId, 'USER', 'ProfilePermission.EDIT_OTHERS_PROFILE') or " +
+    		"hasPermission(#userId, 'USER', 'ProfilePermission.EDIT_OWN_PROFILE')")
+    public void checkPermissionsToEditProfiles(Long userId) {
         LOGGER.debug("Check permission to edit profile for user - " + userId);
     }
 

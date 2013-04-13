@@ -47,6 +47,7 @@
                    class="form-horizontal">
 
             <form:hidden id="avatar" path="avatar"/>
+            <form:hidden id="editedUserId" path="userId" value="${editedUser.userId}"/>
 
             <div class='user-profile-header'>
                     <span class="pull-left thumbnail">

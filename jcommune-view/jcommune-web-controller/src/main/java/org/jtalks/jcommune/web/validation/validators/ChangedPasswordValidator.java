@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.web.validation.validators;
 
+import org.apache.commons.lang.ObjectUtils;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
@@ -25,7 +27,7 @@ import javax.validation.ConstraintValidatorContext;
 
 /**
  * Validates if password set matches the current user's password.
- * This check is to be performed only if new passwword has been set.
+ * This check is to be performed only if new password has been set.
  *
  * @author Evgeniy Naumenko
  */
@@ -59,16 +61,23 @@ public class ChangedPasswordValidator implements ConstraintValidator<ChangedPass
      */
     @Override
     public boolean isValid(EditUserProfileDto dto, ConstraintValidatorContext context) {
-        boolean result = dto.getNewUserPassword() == null;
-        //we must compare the hashes, so we encrypt the entered value
-        String enteredCurrentPassword = encryptionService.encryptPassword(dto.getCurrentUserPassword());
-        result |= userService.getCurrentUser().getPassword().equals(enteredCurrentPassword);
-        if (!result) {
-            // add validation error to the field
-            context.buildConstraintViolationWithTemplate(message)
-                    .addNode("currentUserPassword")
-                    .addConstraintViolation();
+        JCUser currentUser = userService.getCurrentUser();
+        String editedUserName = dto.getUsername();
+        String currentUserName = currentUser.getUsername();
+        boolean isWillBeChangedByOwner = ObjectUtils.equals(editedUserName, currentUserName);
+        if (isWillBeChangedByOwner) {
+            boolean result = dto.getNewUserPassword() == null;
+            //we must compare the hashes, so we encrypt the entered value
+            String enteredCurrentPassword = encryptionService.encryptPassword(dto.getCurrentUserPassword());
+            result |= currentUser.getPassword().equals(enteredCurrentPassword);
+            if (!result) {
+                // add validation error to the field
+                context.buildConstraintViolationWithTemplate(message)
+                        .addNode("currentUserPassword")
+                        .addConstraintViolation();
+            }
+            return result;
         }
-        return result;
+        return true;
     }
 }

@@ -69,10 +69,12 @@ public interface UserService extends EntityService<JCUser> {
     /**
      * Update user entity.
      *
+     * @param an identifier of edited user
      * @param info modified profile info holder
      * @return edited user
+     * @throws NotFoundException if edited user doesn't exists in system
      */
-    JCUser editUserProfile(UserInfoContainer info);
+    JCUser editUserProfile(long editedUserId, UserInfoContainer info) throws NotFoundException;
 
     /**
      * Performs the following:
@@ -103,11 +105,11 @@ public interface UserService extends EntityService<JCUser> {
     void deleteUnactivatedAccountsByTimer();
 
     /**
-     * This methods checks a permissions of user to edit profile.
+     * This methods checks a permissions of user to edit profiles.
      *
      * @param userId an identifier of user, for which we check permission
      */
-    void checkPermissionsToEditProfile(Long userId);
+    void checkPermissionsToEditProfiles(Long userId);
     
     /**
      * This method checks a permissions of user to create or edit simple(static)

@@ -15,18 +15,17 @@
 package org.jtalks.jcommune.web.controller;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
 import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
-import static org.mockito.Matchers.anyLong;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -68,15 +67,15 @@ public class UserProfileControllerTest {
     private UserService userService;
     private UserProfileController profileController;
 
-    private final String USER_NAME = "username";
-    private final String FIRST_NAME = "first name";
-    private final String LAST_NAME = "last name";
-    private final String EMAIL = "mail@mail.com";
-    private final String PASSWORD = "password";
-    private final String SIGNATURE = "signature";
-    private final Language LANGUAGE = Language.ENGLISH;
-    private final int PAGE_SIZE = 50;
-    private final String LOCATION = "location";
+    private static final long USER_ID = 1l;
+    private static final String USER_NAME = "username";
+    private static final String FIRST_NAME = "first name";
+    private static final String LAST_NAME = "last name";
+    private static final String EMAIL = "mail@mail.com";
+    private static final String PASSWORD = "password";
+    private static final String SIGNATURE = "signature";
+    private static final Language LANGUAGE = Language.ENGLISH;
+    private static final int PAGE_SIZE = 50;
     private String avatar;
     private BreadcrumbBuilder breadcrumbBuilder;
     private ImageUtils imageUtils;
@@ -127,31 +126,30 @@ public class UserProfileControllerTest {
     }
 
     @Test
-    public void testEditProfilePage() throws NotFoundException, IOException {
+    public void editProfilePageShouldMoveUserToPageForEditingPassedUser() throws NotFoundException {
+        Long editedUserId = 1l;
         JCUser user = getUser();
-        //set expectations
         when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.get(editedUserId)).thenReturn(user);
 
-        //invoke the object under test
-        ModelAndView mav = profileController.editProfilePage();
+        ModelAndView mav = profileController.editAnotherUserProfile(editedUserId);
 
-        //check result
         assertViewName(mav, "editProfile");
         EditUserProfileDto dto = assertAndReturnModelAttributeOfType(mav, "editedUser", EditUserProfileDto.class);
         assertEquals(dto.getFirstName(), user.getFirstName(), "First name is not equal");
         assertEquals(dto.getLastName(), user.getLastName(), "Last name is not equal");
         assertEquals(dto.getEmail(), user.getEmail(), "Last name is not equal");
-        verify(userService).checkPermissionsToEditProfile(user.getId());
+        verify(userService).checkPermissionsToEditProfiles(user.getId());
     }
 
 
     @Test
-    public void testEditProfile() throws Exception {
+    public void testEditProfile() throws NotFoundException {
         JCUser user = getUser();
         EditUserProfileDto userDto = getEditUserProfileDto();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        when(userService.editUserProfile(Matchers.<UserInfoContainer>any())).thenReturn(user);
+        when(userService.editUserProfile(anyLong(), Matchers.<UserInfoContainer>any())).thenReturn(user);
         when(userService.getCurrentUser()).thenReturn(user);
 
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
@@ -162,14 +160,11 @@ public class UserProfileControllerTest {
         assertViewName(mav, expectedUrl);
         assertEquals(response.getCookies()[0].getValue(), Language.ENGLISH.getLanguageCode());
         assertEquals(response.getCookies()[0].getName(), CookieLocaleResolver.DEFAULT_COOKIE_NAME);
-        verify(userService).editUserProfile(new UserInfoContainer(userDto.getEmail(), userDto.getFirstName(),
-                userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), anyString(),
-                SIGNATURE, LANGUAGE, PAGE_SIZE, LOCATION));
+        verify(userService).editUserProfile(anyLong(),Matchers.<UserInfoContainer> any());
     }
 
     @Test
-    public void testEditProfileValidationFail() throws Exception {
+    public void testEditProfileValidationFail() throws NotFoundException {
         JCUser user = getUser();
         when(userService.getCurrentUser()).thenReturn(user);
 
@@ -180,18 +175,18 @@ public class UserProfileControllerTest {
         ModelAndView mav = profileController.editProfile(dto, bindingResult, new MockHttpServletResponse());
 
         assertViewName(mav, "editProfile");
-        verify(userService, never()).editUserProfile(Matchers.<UserInfoContainer>any());
+        verify(userService, never()).editUserProfile(anyLong() ,Matchers.<UserInfoContainer>any());
     }
     
     @Test(expectedExceptions=AccessDeniedException.class)
-    public void testEditProfileNotAllowed() throws Exception {
+    public void testEditProfileNotAllowed() throws NotFoundException {
         JCUser user = getUser();
         EditUserProfileDto userDto = getEditUserProfileDto();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        when(userService.editUserProfile(Matchers.<UserInfoContainer>any())).thenReturn(user);
+        when(userService.editUserProfile(anyLong(), Matchers.<UserInfoContainer>any())).thenReturn(user);
         when(userService.getCurrentUser()).thenReturn(user);
-        doThrow(new AccessDeniedException("")).when(userService).checkPermissionsToEditProfile(anyLong());
+        doThrow(new AccessDeniedException("")).when(userService).checkPermissionsToEditProfiles(anyLong());
 
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
@@ -244,6 +239,7 @@ public class UserProfileControllerTest {
         String NEW_PASSWORD = "newPassword";
 
         JCUser user = new JCUser("username", EMAIL, PASSWORD);
+        user.setId(USER_ID);
         user.setFirstName(FIRST_NAME);
         user.setLastName(LAST_NAME);
         user.setSignature(SIGNATURE);
@@ -258,7 +254,7 @@ public class UserProfileControllerTest {
         return dto;
     }
 
-    private JCUser getUser() throws IOException {
+    private JCUser getUser() {
         JCUser newUser = new JCUser(USER_NAME, EMAIL, PASSWORD);
         newUser.setFirstName(FIRST_NAME);
         newUser.setLastName(LAST_NAME);

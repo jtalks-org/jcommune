@@ -209,28 +209,25 @@
                             </ul>
                         </c:if>
 
-                        <c:if test="${user.username == auth}">
-                            <%-- TODO it's better to change tag for OR and AND with the list of permissions --%>
-                            <c:set var="isCanEditProfile" value="${false}"/>
-                            <jtalks:hasPermission targetId='${userId}' targetType='USER' 
-                                        permission='ProfilePermission.EDIT_OWN_PROFILE'>
-                                <c:set var="isCanEditProfile" value="${true}"/>
-                            </jtalks:hasPermission>
-                            <jtalks:hasPermission targetId='${userId}' targetType='USER' 
-                                        permission='ProfilePermission.EDIT_OTHERS_PROFILE'>
-                                <c:set var="isCanEditProfile" value="${true}"/>
-                            </jtalks:hasPermission>
-                            <%-- --%>
-                            
-                            <c:if test="${isCanEditProfile}">
-	                           <div class="user-profile-buttons-form-actions">
-	                               <a class="btn btn-primary"
-	                                   href="${pageContext.request.contextPath}/users/edit"> <spring:message
-	                                       code="label.edit_profile" />
-	                               </a>
-	                           </div>
-                            </c:if>
-                            
+                        <%-- TODO it's better to change tag for OR and AND with the list of permissions --%>
+                        <c:set var="isCanEditProfile" value="${false}"/>
+                        <jtalks:hasPermission targetId='${userId}' targetType='USER' 
+                                    permission='ProfilePermission.EDIT_OWN_PROFILE'>
+                            <c:set var="isCanEditProfile" value="${true}"/>
+                        </jtalks:hasPermission>
+                        <jtalks:hasPermission targetId='${userId}' targetType='USER' 
+                                    permission='ProfilePermission.EDIT_OTHERS_PROFILE'>
+                            <c:set var="isCanEditProfile" value="${true}"/>
+                        </jtalks:hasPermission>
+                        <%-- --%>
+                        
+                        <c:if test="${isCanEditProfile}">
+	                        <div class="user-profile-buttons-form-actions">
+	                            <a class="btn btn-primary"
+	                                href="${pageContext.request.contextPath}/users/edit/${user.id}"> <spring:message
+	                                    code="label.edit_profile" />
+	                            </a>
+	                        </div>
                         </c:if>
                     </fieldset>
                 </form>

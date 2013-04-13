@@ -14,21 +14,24 @@
  */
 package org.jtalks.jcommune.web.validation.validators;
 
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertFalse;
+
+import javax.validation.ConstraintValidatorContext;
+import javax.validation.ConstraintValidatorContext.ConstraintViolationBuilder;
+import javax.validation.ConstraintValidatorContext.ConstraintViolationBuilder.NodeBuilderDefinedContext;
 
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import javax.validation.ConstraintValidatorContext;
-import javax.validation.ConstraintValidatorContext.ConstraintViolationBuilder;
-import javax.validation.ConstraintValidatorContext.ConstraintViolationBuilder.NodeBuilderDefinedContext;
 
 /**
  * 
@@ -36,6 +39,8 @@ import javax.validation.ConstraintValidatorContext.ConstraintViolationBuilder.No
  *
  */
 public class ChangedPasswordValidatorTest {
+    private static final String PROFILE_OWNER_NAME = "owner";
+    
 	@Mock
 	private UserService userService;
 	@Mock
@@ -53,9 +58,10 @@ public class ChangedPasswordValidatorTest {
 	
 	@BeforeMethod
 	public void init() {
-		MockitoAnnotations.initMocks(this);
-		Mockito.when(userService.getCurrentUser()).thenReturn(
-                new JCUser("username", "email", userCurrentPassword));
+		initMocks(this);
+		when(userService.getCurrentUser()).thenReturn(
+                new JCUser(PROFILE_OWNER_NAME, "email", userCurrentPassword));
+		editUserProfileDto.setUsername(PROFILE_OWNER_NAME);
 		validator = new ChangedPasswordValidator(userService, encryptionService);
 		//
 		editUserProfileDto.setCurrentUserPassword(userCurrentPassword);
@@ -63,33 +69,48 @@ public class ChangedPasswordValidatorTest {
 	}
 	
 	@Test
-	public void testCheckNullNewPassword() {
+    public void editedByModeratorShouldNotCheckCurrentPassword() {
+        editUserProfileDto.setUsername("crazy crazy crazy moderator");
+        
+        boolean isValid = validator.isValid(editUserProfileDto, validatorContext);
+        
+        assertTrue(isValid, "If moderator edits user's profile, we mustn't check current password.");
+    }
+	
+	@Test
+	public void editedByOwnerWithNewPasswordAsNullShouldNotBeValid() {
 		editUserProfileDto.setNewUserPassword(null);
+		
 		boolean isValid = validator.isValid(editUserProfileDto, validatorContext);
-		Assert.assertEquals(isValid, true, "The null password is not valid.");
+		
+		assertTrue(isValid, "The null password is not valid.");
 	}
 	
 	@Test
-	public void testChangeUserPasswordCorrect() {
+	public void editedByOwnerWithCorrectCurrentPasswordShouldBeValid() {
 	    String currentUserPassword = editUserProfileDto.getCurrentUserPassword();
-	    Mockito.when(encryptionService.encryptPassword(currentUserPassword)).
+	    when(encryptionService.encryptPassword(currentUserPassword)).
 	        thenReturn(currentUserPassword);
-		boolean isValid = validator.isValid(editUserProfileDto, validatorContext);
-		Assert.assertEquals(isValid, true, "The old password is correct, but the check fails.");
+		
+	    boolean isValid = validator.isValid(editUserProfileDto, validatorContext);
+		
+	    assertTrue(isValid, "The old password is correct, but the check fails.");
 	}
 	
 	@Test
-	public void testChangeUserPasswordIncorrect() {
+	public void editedByOwnerWithIncorrectCurrentPasswordShouldNotBeValid() {
 	    String incorrectCurrentPassword = "other_password";
 		editUserProfileDto.setCurrentUserPassword(incorrectCurrentPassword);
-		Mockito.when(encryptionService.encryptPassword(incorrectCurrentPassword)).
+		when(encryptionService.encryptPassword(incorrectCurrentPassword)).
             thenReturn(incorrectCurrentPassword);
-		Mockito.when(validatorContext.buildConstraintViolationWithTemplate(null)).
+		when(validatorContext.buildConstraintViolationWithTemplate(null)).
 				thenReturn(violationBuilder);
-		Mockito.when(violationBuilder.addNode(Mockito.anyString())).
+		when(violationBuilder.addNode(anyString())).
 				thenReturn(nodeBuilderDefinedContext);
+		
 		boolean isValid = validator.isValid(editUserProfileDto, validatorContext);
-		Assert.assertEquals(isValid, false, "The old password isn't correct, but the check passed.");
-		Mockito.verify(validatorContext).buildConstraintViolationWithTemplate(null);
+		
+		assertFalse(isValid, "The old password isn't correct, but the check passed.");
+		verify(validatorContext).buildConstraintViolationWithTemplate(null);
 	}
 }
