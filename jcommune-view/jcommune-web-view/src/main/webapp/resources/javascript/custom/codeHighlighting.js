@@ -200,26 +200,35 @@ CodeHighlighting.setupEditCommentHandlers = function() {
 		return false;
 	});
 
+    //delete comment from review
     $('.script-first-post').on('click', 'div.review-container a[name=delete-review]', function (e) {
         e.preventDefault();
         var reviewContainer = $(this).closest('.review-container');
         var commentId = reviewContainer.find('input[name=id]').val();
         var reviewId = $('input[id="codeReviewId"]').val();
 
-        bootbox.confirm($labelDeleteCommentConfirmation, function(result) {
-            if(result){
-                $.ajax({
-                    url:baseUrl + '/reviewcomments/delete?reviewId=' + reviewId + '&commentId=' + commentId,
-                    type:"GET",
-                    success:function () {
-                        $(reviewContainer).remove();
-                    },
-                    error:function () {
-                        bootbox.alert($labelUnexpectedError);
-                    }
-                });
+        bootbox.dialog($labelDeleteCommentConfirmation, [
+            {
+                "label" : $labelOk,
+                "class" : "btn-primary",
+                "callback": function() {
+                    $.ajax({
+                        url:baseUrl + '/reviewcomments/delete?reviewId=' + reviewId + '&commentId=' + commentId,
+                        type:"GET",
+                        success:function () {
+                            $(reviewContainer).remove();
+                        },
+                        error:function () {
+                            bootbox.alert($labelUnexpectedError);
+                        }
+                    });
+                }
+            },
+            {
+                "label" : $labelCancel,
+                "class" : "btn"
             }
-        });
+        ]);
 
         return false;
     });
