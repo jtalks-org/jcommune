@@ -268,8 +268,6 @@
                                 </a>
                             </jtalks:hasPermission>
                         </c:if>
-                        <a class="btn btn-mini" href="#"
-                           title="<spring:message code='label.tips.up'/>">&#8657;</a>
                     </div>
                 </div>
             </td>
