@@ -656,3 +656,8 @@ div.anchor {
 .padding-top-profile {
     padding-top: 5px;
 }
+
+.top-line-links {
+    padding-left: 15px;
+    display: none;
+}
