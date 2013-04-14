@@ -40,12 +40,22 @@ $(function () {
         $('#main-links-editor').find('.close').click();
     });
 
+    function getMinMenuButtonVisible(){
+        return $('.btn-navbar').css('display');
+    }
+
     $('.btn-navbar').bind('mainLinksPosition', function (e) {
-        var sizeMin = $('.btn-navbar').css('display');
+        var sizeMin = getMinMenuButtonVisible();
+        console.log(sizeMin);
         if (sizeMin && sizeMin == 'block') {
-            //show in topLine
-            $('li.top-line-links').show();
-            $('span#externalLinks').parent('div').hide();
+            //check again for fix display when loading is long
+            setTimeout(function(){
+              if(getMinMenuButtonVisible() == 'block'){
+                //show in topLine
+                $('li.top-line-links').show();
+                $('span#externalLinks').parent('div').hide();
+              }
+            },500);
         } else {
             //show in mainPage
             $('li.top-line-links').hide();

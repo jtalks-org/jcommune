@@ -76,7 +76,6 @@
             </ul>
           </li>
 
-
           <%-- Not logged in block --%>
           <sec:authorize access="isAnonymous()">
             <%--Temporary disabled, cause we need more requirements for "newbies" page
