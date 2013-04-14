@@ -44,7 +44,7 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
     private JCommuneProperty componentSapeShowDummyLinksProperty;
     private JCommuneProperty componentSapeEnableServiceProperty;
 
-    private static volatile Sape sape;
+    private volatile Sape sape;
 
     private static final List<String> DUMMY_LINKS = Lists.newArrayList(
             "<a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +

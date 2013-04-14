@@ -14,13 +14,10 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import org.hibernate.validator.constraints.NotBlank;
-
 /**
  * Entity for SAPE configuration of the forum
- * 
- * @author Vyacheslav Mishcheryakov
  *
+ * @author Vyacheslav Mishcheryakov
  */
 public class SapeConfiguration {
     private String accountId;
@@ -30,90 +27,73 @@ public class SapeConfiguration {
     private boolean showOnMainPage;
     private boolean showDummyLinks;
     private boolean enableSape;
-    
-    /**
-     * @return the accoundId
-     */
+
+    /** @return the accoundId */
     public String getAccountId() {
         return accountId;
     }
-    /**
-     * @param accountId the accoundId to set
-     */
+
+    /** @param accountId the accoundId to set */
     public void setAccountId(String accountId) {
         this.accountId = accountId;
     }
-    /**
-     * @return the timeout
-     */
+
+    /** @return the timeout */
     public int getTimeout() {
         return timeout;
     }
-    /**
-     * @param timeout the timeout to set
-     */
+
+    /** @param timeout the timeout to set */
     public void setTimeout(int timeout) {
         this.timeout = timeout;
     }
-    /**
-     * @return the hostUrl
-     */
+
+    /** @return the hostUrl */
     public String getHostUrl() {
         return hostUrl;
     }
-    /**
-     * @param hostUrl the hostUrl to set
-     */
+
+    /** @param hostUrl the hostUrl to set */
     public void setHostUrl(String hostUrl) {
         this.hostUrl = hostUrl;
     }
-    /**
-     * @return the numberOfLinks
-     */
+
+    /** @return the numberOfLinks */
     public int getNumberOfLinks() {
         return numberOfLinks;
     }
-    /**
-     * @param numberOfLinks the numberOfLinks to set
-     */
+
+    /** @param numberOfLinks the numberOfLinks to set */
     public void setNumberOfLinks(int numberOfLinks) {
         this.numberOfLinks = numberOfLinks;
     }
-    /**
-     * @return the showOnMainPage
-     */
+
+    /** @return the showOnMainPage */
     public boolean isShowOnMainPage() {
         return showOnMainPage;
     }
-    /**
-     * @param showOnMainPage the showOnMainPage to set
-     */
+
+    /** @param showOnMainPage the showOnMainPage to set */
     public void setShowOnMainPage(boolean showOnMainPage) {
         this.showOnMainPage = showOnMainPage;
     }
-    /**
-     * @return the showDummyLinks
-     */
+
+    /** @return the showDummyLinks */
     public boolean isShowDummyLinks() {
         return showDummyLinks;
     }
-    /**
-     * @param showDummyLinks the showDummyLinks to set
-     */
+
+    /** @param showDummyLinks the showDummyLinks to set */
     public void setShowDummyLinks(boolean showDummyLinks) {
         this.showDummyLinks = showDummyLinks;
     }
 
-    /**
-     * @return the enableSape flag
-     */
+    /** @return the enableSape flag */
     public boolean isEnableSape() {
         return enableSape;
     }
 
-    /**
-     * @param enableSape the enableSape to set
-     */
+    /** @param enableSape the enableSape to set */
     public void setEnableSape(boolean enableSape) {
         this.enableSape = enableSape;
     }
