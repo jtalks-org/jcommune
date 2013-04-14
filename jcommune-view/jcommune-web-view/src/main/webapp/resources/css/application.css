@@ -657,7 +657,12 @@ div.anchor {
     padding-top: 5px;
 }
 
-.top-line-links {
+.top-line-links[style*="display: none"] {
     padding-left: 15px;
-    display: none;
+    display: none !important;
+}
+
+.top-line-links:not([style*="display: none"]) {
+    padding-left: 15px;
+    display: list-item !important;
 }
