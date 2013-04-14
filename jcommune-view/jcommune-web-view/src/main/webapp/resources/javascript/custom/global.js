@@ -102,6 +102,9 @@ $(document).ready(function () {
         searchInput.addClass('search-query-focusout');
     }
 
+    //close modal dialog foer all dialog created by bootbox js. Dialog should have button with class "cancel"
+    $(document).delegate('.bootbox.modal', 'keydown', Keymaps.bootboxClose)
+
     $(window).resize();
 });
 

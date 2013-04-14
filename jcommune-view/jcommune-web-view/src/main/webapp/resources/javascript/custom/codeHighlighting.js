@@ -226,7 +226,7 @@ CodeHighlighting.setupEditCommentHandlers = function() {
             },
             {
                 "label" : $labelCancel,
-                "class" : "btn"
+                "class" : "cancel"
             }
         ]);
 
