@@ -14,22 +14,18 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.apache.commons.collections.ListUtils;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.LastReadPostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.LastReadPost;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Performs last read posts management to track topic updates
@@ -40,9 +36,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 public class TransactionalLastReadPostService implements LastReadPostService {
 
-    private UserService userService;
-    private LastReadPostDao lastReadPostDao;
-    private UserDao userDao;
+    private final UserService userService;
+    private final LastReadPostDao lastReadPostDao;
+    private final UserDao userDao;
 
     /**
      * Constructs an instance with required fields.
@@ -191,24 +187,23 @@ public class TransactionalLastReadPostService implements LastReadPostService {
     }
 
     /**
-     * Stores last read post info in a database for the particular
-     * topic and user.
+     * Stores last read post info into database for the particular topic and user.
      *
      * @param user      user to save last read post data for
      * @param topic     topic to store info for
-     * @param postIndex actual post index, starting from 0
+     * @param postIndex actual post index user has read last, starting from 0
      */
     private void saveLastReadPost(JCUser user, Topic topic, int postIndex) {
-        DateTime lrpDate = user.getAllForumMarkedAsReadTime();
+        DateTime lastTimeForumWasMarkedRead = user.getAllForumMarkedAsReadTime();
         DateTime topicModifiedDate = topic.getModificationDate();
-        if (lrpDate == null || topicModifiedDate.isAfter(lrpDate)) {
-            LastReadPost post = lastReadPostDao.getLastReadPost(user, topic);
-            if (post == null) {
-                post = new LastReadPost(user, topic, postIndex);
+        if (lastTimeForumWasMarkedRead == null || topicModifiedDate.isAfter(lastTimeForumWasMarkedRead)) {
+            LastReadPost lastRead = lastReadPostDao.getLastReadPost(user, topic);
+            if (lastRead == null) {
+                lastRead = new LastReadPost(user, topic, postIndex);
             } else {
-                post.setPostIndex(Math.max(Math.min(topic.getPostCount() - 1, post.getPostIndex()), postIndex));
+                lastRead.setPostIndex(Math.max(Math.min(topic.getPostCount() - 1, lastRead.getPostIndex()), postIndex));
             }
-            lastReadPostDao.update(post);
+            lastReadPostDao.update(lastRead);
         }
     }
 
