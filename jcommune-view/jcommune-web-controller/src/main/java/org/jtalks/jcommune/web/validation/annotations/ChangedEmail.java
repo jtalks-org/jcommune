@@ -35,7 +35,7 @@ import java.lang.annotation.Target;
  *
  * @author Evgeniy Naumenko
  */
-@Target({ElementType.FIELD})
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Constraint(validatedBy = ChangedEmailValidator.class)

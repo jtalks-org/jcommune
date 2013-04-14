@@ -14,18 +14,23 @@
  */
 package org.jtalks.jcommune.web.validation.validators;
 
-import org.jtalks.common.security.SecurityService;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
+
+import javax.validation.ConstraintValidatorContext;
+
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import javax.validation.ConstraintValidatorContext;
 
 /**
  * 
@@ -44,34 +49,51 @@ public class ChangedEmailValidatorTest {
 	private JCUser user = new JCUser("username", userEmail, "password");
 
 	@BeforeMethod
-	public void init() {
-		MockitoAnnotations.initMocks(this);
-		Mockito.when(userService.getCurrentUser()).thenReturn(user);
+	public void init() throws NotFoundException {
+		initMocks(this);
+		when(userService.get(anyLong())).thenReturn(user);
 		validator = new ChangedEmailValidator(userService, userDao);
 	}
 
 	@Test
-	public void testCheckUsingNullValue() {
-		String value = null;
-		boolean isValid = validator.isValid(value, validatorContext);
-		Assert.assertEquals(isValid, true, "Null value isn't valid.");
+	public void emptyEmailShouldBeValidBecauseItIsNotBusy() {
+		EditUserProfileDto editedUserProfile = new EditUserProfileDto();
+		editedUserProfile.setEmail(null);
+		
+		boolean isValid = validator.isValid(editedUserProfile, validatorContext);
+		
+		assertTrue(isValid, "Null value isn't valid.");
 	}
 
 	@Test
-	public void testUserEmailNotChanged() {
-		boolean isValid = validator.isValid(userEmail, validatorContext);
-		Assert.assertEquals(isValid, true, "Email of current user isn't valid.");
+	public void notChangedEmailShouldBeValid() {
+	    EditUserProfileDto editedUserProfile = new EditUserProfileDto();
+        editedUserProfile.setEmail(userEmail);
+	    
+		boolean isValid = validator.isValid(editedUserProfile, validatorContext);
+		
+		assertTrue(isValid, "Email of current user isn't valid.");
 	}
 	
 	@Test
-	public void testUserEmailChanged() {
-		String value = "new_current_user@gmail.com";
-		boolean isValid = validator.isValid(value, validatorContext);
-		Assert.assertEquals(isValid, true, "New email isn't busy, but he invalid.");
-		//
-		Mockito.when(userDao.getByEmail(Mockito.anyString())).thenReturn(
-				new JCUser("username", "email", "password"));
-		isValid = validator.isValid(value, validatorContext);
-		Assert.assertEquals(isValid, false, "New email is busy, but he valid.");
+	public void changedEmailShouldBeValidIfItIsNotBusy() {
+	    EditUserProfileDto editedUserProfile = new EditUserProfileDto();
+        editedUserProfile.setEmail("new_current_user@gmail.com");
+	    
+	    boolean isValid = validator.isValid(editedUserProfile, validatorContext);
+        
+	    assertTrue(isValid, "New email isn't busy, but he invalid.");
 	}
+	
+	@Test
+    public void changedEmailShouldNotBeValidIfItIsBusy() {
+        when(userDao.getByEmail(anyString())).thenReturn(
+                new JCUser("new_current_user@gmail.com", "email", "password"));
+        EditUserProfileDto editedUserProfile = new EditUserProfileDto();
+        editedUserProfile.setEmail("new_current_user@gmail.com");
+        
+        boolean isValid = validator.isValid(editedUserProfile, validatorContext);
+        
+        assertFalse(isValid, "New email is busy, but he valid.");
+    }
 }
