@@ -125,3 +125,10 @@ Keymaps.moveTopicEditor = function (e) {
     }
 }
 
+Keymaps.bootboxClose = function (e) {
+    if ((e.keyCode || e.charCode) == escCode) {
+        e.preventDefault();
+        $(this).find('.cancel').click();
+    }
+}
+

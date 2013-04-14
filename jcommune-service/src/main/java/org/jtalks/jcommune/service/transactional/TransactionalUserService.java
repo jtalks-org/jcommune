@@ -210,7 +210,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
                     System.currentTimeMillis()));
         }
         editedUser.setAvatar(decodedAvatar);
-
         editedUser.setSignature(editedUserProfileInfo.getSignature());
         editedUser.setFirstName(editedUserProfileInfo.getFirstName());
         editedUser.setLastName(editedUserProfileInfo.getLastName());

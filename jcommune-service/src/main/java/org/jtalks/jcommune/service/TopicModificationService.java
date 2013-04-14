@@ -67,7 +67,7 @@ public interface TopicModificationService {
      * <b>NOTE</b>: The whole body will be wrapped with [code] if it is not wrapped, 
      * because CR implies that there is no usual text in the post body.
      *
-     * @param topic           topic that used as dto
+     * @param topicDto           topic that used as dto
      * @param bodyText        body of topic
      * @param notifyOnAnswers user notification on answers flag
      * @return created code review topic

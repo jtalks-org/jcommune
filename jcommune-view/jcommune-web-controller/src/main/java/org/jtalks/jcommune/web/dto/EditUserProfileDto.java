@@ -63,6 +63,7 @@ public class EditUserProfileDto {
     private Language language;
     @PageSize(message = "{validation.profile.page.size}")
     private int pageSize;
+    private boolean autosubscribe;
     private String avatar;
     @Length(max = JCUser.MAX_LOCATION_SIZE)
     private String location;
@@ -97,6 +98,7 @@ public class EditUserProfileDto {
         this.signature = user.getSignature();
         this.language = user.getLanguage();
         this.pageSize = user.getPageSize();
+        this.autosubscribe = user.isAutosubscribe();
         this.location = user.getLocation();
     }
 
@@ -109,7 +111,7 @@ public class EditUserProfileDto {
     public UserInfoContainer getUserInfoContainer() {
         return new UserInfoContainer(this.getFirstName(), this.getLastName(), this.getEmail(),
                 this.getCurrentUserPassword(), this.getNewUserPassword(), this.getSignature(),
-                this.getAvatar(), this.getLanguage(), this.getPageSize(), this.getLocation());
+                this.getAvatar(), this.getLanguage(), this.getPageSize(), this.isAutosubscribe(), this.getLocation());
     }
     
     /**
@@ -176,6 +178,24 @@ public class EditUserProfileDto {
      */
     public void setNewUserPasswordConfirm(String newUserPasswordConfirm) {
         this.newUserPasswordConfirm = newUserPasswordConfirm;
+    }
+
+    /**
+     * Check autosubscribe to user
+     *
+     * @return - autosubscribe
+     */
+    public boolean isAutosubscribe() {
+        return autosubscribe;
+    }
+
+    /**
+     * Set autosubscribe flag user.
+     *
+     * @param autosubscribe
+     */
+    public void setAutosubscribe(boolean autosubscribe) {
+        this.autosubscribe = autosubscribe;
     }
 
     /**

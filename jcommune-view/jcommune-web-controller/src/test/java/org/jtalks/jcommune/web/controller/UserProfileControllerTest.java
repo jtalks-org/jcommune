@@ -164,6 +164,7 @@ public class UserProfileControllerTest {
         assertViewName(mav, expectedUrl);
         assertEquals(response.getCookies()[0].getValue(), Language.ENGLISH.getLanguageCode());
         assertEquals(response.getCookies()[0].getName(), CookieLocaleResolver.DEFAULT_COOKIE_NAME);
+        verify(userService).saveEditedUserProfile(anyLong(), any(UserInfoContainer.class));
     }
 
     @Test

@@ -39,6 +39,7 @@ public class JCUser extends User {
     private String signature;
     private DateTime registrationDate;
     private boolean enabled;
+    private boolean autosubscribe;
 
     public static final int MAX_SIGNATURE_SIZE = 255;
     public static final int MAX_LOCATION_SIZE = 30;
@@ -48,9 +49,9 @@ public class JCUser extends User {
 
     private static final long serialVersionUID = 19981017L;
     private Set<UserContact> contacts = new HashSet<UserContact>();
-    
+
     private DateTime avatarLastModificationTime = new DateTime(System.currentTimeMillis());
-    
+
     private DateTime allForumMarkedAsReadTime;
 
     /**
@@ -212,16 +213,33 @@ public class JCUser extends User {
     }
 
     /**
-     * @param enabled if set to false, it will prevent user from log in
+     * After create new post(topic) user subscribes on update of topic
+     *
+     * @return true, if user autosubscribe
      */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
-    
+
     /**
-     * Returns whether current user is logged in or not. Vast majority of user 
-     * properties is available for logged in users only, anonymous user object 
+     * @param enabled if set to false, it will prevent user from log in
+     */
+    public boolean isAutosubscribe() {
+        return autosubscribe;
+    }
+
+    /**
+     * @param autosubscribe if set to false, it will prevent user from log in
+     */
+    public void setAutosubscribe(boolean autosubscribe) {
+        this.autosubscribe = autosubscribe;
+    }
+
+    /**
+     * Returns whether current user is logged in or not. Vast majority of user
+     * properties is available for logged in users only, anonymous user object
      * holds only default settings
+     *
      * @return whether this user is anonymous
      */
     public boolean isAnonymous() {
@@ -244,7 +262,7 @@ public class JCUser extends User {
 
     /**
      * Get the time when forum was marked as all read for this user.
-     * 
+     *
      * @return if forum was marked as all read for this user it returns time of this action,
      *         if forum was never marked as all read it returns null
      */
@@ -254,8 +272,8 @@ public class JCUser extends User {
 
     /**
      * Set the time when forum was marked as all read for this user.
-     * 
-     * @param allForumMarkedAsReadTime the time when forum was marked as all read for this user
+     *
+     * @param forumMarkedAsAllReadTime the time when forum was marked as all read for this user
      */
     public void setAllForumMarkedAsReadTime(DateTime forumMarkedAsAllReadTime) {
         this.allForumMarkedAsReadTime = forumMarkedAsAllReadTime;
