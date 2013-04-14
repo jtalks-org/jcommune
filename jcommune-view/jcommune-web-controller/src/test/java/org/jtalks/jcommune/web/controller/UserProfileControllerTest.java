@@ -15,6 +15,8 @@
 package org.jtalks.jcommune.web.controller;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -22,15 +24,16 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
 import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.Post;
@@ -44,7 +47,7 @@ import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
-import org.mockito.Matchers;
+import org.mockito.Mock;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -62,11 +65,9 @@ import org.testng.annotations.Test;
 /**
  * @author Kirill Afonin
  * @author Osadchuck Eugeny
+ * @author Anuar_Nurmakanov
  */
 public class UserProfileControllerTest {
-    private UserService userService;
-    private UserProfileController profileController;
-
     private static final long USER_ID = 1l;
     private static final String USER_NAME = "username";
     private static final String FIRST_NAME = "first name";
@@ -77,21 +78,26 @@ public class UserProfileControllerTest {
     private static final Language LANGUAGE = Language.ENGLISH;
     private static final int PAGE_SIZE = 50;
     private String avatar;
+    //
+    @Mock
     private BreadcrumbBuilder breadcrumbBuilder;
+    @Mock
     private ImageUtils imageUtils;
+    @Mock
     private PostService postService;
+    @Mock
+    private UserService userService;
+    //
+    private UserProfileController profileController;
 
     @BeforeClass
-    public void mockAvatar() throws IOException {
+    public void mockAvatar() {
         avatar = new Base64Wrapper().encodeB64Bytes(avatarByteArray);
     }
 
     @BeforeMethod
-    public void setUp() throws IOException {
-        userService = mock(UserService.class);
-        breadcrumbBuilder = mock(BreadcrumbBuilder.class);
-        imageUtils = mock(ImageUtils.class);
-        postService = mock(PostService.class);
+    public void setUp() {
+        initMocks(this);
         profileController = new UserProfileController(
                 userService,
                 breadcrumbBuilder,
@@ -100,29 +106,28 @@ public class UserProfileControllerTest {
     }
 
     @Test
-    public void testShow() throws Exception {
+    public void showProfilePageShouldMovePassedUserToUserProfile() throws Exception {
         JCUser user = new JCUser("username", "email", "password");
         user.setLanguage(LANGUAGE);
-        //set expectations
         when(userService.get(user.getId())).thenReturn(user);
 
-        //invoke the object under test
         ModelAndView mav = profileController.showProfilePage(user.getId());
 
-        //check result
         assertViewName(mav, "userDetails");
         assertModelAttributeAvailable(mav, "user");
+        assertModelAttributeAvailable(mav, "language");
     }
 
     @Test
-    public void testShowShortcut() throws NotFoundException {
+    public void showCurrentUserProfilePageShouldMoveToCurrentUserProfile() throws NotFoundException {
         JCUser user = new JCUser(USER_NAME, EMAIL, PASSWORD);
         when(userService.getCurrentUser()).thenReturn(user);
 
-        ModelAndView mav = profileController.showProfilePage();
+        ModelAndView mav = profileController.showCurrentUserProfilePage();
 
         assertViewName(mav, "userDetails");
         assertModelAttributeAvailable(mav, "user");
+        assertModelAttributeAvailable(mav, "language");
     }
 
     @Test
@@ -132,7 +137,7 @@ public class UserProfileControllerTest {
         when(userService.getCurrentUser()).thenReturn(user);
         when(userService.get(editedUserId)).thenReturn(user);
 
-        ModelAndView mav = profileController.editAnotherUserProfile(editedUserId);
+        ModelAndView mav = profileController.startEditUserProfile(editedUserId);
 
         assertViewName(mav, "editProfile");
         EditUserProfileDto dto = assertAndReturnModelAttributeOfType(mav, "editedUser", EditUserProfileDto.class);
@@ -142,66 +147,66 @@ public class UserProfileControllerTest {
         verify(userService).checkPermissionsToEditProfiles(user.getId());
     }
 
-
     @Test
-    public void testEditProfile() throws NotFoundException {
+    public void saveEditedProfileWithCorrectEnteredDataShouldMoveUserInUpdatedProfile() throws NotFoundException {
         JCUser user = getUser();
         EditUserProfileDto userDto = getEditUserProfileDto();
         MockHttpServletResponse response = new MockHttpServletResponse();
-
-        when(userService.editUserProfile(anyLong(), Matchers.<UserInfoContainer>any())).thenReturn(user);
+        //
+        when(userService.saveEditedUserProfile(anyLong(), any(UserInfoContainer.class))).thenReturn(user);
         when(userService.getCurrentUser()).thenReturn(user);
 
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
-        ModelAndView mav = profileController.editProfile(userDto, bindingResult, response);
+        ModelAndView mav = profileController.saveEditedProfile(userDto, bindingResult, response);
 
         String expectedUrl = "redirect:/users/" + user.getId();
         assertViewName(mav, expectedUrl);
         assertEquals(response.getCookies()[0].getValue(), Language.ENGLISH.getLanguageCode());
         assertEquals(response.getCookies()[0].getName(), CookieLocaleResolver.DEFAULT_COOKIE_NAME);
-        verify(userService).editUserProfile(anyLong(),Matchers.<UserInfoContainer> any());
     }
 
     @Test
-    public void testEditProfileValidationFail() throws NotFoundException {
+    public void saveEditedProfileWithValidationErrorsShouldShowThemToUser() throws NotFoundException {
         JCUser user = getUser();
         when(userService.getCurrentUser()).thenReturn(user);
-
+        //
         EditUserProfileDto dto = getEditUserProfileDto();
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        ModelAndView mav = profileController.editProfile(dto, bindingResult, new MockHttpServletResponse());
+        ModelAndView mav = profileController.saveEditedProfile(dto, bindingResult, new MockHttpServletResponse());
 
         assertViewName(mav, "editProfile");
-        verify(userService, never()).editUserProfile(anyLong() ,Matchers.<UserInfoContainer>any());
+        verify(userService, never()).saveEditedUserProfile(anyLong() , any(UserInfoContainer.class));
     }
     
-    @Test(expectedExceptions=AccessDeniedException.class)
-    public void testEditProfileNotAllowed() throws NotFoundException {
+    @Test(expectedExceptions = AccessDeniedException.class)
+    public void saveEditedProfileShouldShowErrorWhenUserDoesNotHavePermissionToEditProfile() throws NotFoundException {
         JCUser user = getUser();
         EditUserProfileDto userDto = getEditUserProfileDto();
         MockHttpServletResponse response = new MockHttpServletResponse();
-
-        when(userService.editUserProfile(anyLong(), Matchers.<UserInfoContainer>any())).thenReturn(user);
+        //
+        when(userService.saveEditedUserProfile(anyLong(), any(UserInfoContainer.class))).thenReturn(user);
         when(userService.getCurrentUser()).thenReturn(user);
-        doThrow(new AccessDeniedException("")).when(userService).checkPermissionsToEditProfiles(anyLong());
-
+        doThrow(new AccessDeniedException(StringUtils.EMPTY)).when(userService).checkPermissionsToEditProfiles(anyLong());
+        //
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
-        profileController.editProfile(userDto, bindingResult, response);
+        profileController.saveEditedProfile(userDto, bindingResult, response);
     }
 
     @Test
     public void testInitBinder() {
         WebDataBinder binder = mock(WebDataBinder.class);
+        
         profileController.initBinder(binder);
+        
         verify(binder).registerCustomEditor(eq(String.class), any(StringTrimmerEditor.class));
     }
 
     @Test
-    public void testShowUserPostList() throws NotFoundException {
+    public void showUserPostListShouldShowThemToUser() throws NotFoundException {
         JCUser user = new JCUser("username", "email", "password");
         user.setPageSize(5);
         Post post = mock(Post.class);
@@ -209,23 +214,18 @@ public class UserProfileControllerTest {
         List<Post> posts = new ArrayList<Post>();
         posts.add(post);
         Page<Post> postsPage = new PageImpl<Post>(posts);
-
-        //set expectations
+        //
         when(userService.getByUsername("username")).thenReturn(user);
         when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
-        when(postService.getPostsOfUser(Matchers.<JCUser> any(), Matchers.anyInt(), Matchers.anyBoolean()))
+        when(postService.getPostsOfUser(any(JCUser.class), anyInt(), anyBoolean()))
             .thenReturn(postsPage);
         when(userService.getCurrentUser()).thenReturn(user);
         when(post.getTopic()).thenReturn(topic);
 
-        //invoke the object under test
         ModelAndView mav = profileController.showUserPostList(user.getId(), 1, true);
 
-        //check expectations
         verify(userService).get(user.getId());
-        verify(breadcrumbBuilder).getForumBreadcrumb();
-
-        //check result
+        assertViewName(mav, "userPostList");
         assertModelAttributeAvailable(mav, "user");
         assertModelAttributeAvailable(mav, "breadcrumbList");
         assertModelAttributeAvailable(mav, "user");

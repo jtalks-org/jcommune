@@ -28,6 +28,7 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
  *
  * @author Osadchuck Eugeny
  * @author Kirill Afonin
+ * @author Anuar_Nurmakanov
  */
 public interface UserService extends EntityService<JCUser> {
     /**
@@ -69,12 +70,12 @@ public interface UserService extends EntityService<JCUser> {
     /**
      * Update user entity.
      *
-     * @param an identifier of edited user
-     * @param info modified profile info holder
+     * @param editedUserId an identifier of edited user
+     * @param editedUserProfileInfo modified profile info holder
      * @return edited user
      * @throws NotFoundException if edited user doesn't exists in system
      */
-    JCUser editUserProfile(long editedUserId, UserInfoContainer info) throws NotFoundException;
+    JCUser saveEditedUserProfile(long editedUserId, UserInfoContainer editedUserProfileInfo) throws NotFoundException;
 
     /**
      * Performs the following:

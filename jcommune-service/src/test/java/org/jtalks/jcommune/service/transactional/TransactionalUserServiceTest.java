@@ -153,7 +153,7 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
-    public void testGetByUsername() throws Exception {
+    public void testGetByUsername() throws NotFoundException {
         JCUser expectedUser = getUser(USERNAME);;
         when(userDao.getByUsername(USERNAME)).thenReturn(expectedUser);
 
@@ -164,7 +164,7 @@ public class TransactionalUserServiceTest {
     }
 
     @Test(expectedExceptions = NotFoundException.class)
-    public void testGetByUsernameNotFound() throws Exception {
+    public void testGetByUsernameNotFound() throws NotFoundException {
         when(userDao.getByUsername(USERNAME)).thenReturn(null);
 
         userService.getByUsername(USERNAME);
@@ -199,7 +199,7 @@ public class TransactionalUserServiceTest {
 
         String newAvatar = new String(new byte[12]);
 
-        JCUser editedUser = userService.editUserProfile(USER_ID, new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
+        JCUser editedUser = userService.saveEditedUserProfile(USER_ID, new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
                 PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE,
                 LOCATION));
 
@@ -222,7 +222,7 @@ public class TransactionalUserServiceTest {
                 PASSWORD, newPassword, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE,
                 LOCATION);
         
-        JCUser editedUser = userService.editUserProfile(USER_ID, userInfo);
+        JCUser editedUser = userService.saveEditedUserProfile(USER_ID, userInfo);
         
         assertEquals(editedUser.getPassword(), user.getPassword());
     }
@@ -237,7 +237,7 @@ public class TransactionalUserServiceTest {
         when(userDao.get(USER_ID)).thenReturn(user);
         String newAvatar = new String(new byte[0]);
 
-        JCUser editedUser = userService.editUserProfile(USER_ID, new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
+        JCUser editedUser = userService.saveEditedUserProfile(USER_ID, new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
                 PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE,
                 LOCATION));
 

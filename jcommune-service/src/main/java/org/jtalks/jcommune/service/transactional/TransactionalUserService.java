@@ -95,7 +95,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * @param sessionStrategy   used in login logic to call onAuthentication hook
      *                          which stored this user to online uses list.
      */
-    public TransactionalUserService(UserDao dao, GroupDao groupDao,
+    public TransactionalUserService(UserDao dao, 
+                                    GroupDao groupDao,
                                     SecurityService securityService,
                                     MailService mailService,
                                     Base64Wrapper base64Wrapper,
@@ -104,8 +105,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
                                     AuthenticationManager authenticationManager,
                                     SecurityContextHolderFacade securityFacade,
                                     RememberMeServices rememberMeServices,
-                                    SessionAuthenticationStrategy sessionStrategy
-    ) {
+                                    SessionAuthenticationStrategy sessionStrategy) {
         super(dao);
         this.groupDao = groupDao;
         this.securityService = securityService;
@@ -192,17 +192,18 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public JCUser editUserProfile(long editedUserId, UserInfoContainer info) throws NotFoundException {
+    public JCUser saveEditedUserProfile(
+            long editedUserId, UserInfoContainer editedUserProfileInfo) throws NotFoundException {
 
         JCUser editedUser = this.get(editedUserId);
-        byte[] decodedAvatar = base64Wrapper.decodeB64Bytes(info.getB64EncodedAvatar());
+        byte[] decodedAvatar = base64Wrapper.decodeB64Bytes(editedUserProfileInfo.getB64EncodedAvatar());
 
-        String newPassword = info.getNewPassword();
+        String newPassword = editedUserProfileInfo.getNewPassword();
         if (newPassword != null) {
             String encryptedPassword = encryptionService.encryptPassword(newPassword);
             editedUser.setPassword(encryptedPassword);
         }
-        editedUser.setEmail(info.getEmail());
+        editedUser.setEmail(editedUserProfileInfo.getEmail());
 
         if (!Arrays.equals(editedUser.getAvatar(), decodedAvatar)) {
             editedUser.setAvatarLastModificationTime(new DateTime(
@@ -210,12 +211,12 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         }
         editedUser.setAvatar(decodedAvatar);
 
-        editedUser.setSignature(info.getSignature());
-        editedUser.setFirstName(info.getFirstName());
-        editedUser.setLastName(info.getLastName());
-        editedUser.setLanguage(info.getLanguage());
-        editedUser.setPageSize(info.getPageSize());
-        editedUser.setLocation(info.getLocation());
+        editedUser.setSignature(editedUserProfileInfo.getSignature());
+        editedUser.setFirstName(editedUserProfileInfo.getFirstName());
+        editedUser.setLastName(editedUserProfileInfo.getLastName());
+        editedUser.setLanguage(editedUserProfileInfo.getLanguage());
+        editedUser.setPageSize(editedUserProfileInfo.getPageSize());
+        editedUser.setLocation(editedUserProfileInfo.getLocation());
 
         this.getDao().saveOrUpdate(editedUser);
         LOGGER.info("Updated user profile. Username: {}", editedUser.getUsername());
@@ -314,6 +315,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
                 result = true;
             }
         } catch (NotFoundException e) {
+            //TODO why do we catch it? Anyway, we must even if log it
         } catch (AuthenticationException e) {
             LOGGER.warn(e.getMessage());
         }
