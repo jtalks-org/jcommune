@@ -40,11 +40,15 @@ $(function () {
         $('#main-links-editor').find('.close').click();
     });
 
-    $('.btn-navbar').bind('mainLinksPosition', function (e) {
+    //add links when click to button navbar (fix show elements when refresh page)
+    $('.btn-navbar').on('click', function(){
+        $('li.topline-links').show();
+    });
+
+    $('.btn-navbar').on('mainLinksPosition', function (e) {
         var sizeMin = $('.btn-navbar').css('display');
         if (sizeMin && sizeMin == 'block') {
             //show in topLine
-            $('li.topline-links').show();
             $('span#externalLinks').parent('div').hide();
         } else {
             //show in mainPage
