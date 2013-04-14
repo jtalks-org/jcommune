@@ -45,7 +45,6 @@ public class TransactionalLastReadPostServiceTest {
     private static final String BRANCH_NAME = "branch name";
     private static final String BRANCH_DESCRIPTION = "branch description";
     private JCUser user;
-    private JCUser userSpy;
     private DateTime before = new DateTime(2013,2,2,2,2,0,0);
     private DateTime after = new DateTime(2013,2,2,2,3,0,0);
 
@@ -63,7 +62,6 @@ public class TransactionalLastReadPostServiceTest {
     public void setUp() throws Exception {
         initMocks(this);
         user = new JCUser("username", "email@mail.com", "password");
-        userSpy = spy(user);
         lastReadPostService = new TransactionalLastReadPostService(
                 userService,
                 lastReadPostDao,
@@ -159,49 +157,40 @@ public class TransactionalLastReadPostServiceTest {
     @Test
     public void updateLastReadPostToAuthUserWhenAllForumMarkedBefore() {
         Topic topic = this.createTestTopic();
-        Topic topicSpy = spy(topic);
+        user.setAllForumMarkedAsReadTime(topic.getModificationDate().minusSeconds(1));
         LastReadPost post = new LastReadPost(user, topic, 0);
-        when(userService.getCurrentUser()).thenReturn(userSpy);
-        when(userSpy.getAllForumMarkedAsReadTime()).thenReturn(before);
-        when(topicSpy.getModificationDate()).thenReturn(after);
-        when(lastReadPostDao.getLastReadPost(userSpy, topicSpy)).thenReturn(post);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
 
-        lastReadPostService.markTopicPageAsRead(topicSpy, 1, false);
+        lastReadPostService.markTopicPageAsRead(topic, 1, false);
 
-        verify(lastReadPostDao).update(argThat(
-                new LastReadPostMatcher(topicSpy, topicSpy.getPostCount() - 1)));
+        verify(lastReadPostDao).update(post);
     }
 
     @Test
     public void updateLastReadPostToAuthUserWhenAllForumMarkedNull() {
         Topic topic = this.createTestTopic();
-        Topic topicSpy = spy(topic);
+        user.setAllForumMarkedAsReadTime(null);
         LastReadPost post = new LastReadPost(user, topic, 0);
-        when(userService.getCurrentUser()).thenReturn(userSpy);
-        when(userSpy.getAllForumMarkedAsReadTime()).thenReturn(null);
-        when(topicSpy.getModificationDate()).thenReturn(after);
-        when(lastReadPostDao.getLastReadPost(userSpy, topicSpy)).thenReturn(post);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
 
-        lastReadPostService.markTopicPageAsRead(topicSpy, 1, false);
+        lastReadPostService.markTopicPageAsRead(topic, 1, false);
 
-        verify(lastReadPostDao).update(argThat(
-                new LastReadPostMatcher(topicSpy, topicSpy.getPostCount() - 1)));
+        verify(lastReadPostDao).update(post);
     }
 
     @Test
     public void notUpdateLastReadPostToAuthUserWhenAllForumAfter() {
         Topic topic = this.createTestTopic();
-        Topic topicSpy = spy(topic);
+        user.setAllForumMarkedAsReadTime(topic.getModificationDate().plusSeconds(1));
         LastReadPost post = new LastReadPost(user, topic, 0);
-        when(userService.getCurrentUser()).thenReturn(userSpy);
-        when(userSpy.getAllForumMarkedAsReadTime()).thenReturn(after);
-        when(topicSpy.getModificationDate()).thenReturn(before);
-        when(lastReadPostDao.getLastReadPost(userSpy, topicSpy)).thenReturn(post);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
 
-        lastReadPostService.markTopicPageAsRead(topicSpy, 1, false);
+        lastReadPostService.markTopicPageAsRead(topic, 1, false);
 
-        verify(lastReadPostDao, never()).update(argThat(
-                new LastReadPostMatcher(topicSpy, topicSpy.getPostCount() - 1)));
+        verify(lastReadPostDao, never()).update(post);
     }
 
     @Test
