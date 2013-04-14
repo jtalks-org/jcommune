@@ -616,13 +616,6 @@ div.anchor {
     margin: 0 !important;
 }
 
-.topline-links {
-    font-weight: bold;
-    color: #999999;
-}
-
-
-
 .sapeLinks {
     min-height: 10px;
     padding: 5px;
@@ -657,7 +650,16 @@ div.anchor {
     padding-top: 5px;
 }
 
-.top-line-links {
+.topline-links[style*="display: none"] {
     padding-left: 15px;
-    display: none;
+    font-weight: bold;
+    color: #999999;
+    display: none !important;
+}
+
+.topline-links:not([style*="display: none"]) {
+    padding-left: 15px;
+    font-weight: bold;
+    color: #999999;
+    display: list-item !important;
 }

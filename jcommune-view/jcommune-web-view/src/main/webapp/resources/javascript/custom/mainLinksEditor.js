@@ -40,25 +40,15 @@ $(function () {
         $('#main-links-editor').find('.close').click();
     });
 
-    function getMinMenuButtonVisible(){
-        return $('.btn-navbar').css('display');
-    }
-
     $('.btn-navbar').bind('mainLinksPosition', function (e) {
-        var sizeMin = getMinMenuButtonVisible();
-        console.log(sizeMin);
+        var sizeMin = $('.btn-navbar').css('display');
         if (sizeMin && sizeMin == 'block') {
-            //check again for fix display when loading is long
-            setTimeout(function(){
-              if(getMinMenuButtonVisible() == 'block'){
-                //show in topLine
-                $('li.top-line-links').show();
-                $('span#externalLinks').parent('div').hide();
-              }
-            },500);
+            //show in topLine
+            $('li.topline-links').show();
+            $('span#externalLinks').parent('div').hide();
         } else {
             //show in mainPage
-            $('li.top-line-links').hide();
+            $('li.topline-links').hide();
             $('span#externalLinks').parent('div').show();
         }
     });
@@ -69,7 +59,7 @@ $(function () {
         var elements = [];
         $(externalLinksGroupId).find('a').each(function (i, elem) {
             var fullId = $(elem).attr('id');
-        	var id = extractExternalLinkIdFrom(fullId);
+            var id = extractExternalLinkIdFrom(fullId);
             var externalLink = {};
             externalLink.id = id;
             externalLink.url = $(elem).attr('href');
@@ -132,11 +122,11 @@ $(function () {
 });
 
 function extractExternalLinkIdFrom(fullId) {
-	if (fullId.indexOf(bigScreenExternalLinkIdPrefix) !== -1) {
-		return fullId.replace(bigScreenExternalLinkIdPrefix, "");
-	} else if(fullId.indexOf(smallScreenExternalLinkIdPrefix) !== -1) {
-		return fullId.replace(smallScreenExternalLinkIdPrefix, "");
-	}
+    if (fullId.indexOf(bigScreenExternalLinkIdPrefix) !== -1) {
+        return fullId.replace(bigScreenExternalLinkIdPrefix, "");
+    } else if (fullId.indexOf(smallScreenExternalLinkIdPrefix) !== -1) {
+        return fullId.replace(smallScreenExternalLinkIdPrefix, "");
+    }
 }
 
 
