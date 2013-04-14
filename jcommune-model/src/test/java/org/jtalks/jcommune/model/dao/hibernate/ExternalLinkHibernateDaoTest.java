@@ -19,8 +19,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
 
-import org.jtalks.jcommune.model.ObjectsFactory;
-import org.jtalks.jcommune.model.PersistedObjectsFactory;
+import org.jtalks.jcommune.model.entity.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.ExternalLinkDao;
 import org.jtalks.jcommune.model.entity.ExternalLink;
 import org.springframework.beans.factory.annotation.Autowired;

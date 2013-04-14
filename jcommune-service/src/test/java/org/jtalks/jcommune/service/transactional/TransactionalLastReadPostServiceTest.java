@@ -41,12 +41,7 @@ import static org.testng.Assert.*;
  * @author Anuar_Nurmakanov
  */
 public class TransactionalLastReadPostServiceTest {
-
-    private static final String BRANCH_NAME = "branch name";
-    private static final String BRANCH_DESCRIPTION = "branch description";
     private JCUser user;
-    private DateTime before = new DateTime(2013,2,2,2,2,0,0);
-    private DateTime after = new DateTime(2013,2,2,2,3,0,0);
 
     @Mock
     private LastReadPostDao lastReadPostDao;
@@ -70,18 +65,15 @@ public class TransactionalLastReadPostServiceTest {
     
     @Test
     public void userShouldNotSeeUpdatesWhenForumMarkedAsAllReadAndTopicsDoNotHaveModificationsAfter() {
-        Topic topic = new Topic(user, "title");
-        topic.addPost(new Post(user, "content"));
-        List<Topic> topicList = Collections.singletonList(topic);
+        List<Topic> topicList = ObjectsFactory.topics(user, 1);
         when(lastReadPostDao.getLastReadPosts(user, Collections.<Topic> emptyList()))
             .thenReturn(Collections.<LastReadPost> emptyList());
         DateTime forumMarkedAsReadDate = new DateTime().plusYears(1);
         user.setAllForumMarkedAsReadTime(forumMarkedAsReadDate);
         when(userService.getCurrentUser()).thenReturn(user);
-        
-        List<Topic> result
-            = lastReadPostService.fillLastReadPostForTopics(topicList);
-        
+
+        List<Topic> result = lastReadPostService.fillLastReadPostForTopics(topicList);
+
         assertEquals(1, result.size());
         assertFalse(result.get(0).isHasUpdates());
     }
@@ -91,32 +83,24 @@ public class TransactionalLastReadPostServiceTest {
         DateTime forumMarkedAsReadDate = new DateTime().minusYears(1);
         user.setAllForumMarkedAsReadTime(forumMarkedAsReadDate);
         when(userService.getCurrentUser()).thenReturn(user);
-        Topic topic = new Topic(user, "title");
-        topic.addPost(new Post(user, "content"));
-        List<Topic> topicList = Collections.singletonList(topic);
+        List<Topic> topics = ObjectsFactory.topics(user, 1);
         when(lastReadPostDao.getLastReadPosts(user, Collections.<Topic> emptyList()))
             .thenReturn(Collections.<LastReadPost> emptyList());
-        
-        List<Topic> result
-            = lastReadPostService.fillLastReadPostForTopics(topicList);
-        
+
+        List<Topic> result = lastReadPostService.fillLastReadPostForTopics(topics);
+
         assertEquals(1, result.size());
         assertTrue(result.get(0).isHasUpdates());
     }
 
     @Test
     public void authenticatedUserShouldSeeReadTopicAsTopicWithoutUpdates() {
-        Topic topic = new Topic(user, "title");
-        topic.addPost(new Post(user, "content"));
-        List<Topic> topicList = Collections.singletonList(topic);
-        LastReadPost post = new LastReadPost(user, topic, 0);
+        List<Topic> topicList = ObjectsFactory.topics(user, 1);
+        LastReadPost post = new LastReadPost(user, topicList.get(0), 0);
         when(userService.getCurrentUser()).thenReturn(user);
-        when(lastReadPostDao.getLastReadPosts(user, topicList))
-            .thenReturn(Collections.singletonList(post));
+        when(lastReadPostDao.getLastReadPosts(user, topicList)).thenReturn(Collections.singletonList(post));
 
-        List<Topic> result
-                = lastReadPostService.fillLastReadPostForTopics(topicList);
-
+        List<Topic> result = lastReadPostService.fillLastReadPostForTopics(topicList);
         assertEquals(1, result.size());
         assertFalse(result.get(0).isHasUpdates());
     }
@@ -126,20 +110,16 @@ public class TransactionalLastReadPostServiceTest {
         when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
 
         lastReadPostService.fillLastReadPostForTopics(new ArrayList<Topic>());
-
         verify(lastReadPostDao, never()).getLastReadPosts(Matchers.<JCUser> any(), Matchers.<List<Topic>> any());
     }
 
     @Test
     public void authenticatedUserShouldSeeNotReadTopicAsTopicWithUpdates() {
-        Topic topic = new Topic(user, "title");
-        List<Topic> topicList = Collections.singletonList(topic);
+        List<Topic> topicList = ObjectsFactory.topics(user, 1);
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPosts(user, topicList)).thenReturn(Collections.<LastReadPost> emptyList());
         
-        List<Topic> result
-                = lastReadPostService.fillLastReadPostForTopics(Collections.singletonList(topic));
-
+        List<Topic> result = lastReadPostService.fillLastReadPostForTopics(topicList);
         assertEquals(1, result.size());
         assertTrue(result.get(0).isHasUpdates());
     }
@@ -234,16 +214,15 @@ public class TransactionalLastReadPostServiceTest {
     @Test
     public void anonymousUserShouldNotMarkAllTopicsInBranchAsRead() {
         when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
-        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        Branch branch = new Branch("branch name", "branch description");
 
         lastReadPostService.markAllTopicsAsRead(branch);
-
         verifyZeroInteractions(lastReadPostDao);
     }
 
     @Test
     public void authenticatedUserShouldHaveAbilityToMarkAllTopicsInBranchAsRead() throws Exception {
-        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        Branch branch = new Branch("branch name", "branch description");
         when(userService.getCurrentUser()).thenReturn(user);
 
         lastReadPostService.markAllTopicsAsRead(branch);
@@ -258,9 +237,7 @@ public class TransactionalLastReadPostServiceTest {
         when(userService.getCurrentUser()).thenReturn(user);
 
         lastReadPostService.markTopicAsRead(topic);
-
-        verify(lastReadPostDao).update(argThat(
-                new LastReadPostMatcher(topic, topic.getPostCount() - 1)));
+        verify(lastReadPostDao).update(argThat(new LastReadPostMatcher(topic, topic.getPostCount() - 1)));
     }
 
     @Test
@@ -328,7 +305,7 @@ public class TransactionalLastReadPostServiceTest {
         JCUser anonymous = new AnonymousUser();
         when(userService.getCurrentUser()).thenReturn(anonymous);
         when(lastReadPostDao.getLastReadPost(anonymous, topic))
-                .thenThrow(new TransientObjectException("Object refrence to unsaved object"));
+                .thenThrow(new TransientObjectException("Object reference to unsaved object"));
 
         assertNull(lastReadPostService.getLastReadPostForTopic(topic));
     }

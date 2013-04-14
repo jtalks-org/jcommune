@@ -20,8 +20,8 @@ import org.testng.annotations.Test;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.jtalks.jcommune.model.ObjectsFactory.getDefaultTopic;
-import static org.jtalks.jcommune.model.ObjectsFactory.getRandomUser;
+import static org.jtalks.jcommune.model.entity.ObjectsFactory.getDefaultTopic;
+import static org.jtalks.jcommune.model.entity.ObjectsFactory.getRandomUser;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertTrue;

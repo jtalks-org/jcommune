@@ -12,28 +12,16 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model;
+package org.jtalks.jcommune.model.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.math.RandomUtils;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.Section;
-import org.jtalks.jcommune.model.entity.Banner;
-import org.jtalks.jcommune.model.entity.BannerPosition;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.CodeReview;
-import org.jtalks.jcommune.model.entity.CodeReviewComment;
-import org.jtalks.jcommune.model.entity.ExternalLink;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.PrivateMessage;
-import org.jtalks.jcommune.model.entity.SimplePage;
-import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.UserContact;
-import org.jtalks.jcommune.model.entity.UserContactType;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Kirill Afonin
@@ -89,6 +77,16 @@ public final class ObjectsFactory {
         newSection.setDescription("branch description");
         newSection.setPosition(1);
         return newSection;
+    }
+
+    public static List<Topic> topics(JCUser author, int topicCount) {
+        List<Topic> topics = new ArrayList<Topic>();
+        for (int i = 0; i < topicCount; i++) {
+            Topic topic = new Topic(author, "title");
+            topic.addPost(new Post(author, "post-content"));
+            topics.add(topic);
+        }
+        return topics;
     }
 
     public static Topic getDefaultTopic() {
