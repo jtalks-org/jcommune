@@ -14,8 +14,10 @@
  */
 package org.jtalks.jcommune.web.interceptors;
 
+import com.google.common.collect.Lists;
 import javasape.Sape;
 import javasape.SapePageLinks;
+import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -26,14 +28,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Initializes {@link javasape.Sape} object on application start.
- * JavaSapeInterceptor sent request to Javasape provider with specific account ID and
- * sets sape content to parameters of each request.
+ * <b>Objectives:</b> put some links to every page user views.<br/>
+ * <b>Details: </b> initializes {@link javasape.Sape} object on application start. JavaSapeInterceptor sends request
+ * to SAPE.ru  provider with specific account ID and sets sape content to parameters of each request.
  *
  * @author elepaeva
+ * @see <a href="http://jira.jtalks.org/browse/JC-1254">Related JIRA ticket</a>
  */
 public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
-
     private JCommuneProperty componentSapeAccountProperty;
     private JCommuneProperty componentSapeOnMainPageEnableProperty;
     private JCommuneProperty componentSapeLinksCountProperty;
@@ -42,37 +44,31 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
     private JCommuneProperty componentSapeShowDummyLinksProperty;
     private JCommuneProperty componentSapeEnableServiceProperty;
 
-    private static Sape sape;
+    private static volatile Sape sape;
 
-    private static List<String> dummyLinks;
+    private static final List<String> DUMMY_LINKS = Lists.newArrayList(
+            "<a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
+                    "продажа зимних шин нокиан</a><br/> с доставкой",
+            "<a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
+                    "продаю что-то</a><br/>налетай. какой то очень длинный текст, для проверки отображения ссылок. " +
+                    "И еще какой то текст длинный длинный",
+            "<a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
+                    "какая то другая ссылка</a><br/> на что-то другое",
+            "<a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
+                    "продажа зимних шин нокиан</a><br/> с доставкой",
+            "<a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
+                    "какая то другая ссылка</a><br/> на что-то другое",
+            "<a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
+                    "какая то другая ссылка</a><br/> на что-то другое");
 
-    static {
-        dummyLinks = new ArrayList<String>();
-        dummyLinks.add("<a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
-                "продажа зимних шин нокиан</a><br/> с доставкой");
-        dummyLinks.add("<a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
-                "продаю что-то</a><br/>налетай. какой то очень длинный текст, для проверки отображения ссылок. " +
-                "И еще какой то текст длинный длинный");
-        dummyLinks.add("<a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
-                "какая то другая ссылка</a><br/> на что-то другое");
-        dummyLinks.add("<a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
-                "продажа зимних шин нокиан</a><br/> с доставкой");
-        dummyLinks.add(" <a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
-                "какая то другая ссылка</a><br/> на что-то другое");
-        dummyLinks.add(" <a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
-                "какая то другая ссылка</a><br/> на что-то другое");
-    }
-
-    /**
-     * Initializes {@link javasape.Sape} object.
-     */
+    /** Initializes {@link javasape.Sape} object. */
     private boolean initSape() {
         if (sape != null) {
             return true;
         }
         String accountId = componentSapeAccountProperty.getValue();
         String host = componentSapeHostProperty.getValue();
-        if (accountId == null || accountId.trim().isEmpty() || host == null || host.trim().isEmpty()) {
+        if (StringUtils.isBlank(accountId) || StringUtils.isBlank(host)) {
             return false;
         }
         sape = new Sape(componentSapeAccountProperty.getValue(),
@@ -88,21 +84,23 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
      * @param request      current HTTP request
      * @param response     current HTTP response
      * @param handler      chosen handler to execute, for type and/or instance examination
-     * @param modelAndView the {@code ModelAndView} that the handler returned
-     *                     (can also be {@code null})
+     * @param modelAndView the {@code ModelAndView} that the handler returned (can also be {@code null})
      */
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response,
                            Object handler, ModelAndView modelAndView) throws Exception {
-        if (!componentSapeEnableServiceProperty.booleanValue() || modelAndView == null || modelAndView.getViewName() == null ||
-                //do not apply to the redirected requests: it's unnecessary and may cause error pages to work incorrectly
-                (!componentSapeOnMainPageEnableProperty.booleanValue() && modelAndView.getViewName().equals("sectionList")) ||
+        if (!componentSapeEnableServiceProperty.booleanValue() || modelAndView == null || modelAndView.getViewName()
+                == null ||
+                //do not apply to the redirected requests: it's unnecessary and may cause error pages to work
+                // incorrectly
+                (!componentSapeOnMainPageEnableProperty.booleanValue() && modelAndView.getViewName().equals
+                        ("sectionList")) ||
                 modelAndView.getViewName().contains("redirect:")) {
             return;
         }
 
         if (componentSapeShowDummyLinksProperty.booleanValue()) {
-            modelAndView.addObject("sapeLinks", dummyLinks);
+            modelAndView.addObject("sapeLinks", DUMMY_LINKS);
             return;
         }
 
