@@ -49,6 +49,7 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
  * @author Max Malakhov
  * @author Eugeny Batov
  * @author Evgeniy Naumenko
+ * @author Anuar_Nurmakanov
  */
 @Controller
 public class UserProfileController {
@@ -76,10 +77,10 @@ public class UserProfileController {
     }
 
     /**
-     * @param userService       {@link UserService} to be injected
+     * @param userService       to get current user and user by id
      * @param breadcrumbBuilder the object which provides actions on {@link BreadcrumbBuilder} entity
-     * @param imageUtils        {@link ImageUtils} used
-     * @param postService       {@link PostService} used
+     * @param imageUtils        to prepare user avatar for view
+     * @param postService       to get all user's posts
      */
     @Autowired
     public UserProfileController(UserService userService,
@@ -114,9 +115,22 @@ public class UserProfileController {
      * @return user details view with {@link JCUser} object.
      */
     @RequestMapping(value = "/user", method = RequestMethod.GET)
-    public ModelAndView showProfilePage() {
+    public ModelAndView showCurrentUserProfilePage() {
         JCUser user = userService.getCurrentUser();
         return getUserProfileModelAndView(user);
+    }
+    
+    /**
+     * Formats model and view for representing user's details
+     *
+     * @param user  user
+     * @return user's details
+     */
+    private ModelAndView getUserProfileModelAndView(JCUser user){
+        return new ModelAndView("userDetails")
+                .addObject("user", user)
+                // bind separately to get localized value
+                .addObject("language", user.getLanguage());
     }
 
     /**
@@ -125,17 +139,27 @@ public class UserProfileController {
      * @return edit user profile page
      * @throws NotFoundException throws if current logged in user was not found
      */
-    @RequestMapping(value = "/users/edit", method = RequestMethod.GET)
-    public ModelAndView editProfilePage() throws NotFoundException {
-        JCUser user = userService.getCurrentUser();
-        userService.checkPermissionsToEditProfile(user.getId());
-        EditUserProfileDto editedUser = new EditUserProfileDto(user);
-        byte[] avatar = user.getAvatar();
-        editedUser.setAvatar(imageUtils.prepareHtmlImgSrc(avatar));
-        
-        ModelAndView mav = new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUser);
-        mav.addObject("contacts", user.getUserContacts());
+    @RequestMapping(value = "/users/edit/{editedUserId}", method = RequestMethod.GET)
+    public ModelAndView startEditUserProfile(@PathVariable Long editedUserId) throws NotFoundException {
+        checkPermissionsToEditProfile();
+        JCUser editedUser = userService.get(editedUserId);
+        EditUserProfileDto editedUserDto = convertUserForView(editedUser);
+        ModelAndView mav = new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUserDto);
+        mav.addObject("contacts", editedUser.getUserContacts());
         return mav;
+    }
+    
+    /**
+     * Converts passed user to data transfer object for view. 
+     * 
+     * @param user passed user
+     * @return data transfer object for view
+     */
+    private EditUserProfileDto convertUserForView(JCUser user) {
+        EditUserProfileDto editUserProfileDto = new EditUserProfileDto(user);
+        byte[] avatar = user.getAvatar();
+        editUserProfileDto.setAvatar(imageUtils.prepareHtmlImgSrc(avatar));
+        return editUserProfileDto;
     }
 
     /**
@@ -143,27 +167,36 @@ public class UserProfileController {
      * In error case return into the edit profile page and draw the error.
      * <p/>
      *
-     * @param userDto  dto populated by user
+     * @param editedProfileDto  dto populated by user
      * @param result   binding result which contains the validation result
      * @param response http servlet response
      * @return in case of errors return back to edit profile page, in another case return to user details page
+     * @throws NotFoundException if edited user doesn't exist in system
      */
     @RequestMapping(value = "/users/edit", method = RequestMethod.POST)
-    public ModelAndView editProfile(@Valid @ModelAttribute(EDITED_USER) EditUserProfileDto userDto,
-                                    BindingResult result, HttpServletResponse response) {
+    public ModelAndView saveEditedProfile(@Valid @ModelAttribute(EDITED_USER) EditUserProfileDto editedProfileDto,
+                                    BindingResult result, HttpServletResponse response) throws NotFoundException {
         if (result.hasErrors()) {
-            return new ModelAndView(EDIT_PROFILE, EDITED_USER, userDto);
+            return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedProfileDto);
         }
-        JCUser currentUser = userService.getCurrentUser();
-        userService.checkPermissionsToEditProfile(currentUser.getId());
-        JCUser user = userService.editUserProfile(userDto.getUserInfoContainer());
+        checkPermissionsToEditProfile();
+        JCUser user = userService.saveEditedUserProfile(editedProfileDto.getUserId(), editedProfileDto.getUserInfoContainer());
         // apply language changes immediately
-        String code = userDto.getLanguage().getLanguageCode();
+        String code = editedProfileDto.getLanguage().getLanguageCode();
         Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, code);
         cookie.setPath("/");
         response.addCookie(cookie);
         //redirect to the view profile page
         return new ModelAndView("redirect:/users/" + user.getId());
+    }
+    
+    /**
+     * User must have permissions to edit own or other profiles.
+     * So we must check them for users, who try to edit profiles.
+     */
+    private void checkPermissionsToEditProfile() {
+        JCUser editorUser = userService.getCurrentUser();
+        userService.checkPermissionsToEditProfiles(editorUser.getId());
     }
 
     /**
@@ -191,19 +224,5 @@ public class UserProfileController {
                 .addObject("postsPage", postsPage)
                 .addObject("pagingEnabled", pagingEnabled)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
-    }
-
-
-    /**
-     * Formats model and view for representing user's details
-     *
-     * @param user  user
-     * @return user's details
-     */
-    private ModelAndView getUserProfileModelAndView(JCUser user){
-        return new ModelAndView("userDetails")
-                .addObject("user", user)
-                // bind separately to get localized value
-                .addObject("language", user.getLanguage());
     }
 }

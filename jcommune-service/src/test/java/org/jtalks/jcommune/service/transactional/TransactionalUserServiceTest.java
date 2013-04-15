@@ -14,6 +14,32 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.matches;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.jtalks.common.model.dao.GroupDao;
@@ -50,19 +76,6 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.*;
-
 /**
  * @author Kirill Afonin
  * @author Osadchuck Eugeny
@@ -85,15 +98,13 @@ public class TransactionalUserServiceTest {
     private static final int PAGE_SIZE = 50;
     private static final boolean AUTOSUBSCRIBE = true;
     private static final String LOCATION = "location";
-    private byte[] avatar = new byte[10];
-    private static final Long USER_ID = 999L;
+    private static final byte[] AVATAR = new byte[10];
+    private static final long USER_ID = 999L;
     private static final long MAX_REGISTRATION_TIMEOUT = 1000L;
 
     private UserService userService;
     @Mock
     private UserDao userDao;
-    @Mock
-    private JCUser user;
     @Mock
     private GroupDao groupDao;
     @Mock
@@ -139,11 +150,12 @@ public class TransactionalUserServiceTest {
                 securityFacade,
                 rememberMeServices,
                 sessionStrategy));
+      
     }
 
     @Test
-    public void testGetByUsername() throws Exception {
-        JCUser expectedUser = getUser(USERNAME);
+    public void testGetByUsername() throws NotFoundException {
+        JCUser expectedUser = getUser(USERNAME);;
         when(userDao.getByUsername(USERNAME)).thenReturn(expectedUser);
 
         JCUser result = userService.getByUsername(USERNAME);
@@ -153,23 +165,23 @@ public class TransactionalUserServiceTest {
     }
 
     @Test(expectedExceptions = NotFoundException.class)
-    public void testGetByUsernameNotFound() throws Exception {
+    public void testGetByUsernameNotFound() throws NotFoundException {
         when(userDao.getByUsername(USERNAME)).thenReturn(null);
 
         userService.getByUsername(USERNAME);
     }
 
     @Test
-    public void testRegisterUser() throws Exception {
+    public void testRegisterUser() {
         JCUser user = getUser(USERNAME);
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
 
         JCUser registeredUser = userService.registerUser(user);
-        DateTime now = new DateTime();
 
         assertEquals(registeredUser.getUsername(), USERNAME);
         assertEquals(registeredUser.getEmail(), EMAIL);
         assertEquals(registeredUser.getPassword(), PASSWORD_MD5_HASH);
+        DateTime now = new DateTime();
         assertTrue(new Interval(registeredUser.getRegistrationDate(), now)
                 .toDuration().getMillis() <= MAX_REGISTRATION_TIMEOUT);
         verify(userDao).saveOrUpdate(user);
@@ -183,10 +195,12 @@ public class TransactionalUserServiceTest {
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
         when(encryptionService.encryptPassword(NEW_PASSWORD))
                 .thenReturn(NEW_PASSWORD_MD5_HASH);
+        when(userDao.isExist(USER_ID)).thenReturn(Boolean.TRUE);
+        when(userDao.get(USER_ID)).thenReturn(user);
 
         String newAvatar = new String(new byte[12]);
 
-        JCUser editedUser = userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
+        JCUser editedUser = userService.saveEditedUserProfile(USER_ID, new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
                 PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE,
                 LOCATION));
 
@@ -196,18 +210,21 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
-    public void testEditUserProfileNewPasswordNull() {
+    public void testEditUserProfileNewPasswordNull() throws NotFoundException {
         JCUser user = getUser(USERNAME);
         when(securityService.getCurrentUserUsername()).thenReturn("");
         when(userDao.getByUsername(anyString())).thenReturn(user);
         when(encryptionService.encryptPassword(null)).thenReturn(null);
-
+        when(userDao.isExist(USER_ID)).thenReturn(Boolean.TRUE);
+        when(userDao.get(USER_ID)).thenReturn(user);
         String newAvatar = new String(new byte[12]);
         String newPassword = null;
         UserInfoContainer userInfo = new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
                 PASSWORD, newPassword, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE,
                 LOCATION);
-        JCUser editedUser = userService.editUserProfile(userInfo);
+        
+        JCUser editedUser = userService.saveEditedUserProfile(USER_ID, userInfo);
+        
         assertEquals(editedUser.getPassword(), user.getPassword());
     }
 
@@ -217,10 +234,11 @@ public class TransactionalUserServiceTest {
         when(securityService.getCurrentUserUsername()).thenReturn("");
         when(userDao.getByUsername(anyString())).thenReturn(user);
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
-
+        when(userDao.isExist(USER_ID)).thenReturn(Boolean.TRUE);
+        when(userDao.get(USER_ID)).thenReturn(user);
         String newAvatar = new String(new byte[0]);
 
-        JCUser editedUser = userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
+        JCUser editedUser = userService.saveEditedUserProfile(USER_ID, new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
                 PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE,
                 LOCATION));
 
@@ -366,7 +384,7 @@ public class TransactionalUserServiceTest {
 
     @Test
     public void testGetCurrentUser() {
-        JCUser expected = getUser(USERNAME);
+        JCUser expected = getUser(USERNAME);;
         when(securityService.getCurrentUserUsername()).thenReturn(USERNAME);
         when(userDao.getByUsername(USERNAME)).thenReturn(expected);
 
@@ -386,6 +404,7 @@ public class TransactionalUserServiceTest {
 
     @Test
     public void testLoginSuccess() throws Exception {
+        JCUser user = getUser(USERNAME);
         String username = "username";
         when(userDao.getByUsername(username)).thenReturn(user);
 
@@ -399,7 +418,6 @@ public class TransactionalUserServiceTest {
                 PASSWORD, false, httpRequest, httpResponse);
 
         assertTrue(isAuthenticated);
-        verify(user, atLeastOnce()).updateLastLoginTime();
         verify(userDao).getByUsername(username);
         verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
         verify(securityContext).setAuthentication(expectedToken);
@@ -465,20 +483,12 @@ public class TransactionalUserServiceTest {
         verify(userDao).getByUsername(username);
         verify(rememberMeServices, never()).loginSuccess(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Authentication.class));
     }
-    // ===================================================================================================================
-    // = Implementation
-    // ===================================================================================================================
-
-    /**
-     * @param username username
-     * @return create and return {@link JCUser} with default username, encodedUsername,
-     *         first name, last name,  email and password
-     */
+    
     private JCUser getUser(String username) {
         JCUser user = new JCUser(username, EMAIL, PASSWORD);
         user.setFirstName(FIRST_NAME);
         user.setLastName(LAST_NAME);
-        user.setAvatar(avatar);
+        user.setAvatar(AVATAR);
         return user;
     }
 }

@@ -114,24 +114,24 @@
                         </div>
 
                         <%--Do not show my email to other users without permissions--%>
-                        <c:set var="isEditButtonAvailable" value="false"/>
+                        <c:set var="isCanEditProfile" value="false"/>
                         <c:set var="isShowAllFields" value="false"/>
                         <c:if test="${user.username != auth}">
                             <jtalks:hasPermission targetId='${userId}' targetType='USER'
                                                   permission='ProfilePermission.EDIT_OTHERS_PROFILE'>
-                                <c:set var="isEditButtonAvailable" value="true"/>
+                                <c:set var="isCanEditProfile" value="true"/>
                                 <c:set var="isShowAllFields" value="true"/>
                             </jtalks:hasPermission>
                         </c:if>
                         <c:if test="${user.username == auth}">
                             <jtalks:hasPermission targetId='${userId}' targetType='USER'
                                                   permission='ProfilePermission.EDIT_OWN_PROFILE'>
-                                <c:set var="isEditButtonAvailable" value="true"/>
+                                <c:set var="isCanEditProfile" value="true"/>
                                 <c:set var="isShowAllFields" value="true"/>
                             </jtalks:hasPermission>
                         </c:if>
 
-                        <c:if test="${isShowAllFields eq true}">
+                        <c:if test="${isShowAllFields}">
                             <div class="control-group">
                                 <label class="control-label"> <spring:message
                                         code="label.email"/>
@@ -244,14 +244,14 @@
                                 </c:forEach>
                             </ul>
                         </c:if>
-
-                        <c:if test="${isEditButtonAvailable eq true}">
-                               <div class="user-profile-buttons-form-actions">
-                                   <a class="btn btn-primary"
-                                      href="${pageContext.request.contextPath}/users/edit"> <spring:message
-                                           code="label.edit_profile"/>
-                                   </a>
-                               </div>
+                        
+                        <c:if test="${isCanEditProfile}">
+	                        <div class="user-profile-buttons-form-actions">
+	                            <a class="btn btn-primary"
+	                                href="${pageContext.request.contextPath}/users/edit/${user.id}"> <spring:message
+	                                    code="label.edit_profile" />
+	                            </a>
+	                        </div>
                         </c:if>
                     </fieldset>
                 </form>

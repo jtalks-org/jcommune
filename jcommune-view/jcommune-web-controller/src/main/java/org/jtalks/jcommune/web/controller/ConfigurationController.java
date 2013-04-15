@@ -38,12 +38,11 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Controller
 public class ConfigurationController {
-
     private static final String VIEW_SAPE_CONFIGURATION = "sapeConfiguration";
     private static final String PARAM_SAPE_CONFIGURATION = "sapeConfiguration";
 
-    private ConfigurationService configurationService;
-    private ComponentService componentService;
+    private final ConfigurationService configurationService;
+    private final ComponentService componentService;
     
     
     /**
@@ -52,8 +51,7 @@ public class ConfigurationController {
      *      checking
      */
     @Autowired
-    public ConfigurationController(ConfigurationService configurationService,
-                    ComponentService componentService) {
+    public ConfigurationController(ConfigurationService configurationService, ComponentService componentService) {
         this.configurationService = configurationService;
         this.componentService = componentService;
     }
@@ -78,8 +76,7 @@ public class ConfigurationController {
     @RequestMapping(value="/configuration/sape", method=RequestMethod.GET)
     public ModelAndView showSapeConfigurationPage() {
         Component forumComponent = componentService.getComponentOfForum();
-        SapeConfiguration configuration = configurationService
-                .getSapeConfiguration(forumComponent.getId());
+        SapeConfiguration configuration = configurationService.getSapeConfiguration(forumComponent.getId());
         return new ModelAndView(VIEW_SAPE_CONFIGURATION)
                 .addObject(PARAM_SAPE_CONFIGURATION, configuration);
     }
@@ -92,13 +89,10 @@ public class ConfigurationController {
      *      validation errors)
      */
     @RequestMapping(value="/configuration/sape", method=RequestMethod.POST)
-    public ModelAndView saveSapeConfiguration(
-            @ModelAttribute SapeConfiguration configuration,
-            BindingResult result) {
+    public ModelAndView saveSapeConfiguration(@ModelAttribute SapeConfiguration configuration, BindingResult result) {
         if (!result.hasErrors()) {
             Component forumComponent = componentService.getComponentOfForum();
-            configurationService.updateSapeConfiguration(configuration,
-                    forumComponent.getId());
+            configurationService.updateSapeConfiguration(configuration, forumComponent.getId());
         }
         return new ModelAndView(VIEW_SAPE_CONFIGURATION)
             .addObject(PARAM_SAPE_CONFIGURATION, configuration);

@@ -25,7 +25,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
  *
  */
 public class TransactionalConfigurationService implements ConfigurationService {
-
     private JCommuneProperty sapeAccountId;
     private JCommuneProperty sapeTimeout;
     private JCommuneProperty sapeHostUrl;
@@ -86,8 +85,7 @@ public class TransactionalConfigurationService implements ConfigurationService {
      */
     @Override
     @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
-    public void updateSapeConfiguration(SapeConfiguration configuration, 
-            long componentId) {
+    public void updateSapeConfiguration(SapeConfiguration configuration, long componentId) {
         sapeAccountId.setValue(configuration.getAccountId());
         sapeTimeout.setValue(String.valueOf(configuration.getTimeout()));
         sapeHostUrl.setValue(configuration.getHostUrl());

@@ -14,15 +14,18 @@
  */
 package org.jtalks.jcommune.web.validation.validators;
 
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
+import org.apache.commons.lang.ObjectUtils;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.validation.annotations.ChangedEmail;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 
 /**
  * Validates if email change is valid. For detailed validation
@@ -30,7 +33,7 @@ import javax.validation.ConstraintValidatorContext;
  *
  * @author Evgeniy Naumneko
  */
-public class ChangedEmailValidator implements ConstraintValidator<ChangedEmail, String> {
+public class ChangedEmailValidator implements ConstraintValidator<ChangedEmail, EditUserProfileDto> {
 
     private UserService userService;
     private UserDao userDao;
@@ -57,17 +60,33 @@ public class ChangedEmailValidator implements ConstraintValidator<ChangedEmail, 
      * {@inheritDoc}
      */
     @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value == null) {
+    public boolean isValid(EditUserProfileDto userProfile, ConstraintValidatorContext context) {
+        String changedEmail = userProfile.getEmail();
+        if (changedEmail == null) {
             // null emails checks are out of scope, pls use separate annotation for that
             return true;
         }
-        JCUser user = userService.getCurrentUser();
-        if (user.getEmail().equals(value)) {
+        String currentUserEmail = getEmailOfUser(userProfile.getUserId());
+        if (ObjectUtils.equals(changedEmail, currentUserEmail)) {
             return true; // no changes in an email, that's ok
         } else {
-            User found = userDao.getByEmail(value);
-            return found == null;
+            User userWithTheSameChangedEmail = userDao.getByEmail(changedEmail);
+            return userWithTheSameChangedEmail == null;
         }
+    }
+    
+    /**
+     * Get email of user by user's id.
+     * 
+     * @param userId user's id
+     * @return an email of user by user's id 
+     */
+    private String getEmailOfUser(long userId) {
+        try {
+            JCUser user = userService.get(userId);
+            return user.getEmail();
+        } catch (NotFoundException e) {
+            return null;
+        }  
     }
 }

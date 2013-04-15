@@ -19,10 +19,11 @@ import org.apache.commons.logging.Log;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.util.ReflectionUtils;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import sun.security.acl.PrincipalImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
@@ -58,11 +59,12 @@ public class PrettyLogExceptionResolverTest {
         MockHttpServletRequest request = new MockHttpServletRequest("POST", "/testing/url/42");
         request.setServerName("testserver.com");
         request.setServerPort(8080);
-        request.setUserPrincipal(new PrincipalImpl("test user"));
+        request.setUserPrincipal(new UsernamePasswordAuthenticationToken("username", "password"));
 
         prettyLogExceptionResolver.logException(accessDeniedException, request);
 
-        verify(mockLog).info("Access was denied for user [test user] trying to POST http://testserver.com:8080/testing/url/42");
+        verify(mockLog).info(
+                "Access was denied for user [username] trying to POST http://testserver.com:8080/testing/url/42");
     }
 
     @Test

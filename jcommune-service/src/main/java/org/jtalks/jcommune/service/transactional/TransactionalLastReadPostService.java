@@ -14,22 +14,18 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.apache.commons.collections.ListUtils;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.LastReadPostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.LastReadPost;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Performs last read posts management to track topic updates
@@ -40,13 +36,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 public class TransactionalLastReadPostService implements LastReadPostService {
 
-    private UserService userService;
-    private LastReadPostDao lastReadPostDao;
-    private UserDao userDao;
+    private final UserService userService;
+    private final LastReadPostDao lastReadPostDao;
+    private final UserDao userDao;
 
     /**
      * Constructs an instance with required fields.
-     * 
+     *
      * @param userService     to figure out the current user logged in
      * @param lastReadPostDao to save/read last read post information from a database
      * @param userDao         to save an information about user of forum
@@ -59,7 +55,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
         this.lastReadPostDao = lastReadPostDao;
         this.userDao = userDao;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -78,8 +74,8 @@ public class TransactionalLastReadPostService implements LastReadPostService {
         if (!currentUser.isAnonymous()) {
             DateTime forumMarkedAsReadDate = currentUser.getAllForumMarkedAsReadTime();
             List<Topic> notModifiedTopics = extractNotModifiedTopicsSinceForumMarkedAsRead(
-                        forumMarkedAsReadDate, topics);
-            for (Topic notModifiedTopic: notModifiedTopics) {
+                    forumMarkedAsReadDate, topics);
+            for (Topic notModifiedTopic : notModifiedTopics) {
                 int lastPostIndex = notModifiedTopic.getPostCount() - 1;
                 notModifiedTopic.setLastReadPostIndex(lastPostIndex);
             }
@@ -90,12 +86,12 @@ public class TransactionalLastReadPostService implements LastReadPostService {
         }
         return topics;
     }
-    
+
     /**
      * Extract topics that don't have modifications after marking all forum as read.
-     * 
+     *
      * @param forumMarkAsReadDate the date when user marked all forum as read
-     * @param sourceTopics the list of topics that must be processed
+     * @param sourceTopics        the list of topics that must be processed
      * @return topics that don't have modification after marking all forum as read
      */
     private List<Topic> extractNotModifiedTopicsSinceForumMarkedAsRead(
@@ -103,7 +99,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
             List<Topic> sourceTopics) {
         List<Topic> topics = new ArrayList<Topic>();
         if (forumMarkAsReadDate != null) {
-            for (Topic topic: sourceTopics) {
+            for (Topic topic : sourceTopics) {
                 if (topic.getModificationDate().isBefore(forumMarkAsReadDate)) {
                     topics.add(topic);
                 }
@@ -111,33 +107,33 @@ public class TransactionalLastReadPostService implements LastReadPostService {
         }
         return topics;
     }
-    
+
     /**
-     * For topics modified since forum was marked as all read we need to calculate 
+     * For topics modified since forum was marked as all read we need to calculate
      * last read posts from data that were saved in repository.
-     * 
-     * @param modifiedTopics the list of modified topics 
-     * @param currentUser the current user of application
+     *
+     * @param modifiedTopics the list of modified topics
+     * @param currentUser    the current user of application
      */
     private void fillLastReadPostsForModifiedTopics(List<Topic> modifiedTopics, JCUser currentUser) {
         List<LastReadPost> lastReadPosts = lastReadPostDao.getLastReadPosts(currentUser, modifiedTopics);
-        for (Topic topic: modifiedTopics) {
+        for (Topic topic : modifiedTopics) {
             LastReadPost lastReadPost = findLastReadPost(lastReadPosts, topic.getId());
             if (lastReadPost != null) {
                 topic.setLastReadPostIndex(lastReadPost.getPostIndex());
             }
         }
     }
-    
+
     /**
      * Find last read post in the list for given topic.
-     * 
+     *
      * @param lastReadPosts the list of last read posts where we are going to search
-     * @param topicId an identifier of topic for which we find last read post in list
+     * @param topicId       an identifier of topic for which we find last read post in list
      * @return last read post for given topic
      */
     private LastReadPost findLastReadPost(List<LastReadPost> lastReadPosts, long topicId) {
-        for (LastReadPost lastReadPost: lastReadPosts) {
+        for (LastReadPost lastReadPost : lastReadPosts) {
             if (lastReadPost.getTopic().getId() == topicId) {
                 return lastReadPost;
             }
@@ -152,12 +148,13 @@ public class TransactionalLastReadPostService implements LastReadPostService {
     @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.VIEW_TOPICS')")
     public void markTopicPageAsRead(Topic topic, int pageNum, boolean pagingEnabled) {
         JCUser current = userService.getCurrentUser();
-        if (!current.isAnonymous()) { // topics are always unread for anonymous users
+        // topics are always unread for anonymous users
+        if (!current.isAnonymous()) {
             int postIndex = this.calculatePostIndex(current, topic, pageNum, pagingEnabled);
             saveLastReadPost(current, topic, postIndex);
         }
     }
-    
+
     /**
      * Computes new last read post index based on the topic size and
      * current pagination settings.
@@ -188,23 +185,26 @@ public class TransactionalLastReadPostService implements LastReadPostService {
             saveLastReadPost(current, topic, topic.getPostCount() - 1);
         }
     }
-    
+
     /**
-     * Stores last read post info in a database for the particular
-     * topic and user.
+     * Stores last read post info into database for the particular topic and user.
      *
      * @param user      user to save last read post data for
      * @param topic     topic to store info for
-     * @param postIndex actual post index, starting from 0
+     * @param postIndex actual post index user has read last, starting from 0
      */
     private void saveLastReadPost(JCUser user, Topic topic, int postIndex) {
-        LastReadPost post = lastReadPostDao.getLastReadPost(user, topic);
-        if (post == null) {
-            post = new LastReadPost(user, topic, postIndex);
-        } else {
-            post.setPostIndex(Math.max(Math.min(topic.getPostCount() - 1, post.getPostIndex()), postIndex));
+        DateTime lastTimeForumWasMarkedRead = user.getAllForumMarkedAsReadTime();
+        DateTime topicModifiedDate = topic.getModificationDate();
+        if (lastTimeForumWasMarkedRead == null || topicModifiedDate.isAfter(lastTimeForumWasMarkedRead)) {
+            LastReadPost lastRead = lastReadPostDao.getLastReadPost(user, topic);
+            if (lastRead == null) {
+                lastRead = new LastReadPost(user, topic, postIndex);
+            } else {
+                lastRead.setPostIndex(Math.max(Math.min(topic.getPostCount() - 1, lastRead.getPostIndex()), postIndex));
+            }
+            lastReadPostDao.update(lastRead);
         }
-        lastReadPostDao.update(post);
     }
 
     /**
@@ -218,17 +218,17 @@ public class TransactionalLastReadPostService implements LastReadPostService {
             lastReadPostDao.markAllRead(user, branch);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void markAllForumAsReadForCurrentUser() {
         JCUser currentUser = userService.getCurrentUser();
-        
+
         currentUser.setAllForumMarkedAsReadTime(new DateTime());
         userDao.saveOrUpdate(currentUser);
-        
+
         lastReadPostDao.deleteLastReadPostsFor(currentUser);
     }
 

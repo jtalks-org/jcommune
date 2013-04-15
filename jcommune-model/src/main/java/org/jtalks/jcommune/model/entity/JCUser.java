@@ -273,7 +273,7 @@ public class JCUser extends User {
     /**
      * Set the time when forum was marked as all read for this user.
      *
-     * @param allForumMarkedAsReadTime the time when forum was marked as all read for this user
+     * @param forumMarkedAsAllReadTime the time when forum was marked as all read for this user
      */
     public void setAllForumMarkedAsReadTime(DateTime forumMarkedAsAllReadTime) {
         this.allForumMarkedAsReadTime = forumMarkedAsAllReadTime;
