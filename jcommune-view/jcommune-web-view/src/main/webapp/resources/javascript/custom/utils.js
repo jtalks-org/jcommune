@@ -108,7 +108,7 @@ Utils.focusFirstEl = function(target)
  * @param s string where perform replacing
  */
 Utils.lf2br = function(s) {
-	return s.replace("\n", "<br>");
+	return s.replace(/\n/g, "<br>");
 }
 
 /**
@@ -117,5 +117,5 @@ Utils.lf2br = function(s) {
  * @param s string where perform replacing
  */
 Utils.br2lf = function(s) {
-	return s.replace("<br>", "\n");
+	return s.replace(/<br>/gi, "\n");
 }
