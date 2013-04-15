@@ -33,7 +33,7 @@
     </c:if>
 </div>
 <c:if test="${!empty signature}">
-    <div class="signature-conatiner" align="left">
+    <div class="signature-conatiner">
         <hr/>
         <span class='signature'>
             <jtalks:bb2html bbCode="${signature}"/>
