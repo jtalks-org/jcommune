@@ -20,7 +20,6 @@ import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.Section;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -54,8 +53,7 @@ public final class ObjectsFactory {
     }
 
     public static Branch getDefaultBranch() {
-        Branch newBranch = new Branch("branch name", "branch description");
-        return newBranch;
+        return new Branch("branch name", "branch description");
     }
 
     public static Branch getDefaultBranch(Long id) {
@@ -83,6 +81,7 @@ public final class ObjectsFactory {
         List<Topic> topics = new ArrayList<Topic>();
         for (int i = 0; i < topicCount; i++) {
             Topic topic = new Topic(author, "title");
+            topic.setBranch(getDefaultBranch());
             topic.addPost(new Post(author, "post-content"));
             topics.add(topic);
         }
@@ -119,7 +118,7 @@ public final class ObjectsFactory {
     }
 
     public static List<ExternalLink> getExternalLinks(int size) {
-        List<ExternalLink> result = new ArrayList();
+        List<ExternalLink> result = new ArrayList<ExternalLink>();
         for (int i = 0; i < size; i++) {
             result.add(getDefaultExternalLink());
         }

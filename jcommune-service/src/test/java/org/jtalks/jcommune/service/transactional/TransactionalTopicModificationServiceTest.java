@@ -137,23 +137,21 @@ public class TransactionalTopicModificationServiceTest {
 
     @Test
     public void testAutoSubscriptionOnTopicReplyIfAutosubscribeEnabled() throws NotFoundException {
-        Topic answeredTopic = new Topic(user, "title");
+        Topic answeredTopic = ObjectsFactory.topics(user, 1).get(0);
         user.setAutosubscribe(true);
-        answeredTopic.setBranch(new Branch("name", "description"));
         when(userService.getCurrentUser()).thenReturn(user);
-        when(topicFetchService.get(TOPIC_ID)).thenReturn(answeredTopic);
+        when(topicFetchService.get(1L)).thenReturn(answeredTopic);
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
-        topicService.replyToTopic(TOPIC_ID, ANSWER_BODY, BRANCH_ID);
+        topicService.replyToTopic(1L, ANSWER_BODY, BRANCH_ID);
 
         assertTrue(answeredTopic.userSubscribed(user));
     }
 
     @Test
     public void testAutoSubscriptionOnTopicReplyIfAutosubscribeDisabled() throws NotFoundException {
-        Topic answeredTopic = new Topic(user, "title");
         user.setAutosubscribe(false);
-        answeredTopic.setBranch(new Branch("name", "description"));
+        Topic answeredTopic = ObjectsFactory.topics(user, 1).get(0);
         when(userService.getCurrentUser()).thenReturn(user);
         when(topicFetchService.get(TOPIC_ID)).thenReturn(answeredTopic);
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);

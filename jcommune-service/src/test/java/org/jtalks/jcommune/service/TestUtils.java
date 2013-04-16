@@ -33,6 +33,7 @@ public final class TestUtils {
      * @return {@code AclBuilder} mock
      */
     public static CompoundAclBuilder<User> mockAclBuilder() {
+        //noinspection unchecked
         CompoundAclBuilder<User> newBuilder = mock(CompoundAclBuilder.class);
         Mockito.when(newBuilder.grant(Mockito.any(GeneralPermission.class))).thenReturn(newBuilder);
         Mockito.when(newBuilder.to(Mockito.any(User.class))).thenReturn(newBuilder);
