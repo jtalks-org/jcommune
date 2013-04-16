@@ -54,7 +54,9 @@ import org.testng.annotations.Test;
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
 public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpringContextTests {
-	private static final JCommunePageRequest DEFAULT_PAGE_REQUEST = JCommunePageRequest.createWithPagingEnabled(1, 50);
+	private static final int PAGE_SIZE = 50;
+    private static final String TOPIC_CONTENT = "topicContent";
+    private static final JCommunePageRequest DEFAULT_PAGE_REQUEST = JCommunePageRequest.createWithPagingEnabled(1, 50);
     @Autowired
 	private SessionFactory sessionFactory;
 	@Autowired
@@ -149,6 +151,46 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
 					"Content from the index should be the same as in the database.");
 		}
 	}
+	
+	@Test
+    public void testFullPhraseSearchPageNumberTooLow() {
+        Topic expectedTopic = PersistedObjectsFactory.getDefaultTopic();
+        expectedTopic.setTitle(TOPIC_CONTENT);
+        
+        saveAndFlushIndexes(Arrays.asList(expectedTopic));
+        configureMocks(TOPIC_CONTENT, TOPIC_CONTENT);
+        
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(-1, PAGE_SIZE);
+        Page<Topic> searchResultPage = topicSearchDao.searchByTitleAndContent(
+                TOPIC_CONTENT, pageRequest);
+        
+        Assert.assertEquals(searchResultPage.getNumber(), 1);
+        Assert.assertTrue(searchResultPage.hasContent(), "Search result must not be empty.");
+        for (Topic topic : searchResultPage.getContent()) {
+            Assert.assertEquals(expectedTopic.getTitle(), topic.getTitle(), 
+                    "Content from the index should be the same as in the database.");
+        }
+    }
+	
+	@Test
+    public void testFullPhraseSearchPageNumberTooBig() {
+        Topic expectedTopic = PersistedObjectsFactory.getDefaultTopic();
+        expectedTopic.setTitle(TOPIC_CONTENT);
+        
+        saveAndFlushIndexes(Arrays.asList(expectedTopic));
+        configureMocks(TOPIC_CONTENT, TOPIC_CONTENT);
+        
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1000, 50);
+        Page<Topic> searchResultPage = topicSearchDao.searchByTitleAndContent(
+                TOPIC_CONTENT, pageRequest);
+        
+        Assert.assertEquals(searchResultPage.getNumber(), 1);
+        Assert.assertTrue(searchResultPage.hasContent(), "Search result must not be empty.");
+        for (Topic topic : searchResultPage.getContent()) {
+            Assert.assertEquals(expectedTopic.getTitle(), topic.getTitle(), 
+                    "Content from the index should be the same as in the database.");
+        }
+    }
 	
 	@Test(dataProvider = "parameterFullPhraseSearch")
 	public void testPostContentSearch(String content) {

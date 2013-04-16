@@ -63,9 +63,35 @@ public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
     @Override
     public Page<Topic> searchByTitleAndContent(String searchText, JCommunePageRequest pageRequest) {
+       Page<Topic> searchResults = doSearch(searchText, pageRequest);
+       if (isSearchedAboveLastPage(searchResults)) {
+           pageRequest.adjustPageNumber(Long.valueOf(searchResults.getTotalElements()).intValue());
+           searchResults = doSearch(searchText, pageRequest);
+       }
+       return searchResults;
+    }
+    
+    /**
+     * Checks if this search was by made with too big page number specified
+     * @param searchResults search results
+     * @return true if page number is too big
+     */
+    private boolean isSearchedAboveLastPage(Page<Topic> searchResults) {
+        return !searchResults.hasContent() && searchResults.getNumber() > searchResults.getTotalPages();
+    }
+    
+    /**
+     * Perform actual search
+     * @param searchText the search text
+     * @param pageRequest contains information for pagination: page number, page 
+     *                    size
+     * @return object that contains search results for one page(note, that one 
+     *         page may contain all search results) and information for pagination
+     */
+    @SuppressWarnings("unchecked")
+    private Page<Topic> doSearch(String searchText, JCommunePageRequest pageRequest) {
         List<Topic> topics = Collections.emptyList();
         int resultSize = 0;
         //TODO The latest versions of the library filtering is not needed.
