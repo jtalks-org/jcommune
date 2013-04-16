@@ -77,6 +77,7 @@ public class UserProfileControllerTest {
     private static final String SIGNATURE = "signature";
     private static final Language LANGUAGE = Language.ENGLISH;
     private static final int PAGE_SIZE = 50;
+    private static final boolean AUTOSUBSCRIBE = true;
     private String avatar;
     //
     @Mock
@@ -246,6 +247,7 @@ public class UserProfileControllerTest {
         user.setSignature(SIGNATURE);
         user.setLanguage(LANGUAGE);
         user.setPageSize(PAGE_SIZE);
+        user.setAutosubscribe(AUTOSUBSCRIBE);
 
         EditUserProfileDto dto = new EditUserProfileDto(user);
         dto.setCurrentUserPassword(PASSWORD);
