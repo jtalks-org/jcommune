@@ -14,32 +14,26 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.web.dto.json.JsonResponse;
-import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
+import org.jtalks.jcommune.web.dto.json.JsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.util.Locale;
 
 /**
  * This controller handles custom authentication actions
@@ -134,10 +128,7 @@ public class UserController {
         if (result.hasErrors()) {
             return new ModelAndView(REGISTRATION);
         }
-        JCUser user = userDto.createUser();
-        user.setLanguage(Language.byLocale(locale));
-        user.setAutosubscribe(DEFAULT_AUTOSUBSCRIBE);
-        userService.registerUser(user);
+        storeUser(userDto, locale);
         return new ModelAndView(AFTER_REGISTRATION);
     }
 
@@ -157,11 +148,22 @@ public class UserController {
         if (result.hasErrors()) {
             return new JsonResponse(JsonResponseStatus.FAIL, result.getAllErrors());
         }
+        storeUser(userDto, locale);
+        return new JsonResponse(JsonResponseStatus.SUCCESS);
+    }
+
+    /**
+     * Just registers a new user without any additional checks, it gets rid of duplication in enclosing
+     * {@code registerUser()} methods.
+     *
+     * @param userDto coming from enclosing methods, this object is built by Spring MVC
+     * @param locale  the locale of user she can pass in GET requests
+     */
+    private void storeUser(RegisterUserDto userDto, Locale locale) {
         JCUser user = userDto.createUser();
         user.setLanguage(Language.byLocale(locale));
         user.setAutosubscribe(DEFAULT_AUTOSUBSCRIBE);
         userService.registerUser(user);
-        return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 
 
@@ -223,5 +225,5 @@ public class UserController {
             return new JsonResponse(JsonResponseStatus.FAIL);
         }
     }
-    
+
 }

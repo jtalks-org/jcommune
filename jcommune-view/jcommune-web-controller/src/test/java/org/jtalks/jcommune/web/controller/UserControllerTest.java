@@ -20,10 +20,10 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.web.dto.json.JsonResponse;
-import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
+import org.jtalks.jcommune.web.dto.json.JsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
@@ -33,41 +33,32 @@ import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.ModelAndViewAssert.*;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 /**
  * @author Evgeniy Naumenko
  */
 public class UserControllerTest {
-
     private final String USER_NAME = "username";
     private final String EMAIL = "mail@mail.com";
-    private final String PASSWORD = "password";
-
-
     private UserController userController;
     private UserService userService;
-    private SecurityContextHolderFacade securityFacade;
-    private SecurityContext securityContext;
-    
+
     @BeforeMethod
     public void setUp() throws IOException {
         userService = mock(UserService.class);
-        securityFacade = mock(SecurityContextHolderFacade.class);
-        securityContext = mock(SecurityContext.class);
+        SecurityContextHolderFacade securityFacade = mock(SecurityContextHolderFacade.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
         when(securityFacade.getContext()).thenReturn(securityContext);
 
         userController = new UserController(userService);
@@ -103,35 +94,35 @@ public class UserControllerTest {
 
         assertViewName(mav, "registration");
     }
-    
-    @Test 
+
+    @Test
     void testRegisterAjax() {
-    	RegisterUserDto dto = getRegisterUserDto();
+        RegisterUserDto dto = getRegisterUserDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
 
         JsonResponse jsonResponse = userController.registerUserAjax(dto, bindingResult, new Locale("ru"));
-        
+
         assertEquals(jsonResponse.getStatus(), JsonResponseStatus.SUCCESS);
         assertNull(jsonResponse.getResult());
         verify(userService).registerUser(any(JCUser.class));
     }
 
-    @Test 
+    @Test
     void testRegisterAjaxFail() {
         RegisterUserDto dto = getRegisterUserDto();
         List<ObjectError> errors = new ArrayList<ObjectError>();
         ObjectError error = new ObjectError("username", "bullshit");
-		errors.add(error);
+        errors.add(error);
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
         when(bindingResult.getAllErrors()).thenReturn(errors);
         JsonResponse jsonResponse = userController.registerUserAjax(dto, bindingResult, new Locale("ru"));
-        
+
         assertEquals(jsonResponse.getStatus(), JsonResponseStatus.FAIL);
         ObjectError objectError = ((List<ObjectError>) jsonResponse.getResult()).get(0);
-		assertEquals(objectError, error);
+        assertEquals(objectError, error);
     }
-    
+
     @Test
     public void testRestorePasswordPage() {
         assertViewName(userController.showRestorePasswordPage(), "restorePassword");
@@ -206,28 +197,28 @@ public class UserControllerTest {
         assertEquals(result, UserController.LOGIN);
         verify(userService).getCurrentUser();
     }
-    
+
     @Test
     public void testAjaxLoginSuccess() throws Exception {
-        when(userService.loginUser(anyString(), anyString(), anyBoolean(), 
+        when(userService.loginUser(anyString(), anyString(), anyBoolean(),
                 any(HttpServletRequest.class), any(HttpServletResponse.class)))
-        .thenReturn(true);
-        
+                .thenReturn(true);
+
         JsonResponse response = userController.loginAjax(null, null, "on", null, null);
         assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
-        verify(userService).loginUser(anyString(), anyString(), eq(true), 
+        verify(userService).loginUser(anyString(), anyString(), eq(true),
                 any(HttpServletRequest.class), any(HttpServletResponse.class));
     }
-    
+
     @Test
     public void testAjaxLoginFailture() throws Exception {
-        when(userService.loginUser(anyString(), anyString(), anyBoolean(), 
+        when(userService.loginUser(anyString(), anyString(), anyBoolean(),
                 any(HttpServletRequest.class), any(HttpServletResponse.class)))
-        .thenReturn(false);
-        
+                .thenReturn(false);
+
         JsonResponse response = userController.loginAjax(null, null, "off", null, null);
         assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
-        verify(userService).loginUser(anyString(), anyString(), eq(false), 
+        verify(userService).loginUser(anyString(), anyString(), eq(false),
                 any(HttpServletRequest.class), any(HttpServletResponse.class));
     }
 
@@ -242,8 +233,8 @@ public class UserControllerTest {
         RegisterUserDto dto = new RegisterUserDto();
         dto.setUsername(USER_NAME);
         dto.setEmail(EMAIL);
-        dto.setPassword(PASSWORD);
-        dto.setPasswordConfirm(PASSWORD);
+        dto.setPassword("password");
+        dto.setPasswordConfirm("password");
         return dto;
     }
 }
