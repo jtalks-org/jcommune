@@ -50,6 +50,10 @@ public class UserController {
     public static final String REGISTRATION = "registration";
     public static final String LOGIN = "login";
     public static final String AFTER_REGISTRATION = "afterRegistration";
+    /**
+     * While registering a new user, she gets {@link JCUser#setAutosubscribe(boolean)} set to {@code true} by default.
+     * Afterwards user can edit her profile and change this setting.
+     */
     public static final boolean DEFAULT_AUTOSUBSCRIBE = true;
 
     private static final String REMEMBER_ME_ON = "on";

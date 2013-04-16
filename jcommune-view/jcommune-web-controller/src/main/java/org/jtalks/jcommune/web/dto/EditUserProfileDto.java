@@ -14,8 +14,6 @@
  */
 package org.jtalks.jcommune.web.dto;
 
-import javax.validation.constraints.Size;
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
@@ -24,15 +22,13 @@ import org.jtalks.common.validation.annotations.Email;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
-import org.jtalks.jcommune.web.validation.annotations.BbCodeNesting;
-import org.jtalks.jcommune.web.validation.annotations.ChangedEmail;
-import org.jtalks.jcommune.web.validation.annotations.ChangedPassword;
-import org.jtalks.jcommune.web.validation.annotations.Matches;
-import org.jtalks.jcommune.web.validation.annotations.PageSize;
+import org.jtalks.jcommune.web.validation.annotations.*;
+
+import javax.validation.constraints.Size;
 
 /**
  * This dto used for transferring data in edit {@link org.jtalks.jcommune.model.entity.JCUser} profile operation.
- * To get more info see {@link org.jtalks.jcommune.web.controller.UserProfileController#editProfile}.
+ * To get more info see {@link org.jtalks.jcommune.web.controller.UserProfileController#saveEditedProfile(EditUserProfileDto, org.springframework.validation.BindingResult, javax.servlet.http.HttpServletResponse)}.
  *
  * @author Osadchuck Eugeny
  */
@@ -42,7 +38,7 @@ import org.jtalks.jcommune.web.validation.annotations.PageSize;
 public class EditUserProfileDto {
     private long userId;
     private String username;
-    
+
     @NotBlank(message = "{validation.not_null}")
     @Size(max = User.EMAIL_MAX_LENGTH, message = "{validation.email.length}")
     @Email(message = "{validation.email.wrong.format}")
@@ -113,7 +109,7 @@ public class EditUserProfileDto {
                 this.getCurrentUserPassword(), this.getNewUserPassword(), this.getSignature(),
                 this.getAvatar(), this.getLanguage(), this.getPageSize(), this.isAutosubscribe(), this.getLocation());
     }
-    
+
     /**
      * Get the primary id of the user.
      *
@@ -125,7 +121,7 @@ public class EditUserProfileDto {
 
     /**
      * Set the primary id of the user.
-     * 
+     *
      * @param userId the id
      */
     public void setUserId(long userId) {
@@ -181,18 +177,14 @@ public class EditUserProfileDto {
     }
 
     /**
-     * Check autosubscribe to user
-     *
-     * @return - autosubscribe
+     * @see org.jtalks.jcommune.model.entity.JCUser#isAutosubscribe()
      */
     public boolean isAutosubscribe() {
         return autosubscribe;
     }
 
     /**
-     * Set autosubscribe flag user.
-     *
-     * @param autosubscribe
+     * @see JCUser#setAutosubscribe(boolean)
      */
     public void setAutosubscribe(boolean autosubscribe) {
         this.autosubscribe = autosubscribe;
@@ -254,7 +246,7 @@ public class EditUserProfileDto {
 
     /**
      * Get user's name(login).
-     * 
+     *
      * @return user's name(login)
      */
     public String getUsername() {
@@ -263,7 +255,7 @@ public class EditUserProfileDto {
 
     /**
      * Set user's name(login).
-     * 
+     *
      * @param username user's name
      */
     public void setUsername(String username) {
