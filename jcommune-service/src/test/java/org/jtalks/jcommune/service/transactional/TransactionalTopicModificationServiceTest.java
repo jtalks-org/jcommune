@@ -224,7 +224,7 @@ public class TransactionalTopicModificationServiceTest {
 
         createTopicAssertions(branch, createdTopic, createdPost);
         createTopicVerifications(branch);
-        verify(subscriptionService, never()).toggleTopicSubscription(createdTopic);
+        verify(subscriptionService).toggleTopicSubscription(createdTopic);
     }
 
     @Test
@@ -240,7 +240,7 @@ public class TransactionalTopicModificationServiceTest {
 
         createTopicAssertions(branch, createdTopic, createdPost);
         createTopicVerifications(branch);
-        verify(subscriptionService, never()).toggleTopicSubscription(createdTopic);
+        verify(subscriptionService).toggleTopicSubscription(createdTopic);
     }
 
     @Test
@@ -292,7 +292,7 @@ public class TransactionalTopicModificationServiceTest {
 
         createCodeReviewAssertions(branch, createdTopic, createdPost);
         createTopicVerifications(branch);
-        verify(subscriptionService, never()).toggleTopicSubscription(createdTopic);
+        verify(subscriptionService).toggleTopicSubscription(createdTopic);
     }
 
     @Test
@@ -310,7 +310,7 @@ public class TransactionalTopicModificationServiceTest {
 
         createCodeReviewAssertions(branch, createdTopic, createdPost);
         createTopicVerifications(branch);
-        verify(subscriptionService, never()).toggleTopicSubscription(createdTopic);
+        verify(subscriptionService).toggleTopicSubscription(createdTopic);
     }
 
     @Test
