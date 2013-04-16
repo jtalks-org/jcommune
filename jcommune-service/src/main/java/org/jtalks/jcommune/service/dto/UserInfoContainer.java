@@ -130,18 +130,14 @@ public class UserInfoContainer {
     }
 
     /**
-     * Get autosubscribe flag to user
-     *
-     * @return - autosubscribe
+     * @see org.jtalks.jcommune.model.entity.JCUser#isAutosubscribe()
      */
     public boolean isAutosubscribe() {
         return autosubscribe;
     }
 
     /**
-     * Set autosubscribe flag to user.
-     *
-     * @param autosubscribe
+     * @see org.jtalks.jcommune.model.entity.JCUser#setAutosubscribe(boolean)
      */
     public void setAutosubscribe(boolean autosubscribe) {
         this.autosubscribe = autosubscribe;

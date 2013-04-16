@@ -14,24 +14,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertSame;
-
-import java.util.HashSet;
-import java.util.Set;
-
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.SecurityService;
@@ -39,17 +21,8 @@ import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
 import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.CodeReview;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.BranchLastPostService;
-import org.jtalks.jcommune.service.PollService;
-import org.jtalks.jcommune.service.SubscriptionService;
-import org.jtalks.jcommune.service.TopicFetchService;
-import org.jtalks.jcommune.service.TopicModificationService;
-import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.mockito.Matchers;
@@ -63,7 +36,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import static org.mockito.Mockito.spy;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.*;
 
 /**
  * This test cover {@code TransactionalTopicModificationService} logic validation.
@@ -79,14 +61,9 @@ public class TransactionalTopicModificationServiceTest {
 
     private final long TOPIC_ID = 999L;
     private final long BRANCH_ID = 1L;
-    private final long POST_ID = 333L;
     private final String TOPIC_TITLE = "topic title";
-    private final String BRANCH_NAME = "branch name";
-    private final String BRANCH_DESCRIPTION = "branch description";
-    private static final String USERNAME = "username";
     private JCUser user;
     private final String ANSWER_BODY = "Test Answer Body";
-    private final String CODE_REVIEW_PATTERN = "[code=java]%s[/code]";
 
     private TopicModificationService topicService;
 
@@ -114,7 +91,7 @@ public class TransactionalTopicModificationServiceTest {
     private SecurityContext securityContext;
     @Mock
     private BranchLastPostService branchLastPostService;
-    
+
     private CompoundAclBuilder<User> aclBuilder;
 
     @BeforeMethod
@@ -128,13 +105,13 @@ public class TransactionalTopicModificationServiceTest {
                 notificationService,
                 subscriptionService,
                 userService,
-                pollService, 
+                pollService,
                 topicFetchService,
                 securityContextFacade,
                 permissionEvaluator,
                 branchLastPostService);
 
-        user = new JCUser(USERNAME, "email@mail.com", "password");
+        user = new JCUser("username", "email@mail.com", "password");
         when(securityContextFacade.getContext()).thenReturn(securityContext);
     }
 
@@ -151,13 +128,13 @@ public class TransactionalTopicModificationServiceTest {
         assertEquals(createdPost.getPostContent(), ANSWER_BODY);
         assertEquals(createdPost.getUserCreated(), user);
         assertEquals(user.getPostCount(), 1);
-               
+
         verify(aclBuilder).grant(GeneralPermission.WRITE);
         verify(aclBuilder).to(user);
         verify(aclBuilder).on(createdPost);
         verify(notificationService).topicChanged(answeredTopic);
     }
-    
+
     @Test
     public void testAutoSubscriptionOnTopicReplyIfAutosubscribeEnabled() throws NotFoundException {
         Topic answeredTopic = new Topic(user, "title");
@@ -189,7 +166,7 @@ public class TransactionalTopicModificationServiceTest {
     @Test(expectedExceptions = AccessDeniedException.class)
     public void testReplyToClosedTopic() throws NotFoundException {
         Topic answeredTopic = new Topic(user, "title");
-        answeredTopic.setBranch(new Branch("",""));
+        answeredTopic.setBranch(new Branch("", ""));
         answeredTopic.setClosed(true);
         when(topicFetchService.get(TOPIC_ID)).thenReturn(answeredTopic);
 
@@ -199,10 +176,10 @@ public class TransactionalTopicModificationServiceTest {
     @Test
     public void testReplyToClosedTopicWithGrant() throws NotFoundException {
         Topic answeredTopic = new Topic(user, "title");
-        answeredTopic.setBranch(new Branch("",""));
+        answeredTopic.setBranch(new Branch("", ""));
         answeredTopic.setClosed(true);
         when(permissionEvaluator.hasPermission(
-                Matchers.<Authentication>any(), anyLong(), anyString(),  anyString()))
+                Matchers.<Authentication>any(), anyLong(), anyString(), anyString()))
                 .thenReturn(true);
         when(userService.getCurrentUser()).thenReturn(user);
         when(topicFetchService.get(TOPIC_ID)).thenReturn(answeredTopic);
@@ -283,7 +260,7 @@ public class TransactionalTopicModificationServiceTest {
         createTopicVerifications(branch);
         verify(subscriptionService, never()).toggleTopicSubscription(createdTopic);
     }
-    
+
     @Test
     public void testRunSubscriptionByCreateReviewWhenAllParametersTrue() throws NotFoundException {
         Branch branch = createBranch();
@@ -357,18 +334,19 @@ public class TransactionalTopicModificationServiceTest {
     }
 
     @Test
-    public void testCreateCodeReviewWithWrappedBBCode() throws NotFoundException {
+    public void testCreateCodeReviewWithWrappedBbCode() throws NotFoundException {
         Branch branch = createBranch();
         createTopicStubs(branch);
         Topic dto = createTopic();
+        String codeReviewPattern = "[code=java]%s[/code]";
         Topic createdTopic = topicService.createCodeReview(
-                dto, String.format(CODE_REVIEW_PATTERN, ANSWER_BODY), false);
+                dto, String.format(codeReviewPattern, ANSWER_BODY), false);
         Post createdPost = createdTopic.getFirstPost();
 
         createCodeReviewAssertions(branch, createdTopic, createdPost);
         createTopicVerifications(branch);
     }
-    
+
     private void createTopicStubs(Branch branch) throws NotFoundException {
         when(userService.getCurrentUser()).thenReturn(user);
         when(branchDao.get(BRANCH_ID)).thenReturn(branch);
@@ -383,7 +361,7 @@ public class TransactionalTopicModificationServiceTest {
         assertEquals(createdPost.getPostContent(), ANSWER_BODY);
         assertEquals(user.getPostCount(), 1);
     }
-    
+
     private void createCodeReviewAssertions(Branch branch, Topic createdTopic, Post createdPost) {
         assertEquals(createdTopic.getTitle(), TOPIC_TITLE);
         assertEquals(createdTopic.getTopicStarter(), user);
@@ -445,7 +423,7 @@ public class TransactionalTopicModificationServiceTest {
         verify(branchDao).update(branch);
         verify(securityService).deleteFromAcl(Topic.class, TOPIC_ID);
     }
-    
+
     @Test
     public void testDeleteTopicWithLastPostInBranch() throws NotFoundException {
         Topic topic = new Topic(user, "title");
@@ -454,12 +432,12 @@ public class TransactionalTopicModificationServiceTest {
         topic.addPost(firstPost);
         final Branch branch = createBranch();
         branch.addTopic(topic);
-        
+
         Post lastPostInBranch = new Post(user, ANSWER_BODY);
         branch.setLastPost(lastPostInBranch);
         topic.addPost(lastPostInBranch);
         final Post newLastPostInBranch = new Post(user, ANSWER_BODY);
-        
+
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
@@ -467,13 +445,13 @@ public class TransactionalTopicModificationServiceTest {
                 return null;
             }
         }).when(branchLastPostService).refreshLastPostInBranch(branch);
-        
+
         topicService.deleteTopicSilent(TOPIC_ID);
 
         assertEquals(newLastPostInBranch, branch.getLastPost());
         verify(branchLastPostService).refreshLastPostInBranch(branch);
     }
-    
+
     @Test
     public void testDeleteTopicWithoutLastPostInBranch() throws NotFoundException {
         Topic topic = new Topic(user, "title");
@@ -482,18 +460,18 @@ public class TransactionalTopicModificationServiceTest {
         topic.addPost(firstPost);
         final Branch branch = createBranch();
         branch.addTopic(topic);
-        
+
         Post lastPostInBranch = new Post(user, ANSWER_BODY);
         branch.setLastPost(lastPostInBranch);
-        
+
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
-        
+
         topicService.deleteTopicSilent(TOPIC_ID);
 
         assertEquals(lastPostInBranch, branch.getLastPost());
         verify(branchLastPostService, Mockito.never()).refreshLastPostInBranch(branch);
     }
-    
+
 
     @Test(expectedExceptions = {NotFoundException.class})
     public void testDeleteTopicSilentNonExistent() throws NotFoundException {
@@ -508,8 +486,7 @@ public class TransactionalTopicModificationServiceTest {
         when(userService.getCurrentUser()).thenReturn(user);
 
         Topic topic = createTopic();
-        Post post = createPost(true);
-        topic.addPost(post);
+        topic.addPost(createPost());
         when(userService.getCurrentUser()).thenReturn(user);
 
         topicService.updateTopic(topic, null, true);
@@ -524,8 +501,7 @@ public class TransactionalTopicModificationServiceTest {
         when(userService.getCurrentUser()).thenReturn(user);
 
         Topic topic = createTopic();
-        Post post = createPost(true);
-        topic.addPost(post);
+        topic.addPost(createPost());
         subscribeUserOnTopic(user, topic);
         when(userService.getCurrentUser()).thenReturn(user);
 
@@ -540,7 +516,7 @@ public class TransactionalTopicModificationServiceTest {
         when(userService.getCurrentUser()).thenReturn(user);
 
         Topic topic = createTopic();
-        Post post = createPost(true);
+        Post post = createPost();
         topic.addPost(post);
         subscribeUserOnTopic(user, topic);
         when(userService.getCurrentUser()).thenReturn(user);
@@ -557,7 +533,7 @@ public class TransactionalTopicModificationServiceTest {
         when(userService.getCurrentUser()).thenReturn(user);
 
         Topic topic = createTopic();
-        Post post = createPost(true);
+        Post post = createPost();
         topic.addPost(post);
         when(userService.getCurrentUser()).thenReturn(user);
 
@@ -582,8 +558,8 @@ public class TransactionalTopicModificationServiceTest {
         verify(topicDao).update(topic);
         verify(notificationService).topicChanged(topic);
     }
-    
-    @Test(expectedExceptions=AccessDeniedException.class)
+
+    @Test(expectedExceptions = AccessDeniedException.class)
     void shouldBeImpossibleToUpdateCodeReview() throws NotFoundException {
         Topic topic = new Topic(user, "title");
         topic.setCodeReview(new CodeReview());
@@ -610,7 +586,7 @@ public class TransactionalTopicModificationServiceTest {
         verify(branchDao).update(targetBranch);
         verify(notificationService).topicMoved(topic, TOPIC_ID);
     }
-    
+
     @Test
     public void testMoveTopicWithLastPostInBranch() throws NotFoundException {
         Topic topic = new Topic(user, "title");
@@ -630,7 +606,7 @@ public class TransactionalTopicModificationServiceTest {
         verify(branchLastPostService).refreshLastPostInBranch(currentBranch);
         verify(branchLastPostService).refreshLastPostInBranch(targetBranch);
     }
-    
+
     @Test
     public void testMoveTopicWithoutLastPostInBranch() throws NotFoundException {
         Topic topic = new Topic(user, "title");
@@ -655,12 +631,12 @@ public class TransactionalTopicModificationServiceTest {
     public void testCloseTopic() {
         Topic topic = this.createTopic();
         topicService.closeTopic(topic);
-        
+
         assertTrue(topic.isClosed());
         verify(topicDao).update(topic);
     }
-    
-    @Test(expectedExceptions=AccessDeniedException.class)
+
+    @Test(expectedExceptions = AccessDeniedException.class)
     public void testCloseCodeReviewTopic() {
         Topic topic = this.createTopic();
         topic.setCodeReview(new CodeReview());
@@ -678,7 +654,7 @@ public class TransactionalTopicModificationServiceTest {
     }
 
     private Branch createBranch() {
-        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        Branch branch = new Branch("branch name", "branch description");
         branch.setId(BRANCH_ID);
         branch.setUuid("uuid");
         return branch;
@@ -692,9 +668,9 @@ public class TransactionalTopicModificationServiceTest {
         return topic;
     }
 
-    private Post createPost(boolean spy) {
+    private Post createPost() {
         Post post = new Post(user, "content");
-        post.setId(POST_ID);
+        post.setId(333L);
         return post;
     }
 

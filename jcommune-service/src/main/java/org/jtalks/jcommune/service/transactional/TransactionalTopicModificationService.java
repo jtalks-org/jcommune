@@ -113,12 +113,12 @@ public class TransactionalTopicModificationService implements TopicModificationS
 
         Post answer = new Post(currentUser, answerBody);
         topic.addPost(answer);
-        if(currentUser.isAutosubscribe()){
-         Set<JCUser> topicSubscribers = topic.getSubscribers();
-         topicSubscribers.add(currentUser);
+        if (currentUser.isAutosubscribe()) {
+            Set<JCUser> topicSubscribers = topic.getSubscribers();
+            topicSubscribers.add(currentUser);
         }
         dao.update(topic);
-        
+
         Branch branch = topic.getBranch();
         branch.setLastPost(answer);
         branchDao.update(branch);
@@ -181,14 +181,14 @@ public class TransactionalTopicModificationService implements TopicModificationS
                 new Object[]{topic.getId(), branch.getId(), currentUser.getUsername()});
         return topic;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     @PreAuthorize("hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_CODE_REVIEW')")
     public Topic createCodeReview(Topic topicDto, String bodyText,
-                             boolean notifyOnAnswers) throws NotFoundException {
+                                  boolean notifyOnAnswers) throws NotFoundException {
         JCUser currentUser = userService.getCurrentUser();
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);
@@ -198,7 +198,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         CodeReview codeReview = new CodeReview();
         codeReview.setTopic(topic);
         topic.setCodeReview(codeReview);
-        
+
         Branch branch = topicDto.getBranch();
         branch.addTopic(topic);
         branch.setLastPost(first);
@@ -217,27 +217,29 @@ public class TransactionalTopicModificationService implements TopicModificationS
                 new Object[]{topic.getId(), branch.getId(), currentUser.getUsername()});
         return topic;
     }
-    
+
     /**
-     * Wrap given message with [code=java]...[/code] tags if it is not wrapped 
+     * Wrap given message with [code=java]...[/code] tags if it is not wrapped
      * yet
+     *
      * @param message message to wrap
      * @return wrapped message
      */
     private String wrapWithCodeTag(String message) {
         String trimmedMessage = message.trim();
-        if (!trimmedMessage.startsWith(CODE_JAVA_BBCODE_START) || 
-            !trimmedMessage.endsWith(CODE_JAVA_BBCODE_END)) {
+        if (!trimmedMessage.startsWith(CODE_JAVA_BBCODE_START) ||
+                !trimmedMessage.endsWith(CODE_JAVA_BBCODE_END)) {
             return CODE_JAVA_BBCODE_START + message + CODE_JAVA_BBCODE_END;
         }
         return message;
     }
-    
+
     /**
      * {@inheritDoc}
+     *
      * @throws AccessDeniedException besides other reasons, always throws this when Code Review is edited because it
-     *         shouldn't be possible to edit it. More details on requirements can be found here
-     *         <a href="http://jtalks.org/display/jcommune/1.1+Larks">here</a>.
+     *                               shouldn't be possible to edit it. More details on requirements can be found here
+     *                               <a href="http://jtalks.org/display/jcommune/1.1+Larks">here</a>.
      */
     @Override
     @PreAuthorize("(hasPermission(#topic.id, 'TOPIC', 'GeneralPermission.WRITE') and " +
@@ -284,7 +286,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
 
     /**
      * Subscribes topic starter on created topic if notifications enabled("Notify me about the answer" checkbox).
-     * Subscribes and unsubscribes do if notifyOfAnsers ans autoSubscribe enabled
+     * Subscribes and unsubscribes do if notifyOfAnsers ans autoSubscribe enabled.
      *
      * @param notifyOnAnswers flag that indicates notifications state(enabled or disabled)
      * @param topic           topic to subscription
@@ -339,14 +341,14 @@ public class TransactionalTopicModificationService implements TopicModificationS
         if (branchLastPostFromDeletedTopic) {
             branch.clearLastPost();
         }
-        
+
         branch.deleteTopic(topic);
         branchDao.update(branch);
-        
+
         if (branchLastPostFromDeletedTopic) {
             branchLastPostService.refreshLastPostInBranch(branch);
         }
-        
+
         securityService.deleteFromAcl(Topic.class, topic.getId());
         return branch;
     }
@@ -361,10 +363,10 @@ public class TransactionalTopicModificationService implements TopicModificationS
         Branch targetBranch = branchDao.get(branchId);
         targetBranch.addTopic(topic);
         branchDao.update(targetBranch);
-        
+
         List<Post> topicPosts = topic.getPosts();
         if (topicPosts.contains(sourceBranch.getLastPost())) {
-            branchLastPostService.refreshLastPostInBranch(sourceBranch); 
+            branchLastPostService.refreshLastPostInBranch(sourceBranch);
         }
         branchLastPostService.refreshLastPostInBranch(targetBranch);
 
