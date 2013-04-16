@@ -41,7 +41,9 @@ import org.jtalks.jcommune.service.exceptions.ImageSizeException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
-import org.jtalks.jcommune.web.dto.OperationResultDto;
+import org.jtalks.jcommune.web.dto.json.FailJsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponseReason;
+import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.util.JSONUtils;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -124,7 +126,7 @@ public class AvatarControllerTest {
 
         verify(avatarService).validateAvatarFormat(validAvatar);
         verify(avatarService).validateAvatarSize(validAvatar);
-        assertEquals(actualResponce.get(AvatarController.RESULT), "true");
+        assertEquals(actualResponce.get(AvatarController.STATUS), "SUCCESS");
         assertEquals(actualResponce.get(AvatarController.SRC_PREFIX), ImageUtils.HTML_SRC_TAG_PREFIX);
         assertEquals(actualResponce.get(AvatarController.SRC_IMAGE), IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
         assertEquals(response.getStatus(), HttpServletResponse.SC_OK);
@@ -202,7 +204,6 @@ public class AvatarControllerTest {
         Locale locale = Locale.ENGLISH;//it's not matter
         String expectedMessage = "a message";
         String validTypes = "*.png";
-        boolean expectedSuccess = false;
         //
         when(messageSource.getMessage(
                 AvatarController.WRONG_FORMAT_RESOURCE_MESSAGE,
@@ -210,19 +211,19 @@ public class AvatarControllerTest {
                 locale)
                 ).thenReturn(expectedMessage);
 
-        OperationResultDto result = avatarController.handleImageFormatException(new ImageFormatException(validTypes), locale);
+        FailJsonResponse result = avatarController.handleImageFormatException(new ImageFormatException(validTypes), locale);
 
-        assertEquals(result.isSuccess(), expectedSuccess, "We have an exception, so we should get false value.");
-        assertEquals(result.getMessage(), expectedMessage, "Result contains incorrect message.");
+        assertEquals(result.getStatus(), JsonResponseStatus.FAIL, "We have an exception, so we should get false value.");
+        assertEquals(result.getReason(), JsonResponseReason.VALIDATION, "Failture reason should be validation");
+        assertEquals(result.getResult(), expectedMessage, "Result contains incorrect message.");
     }
     
     @Test
-    public void handleImageSizeExceptionShouldReturnFalseAndErrorMessage() {
+    public void handleImageSizeExceptionShouldReturnValidationErrorAndErrorMessage() {
         int maxSize = 1000;
         ImageSizeException exception = new ImageSizeException(maxSize);
         Locale locale = Locale.ENGLISH;//it's not matter
         String expectedMessage = "a message " + maxSize;
-        boolean expectedSuccess = false;
         //
         when(messageSource.getMessage(
                 Matchers.anyString(),
@@ -230,17 +231,17 @@ public class AvatarControllerTest {
                 Matchers.any(Locale.class))
                 ).thenReturn(expectedMessage);
 
-        OperationResultDto result = avatarController.handleImageSizeException(exception, locale);
+        FailJsonResponse result = avatarController.handleImageSizeException(exception, locale);
 
-        assertEquals(result.isSuccess(), expectedSuccess, "We have an exception, so we should get false value.");
-        assertEquals(result.getMessage(), expectedMessage, "Result contains incorrect message.");
+        assertEquals(result.getStatus(), JsonResponseStatus.FAIL, "We have an exception, so we should get false value.");
+        assertEquals(result.getReason(), JsonResponseReason.VALIDATION, "Failture reason should be validation");
+        assertEquals(result.getResult(), expectedMessage, "Result contains incorrect message.");
     }
     
     @Test
-    public void handleImageProcessExceptionShouldReturnFalseAndErrorMessage() {
+    public void handleImageProcessExceptionShouldReturnInternalServerErrorAndErrorMessage() {
         Locale locale = Locale.ENGLISH;//it's not matter
         String expectedMessage = "a message";
-        boolean expectedSuccess = false;
         //
         when(messageSource.getMessage(
                 AvatarController.COMMON_ERROR_RESOURCE_MESSAGE,
@@ -248,9 +249,10 @@ public class AvatarControllerTest {
                 locale)
                 ).thenReturn(expectedMessage);
 
-        OperationResultDto result = avatarController.handleImageProcessException(null, locale);
+        FailJsonResponse result = avatarController.handleImageProcessException(null, locale);
 
-        assertEquals(result.isSuccess(), expectedSuccess, "We have an exception, so we should get false value.");
-        assertEquals(result.getMessage(), expectedMessage, "Result contains incorrect message.");
+        assertEquals(result.getStatus(), JsonResponseStatus.FAIL, "We have an exception, so we should get false value.");
+        assertEquals(result.getReason(), JsonResponseReason.INTERNAL_SERVER_ERROR, "Failture reason should be validation");
+        assertEquals(result.getResult(), expectedMessage, "Result contains incorrect message.");
     }
 }

@@ -80,13 +80,14 @@ $(document).ready(function () {
         			.append('<img id="avatarPreview" src="data:image/jpeg;base64,${editedUser.avatar}" alt="" />');
         	}
         	//
-            if (responseJSON.success == "true") {
+            if (responseJSON.status == "SUCCESS") {
                 //if server side avatar uploading successful  a processed image displayed
             	$('#avatarPreview').attr('src', responseJSON.srcPrefix + responseJSON.srcImage);
                 //
                 $('#avatar').attr('value', responseJSON.srcImage);
             } else {
-                alert(responseJSON.message);
+            	// display error message
+                alert(responseJSON.result);
             }
 
         },

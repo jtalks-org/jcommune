@@ -33,7 +33,9 @@ import org.jtalks.jcommune.service.exceptions.ImageSizeException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
-import org.jtalks.jcommune.web.dto.OperationResultDto;
+import org.jtalks.jcommune.web.dto.json.FailJsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponseReason;
+import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.util.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -62,7 +64,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 public class AvatarController {
 
-    static final String RESULT = "success";
+    static final String STATUS = "status";
     static final String SRC_PREFIX = "srcPrefix";
     static final String SRC_IMAGE = "srcImage";
     
@@ -253,7 +255,7 @@ public class AvatarController {
     private void prepareNormalResponse(byte[] bytes,
                                        Map<String, String> responseContent) throws ImageProcessException {
         String srcImage = avatarService.convertBytesToBase64String(bytes);
-        responseContent.put(RESULT, "true");
+        responseContent.put(STATUS, String.valueOf(JsonResponseStatus.SUCCESS));
         responseContent.put(SRC_PREFIX, ImageUtils.HTML_SRC_TAG_PREFIX);
         responseContent.put(SRC_IMAGE, srcImage);
     }
@@ -267,10 +269,10 @@ public class AvatarController {
      */
     @ExceptionHandler(value = ImageSizeException.class)
     @ResponseBody
-    public OperationResultDto handleImageSizeException(ImageSizeException e, Locale locale) {
+    public FailJsonResponse handleImageSizeException(ImageSizeException e, Locale locale) {
         Object[] parameters = new Object[]{e.getMaxSize()};
         String errorMessage = messageSource.getMessage(WRONG_SIZE_RESOURCE_MESSAGE, parameters, locale);
-        return new OperationResultDto(errorMessage);
+        return new FailJsonResponse(JsonResponseReason.VALIDATION, errorMessage);
     }
 
     /**
@@ -282,10 +284,10 @@ public class AvatarController {
      */
     @ExceptionHandler(value = ImageFormatException.class)
     @ResponseBody
-    public OperationResultDto handleImageFormatException(ImageFormatException e, Locale locale) {
+    public FailJsonResponse handleImageFormatException(ImageFormatException e, Locale locale) {
         Object[] validImageTypes = new Object[]{e.getValidImageTypes()};
         String errorMessage = messageSource.getMessage(WRONG_FORMAT_RESOURCE_MESSAGE, validImageTypes, locale);
-        return new OperationResultDto(errorMessage);
+        return new FailJsonResponse(JsonResponseReason.VALIDATION, errorMessage);
     }
 
     /**
@@ -297,8 +299,8 @@ public class AvatarController {
      */
     @ExceptionHandler(value = ImageProcessException.class)
     @ResponseBody
-    public OperationResultDto handleImageProcessException(ImageProcessException e, Locale locale) {
+    public FailJsonResponse handleImageProcessException(ImageProcessException e, Locale locale) {
         String errorMessage = messageSource.getMessage(COMMON_ERROR_RESOURCE_MESSAGE, null, locale);
-        return new OperationResultDto(errorMessage);
+        return new FailJsonResponse(JsonResponseReason.INTERNAL_SERVER_ERROR, errorMessage);
     }
 }

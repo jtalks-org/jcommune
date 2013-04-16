@@ -100,6 +100,7 @@ public class AvatarService {
     public void validateAvatarFormat(MultipartFile file) throws ImageFormatException {
         Validate.notNull(file, "file argument array cannot be null");
         if (!VALID_IMAGE_TYPES.contains(file.getContentType())) {
+            LOGGER.debug("Wrong file extension. May be only {}", VALID_IMAGE_EXTENSIONS);
             throw new ImageFormatException(VALID_IMAGE_EXTENSIONS);
         }
     }
@@ -117,6 +118,7 @@ public class AvatarService {
         try {
             String type = tika.detect(input);
             if (!VALID_IMAGE_TYPES.contains(type)) {
+                LOGGER.debug("Wrong file extension. May be only {}", VALID_IMAGE_EXTENSIONS);
                 throw new ImageFormatException(VALID_IMAGE_EXTENSIONS);
             }
         } catch (IOException e) {
@@ -134,6 +136,7 @@ public class AvatarService {
         Validate.notNull(bytes, "Incoming byte array cannot be null");
         int maxSize = avatarSizeProperty.intValue();
         if (bytes.length > maxSize) {
+            LOGGER.debug("File has too big size. Must be less than {} bytes", maxSize);
             throw new ImageSizeException(maxSize);
         }
     }

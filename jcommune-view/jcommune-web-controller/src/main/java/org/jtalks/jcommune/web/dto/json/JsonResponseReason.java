@@ -28,6 +28,9 @@ public enum JsonResponseReason {
     SECURITY,
     
     /** Request was failed since entity was not found */
-    ENTITY_NOT_FOUND;
+    ENTITY_NOT_FOUND,
+    
+    /** Request was failed due to some server-side error */
+    INTERNAL_SERVER_ERROR;
 
 }
