@@ -213,23 +213,31 @@ public class JCUser extends User {
     }
 
     /**
-     * After create new post(topic) user subscribes on update of topic
+     * Disables or enables the user account. If it's disabled, user won't be able to log in. Usually user is enabled
+     * during account activation.
      *
-     * @return true, if user autosubscribe
+     * @param enabled if set to false, it will prevent user from log in
      */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
     /**
-     * @param enabled if set to false, it will prevent user from log in
+     * Determines whether user is automatically subscribed to the topic while posting there.
+     *
+     * @return true if user automatically subscribed to the topic while posting there, or false if user switched this
+     *         off in his settings
+     * @see <a href="http://jira.jtalks.org/browse/JC-1361">Related JIRA Ticket</a>
      */
     public boolean isAutosubscribe() {
         return autosubscribe;
     }
 
     /**
-     * @param autosubscribe if set to false, it will prevent user from log in
+     * Set whether after creating a new post user subscribes on update of the topic.
+     *
+     * @param autosubscribe set true if you'd like user to subscribe to the topic when she creates it, otherwise set
+     *                      false and user won't get automatically subscribed to the topic
      */
     public void setAutosubscribe(boolean autosubscribe) {
         this.autosubscribe = autosubscribe;
