@@ -238,6 +238,7 @@ public class JCUser extends User {
      *
      * @param autosubscribe set true if you'd like user to subscribe to the topic when she creates it, otherwise set
      *                      false and user won't get automatically subscribed to the topic
+     * @see <a href="http://jira.jtalks.org/browse/JC-1361">Related JIRA Ticket</a>
      */
     public void setAutosubscribe(boolean autosubscribe) {
         this.autosubscribe = autosubscribe;
