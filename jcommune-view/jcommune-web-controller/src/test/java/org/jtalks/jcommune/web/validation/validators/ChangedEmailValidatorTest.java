@@ -62,7 +62,7 @@ public class ChangedEmailValidatorTest {
 		
 		boolean isValid = validator.isValid(editedUserProfile, validatorContext);
 		
-		assertTrue(isValid, "Null value isn't valid.");
+		assertTrue(isValid, "Empty email should be valid, becuase it isn't busy.");
 	}
 
 	@Test
@@ -82,7 +82,7 @@ public class ChangedEmailValidatorTest {
 	    
 	    boolean isValid = validator.isValid(editedUserProfile, validatorContext);
         
-	    assertTrue(isValid, "New email isn't busy, but he invalid.");
+	    assertTrue(isValid, "New email isn't taken, so it must be valid.");
 	}
 	
 	@Test
@@ -94,6 +94,6 @@ public class ChangedEmailValidatorTest {
         
         boolean isValid = validator.isValid(editedUserProfile, validatorContext);
         
-        assertFalse(isValid, "New email is busy, but he valid.");
+        assertFalse(isValid, "New email is taken, so it must be invalid.");
     }
 }
