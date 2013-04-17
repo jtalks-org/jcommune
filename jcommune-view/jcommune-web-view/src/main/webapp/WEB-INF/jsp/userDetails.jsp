@@ -21,6 +21,7 @@
 <%@ taglib prefix="sec"
     uri="http://www.springframework.org/security/tags"%>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <head>
     <meta name="description" content="<c:out value="${user.username}"/>">
 <title><spring:message code="label.user" /> - ${user.username}</title>
@@ -171,16 +172,9 @@
                                 </label>
 
                                 <div class="controls">
-                                    <label class="input-xlarge box-label test-autosubscribe">
-                                        <c:choose>
-                                            <c:when test="${user.autosubscribe}">
-                                                <spring:message code="label.enabled"/>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <spring:message code="label.disabled"/>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </label>
+                                    <label class="test-autosubscribe"></label>
+                                    <form:checkbox path="user.autosubscribe" value="${user.autosubscribe}"
+                                                          class="form-check-radio-box" disabled="true"/>
                                 </div>
                             </div>
                         </c:if>
@@ -189,8 +183,7 @@
                                     code="label.location" />
                             </label>
                             <div class="controls">
-                                <label class="input-xlarge box-label test-location "> <c:out
-                                        value='${user.location}' />
+                                <label class="input-xlarge box-label test-location "> <c:out value='${user.location}' />
                                 </label>
                             </div>
                         </div>
