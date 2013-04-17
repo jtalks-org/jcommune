@@ -20,7 +20,6 @@ import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.service.CodeReviewCommentService;
 import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -36,7 +35,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 public class TransactionalCodeReviewService extends AbstractTransactionalEntityService<CodeReview,
         ChildRepository<CodeReview>>
-implements CodeReviewService {
+        implements CodeReviewService {
 
     private UserService userService;
     private PermissionService permissionService;
@@ -45,12 +44,12 @@ implements CodeReviewService {
     /**
      * Create an instance of CodeReview entity based service
      *
-     * @param dao                  data access object, which should be able do all CRUD operations with entity.
-     * @param userService          to get current user
-     * @param permissionService    to check permission for current user ({@link org.springframework.security.access
-     * .prepost.PreAuthorize}
-     *                             annotation emulation)
-     * @param notificationService  to send email updates for comment adding subscribers.
+     * @param dao                 data access object, which should be able do all CRUD operations with entity.
+     * @param userService         to get current user
+     * @param permissionService   to check permission for current user ({@link org.springframework.security.access
+     *                            .prepost.PreAuthorize}
+     *                            annotation emulation)
+     * @param notificationService to send email updates for comment adding subscribers.
      */
     public TransactionalCodeReviewService(
             ChildRepository<CodeReview> dao,
@@ -79,6 +78,9 @@ implements CodeReviewService {
         comment.setBody(body);
         comment.setCreationDate(new DateTime(System.currentTimeMillis()));
         comment.setAuthor(currentUser);
+        if (currentUser.isAutosubscribe()) {
+            review.getSubscribers().add(currentUser);
+        }
 
         review.addComment(comment);
         getDao().update(review);

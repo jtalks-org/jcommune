@@ -140,10 +140,10 @@ public class TransactionalTopicModificationServiceTest {
         Topic answeredTopic = ObjectsFactory.topics(user, 1).get(0);
         user.setAutosubscribe(true);
         when(userService.getCurrentUser()).thenReturn(user);
-        when(topicFetchService.get(1L)).thenReturn(answeredTopic);
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(answeredTopic);
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
-        topicService.replyToTopic(1L, ANSWER_BODY, BRANCH_ID);
+        topicService.replyToTopic(TOPIC_ID, ANSWER_BODY, BRANCH_ID);
 
         assertTrue(answeredTopic.userSubscribed(user));
     }
@@ -196,10 +196,8 @@ public class TransactionalTopicModificationServiceTest {
     }
 
     @Test
-    //all parameters : Forum flag "notifyOnAnswers", User parameters from profile "autosubscribe"
-    public void testRunSubscriptionByCreateTopicWhenAllParametersTrue() throws NotFoundException {
+    public void testRunSubscriptionByCreateTopicWhenNotificationTrue() throws NotFoundException {
         Branch branch = createBranch();
-        user.setAutosubscribe(true);
         when(userService.getCurrentUser()).thenReturn(user);
         createTopicStubs(branch);
         Topic dto = createTopic();
@@ -212,42 +210,8 @@ public class TransactionalTopicModificationServiceTest {
     }
 
     @Test
-    //all parameters : Forum flag "notifyOnAnswers", User parameters from profile "autosubscribe"
-    public void testNotRunSubscriptionByCreateTopicWhenOnlyUserTrue() throws NotFoundException {
+    public void testNotRunSubscriptionByCreateTopicWhenNotificationFalse() throws NotFoundException {
         Branch branch = createBranch();
-        user.setAutosubscribe(true);
-        when(userService.getCurrentUser()).thenReturn(user);
-        createTopicStubs(branch);
-        Topic dto = createTopic();
-        Topic createdTopic = topicService.createTopic(dto, ANSWER_BODY, false);
-        Post createdPost = createdTopic.getFirstPost();
-
-        createTopicAssertions(branch, createdTopic, createdPost);
-        createTopicVerifications(branch);
-        verify(subscriptionService).toggleTopicSubscription(createdTopic);
-    }
-
-    @Test
-    //all parameters : Forum flag "notifyOnAnswers", User parameters from profile "autosubscribe"
-    public void testNotRunSubscriptionByCreateTopicWhenOnlyForumTrue() throws NotFoundException {
-        Branch branch = createBranch();
-        user.setAutosubscribe(false);
-        when(userService.getCurrentUser()).thenReturn(user);
-        createTopicStubs(branch);
-        Topic dto = createTopic();
-        Topic createdTopic = topicService.createTopic(dto, ANSWER_BODY, true);
-        Post createdPost = createdTopic.getFirstPost();
-
-        createTopicAssertions(branch, createdTopic, createdPost);
-        createTopicVerifications(branch);
-        verify(subscriptionService).toggleTopicSubscription(createdTopic);
-    }
-
-    @Test
-    //all parameters : Forum flag "notifyOnAnswers", User parameters from profile "autosubscribe"
-    public void testNotRunSubscriptionByCreateTopicWhenAllParametersFalse() throws NotFoundException {
-        Branch branch = createBranch();
-        user.setAutosubscribe(false);
         when(userService.getCurrentUser()).thenReturn(user);
         createTopicStubs(branch);
         Topic dto = createTopic();
@@ -260,9 +224,8 @@ public class TransactionalTopicModificationServiceTest {
     }
 
     @Test
-    public void testRunSubscriptionByCreateReviewWhenAllParametersTrue() throws NotFoundException {
+    public void testRunSubscriptionByCreateReviewWhenNotificationTrue() throws NotFoundException {
         Branch branch = createBranch();
-        user.setAutosubscribe(true);
         when(userService.getCurrentUser()).thenReturn(user);
 
         createTopicStubs(branch);
@@ -278,45 +241,8 @@ public class TransactionalTopicModificationServiceTest {
     }
 
     @Test
-    public void testNotRunSubscriptionByCreateReviewWhenOnlyForumTrue() throws NotFoundException {
+    public void testNotRunSubscriptionByCreateReviewWhenNotificationFalse() throws NotFoundException {
         Branch branch = createBranch();
-        user.setAutosubscribe(true);
-        when(userService.getCurrentUser()).thenReturn(user);
-
-        createTopicStubs(branch);
-        Topic dto = createTopic();
-        dto.setAnnouncement(true);
-        dto.setSticked(true);
-        Topic createdTopic = topicService.createCodeReview(dto, ANSWER_BODY, false);
-        Post createdPost = createdTopic.getFirstPost();
-
-        createCodeReviewAssertions(branch, createdTopic, createdPost);
-        createTopicVerifications(branch);
-        verify(subscriptionService).toggleTopicSubscription(createdTopic);
-    }
-
-    @Test
-    public void testNotRunSubscriptionByCreateReviewWhenOnlyUserTrue() throws NotFoundException {
-        Branch branch = createBranch();
-        user.setAutosubscribe(true);
-        when(userService.getCurrentUser()).thenReturn(user);
-
-        createTopicStubs(branch);
-        Topic dto = createTopic();
-        dto.setAnnouncement(true);
-        dto.setSticked(true);
-        Topic createdTopic = topicService.createCodeReview(dto, ANSWER_BODY, false);
-        Post createdPost = createdTopic.getFirstPost();
-
-        createCodeReviewAssertions(branch, createdTopic, createdPost);
-        createTopicVerifications(branch);
-        verify(subscriptionService).toggleTopicSubscription(createdTopic);
-    }
-
-    @Test
-    public void testNotRunSubscriptionByCreateReviewWhenAllParametersFalse() throws NotFoundException {
-        Branch branch = createBranch();
-        user.setAutosubscribe(false);
         when(userService.getCurrentUser()).thenReturn(user);
 
         createTopicStubs(branch);

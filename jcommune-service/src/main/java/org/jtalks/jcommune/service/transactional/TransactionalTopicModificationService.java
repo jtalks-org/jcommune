@@ -293,8 +293,8 @@ public class TransactionalTopicModificationService implements TopicModificationS
      * @param currentUser     current user
      */
     private void subscribeOnTopicIfNotificationsEnabled(boolean notifyOnAnswers, Topic topic, JCUser currentUser) {
-        boolean autoSubscribe = currentUser.isAutosubscribe();
-        if (notifyOnAnswers || (!notifyOnAnswers && autoSubscribe)) {
+        boolean subscribed = topic.userSubscribed(currentUser);
+        if (notifyOnAnswers ^ subscribed) {
             subscriptionService.toggleTopicSubscription(topic);
         }
     }

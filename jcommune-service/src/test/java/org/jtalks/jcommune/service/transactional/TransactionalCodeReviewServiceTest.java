@@ -30,9 +30,11 @@ import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 
+import static org.jgroups.util.Util.assertFalse;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 public class TransactionalCodeReviewServiceTest {
     private static final long CR_ID = 1L;
@@ -110,6 +112,24 @@ public class TransactionalCodeReviewServiceTest {
         doThrow(new AccessDeniedException(""))
                 .when(permissionService).checkPermission(anyLong(), any(AclClassName.class), any(JtalksPermission.class));
         codeReviewService.addComment(CR_ID, 0, null);
+    }
+
+    @Test
+    public void testAddUserToSubscriptedByComment() throws AccessDeniedException, NotFoundException {
+        JCUser user = new JCUser("username", null, null);
+        user.setAutosubscribe(true);
+        when(userService.getCurrentUser()).thenReturn(user);
+        codeReviewService.addComment(CR_ID, 1, "body");
+        assertTrue(review.getSubscribers().contains(user));
+    }
+
+    @Test
+    public void testNotAddUserToSubscriptedByComment() throws AccessDeniedException, NotFoundException {
+        JCUser user = new JCUser("username", null, null);
+        user.setAutosubscribe(false);
+        when(userService.getCurrentUser()).thenReturn(user);
+        codeReviewService.addComment(CR_ID, 1, "body");
+        assertFalse(review.getSubscribers().contains(user));
     }
 
     private CodeReviewComment createCodeReviewComment(String uuid) {
