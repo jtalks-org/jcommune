@@ -116,8 +116,6 @@ insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audi
 
 -- setting permissions for banned users
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  select BRANCH_ID, 14, @banned_group_sid_id, @VIEW_TOPICS_MASK, 0, 0, 0 from BRANCHES;
-insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
   select BRANCH_ID, 15, @banned_group_sid_id, @CREATE_POSTS_MASK, 0, 0, 0 from BRANCHES;
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
   select BRANCH_ID, 16, @banned_group_sid_id, @EDIT_OWN_POSTS_MASK, 0, 0, 0 from BRANCHES;
