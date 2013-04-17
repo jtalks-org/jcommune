@@ -19,10 +19,14 @@
 <%@ attribute name="postText" required="false" rtexprvalue="true" type="java.lang.String" %>
 <%@ attribute name="bodyParameterName" required="true" rtexprvalue="true" type="java.lang.String" %>
 <%@ attribute name="labelForAction" required="true" rtexprvalue="true" type="java.lang.String" %>
+<%@ attribute name="showSendButton" required="false" rtexprvalue="true" type="java.lang.String" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
+<c:if test="${empty showSendButton}">
+    <c:set var="showSendButton" value="true"/>
+</c:if>
 
 <div class="btn-toolbar hide-on-preview">
     <div class="btn-group">
@@ -158,13 +162,17 @@
                         value="${postText}"/></textarea>
             </span>
     <br>
-    <span class="keymaps-caption"><spring:message code="label.keymaps.post"/></span>
-    <br>
+    <c:if test="${showSendButton}">
+        <span class="keymaps-caption"><spring:message code="label.keymaps.post"/></span>
+        <br>
+    </c:if>
     <form:errors path="${bodyParameterName}" cssClass="help-inline"/>
 </div>
 
-<input id="post" type="submit" class="btn btn-primary" accesskey="s" name="post" tabindex="300"
-       value="<spring:message code="${labelForAction}"/>"/>
+<c:if test="${showSendButton}">
+    <input id="post" type="submit" class="btn btn-primary" accesskey="s" name="post" tabindex="300"
+           value="<spring:message code="${labelForAction}"/>"/>
+</c:if>
 
 <input id="preview" type="button" class="btn btn-success" name="preview" tabindex="400"
        value="<spring:message code="label.answer.preview"/>" onclick="SwitchEditor();return null;"/>

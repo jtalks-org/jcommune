@@ -20,6 +20,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<sec:authentication property="principal.id" var="senderId"/>
 <head>
     <title><spring:message code="label.new_pm"/></title>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
@@ -66,9 +67,18 @@
 	                <form:errors path="title" cssClass="help-inline"/>
                 </div>
             </div>
+
+                <c:set var="hasPermissionToSend" value="false"/>
+                <jtalks:hasPermission targetId='${senderId}' targetType='USER'
+                                                      permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
+                    <c:set var="hasPermissionToSend" value="true"/>
+                </jtalks:hasPermission>
+
+
                 <jtalks:bbeditor labelForAction="label.send"
                                  postText="${privateMessageDto.body}"
                                  bodyParameterName="body"
+                                 showSendButton="${hasPermissionToSend}"
                                  back="${pageContext.request.contextPath}/inbox"/>
 
                 <input id="savePM" type="submit" class="btn" tabindex="500" name="save_pm" value="<spring:message code="label.save"/>"

@@ -20,6 +20,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <head>
     <script
             src="${pageContext.request.contextPath}/resources/javascript/custom/privateMessages.js"></script>
@@ -38,19 +39,23 @@
         <!-- /span2 -->
         <div class="span9">
             <div class="pm_buttons">
-                <c:if test="${pm.replyAllowed && (pm.userTo eq user)}">
-                    <a class="btn btn-primary"
-                       href="${pageContext.request.contextPath}/reply/${pm.id}?userId=${userId}">
-                        <i class="icon-share-alt icon-white"></i>
-                        <spring:message code="label.reply"/>
-                    </a>
+                <jtalks:hasPermission targetId='${user.id}' targetType='USER'
+                                      permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
+                    <c:if test="${(pm.userTo eq user)}">
+                        <a class="btn btn-primary"
+                           href="${pageContext.request.contextPath}/reply/${pm.id}?userId=${user.id}">
+                            <i class="icon-share-alt icon-white"></i>
+                            <spring:message code="label.reply"/>
+                        </a>
 
-                    <a class="btn"
-                       href="${pageContext.request.contextPath}/quote/${pm.id}?userId=${userId}">
-                        <i class="icon-quote"></i>
-                        <spring:message code="label.quote"/>
-                    </a>
-                </c:if>
+                        <a class="btn"
+                           href="${pageContext.request.contextPath}/quote/${pm.id}?userId=${user.id}">
+                            <i class="icon-quote"></i>
+                            <spring:message code="label.quote"/>
+                        </a>
+                    </c:if>
+                </jtalks:hasPermission>
+
                 <span class="del">
                     <a id="deleteOnePM"
                        class="btn btn-danger delete"
