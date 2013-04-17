@@ -78,7 +78,7 @@
                 <jtalks:bbeditor labelForAction="label.send"
                                  postText="${privateMessageDto.body}"
                                  bodyParameterName="body"
-                                 showSendButton="${hasPermissionToSend}"
+                                 showSubmitButton="${hasPermissionToSend}"
                                  back="${pageContext.request.contextPath}/inbox"/>
 
                 <input id="savePM" type="submit" class="btn" tabindex="500" name="save_pm" value="<spring:message code="label.save"/>"

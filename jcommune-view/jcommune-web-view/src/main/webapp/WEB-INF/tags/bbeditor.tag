@@ -19,13 +19,13 @@
 <%@ attribute name="postText" required="false" rtexprvalue="true" type="java.lang.String" %>
 <%@ attribute name="bodyParameterName" required="true" rtexprvalue="true" type="java.lang.String" %>
 <%@ attribute name="labelForAction" required="true" rtexprvalue="true" type="java.lang.String" %>
-<%@ attribute name="showSendButton" required="false" rtexprvalue="true" type="java.lang.String" %>
+<%@ attribute name="showSubmitButton" required="false" rtexprvalue="true" type="java.lang.Boolean" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<c:if test="${empty showSendButton}">
-    <c:set var="showSendButton" value="true"/>
+<c:if test="${empty showSubmitButton}">
+    <c:set var="showSubmitButton" value="true"/>
 </c:if>
 
 <div class="btn-toolbar hide-on-preview">
@@ -162,14 +162,14 @@
                         value="${postText}"/></textarea>
             </span>
     <br>
-    <c:if test="${showSendButton}">
+    <c:if test="${showSubmitButton}">
         <span class="keymaps-caption"><spring:message code="label.keymaps.post"/></span>
         <br>
     </c:if>
     <form:errors path="${bodyParameterName}" cssClass="help-inline"/>
 </div>
 
-<c:if test="${showSendButton}">
+<c:if test="${showSubmitButton}">
     <input id="post" type="submit" class="btn btn-primary" accesskey="s" name="post" tabindex="300"
            value="<spring:message code="${labelForAction}"/>"/>
 </c:if>
