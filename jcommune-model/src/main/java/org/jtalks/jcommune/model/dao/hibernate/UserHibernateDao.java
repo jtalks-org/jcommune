@@ -52,7 +52,6 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser>
         List<JCUser> users = getSession()
                 .createCriteria(JCUser.class)
                 .add(Restrictions.eq("username", username).ignoreCase())
-                .setCacheable(true)
                 .list();
         if (users.size() == 1) {
             return users.get(0);
