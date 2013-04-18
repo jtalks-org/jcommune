@@ -337,7 +337,7 @@ function doLink() {
                 submit:function (value, message, form) {
                     if (value != undefined && value) {
                         mylink = document.getElementById("urlAltId").value;
-                        var link = document.getElementById("urlId").value;
+                        var link = $.trim(document.getElementById("urlId").value);
                         if ((link != null) && (link != "")) {
                             if (mylink == null || mylink == "") {
                                 mylink = link;
