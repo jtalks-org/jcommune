@@ -206,8 +206,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         editedUser.setEmail(editedUserProfileInfo.getEmail());
 
         if (!Arrays.equals(editedUser.getAvatar(), decodedAvatar)) {
-            editedUser.setAvatarLastModificationTime(new DateTime(
-                    System.currentTimeMillis()));
+            editedUser.setAvatarLastModificationTime(new DateTime());
         }
         editedUser.setAvatar(decodedAvatar);
         editedUser.setSignature(editedUserProfileInfo.getSignature());
