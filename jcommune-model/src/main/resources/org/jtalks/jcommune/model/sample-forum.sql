@@ -1,7 +1,7 @@
 -- Creates users: default, admin, banned with respective permissions
 -- Creates sections and branches to be able to see then and post something
 
-INSERT INTO COMPONENTS (CMP_ID, COMPONENT_TYPE, UUID, `NAME`, DESCRIPTION) VALUES (1, 'FORUM', (SELECT UUID() FROM dual), 'JTalks Sample Forum', 'You can quickly experiment on this instance');
+INSERT INTO COMPONENTS (CMP_ID, COMPONENT_TYPE, UUID, `NAME`, DESCRIPTION) VALUES (1, 'FORUM', (SELECT UUID() FROM dual), 'JTalks Sample Forum', 'Available users: admin/admin registered/registered moderator/moderator banned/banned');
 
 INSERT INTO SECTIONS (SECTION_ID, UUID, `NAME`, DESCRIPTION, POSITION, COMPONENT_ID) VALUES
   (1,(SELECT UUID() FROM dual),'Physics', 'Physics related topics are discussed here', 1, 1),
@@ -45,9 +45,12 @@ insert ignore into GROUP_USER_REF select @moderator_group_id, ID from USERS wher
 insert ignore into GROUP_USER_REF select @admin_group_id, ID from USERS where USERNAME = 'admin';
 insert ignore into GROUP_USER_REF select @banned_group_id, ID from USERS where USERNAME = 'banned';
 
-INSERT INTO acl_class VALUES (1,'BRANCH'), (2,'GROUP'), (3,'COMPONENT');
+set @branch_acl_class=1;
+set @group_acl_class=2;
+set @component_acl_class=3;
+insert into acl_class values (@branch_acl_class,'BRANCH'), (@group_acl_class,'GROUP'), (@component_acl_class,'COMPONENT');
 
-INSERT INTO acl_sid VALUES (5, 0, @moderator_group_sid);
+insert into acl_sid values (5, 0, @moderator_group_sid);
 
 SET @admin_group_sid_id := (select id from acl_sid where sid=@admin_group_sid);
 SET @registered_group_sid_id := (select id from acl_sid where sid=@registered_group_sid);
@@ -58,6 +61,7 @@ SET @anonymous_sid_id := (select id from acl_sid where sid='user:anonymousUser')
 SET @SEND_PRIVATE_MESSAGES_MASK := 14;
 SET @CREATE_FORUM_FAQ_MASK := 20;
 SET @EDIT_OWN_PROFILE_MASK := 15;
+SET @EDIT_OTHERS_PROFILE_MASK := 23;
 
 SET @VIEW_TOPICS_MASK := 6;
 SET @MOVE_TOPICS_MASK := 8;
@@ -74,14 +78,18 @@ SET @LEAVE_COMMENTS_IN_CODE_REVIEW_MASK := 22;
 
 SET @ADMIN_MASK := 16;
 
+set @registered_group_object_identity=5;
+set @admin_group_object_identity=6;
+set @banned_group_object_identity=7;
 INSERT INTO acl_object_identity VALUES
-  (1, 1, 1, NULL, 1, 1),
-  (2, 1, 2, NULL, 1, 1),
-  (3, 1, 3, NULL, 1, 1),
-  (4, 1, 4, NULL, 1, 1),
-  (5, 2, @registered_group_id, NULL, 1, 1),
-  (6, 2, @admin_group_id, NULL, 1, 1),
-  (7, 3, 1, NULL, 1, 1);
+  (1, @branch_acl_class, 1, NULL, 1, 1),
+  (2, @branch_acl_class, 2, NULL, 1, 1),
+  (3, @branch_acl_class, 3, NULL, 1, 1),
+  (4, @branch_acl_class, 4, NULL, 1, 1),
+  (@registered_group_object_identity, @group_acl_class, @registered_group_id, NULL, 1, 1),
+  (6, @group_acl_class, @admin_group_id, NULL, 1, 1),
+  (@banned_group_object_identity, @group_acl_class, @banned_group_id, NULL, 1, 1),
+  (8, @component_acl_class, 1, NULL, 1, 1);
 
 -- VIEW_TOPICS FOR anonymous users
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
@@ -128,16 +136,19 @@ insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audi
 
 -- personal permissions
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  values (5, 0, @registered_group_sid_id, @SEND_PRIVATE_MESSAGES_MASK, 1, 0, 0);
+  values (@registered_group_object_identity, 0, @registered_group_sid_id, @SEND_PRIVATE_MESSAGES_MASK, 1, 0, 0);
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  values (5, 1, @registered_group_sid_id, @EDIT_OWN_PROFILE_MASK, 1, 0, 0);
-
+  values (@registered_group_object_identity, 1, @registered_group_sid_id, @EDIT_OWN_PROFILE_MASK, 1, 0, 0);
+-- admin
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  values (5, 2, @banned_group_sid_id, @SEND_PRIVATE_MESSAGES_MASK, 0, 0, 0);
+  values (@admin_group_object_identity, 2, @admin_group_sid_id, @EDIT_OTHERS_PROFILE_MASK, 1, 0, 0);
+-- banned
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  values (5, 3, @banned_group_sid_id, @EDIT_OWN_PROFILE_MASK, 0, 0, 0);
+  values (@banned_group_object_identity, 3, @banned_group_sid_id, @SEND_PRIVATE_MESSAGES_MASK, 0, 0, 0);
+insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+  values (@banned_group_object_identity, 4, @banned_group_sid_id, @EDIT_OWN_PROFILE_MASK, 0, 0, 0);
 
 -- admin permissions for the component
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  values (7, 0, @admin_group_sid_id, @ADMIN_MASK, 1, 0, 0);
+  values (@admin_group_object_identity, 0, @admin_group_sid_id, @ADMIN_MASK, 1, 0, 0);
 
