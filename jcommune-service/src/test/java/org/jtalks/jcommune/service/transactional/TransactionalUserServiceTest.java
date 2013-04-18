@@ -40,6 +40,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.jtalks.common.model.dao.GroupDao;
@@ -154,25 +155,24 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
-    public void testGetByUsername() throws NotFoundException {
+    public void getByUsernameShouldReturnUserWithPassedNameFromRepository() throws NotFoundException {
         JCUser expectedUser = getUser(USERNAME);;
         when(userDao.getByUsername(USERNAME)).thenReturn(expectedUser);
 
         JCUser result = userService.getByUsername(USERNAME);
 
-        assertEquals(result, expectedUser, "Username not equals");
-        verify(userDao).getByUsername(USERNAME);
+        assertEquals(result, expectedUser, "Found incorrect user, cause usernames aren't equals");
     }
 
     @Test(expectedExceptions = NotFoundException.class)
-    public void testGetByUsernameNotFound() throws NotFoundException {
+    public void getByUsernameSholdThrowErrorWhenUserWasNofFound() throws NotFoundException {
         when(userDao.getByUsername(USERNAME)).thenReturn(null);
 
         userService.getByUsername(USERNAME);
     }
 
     @Test
-    public void testRegisterUser() {
+    public void registerUserShouldSaveHimInRepository() {
         JCUser user = getUser(USERNAME);
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
 
@@ -188,16 +188,15 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
-    public void testEditUserProfile() throws Exception {
+    public void editUserProfileShouldUpdateHimAndSaveInRepository() throws NotFoundException {
         JCUser user = getUser(USERNAME);
-        when(securityService.getCurrentUserUsername()).thenReturn("");
+        when(securityService.getCurrentUserUsername()).thenReturn(StringUtils.EMPTY);
         when(userDao.getByUsername(anyString())).thenReturn(user);
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
         when(encryptionService.encryptPassword(NEW_PASSWORD))
                 .thenReturn(NEW_PASSWORD_MD5_HASH);
         when(userDao.isExist(USER_ID)).thenReturn(Boolean.TRUE);
         when(userDao.get(USER_ID)).thenReturn(user);
-
         String newAvatar = new String(new byte[12]);
 
         JCUser editedUser = userService.saveEditedUserProfile(USER_ID, new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
@@ -208,11 +207,29 @@ public class TransactionalUserServiceTest {
         assertUserUpdated(editedUser);
         assertEquals(editedUser.getLanguage(), LANGUAGE, "language was not changed");
     }
+    
+    private void assertUserUpdated(JCUser user) {
+        assertEquals(user.getEmail(), EMAIL, "Email was not changed");
+        assertEquals(user.getSignature(), SIGNATURE, "Signature was not changed");
+        assertEquals(user.getFirstName(), FIRST_NAME, "first name was not changed");
+        assertEquals(user.getLastName(), LAST_NAME, "last name was not changed");
+        assertEquals(user.getPassword(), NEW_PASSWORD_MD5_HASH, "new password was not accepted");
+    }
+    
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void editUserProfileShouldNotUpdateHimAndSaveInRepositoryIfHeIsNotFound() throws NotFoundException {
+        String newAvatar = new String(new byte[12]);
+        when(userDao.isExist(USER_ID)).thenReturn(Boolean.FALSE);
+        
+        userService.saveEditedUserProfile(USER_ID, new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
+                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE,
+                LOCATION));
+    }
 
     @Test
-    public void testEditUserProfileNewPasswordNull() throws NotFoundException {
+    public void editUserProfileShouldNotChangePasswordToNull() throws NotFoundException {
         JCUser user = getUser(USERNAME);
-        when(securityService.getCurrentUserUsername()).thenReturn("");
+        when(securityService.getCurrentUserUsername()).thenReturn(StringUtils.EMPTY);
         when(userDao.getByUsername(anyString())).thenReturn(user);
         when(encryptionService.encryptPassword(null)).thenReturn(null);
         when(userDao.isExist(USER_ID)).thenReturn(Boolean.TRUE);
@@ -246,34 +263,24 @@ public class TransactionalUserServiceTest {
         assertEquals(editedUser.getEmail(), EMAIL, "Email was changed");
     }
 
-    private void assertUserUpdated(JCUser user) {
-        assertEquals(user.getEmail(), EMAIL, "Email was not changed");
-        assertEquals(user.getSignature(), SIGNATURE, "Signature was not changed");
-        assertEquals(user.getFirstName(), FIRST_NAME, "first name was not changed");
-        assertEquals(user.getLastName(), LAST_NAME, "last name was not changed");
-        assertEquals(user.getPassword(), NEW_PASSWORD_MD5_HASH, "new password was not accepted");
-    }
-
     @Test
-    public void testGet() throws NotFoundException {
+    public void getShouldReturnUserFromRepositoryWithoutModifications() throws NotFoundException {
         JCUser expectedUser = new JCUser(USERNAME, EMAIL, PASSWORD);
         when(userDao.get(USER_ID)).thenReturn(expectedUser);
         when(userDao.isExist(USER_ID)).thenReturn(true);
 
         JCUser user = userService.get(USER_ID);
 
-        assertEquals(user, expectedUser, "Users aren't equals");
-        verify(userDao).isExist(USER_ID);
-        verify(userDao).get(USER_ID);
+        assertEquals(user, expectedUser, "Returned user is incorrect.");
     }
 
     @Test(expectedExceptions = NotFoundException.class)
-    public void getCommonUserByUsernameShouldNotFind() throws Exception {
+    public void getCommonUserByUsernameShouldNotFind() throws NotFoundException {
         userService.getCommonUserByUsername("username");
     }
 
     @Test
-    public void getCommonUserByUsernameShouldReturnOne() throws Exception {
+    public void getCommonUserByUsernameShouldReturnOne() throws NotFoundException {
         User expectedUser = new User("username", null, null, null);
         doReturn(expectedUser).when(userDao).getCommonUserByUsername("username");
 
@@ -282,7 +289,7 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
-    public void testUpdateLastLoginTime() throws Exception {
+    public void updateLastLoginTimeShouldSaveNewLoginTimeForUSer() throws Exception {
         JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);
         DateTime dateTimeBefore = new DateTime();
         Thread.sleep(25);
