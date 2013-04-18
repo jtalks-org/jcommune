@@ -25,8 +25,6 @@
     <title><spring:message code="label.drafts"/></title>
 </head>
 <body>
-<jsp:include page="../../template/topLine.jsp"/>
-
 <div class="container">
     <%-- Start of pagination --%>
     <div class="row-fluid upper-pagination forum-pagination-container">

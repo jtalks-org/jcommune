@@ -167,6 +167,17 @@ public class UserProfileControllerTest {
         assertEquals(response.getCookies()[0].getName(), CookieLocaleResolver.DEFAULT_COOKIE_NAME);
         verify(userService).saveEditedUserProfile(anyLong(), any(UserInfoContainer.class));
     }
+    
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void saveEditedProfileShouldShowErrorWhenUserWasNotFound() throws NotFoundException {
+        EditUserProfileDto userDto = getEditUserProfileDto();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
+        when(userService.saveEditedUserProfile(anyLong(), any(UserInfoContainer.class)))
+            .thenThrow(new NotFoundException());
+        
+        profileController.saveEditedProfile(userDto, bindingResult, response);
+    }
 
     @Test
     public void saveEditedProfileWithValidationErrorsShouldShowThemToUser() throws NotFoundException {
