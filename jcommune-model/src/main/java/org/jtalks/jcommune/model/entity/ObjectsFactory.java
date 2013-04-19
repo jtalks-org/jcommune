@@ -93,6 +93,14 @@ public final class ObjectsFactory {
         topic.setId(1);
         return topic;
     }
+    
+    public static Topic getTopic(JCUser author, int numberOfPosts) {
+        Topic topic = new Topic(author, "some topic");
+        for (int i = 0; i < numberOfPosts; i++) {
+            topic.addPost(new Post(author, "post #" + (i + 1)));
+        }        
+        return topic;
+    }
 
     public static PrivateMessage getPrivateMessage(JCUser userTo, JCUser userFrom) {
         return new PrivateMessage(userTo, userFrom,

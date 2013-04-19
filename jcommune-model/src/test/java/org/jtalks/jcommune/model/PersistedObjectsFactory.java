@@ -18,6 +18,7 @@ import org.hibernate.Session;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.common.model.entity.ComponentType;
+import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.Property;
 import org.jtalks.jcommune.model.entity.*;
 
@@ -188,6 +189,18 @@ public final class PersistedObjectsFactory {
     public static JCUser getUser(String username, String mail) {
         JCUser user = new JCUser(username, mail, "user");
         persist(user);
+        return user;
+    }
+    
+    public static JCUser getDefaultUserWithGroups() {
+        List<Group> groups = ObjectsFactory.getDefaultGroupList();
+        for (Group group : groups) {
+            persist(group);
+        }
+        JCUser user = ObjectsFactory.getDefaultUser();
+        user.setGroups(groups);
+        persist(user);
+        
         return user;
     }
 
