@@ -173,6 +173,7 @@ public class UserProfileControllerTest {
         EditUserProfileDto userDto = getEditUserProfileDto();
         MockHttpServletResponse response = new MockHttpServletResponse();
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
+        when(userService.getCurrentUser()).thenReturn(getUser());
         when(userService.saveEditedUserProfile(anyLong(), any(UserInfoContainer.class)))
             .thenThrow(new NotFoundException());
         
