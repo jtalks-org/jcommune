@@ -23,7 +23,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -139,7 +138,7 @@ public class TransactionalUserServiceTest {
         aclBuilder = mockAclBuilder();
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
         when(securityFacade.getContext()).thenReturn(securityContext);
-        userService = spy(new TransactionalUserService(
+        userService = new TransactionalUserService(
                 userDao,
                 groupDao,
                 securityService,
@@ -150,7 +149,7 @@ public class TransactionalUserServiceTest {
                 authenticationManager,
                 securityFacade,
                 rememberMeServices,
-                sessionStrategy));
+                sessionStrategy);
       
     }
 

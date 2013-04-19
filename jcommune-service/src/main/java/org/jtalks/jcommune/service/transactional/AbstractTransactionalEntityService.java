@@ -67,8 +67,12 @@ public abstract class AbstractTransactionalEntityService<T extends Entity, Y ext
         return dao.get(id);
     }
 
-    private Class getEntityClass() {
+    /**
+     * Returns entity class with which service implementation works
+     * @return entity class for service implementation
+     */
+    private Class<?> getEntityClass() {
         ParameterizedType parameterizedType = (ParameterizedType) getClass().getGenericSuperclass();
-        return (Class) parameterizedType.getActualTypeArguments()[0];
+        return (Class<?>) parameterizedType.getActualTypeArguments()[0];
     }
 }
