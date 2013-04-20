@@ -58,7 +58,6 @@ $(document).ready(function () {
         action = $root + '/users/XHRavatarpreview';
     }
 
-    console.log('Action: %s', action);
     var uploader = new qq.FileUploaderBasic({
         button:$("#upload").get(0),
         //server side uploading handler
@@ -68,7 +67,6 @@ $(document).ready(function () {
         //is multiple file upload available
         multiple:false,
         // max uploaded file size (bytes)
-        sizeLimit:4194304,
         onSubmit:function (id, filename) {},
         onProgress:function (id, filename, loaded, total) {},
         onComplete:function (id, filename, responseJSON) {
