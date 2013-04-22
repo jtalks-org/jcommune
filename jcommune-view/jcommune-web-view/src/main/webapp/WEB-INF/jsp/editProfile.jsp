@@ -57,7 +57,7 @@
                         </span>
                     </span>
 
-                <h2 class="pull-right user-profile-username"><c:out value="${auth}"/></h2>
+                <h2 class="pull-right user-profile-username"><c:out value="${editedUser.username}"/></h2>
             </div>
             <div class="clearfix"></div>
             <div class="user-profile-top-buttons">
