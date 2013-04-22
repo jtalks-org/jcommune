@@ -106,5 +106,8 @@ $(document).ready(function () {
     $(document).delegate('.bootbox.modal', 'keydown', Keymaps.bootboxClose)
 
     $(window).resize();
+	
+	// html5 placeholder emulation for old IE
+	$('input[placeholder]').placeholder();
 });
 

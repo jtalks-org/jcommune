@@ -69,6 +69,9 @@ $(function () {
         signupDialog.bind("hide", function (e) {
             signupDialog.remove();
         });
+		
+		// html5 placeholder emulation for old IE
+		$(signupDialog).find('input[placeholder]').placeholder();
 
         // submit button handler
         signupDialog.submit(function (e) {

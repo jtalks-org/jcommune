@@ -168,6 +168,8 @@ function showSigninDialog() {
         "show": true
     });
 
+	// html5 placeholder emulation for old IE
+	$(signinDialog).find('input[placeholder]').placeholder();
     signinDialog.find("#j_username").focus();
 
     return signinDialog;
