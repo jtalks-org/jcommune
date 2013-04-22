@@ -32,6 +32,10 @@
       <artifactId>spring-security-web</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-core</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
       <exclusions>

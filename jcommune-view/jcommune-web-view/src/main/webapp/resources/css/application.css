@@ -628,19 +628,6 @@ div.anchor {
     background-image: url("../images/solid.png");
 }
 
-.sapaLinkRow {
-    font-family: Georgia, serif;
-    /*font-size: 0.85em;*/
-    font-style: italic;
-    display: inline-block;
-    margin-bottom: 5px;
-    padding: 10px 10px 10px 10px;
-    max-width: 200px;
-    min-height: 100px;
-    max-height: 50px;
-    vertical-align: top;
-}
-
 #move-topic-editor {
     min-width: 600px;
     max-height: 400px;

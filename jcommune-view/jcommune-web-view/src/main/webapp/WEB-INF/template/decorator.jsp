@@ -85,15 +85,13 @@
 <decorator:body/>
 <div class="container">
   <footer>
+    <jtalks:banner banner="${banners['BOTTOM']}" position="${'BOTTOM'}"/>
     <c:if test="${sapeLinks != null && (not empty sapeLinks)}">
-      <div class="well sapeLinks">
-        <c:forEach items="${sapeLinks}" var="link">
+      <div>
           <%--this shouldn't be escaped because we receive HTML elements from SAPE which should be shown as is--%>
-          <div class="sapaLinkRow">${link}</div>
-        </c:forEach>
+          ${sapeLinks}
       </div>
     </c:if>
-    <jtalks:banner banner="${banners['BOTTOM']}" position="${'BOTTOM'}"/>
     <div>
       <div class="pull-left">
         Powered by JCommune ${project.version}<br/>

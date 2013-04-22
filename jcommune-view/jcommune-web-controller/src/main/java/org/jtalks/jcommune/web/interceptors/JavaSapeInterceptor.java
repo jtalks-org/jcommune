@@ -14,18 +14,20 @@
  */
 package org.jtalks.jcommune.web.interceptors;
 
-import com.google.common.collect.Lists;
 import javasape.Sape;
 import javasape.SapePageLinks;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.entity.JCommuneProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 
 /**
  * <b>Objectives:</b> put some links to every page user views.<br/>
@@ -36,6 +38,7 @@ import java.util.List;
  * @see <a href="http://jira.jtalks.org/browse/JC-1254">Related JIRA ticket</a>
  */
 public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private JCommuneProperty componentSapeAccountProperty;
     private JCommuneProperty componentSapeOnMainPageEnableProperty;
     private JCommuneProperty componentSapeLinksCountProperty;
@@ -46,20 +49,11 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
 
     private volatile Sape sape;
 
-    private static final List<String> DUMMY_LINKS = Lists.newArrayList(
-            "<a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
-                    "продажа зимних шин нокиан</a><br/> с доставкой",
-            "<a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
-                    "продаю что-то</a><br/>налетай. какой то очень длинный текст, для проверки отображения ссылок. " +
-                    "И еще какой то текст длинный длинный",
-            "<a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
-                    "какая то другая ссылка</a><br/> на что-то другое",
-            "<a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
-                    "продажа зимних шин нокиан</a><br/> с доставкой",
-            "<a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
-                    "какая то другая ссылка</a><br/> на что-то другое",
-            "<a href=\"http://www.dilijans.org/zimnie_shiny/Nokian.html\" target=\"_blank\">" +
-                    "какая то другая ссылка</a><br/> на что-то другое");
+    private String dummyLinks = "";
+
+    public JavaSapeInterceptor() {
+        initDummyLinks();
+    }
 
     /** Initializes {@link javasape.Sape} object. */
     private boolean initSape() {
@@ -76,6 +70,15 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
                 Integer.parseInt(componentSapeTimeoutProperty.getValue()),
                 Integer.parseInt(componentSapeLinksCountProperty.getValue()));
         return true;
+    }
+
+    private void initDummyLinks() {
+        String dummyLinksLocation = "/org/jtalks/jcommune/web/interceptors/DummySapeLinks.txt";
+        try {
+            dummyLinks = IOUtils.toString(new ClassPathResource(dummyLinksLocation).getInputStream());
+        } catch (IOException e) {
+            logger.error("Could not find resource [{}] in classpath. This is clearly a bug", dummyLinksLocation);
+        }
     }
 
     /**
@@ -99,28 +102,14 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
             return;
         }
 
+        String sapeLinksAsString = "";
         if (componentSapeShowDummyLinksProperty.booleanValue()) {
-            modelAndView.addObject("sapeLinks", DUMMY_LINKS);
-            return;
-        }
-
-        if (initSape()) {
+            sapeLinksAsString = dummyLinks;
+        } else if (initSape()) {
             SapePageLinks pageLinks = sape.getPageLinks(request.getRequestURI(), request.getCookies());
-            List<String> sapeLinks = new ArrayList<String>();
-            for (int i = 1; i <= componentSapeLinksCountProperty.intValue(); i++) {
-                sapeLinks.add(pageLinks.render(1));
-            }
-            modelAndView.addObject("sapeLinks", sapeLinks);
+            sapeLinksAsString = pageLinks.render();
         }
-    }
-
-    /**
-     * Gets JavaSape account ID property
-     *
-     * @return account ID
-     */
-    public JCommuneProperty getComponentSapeAccountProperty() {
-        return componentSapeAccountProperty;
+        modelAndView.addObject("sapeLinks", sapeLinksAsString);
     }
 
     /**
@@ -130,15 +119,6 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
      */
     public void setComponentSapeAccountProperty(JCommuneProperty componentSapeAccountProperty) {
         this.componentSapeAccountProperty = componentSapeAccountProperty;
-    }
-
-    /**
-     * Gets flag to show javasape content on main page property
-     *
-     * @return show javasape content on main page property or not
-     */
-    public JCommuneProperty getComponentSapeOnMainPageEnableProperty() {
-        return componentSapeOnMainPageEnableProperty;
     }
 
     /**
@@ -152,15 +132,6 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
     }
 
     /**
-     * Gets sape links count for one request to Sape service
-     *
-     * @return links count
-     */
-    public JCommuneProperty getComponentSapeLinksCountProperty() {
-        return componentSapeLinksCountProperty;
-    }
-
-    /**
      * Sets ape links count for one request to Sape service
      *
      * @param componentSapeLinksCountProperty
@@ -168,15 +139,6 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
      */
     public void setComponentSapeLinksCountProperty(JCommuneProperty componentSapeLinksCountProperty) {
         this.componentSapeLinksCountProperty = componentSapeLinksCountProperty;
-    }
-
-    /**
-     * Gets current instance host
-     *
-     * @return host name
-     */
-    public JCommuneProperty getComponentSapeHostProperty() {
-        return componentSapeHostProperty;
     }
 
     /**
@@ -189,30 +151,12 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
     }
 
     /**
-     * Gets Sape request timeout
-     *
-     * @return timeout
-     */
-    public JCommuneProperty getComponentSapeTimeoutProperty() {
-        return componentSapeTimeoutProperty;
-    }
-
-    /**
      * Sets Sape request timeout
      *
      * @param componentSapeTimeoutProperty timeout
      */
     public void setComponentSapeTimeoutProperty(JCommuneProperty componentSapeTimeoutProperty) {
         this.componentSapeTimeoutProperty = componentSapeTimeoutProperty;
-    }
-
-    /**
-     * Gets flag whether show dummy links for SAPE
-     *
-     * @return show dummy links
-     */
-    public JCommuneProperty getComponentSapeShowDummyLinksProperty() {
-        return componentSapeShowDummyLinksProperty;
     }
 
     /**
@@ -223,15 +167,6 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
      */
     public void setComponentSapeShowDummyLinksProperty(JCommuneProperty componentSapeShowDummyLinksProperty) {
         this.componentSapeShowDummyLinksProperty = componentSapeShowDummyLinksProperty;
-    }
-
-    /**
-     * Gets flag whether enable SAPE service
-     *
-     * @return enable SAPE service flag
-     */
-    public JCommuneProperty getComponentSapeEnableServiceProperty() {
-        return componentSapeEnableServiceProperty;
     }
 
     /**
