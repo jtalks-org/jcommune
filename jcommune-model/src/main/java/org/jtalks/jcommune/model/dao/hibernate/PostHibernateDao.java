@@ -17,10 +17,6 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import java.util.List;
 
 import org.hibernate.Query;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Property;
-import org.hibernate.criterion.Restrictions;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dto.JCommunePageRequest;
@@ -91,19 +87,11 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
      */
     @Override
     public Post getLastPostFor(Branch branch) {
-        String creationDateProperty = "creationDate";
-        DetachedCriteria postMaxCreationDateCriteria = 
-                DetachedCriteria.forClass(Post.class)
-                .createAlias("topic", "postTopic")
-                .setProjection(Projections.max(creationDateProperty))
-                .add(Restrictions.eq("postTopic.branch", branch));
-        //Uses the list because it's possible that two posts will have the same creation date
-        @SuppressWarnings("unchecked")
-        List<Post> posts = (List<Post>) getSession().createCriteria(Post.class)
-                .createAlias("topic", "postTopic")
-                .add(Restrictions.eq("postTopic.branch", branch))
-                .add(Property.forName(creationDateProperty).eq(postMaxCreationDateCriteria))
-                .list();
-        return posts.isEmpty()? null: posts.get(0);
+        Post result = (Post) getSession()
+                .getNamedQuery("getLastPostForBranch")
+                .setParameter("branch", branch)
+                .setMaxResults(1)
+                .uniqueResult();
+        return result;
     }
 }
