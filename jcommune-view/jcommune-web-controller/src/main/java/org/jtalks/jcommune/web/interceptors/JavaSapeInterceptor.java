@@ -55,32 +55,6 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
         initDummyLinks();
     }
 
-    /** Initializes {@link javasape.Sape} object. */
-    private boolean initSape() {
-        if (sape != null) {
-            return true;
-        }
-        String accountId = componentSapeAccountProperty.getValue();
-        String host = componentSapeHostProperty.getValue();
-        if (StringUtils.isBlank(accountId) || StringUtils.isBlank(host)) {
-            return false;
-        }
-        sape = new Sape(componentSapeAccountProperty.getValue(),
-                componentSapeHostProperty.getValue(),
-                Integer.parseInt(componentSapeTimeoutProperty.getValue()),
-                Integer.parseInt(componentSapeLinksCountProperty.getValue()));
-        return true;
-    }
-
-    private void initDummyLinks() {
-        String dummyLinksLocation = "/org/jtalks/jcommune/web/interceptors/DummySapeLinks.txt";
-        try {
-            dummyLinks = IOUtils.toString(new ClassPathResource(dummyLinksLocation).getInputStream());
-        } catch (IOException e) {
-            logger.error("Could not find resource [{}] in classpath. This is clearly a bug", dummyLinksLocation);
-        }
-    }
-
     /**
      * Set sape content to request parameters.
      *
@@ -111,6 +85,33 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
         }
         modelAndView.addObject("sapeLinks", sapeLinksAsString);
     }
+
+    /** Initializes {@link javasape.Sape} object. */
+    private boolean initSape() {
+        if (sape != null) {
+            return true;
+        }
+        String accountId = componentSapeAccountProperty.getValue();
+        String host = componentSapeHostProperty.getValue();
+        if (StringUtils.isBlank(accountId) || StringUtils.isBlank(host)) {
+            return false;
+        }
+        sape = new Sape(componentSapeAccountProperty.getValue(),
+                componentSapeHostProperty.getValue(),
+                Integer.parseInt(componentSapeTimeoutProperty.getValue()),
+                Integer.parseInt(componentSapeLinksCountProperty.getValue()));
+        return true;
+    }
+
+    private void initDummyLinks() {
+        String dummyLinksLocation = "/org/jtalks/jcommune/web/interceptors/DummySapeLinks.txt";
+        try {
+            dummyLinks = IOUtils.toString(new ClassPathResource(dummyLinksLocation).getInputStream());
+        } catch (IOException e) {
+            logger.error("Could not find resource [{}] in classpath. This is clearly a bug", dummyLinksLocation);
+        }
+    }
+
 
     /**
      * Sets JavaSape account ID property

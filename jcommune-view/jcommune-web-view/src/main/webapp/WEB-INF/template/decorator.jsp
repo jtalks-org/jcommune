@@ -86,7 +86,7 @@
 <div class="container">
   <footer>
     <jtalks:banner banner="${banners['BOTTOM']}" position="${'BOTTOM'}"/>
-    <c:if test="${sapeLinks != null && (not empty sapeLinks)}">
+    <c:if test="${not empty sapeLinks}">
       <div>
           <%--this shouldn't be escaped because we receive HTML elements from SAPE which should be shown as is--%>
           ${sapeLinks}
