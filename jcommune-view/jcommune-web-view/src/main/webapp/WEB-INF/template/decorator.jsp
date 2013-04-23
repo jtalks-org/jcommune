@@ -86,12 +86,6 @@
 <div class="container">
   <footer>
     <jtalks:banner banner="${banners['BOTTOM']}" position="${'BOTTOM'}"/>
-    <c:if test="${not empty sapeLinks}">
-      <div>
-          <%--this shouldn't be escaped because we receive HTML elements from SAPE which should be shown as is--%>
-          ${sapeLinks}
-      </div>
-    </c:if>
     <div>
       <div class="pull-left">
         Powered by JCommune ${project.version}<br/>
@@ -102,6 +96,12 @@
         <jtalks:banner banner="${banners['BOTTOM_FOOTER']}" position="${'BOTTOM_FOOTER'}"/>
       </div>
     </div>
+    <c:if test="${not empty sapeLinks}">
+      <div class="sape-div">
+          <%--this shouldn't be escaped because we receive HTML elements from SAPE which should be shown as is--%>
+          ${sapeLinks}
+      </div>
+    </c:if>
   </footer>
 </div>
 </body>

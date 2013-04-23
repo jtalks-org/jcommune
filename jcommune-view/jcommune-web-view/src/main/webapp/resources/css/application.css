@@ -651,3 +651,9 @@ div.anchor {
     color: #999999;
     display: list-item !important;
 }
+
+.sape-div {
+    text-align: left;
+    margin-top: 7px;
+}
+
