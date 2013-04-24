@@ -70,16 +70,20 @@ public class UserContactsController {
     @RequestMapping(value="/contacts/add", method = RequestMethod.POST)
     @ResponseBody 
     public UserContactDto addContact(@Valid @RequestBody UserContactDto userContact) throws NotFoundException {
-        UserContact addedContact = service.addContact(userContact.getValue(), userContact.getTypeId());
+        UserContact addedContact = service.addContact(
+                userContact.getOwnerId(),
+                userContact.getValue(),
+                userContact.getTypeId());
         return new UserContactDto(addedContact);
     }
     
     /**
      * Removes contact identified by contactId from user contacts.
      * @param contactId identifier of contact to be removed
+     * @throws NotFoundException when owner of contact wasn't found
      */
-    @RequestMapping(value = "/contacts/remove/{contactId}", method = RequestMethod.DELETE)
-    public void removeContact(@PathVariable Long contactId){
-        service.removeContact(contactId);
+    @RequestMapping(value = "/contacts/remove/{contactOwnerId}/{contactId}", method = RequestMethod.DELETE)
+    public void removeContact(@PathVariable long contactOwnerId, @PathVariable long contactId) throws NotFoundException{
+        service.removeContact(contactOwnerId, contactId);
     }
 }

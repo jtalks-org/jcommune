@@ -14,6 +14,15 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
@@ -23,13 +32,6 @@ import org.jtalks.jcommune.web.dto.UserContactDto;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
 
 /**
  * @author Michael Gamov
@@ -70,8 +72,9 @@ public class UserContactsControllerTest {
     public void testAddContactSuccess() throws NotFoundException {
     	UserContactType contactType = new UserContactType();
     	contactType.setTypeName(TYPENAME);
+    	long ownerId = 1l;
         JCUser owner = new JCUser("username", "email", "password");
-        owner.setId(1);
+        owner.setId(ownerId);
     	UserContact contact = new UserContact("gateway", contactType);
     	contact.setOwner(owner);
     	
@@ -80,7 +83,7 @@ public class UserContactsControllerTest {
     	incomingContactDto.setValue(contact.getValue());
     	incomingContactDto.setTypeId(contactType.getId());
     	
-    	when(service.addContact(contact.getValue(), contact.getType().getId())).thenReturn(contact);
+    	when(service.addContact(ownerId, contact.getValue(), contact.getType().getId())).thenReturn(contact);
     	
     	UserContactDto contactDto = controller.addContact(incomingContactDto);
     	
@@ -90,11 +93,21 @@ public class UserContactsControllerTest {
     }
     
     @Test
-    public void testRemoveContact() {
-    	Long contactId = Long.valueOf(1);
-    	controller.removeContact(contactId);
+    public void removeContactShouldRemoveItInRepository() throws NotFoundException {
+    	long contactId = 1l;
+    	long contactOwnerId = 2l;
     	
-    	verify(service).removeContact(contactId);
+    	controller.removeContact(contactOwnerId, contactId);
+    	
+    	verify(service).removeContact(contactOwnerId, contactId);
     }
     
+    @Test(expectedExceptions = NotFoundException.class)
+    public void removeContactShouldNotRemoveItIfOwnerWasNotFound() throws NotFoundException {
+        long contactId = 1l;
+        long contactOwnerId = 2l;
+        doThrow(new NotFoundException()).when(service).removeContact(contactOwnerId, contactId);
+        
+        controller.removeContact(contactOwnerId, contactId);
+    }
 }

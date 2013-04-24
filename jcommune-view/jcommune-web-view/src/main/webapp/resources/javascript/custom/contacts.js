@@ -39,7 +39,8 @@ AddContact.isValueValid = true;
 
 function deleteContactHandler() {
     var element = $(this).parent();
-    var id = $(this).parent().find("input:hidden").attr("value");
+    var contactId = $(this).parent().find("#contactId:hidden").attr("value");
+    var contactOwnerId = $(this).parent().find("#contactOwnerId:hidden").attr("value");
     $.prompt($labelDeleteContactConfirmation, {
             buttons:[
                 {title:$labelOk, value:true},
@@ -48,7 +49,7 @@ function deleteContactHandler() {
             submit:function (value, message, form) {
                 if (value != undefined && value) {
                     $.ajax({
-                        url:baseUrl + '/contacts/remove/' + id,
+                        url:baseUrl + '/contacts/remove/' + contactOwnerId + '/' + contactId,
                         // this is the way Spring MVC represents HTTP DELETE for better browser compatibility
                         type:"POST",
                         data:{'_method':'DELETE'},
@@ -206,8 +207,10 @@ $(document).ready(function () {
 						// cancel is pressed
 						result = true
 					} else if (AddContact.isValueValid && value != undefined && value && form.contact.length > 0) {
-
+						var ownerId = $("#editedUserId").val();
+						
                         var contact = {
+                        	ownerId: ownerId,
                             value:form.contact,
                             typeId: form.contact_type
                         };

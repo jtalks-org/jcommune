@@ -56,8 +56,8 @@ public class TransactionalUserContactsService
     /**
      * {@inheritDoc}
      */
-    public UserContact addContact(String value, long typeId) throws NotFoundException {
-        JCUser user = userService.getCurrentUser();
+    public UserContact addContact(long ownerId, String value, long typeId) throws NotFoundException {
+        JCUser user = userService.get(ownerId);
 
         //explicitly getting UserContactType because we need to populate it with data before returning
         UserContactType actualType = get(typeId);
@@ -69,8 +69,8 @@ public class TransactionalUserContactsService
     /**
     * {@inheritDoc}
     */
-    public void removeContact(long userContactId) {
-        JCUser user = userService.getCurrentUser();
+    public void removeContact(long removedContactOwnerId, long userContactId) throws NotFoundException {
+        JCUser user = userService.get(removedContactOwnerId);
         UserContact contact = this.getDao().getContactById(userContactId);
         user.removeContact(contact);
     }

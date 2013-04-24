@@ -218,7 +218,8 @@
             <c:forEach var="contact" items="${contacts}">
                 <%-- Class 'contact' used in js for binding --%>
                 <li class="contact">
-                    <input type="hidden" value="${contact.id}"/>
+                    <input id="contactId" type="hidden" value="${contact.id}"/>
+                    <input id="contactOwnerId" type="hidden" value="${editedUser.userId}"/>
                         <%-- Class 'button' used in js for binding --%>
                     <a href="#" id="${contact.id}" class="btn btn-mini btn-danger button"
                        title="<spring:message code='label.contacts.tips.delete'/>">

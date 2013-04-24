@@ -37,16 +37,21 @@ public interface UserContactsService extends EntityService<UserContactType> {
 
     /**
      * Adds contact to current user contacts.
+     * 
+     * @param ownerId owner of contact that will be created
      * @param value actually contact
      * @param typeId identifier of contact type to be added
      * @return saved user contact entity
      * @throws NotFoundException when contact type was not found
      */
-    UserContact addContact(String value, long typeId) throws NotFoundException;
+    UserContact addContact(long ownerId, String value, long typeId) throws NotFoundException;
 
     /**
      * Removes contact from contacts of current user.
+     * 
+     * @param removedContactOwnerId owner of removedContact
      * @param userContactId id of user contact to be removed
+     * @throws NotFoundException if owner of removed contact doesn't exist
      */
-    void removeContact(long userContactId);
+    void removeContact(long removedContactOwnerId, long userContactId) throws NotFoundException;
 }

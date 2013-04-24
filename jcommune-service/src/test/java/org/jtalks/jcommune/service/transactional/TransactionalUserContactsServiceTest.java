@@ -76,36 +76,45 @@ public class TransactionalUserContactsServiceTest {
     }
     
     @Test
-    public void testAddContact() throws NotFoundException {
+    public void addContactShouldAddAndReturnItFromRepository() throws NotFoundException {
+        long newContactOwnerId = 1l;
         UserContactType type = createUserContactType();
-        UserContact contact = new UserContact(CONTACT, type);
-        
         when(userContactsDao.isExist(type.getId())).thenReturn(true);
         when(userContactsDao.get(type.getId())).thenReturn(type);
+        when(userService.get(newContactOwnerId)).thenReturn(user);
         
-        UserContact addedContact = userContactsService.addContact(contact.getValue(), contact.getType().getId());
+        UserContact addedContact = userContactsService.addContact(newContactOwnerId, CONTACT, type.getId());
+        
         assertEquals(addedContact.getValue(), CONTACT);
         assertEquals(addedContact.getType(), type);
     }
     
     @Test
-    public void testRemoveUnfamiliarContact() {
+    public void removeContactShouldNotRemoveItIfContaxtDoesNotExist() throws NotFoundException {
         UserContact userContact = new UserContact(CONTACT, createUserContactType());
         userContact.setId(1L);
-        user.addContact(userContact);        
+        user.addContact(userContact); 
+        long userId = 1L;
+        user.setId(userId);
+        when(userService.get(userId)).thenReturn(user);
         
-        userContactsService.removeContact(2L);
+        userContactsService.removeContact(userId, 2L);
+        
         assertEquals(user.getUserContacts().size(), 1);
     }
 
     @Test
-    public void testRemoveContact() {
+    public void removeContactShouldRemoveItIfContaxtExists() throws NotFoundException {
         UserContact userContact = new UserContact(CONTACT, createUserContactType());
         userContact.setId(1L);
         user.addContact(userContact);
         when(userContactsDao.getContactById(1L)).thenReturn(userContact);
+        long userId = 1L;
+        user.setId(userId);
+        when(userService.get(userId)).thenReturn(user);
 
-        userContactsService.removeContact(1L);
+        userContactsService.removeContact(userId, 1L);
+        
         assertEquals(user.getUserContacts().size(), 0);
     }
 
