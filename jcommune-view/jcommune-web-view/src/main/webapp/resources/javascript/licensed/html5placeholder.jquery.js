@@ -48,9 +48,18 @@
 				$this.wrap(options.inputWrapper);
 				$this.attr('id', inputId).after(placeholder);
 			};
-			//hide placeholder on focus
+			//hide placeholder depending on input content
+			$this.keyup(function(){
+				if (!$.trim($this.val())){
+					$this.next('label').show();
+				} else {
+					$this.next('label').hide();
+				};
+			});
 			$this.keydown(function(){
 				if (!$.trim($this.val())){
+					$this.next('label').show();
+				} else {
 					$this.next('label').hide();
 				};
 			});
