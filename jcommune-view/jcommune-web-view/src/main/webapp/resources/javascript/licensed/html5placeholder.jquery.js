@@ -10,6 +10,8 @@
 //$('input[placeholder]').placeholder();
 // <input type="text" placeholder="username">
 
+// Copied from script at page http://miketaylr.com/code/placeholder.html
+
 (function($){
 	//feature detection
 	var hasPlaceholder = 'placeholder' in document.createElement('input');
@@ -47,15 +49,15 @@
 				$this.attr('id', inputId).after(placeholder);
 			};
 			//hide placeholder on focus
-			$this.focus(function(){
+			$this.keydown(function(){
 				if (!$.trim($this.val())){
-					$this.next().hide();
+					$this.next('label').hide();
 				};
 			});
 			//show placeholder if the input is empty
 			$this.blur(function(){
 				if (!$.trim($this.val())){
-					$this.next().show();
+					$this.next('label').show();
 				};
 			});
 		});
