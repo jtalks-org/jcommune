@@ -124,7 +124,7 @@
             <mvc:mapping path="/branches/**"/>
             <mvc:mapping path="/sections/**"/>
             <mvc:mapping path="/pm/**"/>
-            <bean id="javaSapeInterceptor" class="org.jtalks.jcommune.web.interceptors.JavaSapeInterceptor">
+            <bean id="javaSapeInterceptor" class="org.jtalks.jcommune.web.interceptors.SapeInterceptor">
                 <property name="componentSapeAccountProperty" ref="componentSapeAccountProperty"/>
                 <property name="componentSapeOnMainPageEnableProperty" ref="componentSapeOnMainPageEnableProperty"/>
                 <property name="componentSapeHostProperty" ref="componentSapeHostProperty"/>

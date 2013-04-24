@@ -37,8 +37,8 @@ import java.io.IOException;
  * @author elepaeva
  * @see <a href="http://jira.jtalks.org/browse/JC-1254">Related JIRA ticket</a>
  */
-public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+public class SapeInterceptor extends HandlerInterceptorAdapter {
+    private final Logger logger = LoggerFactory.getLogger(SapeInterceptor.class);
     private JCommuneProperty componentSapeAccountProperty;
     private JCommuneProperty componentSapeOnMainPageEnableProperty;
     private JCommuneProperty componentSapeLinksCountProperty;
@@ -51,7 +51,7 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
 
     private String dummyLinks = "";
 
-    public JavaSapeInterceptor() {
+    public SapeInterceptor() {
         initDummyLinks();
     }
 
