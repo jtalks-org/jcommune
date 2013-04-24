@@ -37,8 +37,8 @@ import java.io.IOException;
  * @author elepaeva
  * @see <a href="http://jira.jtalks.org/browse/JC-1254">Related JIRA ticket</a>
  */
-public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+public class SapeInterceptor extends HandlerInterceptorAdapter {
+    private final Logger logger = LoggerFactory.getLogger(SapeInterceptor.class);
     private JCommuneProperty componentSapeAccountProperty;
     private JCommuneProperty componentSapeOnMainPageEnableProperty;
     private JCommuneProperty componentSapeLinksCountProperty;
@@ -51,34 +51,8 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
 
     private String dummyLinks = "";
 
-    public JavaSapeInterceptor() {
+    public SapeInterceptor() {
         initDummyLinks();
-    }
-
-    /** Initializes {@link javasape.Sape} object. */
-    private boolean initSape() {
-        if (sape != null) {
-            return true;
-        }
-        String accountId = componentSapeAccountProperty.getValue();
-        String host = componentSapeHostProperty.getValue();
-        if (StringUtils.isBlank(accountId) || StringUtils.isBlank(host)) {
-            return false;
-        }
-        sape = new Sape(componentSapeAccountProperty.getValue(),
-                componentSapeHostProperty.getValue(),
-                Integer.parseInt(componentSapeTimeoutProperty.getValue()),
-                Integer.parseInt(componentSapeLinksCountProperty.getValue()));
-        return true;
-    }
-
-    private void initDummyLinks() {
-        String dummyLinksLocation = "/org/jtalks/jcommune/web/interceptors/DummySapeLinks.txt";
-        try {
-            dummyLinks = IOUtils.toString(new ClassPathResource(dummyLinksLocation).getInputStream());
-        } catch (IOException e) {
-            logger.error("Could not find resource [{}] in classpath. This is clearly a bug", dummyLinksLocation);
-        }
     }
 
     /**
@@ -111,6 +85,33 @@ public class JavaSapeInterceptor extends HandlerInterceptorAdapter {
         }
         modelAndView.addObject("sapeLinks", sapeLinksAsString);
     }
+
+    /** Initializes {@link javasape.Sape} object. */
+    private boolean initSape() {
+        if (sape != null) {
+            return true;
+        }
+        String accountId = componentSapeAccountProperty.getValue();
+        String host = componentSapeHostProperty.getValue();
+        if (StringUtils.isBlank(accountId) || StringUtils.isBlank(host)) {
+            return false;
+        }
+        sape = new Sape(componentSapeAccountProperty.getValue(),
+                componentSapeHostProperty.getValue(),
+                Integer.parseInt(componentSapeTimeoutProperty.getValue()),
+                Integer.parseInt(componentSapeLinksCountProperty.getValue()));
+        return true;
+    }
+
+    private void initDummyLinks() {
+        String dummyLinksLocation = "/org/jtalks/jcommune/web/interceptors/DummySapeLinks.txt";
+        try {
+            dummyLinks = IOUtils.toString(new ClassPathResource(dummyLinksLocation).getInputStream());
+        } catch (IOException e) {
+            logger.error("Could not find resource [{}] in classpath. This is clearly a bug", dummyLinksLocation);
+        }
+    }
+
 
     /**
      * Sets JavaSape account ID property

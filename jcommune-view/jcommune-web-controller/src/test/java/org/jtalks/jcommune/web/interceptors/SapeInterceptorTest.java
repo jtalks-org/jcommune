@@ -22,11 +22,11 @@ import java.io.IOException;
 import static org.unitils.reflectionassert.ReflectionAssert.assertPropertyReflectionEquals;
 
 /** @author stanislav bashkirtsev */
-public class JavaSapeInterceptorTest {
+public class SapeInterceptorTest {
     @Test
     public void constructorInitsDummyLinks() throws Exception {
         assertPropertyReflectionEquals("dummyLinks",
-                fileContent("/org/jtalks/jcommune/web/interceptors/DummySapeLinks.txt"), new JavaSapeInterceptor());
+                fileContent("/org/jtalks/jcommune/web/interceptors/DummySapeLinks.txt"), new SapeInterceptor());
 
     }
 
