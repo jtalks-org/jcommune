@@ -34,7 +34,7 @@ $().ready(function() {
 	
 	Search.adjustClearButton();
 		
-	$(Search.searchInputSelector).bind('keyup', function() {
+	$(Search.searchInputSelector).bind('valuechange', function() {
 		Search.adjustClearButton();
 	});
 	
