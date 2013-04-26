@@ -171,7 +171,7 @@ public class JCommunePageRequest implements Pageable {
     public void adjustPageNumber(int totalCount) {
         if (pageNumber <= 1) {
             pageNumber = 1;
-        } else if (getOffset() > totalCount) {
+        } else if (pageNumber > getPageNumber(totalCount - 1)) {
             pageNumber = getPageNumber(totalCount - 1);
         }
     }

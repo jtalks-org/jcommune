@@ -14,10 +14,11 @@
  */
 package org.jtalks.jcommune.model.dto;
 
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
 
-public class JCommunPageRequestTest {
+public class JCommunePageRequestTest {
     
     private static final int PAGE_SIZE = 10;
     private static final int PAGE_NUMBER = 5;
@@ -81,22 +82,24 @@ public class JCommunPageRequestTest {
         assertEquals(pageRequest.getOffset(), 0);
     }
     
-    @Test
-    public void testAdjustPageNumberItIsLessThanOne() {
+    @Test(dataProvider="pageNumbersToAdjust")
+    public void testAdjustPageNumber(int pageNumber, int totalItems, int adjustedPageNumber) {
         pageRequest = new JCommunePageRequest(PAGE_NUMBER, PAGE_SIZE, PAGING_ENABLED);
-        pageRequest.setPageNumber(-1);
+        pageRequest.setPageNumber(pageNumber);
         
-        pageRequest.adjustPageNumber(10);
-        assertEquals(pageRequest.getPageNumber(), 1);
+        pageRequest.adjustPageNumber(totalItems);
+        assertEquals(pageRequest.getPageNumber(), adjustedPageNumber);
     }
     
-    @Test
-    public void testAdjustPageNumberItIsTooBig() {
-        pageRequest = new JCommunePageRequest(PAGE_NUMBER, PAGE_SIZE, PAGING_ENABLED);
-        pageRequest.setPageNumber(1000);
-        
-        pageRequest.adjustPageNumber(PAGE_SIZE * 2);
-        assertEquals(pageRequest.getPageNumber(), 2);
+    @DataProvider(name="pageNumbersToAdjust")
+    public Integer[][] getPageNumbersToAdjust() {
+        return new Integer[][] {
+                // page number, total items, expected result
+                {-1, 10, 1},
+                {1000, PAGE_SIZE * 2, 2},
+                {PAGE_SIZE * 2 + 1, PAGE_SIZE * 2, 2},
+                {2000000000, PAGE_SIZE * 2, 2} 
+        };
     }
     
     
