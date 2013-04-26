@@ -110,7 +110,14 @@ public interface UserService extends EntityService<JCUser> {
      *
      * @param userId an identifier of user, for which we check permission
      */
-    void checkPermissionsToEditProfiles(Long userId);
+    void checkPermissionToEditOtherProfiles(Long userId);
+    
+    /**
+     * This methods checks a permissions of user to edit own profiles.
+     * 
+     * @param userId an identifier of user, for which we check permission
+     */
+    void checkPermissionToEditOwnProfile(Long userId);
     
     /**
      * This method checks a permissions of user to create or edit simple(static)

@@ -141,7 +141,7 @@ public class UserProfileController {
      */
     @RequestMapping(value = "/users/edit/{editedUserId}", method = RequestMethod.GET)
     public ModelAndView startEditUserProfile(@PathVariable Long editedUserId) throws NotFoundException {
-        checkPermissionsToEditProfile();
+        checkPermissionsToEditProfile(editedUserId);
         JCUser editedUser = userService.get(editedUserId);
         EditUserProfileDto editedUserDto = convertUserForView(editedUser);
         ModelAndView mav = new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUserDto);
@@ -179,8 +179,9 @@ public class UserProfileController {
         if (result.hasErrors()) {
             return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedProfileDto);
         }
-        checkPermissionsToEditProfile();
-        JCUser user = userService.saveEditedUserProfile(editedProfileDto.getUserId(), editedProfileDto.getUserInfoContainer());
+        long editedUserId = editedProfileDto.getUserId();
+        checkPermissionsToEditProfile(editedUserId);
+        JCUser user = userService.saveEditedUserProfile(editedUserId, editedProfileDto.getUserInfoContainer());
         // apply language changes immediately
         String code = editedProfileDto.getLanguage().getLanguageCode();
         Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, code);
@@ -193,10 +194,16 @@ public class UserProfileController {
     /**
      * User must have permissions to edit own or other profiles.
      * So we must check them for users, who try to edit profiles.
+     * 
+     * @param editedUserId an identifier of edited user
      */
-    private void checkPermissionsToEditProfile() {
+    private void checkPermissionsToEditProfile(long editedUserId) {
         JCUser editorUser = userService.getCurrentUser();
-        userService.checkPermissionsToEditProfiles(editorUser.getId());
+        if (editorUser.getId() == editedUserId) {
+            userService.checkPermissionToEditOwnProfile(editorUser.getId());
+        } else {
+            userService.checkPermissionToEditOtherProfiles(editorUser.getId());
+        }
     }
 
     /**

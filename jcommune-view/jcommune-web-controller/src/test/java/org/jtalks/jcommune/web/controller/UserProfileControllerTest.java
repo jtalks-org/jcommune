@@ -132,7 +132,7 @@ public class UserProfileControllerTest {
     }
 
     @Test
-    public void editProfilePageShouldMoveUserToPageForEditingPassedUser() throws NotFoundException {
+    public void startEditUserProfilePageShouldMoveUserToPageForEditing() throws NotFoundException {
         Long editedUserId = 1l;
         JCUser user = getUser();
         when(userService.getCurrentUser()).thenReturn(user);
@@ -145,7 +145,30 @@ public class UserProfileControllerTest {
         assertEquals(dto.getFirstName(), user.getFirstName(), "First name is not equal");
         assertEquals(dto.getLastName(), user.getLastName(), "Last name is not equal");
         assertEquals(dto.getEmail(), user.getEmail(), "Last name is not equal");
-        verify(userService).checkPermissionsToEditProfiles(user.getId());
+    }
+    
+    @Test(expectedExceptions = AccessDeniedException.class)
+    public void startEditUserProfileShouldShowErrorIfUserDoesNotHavePermissionToEditOwnProfile() throws NotFoundException {
+        Long editedUserId = 1l;
+        JCUser editorUser = getUser();
+        editorUser.setId(editedUserId);
+        when(userService.getCurrentUser()).thenReturn(editorUser);
+        when(userService.get(editedUserId)).thenReturn(editorUser);
+        doThrow(new AccessDeniedException(StringUtils.EMPTY)).when(userService).checkPermissionToEditOwnProfile((anyLong()));
+        
+        profileController.startEditUserProfile(editedUserId);
+    }
+    
+    @Test(expectedExceptions = AccessDeniedException.class)
+    public void startEditUserProfileShouldShowErrorIfUserDoesNotHavePermissionToEditOtherProfile() throws NotFoundException {
+        Long editedUserId = 1l;
+        JCUser user = getUser();
+        user.setId(2l);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.get(editedUserId)).thenReturn(user);
+        doThrow(new AccessDeniedException(StringUtils.EMPTY)).when(userService).checkPermissionToEditOtherProfiles((anyLong()));
+        
+        profileController.startEditUserProfile(editedUserId);
     }
 
     @Test
@@ -196,14 +219,30 @@ public class UserProfileControllerTest {
     }
     
     @Test(expectedExceptions = AccessDeniedException.class)
-    public void saveEditedProfileShouldShowErrorWhenUserDoesNotHavePermissionToEditProfile() throws NotFoundException {
+    public void saveEditedProfileShouldShowErrorWhenUserDoesNotHavePermissionToEditOwnProfile() throws NotFoundException {
         JCUser user = getUser();
         EditUserProfileDto userDto = getEditUserProfileDto();
         MockHttpServletResponse response = new MockHttpServletResponse();
         //
         when(userService.saveEditedUserProfile(anyLong(), any(UserInfoContainer.class))).thenReturn(user);
         when(userService.getCurrentUser()).thenReturn(user);
-        doThrow(new AccessDeniedException(StringUtils.EMPTY)).when(userService).checkPermissionsToEditProfiles(anyLong());
+        doThrow(new AccessDeniedException(StringUtils.EMPTY)).when(userService).checkPermissionToEditOtherProfiles(anyLong());
+        //
+        BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
+
+        profileController.saveEditedProfile(userDto, bindingResult, response);
+    }
+    
+    @Test(expectedExceptions = AccessDeniedException.class)
+    public void saveEditedProfileShouldShowErrorWhenUserDoesNotHavePermissionToEditOtherProfile() throws NotFoundException {
+        JCUser editorUser = getUser();
+        JCUser editedUser = getUser();
+        EditUserProfileDto userDto = getEditUserProfileDto();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        //
+        when(userService.saveEditedUserProfile(anyLong(), any(UserInfoContainer.class))).thenReturn(editedUser);
+        when(userService.getCurrentUser()).thenReturn(editorUser);
+        doThrow(new AccessDeniedException(StringUtils.EMPTY)).when(userService).checkPermissionToEditOtherProfiles((anyLong()));
         //
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
