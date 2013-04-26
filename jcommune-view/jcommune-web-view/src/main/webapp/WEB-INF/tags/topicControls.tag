@@ -28,11 +28,9 @@
 
 <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
                       permission='BranchPermission.MOVE_TOPICS'>
-               <span class="topicId" id="${topic.id}">
-               <a name="move_topic" href="#" class="btn" title="<spring:message code='label.tips.move_topic'/>">
+               <a name="move_topic" href="#" class="btn" title="<spring:message code='label.tips.move_topic'/>" data-topicId="${topic.id}">
                    <spring:message code="label.topic.move"/>
                </a>
-               </span>
 </jtalks:hasPermission>
 
 <c:if test='${topic.codeReview == null && hasCloseTopicPermission}'>

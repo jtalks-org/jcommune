@@ -57,10 +57,8 @@ $(function () {
      * "Move topic" button handler.
      */
     $("[name=move_topic]").on('click', function () {
+		topicId = $(this).attr('data-topicId');
         $.getJSON(baseUrl + "/sections/json", function (sections) {
-
-            topicId = $(".topicId").attr('id');
-
             moveTopicEditor = createMoveTopicEditor(sections);
 
             moveTopicEditor.unbind();
