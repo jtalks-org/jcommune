@@ -60,7 +60,7 @@
                     <a id="deleteOnePM"
                        class="btn btn-danger delete"
                        href="${pageContext.request.contextPath}/pm"
-                       rel="<spring:message code="label.deletePMConfirmation"/>">
+                       data-confirmationMessage="<spring:message code="label.deletePMConfirmation"/>">
 
                         <i class="icon-trash icon-white"></i>
                         <spring:message code="label.delete"/>

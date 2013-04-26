@@ -34,8 +34,8 @@ $(document).ready(function () {
     $("a.delete").each(function () {
         $(this).click(function (e) {
             e.preventDefault();
-            deletePath = $(this)[0].href;
-            $.prompt($(this)[0].rel,
+            deletePath = $(this).attr('href');
+            $.prompt($(this).attr('data-confirmationMessage'),
                 {buttons: [
                     {title: $labelOk, value: true},
                     {title: $labelCancel, value: false}
@@ -43,7 +43,7 @@ $(document).ready(function () {
                     persistent: false,
                     submit: function (confirmed) {
                         if (confirmed) {
-                            var deleteForm = $('#deleteForm')[0];
+                            var deleteForm = $('#deleteForm').get(0);
                             deleteForm.action = deletePath;
                             deleteForm.submit();
                         }

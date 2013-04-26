@@ -243,7 +243,7 @@
                             <c:if test="${isDeleteButtonAvailable}">
                                 <a href="${delete_url}" class="btn btn-mini btn-danger delete"
                                    title="<spring:message code='label.tips.remove_post'/>"
-                                   rel="<spring:message code='${confirm_message}'/>">
+                                   data-confirmationMessage="<spring:message code='${confirm_message}'/>">
                                     <i class="icon-remove icon-white"></i>
                                     <spring:message code="label.delete"/>
                                 </a>
