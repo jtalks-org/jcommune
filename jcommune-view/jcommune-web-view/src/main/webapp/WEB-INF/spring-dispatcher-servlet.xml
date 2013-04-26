@@ -50,15 +50,20 @@
     </bean>
 
     <bean class="org.jtalks.jcommune.web.exception.PrettyLogExceptionResolver">
+        <property name="order" value="1"/>
         <property name="exceptionMappings">
             <props>
                 <prop key="org.jtalks.jcommune.service.exceptions.NotFoundException">/errors/404</prop>
                 <prop key="org.springframework.security.access.AccessDeniedException">/errors/accessDenied</prop>
+                <prop key="org.springframework.beans.TypeMismatchException">/errors/400</prop>
             </props>
         </property>
         <property name="warnLogCategory" value="org.jtalks.jcommune"/>
         <property name="defaultErrorView" value="/errors/500"/>
     </bean>
+    <bean class="org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver">
+        <property name="order" value="2"/>
+    </bean>  
 
     <!--Cookie-based locale resolver, chosen as we can't guarantee sessioin existence for any request-->
     <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
