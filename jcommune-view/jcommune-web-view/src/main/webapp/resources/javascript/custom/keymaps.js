@@ -30,6 +30,20 @@ Keymaps.review = function (e) {
     }
 };
 
+Keymaps.reviewConfirmRemoveButton = function (e) {
+    if ((e.keyCode || e.charCode) == tabCode) {
+        e.preventDefault();
+        $(e.target).parents('.modal').find('.cancel').focus();
+    }
+}
+
+Keymaps.reviewCancelRemoveButton = function (e) {
+    if ((e.keyCode || e.charCode) == tabCode) {
+        e.preventDefault();
+        $(e.target).parents('.modal').find('.btn-primary').focus();
+    }
+}
+
 Keymaps.registrationSubmit = function (e) {
     if ((e.keyCode || e.charCode) == tabCode) {
         e.preventDefault();

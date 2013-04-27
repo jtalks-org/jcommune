@@ -207,7 +207,7 @@ CodeHighlighting.setupEditCommentHandlers = function() {
         var commentId = reviewContainer.find('input[name=id]').val();
         var reviewId = $('input[id="codeReviewId"]').val();
 
-        bootbox.dialog($labelDeleteCommentConfirmation, [
+        var dialog = bootbox.dialog($labelDeleteCommentConfirmation, [
             {
                 "label" : $labelOk,
                 "class" : "btn-primary",
@@ -229,6 +229,9 @@ CodeHighlighting.setupEditCommentHandlers = function() {
                 "class" : "cancel"
             }
         ]);
+
+        dialog.find('.cancel').on('keydown', Keymaps.reviewCancelRemoveButton);
+        dialog.find('.btn-primary').on('keydown', Keymaps.reviewConfirmRemoveButton);
 
         return false;
     });
