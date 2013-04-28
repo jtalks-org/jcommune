@@ -229,19 +229,19 @@ public class TopicControllerTest {
         assertTrue(topicDto.isNotifyOnAnswers());
         //
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
-        assertEquals(branchId, BRANCH_ID, 
+        assertEquals(branchId, BRANCH_ID,
                 "Topic template should be returned with the same branch id as passed to create new topic.");
         assertModelAttributeAvailable(mav, "breadcrumbList");
     }
 
-    public void checkCopyAutosubscribeFromProfile() throws NotFoundException{
+    public void checkCopyAutosubscribeFromProfile() throws NotFoundException {
         JCUser user = new JCUser("", "", "");
         user.setAutosubscribe(false);
         when(branchService.get(BRANCH_ID)).thenReturn(branch);
 
         ModelAndView mav = controller.showNewTopicPage(BRANCH_ID);
 
-       TopicDto topicDto = assertAndReturnModelAttributeOfType(mav, "topicDto", TopicDto.class);
+        TopicDto topicDto = assertAndReturnModelAttributeOfType(mav, "topicDto", TopicDto.class);
 
         assertTrue(topicDto.isNotifyOnAnswers());
     }
@@ -300,15 +300,15 @@ public class TopicControllerTest {
         assertEquals(branchId, BRANCH_ID);
         assertModelAttributeAvailable(mav, "breadcrumbList");
     }
-    
-    @Test(expectedExceptions=AccessDeniedException.class)
+
+    @Test(expectedExceptions = AccessDeniedException.class)
     public void editTopicPageShouldNotBePossibleForCodeReview() throws NotFoundException {
         Topic topic = this.createTopic();
         topic.setCodeReview(new CodeReview());
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
         when(userService.getCurrentUser()).thenReturn(user);
-        
+
         controller.editTopicPage(TOPIC_ID);
     }
 
