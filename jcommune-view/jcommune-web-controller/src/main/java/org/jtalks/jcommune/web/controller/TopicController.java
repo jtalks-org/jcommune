@@ -138,7 +138,7 @@ public class TopicController {
         topic.setBranch(branch);
         topic.setPoll(new Poll());
         TopicDto dto = new TopicDto(topic);
-        dto.setNotifyOnAnswers(true);
+        dto.setNotifyOnAnswers(userService.getCurrentUser().isAutosubscribe());
         return new ModelAndView(TOPIC_VIEW)
                 .addObject(TOPIC_DTO, dto)
                 .addObject(BRANCH_ID, branchId)

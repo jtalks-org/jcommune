@@ -208,6 +208,9 @@ public class TopicControllerTest {
 
     @Test
     public void showNewTopicPageShouldReturnTemplateForNewTopic() throws NotFoundException {
+        JCUser user = new JCUser("", "", "");
+        user.setAutosubscribe(true);
+        when(userService.getCurrentUser()).thenReturn(user);
         when(branchService.get(BRANCH_ID)).thenReturn(branch);
         when(breadcrumbBuilder.getNewTopicBreadcrumb(branch)).thenReturn(new ArrayList<Breadcrumb>());
 
@@ -223,12 +226,24 @@ public class TopicControllerTest {
         Branch actualTopicBranch = actualTopic.getBranch();
         assertEquals(actualTopicBranch, branch, "Topic template should be attached to branch where user creates branch.");
         assertNotNull(actualTopic.getPoll(), "Topic template should contain poll template.");
-        assertTrue(topicDto.isNotifyOnAnswers(), "Topic template should be notifiable by default");
+        assertTrue(topicDto.isNotifyOnAnswers());
         //
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         assertEquals(branchId, BRANCH_ID, 
                 "Topic template should be returned with the same branch id as passed to create new topic.");
         assertModelAttributeAvailable(mav, "breadcrumbList");
+    }
+
+    public void checkCopyAutosubscribeFromProfile() throws NotFoundException{
+        JCUser user = new JCUser("", "", "");
+        user.setAutosubscribe(false);
+        when(branchService.get(BRANCH_ID)).thenReturn(branch);
+
+        ModelAndView mav = controller.showNewTopicPage(BRANCH_ID);
+
+       TopicDto topicDto = assertAndReturnModelAttributeOfType(mav, "topicDto", TopicDto.class);
+
+        assertTrue(topicDto.isNotifyOnAnswers());
     }
 
     @Test
