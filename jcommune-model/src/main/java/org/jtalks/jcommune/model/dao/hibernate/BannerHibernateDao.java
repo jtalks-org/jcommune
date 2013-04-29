@@ -14,12 +14,13 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import java.util.Collection;
-
-import org.jtalks.common.model.dao.hibernate.AbstractHibernateParentRepository;
+import org.hibernate.SessionFactory;
+import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.jcommune.model.dao.BannerDao;
 import org.jtalks.jcommune.model.entity.Banner;
 import org.jtalks.jcommune.model.entity.BannerPosition;
+
+import java.util.Collection;
 
 /**
  * An implementation of {@link BannerDao} that is based on Hibernate and working
@@ -28,15 +29,24 @@ import org.jtalks.jcommune.model.entity.BannerPosition;
  * @author Anuar_Nurmakanov
  *
  */
-public class BannerHibernateDao extends AbstractHibernateParentRepository<Banner> 
+public class BannerHibernateDao extends GenericDao<Banner>
     implements BannerDao {
+
+    /**
+     * @param sessionFactory The SessionFactory.
+     * @param type           An entity type.
+     */
+    public BannerHibernateDao(SessionFactory sessionFactory, Class<Banner>
+            type) {
+        super(sessionFactory, type);
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     public Banner getByPosition(BannerPosition positionOnPage) {
-        return (Banner) getSession()
+        return (Banner) session()
                 .getNamedQuery("getByPosition")
                 .setParameter("position", positionOnPage)
                 .uniqueResult();
@@ -48,7 +58,7 @@ public class BannerHibernateDao extends AbstractHibernateParentRepository<Banner
     @Override
     @SuppressWarnings("unchecked")
     public Collection<Banner> getAll() {
-        return getSession()
+        return session()
                 .getNamedQuery("getAll")
                 .list();
     }

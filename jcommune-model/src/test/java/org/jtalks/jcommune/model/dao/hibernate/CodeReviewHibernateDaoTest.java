@@ -14,13 +14,9 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.dao.Crud;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.entity.CodeReview;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import static org.testng.Assert.*;
+
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
@@ -39,7 +37,7 @@ public class CodeReviewHibernateDaoTest extends AbstractTransactionalTestNGSprin
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
-    private ChildRepository<CodeReview> codeReviewDao;    
+    private Crud<CodeReview> codeReviewDao;
     private Session session;
 
     @BeforeMethod
@@ -77,7 +75,7 @@ public class CodeReviewHibernateDaoTest extends AbstractTransactionalTestNGSprin
         session.save(review);
         review.setUuid(newUuid);
 
-        codeReviewDao.update(review);
+        codeReviewDao.saveOrUpdate(review);
         session.evict(review);
         CodeReview result = (CodeReview) session.get(CodeReview.class, review.getId());
 
@@ -90,7 +88,7 @@ public class CodeReviewHibernateDaoTest extends AbstractTransactionalTestNGSprin
         session.save(review);
         review.setUuid(null);
 
-        codeReviewDao.update(review);
+        codeReviewDao.saveOrUpdate(review);
     }
     
     @Test
@@ -98,7 +96,7 @@ public class CodeReviewHibernateDaoTest extends AbstractTransactionalTestNGSprin
         CodeReview review = PersistedObjectsFactory.getDefaultCodeReview();
         
         review.getComments().remove(0);
-        codeReviewDao.update(review);
+        codeReviewDao.saveOrUpdate(review);
         session.evict(review);
         
         assertEquals(codeReviewDao.get(review.getId()).getComments().size(), 1);

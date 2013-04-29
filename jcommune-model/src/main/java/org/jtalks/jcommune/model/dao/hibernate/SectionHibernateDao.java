@@ -15,8 +15,9 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Query;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
-import org.jtalks.common.model.dao.hibernate.AbstractHibernateParentRepository;
+import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.common.model.entity.Branch;
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.common.model.entity.Group;
@@ -32,8 +33,17 @@ import java.util.List;
  *
  * @author Max Malakhov
  */
-public class SectionHibernateDao extends AbstractHibernateParentRepository<Section> implements SectionDao {
+public class SectionHibernateDao extends GenericDao<Section> implements SectionDao {
 
+
+    /**
+     * @param sessionFactory The SessionFactory.
+     * @param type           An entity type.
+     */
+    public SectionHibernateDao(SessionFactory sessionFactory, Class<Section>
+            type) {
+        super(sessionFactory, type);
+    }
 
     /**
      * {@inheritDoc}
@@ -41,7 +51,7 @@ public class SectionHibernateDao extends AbstractHibernateParentRepository<Secti
     @Override
     @SuppressWarnings("unchecked")
     public List<Section> getAll() {
-        List<Section> sectionList = getSession()
+        List<Section> sectionList = session()
                 .createCriteria(Section.class)
                 .addOrder(Order.asc("position"))
                 .setCacheable(true).list();
@@ -58,7 +68,7 @@ public class SectionHibernateDao extends AbstractHibernateParentRepository<Secti
         if(!user.isAnonymous()){
             return countVisibleBranchesForLoggedIn(user,branchIds);
         }
-        Query query = getSession().getNamedQuery("getCountAvailableBranchesForAnonymousUser");
+        Query query = session().getNamedQuery("getCountAvailableBranchesForAnonymousUser");
         query.setParameterList("branchIds",branchIds);
         return (Long) query.uniqueResult();
     }
@@ -74,7 +84,7 @@ public class SectionHibernateDao extends AbstractHibernateParentRepository<Secti
         if(groups.isEmpty()){return 0L;}
         List<String> groupIds = new ArrayList(getEntityIdsStrings(new ArrayList<Entity>(groups)));
 
-        Query query = getSession().getNamedQuery("getCountAvailableBranchesByGroupsIds");
+        Query query = session().getNamedQuery("getCountAvailableBranchesByGroupsIds");
         query.setParameterList("groupIds",groupIds);
         query.setParameterList("branchIds",branchIds);
         return (Long)query.uniqueResult();

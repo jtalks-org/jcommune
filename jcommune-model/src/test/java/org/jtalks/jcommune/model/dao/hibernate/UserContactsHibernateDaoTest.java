@@ -16,14 +16,15 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.jtalks.jcommune.model.entity.ObjectsFactory;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.UserContactsDao;
+import org.jtalks.jcommune.model.entity.ObjectsFactory;
 import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
+import org.springframework.test.context.testng
+        .AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
@@ -32,7 +33,6 @@ import org.testng.annotations.Test;
 import java.util.List;
 
 import static org.testng.Assert.*;
-import static org.testng.Assert.assertEquals;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
@@ -93,7 +93,7 @@ public class UserContactsHibernateDaoTest extends AbstractTransactionalTestNGSpr
         type.setTypeName(newName);
         type.setIcon(newIcon);
 
-        dao.update(type);
+        dao.saveOrUpdate(type);
         session.evict(type);
 
         UserContactType result = (UserContactType) session.get(UserContactType.class, type.getId());

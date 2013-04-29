@@ -14,13 +14,9 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.dao.Crud;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import static org.testng.Assert.*;
+
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
@@ -39,7 +37,7 @@ public class CodeReviewCommentHibernateDaoTest extends AbstractTransactionalTest
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
-    private ChildRepository<CodeReviewComment> codeReviewCommentDao;    
+    private Crud<CodeReviewComment> codeReviewCommentDao;
     private Session session;
 
     @BeforeMethod
@@ -79,7 +77,7 @@ public class CodeReviewCommentHibernateDaoTest extends AbstractTransactionalTest
         session.save(review);
         review.setUuid(newUuid);
 
-        codeReviewCommentDao.update(review);
+        codeReviewCommentDao.saveOrUpdate(review);
         session.evict(review);
         CodeReviewComment result = (CodeReviewComment) session.get(CodeReviewComment.class, review.getId());
 
@@ -92,7 +90,7 @@ public class CodeReviewCommentHibernateDaoTest extends AbstractTransactionalTest
         session.save(review);
         review.setUuid(null);
 
-        codeReviewCommentDao.update(review);
+        codeReviewCommentDao.saveOrUpdate(review);
     }
     
 }

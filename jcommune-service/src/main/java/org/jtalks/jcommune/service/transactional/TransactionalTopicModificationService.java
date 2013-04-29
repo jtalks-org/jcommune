@@ -117,11 +117,11 @@ public class TransactionalTopicModificationService implements TopicModificationS
             Set<JCUser> topicSubscribers = topic.getSubscribers();
             topicSubscribers.add(currentUser);
         }
-        dao.update(topic);
+        dao.saveOrUpdate(topic);
 
         Branch branch = topic.getBranch();
         branch.setLastPost(answer);
-        branchDao.update(branch);
+        branchDao.saveOrUpdate(branch);
 
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(currentUser).on(answer).flush();
         notificationService.topicChanged(topic);
@@ -165,7 +165,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
 
         branch.addTopic(topic);
         branch.setLastPost(first);
-        branchDao.update(branch);
+        branchDao.saveOrUpdate(branch);
 
         JCUser user = userService.getCurrentUser();
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(topic).flush();
@@ -176,7 +176,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         subscribeOnTopicIfNotificationsEnabled(notifyOnAnswers, topic, currentUser);
         createOrUpdatePoll(topicDto.getPoll(), topic);
 
-        dao.update(topic);
+        dao.saveOrUpdate(topic);
         logger.debug("Created new topic id={}, branch id={}, author={}",
                 new Object[]{topic.getId(), branch.getId(), currentUser.getUsername()});
         return topic;
@@ -202,7 +202,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         Branch branch = topicDto.getBranch();
         branch.addTopic(topic);
         branch.setLastPost(first);
-        branchDao.update(branch);
+        branchDao.saveOrUpdate(branch);
 
         JCUser user = userService.getCurrentUser();
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(topic).flush();
@@ -212,7 +212,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
 
         subscribeOnTopicIfNotificationsEnabled(notifyOnAnswers, topic, currentUser);
 
-        dao.update(topic);
+        dao.saveOrUpdate(topic);
         logger.debug("Created new code review topic id={}, branch id={}, author={}",
                 new Object[]{topic.getId(), branch.getId(), currentUser.getUsername()});
         return topic;
@@ -253,7 +253,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         Post post = topic.getFirstPost();
         post.updateModificationDate();
         this.createOrUpdatePoll(poll, topic);
-        dao.update(topic);
+        dao.saveOrUpdate(topic);
         notificationService.topicChanged(topic);
         JCUser currentUser = userService.getCurrentUser();
         subscribeOnTopicIfNotificationsEnabled(notifyOnAnswers, topic, currentUser);
@@ -342,7 +342,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         }
 
         branch.deleteTopic(topic);
-        branchDao.update(branch);
+        branchDao.saveOrUpdate(branch);
 
         if (branchLastPostFromDeletedTopic) {
             branchLastPostService.refreshLastPostInBranch(branch);
@@ -361,7 +361,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         Branch sourceBranch = topic.getBranch();
         Branch targetBranch = branchDao.get(branchId);
         targetBranch.addTopic(topic);
-        branchDao.update(targetBranch);
+        branchDao.saveOrUpdate(targetBranch);
 
         List<Post> topicPosts = topic.getPosts();
         if (topicPosts.contains(sourceBranch.getLastPost())) {
@@ -384,7 +384,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
             throw new AccessDeniedException("Close for code review");
         }
         topic.setClosed(true);
-        dao.update(topic);
+        dao.saveOrUpdate(topic);
     }
 
     /**
@@ -394,6 +394,6 @@ public class TransactionalTopicModificationService implements TopicModificationS
     @Override
     public void openTopic(Topic topic) {
         topic.setClosed(false);
-        dao.update(topic);
+        dao.saveOrUpdate(topic);
     }
 }

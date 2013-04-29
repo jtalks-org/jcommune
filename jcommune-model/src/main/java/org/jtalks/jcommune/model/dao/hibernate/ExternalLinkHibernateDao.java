@@ -14,21 +14,31 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.jtalks.common.model.dao.hibernate.AbstractHibernateParentRepository;
+import org.hibernate.SessionFactory;
+import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.jcommune.model.dao.ExternalLinkDao;
 import org.jtalks.jcommune.model.entity.ExternalLink;
 
 import java.util.List;
 
 /** @author Alexandre Teterin */
-public class ExternalLinkHibernateDao extends AbstractHibernateParentRepository<ExternalLink>
+public class ExternalLinkHibernateDao extends GenericDao<ExternalLink>
         implements ExternalLinkDao {
+
+    /**
+     * @param sessionFactory The SessionFactory.
+     * @param type           An entity type.
+     */
+    public ExternalLinkHibernateDao(SessionFactory sessionFactory,
+            Class<ExternalLink> type) {
+        super(sessionFactory, type);
+    }
 
     /** {@inheritDoc} */
     @Override
     public List<ExternalLink> getAll() {
         //noinspection unchecked
-        return getSession().createQuery("from ExternalLink").setCacheable(true).list();
+        return session().createQuery("from ExternalLink").setCacheable(true).list();
     }
 
 }

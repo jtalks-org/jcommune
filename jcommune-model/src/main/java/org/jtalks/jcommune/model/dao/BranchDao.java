@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.model.dao;
 
-import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.dao.Crud;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 
@@ -31,7 +31,7 @@ import java.util.List;
  * @see org.jtalks.jcommune.model.dao.hibernate.BranchHibernateDao
  */
 
-public interface BranchDao extends ChildRepository<Branch> {
+public interface BranchDao extends Crud<Branch> {
 
     /**
      * Get all existing branches sorted by section position as primary order and

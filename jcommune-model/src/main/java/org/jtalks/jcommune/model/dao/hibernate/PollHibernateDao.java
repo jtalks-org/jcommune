@@ -14,18 +14,25 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.jtalks.common.model.dao.ChildRepository;
-import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
+import org.hibernate.SessionFactory;
+import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.jcommune.model.entity.Poll;
 
 /**
  * The implementation of the {@link PollDao} based on Hibernate. The class is responsible for loading
  * {@link Poll} objects from database and update them. This implementation doesn't contain any
- * additional methods, because methods of {@link ChildRepository} cover all needed functionality.
+ * additional methods, because methods of {@link GenericDao} cover all needed functionality.
  *
  * @author Anuar Nurmakanov
- * @see ChildRepository
+ * @see GenericDao
  * @see Poll
  */
-public class PollHibernateDao extends AbstractHibernateChildRepository<Poll> {
+public class PollHibernateDao extends GenericDao<Poll> {
+    /**
+     * @param sessionFactory The SessionFactory.
+     * @param type           An entity type.
+     */
+    public PollHibernateDao(SessionFactory sessionFactory, Class<Poll> type) {
+        super(sessionFactory, type);
+    }
 }

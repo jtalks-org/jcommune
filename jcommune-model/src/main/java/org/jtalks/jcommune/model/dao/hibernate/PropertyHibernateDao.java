@@ -15,7 +15,8 @@
 
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
+import org.hibernate.SessionFactory;
+import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.common.model.entity.Property;
 import org.jtalks.jcommune.model.dao.PropertyDao;
 
@@ -27,13 +28,22 @@ import org.jtalks.jcommune.model.dao.PropertyDao;
  * 
  * @author Anuar Nurmakanov
  */
-public class PropertyHibernateDao extends AbstractHibernateChildRepository<Property> implements PropertyDao {
+public class PropertyHibernateDao extends GenericDao<Property> implements PropertyDao {
+
+    /**
+     * @param sessionFactory The SessionFactory.
+     * @param type           An entity type.
+     */
+    public PropertyHibernateDao(SessionFactory sessionFactory,
+            Class<Property> type) {
+        super(sessionFactory, type);
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void update(Property entity) {
+    public void saveOrUpdate(Property entity) {
         throw new UnsupportedOperationException("Value of \"Property\" cannot be changed in a forum.");
     }
 
@@ -42,7 +52,7 @@ public class PropertyHibernateDao extends AbstractHibernateChildRepository<Prope
      */
     @Override
     public Property getByName(String name) {
-        return (Property)getSession()
+        return (Property)session()
                 .getNamedQuery("getPropertyByName")
                 .setString("name", name)
                 .uniqueResult();

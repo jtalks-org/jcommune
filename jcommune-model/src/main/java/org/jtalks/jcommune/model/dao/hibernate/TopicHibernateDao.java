@@ -16,13 +16,13 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 
 import org.hibernate.Query;
-import org.hibernate.classic.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.DateTime;
-import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
+import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.common.model.entity.Branch;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.jcommune.model.dao.TopicDao;
@@ -44,11 +44,19 @@ import java.util.List;
  * @author Eugeny Batov
  * @author Anuar Nurmakanov
  */
-public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> implements TopicDao {
+public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
     private static final String BRANCH = "branch";
     private static final String MAX_MOD_DATE = "maxModDate";
     private static final String GROUP_IDS = "groupIds";
     private static final String UNCHECKED = "unchecked";
+
+    /**
+     * @param sessionFactory The SessionFactory.
+     * @param type           An entity type.
+     */
+    public TopicHibernateDao(SessionFactory sessionFactory, Class<Topic> type) {
+        super(sessionFactory, type);
+    }
 
     /**
      * {@inheritDoc}
@@ -97,12 +105,12 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      */
     private PageImpl<Topic> getUnansweredTopicsByGroupIds(List<String> groupIds, JCommunePageRequest pageRequest) {
         if (!groupIds.isEmpty()) {
-            Query query = getSession().getNamedQuery("getCountUnansweredTopicsByGroups");
+            Query query = session().getNamedQuery("getCountUnansweredTopicsByGroups");
             query.setParameterList(GROUP_IDS, groupIds);
             Number totalCount = (Number) query.uniqueResult();
             pageRequest.adjustPageNumber(totalCount.intValue());
             
-            query = getSession().getNamedQuery("getUnansweredTopicsByGroups");
+            query = session().getNamedQuery("getUnansweredTopicsByGroups");
             query.setParameterList(GROUP_IDS, groupIds);
             query.setFirstResult(pageRequest.getOffset()).setMaxResults(pageRequest.getPageSize());
             @SuppressWarnings(UNCHECKED)
@@ -119,11 +127,11 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      * @return unanswered topics
      */
     private PageImpl<Topic> getUnansweredTopicsForAnonymousUser(JCommunePageRequest pageRequest) {
-        Query query = getSession().getNamedQuery("getCountUnansweredTopicsForAnonymousUser");
+        Query query = session().getNamedQuery("getCountUnansweredTopicsForAnonymousUser");
         Number totalCount = (Number) query.uniqueResult();
         pageRequest.adjustPageNumber(totalCount.intValue());
         
-        query = getSession().getNamedQuery("getUnansweredTopicsForAnonymousUser");
+        query = session().getNamedQuery("getUnansweredTopicsForAnonymousUser");
         query.setFirstResult(pageRequest.getOffset()).setMaxResults(pageRequest.getPageSize());
         @SuppressWarnings(UNCHECKED)
         List<Topic> unansweredTopics = (List<Topic>) query.list();
@@ -141,13 +149,13 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
     private PageImpl<Topic> getRecentTopicsByGroupIds(List<String> groupIds, DateTime timeStamp,
                                                       JCommunePageRequest pageRequest) {
         if (!groupIds.isEmpty()) {
-            Query query = getSession().getNamedQuery("getCountRecentTopicsByGroups");
+            Query query = session().getNamedQuery("getCountRecentTopicsByGroups");
             query.setParameter(MAX_MOD_DATE, timeStamp);
             query.setParameterList(GROUP_IDS, groupIds);
             Number totalCount = (Number) query.uniqueResult();
             pageRequest.adjustPageNumber(totalCount.intValue());
             
-            query = getSession().getNamedQuery("getRecentTopicsByGroups");
+            query = session().getNamedQuery("getRecentTopicsByGroups");
             query.setParameter(MAX_MOD_DATE, timeStamp);
             query.setParameterList(GROUP_IDS, groupIds);
             query.setFirstResult(pageRequest.getOffset()).setMaxResults(pageRequest.getPageSize());
@@ -166,12 +174,12 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      * @return recent topics
      */
     private PageImpl<Topic> getRecentTopicsForAnonymousUser(DateTime timeStamp, JCommunePageRequest pageRequest) {
-        Query query = getSession().getNamedQuery("getCountRecentTopicsForAnonymousUser");
+        Query query = session().getNamedQuery("getCountRecentTopicsForAnonymousUser");
         query.setParameter(MAX_MOD_DATE, timeStamp);
         Number totalCount = (Number) query.uniqueResult();
         pageRequest.adjustPageNumber(totalCount.intValue());
         
-        query = getSession().getNamedQuery("getRecentTopicsForAnonymousUser");
+        query = session().getNamedQuery("getRecentTopicsForAnonymousUser");
         query.setParameter(MAX_MOD_DATE, timeStamp);
         query.setFirstResult(pageRequest.getOffset()).setMaxResults(pageRequest.getPageSize());
         @SuppressWarnings(UNCHECKED)
@@ -184,7 +192,6 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      */
     @Override
     public Topic getLastUpdatedTopicInBranch(Branch branch) {
-        Session session = getSession();
         //find the last topic in the branch
         String modificationDateProperty = "modificationDate";
         DetachedCriteria topicMaxModificationDateCriteria =
@@ -193,7 +200,7 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
                         .add(Restrictions.eq(BRANCH, branch));
         //possible that the two topics will be modified at the same time
         @SuppressWarnings(UNCHECKED)
-        List<Topic> topics = (List<Topic>) session
+        List<Topic> topics = (List<Topic>) session()
                 .createCriteria(Topic.class)
                 .add(Restrictions.eq(BRANCH, branch))
                 .add(Property.forName(modificationDateProperty).eq(topicMaxModificationDateCriteria))
@@ -208,7 +215,7 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
     @Override
     public Page<Topic> getTopics(Branch branch, JCommunePageRequest pageRequest) {
         int totalCount = countTopics(branch);
-        Query query = getSession().getNamedQuery("getTopicsInBranch")
+        Query query = session().getNamedQuery("getTopicsInBranch")
                 .setParameter(BRANCH, branch);
         if (pageRequest.isPagingEnabled()) {
             pageRequest.adjustPageNumber(totalCount);
@@ -225,7 +232,7 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      */
     @Override
     public int countTopics(Branch branch) {
-        Number count = (Number) getSession()
+        Number count = (Number) session()
                 .getNamedQuery("getCountTopicsInBranch")
                 .setParameter(BRANCH, branch)
                 .uniqueResult();

@@ -50,6 +50,6 @@ public class TransactionalBranchLastPostService implements BranchLastPostService
     public void refreshLastPostInBranch(Branch branch) {
         Post lastPostOfBranch = postDao.getLastPostFor(branch);
         branch.setLastPost(lastPostOfBranch);
-        branchDao.update(branch);
+        branchDao.saveOrUpdate(branch);
     }
 }

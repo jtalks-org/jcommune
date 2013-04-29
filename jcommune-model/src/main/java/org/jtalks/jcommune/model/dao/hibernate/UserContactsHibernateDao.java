@@ -14,7 +14,8 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
+import org.hibernate.SessionFactory;
+import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.jcommune.model.dao.UserContactsDao;
 import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
@@ -28,16 +29,25 @@ import java.util.List;
  *
  * @author Evgeniy Naumenko
  */
-public class UserContactsHibernateDao extends AbstractHibernateChildRepository<UserContactType>
+public class UserContactsHibernateDao extends GenericDao<UserContactType>
         implements UserContactsDao {
 
+
+    /**
+     * @param sessionFactory The SessionFactory.
+     * @param type           An entity type.
+     */
+    public UserContactsHibernateDao(SessionFactory sessionFactory,
+            Class<UserContactType> type) {
+        super(sessionFactory, type);
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     public List<UserContactType> getAvailableContactTypes() {
-        return getSession()
+        return session()
                 .createQuery("from UserContactType")
                 .setCacheable(true)
                 .list();
@@ -48,7 +58,7 @@ public class UserContactsHibernateDao extends AbstractHibernateChildRepository<U
      */
     @Override
     public UserContact getContactById(long id) {
-        return (UserContact) getSession()
+        return (UserContact) session()
                 .createQuery("from UserContact u where u.id = ?")
                 .setCacheable(true)
                 .setLong(0, id)

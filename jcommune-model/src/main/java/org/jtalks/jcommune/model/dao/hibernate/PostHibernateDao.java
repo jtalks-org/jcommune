@@ -14,10 +14,9 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import java.util.List;
-
 import org.hibernate.Query;
-import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
+import org.hibernate.SessionFactory;
+import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -26,6 +25,8 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+
+import java.util.List;
 
 /**
  * The implementation of PostDao based on Hibernate.
@@ -36,18 +37,26 @@ import org.springframework.data.domain.PageImpl;
  * @author Kirill Afonin
  * @author Anuar Nurmakanov
  */
-public class PostHibernateDao extends AbstractHibernateChildRepository<Post> implements PostDao {
+public class PostHibernateDao extends GenericDao<Post> implements PostDao {
     private static final String TOPIC_PARAMETER_NAME = "topic";
+
+    /**
+     * @param sessionFactory The SessionFactory.
+     * @param type           An entity type.
+     */
+    public PostHibernateDao(SessionFactory sessionFactory, Class<Post> type) {
+        super(sessionFactory, type);
+    }
 
     /**
      * {@inheritDoc}
      */
     public Page<Post> getUserPosts(JCUser author, JCommunePageRequest pageRequest) {
-        Number totalCount = (Number) getSession()
+        Number totalCount = (Number) session()
                 .getNamedQuery("getCountPostsOfUser")
                 .setParameter("userCreated", author)
                 .uniqueResult();
-        Query query = getSession()
+        Query query = session()
                 .getNamedQuery("getPostsOfUser")
                 .setParameter("userCreated", author);
         if (pageRequest.isPagingEnabled()) {
@@ -65,11 +74,11 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
      */
     @Override
     public Page<Post> getPosts(Topic topic, JCommunePageRequest pageRequest) {
-        Number totalCount = (Number) getSession()
+        Number totalCount = (Number) session()
                 .getNamedQuery("getCountPostsInTopic")
                 .setParameter(TOPIC_PARAMETER_NAME, topic)
                 .uniqueResult();
-        Query query = getSession()
+        Query query = session()
                 .getNamedQuery("getPostsInTopic")
                 .setParameter(TOPIC_PARAMETER_NAME, topic);
         if (pageRequest.isPagingEnabled()) {
@@ -87,7 +96,7 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
      */
     @Override
     public Post getLastPostFor(Branch branch) {
-        Post result = (Post) getSession()
+        Post result = (Post) session()
                 .getNamedQuery("getLastPostForBranch")
                 .setParameter("branch", branch)
                 .setMaxResults(1)

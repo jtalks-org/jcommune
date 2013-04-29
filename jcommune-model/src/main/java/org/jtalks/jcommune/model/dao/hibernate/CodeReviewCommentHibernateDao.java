@@ -14,7 +14,8 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
+import org.hibernate.SessionFactory;
+import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
 
 /**
@@ -23,6 +24,14 @@ import org.jtalks.jcommune.model.entity.CodeReviewComment;
  * @author Vyacheslav Mishcheryakov
  *
  */
-public class CodeReviewCommentHibernateDao extends AbstractHibernateChildRepository<CodeReviewComment> {
+public class CodeReviewCommentHibernateDao extends GenericDao<CodeReviewComment> {
 
+    /**
+     * @param sessionFactory The SessionFactory.
+     * @param type           An entity type.
+     */
+    public CodeReviewCommentHibernateDao(SessionFactory sessionFactory,
+            Class<CodeReviewComment> type) {
+        super(sessionFactory, type);
+    }
 }

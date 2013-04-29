@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.model.dao;
 
-import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.dao.Crud;
 import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
 
@@ -27,7 +27,7 @@ import java.util.List;
  *
  * @author Evgeniy Naumenko
  */
-public interface UserContactsDao extends ChildRepository<UserContactType> {
+public interface UserContactsDao extends Crud<UserContactType> {
 
     /**
      * Returns a list of contact types permitted in the current configuration.

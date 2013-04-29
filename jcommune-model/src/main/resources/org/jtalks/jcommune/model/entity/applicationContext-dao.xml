@@ -16,7 +16,8 @@
 
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
@@ -26,121 +27,185 @@
 
   <!--Declaration of AOP Config -->
   <aop:config>
-        <aop:advisor advice-ref="exceptionTranslationInterceptor"
-                     pointcut="execution(* org.jtalks.common.model.dao.ChildRepository+.* (*))"/>
-        <aop:advisor advice-ref="exceptionTranslationInterceptor"
-                     pointcut="execution(* org.jtalks.jcommune.model.dao.ForumStatisticsDao.* (*))"/>
-        <aop:advisor advice-ref="exceptionTranslationInterceptor"
-                     pointcut="execution(* org.jtalks.jcommune.model.dao.ValidatorDao.* (*))"/>
-    </aop:config>
+    <aop:advisor advice-ref="exceptionTranslationInterceptor"
+                 pointcut="execution(* org.jtalks.common.model.dao.Crud+.* (*))"/>
+    <aop:advisor advice-ref="exceptionTranslationInterceptor"
+                 pointcut="execution(* org.jtalks.jcommune.model.dao.ForumStatisticsDao.* (*))"/>
+    <aop:advisor advice-ref="exceptionTranslationInterceptor"
+                 pointcut="execution(* org.jtalks.jcommune.model.dao.ValidatorDao.* (*))"/>
+  </aop:config>
 
-    <!--Declaration of DAO beans -->
-    <bean id="userDao"
-          class="org.jtalks.jcommune.model.dao.hibernate.UserHibernateDao"
-          parent="abstractHibernateDao"/>
-    <bean id="groupDao"
-          class="org.jtalks.common.model.dao.hibernate.GroupHibernateDao"
-          parent="abstractHibernateDao"/>
-    <bean id="topicDao"
-          class="org.jtalks.jcommune.model.dao.hibernate.TopicHibernateDao"
-          parent="abstractHibernateDao"/>
-    <bean id="postDao"
-          class="org.jtalks.jcommune.model.dao.hibernate.PostHibernateDao"
-          parent="abstractHibernateDao"/>
-    <bean id="topicBranchDao" class="org.jtalks.jcommune.model.dao.hibernate.BranchHibernateDao"
-          parent="abstractHibernateDao"/>
-    <bean id="privateMessageDao" class="org.jtalks.jcommune.model.dao.hibernate.PrivateMessageHibernateDao"
-          parent="abstractHibernateDao"/>
-    <bean id="branchSectionDao" class="org.jtalks.jcommune.model.dao.hibernate.SectionHibernateDao"
-          parent="abstractHibernateDao"/>
-    <bean id="lastReadPostHibernateDao" class="org.jtalks.jcommune.model.dao.hibernate.LastReadPostHibernateDao"
-          parent="abstractHibernateDao"/>
-    <bean id="forumStatisticsDAO" class="org.jtalks.jcommune.model.dao.hibernate.ForumStatisticsHibernateDao">
-        <constructor-arg index="0" ref="sessionFactory"/>
-    </bean>
-    <bean id="validatorDAO" class="org.jtalks.jcommune.model.dao.hibernate.ValidatorHibernateDao">
-        <constructor-arg ref="sessionFactory"/>
-    </bean>
+  <!--Declaration of DAO beans -->
+  <bean id="userDao"
+        class="org.jtalks.jcommune.model.dao.hibernate.UserHibernateDao">
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+    <constructor-arg name="type"
+                     value="org.jtalks.jcommune.model.entity.JCUser"/>
+  </bean>
 
-    <bean id="userContactsDao"
-          class="org.jtalks.jcommune.model.dao.hibernate.UserContactsHibernateDao"
-          parent="abstractHibernateDao"/>
 
-    <bean id="simplePageDao"
-          class="org.jtalks.jcommune.model.dao.hibernate.SimplePageHibernateDao"
-          parent="abstractHibernateDao"/>
+  <bean id="groupDao"
+        class="org.jtalks.common.model.dao.hibernate.GroupHibernateDao">
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+    <constructor-arg name="type"
+                     value="org.jtalks.common.model.entity.Group"/>
 
-    <bean id="pollDao"
-          class="org.jtalks.jcommune.model.dao.hibernate.PollHibernateDao"
-          parent="abstractHibernateDao"/>
+  </bean>
+  <bean id="topicDao"
+        class="org.jtalks.jcommune.model.dao.hibernate.TopicHibernateDao">
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+    <constructor-arg name="type"
+                     value="org.jtalks.jcommune.model.entity.Topic"/>
+  </bean>
 
-    <bean id="pollOptionDao"
-          class="org.jtalks.jcommune.model.dao.hibernate.PollOptionHibernateDao"
-          parent="abstractHibernateDao"/>
+  <bean id="postDao"
+        class="org.jtalks.jcommune.model.dao.hibernate.PostHibernateDao">
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+    <constructor-arg name="type" value="org.jtalks.jcommune.model.entity.Post"/>
+  </bean>
+  <bean id="topicBranchDao"
+        class="org.jtalks.jcommune.model.dao.hibernate.BranchHibernateDao">
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+    <constructor-arg name="type"
+                     value="org.jtalks.jcommune.model.entity.Branch"/>
+  </bean>
+  <bean id="privateMessageDao"
+        class="org.jtalks.jcommune.model.dao.hibernate.PrivateMessageHibernateDao">
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+    <constructor-arg name="type"
+                     value="org.jtalks.jcommune.model.entity.PrivateMessage"/>
+  </bean>
+  <bean id="branchSectionDao"
+        class="org.jtalks.jcommune.model.dao.hibernate.SectionHibernateDao">
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+    <constructor-arg name="type"
+                     value="org.jtalks.common.model.entity.Section"/>
+  </bean>
+  <bean id="lastReadPostHibernateDao"
+        class="org.jtalks.jcommune.model.dao.hibernate.LastReadPostHibernateDao">
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+    <constructor-arg name="type"
+                     value="org.jtalks.jcommune.model.entity.LastReadPost"/>
+  </bean>
+  <bean id="forumStatisticsDAO"
+        class="org.jtalks.jcommune.model.dao.hibernate.ForumStatisticsHibernateDao">
+    <constructor-arg index="0" ref="sessionFactory"/>
+  </bean>
+  <bean id="validatorDAO"
+        class="org.jtalks.jcommune.model.dao.hibernate.ValidatorHibernateDao">
+    <constructor-arg ref="sessionFactory"/>
+  </bean>
 
-    <bean id="propertyDao"
-          class="org.jtalks.jcommune.model.dao.hibernate.PropertyHibernateDao"
-          parent="abstractHibernateDao"/>
+  <bean id="userContactsDao"
+        class="org.jtalks.jcommune.model.dao.hibernate.UserContactsHibernateDao">
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+    <constructor-arg name="type"
+                     value="org.jtalks.jcommune.model.entity.UserContact"/>
+  </bean>
 
-    <bean id="componentDao"
-          class="org.jtalks.jcommune.model.dao.hibernate.ComponentHibernateDao"
-          parent="abstractHibernateDao"/>
+  <bean id="simplePageDao"
+        class="org.jtalks.jcommune.model.dao.hibernate.SimplePageHibernateDao">
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+    <constructor-arg name="type"
+                     value="org.jtalks.jcommune.model.entity.SimplePage"/>
+  </bean>
 
-    <bean id="lastReadPostDao"
-          class="org.jtalks.jcommune.model.dao.hibernate.LastReadPostHibernateDao"
-          parent="abstractHibernateDao"/>
-          
-    <bean id="codeReviewDao"
-          class="org.jtalks.jcommune.model.dao.hibernate.CodeReviewHibernateDao"
-          parent="abstractHibernateDao"/>
-          
-    <bean id="codeReviewCommentDao"
-          class="org.jtalks.jcommune.model.dao.hibernate.CodeReviewCommentHibernateDao"
-          parent="abstractHibernateDao"/>
-          
-   <bean id="bannerDao"
-          class="org.jtalks.jcommune.model.dao.hibernate.BannerHibernateDao"
-          parent="abstractHibernateDao"/>
+  <bean id="pollDao"
+        class="org.jtalks.jcommune.model.dao.hibernate.PollHibernateDao">
+    <constructor-arg name="sessionFactory" value="sessionFactory"/>
+    <constructor-arg name="type" value="org.jtalks.jcommune.model.entity.Poll"/>
+  </bean>
 
-    <bean id="externalLinkDao"
-          class="org.jtalks.jcommune.model.dao.hibernate.ExternalLinkHibernateDao"
-          parent="abstractHibernateDao"/>
+  <bean id="pollOptionDao"
+        class="org.jtalks.jcommune.model.dao.hibernate.PollOptionHibernateDao">
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+    <constructor-arg name="type"
+                     value="org.jtalks.jcommune.model.entity.PollItem"/>
+  </bean>
 
-    <!-- Declaration of Hibernate Search DAO beans -->
-    <bean id="topicSearchDao" class="org.jtalks.jcommune.model.dao.search.hibernate.TopicHibernateSearchDao">
-        <constructor-arg name="sessionFactory" ref="sessionFactory"/>
-        <constructor-arg name="filters">
-            <list>
-                <ref bean="invalidCharactersFilter"/>
-                <ref bean="stopWordsFilter"/>
-            </list>
-        </constructor-arg>
-    </bean>
-    <bean id="invalidCharactersFilter"
-          class="org.jtalks.jcommune.model.search.InvalidCharactersFilter"/>
-    <bean id="stopWordsFilter" class="org.jtalks.jcommune.model.search.StopWordsFilter">
-        <constructor-arg>
-            <list>
-                <value>org/jtalks/jcommune/lucene/english_stop.txt</value>
-                <value>org/jtalks/jcommune/lucene/russian_stop.txt</value>
-            </list>
-        </constructor-arg>
-        <constructor-arg value="true"/>
-    </bean>
-    <!--Injecting sessionFactory bean to class AbstractHibernateChildRepository, this way
-  resolves a problem of multiple DAO beans definition -->
-    <bean id="abstractHibernateDao" abstract="true">
-        <property name="sessionFactory" ref="sessionFactory"/>
-    </bean>
-    <!--Declaration and setting up datasource, sessionFactory and transactionalManager
-   beans -->
+  <bean id="propertyDao"
+        class="org.jtalks.jcommune.model.dao.hibernate.PropertyHibernateDao">
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+    <constructor-arg name="type"
+                     value="org.jtalks.common.model.entity.Property"/>
+  </bean>
 
-    <!--We're wrapping our underlying data source with lazy one so that connection is not retrieved from the pool unless-->
-    <!--it's really necessary. E.g. if Hibernate hits only cache, there is no need to fetch connection, but without lazy-->
-    <!--data source, it will be actually fetched if service methods are marked with @Transactional-->
-  <bean id="dataSource" class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy">
+  <bean id="componentDao"
+        class="org.jtalks.jcommune.model.dao.hibernate.ComponentHibernateDao">
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+    <constructor-arg name="type"
+                     value="org.jtalks.common.model.entity.Component"/>
+  </bean>
+
+  <bean id="lastReadPostDao"
+        class="org.jtalks.jcommune.model.dao.hibernate.LastReadPostHibernateDao">
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+    <constructor-arg name="type"
+                     value="org.jtalks.jcommune.model.entity.LastReadPost"/>
+  </bean>
+
+  <bean id="codeReviewDao"
+        class="org.jtalks.jcommune.model.dao.hibernate.CodeReviewHibernateDao">
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+    <constructor-arg name="type"
+                     value="org.jtalks.jcommune.model.entity.CodeReview"/>
+  </bean>
+
+  <bean id="codeReviewCommentDao"
+        class="org.jtalks.jcommune.model.dao.hibernate.CodeReviewCommentHibernateDao">
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+    <constructor-arg name="type"
+                     value="org.jtalks.jcommune.model.entity.CodeReviewComment"/>
+  </bean>
+
+  <bean id="bannerDao"
+        class="org.jtalks.jcommune.model.dao.hibernate.BannerHibernateDao">
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+    <constructor-arg name="type"
+                     value="org.jtalks.jcommune.model.entity.Banner"/>
+  </bean>
+
+  <bean id="externalLinkDao"
+        class="org.jtalks.jcommune.model.dao.hibernate.ExternalLinkHibernateDao">
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+    <constructor-arg name="type"
+                     value="org.jtalks.jcommune.model.entity.ExternalLink"/>
+  </bean>
+
+  <!-- Declaration of Hibernate Search DAO beans -->
+  <bean id="topicSearchDao"
+        class="org.jtalks.jcommune.model.dao.search.hibernate.TopicHibernateSearchDao">
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+    <constructor-arg name="filters">
+      <list>
+        <ref bean="invalidCharactersFilter"/>
+        <ref bean="stopWordsFilter"/>
+      </list>
+    </constructor-arg>
+  </bean>
+  <bean id="invalidCharactersFilter"
+        class="org.jtalks.jcommune.model.search.InvalidCharactersFilter"/>
+  <bean id="stopWordsFilter"
+        class="org.jtalks.jcommune.model.search.StopWordsFilter">
+    <constructor-arg>
+      <list>
+        <value>org/jtalks/jcommune/lucene/english_stop.txt</value>
+        <value>org/jtalks/jcommune/lucene/russian_stop.txt</value>
+      </list>
+    </constructor-arg>
+    <constructor-arg value="true"/>
+  </bean>
+  <!--Declaration and setting up datasource, sessionFactory and transactionalManager
+ beans -->
+
+  <!--We're wrapping our underlying data source with lazy one so that connection is not retrieved from the pool unless-->
+  <!--it's really necessary. E.g. if Hibernate hits only cache, there is no need to fetch connection, but without lazy-->
+  <!--data source, it will be actually fetched if service methods are marked with @Transactional-->
+  <bean id="dataSource"
+        class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy">
     <property name="targetDataSource">
-      <bean class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+      <bean class="com.mchange.v2.c3p0.ComboPooledDataSource"
+            destroy-method="close">
         <property name="driverClass" value="${jdbc.driverClassName}"/>
         <!--the properties are set by JndiAwarePropertyPlaceholderConfigurer, see it for details-->
         <property name="jdbcUrl" value="${JCOMMUNE_DB_URL}"/>
@@ -160,64 +225,78 @@
     </property>
   </bean>
 
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
-          depends-on="flyway_jcommune">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="mappingResources">
-            <list>
-                <value>/org/jtalks/jcommune/model/entity/JCUser.hbm.xml</value>
-                <value>/org/jtalks/jcommune/model/entity/Group.hbm.xml</value>
-                <value>/org/jtalks/jcommune/model/entity/Post.hbm.xml</value>
-                <value>/org/jtalks/jcommune/model/entity/Topic.hbm.xml</value>
-                <value>/org/jtalks/jcommune/model/entity/Branch.hbm.xml</value>
-                <value>/org/jtalks/jcommune/model/entity/PrivateMessage.hbm.xml</value>
-                <value>/org/jtalks/jcommune/model/entity/Section.hbm.xml</value>
-                <value>/org/jtalks/jcommune/model/entity/UserContact.hbm.xml</value>
-                <value>/org/jtalks/jcommune/model/entity/UserContactType.hbm.xml</value>
-                <value>/org/jtalks/jcommune/model/entity/LastReadPost.hbm.xml</value>
-                <value>/org/jtalks/jcommune/model/entity/Poll.hbm.xml</value>
-                <value>/org/jtalks/jcommune/model/entity/PollOption.hbm.xml</value>
-                <value>/org/jtalks/jcommune/model/entity/Property.hbm.xml</value>
-                <value>/org/jtalks/jcommune/model/entity/SimplePage.hbm.xml</value>
-                <value>/org/jtalks/jcommune/model/entity/Component.hbm.xml</value>
-                <value>/org/jtalks/jcommune/model/entity/ViewTopicsBranches.hbm.xml</value>
-                <value>/org/jtalks/jcommune/model/entity/CodeReview.hbm.xml</value>
-                <value>/org/jtalks/jcommune/model/entity/CodeReviewComment.hbm.xml</value>
-                <value>/org/jtalks/jcommune/model/entity/Banner.hbm.xml</value>
-                <value>/org/jtalks/jcommune/model/entity/ExternalLink.hbm.xml</value>
-            </list>
-        </property>
-        <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.query.factory_class">
-                    org.hibernate.hql.ast.ASTQueryTranslatorFactory
-                </prop>
-                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
-                <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
-                <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
-                <prop key="hibernate.connection.charset">${encoding}</prop>
-                <prop key="hibernate.connection.release_mode">auto</prop>
-                <prop key="hibernate.cache.region.factory_class">
-                    ${HIBERNATE_CACHE_FACTORY:net.sf.ehcache.hibernate.SingletonEhCacheRegionFactory}
-                </prop>
-                <prop key="hibernate.cache.use_second_level_cache">${hibernate.use_second_level_cache}</prop>
-                <prop key="hibernate.cache.use_query_cache">${hibernate.use_query_cache}</prop>
-                <prop key="net.sf.ehcache.configurationResourceName">${EH_CACHE_CONFIG}</prop>
-                <prop key="hibernate.search.default.directory_provider">
-                    ${hibernate.search.default.directory_provider}
-                </prop>
-                <prop key="hibernate.search.default.indexBase">${hibernate.search.default.indexBase}</prop>
-            </props>
-        </property>
-    </bean>
-    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory"/>
-    </bean>
-    <bean class="org.jtalks.jcommune.model.utils.JndiAwarePropertyPlaceholderConfigurer">
-      <property name="location" value="classpath:/org/jtalks/jcommune/model/datasource.properties"/>
-    </bean>
+  <bean id="sessionFactory"
+        class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
+        depends-on="flyway_jcommune">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="mappingResources">
+      <list>
+        <value>/org/jtalks/jcommune/model/entity/JCUser.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/Group.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/Post.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/Topic.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/Branch.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/PrivateMessage.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/Section.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/UserContact.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/UserContactType.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/LastReadPost.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/Poll.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/PollOption.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/Property.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/SimplePage.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/Component.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/ViewTopicsBranches.hbm.xml
+        </value>
+        <value>/org/jtalks/jcommune/model/entity/CodeReview.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/CodeReviewComment.hbm.xml
+        </value>
+        <value>/org/jtalks/jcommune/model/entity/Banner.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/ExternalLink.hbm.xml</value>
+      </list>
+    </property>
+    <property name="hibernateProperties">
+      <props>
+        <prop key="hibernate.query.factory_class">
+          org.hibernate.hql.ast.ASTQueryTranslatorFactory
+        </prop>
+        <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+        <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+        <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+        <prop key="hibernate.connection.charset">${encoding}</prop>
+        <prop key="hibernate.connection.release_mode">auto</prop>
+        <prop key="hibernate.cache.region.factory_class">
+          ${HIBERNATE_CACHE_FACTORY:net.sf.ehcache.hibernate.SingletonEhCacheRegionFactory}
+        </prop>
+        <prop key="hibernate.cache.use_second_level_cache">
+          ${hibernate.use_second_level_cache}
+        </prop>
+        <prop key="hibernate.cache.use_query_cache">
+          ${hibernate.use_query_cache}
+        </prop>
+        <prop key="net.sf.ehcache.configurationResourceName">
+          ${EH_CACHE_CONFIG}
+        </prop>
+        <prop key="hibernate.search.default.directory_provider">
+          ${hibernate.search.default.directory_provider}
+        </prop>
+        <prop key="hibernate.search.default.indexBase">
+          ${hibernate.search.default.indexBase}
+        </prop>
+      </props>
+    </property>
+  </bean>
+  <bean id="transactionManager"
+        class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+  <bean class="org.jtalks.jcommune.model.utils.JndiAwarePropertyPlaceholderConfigurer">
+    <property name="location"
+              value="classpath:/org/jtalks/jcommune/model/datasource.properties"/>
+  </bean>
 
-  <bean id="hibernateStatisticsMBean" class="org.hibernate.jmx.StatisticsService">
+  <bean id="hibernateStatisticsMBean"
+        class="org.hibernate.jmx.StatisticsService">
     <property name="statisticsEnabled" value="true"/>
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
@@ -228,32 +307,36 @@
 
   <!-- Migrations, todo: 4 beans - that's weird, Ticket has been left for common to move init to one method -->
 
-    <bean id="flyway_common_init" class="org.jtalks.common.util.FlywayWrapper" init-method="smartInit">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="table" value="common_schema_version"/>
-        <property name="enabled" value="${migrations_enabled}"/>
-    </bean>
-    <bean id="flyway_common" class="org.jtalks.common.util.FlywayWrapper" init-method="migrate"
-          depends-on="flyway_common_init">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="basePackage" value="org.jtalks.common.migrations"/>
-        <property name="baseDir" value="/org/jtalks/common/migrations"/>
-        <property name="table" value="common_schema_version"/>
-        <property name="enabled" value="${migrations_enabled}"/>
-    </bean>
-    <bean id="flyway_jcommune_init" class="org.jtalks.common.util.FlywayWrapper" init-method="smartInit"
-          depends-on="flyway_common">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="table" value="jcommune_schema_version"/>
-        <property name="enabled" value="${migrations_enabled}"/>
-    </bean>
-    <bean id="flyway_jcommune" class="org.jtalks.common.util.FlywayWrapper" init-method="migrate"
-          depends-on="flyway_jcommune_init">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="basePackage" value="org.jtalks.jcommune.migrations"/>
-        <property name="baseDir" value="/org/jtalks/jcommune/migrations"/>
-        <property name="table" value="jcommune_schema_version"/>
-        <property name="enabled" value="${migrations_enabled}"/>
-    </bean>
+  <bean id="flyway_common_init" class="org.jtalks.common.util.FlywayWrapper"
+        init-method="smartInit">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="table" value="common_schema_version"/>
+    <property name="enabled" value="${migrations_enabled}"/>
+  </bean>
+  <bean id="flyway_common" class="org.jtalks.common.util.FlywayWrapper"
+        init-method="migrate"
+        depends-on="flyway_common_init">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="basePackage" value="org.jtalks.common.migrations"/>
+    <property name="baseDir" value="/org/jtalks/common/migrations"/>
+    <property name="table" value="common_schema_version"/>
+    <property name="enabled" value="${migrations_enabled}"/>
+  </bean>
+  <bean id="flyway_jcommune_init" class="org.jtalks.common.util.FlywayWrapper"
+        init-method="smartInit"
+        depends-on="flyway_common">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="table" value="jcommune_schema_version"/>
+    <property name="enabled" value="${migrations_enabled}"/>
+  </bean>
+  <bean id="flyway_jcommune" class="org.jtalks.common.util.FlywayWrapper"
+        init-method="migrate"
+        depends-on="flyway_jcommune_init">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="basePackage" value="org.jtalks.jcommune.migrations"/>
+    <property name="baseDir" value="/org/jtalks/jcommune/migrations"/>
+    <property name="table" value="jcommune_schema_version"/>
+    <property name="enabled" value="${migrations_enabled}"/>
+  </bean>
 
 </beans>

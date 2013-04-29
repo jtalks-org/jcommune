@@ -22,15 +22,14 @@ import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.ComponentDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
+import org.springframework.test.context.testng
+        .AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
+import static org.testng.Assert.*;
 
 /**
  * @autor masyan
@@ -83,7 +82,7 @@ public class ComponentHibernateDaoTest extends AbstractTransactionalTestNGSpring
         session.save(component);
         component.setUuid(newUuid);
 
-        componentDao.update(component);
+        componentDao.saveOrUpdate(component);
         session.evict(component);
         Component result = (Component) session.get(Component.class, component.getId());
 
@@ -96,7 +95,7 @@ public class ComponentHibernateDaoTest extends AbstractTransactionalTestNGSpring
         session.save(component);
         component.setUuid(null);
 
-        componentDao.update(component);
+        componentDao.saveOrUpdate(component);
     }
     
     @Test
@@ -104,7 +103,7 @@ public class ComponentHibernateDaoTest extends AbstractTransactionalTestNGSpring
         Component component = PersistedObjectsFactory.getDefaultComponent();
         
         component.getProperties().remove(0);
-        componentDao.update(component);
+        componentDao.saveOrUpdate(component);
         session.evict(component);
         
         assertEquals(componentDao.get(component.getId()).getProperties().size(), 1);

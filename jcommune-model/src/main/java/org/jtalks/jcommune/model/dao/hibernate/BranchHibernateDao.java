@@ -14,7 +14,8 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
+import org.hibernate.SessionFactory;
+import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -30,8 +31,17 @@ import java.util.List;
  * @author Anuar Nurmakanov
  * @author masyan
  */
-public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch> 
+public class BranchHibernateDao extends GenericDao<Branch>
         implements BranchDao {
+
+    /**
+     * @param sessionFactory The SessionFactory.
+     * @param type           An entity type.
+     */
+    public BranchHibernateDao(SessionFactory sessionFactory, Class<Branch>
+            type) {
+        super(sessionFactory, type);
+    }
 
     /**
      * {@inheritDoc}
@@ -39,7 +49,7 @@ public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch>
     @SuppressWarnings("unchecked")
     @Override
     public List<Branch> getAllBranches() {
-        List<Branch> branches = getSession()
+        List<Branch> branches = session()
                 .getNamedQuery("getAllBranches")
                 .list();
         return branches;
@@ -50,7 +60,7 @@ public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch>
      */
     @Override
     public int getCountPostsInBranch(Branch branch) {
-        Number count = (Number) getSession()
+        Number count = (Number) session()
                 .getNamedQuery("getCountPostsInBranch")
                 .setParameter("branch", branch)
                 .uniqueResult();
@@ -62,7 +72,7 @@ public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch>
      */
     @Override
     public boolean isUnreadPostsInBranch(Branch branch, JCUser user) {
-        Number count = (Number) getSession()
+        Number count = (Number) session()
                 .getNamedQuery("getCountUnreadPostsInBranch")
                 .setParameter("user", user.getId())
                 .setParameter("branch", branch.getId())

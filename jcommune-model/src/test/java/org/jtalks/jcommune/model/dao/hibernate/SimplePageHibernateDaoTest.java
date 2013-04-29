@@ -23,16 +23,10 @@ package org.jtalks.jcommune.model.dao.hibernate;
  * To change this template use File | Settings | File Templates.
  */
 
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertFalse;
-import static org.testng.AssertJUnit.assertNull;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.jtalks.jcommune.model.entity.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.SimplePageDao;
+import org.jtalks.jcommune.model.entity.ObjectsFactory;
 import org.jtalks.jcommune.model.entity.SimplePage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -41,6 +35,10 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
+import static org.testng.AssertJUnit.*;
 
 /**
  * @author Alexander Gavrikov
@@ -95,7 +93,7 @@ public class SimplePageHibernateDaoTest extends AbstractTransactionalTestNGSprin
         simplePage.setName(newName);
         simplePage.setContent(newContent);
 
-        dao.update(simplePage);
+        dao.saveOrUpdate(simplePage);
         session.evict(simplePage);
         SimplePage result = (SimplePage) session.get(SimplePage.class, simplePage.getId());
 

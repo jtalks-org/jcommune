@@ -14,24 +14,13 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-
-import java.util.List;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
-import org.jtalks.jcommune.model.entity.ObjectsFactory;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dto.JCommunePageRequest;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.ContextConfiguration;
@@ -41,6 +30,10 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.List;
+
+import static org.testng.Assert.*;
 
 /**
  * @author Kirill Afonin
@@ -91,7 +84,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         session.save(post);
         post.setPostContent(newContent);
 
-        dao.update(post);
+        dao.saveOrUpdate(post);
         session.evict(post);
         Post result = (Post) session.get(Post.class, post.getId());
 
@@ -104,7 +97,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         session.save(post);
         post.setPostContent(null);
 
-        dao.update(post);
+        dao.saveOrUpdate(post);
     }
 
     /* PostDao specific methods */

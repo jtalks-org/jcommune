@@ -15,7 +15,8 @@
 
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
+import org.hibernate.SessionFactory;
+import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.dao.ComponentDao;
 
@@ -27,10 +28,19 @@ import org.jtalks.jcommune.model.dao.ComponentDao;
  *
  * @author masyan
  */
-public class ComponentHibernateDao extends AbstractHibernateChildRepository<Component> implements ComponentDao {
+public class ComponentHibernateDao extends GenericDao<Component> implements ComponentDao {
+
+    /**
+     * @param sessionFactory The SessionFactory.
+     * @param type           An entity type.
+     */
+    public ComponentHibernateDao(SessionFactory sessionFactory,
+            Class<Component> type) {
+        super(sessionFactory, type);
+    }
 
     @Override
     public Component getComponent() {
-        return (Component) getSession().getNamedQuery("getForumComponent").uniqueResult();
+        return (Component) session().getNamedQuery("getForumComponent").uniqueResult();
     }
 }
