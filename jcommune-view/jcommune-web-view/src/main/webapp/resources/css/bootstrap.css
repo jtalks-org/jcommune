@@ -4235,3 +4235,8 @@ a.thumbnail:hover {
     -moz-transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s;
     word-wrap: break-word;
 }
+
+input[type=text]::-ms-clear {
+    display: none;
+}
+
