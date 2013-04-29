@@ -220,7 +220,7 @@ public class UserProfileController {
     @RequestMapping(value = "/users/{id}/postList", method = RequestMethod.GET)
     public ModelAndView showUserPostList(@PathVariable Long id,
                                          @RequestParam(value = "page", defaultValue = "1",
-                                                 required = false) Integer page,
+                                                 required = false) int page,
                                          @RequestParam(value = "pagingEnabled", defaultValue = "true", required = false
                                          ) Boolean pagingEnabled
     ) throws NotFoundException {

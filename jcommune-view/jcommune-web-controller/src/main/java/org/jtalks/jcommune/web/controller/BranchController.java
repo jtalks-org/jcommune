@@ -100,7 +100,7 @@ public class BranchController {
      */
     @RequestMapping(value = "/branches/{branchId}", method = RequestMethod.GET)
     public ModelAndView showPage(@PathVariable("branchId") long branchId,
-                                 @RequestParam(value = PAGE, defaultValue = "1", required = false) Integer page,
+                                 @RequestParam(value = PAGE, defaultValue = "1", required = false) int page,
                                  @RequestParam(value = PAGING_ENABLED, defaultValue = "true",
                                          required = false) Boolean pagingEnabled
     ) throws NotFoundException {
@@ -129,7 +129,7 @@ public class BranchController {
      */
     @RequestMapping("/topics/recent")
     public ModelAndView recentTopicsPage(
-            @RequestParam(value = PAGE, defaultValue = "1", required = false) Integer page) {
+            @RequestParam(value = PAGE, defaultValue = "1", required = false) int page) {
         Page<Topic> topicsPage = topicFetchService.getRecentTopics(page);
         lastReadPostService.fillLastReadPostForTopics(topicsPage.getContent());
 
@@ -147,7 +147,7 @@ public class BranchController {
      */
     @RequestMapping("/topics/unanswered")
     public ModelAndView unansweredTopicsPage(@RequestParam(value = PAGE, defaultValue = "1", required = false)
-                                             Integer page) {
+                                             int page) {
         Page<Topic> topicsPage = topicFetchService.getUnansweredTopics(page);
         lastReadPostService.fillLastReadPostForTopics(topicsPage.getContent());
         return new ModelAndView("unansweredTopics")

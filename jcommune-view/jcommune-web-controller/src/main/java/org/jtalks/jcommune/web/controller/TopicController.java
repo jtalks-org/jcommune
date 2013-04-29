@@ -201,7 +201,7 @@ public class TopicController {
      */
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.GET)
     public ModelAndView showTopicPage(@PathVariable(TOPIC_ID) Long topicId,
-                                      @RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
+                                      @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                       @RequestParam(value = PAGING_ENABLED, defaultValue = "true",
                                               required = false) Boolean pagingEnabled) throws NotFoundException {
 

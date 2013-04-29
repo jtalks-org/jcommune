@@ -172,7 +172,7 @@ public class BranchControllerTest {
 
         ModelAndView mav = controller.showPage(branchId, page, pagingEnabled);
 
-        List actualViewList = assertAndReturnModelAttributeOfType(mav, "viewList", List.class);
+        List<?> actualViewList = assertAndReturnModelAttributeOfType(mav, "viewList", List.class);
         assertEquals(actualViewList, new ArrayList<String>());
     }
 

@@ -96,7 +96,7 @@ public class TopicSearchController {
      */
     @RequestMapping(value = "/search/{searchText}", method = RequestMethod.GET)
     public ModelAndView continueSearch(@PathVariable String searchText,
-            @RequestParam(value = "page", defaultValue = "1", required = true) Integer page) {
+            @RequestParam(value = "page", defaultValue = "1", required = true) int page) {
         return search(searchText, page);
     }
 

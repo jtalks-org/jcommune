@@ -95,7 +95,7 @@ public class PrivateMessageController {
      * @return {@code ModelAndView} with added {@link Page} instance with of private messages.
      */
     @RequestMapping(value = "/inbox", method = RequestMethod.GET)
-    public ModelAndView inboxPage(@RequestParam(value = "page", defaultValue = "1", required = false) Integer page) {
+    public ModelAndView inboxPage(@RequestParam(value = "page", defaultValue = "1", required = false) int page) {
         Page<PrivateMessage> inboxPage = pmService.getInboxForCurrentUser(page);
 
         return new ModelAndView("pm/inbox")
@@ -109,7 +109,7 @@ public class PrivateMessageController {
      * @return {@code ModelAndView} with added {@link Page} instance with of private messages.
      */
     @RequestMapping(value = "/outbox", method = RequestMethod.GET)
-    public ModelAndView outboxPage(@RequestParam(value = "page", defaultValue = "1", required = false) Integer page) {
+    public ModelAndView outboxPage(@RequestParam(value = "page", defaultValue = "1", required = false) int page) {
         Page<PrivateMessage> outboxPage = pmService.getOutboxForCurrentUser(page);
 
         return new ModelAndView("pm/outbox")
@@ -123,7 +123,7 @@ public class PrivateMessageController {
      * @return {@code ModelAndView} with added {@link Page} instance with of private messages.
      */
     @RequestMapping(value = "/drafts", method = RequestMethod.GET)
-    public ModelAndView draftsPage(@RequestParam(value = "page", defaultValue = "1", required = false) Integer page) {
+    public ModelAndView draftsPage(@RequestParam(value = "page", defaultValue = "1", required = false) int page) {
         Page<PrivateMessage> draftsPage = pmService.getDraftsForCurrentUser(page);
         return new ModelAndView("pm/drafts")
                 .addObject("draftsPage", draftsPage);
