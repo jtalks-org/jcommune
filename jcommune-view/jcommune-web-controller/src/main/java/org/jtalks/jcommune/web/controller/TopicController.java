@@ -138,14 +138,13 @@ public class TopicController {
         topic.setBranch(branch);
         topic.setPoll(new Poll());
         TopicDto dto = new TopicDto(topic);
-        dto.setNotifyOnAnswers(userService.getCurrentUser().isAutosubscribe());
         return new ModelAndView(TOPIC_VIEW)
                 .addObject(TOPIC_DTO, dto)
                 .addObject(BRANCH_ID, branchId)
                 .addObject(SUBMIT_URL, "/topics/new?branchId=" + branchId)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch));
     }
-    
+
     /**
      * Create topic from data entered in form
      *
@@ -169,8 +168,7 @@ public class TopicController {
         }
         Topic topic = topicDto.getTopic();
         topic.setBranch(branch);
-        Topic createdTopic = topicModificationService.createTopic(
-                topic, topicDto.getBodyText(), topicDto.isNotifyOnAnswers());
+        Topic createdTopic = topicModificationService.createTopic(topic, topicDto.getBodyText());
 
         lastReadPostService.markTopicAsRead(createdTopic);
         return new ModelAndView(REDIRECT_URL + createdTopic.getId());
@@ -236,10 +234,7 @@ public class TopicController {
             throw new AccessDeniedException("Edit page for code review");
         }
         TopicDto topicDto = new TopicDto(topic);
-        JCUser currentUser = userService.getCurrentUser();
-        if (topic.userSubscribed(currentUser)) {
-            topicDto.setNotifyOnAnswers(true);
-        }
+
         return new ModelAndView(TOPIC_VIEW)
                 .addObject(BRANCH_ID, topic.getBranch().getId())
                 .addObject(TOPIC_DTO, topicDto)
@@ -269,7 +264,7 @@ public class TopicController {
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
         }
         topicDto.fillTopic(topic);
-        topicModificationService.updateTopic(topic, topicDto.getPoll(), topicDto.isNotifyOnAnswers());
+        topicModificationService.updateTopic(topic, topicDto.getPoll());
         return new ModelAndView(REDIRECT_URL + topicId);
     }
 

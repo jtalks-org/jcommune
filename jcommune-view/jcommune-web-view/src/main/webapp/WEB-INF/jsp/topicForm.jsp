@@ -92,13 +92,6 @@
                 <form:errors path="topic.announcement"/>
             </div>
         </jtalks:hasPermission>
-        <div class="control-group hide-on-preview">
-            <form:checkbox id="notify" tabindex="500" path="notifyOnAnswers" name="notify"
-                           class="script-confirm-unsaved form-check-radio-box"/>
-            <label for='notifyOnAnswers' class='string optional'>
-                <spring:message code="label.answer.notify_message"/>
-            </label>
-        </div>
         <jtalks:bbeditor labelForAction="label.save"
                          postText="${topicDto.bodyText}"
                          bodyParameterName="bodyText"

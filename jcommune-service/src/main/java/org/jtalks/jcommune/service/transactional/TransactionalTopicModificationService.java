@@ -151,8 +151,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
      */
     @Override
     @PreAuthorize("hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_POSTS')")
-    public Topic createTopic(Topic topicDto, String bodyText,
-                             boolean notifyOnAnswers) throws NotFoundException {
+    public Topic createTopic(Topic topicDto, String bodyText) throws NotFoundException {
         JCUser currentUser = userService.getCurrentUser();
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);
@@ -173,7 +172,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
 
         notificationService.branchChanged(branch);
 
-        subscribeOnTopicIfNotificationsEnabled(notifyOnAnswers, topic, currentUser);
+        subscribeOnTopicIfNotificationsEnabled(topic, currentUser);
         createOrUpdatePoll(topicDto.getPoll(), topic);
 
         dao.update(topic);
@@ -187,8 +186,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
      */
     @Override
     @PreAuthorize("hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_CODE_REVIEW')")
-    public Topic createCodeReview(Topic topicDto, String bodyText,
-                                  boolean notifyOnAnswers) throws NotFoundException {
+    public Topic createCodeReview(Topic topicDto, String bodyText) throws NotFoundException {
         JCUser currentUser = userService.getCurrentUser();
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);
@@ -210,7 +208,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
 
         notificationService.branchChanged(branch);
 
-        subscribeOnTopicIfNotificationsEnabled(notifyOnAnswers, topic, currentUser);
+        subscribeOnTopicIfNotificationsEnabled(topic, currentUser);
 
         dao.update(topic);
         logger.debug("Created new code review topic id={}, branch id={}, author={}",
@@ -246,7 +244,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
             "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OWN_POSTS')) or " +
             "(not hasPermission(#topic.id, 'TOPIC', 'GeneralPermission.WRITE') and " +
             "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS'))")
-    public void updateTopic(Topic topic, Poll poll, boolean notifyOnAnswers) {
+    public void updateTopic(Topic topic, Poll poll) {
         if (topic.getCodeReview() != null) {
             throw new AccessDeniedException("It is not allowed to edit Code Review!");
         }
@@ -256,7 +254,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         dao.update(topic);
         notificationService.topicChanged(topic);
         JCUser currentUser = userService.getCurrentUser();
-        subscribeOnTopicIfNotificationsEnabled(notifyOnAnswers, topic, currentUser);
+        subscribeOnTopicIfNotificationsEnabled(topic, currentUser);
         logger.debug("Topic id={} updated", topic.getId());
     }
 
@@ -286,15 +284,14 @@ public class TransactionalTopicModificationService implements TopicModificationS
 
     /**
      * Subscribes topic starter on created topic if notifications enabled("Notify me about the answer" checkbox).
-     * Subscribes and unsubscribes do if notifyOfAnsers ans autoSubscribe enabled.
+     * Subscribes and unsubscribes do if autoSubscribe enabled/disabled.
      *
-     * @param notifyOnAnswers flag that indicates notifications state(enabled or disabled)
-     * @param topic           topic to subscription
-     * @param currentUser     current user
+     * @param topic       topic to subscription
+     * @param currentUser current user
      */
-    private void subscribeOnTopicIfNotificationsEnabled(boolean notifyOnAnswers, Topic topic, JCUser currentUser) {
+    private void subscribeOnTopicIfNotificationsEnabled(Topic topic, JCUser currentUser) {
         boolean subscribed = topic.userSubscribed(currentUser);
-        if (notifyOnAnswers ^ subscribed) {
+        if (currentUser.isAutosubscribe() ^ subscribed) {
             subscriptionService.toggleTopicSubscription(topic);
         }
     }

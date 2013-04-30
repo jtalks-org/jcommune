@@ -40,8 +40,6 @@ public class TopicDto {
     @BbCodeNesting
     private String bodyText;
 
-    private boolean notifyOnAnswers;
-
     /**
      * Plain object for topic creation
      */
@@ -92,22 +90,6 @@ public class TopicDto {
      */
     public void setBodyText(String bodyText) {
         this.bodyText = bodyText;
-    }
-
-    /**
-     * @return flag that indicates notification state(enabled or disabled)
-     */
-    public boolean isNotifyOnAnswers() {
-        return notifyOnAnswers;
-    }
-
-    /**
-     * Set flag that indicates notification state(enabled or disabled).
-     *
-     * @param notifyOnAnswers flag of notifications state
-     */
-    public void setNotifyOnAnswers(boolean notifyOnAnswers) {
-        this.notifyOnAnswers = notifyOnAnswers;
     }
 
     /**

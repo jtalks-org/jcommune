@@ -14,15 +14,8 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.CodeReview;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.CodeReviewService;
-import org.jtalks.jcommune.service.LastReadPostService;
-import org.jtalks.jcommune.service.TopicModificationService;
+import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.CodeReviewDto;
@@ -42,13 +35,9 @@ import java.util.ArrayList;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -58,7 +47,7 @@ public class CodeReviewControllerTest {
     public long BRANCH_ID = 1L;
     private String TOPIC_CONTENT = "content here";
     private long REVIEW_ID = 1L;
-    
+
     private JCUser user;
     private Branch branch;
 
@@ -72,7 +61,9 @@ public class CodeReviewControllerTest {
     private LastReadPostService lastReadPostService;
     @Mock
     private CodeReviewService codeReviewService;
-    
+    @Mock
+    private UserService userService;
+
 
     private CodeReviewController controller;
 
@@ -95,14 +86,14 @@ public class CodeReviewControllerTest {
     }
 
     @Test
-    public void testInitBinder() {
+    public void initBinder() {
         WebDataBinder binder = mock(WebDataBinder.class);
         controller.initBinder(binder);
         verify(binder).registerCustomEditor(eq(String.class), any(StringTrimmerEditor.class));
     }
 
     @Test
-    public void testCreatePage() throws NotFoundException {
+    public void createPage() throws NotFoundException {
         //set expectations
         when(branchService.get(BRANCH_ID)).thenReturn(branch);
         when(breadcrumbBuilder.getNewTopicBreadcrumb(branch)).thenReturn(new ArrayList<Breadcrumb>());
@@ -119,9 +110,10 @@ public class CodeReviewControllerTest {
         assertEquals(submitUrl, "/reviews/new?branchId=" + branchId);
         assertModelAttributeAvailable(mav, "breadcrumbList");
     }
-    
+
     @Test
-    public void testCreateValidationPass() throws Exception {
+    public void createValidationPass() throws Exception {
+        user.setAutosubscribe(true);
         Branch branch = createBranch();
         Topic topic = createTopic();
         TopicDto dto = getDto();
@@ -129,21 +121,21 @@ public class CodeReviewControllerTest {
 
         //set expectations
         when(branchService.get(BRANCH_ID)).thenReturn(branch);
-        when(topicModificationService.createCodeReview(topic, TOPIC_CONTENT, true))
+        when(topicModificationService.createCodeReview(topic, TOPIC_CONTENT))
                 .thenReturn(topic);
 
         //invoke the object under test
         ModelAndView mav = controller.createCodeReview(dto, result, BRANCH_ID);
 
         //check expectations
-        verify(topicModificationService).createCodeReview(topic, TOPIC_CONTENT, true);
+        verify(topicModificationService).createCodeReview(topic, TOPIC_CONTENT);
 
         //check result
         assertViewName(mav, "redirect:/topics/1");
     }
 
     @Test
-    public void testCreateValidationFail() throws Exception {
+    public void createValidationFail() throws Exception {
         BindingResult result = mock(BindingResult.class);
 
         //set expectations
@@ -159,26 +151,26 @@ public class CodeReviewControllerTest {
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         assertEquals(branchId, BRANCH_ID);
     }
-    
+
     @Test
-    public void testGetCodeReviewSuccess() throws NotFoundException {
+    public void getCodeReviewSuccess() throws NotFoundException {
         CodeReview review = new CodeReview();
         review.setId(REVIEW_ID);
         when(codeReviewService.get(REVIEW_ID)).thenReturn(review);
-        
+
         JsonResponse response = controller.getCodeReview(REVIEW_ID);
-        
+
         assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
-        assertEquals(((CodeReviewDto)response.getResult()).getId(), REVIEW_ID);
+        assertEquals(((CodeReviewDto) response.getResult()).getId(), REVIEW_ID);
     }
-    
-    @Test(expectedExceptions=NotFoundException.class)
-    public void testGetCodeReviewNotFound() throws NotFoundException {
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void getCodeReviewNotFound() throws NotFoundException {
         when(codeReviewService.get(REVIEW_ID)).thenThrow(new NotFoundException());
-        
+
         controller.getCodeReview(REVIEW_ID);
     }
-    
+
     private Branch createBranch() {
         Branch branch = new Branch("branch name", "branch description");
         branch.setId(BRANCH_ID);
@@ -202,5 +194,5 @@ public class CodeReviewControllerTest {
         dto.setTopic(topic);
         return dto;
     }
-    
+
 }
