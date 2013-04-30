@@ -198,10 +198,11 @@ public class TransactionalTopicModificationServiceTest {
     @Test
     public void testRunSubscriptionByCreateTopicWhenNotificationTrue() throws NotFoundException {
         Branch branch = createBranch();
+        user.setAutosubscribe(true);
         when(userService.getCurrentUser()).thenReturn(user);
         createTopicStubs(branch);
         Topic dto = createTopic();
-        Topic createdTopic = topicService.createTopic(dto, ANSWER_BODY, true);
+        Topic createdTopic = topicService.createTopic(dto, ANSWER_BODY);
         Post createdPost = createdTopic.getFirstPost();
 
         createTopicAssertions(branch, createdTopic, createdPost);
@@ -212,10 +213,11 @@ public class TransactionalTopicModificationServiceTest {
     @Test
     public void testNotRunSubscriptionByCreateTopicWhenNotificationFalse() throws NotFoundException {
         Branch branch = createBranch();
+        user.setAutosubscribe(false);
         when(userService.getCurrentUser()).thenReturn(user);
         createTopicStubs(branch);
         Topic dto = createTopic();
-        Topic createdTopic = topicService.createTopic(dto, ANSWER_BODY, false);
+        Topic createdTopic = topicService.createTopic(dto, ANSWER_BODY);
         Post createdPost = createdTopic.getFirstPost();
 
         createTopicAssertions(branch, createdTopic, createdPost);
@@ -226,13 +228,14 @@ public class TransactionalTopicModificationServiceTest {
     @Test
     public void testRunSubscriptionByCreateReviewWhenNotificationTrue() throws NotFoundException {
         Branch branch = createBranch();
+        user.setAutosubscribe(true);
         when(userService.getCurrentUser()).thenReturn(user);
 
         createTopicStubs(branch);
         Topic dto = createTopic();
         dto.setAnnouncement(true);
         dto.setSticked(true);
-        Topic createdTopic = topicService.createCodeReview(dto, ANSWER_BODY, true);
+        Topic createdTopic = topicService.createCodeReview(dto, ANSWER_BODY);
         Post createdPost = createdTopic.getFirstPost();
 
         createCodeReviewAssertions(branch, createdTopic, createdPost);
@@ -243,13 +246,14 @@ public class TransactionalTopicModificationServiceTest {
     @Test
     public void testNotRunSubscriptionByCreateReviewWhenNotificationFalse() throws NotFoundException {
         Branch branch = createBranch();
+        user.setAutosubscribe(false);
         when(userService.getCurrentUser()).thenReturn(user);
 
         createTopicStubs(branch);
         Topic dto = createTopic();
         dto.setAnnouncement(true);
         dto.setSticked(true);
-        Topic createdTopic = topicService.createCodeReview(dto, ANSWER_BODY, false);
+        Topic createdTopic = topicService.createCodeReview(dto, ANSWER_BODY);
         Post createdPost = createdTopic.getFirstPost();
 
         createCodeReviewAssertions(branch, createdTopic, createdPost);
@@ -259,12 +263,14 @@ public class TransactionalTopicModificationServiceTest {
 
     @Test
     public void testCreateCodeReviewWithWrappedBbCode() throws NotFoundException {
+        JCUser user = new JCUser("", "", "");
+        user.setAutosubscribe(false);
+        when(userService.getCurrentUser()).thenReturn(user);
         Branch branch = createBranch();
         createTopicStubs(branch);
         Topic dto = createTopic();
         String codeReviewPattern = "[code=java]%s[/code]";
-        Topic createdTopic = topicService.createCodeReview(
-                dto, String.format(codeReviewPattern, ANSWER_BODY), false);
+        Topic createdTopic = topicService.createCodeReview(dto, String.format(codeReviewPattern, ANSWER_BODY));
         Post createdPost = createdTopic.getFirstPost();
 
         createCodeReviewAssertions(branch, createdTopic, createdPost);
@@ -413,7 +419,7 @@ public class TransactionalTopicModificationServiceTest {
         topic.addPost(createPost());
         when(userService.getCurrentUser()).thenReturn(user);
 
-        topicService.updateTopic(topic, null, true);
+        topicService.updateTopic(topic, null);
 
         verify(notificationService).topicChanged(topic);
         verify(subscriptionService).toggleTopicSubscription(topic);
@@ -429,14 +435,14 @@ public class TransactionalTopicModificationServiceTest {
         subscribeUserOnTopic(user, topic);
         when(userService.getCurrentUser()).thenReturn(user);
 
-        topicService.updateTopic(topic, null, false);
+        topicService.updateTopic(topic, null);
 
         verify(notificationService).topicChanged(topic);
     }
 
     @Test
     void testUpdateTopicWithUnsubscribe() throws NotFoundException {
-        user.setAutosubscribe(true);
+        user.setAutosubscribe(false);
         when(userService.getCurrentUser()).thenReturn(user);
 
         Topic topic = createTopic();
@@ -445,7 +451,7 @@ public class TransactionalTopicModificationServiceTest {
         subscribeUserOnTopic(user, topic);
         when(userService.getCurrentUser()).thenReturn(user);
 
-        topicService.updateTopic(topic, null, false);
+        topicService.updateTopic(topic, null);
 
         verify(notificationService).topicChanged(topic);
         verify(subscriptionService).toggleTopicSubscription(topic);
@@ -461,7 +467,7 @@ public class TransactionalTopicModificationServiceTest {
         topic.addPost(post);
         when(userService.getCurrentUser()).thenReturn(user);
 
-        topicService.updateTopic(topic, null, false);
+        topicService.updateTopic(topic, null);
 
         verify(notificationService).topicChanged(topic);
     }
@@ -477,7 +483,7 @@ public class TransactionalTopicModificationServiceTest {
         Post post = new Post(user, "content");
         topic.addPost(post);
 
-        topicService.updateTopic(topic, null, false);
+        topicService.updateTopic(topic, null);
 
         verify(topicDao).update(topic);
         verify(notificationService).topicChanged(topic);
@@ -485,10 +491,12 @@ public class TransactionalTopicModificationServiceTest {
 
     @Test(expectedExceptions = AccessDeniedException.class)
     void shouldBeImpossibleToUpdateCodeReview() throws NotFoundException {
+        user.setAutosubscribe(false);
+        when(userService.getCurrentUser()).thenReturn(user);
         Topic topic = new Topic(user, "title");
         topic.setCodeReview(new CodeReview());
 
-        topicService.updateTopic(topic, null, false);
+        topicService.updateTopic(topic, null);
     }
 
     @Test

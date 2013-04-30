@@ -21,22 +21,22 @@ $(document).ready(function () {
 
     //remove avatar handler
     $('#removeAvatar').click(function () {
-    	$.prompt($labelDeleteAvatarConfirmation,
-    	    {buttons:[
-                {title:$labelOk, value:true},
-                {title:$labelCancel, value:false}
+        $.prompt($labelDeleteAvatarConfirmation,
+            {buttons: [
+                {title: $labelOk, value: true},
+                {title: $labelCancel, value: false}
             ],
-            persistent:false,
-            submit:function (confirmed) {
-               	if (confirmed) {
-               		$.getJSON($root + "/defaultAvatar", function (responseJSON) {
-               			document.getElementById('avatarPreview').setAttribute('src', 
-               					responseJSON.srcPrefix + responseJSON.srcImage);
-                        document.getElementById('avatar').setAttribute('value', responseJSON.srcImage);
-                    });
+                persistent: false,
+                submit: function (confirmed) {
+                    if (confirmed) {
+                        $.getJSON($root + "/defaultAvatar", function (responseJSON) {
+                            document.getElementById('avatarPreview').setAttribute('src',
+                                responseJSON.srcPrefix + responseJSON.srcImage);
+                            document.getElementById('avatar').setAttribute('value', responseJSON.srcImage);
+                        });
+                    }
                 }
-            }
-        });
+            });
     });
 
     //avatar uploading handler
@@ -59,41 +59,42 @@ $(document).ready(function () {
     }
 
     var uploader = new qq.FileUploaderBasic({
-        button:$("#upload").get(0),
+        button: $("#upload").get(0),
         //server side uploading handler
-        action:action,
+        action: action,
         //
         encoding: encoding,
         //is multiple file upload available
-        multiple:false,
-        // max uploaded file size (bytes)
-        onSubmit:function (id, filename) {},
-        onProgress:function (id, filename, loaded, total) {},
-        onComplete:function (id, filename, responseJSON) {
-        	//If the picture has been replaced by alternative text in the previous avatar uploading,
-        	//we need to restore it, because the next uploading may be successful.
-        	if (!$('#avatarPreview').length) {
-        		$('#avatarPreviewContainer').empty();
-        		$('#avatarPreviewContainer')
-        			.append('<img id="avatarPreview" src="data:image/jpeg;base64,${editedUser.avatar}" alt="" />');
-        	}
-        	//
+        multiple: false,
+        onSubmit: function (id, filename) {
+        },
+        onProgress: function (id, filename, loaded, total) {
+        },
+        onComplete: function (id, filename, responseJSON) {
+            //If the picture has been replaced by alternative text in the previous avatar uploading,
+            //we need to restore it, because the next uploading may be successful.
+            if (!$('#avatarPreview').length) {
+                $('#avatarPreviewContainer').empty();
+                $('#avatarPreviewContainer')
+                    .append('<img id="avatarPreview" src="data:image/jpeg;base64,${editedUser.avatar}" alt="" />');
+            }
+            //
             if (responseJSON.status == "SUCCESS") {
                 //if server side avatar uploading successful  a processed image displayed
-            	$('#avatarPreview').attr('src', responseJSON.srcPrefix + responseJSON.srcImage);
+                $('#avatarPreview').attr('src', responseJSON.srcPrefix + responseJSON.srcImage);
                 //
                 $('#avatar').attr('value', responseJSON.srcImage);
             } else {
-            	// display error message
+                // display error message
                 alert(responseJSON.result);
             }
 
         },
-        debug:false,
-		messages: {
-			sizeError: $labelImageWrongSizeJs,
+        debug: false,
+        messages: {
+            sizeError: $labelImageWrongSizeJs,
             emptyError: $fileIsEmpty
-		}
+        }
     });
 
 });
@@ -101,17 +102,17 @@ $(document).ready(function () {
 /**
  * Remove the component and replace it with alternate text.
  */
-function showAlt(){
-	$(this).replaceWith(this.alt);
+function showAlt() {
+    $(this).replaceWith(this.alt);
 };
 
 /**
  * Remove the component and replace it with alternate text
  * for given selector.
- *  
+ *
  * @param selector selector for component, which we should replace
  */
-function addShowAlt(selector){
-	$(selector).error(showAlt).attr("src", $(selector).src);
+function addShowAlt(selector) {
+    $(selector).error(showAlt).attr("src", $(selector).src);
 };
 

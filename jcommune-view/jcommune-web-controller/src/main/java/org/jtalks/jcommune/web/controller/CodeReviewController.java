@@ -58,20 +58,20 @@ public class CodeReviewController {
     private static final String SUBMIT_URL = "submitUrl";
     private static final String TOPIC_DTO = "topicDto";
     private static final String REDIRECT_URL = "redirect:/topics/";
-    
-    private BranchService branchService;    
+
+    private BranchService branchService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private TopicModificationService topicModificationService;
     private LastReadPostService lastReadPostService;
     private CodeReviewService codeReviewService;
-    
+
     /**
      * @param branchService            the object which provides actions on
      *                                 {@link org.jtalks.jcommune.model.entity.Branch} entity
      * @param breadcrumbBuilder        to create Breadcrumbs for pages
      * @param topicModificationService the object which provides actions on
      *                                 {@link org.jtalks.jcommune.model.entity.Topic} entity
-     * @param lastReadPostService      to perform post-related actions   
+     * @param lastReadPostService      to perform post-related actions
      * @param codeReviewService        to operate with {@link CodeReview} entities
      */
     @Autowired
@@ -86,7 +86,7 @@ public class CodeReviewController {
         this.lastReadPostService = lastReadPostService;
         this.codeReviewService = codeReviewService;
     }
-    
+
     /**
      * This method turns the trim binder on. Trim binder
      * removes leading and trailing spaces from the submitted fields.
@@ -113,14 +113,13 @@ public class CodeReviewController {
         Topic topic = new Topic();
         topic.setBranch(branch);
         TopicDto dto = new TopicDto(topic);
-        dto.setNotifyOnAnswers(true);
         return new ModelAndView(CODE_REVIEW_VIEW)
                 .addObject(TOPIC_DTO, dto)
                 .addObject(BRANCH_ID, branchId)
                 .addObject(SUBMIT_URL, "/reviews/new?branchId=" + branchId)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch));
     }
-    
+
     /**
      * Create code review from data entered in form
      *
@@ -132,8 +131,8 @@ public class CodeReviewController {
      */
     @RequestMapping(value = "/reviews/new", method = RequestMethod.POST)
     public ModelAndView createCodeReview(@Valid @ModelAttribute TopicDto topicDto,
-                                    BindingResult result,
-                                    @RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
+                                         BindingResult result,
+                                         @RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
         Branch branch = branchService.get(branchId);
         if (result.hasErrors()) {
             return new ModelAndView(CODE_REVIEW_VIEW)
@@ -144,25 +143,25 @@ public class CodeReviewController {
         }
         Topic topic = topicDto.getTopic();
         topic.setBranch(branch);
-        Topic createdTopic = topicModificationService.createCodeReview(
-                topic, topicDto.getBodyText(), true);
+        Topic createdTopic = topicModificationService.createCodeReview(topic, topicDto.getBodyText());
 
         lastReadPostService.markTopicAsRead(createdTopic);
         return new ModelAndView(REDIRECT_URL + createdTopic.getId());
     }
-    
+
     /**
      * Returns code review by its ID as JSON data
+     *
      * @param reviewId ID of code review
-     * @return JSON response object containing string status and review DTO as 
-     *          result field 
+     * @return JSON response object containing string status and review DTO as
+     *         result field
      * @throws NotFoundException if code review was not found
      */
-    @RequestMapping(value="/reviews/{reviewId}/json", method = RequestMethod.GET)
+    @RequestMapping(value = "/reviews/{reviewId}/json", method = RequestMethod.GET)
     @ResponseBody
     public JsonResponse getCodeReview(@PathVariable("reviewId") Long reviewId) throws NotFoundException {
         CodeReview review = codeReviewService.get(reviewId);
         return new JsonResponse(JsonResponseStatus.SUCCESS, new CodeReviewDto(review));
     }
-    
+
 }

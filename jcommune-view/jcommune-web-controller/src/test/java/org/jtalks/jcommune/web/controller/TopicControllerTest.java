@@ -14,19 +14,8 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.CodeReview;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Poll;
-import org.jtalks.jcommune.model.entity.PollItem;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.LastReadPostService;
-import org.jtalks.jcommune.service.PostService;
-import org.jtalks.jcommune.service.TopicFetchService;
-import org.jtalks.jcommune.service.TopicModificationService;
-import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
@@ -46,29 +35,16 @@ import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertFalse;
 
 /**
  * @author Teterin Alexandre
@@ -127,14 +103,14 @@ public class TopicControllerTest {
     }
 
     @Test
-    public void testInitBinder() {
+    public void initBinder() {
         WebDataBinder binder = mock(WebDataBinder.class);
         controller.initBinder(binder);
         verify(binder).registerCustomEditor(eq(String.class), any(StringTrimmerEditor.class));
     }
 
     @Test
-    public void testDelete() throws NotFoundException {
+    public void delete() throws NotFoundException {
         Topic topic = new Topic(null, null);
         branch.addTopic(topic);
         when(topicFetchService.get(anyLong())).thenReturn(topic);
@@ -179,12 +155,12 @@ public class TopicControllerTest {
         TopicDto dto = getDto();
         BindingResult result = mock(BindingResult.class);
         when(branchService.get(BRANCH_ID)).thenReturn(branch);
-        when(topicModificationService.createTopic(topic, TOPIC_CONTENT, false)).thenReturn(topic);
+        when(topicModificationService.createTopic(topic, TOPIC_CONTENT)).thenReturn(topic);
 
         ModelAndView mav = controller.createTopic(dto, result, BRANCH_ID);
 
         verify(lastReadPostService).markTopicAsRead(topic);
-        verify(topicModificationService).createTopic(topic, TOPIC_CONTENT, false);
+        verify(topicModificationService).createTopic(topic, TOPIC_CONTENT);
         //
         assertViewName(mav, "redirect:/topics/1");
     }
@@ -208,9 +184,6 @@ public class TopicControllerTest {
 
     @Test
     public void showNewTopicPageShouldReturnTemplateForNewTopic() throws NotFoundException {
-        JCUser user = new JCUser("", "", "");
-        user.setAutosubscribe(true);
-        when(userService.getCurrentUser()).thenReturn(user);
         when(branchService.get(BRANCH_ID)).thenReturn(branch);
         when(breadcrumbBuilder.getNewTopicBreadcrumb(branch)).thenReturn(new ArrayList<Breadcrumb>());
 
@@ -226,24 +199,12 @@ public class TopicControllerTest {
         Branch actualTopicBranch = actualTopic.getBranch();
         assertEquals(actualTopicBranch, branch, "Topic template should be attached to branch where user creates branch.");
         assertNotNull(actualTopic.getPoll(), "Topic template should contain poll template.");
-        assertTrue(topicDto.isNotifyOnAnswers());
+
         //
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         assertEquals(branchId, BRANCH_ID,
                 "Topic template should be returned with the same branch id as passed to create new topic.");
         assertModelAttributeAvailable(mav, "breadcrumbList");
-    }
-
-    public void checkCopyAutosubscribeFromProfile() throws NotFoundException {
-        JCUser user = new JCUser("", "", "");
-        user.setAutosubscribe(false);
-        when(branchService.get(BRANCH_ID)).thenReturn(branch);
-
-        ModelAndView mav = controller.showNewTopicPage(BRANCH_ID);
-
-        TopicDto topicDto = assertAndReturnModelAttributeOfType(mav, "topicDto", TopicDto.class);
-
-        assertTrue(topicDto.isNotifyOnAnswers());
     }
 
     @Test
@@ -265,7 +226,6 @@ public class TopicControllerTest {
         //
         TopicDto dto = assertAndReturnModelAttributeOfType(mav, "topicDto", TopicDto.class);
         assertEquals(dto.getTopic().getId(), TOPIC_ID);
-        assertFalse(dto.isNotifyOnAnswers());
         //
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         assertEquals(branchId, BRANCH_ID);
@@ -294,7 +254,6 @@ public class TopicControllerTest {
         //
         TopicDto dto = assertAndReturnModelAttributeOfType(mav, "topicDto", TopicDto.class);
         assertEquals(dto.getTopic().getId(), TOPIC_ID);
-        assertTrue(dto.isNotifyOnAnswers());
         //
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         assertEquals(branchId, BRANCH_ID);
@@ -313,7 +272,7 @@ public class TopicControllerTest {
     }
 
     @Test
-    public void testSaveValidationPass() throws NotFoundException {
+    public void saveValidationPass() throws NotFoundException {
         TopicDto dto = getDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "topicDto");
         when(topicFetchService.get(TOPIC_ID)).thenReturn(createTopic());
@@ -322,14 +281,14 @@ public class TopicControllerTest {
         ModelAndView mav = controller.editTopic(dto, bindingResult, TOPIC_ID);
         Topic topic = topicFetchService.get(TOPIC_ID);
         //check expectations
-        verify(topicModificationService).updateTopic(topic, dto.getPoll(), false);
+        verify(topicModificationService).updateTopic(topic, dto.getPoll());
 
         //check result
         assertViewName(mav, "redirect:/topics/" + TOPIC_ID);
     }
 
     @Test
-    public void testSaveValidationFail() throws NotFoundException {
+    public void saveValidationFail() throws NotFoundException {
         TopicDto dto = getDto();
         BeanPropertyBindingResult resultWithErrors = mock(BeanPropertyBindingResult.class);
         when(topicFetchService.get(TOPIC_ID)).thenReturn(this.createTopic());
@@ -341,12 +300,11 @@ public class TopicControllerTest {
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         assertEquals(branchId, BRANCH_ID);
 
-        verify(topicModificationService, never()).updateTopic(
-                Matchers.<Topic>any(), Matchers.<Poll>any(), anyBoolean());
+        verify(topicModificationService, never()).updateTopic(Matchers.<Topic>any(), Matchers.<Poll>any());
     }
 
     @Test
-    public void testMoveTopic() throws NotFoundException {
+    public void moveTopic() throws NotFoundException {
         Topic topic = createTopic();
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
 
@@ -356,7 +314,7 @@ public class TopicControllerTest {
     }
 
     @Test
-    public void testCloseTopic() throws NotFoundException {
+    public void closeTopic() throws NotFoundException {
         Topic topic = createTopic();
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
 
@@ -366,7 +324,7 @@ public class TopicControllerTest {
     }
 
     @Test
-    public void testReopenTopic() throws NotFoundException {
+    public void reopenTopic() throws NotFoundException {
         Topic topic = createTopic();
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
 

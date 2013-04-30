@@ -30,11 +30,11 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
  */
 public interface TopicModificationService {
 
-    static final String CODE_JAVA_BBCODE_START         = "[code=java]";
-    static final String CODE_JAVA_BBCODE_END           = "[/code]";
+    static final String CODE_JAVA_BBCODE_START = "[code=java]";
+    static final String CODE_JAVA_BBCODE_END = "[/code]";
     static final String CODE_JAVA_BBCODE_START_PATTERN = "\\[code=java\\]";
-    static final String CODE_JAVA_BBCODE_END_PATTERN   = "\\[/code\\]";
-    
+    static final String CODE_JAVA_BBCODE_END_PATTERN = "\\[/code\\]";
+
     /**
      * Add the answer to the topic. Add the specified message to the target topic and save.
      * User should be authorized to answer to the topic. Otherwise {@link IllegalStateException} will be thrown.
@@ -52,38 +52,35 @@ public interface TopicModificationService {
      * Add new topic with given title and body.
      * Author is current user.
      *
-     * @param topic           topic that used as dto
-     * @param bodyText        body of topic
-     * @param notifyOnAnswers user notification on answers flag
+     * @param topic    topic that used as dto
+     * @param bodyText body of topic
      * @return created topic
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
      */
-    Topic createTopic(Topic topic, String bodyText, boolean notifyOnAnswers) throws NotFoundException;
+    Topic createTopic(Topic topic, String bodyText) throws NotFoundException;
 
     /**
      * Add new code review with given title and body.
      * Author is current user.<br>
-     * <b>NOTE</b>: The whole body will be wrapped with [code] if it is not wrapped, 
+     * <b>NOTE</b>: The whole body will be wrapped with [code] if it is not wrapped,
      * because CR implies that there is no usual text in the post body.
      *
-     * @param topicDto           topic that used as dto
-     * @param bodyText        body of topic
-     * @param notifyOnAnswers user notification on answers flag
+     * @param topicDto topic that used as dto
+     * @param bodyText body of topic
      * @return created code review topic
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
      */
-    Topic createCodeReview(Topic topicDto, String bodyText, boolean notifyOnAnswers) throws NotFoundException;
-    
+    Topic createCodeReview(Topic topicDto, String bodyText) throws NotFoundException;
+
     /**
      * Update current topic with given title and body.
      *
      * @param topic topic to be updated
-     * @param poll poll of the updated topic, if any
-     * @param notifyOnAnswers user notification on answers flag
+     * @param poll  poll of the updated topic, if any
      */
-    void updateTopic(Topic topic, Poll poll, boolean notifyOnAnswers);
+    void updateTopic(Topic topic, Poll poll);
 
     /**
      * Delete topic by id. Sends notifications to subscribers and performs logging.
@@ -92,9 +89,9 @@ public interface TopicModificationService {
      * @throws NotFoundException when topic not found
      */
     void deleteTopic(Topic topic) throws NotFoundException;
-    
+
     /**
-     * Delete topic by id. Does not send any notification or log messages. 
+     * Delete topic by id. Does not send any notification or log messages.
      * Intended to be used mostly by other services.
      *
      * @param topicId topic id
@@ -105,7 +102,7 @@ public interface TopicModificationService {
     /**
      * Moves topic to another branch.
      *
-     * @param topic  topic we're about to move
+     * @param topic    topic we're about to move
      * @param branchId id of target branch
      * @throws NotFoundException when topic or branch with given id not found
      */
@@ -115,7 +112,7 @@ public interface TopicModificationService {
      * Closes topic so no one can add new post until it's not open again.
      * For the topic already closed does nothing.
      *
-     * @param topic  topic we want to close, hibernate session-bound
+     * @param topic topic we want to close, hibernate session-bound
      */
     void closeTopic(Topic topic);
 
