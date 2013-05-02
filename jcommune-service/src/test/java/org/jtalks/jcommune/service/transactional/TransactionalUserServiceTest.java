@@ -14,31 +14,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.matches;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -75,6 +50,21 @@ import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.matches;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.*;
 
 /**
  * @author Kirill Afonin
@@ -150,12 +140,13 @@ public class TransactionalUserServiceTest {
                 securityFacade,
                 rememberMeServices,
                 sessionStrategy);
-      
+
     }
 
     @Test
     public void getByUsernameShouldReturnUserWithPassedNameFromRepository() throws NotFoundException {
-        JCUser expectedUser = getUser(USERNAME);;
+        JCUser expectedUser = getUser(USERNAME);
+        ;
         when(userDao.getByUsername(USERNAME)).thenReturn(expectedUser);
 
         JCUser result = userService.getByUsername(USERNAME);
@@ -206,7 +197,7 @@ public class TransactionalUserServiceTest {
         assertUserUpdated(editedUser);
         assertEquals(editedUser.getLanguage(), LANGUAGE, "language was not changed");
     }
-    
+
     private void assertUserUpdated(JCUser user) {
         assertEquals(user.getEmail(), EMAIL, "Email was not changed");
         assertEquals(user.getSignature(), SIGNATURE, "Signature was not changed");
@@ -214,12 +205,12 @@ public class TransactionalUserServiceTest {
         assertEquals(user.getLastName(), LAST_NAME, "last name was not changed");
         assertEquals(user.getPassword(), NEW_PASSWORD_MD5_HASH, "new password was not accepted");
     }
-    
+
     @Test(expectedExceptions = {NotFoundException.class})
     public void editUserProfileShouldNotUpdateHimAndSaveInRepositoryIfHeIsNotFound() throws NotFoundException {
         String newAvatar = new String(new byte[12]);
         when(userDao.isExist(USER_ID)).thenReturn(Boolean.FALSE);
-        
+
         userService.saveEditedUserProfile(USER_ID, new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
                 PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE,
                 LOCATION));
@@ -238,9 +229,9 @@ public class TransactionalUserServiceTest {
         UserInfoContainer userInfo = new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
                 PASSWORD, newPassword, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE,
                 LOCATION);
-        
+
         JCUser editedUser = userService.saveEditedUserProfile(USER_ID, userInfo);
-        
+
         assertEquals(editedUser.getPassword(), user.getPassword());
     }
 
@@ -310,7 +301,7 @@ public class TransactionalUserServiceTest {
 
         verify(mailService).sendPasswordRecoveryMail(eq(user), matches("^[a-zA-Z0-9]*$"));
         ArgumentCaptor<JCUser> captor = ArgumentCaptor.forClass(JCUser.class);
-        verify(userDao).update(captor.capture());
+        verify(userDao).saveOrUpdate(captor.capture());
         assertEquals(captor.getValue().getUsername(), USERNAME);
         assertEquals(captor.getValue().getEmail(), EMAIL);
         assertFalse(PASSWORD.equals(captor.getValue().getPassword()));
@@ -327,7 +318,7 @@ public class TransactionalUserServiceTest {
             userService.restorePassword(EMAIL);
         } finally {
             // ensure db modification haven't been done if mailing failed
-            verify(userDao, never()).update(Matchers.<JCUser>any());
+            verify(userDao, never()).saveOrUpdate(Matchers.<JCUser>any());
         }
     }
 
@@ -341,7 +332,7 @@ public class TransactionalUserServiceTest {
         userService.activateAccount(user.getUuid());
 
         assertTrue(user.isEnabled());
-        verify(groupDao).update(group);
+        verify(groupDao).saveOrUpdate(group);
         assertTrue(group.getUsers().contains(user));
     }
 
@@ -363,7 +354,7 @@ public class TransactionalUserServiceTest {
         userService.activateAccount(user.getUuid());
 
         assertTrue(user.isEnabled());
-        verify(groupDao, never()).update(any(Group.class));
+        verify(groupDao, never()).saveOrUpdate(any(Group.class));
         assertFalse(group.getUsers().contains(user));
     }
 
@@ -390,7 +381,8 @@ public class TransactionalUserServiceTest {
 
     @Test
     public void testGetCurrentUser() {
-        JCUser expected = getUser(USERNAME);;
+        JCUser expected = getUser(USERNAME);
+        ;
         when(securityService.getCurrentUserUsername()).thenReturn(USERNAME);
         when(userDao.getByUsername(USERNAME)).thenReturn(expected);
 
@@ -489,7 +481,7 @@ public class TransactionalUserServiceTest {
         verify(userDao).getByUsername(username);
         verify(rememberMeServices, never()).loginSuccess(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Authentication.class));
     }
-    
+
     private JCUser getUser(String username) {
         JCUser user = new JCUser(username, EMAIL, PASSWORD);
         user.setFirstName(FIRST_NAME);

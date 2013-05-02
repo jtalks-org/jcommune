@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.CodeReviewService;
@@ -40,7 +40,7 @@ public class TransactionalCodeReviewServiceTest {
     private static final long CR_ID = 1L;
 
     @Mock
-    private ChildRepository<CodeReview> dao;
+    private Crud<CodeReview> dao;
     @Mock
     private UserService userService;
     @Mock
@@ -98,7 +98,7 @@ public class TransactionalCodeReviewServiceTest {
 
         codeReviewService.deleteComment(reviewComment, codeReview);
 
-        verify(dao).update(codeReview);
+        verify(dao).saveOrUpdate(codeReview);
         assertEquals(codeReview.getComments().size(), oldSize - 1);
     }
 

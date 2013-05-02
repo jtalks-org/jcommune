@@ -24,8 +24,7 @@ import org.jtalks.jcommune.model.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng
-        .AbstractTransactionalTestNGSpringContextTests;
+import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
@@ -86,6 +85,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         branch.setName(null);
 
         dao.saveOrUpdate(branch);
+        session.flush();
     }
 
     @Test
@@ -114,19 +114,21 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         branch.setName(newName);
 
         dao.saveOrUpdate(branch);
+        session.flush();
         session.evict(branch);
         Branch result = (Branch) session.get(Branch.class, branch.getId());
 
         assertEquals(result.getName(), newName);
     }
 
-    @Test(expectedExceptions = Exception.class)
+    @Test(expectedExceptions = javax.validation.ConstraintViolationException.class)
     public void testUpdateNotNullViolation() {
         Branch branch = ObjectsFactory.getDefaultBranch();
         session.save(branch);
         branch.setName(null);
 
         dao.saveOrUpdate(branch);
+        session.flush();
     }
 
     @Test
@@ -175,7 +177,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
             section.addOrUpdateBranch(newBranch);
             newBranch.setSection(section);
             branches.add(newBranch);
-        }   
+        }
         session.save(section);
         return branches;
     }
@@ -187,13 +189,13 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         List<Branch> selectedBranches = dao.getAllBranches();
         assertTrue(selectedBranches.isEmpty());
     }
-    
+
     @Test
     public void testGetAllBranches() {
         int sectionSize = 5;
         List<Branch> branchesOfFirstSection = createAndSaveBranchList(sectionSize, 1);
         List<Branch> branchesOfSecondSection = createAndSaveBranchList(sectionSize, 0);
-        
+
         // build desired order
         List<Branch> createdBranches = new ArrayList<Branch>(branchesOfSecondSection);
         createdBranches.addAll(branchesOfFirstSection);

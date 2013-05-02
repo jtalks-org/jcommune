@@ -112,7 +112,7 @@
 
   <bean id="pollDao"
         class="org.jtalks.jcommune.model.dao.hibernate.PollHibernateDao">
-    <constructor-arg name="sessionFactory" value="sessionFactory"/>
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
     <constructor-arg name="type" value="org.jtalks.jcommune.model.entity.Poll"/>
   </bean>
 

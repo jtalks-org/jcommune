@@ -70,7 +70,7 @@ public class TransactionalPostServiceTest {
     private TopicDao topicDao;
     @Mock
     private LastReadPostService lastReadPostService;
-    @Mock 
+    @Mock
     private UserService userService;
     @Mock
     private BranchLastPostService branchLastPostService;
@@ -78,17 +78,17 @@ public class TransactionalPostServiceTest {
     private PostService postService;
 
     private JCUser user;
-    
-    private JCUser currentUser; 
+
+    private JCUser currentUser;
 
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
         user = new JCUser(USERNAME, EMAIL, PASSWORD);
-        
+
         currentUser = new JCUser("current", null, null);
         when(userService.getCurrentUser()).thenReturn(currentUser);
-        
+
         postService = new TransactionalPostService(
                 postDao,
                 topicDao,
@@ -136,10 +136,10 @@ public class TransactionalPostServiceTest {
 
         verify(notificationService).topicChanged(topic);
 
-        verify(postDao).update(post);
+        verify(postDao).saveOrUpdate(post);
     }
-    
-    @Test(expectedExceptions=AccessDeniedException.class)
+
+    @Test(expectedExceptions = AccessDeniedException.class)
     void shouldBeImpossibleToEditCodeReviewBody() throws NotFoundException {
         Post post = firstPostOfCodeReview();
         when(postDao.isExist(post.getId())).thenReturn(true);
@@ -183,11 +183,11 @@ public class TransactionalPostServiceTest {
 
         assertEquals(user.getPostCount(), 1);
         assertEquals(topic.getModificationDate(), topic.getFirstPost().getModificationDate());
-        verify(topicDao).update(topic);
+        verify(topicDao).saveOrUpdate(topic);
         verify(securityService).deleteFromAcl(postForDelete);
         verify(notificationService).topicChanged(topic);
     }
-    
+
     @Test
     public void testDeletePostFirstPostIsLastModified() throws NotFoundException {
         Topic topic = new Topic(user, "title");
@@ -195,14 +195,14 @@ public class TransactionalPostServiceTest {
         post.setId(1L);
         Post postForDelete = new Post(user, "content");
         postForDelete.setId(POST_ID);
-        
+
         topic.addPost(post);
         topic.addPost(postForDelete);
-        
+
         postForDelete.updateModificationDate();
-        post.updateModificationDate();        
+        post.updateModificationDate();
         topic.recalculateModificationDate();
-        
+
         Branch branch = new Branch("branch", "branch description");
         topic.setBranch(branch);
         user.setPostCount(2);
@@ -211,12 +211,12 @@ public class TransactionalPostServiceTest {
 
         assertEquals(user.getPostCount(), 1);
         assertEquals(topic.getModificationDate(), topic.getFirstPost().getModificationDate());
-        verify(topicDao).update(topic);
+        verify(topicDao).saveOrUpdate(topic);
         verify(securityService).deleteFromAcl(postForDelete);
         verify(notificationService).topicChanged(topic);
-        
+
     }
-    
+
     @Test
     public void testDeletePostThatIsLastInBranch() throws NotFoundException {
         Topic topic = new Topic(user, "title");
@@ -238,7 +238,7 @@ public class TransactionalPostServiceTest {
         assertEquals(topic.getModificationDate(), topic.getFirstPost().getModificationDate());
         verify(branchLastPostService).refreshLastPostInBranch(branch);
     }
-    
+
     @Test
     public void testDeletePostThatIsNotLastInBranch() throws NotFoundException {
         Topic topic = new Topic(user, "title");
@@ -268,25 +268,25 @@ public class TransactionalPostServiceTest {
         boolean pagingEnabled = true;
         List<Post> posts = Arrays.asList(new Post(user, ""));
         Page<Post> expectedPostsPage = new PageImpl<Post>(posts);
-        when(postDao.getUserPosts(Matchers.<JCUser> any(), Matchers.<JCommunePageRequest>any()))
-            .thenReturn(expectedPostsPage);
-        
+        when(postDao.getUserPosts(Matchers.<JCUser>any(), Matchers.<JCommunePageRequest>any()))
+                .thenReturn(expectedPostsPage);
+
         currentUser.setPageSize(pageSize);
 
         Page<Post> actualPostsPage = postService.getPostsOfUser(user, page, pagingEnabled);
-        
+
         assertEquals(actualPostsPage, expectedPostsPage);
         verify(postDao).getUserPosts(
-                Matchers.<JCUser> any(),
-                Matchers.<JCommunePageRequest> any()
-                );
+                Matchers.<JCUser>any(),
+                Matchers.<JCommunePageRequest>any()
+        );
     }
 
     @Test
     public void testLastPostInTopicPageCalculation() {
         int pageSize = 2;
         currentUser.setPageSize(pageSize);
-        
+
         Topic topic = new Topic(null, "");
         Post post = new Post(null, "");
         topic.addPost(new Post(null, null));
@@ -310,7 +310,7 @@ public class TransactionalPostServiceTest {
     @Test
     public void testFirstPostInTopicPageCalculationWithNoUser() {
         currentUser.setPageSize(JCUser.DEFAULT_PAGE_SIZE);
-        
+
         Topic topic = new Topic(user, "");
         Post post = new Post(user, "");
         topic.addPost(post);
@@ -322,7 +322,7 @@ public class TransactionalPostServiceTest {
     public void testLastPostOnFirstPagePageCalculation() {
         int pageSize = 2;
         currentUser.setPageSize(pageSize);
-        
+
         Topic topic = new Topic(user, "");
         Post post = new Post(user, "");
         topic.addPost(new Post(null, null));
@@ -335,7 +335,7 @@ public class TransactionalPostServiceTest {
     public void testLastPostOnPagePageCalculation() {
         int pageSize = 2;
         currentUser.setPageSize(pageSize);
-        
+
         Topic topic = new Topic(null, "");
         Post post = new Post(null, "");
         topic.addPost(new Post(null, null));
@@ -350,7 +350,7 @@ public class TransactionalPostServiceTest {
     public void testPostInCenterOfTopicPageCalculation() {
         int pageSize = 2;
         currentUser.setPageSize(pageSize);
-        
+
         Topic topic = new Topic(null, "");
         Post post = new Post(null, "");
         topic.addPost(new Post(null, null));
@@ -359,35 +359,35 @@ public class TransactionalPostServiceTest {
 
         assertEquals(postService.calculatePageForPost(post), 1);
     }
-    
+
     @Test
     public void testGetPosts() {
         int pageSize = 50;
         Topic topic = new Topic(user, "");
-        Page<Post> expectedPage = new PageImpl<Post>(Collections.<Post> emptyList());
-        
+        Page<Post> expectedPage = new PageImpl<Post>(Collections.<Post>emptyList());
+
         currentUser.setPageSize(pageSize);
-        
+
         when(postDao.getPosts(
                 Matchers.any(Topic.class), Matchers.any(JCommunePageRequest.class)))
-            .thenReturn(expectedPage);
-        
+                .thenReturn(expectedPage);
+
         Page<Post> actualPage = postService.getPosts(topic, pageSize, true);
-        
+
         assertEquals(actualPage, expectedPage, "Service returned incorrect data for one page of posts");
         verify(postDao).getPosts(
                 Matchers.any(Topic.class), Matchers.any(JCommunePageRequest.class));
     }
-    
+
     @Test
     public void testGetLastPostForBranch() {
         Branch postBranch = new Branch(null, null);
         Post expectedPost = new Post(null, null);
-        when(postDao.getLastPostFor(Mockito.<Branch> any()))
-            .thenReturn(expectedPost);
-        
+        when(postDao.getLastPostFor(Mockito.<Branch>any()))
+                .thenReturn(expectedPost);
+
         Post actualPost = postService.getLastPostFor(postBranch);
-        
+
         assertEquals(actualPost, expectedPost, "Service returned incorrect last post for branch");
         verify(postDao).getLastPostFor(postBranch);
     }
