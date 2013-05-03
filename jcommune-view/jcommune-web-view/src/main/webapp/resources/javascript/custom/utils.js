@@ -43,53 +43,16 @@ function getSelectedPostText() {
     return txt;
 }
 
-//methods to dialogs
-Utils.resizeDialog = function (dialog) {
-    dialog.css("margin-top", function () {
-        return $(this).outerHeight() / 2 * (-1)
-    });
-    dialog.css("margin-left", function () {
-        return $(this).outerWidth() / 2 * (-1)
-    });
-}
-
-/**
- * Enable all disabled elements
- * Remove previous errors
- * Show hidden hel text
- */
-function prepareDialog(dialog) {
-    dialog.find('*').attr('disabled', false);
-    dialog.find('._error').remove();
-    dialog.find(".help-block").show();
-    dialog.find('.control-group').removeClass('error');
-}
-
-/**
- * Show errors under fields with errors
- * Errors overrides help text (help text will be hidden)
- */
-function showErrors(dialog, errors, idPrefix, idPostfix) {
-    for (var i = 0; i < errors.length; i++) {
-        var e = dialog.find('#' + idPrefix + errors[i].field + idPostfix);
-        e.parent().wrap('<div class="control-group error" />');
-        e.parent().find(".help-block").hide();
-        e.parent().last().append('<span class="help-block _error">' + errors[i].defaultMessage + '</span>');
-    }
-    Utils.resizeDialog(dialog);
-}
-
 /**
  * Encodes given string by escaping special HTML characters
- * 
+ *
  * @param s string to be encoded
  */
-Utils.htmlEncode = function(s)
-{
-  var el = document.createElement("div");
-  el.innerText = el.textContent = s;
-  s = el.innerHTML;
-  return s;
+Utils.htmlEncode = function (s) {
+    var el = document.createElement("div");
+    el.innerText = el.textContent = s;
+    s = el.innerHTML;
+    return s;
 }
 
 /**
@@ -97,25 +60,39 @@ Utils.htmlEncode = function(s)
  *
  * @param target selector of element to focus
  */
-Utils.focusFirstEl = function(target)
-{
+Utils.focusFirstEl = function (target) {
     $(target).focus();
 }
 
 /**
  * Replaces all \n characters by <br> tags. Used for review comments.
- * 
+ *
  * @param s string where perform replacing
  */
-Utils.lf2br = function(s) {
-	return s.replace(/\n/g, "<br>");
+Utils.lf2br = function (s) {
+    return s.replace(/\n/g, "<br>");
 }
 
 /**
  * Replaces all \<br> tags by \n characters. Used for review comments.
- * 
+ *
  * @param s string where perform replacing
  */
-Utils.br2lf = function(s) {
-	return s.replace(/<br>/gi, "\n");
+Utils.br2lf = function (s) {
+    return s.replace(/<br>/gi, "\n");
+}
+
+/**
+ * Create form field with given label(placeholder), id, type
+ */
+Utils.createFormElement = function(label, id, type, cls) {
+    var elementHtml = ' \
+        <div class="control-group"> \
+            <div class="controls"> \
+                <input type="' + type + '" id="' + id + '" name="' + id + '" placeholder="' + label + '" class="input-xlarge ' + cls + '" /> \
+            </div> \
+        </div> \
+    ';
+
+    return elementHtml;
 }

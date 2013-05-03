@@ -169,6 +169,9 @@ function addMultipleVote(pollDto, pollId) {
  * Handles error during voting
  */
 function processVotingError() {
-	bootbox.alert($labelUnexpectedError);
+    jDialog.createDialog({
+        type: jDialog.alertType,
+        bodyMessage: $labelUnexpectedError
+    });
 	$("#pollAjaxLoader").hide(); //hide the ajax loader again
 }

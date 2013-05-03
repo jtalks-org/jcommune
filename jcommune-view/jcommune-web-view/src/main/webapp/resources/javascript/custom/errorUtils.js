@@ -63,6 +63,15 @@ ErrorUtils.removeErrorMessage = function(inputOrSelector) {
 	ErrorUtils.removeErrorStyles(input);
 }
 
+/**
+ *  Removes all errors message
+ */
+ErrorUtils.removeAllErrorMessages = function() {
+    var input = $('span.help-inline').siblings('input');
+    input.closest('div.controls').find('span.help-inline').remove();
+    ErrorUtils.removeErrorStyles(input);
+}
+
 /** Returns actual error row with given message based on pattern for errors
  * @param - error message to be displayed
  */

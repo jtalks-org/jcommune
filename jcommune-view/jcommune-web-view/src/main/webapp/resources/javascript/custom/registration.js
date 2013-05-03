@@ -20,65 +20,25 @@
 //handling click on menu link Sign Up
 $(function () {
 
-    // hide dialog on backdrop click
-    $('.modal-backdrop').live('click', function (e) {
-        $('#signup-modal-dialog').modal('hide');
-    });
-
-    // captcha container on jsp page (if open jsp page)
-    var captchaContainer = $('.registration-page');
-    if (captchaContainer) {
-
-        captchaContainer.find("#captcha-refresh, #captcha-img").click(function (e) {
-            e.preventDefault();
-            refreshCaptcha(captchaContainer);
-        });
-    }
-
     $("#signup").on('click', function (e) {
         e.preventDefault();
 
-        var signupDialog = createDialog();
+        var bodyContent =
+            Utils.createFormElement($labelUsername, 'username', 'text', 'first') +
+                Utils.createFormElement($labelEmail, 'email', 'text') +
+                Utils.createFormElement($labelPassword, 'password', 'password') +
+                Utils.createFormElement($labelPasswordConfirmation, 'passwordConfirm', 'password') +
+                createCaptchaElements();
 
-        // show dialog
-        signupDialog.modal({
-            "backdrop": "static",
-            "keyboard": true,
-            "show": true
-        });
-
-        Utils.resizeDialog(signupDialog);
-        // refreshes captcha on click refresh button or captcha image
-        signupDialog.find("#captcha-refresh, #captcha-img").click(function (e) {
-            e.preventDefault();
-            refreshCaptcha(signupDialog);
-        });
-
-        // focus on first element
-        signupDialog.find('#username').focus();
-
-        var submitButton = signupDialog.find('#signup-submit-button');
-
-        // returns focus back to uername field
-        submitButton.keydown(Keymaps.registrationSubmit);
-
-        // skip captcha image and refresh and go to captcha input
-        signupDialog.find('#passwordConfirm').keydown(Keymaps.registrationPassConfirm);
-
-        // remove dialog from DOM on hide
-        signupDialog.bind("hide", function (e) {
-            signupDialog.remove();
-        });
-		
-		// html5 placeholder emulation for old IE
-		$(signupDialog).find('input[placeholder]').placeholder();
+        var footerContent = '<button id="signup-submit-button" class="btn btn-primary btn-block" name="commit"> \
+            ' + $signupButtonLabel + '</button>';
 
         // submit button handler
-        signupDialog.submit(function (e) {
+        var submitFunc = function (e) {
             e.preventDefault();
             // disable all elements before and during submission
-            signupDialog.find('*').attr('disabled', true);
-            var query = composeQuery(signupDialog);
+            jDialog.dialog.find('*').attr('disabled', true);
+            var query = composeQuery(jDialog.dialog);
             $.ajax({
                 type: "POST",
                 url: $root + "/user/new_ajax",
@@ -88,34 +48,77 @@ $(function () {
                     resp = eval('(' + resp + ')'); // warning: not safe
                     if (resp.status == "SUCCESS") {
                         // hide dialog and show success message
-                        signupDialog.modal('hide');
-                        bootbox.alert($labelRegistrationSuccess);
+                        jDialog.createDialog({
+                            type: jDialog.alertType,
+                            bodyMessage: $labelRegistrationSuccess
+                        });
                     }
                     else {
                         // remove previous errors and show new errors
-                        prepareDialog(signupDialog);
-                        refreshCaptcha(signupDialog);
-                        showErrors(signupDialog, resp.result, "", "");
+                        jDialog.prepareDialog(jDialog.dialog);
+                        refreshCaptcha(jDialog.dialog);
+                        jDialog.showErrors(jDialog.dialog, resp.result, "", "");
                     }
                 },
                 error: function (resp) {
-                    bootbox.alert($labelRegistrationFailture);
+                    jDialog.createDialog({
+                        type: jDialog.alertType,
+                        bodyMessage: $labelRegistrationFailture
+                    });
                 }
             });
-        });
+        }
+
+        //check to fix double windows when click registration on jsp registration page
+        if($('#signup-modal-dialog').length == 0){
+            jDialog.createDialog({
+                dialogId: 'signup-modal-dialog',
+                title: $labelRegistration,
+                bodyContent: bodyContent,
+                footerContent: footerContent,
+                maxWidth: 400,
+                maxHeight: 600,
+                tabNavigation: ['#username', '#email', '#password', '#passwordConfirm', '#captcha', '#signup-submit-button'],
+                handlers: {
+                    "#signup-submit-button": {'click': submitFunc},
+                    "#captcha-refresh, #captcha-img": {'click' : refreshCaptcha}
+                }
+            });
+        }
     });
 
     clearPageForm();
+
+    // captcha container on jsp page (if open jsp page)
+    var captchaContainer = $('.registration-page');
+    if (captchaContainer) {
+
+        captchaContainer.find("#captcha-refresh, #captcha-img").click(function (e) {
+            e.preventDefault();
+            refreshCaptchaJsp();
+        });
+    }
+
+    //to registration jsp
+    function clearPageForm() {
+        if ($('.capcha-field')) {
+            $('.capcha-field').val('');
+        }
+    }
 });
 
 
 /**
  * Get new captcha image
  */
-function refreshCaptcha(signupDialog) {
-    //this parameter forces browser to reload image every time
-    signupDialog.find("#captcha-img").removeAttr("src").attr("src", captchaUrl());
-    signupDialog.find("#captcha").val("");
+function refreshCaptcha() {
+    jDialog.dialog.find("#captcha-img").removeAttr("src").attr("src", captchaUrl());
+    jDialog.dialog.find("#captcha").val("");
+}
+
+function refreshCaptchaJsp() {
+    $('#form').find("#captcha-img").removeAttr("src").attr("src", captchaUrl());
+    $('#form').find("#captcha").val("");
 }
 
 function captchaUrl() {
@@ -137,7 +140,7 @@ function composeQuery(signupDialog) {
  * Create captcha form elements: captcha image, refresh button, input field
  */
 function createCaptchaElements() {
-    return $(' \
+    return '\
         <div class="control-group"> \
             <div class="controls captcha-images"> \
                 <img id="captcha-img" src="' + captchaUrl() + '" /> \
@@ -147,48 +150,5 @@ function createCaptchaElements() {
                 <input type="text" id="captcha" placeholder="' + $labelCaptcha + '" class="input-xlarge" /> \
             </div> \
         </div> \
-    ').html();
-}
-
-/**
- * Create form field with given label(placeholder), id, type
- */
-function createFormElement(label, id, type, cls) {
-    var elementHtml = ' \
-        <div class="control-group"> \
-            <div class="controls"> \
-                <input type="' + type + '" id="' + id + '" name="' + id + '" placeholder="' + label + '" class="input-xlarge ' + cls + '" /> \
-            </div> \
-        </div> \
     ';
-    return $(elementHtml).html();
-}
-
-function createDialog() {
-    return $(' \
-        <form class="modal" id="signup-modal-dialog" tabindex="-1" role="dialog" \
-                    aria-labelledby="sign in" aria-hidden="true"> \
-            <div class="modal-header"> \
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> \
-                <h3>' + $labelRegistration + '</h3> \
-            </div> \
-            <div class="modal-body">' +
-        createFormElement($labelUsername, 'username', 'text') +
-        createFormElement($labelEmail, 'email', 'text') +
-        createFormElement($labelPassword, 'password', 'password') +
-        createFormElement($labelPasswordConfirmation, 'passwordConfirm', 'password') +
-        createCaptchaElements() + ' \
-            </div> \
-            <div class="modal-footer"> \
-                <button id="signup-submit-button" class="btn btn-primary btn-block" name="commit" type="submit">' + $signupButtonLabel + '</button> \
-            </div> \
-        </form> \
-        ');
-}
-
-//to registration jsp
-function clearPageForm() {
-    if ($('.capcha-field')) {
-        $('.capcha-field').val('');
-    }
 }

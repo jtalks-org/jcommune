@@ -36,9 +36,33 @@ function getLinkById(id) {
 
 $(function () {
 
-    $('.modal-backdrop').live('click', function (e) {
-        $('#main-links-editor').find('.close').click();
+    var elements = [];
+    $(externalLinksGroupId).find('a').each(function (i, elem) {
+        var fullId = $(elem).attr('id');
+        var id = extractExternalLinkIdFrom(fullId);
+        var externalLink = {};
+        externalLink.id = id;
+        externalLink.url = $(elem).attr('href');
+        externalLink.title = $(elem).text();
+        externalLink.hint = $(elem).attr('data-original-title');
+        idToExternalLinkMap[id] = externalLink;
+        elements[i] = externalLink;
     });
+
+    var footerContent = '' +
+        '<button id="add-main-link" class="btn btn-block list-of-links hide-element">' + $labelAdd + '</button> \
+        <button id="cancel-link" class="btn  edit-links remove-links hide-element">' + $labelCancel + '</button> \
+        <button id="save-link" class="btn btn-primary  edit-links hide-element">' + $labelSave + '</button> \
+        <button id="remove-link" class="btn btn-primary  remove-links hide-element">' + $labelDelete + '</button>';
+
+    var bodyContent =
+        '<table cellpadding="0" cellspacing="0" class="list-of-links"> <tbody>' +
+            createLinksTableRows(elements) + ' \
+         </tbody></table>' +
+            Utils.createFormElement($labelTitle, 'link-title', 'text', 'hide-element edit-links dialog-input') +
+            Utils.createFormElement($labelUrl, 'link-url', 'text', 'hide-element edit-links dialog-input') +
+            Utils.createFormElement($labelHint, 'link-hint', 'text', 'hide-element edit-links dialog-input') + ' \
+         <span class="confirm-delete-text remove-links"></span> ';
 
     //add links when click to button navbar (fix show elements when refresh page)
     $('.btn-navbar').on('click', function(){
@@ -57,71 +81,53 @@ $(function () {
         }
     });
 
+    var editButtonClick = function (e) {
+        e.preventDefault();
+        actionId = $(e.target).parent('tr').attr('id');
+        toAction('edit');
+    };
+
+    var trashButtonClick = function (e) {
+        e.preventDefault();
+        actionId = $(e.target).parent('tr').attr('id');
+        toAction('confirmRemove');
+
+    };
+
+    var addButtonClick = function (e) {
+        e.preventDefault();
+        toAction('add');
+    };
+
+
     $('.links_editor').on('click', function (e) {
         e.preventDefault();
 
-        var elements = [];
-        $(externalLinksGroupId).find('a').each(function (i, elem) {
-            var fullId = $(elem).attr('id');
-            var id = extractExternalLinkIdFrom(fullId);
-            var externalLink = {};
-            externalLink.id = id;
-            externalLink.url = $(elem).attr('href');
-            externalLink.title = $(elem).text();
-            externalLink.hint = $(elem).attr('data-original-title');
-            idToExternalLinkMap[id] = externalLink;
-            elements[i] = externalLink;
-        });
-        linksEditor = createMainLinkEditor(elements);
-
-        linksEditor.modal({
-            "backdrop": "static",
-            "keyboard": true,
-            "show": true
-        });
-
-        linksEditor.find('#add-main-link').focus();
-
-        linksEditor.unbind();
-
-        linksEditor.find('.close').bind('click', function (e) {
-            linksEditor.modal('hide');
-            linksEditor.remove();
+        jDialog.createDialog({
+            dialogId: 'main-links-editor',
+            title: $labelLinksEditor,
+            bodyContent: bodyContent,
+            footerContent: footerContent,
+            maxWidth: 400,
+            maxHeight: 400,
+            tabNavigation: [],
+            dialogKeydown: Keymaps.linksEditor,
+            handlers: {
+                "#add-main-link": {'click': addButtonClick},
+                "#main-links-editor #link-hint": {'keydown': Keymaps.linksEditorHintInput},
+                "#main-links-editor #save-link": {'keydown': Keymaps.linksEditorSaveButton},
+                "#main-links-editor #cancel-link": {'keydown': Keymaps.linksEditorCancelButton},
+                "#main-links-editor #remove-link": {'keydown': Keymaps.linksEditorRemoveButton}
+            },
+            handlersDelegate: {
+                ".icon-pencil": {'click': editButtonClick},
+                ".icon-trash": {'click': trashButtonClick}
+            }
         });
 
         toAction('list');
-
-        $(document).delegate('.icon-pencil', 'click', function (e) {
-            e.preventDefault();
-            actionId = $(e.target).parent('tr').attr('id');
-            toAction('edit');
-        });
-        $(document).delegate('.icon-trash', 'click', function (e) {
-            e.preventDefault();
-            actionId = $(e.target).parent('tr').attr('id');
-            toAction('confirmRemove');
-
-        })
-
-
-        $('#add-main-link').bind('click', function (e) {
-            e.preventDefault();
-            toAction('add');
-        });
-
-
-        linksEditor.keydown(Keymaps.linksEditor);
-
-        linksEditor.find('#link-hint').keydown(Keymaps.linksEditorHintInput);
-
-        linksEditor.find('#save-link').keydown(Keymaps.linksEditorSaveButton);
-
-        linksEditor.find('#cancel-link').keydown(Keymaps.linksEditorCancelButton);
-
-        linksEditor.find('#remove-link').keydown(Keymaps.linksEditorRemoveButton);
-
-        Utils.resizeDialog(linksEditor);
     });
+
 
 });
 
@@ -151,32 +157,6 @@ function createLinksTableRows(elements) {
     return elementHtml;
 }
 
-function createMainLinkEditor(elements) {
-    return $(' \
-        <div class="modal" id="main-links-editor" align="center"> \
-            <div class="modal-header"> \
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> \
-                <h3>' + $labelLinksEditor + '</h3> \
-            </div> \
-            <div class="modal-body"> \
-            <table cellpadding="0" cellspacing="0" class="list-of-links"> <tbody>' +
-        createLinksTableRows(elements) + '\
-            </tbody></table>' +
-        createFormElement($labelTitle, 'link-title', 'text', 'hide-element edit-links') +
-        createFormElement($labelUrl, 'link-url', 'text', 'hide-element edit-links') +
-        createFormElement($labelHint, 'link-hint', 'text', 'hide-element edit-links') + ' \
-            <span class="confirm-delete-text remove-links"></span>\
-            </div> \
-            <div class="modal-footer"> \
-                <button id="add-main-link" class="btn btn-block list-of-links hide-element">' + $labelAdd + '</button> \
-                <button id="cancel-link" class="btn  edit-links remove-links hide-element">' + $labelCancel + '</button> \
-                <button id="save-link" class="btn btn-primary  edit-links hide-element">' + $labelSave + '</button> \
-                <button id="remove-link" class="btn btn-primary  remove-links hide-element">' + $labelDelete + '</button> \
-            </div> \
-        </div> \
-        ');
-}
-
 function listOfLinksVisible(visible) {
 
     var intervalID = setInterval(function () {
@@ -204,7 +184,8 @@ function editLinksVisible(visible) {
                 $('.edit-links').removeClass("hide-element");
                 $('#link-title').focus();
                 //save edited link
-                $('#save-link').unbind("click").bind('click', function () {
+                $('#save-link').unbind('click').bind('click', function (e) {
+                    e.preventDefault();
                     link.title = $('#link-title').val();
                     link.url = $('#link-url').val();
                     link.hint = $('#link-hint').val();
@@ -222,17 +203,21 @@ function editLinksVisible(visible) {
                                 toAction('list');
                             } else {
                                 // remove previous errors and show new errors
-                                prepareDialog(linksEditor);
-                                showErrors(linksEditor, resp.result, "link-", "");
+                                jDialog.prepareDialog(jDialog.dialog);
+                                jDialog.showErrors(jDialog.dialog, resp.result, "link-", "");
                             }
                         },
                         error: function (resp) {
-                            bootbox.alert($labelErrorLinkSave);
+                            jDialog.createDialog({
+                                type: jDialog.alertType,
+                                bodyMessage: $labelErrorLinkSave
+                            });
                         }
                     });
 
                 });
-                $('#cancel-link').unbind("click").bind('click', function () {
+                $('#cancel-link').unbind('click').bind('click', function (e) {
+                    e.preventDefault();
                     toAction('list');
                 });
             }
@@ -275,7 +260,8 @@ function addLinkVisible(visible) {
                 $('#link-hint').val("");
                 $('.edit-links').removeClass("hide-element");
                 $('#link-title').focus();
-                $('#save-link').unbind("click").bind('click', function () {
+                $('#save-link').unbind('click').bind('click', function (e) {
+                    e.preventDefault();
                     var link = {};
                     link.title = $('#link-title').val();
                     link.url = $('#link-url').val();
@@ -293,17 +279,21 @@ function addLinkVisible(visible) {
                                 toAction('list');
                             } else {
                                 // remove previous errors and show new errors
-                                prepareDialog(linksEditor);
-                                showErrors(linksEditor, resp.result, "link-", "");
+                                jDialog.prepareDialog(jDialog.dialog);
+                                jDialog.showErrors(linksEditor, resp.result, "link-", "");
                             }
                         },
                         error: function (resp) {
-                            bootbox.alert($labelErrorLinkSave);
+                            jDialog.createDialog({
+                                type: jDialog.alertType,
+                                bodyMessage: $labelErrorLinkSave
+                            });
                         }
                     });
 
                 });
-                $('#cancel-link').unbind("click").bind('click', function () {
+                $('#cancel-link').unbind('click').bind('click', function (e) {
+                    e.preventDefault();
                     toAction('list');
                 });
             }
@@ -352,7 +342,8 @@ function confirmRemoveVisible(visible) {
                 $('.remove-links').removeClass("hide-element");
                 removeLinkBut.focus();
                 //delete link
-                removeLinkBut.unbind("click").bind('click', function () {
+                removeLinkBut.unbind('click').bind('click', function (e) {
+                    e.preventDefault();
                     $.ajax({
                         url: baseUrl + "/links/delete/" + link.id,
                         type: "DELETE",
@@ -370,15 +361,22 @@ function confirmRemoveVisible(visible) {
                                 toAction('list');
                             }
                             else {
-                                bootbox.alert($labelErrorLinkDelete);
+                                jDialog.createDialog({
+                                    type: jDialog.alertType,
+                                    bodyMessage: $labelErrorLinkDelete
+                                });
                             }
                         },
                         error: function () {
-                            bootbox.alert($labelErrorLinkDelete);
+                            jDialog.createDialog({
+                                type: jDialog.alertType,
+                                bodyMessage: $labelErrorLinkDelete
+                            });
                         }
                     });
                 });
-                $('#cancel-link').unbind("click").bind('click', function () {
+                $('#cancel-link').unbind('click').bind('click', function (e) {
+                    e.preventDefault();
                     toAction('list');
                 });
             }
@@ -397,7 +395,8 @@ function toAction(typeOfAction) {
     listOfLinksVisible(false);
     switch (typeOfAction) {
         case "list":
-            prepareDialog(linksEditor)
+            jDialog.prepareDialog(jDialog.dialog);
+            ErrorUtils.removeAllErrorMessages();
             listOfLinksVisible(true);
             break;
         case "add":
@@ -414,6 +413,6 @@ function toAction(typeOfAction) {
             break;
 
     }
-    Utils.resizeDialog($('#main-links-editor'));
+    jDialog.resizeDialog(jDialog.dialog);
 }
 

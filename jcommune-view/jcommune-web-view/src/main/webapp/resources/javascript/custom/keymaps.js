@@ -44,27 +44,6 @@ Keymaps.reviewCancelRemoveButton = function (e) {
     }
 }
 
-Keymaps.registrationSubmit = function (e) {
-    if ((e.keyCode || e.charCode) == tabCode) {
-        e.preventDefault();
-        $('#signup-modal-dialog').find("#username").focus();
-    }
-}
-
-Keymaps.registrationPassConfirm = function (e) {
-    if ((e.keyCode || e.charCode) == tabCode) {
-        e.preventDefault();
-        $('#signup-modal-dialog').find("#captcha").focus();
-    }
-}
-
-Keymaps.signinSubmit = function (e) {
-    if ((e.keyCode || e.charCode) == tabCode) {
-        e.preventDefault();
-        $('#signin-modal-dialog').find("#j_username").focus();
-    }
-}
-
 Keymaps.linksEditor = function (e) {
     if ((e.keyCode || e.charCode) == enterCode) {
         var but = $('#main-links-editor  #save-link:visible')[0]
@@ -79,6 +58,8 @@ Keymaps.linksEditor = function (e) {
         if (but) {
             e.preventDefault();
             but.click();
+        }else{
+            $('#main-links-editor .close').click();
         }
     }
 }
@@ -129,20 +110,13 @@ Keymaps.post = function (e) {
     }
 };
 
-Keymaps.moveTopicEditor = function (e) {
-    if ((e.keyCode || e.charCode) == escCode) {
-        var but = $('#move-topic-editor .close:visible')[0]
-        if (but) {
-            e.preventDefault();
-            but.click();
-        }
-    }
-}
-
-Keymaps.bootboxClose = function (e) {
-    if ((e.keyCode || e.charCode) == escCode) {
+Keymaps.defaultDialog = function (e) {
+    //disable submit by enter
+    if (e.keyCode == enterCode) {
         e.preventDefault();
-        $(this).find('.cancel').click();
+        jDialog.dialog.find('.btn-primary:first').click();
+    }
+    if ((e.keyCode || e.charCode) == escCode) {
+        jDialog.dialog.find('.close').click();
     }
 }
-

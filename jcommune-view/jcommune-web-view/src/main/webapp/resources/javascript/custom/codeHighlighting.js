@@ -86,7 +86,10 @@ CodeHighlighting.displayReviewComments = function () {
             }
         },
         error: function () {
-            bootbox.alert($labelUnexpectedError);
+            jDialog.createDialog({
+                type: jDialog.alertType,
+                bodyMessage: $labelUnexpectedError
+            });
         }
     });
 }
@@ -161,15 +164,27 @@ CodeHighlighting.setupAddCommentFormHandlers = function () {
                     } else if (data.reason == 'VALIDATION') {
                         CodeHighlighting.displayValidationErrors(data.result);
                     } else if (data.reason == 'SECURITY'){
-                    	bootbox.alert($labelYouDontHavePermissions);
+                        jDialog.createDialog({
+                            type: jDialog.alertType,
+                            bodyMessage: $labelYouDontHavePermissions
+                        });
                     } else if (data.reason == 'ENTITY_NOT_FOUND') {
-                    	bootbox.alert($labelTopicWasRemoved);
+                        jDialog.createDialog({
+                            type: jDialog.alertType,
+                            bodyMessage: $labelTopicWasRemoved
+                        });
                     } else {
-                        bootbox.alert($labelUnexpectedError);
+                        jDialog.createDialog({
+                            type: jDialog.alertType,
+                            bodyMessage: $labelUnexpectedError
+                        });
                     }
                 })
                 .error(function (data) {
-                    bootbox.alert($label.topicWasRemovedOrYouDontHavePermissions);
+                    jDialog.createDialog({
+                        type: jDialog.alertType,
+                        bodyMessage: $label.topicWasRemovedOrYouDontHavePermissions
+                    });
                 })
                 .complete(function () {
                     Antimultipost.enableSubmit(formContainer);
@@ -207,31 +222,44 @@ CodeHighlighting.setupEditCommentHandlers = function() {
         var commentId = reviewContainer.find('input[name=id]').val();
         var reviewId = $('input[id="codeReviewId"]').val();
 
-        var dialog = bootbox.dialog($labelDeleteCommentConfirmation, [
-            {
-                "label" : $labelOk,
-                "class" : "btn-primary",
-                "callback": function() {
-                    $.ajax({
-                        url:baseUrl + '/reviewcomments/delete?reviewId=' + reviewId + '&commentId=' + commentId,
-                        type:"GET",
-                        success:function () {
-                            $(reviewContainer).remove();
-                        },
-                        error:function () {
-                            bootbox.alert($labelUnexpectedError);
-                        }
+
+        var footerContent = ' \
+            <button id="remove-review-cancel" class="btn cancel">' + $labelCancel + '</button> \
+            <button id="remove-review-ok" class="btn btn-primary">' + $labelOk + '</button>'
+
+        var submitFunc = function (e) {
+            e.preventDefault();
+            $.ajax({
+                url:baseUrl + '/reviewcomments/delete?reviewId=' + reviewId + '&commentId=' + commentId,
+                type:"GET",
+                success:function () {
+                    $(reviewContainer).remove();
+                },
+                error:function () {
+                    jDialog.createDialog({
+                        type: jDialog.alertType,
+                        bodyMessage: $labelUnexpectedError
                     });
                 }
-            },
-            {
-                "label" : $labelCancel,
-                "class" : "cancel"
-            }
-        ]);
+            });
+            jDialog.closeDialog();
+        };
 
-        dialog.find('.cancel').on('keydown', Keymaps.reviewCancelRemoveButton);
-        dialog.find('.btn-primary').on('keydown', Keymaps.reviewConfirmRemoveButton);
+        jDialog.createDialog({
+            type: jDialog.confirmType,
+            bodyMessage : $labelDeleteCommentConfirmation,
+            firstFocus : false,
+            footerContent: footerContent,
+            maxWidth: 300,
+            tabNavigation: ['#remove-review-ok','#remove-review-cancel'],
+            handlers: {
+                "#remove-review-ok": {'click': submitFunc, 'keydown' : Keymaps.reviewConfirmRemoveButton},
+                "#remove-cancel-ok": 'close',
+                "#remove-cancel-ok": {'keydown': Keymaps.reviewCancelRemoveButton}
+            }
+        });
+
+        $('#remove-review-ok').focus();
 
         return false;
     });
@@ -259,15 +287,27 @@ CodeHighlighting.setupEditCommentHandlers = function() {
                     } else if (data.reason == 'VALIDATION') {
                         CodeHighlighting.displayValidationErrors(data.result);
                     } else if (data.reason == 'SECURITY'){
-                    	bootbox.alert($labelYouDontHavePermissions);
+                        jDialog.createDialog({
+                            type: jDialog.alertType,
+                            bodyMessage: $labelYouDontHavePermissions
+                        });
                     } else if (data.reason == 'ENTITY_NOT_FOUND') {
-                    	bootbox.alert($labelTopicWasRemoved);
+                        jDialog.createDialog({
+                            type: jDialog.alertType,
+                            bodyMessage: $labelTopicWasRemoved
+                        });
                     } else {
-                        bootbox.alert($labelUnexpectedError);
+                        jDialog.createDialog({
+                            type: jDialog.alertType,
+                            bodyMessage: $labelUnexpectedError
+                        });
                     }
                 })
                 .error(function (data) {
-                    bootbox.alert($labelUnexpectedError);
+                    jDialog.createDialog({
+                        type: jDialog.alertType,
+                        bodyMessage: $labelUnexpectedError
+                    });
                 })
                 .complete(function () {
                     Antimultipost.enableSubmit(formContainer);
@@ -299,7 +339,7 @@ CodeHighlighting.getCommentHtml = function (comment) {
             '<div class="review-container"> '
 				+ '<input type=hidden name=id value="' + comment.id + '"/>'
 				+ '<input type=hidden name=authorId value="' + comment.authorId + '"/>'
-                + '<div class="review-avatar">'
+                + '<div class="left-aligned">'
                     + '<img class="review-avatar-img" src="' + baseUrl + '/users/' + comment.authorId + '/avatar"/>'
                 + '</div>'
                 + '<div class="review-content">'
