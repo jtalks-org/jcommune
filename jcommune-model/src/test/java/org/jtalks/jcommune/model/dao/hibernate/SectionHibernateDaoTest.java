@@ -18,13 +18,9 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.Section;
-import org.jtalks.jcommune.model.entity.ObjectsFactory;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.SectionDao;
-import org.jtalks.jcommune.model.entity.AnonymousUser;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -83,6 +79,7 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
         section.setName(null);
 
         dao.saveOrUpdate(section);
+        session.flush();
     }
 
     @Test
@@ -111,19 +108,20 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
         section.setName(newName);
 
         dao.saveOrUpdate(section);
+        session.flush();
         session.evict(section);
         Section result = (Section) session.get(Section.class, section.getId());
 
         assertEquals(result.getName(), newName);
     }
 
-    @Test(expectedExceptions = Exception.class)
+    @Test
     public void testUpdateNotNullViolation() {
         Section section = ObjectsFactory.getDefaultSection();
         session.save(section);
         section.setName(null);
-
         dao.saveOrUpdate(section);
+        session.flush();
     }
 
     @Test
@@ -206,10 +204,10 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
     }
 
     @Test
-    public void testGetCountAvailableBranches(){
-        JCUser user =  ObjectsFactory.getDefaultUser();
+    public void testGetCountAvailableBranches() {
+        JCUser user = ObjectsFactory.getDefaultUser();
         assertTrue(dao.getCountAvailableBranches(user,
-                new ArrayList<org.jtalks.common.model.entity.Branch>())==0);
+                new ArrayList<org.jtalks.common.model.entity.Branch>()) == 0);
         user.setGroups(new ArrayList<Group>());
 
         List<Branch> branches = ObjectsFactory.getDefaultBranchList();
@@ -222,7 +220,7 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
         assertTrue(dao.getCountAvailableBranches(user,
                 new ArrayList<org.jtalks.common.model.entity.Branch>(branches)) == 0);
         assertTrue(dao.getCountAvailableBranches(new AnonymousUser(),
-                new ArrayList<org.jtalks.common.model.entity.Branch>(branches))==0);
+                new ArrayList<org.jtalks.common.model.entity.Branch>(branches)) == 0);
     }
 
     private int getSectionCount() {

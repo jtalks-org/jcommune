@@ -17,11 +17,11 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.jtalks.jcommune.model.entity.ObjectsFactory;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.ObjectsFactory;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,12 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNotSame;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
@@ -82,7 +77,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
 
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void testSavePostWithDateNotNullViolation() {
-        PrivateMessage pm = new PrivateMessage(author,recipient, "", "");
+        PrivateMessage pm = new PrivateMessage(author, recipient, "", "");
         dao.saveOrUpdate(pm);
     }
 
@@ -110,6 +105,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         pm.setBody(newBody);
 
         dao.saveOrUpdate(pm);
+        session.flush();
         session.evict(pm);
         PrivateMessage result = (PrivateMessage) session.get(PrivateMessage.class, pm.getId());
 
@@ -149,7 +145,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
     public void testGetAllFromUserCommonCase() {
         int totalSize = 50;
         int pageCount = 2;
-        int pageSize = totalSize/pageCount;
+        int pageSize = totalSize / pageCount;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, pageSize);
@@ -165,12 +161,12 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         assertEquals(messagePage.getTotalElements(), totalSize, "Incorrect total count.");
         assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
     }
-    
+
     @Test
     public void testGetAllFromUserCommonCasePageTooLow() {
         int totalSize = 50;
         int pageCount = 2;
-        int pageSize = totalSize/pageCount;
+        int pageSize = totalSize / pageCount;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(PAGE_NUMBER_TOO_LOW, pageSize);
@@ -187,12 +183,12 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
         assertEquals(messagePage.getNumber(), 1, "Incorrect page number");
     }
-    
+
     @Test
     public void testGetAllFromUserCommonCasePageTooBig() {
         int totalSize = 50;
         int pageCount = 2;
-        int pageSize = totalSize/pageCount;
+        int pageSize = totalSize / pageCount;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(PAGE_NUMBER_TOO_BIG, pageSize);
@@ -214,7 +210,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
     public void testGetAllFromUserOneMessageCase() {
         int totalSize = 50;
         int pageCount = 1;
-        int pageSize = totalSize/pageCount;
+        int pageSize = totalSize / pageCount;
         int messageNumber = 1;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
@@ -236,7 +232,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
     public void testGetAllToUserCommonCase() {
         int totalSize = 50;
         int pageCount = 2;
-        int itemsOnPage = totalSize/pageCount;
+        int itemsOnPage = totalSize / pageCount;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
@@ -252,12 +248,12 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         assertEquals(messagePage.getTotalElements(), totalSize, "Incorrect total count.");
         assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
     }
-    
+
     @Test
     public void testGetAllToUserCommonCasePageTooLoww() {
         int totalSize = 50;
         int pageCount = 2;
-        int itemsOnPage = totalSize/pageCount;
+        int itemsOnPage = totalSize / pageCount;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
@@ -274,12 +270,12 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
         assertEquals(messagePage.getNumber(), 1, "Incorrect page number.");
     }
-    
+
     @Test
     public void testGetAllToUserCommonCasePageTooBig() {
         int totalSize = 50;
         int pageCount = 2;
-        int itemsOnPage = totalSize/pageCount;
+        int itemsOnPage = totalSize / pageCount;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
@@ -301,7 +297,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
     public void testGetAllToUserOneMessageCase() {
         int totalSize = 50;
         int pageCount = 1;
-        int itemsOnPage = totalSize/pageCount;
+        int itemsOnPage = totalSize / pageCount;
         int messageNumber = 1;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
@@ -323,7 +319,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
     public void testGetDraftsFromUserCommonCase() {
         int totalSize = 50;
         int pageCount = 2;
-        int itemsOnPage = totalSize/pageCount;
+        int itemsOnPage = totalSize / pageCount;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
@@ -338,12 +334,12 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         assertEquals(messagePage.getTotalElements(), totalSize, "Incorrect total count.");
         assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
     }
-    
+
     @Test
     public void testGetDraftsFromUserCommonCasePageTooLow() {
         int totalSize = 50;
         int pageCount = 2;
-        int itemsOnPage = totalSize/pageCount;
+        int itemsOnPage = totalSize / pageCount;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
@@ -359,12 +355,12 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
         assertEquals(messagePage.getNumber(), 1, "Incorrect page number");
     }
-    
+
     @Test
     public void testGetDraftsFromUserCommonCasePageTooBig() {
         int totalSize = 50;
         int pageCount = 2;
-        int itemsOnPage = totalSize/pageCount;
+        int itemsOnPage = totalSize / pageCount;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
@@ -386,7 +382,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
     public void testGetDraftsFromUserOneMessageCase() {
         int totalSize = 50;
         int pageCount = 1;
-        int itemsOnPage = totalSize/pageCount;
+        int itemsOnPage = totalSize / pageCount;
         int messageNumber = 1;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
@@ -402,6 +398,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         assertEquals(messagePage.getTotalElements(), messageNumber, "Incorrect total count.");
         assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
     }
+
     @Test
     public void testGetNewMessagesCountFor() {
         saveMessagesWithDifferentStatus();

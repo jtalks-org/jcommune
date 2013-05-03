@@ -23,8 +23,7 @@ import org.jtalks.jcommune.model.entity.ExternalLink;
 import org.jtalks.jcommune.model.entity.ObjectsFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng
-        .AbstractTransactionalTestNGSpringContextTests;
+import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
@@ -87,6 +86,7 @@ public class ExternalLinkHibernateDaoTest extends AbstractTransactionalTestNGSpr
         fillFieldsRandomly(link);
 
         dao.saveOrUpdate(link);
+        session.flush();
         session.clear();
 
         ExternalLink actual = (ExternalLink) session.get(ExternalLink.class, link.getId());

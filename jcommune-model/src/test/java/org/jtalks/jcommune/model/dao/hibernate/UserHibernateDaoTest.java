@@ -17,10 +17,10 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.common.model.entity.User;
-import org.jtalks.jcommune.model.entity.ObjectsFactory;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.ObjectsFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
@@ -106,6 +106,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         user.setFirstName(newName);
 
         dao.saveOrUpdate(user);
+        session.flush();
         session.evict(user);
         JCUser result = (JCUser) session.get(JCUser.class, user.getId());//!
 
@@ -119,6 +120,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         user.setEmail(null);
 
         dao.saveOrUpdate(user);
+        session.flush();
     }
 
     @Test
@@ -152,7 +154,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         assertNotNull(result);
         assertReflectionEquals(user, result);
     }
-    
+
     @Test
     public void testGetByUsernameDifferentCases() {
         JCUser user = ObjectsFactory.getDefaultUser();
@@ -163,39 +165,39 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         assertNotNull(result);
         assertReflectionEquals(user, result);
     }
-    
+
     @Test
     public void testGetByUsernameMultipleUsersWithSameNameWhenIgnoringCase() {
         JCUser user = ObjectsFactory.getUser("usernamE", "username@mail.com");
         session.save(user);
         session.save(ObjectsFactory.getUser("Username", "Username@mail.com"));
-        
+
         JCUser result = dao.getByUsername("usernamE");
-        
+
         assertNotNull(result);
         assertReflectionEquals(user, result);
     }
-    
+
     @Test
     public void testGetByUsernameNotExist() {
         JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
-        
+
         JCUser result = dao.getByUsername("Name");
-        
+
         assertNull(result);
     }
-    
+
     @Test
     public void testGetByUsernameNotFoundWhenMultipleUsersWithSameNameWhenIgnoringCase() {
         session.save(ObjectsFactory.getUser("usernamE", "username@mail.com"));
         session.save(ObjectsFactory.getUser("Username", "Username@mail.com"));
-        
+
         JCUser result = dao.getByUsername("username");
-        
+
         assertNull(result);
     }
-    
+
     @Test
     public void getCommonUserByUsernameShouldFindOne() {
         User expected = givenCommonUserWithUsernameStoredInDb("username");

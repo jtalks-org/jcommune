@@ -42,7 +42,6 @@ import static org.testng.AssertJUnit.*;
 
 /**
  * @author Alexander Gavrikov
- *
  */
 
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
@@ -54,8 +53,8 @@ public class SimplePageHibernateDaoTest extends AbstractTransactionalTestNGSprin
     @Autowired
     private SimplePageDao dao;
     private Session session;
-    
-    
+
+
     @BeforeMethod
     public void setUp() throws Exception {
         session = sessionFactory.getCurrentSession();
@@ -94,6 +93,7 @@ public class SimplePageHibernateDaoTest extends AbstractTransactionalTestNGSprin
         simplePage.setContent(newContent);
 
         dao.saveOrUpdate(simplePage);
+        session.flush();
         session.evict(simplePage);
         SimplePage result = (SimplePage) session.get(SimplePage.class, simplePage.getId());
 
@@ -145,7 +145,7 @@ public class SimplePageHibernateDaoTest extends AbstractTransactionalTestNGSprin
         assertEquals(simplePage.getPathName(), result.getPathName());
     }
 
-     @Test
+    @Test
     public void testGetPageByPathNameNotExist() {
         SimplePage simplePage = ObjectsFactory.getDefaultSimplePage();
         session.save(simplePage);

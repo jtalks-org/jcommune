@@ -75,6 +75,7 @@ public class PollHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
         poll.setTitle(newTitle);
         pollDao.saveOrUpdate(poll);
+        session.flush();
         session.evict(poll);
 
         Poll changedPoll = (Poll) session.get(Poll.class, poll.getId());
