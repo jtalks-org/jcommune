@@ -115,7 +115,7 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
         assertEquals(result.getName(), newName);
     }
 
-    @Test
+    @Test(expectedExceptions = javax.validation.ConstraintViolationException.class)
     public void testUpdateNotNullViolation() {
         Section section = ObjectsFactory.getDefaultSection();
         session.save(section);

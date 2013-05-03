@@ -89,7 +89,7 @@ public class ComponentHibernateDaoTest extends AbstractTransactionalTestNGSpring
         assertEquals(result.getUuid(), newUuid);
     }
 
-    @Test
+    @Test(expectedExceptions = javax.validation.ValidationException.class)
     public void testUpdateUuidNotNullViolation() {
         Component component = PersistedObjectsFactory.getDefaultComponent();
         session.save(component);

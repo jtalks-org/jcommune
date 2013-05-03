@@ -83,7 +83,7 @@ public class CodeReviewHibernateDaoTest extends AbstractTransactionalTestNGSprin
         assertEquals(result.getUuid(), newUuid);
     }
 
-    @Test
+    @Test(expectedExceptions = org.hibernate.exception.ConstraintViolationException.class)
     public void testUpdateNotNullViolation() {
         CodeReview review = PersistedObjectsFactory.getDefaultCodeReview();
         session.save(review);

@@ -92,7 +92,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         assertEquals(result.getPostContent(), newContent);
     }
 
-    @Test
+    @Test(expectedExceptions = org.hibernate.exception.ConstraintViolationException.class)
     public void testUpdateNotNullViolation() {
         Post post = PersistedObjectsFactory.getDefaultPost();
         session.save(post);
