@@ -75,14 +75,7 @@ get XSS attacks.</p>-->
             <pattern>\]</pattern>
             <template>]</template>
         </code>
-        <coderef name="comment"/>
     </scope>
-
-    <!-- Comment -->
-    <code name="comment">
-        <pattern>[*<var parse="false"/>*]</pattern>
-        <template/>
-    </code>
 
     <!-- Escape basic HTML char sequences -->
     <scope name="basic" parent="escapeBb">
@@ -326,7 +319,6 @@ get XSS attacks.</p>-->
             <pattern>[tr]<var scope="trScope"/>[/tr]</pattern>
             <template>&lt;tr&gt;<var/>&lt;/tr&gt;</template>
         </code>
-        <coderef name="comment"/>
     </scope>
     <scope name="trScope" ignoreText="true">
         <code name="th">
@@ -337,6 +329,5 @@ get XSS attacks.</p>-->
             <pattern>[td]<var/>[/td]</pattern>
             <template>&lt;td&gt;<var/>&lt;/td&gt;</template>
         </code>
-        <coderef name="comment"/>
     </scope>
 </configuration>
