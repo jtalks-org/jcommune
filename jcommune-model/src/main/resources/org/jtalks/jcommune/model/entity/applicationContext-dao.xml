@@ -100,7 +100,7 @@
         class="org.jtalks.jcommune.model.dao.hibernate.UserContactsHibernateDao">
     <constructor-arg name="sessionFactory" ref="sessionFactory"/>
     <constructor-arg name="type"
-                     value="org.jtalks.jcommune.model.entity.UserContact"/>
+                     value="org.jtalks.jcommune.model.entity.UserContactType"/>
   </bean>
 
   <bean id="simplePageDao"

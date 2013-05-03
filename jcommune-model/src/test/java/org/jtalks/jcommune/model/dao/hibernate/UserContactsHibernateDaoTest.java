@@ -23,8 +23,7 @@ import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng
-        .AbstractTransactionalTestNGSpringContextTests;
+import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
@@ -64,7 +63,8 @@ public class UserContactsHibernateDaoTest extends AbstractTransactionalTestNGSpr
     @Test
     public void testGet() {
         UserContactType type = ObjectsFactory.getDefaultUserContactType();
-        session.save(type);
+        dao.saveOrUpdate(type);
+        session.flush();
 
         UserContactType result = dao.get(type.getId());
 
@@ -94,10 +94,17 @@ public class UserContactsHibernateDaoTest extends AbstractTransactionalTestNGSpr
         type.setIcon(newIcon);
 
         dao.saveOrUpdate(type);
+        session.flush();
         session.evict(type);
 
         UserContactType result = (UserContactType) session.get(UserContactType.class, type.getId());
-
+        assertNotNull(result);
+        assertEquals(type.getId(), result.getId());
+        assertEquals(type.getIcon(), result.getIcon());
+        assertEquals(type.getTypeName(), result.getTypeName());
+        assertEquals(type.getMask(), result.getMask());
+        assertEquals(type.getDisplayPattern(), result.getDisplayPattern());
+        assertEquals(type.getValidationPattern(), result.getValidationPattern());
 
     }
 

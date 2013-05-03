@@ -23,8 +23,8 @@ import org.jtalks.jcommune.model.entity.UserContactType;
 import java.util.List;
 
 /**
- * This dao manages user ccontact and user contact types.
- *
+ * This dao manages user contacts and user contact types.
+ * <p/>
  * Types are to be configured in Poulpe, so we need to retrieve them from a database.
  *
  * @author Evgeniy Naumenko
@@ -38,7 +38,7 @@ public class UserContactsHibernateDao extends GenericDao<UserContactType>
      * @param type           An entity type.
      */
     public UserContactsHibernateDao(SessionFactory sessionFactory,
-            Class<UserContactType> type) {
+                                    Class<UserContactType> type) {
         super(sessionFactory, type);
     }
 
