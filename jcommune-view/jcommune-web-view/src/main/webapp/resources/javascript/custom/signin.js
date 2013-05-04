@@ -62,7 +62,8 @@ $(function () {
  * to request, after successfully login current page will be reloaded, otherwise you will
  * get error message, providing user with opportunity to change login or password
  */
-function sendLoginPost() {
+function sendLoginPost(e) {
+    e.preventDefault();
 
     var rememberMeElement = jDialog.dialog.find('input[name=_spring_security_remember_me]');
     var usernameElement = jDialog.dialog.find('#j_username');
