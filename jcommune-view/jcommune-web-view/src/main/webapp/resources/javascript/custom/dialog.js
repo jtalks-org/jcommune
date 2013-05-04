@@ -127,7 +127,7 @@ $(function () {
 
         addHandlers();
 
-        if(jDialog.options.fisrtFocus && jDialog.options.type == jDialog.infoType){
+        if(jDialog.options.firstFocus && jDialog.options.type == jDialog.infoType){
           jDialog.focusFirstElement();
         }
 

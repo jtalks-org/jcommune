@@ -159,7 +159,7 @@ Keymaps.bbeditor = function(e) {
         if (e.ctrlKey && e.keyCode >= charMin && e.keyCode <= charMax) {
             var keyVal = String.fromCharCode(e.keyCode);
             var but = $('[data-original-title$="(Ctrl + ' + keyVal + ')"]')
-            if(but){
+            if(but && but.length > 0){
                 e.preventDefault();
                 but.click();
             }
