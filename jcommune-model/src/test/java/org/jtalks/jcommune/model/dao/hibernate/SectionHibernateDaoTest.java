@@ -79,7 +79,6 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
         section.setName(null);
 
         dao.saveOrUpdate(section);
-        session.flush();
     }
 
     @Test
@@ -108,7 +107,6 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
         section.setName(newName);
 
         dao.saveOrUpdate(section);
-        session.flush();
         session.evict(section);
         Section result = (Section) session.get(Section.class, section.getId());
 
@@ -121,7 +119,6 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
         session.save(section);
         section.setName(null);
         dao.saveOrUpdate(section);
-        session.flush();
     }
 
     @Test

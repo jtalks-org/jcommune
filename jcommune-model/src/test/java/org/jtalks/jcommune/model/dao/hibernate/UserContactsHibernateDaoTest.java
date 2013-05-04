@@ -64,10 +64,7 @@ public class UserContactsHibernateDaoTest extends AbstractTransactionalTestNGSpr
     public void testGet() {
         UserContactType type = ObjectsFactory.getDefaultUserContactType();
         dao.saveOrUpdate(type);
-        session.flush();
-
         UserContactType result = dao.get(type.getId());
-
         assertNotNull(result);
         assertEquals(type.getId(), result.getId());
         assertEquals(type.getIcon(), result.getIcon());
@@ -92,11 +89,8 @@ public class UserContactsHibernateDaoTest extends AbstractTransactionalTestNGSpr
         session.save(type);
         type.setTypeName(newName);
         type.setIcon(newIcon);
-
         dao.saveOrUpdate(type);
-        session.flush();
         session.evict(type);
-
         UserContactType result = (UserContactType) session.get(UserContactType.class, type.getId());
         assertNotNull(result);
         assertEquals(type.getId(), result.getId());

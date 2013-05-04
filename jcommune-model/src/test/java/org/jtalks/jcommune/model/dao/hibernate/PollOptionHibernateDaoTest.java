@@ -75,7 +75,6 @@ public class PollOptionHibernateDaoTest extends AbstractTransactionalTestNGSprin
 
         option.setName(newName);
         pollOptionDao.saveOrUpdate(option);
-        session.flush();
         session.evict(option);
 
         PollItem changedOption = (PollItem) session.get(PollItem.class, option.getId());

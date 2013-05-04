@@ -88,7 +88,6 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         topic.setTitle(newTitle);
 
         dao.saveOrUpdate(topic);
-        session.flush();
         session.evict(topic);
         Topic result = (Topic) session.get(Topic.class, topic.getId());
 
@@ -453,10 +452,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         topic.setCodeReview(review);
         review.setTopic(topic);
         dao.saveOrUpdate(topic);
-        session.flush();
-
         session.evict(topic);
-
         assertNotNull(dao.get(topic.getId()).getCodeReview());
     }
 

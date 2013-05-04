@@ -85,7 +85,6 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         branch.setName(null);
 
         dao.saveOrUpdate(branch);
-        session.flush();
     }
 
     @Test
@@ -114,7 +113,6 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         branch.setName(newName);
 
         dao.saveOrUpdate(branch);
-        session.flush();
         session.evict(branch);
         Branch result = (Branch) session.get(Branch.class, branch.getId());
 
@@ -128,7 +126,6 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         branch.setName(null);
 
         dao.saveOrUpdate(branch);
-        session.flush();
     }
 
     @Test
