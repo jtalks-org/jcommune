@@ -94,9 +94,9 @@ $(function () {
         "overflow": "hidden",
         "overflowBody": "hidden",
         //first element focus
-        "fisrtFocus": true,
+        "firstFocus": true,
         "tabNavigation": [],
-        //conataind selector of object (key of object), hadler to object (value of object)
+        //contained selector of object (key of object), handler to object (value of object)
         "handlers": {},
         "handlersDelegate": {},
         "handlersLive": {},
