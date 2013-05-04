@@ -323,65 +323,90 @@ function doLink() {
         str = element.value.substring(sel_start, sel_end);
     }
     if (!editorVisible) {
-        var content = '<ul><div>' + $labelUrlHeader + '</div>' +
-            '<span class="empty_cell"></span>' +
-            '<br/>' +
-            createFormRow($labelUrlText, str, "urlAltId", $labelUrlInfo) +
-            createFormRow($labelUrl, "", "urlId", $labelUrlRequired) +
-            '</ul>';
-        $.prompt(content,
-            {buttons:[
-                {title:$labelOk, value:true},
-                {title:$labelCancel, value:false}
-            ], focus:0,
-                submit:function (value, message, form) {
-                    if (value != undefined && value) {
-                        mylink = document.getElementById("urlAltId").value;
-                        var link = $.trim(document.getElementById("urlId").value);
-                        if ((link != null) && (link != "")) {
-                            if (mylink == null || mylink == "") {
-                                mylink = link;
-                            }
-                            AddTag('[url=' + link + ']', '[/url]');
-                        } else {
-                            ErrorUtils.removeErrorMessage('#urlId', $labelErrorsNotEmpty);
-                            ErrorUtils.addErrorMessage('#urlId', $labelErrorsNotEmpty);
-                            return false;
-                        }
+        var bodyContent = createFormRow($labelUrlText, str, 'urlAltId', $labelUrlInfo, 'first') +
+        createFormRow($labelUrl, '', 'urlId', $labelUrlRequired,'');
+        var footerContent = '' +
+            '<button id="bb-link-cancel" class="btn">' + $labelCancel + '</button> \
+            <button id="bb-link-ok" class="btn btn-primary">' + $labelOk + '</button>';
+
+        var submitFunc = function(e){
+            e.preventDefault();
+            if ($("#urlAltId")) {
+                mylink = $("#urlAltId").val();
+                var link = $.trim($("#urlId").val());
+                if ((link != null) && (link != "")) {
+                    if (mylink == null || mylink == "") {
+                        mylink = link;
                     }
-                }});
+                    AddTag('[url=' + link + ']', '[/url]');
+                    jDialog.closeDialog();
+                } else {
+                    ErrorUtils.removeErrorMessage('#urlId', $labelErrorsNotEmpty);
+                    ErrorUtils.addErrorMessage('#urlId', $labelErrorsNotEmpty);
+                    return false;
+                }
+            }
+        }
+
+        jDialog.createDialog({
+            title: $labelUrlHeader,
+            bodyContent: bodyContent,
+            footerContent: footerContent,
+            maxWidth: 450,
+            tabNavigation: ['#urlAltId', '#urlId', '#bb-link-ok','#bb-link-cancel'],
+            handlers: {
+                '#bb-link-cancel': 'close',
+                '#bb-link-ok': {'click': submitFunc}
+            }
+        });
     }
 }
 
-function createFormRow(text, value, idForElement, info) {
+function createFormRow(text, value, idForElement, info, cls) {
     return '' +
         '<div class="control-group">' +
     		'<label for="' + idForElement + '" class="control-label">' + text + '</label>' +
     		'<div class="controls">' +
-    			'<input id="' + idForElement + '" class="reg_input" type="text" value="' +
+    			'<input id="' + idForElement + '" class="dialog-input ' + cls + '" type="text" value="' +
     				value + '" name="' + idForElement + '">' +
     				'<br>' +
     	    '</div>' +
-    	    '<span class="reg_info">' + info + '</span>' +
+    	    '<span class="dialog-info">' + info + '</span>' +
         '</div>';
     
 }
 
 function doImage() {
     if (!editorVisible) {
-        var content = '<ul><div>' + $labelImgHeader + '</div>' +
-            '<br/>' +
-            createFormRow($labelUrl, "", "imgId", $labelUrlRequired) +
-            '</ul>';
+        var bodyContent = createFormRow($labelUrl, "", "imgId", $labelUrlRequired, '');
+        var footerContent = '' +
+            '<button id="bb-img-cancel" class="btn">' + $labelCancel + '</button> \
+            <button id="bb-img-ok" class="btn btn-primary">' + $labelOk + '</button>';
 
-        $.prompt(content,
-            {buttons:{Ok:true}, focus:0,
-                submit:function () {
-                    myimg = document.getElementById("imgId").value;
-                    if ((myimg != null) && (myimg != "")) {
-                        AddTag('[img]' + myimg + '[/img]', '');
-                    }
-                }});
+        var submitFunc = function(e){
+            e.preventDefault();
+            myimg = $("#imgId").val();
+            if ((myimg != null) && (myimg != "")) {
+                AddTag('[img]' + myimg + '[/img]', '');
+                jDialog.closeDialog();
+            }else {
+                ErrorUtils.removeErrorMessage('#imgId', $labelErrorsNotEmpty);
+                ErrorUtils.addErrorMessage('#imgId', $labelErrorsNotEmpty);
+                return false;
+            }
+        }
+
+        jDialog.createDialog({
+            title: $labelImgHeader,
+            bodyContent: bodyContent,
+            footerContent: footerContent,
+            maxWidth: 400,
+            tabNavigation: ['#imgId', '#bb-img-ok','#bb-img-cancel'],
+            handlers: {
+                '#bb-img-ok': {'click': submitFunc},
+                '#bb-img-cancel': 'close'
+            }
+        });
     }
 }
 
@@ -597,44 +622,55 @@ function showColorGrid2(Sam, textBoxId) {
         var objX = new Array('00', '33', '66', '99', 'CC', 'FF');
         var c = 0;
         var xl = '"' + Sam + '","x", "' + textBoxId + '"';
-        var context = '';
-        context += '<table border="0" cellpadding="0" cellspacing="0" style="border:solid 0px #F0F0F0;padding:2px;table-layout:fixed;width:350px;"><tr>';
-        context += "<td colspan='20' style='margin:0;padding:2px;height:15px;padding-bottom: 30px;'>" +
-            '<label>' + $labelSelectedColor + '</label>' +
-            "<div id='o5582n66a' style='margin-left:35px;display: inline-block;height:25px;width:25px;border:solid 2px #666;background-color: rgb(0, 0, 0);'></div></td><tr><br>";
+
+        var bodyContent = '';
+        bodyContent += '<table border="0" cellpadding="0" cellspacing="0" style="border:solid 0px #F0F0F0;padding:2px;table-layout:fixed;width:350px;"><tr>';
         var br = 1;
         for (o = 0; o < 6; o++) {
-            context += '</tr><tr>';
+            bodyContent += '</tr><tr>';
             for (y = 0; y < 6; y++) {
                 if (y == 3) {
-                    context += '</tr><tr>';
+                    bodyContent += '</tr><tr>';
                 }
                 for (x = 0; x < 6; x++) {
                     var grid = '';
                     grid = objX[o] + objX[y] + objX[x];
                     var b = "'" + Sam + "','" + grid + "', '" + textBoxId + "'";
-                    context += '<td class="o5582brd" style="background-color:#' + grid + '"><a class="o5582n66"  href="javascript:onclick=putOBJxColor2(' + b + ');"><div style="width:12px;height:14px;"></div></a></td>';
+                    bodyContent += '<td class="o5582brd" style="background-color:#' + grid + '"><a class="o5582n66"  href="javascript:onclick=putOBJxColor2(' + b + ');"><div style="width:12px;height:14px;"></div></a></td>';
                     c++;
                 }
             }
         }
-        context += "</tr></table>";
+        bodyContent += "</tr></table>";
 
-        $.prompt(context,
-            {buttons:[
-                {title:$labelOk, value:true},
-                {title:$labelCancel, value:false}
-            ], focus:0,
-                submit:function (value) {
-                    if (value) {
-                        var rgb_color = document.getElementById("o5582n66a").style.backgroundColor;
-                        var hex_color = getHexRGBColor(rgb_color);
-                        //var grid = $('#o5582n66a').css("background-color");
-                        AddTag('[color=' + hex_color + ']', '[/color]');
-                    }
-                }
-            });
-        $('div.jqi').css('width', '350px');
+        var titleContent = '<div style="height: 30px"> \
+            <div class="left-aligned">' + $labelSelectedColor + '</div> \
+            <div id="o5582n66a" class="left-aligned dialog-color-picker"></div></div>';
+
+        var footerContent = '' +
+            '<button id="bb-color-cancel" class="btn">' + $labelCancel + '</button> \
+            <button id="bb-color-ok" class="btn btn-primary">' + $labelOk + '</button>';
+
+        var submitFunc = function (e) {
+            e.preventDefault();
+            var rgb_color = $("#o5582n66a").css('backgroundColor');
+            var hex_color = getHexRGBColor(rgb_color);
+            AddTag('[color=' + hex_color + ']', '[/color]');
+            jDialog.closeDialog();
+        }
+
+        jDialog.createDialog({
+            title: titleContent,
+            bodyContent: bodyContent,
+            footerContent: footerContent,
+            maxWidth: 380,
+            fisrtFocus: false,
+            tabNavigation: ['#bb-color-ok','#bb-color-cancel'],
+            handlers: {
+                "#bb-color-ok": {'click': submitFunc},
+                "#bb-color-cancel": 'close'
+            }
+        });
     }
 
     function getHexRGBColor(color) {

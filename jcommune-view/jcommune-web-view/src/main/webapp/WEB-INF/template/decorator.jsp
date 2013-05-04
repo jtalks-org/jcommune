@@ -50,19 +50,18 @@
   <link rel="icon" type="image/png" href="${pageContext.request.contextPath}/resources/images/favicon.png"/>
   <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-1.7.min.js"></script>
   <script src="${pageContext.request.contextPath}/resources/javascript/custom/keymaps.js"></script>
+  <script src='${pageContext.request.contextPath}/resources/javascript/custom/dialog.js'></script>
   <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery.prettyPhoto.js"></script>
   <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery.truncate.js"></script>
-  <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jqery.impromptu.js"></script>
   <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery.offtmp.js"></script>
   <script src="${pageContext.request.contextPath}/resources/javascript/custom/URLBuilder.js"></script>
   <script src="${pageContext.request.contextPath}/resources/javascript/custom/registration.js"></script>
   <script src="${pageContext.request.contextPath}/resources/javascript/custom/mainLinksEditor.js"></script>
   <script src='${pageContext.request.contextPath}/resources/javascript/custom/signin.js'></script>
-  <script src="${pageContext.request.contextPath}/resources/javascript/custom/global.js"></script>
+  <script src='${pageContext.request.contextPath}/resources/javascript/custom/global.js'></script>
   <script src="${pageContext.request.contextPath}/resources/javascript/custom/antimultipost.js"></script>
   <script src='${pageContext.request.contextPath}/resources/javascript/licensed/xregexp-min.js'></script>
   <script src='${pageContext.request.contextPath}/resources/javascript/licensed/bootstrap.min.js'></script>
-  <script src='${pageContext.request.contextPath}/resources/javascript/licensed/bootbox.min.js'></script>
   <script src='${pageContext.request.contextPath}/resources/javascript/custom/errorUtils.js'></script>
   <script src='${pageContext.request.contextPath}/resources/javascript/custom/utils.js'></script>
   <script src='${pageContext.request.contextPath}/resources/javascript/custom/dropdown.js'></script>

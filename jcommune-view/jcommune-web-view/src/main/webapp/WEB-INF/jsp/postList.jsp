@@ -28,8 +28,6 @@
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/subscription.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jqery.impromptu.js"
-            type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/moveTopic.js"
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/poll.js"

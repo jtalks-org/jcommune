@@ -27,31 +27,44 @@ $(document).ready(function () {
         $(this).click(function (e) {
             e.preventDefault();
             var path = window.location.protocol + "//" + window.location.host;
-            $.prompt(path + $(this).attr("href"), {buttons: {}, persistent: false});
+            jDialog.createDialog({
+                type: jDialog.alertType,
+                maxWidth: 800,
+                bodyMessage: path + $(this).attr("href")
+            });
         })
     })
-    // popups to confirm post/topic/pm deletion
-    $("a.delete").each(function () {
-        $(this).click(function (e) {
+    // popups to confirm post/topic deletion
+    $(document).delegate('a.delete', 'click', function(e){
+        e.preventDefault();
+        deletePath = $(this).attr('href');
+        var footerContent = ' \
+            <button id="remove-entity-cancel" class="btn">' + $labelCancel + '</button> \
+            <button id="remove-entity-ok" class="btn btn-primary">' + $labelOk + '</button>';
+
+        var submitFunc = function (e) {
             e.preventDefault();
-            deletePath = $(this).attr('href');
-            $.prompt($(this).attr('data-confirmationMessage'),
-                {buttons: [
-                    {title: $labelOk, value: true},
-                    {title: $labelCancel, value: false}
-                ],
-                    persistent: false,
-                    submit: function (confirmed) {
-                        if (confirmed) {
-                            var deleteForm = $('#deleteForm').get(0);
-                            deleteForm.action = deletePath;
-                            deleteForm.submit();
-                        }
-                    }
-                }
-            );
-        })
-    })
+            var deleteForm = $('#deleteForm').get(0);
+            deleteForm.action = deletePath;
+            deleteForm.submit();
+            jDialog.closeDialog();
+        };
+
+        jDialog.createDialog({
+            type: jDialog.confirmType,
+            bodyMessage : $(this).attr('data-confirmationMessage'),
+            firstFocus : false,
+            footerContent: footerContent,
+            maxWidth: 300,
+            tabNavigation: ['#remove-entity-ok','#remove-entity-cancel'],
+            handlers: {
+                "#remove-entity-ok": {'click': submitFunc},
+                "#remove-entity-cancel": 'close'
+            }
+        });
+
+        $('#remove-entity-ok').focus();
+    });
 
     /** Handler to prevent multiposting. */
     $('form.anti-multipost').submit(function () {
@@ -99,9 +112,6 @@ $(document).ready(function () {
     if(searchInput.val() == ''){
         searchInput.addClass('search-query-focusout');
     }
-
-    //close modal dialog foer all dialog created by bootbox js. Dialog should have button with class "cancel"
-    $(document).delegate('.bootbox.modal', 'keydown', Keymaps.bootboxClose)
 
     $(window).resize();
 	

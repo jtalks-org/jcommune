@@ -62,6 +62,7 @@ $(document).ready(function () {
     updateButtonsState();
 
     // collect checked private messages
+
     $("#deleteCheckedPM").each(function () {
         $(this).click(function (e) {
             e.preventDefault();
@@ -74,23 +75,33 @@ $(document).ready(function () {
             if (identifiers.length > 0) {
                 var deletePath = $(this)[0].href;
                 var deletePmPromt = $labelDeletePmGroupConfirmation.replace('%s', identifiers.length);
-                $.prompt(deletePmPromt,
-                    {
-                        buttons:[
-                            {title:$labelOk, value:true},
-                            {title:$labelCancel, value:false}
-                        ],
-                        persistent:false,
-                        submit:function (confirmed) {
-                            if (confirmed) {
-                                deleteMessages(identifiers);
-                                var deleteForm = $('#deleteForm')[0];
-                                deleteForm.action = deletePath;
-                                deleteForm.submit();
-                            }
-                        }
+                var footerContent = ' \
+                    <button id="remove-pm-cancel" class="btn">' + $labelCancel + '</button> \
+                    <button id="remove-pm-ok" class="btn btn-primary">' + $labelOk + '</button>';
+
+                var submitFunc = function (e) {
+                    e.preventDefault();
+                    deleteMessages(identifiers);
+                    var deleteForm = $('#deleteForm')[0];
+                    deleteForm.action = deletePath;
+                    deleteForm.submit();
+                    jDialog.closeDialog();
+                };
+
+                jDialog.createDialog({
+                    type: jDialog.confirmType,
+                    bodyMessage: deletePmPromt,
+                    firstFocus: false,
+                    footerContent: footerContent,
+                    maxWidth: 300,
+                    tabNavigation: ['#remove-pm-ok', '#remove-pm-cancel'],
+                    handlers: {
+                        "#remove-pm-ok": {'click': submitFunc},
+                        "#remove-pm-cancel": 'close'
                     }
-                );
+                });
+
+                $('#remove-pm-ok').focus();
             }
         });
     });

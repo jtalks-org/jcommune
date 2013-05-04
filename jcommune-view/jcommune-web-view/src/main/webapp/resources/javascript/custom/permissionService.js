@@ -32,7 +32,10 @@ PermissionService.hasPermission = function(targetId, targetType, permission, cal
 			}
 		})
 		.error(function() {
-			bootbox.alert($labelUnexpectedError);
+            jDialog.createDialog({
+                type: jDialog.alertType,
+                bodyMessage: $labelUnexpectedError
+            });
 		});
 }
 
@@ -53,7 +56,10 @@ PermissionService.getHasPermission = function(targetId, targetType, permission) 
 			result = (data.status == 'SUCCESS');
 		},
 		error : function() {
-			bootbox.alert($labelUnexpectedError);
+            jDialog.createDialog({
+                type: jDialog.alertType,
+                bodyMessage: $labelUnexpectedError
+            });
 		}
 	});
 	

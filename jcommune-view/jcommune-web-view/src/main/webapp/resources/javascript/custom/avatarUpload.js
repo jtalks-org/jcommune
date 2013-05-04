@@ -21,22 +21,34 @@ $(document).ready(function () {
 
     //remove avatar handler
     $('#removeAvatar').click(function () {
-        $.prompt($labelDeleteAvatarConfirmation,
-            {buttons: [
-                {title: $labelOk, value: true},
-                {title: $labelCancel, value: false}
-            ],
-                persistent: false,
-                submit: function (confirmed) {
-                    if (confirmed) {
-                        $.getJSON($root + "/defaultAvatar", function (responseJSON) {
-                            document.getElementById('avatarPreview').setAttribute('src',
-                                responseJSON.srcPrefix + responseJSON.srcImage);
-                            document.getElementById('avatar').setAttribute('value', responseJSON.srcImage);
-                        });
-                    }
-                }
+        var footerContent = ' \
+            <button id="remove-avatar-cancel" class="btn">' + $labelCancel + '</button> \
+            <button id="remove-avatar-ok" class="btn btn-primary">' + $labelOk + '</button>';
+
+        var submitFunc = function (e) {
+            e.preventDefault();
+            $.getJSON($root + "/defaultAvatar", function (responseJSON) {
+                $('#avatarPreview').attr('src', responseJSON.srcPrefix + responseJSON.srcImage);
+                $('#avatar').val(responseJSON.srcImage);
             });
+            jDialog.closeDialog();
+        };
+
+        jDialog.createDialog({
+            type: jDialog.confirmType,
+            bodyMessage : $labelDeleteAvatarConfirmation,
+            firstFocus : false,
+            footerContent: footerContent,
+            maxWidth: 300,
+            tabNavigation: ['#remove-avatar-ok','#remove-avatar-cancel'],
+            handlers: {
+                "#remove-avatar-ok": {'click': submitFunc},
+                "#remove-avatar-cancel": 'close'
+            }
+        });
+
+        $('#remove-avatar-ok').focus();
+
     });
 
     //avatar uploading handler

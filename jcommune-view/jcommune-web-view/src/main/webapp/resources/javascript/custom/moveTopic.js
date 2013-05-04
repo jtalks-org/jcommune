@@ -18,94 +18,75 @@
  */
 var baseUrl = $root;
 
-var moveTopicEditor;
 var branchId;
 var sectionId;
 var topicId;
 
 $(function () {
 
-    $('.modal-backdrop').live('click', function (e) {
-        $('#move-topic-editor').find('.close').click();
-    });
-
-    $('#move-button-cancel').live('click', function (e) {
-        $('#move-topic-editor').find('.close').click();
-    });
-
-    $('#move-button-save').live('click', function (e) {
-        $.ajax({
-            url: baseUrl + '/topics/move/json/' + topicId,
-            type: "POST",
-            data: {"branchId": branchId},
-            success: function () {
-                document.location = baseUrl + '/topics/' + topicId;
-            },
-            error: function () {
-                $.prompt($labelError500Detail);
-            }
-        });
-    });
-
-    $("#branch_name").live('change', function () {
-        disableMoveButton(false);
-        branchId = $(this).val();
-    });
-
-
     /**
      * "Move topic" button handler.
      */
     $("[name=move_topic]").on('click', function () {
-		topicId = $(this).attr('data-topicId');
+
+        topicId = $(this).attr('data-topicId');
+
         $.getJSON(baseUrl + "/sections/json", function (sections) {
-            moveTopicEditor = createMoveTopicEditor(sections);
+            var branchNameLive = function (e) {
+                e.preventDefault();
+                disableMoveButton(false);
+                branchId = $(this).val();
+            }
 
-            moveTopicEditor.unbind();
+            var submitFunc = function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: baseUrl + '/topics/move/json/' + topicId,
+                    type: "POST",
+                    data: {"branchId": branchId},
+                    success: function () {
+                        document.location = baseUrl + '/topics/' + topicId;
+                    },
+                    error: function () {
+                        jDialog.createDialog({
+                            type: jDialog.alertType,
+                            bodyMessage: $labelError500Detail
+                        });
+                    }
+                });
+            }
 
-            moveTopicEditor.find('.close').on('click', function (e) {
-                moveTopicEditor.modal('hide');
-                moveTopicEditor.remove();
+            var bodyContent = createSectionsForModalWindow(sections);
+
+            var footerContent = ' \
+            <button id="move-button-cancel" class="btn">' + $labelCancel + '</button> \
+            <button id="move-button-save" class="btn btn-primary">' + $labelTopicMove + '</button>';
+
+            jDialog.createDialog({
+                dialogId: 'move-topic-editor',
+                title: $labelTopicMoveFull,
+                bodyContent: bodyContent,
+                footerContent: footerContent,
+                maxWidth: 350,
+                tabNavigation: ['select:first', 'select:last', '#move-button-save', '#move-button-cancel'],
+                handlers: {
+                    '#move-button-cancel' : 'close'
+                },
+                handlersDelegate: {
+                    '#branch_name': {'change': branchNameLive},
+                    '#move-button-save': {'click': submitFunc}
+                }
             });
 
             var eliminatedBranchId = $("#edit_button").attr("rel");
 
             displayAllBranches(eliminatedBranchId);
 
-            moveTopicEditor.modal({
-                "backdrop": "static",
-                "keyboard": true,
-                "show": true
-            });
-
-            moveTopicEditor.keydown(Keymaps.moveTopicEditor);
-
-            Utils.resizeDialog(moveTopicEditor);
-
             displayBranches(eliminatedBranchId);
 
-            moveTopicEditor.find('select:first').focus()
+            jDialog.dialog.find('select:first').focus()
         });
     });
-
-    function createMoveTopicEditor(sections) {
-        return $(' \
-        <div class="modal" id="move-topic-editor" align="center"> \
-            <div class="modal-header"> \
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> \
-                <h3>' + $labelTopicMoveFull + '</h3> \
-            </div> \
-            <div class="modal-body"> ' +
-            createSectionsForModalWindow(sections) + ' \
-            </div> \
-            <div class="modal-footer"> \
-                <button id="move-button-cancel" class="btn">' + $labelCancel + '</button> \
-                <button id="move-button-save" class="btn btn-primary">' + $labelTopicMove + '</button> \
-            </div> \
-        </div> \
-        ');
-    }
-
 
     /**
      * Prepares and returns html code for "Move topic" modal window in string representation.
