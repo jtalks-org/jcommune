@@ -17,9 +17,11 @@ var Keymaps = {};
 
 var escCode = 27;
 var enterCode = 13;
+var charMin = 60;
+var charMax = 90;
 var tabCode = 9;
 
-Keymaps.review = function (e) {
+Keymaps.review = function(e) {
     if (e.ctrlKey && e.keyCode == enterCode) {
         e.preventDefault();
         $(".review-container-controls-ok").click();
@@ -30,42 +32,42 @@ Keymaps.review = function (e) {
     }
 };
 
-Keymaps.reviewConfirmRemoveButton = function (e) {
+Keymaps.reviewConfirmRemoveButton = function(e) {
     if ((e.keyCode || e.charCode) == tabCode) {
         e.preventDefault();
         $(e.target).parents('.modal').find('.cancel').focus();
     }
 }
 
-Keymaps.reviewCancelRemoveButton = function (e) {
+Keymaps.reviewCancelRemoveButton = function(e) {
     if ((e.keyCode || e.charCode) == tabCode) {
         e.preventDefault();
         $(e.target).parents('.modal').find('.btn-primary').focus();
     }
 }
 
-Keymaps.registrationSubmit = function (e) {
+Keymaps.registrationSubmit = function(e) {
     if ((e.keyCode || e.charCode) == tabCode) {
         e.preventDefault();
         $('#signup-modal-dialog').find("#username").focus();
     }
 }
 
-Keymaps.registrationPassConfirm = function (e) {
+Keymaps.registrationPassConfirm = function(e) {
     if ((e.keyCode || e.charCode) == tabCode) {
         e.preventDefault();
         $('#signup-modal-dialog').find("#captcha").focus();
     }
 }
 
-Keymaps.signinSubmit = function (e) {
+Keymaps.signinSubmit = function(e) {
     if ((e.keyCode || e.charCode) == tabCode) {
         e.preventDefault();
         $('#signin-modal-dialog').find("#j_username").focus();
     }
 }
 
-Keymaps.linksEditor = function (e) {
+Keymaps.linksEditor = function(e) {
     if ((e.keyCode || e.charCode) == enterCode) {
         var but = $('#main-links-editor  #save-link:visible')[0]
         if (but && $(e.target).attr('id') != 'cancel-link') {
@@ -83,14 +85,14 @@ Keymaps.linksEditor = function (e) {
     }
 }
 
-Keymaps.linksEditorRemoveButton = function (e) {
+Keymaps.linksEditorRemoveButton = function(e) {
     if ((e.keyCode || e.charCode) == tabCode) {
         e.preventDefault();
         $('#main-links-editor #cancel-link').focus();
     }
 }
 
-Keymaps.linksEditorCancelButton = function (e) {
+Keymaps.linksEditorCancelButton = function(e) {
     if ((e.keyCode || e.charCode) == tabCode) {
         e.preventDefault();
         if ($('#main-links-editor #remove-link:visible')[0]) {
@@ -101,35 +103,28 @@ Keymaps.linksEditorCancelButton = function (e) {
     }
 }
 
-Keymaps.linksEditorHintInput = function (e) {
+Keymaps.linksEditorHintInput = function(e) {
     if ((e.keyCode || e.charCode) == tabCode) {
         e.preventDefault();
         $('#main-links-editor #save-link').focus();
     }
 }
 
-Keymaps.linksEditorSaveButton = function (e) {
+Keymaps.linksEditorSaveButton = function(e) {
     if ((e.keyCode || e.charCode) == tabCode) {
         e.preventDefault();
         $('#main-links-editor #cancel-link').focus();
     }
 }
 
-Keymaps.uploadBannerCancelButton = function (e) {
+Keymaps.uploadBannerCancelButton = function(e) {
     if ((e.keyCode || e.charCode) == tabCode) {
         e.preventDefault();
         $(this).closest("form[id^=uploadBannerModal]").find('#body').focus();
     }
 }
 
-Keymaps.post = function (e) {
-    if (e.ctrlKey && e.keyCode == enterCode) {
-        e.preventDefault();
-        $('input[type="submit"]').click();
-    }
-};
-
-Keymaps.moveTopicEditor = function (e) {
+Keymaps.moveTopicEditor = function(e) {
     if ((e.keyCode || e.charCode) == escCode) {
         var but = $('#move-topic-editor .close:visible')[0]
         if (but) {
@@ -139,10 +134,29 @@ Keymaps.moveTopicEditor = function (e) {
     }
 }
 
-Keymaps.bootboxClose = function (e) {
+Keymaps.bootboxClose = function(e) {
     if ((e.keyCode || e.charCode) == escCode) {
         e.preventDefault();
         $(this).find('.cancel').click();
     }
 }
+
+//post,topic,pm forms
+Keymaps.bbeditor = function(e) {
+    if (e.ctrlKey && e.keyCode == enterCode) {
+        e.preventDefault();
+        $('input[type="submit"]').click();
+    }
+    //check bb-editor toolbar
+    if($(e.target).parents('form').find('.btn-toolbar').length > 0){
+        //if editor contains button with tooltip Ctrl + <char> than click
+        if (e.ctrlKey && e.keyCode >= charMin && e.keyCode <= charMax) {
+            e.preventDefault();
+            var keyVal = String.fromCharCode(e.keyCode);
+            var but = $('[data-original-title$="(Ctrl + ' + keyVal + ')"]')
+            but.click();
+        }
+    }
+}
+
 

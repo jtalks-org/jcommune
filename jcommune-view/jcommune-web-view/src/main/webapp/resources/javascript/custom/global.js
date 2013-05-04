@@ -61,6 +61,9 @@ $(document).ready(function () {
         Antimultipost.disableSubmit($(this));
     });
 
+    //keyamaps to html forms
+    $(document).delegate('form.anti-multipost', 'keydown', Keymaps.bbeditor);
+
     //for change externalLinks position (top line or main page)
     $(window).resize(function (e) {
         e.preventDefault();
@@ -77,11 +80,6 @@ $(document).ready(function () {
             elements.hide();
         }
     })
-
-    //keyamaps to html forms
-    $('#postDto').bind('keydown', Keymaps.post);
-    $('#topicDto').bind('keydown', Keymaps.post);
-    $('#privateMessageDto').bind('keydown', Keymaps.post);
 
     var searchInput = $('#searchText');
     searchInput.on('focus', function (e) {
