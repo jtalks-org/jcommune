@@ -136,6 +136,17 @@ Keymaps.moveTopicEditor = function(e) {
     }
 }
 
+Keymaps.defaultDialog = function (e) {
+    //disable submit by enter
+    if (e.keyCode == enterCode) {
+        e.preventDefault();
+        jDialog.dialog.find('.btn-primary:first').click();
+    }
+    if ((e.keyCode || e.charCode) == escCode) {
+        jDialog.dialog.find('.close').click();
+    }
+}
+
 //post,topic,pm forms
 Keymaps.bbeditor = function(e) {
     if (e.ctrlKey && e.keyCode == enterCode) {
