@@ -84,7 +84,6 @@
 
                                 <c:out value="${branch.description}"/>
                                 <br/>
-                                <strong><spring:message code="label.section.moderators"/></strong>
                                 <jtalks:moderators moderators="${branch.moderatorsGroup.users}"/>
                             </td>
                             <td class="topics-posts">

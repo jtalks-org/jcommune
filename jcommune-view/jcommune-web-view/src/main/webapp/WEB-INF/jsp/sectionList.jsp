@@ -101,8 +101,7 @@
                                 <br/>
 
                                 <div class="forum-sections-moderators-container">
-                                    <strong><spring:message code="label.section.moderators"/></strong>
-                                    <jtalks:moderators moderators="${branch.moderatorsGroup.users}"/>
+                                    <jtalks:moderators moderators="${branch.moderatorsGroup.users}" visibleIfEmpty="false"/>
                                 </div>
                             </td>
                             <td class="topics-posts shrink-to-fit">

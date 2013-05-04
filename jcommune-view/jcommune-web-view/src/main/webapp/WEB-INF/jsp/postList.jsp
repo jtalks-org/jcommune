@@ -360,8 +360,7 @@
 
 <%-- Users --%>
 <div id="users-stats" class="well forum-user-stats-container">
-    <strong><spring:message code="label.topic.moderators"/></strong>
-    <jtalks:moderators moderators="${topic.branch.moderatorsGroup.users}"/>
+    <jtalks:moderators moderators="${topic.branch.moderatorsGroup.users}" />
     <br/>
     <strong><spring:message code="label.branch.now_browsing"/></strong>
     <jtalks:users users="${viewList}" branch="${topic.branch}"/>
