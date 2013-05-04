@@ -136,13 +136,6 @@ Keymaps.moveTopicEditor = function(e) {
     }
 }
 
-Keymaps.bootboxClose = function(e) {
-    if ((e.keyCode || e.charCode) == escCode) {
-        e.preventDefault();
-        $(this).find('.cancel').click();
-    }
-}
-
 //post,topic,pm forms
 Keymaps.bbeditor = function(e) {
     if (e.ctrlKey && e.keyCode == enterCode) {
