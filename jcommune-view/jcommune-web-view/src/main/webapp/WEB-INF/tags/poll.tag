@@ -62,6 +62,7 @@
                         <c:out value="${option.name}"/>
                     <span id="pollAnswer${option.id}" style="display:none">
                         <div class="progress" style="margin-bottom: 3px;">
+                            <div class="pool-result left-aligned"></div>
                             <div class="bar chart" style="width: 0;"></div>
                         </div>
                     </span>
@@ -82,8 +83,7 @@
                                 <div class="progress" style="margin-bottom: 3px;">
                                     <c:choose>
                                         <c:when test="${poll.totalVotesCount > 0 && option.votesCount > 0}">
-                                            <div class="bar"
-                                                 style="width: ${option.votesCount / poll.totalVotesCount * 100}%;">
+                                            <div class="pool-result left-aligned">
                                                 <fmt:message key="label.poll.option.vote.info">
                                                     <fmt:param>${option.votesCount}</fmt:param>
                                                     <fmt:param>
@@ -99,6 +99,9 @@
                                                         </c:choose>
                                                     </fmt:param>
                                                 </fmt:message>
+                                            </div>
+                                            <div class="bar"
+                                                 style="width: ${option.votesCount / poll.totalVotesCount * 100}%;">
                                             </div>
                                         </c:when>
                                         <c:otherwise>

@@ -660,3 +660,8 @@ div.anchor {
     padding: 5px;
     text-align: center;
 }
+
+.pool-result{
+  width: 100%;
+  text-align: center;
+}
