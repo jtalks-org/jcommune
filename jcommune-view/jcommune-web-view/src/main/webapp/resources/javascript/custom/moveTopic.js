@@ -42,7 +42,7 @@ $(function () {
                 e.preventDefault();
                 $.ajax({
                     url: baseUrl + '/topics/move/json/' + topicId,
-                    type: "POST",
+                    type: 'POST',
                     data: {"branchId": branchId},
                     success: function () {
                         document.location = baseUrl + '/topics/' + topicId;

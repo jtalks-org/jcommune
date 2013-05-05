@@ -23,14 +23,14 @@ $(document).ready(function () {
     // Initializes image previewing
     $("a[rel^='prettyPhoto']").prettyPhoto({social_tools: false});
     // popups for individual post links
-    $("a.postLink").each(function () {
+    $('a.postLink').each(function () {
         $(this).click(function (e) {
             e.preventDefault();
-            var path = window.location.protocol + "//" + window.location.host;
+            var path = window.location.protocol + '//' + window.location.host;
             jDialog.createDialog({
                 type: jDialog.alertType,
                 maxWidth: 800,
-                bodyMessage: path + $(this).attr("href")
+                bodyMessage: path + $(this).attr('href')
             });
         })
     })
@@ -58,8 +58,8 @@ $(document).ready(function () {
             maxWidth: 300,
             tabNavigation: ['#remove-entity-ok','#remove-entity-cancel'],
             handlers: {
-                "#remove-entity-ok": {'click': submitFunc},
-                "#remove-entity-cancel": 'close'
+                '#remove-entity-ok': {'click': submitFunc},
+                '#remove-entity-cancel': 'close'
             }
         });
 

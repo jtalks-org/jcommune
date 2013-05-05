@@ -14,7 +14,33 @@
  */
 
 /**
- * Constructor of dialogs
+ * This is a central class for creation dialog windows in the project. Each dialog consists of three parts: header, body, footer.
+ * For each of these parts there is a function that generates the content: rootPanelFunc, bodyContentFunc, footerContentFunc,
+ * you can override them for your particular dialog. The main method of creating the Dialog is 'createDialog' where you can
+ * specify your custom configuration parameters. Note, that each parameter has a default option and if you don't override it, then default will be taken.
+ * Also, there are 3 types of dialogs: alert, info, confirm with predefined markup and functions. E.g. to create an alert, write this:
+ * jDialog.createDialog({
+ *     type: jDialog.alertType,
+ *     bodyMessage: 'some message'
+ *  });
+ *
+ *  Options.
+ *  tabNavigation - this option sets the order of elements that get focused when user presses TAB, you just need to specify a list of selectors here
+ *  Example:
+ *  jDialog.createDialog({
+ *      ...
+ *      tabNavigation : ['#fieldId', '.className', 'input[name="fieldName"]', etc.]
+ *      ...
+ *  })
+ *  handlers - a list of objects to configure a UI event and the function to process this event. Instead of passing actual functions, you can use mnemonics
+ *  (predefined names functions). Example of both:
+ *   handlers: {
+ *         '#signin-submit-button': {'click': sendLoginPost, 'keydown': someFunc, ...}
+ *         '#signin-cancel-button': 'close'
+ *   }
+ *  handlersDelegate & handlersLive - same purpose as 'handlers', but instead of 'onSomeEvent' functions JQuery uses 'delegate' and 'live' functions.
+ *  This is needed when while dialog creation
+ *  you don't yet have elements to describe events for (these elements are dynamically created after the dialog is already in place)
  */
 
 var jDialog = {};
@@ -78,30 +104,30 @@ $(function () {
 
     //if user sets options with name which exists in default then default option overridden, else adds
     jDialog.defaultOptions = {
-        "type": jDialog.infoType,
-        "dialogId": '',
+        'type': jDialog.infoType,
+        'dialogId': '',
         //for header height
-        "title": '&nbsp;',
-        "rootPanelFunc": jDialog.rootPanelFunc,
-        "bodyContentFunc": jDialog.bodyContentFunc,
-        "footerContentFunc": jDialog.footerContentFunc,
-        "bodyContent": '',
+        'title': '&nbsp;',
+        'rootPanelFunc': jDialog.rootPanelFunc,
+        'bodyContentFunc': jDialog.bodyContentFunc,
+        'footerContentFunc': jDialog.footerContentFunc,
+        'bodyContent': '',
         //for confirm, alert types
-        "bodyMessage": '',
-        "footerContent": '',
-        "maxWidth": 300,
-        "maxHeight": 400,
-        "overflow": "hidden",
-        "overflowBody": "hidden",
+        'bodyMessage': '',
+        'footerContent': '',
+        'maxWidth': 300,
+        'maxHeight': 400,
+        'overflow': 'hidden',
+        'overflowBody': 'hidden',
         //first element focus
-        "firstFocus": true,
-        "tabNavigation": [],
+        'firstFocus': true,
+        'tabNavigation': [],
         //contained selector of object (key of object), handler to object (value of object)
-        "handlers": {},
-        "handlersDelegate": {},
-        "handlersLive": {},
-        "dialogKeydown": Keymaps.defaultDialog,
-        "alertDefaultBut": "alert-ok"
+        'handlers': {},
+        'handlersDelegate': {},
+        'handlersLive': {},
+        'dialogKeydown': Keymaps.defaultDialog,
+        'alertDefaultBut': 'alert-ok'
     }
 
     jDialog.createDialog = function (opts) {
@@ -114,13 +140,13 @@ $(function () {
 
         //modal function is bootstrap
         jDialog.dialog.modal({
-            "backdrop": "static",
-            "keyboard": true,
-            "show": true
+            'backdrop': 'static',
+            'keyboard': true,
+            'show': true
         }).css(
-            {"max-width": jDialog.options.maxWidth,
-            "max-height": jDialog.options.maxHeight,
-            "overflow" : jDialog.options.overflow}
+            {'max-width': jDialog.options.maxWidth,
+            'max-height': jDialog.options.maxHeight,
+            'overflow' : jDialog.options.overflow}
         );
 
         jDialog.resizeDialog(jDialog.dialog);

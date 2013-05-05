@@ -113,15 +113,15 @@ $(function () {
             tabNavigation: [],
             dialogKeydown: Keymaps.linksEditor,
             handlers: {
-                "#add-main-link": {'click': addButtonClick},
-                "#main-links-editor #link-hint": {'keydown': Keymaps.linksEditorHintInput},
-                "#main-links-editor #save-link": {'keydown': Keymaps.linksEditorSaveButton},
-                "#main-links-editor #cancel-link": {'keydown': Keymaps.linksEditorCancelButton},
-                "#main-links-editor #remove-link": {'keydown': Keymaps.linksEditorRemoveButton}
+                '#add-main-link': {'click': addButtonClick},
+                '#main-links-editor #link-hint': {'keydown': Keymaps.linksEditorHintInput},
+                '#main-links-editor #save-link': {'keydown': Keymaps.linksEditorSaveButton},
+                '#main-links-editor #cancel-link': {'keydown': Keymaps.linksEditorCancelButton},
+                '#main-links-editor #remove-link': {'keydown': Keymaps.linksEditorRemoveButton}
             },
             handlersDelegate: {
-                ".icon-pencil": {'click': editButtonClick},
-                ".icon-trash": {'click': trashButtonClick}
+                '.icon-pencil': {'click': editButtonClick},
+                '.icon-trash': {'click': trashButtonClick}
             }
         });
 

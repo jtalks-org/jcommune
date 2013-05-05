@@ -17,8 +17,8 @@ function deleteMessages(identifiers) {
     // add identifiers of the checked private messages for deletion
     $('[name=pmIdentifiers]').remove();
 
-    var deleteForm = $("#deleteForm");
-    var field = "<input type='hidden' name='pmIdentifiers' value='%value%'>";
+    var deleteForm = $('#deleteForm');
+    var field = '<input type="hidden" name="pmIdentifiers" value="%value%">';
     for (i = 0; i < identifiers.length; i++) {
         var actualField = field.replace('%value%', identifiers[i]);
         deleteForm.append(actualField);
@@ -33,7 +33,7 @@ function editMessage() {
     selectedCheckboxes = $('.checker:checked');
     if (selectedCheckboxes.size() == 1) {
         id = selectedCheckboxes[0].id;
-        document.location = $root + "/pm/" + id + "/edit";
+        document.location = $root + '/pm/' + id + '/edit';
     }
 }
 
@@ -96,8 +96,8 @@ $(document).ready(function () {
                     maxWidth: 300,
                     tabNavigation: ['#remove-pm-ok', '#remove-pm-cancel'],
                     handlers: {
-                        "#remove-pm-ok": {'click': submitFunc},
-                        "#remove-pm-cancel": 'close'
+                        '#remove-pm-ok': {'click': submitFunc},
+                        '#remove-pm-cancel': 'close'
                     }
                 });
 
@@ -106,17 +106,17 @@ $(document).ready(function () {
         });
     });
     // get private message identifier
-    $("#deleteOnePM").each(function () {
+    $('#deleteOnePM').each(function () {
         $(this).click(function (e) {
             e.preventDefault();
             var identifiers = [];
-            identifiers[0] = $("#PMId").val();
+            identifiers[0] = $('#PMId').val();
             deleteMessages(identifiers);
         });
     });
 
     //bind edit message handler
-    $("#editCheckedPM").click(function (e) {
+    $('#editCheckedPM').click(function (e) {
         e.preventDefault();
         editMessage();
         return false;
@@ -147,7 +147,7 @@ $(document).ready(function () {
             updateButtonsState();
         });
 
-        $('.check_all').on("click", function () {
+        $('.check_all').on('click', function () {
             if ($(this).is(':checked')) {
                 $('.checker').attr('checked', true);
                 c = $('.checker').length;
@@ -168,11 +168,11 @@ $(document).ready(function () {
     $(document).ready(function () {
         var url = document.URL.toString();
         if (url.match(/inbox/)) {
-            $("#inbox_link").addClass("active");
+            $('#inbox_link').addClass('active');
         } else if (url.match(/outbox/)) {
-            $("#outbox_link").addClass("active");
+            $('#outbox_link').addClass('active');
         } else if (url.match(/drafts$/)) {
-            $("#draft_link").addClass("active");
+            $('#draft_link').addClass('active');
         }
     });
 });

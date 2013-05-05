@@ -136,7 +136,7 @@ function applyPollResult(poll) {
 function addSingleVote(pollOptionId, pollId) {
     $.ajax({
         url:$root + '/poll/' + pollId + '/single',
-        type:"POST",
+        type:'POST',
         data:{"pollOptionId":pollOptionId},
         success:function (poll) {
             applyPollResult(poll);
@@ -154,8 +154,8 @@ function addSingleVote(pollOptionId, pollId) {
  */
 function addMultipleVote(pollDto, pollId) {
     $.ajax({
-        url:$root + "/poll/" + pollId + '/multiple',
-        type:"POST",
+        url:$root + '/poll/' + pollId + '/multiple',
+        type:'POST',
         contentType:"application/json",
         data:JSON.stringify(pollDto),
         success:function (poll) {
@@ -173,5 +173,5 @@ function processVotingError() {
         type: jDialog.alertType,
         bodyMessage: $labelUnexpectedError
     });
-	$("#pollAjaxLoader").hide(); //hide the ajax loader again
+	$('#pollAjaxLoader').hide(); //hide the ajax loader again
 }

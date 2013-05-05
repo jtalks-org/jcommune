@@ -48,7 +48,7 @@ $(function () {
             tabNavigation: ['#j_username','#j_password','#rememberme-area input','#restore-passwd a',
                 '#signin-submit-button'],
             handlers: {
-                "#signin-submit-button": {'click': sendLoginPost}
+                '#signin-submit-button': {'click': sendLoginPost}
             }
         });
     });
@@ -75,27 +75,27 @@ function sendLoginPost(e) {
 
     jDialog.dialog.find('*').attr('disabled', true);
 
-    var query = "j_username=" + encodeURIComponent(username) + "&" + "j_password=" + encodeURIComponent(password);
+    var query = 'j_username=' + encodeURIComponent(username) + '&' + 'j_password=' + encodeURIComponent(password);
     if (remember_me) {
-        query = query + "&_spring_security_remember_me=on";
+        query = query + '&_spring_security_remember_me=on';
     }
 
     $.ajax({
-        type: "POST",
-        url: $root + "/login_ajax",
+        type: 'POST',
+        url: $root + '/login_ajax',
         data: query,
-        dataType: "html",
+        dataType: 'html',
         success: function (resp) {
             resp = eval('(' + resp + ')');
 
-            if (resp.status == "SUCCESS") {
+            if (resp.status == 'SUCCESS') {
                 location.reload();
             }
             else {
                 jDialog.prepareDialog(jDialog.dialog);
 
-                ErrorUtils.addErrorStyles("#j_username");
-                ErrorUtils.addErrorStyles("#j_password");
+                ErrorUtils.addErrorStyles('#j_username');
+                ErrorUtils.addErrorStyles('#j_password');
 
                 passwordElement.parent().append('<span class="help-inline _error">' + $labelLoginError + '</span>');
                 jDialog.resizeDialog(jDialog.dialog);

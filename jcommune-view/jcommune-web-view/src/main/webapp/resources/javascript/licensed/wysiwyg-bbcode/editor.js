@@ -331,11 +331,11 @@ function doLink() {
 
         var submitFunc = function(e){
             e.preventDefault();
-            if ($("#urlAltId")) {
-                mylink = $("#urlAltId").val();
-                var link = $.trim($("#urlId").val());
-                if ((link != null) && (link != "")) {
-                    if (mylink == null || mylink == "") {
+            if ($('#urlAltId')) {
+                mylink = $('#urlAltId').val();
+                var link = $.trim($('#urlId').val());
+                if ((link != null) && (link != '')) {
+                    if (mylink == null || mylink == '') {
                         mylink = link;
                     }
                     AddTag('[url=' + link + ']', '[/url]');
@@ -378,15 +378,15 @@ function createFormRow(text, value, idForElement, info, cls) {
 
 function doImage() {
     if (!editorVisible) {
-        var bodyContent = createFormRow($labelUrl, "", "imgId", $labelUrlRequired, '');
+        var bodyContent = createFormRow($labelUrl, '', 'imgId', $labelUrlRequired, '');
         var footerContent = '' +
             '<button id="bb-img-cancel" class="btn">' + $labelCancel + '</button> \
             <button id="bb-img-ok" class="btn btn-primary">' + $labelOk + '</button>';
 
         var submitFunc = function(e){
             e.preventDefault();
-            myimg = $("#imgId").val();
-            if ((myimg != null) && (myimg != "")) {
+            myimg = $('#imgId').val();
+            if ((myimg != null) && (myimg != '')) {
                 AddTag('[img]' + myimg + '[/img]', '');
                 jDialog.closeDialog();
             }else {
@@ -641,7 +641,7 @@ function showColorGrid2(Sam, textBoxId) {
                 }
             }
         }
-        bodyContent += "</tr></table>";
+        bodyContent += '</tr></table>';
 
         var titleContent = '<div style="height: 30px"> \
             <div class="left-aligned">' + $labelSelectedColor + '</div> \
@@ -653,7 +653,7 @@ function showColorGrid2(Sam, textBoxId) {
 
         var submitFunc = function (e) {
             e.preventDefault();
-            var rgb_color = $("#o5582n66a").css('backgroundColor');
+            var rgb_color = $('#o5582n66a').css('backgroundColor');
             var hex_color = getHexRGBColor(rgb_color);
             AddTag('[color=' + hex_color + ']', '[/color]');
             jDialog.closeDialog();
@@ -667,14 +667,14 @@ function showColorGrid2(Sam, textBoxId) {
             fisrtFocus: false,
             tabNavigation: ['#bb-color-ok','#bb-color-cancel'],
             handlers: {
-                "#bb-color-ok": {'click': submitFunc},
-                "#bb-color-cancel": 'close'
+                '#bb-color-ok': {'click': submitFunc},
+                '#bb-color-cancel': 'close'
             }
         });
     }
 
     function getHexRGBColor(color) {
-        color = color.replace(/\s/g, "");
+        color = color.replace(/\s/g, '');
         var aRGB = color.match(/^rgb\((\d{1,3}[%]?),(\d{1,3}[%]?),(\d{1,3}[%]?)\)$/i);
 
         if (aRGB) {

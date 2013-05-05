@@ -40,13 +40,13 @@ $(function () {
             jDialog.dialog.find('*').attr('disabled', true);
             var query = composeQuery(jDialog.dialog);
             $.ajax({
-                type: "POST",
-                url: $root + "/user/new_ajax",
+                type: 'POST',
+                url: $root + '/user/new_ajax',
                 data: query,
-                dataType: "html",
+                dataType: 'html',
                 success: function (resp) {
                     resp = eval('(' + resp + ')'); // warning: not safe
-                    if (resp.status == "SUCCESS") {
+                    if (resp.status == 'SUCCESS') {
                         // hide dialog and show success message
                         jDialog.createDialog({
                             type: jDialog.alertType,
@@ -57,7 +57,7 @@ $(function () {
                         // remove previous errors and show new errors
                         jDialog.prepareDialog(jDialog.dialog);
                         refreshCaptcha(jDialog.dialog);
-                        jDialog.showErrors(jDialog.dialog, resp.result, "", "");
+                        jDialog.showErrors(jDialog.dialog, resp.result, '', '');
                     }
                 },
                 error: function (resp) {
@@ -80,8 +80,8 @@ $(function () {
                 maxHeight: 600,
                 tabNavigation: ['#username', '#email', '#password', '#passwordConfirm', '#captcha', '#signup-submit-button'],
                 handlers: {
-                    "#signup-submit-button": {'click': submitFunc},
-                    "#captcha-refresh, #captcha-img": {'click' : refreshCaptcha}
+                    '#signup-submit-button': {'click': submitFunc},
+                    '#captcha-refresh, #captcha-img': {'click' : refreshCaptcha}
                 }
             });
         }
@@ -93,7 +93,7 @@ $(function () {
     var captchaContainer = $('.registration-page');
     if (captchaContainer) {
 
-        captchaContainer.find("#captcha-refresh, #captcha-img").click(function (e) {
+        captchaContainer.find('#captcha-refresh, #captcha-img').click(function (e) {
             e.preventDefault();
             refreshCaptchaJsp();
         });
@@ -112,28 +112,28 @@ $(function () {
  * Get new captcha image
  */
 function refreshCaptcha() {
-    jDialog.dialog.find("#captcha-img").removeAttr("src").attr("src", captchaUrl());
-    jDialog.dialog.find("#captcha").val("");
+    jDialog.dialog.find('#captcha-img').removeAttr('src').attr('src', captchaUrl());
+    jDialog.dialog.find('#captcha').val('');
 }
 
 function refreshCaptchaJsp() {
-    $('#form').find("#captcha-img").removeAttr("src").attr("src", captchaUrl());
-    $('#form').find("#captcha").val("");
+    $('#form').find('#captcha-img').removeAttr('src').attr('src', captchaUrl());
+    $('#form').find('#captcha').val('');
 }
 
 function captchaUrl() {
-    return $root + "/captcha/image?param=" + $.now();
+    return $root + '/captcha/image?param=' + $.now();
 }
 
 /**
  * POST request query
  */
 function composeQuery(signupDialog) {
-    return "username=" + encodeURIComponent(signupDialog.find('#username').val()) +
-        "&password=" + encodeURIComponent(signupDialog.find('#password').val()) +
-        "&passwordConfirm=" + encodeURIComponent(signupDialog.find('#passwordConfirm').val()) +
-        "&email=" + encodeURIComponent(signupDialog.find('#email').val()) +
-        "&captcha=" + encodeURIComponent(signupDialog.find('#captcha').val());
+    return 'username=' + encodeURIComponent(signupDialog.find('#username').val()) +
+        '&password=' + encodeURIComponent(signupDialog.find('#password').val()) +
+        '&passwordConfirm=' + encodeURIComponent(signupDialog.find('#passwordConfirm').val()) +
+        '&email=' + encodeURIComponent(signupDialog.find('#email').val()) +
+        '&captcha=' + encodeURIComponent(signupDialog.find('#captcha').val());
 }
 
 /**

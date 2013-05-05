@@ -42,8 +42,8 @@ $(document).ready(function () {
             maxWidth: 300,
             tabNavigation: ['#remove-avatar-ok','#remove-avatar-cancel'],
             handlers: {
-                "#remove-avatar-ok": {'click': submitFunc},
-                "#remove-avatar-cancel": 'close'
+                '#remove-avatar-ok': {'click': submitFunc},
+                '#remove-avatar-cancel': 'close'
             }
         });
 
