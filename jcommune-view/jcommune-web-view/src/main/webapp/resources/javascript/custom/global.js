@@ -116,10 +116,10 @@ $(document).ready(function () {
     //caps lock alert to passwords fields
     $(document).delegate('input[type="password"]', 'keypress keydown', function (e) {
         var container = $(e.target).parent('div');
-        var el = $('<span class="icon-exclamation-sign icon-password-exclamation" data-original-title="' + $capsLock + '"/>');
+        var el = $('<i class="icon-exclamation-sign icon-password-exclamation" data-original-title="' + $capsLock + '"/>');
         if(e.type == 'keydown' && container.find('.icon-exclamation-sign').length > 0){
             container.find('.icon-exclamation-sign').remove();
-            container.find('.tooltip').remove();
+//            container.find('.tooltip').remove();
             $(e.target).css('padding-right', (parseInt($(e.target).css('padding-right')) - 20) + 'px');
             $(e.target).width($(e.target).width() + 20);
         }
@@ -130,7 +130,13 @@ $(document).ready(function () {
             $(e.target).after(el);
             $(e.target).css('padding-right', (parseInt($(e.target).css('padding-right')) + 20) + 'px');
             $(e.target).width($(e.target).width() - 20);
-            el.tooltip();
+            //fix to modal dialog tooltip
+            if($(e.target).parents('.modal').length > 0){
+                el.tooltip({placement: 'bottom', cls: 'modal-tooltip-caps-lock'});
+            }else{
+                el.tooltip({placement: 'bottom'});
+            }
+
         }
 
     });

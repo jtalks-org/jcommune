@@ -673,3 +673,7 @@ div.anchor {
 .icon-password-exclamation {
   margin-left: -20px;
 }
+
+.modal-tooltip-caps-lock .tooltip-arrow {
+    margin-left: 8px !important;
+}
