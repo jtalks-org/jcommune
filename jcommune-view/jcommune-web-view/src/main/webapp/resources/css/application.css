@@ -636,7 +636,7 @@ div.anchor {
     margin-top: 7px;
 }
 
-.dialog-info{
+.dialog-info {
     font-size: 10px;
     color: gray;
     margin: 4px;
@@ -644,7 +644,7 @@ div.anchor {
     width: 100%;
 }
 
-.dialog-input{
+.dialog-input {
     width: 99%;
 }
 
@@ -656,12 +656,16 @@ div.anchor {
     background-color: rgb(0, 0, 0);
 }
 
-.dialog-message{
+.dialog-message {
     padding: 5px;
     text-align: center;
 }
 
-.pool-result{
+.pool-result {
   width: 100%;
   text-align: center;
+}
+
+.icon-password-exclamation {
+  margin-left: -20px;
 }

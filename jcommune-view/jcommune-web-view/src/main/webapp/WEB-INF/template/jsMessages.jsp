@@ -102,3 +102,4 @@ $labelErrorLinkSave = '<spring:message code="label.link.error.save" htmlEscape="
 $labelErrorLinkDelete = '<spring:message code="label.link.error.save" htmlEscape="true"/>';
 $linksEditIcon = '<spring:message code="label.linksEditIcon" htmlEscape="true"/>';
 $linksRemoveIcon = '<spring:message code="label.linksRemoveIcon" htmlEscape="true"/>';
+$capsLock = '<spring:message code="label.tips.capsLock" htmlEscape="true"/>';

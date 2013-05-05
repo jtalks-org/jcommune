@@ -15,7 +15,7 @@
 
 $(document).ready(function () {
 
-    if($('.sapaLinkRow').length > 0){
+    if ($('.sapaLinkRow').length > 0) {
         $('.sapaLinkRow').dotdotdot();
     }
     //Sets timezone cookie for the server to show all the dates in a client timezone
@@ -35,7 +35,7 @@ $(document).ready(function () {
         })
     })
     // popups to confirm post/topic deletion
-    $(document).delegate('a.delete', 'click', function(e){
+    $(document).delegate('a.delete', 'click', function (e) {
         e.preventDefault();
         deletePath = $(this).attr('href');
         var footerContent = ' \
@@ -52,11 +52,11 @@ $(document).ready(function () {
 
         jDialog.createDialog({
             type: jDialog.confirmType,
-            bodyMessage : $(this).attr('data-confirmationMessage'),
-            firstFocus : false,
+            bodyMessage: $(this).attr('data-confirmationMessage'),
+            firstFocus: false,
             footerContent: footerContent,
             maxWidth: 300,
-            tabNavigation: ['#remove-entity-ok','#remove-entity-cancel'],
+            tabNavigation: ['#remove-entity-ok', '#remove-entity-cancel'],
             handlers: {
                 '#remove-entity-ok': {'click': submitFunc},
                 '#remove-entity-cancel': 'close'
@@ -109,13 +109,35 @@ $(document).ready(function () {
         }
     });
 
-    if(searchInput.val() == ''){
+    if (searchInput.val() == '') {
         searchInput.addClass('search-query-focusout');
     }
 
+    //caps lock alert to passwords fields
+    $(document).delegate('input[type="password"]', 'keypress keydown', function (e) {
+        var container = $(e.target).parent('div');
+        var el = $('<span class="icon-exclamation-sign icon-password-exclamation" data-original-title="' + $capsLock + '"/>');
+        if(e.type == 'keydown' && container.find('.icon-exclamation-sign').length > 0){
+            container.find('.icon-exclamation-sign').remove();
+            container.find('.tooltip').remove();
+            $(e.target).css('padding-right', (parseInt($(e.target).css('padding-right')) - 20) + 'px');
+            $(e.target).width($(e.target).width() + 20);
+        }
+
+        var s = String.fromCharCode(e.which);
+        if (e.type == 'keypress' && s.toUpperCase() === s && s.toLowerCase() !== s && !e.shiftKey
+            && container.find('.icon-exclamation-sign').length == 0) {
+            $(e.target).after(el);
+            $(e.target).css('padding-right', (parseInt($(e.target).css('padding-right')) + 20) + 'px');
+            $(e.target).width($(e.target).width() - 20);
+            el.tooltip();
+        }
+
+    });
+
     $(window).resize();
-	
-	// html5 placeholder emulation for old IE
-	$('input[placeholder]').placeholder();
+
+    // html5 placeholder emulation for old IE
+    $('input[placeholder]').placeholder();
 });
 
