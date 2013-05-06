@@ -327,7 +327,7 @@ ul.lang-menu li img {
     }
 }
 
-.post {
+.post, #editorBBCODEdiv {
     width: 100%;
     text-align: left;
     padding: 0px;
@@ -538,7 +538,7 @@ div.anchor {
 }
 
 .modal-body .link-hint {
-   display: none;
+    display: none;
 }
 
 .modal-body .link-title {
@@ -653,10 +653,10 @@ div.anchor {
 }
 
 .dialog-color-picker {
-    margin-left:35px;
-    height:25px;
-    width:25px;
-    border:solid 2px #666;
+    margin-left: 35px;
+    height: 25px;
+    width: 25px;
+    border: solid 2px #666;
     background-color: rgb(0, 0, 0);
 }
 
@@ -666,12 +666,12 @@ div.anchor {
 }
 
 .pool-result {
-  width: 100%;
-  text-align: center;
+    width: 100%;
+    text-align: center;
 }
 
 .icon-password-exclamation {
-  margin-left: -20px;
+    margin-left: -20px;
 }
 
 .modal-tooltip-caps-lock .tooltip-arrow {
