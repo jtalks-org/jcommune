@@ -273,17 +273,19 @@
         <tr class="post-content-tr">
             <td class="userinfo">
                 <div>
-                    <spring:message var="onlineTip" code="label.tips.user_online"/>
-                    <spring:message var="offlineTip" code="label.tips.user_offline"/>
-                    <c:set var="online" value='<i class="icon-online" title="${onlineTip}"></i>'/>
-                    <c:set var="offline" value='<i class="icon-offline" title="${offlineTip}"></i>'/>
-                    <jtalks:ifContains collection="${usersOnline}" object="${post.userCreated}"
-                                       successMessage="${online}" failMessage="${offline}"/>
-                    <a class='post-userinfo-username'
-                       href="${pageContext.request.contextPath}/users/${post.userCreated.id}"
-                       title="<spring:message code='label.tips.view_profile'/>">
-                        <c:out value="${post.userCreated.username}"/>
-                    </a>
+                    <p>
+                        <spring:message var="onlineTip" code="label.tips.user_online"/>
+                        <spring:message var="offlineTip" code="label.tips.user_offline"/>
+                        <c:set var="online" value='<i class="icon-online" title="${onlineTip}"></i>'/>
+                        <c:set var="offline" value='<i class="icon-offline" title="${offlineTip}"></i>'/>
+                        <jtalks:ifContains collection="${usersOnline}" object="${post.userCreated}"
+                                           successMessage="${online}" failMessage="${offline}"/>
+                        <a class='post-userinfo-username'
+                           href="${pageContext.request.contextPath}/users/${post.userCreated.id}"
+                           title="<spring:message code='label.tips.view_profile'/>">
+                            <c:out value="${post.userCreated.username}"/>
+                        </a>
+                    </p>
                 </div>
              
                    <span class="thumbnail post-userinfo-avatal wraptocenter">
