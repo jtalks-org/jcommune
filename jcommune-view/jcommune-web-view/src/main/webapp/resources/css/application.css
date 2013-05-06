@@ -353,8 +353,23 @@ ul.lang-menu li img {
 }
 
 .post table .userinfo {
-    width: 175px;
+    max-width: 175px;
     vertical-align: top;
+}
+
+.post table .userinfo p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    -webkit-text-overflow: ellipsis;
+    -ms-text-overflow: ellipsis;
+    -moz-box-sizing: border-box;
+}
+
+/* attr to bootrap tooltip*/
+.post table .userinfo p a{
+    max-width: 175px;
 }
 
 .post table .userinfo div {
