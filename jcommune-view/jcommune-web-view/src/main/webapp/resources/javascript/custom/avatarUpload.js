@@ -83,6 +83,10 @@ $(document).ready(function () {
         onProgress: function (id, filename, loaded, total) {
         },
         onComplete: function (id, filename, responseJSON) {
+            // response is empty when response status is not 200
+		    if (jQuery.isEmptyObject(responseJSON)) {
+				return;
+			}
             //If the picture has been replaced by alternative text in the previous avatar uploading,
             //we need to restore it, because the next uploading may be successful.
             if (!$('#avatarPreview').length) {
@@ -98,13 +102,24 @@ $(document).ready(function () {
                 $('#avatar').attr('value', responseJSON.srcImage);
             } else {
                 // display error message
-                alert(responseJSON.result);
+            	jDialog.createDialog({
+                    type: jDialog.alertType,
+                    bodyMessage: responseJSON.result
+                });
             }
 
         },
+        onError: function(id, filename, xhr) {
+        	if (xhr.status == 413) {
+        		jDialog.createDialog({
+                    type: jDialog.alertType,
+                    bodyMessage: $labelImageWrongSizeJs
+                });
+				return false;
+        	}
+        },
         debug: false,
         messages: {
-            sizeError: $labelImageWrongSizeJs,
             emptyError: $fileIsEmpty
         }
     });
