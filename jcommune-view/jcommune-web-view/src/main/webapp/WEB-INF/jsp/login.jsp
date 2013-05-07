@@ -34,7 +34,7 @@
                 <label for="j_username" class="control-label"><spring:message code="label.username"/> </label>
 
                 <div class="controls">
-                    <input class="reg_input" type="text" name="j_username" id="j_username">
+                    <input class="reg_input" type="text" name="j_username" id="j_username" value="${param.username}">
                 </div>
             </div>
             
