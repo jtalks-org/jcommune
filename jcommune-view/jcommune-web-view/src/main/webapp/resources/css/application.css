@@ -354,6 +354,7 @@ ul.lang-menu li img {
 
 .post table .userinfo {
     max-width: 175px;
+    min-width: 175px;
     vertical-align: top;
 }
 
@@ -368,7 +369,7 @@ ul.lang-menu li img {
 }
 
 /* attr to bootrap tooltip*/
-.post table .userinfo p a{
+.post table .userinfo p a {
     max-width: 175px;
 }
 
