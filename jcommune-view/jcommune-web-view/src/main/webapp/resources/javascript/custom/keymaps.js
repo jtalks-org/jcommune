@@ -158,7 +158,7 @@ Keymaps.bbeditor = function(e) {
         //if editor contains button with tooltip Ctrl + <char> than click
         if (e.ctrlKey && e.keyCode >= charMin && e.keyCode <= charMax) {
             var keyVal = String.fromCharCode(e.keyCode);
-            var but = $('[data-original-title$="(Ctrl + ' + keyVal + ')"]')
+            var but = $('[data-original-title$="(Ctrl+' + keyVal + ')"]')
             if(but && but.length > 0){
                 e.preventDefault();
                 but.click();
