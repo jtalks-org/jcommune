@@ -30,6 +30,7 @@ import java.util.List;
  * @author Pavel Vervenko
  * @author Evgeniy Naumenko
  * @author Kirill Afonin
+ * @author Anuar_Nurmakanov
  */
 public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser>
         implements UserDao {
@@ -107,6 +108,11 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser>
      */
     @Override
     public List<JCUser> getByUsernames(List<String> usernames) {
-        return null;
+        @SuppressWarnings("unchecked")
+        List<JCUser> foundUsers = (List<JCUser>) getSession()
+                .getNamedQuery("getByUsernames")
+                .setParameterList("usernames", usernames)
+                .list();
+        return foundUsers;
     }
 }
