@@ -327,15 +327,18 @@ ul.lang-menu li img {
     }
 }
 
-.post, #editorBBCODEdiv {
+.post {
     width: 100%;
     text-align: left;
     padding: 0px;
     margin: 0px;
-    -webkit-tab-size: 4;
-    -moz-tab-size: 4;
-    -o-tab-size: 4;
-    tab-size: 4;
+}
+
+.post, .pm-text-box, #topicDto, #postDto, #privateMessageDto{
+    -webkit-tab-size: 4 !important;
+    -moz-tab-size: 4 !important;
+    -o-tab-size: 4 !important;
+    tab-size: 4 !important;
 }
 
 .post table td {
@@ -702,4 +705,8 @@ div.anchor {
 
 .modal-tooltip-caps-lock .tooltip-arrow {
     margin-left: 8px !important;
+}
+
+.btn-group .tooltip {
+    white-space: nowrap;
 }

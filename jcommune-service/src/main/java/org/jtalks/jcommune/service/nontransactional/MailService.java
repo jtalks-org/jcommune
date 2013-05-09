@@ -294,6 +294,10 @@ public class MailService {
             LOGGER.error("Failed to sent activation mail for user: " + recipient.getUsername());
         }
     }
+    
+    public void sendUserMentionedNotification(JCUser recipient, long postId) {
+        
+    }
 
     /**
      * Just a convenience method for message sending to encapsulate

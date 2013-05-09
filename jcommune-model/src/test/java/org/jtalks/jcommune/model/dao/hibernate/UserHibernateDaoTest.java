@@ -30,7 +30,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import static org.testng.Assert.*;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
@@ -260,7 +262,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         assertTrue(users.contains(nonActivated));
         assertEquals(users.size(), 1);
     }
-
+    
     /**
      * Creates a user with the specified username, stores it into database and clears the session so that we won't get
      * the same object from the session, but rather a new one will be returned from database.
@@ -277,6 +279,43 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
 
     private int getCount() {
-        return ((Number) session.createQuery("select count(*) from org.jtalks.jcommune.model.entity.JCUser").uniqueResult()).intValue();
+        return ((Number) session
+                .createQuery("select count(*) from org.jtalks.jcommune.model.entity.JCUser")
+                .uniqueResult())
+                .intValue();
+    }
+    
+    @Test
+    public void getByUsernamesShouldReturnExistsInRepoUsers() {
+        String firstExistsUsername = "Shogun";
+        JCUser firstExistsUser = givenJCUserWithUsernameStoredInDb(firstExistsUsername);
+        String secondExistsUsername = "masyan";
+        JCUser secondExistsUser = givenJCUserWithUsernameStoredInDb(secondExistsUsername);
+        String thirdExistsUsername = "jk1";
+        JCUser thirdExistsUser = givenJCUserWithUsernameStoredInDb(thirdExistsUsername);
+        List<String> existsUsernames = Arrays.asList(firstExistsUsername, secondExistsUsername, thirdExistsUsername);
+        
+        List<JCUser> foundByUsernames = dao.getByUsernames(existsUsernames);
+        
+        assertTrue(foundByUsernames.size() == existsUsernames.size(), "It should return all users by their names.");
+        assertTrue(foundByUsernames.contains(firstExistsUser), firstExistsUser.getUsername() + "should be found by his name.");
+        assertTrue(foundByUsernames.contains(secondExistsUser), secondExistsUser.getUsername() + "should be found by his name.");
+        assertTrue(foundByUsernames.contains(thirdExistsUser), thirdExistsUser.getUsername() + "should be found by his name.");
+    }
+    
+    @Test
+    public void getByUsernamesShouldReturnEmptyListWhenFoundUsersDoNotExist() {
+        List<String> existsUsernames = Arrays.asList("Shogun", "jk1", "masyan");
+        
+        List<JCUser> foundByUsernames = dao.getByUsernames(existsUsernames);
+        
+        assertTrue(foundByUsernames.size() == 0, "It should return empty list, cause found users not exist.");
+    }
+    
+    private JCUser givenJCUserWithUsernameStoredInDb(String username) {
+        JCUser expected = new JCUser(username, username + "@mail.com", username + "pass");
+        session.save(expected);
+        session.clear();
+        return expected;
     }
 }

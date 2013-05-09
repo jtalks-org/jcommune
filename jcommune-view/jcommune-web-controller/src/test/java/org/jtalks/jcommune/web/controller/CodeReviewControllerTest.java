@@ -86,13 +86,6 @@ public class CodeReviewControllerTest {
     }
 
     @Test
-    public void initBinder() {
-        WebDataBinder binder = mock(WebDataBinder.class);
-        controller.initBinder(binder);
-        verify(binder).registerCustomEditor(eq(String.class), any(StringTrimmerEditor.class));
-    }
-
-    @Test
     public void createPage() throws NotFoundException {
         //set expectations
         when(branchService.get(BRANCH_ID)).thenReturn(branch);
