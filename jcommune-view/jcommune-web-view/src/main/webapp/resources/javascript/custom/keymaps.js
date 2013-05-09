@@ -81,20 +81,20 @@ Keymaps.linksEditor = function (e) {
         if (but) {
             e.preventDefault();
             but.click();
-        }else{
+        } else {
             $('#main-links-editor .close').click();
         }
     }
 }
 
-Keymaps.linksEditorRemoveButton = function(e) {
+Keymaps.linksEditorRemoveButton = function (e) {
     if ((e.keyCode || e.charCode) == tabCode) {
         e.preventDefault();
         $('#main-links-editor #cancel-link').focus();
     }
 }
 
-Keymaps.linksEditorCancelButton = function(e) {
+Keymaps.linksEditorCancelButton = function (e) {
     if ((e.keyCode || e.charCode) == tabCode) {
         e.preventDefault();
         if ($('#main-links-editor #remove-link:visible')[0]) {
@@ -105,28 +105,28 @@ Keymaps.linksEditorCancelButton = function(e) {
     }
 }
 
-Keymaps.linksEditorHintInput = function(e) {
+Keymaps.linksEditorHintInput = function (e) {
     if ((e.keyCode || e.charCode) == tabCode) {
         e.preventDefault();
         $('#main-links-editor #save-link').focus();
     }
 }
 
-Keymaps.linksEditorSaveButton = function(e) {
+Keymaps.linksEditorSaveButton = function (e) {
     if ((e.keyCode || e.charCode) == tabCode) {
         e.preventDefault();
         $('#main-links-editor #cancel-link').focus();
     }
 }
 
-Keymaps.uploadBannerCancelButton = function(e) {
+Keymaps.uploadBannerCancelButton = function (e) {
     if ((e.keyCode || e.charCode) == tabCode) {
         e.preventDefault();
         $(this).closest("form[id^=uploadBannerModal]").find('#body').focus();
     }
 }
 
-Keymaps.moveTopicEditor = function(e) {
+Keymaps.moveTopicEditor = function (e) {
     if ((e.keyCode || e.charCode) == escCode) {
         var but = $('#move-topic-editor .close:visible')[0]
         if (but) {
@@ -139,8 +139,12 @@ Keymaps.moveTopicEditor = function(e) {
 Keymaps.defaultDialog = function (e) {
     //disable submit by enter
     if (e.keyCode == enterCode) {
-        e.preventDefault();
-        jDialog.dialog.find('.btn-primary:first').click();
+        //if focus on button then do action of button, else click submit
+        if (!$(e.target).hasClass('btn')) {
+            e.preventDefault();
+            jDialog.dialog.find('.btn-primary:first').click();
+        }
+
     }
     if ((e.keyCode || e.charCode) == escCode) {
         jDialog.dialog.find('.close').click();
@@ -148,18 +152,18 @@ Keymaps.defaultDialog = function (e) {
 }
 
 //post,topic,pm forms
-Keymaps.bbeditor = function(e) {
+Keymaps.bbeditor = function (e) {
     if (e.ctrlKey && e.keyCode == enterCode) {
         e.preventDefault();
         $('input[type="submit"]').click();
     }
     //check bb-editor toolbar
-    if($(e.target).parents('form').find('.btn-toolbar').length > 0){
+    if ($(e.target).parents('form').find('.btn-toolbar').length > 0) {
         //if editor contains button with tooltip Ctrl + <char> than click
         if (e.ctrlKey && e.keyCode >= charMin && e.keyCode <= charMax) {
             var keyVal = String.fromCharCode(e.keyCode);
             var but = $('[data-original-title$="(Ctrl+' + keyVal + ')"]')
-            if(but && but.length > 0){
+            if (but && but.length > 0) {
                 e.preventDefault();
                 but.click();
             }
