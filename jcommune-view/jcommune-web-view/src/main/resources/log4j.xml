@@ -62,11 +62,6 @@
     <level value="WARN"/>
     <appender-ref ref="BULK"/>
   </logger>
-  
-  <logger name="org.hibernate.SQL" additivity="false">
-    <level value="DEBUG"/>
-    <appender-ref ref="BULK"/>
-  </logger>
 
   <logger name="net.sf.ehcache">
     <level value="WARN"/>
