@@ -18,6 +18,7 @@ import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.entity.JCUser;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * This interface provides persistence operations for {@link org.jtalks.jcommune.model.entity.JCUser} objects.
@@ -75,4 +76,11 @@ public interface UserDao extends org.jtalks.common.model.dao.UserDao<JCUser> {
      * @return a user with the specified username, or {@code null} if such user wasn't found
      */
     User getCommonUserByUsername(String username);
+
+    /**
+     * 
+     * @param usernames
+     * @return
+     */
+    List<JCUser> getByUsernames(List<String> usernames);
 }

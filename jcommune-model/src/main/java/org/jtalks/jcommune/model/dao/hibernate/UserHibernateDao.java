@@ -101,4 +101,12 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser>
                 .setCacheable(true)
                 .uniqueResult();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<JCUser> getByUsernames(List<String> usernames) {
+        return null;
+    }
 }
