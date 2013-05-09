@@ -696,3 +696,7 @@ div.anchor {
 .modal-tooltip-caps-lock .tooltip-arrow {
     margin-left: 8px !important;
 }
+
+.btn-group .tooltip {
+    white-space: nowrap;
+}
