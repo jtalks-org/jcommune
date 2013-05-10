@@ -22,6 +22,7 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://www.springframework.org/tags" %>
 <sec:authentication property="principal.username" var="auth" scope="request"/>
+<sec:authentication property="principal.id" var="userId" scope="request"/>
 <head>
     <meta name="description" content="<c:out value="${label.user}"/>">
     <title><spring:message code="label.user"/> - "${auth}"</title>
@@ -33,7 +34,6 @@
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/userProfileEffects.js"
             type="text/javascript"></script>
-
     <link rel="stylesheet" type="text/css" media="screen, projection"
           href="${pageContext.request.contextPath}/resources/css/profile.css"/>
 </head>
@@ -164,8 +164,8 @@
                             <form:errors path="location" cssClass="help-inline"/>
                         </div>
                     </div>
-                    
-                    <c:if test="${auth == editedUser.username}">
+
+                    <c:if test="${userId == editedUser.userId}">
 	                    <div class="control-group">
 	                        <label class="control-label"><spring:message code="label.currentPassword"/></label>
 	

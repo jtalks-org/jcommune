@@ -55,7 +55,7 @@ $(function () {
 
     jDialog.rootPanelFunc = function () {
         var dialog = $(' \
-        <form class="modal" id="' + jDialog.options.dialogId + '" tabindex="-1" role="dialog" \
+        <form style="display: none" class="modal" id="' + jDialog.options.dialogId + '" tabindex="-1" role="dialog" \
                     aria-hidden="true"> \
             <div class="modal-header"> \
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> \
@@ -141,15 +141,20 @@ $(function () {
         //modal function is bootstrap
         jDialog.dialog.modal({
             'backdrop': 'static',
-            'keyboard': true,
-            'show': true
+            'keyboard': false,
+            'show': false
         }).css(
             {'max-width': jDialog.options.maxWidth,
             'max-height': jDialog.options.maxHeight,
             'overflow' : jDialog.options.overflow}
         );
 
+        //we need add element to calculate width and height
+        $('body').append(jDialog.dialog);
+
         jDialog.resizeDialog(jDialog.dialog);
+
+        jDialog.dialog.modal('show');
 
         addHandlers();
 

@@ -327,15 +327,18 @@ ul.lang-menu li img {
     }
 }
 
-.post, #editorBBCODEdiv {
+.post {
     width: 100%;
     text-align: left;
     padding: 0px;
     margin: 0px;
-    -webkit-tab-size: 4;
-    -moz-tab-size: 4;
-    -o-tab-size: 4;
-    tab-size: 4;
+}
+
+.post, .pm-text-box, #topicDto, #postDto, #privateMessageDto{
+    -webkit-tab-size: 4 !important;
+    -moz-tab-size: 4 !important;
+    -o-tab-size: 4 !important;
+    tab-size: 4 !important;
 }
 
 .post table td {
@@ -490,7 +493,7 @@ div.anchor {
     margin-right: 5px
 }
 
-.review-container {
+.review-container, #add-comment-form {
     background-color: #FBF9EA;
     border: 1px solid #E2E1D5;
     border-radius: 5px 5px 5px 5px;
@@ -529,6 +532,16 @@ div.anchor {
 
 .review-header {
     font-style: italic;
+}
+
+.review-group {
+    background-color: #A0C0F0;
+    border-radius: 5px 5px 5px 5px;
+    padding: 1px 0;
+}
+
+.review-group-buttons {
+    padding: 0 0 4px 5px;
 }
 
 .keymaps-caption {
@@ -692,4 +705,8 @@ div.anchor {
 
 .modal-tooltip-caps-lock .tooltip-arrow {
     margin-left: 8px !important;
+}
+
+.btn-group .tooltip {
+    white-space: nowrap;
 }

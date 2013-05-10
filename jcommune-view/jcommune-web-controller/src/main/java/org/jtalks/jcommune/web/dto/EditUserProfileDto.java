@@ -42,7 +42,6 @@ public class EditUserProfileDto {
     @NotBlank(message = "{validation.not_null}")
     @Size(max = User.EMAIL_MAX_LENGTH, message = "{validation.email.length}")
     @Email(message = "{validation.email.wrong.format}")
-    @Unique(entity = JCUser.class, field = "email", message = "{validation.duplicateemail}")
     private String email;
 
     @Size(max = User.USERNAME_FIRSTNAME_MAX_LENGTH, message = "{user.first_and_last_name.illegal_length}")

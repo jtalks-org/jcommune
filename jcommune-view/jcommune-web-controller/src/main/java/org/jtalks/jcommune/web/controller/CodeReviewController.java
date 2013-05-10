@@ -88,19 +88,6 @@ public class CodeReviewController {
     }
 
     /**
-     * This method turns the trim binder on. Trim binder
-     * removes leading and trailing spaces from the submitted fields.
-     * So, it ensures, that all validations will be applied to
-     * trimmed field values only.
-     *
-     * @param binder Binder object to be injected
-     */
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
-    }
-
-    /**
      * Shows page with form for new code review
      *
      * @param branchId {@link Branch} branch, where code review will be created

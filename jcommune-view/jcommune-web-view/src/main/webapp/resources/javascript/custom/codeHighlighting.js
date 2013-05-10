@@ -17,11 +17,14 @@
 var CodeHighlighting = {}
 
 CodeHighlighting.ADD_COMMENT_FORM_ID = 'add-comment-form';
+CodeHighlighting.ADD_COMMENT_BUTTON_NAME = 'add-comment-button';
 
 /** ID of branch where we currently are */
 CodeHighlighting.branchId = 0;
 /** ID of current user */
 CodeHighlighting.currentUserId = 0;
+/** Indicates if current user can add comments */
+CodeHighlighting.canAddComents = false;
 /** Indicates if current user has EDIT_OWN_POSTS permission */
 CodeHighlighting.canEditOwnPosts = false;
 /** Indicates if current user has EDIT_OTHERS_POSTS permission */
@@ -57,7 +60,10 @@ $(document).ready(function () {
  * Function to append comment to HTML
  */
 CodeHighlighting.addComment = function (comment) {
-    $('.script-first-post ol.linenums li:nth-child(' + comment.lineNumber + ')')
+	if (CodeHighlighting.getNumberOfComments(comment.lineNumber) == 0) {
+		CodeHighlighting.addReviewGroup(comment.lineNumber);
+	}
+    $('.script-first-post ol.linenums li:nth-child(' + comment.lineNumber + ') div.review-group-comments')
 			.append(CodeHighlighting.getCommentHtml(comment));
 }
 
@@ -100,6 +106,8 @@ CodeHighlighting.displayReviewComments = function () {
 CodeHighlighting.initializeVariables = function() {
 	CodeHighlighting.branchId = $('#branchId').val();
 	CodeHighlighting.currentUserId = $('#userId').val();
+	CodeHighlighting.canAddComents = PermissionService.getHasPermission(CodeHighlighting.branchId, 'BRANCH',
+					'BranchPermission.LEAVE_COMMENTS_IN_CODE_REVIEW');
 	CodeHighlighting.canEditOwnPosts = PermissionService.getHasPermission(CodeHighlighting.branchId, 'BRANCH',
 	                'BranchPermission.EDIT_OWN_POSTS');
 	CodeHighlighting.canEditOtherPosts = PermissionService.getHasPermission(CodeHighlighting.branchId, 'BRANCH',
@@ -127,16 +135,30 @@ CodeHighlighting.setupAddCommentFormHandlers = function () {
     });
 	
 	// don't handle clicks on comments
-	$('.script-first-post').on('click', 'ol.linenums li div.review-container', function () {
+	$('.script-first-post').on('click', 'ol.linenums li div.review-group', function () {
 		return false;
 	});	
 	
     $('.script-first-post').on('click', 'ol.linenums li', function () {
         var addCommentForm = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID);
         if (addCommentForm.length == 0) {
-            var index = $(this).index();
+            var lineNumber = $(this).index() + 1;
 			// display form before first comment
-			CodeHighlighting.showAddCommentForm($(this).find('span:last'), index + 1);
+			var elementBeforeForm = $(this).find('div.review-container:last');
+			if (elementBeforeForm.length == 0) {
+				elementBeforeForm = $(this).find('span:last');
+			}
+			CodeHighlighting.showAddCommentForm(elementBeforeForm, lineNumber);
+        }
+        
+    });	
+	$('.script-first-post').on('click', 'ol.linenums li input[name="' + CodeHighlighting.ADD_COMMENT_BUTTON_NAME + '"]', function () {
+        var addCommentForm = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID);
+        if (addCommentForm.length == 0) {
+			var line = $(this).closest('li');
+            var lineNumber = $(line).index() + 1;
+			// display form before first comment
+			CodeHighlighting.showAddCommentForm($(line).find('div.review-container:last'), lineNumber);
         }
         
     });
@@ -233,7 +255,11 @@ CodeHighlighting.setupEditCommentHandlers = function() {
                 url:baseUrl + '/reviewcomments/delete?reviewId=' + reviewId + '&commentId=' + commentId,
                 type:"GET",
                 success:function () {
-                    $(reviewContainer).remove();
+					var lineNumber = $(reviewContainer).closest('li').index() + 1;
+                    $(reviewContainer).remove();					
+					if (CodeHighlighting.getNumberOfComments(lineNumber) == 0) {
+						CodeHighlighting.removeReviewGroup(lineNumber);
+					}
                 },
                 error:function () {
                     jDialog.createDialog({
@@ -373,7 +399,7 @@ CodeHighlighting.getCommentForm = function (submitButtonTitle, action, lineNumbe
 		comment = {id:0,body:''};
 	}
     var result =
-            '<div id="' + CodeHighlighting.ADD_COMMENT_FORM_ID + '" class="review-container">'
+            '<div id="' + CodeHighlighting.ADD_COMMENT_FORM_ID + '" >'
                 + '<div class="control-group">'
                     + '<input type=hidden name=lineNumber value="' + lineNumber + '"/>'
 					+ '<input type=hidden name=id value="' + comment.id + '"/>'
@@ -397,10 +423,15 @@ CodeHighlighting.getCommentForm = function (submitButtonTitle, action, lineNumbe
  * @param comment data to fill form if defined
  */
 CodeHighlighting.showCommentForm = function(element, submitButtonTitle, submitButtonName, lineNumber, comment) {
+	if (lineNumber == 0) {
+		lineNumber = $(element).closest('li').index() + 1;
+	}
 	element.after(CodeHighlighting.getCommentForm(submitButtonTitle, submitButtonName, lineNumber, comment));
 	var reviewContent = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID + ' textarea');
     reviewContent.keydown(Keymaps.review);
     reviewContent.focus();
+	
+	CodeHighlighting.toggleActionButton(lineNumber);
 }
 
 /**
@@ -427,7 +458,10 @@ CodeHighlighting.showEditCommentForm = function(element, comment) {
  * Remove comment form from the page
  */
 CodeHighlighting.removeCommentForm = function () {
-    $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID).remove();
+    var form = $('#' + CodeHighlighting.ADD_COMMENT_FORM_ID);
+	var lineNumber = $(form).find('input[name=lineNumber]').val();
+	form.remove();
+	CodeHighlighting.toggleActionButton(lineNumber);
 }
 
 /**
@@ -448,4 +482,48 @@ CodeHighlighting.displayValidationErrors = function (errors) {
             errorsContainer.append(errors[i].message + '<br/>');
         }
     }
+}
+
+/**
+ * @param lineNumber number of code line
+ * @return number of comments for this line of code
+ */
+CodeHighlighting.getNumberOfComments = function(lineNumber) {
+	var comments = $('.script-first-post ol.linenums li:nth-child(' + lineNumber + ') div.review-container');
+	return comments.length;
+}
+
+/**
+ * Add div container for comments and section with 'add comment' button 
+ * (if user has corresponding permission)
+ * @param lineNumber number of line in code
+ */
+CodeHighlighting.addReviewGroup = function(lineNumber) {
+	var addCommentButtonHtml = '';
+	if (CodeHighlighting.canAddComents) {
+		addCommentButtonHtml = '<input type="button" name="' + CodeHighlighting.ADD_COMMENT_BUTTON_NAME + '" class="btn" value="' + $labelAddReviewComment + '"/>';
+	}
+	var reviewGroup = 
+		'<div class="review-group">' 
+			+ '<div class="review-group-comments"/>'
+			+ '<div class="review-group-buttons">'
+				+ addCommentButtonHtml
+			+ '</div>';
+	$('.script-first-post ol.linenums li:nth-child(' + lineNumber + ')').append(reviewGroup);
+}
+
+/**
+ * Removes container for comments (with 'add comment' button). 
+ * @param lineNumber number of line in code
+ */
+CodeHighlighting.removeReviewGroup = function(lineNumber) {
+	$('.script-first-post ol.linenums li:nth-child(' + lineNumber + ') div.review-group').remove();
+}
+
+/**
+ * Showes/hides button for adding new comment
+ * @param lineNumber number of line where toggle button
+ */
+CodeHighlighting.toggleActionButton = function(lineNumber) {
+	$('.script-first-post ol.linenums li:nth-child(' + lineNumber + ') div.review-group-buttons').toggle();
 }
