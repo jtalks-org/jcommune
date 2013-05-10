@@ -97,7 +97,7 @@ $(document).ready(function () {
                     tabNavigation: ['#remove-pm-ok', '#remove-pm-cancel'],
                     handlers: {
                         '#remove-pm-ok': {'click': submitFunc},
-                        '#remove-pm-cancel': 'close'
+                        '#remove-pm-cancel': {'static':'close'}
                     }
                 });
 

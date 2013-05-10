@@ -70,7 +70,7 @@ $(function () {
                 maxWidth: 350,
                 tabNavigation: ['select:first', 'select:last', '#move-button-save', '#move-button-cancel'],
                 handlers: {
-                    '#move-button-cancel' : 'close'
+                    '#move-button-cancel' : {'static':'close'}
                 },
                 handlersDelegate: {
                     '#branch_name': {'change': branchNameLive},
