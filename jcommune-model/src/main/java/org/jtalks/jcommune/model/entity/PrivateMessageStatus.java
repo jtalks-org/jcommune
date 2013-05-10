@@ -47,10 +47,18 @@ public enum PrivateMessageStatus {
     DELETED_FROM_OUTBOX;
 
     /**
-     * Return private message statuses for inbox/outbox page.
-     * @return private message statuses for inbox/outbox page.
+     * Return private message statuses for inbox page.
+     * @return private message statuses for inbox page.
      */
-    public static PrivateMessageStatus[] getInboxOutboxStatus() {
-        return new PrivateMessageStatus[] {NEW, SENT};
+    public static PrivateMessageStatus[] getInboxStatus() {
+        return new PrivateMessageStatus[] {NEW, SENT, DELETED_FROM_OUTBOX};
+    }
+
+    /**
+     * Return private message statuses for outbox page.
+     * @return private message statuses for outbox page.
+     */
+    public static PrivateMessageStatus[] getOutboxStatus() {
+        return new PrivateMessageStatus[] {NEW, SENT, DELETED_FROM_INBOX};
     }
 }
