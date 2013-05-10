@@ -75,7 +75,7 @@ function deleteContactHandler() {
         tabNavigation: ['#remove-contact-ok', '#remove-contact-cancel'],
         handlers: {
             '#remove-contact-ok': {'click': submitFunc},
-            '#remove-contact-cancel': 'close'
+            '#remove-contact-cancel': {'static':'close'}
         }
     });
 
@@ -253,7 +253,7 @@ $(document).ready(function () {
                 tabNavigation: ['#contact_type', '#contact', '#add-contact-ok', '#add-contact-cancel'],
                 handlers: {
                     '#add-contact-ok': {'click': submitFunc},
-                    '#add-contact-cancel': 'close'
+                    '#add-contact-cancel': {'static':'close'}
                 }
             });
         });

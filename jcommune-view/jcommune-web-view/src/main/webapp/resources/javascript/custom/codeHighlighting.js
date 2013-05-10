@@ -284,8 +284,7 @@ CodeHighlighting.setupEditCommentHandlers = function() {
             tabNavigation: ['#remove-review-ok','#remove-review-cancel'],
             handlers: {
                 '#remove-review-ok': {'click': submitFunc, 'keydown' : Keymaps.reviewConfirmRemoveButton},
-				'#remove-review-cancel': {'keydown': Keymaps.reviewCancelRemoveButton},
-                '#remove-review-cancel': 'close'                
+				'#remove-review-cancel': {'keydown': Keymaps.reviewCancelRemoveButton, 'static':'close'}
             }
         });
 
