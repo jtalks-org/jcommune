@@ -22,7 +22,8 @@ public class UserAuthenticationFailureHandler extends SimpleUrlAuthenticationFai
      * {@inheritDoc}
      */
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+                                        AuthenticationException exception) throws IOException, ServletException {
 
         HttpSession session = request.getSession(false);
         if (session != null || isAllowSessionCreation()) {
