@@ -113,10 +113,11 @@ public class PrivateMessageHibernateDao extends
      */
     @Override
     public int getNewMessagesCountFor(String username) {
+        PrivateMessageStatus[] statuses = PrivateMessageStatus.getNewMessageStatus();
         return ((Number) getSession().getNamedQuery("getNewMessagesCountFor")
                 .setParameter("read", false)
                 .setString("username", username)
-                .setParameter(STATUS, PrivateMessageStatus.SENT)
+                .setParameterList(STATUSES, statuses)
                 .uniqueResult())
                 .intValue();
     }

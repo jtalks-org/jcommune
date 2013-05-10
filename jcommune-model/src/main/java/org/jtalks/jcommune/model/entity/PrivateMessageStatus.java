@@ -61,4 +61,12 @@ public enum PrivateMessageStatus {
     public static PrivateMessageStatus[] getOutboxStatus() {
         return new PrivateMessageStatus[] {NEW, SENT, DELETED_FROM_INBOX};
     }
+
+    /**
+     * Return private message statuses for new messages counter.
+     * @return private message statuses for new messages counter.
+     */
+    public static PrivateMessageStatus[] getNewMessageStatus() {
+        return new PrivateMessageStatus[] {SENT, DELETED_FROM_OUTBOX};
+    }
 }
