@@ -93,7 +93,9 @@
 
     <!--Needed to correct operation "logout". Was added with UsernamePasswordAuthenticationFilter.-->
     <bean id="failureAuthHandler"
-          class="org.jtalks.jcommune.web.util.UserAuthenticationFailureHandler"/>
+          class="org.jtalks.jcommune.web.util.UserAuthenticationFailureHandler">
+        <property name="defaultFailureUrl" value="/login?login_error=1"/>
+    </bean>
 
     <bean id="concurrentSessionControlStrategy"
           class="org.springframework.security.web.authentication.session.ConcurrentSessionControlStrategy">

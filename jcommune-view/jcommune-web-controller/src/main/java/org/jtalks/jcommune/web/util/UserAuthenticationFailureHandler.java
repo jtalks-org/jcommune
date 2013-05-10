@@ -1,54 +1,51 @@
 package org.jtalks.jcommune.web.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.DefaultRedirectStrategy;
-import org.springframework.security.web.RedirectStrategy;
-import org.springframework.security.web.WebAttributes;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
- * <tt>AuthenticationFailureHandler</tt> which performs a redirect back to the login page
+ * <tt>AuthenticationFailureHandler</tt> which extends <tt>SimpleUrlAuthenticationFailureHandler</tt>
+ * by adding to the Session an attribute with value of username which was used in authentication
  * @author Andrei Alikov
  */
-public class UserAuthenticationFailureHandler implements AuthenticationFailureHandler {
-    private final Log logger = LogFactory.getLog(getClass());
-    private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-    private static final String FAILURE_REDIRECT_URL = "/login?login_error=1&username=";
+public class UserAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
+
+    private String usernameSessionAttribute = "username";
 
     /**
      * {@inheritDoc}
      */
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        request.getSession().setAttribute(WebAttributes.AUTHENTICATION_EXCEPTION, exception);
 
-        String fullUrl = FAILURE_REDIRECT_URL + exception.getAuthentication().getName();
+        HttpSession session = request.getSession(false);
+        if (session != null || isAllowSessionCreation()) {
+            request.getSession().setAttribute(usernameSessionAttribute, exception.getAuthentication().getName());
+        }
 
-        logger.debug("Redirecting to " + fullUrl);
-        redirectStrategy.sendRedirect(request, response, fullUrl);
+        super.onAuthenticationFailure(request, response, exception);
     }
 
     /**
-     * Allows overriding of the behaviour when redirecting to a target URL.
-     * @param redirectStrategy new behaviour when redirecting to a target URL.
+     * Gets name of Session's attribute which is used to store username.
+     * Default value is "username"
+     * @return name of Session attribute which is used to store username
      */
-    public void setRedirectStrategy(RedirectStrategy redirectStrategy) {
-        this.redirectStrategy = redirectStrategy;
+    public String getUsernameSessionAttribute() {
+        return usernameSessionAttribute;
     }
 
     /**
-     * Gets current behaviour when redirecting to a target URL.
-     * @return current behaviour when redirecting to a target URL.
+     * Set the name of Session's attribute which is used to store username
+     * @param usernameSessionAttribute
      */
-    public RedirectStrategy getRedirectStrategy() {
-        return redirectStrategy;
+    public void setUsernameSessionAttribute(String usernameSessionAttribute) {
+        this.usernameSessionAttribute = usernameSessionAttribute;
     }
-
 }

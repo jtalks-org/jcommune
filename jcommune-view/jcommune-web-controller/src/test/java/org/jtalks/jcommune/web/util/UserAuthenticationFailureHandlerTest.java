@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.testng.Assert.assertEquals;
 
 /**
  * @author Andrei Alikov
@@ -38,11 +39,14 @@ public class UserAuthenticationFailureHandlerTest {
 
         RedirectStrategy redirectStrategy = mock(RedirectStrategy.class);
         handler.setRedirectStrategy(redirectStrategy);
+        handler.setDefaultFailureUrl("/badlogin?login_error=1");
+        handler.setUsernameSessionAttribute("j_user_name");
 
         HttpServletRequest request = new MockHttpServletRequest();
         HttpServletResponse response = new MockHttpServletResponse();
         handler.onAuthenticationFailure(request, response, exception);
 
-        verify(redirectStrategy).sendRedirect(request, response, "/login?login_error=1&username=username");
+        verify(redirectStrategy).sendRedirect(request, response, "/badlogin?login_error=1");
+        assertEquals(request.getSession().getAttribute(handler.getUsernameSessionAttribute()), "username");
     }
 }
