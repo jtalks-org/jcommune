@@ -64,7 +64,7 @@
     <query name="getNewMessagesCountFor">
         <![CDATA[SELECT count(*) FROM PrivateMessage as pm
              WHERE pm.userTo.username = :username
-             and pm.status = :status
+             and pm.status in (:statuses)
              and pm.read = :read]]>
     </query>
     <query name="getCountUserSentPm">
