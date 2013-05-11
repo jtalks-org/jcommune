@@ -284,6 +284,9 @@ function doClick(command) {
             case 'listElement':
                 AddTag('[*]', '');
                 break;
+            case 'user':
+            	AddTag('[user]', '[/user]');
+            	break;
         }
     }
 }
@@ -686,8 +689,6 @@ function showColorGrid2(Sam, textBoxId) {
         return color.toUpperCase();
     }
 }
-
-
 
 $(document).ready(function() {
 	$('#select_size a').click(function() {
