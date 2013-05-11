@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.web.validation.validators;
 
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -42,7 +41,6 @@ import org.testng.annotations.Test;
  */
 public class ChangedPasswordValidatorTest {
     private static final String PROFILE_OWNER_NAME = "owner";
-    private static final long USER_ID = 1l;
 
 	@Mock
 	private UserService userService;
@@ -65,19 +63,19 @@ public class ChangedPasswordValidatorTest {
 		when(userService.getCurrentUser()).thenReturn(
                 new JCUser(PROFILE_OWNER_NAME, "email", userCurrentPassword));
 		editUserProfileDto.setUsername(PROFILE_OWNER_NAME);
-        editUserProfileDto.setUserId(USER_ID);
+        editUserProfileDto.setUserId(1L);
 		validator = new ChangedPasswordValidator(userService, encryptionService);
 		//
 		editUserProfileDto.setCurrentUserPassword(userCurrentPassword);
 		editUserProfileDto.setNewUserPassword(userNewPassword);
-        when(userService.get(anyLong())).thenReturn(new JCUser(PROFILE_OWNER_NAME, "email", userCurrentPassword));
+        when(userService.get(1L)).thenReturn(new JCUser(PROFILE_OWNER_NAME, "email", userCurrentPassword));
 	}
 	
 	@Test
     public void editedByModeratorShouldNotCheckCurrentPassword() throws NotFoundException {
-        editUserProfileDto.setUserId(2l);
+        editUserProfileDto.setUserId(2L);
 
-        when(userService.get(anyLong())).thenReturn(new JCUser("moderator", "email", userCurrentPassword));
+        when(userService.get(2L)).thenReturn(new JCUser("moderator", "email", userCurrentPassword));
 
         boolean isValid = validator.isValid(editUserProfileDto, validatorContext);
         
@@ -86,7 +84,7 @@ public class ChangedPasswordValidatorTest {
 
     @Test
     public void editedNotExistingUserShouldNotCheckPassword() throws NotFoundException {
-        when(userService.get(anyLong())).thenThrow(new NotFoundException());
+        when(userService.get(1L)).thenThrow(new NotFoundException());
 
         boolean isValid = validator.isValid(editUserProfileDto, validatorContext);
 
