@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.validation.validators;
 import org.apache.commons.lang.ObjectUtils;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.validation.annotations.ChangedPassword;
@@ -62,7 +63,7 @@ public class ChangedPasswordValidator implements ConstraintValidator<ChangedPass
     @Override
     public boolean isValid(EditUserProfileDto dto, ConstraintValidatorContext context) {
         JCUser currentUser = userService.getCurrentUser();
-        String editedUserName = dto.getUsername();
+        String editedUserName = getUsername(dto.getUserId());
         String currentUserName = currentUser.getUsername();
         boolean isWillBeChangedByOwner = ObjectUtils.equals(editedUserName, currentUserName);
         if (isWillBeChangedByOwner) {
@@ -79,5 +80,20 @@ public class ChangedPasswordValidator implements ConstraintValidator<ChangedPass
             return result;
         }
         return true;
+    }
+
+    /**
+     * Get username by user's id.
+     *
+     * @param userId user's id
+     * @return an username
+     */
+    private String getUsername(long userId) {
+        try {
+            JCUser user = userService.get(userId);
+            return user.getUsername();
+        } catch (NotFoundException e) {
+            return null;
+        }
     }
 }

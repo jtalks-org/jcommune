@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.validation.validators;
 
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -27,6 +28,7 @@ import javax.validation.ConstraintValidatorContext.ConstraintViolationBuilder.No
 
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.mockito.Mock;
@@ -40,7 +42,8 @@ import org.testng.annotations.Test;
  */
 public class ChangedPasswordValidatorTest {
     private static final String PROFILE_OWNER_NAME = "owner";
-    
+    private static final long USER_ID = 1l;
+
 	@Mock
 	private UserService userService;
 	@Mock
@@ -57,28 +60,41 @@ public class ChangedPasswordValidatorTest {
 	private EditUserProfileDto editUserProfileDto = new EditUserProfileDto();
 	
 	@BeforeMethod
-	public void init() {
+	public void init() throws NotFoundException {
 		initMocks(this);
 		when(userService.getCurrentUser()).thenReturn(
                 new JCUser(PROFILE_OWNER_NAME, "email", userCurrentPassword));
 		editUserProfileDto.setUsername(PROFILE_OWNER_NAME);
+        editUserProfileDto.setUserId(USER_ID);
 		validator = new ChangedPasswordValidator(userService, encryptionService);
 		//
 		editUserProfileDto.setCurrentUserPassword(userCurrentPassword);
 		editUserProfileDto.setNewUserPassword(userNewPassword);
+        when(userService.get(anyLong())).thenReturn(new JCUser(PROFILE_OWNER_NAME, "email", userCurrentPassword));
 	}
 	
 	@Test
-    public void editedByModeratorShouldNotCheckCurrentPassword() {
-        editUserProfileDto.setUsername("crazy crazy crazy moderator");
-        
+    public void editedByModeratorShouldNotCheckCurrentPassword() throws NotFoundException {
+        editUserProfileDto.setUserId(2l);
+
+        when(userService.get(anyLong())).thenReturn(new JCUser("moderator", "email", userCurrentPassword));
+
         boolean isValid = validator.isValid(editUserProfileDto, validatorContext);
         
         assertTrue(isValid, "If moderator edits user's profile, we mustn't check current password.");
     }
-	
+
+    @Test
+    public void editedNotExistingUserShouldNotCheckPassword() throws NotFoundException {
+        when(userService.get(anyLong())).thenThrow(new NotFoundException());
+
+        boolean isValid = validator.isValid(editUserProfileDto, validatorContext);
+
+        assertTrue(isValid, "If someone try to edit not existing user's profile, we shouldn't check current password.");
+    }
+
 	@Test
-	public void editedByOwnerWithNewPasswordAsNullShouldNotBeValid() {
+	public void editedByOwnerWithNewPasswordAsNullShouldBeValid() {
 		editUserProfileDto.setNewUserPassword(null);
 		
 		boolean isValid = validator.isValid(editUserProfileDto, validatorContext);
