@@ -15,12 +15,12 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 
@@ -50,16 +50,18 @@ public class UserMentionService {
      * @return extracted user names
      */
     public List<String> extractMentionedUsers(String canContainMentionedUsers) {
-        Validate.notEmpty(canContainMentionedUsers);
-        Pattern pattern = Pattern.compile("\\[user\\].*?\\[/user\\]");
-        Matcher matcher = pattern.matcher(canContainMentionedUsers);
-        List<String> mentionedUsernames = new ArrayList<String>();
-        while (matcher.find()) {
-            String userBBCode = matcher.group();
-            String mentionedUser = userBBCode.replaceAll("\\[.*?\\]", StringUtils.EMPTY);
-            mentionedUsernames.add(mentionedUser);
-        }
-        return mentionedUsernames;
+        if (!StringUtils.isEmpty(canContainMentionedUsers)) {
+            Pattern pattern = Pattern.compile("\\[user\\].*?\\[/user\\]");
+            Matcher matcher = pattern.matcher(canContainMentionedUsers);
+            List<String> mentionedUsernames = new ArrayList<String>();
+            while (matcher.find()) {
+                String userBBCode = matcher.group();
+                String mentionedUser = userBBCode.replaceAll("\\[.*?\\]", StringUtils.EMPTY);
+                mentionedUsernames.add(mentionedUser);
+            }
+            return mentionedUsernames;
+        } 
+        return Collections.emptyList();
     }
     
     /**

@@ -149,11 +149,6 @@
         <a href="" class='btn' onclick="closeTags();return false;"
            title='<spring:message code="label.answer.close_tags"/>'>[/..]</a>
     </div>
-    
-    <div class='btn-group'>
-        <a href="" class='btn' onclick="doClick('user');"
-           title='<spring:message code="label.answer.mention_user"/>'>[user]</a>
-    </div>
 </div>
 
 <div class='control-group'>

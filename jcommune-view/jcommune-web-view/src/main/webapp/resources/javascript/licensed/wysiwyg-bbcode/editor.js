@@ -284,9 +284,6 @@ function doClick(command) {
             case 'listElement':
                 AddTag('[*]', '');
                 break;
-            case 'user':
-            	AddTag('[user]', '[/user]');
-            	break;
         }
     }
 }
