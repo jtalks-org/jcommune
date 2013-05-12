@@ -142,30 +142,6 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         assertFalse(result, "Entity deleted");
     }
 
-
-//    @Test
-//    public void testGetAllFromUserCommonCase() {
-//        int totalSize = 75;
-//        int pageCount = 3;
-//        int pageSize = totalSize/pageCount;
-//        int messageCount = 50;
-//        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
-//        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
-//        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, pageSize);
-//        PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
-//
-//        Page<PrivateMessage> messagePage = dao.getAllFromUser(userFrom, pageRequest);
-//
-//        for (PrivateMessage message : messagePage.getContent()) {
-//            assertTrue(message.getStatus().equals(PrivateMessageStatus.SENT)
-//                    || message.getStatus().equals(PrivateMessageStatus.NEW)
-//                    || message.getStatus().equals(PrivateMessageStatus.DELETED_FROM_INBOX));
-//        }
-//        assertEquals(messagePage.getContent().size(), pageSize, "Incorrect count of message in one page.");
-//        assertEquals(messagePage.getTotalElements(), totalSize, "Incorrect total count.");
-//        assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
-//    }
-
     @Test
     public void testGetAllFromUserMessageStatusIsCorrect(){
         int totalSize = 75;
@@ -232,25 +208,6 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
 
         assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
     }
-
-//    @Test
-//    public void testGetAllFromUserCommonCasePageTooLow() {
-//        int totalSize = 75;
-//        int pageCount = 3;
-//        int pageSize = totalSize/pageCount;
-//        int messageCount = 50;
-//        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
-//        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
-//        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(0, pageSize);
-//        PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
-//
-//        Page<PrivateMessage> messagePage = dao.getAllFromUser(userFrom, pageRequest);
-//
-//        assertEquals(messagePage.getContent().size(), pageSize, "Incorrect count of message in one page.");
-//        assertEquals(messagePage.getTotalElements(), totalSize, "Incorrect total count.");
-//        assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
-//        assertEquals(messagePage.getNumber(), 1, "Incorrect page number");
-//    }
 
     @Test
     public void testGetAllFromUserCommonCasePageTooLowPageCountIsCorrect() {

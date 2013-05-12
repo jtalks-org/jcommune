@@ -71,6 +71,11 @@ public final class PersistedObjectsFactory {
                 "Message title", "Private message body");
     }
 
+    /**
+     * Create and persist one single message.
+     * @param status message status.
+     * @return saved pm.
+     */
     public static PrivateMessage createAndSaveMessage(PrivateMessageStatus status, JCUser userTo,
                                             JCUser userFrom){
         PrivateMessage pm = new PrivateMessage(userTo, userFrom,
