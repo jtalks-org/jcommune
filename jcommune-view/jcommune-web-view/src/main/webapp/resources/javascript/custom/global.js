@@ -59,7 +59,7 @@ $(document).ready(function () {
             tabNavigation: ['#remove-entity-ok', '#remove-entity-cancel'],
             handlers: {
                 '#remove-entity-ok': {'click': submitFunc},
-                '#remove-entity-cancel': 'close'
+                '#remove-entity-cancel': {'static':'close'}
             }
         });
 

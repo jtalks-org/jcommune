@@ -45,7 +45,7 @@ public class PrivateMessageHibernateDao extends
     @SuppressWarnings("unchecked")
     @Override
     public Page<PrivateMessage> getAllFromUser(JCUser userFrom, JCommunePageRequest pageRequest) {
-        PrivateMessageStatus[] statuses = PrivateMessageStatus.getInboxOutboxStatus();
+        PrivateMessageStatus[] statuses = PrivateMessageStatus.getOutboxStatus();
         Number totalCount = (Number) getSession()
                 .getNamedQuery("getCountUserSentPm")
                 .setParameter("userFrom", userFrom)
@@ -71,7 +71,7 @@ public class PrivateMessageHibernateDao extends
     @SuppressWarnings("unchecked")
     @Override
     public Page<PrivateMessage> getAllForUser(JCUser userTo, JCommunePageRequest pageRequest) {
-        PrivateMessageStatus[] statuses = PrivateMessageStatus.getInboxOutboxStatus();
+        PrivateMessageStatus[] statuses = PrivateMessageStatus.getInboxStatus();
         Number totalCount = (Number) getSession()
                 .getNamedQuery("getCountUserInboxPm")
                 .setParameter("userTo", userTo)
@@ -113,10 +113,11 @@ public class PrivateMessageHibernateDao extends
      */
     @Override
     public int getNewMessagesCountFor(String username) {
+        PrivateMessageStatus[] statuses = PrivateMessageStatus.getNewMessageStatus();
         return ((Number) getSession().getNamedQuery("getNewMessagesCountFor")
                 .setParameter("read", false)
                 .setString("username", username)
-                .setParameter(STATUS, PrivateMessageStatus.SENT)
+                .setParameterList(STATUSES, statuses)
                 .uniqueResult())
                 .intValue();
     }

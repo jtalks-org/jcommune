@@ -48,6 +48,7 @@
 
             <form:hidden id="avatar" path="avatar"/>
             <form:hidden id="editedUserId" path="userId" value="${editedUser.userId}"/>
+            <form:hidden id="editedUsername" path="username" value="${editedUser.username}"/>
 
             <div class='user-profile-header'>
                     <span class="pull-left thumbnail">
@@ -151,6 +152,14 @@
                         <label class="control-label"><spring:message code="label.autosubscribe"/></label>
                         <div class="controls padding-top-profile">
                             <form:checkbox path="autosubscribe" value="${editedUser.autosubscribe}"
+                                         class="form-check-radio-box"/>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label"><spring:message code="label.mentioning.notifications.enabled"/></label>
+                        <div class="controls padding-top-profile">
+                            <form:checkbox path="mentioningNotificationsEnabled" value="${editedUser.mentioningNotificationsEnabled}"
                                          class="form-check-radio-box"/>
                         </div>
                     </div>

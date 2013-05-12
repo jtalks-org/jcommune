@@ -21,6 +21,7 @@ import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.ui.velocity.VelocityEngineUtils;
@@ -28,6 +29,7 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -296,7 +298,20 @@ public class MailService {
     }
     
     public void sendUserMentionedNotification(JCUser recipient, long postId) {
-        
+        String urlSuffix = "/posts/" + postId;
+        String url = this.getDeploymentRootUrl() + urlSuffix;
+        Locale locale = recipient.getLanguage().getLocale();
+        Map<String, Object> model = new HashMap<String, Object>();
+        model.put(NAME, recipient.getUsername());
+        model.put(LINK, url);
+        model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
+        model.put(RECIPIENT_LOCALE, locale);
+        try {
+            this.sendEmail(recipient.getEmail(), messageSource.getMessage("userMentioning.subject",
+                    new Object[]{}, locale), model, "userMentioning.vm");
+        } catch (MailingFailedException e) {
+            LOGGER.error("Failed to sent activation mail for user: " + recipient.getUsername());
+        }
     }
 
     /**
@@ -323,7 +338,10 @@ public class MailService {
             helper.setSubject(subject);
             helper.setText(plainText, htmlText);
             mailSender.send(message);
-        } catch (Exception e) {
+        } catch (MailException e) {
+            LOGGER.error("Mail sending failed", e);
+            throw new MailingFailedException(e);
+        } catch (MessagingException e) {
             LOGGER.error("Mail sending failed", e);
             throw new MailingFailedException(e);
         }

@@ -75,6 +75,7 @@
                     type="org.joda.time.contrib.hibernate.PersistentDateTime" not-null="false"/>
 
             <property column="AUTOSUBSCRIBE" name="autosubscribe"/>
+            <property column="MENTIONING_NOTIFICATIONS_ENABLED" name="mentioningNotificationsEnabled" />
         </joined-subclass>
     </class>
 

@@ -219,12 +219,18 @@
     </bean>
 
     <bean id="bbCodeReviewProcessor" class="org.jtalks.jcommune.service.bb2htmlprocessors.BbCodeReviewProcessor"/>
+    
+    <bean id="bbUserPreprocessor" class="org.jtalks.jcommune.service.bb2htmlprocessors.BBUserPreprocessor">
+        <constructor-arg ref="userService"/>
+        <constructor-arg ref="userMentionService"/>
+    </bean>
 
     <bean id="bbCodeService" class="org.jtalks.jcommune.service.nontransactional.BBCodeService">
         <property name="preprocessors">
             <list>
                 <bean class="org.jtalks.jcommune.service.bb2htmlprocessors.BBCodeListPreprocessor"/>
                 <ref local="bbCodeReviewProcessor"/>
+                <ref bean="bbUserPreprocessor"/>
             </list>
         </property>
         <property name="postprocessors">
@@ -273,6 +279,11 @@
         <constructor-arg ref="componentSapeOnMainPageEnableProperty"/>
         <constructor-arg ref="componentSapeShowDummyLinksProperty"/>
         <constructor-arg ref="componentSapeEnableServiceProperty"/>
+    </bean>
+    
+    <bean id="userMentionService" class="org.jtalks.jcommune.service.nontransactional.UserMentionService">
+        <constructor-arg ref="mailService"/>
+        <constructor-arg ref="userDao"/>
     </bean>
 
     <!--

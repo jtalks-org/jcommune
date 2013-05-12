@@ -148,6 +148,9 @@ get XSS attacks.</p>-->
 
         <!-- Table -->
         <coderef name="table"/>
+        
+        <!-- User mentioning -->
+        <coderef name="user"/>
     </scope>
 
     <!-- Simple formatting -->
@@ -330,4 +333,10 @@ get XSS attacks.</p>-->
             <template>&lt;td&gt;<var/>&lt;/td&gt;</template>
         </code>
     </scope>
+    
+    <!-- User mentioning -->
+    <code name="user">
+        <pattern>[user=<var name="mentionedUserProfileLink"/>]<var name="mentionedUser" inherit="true"/>[/user]</pattern>
+        <template>&lt;a style=&quot;font-weight:bold;text-decoration:underline;&quot; href=&quot;<var name="mentionedUserProfileLink"/>&quot;&gt;<var name="mentionedUser"/>&lt;/a&gt;</template>
+    </code>
 </configuration>

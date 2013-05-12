@@ -244,13 +244,27 @@ public class MailServiceTest {
     }
 
     @Test
-    public void testSendTopicMovedMailFailed() {
+    public void testSendTopicMovedMailFailed() throws MessagingException, IOException {
         Exception fail = new MailSendException("");
         doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
 
         topic.setId(1);
 
         service.sendTopicMovedMail(user, topic.getId());
+        
+        this.checkMailCredentials();
+        assertTrue(this.getMimeMailBody().contains("http://coolsite.com/forum/topics/" + topic.getId()));
+    }
+    
+    @Test
+    public void sendUserMentionedNotificationShouldSentIt() throws MessagingException, IOException {
+        long postId = 25l;
+        
+        service.sendUserMentionedNotification(user, postId);
+        
+        this.checkMailCredentials();
+        assertTrue(this.getMimeMailBody().contains(USERNAME));
+        assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/posts/" + postId));
     }
 
     private String getMimeMailBody() throws IOException, MessagingException {

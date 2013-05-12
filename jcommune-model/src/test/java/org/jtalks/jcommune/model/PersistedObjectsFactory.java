@@ -72,6 +72,20 @@ public final class PersistedObjectsFactory {
     }
 
     /**
+     * Create and persist one single message.
+     * @param status message status.
+     * @return saved pm.
+     */
+    public static PrivateMessage createAndSaveMessage(PrivateMessageStatus status, JCUser userTo,
+                                            JCUser userFrom){
+        PrivateMessage pm = new PrivateMessage(userTo, userFrom,
+                "Message title", "Private message body");
+        pm.setStatus(status);
+        persist(pm);
+        return pm;
+    }
+
+    /**
      * Create and persist list of private messages with all possible statuses.
      * @param size message number for DRAFT status. For other statuses message number is size / 2.
      * @return saved pm list.

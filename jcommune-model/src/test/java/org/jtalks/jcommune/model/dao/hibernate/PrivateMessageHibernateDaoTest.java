@@ -50,8 +50,6 @@ import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEqua
 @Transactional
 public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
 
-    private static final int PAGE_NUMBER_TOO_BIG = 1000;
-    private static final int PAGE_NUMBER_TOO_LOW = 0;
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
@@ -144,9 +142,28 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         assertFalse(result, "Entity deleted");
     }
 
+    @Test
+    public void testGetAllFromUserMessageStatusIsCorrect(){
+        int totalSize = 75;
+        int pageCount = 3;
+        int pageSize = totalSize/pageCount;
+        int messageCount = 50;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, pageSize);
+        PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getAllFromUser(userFrom, pageRequest);
+
+        for (PrivateMessage message : messagePage.getContent()) {
+            assertTrue(message.getStatus().equals(PrivateMessageStatus.SENT)
+                    || message.getStatus().equals(PrivateMessageStatus.NEW)
+                    || message.getStatus().equals(PrivateMessageStatus.DELETED_FROM_INBOX));
+        }
+    }
 
     @Test
-    public void testGetAllFromUserCommonCase() {
+    public void testGetAllFromUserMessageCountOnOnePageIsCorrect(){
         int totalSize = 50;
         int pageCount = 2;
         int pageSize = totalSize/pageCount;
@@ -157,170 +174,337 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
 
         Page<PrivateMessage> messagePage = dao.getAllFromUser(userFrom, pageRequest);
 
-        for (PrivateMessage message : messagePage.getContent()) {
-            assertTrue(message.getStatus().equals(PrivateMessageStatus.SENT)
-                    || message.getStatus().equals(PrivateMessageStatus.NEW));
-        }
         assertEquals(messagePage.getContent().size(), pageSize, "Incorrect count of message in one page.");
-        assertEquals(messagePage.getTotalElements(), totalSize, "Incorrect total count.");
-        assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
     }
-    
+
     @Test
-    public void testGetAllFromUserCommonCasePageTooLow() {
-        int totalSize = 50;
-        int pageCount = 2;
+    public void testGetAllFromUserTotalMessageCountIsCorrect(){
+        int totalSize = 75;
+        int pageCount = 3;
         int pageSize = totalSize/pageCount;
+        int messageCount = 50;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
-        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(PAGE_NUMBER_TOO_LOW, pageSize);
-        PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, pageSize);
+        PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllFromUser(userFrom, pageRequest);
 
-        for (PrivateMessage message : messagePage.getContent()) {
-            assertTrue(message.getStatus().equals(PrivateMessageStatus.SENT)
-                    || message.getStatus().equals(PrivateMessageStatus.NEW));
-        }
-        assertEquals(messagePage.getContent().size(), pageSize, "Incorrect count of message in one page.");
         assertEquals(messagePage.getTotalElements(), totalSize, "Incorrect total count.");
+    }
+
+    @Test
+    public void testGetAllFromUserPageCountIsCorrect(){
+        int totalSize = 75;
+        int pageCount = 3;
+        int pageSize = totalSize/pageCount;
+        int messageCount = 50;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, pageSize);
+        PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getAllFromUser(userFrom, pageRequest);
+
         assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
+    }
+
+    @Test
+    public void testGetAllFromUserCommonCasePageTooLowPageCountIsCorrect() {
+        int totalSize = 75;
+        int pageCount = 3;
+        int pageSize = totalSize/pageCount;
+        int messageCount = 50;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(0, pageSize);
+        PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getAllFromUser(userFrom, pageRequest);
+
+        assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
+    }
+
+    @Test
+    public void testGetAllFromUserCommonCasePageTooLowPageNumberIsCorrect() {
+        int totalSize = 75;
+        int pageCount = 3;
+        int pageSize = totalSize/pageCount;
+        int messageCount = 50;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(0, pageSize);
+        PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getAllFromUser(userFrom, pageRequest);
+
         assertEquals(messagePage.getNumber(), 1, "Incorrect page number");
     }
-    
+
     @Test
-    public void testGetAllFromUserCommonCasePageTooBig() {
-        int totalSize = 50;
-        int pageCount = 2;
+    public void testGetAllFromUserCommonCasePageTooBigMessageOnOnePageIsCorrect() {
+        int totalSize = 75;
+        int pageCount = 3;
         int pageSize = totalSize/pageCount;
+        int messageCount = 50;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
-        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(PAGE_NUMBER_TOO_BIG, pageSize);
-        PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1000, pageSize);
+        PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllFromUser(userFrom, pageRequest);
 
-        for (PrivateMessage message : messagePage.getContent()) {
-            assertTrue(message.getStatus().equals(PrivateMessageStatus.SENT)
-                    || message.getStatus().equals(PrivateMessageStatus.NEW));
-        }
         assertEquals(messagePage.getContent().size(), pageSize, "Incorrect count of message in one page.");
-        assertEquals(messagePage.getTotalElements(), totalSize, "Incorrect total count.");
+    }
+
+    @Test
+    public void testGetAllFromUserCommonCasePageTooBigPageCountIsCorrect() {
+        int totalSize = 75;
+        int pageCount = 3;
+        int pageSize = totalSize/pageCount;
+        int messageCount = 50;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1000, pageSize);
+        PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getAllFromUser(userFrom, pageRequest);
+
         assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
+    }
+
+    @Test
+    public void testGetAllFromUserCommonCasePageTooBigPageNumberIsCorrect() {
+        int totalSize = 75;
+        int pageCount = 3;
+        int pageSize = totalSize/pageCount;
+        int messageCount = 50;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1000, pageSize);
+        PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getAllFromUser(userFrom, pageRequest);
+
         assertEquals(messagePage.getNumber(), pageCount, "Incorrect page number");
     }
 
     @Test
-    public void testGetAllFromUserOneMessageCase() {
-        int totalSize = 50;
-        int pageCount = 1;
-        int pageSize = totalSize/pageCount;
-        int messageNumber = 1;
+    public void testGetAllFromUserOneMessageCaseMessageCountOnOnePageIsCorrect() {
+        int pageSize = 25;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, pageSize);
-        PersistedObjectsFactory.preparePrivateMessages(messageNumber, userTo, userFrom);
+        PersistedObjectsFactory.createAndSaveMessage(PrivateMessageStatus.SENT, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllFromUser(userFrom, pageRequest);
 
-        for (PrivateMessage message : messagePage.getContent()) {
-            assertTrue(message.getStatus().equals(PrivateMessageStatus.SENT)
-                    || message.getStatus().equals(PrivateMessageStatus.NEW));
-        }
-        assertEquals(messagePage.getContent().size(), messageNumber, "Incorrect count of message in one page.");
-        assertEquals(messagePage.getTotalElements(), messageNumber, "Incorrect total count.");
+        assertEquals(messagePage.getContent().size(), 1, "Incorrect count of message in one page.");
+    }
+
+    @Test
+    public void testGetAllFromUserOneMessageCasePageCountIsCorrect() {
+        int pageCount = 1;
+        int pageSize = 25;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, pageSize);
+        PersistedObjectsFactory.createAndSaveMessage(PrivateMessageStatus.SENT, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getAllFromUser(userFrom, pageRequest);
+
         assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
     }
 
     @Test
-    public void testGetAllToUserCommonCase() {
-        int totalSize = 50;
-        int pageCount = 2;
+    public void testGetAllToUserCommonCaseMessageStatusIsCorrect() {
+        int totalSize = 75;
+        int pageCount = 3;
         int itemsOnPage = totalSize/pageCount;
+        int messageCount = 50;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, itemsOnPage);
-        PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
+        PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllForUser(userTo, pageRequest);
         for (PrivateMessage message : messagePage.getContent()) {
             assertTrue(message.getStatus().equals(PrivateMessageStatus.SENT)
-                    || message.getStatus().equals(PrivateMessageStatus.NEW));
+                    || message.getStatus().equals(PrivateMessageStatus.NEW)
+                    || message.getStatus().equals(PrivateMessageStatus.DELETED_FROM_OUTBOX));
         }
+    }
+
+    @Test
+    public void testGetAllToUserCommonCaseMessageCountOnOnePageIsCorrect() {
+        int totalSize = 75;
+        int pageCount = 3;
+        int itemsOnPage = totalSize/pageCount;
+        int messageCount = 50;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, itemsOnPage);
+        PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getAllForUser(userTo, pageRequest);
+        
         assertEquals(messagePage.getContent().size(), itemsOnPage, "Incorrect count of message in one page.");
+    }
+
+    @Test
+    public void testGetAllToUserCommonCaseTotalMessageCountIsCorrect() {
+        int totalSize = 75;
+        int pageCount = 3;
+        int itemsOnPage = totalSize/pageCount;
+        int messageCount = 50;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, itemsOnPage);
+        PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getAllForUser(userTo, pageRequest);
+        
         assertEquals(messagePage.getTotalElements(), totalSize, "Incorrect total count.");
+    }
+
+    @Test
+    public void testGetAllToUserCommonCasePageCountIsCorrect() {
+        int totalSize = 75;
+        int pageCount = 3;
+        int itemsOnPage = totalSize/pageCount;
+        int messageCount = 50;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, itemsOnPage);
+        PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getAllForUser(userTo, pageRequest);
+        
         assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
     }
     
     @Test
-    public void testGetAllToUserCommonCasePageTooLoww() {
-        int totalSize = 50;
-        int pageCount = 2;
+    public void testGetAllToUserCommonCasePageTooLowPageCountIsCorrect() {
+        int totalSize = 75;
+        int pageCount = 3;
         int itemsOnPage = totalSize/pageCount;
+        int messageCount = 50;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(PAGE_NUMBER_TOO_LOW, itemsOnPage);
-        PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(0, itemsOnPage);
+        PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllForUser(userTo, pageRequest);
-        for (PrivateMessage message : messagePage.getContent()) {
-            assertTrue(message.getStatus().equals(PrivateMessageStatus.SENT)
-                    || message.getStatus().equals(PrivateMessageStatus.NEW));
-        }
-        assertEquals(messagePage.getContent().size(), itemsOnPage, "Incorrect count of message in one page.");
-        assertEquals(messagePage.getTotalElements(), totalSize, "Incorrect total count.");
+
         assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
+    }
+
+    @Test
+    public void testGetAllToUserCommonCasePageTooLowPageNumberIsCorrect() {
+        int totalSize = 75;
+        int pageCount = 3;
+        int itemsOnPage = totalSize/pageCount;
+        int messageCount = 50;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(0, itemsOnPage);
+        PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getAllForUser(userTo, pageRequest);
+
         assertEquals(messagePage.getNumber(), 1, "Incorrect page number.");
     }
-    
+
     @Test
-    public void testGetAllToUserCommonCasePageTooBig() {
-        int totalSize = 50;
-        int pageCount = 2;
+    public void testGetAllToUserCommonCasePageTooBigMessageCountOnOnePageIsCorrect() {
+        int totalSize = 75;
+        int pageCount = 3;
         int itemsOnPage = totalSize/pageCount;
+        int messageCount = 50;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(PAGE_NUMBER_TOO_BIG, itemsOnPage);
-        PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1000, itemsOnPage);
+        PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllForUser(userTo, pageRequest);
-        for (PrivateMessage message : messagePage.getContent()) {
-            assertTrue(message.getStatus().equals(PrivateMessageStatus.SENT)
-                    || message.getStatus().equals(PrivateMessageStatus.NEW));
-        }
+
         assertEquals(messagePage.getContent().size(), itemsOnPage, "Incorrect count of message in one page.");
-        assertEquals(messagePage.getTotalElements(), totalSize, "Incorrect total count.");
+    }
+
+    @Test
+    public void testGetAllToUserCommonCasePageTooBigPageCountIsCorrect() {
+        int totalSize = 75;
+        int pageCount = 3;
+        int itemsOnPage = totalSize/pageCount;
+        int messageCount = 50;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1000, itemsOnPage);
+        PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getAllForUser(userTo, pageRequest);
+
         assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
+    }
+
+    @Test
+    public void testGetAllToUserCommonCasePageTooBigPageNumberIsCorrect() {
+        int totalSize = 75;
+        int pageCount = 3;
+        int itemsOnPage = totalSize/pageCount;
+        int messageCount = 50;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1000, itemsOnPage);
+        PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getAllForUser(userTo, pageRequest);
+
         assertEquals(messagePage.getNumber(), pageCount, "Incorrect page number.");
     }
 
     @Test
-    public void testGetAllToUserOneMessageCase() {
-        int totalSize = 50;
+    public void testGetAllToUserOneMessageCaseMessageCountOnOnePageIsCorrect() {
         int pageCount = 1;
-        int itemsOnPage = totalSize/pageCount;
-        int messageNumber = 1;
+        int itemsOnPage = 25;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, itemsOnPage);
-        PersistedObjectsFactory.preparePrivateMessages(messageNumber, userTo, userFrom);
+        PersistedObjectsFactory.createAndSaveMessage(PrivateMessageStatus.SENT, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllForUser(userTo, pageRequest);
-        for (PrivateMessage message : messagePage.getContent()) {
-            assertTrue(message.getStatus().equals(PrivateMessageStatus.SENT)
-                    || message.getStatus().equals(PrivateMessageStatus.NEW));
-        }
-        assertEquals(messagePage.getContent().size(), messageNumber, "Incorrect count of message in one page.");
-        assertEquals(messagePage.getTotalElements(), messageNumber, "Incorrect total count.");
+
+        assertEquals(messagePage.getContent().size(), 1, "Incorrect count of message in one page.");
         assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
     }
 
     @Test
-    public void testGetDraftsFromUserCommonCase() {
+    public void testGetAllToUserOneMessageCasePageCountIsCorrect() {
+        int pageCount = 1;
+        int itemsOnPage = 25;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, itemsOnPage);
+        PersistedObjectsFactory.createAndSaveMessage(PrivateMessageStatus.SENT, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getAllForUser(userTo, pageRequest);
+
+        assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
+    }
+
+    @Test
+    public void testGetDraftsFromUserCommonCaseMessageStatusIsCorrect() {
         int totalSize = 50;
         int pageCount = 2;
         int itemsOnPage = totalSize/pageCount;
@@ -334,56 +518,138 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         for (PrivateMessage message : messagePage.getContent()) {
             assertTrue(message.getStatus().equals(PrivateMessageStatus.DRAFT));
         }
-        assertEquals(messagePage.getContent().size(), itemsOnPage, "Incorrect count of message in one page.");
-        assertEquals(messagePage.getTotalElements(), totalSize, "Incorrect total count.");
-        assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
     }
-    
+
     @Test
-    public void testGetDraftsFromUserCommonCasePageTooLow() {
+    public void testGetDraftsFromUserCommonCaseMessageCountOnOnePageIsCorrect() {
         int totalSize = 50;
         int pageCount = 2;
         int itemsOnPage = totalSize/pageCount;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(PAGE_NUMBER_TOO_LOW, itemsOnPage);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, itemsOnPage);
         PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getDraftsForUser(userFrom, pageRequest);
-        for (PrivateMessage message : messagePage.getContent()) {
-            assertTrue(message.getStatus().equals(PrivateMessageStatus.DRAFT));
-        }
+
         assertEquals(messagePage.getContent().size(), itemsOnPage, "Incorrect count of message in one page.");
+    }
+
+    @Test
+    public void testGetDraftsFromUserCommonCaseTotalMessageCountIsCorrect() {
+        int totalSize = 50;
+        int pageCount = 2;
+        int itemsOnPage = totalSize/pageCount;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, itemsOnPage);
+        PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getDraftsForUser(userFrom, pageRequest);
+
         assertEquals(messagePage.getTotalElements(), totalSize, "Incorrect total count.");
+    }
+
+    @Test
+    public void testGetDraftsFromUserCommonCasePageCountIsCorrect() {
+        int totalSize = 50;
+        int pageCount = 2;
+        int itemsOnPage = totalSize/pageCount;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, itemsOnPage);
+        PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getDraftsForUser(userFrom, pageRequest);
+
         assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
+    }
+
+    @Test
+    public void testGetDraftsFromUserCommonCasePageTooLowPageNumberIsCorrect() {
+        int totalSize = 50;
+        int pageCount = 2;
+        int itemsOnPage = totalSize/pageCount;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(0, itemsOnPage);
+        PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getDraftsForUser(userFrom, pageRequest);
+
         assertEquals(messagePage.getNumber(), 1, "Incorrect page number");
     }
-    
+
     @Test
-    public void testGetDraftsFromUserCommonCasePageTooBig() {
+    public void testGetDraftsFromUserCommonCasePageTooLowPageCountIsCorrect() {
         int totalSize = 50;
         int pageCount = 2;
         int itemsOnPage = totalSize/pageCount;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(PAGE_NUMBER_TOO_BIG, itemsOnPage);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(0, itemsOnPage);
         PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getDraftsForUser(userFrom, pageRequest);
-        for (PrivateMessage message : messagePage.getContent()) {
-            assertTrue(message.getStatus().equals(PrivateMessageStatus.DRAFT));
-        }
-        assertEquals(messagePage.getContent().size(), itemsOnPage, "Incorrect count of message in one page.");
-        assertEquals(messagePage.getTotalElements(), totalSize, "Incorrect total count.");
+
         assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
+    }
+
+    @Test
+    public void testGetDraftsFromUserCommonCasePageTooBigMessageCountOnOnePageIsCorrect() {
+        int totalSize = 50;
+        int pageCount = 2;
+        int itemsOnPage = totalSize/pageCount;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1000, itemsOnPage);
+        PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getDraftsForUser(userFrom, pageRequest);
+
+        assertEquals(messagePage.getContent().size(), itemsOnPage, "Incorrect count of message in one page.");
+    }
+
+    @Test
+    public void testGetDraftsFromUserCommonCasePageTooBigPageCountIsCorrect() {
+        int totalSize = 50;
+        int pageCount = 2;
+        int itemsOnPage = totalSize/pageCount;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1000, itemsOnPage);
+        PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getDraftsForUser(userFrom, pageRequest);
+
+        assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
+    }
+
+    @Test
+    public void testGetDraftsFromUserCommonCasePageTooBigPageNumberIsCorrect() {
+        int totalSize = 50;
+        int pageCount = 2;
+        int itemsOnPage = totalSize/pageCount;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1000, itemsOnPage);
+        PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getDraftsForUser(userFrom, pageRequest);
+
         assertEquals(messagePage.getNumber(), pageCount, "Incorrect page number");
     }
 
-
     @Test
-    public void testGetDraftsFromUserOneMessageCase() {
+    public void testGetDraftsFromUserOneMessageCaseMessageCountOnOnePageIsCorrect() {
         int totalSize = 50;
         int pageCount = 1;
         int itemsOnPage = totalSize/pageCount;
@@ -395,13 +661,27 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         PersistedObjectsFactory.preparePrivateMessages(messageNumber, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getDraftsForUser(userFrom, pageRequest);
-        for (PrivateMessage message : messagePage.getContent()) {
-            assertTrue(message.getStatus().equals(PrivateMessageStatus.DRAFT));
-        }
+
         assertEquals(messagePage.getContent().size(), messageNumber, "Incorrect count of message in one page.");
-        assertEquals(messagePage.getTotalElements(), messageNumber, "Incorrect total count.");
+    }
+
+    @Test
+    public void testGetDraftsFromUserOneMessageCasePageCountIsCorrect() {
+        int totalSize = 50;
+        int pageCount = 1;
+        int itemsOnPage = totalSize/pageCount;
+        int messageNumber = 1;
+        JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
+        JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
+
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, itemsOnPage);
+        PersistedObjectsFactory.preparePrivateMessages(messageNumber, userTo, userFrom);
+
+        Page<PrivateMessage> messagePage = dao.getDraftsForUser(userFrom, pageRequest);
+
         assertEquals(messagePage.getTotalPages(), pageCount, "Incorrect count of pages.");
     }
+
     @Test
     public void testGetNewMessagesCountFor() {
         saveMessagesWithDifferentStatus();

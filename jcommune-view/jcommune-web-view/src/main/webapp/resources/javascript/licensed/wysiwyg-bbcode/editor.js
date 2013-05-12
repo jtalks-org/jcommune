@@ -355,7 +355,7 @@ function doLink() {
             maxWidth: 450,
             tabNavigation: ['#urlAltId', '#urlId', '#bb-link-ok','#bb-link-cancel'],
             handlers: {
-                '#bb-link-cancel': 'close',
+                '#bb-link-cancel': {'static':'close'},
                 '#bb-link-ok': {'click': submitFunc}
             }
         });
@@ -404,7 +404,7 @@ function doImage() {
             tabNavigation: ['#imgId', '#bb-img-ok','#bb-img-cancel'],
             handlers: {
                 '#bb-img-ok': {'click': submitFunc},
-                '#bb-img-cancel': 'close'
+                '#bb-img-cancel': {'static':'close'}
             }
         });
     }
@@ -668,7 +668,7 @@ function showColorGrid2(Sam, textBoxId) {
             tabNavigation: ['#bb-color-ok','#bb-color-cancel'],
             handlers: {
                 '#bb-color-ok': {'click': submitFunc},
-                '#bb-color-cancel': 'close'
+                '#bb-color-cancel': {'static':'close'}
             }
         });
     }
@@ -686,8 +686,6 @@ function showColorGrid2(Sam, textBoxId) {
         return color.toUpperCase();
     }
 }
-
-
 
 $(document).ready(function() {
 	$('#select_size a').click(function() {

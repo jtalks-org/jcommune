@@ -43,7 +43,7 @@ $(document).ready(function () {
             tabNavigation: ['#remove-avatar-ok','#remove-avatar-cancel'],
             handlers: {
                 '#remove-avatar-ok': {'click': submitFunc},
-                '#remove-avatar-cancel': 'close'
+                '#remove-avatar-cancel': {'static':'close'}
             }
         });
 

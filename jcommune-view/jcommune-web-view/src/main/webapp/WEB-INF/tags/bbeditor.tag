@@ -148,7 +148,6 @@
     <div class='btn-group'>
         <a href="" class='btn' onclick="closeTags();return false;"
            title='<spring:message code="label.answer.close_tags"/>'>[/..]</a>
-
     </div>
 </div>
 

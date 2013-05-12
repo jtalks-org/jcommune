@@ -145,10 +145,14 @@ CodeHighlighting.setupAddCommentFormHandlers = function () {
             var lineNumber = $(this).index() + 1;
 			// display form before first comment
 			var elementBeforeForm = $(this).find('div.review-container:last');
-			if (elementBeforeForm.length == 0) {
+			var hasComments = (elementBeforeForm.length != 0);
+			if (!hasComments) {
 				elementBeforeForm = $(this).find('span:last');
 			}
 			CodeHighlighting.showAddCommentForm(elementBeforeForm, lineNumber);
+			if (hasComments) {
+				$(document).scrollTop($('#' + CodeHighlighting.ADD_COMMENT_FORM_ID).offset().top - 150);
+			}
         }
         
     });	
@@ -280,8 +284,7 @@ CodeHighlighting.setupEditCommentHandlers = function() {
             tabNavigation: ['#remove-review-ok','#remove-review-cancel'],
             handlers: {
                 '#remove-review-ok': {'click': submitFunc, 'keydown' : Keymaps.reviewConfirmRemoveButton},
-                '#remove-cancel-ok': 'close',
-                '#remove-cancel-ok': {'keydown': Keymaps.reviewCancelRemoveButton}
+				'#remove-review-cancel': {'keydown': Keymaps.reviewCancelRemoveButton, 'static':'close'}
             }
         });
 
@@ -431,7 +434,7 @@ CodeHighlighting.showCommentForm = function(element, submitButtonTitle, submitBu
     reviewContent.keydown(Keymaps.review);
     reviewContent.focus();
 	
-	CodeHighlighting.toggleActionButton(lineNumber);
+	CodeHighlighting.toggleActionButton(lineNumber);	
 }
 
 /**
