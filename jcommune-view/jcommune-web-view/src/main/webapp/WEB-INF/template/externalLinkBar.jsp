@@ -22,7 +22,7 @@
 
 <div class="external-links-bar">
   <div class="external-links-container">
-    <c:if test="${not empty forumComponent}">
+    <c:if test="${not empty forumComponent and sessionScope.adminMode == true}">
       <jtalks:hasPermission targetId="${forumComponent.id}" targetType="COMPONENT" permission="GeneralPermission.ADMIN">
         <span id="links_editor" title='<fmt:message key="label.linksEditor"/>'
               class="icon-cog cursor-hand links_editor"></span>

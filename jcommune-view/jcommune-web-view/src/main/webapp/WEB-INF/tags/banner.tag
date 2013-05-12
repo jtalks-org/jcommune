@@ -27,7 +27,7 @@
     <c:if test="${not empty banner}">
         ${banner.content}
     </c:if>
-    <c:if test="${not empty forumComponent}">
+    <c:if test="${not empty forumComponent and sessionScope.adminMode == true}">
         <jtalks:hasPermission targetId="${forumComponent.id}" targetType="COMPONENT" permission="GeneralPermission.ADMIN">
             <div class="pull-right">
                 <a href="#uploadBannerModal${position}" role="button" class="btn" data-toggle="modal">

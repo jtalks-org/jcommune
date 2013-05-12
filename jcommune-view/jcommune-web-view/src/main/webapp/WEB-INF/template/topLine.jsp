@@ -101,6 +101,27 @@
 
           <%-- Logged in block --%>
           <sec:authorize access="isAuthenticated()">
+            <c:if test="${not empty forumComponent}">
+              <jtalks:hasPermission permission="GeneralPermission.ADMIN"
+                                    targetId="${forumComponent.id}" targetType="COMPONENT">
+                <li>
+                  <c:choose>
+                    <c:when test="${sessionScope.adminMode == true}">
+                      <a id="Administration" href="${pageContext.request.contextPath}/admin/exit">
+                        <fmt:message key="label.administration.exit"/>
+                      </a>
+                    </c:when>
+
+                    <c:otherwise>
+                      <a id="Administration" href="${pageContext.request.contextPath}/admin/enter">
+                        <fmt:message key="label.administration"/>
+                      </a>
+                    </c:otherwise>
+                  </c:choose>
+                </li>
+              </jtalks:hasPermission>
+            </c:if>
+
             <sec:authentication property="principal.username" var="username" scope="request"/>
             <li class="dropdown">
               <div class="dropdown-toggle topline-dropdown-menu" data-toggle="dropdown">
