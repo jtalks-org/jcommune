@@ -71,8 +71,6 @@
   <script src="${pageContext.request.contextPath}/resources/javascript/custom/search.js"></script>
   <script src="${pageContext.request.contextPath}/resources/javascript/custom/componentClickEventDisabler.js"></script>
   <script src="${pageContext.request.contextPath}/resources/javascript/custom/banner.js"></script>
-  <script
-      src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/dotdotdot/jquery.dotdotdot-1.5.6-packed.js"></script>
   <script src="${pageContext.request.contextPath}/resources/javascript/licensed/html5placeholder.jquery.js"></script>
   <script src="${pageContext.request.contextPath}/resources/javascript/custom/events.js"></script>
   <decorator:head/>
