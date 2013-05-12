@@ -60,6 +60,7 @@ public class EditUserProfileDto {
     @PageSize(message = "{validation.profile.page.size}")
     private int pageSize;
     private boolean autosubscribe;
+    private boolean mentioningNotificationsEnabled;
     private String avatar;
     @Length(max = JCUser.MAX_LOCATION_SIZE)
     private String location;
@@ -95,6 +96,7 @@ public class EditUserProfileDto {
         this.language = user.getLanguage();
         this.pageSize = user.getPageSize();
         this.autosubscribe = user.isAutosubscribe();
+        this.mentioningNotificationsEnabled = user.isMentioningNotificationsEnabled();
         this.location = user.getLocation();
     }
 
@@ -107,7 +109,8 @@ public class EditUserProfileDto {
     public UserInfoContainer getUserInfoContainer() {
         return new UserInfoContainer(this.getFirstName(), this.getLastName(), this.getEmail(),
                 this.getCurrentUserPassword(), this.getNewUserPassword(), this.getSignature(),
-                this.getAvatar(), this.getLanguage(), this.getPageSize(), this.isAutosubscribe(), this.getLocation());
+                this.getAvatar(), this.getLanguage(), this.getPageSize(), this.isAutosubscribe(),
+                this.isMentioningNotificationsEnabled(), this.getLocation());
     }
 
     /**
@@ -188,6 +191,21 @@ public class EditUserProfileDto {
      */
     public void setAutosubscribe(boolean autosubscribe) {
         this.autosubscribe = autosubscribe;
+    }
+    
+    /**
+     * @see JCUser#isMentioningNotificationsEnabled()
+     */
+    public boolean isMentioningNotificationsEnabled() {
+        return mentioningNotificationsEnabled;
+    }
+    
+    /**
+     * @see JCUser#setMentioningNotificationsEnabled(boolean)
+     */
+    public void setMentioningNotificationsEnabled(
+            boolean mentioningNotificationsEnabled) {
+        this.mentioningNotificationsEnabled = mentioningNotificationsEnabled;
     }
 
     /**

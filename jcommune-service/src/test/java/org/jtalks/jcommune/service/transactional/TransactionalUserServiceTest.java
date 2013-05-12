@@ -97,6 +97,7 @@ public class TransactionalUserServiceTest {
     private static final Language LANGUAGE = Language.ENGLISH;
     private static final int PAGE_SIZE = 50;
     private static final boolean AUTOSUBSCRIBE = true;
+    private static final boolean MENTIONING_NOTIFICATIONS_ENABLED = true;
     private static final String LOCATION = "location";
     private static final byte[] AVATAR = new byte[10];
     private static final long USER_ID = 999L;
@@ -199,7 +200,7 @@ public class TransactionalUserServiceTest {
         String newAvatar = new String(new byte[12]);
 
         JCUser editedUser = userService.saveEditedUserProfile(USER_ID, new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE,
+                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE, MENTIONING_NOTIFICATIONS_ENABLED,
                 LOCATION));
 
         verify(userDao).saveOrUpdate(user);
@@ -221,7 +222,7 @@ public class TransactionalUserServiceTest {
         when(userDao.isExist(USER_ID)).thenReturn(Boolean.FALSE);
         
         userService.saveEditedUserProfile(USER_ID, new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE,
+                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE, MENTIONING_NOTIFICATIONS_ENABLED,
                 LOCATION));
     }
 
@@ -236,7 +237,7 @@ public class TransactionalUserServiceTest {
         String newAvatar = new String(new byte[12]);
         String newPassword = null;
         UserInfoContainer userInfo = new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, newPassword, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE,
+                PASSWORD, newPassword, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE, MENTIONING_NOTIFICATIONS_ENABLED, 
                 LOCATION);
         
         JCUser editedUser = userService.saveEditedUserProfile(USER_ID, userInfo);
@@ -255,7 +256,7 @@ public class TransactionalUserServiceTest {
         String newAvatar = new String(new byte[0]);
 
         JCUser editedUser = userService.saveEditedUserProfile(USER_ID, new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE,
+                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE, MENTIONING_NOTIFICATIONS_ENABLED,
                 LOCATION));
 
         verify(userDao).saveOrUpdate(user);

@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.dto;
 
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 
 /**
@@ -35,6 +36,7 @@ public class UserInfoContainer {
     private Language language;
     private int pageSize;
     private boolean autosubscribe;
+    private boolean mentioningNotificationsEnabled;
     private String location;
 
 
@@ -51,11 +53,13 @@ public class UserInfoContainer {
      * @param language        preferred language
      * @param pageSize        page size chosen
      * @param autosubscribe   autosubscribe to topic/post flag
+     * @param mentioningNotificationsEnabled whether email notifications are send when user was mentioned in forum
      * @param location        geographic user location
      */
     public UserInfoContainer(String firstName, String lastName, String email, String currentPassword,
                              String newPassword, String signature, String avatar, Language language,
-                             int pageSize, boolean autosubscribe, String location) {
+                             int pageSize, boolean autosubscribe, boolean mentioningNotificationsEnabled, 
+                             String location) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -66,6 +70,7 @@ public class UserInfoContainer {
         this.language = language;
         this.pageSize = pageSize;
         this.autosubscribe = autosubscribe;
+        this.mentioningNotificationsEnabled = mentioningNotificationsEnabled;
         this.location = location;
     }
 
@@ -141,6 +146,21 @@ public class UserInfoContainer {
      */
     public void setAutosubscribe(boolean autosubscribe) {
         this.autosubscribe = autosubscribe;
+    }
+    
+    /**
+     * @see JCUser#isMentioningNotificationsEnabled()
+     */
+    public boolean isMentioningNotificationsEnabled() {
+        return mentioningNotificationsEnabled;
+    }
+    
+    /**
+     * @see JCUser#setMentioningNotificationsEnabled(boolean)
+     */
+    public void setMentioningNotificationsEnabled(
+            boolean mentioningNotificationsEnabled) {
+        this.mentioningNotificationsEnabled = mentioningNotificationsEnabled;
     }
 
     /**

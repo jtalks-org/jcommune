@@ -216,6 +216,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         editedUser.setPageSize(editedUserProfileInfo.getPageSize());
         editedUser.setLocation(editedUserProfileInfo.getLocation());
         editedUser.setAutosubscribe(editedUserProfileInfo.isAutosubscribe());
+        editedUser.setMentioningNotificationsEnabled(editedUserProfileInfo.isMentioningNotificationsEnabled());
 
         this.getDao().saveOrUpdate(editedUser);
         LOGGER.info("Updated user profile. Username: {}", editedUser.getUsername());

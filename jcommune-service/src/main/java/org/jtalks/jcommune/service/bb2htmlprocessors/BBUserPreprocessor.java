@@ -80,6 +80,7 @@ public class BBUserPreprocessor extends TextProcessorAdapter {
         try {
             JCUser user = userService.getByUsername(username);
             userPofileLink = getDeploymentRootUrlWithoutPort() + "/users/" + user.getId();
+            LOGGER.debug(username + " has the following url of profile -" + userPofileLink);
         } catch (NotFoundException e) {
             LOGGER.debug("Mentioned user wasn't find", e);
         }

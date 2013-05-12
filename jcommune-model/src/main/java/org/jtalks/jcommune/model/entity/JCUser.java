@@ -40,6 +40,7 @@ public class JCUser extends User {
     private DateTime registrationDate;
     private boolean enabled;
     private boolean autosubscribe;
+    private boolean mentioningNotificationsEnabled;
 
     public static final int MAX_SIGNATURE_SIZE = 255;
     public static final int MAX_LOCATION_SIZE = 30;
@@ -242,6 +243,24 @@ public class JCUser extends User {
      */
     public void setAutosubscribe(boolean autosubscribe) {
         this.autosubscribe = autosubscribe;
+    }
+    
+    /**
+     * Determines whether email notifications are send to user when he has been mentioned in forum.
+     *
+     * @return true user receives email notifications, otherwise false 
+     */
+    public boolean isMentioningNotificationsEnabled() {
+        return mentioningNotificationsEnabled;
+    }
+
+    /**
+     * Set whether email notifications are send to user when he has been mentioned in forum.
+     * 
+     * @param mentioningNotificationsEnabled true user receives email notifications, otherwise false
+     */
+    public void setMentioningNotificationsEnabled(boolean mentioningNotificationsEnabled) {
+        this.mentioningNotificationsEnabled = mentioningNotificationsEnabled;
     }
 
     /**

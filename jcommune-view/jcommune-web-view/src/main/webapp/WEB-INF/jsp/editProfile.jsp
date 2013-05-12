@@ -155,6 +155,14 @@
                                          class="form-check-radio-box"/>
                         </div>
                     </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label"><spring:message code="label.mentioning.notifications.enabled"/></label>
+                        <div class="controls padding-top-profile">
+                            <form:checkbox path="mentioningNotificationsEnabled" value="${editedUser.mentioningNotificationsEnabled}"
+                                         class="form-check-radio-box"/>
+                        </div>
+                    </div>
 
                     <div class="control-group">
                         <label class="control-label"><spring:message code="label.location"/></label>
