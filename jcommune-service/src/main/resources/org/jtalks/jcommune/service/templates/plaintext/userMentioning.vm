@@ -14,10 +14,9 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 *#
-${messageSource.getMessage("greeting", $noArgs, $locale)} ${user.username}!
+${messageSource.getMessage("greeting", $noArgs, $locale)} ${name}!
 
-${messageSource.getMessage("userMentioning.content", $noArgs, $locale)}
-${messageSource.getMessage("userMentioning.link", $noArgs, $locale)} ${link}.
+${messageSource.getMessage("userMentioning.content", $noArgs, $locale)} ${link}.
 
 ${messageSource.getMessage("wish", $noArgs, $locale)}
 

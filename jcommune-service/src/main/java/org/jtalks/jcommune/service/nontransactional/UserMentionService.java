@@ -23,6 +23,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -31,6 +33,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
  *
  */
 public class UserMentionService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserMentionService.class);
     private MailService mailService;
     private UserDao userDao;
     
@@ -44,6 +47,17 @@ public class UserMentionService {
         this.userDao = userDao;
     }
 
+    /**
+     * Extract all mentioned users and notify them.
+     * 
+     * @param canContainMentionedUsers can contains mentioned users
+     * @param post where user was mentioned
+     */
+    public void notifyAllMentionedUsers(String canContainMentionedUsers, long mentioningPostId) {
+        List<String> mentionedUsersNames = extractMentionedUsers(canContainMentionedUsers);
+        sendNotificationToMentionedUsers(mentionedUsersNames, mentioningPostId);
+    }
+    
     /**
      * Extract all user names that were mentioned in passed text.
      * 
@@ -70,10 +84,13 @@ public class UserMentionService {
      * @param mentionedUsernames the list of names of mentioned users
      * @param mentioningPostId an identifier of post where users where mentioned
      */
-    public void sendNotificationToMentionedUsers(List<String> mentionedUsernames, long mentioningPostId) {
+    private void sendNotificationToMentionedUsers(List<String> mentionedUsernames, long mentioningPostId) {
         List<JCUser> mentionedUsers = userDao.getByUsernames(mentionedUsernames);
         for (JCUser mentionedUser: mentionedUsers) {
-            mailService.sendUserMentionedNotification(mentionedUser, mentioningPostId);
+            if (mentionedUser.isMentioningNotificationsEnabled()) {
+                LOGGER.debug(mentionedUser.getUsername() + " was mentioned, email was sent to - " + mentionedUser.getEmail());
+                mailService.sendUserMentionedNotification(mentionedUser, mentioningPostId);
+            }
         }
     }
 }

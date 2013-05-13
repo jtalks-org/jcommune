@@ -136,6 +136,7 @@
         <constructor-arg ref="securityContextFacade"/>
         <constructor-arg ref="aclGroupPermissionEvaluator"/>
         <constructor-arg ref="branchLastPostService"/>
+        <constructor-arg ref="userMentionService"/>
     </bean>
 
     <bean id="topicFetchService"

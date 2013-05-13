@@ -77,32 +77,59 @@ public class UserMentionServiceTest {
     }
     
     @Test
-    public void sendNotificationToMentionedUsersShouldSentdWhenUsersWereFound() {
+    public void notifyAllMentionedUsersShouldSendForAllFoundMentionedUsers() {
         long mentioningPostId = 1l;
         String firstUsername = "Shogun";
         String secondUsername = "jk1";
         String thirdUsername = "masyan";
+        String textWithUsersMentioning = "In this text we have 3 user mentioning: first [user]" + firstUsername + "[/user]," +
+                "second [user]"+ secondUsername + "[/user]," +
+                "third [user]" + thirdUsername + "[/user]";
         List<String> usernames = Arrays.asList(firstUsername, secondUsername, thirdUsername);
         List<JCUser> users = Arrays.asList(
-                new JCUser(firstUsername, "email@gmail.com", "password"),
-                new JCUser(secondUsername, "email@gmail.com", "password"),
-                new JCUser(thirdUsername, "email@gmail.com", "password"));
+                getJCUser(firstUsername, true),
+                getJCUser(secondUsername, true),
+                getJCUser(thirdUsername, true));
         when(userDao.getByUsernames(usernames)).thenReturn(users);
         
-        userMentionService.sendNotificationToMentionedUsers(usernames, mentioningPostId);
+        userMentionService.notifyAllMentionedUsers(textWithUsersMentioning, mentioningPostId);
         
         verify(mailService, times(users.size()))
             .sendUserMentionedNotification(any(JCUser.class), anyLong());
     }
     
     @Test
-    public void sendNotificationToMentionedUsersShouldNotSendWhenUsersWereNotFound() {
+    public void notifyAllMentionedUsersShouldNotNotifyNotAgreedWithNotificationsUsers() {
         long mentioningPostId = 1l;
-        List<String> usernames = Arrays.asList("Shogun", "jk1", "masyan");
-        List<JCUser> users = Collections.emptyList();
+        String mentionedUsername = "Shogun";
+        String textWithUsersMentioning = "In this text we have 1 user mentioning - [user]" + mentionedUsername + "[/user]";
+        List<String> usernames = Arrays.asList(mentionedUsername);
+        JCUser mentionedUser = getJCUser(mentionedUsername, false);
+        List<JCUser> users = Arrays.asList(mentionedUser);
         when(userDao.getByUsernames(usernames)).thenReturn(users);
         
-        userMentionService.sendNotificationToMentionedUsers(usernames, mentioningPostId);
+        userMentionService.notifyAllMentionedUsers(textWithUsersMentioning, mentioningPostId);
+        
+        verify(mailService, never())
+            .sendUserMentionedNotification(any(JCUser.class), anyLong());
+    }
+    
+    private JCUser getJCUser(String name, boolean isMentioningEnabled) {
+        JCUser user = new JCUser(name, "email@gmail.com", "password");
+        user.setMentioningNotificationsEnabled(isMentioningEnabled);
+        return user;
+    }
+    
+    @Test
+    public void notifyAllMentionedUsersShouldNotSendWhenUsersWereNotFound() {
+        String textWithUsersMentioning = "In this text we have 3 user mentioning: first [user]Shogun[/user]," +
+                "second [user]masyan[/user]," +
+                "third [user]jk1[/user]";
+        long mentioningPostId = 1l;
+        List<String> usernames = Arrays.asList("Shogun", "jk1", "masyan");
+        when(userDao.getByUsernames(usernames)).thenReturn(Collections.<JCUser> emptyList());
+        
+        userMentionService.notifyAllMentionedUsers(textWithUsersMentioning, mentioningPostId);
         
         verify(mailService, never())
             .sendUserMentionedNotification(any(JCUser.class), anyLong());

@@ -23,6 +23,7 @@ import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
+import org.jtalks.jcommune.service.nontransactional.UserMentionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
@@ -60,6 +61,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
     private PermissionEvaluator permissionEvaluator;
     private SecurityContextFacade securityContextFacade;
     private BranchLastPostService branchLastPostService;
+    private UserMentionService userMentionService;
 
     /**
      * Create an instance of User entity based service
@@ -85,7 +87,8 @@ public class TransactionalTopicModificationService implements TopicModificationS
                                                  TopicFetchService topicFetchService,
                                                  SecurityContextFacade securityContextFacade,
                                                  PermissionEvaluator permissionEvaluator,
-                                                 BranchLastPostService branchLastPostService) {
+                                                 BranchLastPostService branchLastPostService,
+                                                 UserMentionService userMentionService) {
         this.dao = dao;
         this.securityService = securityService;
         this.branchDao = branchDao;
@@ -97,6 +100,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         this.securityContextFacade = securityContextFacade;
         this.permissionEvaluator = permissionEvaluator;
         this.branchLastPostService = branchLastPostService;
+        this.userMentionService = userMentionService;
     }
 
     /**
@@ -176,6 +180,8 @@ public class TransactionalTopicModificationService implements TopicModificationS
         createOrUpdatePoll(topicDto.getPoll(), topic);
 
         dao.update(topic);
+        userMentionService.notifyAllMentionedUsers(bodyText, topic.getFirstPost().getId());
+        
         logger.debug("Created new topic id={}, branch id={}, author={}",
                 new Object[]{topic.getId(), branch.getId(), currentUser.getUsername()});
         return topic;

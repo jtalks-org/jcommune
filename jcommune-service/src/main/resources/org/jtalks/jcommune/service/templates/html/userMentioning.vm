@@ -14,10 +14,9 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 *#
-<p>${messageSource.getMessage("greeting", $noArgs, $locale)} ${user.username}!</p>
+<p>${messageSource.getMessage("greeting", $noArgs, $locale)} ${name}!</p>
 <br/>
-<p>${messageSource.getMessage("userMentioning.content", $noArgs, $locale)}</p>
-<p>${messageSource.getMessage("userMentioning.link", $noArgs, $locale)} <a href="${link}">${linkLabel}</a>.
+<p>${messageSource.getMessage("userMentioning.content", $noArgs, $locale)} <a href="${link}">${linkLabel}</a>.
 <br/>
 <p>${messageSource.getMessage("wish", $noArgs, $locale)}</p>
 <br/>
