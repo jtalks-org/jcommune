@@ -182,6 +182,19 @@ public class TransactionalTopicModificationServiceTest {
 
         assertFalse(answeredTopic.userSubscribed(user));
     }
+    
+    @Test
+    public void replyTopicShouldNotifyMentionedInReplyUsers() throws NotFoundException {
+        Topic answeredTopic = ObjectsFactory.topics(user, 1).get(0);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(answeredTopic);
+        when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
+        String answerWithUserMentioning = "[user]Shogun[/user] was mentioned";
+        
+        Post answerPost = topicService.replyToTopic(TOPIC_ID, answerWithUserMentioning, BRANCH_ID);
+        
+        verify(userMentionService).notifyAllMentionedUsers(answerWithUserMentioning, answerPost.getId());
+    }
 
     @Test(expectedExceptions = AccessDeniedException.class)
     public void testReplyToClosedTopic() throws NotFoundException {

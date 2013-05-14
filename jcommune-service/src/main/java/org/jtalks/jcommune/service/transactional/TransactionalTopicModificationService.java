@@ -129,6 +129,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
 
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(currentUser).on(answer).flush();
         notificationService.topicChanged(topic);
+        userMentionService.notifyAllMentionedUsers(answerBody, topic.getFirstPost().getId());
         logger.debug("New post in topic. Topic id={}, Post id={}, Post author={}",
                 new Object[]{topicId, answer.getId(), currentUser.getUsername()});
 

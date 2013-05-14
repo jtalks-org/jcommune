@@ -25,6 +25,7 @@ import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
+import org.jtalks.jcommune.service.nontransactional.UserMentionService;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -55,7 +56,6 @@ import static org.testng.Assert.assertEquals;
 public class TransactionalPostServiceTest {
 
     private final long POST_ID = 9L;
-    private static final Long BRANCH_ID = 1L;
     private static final String USERNAME = "username";
     private static final String EMAIL = "username@mail.com";
     private static final String PASSWORD = "password";
@@ -74,6 +74,8 @@ public class TransactionalPostServiceTest {
     private UserService userService;
     @Mock
     private BranchLastPostService branchLastPostService;
+    @Mock
+    private UserMentionService userMentionService;
 
     private PostService postService;
 
@@ -96,7 +98,8 @@ public class TransactionalPostServiceTest {
                 notificationService,
                 lastReadPostService,
                 userService,
-                branchLastPostService);
+                branchLastPostService,
+                userMentionService);
     }
 
     @Test
