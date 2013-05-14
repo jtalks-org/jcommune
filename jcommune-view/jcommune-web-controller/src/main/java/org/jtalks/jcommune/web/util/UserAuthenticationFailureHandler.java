@@ -30,7 +30,12 @@ import java.io.IOException;
  */
 public class UserAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
-    private String usernameSessionAttribute = "username";
+    /**
+     * Default session attribute name storing username
+     */
+    public static final String DEFAULT_USERNAME_SESSION_ATTRIBUTE = "username";
+
+    private String usernameSessionAttribute = DEFAULT_USERNAME_SESSION_ATTRIBUTE;
 
     /**
      * {@inheritDoc}
@@ -49,7 +54,7 @@ public class UserAuthenticationFailureHandler extends SimpleUrlAuthenticationFai
 
     /**
      * Gets name of Session's attribute which is used to store username.
-     * Default value is "username"
+     * Default value is DEFAULT_USERNAME_SESSION_ATTRIBUTE
      * @return name of Session attribute which is used to store username
      */
     public String getUsernameSessionAttribute() {
