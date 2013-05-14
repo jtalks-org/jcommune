@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.dao.ComponentDao;
+import org.jtalks.jcommune.model.entity.ComponentInformation;
 import org.jtalks.jcommune.service.ComponentService;
 
 /**
@@ -42,5 +43,13 @@ public class TransactionalComponentService extends AbstractTransactionalEntitySe
     @Override
     public Component getComponentOfForum() {
         return getDao().getComponent();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setComponentInformation(ComponentInformation componentInformation) {
+        getDao().setComponentInformation(componentInformation);
     }
 }

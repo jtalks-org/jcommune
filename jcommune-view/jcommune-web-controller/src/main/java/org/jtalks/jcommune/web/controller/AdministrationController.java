@@ -14,14 +14,18 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.ComponentInformation;
 import org.jtalks.jcommune.service.ComponentService;
+import org.jtalks.jcommune.web.dto.json.JsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 /**
  * @author Andrei Alikov
@@ -65,6 +69,18 @@ public class AdministrationController {
         request.getSession().removeAttribute(ADMIN_ATTRIBUTE_NAME);
 
         return getRedirectToPrevPage(request);
+    }
+
+    @RequestMapping(value = "/admin/edit_ajax", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResponse setForumInformation(@Valid @RequestBody ComponentInformation componentInformation, BindingResult result) {
+        if (result.hasErrors()) {
+            return new JsonResponse(JsonResponseStatus.FAIL, result.getAllErrors());
+        }
+
+        componentService.setComponentInformation(componentInformation);
+
+        return new JsonResponse(JsonResponseStatus.SUCCESS, null);
     }
 
     /**

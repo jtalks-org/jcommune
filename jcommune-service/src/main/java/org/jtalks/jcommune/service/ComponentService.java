@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.common.model.entity.Component;
+import org.jtalks.jcommune.model.entity.ComponentInformation;
 
 /**
  * Provides an ability to work with component of forum.
@@ -29,4 +30,10 @@ public interface ComponentService {
      * @return component of forum.
      */
     Component getComponentOfForum();
+
+    /**
+     * Sets administrative information about the component
+     * @param componentInformation administrative information about component
+     */
+    void setComponentInformation(ComponentInformation componentInformation);
 }

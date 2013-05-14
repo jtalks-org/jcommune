@@ -34,6 +34,9 @@
         <c:when test="${cmpName==null}">
           <span class="brand"><fmt:message key="label.error"/></span>
         </c:when>
+        <c:when test="${cmpName != null and sessionScope.adminMode == true}">
+            <span class="brand" id="cmpName"><c:out value="${cmpName}"/></span>
+        </c:when>
         <c:otherwise>
           <a class="brand"
              href="${pageContext.request.contextPath}/"><c:out value="${cmpName}"/>

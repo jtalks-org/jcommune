@@ -105,3 +105,10 @@ $linksRemoveIcon = '<spring:message code="label.linksRemoveIcon" htmlEscape="tru
 $capsLock = '<spring:message code="label.tips.capsLock" htmlEscape="true"/>';
 
 $labelAddReviewComment = '<spring:message code="label.addReviewComment" htmlEscape="true"/>';
+
+$labelSaveChanges = '<spring:message code="label.save_changes" htmlEscape="true"/>';
+
+$labelForumDescription = '<spring:message code="label.forum.description" htmlEscape="true"/>';
+$labelForumTitle = '<spring:message code="label.forum.title" htmlEscape="true"/>';
+$labelLogoTooltip = '<spring:message code="label.logo.tooltip" htmlEscape="true"/>';
+$labelAdministration = '<spring:message code="label.administration" htmlEscape="true"/>';

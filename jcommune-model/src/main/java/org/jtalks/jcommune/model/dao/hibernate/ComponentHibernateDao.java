@@ -18,6 +18,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.dao.ComponentDao;
+import org.jtalks.jcommune.model.entity.ComponentInformation;
 
 /**
  * The implementation of {@link org.jtalks.jcommune.model.dao.ComponentDao} based on Hibernate.
@@ -29,8 +30,22 @@ import org.jtalks.jcommune.model.dao.ComponentDao;
  */
 public class ComponentHibernateDao extends AbstractHibernateChildRepository<Component> implements ComponentDao {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Component getComponent() {
         return (Component) getSession().getNamedQuery("getForumComponent").uniqueResult();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setComponentInformation(ComponentInformation componentInformation) {
+        Component forumComponent = getComponent();
+        forumComponent.setName(componentInformation.getName());
+        forumComponent.setDescription(componentInformation.getDescription());
+        forumComponent.setProperty("logoTooltip", componentInformation.getLogoTooltip());
     }
 }

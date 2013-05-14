@@ -28,9 +28,19 @@
 <body>
 <div class="container">
     <div class="row forum-sections-header">
-        <h1 class="pull-left logo-text">
-            <c:out value="${cmpDescription}"/>
-        </h1>
+
+        <c:choose>
+            <c:when test="${sessionScope.adminMode == true}">
+                <h1 class="pull-left logo-text">
+                    <span id="cmpDescription"><c:out value="${cmpDescription}"/></span>
+                </h1>
+            </c:when>
+            <c:otherwise>
+                <h1 class="pull-left logo-text">
+                    <c:out value="${cmpDescription}"/>
+                </h1>
+            </c:otherwise>
+        </c:choose>
 
         <div class="pull-right">
            <span class="forum-sections-header-actions">
