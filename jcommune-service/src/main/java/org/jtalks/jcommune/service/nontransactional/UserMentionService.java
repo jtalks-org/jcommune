@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -55,7 +56,9 @@ public class UserMentionService {
      */
     public void notifyAllMentionedUsers(String canContainMentionedUsers, long mentioningPostId) {
         List<String> mentionedUsersNames = extractMentionedUsers(canContainMentionedUsers);
-        sendNotificationToMentionedUsers(mentionedUsersNames, mentioningPostId);
+        if (!CollectionUtils.isEmpty(mentionedUsersNames)) {
+            sendNotificationToMentionedUsers(mentionedUsersNames, mentioningPostId);
+        }
     }
     
     /**
