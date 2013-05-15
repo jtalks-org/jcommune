@@ -17,6 +17,7 @@
 $(function () {
     $("#cmpName").on('click', showForumConfigurationDialog);
     $("#cmpDescription").on('click', showForumConfigurationDialog);
+    $("#forumLogo").on('click', showForumConfigurationDialog);
 });
 
 function showForumConfigurationDialog(e) {
@@ -45,10 +46,13 @@ function showForumConfigurationDialog(e) {
         }
     });
 
-    var cmpName = $("#cmpName").text()
-    var forumDescription = $("#cmpDescription").text()
+    var cmpName = $("#cmpName").text();
+    var forumDescription = $("#cmpDescription").text();
+    var logoTooltip = $("#forumLogo").attr("title");
+
     $('#form_title').val(cmpName);
     $('#forum_description').val(forumDescription);
+    $('#logo_tooltip').val(logoTooltip);
 }
 
 

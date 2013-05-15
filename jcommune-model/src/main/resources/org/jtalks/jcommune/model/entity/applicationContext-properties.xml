@@ -125,4 +125,12 @@
         <property name="defaultValue" value="false"/>
     </bean>
 
+    <bean id="componentLogoTooltipProperty" class="org.jtalks.jcommune.model.entity.JCommuneProperty"
+          factory-method="valueOf">
+        <constructor-arg type="java.lang.String" value="LOGO_TOOLTIP"/>
+        <property name="propertyDao" ref="propertyDao"/>
+        <property name="name" value="jcommune.logo_tooltip"/>
+        <property name="defaultValue" value="You can change logo in admin mode"/>
+    </bean>
+
 </beans>

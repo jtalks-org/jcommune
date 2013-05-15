@@ -34,22 +34,27 @@ public class PropertiesInterceptor extends HandlerInterceptorAdapter {
     private static final String PARAM_CMP_NAME = "cmpName";
     private static final String PARAM_CMP_DESCRIPTION = "cmpDescription";
     private static final String PARAM_SHOW_DUMMY_LINKS = "sapeShowDummyLinks";
+    private static final String PARAM_LOGO_TOOLTIP = "logoTooltip";
     
     private JCommuneProperty componentNameProperty;
     private JCommuneProperty componentDescriptionProperty;
     private JCommuneProperty sapeShowDummyLinksProperty;
+    private JCommuneProperty logoTooltipProperty;
 
     /**
      * @param componentDescriptionProperty component description property
      * @param componentNameProperty        component name property
-     * @param sapeShowDummyLinksProperty   show dummy links for SAPE on not 
+     * @param sapeShowDummyLinksProperty   show dummy links for SAPE on not
+     * @param logoTooltipProperty          tooltip for forum logo
      */
     public PropertiesInterceptor(JCommuneProperty componentNameProperty,
                                  JCommuneProperty componentDescriptionProperty,
-                                 JCommuneProperty sapeShowDummyLinksProperty) {
+                                 JCommuneProperty sapeShowDummyLinksProperty,
+                                 JCommuneProperty logoTooltipProperty) {
         this.componentDescriptionProperty = componentDescriptionProperty;
         this.componentNameProperty = componentNameProperty;
         this.sapeShowDummyLinksProperty = sapeShowDummyLinksProperty;
+        this.logoTooltipProperty =  logoTooltipProperty;
     }
 
     /**
@@ -69,6 +74,7 @@ public class PropertiesInterceptor extends HandlerInterceptorAdapter {
             modelAndView.addObject(PARAM_CMP_NAME, componentNameProperty.getValueOfComponent());
             modelAndView.addObject(PARAM_CMP_DESCRIPTION, componentDescriptionProperty.getValueOfComponent());
             modelAndView.addObject(PARAM_SHOW_DUMMY_LINKS, sapeShowDummyLinksProperty.booleanValue());
+            modelAndView.addObject(PARAM_LOGO_TOOLTIP, logoTooltipProperty.getValue());
         }
     }
 }
