@@ -53,7 +53,8 @@ public class BBUserPreprocessorTest {
         //
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setScheme("http");
-        request.setServerName("shogun.com");
+        request.setServerName("localhost");
+        request.setServerPort(8080);
         request.setContextPath("/forum");
         RequestContextHolder.setRequestAttributes(new ServletWebRequest(request));
     }
@@ -65,11 +66,11 @@ public class BBUserPreprocessorTest {
         JCUser mentionedUser = new JCUser(mentionedUserName, "sshogunn@gmail.com", "shogun password");
         mentionedUser.setId(mentionedUserId);
         when(userService.getByUsername(mentionedUserName)).thenReturn(mentionedUser);
-        String expectedUserProfileLink = "http://shogun.com/forum/users/" + mentionedUserId;
+        String expectedUserProfileLink = "http://localhost:8080/forum/users/" + mentionedUserId;
         String notProcessedSource = "This post contains [user]" + mentionedUserName + "[/user] mentioning";
         when(userMentionService.extractMentionedUsers(notProcessedSource))
             .thenReturn(Arrays.asList(mentionedUserName));
-        String expectedAfterProcess = "This post contains [user=\"" + expectedUserProfileLink + "\"]" 
+        String expectedAfterProcess = "This post contains [user=" + expectedUserProfileLink + "]" 
                 + mentionedUserName + "[/user] mentioning";
         
         String actualAfterProcess = userPreprocessor.process(notProcessedSource);

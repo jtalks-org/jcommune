@@ -97,6 +97,7 @@ public class BBUserPreprocessor extends TextProcessorAdapter {
         HttpServletRequest request = ((ServletRequestAttributes) attributes).getRequest();
         return request.getScheme()
                 + "://" + request.getServerName()
+                + ":" + request.getServerPort()
                 + request.getContextPath();
     }
     
@@ -112,7 +113,7 @@ public class BBUserPreprocessor extends TextProcessorAdapter {
         String changedSource = source;
         for (Map.Entry<String, String> userToLinkMap: userToUserProfileLinkMap.entrySet()) {
             String userBBCode = "[user]" + userToLinkMap.getKey() + "[/user]";
-            String userBBCodeWithLink = "[user=\"" + userToLinkMap.getValue() + "\"]" + userToLinkMap.getKey() + "[/user]";
+            String userBBCodeWithLink = "[user=" + userToLinkMap.getValue() + "]" + userToLinkMap.getKey() + "[/user]";
             changedSource = changedSource.replace(userBBCode, userBBCodeWithLink);
         }
         return changedSource;
