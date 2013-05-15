@@ -115,7 +115,6 @@ function applyPollResult(poll) {
         var pollOptionId = pollOption.id;
         var pollPercentage = pollOption.votesCount / poll.totalVotesCount * 100;
         var roundedPollPercentage = (Math.round(pollPercentage * 100) / 100).toFixed(2);
-        console.log('gre');
         $("#pollAnswer" + pollOptionId + " .chart").css("width", roundedPollPercentage + "%");
         if (pollOption.votesCount > 0) {
             $("#pollAnswer" + pollOptionId + " .pool-result").text(pollOption.votesCount + " - " + roundedPollPercentage + "%");
@@ -140,7 +139,6 @@ function addSingleVote(pollOptionId, pollId) {
         type: 'POST',
         data: {"pollOptionId": pollOptionId},
         success: function (poll) {
-            console.log('greg');
             applyPollResult(poll);
         },
         error: processVotingError
@@ -161,7 +159,6 @@ function addMultipleVote(pollDto, pollId) {
         contentType: "application/json",
         data: JSON.stringify(pollDto),
         success: function (poll) {
-            console.log('gretrytr');
             applyPollResult(poll);
         },
         error: processVotingError
