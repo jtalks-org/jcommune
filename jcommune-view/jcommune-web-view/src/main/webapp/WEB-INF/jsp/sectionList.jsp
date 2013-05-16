@@ -28,19 +28,17 @@
 <body>
 <div class="container">
     <div class="row forum-sections-header">
-
-        <c:choose>
-            <c:when test="${sessionScope.adminMode == true}">
-                <h1 class="pull-left logo-text">
+        
+        <h1 class="pull-left logo-text">
+            <c:choose>
+                <c:when test="${sessionScope.adminMode == true}">
                     <span id="cmpDescription"><c:out value="${cmpDescription}"/></span>
-                </h1>
-            </c:when>
-            <c:otherwise>
-                <h1 class="pull-left logo-text">
-                    <c:out value="${cmpDescription}"/>
-                </h1>
-            </c:otherwise>
-        </c:choose>
+                </c:when>
+                <c:otherwise>                
+                    <a class="invisible-link" href="${pageContext.request.contextPath}/"><c:out value="${cmpDescription}"/></a>
+                </c:otherwise>
+            </c:choose>
+        </h1>
 
         <div class="pull-right">
            <span class="forum-sections-header-actions">

@@ -30,7 +30,11 @@
 <div class="container">
     <%-- Section header --%>
     <div id="branch-header">
-        <h2><c:out value="${section.name}"/></h2>
+        <h2>
+            <a class="invisible-link" href="${pageContext.request.contextPath}/sections/${section.id}">
+                <c:out value="${section.name}"/>
+            </a>
+        </h2>
         <span class="inline-block"></span>
     </div>
     <%-- END OF Branch header --%>
@@ -88,14 +92,14 @@
                             </td>
                             <td class="topics-posts">
                                 <spring:message code="label.section.header.topics"/>:
-	                            <span class='test-topics-count'>
-	                                <c:out value="${branch.topicCount}"/>
-	                            </span>
+                                <span class='test-topics-count'>
+                                    <c:out value="${branch.topicCount}"/>
+                                </span>
                                 <br/>
                                 <spring:message code="label.section.header.messages"/>:
-	                            <span class='test-posts-count'>
-	                                <c:out value="${branch.postCount}"/>
-	                            </span>
+                                <span class='test-posts-count'>
+                                    <c:out value="${branch.postCount}"/>
+                                </span>
                             </td>
                             <td class="latest-by">
                                 <c:if test="${branch.topicCount>0}">
