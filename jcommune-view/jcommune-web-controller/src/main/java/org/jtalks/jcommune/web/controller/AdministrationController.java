@@ -24,8 +24,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * @author Andrei Alikov
@@ -36,6 +41,9 @@ public class AdministrationController {
     private static final String ADMIN_ATTRIBUTE_NAME = "adminMode";
 
     private ComponentService componentService;
+
+    @Autowired
+    ServletContext servletContext;
 
     /**
      * Creates instance of the service
@@ -73,6 +81,7 @@ public class AdministrationController {
 
     @RequestMapping(value = "/admin/edit_ajax", method = RequestMethod.POST)
     @ResponseBody
+    @PreAuthorize("hasPermission(#componentService.componentOfForum.id, 'COMPONENT', 'GeneralPermission.ADMIN')")
     public JsonResponse setForumInformation(@Valid @RequestBody ComponentInformation componentInformation, BindingResult result) {
         if (result.hasErrors()) {
             return new JsonResponse(JsonResponseStatus.FAIL, result.getAllErrors());
@@ -81,6 +90,27 @@ public class AdministrationController {
         componentService.setComponentInformation(componentInformation);
 
         return new JsonResponse(JsonResponseStatus.SUCCESS, null);
+    }
+
+    /**
+     * Returns logo of the forum
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "/admin/logo", method = RequestMethod.GET)
+    public void getForumLogo(HttpServletRequest request, HttpServletResponse response) {
+        response.setContentType("image/jpeg");
+        try {
+            // Temporary solution - load image from the resources
+            OutputStream stream = response.getOutputStream();
+            InputStream logo = servletContext.getResourceAsStream("/resources/images/jcommune.jpeg");
+            byte[] bytes = new byte[100 * 1024];
+            logo.read(bytes);
+            stream.write(bytes);
+            logo.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

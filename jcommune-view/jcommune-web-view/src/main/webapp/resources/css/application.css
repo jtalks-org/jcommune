@@ -710,3 +710,14 @@ div.anchor {
 .btn-group .tooltip {
     white-space: nowrap;
 }
+
+.thumbnail-logo {
+    max-height: 24px;
+    max-width: 24px;
+    padding: 10px 10px 10px 10px;
+}
+
+.forum-logo {
+    height: 24px;
+    width: 24px;
+}
