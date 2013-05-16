@@ -39,6 +39,9 @@ import org.testng.annotations.Test;
  *
  */
 public class BBUserPreprocessorTest {
+    private static final String MENTIONING_TEMPLATE = "This post contains [user]%s[/user] mentioning";
+    private static final String MENTIONING_WITH_LINK_TO_PROFILE_TEMPALTE = 
+            "This post contains [user=%s]%s[/user] mentioning";
     @Mock
     private UserService userService;
     @Mock
@@ -62,27 +65,33 @@ public class BBUserPreprocessorTest {
     @Test
     public void processShouldAttachProfileLinkToExistUsers() throws NotFoundException {
         String mentionedUserName = "Shogun";
-        long mentionedUserId = 100l;
-        JCUser mentionedUser = new JCUser(mentionedUserName, "sshogunn@gmail.com", "shogun password");
-        mentionedUser.setId(mentionedUserId);
+        long mentionedUserId = 100L;
+        JCUser mentionedUser = getUser(mentionedUserName, mentionedUserId);
         when(userService.getByUsername(mentionedUserName)).thenReturn(mentionedUser);
+        //
         String expectedUserProfileLink = "http://localhost:8080/forum/users/" + mentionedUserId;
-        String notProcessedSource = "This post contains [user]" + mentionedUserName + "[/user] mentioning";
+        String notProcessedSource = String.format(MENTIONING_TEMPLATE, mentionedUserName);
         when(userMentionService.extractMentionedUsers(notProcessedSource))
             .thenReturn(Arrays.asList(mentionedUserName));
-        String expectedAfterProcess = "This post contains [user=" + expectedUserProfileLink + "]" 
-                + mentionedUserName + "[/user] mentioning";
+        String expectedAfterProcess = String.format(
+                MENTIONING_WITH_LINK_TO_PROFILE_TEMPALTE, expectedUserProfileLink, mentionedUserName);
         
         String actualAfterProcess = userPreprocessor.process(notProcessedSource);
         
         assertEquals(actualAfterProcess, expectedAfterProcess);
     }
     
+    private JCUser getUser(String username, long userId) {
+        JCUser user = new JCUser(username, "sshogunn@gmail.com", "shogun password");
+        user.setId(userId);
+        return user;
+    }
+    
     @Test
     public void processShouldNotAttachProfileLinkToNotExistUsers() throws NotFoundException {
         String mentionedUserName = "Shogun";
         when(userService.getByUsername(mentionedUserName)).thenThrow(new NotFoundException());
-        String notProcessedSource = "This post contains [user]" + mentionedUserName + "[/user] mentioning";
+        String notProcessedSource = String.format(MENTIONING_TEMPLATE, mentionedUserName);
         when(userMentionService.extractMentionedUsers(notProcessedSource))
             .thenReturn(Arrays.asList(mentionedUserName));
         

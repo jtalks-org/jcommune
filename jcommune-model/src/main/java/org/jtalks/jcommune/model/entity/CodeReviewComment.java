@@ -126,4 +126,12 @@ public class CodeReviewComment extends Entity {
         this.body = body;
     }
     
+    /**
+     * Get post where code review is placed.
+     * 
+     * @return post where code review is placed
+     */
+    public Post getOwnerPost() {
+       return getCodeReview().getOwnerPost();
+    }
 }
