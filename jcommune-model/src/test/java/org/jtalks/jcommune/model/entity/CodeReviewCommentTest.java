@@ -18,6 +18,7 @@ import org.testng.annotations.Test;
 
 import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.AssertJUnit.assertEquals;
 
 /** @author stanislav bashkirtsev */
 public class CodeReviewCommentTest {
@@ -61,5 +62,22 @@ public class CodeReviewCommentTest {
         CodeReviewComment comment = new CodeReviewComment();
         comment.setAuthor(user);
         return comment;
+    }
+    
+    @Test
+    public void getOwnerPostShouldReturnFirstPostOfCodeReviewTopic() {
+        Topic topic = new Topic();
+        Post expectedOwnerPost = new Post();
+        topic.addPost(expectedOwnerPost);
+        CodeReview codeReview = new CodeReview();
+        CodeReviewComment codeReviewComment = new CodeReviewComment();
+        codeReview.addComment(codeReviewComment);
+        codeReviewComment.setCodeReview(codeReview);
+        codeReview.setTopic(topic);
+        
+        Post actualOwnerPost = codeReviewComment.getOwnerPost();
+        
+        assertEquals("It should return first post of owner topic, cause it contains code review.",
+                expectedOwnerPost, actualOwnerPost);
     }
 }

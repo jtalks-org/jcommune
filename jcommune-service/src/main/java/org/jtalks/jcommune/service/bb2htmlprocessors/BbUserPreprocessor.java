@@ -34,12 +34,16 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import ru.perm.kefir.bbcode.TextProcessorAdapter;
 
 /**
+ * Process for [user][/user] code. It adds link to user mentioned in tag before starting
+ * converting to HTML tags.  
  * 
  * @author Anuar_Nurmakanov
  *
  */
-public class BBUserPreprocessor extends TextProcessorAdapter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(BBUserPreprocessor.class);
+public class BbUserPreprocessor extends TextProcessorAdapter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BbUserPreprocessor.class);
+    private static final String USER_BB_CODE_TEMPLATE = "[user]%s[/user]";
+    private static final String USER_BB_CODE_WITH_LINK_TO_PROFILE = "[user=%s]%s[/user]";
     private UserService userService;
     private UserMentionService userMentionService;
 
@@ -47,7 +51,7 @@ public class BBUserPreprocessor extends TextProcessorAdapter {
      * @param userService to check users' existence
      * @param userMentionService to extract mentioned users
      */
-    public BBUserPreprocessor(UserService userService, UserMentionService userMentionService) {
+    public BbUserPreprocessor(UserService userService, UserMentionService userMentionService) {
         this.userService = userService;
         this.userMentionService = userMentionService;
     }
@@ -112,8 +116,9 @@ public class BBUserPreprocessor extends TextProcessorAdapter {
             String source, Map<String, String> userToUserProfileLinkMap) {
         String changedSource = source;
         for (Map.Entry<String, String> userToLinkMap: userToUserProfileLinkMap.entrySet()) {
-            String userBBCode = "[user]" + userToLinkMap.getKey() + "[/user]";
-            String userBBCodeWithLink = "[user=" + userToLinkMap.getValue() + "]" + userToLinkMap.getKey() + "[/user]";
+            String userBBCode = String.format(USER_BB_CODE_TEMPLATE, userToLinkMap.getKey());
+            String userBBCodeWithLink = String.format(
+                    USER_BB_CODE_WITH_LINK_TO_PROFILE, userToLinkMap.getValue() , userToLinkMap.getKey());
             changedSource = changedSource.replace(userBBCode, userBBCodeWithLink);
         }
         return changedSource;

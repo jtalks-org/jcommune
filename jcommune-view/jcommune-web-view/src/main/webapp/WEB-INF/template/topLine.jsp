@@ -30,9 +30,13 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </a>
+
       <div class="brand">
-        <img id="forumLogo" src="${pageContext.request.contextPath}/resources/images/favicon.png" height="30" width="30" title="${logoTooltip}" alt="${logoTooltip}"/>
+        <img id="${sessionScope.adminMode == true ? 'forumLogo' : ''}" class="forum-logo"
+             src="${pageContext.request.contextPath}/admin/logo"
+             title="${logoTooltip}" alt="${logoTooltip}"/>
       </div>
+
       <c:choose>
         <c:when test="${cmpName==null}">
           <span class="brand"><fmt:message key="label.error"/></span>

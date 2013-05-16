@@ -18,6 +18,7 @@ import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.dao.ComponentDao;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
 import org.jtalks.jcommune.service.ComponentService;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  * The implementation of {@link ComponentService}.

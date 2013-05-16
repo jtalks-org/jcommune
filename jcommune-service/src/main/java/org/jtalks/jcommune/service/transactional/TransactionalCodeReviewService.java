@@ -90,7 +90,7 @@ public class TransactionalCodeReviewService extends AbstractTransactionalEntityS
         review.addComment(comment);
         getDao().update(review);
         notificationService.subscribedEntityChanged(review);
-        userMentionService.notifyAllMentionedUsers(body, review.getTopic().getFirstPost().getId());
+        userMentionService.notifyAllMentionedUsers(body, review.getOwnerPost().getId());
         
         return comment;
     }
