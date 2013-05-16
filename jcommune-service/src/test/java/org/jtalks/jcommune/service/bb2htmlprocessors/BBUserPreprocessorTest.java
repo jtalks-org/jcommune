@@ -46,13 +46,13 @@ public class BBUserPreprocessorTest {
     private UserService userService;
     @Mock
     private UserMentionService userMentionService;
-    private BBUserPreprocessor userPreprocessor;
+    private BbUserPreprocessor userPreprocessor;
     
     
     @BeforeMethod
     public void init() {
         initMocks(this);
-        userPreprocessor = new BBUserPreprocessor(userService, userMentionService);
+        userPreprocessor = new BbUserPreprocessor(userService, userMentionService);
         //
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setScheme("http");

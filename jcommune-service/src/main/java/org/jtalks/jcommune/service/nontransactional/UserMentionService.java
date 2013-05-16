@@ -24,8 +24,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -34,7 +32,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class UserMentionService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserMentionService.class);
+    private static final Pattern USER_BB_CODE_PATTERN = Pattern.compile("\\[user\\].*?\\[/user\\]");
     private MailService mailService;
     private UserDao userDao;
     
@@ -68,8 +66,7 @@ public class UserMentionService {
      */
     public List<String> extractMentionedUsers(String canContainMentionedUsers) {
         if (!StringUtils.isEmpty(canContainMentionedUsers)) {
-            Pattern pattern = Pattern.compile("\\[user\\].*?\\[/user\\]");
-            Matcher matcher = pattern.matcher(canContainMentionedUsers);
+            Matcher matcher = USER_BB_CODE_PATTERN.matcher(canContainMentionedUsers);
             List<String> mentionedUsernames = new ArrayList<String>();
             while (matcher.find()) {
                 String userBBCode = matcher.group();
@@ -91,7 +88,6 @@ public class UserMentionService {
         List<JCUser> mentionedUsers = userDao.getByUsernames(mentionedUsernames);
         for (JCUser mentionedUser: mentionedUsers) {
             if (mentionedUser.isMentioningNotificationsEnabled()) {
-                LOGGER.debug(mentionedUser.getUsername() + " was mentioned, email was sent to - " + mentionedUser.getEmail());
                 mailService.sendUserMentionedNotification(mentionedUser, mentioningPostId);
             }
         }

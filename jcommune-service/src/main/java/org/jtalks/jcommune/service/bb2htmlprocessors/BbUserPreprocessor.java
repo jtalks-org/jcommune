@@ -40,8 +40,8 @@ import ru.perm.kefir.bbcode.TextProcessorAdapter;
  * @author Anuar_Nurmakanov
  *
  */
-public class BBUserPreprocessor extends TextProcessorAdapter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(BBUserPreprocessor.class);
+public class BbUserPreprocessor extends TextProcessorAdapter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BbUserPreprocessor.class);
     private static final String USER_BB_CODE_TEMPLATE = "[user]%s[/user]";
     private static final String USER_BB_CODE_WITH_LINK_TO_PROFILE = "[user=%s]%s[/user]";
     private UserService userService;
@@ -51,7 +51,7 @@ public class BBUserPreprocessor extends TextProcessorAdapter {
      * @param userService to check users' existence
      * @param userMentionService to extract mentioned users
      */
-    public BBUserPreprocessor(UserService userService, UserMentionService userMentionService) {
+    public BbUserPreprocessor(UserService userService, UserMentionService userMentionService) {
         this.userService = userService;
         this.userMentionService = userMentionService;
     }

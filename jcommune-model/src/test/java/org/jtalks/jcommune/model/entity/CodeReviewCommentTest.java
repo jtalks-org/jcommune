@@ -72,6 +72,7 @@ public class CodeReviewCommentTest {
         CodeReview codeReview = new CodeReview();
         CodeReviewComment codeReviewComment = new CodeReviewComment();
         codeReview.addComment(codeReviewComment);
+        codeReviewComment.setCodeReview(codeReview);
         codeReview.setTopic(topic);
         
         Post actualOwnerPost = codeReviewComment.getOwnerPost();
