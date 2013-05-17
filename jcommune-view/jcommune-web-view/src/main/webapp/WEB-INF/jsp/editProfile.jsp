@@ -159,8 +159,10 @@
                     <div class="control-group">
                         <label class="control-label"><spring:message code="label.mentioning.notifications.enabled"/></label>
                         <div class="controls padding-top-profile">
+                            <spring:message var="mentioningNotificationsTooltip" code="label.tips.userMentioningNotification" />
                             <form:checkbox path="mentioningNotificationsEnabled" value="${editedUser.mentioningNotificationsEnabled}"
-                                         class="form-check-radio-box"/>
+                                         class="form-check-radio-box script-has-tooltip" 
+                                         data-original-title='${mentioningNotificationsTooltip}'/>
                         </div>
                     </div>
 
@@ -175,15 +177,15 @@
                     </div>
 
                     <c:if test="${userId == editedUser.userId}">
-	                    <div class="control-group">
-	                        <label class="control-label"><spring:message code="label.currentPassword"/></label>
-	
-	                        <div class="controls">
-	                            <form:input class="input-xlarge" type="password" path="currentUserPassword"/>
-	                            <br/>
-	                            <form:errors path="currentUserPassword" cssClass="help-inline"/>
-	                        </div>
-	                    </div>
+                        <div class="control-group">
+                            <label class="control-label"><spring:message code="label.currentPassword"/></label>
+    
+                            <div class="controls">
+                                <form:input class="input-xlarge" type="password" path="currentUserPassword"/>
+                                <br/>
+                                <form:errors path="currentUserPassword" cssClass="help-inline"/>
+                            </div>
+                        </div>
                     </c:if>
 
                     <div class="control-group">
