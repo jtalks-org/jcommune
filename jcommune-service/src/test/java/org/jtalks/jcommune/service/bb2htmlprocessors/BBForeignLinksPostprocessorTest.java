@@ -25,14 +25,14 @@ import javax.servlet.http.HttpServletRequest;
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
 
-public class BBForeignLinksPostprocessorTest {
-    private BBForeignLinksPostprocessor service;
+public class BbForeignLinksPostprocessorTest {
+    private BbForeignLinksPostprocessor service;
     @Mock
     private HttpServletRequest request;
     
     @BeforeMethod
     public void setUp() {
-        service = spy(new BBForeignLinksPostprocessor());
+        service = spy(new BbForeignLinksPostprocessor());
         MockitoAnnotations.initMocks(this);
         doReturn(request).when(service).getServletRequest();  
     }
