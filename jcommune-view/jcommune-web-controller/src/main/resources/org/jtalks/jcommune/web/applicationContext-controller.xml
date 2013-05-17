@@ -57,18 +57,6 @@
             <bean class="org.codehaus.jackson.map.ObjectMapper"/>
         </constructor-arg>
     </bean>
-
-    <bean id="imageControllerUtils"  class="org.jtalks.jcommune.web.util.ImageControllerUtils">
-        <constructor-arg>
-            <ref bean="avatarService"/>
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="messageSource"/>
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="jsonUtils"/>
-        </constructor-arg>
-    </bean>
     
     <bean id="rememberMeCookieDecoder" 
           class="org.jtalks.jcommune.web.rememberme.RememberMeCookieDecoderImpl" />

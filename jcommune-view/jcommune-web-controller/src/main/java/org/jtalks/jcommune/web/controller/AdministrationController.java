@@ -14,27 +14,15 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.Validate;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
 import org.jtalks.jcommune.service.ComponentService;
-import org.jtalks.jcommune.service.exceptions.ImageProcessException;
-import org.jtalks.jcommune.service.nontransactional.AvatarService;
-import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
-import org.jtalks.jcommune.web.util.ImageControllerUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -43,8 +31,6 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Andrei Alikov
@@ -52,14 +38,9 @@ import java.util.Map;
  */
 @Controller
 public class AdministrationController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AvatarService.class);
-
     private static final String ADMIN_ATTRIBUTE_NAME = "adminMode";
-    public static final String DEFAULT_LOGO_PATH = "/resources/images/jcommune.jpeg";
 
     private ComponentService componentService;
-    private ImageControllerUtils imageControllerUtils;
-
 
     @Autowired
     ServletContext servletContext;
@@ -69,10 +50,8 @@ public class AdministrationController {
      * @param componentService service to work with the forum component
      */
     @Autowired
-    public AdministrationController(ComponentService componentService,
-                                    ImageControllerUtils imageControllerUtils) {
+    public AdministrationController(ComponentService componentService) {
         this.componentService = componentService;
-        this.imageControllerUtils = imageControllerUtils;
     }
 
     /**
@@ -121,43 +100,17 @@ public class AdministrationController {
     @RequestMapping(value = "/admin/logo", method = RequestMethod.GET)
     public void getForumLogo(HttpServletRequest request, HttpServletResponse response) {
         response.setContentType("image/jpeg");
-
-        String logoProperty = componentService.getComponentOfForum().getProperty("jcommune.logo");
-        byte[] logoBytes = null;
-
-        if (logoProperty == null || logoProperty.isEmpty()) {
-            logoBytes = getDefaultLogo();
-        } else {
-            Base64Wrapper wrapper = new Base64Wrapper();
-            logoBytes = wrapper.decodeB64Bytes(logoProperty);
-        }
-
         try {
+            // Temporary solution - load image from the resources
             OutputStream stream = response.getOutputStream();
-            stream.write(logoBytes);
+            InputStream logo = servletContext.getResourceAsStream("/resources/images/jcommune.jpeg");
+            byte[] bytes = new byte[100 * 1024];
+            logo.read(bytes);
+            stream.write(bytes);
+            logo.close();
         } catch (IOException e) {
-            LOGGER.error("Failed to write data in forum logo response", e);
+            e.printStackTrace();
         }
-    }
-
-    /**
-     * Returns default logo to be used when custom logo image is not set
-     *
-     * @return byte array-stored image
-     */
-    public byte[] getDefaultLogo() {
-        byte[] result = new byte[0];
-        InputStream stream = servletContext.getResourceAsStream(DEFAULT_LOGO_PATH);
-        try {
-            result = new byte[stream.available()];
-            Validate.isTrue(stream.read(result) > 0);
-        } catch (IOException e) {
-            LOGGER.error("Failed to load default logo", e);
-        }
-        finally {
-            IOUtils.closeQuietly(stream);
-        }
-        return result;
     }
 
     /**
@@ -166,43 +119,5 @@ public class AdministrationController {
      */
     private String getRedirectToPrevPage(HttpServletRequest request) {
         return "redirect:" + request.getHeader("Referer");
-    }
-
-    /**
-     * Process avatar file from request and return avatar preview in response.
-     * Used for IE, Opera specific request processing.
-     *
-     * @param file file, that contains uploaded image
-     * @return ResponseEntity
-     * @throws IOException           defined in the JsonFactory implementation,
-     *                               caller must implement exception processing
-     * @throws org.jtalks.jcommune.service.exceptions.ImageProcessException if error occurred while image processing
-     */
-    @RequestMapping(value = "/admin/logo/IFrameLogoPreview", method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseEntity<String> uploadAvatar(
-            @RequestParam(value = "qqfile") MultipartFile file) throws IOException, ImageProcessException {
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.setContentType(MediaType.TEXT_HTML);
-        Map<String, String> responseContent = new HashMap<String, String>();
-        return imageControllerUtils.prepareResponse(file, responseHeaders, responseContent);
-    }
-
-    /**
-     * Process avatar file from request and return avatar preview in response.
-     * Used for FF, Chrome specific request processing
-     *
-     * @param bytes    input avatar data
-     * @param response servlet response
-     * @return response content
-     * @throws ImageProcessException if error occurred while image processing
-     */
-    @RequestMapping(value = "/admin/logo/XHRlogoPreview", method = RequestMethod.POST)
-    @ResponseBody
-    public Map<String, String> uploadAvatar(@RequestBody byte[] bytes,
-                                            HttpServletResponse response) throws ImageProcessException {
-        Map<String, String> responseContent = new HashMap<String, String>();
-        imageControllerUtils.prepareResponse(bytes, response, responseContent);
-        return responseContent;
     }
 }

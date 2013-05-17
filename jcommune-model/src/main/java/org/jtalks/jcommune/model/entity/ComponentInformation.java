@@ -29,13 +29,13 @@ public class ComponentInformation {
     private String name;
     private String description;
     private String logoTooltip;
-    private String logo;
+    private byte[] logo;
 
-    public String getLogo() {
+    public byte[] getLogo() {
         return logo;
     }
 
-    public void setLogo(String logo) {
+    public void setLogo(byte[] logo) {
         this.logo = logo;
     }
 

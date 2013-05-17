@@ -24,7 +24,7 @@
         </id>
         <property column="UUID" name="uuid" unique="true" not-null="true"/>
         <property name="name" column="NAME"/>
-        <property name="value" column="VALUE" type="text"/>
+        <property name="value" column="VALUE"/>
     </class>
     
     <query name="getPropertyByName">

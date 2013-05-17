@@ -14,16 +14,43 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNotSame;
+import static org.testng.Assert.assertTrue;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.exceptions.ImageFormatException;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
+import org.jtalks.jcommune.service.exceptions.ImageSizeException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
-import org.jtalks.jcommune.web.util.ImageControllerUtils;
+import org.jtalks.jcommune.service.nontransactional.ImageUtils;
+import org.jtalks.jcommune.web.dto.json.FailJsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponseReason;
+import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
+import org.jtalks.jcommune.web.util.JSONUtils;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -31,18 +58,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.*;
 
 
 /**
@@ -62,8 +77,9 @@ public class AvatarControllerTest {
     @Mock
     private UserService userService;
     @Mock
-    private ImageControllerUtils imageControllerUtils;
-
+    private MessageSource messageSource;
+    @Mock
+    private JSONUtils jsonUtils;
     //
     private AvatarController avatarController;
 
@@ -79,7 +95,7 @@ public class AvatarControllerTest {
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
-        avatarController = new AvatarController(avatarService,  userService, imageControllerUtils);
+        avatarController = new AvatarController(avatarService,  userService, messageSource, jsonUtils);
     }
 
     @Test
@@ -87,19 +103,33 @@ public class AvatarControllerTest {
     public void uploadAvatarForOperaAndIEShouldReturnPreviewInResponce() 
             throws IOException, ImageProcessException {
         MultipartFile file = new MockMultipartFile("qqfile", validAvatar);
+        String expectedBody = "{\"srcPrefix\":\"data:image/jpeg;base64,\",\"srcImage\":\"srcImage\",\"success\":\"true\"}";
+        when(avatarService.convertBytesToBase64String(validAvatar)).thenReturn(IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
+        when(jsonUtils.prepareJSONString(Matchers.anyMap())).thenReturn(expectedBody);
 
         ResponseEntity<String> actualResponseEntity = avatarController.uploadAvatar(file);
 
-        verify(imageControllerUtils).prepareResponse(eq(file), any(HttpHeaders.class), any(HashMap.class));
+        verify(avatarService).validateAvatarFormat(file);
+        verify(avatarService).validateAvatarSize(file.getBytes());
+        assertEquals(actualResponseEntity.getStatusCode(), HttpStatus.OK);
+        assertEquals(actualResponseEntity.getBody(), expectedBody);
+        HttpHeaders headers = actualResponseEntity.getHeaders();
+        assertEquals(headers.getContentType(), MediaType.TEXT_HTML);
     }
 
     @Test
     public void uploadAvatarForChromeAndFFShouldReturnPreviewInResponce() throws ImageProcessException {
+        when(avatarService.convertBytesToBase64String(validAvatar)).thenReturn(IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        avatarController.uploadAvatar(validAvatar, response);
+        Map<String, String> actualResponce = avatarController.uploadAvatar(validAvatar, response);
 
-        verify(imageControllerUtils).prepareResponse(eq(validAvatar), eq(response), any(HashMap.class));
+        verify(avatarService).validateAvatarFormat(validAvatar);
+        verify(avatarService).validateAvatarSize(validAvatar);
+        assertEquals(actualResponce.get(AvatarController.STATUS), "SUCCESS");
+        assertEquals(actualResponce.get(AvatarController.SRC_PREFIX), ImageUtils.HTML_SRC_TAG_PREFIX);
+        assertEquals(actualResponce.get(AvatarController.SRC_IMAGE), IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
+        assertEquals(response.getStatus(), HttpServletResponse.SC_OK);
     }
     
     @Test
@@ -161,11 +191,68 @@ public class AvatarControllerTest {
         String expectedJSON = "{\"team\": \"larks\"}";
         when(avatarService.getDefaultAvatar()).thenReturn(validAvatar);
         when(avatarService.convertBytesToBase64String(validAvatar)).thenReturn(IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
-        when(imageControllerUtils.getResponceJSONString(Matchers.anyMap())).thenReturn(expectedJSON);
+        when(jsonUtils.prepareJSONString(Matchers.anyMap())).thenReturn(expectedJSON);
 
         String actualJSON = avatarController.getDefaultAvatar();
 
         verify(avatarService).getDefaultAvatar();
         assertEquals(actualJSON, expectedJSON);
+    }
+
+    @Test
+    public void imageFormatExceptionShouldProduceNotSuccessOperationResultWithMessageAboutValidImageTypes() {
+        Locale locale = Locale.ENGLISH;//it's not matter
+        String expectedMessage = "a message";
+        String validTypes = "*.png";
+        //
+        when(messageSource.getMessage(
+                AvatarController.WRONG_FORMAT_RESOURCE_MESSAGE,
+                new Object[]{validTypes},
+                locale)
+                ).thenReturn(expectedMessage);
+
+        FailJsonResponse result = avatarController.handleImageFormatException(new ImageFormatException(validTypes), locale);
+
+        assertEquals(result.getStatus(), JsonResponseStatus.FAIL, "We have an exception, so we should get false value.");
+        assertEquals(result.getReason(), JsonResponseReason.VALIDATION, "Failture reason should be validation");
+        assertEquals(result.getResult(), expectedMessage, "Result contains incorrect message.");
+    }
+    
+    @Test
+    public void handleImageSizeExceptionShouldReturnValidationErrorAndErrorMessage() {
+        int maxSize = 1000;
+        ImageSizeException exception = new ImageSizeException(maxSize);
+        Locale locale = Locale.ENGLISH;//it's not matter
+        String expectedMessage = "a message " + maxSize;
+        //
+        when(messageSource.getMessage(
+                Matchers.anyString(),
+                Matchers.any(Object[].class),
+                Matchers.any(Locale.class))
+                ).thenReturn(expectedMessage);
+
+        FailJsonResponse result = avatarController.handleImageSizeException(exception, locale);
+
+        assertEquals(result.getStatus(), JsonResponseStatus.FAIL, "We have an exception, so we should get false value.");
+        assertEquals(result.getReason(), JsonResponseReason.VALIDATION, "Failture reason should be validation");
+        assertEquals(result.getResult(), expectedMessage, "Result contains incorrect message.");
+    }
+    
+    @Test
+    public void handleImageProcessExceptionShouldReturnInternalServerErrorAndErrorMessage() {
+        Locale locale = Locale.ENGLISH;//it's not matter
+        String expectedMessage = "a message";
+        //
+        when(messageSource.getMessage(
+                AvatarController.COMMON_ERROR_RESOURCE_MESSAGE,
+                null,
+                locale)
+                ).thenReturn(expectedMessage);
+
+        FailJsonResponse result = avatarController.handleImageProcessException(null, locale);
+
+        assertEquals(result.getStatus(), JsonResponseStatus.FAIL, "We have an exception, so we should get false value.");
+        assertEquals(result.getReason(), JsonResponseReason.INTERNAL_SERVER_ERROR, "Failture reason should be validation");
+        assertEquals(result.getResult(), expectedMessage, "Result contains incorrect message.");
     }
 }

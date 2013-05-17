@@ -17,10 +17,6 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.common.model.entity.ComponentType;
 import org.jtalks.jcommune.service.ComponentService;
-import org.jtalks.jcommune.service.nontransactional.AvatarService;
-import org.jtalks.jcommune.web.util.ImageControllerUtils;
-import org.jtalks.jcommune.web.util.JSONUtils;
-import org.springframework.context.MessageSource;
 import org.springframework.mock.web.MockHttpSession;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -42,12 +38,10 @@ public class AdministrationControllerTest {
     @BeforeMethod
     public void init() {
         ComponentService componentService = mock(ComponentService.class);
-        AvatarService avatarService = mock(AvatarService.class);
-        ImageControllerUtils imageControllerUtils = mock(ImageControllerUtils.class);
         Component component = new Component("Forum", "Cool Forum", ComponentType.FORUM);
         component.setId(42);
 
-        administrationController = new AdministrationController(componentService, imageControllerUtils);
+        administrationController = new AdministrationController(componentService);
     }
 
     @Test
