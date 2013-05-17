@@ -221,6 +221,7 @@
     </bean>
 
     <bean id="bbCodeReviewProcessor" class="org.jtalks.jcommune.service.bb2htmlprocessors.BbCodeReviewProcessor"/>
+    <bean id="bbForeignLinksPostprocessor" class="org.jtalks.jcommune.service.bb2htmlprocessors.BBForeignLinksPostprocessor"/>
     
     <bean id="bbUserPreprocessor" class="org.jtalks.jcommune.service.bb2htmlprocessors.BBUserPreprocessor">
         <constructor-arg ref="userService"/>
@@ -238,6 +239,7 @@
         <property name="postprocessors">
             <list>
                 <ref local="bbCodeReviewProcessor"/>
+                <ref local="bbForeignLinksPostprocessor"/>
             </list>
         </property>
     </bean>
