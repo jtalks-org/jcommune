@@ -36,6 +36,7 @@ import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.jtalks.jcommune.web.dto.json.FailJsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseReason;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
+import org.jtalks.jcommune.web.util.ImageControllerUtils;
 import org.jtalks.jcommune.web.util.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -64,38 +65,27 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 public class AvatarController {
 
-    static final String STATUS = "status";
-    static final String SRC_PREFIX = "srcPrefix";
-    static final String SRC_IMAGE = "srcImage";
-    
-    static final String WRONG_FORMAT_RESOURCE_MESSAGE = "image.wrong.format";
-    static final String WRONG_SIZE_RESOURCE_MESSAGE = "image.wrong.size";
-    static final String COMMON_ERROR_RESOURCE_MESSAGE = "avatar.500.common.error";
     private static final String IF_MODIFIED_SINCE_HEADER = "If-Modified-Since";
 
     private AvatarService avatarService;
     private UserService userService;
-    private MessageSource messageSource;
-    private JSONUtils jsonUtils;
+    private ImageControllerUtils imageControllerUtils;
 
     /**
      * Constructor for controller instantiating, dependencies injected via autowiring.
      *
      * @param avatarService for avatar manipulation
      * @param userService   to manipulate user-related data
-     * @param messageSource to resolve locale-dependent messages
-     * @param jsonUtils     to convert data to JSON format
+     * @param imageControllerUtils utility object for image-related functions
      */
     @Autowired
     public AvatarController(
             AvatarService avatarService,
             UserService userService,
-            MessageSource messageSource,
-            JSONUtils jsonUtils) {
+            ImageControllerUtils imageControllerUtils) {
         this.avatarService = avatarService;
         this.userService = userService;
-        this.messageSource = messageSource;
-        this.jsonUtils = jsonUtils;
+        this.imageControllerUtils = imageControllerUtils;
     }
 
     /**
@@ -115,29 +105,7 @@ public class AvatarController {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.setContentType(MediaType.TEXT_HTML);
         Map<String, String> responseContent = new HashMap<String, String>();
-        return prepareResponse(file, responseHeaders, responseContent);
-    }
-    
-    /**
-     * Prepare valid response after avatar processing
-     *
-     * @param file            file, that contains uploaded image
-     * @param responseHeaders response HTTP headers
-     * @param responseContent response content
-     * @return ResponseEntity with avatar processing results
-     * @throws IOException           defined in the JsonFactory implementation, caller must implement exception processing
-     * @throws ImageProcessException if error occurred while image processing
-     */
-    private ResponseEntity<String> prepareResponse(
-            MultipartFile file,
-            HttpHeaders responseHeaders,
-            Map<String, String> responseContent) throws IOException, ImageProcessException {
-        avatarService.validateAvatarFormat(file);
-        byte[] bytes = file.getBytes();
-        avatarService.validateAvatarSize(bytes);
-        prepareNormalResponse(bytes, responseContent);
-        String body = jsonUtils.prepareJSONString(responseContent);
-        return new ResponseEntity<String>(body, responseHeaders, HttpStatus.OK);
+        return imageControllerUtils.prepareResponse(file, responseHeaders, responseContent);
     }
 
     /**
@@ -154,25 +122,8 @@ public class AvatarController {
     public Map<String, String> uploadAvatar(@RequestBody byte[] bytes,
                                             HttpServletResponse response) throws ImageProcessException {
         Map<String, String> responseContent = new HashMap<String, String>();
-        prepareResponse(bytes, response, responseContent);
+        imageControllerUtils.prepareResponse(bytes, response, responseContent);
         return responseContent;
-    }
-    
-    /**
-     * Prepare valid response after avatar processing
-     *
-     * @param bytes           input avatar data
-     * @param response        resulting response
-     * @param responseContent with avatar processing results
-     * @throws ImageProcessException if it's impossible to form correct image response
-     */
-    private void prepareResponse(byte[] bytes,
-                                 HttpServletResponse response,
-                                 Map<String, String> responseContent) throws ImageProcessException {
-        avatarService.validateAvatarFormat(bytes);
-        avatarService.validateAvatarSize(bytes);
-        prepareNormalResponse(bytes, responseContent);
-        response.setStatus(HttpServletResponse.SC_OK);
     }
 
     /**
@@ -206,26 +157,25 @@ public class AvatarController {
                 user.getAvatarLastModificationTime().getMillis());
         setupAvatarHeaders(response, avatarLastModificationDate);
     }
-    
-    
+
     /**
-     * Sets up avatar cache related headers. 
+     * Sets up avatar cache related headers.
      * @param response - HTTP response object where set headers
      * @param avatarLastModificationTime - last modification time of avatar
      */
-    private void setupAvatarHeaders(HttpServletResponse response, 
-            Date avatarLastModificationTime) {
+    private void setupAvatarHeaders(HttpServletResponse response,
+                                    Date avatarLastModificationTime) {
         response.setHeader("Pragma", "public");
         response.setHeader("Cache-Control", "public");
         response.addHeader("Cache-Control", "must-revalidate");
         response.addHeader("Cache-Control","max-age=0");
         String formattedDateExpires = DateFormatUtils.format(
-                new Date(System.currentTimeMillis()), 
+                new Date(System.currentTimeMillis()),
                 AvatarService.HTTP_HEADER_DATETIME_PATTERN, Locale.US);
         response.setHeader("Expires", formattedDateExpires);
-    
+
         String formattedDateLastModified = DateFormatUtils.format(
-                avatarLastModificationTime, 
+                avatarLastModificationTime,
                 AvatarService.HTTP_HEADER_DATETIME_PATTERN, Locale.US);
         response.setHeader("Last-Modified", formattedDateLastModified);
     }
@@ -241,66 +191,8 @@ public class AvatarController {
     @ResponseBody
     public String getDefaultAvatar() throws ImageProcessException, IOException {
         Map<String, String> responseContent = new HashMap<String, String>();
-        prepareNormalResponse(avatarService.getDefaultAvatar(), responseContent);
-        return jsonUtils.prepareJSONString(responseContent);
+        imageControllerUtils.prepareNormalResponse(avatarService.getDefaultAvatar(), responseContent);
+        return imageControllerUtils.getResponceJSONString(responseContent);
     }
 
-    /**
-     * Used for prepare normal response.
-     *
-     * @param bytes           input avatar data
-     * @param responseContent response payload
-     * @throws ImageProcessException due to common avatar processing error
-     */
-    private void prepareNormalResponse(byte[] bytes,
-                                       Map<String, String> responseContent) throws ImageProcessException {
-        String srcImage = avatarService.convertBytesToBase64String(bytes);
-        responseContent.put(STATUS, String.valueOf(JsonResponseStatus.SUCCESS));
-        responseContent.put(SRC_PREFIX, ImageUtils.HTML_SRC_TAG_PREFIX);
-        responseContent.put(SRC_IMAGE, srcImage);
-    }
-
-    /**
-     * Handles an exception that is thrown when the avatar has incorrect size.
-     *
-     * @param e      exception
-     * @param locale locale, it's needed for error message localization
-     * @return DTO, that contains information about error, it will be converted to JSON
-     */
-    @ExceptionHandler(value = ImageSizeException.class)
-    @ResponseBody
-    public FailJsonResponse handleImageSizeException(ImageSizeException e, Locale locale) {
-        Object[] parameters = new Object[]{e.getMaxSize()};
-        String errorMessage = messageSource.getMessage(WRONG_SIZE_RESOURCE_MESSAGE, parameters, locale);
-        return new FailJsonResponse(JsonResponseReason.VALIDATION, errorMessage);
-    }
-
-    /**
-     * Handles an exception that is thrown when the avatar has incorrect format.
-     *
-     * @param e      exception
-     * @param locale locale, it's needed for error message localization
-     * @return DTO, that contains information about error, it will be converted to JSON
-     */
-    @ExceptionHandler(value = ImageFormatException.class)
-    @ResponseBody
-    public FailJsonResponse handleImageFormatException(ImageFormatException e, Locale locale) {
-        Object[] validImageTypes = new Object[]{e.getValidImageTypes()};
-        String errorMessage = messageSource.getMessage(WRONG_FORMAT_RESOURCE_MESSAGE, validImageTypes, locale);
-        return new FailJsonResponse(JsonResponseReason.VALIDATION, errorMessage);
-    }
-
-    /**
-     * Handles common exception that can occur when loading an avatar.
-     *
-     * @param e      exception
-     * @param locale locale, it's needed for error message localization
-     * @return DTO, that contains information about error, it will be converted to JSON
-     */
-    @ExceptionHandler(value = ImageProcessException.class)
-    @ResponseBody
-    public FailJsonResponse handleImageProcessException(ImageProcessException e, Locale locale) {
-        String errorMessage = messageSource.getMessage(COMMON_ERROR_RESOURCE_MESSAGE, null, locale);
-        return new FailJsonResponse(JsonResponseReason.INTERNAL_SERVER_ERROR, errorMessage);
-    }
 }

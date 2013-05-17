@@ -28,7 +28,24 @@ function showForumConfigurationDialog(e) {
             <div class="controls thumbnail-logo"> \
                 <img id="logoPreview" src="' + $root + '/admin/logo" alt=""/>  \
             </div> \
+            \
+            \
+            <div class="user-profile-top-buttons"> \
+                <div class="user-profile-buttons-avatar"> \
+                    <a id="upload" href="#" class="btn btn-mini"> \
+                        <i class="icon-picture"></i>  \
+                        Load logo \
+                    </a>  \
+                    <a id="removeLogo" href="#" class="btn btn-mini btn-danger" \
+                        title="Remove logo"> \
+                        <i class="icon-remove icon-white"></i> \
+                    </a> \
+                </div> \
+            </div>  \
+            \
+            \
         </div>  \
+        <form:hidden id="logo" path="logo"/> \
         ' + Utils.createFormElement($labelForumTitle, 'form_title', 'text', 'edit-links dialog-input')
         + Utils.createFormElement($labelForumDescription, 'forum_description', 'text', 'edit-links dialog-input')
         + Utils.createFormElement($labelLogoTooltip, 'logo_tooltip', 'text', 'edit-links dialog-input') + ' \
@@ -57,6 +74,72 @@ function showForumConfigurationDialog(e) {
     $('#form_title').val(cmpName);
     $('#forum_description').val(forumDescription);
     $('#logo_tooltip').val(logoTooltip);
+
+    //avatar uploading handler
+
+    //defined the URL for appropriate avatar processing depending on client browser:
+    // Opera, IE - multipart file using iFrame
+    // Chrome, Opera - byte [] using XHR
+    var action;
+    //this parameter tells to valums file uploader the appropriate content type
+    //if encoding != multipart, it will use "application/octet-stream" content type
+    //otherwise it will use "multipart/form-data"
+    var encoding = "not-multipart";
+    if (navigator.appName.indexOf("Microsoft") != -1 ||
+        navigator.appName.indexOf("Opera") != -1) {
+        action = $root + '/admin/logo/IFrameLogoPreview';
+        encoding = "multipart";
+    }
+    else {
+        action = $root + '/admin/logo/XHRlogoPreview';
+    }
+
+    var uploader = new qq.FileUploaderBasic({
+        button: $("#upload").get(0),
+        //server side uploading handler
+        action: action,
+        //
+        encoding: encoding,
+        //is multiple file upload available
+        multiple: false,
+        onSubmit: function (id, filename) {
+        },
+        onProgress: function (id, filename, loaded, total) {
+        },
+        onComplete: function (id, filename, responseJSON) {
+            // response is empty when response status is not 200
+            if (jQuery.isEmptyObject(responseJSON)) {
+                return;
+            }
+            //
+            if (responseJSON.status == "SUCCESS") {
+                //if server side avatar uploading successful  a processed image displayed
+                $('#logoPreview').attr('src', responseJSON.srcPrefix + responseJSON.srcImage);
+                //
+                $('#logo').attr('value', responseJSON.srcImage);
+            } else {
+                // display error message
+                jDialog.createDialog({
+                    type: jDialog.alertType,
+                    bodyMessage: responseJSON.result
+                });
+            }
+
+        },
+        onError: function(id, filename, xhr) {
+            if (xhr.status == 413) {
+                jDialog.createDialog({
+                    type: jDialog.alertType,
+                    bodyMessage: $labelImageWrongSizeJs
+                });
+                return false;
+            }
+        },
+        debug: false,
+        messages: {
+            emptyError: $fileIsEmpty
+        }
+    });
 }
 
 
@@ -70,21 +153,20 @@ function sendForumConfiguration(e) {
     var forumTitleElement = jDialog.dialog.find('#form_title');
     var forumDescriptionElement = jDialog.dialog.find('#forum_description');
     var logoTooltipElement = jDialog.dialog.find('#logo_tooltip');
+    var logoElement = jDialog.dialog.find('#logo');
 
     var forumTitle = forumTitleElement.val();
     var forumDescription = forumDescriptionElement.val();
     var logoTooltip = logoTooltipElement.val();
+    var logo = logoElement.val();
 
     var componentInformation = {};
     componentInformation.name = forumTitle;
     componentInformation.description = forumDescription;
     componentInformation.logoTooltip = logoTooltip;
+    componentInformation.logo = logo;
 
     jDialog.dialog.find('*').attr('disabled', true);
-
-    var query = 'formTitle=' + encodeURIComponent(forumTitle) + '&'
-        + 'forumDescription=' + encodeURIComponent(forumDescription) + '&'
-        + 'logoTooltip=' + encodeURIComponent(logoTooltip);
 
     $.ajax({
         url: $root + '/admin/edit_ajax',
