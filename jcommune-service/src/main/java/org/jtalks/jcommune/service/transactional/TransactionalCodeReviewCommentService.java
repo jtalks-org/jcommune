@@ -66,7 +66,7 @@ public class TransactionalCodeReviewCommentService extends
         comment.setBody(body);
         getDao().update(comment);
 
-        long commentPostId = comment.getCodeReview().getTopic().getFirstPost().getId();
+        long commentPostId = comment.getOwnerPost().getId();
         userMentionService.notifyAllMentionedUsers(body, commentPostId);
         return comment;
     }

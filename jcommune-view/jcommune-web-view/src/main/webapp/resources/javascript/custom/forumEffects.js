@@ -21,4 +21,5 @@ jQuery(document).ready(function(){
         jQuery('img.status-img').tooltip();
         jQuery("a").tooltip();
         jQuery('.btn').tooltip({placement: 'bottom'});
+		jQuery('.script-has-tooltip').tooltip();
 });

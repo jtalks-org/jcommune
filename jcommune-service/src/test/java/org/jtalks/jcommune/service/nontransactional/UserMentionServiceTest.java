@@ -73,7 +73,7 @@ public class UserMentionServiceTest {
         assertTrue(extractedUserNames.size() == 3, "Passed text should contain 3 user mentioning.");
         assertTrue(extractedUserNames.contains("Shogun"), "Shogun is mentioned, so he should be extracted.");
         assertTrue(extractedUserNames.contains("masyan"), "masyan is mentioned, so he should be extracted.");
-        assertTrue(extractedUserNames.contains("jk1"), "masyan is mentioned, so he should be extracted.");
+        assertTrue(extractedUserNames.contains("jk1"), "jk1 is mentioned, so he should be extracted.");
     }
     
     @Test

@@ -60,4 +60,18 @@ public class CodeReviewTest {
         assertTrue(review.isUserSubscribed(subscribedUser));
         assertFalse(review.isUserSubscribed(unsubscribedUser));
     }
+    
+    @Test
+    public void getOwnerPostShouldReturnFirstPostOfCodeReviewTopic() {
+        Topic topic = new Topic();
+        Post expectedOwnerPost = new Post();
+        topic.addPost(expectedOwnerPost);
+        CodeReview codeReview = new CodeReview();
+        codeReview.setTopic(topic);
+        
+        Post actualOwnerPost = codeReview.getOwnerPost();
+        
+        assertEquals("It should return first post of owner topic, cause it contains code review.",
+                expectedOwnerPost, actualOwnerPost);
+    }
 }

@@ -88,7 +88,12 @@ public enum JCommuneProperty {
     /**
      * Whether enable SAPE service
      */
-    CMP_SAPE_ENABLED;
+    CMP_SAPE_ENABLED,
+    /**
+     * Logo tooltip
+     */
+    LOGO_TOOLTIP
+    ;
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JCommuneProperty.class);

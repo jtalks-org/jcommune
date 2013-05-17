@@ -297,6 +297,12 @@ public class MailService {
         }
     }
     
+    /**
+     * Send email notification to user when he was mentioned in forum.
+     * 
+     * @param recipient mentioned user who will receive notification
+     * @param postId id of post where user was mentioned
+     */
     public void sendUserMentionedNotification(JCUser recipient, long postId) {
         String urlSuffix = "/posts/" + postId;
         String url = this.getDeploymentRootUrl() + urlSuffix;

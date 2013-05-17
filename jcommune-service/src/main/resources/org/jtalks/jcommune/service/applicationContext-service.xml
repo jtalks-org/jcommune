@@ -223,7 +223,7 @@
     <bean id="bbCodeReviewProcessor" class="org.jtalks.jcommune.service.bb2htmlprocessors.BbCodeReviewProcessor"/>
     <bean id="bbForeignLinksPostprocessor" class="org.jtalks.jcommune.service.bb2htmlprocessors.BBForeignLinksPostprocessor"/>
     
-    <bean id="bbUserPreprocessor" class="org.jtalks.jcommune.service.bb2htmlprocessors.BBUserPreprocessor">
+    <bean id="bbUserPreprocessor" class="org.jtalks.jcommune.service.bb2htmlprocessors.BbUserPreprocessor">
         <constructor-arg ref="userService"/>
         <constructor-arg ref="userMentionService"/>
     </bean>

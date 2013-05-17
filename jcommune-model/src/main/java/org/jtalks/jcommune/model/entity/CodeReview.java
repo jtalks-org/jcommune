@@ -92,4 +92,12 @@ public class CodeReview extends Entity implements SubscriptionAwareEntity {
         comments.add(comment);
     }
     
+    /**
+     * Get post where code review is placed.
+     * 
+     * @return post where code review is placed
+     */
+    public Post getOwnerPost() {
+       return getTopic().getFirstPost();
+    }
 }

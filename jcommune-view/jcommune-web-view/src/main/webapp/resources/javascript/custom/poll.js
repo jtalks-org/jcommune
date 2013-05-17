@@ -117,7 +117,7 @@ function applyPollResult(poll) {
         var roundedPollPercentage = (Math.round(pollPercentage * 100) / 100).toFixed(2);
         $("#pollAnswer" + pollOptionId + " .chart").css("width", roundedPollPercentage + "%");
         if (pollOption.votesCount > 0) {
-            $("#pollAnswer" + pollOptionId + " .chart").text(pollOption.votesCount + " - " + roundedPollPercentage + "%");
+            $("#pollAnswer" + pollOptionId + " .pool-result").text(pollOption.votesCount + " - " + roundedPollPercentage + "%");
         }
         $("#pollAnswer" + pollOptionId).show();
     }
@@ -135,10 +135,10 @@ function applyPollResult(poll) {
  */
 function addSingleVote(pollOptionId, pollId) {
     $.ajax({
-        url:$root + '/poll/' + pollId + '/single',
-        type:'POST',
-        data:{"pollOptionId":pollOptionId},
-        success:function (poll) {
+        url: $root + '/poll/' + pollId + '/single',
+        type: 'POST',
+        data: {"pollOptionId": pollOptionId},
+        success: function (poll) {
             applyPollResult(poll);
         },
         error: processVotingError
@@ -154,11 +154,11 @@ function addSingleVote(pollOptionId, pollId) {
  */
 function addMultipleVote(pollDto, pollId) {
     $.ajax({
-        url:$root + '/poll/' + pollId + '/multiple',
-        type:'POST',
-        contentType:"application/json",
-        data:JSON.stringify(pollDto),
-        success:function (poll) {
+        url: $root + '/poll/' + pollId + '/multiple',
+        type: 'POST',
+        contentType: "application/json",
+        data: JSON.stringify(pollDto),
+        success: function (poll) {
             applyPollResult(poll);
         },
         error: processVotingError
@@ -173,5 +173,5 @@ function processVotingError() {
         type: jDialog.alertType,
         bodyMessage: $labelUnexpectedError
     });
-	$('#pollAjaxLoader').hide(); //hide the ajax loader again
+    $('#pollAjaxLoader').hide(); //hide the ajax loader again
 }

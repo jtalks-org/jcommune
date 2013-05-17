@@ -17,13 +17,18 @@
 $(function () {
     $("#cmpName").on('click', showForumConfigurationDialog);
     $("#cmpDescription").on('click', showForumConfigurationDialog);
+    $("#forumLogo").on('click', showForumConfigurationDialog);
 });
 
 function showForumConfigurationDialog(e) {
     // prevent from following link
     e.preventDefault();
 
-    var bodyContent = '\
+    var bodyContent = '<div class="control-group"> \
+            <div class="controls thumbnail-logo"> \
+                <img id="logoPreview" src="' + $root + '/admin/logo" alt=""/>  \
+            </div> \
+        </div>  \
         ' + Utils.createFormElement($labelForumTitle, 'form_title', 'text', 'edit-links dialog-input')
         + Utils.createFormElement($labelForumDescription, 'forum_description', 'text', 'edit-links dialog-input')
         + Utils.createFormElement($labelLogoTooltip, 'logo_tooltip', 'text', 'edit-links dialog-input') + ' \
@@ -45,10 +50,13 @@ function showForumConfigurationDialog(e) {
         }
     });
 
-    var cmpName = $("#cmpName").text()
-    var forumDescription = $("#cmpDescription").text()
+    var cmpName = $("#cmpName").text();
+    var forumDescription = $("#cmpDescription").text();
+    var logoTooltip = $("#forumLogo").attr("title");
+
     $('#form_title').val(cmpName);
     $('#forum_description').val(forumDescription);
+    $('#logo_tooltip').val(logoTooltip);
 }
 
 
