@@ -43,9 +43,11 @@
 <div class="container">
 <%-- Topic header --%>
 <div id="branch-header">
-    <h3>
-        <c:out value="${topic.title}"/>
-    </h3>
+    <h2>
+        <a class="invisible-link" href="${pageContext.request.contextPath}/topics/${topic.id}">
+            <c:out value="${topic.title}"/>
+        </a>
+    </h2>
 
     <div id="right-block">
         <sec:authorize access="isAuthenticated()">

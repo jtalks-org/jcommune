@@ -4240,3 +4240,11 @@ input[type=text]::-ms-clear {
     display: none;
 }
 
+a.invisible-link {
+    color: #333333;
+}
+
+a.invisible-link:hover {
+    color: #005580;
+}
+

@@ -28,9 +28,16 @@
 <body>
 <div class="container">
     <div class="row forum-sections-header">
-
+        
         <h1 class="pull-left logo-text">
-            <span id="${sessionScope.adminMode == true ? 'cmpDescription' : ''}" id=""><c:out value="${cmpDescription}"/></span>
+            <c:choose>
+                <c:when test="${sessionScope.adminMode == true}">
+                    <span id="cmpDescription"><c:out value="${cmpDescription}"/></span>
+                </c:when>
+                <c:otherwise>                
+                    <a class="invisible-link" href="${pageContext.request.contextPath}/"><c:out value="${cmpDescription}"/></a>
+                </c:otherwise>
+            </c:choose>
         </h1>
 
         <div class="pull-right">
