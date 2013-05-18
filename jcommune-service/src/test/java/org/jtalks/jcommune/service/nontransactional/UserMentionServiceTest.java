@@ -22,6 +22,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotSame;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Collections;
@@ -30,6 +32,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
@@ -48,13 +51,15 @@ public class UserMentionServiceTest {
     private MailService mailService;
     @Mock
     private UserDao userDao;
+    @Mock 
+    private PostDao postDao;
     
     private UserMentionService userMentionService;
  
     @BeforeTest
     public void init() {
         initMocks(this);
-        userMentionService = new UserMentionService(mailService, userDao);
+        userMentionService = new UserMentionService(mailService, userDao, postDao);
     }
     
     @Test
@@ -100,8 +105,11 @@ public class UserMentionServiceTest {
         
         userMentionService.notifyAllMentionedUsers(mentioningPost);
         
+        assertNotSame(mentioningPost.getPostContent(), textWithUsersMentioning,
+                "After sending email [user][/user] tag shoud be changed to [user notified=true][/user]");
         verify(mailService, times(users.size()))
             .sendUserMentionedNotification(any(JCUser.class), anyLong());
+        verify(postDao, times(users.size())).update(mentioningPost);
     }
     
     @Test
@@ -118,26 +126,32 @@ public class UserMentionServiceTest {
         
         userMentionService.notifyAllMentionedUsers(mentioningPost);
         
+        assertEquals(mentioningPost.getPostContent(), textWithUsersMentioning,
+                "After sending email [user][/user] tag shoudn't be changed");
         verify(mailService, never())
             .sendUserMentionedNotification(any(JCUser.class), anyLong());
+        verify(postDao, never()).update(mentioningPost);
     }
     
     @Test
     public void notifyAllMentionedUsersShouldNotSendWhenUsersWereNotFound() {
         long mentioningPostId = 1L;
-        Post mentionedPost = getPost(mentioningPostId);
+        Post mentioningPost = getPost(mentioningPostId);
         //
         String textWithUsersMentioning = "In this text we have 3 user mentioning: first [user]Shogun[/user]," +
                 "second [user]masyan[/user]," +
                 "third [user]jk1[/user]";
-        mentionedPost.setPostContent(textWithUsersMentioning);
+        mentioningPost.setPostContent(textWithUsersMentioning);
         List<String> usernames = asList("Shogun", "jk1", "masyan");
         when(userDao.getByUsernames(usernames)).thenReturn(Collections.<JCUser> emptyList());
         
-        userMentionService.notifyAllMentionedUsers(mentionedPost);
+        userMentionService.notifyAllMentionedUsers(mentioningPost);
         
+        assertEquals(mentioningPost.getPostContent(), textWithUsersMentioning,
+                "After sending email [user][/user] tag shoudn't be changed");
         verify(mailService, never())
             .sendUserMentionedNotification(any(JCUser.class), anyLong());
+        verify(postDao, never()).update(mentioningPost);
     }
     
     @Test
@@ -158,8 +172,11 @@ public class UserMentionServiceTest {
         
         userMentionService.notifyAllMentionedUsers(mentioningPost);
         
+        assertEquals(mentioningPost.getPostContent(), textWithUsersMentioning,
+                "After sending email [user][/user] tag shoudn't be changed");
         verify(mailService, never())
             .sendUserMentionedNotification(any(JCUser.class), anyLong());
+        verify(postDao, never()).update(mentioningPost);
     }
     
     private JCUser getJCUser(String name, boolean isMentioningEnabled) {

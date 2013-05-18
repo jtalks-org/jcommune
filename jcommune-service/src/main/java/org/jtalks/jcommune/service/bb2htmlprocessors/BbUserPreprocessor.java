@@ -15,6 +15,8 @@
 
 package org.jtalks.jcommune.service.bb2htmlprocessors;
 
+import static java.lang.String.format;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +44,8 @@ import ru.perm.kefir.bbcode.TextProcessorAdapter;
  */
 public class BbUserPreprocessor extends TextProcessorAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(BbUserPreprocessor.class);
-    private static final String USER_BB_CODE_TEMPLATE = "[user]%s[/user]";
+    private static final String USER_NOT_NOTIFIED_BB_CODE_TEMPLATE = "[user]%s[/user]";
+    private static final String USER_NOTIFIED_BB_CODE_TEMPLATE = "[user notified=true]%s[/user]";
     private static final String USER_BB_CODE_WITH_LINK_TO_PROFILE = "[user=%s]%s[/user]";
     private UserService userService;
     private UserMentionService userMentionService;
@@ -116,10 +119,13 @@ public class BbUserPreprocessor extends TextProcessorAdapter {
             String source, Map<String, String> userToUserProfileLinkMap) {
         String changedSource = source;
         for (Map.Entry<String, String> userToLinkMap: userToUserProfileLinkMap.entrySet()) {
-            String userBBCode = String.format(USER_BB_CODE_TEMPLATE, userToLinkMap.getKey());
-            String userBBCodeWithLink = String.format(
-                    USER_BB_CODE_WITH_LINK_TO_PROFILE, userToLinkMap.getValue() , userToLinkMap.getKey());
-            changedSource = changedSource.replace(userBBCode, userBBCodeWithLink);
+            String username = userToLinkMap.getKey();
+            String userNotNotifiedBBCode = format(USER_NOT_NOTIFIED_BB_CODE_TEMPLATE, username);
+            String userNotifiedBBCode = format(USER_NOTIFIED_BB_CODE_TEMPLATE, username);
+            String userBBCodeWithLink = format(
+                    USER_BB_CODE_WITH_LINK_TO_PROFILE, userToLinkMap.getValue(), username);
+            changedSource = changedSource.replace(userNotNotifiedBBCode, userBBCodeWithLink);
+            changedSource = changedSource.replace(userNotifiedBBCode, userBBCodeWithLink);
         }
         return changedSource;
     }

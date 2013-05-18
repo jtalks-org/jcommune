@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import static java.lang.String.format;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
@@ -36,17 +39,21 @@ import org.jtalks.jcommune.model.entity.Post;
  */
 public class UserMentionService {
     private static final Pattern USER_BB_CODE_PATTERN = Pattern.compile("\\[user\\].*?\\[/user\\]");
+    private static final String MENTIONED_NOT_NOTIFIED_USER_BB_CODE_PATTERN = "[user]%s[/user]";
+    private static final String MENTIONED_NOTIFIED_USER_BB_CODE_PATTERN = "[user notified=true]%s[/user]";
     private MailService mailService;
     private UserDao userDao;
-    
+    private PostDao postDao;
     
     /**
-     * @param mailService
-     * @param userDao
+     * @param mailService to send email notifications
+     * @param userDao to find mentioned user
+     * @param postDao to save post after some changes
      */
-    public UserMentionService(MailService mailService, UserDao userDao) {
+    public UserMentionService(MailService mailService, UserDao userDao, PostDao postDao) {
         this.mailService = mailService;
         this.userDao = userDao;
+        this.postDao = postDao;
     }
 
     /**
@@ -91,7 +98,13 @@ public class UserMentionService {
         for (JCUser mentionedUser: mentionedUsers) {
             boolean isNotificationAlreadySent = mentioningPost.getTopicSubscribers().contains(mentionedUser);
             if (!isNotificationAlreadySent && mentionedUser.isMentioningNotificationsEnabled()) {
+                String username = mentionedUser.getUsername();
+                String initialUserMentioning = format(MENTIONED_NOT_NOTIFIED_USER_BB_CODE_PATTERN, username);
+                String notifiedUserMentioing = format(MENTIONED_NOTIFIED_USER_BB_CODE_PATTERN, username);
                 mailService.sendUserMentionedNotification(mentionedUser, mentioningPost.getId());
+                String newPostContent = mentioningPost.getPostContent().replace(initialUserMentioning, notifiedUserMentioing);
+                mentioningPost.setPostContent(newPostContent);
+                postDao.update(mentioningPost);
             }
         }
     }
