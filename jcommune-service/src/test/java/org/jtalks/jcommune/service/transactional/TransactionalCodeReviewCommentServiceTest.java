@@ -155,7 +155,7 @@ public class TransactionalCodeReviewCommentServiceTest {
         
         verify(userMentionService).notifyAllMentionedUsers(
                 commentWithUserMentioning, 
-                comment.getCodeReview().getTopic().getFirstPost().getId());
+                comment.getCodeReview().getTopic().getFirstPost());
     }
 
     private void givenUserHasPermissionToEditOwnPosts(boolean isGranted) {

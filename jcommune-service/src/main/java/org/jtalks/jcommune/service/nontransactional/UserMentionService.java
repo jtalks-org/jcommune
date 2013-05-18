@@ -24,6 +24,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Post;
 
 
 /**
@@ -52,10 +53,10 @@ public class UserMentionService {
      * @param canContainMentionedUsers can contains mentioned users
      * @param post where user was mentioned
      */
-    public void notifyAllMentionedUsers(String canContainMentionedUsers, long mentioningPostId) {
+    public void notifyAllMentionedUsers(String canContainMentionedUsers, Post mentioningPost) {
         List<String> mentionedUsersNames = extractMentionedUsers(canContainMentionedUsers);
         if (!CollectionUtils.isEmpty(mentionedUsersNames)) {
-            sendNotificationToMentionedUsers(mentionedUsersNames, mentioningPostId);
+            sendNotificationToMentionedUsers(mentionedUsersNames, mentioningPost);
         }
     }
     
@@ -82,13 +83,14 @@ public class UserMentionService {
      * Send notification for all mentioned users.
      * 
      * @param mentionedUsernames the list of names of mentioned users
-     * @param mentioningPostId an identifier of post where users where mentioned
+     * @param mentioningPost post where users where mentioned
      */
-    private void sendNotificationToMentionedUsers(List<String> mentionedUsernames, long mentioningPostId) {
+    private void sendNotificationToMentionedUsers(List<String> mentionedUsernames, Post mentioningPost) {
         List<JCUser> mentionedUsers = userDao.getByUsernames(mentionedUsernames);
         for (JCUser mentionedUser: mentionedUsers) {
-            if (mentionedUser.isMentioningNotificationsEnabled()) {
-                mailService.sendUserMentionedNotification(mentionedUser, mentioningPostId);
+            boolean isNotificationAlreadySent = mentioningPost.getTopicSubscribers().contains(mentionedUser);
+            if (!isNotificationAlreadySent && mentionedUser.isMentioningNotificationsEnabled()) {
+                mailService.sendUserMentionedNotification(mentionedUser, mentioningPost.getId());
             }
         }
     }

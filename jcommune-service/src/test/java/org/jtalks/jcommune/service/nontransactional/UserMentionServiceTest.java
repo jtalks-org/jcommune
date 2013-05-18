@@ -14,23 +14,27 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import static java.util.Arrays.asList;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertTrue;
 
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.mockito.Mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.never;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.MockitoAnnotations.initMocks;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -78,21 +82,22 @@ public class UserMentionServiceTest {
     
     @Test
     public void notifyAllMentionedUsersShouldSendForAllFoundMentionedUsers() {
-        long mentioningPostId = 1l;
+        Post mentioningPost = getPost(25L);
+        //
         String firstUsername = "Shogun";
         String secondUsername = "jk1";
         String thirdUsername = "masyan";
         String textWithUsersMentioning = "In this text we have 3 user mentioning: first [user]" + firstUsername + "[/user]," +
                 "second [user]"+ secondUsername + "[/user]," +
                 "third [user]" + thirdUsername + "[/user]";
-        List<String> usernames = Arrays.asList(firstUsername, secondUsername, thirdUsername);
-        List<JCUser> users = Arrays.asList(
+        List<String> usernames = asList(firstUsername, secondUsername, thirdUsername);
+        List<JCUser> users = asList(
                 getJCUser(firstUsername, true),
                 getJCUser(secondUsername, true),
                 getJCUser(thirdUsername, true));
         when(userDao.getByUsernames(usernames)).thenReturn(users);
         
-        userMentionService.notifyAllMentionedUsers(textWithUsersMentioning, mentioningPostId);
+        userMentionService.notifyAllMentionedUsers(textWithUsersMentioning, mentioningPost);
         
         verify(mailService, times(users.size()))
             .sendUserMentionedNotification(any(JCUser.class), anyLong());
@@ -100,15 +105,54 @@ public class UserMentionServiceTest {
     
     @Test
     public void notifyAllMentionedUsersShouldNotNotifyNotAgreedWithNotificationsUsers() {
-        long mentioningPostId = 1l;
+        Post mentioningPost = getPost(25L);
+        //
         String mentionedUsername = "Shogun";
         String textWithUsersMentioning = "In this text we have 1 user mentioning - [user]" + mentionedUsername + "[/user]";
-        List<String> usernames = Arrays.asList(mentionedUsername);
+        List<String> usernames = asList(mentionedUsername);
         JCUser mentionedUser = getJCUser(mentionedUsername, false);
-        List<JCUser> users = Arrays.asList(mentionedUser);
+        List<JCUser> users = asList(mentionedUser);
         when(userDao.getByUsernames(usernames)).thenReturn(users);
         
-        userMentionService.notifyAllMentionedUsers(textWithUsersMentioning, mentioningPostId);
+        userMentionService.notifyAllMentionedUsers(textWithUsersMentioning, mentioningPost);
+        
+        verify(mailService, never())
+            .sendUserMentionedNotification(any(JCUser.class), anyLong());
+    }
+    
+    @Test
+    public void notifyAllMentionedUsersShouldNotSendWhenUsersWereNotFound() {
+        long mentioningPostId = 1L;
+        Post mentionedPost = getPost(mentioningPostId);
+        //
+        String textWithUsersMentioning = "In this text we have 3 user mentioning: first [user]Shogun[/user]," +
+                "second [user]masyan[/user]," +
+                "third [user]jk1[/user]";
+        List<String> usernames = asList("Shogun", "jk1", "masyan");
+        when(userDao.getByUsernames(usernames)).thenReturn(Collections.<JCUser> emptyList());
+        
+        userMentionService.notifyAllMentionedUsers(textWithUsersMentioning, mentionedPost);
+        
+        verify(mailService, never())
+            .sendUserMentionedNotification(any(JCUser.class), anyLong());
+    }
+    
+    @Test
+    public void notifyAllMentionedUsersShouldNotSendIfUserIsSubscriberOfTopic() {
+        String mentionedUsername = "Shogun";
+        String textWithUsersMentioning = 
+                "In this text we have 1 user mentioning - [user]" + mentionedUsername + "[/user]";
+        JCUser mentionedUser = getJCUser(mentionedUsername, true);
+        //
+        Post mentioningPost = getPost(25L);
+        Set<JCUser> topicSubscribers = new HashSet<JCUser>();
+        topicSubscribers.add(mentionedUser);
+        mentioningPost.getTopic().setSubscribers(topicSubscribers);
+        //
+        when(userDao.getByUsernames(asList(mentionedUsername)))
+            .thenReturn(asList(mentionedUser));
+        
+        userMentionService.notifyAllMentionedUsers(textWithUsersMentioning, mentioningPost);
         
         verify(mailService, never())
             .sendUserMentionedNotification(any(JCUser.class), anyLong());
@@ -120,18 +164,10 @@ public class UserMentionServiceTest {
         return user;
     }
     
-    @Test
-    public void notifyAllMentionedUsersShouldNotSendWhenUsersWereNotFound() {
-        String textWithUsersMentioning = "In this text we have 3 user mentioning: first [user]Shogun[/user]," +
-                "second [user]masyan[/user]," +
-                "third [user]jk1[/user]";
-        long mentioningPostId = 1l;
-        List<String> usernames = Arrays.asList("Shogun", "jk1", "masyan");
-        when(userDao.getByUsernames(usernames)).thenReturn(Collections.<JCUser> emptyList());
-        
-        userMentionService.notifyAllMentionedUsers(textWithUsersMentioning, mentioningPostId);
-        
-        verify(mailService, never())
-            .sendUserMentionedNotification(any(JCUser.class), anyLong());
+    private Post getPost(long id) {
+        Post post = new Post(null, "test post");
+        post.setTopic(new Topic());
+        post.setId(id); 
+        return post;
     }
 }

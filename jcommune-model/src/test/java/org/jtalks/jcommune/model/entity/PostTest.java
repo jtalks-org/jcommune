@@ -14,12 +14,15 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import org.joda.time.DateTime;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
 /**
  * @author Evgeniy Naumenko
@@ -67,5 +70,19 @@ public class PostTest {
         post.setModificationDate(modifiedDate);
         
         assertEquals(post.getLastTouchedDate(), modifiedDate);
+    }
+    
+    @Test
+    public void getTopicSubscribersShouldReturnSubscribersOfParentTopic() {
+        Set<JCUser> expectedSubscribers = new HashSet<JCUser>();
+        expectedSubscribers.add(new JCUser());
+        expectedSubscribers.add(new JCUser());
+        post.getTopic().setSubscribers(expectedSubscribers);
+        
+        Set<JCUser> actualSubscribers = post.getTopicSubscribers();
+        
+        assertEquals(actualSubscribers, expectedSubscribers,
+                "Post should have the same subscribers as parent topic.");
+    
     }
 }

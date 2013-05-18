@@ -157,7 +157,7 @@ public class TransactionalCodeReviewServiceTest {
         codeReviewService.addComment(CR_ID, 1, commentContent);
         
         verify(userMentionService)
-            .notifyAllMentionedUsers(commentContent, review.getTopic().getFirstPost().getId());
+            .notifyAllMentionedUsers(commentContent, review.getTopic().getFirstPost());
     }
 
     private CodeReviewComment createCodeReviewComment(String uuid) {

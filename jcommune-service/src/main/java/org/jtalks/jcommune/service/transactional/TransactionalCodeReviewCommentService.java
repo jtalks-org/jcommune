@@ -18,6 +18,7 @@ import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.CodeReviewCommentService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -66,7 +67,7 @@ public class TransactionalCodeReviewCommentService extends
         comment.setBody(body);
         getDao().update(comment);
 
-        long commentPostId = comment.getOwnerPost().getId();
+        Post commentPostId = comment.getOwnerPost();
         userMentionService.notifyAllMentionedUsers(body, commentPostId);
         return comment;
     }
