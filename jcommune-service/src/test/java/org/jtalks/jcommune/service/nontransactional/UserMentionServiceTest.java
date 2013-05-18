@@ -90,6 +90,7 @@ public class UserMentionServiceTest {
         String textWithUsersMentioning = "In this text we have 3 user mentioning: first [user]" + firstUsername + "[/user]," +
                 "second [user]"+ secondUsername + "[/user]," +
                 "third [user]" + thirdUsername + "[/user]";
+        mentioningPost.setPostContent(textWithUsersMentioning);
         List<String> usernames = asList(firstUsername, secondUsername, thirdUsername);
         List<JCUser> users = asList(
                 getJCUser(firstUsername, true),
@@ -97,7 +98,7 @@ public class UserMentionServiceTest {
                 getJCUser(thirdUsername, true));
         when(userDao.getByUsernames(usernames)).thenReturn(users);
         
-        userMentionService.notifyAllMentionedUsers(textWithUsersMentioning, mentioningPost);
+        userMentionService.notifyAllMentionedUsers(mentioningPost);
         
         verify(mailService, times(users.size()))
             .sendUserMentionedNotification(any(JCUser.class), anyLong());
@@ -109,12 +110,13 @@ public class UserMentionServiceTest {
         //
         String mentionedUsername = "Shogun";
         String textWithUsersMentioning = "In this text we have 1 user mentioning - [user]" + mentionedUsername + "[/user]";
+        mentioningPost.setPostContent(textWithUsersMentioning);
         List<String> usernames = asList(mentionedUsername);
         JCUser mentionedUser = getJCUser(mentionedUsername, false);
         List<JCUser> users = asList(mentionedUser);
         when(userDao.getByUsernames(usernames)).thenReturn(users);
         
-        userMentionService.notifyAllMentionedUsers(textWithUsersMentioning, mentioningPost);
+        userMentionService.notifyAllMentionedUsers(mentioningPost);
         
         verify(mailService, never())
             .sendUserMentionedNotification(any(JCUser.class), anyLong());
@@ -128,10 +130,11 @@ public class UserMentionServiceTest {
         String textWithUsersMentioning = "In this text we have 3 user mentioning: first [user]Shogun[/user]," +
                 "second [user]masyan[/user]," +
                 "third [user]jk1[/user]";
+        mentionedPost.setPostContent(textWithUsersMentioning);
         List<String> usernames = asList("Shogun", "jk1", "masyan");
         when(userDao.getByUsernames(usernames)).thenReturn(Collections.<JCUser> emptyList());
         
-        userMentionService.notifyAllMentionedUsers(textWithUsersMentioning, mentionedPost);
+        userMentionService.notifyAllMentionedUsers(mentionedPost);
         
         verify(mailService, never())
             .sendUserMentionedNotification(any(JCUser.class), anyLong());
@@ -145,6 +148,7 @@ public class UserMentionServiceTest {
         JCUser mentionedUser = getJCUser(mentionedUsername, true);
         //
         Post mentioningPost = getPost(25L);
+        mentioningPost.setPostContent(textWithUsersMentioning);
         Set<JCUser> topicSubscribers = new HashSet<JCUser>();
         topicSubscribers.add(mentionedUser);
         mentioningPost.getTopic().setSubscribers(topicSubscribers);
@@ -152,7 +156,7 @@ public class UserMentionServiceTest {
         when(userDao.getByUsernames(asList(mentionedUsername)))
             .thenReturn(asList(mentionedUser));
         
-        userMentionService.notifyAllMentionedUsers(textWithUsersMentioning, mentioningPost);
+        userMentionService.notifyAllMentionedUsers(mentioningPost);
         
         verify(mailService, never())
             .sendUserMentionedNotification(any(JCUser.class), anyLong());

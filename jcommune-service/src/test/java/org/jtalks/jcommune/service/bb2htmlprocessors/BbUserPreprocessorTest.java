@@ -38,7 +38,7 @@ import org.testng.annotations.Test;
  * @author Anuar_Nurmakanov
  *
  */
-public class BBUserPreprocessorTest {
+public class BbUserPreprocessorTest {
     private static final String MENTIONING_TEMPLATE = "This post contains [user]%s[/user] mentioning";
     private static final String MENTIONING_WITH_LINK_TO_PROFILE_TEMPALTE = 
             "This post contains [user=%s]%s[/user] mentioning";

@@ -28,6 +28,8 @@ import org.jtalks.jcommune.model.entity.Post;
 
 
 /**
+ * This service provides send email notifications to all mentioned users
+ * in some components of forum:topics, posts.
  * 
  * @author Anuar_Nurmakanov
  *
@@ -50,11 +52,10 @@ public class UserMentionService {
     /**
      * Extract all mentioned users and notify them.
      * 
-     * @param canContainMentionedUsers can contains mentioned users
      * @param post where user was mentioned
      */
-    public void notifyAllMentionedUsers(String canContainMentionedUsers, Post mentioningPost) {
-        List<String> mentionedUsersNames = extractMentionedUsers(canContainMentionedUsers);
+    public void notifyAllMentionedUsers(Post mentioningPost) {
+        List<String> mentionedUsersNames = extractMentionedUsers(mentioningPost.getPostContent());
         if (!CollectionUtils.isEmpty(mentionedUsersNames)) {
             sendNotificationToMentionedUsers(mentionedUsersNames, mentioningPost);
         }

@@ -38,7 +38,6 @@ import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
-import org.jtalks.jcommune.service.nontransactional.UserMentionService;
 import org.jtalks.jcommune.service.security.AclClassName;
 import org.jtalks.jcommune.service.security.PermissionService;
 import org.mockito.Mock;
@@ -57,8 +56,6 @@ public class TransactionalCodeReviewServiceTest {
     private PermissionService permissionService;
     @Mock
     private NotificationService notificationService;
-    @Mock
-    private UserMentionService userMentionService; 
     
     private CodeReviewService codeReviewService;
 
@@ -70,7 +67,7 @@ public class TransactionalCodeReviewServiceTest {
     public void initEnvironmental() {
         initMocks(this);
         codeReviewService = new TransactionalCodeReviewService(
-                dao, userService, permissionService, notificationService, userMentionService);
+                dao, userService, permissionService, notificationService);
     }
 
     @BeforeMethod
@@ -145,19 +142,6 @@ public class TransactionalCodeReviewServiceTest {
         when(userService.getCurrentUser()).thenReturn(user);
         codeReviewService.addComment(CR_ID, 1, "body");
         assertFalse(review.getSubscribers().contains(user));
-    }
-    
-    @Test
-    public void addCommentShouldNotifyAllMentionedInItUsers() throws NotFoundException  {
-        JCUser user = new JCUser("username", null, null);
-        user.setAutosubscribe(true);
-        when(userService.getCurrentUser()).thenReturn(user);
-        String commentContent = "[user]Shogun[/user] was mentioned.";
-        
-        codeReviewService.addComment(CR_ID, 1, commentContent);
-        
-        verify(userMentionService)
-            .notifyAllMentionedUsers(commentContent, review.getTopic().getFirstPost());
     }
 
     private CodeReviewComment createCodeReviewComment(String uuid) {
