@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  * @author Andrey Pogorelov
  * @see <a href="http://jira.jtalks.org/browse/JC-1421">JIRA</a> for more details.
  */
-public class BbForeignLinksPostprocessor implements TextPostProcessor {
+public class BBForeignLinksPostprocessor implements TextPostProcessor {
 
     private static final String LINK_PATTERN = "<a .*?href=(\"|').*?(\"|')";
 
