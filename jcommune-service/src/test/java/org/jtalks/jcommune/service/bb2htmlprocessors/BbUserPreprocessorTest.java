@@ -78,7 +78,7 @@ public class BbUserPreprocessorTest {
         String expectedNotNotifiedUserProfile = "http://localhost:8080/forum/users/" + notNotifiedMentionedUserId;
         String expectedNotifiedUserProfile = "http://localhost:8080/forum/users/" + notifiedMentionedUserId;
         String notProcessedSource = format(MENTIONING_TEMPLATE, notNotifiedMentionedUserName, notifiedMentionedUserName);
-        when(userMentionService.extractMentionedUsers(notProcessedSource))
+        when(userMentionService.extractAllMentionedUsers(notProcessedSource))
             .thenReturn(Arrays.asList(notNotifiedMentionedUserName, notifiedMentionedUserName));
         String expectedAfterProcess = format(MENTIONING_WITH_LINK_TO_PROFILE_TEMPALTE, 
                 expectedNotNotifiedUserProfile, notNotifiedMentionedUserName, expectedNotifiedUserProfile, notifiedMentionedUserName);
@@ -101,7 +101,7 @@ public class BbUserPreprocessorTest {
         when(userService.getByUsername(firstMentionedUserName)).thenThrow(new NotFoundException());
         when(userService.getByUsername(secondMentionedUserName)).thenThrow(new NotFoundException());
         String notProcessedSource = format(MENTIONING_TEMPLATE, firstMentionedUserName, secondMentionedUserName);
-        when(userMentionService.extractMentionedUsers(notProcessedSource))
+        when(userMentionService.extractAllMentionedUsers(notProcessedSource))
             .thenReturn(Arrays.asList(firstMentionedUserName, secondMentionedUserName));
         
         String actualAfterProcess = userPreprocessor.process(notProcessedSource);

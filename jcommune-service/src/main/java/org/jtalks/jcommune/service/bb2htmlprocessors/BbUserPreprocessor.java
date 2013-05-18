@@ -65,7 +65,7 @@ public class BbUserPreprocessor extends TextProcessorAdapter {
     @Override
     public CharSequence process(CharSequence source) {
         String notProcessedSource = source.toString();
-        List<String> mentionedUsers = userMentionService.extractMentionedUsers(notProcessedSource);
+        List<String> mentionedUsers = userMentionService.extractAllMentionedUsers(notProcessedSource);
         Map<String, String> userToUserProfileLinkMap = new HashMap<String, String>();
         for (String mentionedUser: mentionedUsers) {
             String mentionedUserProfileLink = getLinkToUserProfile(mentionedUser);
