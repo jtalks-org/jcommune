@@ -74,6 +74,7 @@
   <script src="${pageContext.request.contextPath}/resources/javascript/licensed/html5placeholder.jquery.js"></script>
   <script src="${pageContext.request.contextPath}/resources/javascript/custom/events.js"></script>
   <script src="${pageContext.request.contextPath}/resources/javascript/custom/forumAdministration.js"></script>
+  <script src="${pageContext.request.contextPath}/resources/javascript/licensed/fileuploader.js"></script>
   <decorator:head/>
   <title><decorator:title/></title>
 </head>

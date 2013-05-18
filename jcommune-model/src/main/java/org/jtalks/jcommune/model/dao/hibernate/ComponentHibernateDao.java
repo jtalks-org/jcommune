@@ -31,6 +31,7 @@ import org.jtalks.jcommune.model.entity.ComponentInformation;
 public class ComponentHibernateDao extends AbstractHibernateChildRepository<Component> implements ComponentDao {
 
     public static final String LOGO_TOOLTIP_PROPERTY = "jcommune.logo_tooltip";
+    public static final String LOGO_PROPERTY = "jcommune.logo";
 
     /**
      * {@inheritDoc}
@@ -49,5 +50,6 @@ public class ComponentHibernateDao extends AbstractHibernateChildRepository<Comp
         forumComponent.setName(componentInformation.getName());
         forumComponent.setDescription(componentInformation.getDescription());
         forumComponent.setProperty(LOGO_TOOLTIP_PROPERTY, componentInformation.getLogoTooltip());
+        forumComponent.setProperty(LOGO_PROPERTY, componentInformation.getLogo());
     }
 }

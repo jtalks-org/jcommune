@@ -1,0 +1,1 @@
+ALTER TABLE PROPERTIES CHANGE value value text NULL;
