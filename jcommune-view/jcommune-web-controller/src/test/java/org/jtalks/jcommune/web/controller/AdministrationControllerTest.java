@@ -43,11 +43,13 @@ public class AdministrationControllerTest {
     public void init() {
         ComponentService componentService = mock(ComponentService.class);
         AvatarService avatarService = mock(AvatarService.class);
+        MessageSource messageSource = mock(MessageSource.class);
+
         ImageControllerUtils imageControllerUtils = mock(ImageControllerUtils.class);
         Component component = new Component("Forum", "Cool Forum", ComponentType.FORUM);
         component.setId(42);
 
-        administrationController = new AdministrationController(componentService, imageControllerUtils);
+        administrationController = new AdministrationController(componentService, imageControllerUtils, messageSource);
     }
 
     @Test

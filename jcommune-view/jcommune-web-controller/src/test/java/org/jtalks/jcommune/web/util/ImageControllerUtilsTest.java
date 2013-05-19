@@ -15,17 +15,11 @@
 
 package org.jtalks.jcommune.web.util;
 
-import org.jtalks.jcommune.service.exceptions.ImageFormatException;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
-import org.jtalks.jcommune.service.exceptions.ImageSizeException;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
-import org.jtalks.jcommune.web.dto.json.FailJsonResponse;
-import org.jtalks.jcommune.web.dto.json.JsonResponseReason;
-import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -39,7 +33,6 @@ import org.testng.annotations.Test;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import static org.mockito.Mockito.verify;
@@ -55,8 +48,6 @@ public class ImageControllerUtilsTest {
 
     @Mock
     private AvatarService avatarService;
-    @Mock
-    private MessageSource messageSource;
     @Mock
     private JSONUtils jsonUtils;
 
@@ -75,7 +66,7 @@ public class ImageControllerUtilsTest {
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
-        imageControllerUtils = new ImageControllerUtils(avatarService, messageSource, jsonUtils);
+        imageControllerUtils = new ImageControllerUtils(avatarService, jsonUtils);
     }
 
     @Test
@@ -114,62 +105,5 @@ public class ImageControllerUtilsTest {
         assertEquals(responseContent.get(imageControllerUtils.SRC_PREFIX), ImageUtils.HTML_SRC_TAG_PREFIX);
         assertEquals(responseContent.get(imageControllerUtils.SRC_IMAGE), IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
         assertEquals(response.getStatus(), HttpServletResponse.SC_OK);
-    }
-
-    @Test
-    public void imageFormatExceptionShouldProduceNotSuccessOperationResultWithMessageAboutValidImageTypes() {
-        Locale locale = Locale.ENGLISH;//it's not matter
-        String expectedMessage = "a message";
-        String validTypes = "*.png";
-        //
-        when(messageSource.getMessage(
-                imageControllerUtils.WRONG_FORMAT_RESOURCE_MESSAGE,
-                new Object[]{validTypes},
-                locale)
-        ).thenReturn(expectedMessage);
-
-        FailJsonResponse result = imageControllerUtils.handleImageFormatException(new ImageFormatException(validTypes), locale);
-
-        assertEquals(result.getStatus(), JsonResponseStatus.FAIL, "We have an exception, so we should get false value.");
-        assertEquals(result.getReason(), JsonResponseReason.VALIDATION, "Failture reason should be validation");
-        assertEquals(result.getResult(), expectedMessage, "Result contains incorrect message.");
-    }
-
-    @Test
-    public void handleImageSizeExceptionShouldReturnValidationErrorAndErrorMessage() {
-        int maxSize = 1000;
-        ImageSizeException exception = new ImageSizeException(maxSize);
-        Locale locale = Locale.ENGLISH;//it's not matter
-        String expectedMessage = "a message " + maxSize;
-        //
-        when(messageSource.getMessage(
-                Matchers.anyString(),
-                Matchers.any(Object[].class),
-                Matchers.any(Locale.class))
-        ).thenReturn(expectedMessage);
-
-        FailJsonResponse result = imageControllerUtils.handleImageSizeException(exception, locale);
-
-        assertEquals(result.getStatus(), JsonResponseStatus.FAIL, "We have an exception, so we should get false value.");
-        assertEquals(result.getReason(), JsonResponseReason.VALIDATION, "Failture reason should be validation");
-        assertEquals(result.getResult(), expectedMessage, "Result contains incorrect message.");
-    }
-
-    @Test
-    public void handleImageProcessExceptionShouldReturnInternalServerErrorAndErrorMessage() {
-        Locale locale = Locale.ENGLISH;//it's not matter
-        String expectedMessage = "a message";
-        //
-        when(messageSource.getMessage(
-                ImageControllerUtils.COMMON_ERROR_RESOURCE_MESSAGE,
-                null,
-                locale)
-        ).thenReturn(expectedMessage);
-
-        FailJsonResponse result = imageControllerUtils.handleImageProcessException(null, locale);
-
-        assertEquals(result.getStatus(), JsonResponseStatus.FAIL, "We have an exception, so we should get false value.");
-        assertEquals(result.getReason(), JsonResponseReason.INTERNAL_SERVER_ERROR, "Failture reason should be validation");
-        assertEquals(result.getResult(), expectedMessage, "Result contains incorrect message.");
     }
 }

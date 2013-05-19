@@ -160,22 +160,24 @@ function createUploader() {
                 $('#logoPreview').attr('src', responseJSON.srcPrefix + responseJSON.srcImage);
                 $('#logo').attr('value', responseJSON.srcImage);
             } else {
+                saveInputValues();
                 // display error message
                 jDialog.createDialog({
                     type: jDialog.alertType,
-                    bodyMessage: responseJSON.result,
-                    handlers: { 'alert-ok' : createAdministrationDialog}
+                    bodyMessage: responseJSON.result
                 });
+                $('#' + jDialog.options.alertDefaultBut).on('click', createAdministrationDialog);
             }
 
         },
         onError: function(id, filename, xhr) {
             if (xhr.status == 413) {
+                saveInputValues();
                 jDialog.createDialog({
                     type: jDialog.alertType,
-                    bodyMessage: $labelImageWrongSizeJs,
-                    handlers: { 'alert-ok' : createAdministrationDialog}
+                    bodyMessage: $labelImageWrongSizeJs
                 });
+                $('#' + jDialog.options.alertDefaultBut).on('click', createAdministrationDialog);
                 return false;
             }
         },

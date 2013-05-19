@@ -63,9 +63,6 @@
             <ref bean="avatarService"/>
         </constructor-arg>
         <constructor-arg>
-            <ref bean="messageSource"/>
-        </constructor-arg>
-        <constructor-arg>
             <ref bean="jsonUtils"/>
         </constructor-arg>
     </bean>

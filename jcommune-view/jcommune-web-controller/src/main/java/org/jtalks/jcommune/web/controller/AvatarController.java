@@ -15,44 +15,29 @@
 
 package org.jtalks.jcommune.web.controller;
 
+import org.apache.commons.lang.time.DateFormatUtils;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.exceptions.ImageProcessException;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.AvatarService;
+import org.jtalks.jcommune.web.util.ImageControllerUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang.time.DateFormatUtils;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.ImageFormatException;
-import org.jtalks.jcommune.service.exceptions.ImageProcessException;
-import org.jtalks.jcommune.service.exceptions.ImageSizeException;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.AvatarService;
-import org.jtalks.jcommune.service.nontransactional.ImageUtils;
-import org.jtalks.jcommune.web.dto.json.FailJsonResponse;
-import org.jtalks.jcommune.web.dto.json.JsonResponseReason;
-import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
-import org.jtalks.jcommune.web.util.ImageControllerUtils;
-import org.jtalks.jcommune.web.util.JSONUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Controller for processing avatar related request.
@@ -63,7 +48,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 
 @Controller
-public class AvatarController {
+public class AvatarController extends ImageUploadController {
 
     private static final String IF_MODIFIED_SINCE_HEADER = "If-Modified-Since";
 
@@ -82,7 +67,10 @@ public class AvatarController {
     public AvatarController(
             AvatarService avatarService,
             UserService userService,
-            ImageControllerUtils imageControllerUtils) {
+            ImageControllerUtils imageControllerUtils,
+            MessageSource messageSource) {
+        super(messageSource);
+
         this.avatarService = avatarService;
         this.userService = userService;
         this.imageControllerUtils = imageControllerUtils;
@@ -194,5 +182,4 @@ public class AvatarController {
         imageControllerUtils.prepareNormalResponse(avatarService.getDefaultAvatar(), responseContent);
         return imageControllerUtils.getResponceJSONString(responseContent);
     }
-
 }

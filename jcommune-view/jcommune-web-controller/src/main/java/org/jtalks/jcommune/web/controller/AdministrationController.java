@@ -19,7 +19,6 @@ import org.apache.commons.lang.Validate;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
-import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
@@ -27,6 +26,7 @@ import org.jtalks.jcommune.web.util.ImageControllerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -51,11 +51,12 @@ import java.util.Map;
  * Controller for processing forum administration related requests
  */
 @Controller
-public class AdministrationController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AvatarService.class);
+public class AdministrationController extends ImageUploadController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdministrationController.class);
 
     private static final String ADMIN_ATTRIBUTE_NAME = "adminMode";
     public static final String DEFAULT_LOGO_PATH = "/resources/images/jcommune.jpeg";
+    public static final String JCOMMUNE_LOGO_PARAM = "jcommune.logo";
 
     private ComponentService componentService;
     private ImageControllerUtils imageControllerUtils;
@@ -70,7 +71,9 @@ public class AdministrationController {
      */
     @Autowired
     public AdministrationController(ComponentService componentService,
-                                    ImageControllerUtils imageControllerUtils) {
+                                    ImageControllerUtils imageControllerUtils,
+                                    MessageSource messageSource) {
+        super(messageSource);
         this.componentService = componentService;
         this.imageControllerUtils = imageControllerUtils;
     }
@@ -100,6 +103,9 @@ public class AdministrationController {
         return getRedirectToPrevPage(request);
     }
 
+    /*
+    Handler for request of updating Administratio information
+     */
     @RequestMapping(value = "/admin/edit_ajax", method = RequestMethod.POST)
     @ResponseBody
     @PreAuthorize("hasPermission(#componentService.componentOfForum.id, 'COMPONENT', 'GeneralPermission.ADMIN')")
@@ -115,14 +121,13 @@ public class AdministrationController {
 
     /**
      * Returns logo of the forum
-     * @param request
      * @param response
      */
     @RequestMapping(value = "/admin/logo", method = RequestMethod.GET)
-    public void getForumLogo(HttpServletRequest request, HttpServletResponse response) {
+    public void getForumLogo(HttpServletResponse response) {
         response.setContentType("image/jpeg");
 
-        String logoProperty = componentService.getComponentOfForum().getProperty("jcommune.logo");
+        String logoProperty = componentService.getComponentOfForum().getProperty(JCOMMUNE_LOGO_PARAM);
         byte[] logoBytes = null;
 
         if (logoProperty == null || logoProperty.isEmpty()) {
@@ -177,7 +182,7 @@ public class AdministrationController {
     }
 
     /**
-     * Process avatar file from request and return avatar preview in response.
+     * Process Logo file from request and return logo preview in response.
      * Used for IE, Opera specific request processing.
      *
      * @param file file, that contains uploaded image
@@ -188,7 +193,7 @@ public class AdministrationController {
      */
     @RequestMapping(value = "/admin/logo/IFrameLogoPreview", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<String> uploadAvatar(
+    public ResponseEntity<String> uploadLogo(
             @RequestParam(value = "qqfile") MultipartFile file) throws IOException, ImageProcessException {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.setContentType(MediaType.TEXT_HTML);
@@ -197,17 +202,17 @@ public class AdministrationController {
     }
 
     /**
-     * Process avatar file from request and return avatar preview in response.
+     * Process logo file from request and return logo preview in response.
      * Used for FF, Chrome specific request processing
      *
-     * @param bytes    input avatar data
+     * @param bytes    input logo data
      * @param response servlet response
      * @return response content
      * @throws ImageProcessException if error occurred while image processing
      */
     @RequestMapping(value = "/admin/logo/XHRlogoPreview", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, String> uploadAvatar(@RequestBody byte[] bytes,
+    public Map<String, String> uploadLogo(@RequestBody byte[] bytes,
                                             HttpServletResponse response) throws ImageProcessException {
         Map<String, String> responseContent = new HashMap<String, String>();
         imageControllerUtils.prepareResponse(bytes, response, responseContent);

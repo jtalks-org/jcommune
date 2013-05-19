@@ -15,25 +15,17 @@
 
 package org.jtalks.jcommune.web.util;
 
-import org.jtalks.jcommune.service.exceptions.ImageFormatException;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
-import org.jtalks.jcommune.service.exceptions.ImageSizeException;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
-import org.jtalks.jcommune.web.dto.json.FailJsonResponse;
-import org.jtalks.jcommune.web.dto.json.JsonResponseReason;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -46,23 +38,15 @@ public class ImageControllerUtils {
     public static final String SRC_PREFIX = "srcPrefix";
     public static final String SRC_IMAGE = "srcImage";
 
-    static final String WRONG_FORMAT_RESOURCE_MESSAGE = "image.wrong.format";
-    static final String WRONG_SIZE_RESOURCE_MESSAGE = "image.wrong.size";
-    static final String COMMON_ERROR_RESOURCE_MESSAGE = "avatar.500.common.error";
-
     private AvatarService avatarService;
-    private MessageSource messageSource;
     private JSONUtils jsonUtils;
 
     /**
      *
      */
-    @Autowired
     public ImageControllerUtils(AvatarService avatarService,
-                                    MessageSource messageSource,
                                     JSONUtils jsonUtils) {
         this.avatarService = avatarService;
-        this.messageSource = messageSource;
         this.jsonUtils = jsonUtils;
     }
 
@@ -122,49 +106,5 @@ public class ImageControllerUtils {
         responseContent.put(STATUS, String.valueOf(JsonResponseStatus.SUCCESS));
         responseContent.put(SRC_PREFIX, ImageUtils.HTML_SRC_TAG_PREFIX);
         responseContent.put(SRC_IMAGE, srcImage);
-    }
-
-    /**
-     * Handles an exception that is thrown when the image has incorrect size.
-     *
-     * @param e      exception
-     * @param locale locale, it's needed for error message localization
-     * @return DTO, that contains information about error, it will be converted to JSON
-     */
-    @ExceptionHandler(value = ImageSizeException.class)
-    @ResponseBody
-    public FailJsonResponse handleImageSizeException(ImageSizeException e, Locale locale) {
-        Object[] parameters = new Object[]{e.getMaxSize()};
-        String errorMessage = messageSource.getMessage(WRONG_SIZE_RESOURCE_MESSAGE, parameters, locale);
-        return new FailJsonResponse(JsonResponseReason.VALIDATION, errorMessage);
-    }
-
-    /**
-     * Handles an exception that is thrown when the image has incorrect format.
-     *
-     * @param e      exception
-     * @param locale locale, it's needed for error message localization
-     * @return DTO, that contains information about error, it will be converted to JSON
-     */
-    @ExceptionHandler(value = ImageFormatException.class)
-    @ResponseBody
-    public FailJsonResponse handleImageFormatException(ImageFormatException e, Locale locale) {
-        Object[] validImageTypes = new Object[]{e.getValidImageTypes()};
-        String errorMessage = messageSource.getMessage(WRONG_FORMAT_RESOURCE_MESSAGE, validImageTypes, locale);
-        return new FailJsonResponse(JsonResponseReason.VALIDATION, errorMessage);
-    }
-
-    /**
-     * Handles common exception that can occur when loading an image.
-     *
-     * @param e      exception
-     * @param locale locale, it's needed for error message localization
-     * @return DTO, that contains information about error, it will be converted to JSON
-     */
-    @ExceptionHandler(value = ImageProcessException.class)
-    @ResponseBody
-    public FailJsonResponse handleImageProcessException(ImageProcessException e, Locale locale) {
-        String errorMessage = messageSource.getMessage(COMMON_ERROR_RESOURCE_MESSAGE, null, locale);
-        return new FailJsonResponse(JsonResponseReason.INTERNAL_SERVER_ERROR, errorMessage);
     }
 }

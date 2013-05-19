@@ -23,6 +23,7 @@ import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.web.util.ImageControllerUtils;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -62,6 +63,8 @@ public class AvatarControllerTest {
     @Mock
     private UserService userService;
     @Mock
+    private MessageSource messageSource;
+    @Mock
     private ImageControllerUtils imageControllerUtils;
 
     //
@@ -79,7 +82,7 @@ public class AvatarControllerTest {
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
-        avatarController = new AvatarController(avatarService,  userService, imageControllerUtils);
+        avatarController = new AvatarController(avatarService,  userService, imageControllerUtils, messageSource);
     }
 
     @Test
