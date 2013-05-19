@@ -78,7 +78,7 @@ public class UserMentionServiceTest {
     public void extractMentionedUserShouldReturnEmptyListWhenPassedTextDoesNotContainMentioning() {
         String textWithoutUserMentioning = "This text mustn't contain user mentioning. Be carefull.";
         
-        List<String> extractedUserNames = userMentionService.extractAllMentionedUsers(textWithoutUserMentioning);
+        Set<String> extractedUserNames = userMentionService.extractAllMentionedUsers(textWithoutUserMentioning);
         
         assertTrue(CollectionUtils.isEmpty(extractedUserNames), "Passed user should not contain any user mentioning.");
     }
@@ -89,7 +89,7 @@ public class UserMentionServiceTest {
         		"second [user notified=true]masyan[/user]," +
         		"third [user]jk1[/user]";
         
-        List<String> extractedUserNames = userMentionService.extractAllMentionedUsers(textWithUsersMentioning);
+        Set<String> extractedUserNames = userMentionService.extractAllMentionedUsers(textWithUsersMentioning);
         
         assertTrue(extractedUserNames.size() == 3, "Passed text should contain 3 user mentioning.");
         assertTrue(extractedUserNames.contains("Shogun"), "Shogun is mentioned, so he should be extracted.");
@@ -109,7 +109,7 @@ public class UserMentionServiceTest {
                 "second [user]"+ secondUsername + "[/user]," +
                 "third [user]" + thirdUsername + "[/user]";
         mentioningPost.setPostContent(textWithUsersMentioning);
-        List<String> usernames = asList(firstUsername, secondUsername, thirdUsername);
+        Set<String> usernames = asSet(firstUsername, secondUsername, thirdUsername);
         List<JCUser> users = asList(
                 getJCUser(firstUsername, true),
                 getJCUser(secondUsername, true),
@@ -133,7 +133,7 @@ public class UserMentionServiceTest {
         String mentionedUsername = "Shogun";
         String textWithUsersMentioning = "In this text we have 1 user mentioning - [user]" + mentionedUsername + "[/user]";
         mentioningPost.setPostContent(textWithUsersMentioning);
-        List<String> usernames = asList(mentionedUsername);
+        Set<String> usernames = asSet(mentionedUsername);
         JCUser mentionedUser = getJCUser(mentionedUsername, false);
         List<JCUser> users = asList(mentionedUser);
         when(userDao.getByUsernames(usernames)).thenReturn(users);
@@ -157,7 +157,7 @@ public class UserMentionServiceTest {
                 "second [user]masyan[/user]," +
                 "third [user]jk1[/user]";
         mentioningPost.setPostContent(textWithUsersMentioning);
-        List<String> usernames = asList("Shogun", "jk1", "masyan");
+        Set<String> usernames = asSet("Shogun", "jk1", "masyan");
         when(userDao.getByUsernames(usernames)).thenReturn(Collections.<JCUser> emptyList());
         
         userMentionService.notifyNotMentionedUsers(mentioningPost);
@@ -183,7 +183,7 @@ public class UserMentionServiceTest {
         topicSubscribers.add(mentionedUser);
         mentioningPost.getTopic().setSubscribers(topicSubscribers);
         //
-        when(userDao.getByUsernames(asList(mentionedUsername)))
+        when(userDao.getByUsernames(asSet(mentionedUsername)))
             .thenReturn(asList(mentionedUser));
         
         userMentionService.notifyNotMentionedUsers(mentioningPost);
@@ -219,7 +219,7 @@ public class UserMentionServiceTest {
         Post mentioningPost = getPost(25L);
         mentioningPost.setPostContent(textWithUsersMentioning);
         //
-        when(userDao.getByUsernames(asList(mentionedUsername)))
+        when(userDao.getByUsernames(asSet(mentionedUsername)))
             .thenReturn(asList(mentionedUser));
         
         userMentionService.notifyNotMentionedUsers(mentioningPost);
@@ -240,5 +240,11 @@ public class UserMentionServiceTest {
     private void prepareEnabledProperty() {
         Property enabledProperty = new Property(PROPERTY_NAME, TRUE_STRING);
         when(propertyDao.getByName(PROPERTY_NAME)).thenReturn(enabledProperty);
+    }
+    
+    private static<T> Set<T> asSet(T... items) {
+        Set<T> result = new HashSet<T>();
+        result.addAll(asList(items));
+        return result;
     }
 }

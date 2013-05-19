@@ -18,8 +18,8 @@ package org.jtalks.jcommune.service.bb2htmlprocessors;
 import static java.lang.String.format;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -65,7 +65,7 @@ public class BbUserPreprocessor extends TextProcessorAdapter {
     @Override
     public CharSequence process(CharSequence source) {
         String notProcessedSource = source.toString();
-        List<String> mentionedUsers = userMentionService.extractAllMentionedUsers(notProcessedSource);
+        Set<String> mentionedUsers = userMentionService.extractAllMentionedUsers(notProcessedSource);
         Map<String, String> userToUserProfileLinkMap = new HashMap<String, String>();
         for (String mentionedUser: mentionedUsers) {
             String mentionedUserProfileLink = getLinkToUserProfile(mentionedUser);

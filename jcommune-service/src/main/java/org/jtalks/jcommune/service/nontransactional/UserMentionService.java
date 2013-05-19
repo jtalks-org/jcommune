@@ -16,9 +16,10 @@ package org.jtalks.jcommune.service.nontransactional;
 
 import static java.lang.String.format;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -73,7 +74,7 @@ public class UserMentionService {
      * 
      * @return extracted users' names
      */
-    public List<String> extractAllMentionedUsers(String canContainMentionedUsers) {
+    public Set<String> extractAllMentionedUsers(String canContainMentionedUsers) {
         return extractMentionedUsers(canContainMentionedUsers, ALL_MENTIONED_USERS_PATTERN);
     }
 
@@ -84,7 +85,7 @@ public class UserMentionService {
      */
     public void notifyNotMentionedUsers(Post mentioningPost) {
         String postContent = mentioningPost.getPostContent();
-        List<String> mentionedUsersNames = extractNotNotifiedMentionedUsers(postContent);
+        Set<String> mentionedUsersNames = extractNotNotifiedMentionedUsers(postContent);
         if (!CollectionUtils.isEmpty(mentionedUsersNames)) {
             sendNotificationToMentionedUsers(mentionedUsersNames, mentioningPost);
         }
@@ -95,7 +96,7 @@ public class UserMentionService {
      * 
      * @return names of users that were mentioned but not notified yet
      */
-    private List<String> extractNotNotifiedMentionedUsers(String canContainMentionedUsers) {
+    private Set<String> extractNotNotifiedMentionedUsers(String canContainMentionedUsers) {
         return extractMentionedUsers(canContainMentionedUsers, MENTIONED_AND_NOT_NOTIFIED_USERS_PATTERN);
     }
     
@@ -106,10 +107,10 @@ public class UserMentionService {
      * @param mentionedUserPattern pattern to extract mentioned user in given text
      * @return extracted users' names
      */
-    private List<String> extractMentionedUsers(String canContainMentionedUsers, Pattern mentionedUserPattern) {
+    private Set<String> extractMentionedUsers(String canContainMentionedUsers, Pattern mentionedUserPattern) {
         if (!StringUtils.isEmpty(canContainMentionedUsers)) {
             Matcher matcher = mentionedUserPattern.matcher(canContainMentionedUsers);
-            List<String> mentionedUsernames = new ArrayList<String>();
+            Set<String> mentionedUsernames = new HashSet<String>();
             while (matcher.find()) {
                 String userBBCode = matcher.group();
                 String mentionedUser = userBBCode.replaceAll("\\[.*?\\]", StringUtils.EMPTY);
@@ -117,16 +118,16 @@ public class UserMentionService {
             }
             return mentionedUsernames;
         } 
-        return Collections.emptyList();
+        return Collections.emptySet();
     }
     
     /**
      * Send notification for passed list of users.
      * 
-     * @param mentionedUsernames the list of names of mentioned users
+     * @param mentionedUsernames the set of names of mentioned users
      * @param mentioningPost post where users where mentioned
      */
-    private void sendNotificationToMentionedUsers(List<String> mentionedUsernames, Post mentioningPost) {
+    private void sendNotificationToMentionedUsers(Set<String> mentionedUsernames, Post mentioningPost) {
         List<JCUser> mentionedUsers = userDao.getByUsernames(mentionedUsernames);
         for (JCUser mentionedUser: mentionedUsers) {
             sendNotificationToMentionedUser(mentionedUser, mentioningPost);

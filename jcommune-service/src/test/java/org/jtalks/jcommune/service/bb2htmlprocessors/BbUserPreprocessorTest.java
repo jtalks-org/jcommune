@@ -15,19 +15,19 @@
 package org.jtalks.jcommune.service.bb2htmlprocessors;
 
 import static java.lang.String.format;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
 
 import java.util.Arrays;
-
-import static org.testng.Assert.assertEquals;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.UserMentionService;
 import org.mockito.Mock;
-import static org.mockito.Mockito.when;
-
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -79,7 +79,7 @@ public class BbUserPreprocessorTest {
         String expectedNotifiedUserProfile = "/forum/users/" + notifiedMentionedUserId;
         String notProcessedSource = format(MENTIONING_TEMPLATE, notNotifiedMentionedUserName, notifiedMentionedUserName);
         when(userMentionService.extractAllMentionedUsers(notProcessedSource))
-            .thenReturn(Arrays.asList(notNotifiedMentionedUserName, notifiedMentionedUserName));
+            .thenReturn(asSet(notNotifiedMentionedUserName, notifiedMentionedUserName));
         String expectedAfterProcess = format(MENTIONING_WITH_LINK_TO_PROFILE_TEMPALTE, 
                 expectedNotNotifiedUserProfile, notNotifiedMentionedUserName, 
                 expectedNotifiedUserProfile, notifiedMentionedUserName);
@@ -103,10 +103,14 @@ public class BbUserPreprocessorTest {
         when(userService.getByUsername(secondMentionedUserName)).thenThrow(new NotFoundException());
         String notProcessedSource = format(MENTIONING_TEMPLATE, firstMentionedUserName, secondMentionedUserName);
         when(userMentionService.extractAllMentionedUsers(notProcessedSource))
-            .thenReturn(Arrays.asList(firstMentionedUserName, secondMentionedUserName));
+            .thenReturn(asSet(firstMentionedUserName, secondMentionedUserName));
         
         String actualAfterProcess = userPreprocessor.process(notProcessedSource);
         
         assertEquals(actualAfterProcess, notProcessedSource);
+    }
+    
+    public static <T> Set<T> asSet(T... values) {
+        return new HashSet<T>(Arrays.asList(values));
     }
 }

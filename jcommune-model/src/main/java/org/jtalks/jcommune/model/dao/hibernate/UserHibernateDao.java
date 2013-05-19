@@ -14,14 +14,15 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
 import org.hibernate.criterion.Restrictions;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateParentRepository;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
-
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Hibernate implementation of UserDao.
@@ -107,7 +108,7 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser>
      * {@inheritDoc}
      */
     @Override
-    public List<JCUser> getByUsernames(List<String> usernames) {
+    public List<JCUser> getByUsernames(Set<String> usernames) {
         @SuppressWarnings("unchecked")
         List<JCUser> foundUsers = (List<JCUser>) getSession()
                 .getNamedQuery("getByUsernames")
