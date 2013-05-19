@@ -81,7 +81,8 @@ public class BbUserPreprocessorTest {
         when(userMentionService.extractAllMentionedUsers(notProcessedSource))
             .thenReturn(Arrays.asList(notNotifiedMentionedUserName, notifiedMentionedUserName));
         String expectedAfterProcess = format(MENTIONING_WITH_LINK_TO_PROFILE_TEMPALTE, 
-                expectedNotNotifiedUserProfile, notNotifiedMentionedUserName, expectedNotifiedUserProfile, notifiedMentionedUserName);
+                expectedNotNotifiedUserProfile, notNotifiedMentionedUserName, 
+                expectedNotifiedUserProfile, notifiedMentionedUserName);
         
         String actualAfterProcess = userPreprocessor.process(notProcessedSource);
         

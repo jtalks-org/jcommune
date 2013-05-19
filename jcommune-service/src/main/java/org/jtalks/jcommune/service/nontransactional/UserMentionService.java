@@ -32,54 +32,48 @@ import org.jtalks.jcommune.model.entity.Post;
 
 /**
  * This service provides send email notifications to all mentioned users
- * in some components of forum:topics, posts.
+ * in some components of forum:topics, posts. Also it provides an ability
+ * to extract users mentioning from text.
  * 
  * @author Anuar_Nurmakanov
  *
  */
 public class UserMentionService {
-    private static final Pattern ALL_USERS_BB_CODE_PATTERN = 
+    private static final Pattern ALL_MENTIONED_USERS_PATTERN = 
             Pattern.compile("\\[user\\].*?\\[/user\\]|\\[user notified=true\\].*?\\[/user\\]");
-    private static final Pattern NOT_NOTIFIED_USERS_BB_CODE_PATTERN = 
+    private static final Pattern MENTIONED_AND_NOT_NOTIFIED_USERS_PATTERN = 
             Pattern.compile("\\[user\\].*?\\[/user\\]");
-    private static final String MENTIONED_NOT_NOTIFIED_USER_BB_CODE_TEMPLATE = "[user]%s[/user]";
-    private static final String MENTIONED_NOTIFIED_USER_BB_CODE_TEMPLATE = "[user notified=true]%s[/user]";
-    private MailService mailService;
+    private static final String MENTIONED_NOT_NOTIFIED_USER_TEMPLATE = "[user]%s[/user]";
+    private static final String MENTIONED_AND_NOTIFIED_USER_TEMPLATE = "[user notified=true]%s[/user]";
+    private MailService sendMailService;
     private UserDao userDao;
     private PostDao postDao;
     
     /**
-     * @param mailService to send email notifications
+     * @param sendMailService to send email notifications
      * @param userDao to find mentioned user
      * @param postDao to save post after some changes
      */
-    public UserMentionService(MailService mailService, UserDao userDao, PostDao postDao) {
-        this.mailService = mailService;
+    public UserMentionService(
+            MailService sendMailService,
+            UserDao userDao,
+            PostDao postDao) {
+        this.sendMailService = sendMailService;
         this.userDao = userDao;
         this.postDao = postDao;
     }
     
     /**
-     * Extract all usernames that were mentioned in passed text.
+     * Extract names of all users that were mentioned in passed text.
      * 
-     * @return extracted user names
+     * @return extracted users' names
      */
     public List<String> extractAllMentionedUsers(String canContainMentionedUsers) {
-        if (!StringUtils.isEmpty(canContainMentionedUsers)) {
-            Matcher matcher = ALL_USERS_BB_CODE_PATTERN.matcher(canContainMentionedUsers);
-            List<String> mentionedUsernames = new ArrayList<String>();
-            while (matcher.find()) {
-                String userBBCode = matcher.group();
-                String mentionedUser = userBBCode.replaceAll("\\[.*?\\]", StringUtils.EMPTY);
-                mentionedUsernames.add(mentionedUser);
-            }
-            return mentionedUsernames;
-        } 
-        return Collections.emptyList();
+        return extractMentionedUsers(canContainMentionedUsers, ALL_MENTIONED_USERS_PATTERN);
     }
 
     /**
-     * Extract all not mentioned users and notify them.
+     * Extract names of users that haven't been mentioned from this post before and notify them.
      * 
      * @param post where user was mentioned
      */
@@ -92,18 +86,20 @@ public class UserMentionService {
     }
     
     /**
-     * Extract all not notified usernames that were mentioned in passed text.
+     * Extract names of users that were mentioned but not notified yet
      * 
-     * @return extracted not notified usernames
+     * @return names of users that were mentioned but not notified yet
      */
     private List<String> extractNotNotifiedMentionedUsers(String canContainMentionedUsers) {
-        return extractMentionedUsers(canContainMentionedUsers, NOT_NOTIFIED_USERS_BB_CODE_PATTERN);
+        return extractMentionedUsers(canContainMentionedUsers, MENTIONED_AND_NOT_NOTIFIED_USERS_PATTERN);
     }
     
     /**
-     * Extract all usernames that were mentioned in passed text by given pattern.
+     * Extract names of users that were mentioned in passed text.
      * 
-     * @return extracted usernames
+     * @param canContainMentionedUsers can contain users mentioning
+     * @param mentionedUserPattern pattern to extract mentioned user in given text
+     * @return extracted users' names
      */
     private List<String> extractMentionedUsers(String canContainMentionedUsers, Pattern mentionedUserPattern) {
         if (!StringUtils.isEmpty(canContainMentionedUsers)) {
@@ -120,7 +116,7 @@ public class UserMentionService {
     }
     
     /**
-     * Send notification for all mentioned users.
+     * Send notification for passed list of users.
      * 
      * @param mentionedUsernames the list of names of mentioned users
      * @param mentioningPost post where users where mentioned
@@ -128,18 +124,16 @@ public class UserMentionService {
     private void sendNotificationToMentionedUsers(List<String> mentionedUsernames, Post mentioningPost) {
         List<JCUser> mentionedUsers = userDao.getByUsernames(mentionedUsernames);
         for (JCUser mentionedUser: mentionedUsers) {
-            boolean isNotificationAlreadySent = mentioningPost.getTopicSubscribers().contains(mentionedUser);
-            if (!isNotificationAlreadySent && mentionedUser.isMentioningNotificationsEnabled()) {
+            boolean isOtherNotificationAlreadySent = mentioningPost.getTopicSubscribers().contains(mentionedUser);
+            if (!isOtherNotificationAlreadySent && mentionedUser.isMentioningNotificationsEnabled()) {
                 String username = mentionedUser.getUsername();
-                String initialUserMentioning = format(MENTIONED_NOT_NOTIFIED_USER_BB_CODE_TEMPLATE, username);
-                String notifiedUserMentioing = format(MENTIONED_NOTIFIED_USER_BB_CODE_TEMPLATE, username);
-                mailService.sendUserMentionedNotification(mentionedUser, mentioningPost.getId());
+                String initialUserMentioning = format(MENTIONED_NOT_NOTIFIED_USER_TEMPLATE, username);
+                String notifiedUserMentioing = format(MENTIONED_AND_NOTIFIED_USER_TEMPLATE, username);
+                sendMailService.sendUserMentionedNotification(mentionedUser, mentioningPost.getId());
                 String newPostContent = mentioningPost.getPostContent().replace(initialUserMentioning, notifiedUserMentioing);
                 mentioningPost.setPostContent(newPostContent);
                 postDao.update(mentioningPost);
             }
         }
     }
-    
-    
 }

@@ -44,9 +44,9 @@ import ru.perm.kefir.bbcode.TextProcessorAdapter;
  */
 public class BbUserPreprocessor extends TextProcessorAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(BbUserPreprocessor.class);
-    private static final String USER_NOT_NOTIFIED_BB_CODE_TEMPLATE = "[user]%s[/user]";
-    private static final String USER_NOTIFIED_BB_CODE_TEMPLATE = "[user notified=true]%s[/user]";
-    private static final String USER_BB_CODE_WITH_LINK_TO_PROFILE = "[user=%s]%s[/user]";
+    private static final String MENTIONED_AND_NOT_NOTIFIED_USER_TEMPLATE = "[user]%s[/user]";
+    private static final String MENTIONED_AND_NOTIFIED_USER_TEMPLATE = "[user notified=true]%s[/user]";
+    private static final String USER_WITH_LINK_TO_PROFILE_TEMPLATE = "[user=%s]%s[/user]";
     private UserService userService;
     private UserMentionService userMentionService;
 
@@ -111,8 +111,8 @@ public class BbUserPreprocessor extends TextProcessorAdapter {
     /**
      * Add links to users' profiles for mentioned users.
      * 
-     * @param source will be changed and all mentioned users in it will contain link to theirs profiles
-     * @param userToUserProfileLinkMap user to its profile map
+     * @param source will be changed and all mentioned users in it will contain links to their profiles
+     * @param userToUserProfileLinkMap user to it links of profile map
      * @return source with users with attached links to profiles
      */
     private String addLinksToUserProfileForMentionedUsers(
@@ -120,10 +120,10 @@ public class BbUserPreprocessor extends TextProcessorAdapter {
         String changedSource = source;
         for (Map.Entry<String, String> userToLinkMap: userToUserProfileLinkMap.entrySet()) {
             String username = userToLinkMap.getKey();
-            String userNotNotifiedBBCode = format(USER_NOT_NOTIFIED_BB_CODE_TEMPLATE, username);
-            String userNotifiedBBCode = format(USER_NOTIFIED_BB_CODE_TEMPLATE, username);
+            String userNotNotifiedBBCode = format(MENTIONED_AND_NOT_NOTIFIED_USER_TEMPLATE, username);
+            String userNotifiedBBCode = format(MENTIONED_AND_NOTIFIED_USER_TEMPLATE, username);
             String userBBCodeWithLink = format(
-                    USER_BB_CODE_WITH_LINK_TO_PROFILE, userToLinkMap.getValue(), username);
+                    USER_WITH_LINK_TO_PROFILE_TEMPLATE, userToLinkMap.getValue(), username);
             changedSource = changedSource.replace(userNotNotifiedBBCode, userBBCodeWithLink);
             changedSource = changedSource.replace(userNotifiedBBCode, userBBCodeWithLink);
         }
