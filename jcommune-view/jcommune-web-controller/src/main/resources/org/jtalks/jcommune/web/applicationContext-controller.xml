@@ -58,9 +58,18 @@
         </constructor-arg>
     </bean>
 
-    <bean id="imageControllerUtils"  class="org.jtalks.jcommune.web.util.ImageControllerUtils">
+    <bean id="avatarControllerUtils"  class="org.jtalks.jcommune.web.util.ImageControllerUtils">
         <constructor-arg>
             <ref bean="avatarService"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="jsonUtils"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="forumLogoControllerUtils"  class="org.jtalks.jcommune.web.util.ImageControllerUtils">
+        <constructor-arg>
+            <ref bean="forumLogoService"/>
         </constructor-arg>
         <constructor-arg>
             <ref bean="jsonUtils"/>

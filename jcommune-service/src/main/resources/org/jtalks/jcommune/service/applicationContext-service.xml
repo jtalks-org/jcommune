@@ -81,6 +81,13 @@
         <constructor-arg ref="avatarMaxSizeProperty"/>
     </bean>
 
+    <bean id="forumLogoService" class="org.jtalks.jcommune.service.nontransactional.ForumLogoService">
+        <constructor-arg ref="imagePreprocessor"/>
+        <constructor-arg ref="base64Wrapper"/>
+        <constructor-arg value="org/jtalks/jcommune/service/jcommune.jpeg"/>
+        <constructor-arg ref="forumLogoMaxSizeProperty"/>
+    </bean>
+
     <bean id="base64Wrapper" class="org.jtalks.jcommune.service.nontransactional.Base64Wrapper"/>
 
     <bean id="imagePreprocessor" class="org.jtalks.jcommune.service.nontransactional.ImageUtils">

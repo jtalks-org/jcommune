@@ -14,18 +14,18 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.Validate;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
+import org.jtalks.jcommune.service.nontransactional.ForumLogoService;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.util.ImageControllerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -41,7 +41,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,12 +54,11 @@ public class AdministrationController extends ImageUploadController {
     private static final Logger LOGGER = LoggerFactory.getLogger(AdministrationController.class);
 
     private static final String ADMIN_ATTRIBUTE_NAME = "adminMode";
-    public static final String DEFAULT_LOGO_PATH = "/resources/images/jcommune.jpeg";
     public static final String JCOMMUNE_LOGO_PARAM = "jcommune.logo";
 
     private ComponentService componentService;
     private ImageControllerUtils imageControllerUtils;
-
+    private ForumLogoService forumLogoService;
 
     @Autowired
     ServletContext servletContext;
@@ -71,11 +69,14 @@ public class AdministrationController extends ImageUploadController {
      */
     @Autowired
     public AdministrationController(ComponentService componentService,
+                                    @Qualifier("forumLogoControllerUtils")
                                     ImageControllerUtils imageControllerUtils,
-                                    MessageSource messageSource) {
+                                    MessageSource messageSource,
+                                    ForumLogoService forumLogoService) {
         super(messageSource);
         this.componentService = componentService;
         this.imageControllerUtils = imageControllerUtils;
+        this.forumLogoService = forumLogoService;
     }
 
     /**
@@ -131,7 +132,7 @@ public class AdministrationController extends ImageUploadController {
         byte[] logoBytes = null;
 
         if (logoProperty == null || logoProperty.isEmpty()) {
-            logoBytes = getDefaultLogo();
+            logoBytes = forumLogoService.getDefaultLogo();
         } else {
             Base64Wrapper wrapper = new Base64Wrapper();
             logoBytes = wrapper.decodeB64Bytes(logoProperty);
@@ -149,28 +150,8 @@ public class AdministrationController extends ImageUploadController {
     @ResponseBody
     public String getDefaultLogoInJson() throws IOException, ImageProcessException {
         Map<String, String> responseContent = new HashMap<String, String>();
-        imageControllerUtils.prepareNormalResponse(getDefaultLogo(), responseContent);
+        imageControllerUtils.prepareNormalResponse(forumLogoService.getDefaultLogo(), responseContent);
         return imageControllerUtils.getResponceJSONString(responseContent);
-    }
-
-    /**
-     * Returns default logo to be used when custom logo image is not set
-     *
-     * @return byte array-stored image
-     */
-    public byte[] getDefaultLogo() {
-        byte[] result = new byte[0];
-        InputStream stream = servletContext.getResourceAsStream(DEFAULT_LOGO_PATH);
-        try {
-            result = new byte[stream.available()];
-            Validate.isTrue(stream.read(result) > 0);
-        } catch (IOException e) {
-            LOGGER.error("Failed to load default logo", e);
-        }
-        finally {
-            IOUtils.closeQuietly(stream);
-        }
-        return result;
     }
 
     /**

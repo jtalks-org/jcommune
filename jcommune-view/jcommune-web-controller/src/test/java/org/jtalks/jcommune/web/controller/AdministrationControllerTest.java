@@ -18,6 +18,7 @@ import org.jtalks.common.model.entity.Component;
 import org.jtalks.common.model.entity.ComponentType;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
+import org.jtalks.jcommune.service.nontransactional.ForumLogoService;
 import org.jtalks.jcommune.web.util.ImageControllerUtils;
 import org.jtalks.jcommune.web.util.JSONUtils;
 import org.springframework.context.MessageSource;
@@ -44,12 +45,14 @@ public class AdministrationControllerTest {
         ComponentService componentService = mock(ComponentService.class);
         AvatarService avatarService = mock(AvatarService.class);
         MessageSource messageSource = mock(MessageSource.class);
+        ForumLogoService forumLogoService = mock(ForumLogoService.class);
 
         ImageControllerUtils imageControllerUtils = mock(ImageControllerUtils.class);
         Component component = new Component("Forum", "Cool Forum", ComponentType.FORUM);
         component.setId(42);
 
-        administrationController = new AdministrationController(componentService, imageControllerUtils, messageSource);
+        administrationController = new AdministrationController(componentService, imageControllerUtils,
+                                                    messageSource, forumLogoService);
     }
 
     @Test

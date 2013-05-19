@@ -92,7 +92,9 @@ public enum JCommuneProperty {
     /**
      * Logo tooltip
      */
-    LOGO_TOOLTIP
+    LOGO_TOOLTIP,
+    /** Maximum size of the forum logo */
+    FORUM_LOGO_MAX_SIZE
     ;
 
 

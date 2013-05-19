@@ -83,8 +83,8 @@ public class ImageControllerUtilsTest {
 
         ResponseEntity<String> actualResponseEntity = imageControllerUtils.prepareResponse(file, responseHeaders, responseContent);
 
-        verify(avatarService).validateAvatarFormat(file);
-        verify(avatarService).validateAvatarSize(file.getBytes());
+        verify(avatarService).validateImageFormat(file);
+        verify(avatarService).validateImageSize(file.getBytes());
         assertEquals(actualResponseEntity.getStatusCode(), HttpStatus.OK);
         assertEquals(actualResponseEntity.getBody(), expectedBody);
         HttpHeaders headers = actualResponseEntity.getHeaders();
@@ -99,8 +99,8 @@ public class ImageControllerUtilsTest {
 
         imageControllerUtils.prepareResponse(validAvatar, response, responseContent);
 
-        verify(avatarService).validateAvatarFormat(validAvatar);
-        verify(avatarService).validateAvatarSize(validAvatar);
+        verify(avatarService).validateImageFormat(validAvatar);
+        verify(avatarService).validateImageSize(validAvatar);
         assertEquals(responseContent.get(imageControllerUtils.STATUS), "SUCCESS");
         assertEquals(responseContent.get(imageControllerUtils.SRC_PREFIX), ImageUtils.HTML_SRC_TAG_PREFIX);
         assertEquals(responseContent.get(imageControllerUtils.SRC_IMAGE), IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);

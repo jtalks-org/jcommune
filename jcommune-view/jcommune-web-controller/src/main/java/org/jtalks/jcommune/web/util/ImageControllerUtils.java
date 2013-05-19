@@ -16,7 +16,7 @@
 package org.jtalks.jcommune.web.util;
 
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
-import org.jtalks.jcommune.service.nontransactional.AvatarService;
+import org.jtalks.jcommune.service.nontransactional.BaseImageService;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.springframework.http.HttpHeaders;
@@ -38,15 +38,15 @@ public class ImageControllerUtils {
     public static final String SRC_PREFIX = "srcPrefix";
     public static final String SRC_IMAGE = "srcImage";
 
-    private AvatarService avatarService;
+    private BaseImageService baseImageService;
     private JSONUtils jsonUtils;
 
     /**
      *
      */
-    public ImageControllerUtils(AvatarService avatarService,
+    public ImageControllerUtils(BaseImageService baseImageService,
                                     JSONUtils jsonUtils) {
-        this.avatarService = avatarService;
+        this.baseImageService = baseImageService;
         this.jsonUtils = jsonUtils;
     }
 
@@ -64,9 +64,9 @@ public class ImageControllerUtils {
             MultipartFile file,
             HttpHeaders responseHeaders,
             Map<String, String> responseContent) throws IOException, ImageProcessException {
-        avatarService.validateAvatarFormat(file);
+        baseImageService.validateImageFormat(file);
         byte[] bytes = file.getBytes();
-        avatarService.validateAvatarSize(bytes);
+        baseImageService.validateImageSize(bytes);
         prepareNormalResponse(bytes, responseContent);
         String body = getResponceJSONString(responseContent);
         return new ResponseEntity<String>(body, responseHeaders, HttpStatus.OK);
@@ -87,8 +87,8 @@ public class ImageControllerUtils {
     public void prepareResponse(byte[] bytes,
                                  HttpServletResponse response,
                                  Map<String, String> responseContent) throws ImageProcessException {
-        avatarService.validateAvatarFormat(bytes);
-        avatarService.validateAvatarSize(bytes);
+        baseImageService.validateImageFormat(bytes);
+        baseImageService.validateImageSize(bytes);
         prepareNormalResponse(bytes, responseContent);
         response.setStatus(HttpServletResponse.SC_OK);
     }
@@ -102,7 +102,7 @@ public class ImageControllerUtils {
      */
     public void prepareNormalResponse(byte[] bytes,
                                        Map<String, String> responseContent) throws ImageProcessException {
-        String srcImage = avatarService.convertBytesToBase64String(bytes);
+        String srcImage = baseImageService.convertBytesToBase64String(bytes);
         responseContent.put(STATUS, String.valueOf(JsonResponseStatus.SUCCESS));
         responseContent.put(SRC_PREFIX, ImageUtils.HTML_SRC_TAG_PREFIX);
         responseContent.put(SRC_IMAGE, srcImage);
