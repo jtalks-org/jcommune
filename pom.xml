@@ -589,6 +589,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <headerBaseDir>${basedir}</headerBaseDir>
     <pathtoHeader>${headerBaseDir}/header.txt</pathtoHeader>
-    <commonVersion>0.48</commonVersion>
+    <commonVersion>0.51</commonVersion>
   </properties>
 </project>
