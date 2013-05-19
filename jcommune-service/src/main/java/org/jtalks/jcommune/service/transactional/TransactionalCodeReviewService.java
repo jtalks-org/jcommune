@@ -24,7 +24,6 @@ import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
-import org.jtalks.jcommune.service.nontransactional.UserMentionService;
 import org.jtalks.jcommune.service.security.AclClassName;
 import org.jtalks.jcommune.service.security.PermissionService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -41,7 +40,6 @@ public class TransactionalCodeReviewService extends AbstractTransactionalEntityS
     private UserService userService;
     private PermissionService permissionService;
     private NotificationService notificationService;
-    private UserMentionService userMentionService;
 
     /**
      * Create an instance of CodeReview entity based service
@@ -52,19 +50,16 @@ public class TransactionalCodeReviewService extends AbstractTransactionalEntityS
      *                            .prepost.PreAuthorize}
      *                            annotation emulation)
      * @param notificationService to send email updates for comment adding subscribers
-     * @param userMentionService  to send notifications to mentioned in comment users
      */
     public TransactionalCodeReviewService(
             ChildRepository<CodeReview> dao,
             UserService userService,
             PermissionService permissionService,
-            NotificationService notificationService,
-            UserMentionService userMentionService) {
+            NotificationService notificationService) {
         super(dao);
         this.userService = userService;
         this.permissionService = permissionService;
         this.notificationService = notificationService;
-        this.userMentionService = userMentionService;
     }
 
     @Override
@@ -90,7 +85,6 @@ public class TransactionalCodeReviewService extends AbstractTransactionalEntityS
         review.addComment(comment);
         getDao().update(review);
         notificationService.subscribedEntityChanged(review);
-        userMentionService.notifyAllMentionedUsers(body, review.getOwnerPost().getId());
         
         return comment;
     }

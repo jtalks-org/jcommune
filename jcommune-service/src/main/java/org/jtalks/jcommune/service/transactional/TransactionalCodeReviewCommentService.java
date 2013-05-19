@@ -21,7 +21,6 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.CodeReviewCommentService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.UserMentionService;
 import org.jtalks.jcommune.service.security.PermissionService;
 import org.springframework.security.access.AccessDeniedException;
 
@@ -36,7 +35,6 @@ public class TransactionalCodeReviewCommentService extends
 
     private PermissionService permissionService;
     private UserService userService;
-    private UserMentionService userMentionService;
 
     /**
      * Create an instance of CodeReview entity based service
@@ -44,14 +42,12 @@ public class TransactionalCodeReviewCommentService extends
      * @param dao data access object, which should be able do all CRUD operations with entity.
      * @param permissionServiceto check permissions for actions
      * @param userService to get current user
-     * @param userMentionService to notify all mentioned user in comment of code review
      */
     public TransactionalCodeReviewCommentService(ChildRepository<CodeReviewComment> dao,
-            PermissionService permissionService, UserService userService, UserMentionService userMentionService) {
+            PermissionService permissionService, UserService userService) {
         super(dao);
         this.permissionService = permissionService;
         this.userService = userService;
-        this.userMentionService = userMentionService;
     }
 
     /**
@@ -65,9 +61,6 @@ public class TransactionalCodeReviewCommentService extends
 
         comment.setBody(body);
         getDao().update(comment);
-
-        long commentPostId = comment.getOwnerPost().getId();
-        userMentionService.notifyAllMentionedUsers(body, commentPostId);
         return comment;
     }
 
