@@ -140,6 +140,14 @@ public class AdministrationController {
         }
     }
 
+    @RequestMapping(value = "/admin/defaultLogo", method = RequestMethod.GET)
+    @ResponseBody
+    public String getDefaultLogoInJson() throws IOException, ImageProcessException {
+        Map<String, String> responseContent = new HashMap<String, String>();
+        imageControllerUtils.prepareNormalResponse(getDefaultLogo(), responseContent);
+        return imageControllerUtils.getResponceJSONString(responseContent);
+    }
+
     /**
      * Returns default logo to be used when custom logo image is not set
      *

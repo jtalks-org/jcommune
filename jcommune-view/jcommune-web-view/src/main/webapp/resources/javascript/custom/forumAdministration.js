@@ -13,6 +13,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+var forumTitleValue = null;
+var forumDescriptionValue = null;
+var logoTooltipValue = null;
+var logoValue = null;
+var logoPreviewValue = null;
 
 $(function () {
     $("#cmpName").on('click', showForumConfigurationDialog);
@@ -24,6 +29,14 @@ function showForumConfigurationDialog(e) {
     // prevent from following link
     e.preventDefault();
 
+    createAdministrationDialog();
+
+    addRemoveLogoHandler();
+
+    createUploader();
+}
+
+function createAdministrationDialog() {
     var bodyContent = '<div class="control-group"> \
             <div class="controls thumbnail-logo"> \
                 <img id="logoPreview" src="' + $root + '/admin/logo" alt=""/>  \
@@ -45,6 +58,7 @@ function showForumConfigurationDialog(e) {
             \
             \
         </div>  \
+        <hr class="user-profile-hr"> \
         <form:hidden id="logo" path="logo"/> \
         ' + Utils.createFormElement($labelForumTitle, 'form_title', 'text', 'edit-links dialog-input')
         + Utils.createFormElement($labelForumDescription, 'forum_description', 'text', 'edit-links dialog-input')
@@ -67,16 +81,30 @@ function showForumConfigurationDialog(e) {
         }
     });
 
-    var cmpName = $("#cmpName").text();
-    var forumDescription = $("#cmpDescription").text();
-    var logoTooltip = $("#forumLogo").attr("title");
+    fillAdminDialogInputs();
+}
 
-    $('#form_title').val(cmpName);
-    $('#forum_description').val(forumDescription);
-    $('#logo_tooltip').val(logoTooltip);
+function fillAdminDialogInputs() {
+    if (forumTitleValue != null) {
+        $('#form_title').val(forumTitleValue);
+        $('#forum_description').val(forumDescriptionValue);
+        $('#logo_tooltip').val(logoTooltipValue);
+        $('#logoPreview').attr('src', logoPreviewValue);
+        $('#logo').val(logoValue);
+    }
+    else {
+        var cmpNameText = $("#cmpName").text();
+        var forumDescriptionText = $("#cmpDescription").text();
+        var logoTooltipText = $("#forumLogo").attr("title");
 
-    //avatar uploading handler
+        $('#form_title').val(cmpNameText);
+        $('#forum_description').val(forumDescriptionText);
+        $('#logo_tooltip').val(logoTooltipText);
+    }
+}
 
+
+function createUploader() {
     //defined the URL for appropriate avatar processing depending on client browser:
     // Opera, IE - multipart file using iFrame
     // Chrome, Opera - byte [] using XHR
@@ -142,6 +170,57 @@ function showForumConfigurationDialog(e) {
     });
 }
 
+function addRemoveLogoHandler() {
+    //remove logo handler
+    $('#removeLogo').click(function () {
+        saveInputValues();
+
+        var footerContent = ' \
+            <button id="remove-logo-cancel" class="btn">' + $labelCancel + '</button> \
+            <button id="remove-logo-ok" class="btn btn-primary">' + $labelOk + '</button>';
+
+        var submitFunc = function (e) {
+            e.preventDefault();
+            $.getJSON($root + "/admin/defaultLogo", function (responseJSON) {
+                logoPreviewValue = responseJSON.srcPrefix + responseJSON.srcImage;
+                logoValue = responseJSON.srcImage;
+
+                createAdministrationDialog();
+                addRemoveLogoHandler();
+                createUploader();
+            });
+            jDialog.closeDialog();
+        };
+
+        jDialog.createDialog({
+            type: jDialog.confirmType,
+            bodyMessage : $labelDeleteAvatarConfirmation,
+            firstFocus : false,
+            footerContent: footerContent,
+            maxWidth: 300,
+            tabNavigation: ['#remove-logo-ok','#remove-logo-cancel'],
+            handlers: {
+                '#remove-logo-ok': {'click': submitFunc},
+                '#remove-logo-cancel': {'static':'close'}
+            }
+        });
+
+        $('#remove-logo-ok').focus();
+
+    });
+}
+
+function saveInputValues() {
+    var forumTitleElement = jDialog.dialog.find('#form_title');
+    var forumDescriptionElement = jDialog.dialog.find('#forum_description');
+    var logoTooltipElement = jDialog.dialog.find('#logo_tooltip');
+    var logoElement = jDialog.dialog.find('#logo');
+
+    forumTitleValue = forumTitleElement.val();
+    forumDescriptionValue = forumDescriptionElement.val();
+    logoTooltipValue = logoTooltipElement.val();
+    logoValue = logoElement.val();
+}
 
 /**
  * Handles submit request from Administration form by sending POST request, with params
@@ -150,21 +229,13 @@ function showForumConfigurationDialog(e) {
 function sendForumConfiguration(e) {
     e.preventDefault();
 
-    var forumTitleElement = jDialog.dialog.find('#form_title');
-    var forumDescriptionElement = jDialog.dialog.find('#forum_description');
-    var logoTooltipElement = jDialog.dialog.find('#logo_tooltip');
-    var logoElement = jDialog.dialog.find('#logo');
-
-    var forumTitle = forumTitleElement.val();
-    var forumDescription = forumDescriptionElement.val();
-    var logoTooltip = logoTooltipElement.val();
-    var logo = logoElement.val();
+    saveInputValues();
 
     var componentInformation = {};
-    componentInformation.name = forumTitle;
-    componentInformation.description = forumDescription;
-    componentInformation.logoTooltip = logoTooltip;
-    componentInformation.logo = logo;
+    componentInformation.name = forumTitleValue;
+    componentInformation.description = forumDescriptionValue;
+    componentInformation.logoTooltip = logoTooltipValue;
+    componentInformation.logo = logoValue;
 
     jDialog.dialog.find('*').attr('disabled', true);
 
