@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.jtalks.jcommune.model.entity.Post;
 
 
@@ -48,19 +49,23 @@ public class UserMentionService {
     private MailService sendMailService;
     private UserDao userDao;
     private PostDao postDao;
+    private JCommuneProperty notificationsEnabledProperty;
     
     /**
      * @param sendMailService to send email notifications
      * @param userDao to find mentioned user
      * @param postDao to save post after some changes
+     * @param notificationsEnabledProperty lets us know whether we can send notifications
      */
     public UserMentionService(
             MailService sendMailService,
             UserDao userDao,
-            PostDao postDao) {
+            PostDao postDao,
+            JCommuneProperty notificationsEnabledProperty) {
         this.sendMailService = sendMailService;
         this.userDao = userDao;
         this.postDao = postDao;
+        this.notificationsEnabledProperty = notificationsEnabledProperty;
     }
     
     /**
@@ -124,16 +129,28 @@ public class UserMentionService {
     private void sendNotificationToMentionedUsers(List<String> mentionedUsernames, Post mentioningPost) {
         List<JCUser> mentionedUsers = userDao.getByUsernames(mentionedUsernames);
         for (JCUser mentionedUser: mentionedUsers) {
-            boolean isOtherNotificationAlreadySent = mentioningPost.getTopicSubscribers().contains(mentionedUser);
-            if (!isOtherNotificationAlreadySent && mentionedUser.isMentioningNotificationsEnabled()) {
-                String username = mentionedUser.getUsername();
-                String initialUserMentioning = format(MENTIONED_NOT_NOTIFIED_USER_TEMPLATE, username);
-                String notifiedUserMentioing = format(MENTIONED_AND_NOTIFIED_USER_TEMPLATE, username);
-                sendMailService.sendUserMentionedNotification(mentionedUser, mentioningPost.getId());
-                String newPostContent = mentioningPost.getPostContent().replace(initialUserMentioning, notifiedUserMentioing);
-                mentioningPost.setPostContent(newPostContent);
-                postDao.update(mentioningPost);
-            }
+            sendNotificationToMentionedUser(mentionedUser, mentioningPost);
         }
+    }
+    
+    /**
+     * Send notification for passed user
+     * 
+     * @param mentionedUser this user was mentioned, so he should receive notification(if notifications are enabled)
+     * @param mentioningPost post where users where mentioned
+     */
+    private void sendNotificationToMentionedUser(JCUser mentionedUser, Post mentioningPost) {
+        boolean isOtherNotificationAlreadySent = mentioningPost.getTopicSubscribers().contains(mentionedUser);
+        if (!isOtherNotificationAlreadySent && mentionedUser.isMentioningNotificationsEnabled()) {
+            String username = mentionedUser.getUsername();
+            String initialUserMentioning = format(MENTIONED_NOT_NOTIFIED_USER_TEMPLATE, username);
+            String notifiedUserMentioing = format(MENTIONED_AND_NOTIFIED_USER_TEMPLATE, username);
+            if (notificationsEnabledProperty.booleanValue()) {
+                sendMailService.sendUserMentionedNotification(mentionedUser, mentioningPost.getId());
+            }
+            String newPostContent = mentioningPost.getPostContent().replace(initialUserMentioning, notifiedUserMentioing);
+            mentioningPost.setPostContent(newPostContent);
+            postDao.update(mentioningPost);
+        } 
     }
 }
