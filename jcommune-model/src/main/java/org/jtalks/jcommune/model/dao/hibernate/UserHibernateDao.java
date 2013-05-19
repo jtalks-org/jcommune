@@ -37,17 +37,16 @@ public class UserHibernateDao extends GenericDao<JCUser>
 
     /**
      * @param sessionFactory The SessionFactory.
-     * @param type           An entity type.
      */
-    public UserHibernateDao(SessionFactory sessionFactory, Class<JCUser> type) {
-        super(sessionFactory, type);
+    public UserHibernateDao(SessionFactory sessionFactory) {
+        super(sessionFactory, JCUser.class);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public User getCommonUserByUsername(String username){
+    public User getCommonUserByUsername(String username) {
         return (User) session().getNamedQuery("getCommonUserByUsername")
                 .setString("username", username).uniqueResult();
     }

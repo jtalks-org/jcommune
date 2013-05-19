@@ -32,11 +32,9 @@ public class ComponentHibernateDao extends GenericDao<Component> implements Comp
 
     /**
      * @param sessionFactory The SessionFactory.
-     * @param type           An entity type.
      */
-    public ComponentHibernateDao(SessionFactory sessionFactory,
-            Class<Component> type) {
-        super(sessionFactory, type);
+    public ComponentHibernateDao(SessionFactory sessionFactory) {
+        super(sessionFactory, Component.class);
     }
 
     @Override

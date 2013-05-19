@@ -42,10 +42,9 @@ public class PostHibernateDao extends GenericDao<Post> implements PostDao {
 
     /**
      * @param sessionFactory The SessionFactory.
-     * @param type           An entity type.
      */
-    public PostHibernateDao(SessionFactory sessionFactory, Class<Post> type) {
-        super(sessionFactory, type);
+    public PostHibernateDao(SessionFactory sessionFactory) {
+        super(sessionFactory, Post.class);
     }
 
     /**
@@ -68,7 +67,7 @@ public class PostHibernateDao extends GenericDao<Post> implements PostDao {
         List<Post> posts = (List<Post>) query.list();
         return new PageImpl<Post>(posts, pageRequest, totalCount.intValue());
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -87,7 +86,7 @@ public class PostHibernateDao extends GenericDao<Post> implements PostDao {
             query.setMaxResults(pageRequest.getPageSize());
         }
         @SuppressWarnings("unchecked")
-        List<Post> posts = (List<Post> ) query.list();
+        List<Post> posts = (List<Post>) query.list();
         return new PageImpl<Post>(posts, pageRequest, totalCount.intValue());
     }
 

@@ -25,18 +25,16 @@ import org.jtalks.jcommune.model.dao.PropertyDao;
  * The class is responsible for loading {@link Property} objects from database,
  * but another CRUD operations aren't available, because only and only administrative panel may perform
  * creating, updating, deleting {@link Property} in database.
- * 
+ *
  * @author Anuar Nurmakanov
  */
 public class PropertyHibernateDao extends GenericDao<Property> implements PropertyDao {
 
     /**
      * @param sessionFactory The SessionFactory.
-     * @param type           An entity type.
      */
-    public PropertyHibernateDao(SessionFactory sessionFactory,
-            Class<Property> type) {
-        super(sessionFactory, type);
+    public PropertyHibernateDao(SessionFactory sessionFactory) {
+        super(sessionFactory, Property.class);
     }
 
     /**
@@ -52,7 +50,7 @@ public class PropertyHibernateDao extends GenericDao<Property> implements Proper
      */
     @Override
     public Property getByName(String name) {
-        return (Property)session()
+        return (Property) session()
                 .getNamedQuery("getPropertyByName")
                 .setString("name", name)
                 .uniqueResult();

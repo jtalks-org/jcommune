@@ -29,7 +29,7 @@ import java.util.List;
 
 /**
  * Hibernate implementation of PrivateMessageDao
- * 
+ *
  * @author Pavel Vervenko
  * @author Kirill Afonin
  * @author Guram Savinov
@@ -41,11 +41,9 @@ public class PrivateMessageHibernateDao extends GenericDao<PrivateMessage> imple
 
     /**
      * @param sessionFactory The SessionFactory.
-     * @param type           An entity type.
      */
-    public PrivateMessageHibernateDao(SessionFactory sessionFactory,
-            Class<PrivateMessage> type) {
-        super(sessionFactory, type);
+    public PrivateMessageHibernateDao(SessionFactory sessionFactory) {
+        super(sessionFactory, PrivateMessage.class);
     }
 
     /**

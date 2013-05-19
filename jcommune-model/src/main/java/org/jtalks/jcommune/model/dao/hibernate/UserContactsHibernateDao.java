@@ -35,11 +35,9 @@ public class UserContactsHibernateDao extends GenericDao<UserContactType>
 
     /**
      * @param sessionFactory The SessionFactory.
-     * @param type           An entity type.
      */
-    public UserContactsHibernateDao(SessionFactory sessionFactory,
-                                    Class<UserContactType> type) {
-        super(sessionFactory, type);
+    public UserContactsHibernateDao(SessionFactory sessionFactory) {
+        super(sessionFactory, UserContactType.class);
     }
 
     /**

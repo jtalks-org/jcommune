@@ -33,11 +33,9 @@ public class SimplePageHibernateDao extends GenericDao<SimplePage> implements Si
 
     /**
      * @param sessionFactory The SessionFactory.
-     * @param type           An entity type.
      */
-    public SimplePageHibernateDao(SessionFactory sessionFactory,
-            Class<SimplePage> type) {
-        super(sessionFactory, type);
+    public SimplePageHibernateDao(SessionFactory sessionFactory) {
+        super(sessionFactory, SimplePage.class);
     }
 
     /**

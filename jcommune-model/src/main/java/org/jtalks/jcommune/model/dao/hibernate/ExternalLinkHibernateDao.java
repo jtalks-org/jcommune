@@ -21,20 +21,22 @@ import org.jtalks.jcommune.model.entity.ExternalLink;
 
 import java.util.List;
 
-/** @author Alexandre Teterin */
+/**
+ * @author Alexandre Teterin
+ */
 public class ExternalLinkHibernateDao extends GenericDao<ExternalLink>
         implements ExternalLinkDao {
 
     /**
      * @param sessionFactory The SessionFactory.
-     * @param type           An entity type.
      */
-    public ExternalLinkHibernateDao(SessionFactory sessionFactory,
-            Class<ExternalLink> type) {
-        super(sessionFactory, type);
+    public ExternalLinkHibernateDao(SessionFactory sessionFactory) {
+        super(sessionFactory, ExternalLink.class);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<ExternalLink> getAll() {
         //noinspection unchecked

@@ -52,10 +52,9 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
 
     /**
      * @param sessionFactory The SessionFactory.
-     * @param type           An entity type.
      */
-    public TopicHibernateDao(SessionFactory sessionFactory, Class<Topic> type) {
-        super(sessionFactory, type);
+    public TopicHibernateDao(SessionFactory sessionFactory) {
+        super(sessionFactory, Topic.class);
     }
 
     /**
@@ -109,7 +108,7 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
             query.setParameterList(GROUP_IDS, groupIds);
             Number totalCount = (Number) query.uniqueResult();
             pageRequest.adjustPageNumber(totalCount.intValue());
-            
+
             query = session().getNamedQuery("getUnansweredTopicsByGroups");
             query.setParameterList(GROUP_IDS, groupIds);
             query.setFirstResult(pageRequest.getOffset()).setMaxResults(pageRequest.getPageSize());
@@ -130,7 +129,7 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
         Query query = session().getNamedQuery("getCountUnansweredTopicsForAnonymousUser");
         Number totalCount = (Number) query.uniqueResult();
         pageRequest.adjustPageNumber(totalCount.intValue());
-        
+
         query = session().getNamedQuery("getUnansweredTopicsForAnonymousUser");
         query.setFirstResult(pageRequest.getOffset()).setMaxResults(pageRequest.getPageSize());
         @SuppressWarnings(UNCHECKED)
@@ -154,7 +153,7 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
             query.setParameterList(GROUP_IDS, groupIds);
             Number totalCount = (Number) query.uniqueResult();
             pageRequest.adjustPageNumber(totalCount.intValue());
-            
+
             query = session().getNamedQuery("getRecentTopicsByGroups");
             query.setParameter(MAX_MOD_DATE, timeStamp);
             query.setParameterList(GROUP_IDS, groupIds);
@@ -178,7 +177,7 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
         query.setParameter(MAX_MOD_DATE, timeStamp);
         Number totalCount = (Number) query.uniqueResult();
         pageRequest.adjustPageNumber(totalCount.intValue());
-        
+
         query = session().getNamedQuery("getRecentTopicsForAnonymousUser");
         query.setParameter(MAX_MOD_DATE, timeStamp);
         query.setFirstResult(pageRequest.getOffset()).setMaxResults(pageRequest.getPageSize());

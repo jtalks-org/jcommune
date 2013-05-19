@@ -25,20 +25,17 @@ import java.util.Collection;
 /**
  * An implementation of {@link BannerDao} that is based on Hibernate and working
  * with database.
- * 
- * @author Anuar_Nurmakanov
  *
+ * @author Anuar_Nurmakanov
  */
 public class BannerHibernateDao extends GenericDao<Banner>
-    implements BannerDao {
+        implements BannerDao {
 
     /**
      * @param sessionFactory The SessionFactory.
-     * @param type           An entity type.
      */
-    public BannerHibernateDao(SessionFactory sessionFactory, Class<Banner>
-            type) {
-        super(sessionFactory, type);
+    public BannerHibernateDao(SessionFactory sessionFactory) {
+        super(sessionFactory, Banner.class);
     }
 
     /**

@@ -32,7 +32,7 @@ import java.util.UUID;
  * The implementation of {@link LastReadPostDao} based on Hibernate ORM.
  * The class is responsible for loading {@link LastReadPost} objects from database,
  * save, update and delete them.
- * 
+ *
  * @author Evgeniy Naumenko
  * @author Anuar_Nurmakanov
  */
@@ -41,11 +41,9 @@ public class LastReadPostHibernateDao extends GenericDao<LastReadPost>
 
     /**
      * @param sessionFactory The SessionFactory.
-     * @param type           An entity type.
      */
-    public LastReadPostHibernateDao(SessionFactory sessionFactory,
-            Class<LastReadPost> type) {
-        super(sessionFactory, type);
+    public LastReadPostHibernateDao(SessionFactory sessionFactory) {
+        super(sessionFactory, LastReadPost.class);
     }
 
     /**
@@ -69,7 +67,7 @@ public class LastReadPostHibernateDao extends GenericDao<LastReadPost>
                 .setParameter("user", forWho)
                 .uniqueResult();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -125,7 +123,7 @@ public class LastReadPostHibernateDao extends GenericDao<LastReadPost>
     @Override
     public void deleteLastReadPostsFor(JCUser user) {
         session().getNamedQuery("deleteAllLastReadPostsOfUser")
-            .setParameter("user", user)
-            .executeUpdate();
+                .setParameter("user", user)
+                .executeUpdate();
     }
 }

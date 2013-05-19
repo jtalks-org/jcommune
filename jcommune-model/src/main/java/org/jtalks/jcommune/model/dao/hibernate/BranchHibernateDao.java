@@ -36,11 +36,9 @@ public class BranchHibernateDao extends GenericDao<Branch>
 
     /**
      * @param sessionFactory The SessionFactory.
-     * @param type           An entity type.
      */
-    public BranchHibernateDao(SessionFactory sessionFactory, Class<Branch>
-            type) {
-        super(sessionFactory, type);
+    public BranchHibernateDao(SessionFactory sessionFactory) {
+        super(sessionFactory, Branch.class);
     }
 
     /**
