@@ -86,7 +86,7 @@ public class BbUserPreprocessor extends TextProcessorAdapter {
         String userPofileLink = null;
         try {
             JCUser user = userService.getByUsername(username);
-            userPofileLink = getDeploymentRootUrlWithoutPort() + "/users/" + user.getId();
+            userPofileLink = getApplicationNameAsContextPath() + "/users/" + user.getId();
             LOGGER.debug(username + " has the following url of profile -" + userPofileLink);
         } catch (NotFoundException e) {
             LOGGER.debug("Mentioned user wasn't find", e);
@@ -95,17 +95,14 @@ public class BbUserPreprocessor extends TextProcessorAdapter {
     }
     
     /**
-     * Returns current deployment root without port for using as label link, for example.
-     *
-     * @return current deployment root without port, e.g. "http://myhost.com/mycoolforum"
+     * Get the name of application as context path.
+     * 
+     * @return forum application name
      */
-    private String getDeploymentRootUrlWithoutPort() {
+    private String getApplicationNameAsContextPath() {
         RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes) attributes).getRequest();
-        return request.getScheme()
-                + "://" + request.getServerName()
-                + ":" + request.getServerPort()
-                + request.getContextPath();
+        return request.getContextPath();
     }
     
     /**

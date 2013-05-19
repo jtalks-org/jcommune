@@ -75,8 +75,8 @@ public class BbUserPreprocessorTest {
         JCUser notifiedMentionedUser = getUser(notifiedMentionedUserName, notifiedMentionedUserId);
         when(userService.getByUsername(notifiedMentionedUserName)).thenReturn(notifiedMentionedUser);
         //
-        String expectedNotNotifiedUserProfile = "http://localhost:8080/forum/users/" + notNotifiedMentionedUserId;
-        String expectedNotifiedUserProfile = "http://localhost:8080/forum/users/" + notifiedMentionedUserId;
+        String expectedNotNotifiedUserProfile = "/forum/users/" + notNotifiedMentionedUserId;
+        String expectedNotifiedUserProfile = "/forum/users/" + notifiedMentionedUserId;
         String notProcessedSource = format(MENTIONING_TEMPLATE, notNotifiedMentionedUserName, notifiedMentionedUserName);
         when(userMentionService.extractAllMentionedUsers(notProcessedSource))
             .thenReturn(Arrays.asList(notNotifiedMentionedUserName, notifiedMentionedUserName));
