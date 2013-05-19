@@ -13,11 +13,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-var forumTitleValue = null;
-var forumDescriptionValue = null;
-var logoTooltipValue = null;
-var logoValue = null;
-var logoPreviewValue = null;
+/*
+Object storing input values in the dialog.
+Used to keep values when logo removing dialog is showed
+ */
+var currentAdminValues = {
+   'forumName': null,
+   'forumDescription': null,
+   'logoTooltip': null,
+   'logo': null,
+   'logoPreview': null,
+    'valid' : false
+}
+
 
 $(function () {
     $("#cmpName").on('click', showForumConfigurationDialog);
@@ -28,14 +36,13 @@ $(function () {
 function showForumConfigurationDialog(e) {
     // prevent from following link
     e.preventDefault();
-
+    // create the Dialog
     createAdministrationDialog();
-
-    addRemoveLogoHandler();
-
-    createUploader();
 }
 
+/*
+Creates Forum Administration dialog
+ */
 function createAdministrationDialog() {
     var bodyContent = '<div class="control-group"> \
             <div class="controls thumbnail-logo"> \
@@ -43,14 +50,14 @@ function createAdministrationDialog() {
             </div> \
             \
             \
-            <div class="user-profile-top-buttons"> \
-                <div class="user-profile-buttons-avatar"> \
+            <div class="logo-manage-buttons-container"> \
+                <div class="logo-manage-buttons"> \
                     <a id="upload" href="#" class="btn btn-mini"> \
                         <i class="icon-picture"></i>  \
-                        Load logo \
+                        '+ $labelUploadLogo + ' \
                     </a>  \
                     <a id="removeLogo" href="#" class="btn btn-mini btn-danger" \
-                        title="Remove logo"> \
+                        title='+ $labelRemoveLogo + '> \
                         <i class="icon-remove icon-white"></i> \
                     </a> \
                 </div> \
@@ -58,11 +65,11 @@ function createAdministrationDialog() {
             \
             \
         </div>  \
-        <hr class="user-profile-hr"> \
+        <hr class="admin-dialog-hr"> \
         <form:hidden id="logo" path="logo"/> \
-        ' + Utils.createFormElement($labelForumTitle, 'form_title', 'text', 'edit-links dialog-input')
-        + Utils.createFormElement($labelForumDescription, 'forum_description', 'text', 'edit-links dialog-input')
-        + Utils.createFormElement($labelLogoTooltip, 'logo_tooltip', 'text', 'edit-links dialog-input') + ' \
+        ' + Utils.createFormElement($labelForumTitle, 'forum_name', 'text', 'dialog-input')
+        + Utils.createFormElement($labelForumDescription, 'forum_description', 'text', 'dialog-input')
+        + Utils.createFormElement($labelLogoTooltip, 'forum_logoTooltip', 'text', 'dialog-input') + ' \
             <div class="clearfix"';
 
     var footerContent = ' \
@@ -75,37 +82,45 @@ function createAdministrationDialog() {
         bodyContent: bodyContent,
         footerContent: footerContent,
         maxWidth: 350,
-        tabNavigation: ['#form_title','#forum_description','#logo_tooltip'],
+        tabNavigation: ['#forum_name','#forum_description','#forum_logoTooltip'],
         handlers: {
             '#administration-submit-button': {'click': sendForumConfiguration}
         }
     });
 
     fillAdminDialogInputs();
+    addRemoveLogoHandler();
+    createUploader();
 }
 
+/*
+Fills inputs with current information or with
+information stored before logo removing dialog was showed
+ */
 function fillAdminDialogInputs() {
-    if (forumTitleValue != null) {
-        $('#form_title').val(forumTitleValue);
-        $('#forum_description').val(forumDescriptionValue);
-        $('#logo_tooltip').val(logoTooltipValue);
-        $('#logoPreview').attr('src', logoPreviewValue);
-        $('#logo').val(logoValue);
+    if (currentAdminValues.valid == true) {
+        $('#forum_name').val(currentAdminValues.forumName);
+        $('#forum_description').val(currentAdminValues.forumDescription);
+        $('#forum_logoTooltip').val(currentAdminValues.logoTooltip);
+        $('#logoPreview').attr('src', currentAdminValues.logoPreview);
+        $('#logo').val(currentAdminValues.logo);
     }
     else {
         var cmpNameText = $("#cmpName").text();
         var forumDescriptionText = $("#cmpDescription").text();
         var logoTooltipText = $("#forumLogo").attr("title");
 
-        $('#form_title').val(cmpNameText);
+        $('#forum_name').val(cmpNameText);
         $('#forum_description').val(forumDescriptionText);
-        $('#logo_tooltip').val(logoTooltipText);
+        $('#forum_logoTooltip').val(logoTooltipText);
     }
 }
 
-
+/*
+Creates uploader for uploading logo to the server
+ */
 function createUploader() {
-    //defined the URL for appropriate avatar processing depending on client browser:
+    //defined the URL for appropriate logo processing depending on client browser:
     // Opera, IE - multipart file using iFrame
     // Chrome, Opera - byte [] using XHR
     var action;
@@ -141,15 +156,15 @@ function createUploader() {
             }
             //
             if (responseJSON.status == "SUCCESS") {
-                //if server side avatar uploading successful  a processed image displayed
+                //if server side logo uploading successful  a processed image displayed
                 $('#logoPreview').attr('src', responseJSON.srcPrefix + responseJSON.srcImage);
-                //
                 $('#logo').attr('value', responseJSON.srcImage);
             } else {
                 // display error message
                 jDialog.createDialog({
                     type: jDialog.alertType,
-                    bodyMessage: responseJSON.result
+                    bodyMessage: responseJSON.result,
+                    handlers: { 'alert-ok' : createAdministrationDialog}
                 });
             }
 
@@ -158,7 +173,8 @@ function createUploader() {
             if (xhr.status == 413) {
                 jDialog.createDialog({
                     type: jDialog.alertType,
-                    bodyMessage: $labelImageWrongSizeJs
+                    bodyMessage: $labelImageWrongSizeJs,
+                    handlers: { 'alert-ok' : createAdministrationDialog}
                 });
                 return false;
             }
@@ -170,6 +186,9 @@ function createUploader() {
     });
 }
 
+/*
+Adds handler for "Remove Logo" button
+ */
 function addRemoveLogoHandler() {
     //remove logo handler
     $('#removeLogo').click(function () {
@@ -182,26 +201,25 @@ function addRemoveLogoHandler() {
         var submitFunc = function (e) {
             e.preventDefault();
             $.getJSON($root + "/admin/defaultLogo", function (responseJSON) {
-                logoPreviewValue = responseJSON.srcPrefix + responseJSON.srcImage;
-                logoValue = responseJSON.srcImage;
+                // save logo information and show main dialog again
+                currentAdminValues.logoPreview = responseJSON.srcPrefix + responseJSON.srcImage;
+                currentAdminValues.logo = responseJSON.srcImage;
 
                 createAdministrationDialog();
-                addRemoveLogoHandler();
-                createUploader();
             });
             jDialog.closeDialog();
         };
 
         jDialog.createDialog({
             type: jDialog.confirmType,
-            bodyMessage : $labelDeleteAvatarConfirmation,
+            bodyMessage : $labelDeleteLogoConfirmation,
             firstFocus : false,
             footerContent: footerContent,
             maxWidth: 300,
             tabNavigation: ['#remove-logo-ok','#remove-logo-cancel'],
             handlers: {
                 '#remove-logo-ok': {'click': submitFunc},
-                '#remove-logo-cancel': {'static':'close'}
+                '#remove-logo-cancel': {'click': createAdministrationDialog}
             }
         });
 
@@ -210,32 +228,39 @@ function addRemoveLogoHandler() {
     });
 }
 
+/*
+Copies values for Forum Name, Description and Logo from the Dialog
+ */
 function saveInputValues() {
-    var forumTitleElement = jDialog.dialog.find('#form_title');
+    var forumNameElement = jDialog.dialog.find('#forum_name');
     var forumDescriptionElement = jDialog.dialog.find('#forum_description');
-    var logoTooltipElement = jDialog.dialog.find('#logo_tooltip');
+    var logoTooltipElement = jDialog.dialog.find('#forum_logoTooltip');
     var logoElement = jDialog.dialog.find('#logo');
+    var logoPreview = jDialog.dialog.find('#logoPreview');
 
-    forumTitleValue = forumTitleElement.val();
-    forumDescriptionValue = forumDescriptionElement.val();
-    logoTooltipValue = logoTooltipElement.val();
-    logoValue = logoElement.val();
+    currentAdminValues.forumName = forumNameElement.val();
+    currentAdminValues.forumDescription = forumDescriptionElement.val();
+    currentAdminValues.logoTooltip = logoTooltipElement.val();
+    currentAdminValues.logo = logoElement.val();
+    currentAdminValues.logoPreview = logoPreview.attr("src");
+    currentAdminValues.valid = true;
 }
 
 /**
  * Handles submit request from Administration form by sending POST request, with params
- * containing Forum Title & Description, Logo and Logo description
+ * containing Forum Name & Description, Logo and Logo description
  */
 function sendForumConfiguration(e) {
     e.preventDefault();
 
     saveInputValues();
+    currentAdminValues.valid = false;
 
     var componentInformation = {};
-    componentInformation.name = forumTitleValue;
-    componentInformation.description = forumDescriptionValue;
-    componentInformation.logoTooltip = logoTooltipValue;
-    componentInformation.logo = logoValue;
+    componentInformation.name = currentAdminValues.forumName;
+    componentInformation.description = currentAdminValues.forumDescription;
+    componentInformation.logoTooltip = currentAdminValues.logoTooltip;
+    componentInformation.logo = currentAdminValues.logo;
 
     jDialog.dialog.find('*').attr('disabled', true);
 
@@ -251,11 +276,7 @@ function sendForumConfiguration(e) {
             }
             else {
                 jDialog.prepareDialog(jDialog.dialog);
-
-                ErrorUtils.addErrorStyles('#form_title');
-                ErrorUtils.addErrorStyles('#forum_description');
-                ErrorUtils.addErrorStyles('#logo_tooltip');
-
+                jDialog.showErrors(jDialog.dialog, resp.result, "forum_", "");
                 jDialog.resizeDialog(jDialog.dialog);
             }
         },
