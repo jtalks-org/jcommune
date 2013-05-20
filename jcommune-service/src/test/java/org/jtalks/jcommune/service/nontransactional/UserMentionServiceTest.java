@@ -100,21 +100,14 @@ public class UserMentionServiceTest {
     @Test
     public void notifyNotMentionedUsersShouldSendForNotYetNotifiedMentionedUsers() {
         prepareEnabledProperty();
-        Post mentioningPost = getPost(25L);
-        //
-        String firstUsername = "Shogun";
-        String secondUsername = "jk1";
-        String thirdUsername = "masyan";
-        String textWithUsersMentioning = "In this text we have 3 user mentioning: first [user]" + firstUsername + "[/user]," +
-                "second [user]"+ secondUsername + "[/user]," +
-                "third [user]" + thirdUsername + "[/user]";
+        String textWithUsersMentioning = "In this text we have 3 user mentioning: first [user]Shogun[/user]," +
+                "second [user]jk1[/user], third [user]masyan[/user]";
+        Post mentioningPost = getPost(25L, textWithUsersMentioning);
         mentioningPost.setPostContent(textWithUsersMentioning);
-        Set<String> usernames = asSet(firstUsername, secondUsername, thirdUsername);
         List<JCUser> users = asList(
-                getJCUser(firstUsername, true),
-                getJCUser(secondUsername, true),
-                getJCUser(thirdUsername, true));
-        when(userDao.getByUsernames(usernames)).thenReturn(users);
+                getJCUser("Shogun", true), getJCUser("jk1", true), getJCUser("masyan", true));
+        when(userDao.getByUsernames(asSet("Shogun", "jk1", "masyan")))
+            .thenReturn(users);
         
         userMentionService.notifyNotMentionedUsers(mentioningPost);
         
@@ -128,15 +121,10 @@ public class UserMentionServiceTest {
     @Test
     public void notifyNotMentionedUsersShouldNotNotifyNotAgreedWithNotificationsUsers() {
         prepareEnabledProperty();
-        Post mentioningPost = getPost(25L);
-        //
-        String mentionedUsername = "Shogun";
-        String textWithUsersMentioning = "In this text we have 1 user mentioning - [user]" + mentionedUsername + "[/user]";
-        mentioningPost.setPostContent(textWithUsersMentioning);
-        Set<String> usernames = asSet(mentionedUsername);
-        JCUser mentionedUser = getJCUser(mentionedUsername, false);
-        List<JCUser> users = asList(mentionedUser);
-        when(userDao.getByUsernames(usernames)).thenReturn(users);
+        String textWithUsersMentioning = "In this text we have 1 user mentioning - [user]Shogun[/user]";
+        Post mentioningPost = getPost(25L, textWithUsersMentioning);
+        JCUser mentionedUser = getJCUser("Shogun", false);
+        when(userDao.getByUsernames(asSet("Shogun"))).thenReturn(asList(mentionedUser));
         
         userMentionService.notifyNotMentionedUsers(mentioningPost);
         
@@ -150,15 +138,12 @@ public class UserMentionServiceTest {
     @Test
     public void notifyNotMentionedUsersShouldNotSendWhenUsersWereNotFound() {
         prepareEnabledProperty();
-        long mentioningPostId = 1L;
-        Post mentioningPost = getPost(mentioningPostId);
-        //
         String textWithUsersMentioning = "In this text we have 3 user mentioning: first [user]Shogun[/user]," +
                 "second [user]masyan[/user]," +
                 "third [user]jk1[/user]";
-        mentioningPost.setPostContent(textWithUsersMentioning);
-        Set<String> usernames = asSet("Shogun", "jk1", "masyan");
-        when(userDao.getByUsernames(usernames)).thenReturn(Collections.<JCUser> emptyList());
+        Post mentioningPost = getPost(25L, textWithUsersMentioning);
+        when(userDao.getByUsernames(asSet("Shogun", "jk1", "masyan")))
+            .thenReturn(Collections.<JCUser> emptyList());
         
         userMentionService.notifyNotMentionedUsers(mentioningPost);
         
@@ -172,18 +157,16 @@ public class UserMentionServiceTest {
     @Test
     public void notifyNotMentionedUsersShouldNotSendIfUserIsSubscriberOfTopic() {
         prepareEnabledProperty();
-        String mentionedUsername = "Shogun";
         String textWithUsersMentioning = 
-                "In this text we have 1 user mentioning - [user]" + mentionedUsername + "[/user]";
-        JCUser mentionedUser = getJCUser(mentionedUsername, true);
+                "In this text we have 1 user mentioning - [user]Shogun[/user]";
+        JCUser mentionedUser = getJCUser("Shogun", true);
         //
-        Post mentioningPost = getPost(25L);
-        mentioningPost.setPostContent(textWithUsersMentioning);
+        Post mentioningPost = getPost(25L, textWithUsersMentioning);
         Set<JCUser> topicSubscribers = new HashSet<JCUser>();
         topicSubscribers.add(mentionedUser);
         mentioningPost.getTopic().setSubscribers(topicSubscribers);
         //
-        when(userDao.getByUsernames(asSet(mentionedUsername)))
+        when(userDao.getByUsernames(asSet("Shogun")))
             .thenReturn(asList(mentionedUser));
         
         userMentionService.notifyNotMentionedUsers(mentioningPost);
@@ -201,35 +184,31 @@ public class UserMentionServiceTest {
         return user;
     }
     
-    private Post getPost(long id) {
-        Post post = new Post(null, "test post");
-        post.setTopic(new Topic());
-        post.setId(id); 
-        return post;
-    }
-    
     @Test
     public void notifyNotMentionedUsersShouldNotSendIsForumNotificationsAreDisabled() {
         prepareDisabledProperty();
-        String mentionedUsername = "Shogun";
-        String textWithUsersMentioning = 
-                "In this text we have 1 user mentioning - [user]" + mentionedUsername + "[/user]";
-        JCUser mentionedUser = getJCUser(mentionedUsername, true);
+        String postContent = "In this text we have 1 user mentioning - [user]Shogun[/user]";
+        Post mentioningPost = getPost(25L, postContent);
         //
-        Post mentioningPost = getPost(25L);
-        mentioningPost.setPostContent(textWithUsersMentioning);
-        //
-        when(userDao.getByUsernames(asSet(mentionedUsername)))
+        JCUser mentionedUser = getJCUser("Shogun", true);
+        when(userDao.getByUsernames(asSet("Shogun")))
             .thenReturn(asList(mentionedUser));
         
         userMentionService.notifyNotMentionedUsers(mentioningPost);
         
-        assertNotSame(mentioningPost.getPostContent(), textWithUsersMentioning,
+        assertNotSame(mentioningPost.getPostContent(), postContent,
                 "When forum notifications are disabled we should mark that user was notified," +
                 " otherwise after enabling notifications user will recieve all accumulated in queue notifications.");
         verify(postDao).update(mentioningPost);
         verify(mailService, never())
             .sendUserMentionedNotification(any(JCUser.class), anyLong());
+    }
+    
+    private Post getPost(long id, String content) {
+        Post post = new Post(null, content);
+        post.setTopic(new Topic());
+        post.setId(id); 
+        return post;
     }
     
     private void prepareDisabledProperty() {

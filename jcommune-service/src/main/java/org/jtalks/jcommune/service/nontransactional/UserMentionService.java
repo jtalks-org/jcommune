@@ -47,10 +47,10 @@ public class UserMentionService {
             Pattern.compile("\\[user\\].*?\\[/user\\]");
     private static final String MENTIONED_NOT_NOTIFIED_USER_TEMPLATE = "[user]%s[/user]";
     private static final String MENTIONED_AND_NOTIFIED_USER_TEMPLATE = "[user notified=true]%s[/user]";
-    private MailService sendMailService;
-    private UserDao userDao;
-    private PostDao postDao;
-    private JCommuneProperty notificationsEnabledProperty;
+    private final MailService sendMailService;
+    private final UserDao userDao;
+    private final PostDao postDao;
+    private final JCommuneProperty notificationsEnabledProperty;
     
     /**
      * @param sendMailService to send email notifications

@@ -316,7 +316,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         
         List<JCUser> foundByUsernames = dao.getByUsernames(existsUsernames);
         
-        assertTrue(foundByUsernames.size() == 0, "It should return empty list, cause found users not exist.");
+        assertTrue(foundByUsernames.isEmpty(), "It should return empty list, cause found users not exist.");
     }
     
     private JCUser givenJCUserWithUsernameStoredInDb(String username) {

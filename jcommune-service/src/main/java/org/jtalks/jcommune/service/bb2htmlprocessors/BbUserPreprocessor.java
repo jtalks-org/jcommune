@@ -47,8 +47,8 @@ public class BbUserPreprocessor extends TextProcessorAdapter {
     private static final String MENTIONED_AND_NOT_NOTIFIED_USER_TEMPLATE = "[user]%s[/user]";
     private static final String MENTIONED_AND_NOTIFIED_USER_TEMPLATE = "[user notified=true]%s[/user]";
     private static final String USER_WITH_LINK_TO_PROFILE_TEMPLATE = "[user=%s]%s[/user]";
-    private UserService userService;
-    private UserMentionService userMentionService;
+    private final UserService userService;
+    private final UserMentionService userMentionService;
 
     /**
      * @param userService to check users' existence
