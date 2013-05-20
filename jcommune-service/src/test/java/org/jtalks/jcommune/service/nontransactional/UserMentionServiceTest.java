@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import static java.util.Arrays.asList;
-import static org.jtalks.jcommune.model.entity.JCommuneProperty.SENDING_NOTIFICATIONS_ENABLED;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.never;
@@ -24,7 +23,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotSame;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Collections;
@@ -33,12 +31,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.jtalks.common.model.entity.Property;
 import org.jtalks.jcommune.model.dao.PostDao;
-import org.jtalks.jcommune.model.dao.PropertyDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.mockito.Mock;
@@ -51,27 +46,19 @@ import org.testng.annotations.Test;
  *
  */
 public class UserMentionServiceTest {
-    private static final String PROPERTY_NAME = "property";
-    private static final String TRUE_STRING = Boolean.TRUE.toString();
-    private static final String FALSE_STRING = Boolean.FALSE.toString();
     @Mock
     private MailService mailService;
     @Mock
     private UserDao userDao;
     @Mock 
     private PostDao postDao;
-    @Mock
-    private PropertyDao propertyDao;
-    private JCommuneProperty notificationsEnabledProperty = SENDING_NOTIFICATIONS_ENABLED;
     
     private UserMentionService userMentionService;
  
     @BeforeMethod
     public void init() {
         initMocks(this);
-        notificationsEnabledProperty.setPropertyDao(propertyDao);
-        notificationsEnabledProperty.setName(PROPERTY_NAME);
-        userMentionService = new UserMentionService(mailService, userDao, postDao, notificationsEnabledProperty);
+        userMentionService = new UserMentionService(mailService, userDao, postDao);
     }
     
     @Test
@@ -99,11 +86,9 @@ public class UserMentionServiceTest {
     
     @Test
     public void notifyNotMentionedUsersShouldSendForNotYetNotifiedMentionedUsers() {
-        prepareEnabledProperty();
         String textWithUsersMentioning = "In this text we have 3 user mentioning: first [user]Shogun[/user]," +
                 "second [user]jk1[/user], third [user]masyan[/user]";
         Post mentioningPost = getPost(25L, textWithUsersMentioning);
-        mentioningPost.setPostContent(textWithUsersMentioning);
         List<JCUser> users = asList(
                 getJCUser("Shogun", true), getJCUser("jk1", true), getJCUser("masyan", true));
         when(userDao.getByUsernames(asSet("Shogun", "jk1", "masyan")))
@@ -111,16 +96,25 @@ public class UserMentionServiceTest {
         
         userMentionService.notifyNewlyMentionedUsers(mentioningPost);
         
-        assertNotSame(mentioningPost.getPostContent(), textWithUsersMentioning,
-                "After sending email [user][/user] tag shoud be changed to [user notified=true][/user]");
         verify(mailService, times(users.size()))
             .sendUserMentionedNotification(any(JCUser.class), anyLong());
-        verify(postDao, times(users.size())).update(mentioningPost);
+    }
+    
+    @Test
+    public void notifyNewlyMentionedUsersShouldMarkBBCodesOfNotfiiedUsers() {
+        Post mentioningPost = getPost(25L, "In this text we have user mentioning [user]Shogun[/user]");
+        when(userDao.getByUsernames(asSet("Shogun")))
+            .thenReturn(asList(getJCUser("Shogun", true)));
+            
+        userMentionService.notifyNewlyMentionedUsers(mentioningPost);
+        
+        assertEquals(mentioningPost.getPostContent(), "In this text we have user mentioning [user notified=true]Shogun[/user]",
+                "After sending email [user][/user] tag shoud be changed to [user notified=true][/user]");
+        verify(postDao).update(mentioningPost);
     }
     
     @Test
     public void notifyNotMentionedUsersShouldNotNotifyNotAgreedWithNotificationsUsers() {
-        prepareEnabledProperty();
         String textWithUsersMentioning = "In this text we have 1 user mentioning - [user]Shogun[/user]";
         Post mentioningPost = getPost(25L, textWithUsersMentioning);
         JCUser mentionedUser = getJCUser("Shogun", false);
@@ -137,7 +131,6 @@ public class UserMentionServiceTest {
     
     @Test
     public void notifyNotMentionedUsersShouldNotSendWhenUsersWereNotFound() {
-        prepareEnabledProperty();
         String textWithUsersMentioning = "In this text we have 3 user mentioning: first [user]Shogun[/user]," +
                 "second [user]masyan[/user]," +
                 "third [user]jk1[/user]";
@@ -156,7 +149,6 @@ public class UserMentionServiceTest {
     
     @Test
     public void notifyNotMentionedUsersShouldNotSendIfUserIsSubscriberOfTopic() {
-        prepareEnabledProperty();
         String textWithUsersMentioning = 
                 "In this text we have 1 user mentioning - [user]Shogun[/user]";
         JCUser mentionedUser = getJCUser("Shogun", true);
@@ -184,41 +176,11 @@ public class UserMentionServiceTest {
         return user;
     }
     
-    @Test
-    public void notifyNotMentionedUsersShouldNotSendIsForumNotificationsAreDisabled() {
-        prepareDisabledProperty();
-        String postContent = "In this text we have 1 user mentioning - [user]Shogun[/user]";
-        Post mentioningPost = getPost(25L, postContent);
-        //
-        JCUser mentionedUser = getJCUser("Shogun", true);
-        when(userDao.getByUsernames(asSet("Shogun")))
-            .thenReturn(asList(mentionedUser));
-        
-        userMentionService.notifyNewlyMentionedUsers(mentioningPost);
-        
-        assertNotSame(mentioningPost.getPostContent(), postContent,
-                "When forum notifications are disabled we should mark that user was notified," +
-                " otherwise after enabling notifications user will recieve all accumulated in queue notifications.");
-        verify(postDao).update(mentioningPost);
-        verify(mailService, never())
-            .sendUserMentionedNotification(any(JCUser.class), anyLong());
-    }
-    
     private Post getPost(long id, String content) {
         Post post = new Post(null, content);
         post.setTopic(new Topic());
         post.setId(id); 
         return post;
-    }
-    
-    private void prepareDisabledProperty() {
-        Property disabledProperty = new Property(PROPERTY_NAME, FALSE_STRING);
-        when(propertyDao.getByName(PROPERTY_NAME)).thenReturn(disabledProperty);
-    }
-    
-    private void prepareEnabledProperty() {
-        Property enabledProperty = new Property(PROPERTY_NAME, TRUE_STRING);
-        when(propertyDao.getByName(PROPERTY_NAME)).thenReturn(enabledProperty);
     }
     
     private static<T> Set<T> asSet(T... items) {

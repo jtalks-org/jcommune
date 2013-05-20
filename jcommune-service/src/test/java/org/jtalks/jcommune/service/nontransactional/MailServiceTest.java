@@ -14,8 +14,34 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import static org.jtalks.jcommune.model.entity.JCommuneProperty.SENDING_NOTIFICATIONS_ENABLED;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+
+import java.io.IOException;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+
 import org.apache.velocity.app.VelocityEngine;
-import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.common.model.entity.Property;
+import org.jtalks.jcommune.model.dao.PropertyDao;
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.CodeReview;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.JCommuneProperty;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.ArgumentCaptor;
@@ -31,34 +57,26 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import java.io.IOException;
-
-import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-
 /**
  * Test for {@link MailService}.
  *
  * @author Evgeniy Naumenko
  */
 public class MailServiceTest {
-
-    private MailService service;
-    @Mock
-    private JavaMailSender sender;
-
+    private static final String PROPERTY_NAME = "property";
+    private static final String TRUE_STRING = Boolean.TRUE.toString();
+    private static final String FALSE_STRING = Boolean.FALSE.toString();
     private static final String FROM = "lol@wut.zz";
     private static final String TO = "foo@bar.zz";
     private static final String USERNAME = "user";
     private static final String PASSWORD = "new_password";
+    @Mock
+    private JavaMailSender sender;
+    @Mock
+    private PropertyDao propertyDao;
+    private JCommuneProperty notificationsEnabledProperty = SENDING_NOTIFICATIONS_ENABLED;
+    //
+    private MailService service;
 
     private JCUser user = new JCUser(USERNAME, TO, PASSWORD);
     private Topic topic = new Topic(user, "title Topic");
@@ -69,6 +87,11 @@ public class MailServiceTest {
     @BeforeMethod
     public void setUp() {
         initMocks(this);
+        //
+        notificationsEnabledProperty.setPropertyDao(propertyDao);
+        notificationsEnabledProperty.setName(PROPERTY_NAME);
+        enableEmailNotifications();
+        //
         VelocityEngine velocityEngine = new VelocityEngine();
         velocityEngine.setProperty("resource.loader", "class");
         velocityEngine.setProperty("class.resource.loader.class",
@@ -76,7 +99,7 @@ public class MailServiceTest {
         velocityEngine.setProperty("runtime.log.logsystem.class", "org.apache.velocity.runtime.log.NullLogSystem");
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:/org/jtalks/jcommune/service/bundle/TemplatesMessages");
-        service = new MailService(sender, FROM, velocityEngine, messageSource);
+        service = new MailService(sender, FROM, velocityEngine, messageSource, notificationsEnabledProperty);
         MimeMessage message = new MimeMessage((Session) null);
         when(sender.createMimeMessage()).thenReturn(message);
         captor = ArgumentCaptor.forClass(MimeMessage.class);
@@ -266,6 +289,16 @@ public class MailServiceTest {
         assertTrue(this.getMimeMailBody().contains(USERNAME));
         assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/posts/" + postId));
     }
+    
+    @Test
+    public void sendUserMentionedNotificationShouldNotSentWhenForumNotificationsAreDisabled() throws MessagingException, IOException {
+        disableEmailNotifications();
+        long postId = 25l;
+        
+        service.sendUserMentionedNotification(user, postId);
+        
+        verify(sender, never()).send(captor.capture());
+    }
 
     private String getMimeMailBody() throws IOException, MessagingException {
         return ((MimeMultipart) ((MimeMultipart) ((MimeMultipart) captor.getValue().getContent()).getBodyPart(0).
@@ -284,5 +317,16 @@ public class MailServiceTest {
         assertEquals(actualTo.getAddress(), TO);
         InternetAddress actualFrom = (InternetAddress) captor.getValue().getFrom()[0];
         assertEquals(actualFrom.getAddress(), FROM);
+    }
+    
+    
+    private void disableEmailNotifications() {
+        Property disabledProperty = new Property(PROPERTY_NAME, FALSE_STRING);
+        when(propertyDao.getByName(PROPERTY_NAME)).thenReturn(disabledProperty);
+    }
+    
+    private void enableEmailNotifications() {
+        Property enabledProperty = new Property(PROPERTY_NAME, TRUE_STRING);
+        when(propertyDao.getByName(PROPERTY_NAME)).thenReturn(enabledProperty);
     }
 }

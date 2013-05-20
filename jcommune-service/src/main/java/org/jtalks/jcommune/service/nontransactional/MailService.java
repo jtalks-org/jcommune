@@ -49,10 +49,11 @@ public class MailService {
     public static final String TOPICS = "/topics/";
     public static final String TOPIC = "Topic";
     public static final String TOPIC_CR = "Topic (code review)";
-    private JavaMailSender mailSender;
-    private String from;
-    private VelocityEngine velocityEngine;
-    private MessageSource messageSource;
+    private final JavaMailSender mailSender;
+    private final String from;
+    private final VelocityEngine velocityEngine;
+    private final MessageSource messageSource;
+    private final JCommuneProperty notificationsEnabledProperty;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MailService.class);
 
@@ -77,12 +78,18 @@ public class MailService {
      * @param from   blank message with "from" filed preset
      * @param engine engine for templating email notifications
      * @param source for resolving internationalization messages
+     * @param notificationsEnabledProperty to check whether email notifications are enabled
      */
-    public MailService(JavaMailSender sender, String from, VelocityEngine engine, MessageSource source) {
+    public MailService(JavaMailSender sender,
+            String from,
+            VelocityEngine engine,
+            MessageSource source,
+            JCommuneProperty notificationsEnabledProperty) {
         this.mailSender = sender;
         this.from = from;
         this.velocityEngine = engine;
         this.messageSource = source;
+        this.notificationsEnabledProperty = notificationsEnabledProperty;
     }
 
     /**
@@ -299,24 +306,28 @@ public class MailService {
     
     /**
      * Send email notification to user when he was mentioned in forum.
+     * Email notification will be sent only when notifications are enabled 
+     * in forum, otherwise nothing will happen.
      * 
      * @param recipient mentioned user who will receive notification
      * @param postId id of post where user was mentioned
      */
     public void sendUserMentionedNotification(JCUser recipient, long postId) {
-        String urlSuffix = "/posts/" + postId;
-        String url = this.getDeploymentRootUrl() + urlSuffix;
-        Locale locale = recipient.getLanguage().getLocale();
-        Map<String, Object> model = new HashMap<String, Object>();
-        model.put(NAME, recipient.getUsername());
-        model.put(LINK, url);
-        model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
-        model.put(RECIPIENT_LOCALE, locale);
-        try {
-            this.sendEmail(recipient.getEmail(), messageSource.getMessage("userMentioning.subject",
-                    new Object[]{}, locale), model, "userMentioning.vm");
-        } catch (MailingFailedException e) {
-            LOGGER.error("Failed to sent activation mail for user: " + recipient.getUsername());
+        if (notificationsEnabledProperty.booleanValue()) {
+            String urlSuffix = "/posts/" + postId;
+            String url = this.getDeploymentRootUrl() + urlSuffix;
+            Locale locale = recipient.getLanguage().getLocale();
+            Map<String, Object> model = new HashMap<String, Object>();
+            model.put(NAME, recipient.getUsername());
+            model.put(LINK, url);
+            model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
+            model.put(RECIPIENT_LOCALE, locale);
+            try {
+                this.sendEmail(recipient.getEmail(), messageSource.getMessage("userMentioning.subject",
+                        new Object[]{}, locale), model, "userMentioning.vm");
+            } catch (MailingFailedException e) {
+                LOGGER.error("Failed to sent activation mail for user: " + recipient.getUsername());
+            }
         }
     }
 

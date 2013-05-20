@@ -296,7 +296,6 @@
         <constructor-arg ref="mailService"/>
         <constructor-arg ref="userDao"/>
         <constructor-arg ref="postDao"/>
-        <constructor-arg ref="sendingNotificationsProperty"/>
     </bean>
 
     <!--

@@ -28,7 +28,6 @@ import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.jtalks.jcommune.model.entity.Post;
 
 
@@ -52,23 +51,19 @@ public class UserMentionService {
     private final MailService sendMailService;
     private final UserDao userDao;
     private final PostDao postDao;
-    private final JCommuneProperty notificationsEnabledProperty;
     
     /**
      * @param sendMailService to send email notifications
      * @param userDao to find mentioned user
      * @param postDao to save post after some changes
-     * @param notificationsEnabledProperty lets us know whether we can send notifications
      */
     public UserMentionService(
             MailService sendMailService,
             UserDao userDao,
-            PostDao postDao,
-            JCommuneProperty notificationsEnabledProperty) {
+            PostDao postDao) {
         this.sendMailService = sendMailService;
         this.userDao = userDao;
         this.postDao = postDao;
-        this.notificationsEnabledProperty = notificationsEnabledProperty;
     }
     
     /**
@@ -147,11 +142,9 @@ public class UserMentionService {
         if (!isOtherNotificationAlreadySent && mentionedUser.isMentioningNotificationsEnabled()) {
             String username = mentionedUser.getUsername();
             String initialUserMentioning = format(MENTIONED_NOT_NOTIFIED_USER_TEMPLATE, username);
-            String notifiedUserMentioing = format(MENTIONED_AND_NOTIFIED_USER_TEMPLATE, username);
-            if (notificationsEnabledProperty.booleanValue()) {
-                sendMailService.sendUserMentionedNotification(mentionedUser, mentioningPost.getId());
-            }
-            String newPostContent = mentioningPost.getPostContent().replace(initialUserMentioning, notifiedUserMentioing);
+            String notifiedUserMentioning = format(MENTIONED_AND_NOTIFIED_USER_TEMPLATE, username);
+            sendMailService.sendUserMentionedNotification(mentionedUser, mentioningPost.getId());
+            String newPostContent = mentioningPost.getPostContent().replace(initialUserMentioning, notifiedUserMentioning);
             mentioningPost.setPostContent(newPostContent);
             postDao.update(mentioningPost);
         } 
