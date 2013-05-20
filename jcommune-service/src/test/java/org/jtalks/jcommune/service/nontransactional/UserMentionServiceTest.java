@@ -109,7 +109,7 @@ public class UserMentionServiceTest {
         when(userDao.getByUsernames(asSet("Shogun", "jk1", "masyan")))
             .thenReturn(users);
         
-        userMentionService.notifyNotMentionedUsers(mentioningPost);
+        userMentionService.notifyNewlyMentionedUsers(mentioningPost);
         
         assertNotSame(mentioningPost.getPostContent(), textWithUsersMentioning,
                 "After sending email [user][/user] tag shoud be changed to [user notified=true][/user]");
@@ -126,7 +126,7 @@ public class UserMentionServiceTest {
         JCUser mentionedUser = getJCUser("Shogun", false);
         when(userDao.getByUsernames(asSet("Shogun"))).thenReturn(asList(mentionedUser));
         
-        userMentionService.notifyNotMentionedUsers(mentioningPost);
+        userMentionService.notifyNewlyMentionedUsers(mentioningPost);
         
         assertEquals(mentioningPost.getPostContent(), textWithUsersMentioning,
                 "After sending email [user][/user] tag shoudn't be changed");
@@ -145,7 +145,7 @@ public class UserMentionServiceTest {
         when(userDao.getByUsernames(asSet("Shogun", "jk1", "masyan")))
             .thenReturn(Collections.<JCUser> emptyList());
         
-        userMentionService.notifyNotMentionedUsers(mentioningPost);
+        userMentionService.notifyNewlyMentionedUsers(mentioningPost);
         
         assertEquals(mentioningPost.getPostContent(), textWithUsersMentioning,
                 "After sending email [user][/user] tag shoudn't be changed");
@@ -169,7 +169,7 @@ public class UserMentionServiceTest {
         when(userDao.getByUsernames(asSet("Shogun")))
             .thenReturn(asList(mentionedUser));
         
-        userMentionService.notifyNotMentionedUsers(mentioningPost);
+        userMentionService.notifyNewlyMentionedUsers(mentioningPost);
         
         assertEquals(mentioningPost.getPostContent(), textWithUsersMentioning,
                 "After sending email [user][/user] tag shoudn't be changed");
@@ -194,7 +194,7 @@ public class UserMentionServiceTest {
         when(userDao.getByUsernames(asSet("Shogun")))
             .thenReturn(asList(mentionedUser));
         
-        userMentionService.notifyNotMentionedUsers(mentioningPost);
+        userMentionService.notifyNewlyMentionedUsers(mentioningPost);
         
         assertNotSame(mentioningPost.getPostContent(), postContent,
                 "When forum notifications are disabled we should mark that user was notified," +

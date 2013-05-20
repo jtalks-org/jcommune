@@ -45,8 +45,10 @@ public class UserMentionService {
             Pattern.compile("\\[user\\].*?\\[/user\\]|\\[user notified=true\\].*?\\[/user\\]");
     private static final Pattern MENTIONED_AND_NOT_NOTIFIED_USERS_PATTERN = 
             Pattern.compile("\\[user\\].*?\\[/user\\]");
-    private static final String MENTIONED_NOT_NOTIFIED_USER_TEMPLATE = "[user]%s[/user]";
-    private static final String MENTIONED_AND_NOTIFIED_USER_TEMPLATE = "[user notified=true]%s[/user]";
+    public static final String MENTIONED_NOT_NOTIFIED_USER_TEMPLATE = "[user]%s[/user]";
+    public static final String MENTIONED_AND_NOTIFIED_USER_TEMPLATE = "[user notified=true]%s[/user]";
+    public static final String USER_WITH_LINK_TO_PROFILE_TEMPLATE = "[user=%s]%s[/user]";
+
     private final MailService sendMailService;
     private final UserDao userDao;
     private final PostDao postDao;
@@ -83,7 +85,7 @@ public class UserMentionService {
      * 
      * @param post where user was mentioned
      */
-    public void notifyNotMentionedUsers(Post mentioningPost) {
+    public void notifyNewlyMentionedUsers(Post mentioningPost) {
         String postContent = mentioningPost.getPostContent();
         Set<String> mentionedUsersNames = extractNotNotifiedMentionedUsers(postContent);
         if (!CollectionUtils.isEmpty(mentionedUsersNames)) {

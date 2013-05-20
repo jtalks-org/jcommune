@@ -16,6 +16,9 @@
 package org.jtalks.jcommune.service.bb2htmlprocessors;
 
 import static java.lang.String.format;
+import static org.jtalks.jcommune.service.nontransactional.UserMentionService.MENTIONED_AND_NOTIFIED_USER_TEMPLATE;
+import static org.jtalks.jcommune.service.nontransactional.UserMentionService.MENTIONED_NOT_NOTIFIED_USER_TEMPLATE;
+import static org.jtalks.jcommune.service.nontransactional.UserMentionService.USER_WITH_LINK_TO_PROFILE_TEMPLATE;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,9 +47,6 @@ import ru.perm.kefir.bbcode.TextProcessorAdapter;
  */
 public class BbUserPreprocessor extends TextProcessorAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(BbUserPreprocessor.class);
-    private static final String MENTIONED_AND_NOT_NOTIFIED_USER_TEMPLATE = "[user]%s[/user]";
-    private static final String MENTIONED_AND_NOTIFIED_USER_TEMPLATE = "[user notified=true]%s[/user]";
-    private static final String USER_WITH_LINK_TO_PROFILE_TEMPLATE = "[user=%s]%s[/user]";
     private final UserService userService;
     private final UserMentionService userMentionService;
 
@@ -117,7 +117,7 @@ public class BbUserPreprocessor extends TextProcessorAdapter {
         String changedSource = source;
         for (Map.Entry<String, String> userToLinkMap: userToUserProfileLinkMap.entrySet()) {
             String username = userToLinkMap.getKey();
-            String userNotNotifiedBBCode = format(MENTIONED_AND_NOT_NOTIFIED_USER_TEMPLATE, username);
+            String userNotNotifiedBBCode = format(MENTIONED_NOT_NOTIFIED_USER_TEMPLATE, username);
             String userNotifiedBBCode = format(MENTIONED_AND_NOTIFIED_USER_TEMPLATE, username);
             String userBBCodeWithLink = format(
                     USER_WITH_LINK_TO_PROFILE_TEMPLATE, userToLinkMap.getValue(), username);

@@ -129,7 +129,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
 
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(currentUser).on(answer).flush();
         notificationService.topicChanged(topic);
-        userMentionService.notifyNotMentionedUsers(answer);
+        userMentionService.notifyNewlyMentionedUsers(answer);
         logger.debug("New post in topic. Topic id={}, Post id={}, Post author={}",
                 new Object[]{topicId, answer.getId(), currentUser.getUsername()});
 
@@ -181,7 +181,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         createOrUpdatePoll(topicDto.getPoll(), topic);
 
         dao.update(topic);
-        userMentionService.notifyNotMentionedUsers(topic.getFirstPost());
+        userMentionService.notifyNewlyMentionedUsers(topic.getFirstPost());
         
         logger.debug("Created new topic id={}, branch id={}, author={}",
                 new Object[]{topic.getId(), branch.getId(), currentUser.getUsername()});
