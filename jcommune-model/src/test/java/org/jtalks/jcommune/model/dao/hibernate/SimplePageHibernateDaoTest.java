@@ -23,16 +23,10 @@ package org.jtalks.jcommune.model.dao.hibernate;
  * To change this template use File | Settings | File Templates.
  */
 
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertFalse;
-import static org.testng.AssertJUnit.assertNull;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.jtalks.jcommune.model.entity.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.SimplePageDao;
+import org.jtalks.jcommune.model.entity.ObjectsFactory;
 import org.jtalks.jcommune.model.entity.SimplePage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -42,9 +36,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
+import static org.testng.AssertJUnit.*;
+
 /**
  * @author Alexander Gavrikov
- *
  */
 
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
@@ -56,8 +53,8 @@ public class SimplePageHibernateDaoTest extends AbstractTransactionalTestNGSprin
     @Autowired
     private SimplePageDao dao;
     private Session session;
-    
-    
+
+
     @BeforeMethod
     public void setUp() throws Exception {
         session = sessionFactory.getCurrentSession();
@@ -95,7 +92,7 @@ public class SimplePageHibernateDaoTest extends AbstractTransactionalTestNGSprin
         simplePage.setName(newName);
         simplePage.setContent(newContent);
 
-        dao.update(simplePage);
+        dao.saveOrUpdate(simplePage);
         session.evict(simplePage);
         SimplePage result = (SimplePage) session.get(SimplePage.class, simplePage.getId());
 
@@ -147,7 +144,7 @@ public class SimplePageHibernateDaoTest extends AbstractTransactionalTestNGSprin
         assertEquals(simplePage.getPathName(), result.getPathName());
     }
 
-     @Test
+    @Test
     public void testGetPageByPathNameNotExist() {
         SimplePage simplePage = ObjectsFactory.getDefaultSimplePage();
         session.save(simplePage);

@@ -17,14 +17,10 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.common.model.entity.Section;
-import org.jtalks.jcommune.model.entity.ObjectsFactory;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.LastReadPostDao;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
@@ -71,7 +67,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     @Test
     public void testSave() {
         Branch branch = ObjectsFactory.getDefaultBranch();
-        dao.update(branch);
+        dao.saveOrUpdate(branch);
 
         assertNotSame(branch.getId(), 0, "Id not created");
 
@@ -88,7 +84,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         session.save(branch);
         branch.setName(null);
 
-        dao.update(branch);
+        dao.saveOrUpdate(branch);
     }
 
     @Test
@@ -116,20 +112,20 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         session.save(branch);
         branch.setName(newName);
 
-        dao.update(branch);
+        dao.saveOrUpdate(branch);
         session.evict(branch);
         Branch result = (Branch) session.get(Branch.class, branch.getId());
 
         assertEquals(result.getName(), newName);
     }
 
-    @Test(expectedExceptions = Exception.class)
+    @Test(expectedExceptions = javax.validation.ConstraintViolationException.class)
     public void testUpdateNotNullViolation() {
         Branch branch = ObjectsFactory.getDefaultBranch();
         session.save(branch);
         branch.setName(null);
 
-        dao.update(branch);
+        dao.saveOrUpdate(branch);
     }
 
     @Test
@@ -157,7 +153,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         session.save(branch);
 
         branch.deleteTopic(topic);
-        dao.update(branch);
+        dao.saveOrUpdate(branch);
         session.flush();
 
         assertEquals(getCount("select count(*) from org.jtalks.jcommune.model.entity.Branch"), 1);
@@ -178,7 +174,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
             section.addOrUpdateBranch(newBranch);
             newBranch.setSection(section);
             branches.add(newBranch);
-        }   
+        }
         session.save(section);
         return branches;
     }
@@ -190,13 +186,13 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         List<Branch> selectedBranches = dao.getAllBranches();
         assertTrue(selectedBranches.isEmpty());
     }
-    
+
     @Test
     public void testGetAllBranches() {
         int sectionSize = 5;
         List<Branch> branchesOfFirstSection = createAndSaveBranchList(sectionSize, 1);
         List<Branch> branchesOfSecondSection = createAndSaveBranchList(sectionSize, 0);
-        
+
         // build desired order
         List<Branch> createdBranches = new ArrayList<Branch>(branchesOfSecondSection);
         createdBranches.addAll(branchesOfFirstSection);

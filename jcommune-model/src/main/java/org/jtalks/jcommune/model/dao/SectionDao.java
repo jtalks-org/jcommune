@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.model.dao;
 
-import org.jtalks.common.model.dao.ParentRepository;
+import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.entity.Branch;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -27,7 +27,7 @@ import java.util.List;
  * @author Max Malakhov
  * @see org.jtalks.jcommune.model.dao.hibernate.SectionHibernateDao
  */
-public interface SectionDao extends ParentRepository<Section> {
+public interface SectionDao extends Crud<Section> {
 
     /**
      * Get the list of all sections.

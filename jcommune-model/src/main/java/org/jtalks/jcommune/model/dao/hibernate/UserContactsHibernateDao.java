@@ -14,7 +14,8 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
+import org.hibernate.SessionFactory;
+import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.jcommune.model.dao.UserContactsDao;
 import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
@@ -22,22 +23,29 @@ import org.jtalks.jcommune.model.entity.UserContactType;
 import java.util.List;
 
 /**
- * This dao manages user ccontact and user contact types.
- *
+ * This dao manages user contacts and user contact types.
+ * <p/>
  * Types are to be configured in Poulpe, so we need to retrieve them from a database.
  *
  * @author Evgeniy Naumenko
  */
-public class UserContactsHibernateDao extends AbstractHibernateChildRepository<UserContactType>
+public class UserContactsHibernateDao extends GenericDao<UserContactType>
         implements UserContactsDao {
 
+
+    /**
+     * @param sessionFactory The SessionFactory.
+     */
+    public UserContactsHibernateDao(SessionFactory sessionFactory) {
+        super(sessionFactory, UserContactType.class);
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     public List<UserContactType> getAvailableContactTypes() {
-        return getSession()
+        return session()
                 .createQuery("from UserContactType")
                 .setCacheable(true)
                 .list();
@@ -48,7 +56,7 @@ public class UserContactsHibernateDao extends AbstractHibernateChildRepository<U
      */
     @Override
     public UserContact getContactById(long id) {
-        return (UserContact) getSession()
+        return (UserContact) session()
                 .createQuery("from UserContact u where u.id = ?")
                 .setCacheable(true)
                 .setLong(0, id)

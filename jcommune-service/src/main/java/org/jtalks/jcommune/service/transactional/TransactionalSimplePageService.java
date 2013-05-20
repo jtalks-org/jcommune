@@ -76,7 +76,7 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
         simplePage.setName(simplePageInfoContainer.getName());
         simplePage.setContent(simplePageInfoContainer.getContent());
 
-        this.getDao().update(simplePage);
+        this.getDao().saveOrUpdate(simplePage);
 
         logger.info("Simple page with id = " + simplePage.getId() + " update.");
     }
@@ -111,7 +111,7 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
         }
 
 
-        this.getDao().update(simplePage);
+        this.getDao().saveOrUpdate(simplePage);
 
         Group group = groupDao.getGroupByName(AdministrationGroup.ADMIN.getName());
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(group).on(simplePage).flush();

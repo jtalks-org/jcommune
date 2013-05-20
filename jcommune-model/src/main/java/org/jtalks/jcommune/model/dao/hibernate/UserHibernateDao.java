@@ -14,12 +14,13 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import org.hibernate.SessionFactory;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 import org.hibernate.criterion.Restrictions;
-import org.jtalks.common.model.dao.hibernate.AbstractHibernateParentRepository;
+import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -33,15 +34,22 @@ import org.jtalks.jcommune.model.entity.JCUser;
  * @author Kirill Afonin
  * @author Anuar_Nurmakanov
  */
-public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser>
+public class UserHibernateDao extends GenericDao<JCUser>
         implements UserDao {
+
+    /**
+     * @param sessionFactory The SessionFactory.
+     */
+    public UserHibernateDao(SessionFactory sessionFactory) {
+        super(sessionFactory, JCUser.class);
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public User getCommonUserByUsername(String username){
-        return (User) getSession().getNamedQuery("getCommonUserByUsername")
+    public User getCommonUserByUsername(String username) {
+        return (User) session().getNamedQuery("getCommonUserByUsername")
                 .setString("username", username).uniqueResult();
     }
 
@@ -51,7 +59,7 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser>
     @SuppressWarnings("unchecked")
     @Override
     public JCUser getByUsername(String username) {
-        List<JCUser> users = getSession()
+        List<JCUser> users = session()
                 .createCriteria(JCUser.class)
                 .add(Restrictions.eq("username", username).ignoreCase())
                 .list();
@@ -72,7 +80,7 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser>
      */
     @Override
     public JCUser getByEmail(String email) {
-        return (JCUser) getSession()
+        return (JCUser) session()
                 .createCriteria(JCUser.class)
                 .add(Restrictions.eq("email", email))
                 .setCacheable(true)
@@ -85,7 +93,7 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser>
     @SuppressWarnings("unchecked")
     @Override
     public Collection<JCUser> getNonActivatedUsers() {
-        return getSession()
+        return session()
                 .createCriteria(JCUser.class)
                 .add(Restrictions.eq("enabled", false))
                 .setCacheable(false)
@@ -97,7 +105,7 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser>
      */
     @Override
     public JCUser getByUuid(String uuid) {
-        return (JCUser) getSession()
+        return (JCUser) session()
                 .createCriteria(JCUser.class)
                 .add(Restrictions.eq("uuid", uuid))
                 .setCacheable(true)
@@ -110,7 +118,7 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser>
     @Override
     public List<JCUser> getByUsernames(Set<String> usernames) {
         @SuppressWarnings("unchecked")
-        List<JCUser> foundUsers = (List<JCUser>) getSession()
+        List<JCUser> foundUsers = (List<JCUser>) session()
                 .getNamedQuery("getByUsernames")
                 .setParameterList("usernames", usernames)
                 .list();

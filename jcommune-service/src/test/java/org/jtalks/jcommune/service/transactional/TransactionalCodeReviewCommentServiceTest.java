@@ -14,13 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-
-import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
@@ -37,8 +31,11 @@ import org.springframework.security.access.AccessDeniedException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
+
 /**
- * 
  * @author Vyacheslav Mishcheryakov
  */
 public class TransactionalCodeReviewCommentServiceTest {
@@ -48,7 +45,7 @@ public class TransactionalCodeReviewCommentServiceTest {
     private static final long CR_ID = 1L;
 
     @Mock
-    private ChildRepository<CodeReviewComment> dao;
+    private Crud<CodeReviewComment> dao;
     @Mock
     private PermissionService permissionService;
     @Mock

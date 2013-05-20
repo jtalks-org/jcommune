@@ -356,7 +356,7 @@ public class TransactionalTopicModificationServiceTest {
 
     private void createTopicVerifications(Branch branch)
             throws NotFoundException {
-        verify(branchDao).update(branch);
+        verify(branchDao).saveOrUpdate(branch);
         verify(aclBuilder, times(2)).grant(GeneralPermission.WRITE);
         verify(notificationService).branchChanged(branch);
     }
@@ -377,7 +377,7 @@ public class TransactionalTopicModificationServiceTest {
 
         assertEquals(branch.getTopicCount(), 0);
         assertEquals(user.getPostCount(), 0);
-        verify(branchDao).update(branch);
+        verify(branchDao).saveOrUpdate(branch);
         verify(securityService).deleteFromAcl(Topic.class, TOPIC_ID);
         verify(notificationService).branchChanged(branch);
     }
@@ -398,7 +398,7 @@ public class TransactionalTopicModificationServiceTest {
 
         assertEquals(branch.getTopicCount(), 0);
         assertEquals(user.getPostCount(), 0);
-        verify(branchDao).update(branch);
+        verify(branchDao).saveOrUpdate(branch);
         verify(securityService).deleteFromAcl(Topic.class, TOPIC_ID);
     }
 
@@ -533,7 +533,7 @@ public class TransactionalTopicModificationServiceTest {
 
         topicService.updateTopic(topic, null);
 
-        verify(topicDao).update(topic);
+        verify(topicDao).saveOrUpdate(topic);
         verify(notificationService).topicChanged(topic);
     }
 
@@ -563,7 +563,7 @@ public class TransactionalTopicModificationServiceTest {
         topicService.moveTopic(topic, BRANCH_ID);
 
         assertEquals(targetBranch.getTopicCount(), 1);
-        verify(branchDao).update(targetBranch);
+        verify(branchDao).saveOrUpdate(targetBranch);
         verify(notificationService).topicMoved(topic, TOPIC_ID);
     }
 
@@ -613,7 +613,7 @@ public class TransactionalTopicModificationServiceTest {
         topicService.closeTopic(topic);
 
         assertTrue(topic.isClosed());
-        verify(topicDao).update(topic);
+        verify(topicDao).saveOrUpdate(topic);
     }
 
     @Test(expectedExceptions = AccessDeniedException.class)
@@ -630,7 +630,7 @@ public class TransactionalTopicModificationServiceTest {
         topicService.openTopic(topic);
 
         assertFalse(topic.isClosed());
-        verify(topicDao).update(topic);
+        verify(topicDao).saveOrUpdate(topic);
     }
 
     private Branch createBranch() {

@@ -16,15 +16,6 @@
 package org.jtalks.jcommune.service.transactional;
 
 
-import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-
-import javax.persistence.EntityExistsException;
-
 import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
@@ -42,15 +33,21 @@ import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.EntityExistsException;
+
+import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 public class TransactionalSimplePageServiceTest {
 
-  private static final long ID = 2L;
+    private static final long ID = 2L;
     private static final String NAME = "name";
     private static final String CONTENT = "content";
-    private  static  final  String PATH_NAME = "path_name";
+    private static final String PATH_NAME = "path_name";
 
     @Mock
     private SimplePageDao dao;
@@ -97,7 +94,7 @@ public class TransactionalSimplePageServiceTest {
     }
 
     @Test
-    void  testGetPageByPathName() throws NotFoundException {
+    void testGetPageByPathName() throws NotFoundException {
         SimplePage samplePage = new SimplePage(NAME, CONTENT, PATH_NAME);
         when(dao.getPageByPathName(PATH_NAME)).thenReturn(samplePage);
 
@@ -107,7 +104,7 @@ public class TransactionalSimplePageServiceTest {
 
         verify(dao).getPageByPathName(PATH_NAME);
     }
-    
+
     @Test
     void testCreatePage() throws EntityExistsException {
         SimplePage simplePage = new SimplePage(NAME, CONTENT, PATH_NAME);
@@ -123,12 +120,12 @@ public class TransactionalSimplePageServiceTest {
         assertEquals(actualSimplePage.getPathName(), PATH_NAME);
 
         verify(dao).isExist(PATH_NAME);
-        verify(dao).update(simplePage);
+        verify(dao).saveOrUpdate(simplePage);
         verify(aclBuilder).grant(GeneralPermission.WRITE);
     }
 
     @Test(expectedExceptions = {NotFoundException.class})
-    void  testUpdateFailPageNotFound() throws NotFoundException {
+    void testUpdateFailPageNotFound() throws NotFoundException {
 
         String updatedName = "new name";
         String updatedContent = "new content";
@@ -142,7 +139,7 @@ public class TransactionalSimplePageServiceTest {
     }
 
     @Test(expectedExceptions = {NotFoundException.class})
-    void testGetPageByPathNameFailPageNotFound() throws NotFoundException{
+    void testGetPageByPathNameFailPageNotFound() throws NotFoundException {
 
         when(dao.getPageByPathName(PATH_NAME)).thenReturn(null);
 
@@ -154,9 +151,9 @@ public class TransactionalSimplePageServiceTest {
 
         SimplePage simplePage = new SimplePage(NAME, CONTENT, PATH_NAME);
         JCUser user = new JCUser("username", "email", "password");
-        
+
         when(dao.isExist(PATH_NAME)).thenReturn(true);
         SimplePage actualSimpePage = simplePageService.createPage(simplePage, user);
     }
-   
+
 }

@@ -203,7 +203,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
             } else {
                 lastRead.setPostIndex(Math.max(Math.min(topic.getPostCount() - 1, lastRead.getPostIndex()), postIndex));
             }
-            lastReadPostDao.update(lastRead);
+            lastReadPostDao.saveOrUpdate(lastRead);
         }
     }
 
@@ -243,7 +243,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
             int index = lastReadPost.getPostIndex();
             if (index >= post.getPostIndexInTopic()) {
                 lastReadPost.setPostIndex(index - 1);
-                lastReadPostDao.update(lastReadPost);
+                lastReadPostDao.saveOrUpdate(lastReadPost);
             }
         }
     }

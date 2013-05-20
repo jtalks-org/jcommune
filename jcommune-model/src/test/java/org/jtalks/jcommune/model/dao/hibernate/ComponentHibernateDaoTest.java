@@ -28,9 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
+import static org.testng.Assert.*;
 
 /**
  * @autor masyan
@@ -83,30 +81,30 @@ public class ComponentHibernateDaoTest extends AbstractTransactionalTestNGSpring
         session.save(component);
         component.setUuid(newUuid);
 
-        componentDao.update(component);
+        componentDao.saveOrUpdate(component);
         session.evict(component);
         Component result = (Component) session.get(Component.class, component.getId());
 
         assertEquals(result.getUuid(), newUuid);
     }
 
-    @Test(expectedExceptions = Exception.class)
+    @Test(expectedExceptions = javax.validation.ValidationException.class)
     public void testUpdateUuidNotNullViolation() {
         Component component = PersistedObjectsFactory.getDefaultComponent();
         session.save(component);
         component.setUuid(null);
 
-        componentDao.update(component);
+        componentDao.saveOrUpdate(component);
     }
-    
+
     @Test
     public void testOrphanRemoving() {
         Component component = PersistedObjectsFactory.getDefaultComponent();
-        
+
         component.getProperties().remove(0);
-        componentDao.update(component);
+        componentDao.saveOrUpdate(component);
         session.evict(component);
-        
+
         assertEquals(componentDao.get(component.getId()).getProperties().size(), 1);
     }
     

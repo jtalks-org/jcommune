@@ -15,7 +15,8 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Query;
-import org.jtalks.common.model.dao.hibernate.AbstractHibernateParentRepository;
+import org.hibernate.SessionFactory;
+import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -28,16 +29,22 @@ import java.util.List;
 
 /**
  * Hibernate implementation of PrivateMessageDao
- * 
+ *
  * @author Pavel Vervenko
  * @author Kirill Afonin
  * @author Guram Savinov
  */
-public class PrivateMessageHibernateDao extends
-        AbstractHibernateParentRepository<PrivateMessage> implements PrivateMessageDao {
+public class PrivateMessageHibernateDao extends GenericDao<PrivateMessage> implements PrivateMessageDao {
 
     private static final String STATUS = "status";
     private static final String STATUSES = "statuses";
+
+    /**
+     * @param sessionFactory The SessionFactory.
+     */
+    public PrivateMessageHibernateDao(SessionFactory sessionFactory) {
+        super(sessionFactory, PrivateMessage.class);
+    }
 
     /**
      * {@inheritDoc}
@@ -46,14 +53,14 @@ public class PrivateMessageHibernateDao extends
     @Override
     public Page<PrivateMessage> getAllFromUser(JCUser userFrom, JCommunePageRequest pageRequest) {
         PrivateMessageStatus[] statuses = PrivateMessageStatus.getOutboxStatus();
-        Number totalCount = (Number) getSession()
+        Number totalCount = (Number) session()
                 .getNamedQuery("getCountUserSentPm")
                 .setParameter("userFrom", userFrom)
                 .setParameterList(STATUSES, statuses)
                 .uniqueResult();
         pageRequest.adjustPageNumber(totalCount.intValue());
 
-        Query query = getSession().getNamedQuery("getAllFromUser")
+        Query query = session().getNamedQuery("getAllFromUser")
                 .setParameterList(STATUSES, statuses)
                 .setEntity("user", userFrom);
 
@@ -72,7 +79,7 @@ public class PrivateMessageHibernateDao extends
     @Override
     public Page<PrivateMessage> getAllForUser(JCUser userTo, JCommunePageRequest pageRequest) {
         PrivateMessageStatus[] statuses = PrivateMessageStatus.getInboxStatus();
-        Number totalCount = (Number) getSession()
+        Number totalCount = (Number) session()
                 .getNamedQuery("getCountUserInboxPm")
                 .setParameter("userTo", userTo)
                 .setParameterList(STATUSES, statuses)
@@ -93,13 +100,13 @@ public class PrivateMessageHibernateDao extends
     @SuppressWarnings("unchecked")
     @Override
     public Page<PrivateMessage> getDraftsForUser(JCUser user, JCommunePageRequest pageRequest) {
-        Number totalCount = (Number) getSession()
+        Number totalCount = (Number) session()
                 .getNamedQuery("getCountUserDraftPm")
                 .setParameter("userFrom", user)
                 .setParameter(STATUS, PrivateMessageStatus.DRAFT)
                 .uniqueResult();
         pageRequest.adjustPageNumber(totalCount.intValue());
-        Query query = getSession().getNamedQuery("getDraftsFromUser")
+        Query query = session().getNamedQuery("getDraftsFromUser")
                 .setParameter(STATUS, PrivateMessageStatus.DRAFT)
                 .setParameter("user", user);
         query.setFirstResult(pageRequest.getOffset());
@@ -114,7 +121,7 @@ public class PrivateMessageHibernateDao extends
     @Override
     public int getNewMessagesCountFor(String username) {
         PrivateMessageStatus[] statuses = PrivateMessageStatus.getNewMessageStatus();
-        return ((Number) getSession().getNamedQuery("getNewMessagesCountFor")
+        return ((Number) session().getNamedQuery("getNewMessagesCountFor")
                 .setParameter("read", false)
                 .setString("username", username)
                 .setParameterList(STATUSES, statuses)

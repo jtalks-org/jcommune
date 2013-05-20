@@ -14,19 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import static org.jgroups.util.Util.assertFalse;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-
-import java.util.ArrayList;
-
-import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.CodeReview;
@@ -44,12 +32,17 @@ import org.mockito.Mock;
 import org.springframework.security.access.AccessDeniedException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import static org.jgroups.util.Util.assertFalse;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 public class TransactionalCodeReviewServiceTest {
     private static final long CR_ID = 1L;
 
     @Mock
-    private ChildRepository<CodeReview> dao;
+    private Crud<CodeReview> dao;
     @Mock
     private UserService userService;
     @Mock
@@ -110,7 +103,7 @@ public class TransactionalCodeReviewServiceTest {
 
         codeReviewService.deleteComment(reviewComment, codeReview);
 
-        verify(dao).update(codeReview);
+        verify(dao).saveOrUpdate(codeReview);
         assertEquals(codeReview.getComments().size(), oldSize - 1);
     }
 

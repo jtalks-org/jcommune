@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.model.dao;
 
-import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
 
@@ -24,7 +24,7 @@ import org.jtalks.jcommune.model.entity.ComponentInformation;
  *
  * @author masyan
  */
-public interface ComponentDao extends ChildRepository<Component> {
+public interface ComponentDao extends Crud<Component> {
     /**
      * Gets a component.
      *
