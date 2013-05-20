@@ -53,8 +53,15 @@ import java.util.Map;
 @Controller
 public class AdministrationController extends ImageUploadController {
     private static final Logger LOGGER = LoggerFactory.getLogger(AdministrationController.class);
-    private static final String ADMIN_ATTRIBUTE_NAME = "adminMode";
-    private static final String JCOMMUNE_LOGO_PARAM = "jcommune.logo";
+    /**
+     * Parameter name for forum logo
+     */
+    public static final String JCOMMUNE_LOGO_PARAM = "jcommune.logo";
+
+    /**
+     * Session's marker attribute name for Administration mode
+     */
+    public static final String ADMIN_ATTRIBUTE_NAME = "adminMode";
 
     private final ComponentService componentService;
     private final ImageControllerUtils imageControllerUtils;
@@ -137,7 +144,7 @@ public class AdministrationController extends ImageUploadController {
         Component forumComponent = componentService.getComponentOfForum();
         String logoProperty = null;
         if (forumComponent != null) {
-            forumComponent.getProperty(JCOMMUNE_LOGO_PARAM);
+            logoProperty = forumComponent.getProperty(JCOMMUNE_LOGO_PARAM);
         }
         byte[] logoBytes = null;
 
