@@ -46,7 +46,7 @@ Creates Forum Administration dialog
 function createAdministrationDialog() {
     var bodyContent = '<div class="control-group"> \
             <div class="controls thumbnail-logo"> \
-                <img id="logoPreview" src="' + $root + '/admin/logo" alt=""/>  \
+                <img id="logoPreview" class="forum-logo" src="' + $root + '/admin/logo" alt=""/>  \
             </div> \
             \
             \
@@ -84,7 +84,8 @@ function createAdministrationDialog() {
         maxWidth: 350,
         tabNavigation: ['#forum_name','#forum_description','#forum_logoTooltip'],
         handlers: {
-            '#administration-submit-button': {'click': sendForumConfiguration}
+            '#administration-submit-button': {'click': sendForumConfiguration},
+            '#administration-cancel-button': {'click': jDialog.closeDialog}
         }
     });
 

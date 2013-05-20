@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
@@ -128,7 +129,11 @@ public class AdministrationController extends ImageUploadController {
     public void getForumLogo(HttpServletResponse response) {
         response.setContentType("image/jpeg");
 
-        String logoProperty = componentService.getComponentOfForum().getProperty(JCOMMUNE_LOGO_PARAM);
+        Component forumComponent = componentService.getComponentOfForum();
+        String logoProperty = null;
+        if (forumComponent != null) {
+            forumComponent.getProperty(JCOMMUNE_LOGO_PARAM);
+        }
         byte[] logoBytes = null;
 
         if (logoProperty == null || logoProperty.isEmpty()) {

@@ -50,7 +50,7 @@ public class ForumLogoService extends BaseImageService {
 
 
     /**
-     * Returns default avatar to be used when custom user image is not set
+     * Returns default forum logo to be used when custom user image is not set
      *
      * @return byte array-stored image
      */

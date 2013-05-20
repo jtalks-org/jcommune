@@ -712,12 +712,19 @@ div.anchor {
 }
 
 .thumbnail-logo {
-    max-height: 24px;
-    max-width: 24px;
+    max-height: 34px;
+    max-width: 31px;
     padding: 10px 10px 10px 10px;
 }
 
 .forum-logo {
-    height: 24px;
-    width: 24px;
+    height: 31px;
+    width: 34px;
+}
+
+.logo-container {
+    float: left;
+    display: block;
+    padding: 5px 12px 0px 0px;
+    line-height: 1;
 }

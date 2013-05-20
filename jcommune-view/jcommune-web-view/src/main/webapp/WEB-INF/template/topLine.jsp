@@ -31,7 +31,7 @@
         <span class="icon-bar"></span>
       </a>
 
-      <div class="brand">
+      <div class="logo-container">
         <img id="${sessionScope.adminMode == true ? 'forumLogo' : ''}" class="forum-logo"
              src="${pageContext.request.contextPath}/admin/logo"
              title="${logoTooltip}" alt="${logoTooltip}"/>
