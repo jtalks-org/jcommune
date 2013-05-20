@@ -85,7 +85,7 @@ public class PrivateMessageHibernateDao extends GenericDao<PrivateMessage> imple
                 .setParameterList(STATUSES, statuses)
                 .uniqueResult();
         pageRequest.adjustPageNumber(totalCount.intValue());
-        Query query = getSession().getNamedQuery("getAllToUser")
+        Query query = session().getNamedQuery("getAllToUser")
                 .setParameterList(STATUSES, statuses)
                 .setEntity("user", userTo);
         query.setFirstResult(pageRequest.getOffset());

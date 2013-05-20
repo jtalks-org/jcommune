@@ -14,24 +14,6 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
-import static java.util.Arrays.asList;
-import static org.jtalks.jcommune.model.entity.JCommuneProperty.SENDING_NOTIFICATIONS_ENABLED;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotSame;
-import static org.testng.Assert.assertTrue;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.jtalks.common.model.entity.Property;
 import org.jtalks.jcommune.model.dao.PostDao;
@@ -44,6 +26,19 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static java.util.Arrays.asList;
+import static org.jtalks.jcommune.model.entity.JCommuneProperty.SENDING_NOTIFICATIONS_ENABLED;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.*;
 
 /**
  * 
@@ -122,7 +117,7 @@ public class UserMentionServiceTest {
                 "After sending email [user][/user] tag shoud be changed to [user notified=true][/user]");
         verify(mailService, times(users.size()))
             .sendUserMentionedNotification(any(JCUser.class), anyLong());
-        verify(postDao, times(users.size())).update(mentioningPost);
+        verify(postDao, times(users.size())).saveOrUpdate(mentioningPost);
     }
     
     @Test
@@ -144,7 +139,7 @@ public class UserMentionServiceTest {
                 "After sending email [user][/user] tag shoudn't be changed");
         verify(mailService, never())
             .sendUserMentionedNotification(any(JCUser.class), anyLong());
-        verify(postDao, never()).update(mentioningPost);
+        verify(postDao, never()).saveOrUpdate(mentioningPost);
     }
     
     @Test
@@ -166,7 +161,7 @@ public class UserMentionServiceTest {
                 "After sending email [user][/user] tag shoudn't be changed");
         verify(mailService, never())
             .sendUserMentionedNotification(any(JCUser.class), anyLong());
-        verify(postDao, never()).update(mentioningPost);
+        verify(postDao, never()).saveOrUpdate(mentioningPost);
     }
     
     @Test
@@ -192,7 +187,7 @@ public class UserMentionServiceTest {
                 "After sending email [user][/user] tag shoudn't be changed");
         verify(mailService, never())
             .sendUserMentionedNotification(any(JCUser.class), anyLong());
-        verify(postDao, never()).update(mentioningPost);
+        verify(postDao, never()).saveOrUpdate(mentioningPost);
     }
     
     private JCUser getJCUser(String name, boolean isMentioningEnabled) {
@@ -227,7 +222,7 @@ public class UserMentionServiceTest {
         assertNotSame(mentioningPost.getPostContent(), textWithUsersMentioning,
                 "When forum notifications are disabled we should mark that user was notified," +
                 " otherwise after enabling notifications user will recieve all accumulated in queue notifications.");
-        verify(postDao).update(mentioningPost);
+        verify(postDao).saveOrUpdate(mentioningPost);
         verify(mailService, never())
             .sendUserMentionedNotification(any(JCUser.class), anyLong());
     }

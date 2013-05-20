@@ -15,15 +15,15 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.SessionFactory;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-
 import org.hibernate.criterion.Restrictions;
 import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Hibernate implementation of UserDao.

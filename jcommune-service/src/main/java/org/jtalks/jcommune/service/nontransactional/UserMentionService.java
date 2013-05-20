@@ -14,7 +14,13 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
-import static java.lang.String.format;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.jtalks.jcommune.model.dao.PostDao;
+import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.JCommuneProperty;
+import org.jtalks.jcommune.model.entity.Post;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -23,13 +29,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.jtalks.jcommune.model.dao.PostDao;
-import org.jtalks.jcommune.model.dao.UserDao;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.JCommuneProperty;
-import org.jtalks.jcommune.model.entity.Post;
+import static java.lang.String.format;
 
 
 /**
@@ -81,7 +81,7 @@ public class UserMentionService {
     /**
      * Extract names of users that haven't been mentioned from this post before and notify them.
      * 
-     * @param post where user was mentioned
+     * @param mentioningPost where user was mentioned
      */
     public void notifyNotMentionedUsers(Post mentioningPost) {
         String postContent = mentioningPost.getPostContent();
@@ -151,7 +151,7 @@ public class UserMentionService {
             }
             String newPostContent = mentioningPost.getPostContent().replace(initialUserMentioning, notifiedUserMentioing);
             mentioningPost.setPostContent(newPostContent);
-            postDao.update(mentioningPost);
+            postDao.saveOrUpdate(mentioningPost);
         } 
     }
 }
