@@ -268,7 +268,7 @@ function sendForumConfiguration(e) {
     jDialog.dialog.find('*').attr('disabled', true);
 
     $.ajax({
-        url: $root + '/admin/edit_ajax',
+        url: $root + '/admin/edit',
         type: "POST",
         contentType: "application/json",
         async: false,

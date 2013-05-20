@@ -63,6 +63,7 @@ public class AvatarController extends ImageUploadController {
      * @param avatarService for avatar manipulation
      * @param userService   to manipulate user-related data
      * @param imageControllerUtils utility object for image-related functions
+     * @param messageSource to resolve locale-dependent messages
      */
     @Autowired
     public AvatarController(

@@ -53,13 +53,12 @@ import java.util.Map;
 @Controller
 public class AdministrationController extends ImageUploadController {
     private static final Logger LOGGER = LoggerFactory.getLogger(AdministrationController.class);
-
     private static final String ADMIN_ATTRIBUTE_NAME = "adminMode";
-    public static final String JCOMMUNE_LOGO_PARAM = "jcommune.logo";
+    private static final String JCOMMUNE_LOGO_PARAM = "jcommune.logo";
 
-    private ComponentService componentService;
-    private ImageControllerUtils imageControllerUtils;
-    private ForumLogoService forumLogoService;
+    private final ComponentService componentService;
+    private final ImageControllerUtils imageControllerUtils;
+    private final ForumLogoService forumLogoService;
 
     @Autowired
     ServletContext servletContext;
@@ -67,6 +66,9 @@ public class AdministrationController extends ImageUploadController {
     /**
      * Creates instance of the service
      * @param componentService service to work with the forum component
+     * @param imageControllerUtils utility object for image-related functions
+     * @param messageSource to resolve locale-dependent messages
+     * @param forumLogoService service for forum logo related operations
      */
     @Autowired
     public AdministrationController(ComponentService componentService,
@@ -81,7 +83,8 @@ public class AdministrationController extends ImageUploadController {
     }
 
     /**
-     * Change mode to Administrator mode in which
+     * Change mode to Administrator mode in which user can edit
+     * forum parameters - external links, banners, logo, title, etc.
      * @param request Client request
      * @return redirect back to previous page
      */
@@ -105,10 +108,12 @@ public class AdministrationController extends ImageUploadController {
         return getRedirectToPrevPage(request);
     }
 
-    /*
-    Handler for request of updating Administratio information
+    /**
+     * Handler for request of updating Administration information
+     * @param componentInformation new forum information
+     * @param result form validation result
      */
-    @RequestMapping(value = "/admin/edit_ajax", method = RequestMethod.POST)
+    @RequestMapping(value = "/admin/edit", method = RequestMethod.POST)
     @ResponseBody
     @PreAuthorize("hasPermission(#componentService.componentOfForum.id, 'COMPONENT', 'GeneralPermission.ADMIN')")
     public JsonResponse setForumInformation(@Valid @RequestBody ComponentInformation componentInformation, BindingResult result) {
@@ -122,8 +127,8 @@ public class AdministrationController extends ImageUploadController {
     }
 
     /**
-     * Returns logo of the forum
-     * @param response
+     * handler returning logo of the forum
+     * @param response server response object
      */
     @RequestMapping(value = "/admin/logo", method = RequestMethod.GET)
     public void getForumLogo(HttpServletResponse response) {
@@ -151,6 +156,12 @@ public class AdministrationController extends ImageUploadController {
         }
     }
 
+    /**
+     * Gets default logo in JSON containing image data in String64 format
+     * @return JSON string containing default logo in String64 format
+     * @throws IOException
+     * @throws ImageProcessException
+     */
     @RequestMapping(value = "/admin/defaultLogo", method = RequestMethod.GET)
     @ResponseBody
     public String getDefaultLogoInJson() throws IOException, ImageProcessException {

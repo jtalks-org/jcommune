@@ -28,14 +28,14 @@ import java.io.InputStream;
  */
 public class ForumLogoService extends BaseImageService {
     private String defaultLogoPath;
-    private static final Logger LOGGER = LoggerFactory.getLogger(AvatarService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ForumLogoService.class);
 
     /**
-     * Create AvatarService instance
+     * Create ForumLogoService instance
      *
      * @param imageUtils        object for image processing
-     * @param base64Wrapper     to encode/decode avatar passed from the client side
-     * @param defaultLogoPath path to the default avatar image, to be replaced with image managed in Poulpe in future
+     * @param base64Wrapper     to encode/decode logo passed from the client side
+     * @param defaultLogoPath path to the default logo image
      * @param logoSizeProperty let us know the limitation of logo max size
      */
     public ForumLogoService(
@@ -56,7 +56,7 @@ public class ForumLogoService extends BaseImageService {
      */
     public byte[] getDefaultLogo() {
         byte[] result = new byte[0];
-        InputStream stream = AvatarService.class.getClassLoader().getResourceAsStream(defaultLogoPath);
+        InputStream stream = ForumLogoService.class.getClassLoader().getResourceAsStream(defaultLogoPath);
         try {
             result = new byte[stream.available()];
             Validate.isTrue(stream.read(result) > 0);

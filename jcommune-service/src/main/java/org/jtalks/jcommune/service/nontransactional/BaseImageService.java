@@ -46,19 +46,19 @@ public class BaseImageService {
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseImageService.class);
 
     /**
-     * Create AvatarService instance
+     * Create BaseImageService instance
      *
      * @param imageUtils        object for image processing
-     * @param base64Wrapper     to encode/decode avatar passed from the client side
-     * @param avatarSizeProperty let us know the limitation of avatar max size
+     * @param base64Wrapper     to encode/decode image passed from the client side
+     * @param imageSizeProperty let us know the limitation of image max size
      */
     public BaseImageService(
             ImageUtils imageUtils,
             Base64Wrapper base64Wrapper,
-            JCommuneProperty avatarSizeProperty) {
+            JCommuneProperty imageSizeProperty) {
         this.imageUtils = imageUtils;
         this.base64Wrapper = base64Wrapper;
-        this.imageSizeProperty = avatarSizeProperty;
+        this.imageSizeProperty = imageSizeProperty;
     }
 
     /**
@@ -66,7 +66,7 @@ public class BaseImageService {
      *  (todo: wtf? it does tons of things, correct method name and description)
      * @param bytes for conversion
      * @return result string
-     * @throws org.jtalks.jcommune.service.exceptions.ImageProcessException common avatar processing error
+     * @throws org.jtalks.jcommune.service.exceptions.ImageProcessException common image processing error
      */
     public String convertBytesToBase64String(byte[] bytes) throws ImageProcessException {
         Validate.notNull(bytes, "Incoming byte array cannot be null");
@@ -74,8 +74,8 @@ public class BaseImageService {
         if (image == null) { // something went wrong during conversion
             throw new ImageProcessException();
         }
-        byte[] outputAvatar = imageUtils.preprocessImage(image);
-        return base64Wrapper.encodeB64Bytes(outputAvatar);
+        byte[] outputImage = imageUtils.preprocessImage(image);
+        return base64Wrapper.encodeB64Bytes(outputImage);
     }
 
     /**
@@ -109,7 +109,7 @@ public class BaseImageService {
                 throw new ImageFormatException(VALID_IMAGE_EXTENSIONS);
             }
         } catch (IOException e) {
-            LOGGER.error("Failed to handle avatar ByteArrayInputStream", e);
+            LOGGER.error("Failed to handle image ByteArrayInputStream", e);
         }
     }
 

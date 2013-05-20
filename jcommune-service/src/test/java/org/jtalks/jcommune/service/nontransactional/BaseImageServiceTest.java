@@ -44,8 +44,8 @@ import static org.testng.Assert.assertEquals;
 public class BaseImageServiceTest {
 
     private static final String PROPERTY_NAME = "property";
-    private static final int AVATAR_MAX_SIZE = 1000;
-    private JCommuneProperty avatarSizeProperty = JCommuneProperty.AVATAR_MAX_SIZE;
+    private static final int IMAGE_MAX_SIZE = 1000;
+    private JCommuneProperty imageSizeProperty = JCommuneProperty.AVATAR_MAX_SIZE;
     @Mock
     private ImageUtils imageUtils;
     @Mock
@@ -59,14 +59,14 @@ public class BaseImageServiceTest {
     @BeforeMethod
     public void setUp() {
         initMocks(this);
-        avatarSizeProperty.setName(PROPERTY_NAME);
-        avatarSizeProperty.setPropertyDao(propertyDao);
+        imageSizeProperty.setName(PROPERTY_NAME);
+        imageSizeProperty.setPropertyDao(propertyDao);
         when(propertyDao.getByName(PROPERTY_NAME))
-                .thenReturn(new Property(PROPERTY_NAME, String.valueOf(AVATAR_MAX_SIZE)));
+                .thenReturn(new Property(PROPERTY_NAME, String.valueOf(IMAGE_MAX_SIZE)));
         baseImageService = new BaseImageService(
                 imageUtils,
                 base64Wrapper,
-                avatarSizeProperty);
+                imageSizeProperty);
     }
 
     @Test(dataProvider = "validImageBytesValues")
@@ -125,26 +125,26 @@ public class BaseImageServiceTest {
     }
 
     @Test(expectedExceptions = ImageFormatException.class, dataProvider = "invalidFormatValues")
-    public void validateAvatarFormatShouldNotConsiderIncorrectFormatsAsValid(MultipartFile file) throws ImageFormatException {
+    public void validateImageFormatShouldNotConsiderIncorrectFormatsAsValid(MultipartFile file) throws ImageFormatException {
         baseImageService.validateImageFormat(file);
     }
 
     @DataProvider
     public Object[][] invalidFormatValues() {
         return new Object[][]{
-                {new MockMultipartFile("test_avatar", "test_avatar", "image/bmp", new byte[10])},
-                {new MockMultipartFile("test_avatar", "test_avatar", "image/tiff", new byte[10])},
-                {new MockMultipartFile("test_avatar", "test_avatar", "text/plain", new byte[10])},
-                {new MockMultipartFile("test_avatar", "test_avatar", "audio/mpeg", new byte[10])},
-                {new MockMultipartFile("test_avatar", "test_avatar", "audio/x-wav", new byte[10])},
-                {new MockMultipartFile("test_avatar", "test_avatar", "text/plain", new byte[10])},
-                {new MockMultipartFile("test_avatar", "test_avatar", "text/html", new byte[10])},
-                {new MockMultipartFile("test_avatar", "test_avatar", "video/mpeg", new byte[10])}
+                {new MockMultipartFile("test_image", "test_image", "image/bmp", new byte[10])},
+                {new MockMultipartFile("test_image", "test_image", "image/tiff", new byte[10])},
+                {new MockMultipartFile("test_image", "test_image", "text/plain", new byte[10])},
+                {new MockMultipartFile("test_image", "test_image", "audio/mpeg", new byte[10])},
+                {new MockMultipartFile("test_image", "test_image", "audio/x-wav", new byte[10])},
+                {new MockMultipartFile("test_image", "test_image", "text/plain", new byte[10])},
+                {new MockMultipartFile("test_image", "test_image", "text/html", new byte[10])},
+                {new MockMultipartFile("test_image", "test_image", "video/mpeg", new byte[10])}
         };
     }
 
     @Test(dataProvider = "validFormatValues")
-    public void validateAvatarFormatShouldConsiderCorrectFormatsFromOperaAndIEAsValid(MultipartFile file)
+    public void validateImageFormatShouldConsiderCorrectFormatsFromOperaAndIEAsValid(MultipartFile file)
             throws ImageFormatException {
         baseImageService.validateImageFormat(file);
     }
@@ -157,7 +157,7 @@ public class BaseImageServiceTest {
         validFormats.add("image/gif");
         List<MultipartFile> files = new ArrayList<MultipartFile>(validFormats.size());
         for (String contentType : validFormats) {
-            files.add(new MockMultipartFile("test_avatar", "test_avatar", contentType, new byte[10]));
+            files.add(new MockMultipartFile("test_image", "test_image", contentType, new byte[10]));
         }
         Object[][] result = new Object[files.size()][];
         for (int i = 0; i < result.length; i++) {
@@ -168,19 +168,19 @@ public class BaseImageServiceTest {
     }
 
     @Test(expectedExceptions = {IllegalArgumentException.class})
-    public void validateAvatarFormatInFileShouldNotWorkWithPassedNull() throws ImageFormatException {
+    public void validateImageFormatInFileShouldNotWorkWithPassedNull() throws ImageFormatException {
         MultipartFile nullMultipartFile = null;
         baseImageService.validateImageFormat(nullMultipartFile);
     }
 
     @Test(expectedExceptions = {IllegalArgumentException.class})
-    public void validateAvatarFormatInByteArrayShouldNotWorkWithPassedNull() throws ImageFormatException {
+    public void validateImageFormatInByteArrayShouldNotWorkWithPassedNull() throws ImageFormatException {
         byte[] nullByteArray = null;
         baseImageService.validateImageFormat(nullByteArray);
     }
 
     @Test(dataProvider = "validFormatValuesForChromeFF")
-    public void validateAvatarFormatShouldProcessValidValuesForChromeFF(byte[] bytes) throws ImageFormatException {
+    public void validateImageFormatShouldProcessValidValuesForChromeFF(byte[] bytes) throws ImageFormatException {
         baseImageService.validateImageFormat(bytes);
     }
 
@@ -195,7 +195,7 @@ public class BaseImageServiceTest {
     }
 
     @Test(dataProvider = "invalidFormatValuesForChromeFF", expectedExceptions = ImageFormatException.class)
-    public void validateAvatarFormatShouldNotProcessInvalidValuesForChromeFF(byte[] bytes) throws ImageFormatException {
+    public void validateImageFormatShouldNotProcessInvalidValuesForChromeFF(byte[] bytes) throws ImageFormatException {
         baseImageService.validateImageFormat(bytes);
     }
 
@@ -211,20 +211,20 @@ public class BaseImageServiceTest {
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void validateAvatarSizeSholdNotContinueWithPassedNullValue() throws ImageSizeException {
+    public void validateImageSizeSholdNotContinueWithPassedNullValue() throws ImageSizeException {
         baseImageService.validateImageSize(null);
     }
 
     @Test(expectedExceptions = ImageSizeException.class)
-    public void validateAvatarSizeShouldNotConsiderAvatarWithIncorrectSizeAsValid() throws Exception {
-        byte[] bytes = new byte[AVATAR_MAX_SIZE * 2];
+    public void validateImageSizeShouldNotConsiderAvatarWithIncorrectSizeAsValid() throws Exception {
+        byte[] bytes = new byte[IMAGE_MAX_SIZE * 2];
 
         baseImageService.validateImageSize(bytes);
     }
 
     @Test
-    public void validateAvatarSizeShouldConsiderAvatarWithCorrectSizeAsValid() throws ImageSizeException {
-        byte[] bytes = new byte[AVATAR_MAX_SIZE];
+    public void validateImageSizeShouldConsiderAvatarWithCorrectSizeAsValid() throws ImageSizeException {
+        byte[] bytes = new byte[IMAGE_MAX_SIZE];
 
         baseImageService.validateImageSize(bytes);
     }
