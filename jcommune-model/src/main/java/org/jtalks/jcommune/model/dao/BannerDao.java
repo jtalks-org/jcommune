@@ -14,11 +14,11 @@
  */
 package org.jtalks.jcommune.model.dao;
 
-import java.util.Collection;
-
-import org.jtalks.common.model.dao.ParentRepository;
+import org.jtalks.common.model.dao.Crud;
 import org.jtalks.jcommune.model.entity.Banner;
 import org.jtalks.jcommune.model.entity.BannerPosition;
+
+import java.util.Collection;
 
 /**
  * DAO for the {@link Banner}. It provides all CRUD operations
@@ -27,7 +27,7 @@ import org.jtalks.jcommune.model.entity.BannerPosition;
  * @author Anuar_Nurmakanov
  *
  */
-public interface BannerDao extends ParentRepository<Banner> {
+public interface BannerDao extends Crud<Banner> {
     /**
      * Get banner by position. By default we don't have banner
      * for every position on page, so it's possible that you don't

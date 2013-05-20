@@ -78,7 +78,7 @@ public class UserMentionService {
     /**
      * Extract names of users that haven't been mentioned from this post before and notify them.
      * 
-     * @param post where user was mentioned
+     * @param mentioningPost where user was mentioned
      */
     public void notifyNewlyMentionedUsers(Post mentioningPost) {
         String postContent = mentioningPost.getPostContent();
@@ -146,7 +146,7 @@ public class UserMentionService {
             sendMailService.sendUserMentionedNotification(mentionedUser, mentioningPost.getId());
             String newPostContent = mentioningPost.getPostContent().replace(initialUserMentioning, notifiedUserMentioning);
             mentioningPost.setPostContent(newPostContent);
-            postDao.update(mentioningPost);
+            postDao.saveOrUpdate(mentioningPost);
         } 
     }
 }

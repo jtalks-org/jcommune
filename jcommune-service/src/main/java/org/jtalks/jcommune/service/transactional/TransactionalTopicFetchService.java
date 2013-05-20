@@ -58,7 +58,7 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
     public Topic get(Long id) throws NotFoundException {
         Topic topic = super.get(id);
         topic.setViews(topic.getViews() + 1);
-        this.getDao().update(topic);
+        this.getDao().saveOrUpdate(topic);
         return topic;
     }
 

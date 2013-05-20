@@ -15,7 +15,8 @@
 
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
+import org.hibernate.SessionFactory;
+import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.common.model.entity.Property;
 import org.jtalks.jcommune.model.dao.PropertyDao;
 
@@ -24,16 +25,23 @@ import org.jtalks.jcommune.model.dao.PropertyDao;
  * The class is responsible for loading {@link Property} objects from database,
  * but another CRUD operations aren't available, because only and only administrative panel may perform
  * creating, updating, deleting {@link Property} in database.
- * 
+ *
  * @author Anuar Nurmakanov
  */
-public class PropertyHibernateDao extends AbstractHibernateChildRepository<Property> implements PropertyDao {
+public class PropertyHibernateDao extends GenericDao<Property> implements PropertyDao {
+
+    /**
+     * @param sessionFactory The SessionFactory.
+     */
+    public PropertyHibernateDao(SessionFactory sessionFactory) {
+        super(sessionFactory, Property.class);
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void update(Property entity) {
+    public void saveOrUpdate(Property entity) {
         throw new UnsupportedOperationException("Value of \"Property\" cannot be changed in a forum.");
     }
 
@@ -42,7 +50,7 @@ public class PropertyHibernateDao extends AbstractHibernateChildRepository<Prope
      */
     @Override
     public Property getByName(String name) {
-        return (Property)getSession()
+        return (Property) session()
                 .getNamedQuery("getPropertyByName")
                 .setString("name", name)
                 .uniqueResult();

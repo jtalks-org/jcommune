@@ -14,11 +14,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import java.util.Arrays;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
@@ -49,6 +44,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 
 /**
  * User service class. This class contains method needed to manipulate with User persistent entity.
@@ -234,7 +233,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         mailService.sendPasswordRecoveryMail(user, randomPassword);
         String encryptedRandomPassword = encryptionService.encryptPassword(randomPassword);
         user.setPassword(encryptedRandomPassword);
-        this.getDao().update(user);
+        this.getDao().saveOrUpdate(user);
 
         LOGGER.info("New random password was set for user {}", user.getUsername());
     }
@@ -250,7 +249,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         } else if (!user.isEnabled()) {
             Group group = groupDao.getGroupByName(AdministrationGroup.USER.getName());
             group.getUsers().add(user);
-            groupDao.update(group);
+            groupDao.saveOrUpdate(group);
             
             user.setEnabled(true);
             this.getDao().saveOrUpdate(user);

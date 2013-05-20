@@ -23,17 +23,13 @@ import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.times;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
 
 /**
- * 
  * @author Vyacheslav Mishcheryakov
- *
  */
 public class TransactionalConfigurationServiceTest {
 
@@ -44,7 +40,7 @@ public class TransactionalConfigurationServiceTest {
     private static final int SAPE_NUMBER_OF_LINKS = 10;
     private static final boolean SAPE_SHOW_ON_MAIN_PAGE = true;
     private static final boolean SAPE_SHOW_DUMMY_LINKS = false;
-    
+
     private JCommuneProperty sapeAccountId = JCommuneProperty.CMP_SAPE_ACCOUNT_ID;
     private JCommuneProperty sapeTimeout = JCommuneProperty.CMP_SAPE_TIMEOUT;
     private JCommuneProperty sapeHostUrl = JCommuneProperty.CMP_HOST_URL;
@@ -54,30 +50,30 @@ public class TransactionalConfigurationServiceTest {
     private JCommuneProperty sapeEnabled = JCommuneProperty.CMP_SAPE_ENABLED;
     @Mock
     private ComponentDao componentDao;
-    
+
     private ConfigurationService configurationService;
-    
+
     @BeforeMethod
     public void init() {
         initMocks(this);
         configurationService = new TransactionalConfigurationService(
-                sapeAccountId, sapeTimeout, sapeHostUrl, sapeNumberOrLinks, 
-                sapeShowOnMainPage, sapeShowDummyLinks,sapeEnabled);
-        
+                sapeAccountId, sapeTimeout, sapeHostUrl, sapeNumberOrLinks,
+                sapeShowOnMainPage, sapeShowDummyLinks, sapeEnabled);
+
         sapeAccountId.setName("sape.account.id");
         sapeTimeout.setName("sape.timeout");
         sapeHostUrl.setName("sape.host.url");
         sapeNumberOrLinks.setName("sape.number.of.links");
         sapeShowOnMainPage.setName("sape.show.on.main.page");
         sapeShowDummyLinks.setName("sape.show.dummy.links");
-        
+
         sapeAccountId.setDefaultValue(SAPE_ACCOUNT_ID);
         sapeTimeout.setDefaultValue(String.valueOf(SAPE_TIMEOUT));
         sapeHostUrl.setDefaultValue(SAPE_HOST_URL);
         sapeNumberOrLinks.setDefaultValue(String.valueOf(SAPE_NUMBER_OF_LINKS));
         sapeShowOnMainPage.setDefaultValue(String.valueOf(SAPE_SHOW_ON_MAIN_PAGE));
         sapeShowDummyLinks.setDefaultValue(String.valueOf(SAPE_SHOW_DUMMY_LINKS));
-        
+
         sapeAccountId.setComponentDao(componentDao);
         sapeTimeout.setComponentDao(componentDao);
         sapeHostUrl.setComponentDao(componentDao);
@@ -85,11 +81,11 @@ public class TransactionalConfigurationServiceTest {
         sapeShowOnMainPage.setComponentDao(componentDao);
         sapeShowDummyLinks.setComponentDao(componentDao);
     }
-    
+
     @Test
     public void testGetSapeConfiguration() {
         SapeConfiguration configuration = configurationService.getSapeConfiguration(COMPONENT_ID);
-        
+
         assertEquals(configuration.getAccountId(), SAPE_ACCOUNT_ID);
         assertEquals(configuration.getTimeout(), SAPE_TIMEOUT);
         assertEquals(configuration.getHostUrl(), SAPE_HOST_URL);
@@ -97,7 +93,7 @@ public class TransactionalConfigurationServiceTest {
         assertEquals(configuration.isShowOnMainPage(), SAPE_SHOW_ON_MAIN_PAGE);
         assertEquals(configuration.isShowDummyLinks(), SAPE_SHOW_DUMMY_LINKS);
     }
-    
+
     @Test
     public void testUpdateSapeConfiguration() {
         SapeConfiguration configuration = new SapeConfiguration();
@@ -107,16 +103,15 @@ public class TransactionalConfigurationServiceTest {
         configuration.setNumberOfLinks(SAPE_NUMBER_OF_LINKS);
         configuration.setShowOnMainPage(SAPE_SHOW_ON_MAIN_PAGE);
         configuration.setShowDummyLinks(SAPE_SHOW_DUMMY_LINKS);
-        
+
         Component component = new Component();
         when(componentDao.getComponent()).thenReturn(component);
-        
+
         configurationService.updateSapeConfiguration(configuration, COMPONENT_ID);
-        
-        verify(componentDao, times(6)).update(any(Component.class));
+
+        verify(componentDao, times(6)).saveOrUpdate(any(Component.class));
         assertEquals(component.getProperties().size(), 6);
     }
-    
-    
-    
+
+
 }

@@ -110,7 +110,7 @@ public class UserMentionServiceTest {
         
         assertEquals(mentioningPost.getPostContent(), "In this text we have user mentioning [user notified=true]Shogun[/user]",
                 "After sending email [user][/user] tag shoud be changed to [user notified=true][/user]");
-        verify(postDao).update(mentioningPost);
+        verify(postDao).saveOrUpdate(mentioningPost);
     }
     
     @Test
@@ -126,7 +126,7 @@ public class UserMentionServiceTest {
                 "After sending email [user][/user] tag shoudn't be changed");
         verify(mailService, never())
             .sendUserMentionedNotification(any(JCUser.class), anyLong());
-        verify(postDao, never()).update(mentioningPost);
+        verify(postDao, never()).saveOrUpdate(mentioningPost);
     }
     
     @Test
@@ -144,7 +144,7 @@ public class UserMentionServiceTest {
                 "After sending email [user][/user] tag shoudn't be changed");
         verify(mailService, never())
             .sendUserMentionedNotification(any(JCUser.class), anyLong());
-        verify(postDao, never()).update(mentioningPost);
+        verify(postDao, never()).saveOrUpdate(mentioningPost);
     }
     
     @Test
@@ -167,7 +167,7 @@ public class UserMentionServiceTest {
                 "After sending email [user][/user] tag shoudn't be changed");
         verify(mailService, never())
             .sendUserMentionedNotification(any(JCUser.class), anyLong());
-        verify(postDao, never()).update(mentioningPost);
+        verify(postDao, never()).saveOrUpdate(mentioningPost);
     }
     
     private JCUser getJCUser(String name, boolean isMentioningEnabled) {

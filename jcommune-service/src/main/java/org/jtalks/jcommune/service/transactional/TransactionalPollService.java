@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.service.transactional;
 
 import ch.lambdaj.function.closure.Closure1;
-import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.SecurityService;
@@ -38,9 +38,9 @@ import static ch.lambdaj.Lambda.*;
  * @author Alexandre Teterin
  * @see org.jtalks.jcommune.model.entity.Poll
  */
-public class TransactionalPollService extends AbstractTransactionalEntityService<Poll, ChildRepository<Poll>>
+public class TransactionalPollService extends AbstractTransactionalEntityService<Poll, Crud<Poll>>
         implements PollService {
-    private ChildRepository<PollItem> pollOptionDao;
+    private Crud<PollItem> pollOptionDao;
     private GroupDao groupDao;
     private SecurityService securityService;
     private UserService userService;
@@ -56,9 +56,9 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
      * @param securityService           the service for security operations
      * @param userService               to fetch the user currently logged in
      */
-    public TransactionalPollService(ChildRepository<Poll> pollDao,
+    public TransactionalPollService(Crud<Poll> pollDao,
                                     GroupDao groupDao,
-                                    ChildRepository<PollItem> pollOptionDao,
+                                    Crud<PollItem> pollOptionDao,
                                     SecurityService securityService,
                                     UserService userService) {
         super(pollDao);
@@ -80,7 +80,7 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
             for (PollItem option : poll.getPollItems()) {
                 if (selectedOptionsIds.contains(option.getId())) {
                     option.increaseVotesCount();
-                    pollOptionDao.update(option);
+                    pollOptionDao.saveOrUpdate(option);
                 }
             }
         }
@@ -92,9 +92,9 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
      */
     @Override
     public void createPoll(Poll poll) {
-        this.getDao().update(poll);
+        this.getDao().saveOrUpdate(poll);
         Closure1<PollItem> closure = closure(PollItem.class);
-        of(pollOptionDao).update(var(PollItem.class));
+        of(pollOptionDao).saveOrUpdate(var(PollItem.class));
         closure.each(poll.getPollItems());
         securityService.createAclBuilder().grant(GeneralPermission.WRITE)
                 .to(groupDao.getGroupByName(AdministrationGroup.USER.getName()))

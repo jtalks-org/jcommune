@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.model.dao;
 
-import org.jtalks.common.model.dao.ParentRepository;
+import org.jtalks.common.model.dao.Crud;
 import org.jtalks.jcommune.model.entity.ExternalLink;
 
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * @author Alexandre Teterin
  */
-public interface ExternalLinkDao extends ParentRepository<ExternalLink> {
+public interface ExternalLinkDao extends Crud<ExternalLink> {
 
     /**
      * Provide a list of all links to external resources.

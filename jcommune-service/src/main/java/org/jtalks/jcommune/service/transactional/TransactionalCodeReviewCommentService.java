@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -30,7 +30,7 @@ import org.springframework.security.access.AccessDeniedException;
  * @author Vyacheslav Mishcheryakov
  */
 public class TransactionalCodeReviewCommentService extends
-        AbstractTransactionalEntityService<CodeReviewComment, ChildRepository<CodeReviewComment>> implements
+        AbstractTransactionalEntityService<CodeReviewComment, Crud<CodeReviewComment>> implements
         CodeReviewCommentService {
 
     private PermissionService permissionService;
@@ -40,10 +40,10 @@ public class TransactionalCodeReviewCommentService extends
      * Create an instance of CodeReview entity based service
      * 
      * @param dao data access object, which should be able do all CRUD operations with entity.
-     * @param permissionServiceto check permissions for actions
+     * @param permissionService to check permissions for actions
      * @param userService to get current user
      */
-    public TransactionalCodeReviewCommentService(ChildRepository<CodeReviewComment> dao,
+    public TransactionalCodeReviewCommentService(Crud<CodeReviewComment> dao,
             PermissionService permissionService, UserService userService) {
         super(dao);
         this.permissionService = permissionService;
@@ -60,7 +60,8 @@ public class TransactionalCodeReviewCommentService extends
         checkHasUpdatePermission(comment, branchId);
 
         comment.setBody(body);
-        getDao().update(comment);
+        getDao().saveOrUpdate(comment);
+
         return comment;
     }
 

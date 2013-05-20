@@ -14,8 +14,8 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.entity.Entity;
-import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.jcommune.service.EntityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
@@ -29,7 +29,7 @@ import java.lang.reflect.ParameterizedType;
  * @author Osadchuck Eugeny
  * @author Kirill Afonin
  */
-public abstract class AbstractTransactionalEntityService<T extends Entity, Y extends ChildRepository<T>>
+public abstract class AbstractTransactionalEntityService<T extends Entity, Y extends Crud<T>>
         implements EntityService<T> {
     /**
      * ChildRepository object implementation.

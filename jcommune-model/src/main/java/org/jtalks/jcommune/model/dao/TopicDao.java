@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.model.dao;
 
 import org.joda.time.DateTime;
-import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.entity.Branch;
 import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -33,7 +33,7 @@ import org.springframework.data.domain.Page;
  * @author Anuar Nurmakanov
  * @see org.jtalks.jcommune.model.dao.hibernate.TopicHibernateDao
  */
-public interface TopicDao extends ChildRepository<Topic> {
+public interface TopicDao extends Crud<Topic> {
 
 
     /**

@@ -15,13 +15,15 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
-import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
-import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Poll;
+import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.UserService;
 import org.mockito.Mock;
@@ -44,9 +46,9 @@ public class TransactionalPollServiceTest {
     private static final Long POLL_ID = 1L;
     private PollService pollService;
     @Mock
-    private ChildRepository<PollItem> pollOptionDao;
+    private Crud<PollItem> pollOptionDao;
     @Mock
-    private ChildRepository<Poll> pollDao;
+    private Crud<Poll> pollDao;
     @Mock
     private GroupDao groupDao;
     @Mock
