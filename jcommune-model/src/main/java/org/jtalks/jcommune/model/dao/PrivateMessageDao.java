@@ -14,21 +14,21 @@
  */
 package org.jtalks.jcommune.model.dao;
 
-import org.jtalks.common.model.dao.ParentRepository;
+import org.jtalks.common.model.dao.Crud;
 import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.springframework.data.domain.Page;
 
 /**
- * DAO interface for private messaging. Except of basic CRUD operations from {@link ParentRepository}
+ * DAO interface for private messaging. Except of basic CRUD operations from {@link Crud}
  * provides methods to get all messages from some user or to the user.
  *
  * @author Pavel Vervenko
  * @author Kirill Afonin
  * @see org.jtalks.jcommune.model.dao.hibernate.PrivateMessageHibernateDao
  */
-public interface PrivateMessageDao extends ParentRepository<PrivateMessage> {
+public interface PrivateMessageDao extends Crud<PrivateMessage> {
 
     /**
      * Get all messages sent by specified user (either

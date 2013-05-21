@@ -14,13 +14,13 @@
  */
 package org.jtalks.jcommune.model.dao;
 
-import java.util.List;
-
-import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.dao.Crud;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Topic;
+
+import java.util.List;
 
 /**
  * Interface allows to make basic CRUD operations with the
@@ -29,7 +29,7 @@ import org.jtalks.jcommune.model.entity.Topic;
  * @author Evgeniy Naumenko
  * @author Anuar_Nurmakanov
  */
-public interface LastReadPostDao extends ChildRepository<LastReadPost> {
+public interface LastReadPostDao extends Crud<LastReadPost> {
 
     /**
      * Returns all last read post data saved for the topic given

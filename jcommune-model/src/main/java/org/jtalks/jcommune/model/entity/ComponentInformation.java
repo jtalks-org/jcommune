@@ -20,45 +20,86 @@ import javax.validation.constraints.Size;
 
 /**
  * Class keeping administrative information about the component
+ * @author Andrei Alikov
  */
 public class ComponentInformation {
-    private static final int NAME_MAX_SIZE = 255;
+    private static final int PARAM_MAX_SIZE = 255;
+    private static final int PARAM_MIN_SIZE = 1;
 
     @NotNull(message = "{validation.not_null}")
-    @Size(max = NAME_MAX_SIZE, message = "{validation.links.title.length}")
+    @Size(min = PARAM_MIN_SIZE, max = PARAM_MAX_SIZE, message = "{validation.param.length}")
     private String name;
-    private String description;
-    private String logoTooltip;
-    private byte[] logo;
 
-    public byte[] getLogo() {
+    @NotNull(message = "{validation.not_null}")
+    @Size(min = PARAM_MIN_SIZE, max = PARAM_MAX_SIZE, message = "{validation.param.length}")
+    private String description;
+
+    @NotNull(message = "{validation.not_null}")
+    @Size(min = PARAM_MIN_SIZE, max = PARAM_MAX_SIZE, message = "{validation.param.length}")
+    private String logoTooltip;
+
+    private String logo;
+
+    /**
+     * Gets the string with encoded logo picture
+     * @return the string with encoded logo picture
+     */
+    public String getLogo() {
         return logo;
     }
 
-    public void setLogo(byte[] logo) {
+    /**
+     * sets the string with encoded logo picture
+     * @param logo string with new encoded logo picture
+     */
+    public void setLogo(String logo) {
         this.logo = logo;
     }
 
+    /**
+     * Gets the name of the component
+     * @return name of the component
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the name of the component
+     * @param name new name of the component
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Gets the description of the component
+     * @return description of the component
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Sets the description of the component
+     * @param description new description of the component
+     */
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     * Gets the tooltip for the component logo
+     * @return tooltip for the component logo
+     */
     public String getLogoTooltip() {
         return logoTooltip;
     }
 
+    /**
+     * Sets the tooltip for the component logo
+     * @param logoTooltip new tooltip for the component logo
+     */
     public void setLogoTooltip(String logoTooltip) {
         this.logoTooltip = logoTooltip;
     }

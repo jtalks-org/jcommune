@@ -18,10 +18,9 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
-
-import org.jtalks.jcommune.model.entity.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.ExternalLinkDao;
 import org.jtalks.jcommune.model.entity.ExternalLink;
+import org.jtalks.jcommune.model.entity.ObjectsFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -86,7 +85,7 @@ public class ExternalLinkHibernateDaoTest extends AbstractTransactionalTestNGSpr
         link = (ExternalLink) session.get(ExternalLink.class, link.getId());
         fillFieldsRandomly(link);
 
-        dao.update(link);
+        dao.saveOrUpdate(link);
         session.clear();
 
         ExternalLink actual = (ExternalLink) session.get(ExternalLink.class, link.getId());

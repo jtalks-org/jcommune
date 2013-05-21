@@ -356,3 +356,19 @@ h3 {
 .topline-dropdown-menu {
     margin: 10px 0 2px 15px;
 }
+
+
+/* Administration dialog */
+.logo-manage-buttons-container {
+    padding-top: 4px;
+}
+
+.logo-manage-buttons {
+    width: 250px;
+    display: inline-block;
+    text-align: left;
+}
+
+.admin-dialog-hr {
+    margin: 6px 0 6px 0;
+}

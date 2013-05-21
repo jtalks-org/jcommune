@@ -41,18 +41,11 @@ import java.util.Locale;
  *
  * @author Alexandre Teterin
  */
-public class AvatarService {
+public class AvatarService extends BaseImageService {
 
-    private static final List<String> VALID_IMAGE_TYPES = Arrays.asList("image/jpeg", "image/png", "image/gif");
-    /** user-friendly string with all valid image types */
-    private static final String VALID_IMAGE_EXTENSIONS = "*.jpeg, *.jpg, *.gif, *.png";
     public static final String HTTP_HEADER_DATETIME_PATTERN = "E, dd MMM yyyy HH:mm:ss z";
-    
-    private ImageUtils imageUtils;
-    private Base64Wrapper base64Wrapper;
-    private String defaultAvatarPath;
-    private JCommuneProperty avatarSizeProperty;
 
+    private String defaultAvatarPath;
     private static final Logger LOGGER = LoggerFactory.getLogger(AvatarService.class);
 
     /**
@@ -68,78 +61,11 @@ public class AvatarService {
             Base64Wrapper base64Wrapper,
             String defaultAvatarPath,
             JCommuneProperty avatarSizeProperty) {
+        super(imageUtils, base64Wrapper, avatarSizeProperty);
         this.defaultAvatarPath = defaultAvatarPath;
-        this.imageUtils = imageUtils;
-        this.base64Wrapper = base64Wrapper;
-        this.avatarSizeProperty = avatarSizeProperty;
     }
 
-    /**
-     * Perform bytes data to string conversion
-     *  (todo: wtf? it does tons of things, correct method name and description)
-     * @param bytes for conversion
-     * @return result string
-     * @throws ImageProcessException common avatar processing error
-     */
-    public String convertBytesToBase64String(byte[] bytes) throws ImageProcessException {
-        Validate.notNull(bytes, "Incoming byte array cannot be null");
-        BufferedImage image = imageUtils.convertByteArrayToImage(bytes);
-        if (image == null) { // something went wrong during conversion
-            throw new ImageProcessException();
-        }
-        byte[] outputAvatar = imageUtils.preprocessImage(image);
-        return base64Wrapper.encodeB64Bytes(outputAvatar);
-    }
 
-    /**
-     * Validate file format
-     *
-     * @param file for validation, cannot be null
-     * @throws ImageFormatException invalid format avatar processing error
-     */
-    public void validateAvatarFormat(MultipartFile file) throws ImageFormatException {
-        Validate.notNull(file, "file argument array cannot be null");
-        if (!VALID_IMAGE_TYPES.contains(file.getContentType())) {
-            LOGGER.debug("Wrong file extension. May be only {}", VALID_IMAGE_EXTENSIONS);
-            throw new ImageFormatException(VALID_IMAGE_EXTENSIONS);
-        }
-    }
-
-    /**
-     * Validate byte array data format
-     *
-     * @param bytes for validation
-     * @throws ImageFormatException invalid format avatar processing error
-     */
-    public void validateAvatarFormat(byte[] bytes) throws ImageFormatException {
-        Validate.notNull(bytes, "Incoming byte array cannot be null");
-        Tika tika = new Tika();
-        InputStream input = new ByteArrayInputStream(bytes);
-        try {
-            String type = tika.detect(input);
-            if (!VALID_IMAGE_TYPES.contains(type)) {
-                LOGGER.debug("Wrong file extension. May be only {}", VALID_IMAGE_EXTENSIONS);
-                throw new ImageFormatException(VALID_IMAGE_EXTENSIONS);
-            }
-        } catch (IOException e) {
-            LOGGER.error("Failed to handle avatar ByteArrayInputStream", e);
-        }
-    }
-
-    /**
-     * Validate avatar size
-     *
-     * @param bytes array for validation
-     * @throws ImageSizeException invalid size avatar processing error
-     */
-    public void validateAvatarSize(byte[] bytes) throws ImageSizeException {
-        Validate.notNull(bytes, "Incoming byte array cannot be null");
-        int maxSize = avatarSizeProperty.intValue();
-        if (bytes.length > maxSize) {
-            LOGGER.debug("File has too big size. Must be less than {} bytes", maxSize);
-            throw new ImageSizeException(maxSize);
-        }
-    }
 
     /**
      * Returns default avatar to be used when custom user image is not set

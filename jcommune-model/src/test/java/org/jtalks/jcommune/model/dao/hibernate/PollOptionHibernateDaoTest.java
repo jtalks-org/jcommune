@@ -16,7 +16,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.dao.Crud;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.entity.PollItem;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class PollOptionHibernateDaoTest extends AbstractTransactionalTestNGSprin
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
-    private ChildRepository<PollItem> pollOptionDao;
+    private Crud<PollItem> pollOptionDao;
     private Session session;
 
     @BeforeMethod
@@ -74,7 +74,7 @@ public class PollOptionHibernateDaoTest extends AbstractTransactionalTestNGSprin
         session.save(option);
 
         option.setName(newName);
-        pollOptionDao.update(option);
+        pollOptionDao.saveOrUpdate(option);
         session.evict(option);
 
         PollItem changedOption = (PollItem) session.get(PollItem.class, option.getId());

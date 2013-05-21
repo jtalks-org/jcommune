@@ -31,7 +31,7 @@
         <span class="icon-bar"></span>
       </a>
 
-      <div class="brand">
+      <div class="logo-container">
         <img id="${sessionScope.adminMode == true ? 'forumLogo' : ''}" class="forum-logo"
              src="${pageContext.request.contextPath}/admin/logo"
              title="${logoTooltip}" alt="${logoTooltip}"/>
@@ -42,7 +42,7 @@
           <span class="brand"><fmt:message key="label.error"/></span>
         </c:when>
         <c:when test="${cmpName != null and sessionScope.adminMode == true}">
-            <span class="brand" id="cmpName"><c:out value="${cmpName}"/></span>
+            <a class="brand" id="cmpName"><c:out value="${cmpName}"/></a>
         </c:when>
         <c:otherwise>
           <a class="brand"

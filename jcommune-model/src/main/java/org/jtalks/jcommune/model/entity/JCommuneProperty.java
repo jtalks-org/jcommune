@@ -92,7 +92,9 @@ public enum JCommuneProperty {
     /**
      * Logo tooltip
      */
-    LOGO_TOOLTIP
+    LOGO_TOOLTIP,
+    /** Maximum size of the forum logo */
+    FORUM_LOGO_MAX_SIZE
     ;
 
 
@@ -135,7 +137,7 @@ public enum JCommuneProperty {
         if (componentDao != null) {
             Component component = componentDao.getComponent();
             component.setProperty(name, value);
-            componentDao.update(component);
+            componentDao.saveOrUpdate(component);
         } else {
             LOGGER.warn("Can't set value of property {}. No componentDAO", name);
         }

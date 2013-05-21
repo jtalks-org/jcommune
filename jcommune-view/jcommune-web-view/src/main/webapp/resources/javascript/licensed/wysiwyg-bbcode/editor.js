@@ -123,6 +123,7 @@ function bbcode2html() {
     textdata = textdata.replace(/%5D/gi, "]");
     textdata = textdata.replace(/%5B/gi, "[");
     textdata = textdata.replace(/%22/gi, "\"");
+    textdata = textdata.replace(/%20/gi, " ");
 	
     $.ajax({
         type:"POST",

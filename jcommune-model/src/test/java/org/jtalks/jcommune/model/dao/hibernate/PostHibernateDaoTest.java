@@ -14,24 +14,13 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-
-import java.util.List;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
-import org.jtalks.jcommune.model.entity.ObjectsFactory;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dto.JCommunePageRequest;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.ContextConfiguration;
@@ -41,6 +30,10 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.List;
+
+import static org.testng.Assert.*;
 
 /**
  * @author Kirill Afonin
@@ -91,20 +84,19 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         session.save(post);
         post.setPostContent(newContent);
 
-        dao.update(post);
+        dao.saveOrUpdate(post);
         session.evict(post);
         Post result = (Post) session.get(Post.class, post.getId());
 
         assertEquals(result.getPostContent(), newContent);
     }
 
-    @Test(expectedExceptions = Exception.class)
+    @Test(expectedExceptions = org.springframework.dao.DataIntegrityViolationException.class)
     public void testUpdateNotNullViolation() {
         Post post = PersistedObjectsFactory.getDefaultPost();
         session.save(post);
         post.setPostContent(null);
-
-        dao.update(post);
+        dao.saveOrUpdate(post);
     }
 
     /* PostDao specific methods */
@@ -113,8 +105,8 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     public void testPostOfUserWithEnabledPaging() {
         int totalSize = 50;
         int pageCount = 2;
-        int pageSize = totalSize/pageCount;
-        
+        int pageSize = totalSize / pageCount;
+
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, pageSize);
         List<Post> posts = PersistedObjectsFactory.createAndSavePostList(totalSize);
         JCUser author = posts.get(0).getUserCreated();
@@ -125,13 +117,13 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         assertEquals(postsPage.getTotalElements(), totalSize, "Incorrect total count.");
         assertEquals(postsPage.getTotalPages(), pageCount, "Incorrect count of pages.");
     }
-    
+
     @Test
     public void testPostOfUserWithEnabledPagingPageLessTooLow() {
         int totalSize = 50;
         int pageCount = 2;
-        int pageSize = totalSize/pageCount;
-        
+        int pageSize = totalSize / pageCount;
+
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(PAGE_NUMBER_TOO_LOW, pageSize);
         List<Post> posts = PersistedObjectsFactory.createAndSavePostList(totalSize);
         JCUser author = posts.get(0).getUserCreated();
@@ -143,13 +135,13 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         assertEquals(postsPage.getTotalPages(), pageCount, "Incorrect count of pages.");
         assertEquals(postsPage.getNumber(), 1, "Incorrect page number");
     }
-    
+
     @Test
     public void testPostOfUserWithEnabledPagingPageTooBig() {
         int totalSize = 50;
         int pageCount = 2;
-        int pageSize = totalSize/pageCount;
-        
+        int pageSize = totalSize / pageCount;
+
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(PAGE_NUMBER_TOO_BIG, pageSize);
         List<Post> posts = PersistedObjectsFactory.createAndSavePostList(totalSize);
         JCUser author = posts.get(0).getUserCreated();
@@ -165,17 +157,17 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     @Test
     public void testPostsOfUserWithDisabledPaging() {
         int size = 50;
-        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingDisabled(1, size/2);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingDisabled(1, size / 2);
         List<Post> posts = PersistedObjectsFactory.createAndSavePostList(size);
         JCUser author = posts.get(0).getUserCreated();
-        
+
         Page<Post> postsPage = dao.getUserPosts(author, pageRequest);
-        
-        assertEquals(postsPage.getContent().size(), size, 
+
+        assertEquals(postsPage.getContent().size(), size,
                 "Paging is disabled, so it should retrieve all posts in the topic.");
         assertEquals(postsPage.getTotalElements(), size, "Incorrect total count.");
     }
-    
+
     @Test
     public void testNullPostOfUser() {
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, 50);
@@ -186,71 +178,71 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
         assertFalse(postsPage.hasContent());
     }
-    
+
     @Test
     public void testGetPostsWithEnabledPaging() {
         int totalSize = 50;
         int pageCount = 2;
-        int pageSize = totalSize/pageCount;
+        int pageSize = totalSize / pageCount;
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, pageSize);
         List<Post> posts = PersistedObjectsFactory.createAndSavePostList(totalSize);
         Topic topic = posts.get(0).getTopic();
-        
+
         Page<Post> postsPage = dao.getPosts(topic, pageRequest);
-        
+
         assertEquals(postsPage.getContent().size(), pageSize, "Incorrect count of posts in one page.");
         assertEquals(postsPage.getTotalElements(), totalSize, "Incorrect total count.");
         assertEquals(postsPage.getTotalPages(), pageCount, "Incorrect count of pages.");
     }
-    
+
     @Test
     public void testGetPostsWithEnabledPagingPageTooLow() {
         int totalSize = 50;
         int pageCount = 2;
-        int pageSize = totalSize/pageCount;
+        int pageSize = totalSize / pageCount;
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(PAGE_NUMBER_TOO_LOW, pageSize);
         List<Post> posts = PersistedObjectsFactory.createAndSavePostList(totalSize);
         Topic topic = posts.get(0).getTopic();
-        
+
         Page<Post> postsPage = dao.getPosts(topic, pageRequest);
-        
+
         assertEquals(postsPage.getContent().size(), pageSize, "Incorrect count of posts in one page.");
         assertEquals(postsPage.getTotalElements(), totalSize, "Incorrect total count.");
         assertEquals(postsPage.getTotalPages(), pageCount, "Incorrect count of pages.");
         assertEquals(postsPage.getNumber(), 1, "Incorrect number of page");
     }
-    
+
     @Test
     public void testGetPostsWithEnabledPagingPageTooBig() {
         int totalSize = 50;
         int pageCount = 2;
-        int pageSize = totalSize/pageCount;
+        int pageSize = totalSize / pageCount;
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(PAGE_NUMBER_TOO_BIG, pageSize);
         List<Post> posts = PersistedObjectsFactory.createAndSavePostList(totalSize);
         Topic topic = posts.get(0).getTopic();
-        
+
         Page<Post> postsPage = dao.getPosts(topic, pageRequest);
-        
+
         assertEquals(postsPage.getContent().size(), pageSize, "Incorrect count of posts in one page.");
         assertEquals(postsPage.getTotalElements(), totalSize, "Incorrect total count.");
         assertEquals(postsPage.getTotalPages(), pageCount, "Incorrect count of pages.");
         assertEquals(postsPage.getNumber(), pageCount, "Incorrect number of page");
     }
-    
+
     @Test
     public void testGetPostsWithDisabledPaging() {
         int size = 50;
-        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingDisabled(1, size/2);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingDisabled(1, size / 2);
         List<Post> posts = PersistedObjectsFactory.createAndSavePostList(size);
         Topic topic = posts.get(0).getTopic();
-        
+
         Page<Post> postsPage = dao.getPosts(topic, pageRequest);
-        
-        assertEquals(postsPage.getContent().size(), size, 
+
+        assertEquals(postsPage.getContent().size(), size,
                 "Paging is disabled, so it should retrieve all posts in the topic.");
         assertEquals(postsPage.getTotalElements(), size, "Incorrect total count.");
     }
-    
+
     @Test
     public void testGetLastPostForBranch() {
         int size = 2;
@@ -263,23 +255,23 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
                 "creationDate",
                 new DateTime(2100, 12, 25, 0, 0, 0, 0));
         session.save(expectedLastPost);
-        
+
         Post actualLastPost = dao.getLastPostFor(postsBranch);
-        
+
         assertNotNull(actualLastPost, "Last post in the branch is not found.");
         assertEquals(actualLastPost.getId(), expectedLastPost.getId(),
                 "The last post in the branch is the wrong.");
     }
-    
-    @Test 
+
+    @Test
     public void testGetLastPostInEmptyBranch() {
         Topic topic = PersistedObjectsFactory.getDefaultTopic();
         Branch branch = topic.getBranch();
         branch.deleteTopic(topic);
-        
+
         session.save(branch);
-        
-        assertNull(dao.getLastPostFor(branch), 
+
+        assertNull(dao.getLastPostFor(branch),
                 "The branch is empty, so last post mustn't be found");
     }
 }

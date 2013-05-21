@@ -14,9 +14,6 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
 import org.jtalks.common.model.entity.Property;
@@ -28,6 +25,9 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 /**
  * 
@@ -55,7 +55,7 @@ public class PropertyHibernateDaoTest  extends AbstractTransactionalTestNGSpring
     
     @Test(expectedExceptions = {UnsupportedOperationException.class})
     public void testUpdate() {
-        propertyDao.update(property);
+        propertyDao.saveOrUpdate(property);
     }
     
     @Test

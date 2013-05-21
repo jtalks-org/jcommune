@@ -15,7 +15,8 @@
 
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
+import org.hibernate.SessionFactory;
+import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.dao.ComponentDao;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
@@ -28,16 +29,24 @@ import org.jtalks.jcommune.model.entity.ComponentInformation;
  *
  * @author masyan
  */
-public class ComponentHibernateDao extends AbstractHibernateChildRepository<Component> implements ComponentDao {
+public class ComponentHibernateDao extends GenericDao<Component> implements ComponentDao {
+
+    /**
+     * @param sessionFactory The SessionFactory.
+     */
+    public ComponentHibernateDao(SessionFactory sessionFactory) {
+        super(sessionFactory, Component.class);
+    }
 
     public static final String LOGO_TOOLTIP_PROPERTY = "jcommune.logo_tooltip";
+    public static final String LOGO_PROPERTY = "jcommune.logo";
 
     /**
      * {@inheritDoc}
      */
     @Override
     public Component getComponent() {
-        return (Component) getSession().getNamedQuery("getForumComponent").uniqueResult();
+        return (Component) session().getNamedQuery("getForumComponent").uniqueResult();
     }
 
     /**
@@ -49,5 +58,6 @@ public class ComponentHibernateDao extends AbstractHibernateChildRepository<Comp
         forumComponent.setName(componentInformation.getName());
         forumComponent.setDescription(componentInformation.getDescription());
         forumComponent.setProperty(LOGO_TOOLTIP_PROPERTY, componentInformation.getLogoTooltip());
+        forumComponent.setProperty(LOGO_PROPERTY, componentInformation.getLogo());
     }
 }

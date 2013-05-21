@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import java.util.Set;
+
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
@@ -177,7 +179,14 @@ public class Post extends Entity {
     /**
      * @param topic the Topic to set
      */
-    protected void setTopic(Topic topic) {
+    public void setTopic(Topic topic) {
         this.topic = topic;
+    }
+
+    /**
+     * @return subscribers of topic of this post
+     */
+    public Set<JCUser> getTopicSubscribers() {
+        return getTopic().getSubscribers();
     }
 }

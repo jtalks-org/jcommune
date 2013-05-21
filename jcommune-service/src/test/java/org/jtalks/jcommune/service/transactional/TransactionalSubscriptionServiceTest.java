@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.dao.Crud;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -44,7 +44,7 @@ public class TransactionalSubscriptionServiceTest {
     @Mock
     private TopicDao topicDao;
     @Mock
-    private ChildRepository<CodeReview> codeReviewDao;
+    private Crud<CodeReview> codeReviewDao;
 
     private TransactionalSubscriptionService service;
 
@@ -70,7 +70,7 @@ public class TransactionalSubscriptionServiceTest {
         service.toggleTopicSubscription(topic);
 
         assertTrue(topic.getSubscribers().contains(user));
-        verify(topicDao).update(topic);
+        verify(topicDao).saveOrUpdate(topic);
     }
 
     @Test
@@ -87,7 +87,7 @@ public class TransactionalSubscriptionServiceTest {
         service.toggleTopicSubscription(topic);
 
         assertFalse(topic.getSubscribers().contains(user));
-        verify(topicDao).update(topic);
+        verify(topicDao).saveOrUpdate(topic);
     }
 
     @Test
@@ -103,7 +103,7 @@ public class TransactionalSubscriptionServiceTest {
     public void testToggleSubscriptionCodeReviewSubscribeCase() {
         service.toggleSubscription(codeReview);
         assertTrue(codeReview.getSubscribers().contains(user));
-        verify(codeReviewDao).update(codeReview);
+        verify(codeReviewDao).saveOrUpdate(codeReview);
     }
 
     @Test
@@ -111,6 +111,6 @@ public class TransactionalSubscriptionServiceTest {
         codeReview.getSubscribers().add(user);
         service.toggleSubscription(codeReview);
         assertFalse(codeReview.getSubscribers().contains(user));
-        verify(codeReviewDao).update(codeReview);
+        verify(codeReviewDao).saveOrUpdate(codeReview);
     }
 }

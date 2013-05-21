@@ -81,6 +81,13 @@
         <constructor-arg ref="avatarMaxSizeProperty"/>
     </bean>
 
+    <bean id="forumLogoService" class="org.jtalks.jcommune.service.nontransactional.ForumLogoService">
+        <constructor-arg ref="imagePreprocessor"/>
+        <constructor-arg ref="base64Wrapper"/>
+        <constructor-arg value="org/jtalks/jcommune/service/jcommune.jpeg"/>
+        <constructor-arg ref="forumLogoMaxSizeProperty"/>
+    </bean>
+
     <bean id="base64Wrapper" class="org.jtalks.jcommune.service.nontransactional.Base64Wrapper"/>
 
     <bean id="imagePreprocessor" class="org.jtalks.jcommune.service.nontransactional.ImageUtils">
@@ -249,7 +256,6 @@
         <constructor-arg ref="userService"/>
         <constructor-arg ref="permissionService"/>
         <constructor-arg ref="notificationService"/>
-        <constructor-arg ref="userMentionService" />
     </bean>
 
     <bean id="codeReviewCommentService"
@@ -257,7 +263,6 @@
         <constructor-arg ref="codeReviewCommentDao"/>
         <constructor-arg ref="permissionService"/>
         <constructor-arg ref="userService"/>
-        <constructor-arg ref="userMentionService" />
     </bean>
 
     <bean id="permissionService" class="org.jtalks.jcommune.service.security.TransactionalPermissionService">
@@ -290,6 +295,7 @@
     <bean id="userMentionService" class="org.jtalks.jcommune.service.nontransactional.UserMentionService">
         <constructor-arg ref="mailService"/>
         <constructor-arg ref="userDao"/>
+        <constructor-arg ref="postDao"/>
     </bean>
 
     <!--

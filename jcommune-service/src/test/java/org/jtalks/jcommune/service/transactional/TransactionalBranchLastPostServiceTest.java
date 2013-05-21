@@ -14,10 +14,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertEquals;
-
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -28,10 +24,12 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
+
 /**
- * 
  * @author Anuar Nurmakanov
- *
  */
 public class TransactionalBranchLastPostServiceTest {
     private static final String BRANCH_NAME = "branch name";
@@ -40,7 +38,7 @@ public class TransactionalBranchLastPostServiceTest {
     private PostDao postDao;
     @Mock
     private BranchDao branchDao;
-    
+
     private BranchLastPostService branchLastPostService;
 
     @BeforeMethod
@@ -48,19 +46,19 @@ public class TransactionalBranchLastPostServiceTest {
         MockitoAnnotations.initMocks(this);
         branchLastPostService = new TransactionalBranchLastPostService(postDao, branchDao);
     }
-    
+
     @Test
     public void testUpdateLastPostInBranchWhenPostDeletedIsLastPost() {
         Branch branchOfDeletedPost = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
         Post expectedNewLastPost = new Post(null, null);
         when(postDao.getLastPostFor(branchOfDeletedPost))
-            .thenReturn(expectedNewLastPost);
-        
+                .thenReturn(expectedNewLastPost);
+
         branchLastPostService.refreshLastPostInBranch(branchOfDeletedPost);
         Post actualNewLastPost = branchOfDeletedPost.getLastPost();
-        
+
         assertEquals(actualNewLastPost, expectedNewLastPost, "Incorrect last post was setted.");
-        verify(branchDao).update(branchOfDeletedPost);
+        verify(branchDao).saveOrUpdate(branchOfDeletedPost);
         verify(postDao).getLastPostFor(branchOfDeletedPost);
     }
 }

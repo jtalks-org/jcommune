@@ -15,9 +15,14 @@
 
 package org.jtalks.jcommune.service.bb2htmlprocessors;
 
+import static java.lang.String.format;
+import static org.jtalks.jcommune.service.nontransactional.UserMentionService.MENTIONED_AND_NOTIFIED_USER_TEMPLATE;
+import static org.jtalks.jcommune.service.nontransactional.UserMentionService.MENTIONED_NOT_NOTIFIED_USER_TEMPLATE;
+import static org.jtalks.jcommune.service.nontransactional.UserMentionService.USER_WITH_LINK_TO_PROFILE_TEMPLATE;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -42,10 +47,8 @@ import ru.perm.kefir.bbcode.TextProcessorAdapter;
  */
 public class BbUserPreprocessor extends TextProcessorAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(BbUserPreprocessor.class);
-    private static final String USER_BB_CODE_TEMPLATE = "[user]%s[/user]";
-    private static final String USER_BB_CODE_WITH_LINK_TO_PROFILE = "[user=%s]%s[/user]";
-    private UserService userService;
-    private UserMentionService userMentionService;
+    private final UserService userService;
+    private final UserMentionService userMentionService;
 
     /**
      * @param userService to check users' existence
@@ -62,7 +65,7 @@ public class BbUserPreprocessor extends TextProcessorAdapter {
     @Override
     public CharSequence process(CharSequence source) {
         String notProcessedSource = source.toString();
-        List<String> mentionedUsers = userMentionService.extractMentionedUsers(notProcessedSource);
+        Set<String> mentionedUsers = userMentionService.extractAllMentionedUsers(notProcessedSource);
         Map<String, String> userToUserProfileLinkMap = new HashMap<String, String>();
         for (String mentionedUser: mentionedUsers) {
             String mentionedUserProfileLink = getLinkToUserProfile(mentionedUser);
@@ -83,7 +86,7 @@ public class BbUserPreprocessor extends TextProcessorAdapter {
         String userPofileLink = null;
         try {
             JCUser user = userService.getByUsername(username);
-            userPofileLink = getDeploymentRootUrlWithoutPort() + "/users/" + user.getId();
+            userPofileLink = getApplicationNameAsContextPath() + "/users/" + user.getId();
             LOGGER.debug(username + " has the following url of profile -" + userPofileLink);
         } catch (NotFoundException e) {
             LOGGER.debug("Mentioned user wasn't find", e);
@@ -92,34 +95,34 @@ public class BbUserPreprocessor extends TextProcessorAdapter {
     }
     
     /**
-     * Returns current deployment root without port for using as label link, for example.
-     *
-     * @return current deployment root without port, e.g. "http://myhost.com/mycoolforum"
+     * Get the name of application as context path.
+     * 
+     * @return forum application name
      */
-    private String getDeploymentRootUrlWithoutPort() {
+    private String getApplicationNameAsContextPath() {
         RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes) attributes).getRequest();
-        return request.getScheme()
-                + "://" + request.getServerName()
-                + ":" + request.getServerPort()
-                + request.getContextPath();
+        return request.getContextPath();
     }
     
     /**
      * Add links to users' profiles for mentioned users.
      * 
-     * @param source will be changed and all mentioned users in it will contain link to theirs profiles
-     * @param userToUserProfileLinkMap user to its profile map
+     * @param source will be changed and all mentioned users in it will contain links to their profiles
+     * @param userToUserProfileLinkMap user to it links of profile map
      * @return source with users with attached links to profiles
      */
     private String addLinksToUserProfileForMentionedUsers(
             String source, Map<String, String> userToUserProfileLinkMap) {
         String changedSource = source;
         for (Map.Entry<String, String> userToLinkMap: userToUserProfileLinkMap.entrySet()) {
-            String userBBCode = String.format(USER_BB_CODE_TEMPLATE, userToLinkMap.getKey());
-            String userBBCodeWithLink = String.format(
-                    USER_BB_CODE_WITH_LINK_TO_PROFILE, userToLinkMap.getValue() , userToLinkMap.getKey());
-            changedSource = changedSource.replace(userBBCode, userBBCodeWithLink);
+            String username = userToLinkMap.getKey();
+            String userNotNotifiedBBCode = format(MENTIONED_NOT_NOTIFIED_USER_TEMPLATE, username);
+            String userNotifiedBBCode = format(MENTIONED_AND_NOTIFIED_USER_TEMPLATE, username);
+            String userBBCodeWithLink = format(
+                    USER_WITH_LINK_TO_PROFILE_TEMPLATE, userToLinkMap.getValue(), username);
+            changedSource = changedSource.replace(userNotNotifiedBBCode, userBBCodeWithLink);
+            changedSource = changedSource.replace(userNotifiedBBCode, userBBCodeWithLink);
         }
         return changedSource;
     }

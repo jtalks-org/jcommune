@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.model.dao;
 
-import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.dao.Crud;
 import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -26,7 +26,7 @@ import org.springframework.data.domain.Page;
 /**
  * Interface allows to make basic CRUD operations with the
  * {@link Post} objects.
- * At the current moment it doesn't provides any additional methods over the basic {@link ChildRepository} interface
+ * At the current moment it doesn't provides any additional methods over the basic {@link Crud} interface
  * but some specific methods will be added soon.
  *
  * @author Pavel Vervenko
@@ -34,7 +34,7 @@ import org.springframework.data.domain.Page;
  * @author Anuar Nurmakanov
  * @see org.jtalks.jcommune.model.dao.hibernate.PostHibernateDao
  */
-public interface PostDao extends ChildRepository<Post> {
+public interface PostDao extends Crud<Post> {
 
     /**
      * Get all the posts that were created  by user.

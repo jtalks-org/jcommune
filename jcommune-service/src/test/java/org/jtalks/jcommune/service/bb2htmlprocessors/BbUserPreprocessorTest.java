@@ -14,19 +14,20 @@
  */
 package org.jtalks.jcommune.service.bb2htmlprocessors;
 
+import static java.lang.String.format;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
 
 import java.util.Arrays;
-
-import static org.testng.Assert.assertEquals;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.UserMentionService;
 import org.mockito.Mock;
-import static org.mockito.Mockito.when;
-
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -38,10 +39,11 @@ import org.testng.annotations.Test;
  * @author Anuar_Nurmakanov
  *
  */
-public class BBUserPreprocessorTest {
-    private static final String MENTIONING_TEMPLATE = "This post contains [user]%s[/user] mentioning";
+public class BbUserPreprocessorTest {
+    private static final String MENTIONING_TEMPLATE = "This post contains not notified [user]%s[/user] mentioning " +
+    		"and notified [user notified=true]%s[/user] mentioning";
     private static final String MENTIONING_WITH_LINK_TO_PROFILE_TEMPALTE = 
-            "This post contains [user=%s]%s[/user] mentioning";
+            "This post contains not notified [user=%s]%s[/user] mentioning and notified [user=%s]%s[/user] mentioning";
     @Mock
     private UserService userService;
     @Mock
@@ -64,17 +66,23 @@ public class BBUserPreprocessorTest {
     
     @Test
     public void processShouldAttachProfileLinkToExistUsers() throws NotFoundException {
-        String mentionedUserName = "Shogun";
-        long mentionedUserId = 100L;
-        JCUser mentionedUser = getUser(mentionedUserName, mentionedUserId);
-        when(userService.getByUsername(mentionedUserName)).thenReturn(mentionedUser);
+        String notNotifiedMentionedUserName = "Shogun";
+        String notifiedMentionedUserName = "jk1";
+        long notNotifiedMentionedUserId = 100L;
+        long notifiedMentionedUserId = 200L;
+        JCUser notNotifiedMentionedUser = getUser(notNotifiedMentionedUserName, notNotifiedMentionedUserId);
+        when(userService.getByUsername(notNotifiedMentionedUserName)).thenReturn(notNotifiedMentionedUser);
+        JCUser notifiedMentionedUser = getUser(notifiedMentionedUserName, notifiedMentionedUserId);
+        when(userService.getByUsername(notifiedMentionedUserName)).thenReturn(notifiedMentionedUser);
         //
-        String expectedUserProfileLink = "http://localhost:8080/forum/users/" + mentionedUserId;
-        String notProcessedSource = String.format(MENTIONING_TEMPLATE, mentionedUserName);
-        when(userMentionService.extractMentionedUsers(notProcessedSource))
-            .thenReturn(Arrays.asList(mentionedUserName));
-        String expectedAfterProcess = String.format(
-                MENTIONING_WITH_LINK_TO_PROFILE_TEMPALTE, expectedUserProfileLink, mentionedUserName);
+        String expectedNotNotifiedUserProfile = "/forum/users/" + notNotifiedMentionedUserId;
+        String expectedNotifiedUserProfile = "/forum/users/" + notifiedMentionedUserId;
+        String notProcessedSource = format(MENTIONING_TEMPLATE, notNotifiedMentionedUserName, notifiedMentionedUserName);
+        when(userMentionService.extractAllMentionedUsers(notProcessedSource))
+            .thenReturn(asSet(notNotifiedMentionedUserName, notifiedMentionedUserName));
+        String expectedAfterProcess = format(MENTIONING_WITH_LINK_TO_PROFILE_TEMPALTE, 
+                expectedNotNotifiedUserProfile, notNotifiedMentionedUserName, 
+                expectedNotifiedUserProfile, notifiedMentionedUserName);
         
         String actualAfterProcess = userPreprocessor.process(notProcessedSource);
         
@@ -89,14 +97,20 @@ public class BBUserPreprocessorTest {
     
     @Test
     public void processShouldNotAttachProfileLinkToNotExistUsers() throws NotFoundException {
-        String mentionedUserName = "Shogun";
-        when(userService.getByUsername(mentionedUserName)).thenThrow(new NotFoundException());
-        String notProcessedSource = String.format(MENTIONING_TEMPLATE, mentionedUserName);
-        when(userMentionService.extractMentionedUsers(notProcessedSource))
-            .thenReturn(Arrays.asList(mentionedUserName));
+        String firstMentionedUserName = "Shogun";
+        String secondMentionedUserName = "jk1";
+        when(userService.getByUsername(firstMentionedUserName)).thenThrow(new NotFoundException());
+        when(userService.getByUsername(secondMentionedUserName)).thenThrow(new NotFoundException());
+        String notProcessedSource = format(MENTIONING_TEMPLATE, firstMentionedUserName, secondMentionedUserName);
+        when(userMentionService.extractAllMentionedUsers(notProcessedSource))
+            .thenReturn(asSet(firstMentionedUserName, secondMentionedUserName));
         
         String actualAfterProcess = userPreprocessor.process(notProcessedSource);
         
         assertEquals(actualAfterProcess, notProcessedSource);
+    }
+    
+    public static <T> Set<T> asSet(T... values) {
+        return new HashSet<T>(Arrays.asList(values));
     }
 }

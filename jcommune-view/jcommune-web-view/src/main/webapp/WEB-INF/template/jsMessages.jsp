@@ -112,3 +112,7 @@ $labelForumDescription = '<spring:message code="label.forum.description" htmlEsc
 $labelForumTitle = '<spring:message code="label.forum.title" htmlEscape="true"/>';
 $labelLogoTooltip = '<spring:message code="label.logo.tooltip" htmlEscape="true"/>';
 $labelAdministration = '<spring:message code="label.administration" htmlEscape="true"/>';
+
+$labelDeleteLogoConfirmation = '<spring:message code="label.deleteLogoConfirmation" htmlEscape="true"/>';
+$labelUploadLogo = '<spring:message code="label.uploadLogo" htmlEscape="true"/>';
+$labelRemoveLogo = '<spring:message code="label.deleteLogo" htmlEscape="true"/>';

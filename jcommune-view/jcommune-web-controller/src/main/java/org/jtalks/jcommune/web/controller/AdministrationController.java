@@ -14,33 +14,58 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
 import org.jtalks.jcommune.service.ComponentService;
+import org.jtalks.jcommune.service.exceptions.ImageProcessException;
+import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
+import org.jtalks.jcommune.service.nontransactional.ForumLogoService;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
+import org.jtalks.jcommune.web.util.ImageControllerUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.MessageSource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Andrei Alikov
  * Controller for processing forum administration related requests
  */
 @Controller
-public class AdministrationController {
-    private static final String ADMIN_ATTRIBUTE_NAME = "adminMode";
+public class AdministrationController extends ImageUploadController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdministrationController.class);
+    /**
+     * Parameter name for forum logo
+     */
+    public static final String JCOMMUNE_LOGO_PARAM = "jcommune.logo";
 
-    private ComponentService componentService;
+    /**
+     * Session's marker attribute name for Administration mode
+     */
+    public static final String ADMIN_ATTRIBUTE_NAME = "adminMode";
+
+    private final ComponentService componentService;
+    private final ImageControllerUtils imageControllerUtils;
+    private final ForumLogoService forumLogoService;
 
     @Autowired
     ServletContext servletContext;
@@ -48,14 +73,25 @@ public class AdministrationController {
     /**
      * Creates instance of the service
      * @param componentService service to work with the forum component
+     * @param imageControllerUtils utility object for image-related functions
+     * @param messageSource to resolve locale-dependent messages
+     * @param forumLogoService service for forum logo related operations
      */
     @Autowired
-    public AdministrationController(ComponentService componentService) {
+    public AdministrationController(ComponentService componentService,
+                                    @Qualifier("forumLogoControllerUtils")
+                                    ImageControllerUtils imageControllerUtils,
+                                    MessageSource messageSource,
+                                    ForumLogoService forumLogoService) {
+        super(messageSource);
         this.componentService = componentService;
+        this.imageControllerUtils = imageControllerUtils;
+        this.forumLogoService = forumLogoService;
     }
 
     /**
-     * Change mode to Administrator mode in which
+     * Change mode to Administrator mode in which user can edit
+     * forum parameters - external links, banners, logo, title, etc.
      * @param request Client request
      * @return redirect back to previous page
      */
@@ -79,7 +115,12 @@ public class AdministrationController {
         return getRedirectToPrevPage(request);
     }
 
-    @RequestMapping(value = "/admin/edit_ajax", method = RequestMethod.POST)
+    /**
+     * Handler for request of updating Administration information
+     * @param componentInformation new forum information
+     * @param result form validation result
+     */
+    @RequestMapping(value = "/admin/edit", method = RequestMethod.POST)
     @ResponseBody
     @PreAuthorize("hasPermission(#componentService.componentOfForum.id, 'COMPONENT', 'GeneralPermission.ADMIN')")
     public JsonResponse setForumInformation(@Valid @RequestBody ComponentInformation componentInformation, BindingResult result) {
@@ -93,24 +134,47 @@ public class AdministrationController {
     }
 
     /**
-     * Returns logo of the forum
-     * @param request
-     * @param response
+     * handler returning logo of the forum
+     * @param response server response object
      */
     @RequestMapping(value = "/admin/logo", method = RequestMethod.GET)
-    public void getForumLogo(HttpServletRequest request, HttpServletResponse response) {
+    public void getForumLogo(HttpServletResponse response) {
         response.setContentType("image/jpeg");
-        try {
-            // Temporary solution - load image from the resources
-            OutputStream stream = response.getOutputStream();
-            InputStream logo = servletContext.getResourceAsStream("/resources/images/jcommune.jpeg");
-            byte[] bytes = new byte[100 * 1024];
-            logo.read(bytes);
-            stream.write(bytes);
-            logo.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        Component forumComponent = componentService.getComponentOfForum();
+        String logoProperty = null;
+        if (forumComponent != null) {
+            logoProperty = forumComponent.getProperty(JCOMMUNE_LOGO_PARAM);
         }
+        byte[] logoBytes = null;
+
+        if (logoProperty == null || logoProperty.isEmpty()) {
+            logoBytes = forumLogoService.getDefaultLogo();
+        } else {
+            Base64Wrapper wrapper = new Base64Wrapper();
+            logoBytes = wrapper.decodeB64Bytes(logoProperty);
+        }
+
+        try {
+            OutputStream stream = response.getOutputStream();
+            stream.write(logoBytes);
+        } catch (IOException e) {
+            LOGGER.error("Failed to write data in forum logo response", e);
+        }
+    }
+
+    /**
+     * Gets default logo in JSON containing image data in String64 format
+     * @return JSON string containing default logo in String64 format
+     * @throws IOException
+     * @throws ImageProcessException
+     */
+    @RequestMapping(value = "/admin/defaultLogo", method = RequestMethod.GET)
+    @ResponseBody
+    public String getDefaultLogoInJson() throws IOException, ImageProcessException {
+        Map<String, String> responseContent = new HashMap<String, String>();
+        imageControllerUtils.prepareNormalResponse(forumLogoService.getDefaultLogo(), responseContent);
+        return imageControllerUtils.getResponceJSONString(responseContent);
     }
 
     /**
@@ -119,5 +183,43 @@ public class AdministrationController {
      */
     private String getRedirectToPrevPage(HttpServletRequest request) {
         return "redirect:" + request.getHeader("Referer");
+    }
+
+    /**
+     * Process Logo file from request and return logo preview in response.
+     * Used for IE, Opera specific request processing.
+     *
+     * @param file file, that contains uploaded image
+     * @return ResponseEntity
+     * @throws IOException           defined in the JsonFactory implementation,
+     *                               caller must implement exception processing
+     * @throws org.jtalks.jcommune.service.exceptions.ImageProcessException if error occurred while image processing
+     */
+    @RequestMapping(value = "/admin/logo/IFrameLogoPreview", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<String> uploadLogo(
+            @RequestParam(value = "qqfile") MultipartFile file) throws IOException, ImageProcessException {
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setContentType(MediaType.TEXT_HTML);
+        Map<String, String> responseContent = new HashMap<String, String>();
+        return imageControllerUtils.prepareResponse(file, responseHeaders, responseContent);
+    }
+
+    /**
+     * Process logo file from request and return logo preview in response.
+     * Used for FF, Chrome specific request processing
+     *
+     * @param bytes    input logo data
+     * @param response servlet response
+     * @return response content
+     * @throws ImageProcessException if error occurred while image processing
+     */
+    @RequestMapping(value = "/admin/logo/XHRlogoPreview", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, String> uploadLogo(@RequestBody byte[] bytes,
+                                            HttpServletResponse response) throws ImageProcessException {
+        Map<String, String> responseContent = new HashMap<String, String>();
+        imageControllerUtils.prepareResponse(bytes, response, responseContent);
+        return responseContent;
     }
 }

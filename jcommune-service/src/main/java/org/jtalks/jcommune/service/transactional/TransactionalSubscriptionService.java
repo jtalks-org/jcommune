@@ -14,14 +14,10 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.dao.Crud;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.CodeReview;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.SubscriptionAwareEntity;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -41,7 +37,7 @@ public class TransactionalSubscriptionService implements SubscriptionService {
     private UserService userService;
     private BranchDao branchDao;
     private TopicDao topicDao;
-    private ChildRepository<CodeReview> codeReviewDao;
+    private Crud<CodeReview> codeReviewDao;
 
     /**
      * @param userService to determine the current user requested the operation
@@ -52,7 +48,7 @@ public class TransactionalSubscriptionService implements SubscriptionService {
     public TransactionalSubscriptionService(UserService userService,
                                             BranchDao branchDao,
                                             TopicDao topicDao,
-                                            ChildRepository<CodeReview> codeReviewDao) {
+                                            Crud<CodeReview> codeReviewDao) {
         this.userService = userService;
         this.branchDao = branchDao;
         this.topicDao = topicDao;
@@ -70,7 +66,7 @@ public class TransactionalSubscriptionService implements SubscriptionService {
         } else {
             topic.getSubscribers().add(current);
         }
-        topicDao.update(topic);
+        topicDao.saveOrUpdate(topic);
     }
 
     /**
@@ -84,7 +80,7 @@ public class TransactionalSubscriptionService implements SubscriptionService {
         } else {
             branch.getSubscribers().add(current);
         }
-        branchDao.update(branch);
+        branchDao.saveOrUpdate(branch);
     }
 
     @Override
@@ -100,7 +96,7 @@ public class TransactionalSubscriptionService implements SubscriptionService {
 
     private void saveChanges(SubscriptionAwareEntity entityToSubscribe) {
         if (entityToSubscribe instanceof CodeReview) {
-            codeReviewDao.update((CodeReview) entityToSubscribe);
+            codeReviewDao.saveOrUpdate((CodeReview) entityToSubscribe);
         }
     }
 }

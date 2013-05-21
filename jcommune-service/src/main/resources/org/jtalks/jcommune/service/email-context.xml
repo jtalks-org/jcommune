@@ -59,6 +59,7 @@
     <constructor-arg name="from" value="${MAIL_FROM:jtalks@inbox.ru}"/>
     <constructor-arg ref="velocityEngine"/>
     <constructor-arg ref="messageSource"/>
+    <constructor-arg ref="sendingNotificationsProperty"/>
   </bean>
 
   <bean id="notificationService" class="org.jtalks.jcommune.service.nontransactional.NotificationService">

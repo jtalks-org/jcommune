@@ -106,9 +106,9 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         post.setPostContent(postContent);
         post.updateModificationDate();
 
-        this.getDao().update(post);
+        this.getDao().saveOrUpdate(post);
         notificationService.topicChanged(post.getTopic());
-        userMentionService.notifyAllMentionedUsers(postContent, post.getId());
+        userMentionService.notifyNewlyMentionedUsers(post);
 
         logger.debug("Post id={} updated.", post.getId());
     }
@@ -140,7 +140,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         }
         
         // todo: event API?
-        topicDao.update(topic);
+        topicDao.saveOrUpdate(topic);
         securityService.deleteFromAcl(post);
         notificationService.topicChanged(topic);
         if (deletedPostIsLastPostInBranch) {

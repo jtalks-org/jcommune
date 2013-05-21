@@ -44,6 +44,15 @@
         <!-- 4096 * 1024 = 4194304 -->
     </bean>
 
+    <bean id="forumLogoMaxSizeProperty" class="org.jtalks.jcommune.model.entity.JCommuneProperty"
+          factory-method="valueOf">
+        <constructor-arg type="java.lang.String" value="FORUM_LOGO_MAX_SIZE"/>
+        <property name="propertyDao"><null/></property>
+        <property name="name" value="jcommune.forum_logo_max_size"/>
+        <property name="defaultValue" value="40960"/>
+        <!-- 40 * 1024 = 40 960 -->
+    </bean>
+
     <bean id="componentNameProperty" class="org.jtalks.jcommune.model.entity.JCommuneProperty"
           factory-method="valueOf">
         <constructor-arg type="java.lang.String" value="CMP_NAME"/>

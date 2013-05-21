@@ -14,7 +14,8 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
+import org.hibernate.SessionFactory;
+import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.jcommune.model.dao.SimplePageDao;
 import org.jtalks.jcommune.model.entity.SimplePage;
 import org.springframework.security.acls.model.NotFoundException;
@@ -28,20 +29,27 @@ import org.springframework.security.acls.model.NotFoundException;
  * @author Scherbakov Roman
  * @author Alexander Gavrikov
  */
-public class SimplePageHibernateDao extends AbstractHibernateChildRepository<SimplePage> implements SimplePageDao {
+public class SimplePageHibernateDao extends GenericDao<SimplePage> implements SimplePageDao {
+
+    /**
+     * @param sessionFactory The SessionFactory.
+     */
+    public SimplePageHibernateDao(SessionFactory sessionFactory) {
+        super(sessionFactory, SimplePage.class);
+    }
 
     /**
      * {@inheritDoc}
      */
     public void createPage(SimplePage simplePage) {
-        getSession().saveOrUpdate(simplePage);
+        session().saveOrUpdate(simplePage);
     }
 
     /**
      * {@inheritDoc}
      */
     public SimplePage getPageByPathName(String pathName) throws NotFoundException {
-        return (SimplePage) (getSession().getNamedQuery("getPageByPathName").
+        return (SimplePage) (session().getNamedQuery("getPageByPathName").
                 setCacheable(true).setString("pathName", pathName).
                 uniqueResult());
     }

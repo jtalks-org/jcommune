@@ -14,24 +14,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
-
-import java.util.HashSet;
-import java.util.Set;
-
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.SecurityService;
@@ -39,18 +21,8 @@ import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
 import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.CodeReview;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.ObjectsFactory;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.BranchLastPostService;
-import org.jtalks.jcommune.service.PollService;
-import org.jtalks.jcommune.service.SubscriptionService;
-import org.jtalks.jcommune.service.TopicFetchService;
-import org.jtalks.jcommune.service.TopicModificationService;
-import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.service.nontransactional.UserMentionService;
@@ -65,6 +37,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.*;
 
 /**
  * This test cover {@code TransactionalTopicModificationService} logic validation.
@@ -193,7 +175,7 @@ public class TransactionalTopicModificationServiceTest {
         
         Post answerPost = topicService.replyToTopic(TOPIC_ID, answerWithUserMentioning, BRANCH_ID);
         
-        verify(userMentionService).notifyAllMentionedUsers(answerWithUserMentioning, answerPost.getId());
+        verify(userMentionService).notifyNewlyMentionedUsers(answerPost);
     }
 
     @Test(expectedExceptions = AccessDeniedException.class)
@@ -270,7 +252,7 @@ public class TransactionalTopicModificationServiceTest {
         
         Topic createdTopic = topicService.createTopic(topicWithUserNotification, answerBodyWithUserMentioning);
         
-        verify(userMentionService).notifyAllMentionedUsers(answerBodyWithUserMentioning, createdTopic.getFirstPost().getId());
+        verify(userMentionService).notifyNewlyMentionedUsers(createdTopic.getFirstPost());
     }
 
     @Test
@@ -356,7 +338,7 @@ public class TransactionalTopicModificationServiceTest {
 
     private void createTopicVerifications(Branch branch)
             throws NotFoundException {
-        verify(branchDao).update(branch);
+        verify(branchDao).saveOrUpdate(branch);
         verify(aclBuilder, times(2)).grant(GeneralPermission.WRITE);
         verify(notificationService).branchChanged(branch);
     }
@@ -377,7 +359,7 @@ public class TransactionalTopicModificationServiceTest {
 
         assertEquals(branch.getTopicCount(), 0);
         assertEquals(user.getPostCount(), 0);
-        verify(branchDao).update(branch);
+        verify(branchDao).saveOrUpdate(branch);
         verify(securityService).deleteFromAcl(Topic.class, TOPIC_ID);
         verify(notificationService).branchChanged(branch);
     }
@@ -398,7 +380,7 @@ public class TransactionalTopicModificationServiceTest {
 
         assertEquals(branch.getTopicCount(), 0);
         assertEquals(user.getPostCount(), 0);
-        verify(branchDao).update(branch);
+        verify(branchDao).saveOrUpdate(branch);
         verify(securityService).deleteFromAcl(Topic.class, TOPIC_ID);
     }
 
@@ -533,7 +515,7 @@ public class TransactionalTopicModificationServiceTest {
 
         topicService.updateTopic(topic, null);
 
-        verify(topicDao).update(topic);
+        verify(topicDao).saveOrUpdate(topic);
         verify(notificationService).topicChanged(topic);
     }
 
@@ -563,7 +545,7 @@ public class TransactionalTopicModificationServiceTest {
         topicService.moveTopic(topic, BRANCH_ID);
 
         assertEquals(targetBranch.getTopicCount(), 1);
-        verify(branchDao).update(targetBranch);
+        verify(branchDao).saveOrUpdate(targetBranch);
         verify(notificationService).topicMoved(topic, TOPIC_ID);
     }
 
@@ -613,7 +595,7 @@ public class TransactionalTopicModificationServiceTest {
         topicService.closeTopic(topic);
 
         assertTrue(topic.isClosed());
-        verify(topicDao).update(topic);
+        verify(topicDao).saveOrUpdate(topic);
     }
 
     @Test(expectedExceptions = AccessDeniedException.class)
@@ -630,7 +612,7 @@ public class TransactionalTopicModificationServiceTest {
         topicService.openTopic(topic);
 
         assertFalse(topic.isClosed());
-        verify(topicDao).update(topic);
+        verify(topicDao).saveOrUpdate(topic);
     }
 
     private Branch createBranch() {

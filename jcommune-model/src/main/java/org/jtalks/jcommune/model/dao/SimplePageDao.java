@@ -14,20 +14,20 @@
  */
 package org.jtalks.jcommune.model.dao;
 
-import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.dao.Crud;
 import org.jtalks.jcommune.model.entity.SimplePage;
 import org.springframework.security.acls.model.NotFoundException;
 
 /**
  * Interface allows to make basic CRUD operations with the
  * {@link org.jtalks.jcommune.model.entity.SimplePage} objects.
- * At the current moment it doesn't provides any additional methods over the basic {@link ChildRepository} interface
+ * At the current moment it doesn't provides any additional methods over the basic {@link Crud} interface
  * but some specific methods will be added soon.
  *
  * @author Scherbakov Roman
  * @author Alexander Gavrikov
  */
-public interface SimplePageDao extends ChildRepository<SimplePage> {
+public interface SimplePageDao extends Crud<SimplePage> {
 
     /**
      * Create a new simple page and then put it into database

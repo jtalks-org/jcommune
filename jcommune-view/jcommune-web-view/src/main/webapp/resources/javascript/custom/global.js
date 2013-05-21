@@ -52,11 +52,11 @@ $(document).ready(function () {
             bodyMessage: $(this).attr('data-confirmationMessage'),
             firstFocus: false,
             footerContent: footerContent,
-            maxWidth: 300,
+            maxWidth: 440,
             tabNavigation: ['#remove-entity-ok', '#remove-entity-cancel'],
             handlers: {
                 '#remove-entity-ok': {'click': submitFunc},
-                '#remove-entity-cancel': {'static':'close'}
+                '#remove-entity-cancel': {'static': 'close'}
             }
         });
 
@@ -114,7 +114,7 @@ $(document).ready(function () {
     $(document).delegate('input[type="password"]', 'keypress keydown', function (e) {
         var container = $(e.target).parent('div');
         var el = $('<i class="icon-exclamation-sign icon-password-exclamation" data-original-title="' + $capsLock + '"/>');
-        if(e.type == 'keydown' && container.find('.icon-exclamation-sign').length > 0){
+        if (e.type == 'keydown' && container.find('.icon-exclamation-sign').length > 0) {
             container.find('.icon-exclamation-sign').remove();
 //            container.find('.tooltip').remove();
             $(e.target).css('padding-right', (parseInt($(e.target).css('padding-right')) - 20) + 'px');
@@ -128,9 +128,9 @@ $(document).ready(function () {
             $(e.target).css('padding-right', (parseInt($(e.target).css('padding-right')) + 20) + 'px');
             $(e.target).width($(e.target).width() - 20);
             //fix to modal dialog tooltip
-            if($(e.target).parents('.modal').length > 0){
+            if ($(e.target).parents('.modal').length > 0) {
                 el.tooltip({placement: 'bottom', cls: 'modal-tooltip-caps-lock'});
-            }else{
+            } else {
                 el.tooltip({placement: 'bottom'});
             }
 

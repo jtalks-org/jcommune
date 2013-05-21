@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.model.dao;
 
-import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.entity.Property;
 
 /**
@@ -23,7 +23,7 @@ import org.jtalks.common.model.entity.Property;
  * 
  * @author Anuar_Nurmakanov
  */
-public interface PropertyDao extends ChildRepository<Property> {
+public interface PropertyDao extends Crud<Property> {
     /**
      * Gets a property by name.
      * 
