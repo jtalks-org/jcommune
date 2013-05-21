@@ -69,7 +69,7 @@ public class ComponentInformation {
      * @param name new name of the component
      */
     public void setName(String name) {
-        this.name = name;
+        this.name = name.trim();
     }
 
     /**
@@ -85,7 +85,7 @@ public class ComponentInformation {
      * @param description new description of the component
      */
     public void setDescription(String description) {
-        this.description = description;
+        this.description = description.trim();
     }
 
     /**
@@ -101,6 +101,6 @@ public class ComponentInformation {
      * @param logoTooltip new tooltip for the component logo
      */
     public void setLogoTooltip(String logoTooltip) {
-        this.logoTooltip = logoTooltip;
+        this.logoTooltip = logoTooltip.trim();
     }
 }

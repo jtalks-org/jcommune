@@ -31,10 +31,25 @@
         <span class="icon-bar"></span>
       </a>
 
+      <span id="logoTooltipHolder" class="hidden"><c:out value="${logoTooltip}"/></span>
+      <span id="descriptionHolder" class="hidden"><c:out value="${cmpDescription}"/></span>
+
+      <c:set var="toolTip" value="${logoTooltip}"/>
+      <c:if test="${not empty forumComponent}">
+        <jtalks:hasPermission permission="GeneralPermission.ADMIN"
+                            targetId="${forumComponent.id}" targetType="COMPONENT">
+          <c:if test="${empty logotTooltip}">
+              <c:set var="toolTip"> <spring:message code="label.changeLogo"/> </c:set>
+          </c:if>
+        </jtalks:hasPermission>
+      </c:if>
+
       <div class="logo-container">
-        <img id="${sessionScope.adminMode == true ? 'forumLogo' : ''}" class="forum-logo"
+        <a href="${pageContext.request.contextPath}/">
+          <img id="${sessionScope.adminMode == true ? 'forumLogo' : ''}" class="forum-logo"
              src="${pageContext.request.contextPath}/admin/logo"
-             title="${logoTooltip}" alt="${logoTooltip}"/>
+             title="${toolTip}" alt="${toolTip}"/>
+        </a>
       </div>
 
       <c:choose>

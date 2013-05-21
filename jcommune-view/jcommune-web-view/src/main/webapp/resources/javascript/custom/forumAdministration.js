@@ -85,7 +85,7 @@ function createAdministrationDialog() {
         tabNavigation: ['#forum_name','#forum_description','#forum_logoTooltip'],
         handlers: {
             '#administration-submit-button': {'click': sendForumConfiguration},
-            '#administration-cancel-button': {'click': jDialog.closeDialog}
+            '#administration-cancel-button': {'static':'close'}
         }
     });
 
@@ -108,8 +108,8 @@ function fillAdminDialogInputs() {
     }
     else {
         var cmpNameText = $("#cmpName").text();
-        var forumDescriptionText = $("#cmpDescription").text();
-        var logoTooltipText = $("#forumLogo").attr("title");
+        var forumDescriptionText = $("#descriptionHolder").text();
+        var logoTooltipText = $("#logoTooltipHolder").text();
 
         $('#forum_name').val(cmpNameText);
         $('#forum_description').val(forumDescriptionText);
