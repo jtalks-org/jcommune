@@ -23,7 +23,7 @@ import javax.validation.constraints.Size;
  * @author Andrei Alikov
  */
 public class ComponentInformation {
-    private static final int PARAM_MAX_SIZE = 255;
+    private static final int PARAM_MAX_SIZE = 50;
     private static final int PARAM_MIN_SIZE = 1;
 
     @NotNull(message = "{validation.not_null}")
