@@ -135,6 +135,7 @@ public class AdministrationController extends ImageUploadController {
 
     /**
      * Returns logo image data in String64
+     * @return current forum logo image data in String64 format appropriate for "src" attribute of <img> tag
      */
     public String getForumLogo() throws ImageProcessException {
         Component forumComponent = componentService.getComponentOfForum();
