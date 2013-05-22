@@ -44,6 +44,11 @@ public class ChangedEmailValidatorTest {
 	private UserDao userDao;
 	@Mock
 	private ConstraintValidatorContext validatorContext;
+    @Mock
+    private ConstraintValidatorContext.ConstraintViolationBuilder violationBuilder;
+    @Mock
+    private ConstraintValidatorContext.ConstraintViolationBuilder.NodeBuilderDefinedContext nodeBuilderDefinedContext;
+
 	private ChangedEmailValidator validator;
 	private String userEmail = "current_user@gmail.com";
 	private JCUser user = new JCUser("username", userEmail, "password");
@@ -59,41 +64,44 @@ public class ChangedEmailValidatorTest {
 	public void emptyEmailShouldBeValidBecauseItIsNotBusy() {
 		EditUserProfileDto editedUserProfile = new EditUserProfileDto();
 		editedUserProfile.setEmail(null);
-		
-		boolean isValid = validator.isValid(editedUserProfile, validatorContext);
-		
-		assertTrue(isValid, "Empty email should be valid, becuase it isn't busy.");
+        boolean isValid = validator.isValid(editedUserProfile, validatorContext);
+
+        assertTrue(isValid, "Empty email should be valid, becuase it isn't busy.");
 	}
 
 	@Test
 	public void notChangedEmailShouldBeValid() {
 	    EditUserProfileDto editedUserProfile = new EditUserProfileDto();
         editedUserProfile.setEmail(userEmail);
-	    
+
 		boolean isValid = validator.isValid(editedUserProfile, validatorContext);
-		
+
 		assertTrue(isValid, "Email of current user isn't valid.");
 	}
-	
+
 	@Test
 	public void changedEmailShouldBeValidIfItIsNotBusy() {
 	    EditUserProfileDto editedUserProfile = new EditUserProfileDto();
         editedUserProfile.setEmail("new_current_user@gmail.com");
-	    
+
 	    boolean isValid = validator.isValid(editedUserProfile, validatorContext);
-        
+
 	    assertTrue(isValid, "New email isn't taken, so it must be valid.");
 	}
-	
+
 	@Test
     public void changedEmailShouldNotBeValidIfItIsBusy() {
         when(userDao.getByEmail(anyString())).thenReturn(
                 new JCUser("new_current_user@gmail.com", "email", "password"));
         EditUserProfileDto editedUserProfile = new EditUserProfileDto();
         editedUserProfile.setEmail("new_current_user@gmail.com");
-        
+        when(validatorContext.buildConstraintViolationWithTemplate(null)).
+                thenReturn(violationBuilder);
+        when(violationBuilder.addNode(anyString())).
+                thenReturn(nodeBuilderDefinedContext);
+
         boolean isValid = validator.isValid(editedUserProfile, validatorContext);
-        
+
         assertFalse(isValid, "New email is taken, so it must be invalid.");
     }
 }

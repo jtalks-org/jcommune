@@ -18,7 +18,6 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
@@ -37,6 +36,7 @@ public class ChangedEmailValidator implements ConstraintValidator<ChangedEmail, 
 
     private UserService userService;
     private UserDao userDao;
+    private String message;
 
     /**
      * @param userService to obtain current user logged in
@@ -53,7 +53,7 @@ public class ChangedEmailValidator implements ConstraintValidator<ChangedEmail, 
      */
     @Override
     public void initialize(ChangedEmail constraintAnnotation) {
-        //nothing to init here
+        this.message = constraintAnnotation.message();
     }
 
     /**
@@ -70,8 +70,14 @@ public class ChangedEmailValidator implements ConstraintValidator<ChangedEmail, 
         if (ObjectUtils.equals(changedEmail, currentUserEmail)) {
             return true; // no changes in an email, that's ok
         } else {
-            User userWithTheSameChangedEmail = userDao.getByEmail(changedEmail);
-            return userWithTheSameChangedEmail == null;
+            boolean userWithTheSameChangedEmailExists = userDao.getByEmail(changedEmail) != null;
+            if(userWithTheSameChangedEmailExists){
+                context.disableDefaultConstraintViolation();
+                context.buildConstraintViolationWithTemplate(message)
+                        .addNode("email")
+                        .addConstraintViolation();
+            }
+            return !userWithTheSameChangedEmailExists;
         }
     }
     

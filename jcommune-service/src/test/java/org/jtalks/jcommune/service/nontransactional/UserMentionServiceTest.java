@@ -85,7 +85,7 @@ public class UserMentionServiceTest {
     }
     
     @Test
-    public void notifyNotMentionedUsersShouldSendForNotYetNotifiedMentionedUsers() {
+    public void notifyNewlyhouldSendEmailForNewlyMentionedUsers() {
         String textWithUsersMentioning = "In this text we have 3 user mentioning: first [user]Shogun[/user]," +
                 "second [user]jk1[/user], third [user]masyan[/user]";
         Post mentioningPost = getPost(25L, textWithUsersMentioning);
@@ -114,7 +114,7 @@ public class UserMentionServiceTest {
     }
     
     @Test
-    public void notifyNotMentionedUsersShouldNotNotifyNotAgreedWithNotificationsUsers() {
+    public void notifyNewlyMentionedUsersShouldNotNotifyNotAgreedWithNotificationsUsers() {
         String textWithUsersMentioning = "In this text we have 1 user mentioning - [user]Shogun[/user]";
         Post mentioningPost = getPost(25L, textWithUsersMentioning);
         JCUser mentionedUser = getJCUser("Shogun", false);
@@ -130,7 +130,7 @@ public class UserMentionServiceTest {
     }
     
     @Test
-    public void notifyNotMentionedUsersShouldNotSendWhenUsersWereNotFound() {
+    public void notifyNewlyMentionedUsersShouldNotSendWhenUsersWereNotFound() {
         String textWithUsersMentioning = "In this text we have 3 user mentioning: first [user]Shogun[/user]," +
                 "second [user]masyan[/user]," +
                 "third [user]jk1[/user]";
@@ -148,7 +148,7 @@ public class UserMentionServiceTest {
     }
     
     @Test
-    public void notifyNotMentionedUsersShouldNotSendIfUserIsSubscriberOfTopic() {
+    public void notifyNewlyMentionedUsersShouldNotSendIfUserIsSubscriberOfTopic() {
         String textWithUsersMentioning = 
                 "In this text we have 1 user mentioning - [user]Shogun[/user]";
         JCUser mentionedUser = getJCUser("Shogun", true);

@@ -66,18 +66,25 @@ public class CodeReviewCommentTest {
     
     @Test
     public void getOwnerPostShouldReturnFirstPostOfCodeReviewTopic() {
-        Topic topic = new Topic();
         Post expectedOwnerPost = new Post();
-        topic.addPost(expectedOwnerPost);
+        CodeReviewComment codeReviewComment = createCodeReviewCommentAttachedTo(expectedOwnerPost);
+        
+        Post actualOwnerPost = codeReviewComment.getOwnerPost();
+        
+        assertEquals("It should return first post of owner topic, cause it contains code review.",
+                expectedOwnerPost, actualOwnerPost);
+    }
+    
+    
+    private CodeReviewComment createCodeReviewCommentAttachedTo(Post ownerPost) {
+        Topic topic = new Topic();
+        topic.addPost(ownerPost);
         CodeReview codeReview = new CodeReview();
         CodeReviewComment codeReviewComment = new CodeReviewComment();
         codeReview.addComment(codeReviewComment);
         codeReviewComment.setCodeReview(codeReview);
         codeReview.setTopic(topic);
         
-        Post actualOwnerPost = codeReviewComment.getOwnerPost();
-        
-        assertEquals("It should return first post of owner topic, cause it contains code review.",
-                expectedOwnerPost, actualOwnerPost);
+        return codeReviewComment;
     }
 }
