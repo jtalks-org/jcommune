@@ -46,8 +46,8 @@
 
       <div class="logo-container">
         <a href="${pageContext.request.contextPath}/">
-          <img id="${sessionScope.adminMode == true ? 'forumLogo' : ''}" class="forum-logo"
-             src="${pageContext.request.contextPath}/admin/logo"
+          <img id="${sessionScope.adminMode == true ? 'forumLogo' : ''}" class="forum-logo cursor-pointer"
+             src="${forumLogo}"
              title="${toolTip}" alt="${toolTip}"/>
         </a>
       </div>
@@ -57,7 +57,7 @@
           <span class="brand"><fmt:message key="label.error"/></span>
         </c:when>
         <c:when test="${cmpName != null and sessionScope.adminMode == true}">
-            <a class="brand" id="cmpName"><c:out value="${cmpName}"/></a>
+            <a class="brand cursor-pointer" id="cmpName"><c:out value="${cmpName}"/></a>
         </c:when>
         <c:otherwise>
           <a class="brand"

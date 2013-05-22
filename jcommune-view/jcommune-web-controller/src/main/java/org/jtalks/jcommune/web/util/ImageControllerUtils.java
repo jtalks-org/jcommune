@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -106,5 +107,15 @@ public class ImageControllerUtils {
         responseContent.put(STATUS, String.valueOf(JsonResponseStatus.SUCCESS));
         responseContent.put(SRC_PREFIX, ImageUtils.HTML_SRC_TAG_PREFIX);
         responseContent.put(SRC_IMAGE, srcImage);
+    }
+
+    /**
+     * Converts raw image data to format appropriate for "src" attribute of <img> tag
+     * @param imageData raw image data appropriate for "src" attribute of <img> tag
+     * @return string with image data
+     * @throws ImageProcessException
+     */
+    public String getImageDataInString64(byte[] imageData) throws ImageProcessException {
+        return  ImageUtils.HTML_SRC_TAG_PREFIX + baseImageService.convertBytesToBase64String(imageData);
     }
 }

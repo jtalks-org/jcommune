@@ -49,8 +49,8 @@
         <constructor-arg type="java.lang.String" value="FORUM_LOGO_MAX_SIZE"/>
         <property name="propertyDao"><null/></property>
         <property name="name" value="jcommune.forum_logo_max_size"/>
-        <property name="defaultValue" value="40960"/>
-        <!-- 40 * 1024 = 40 960 -->
+        <property name="defaultValue" value="10240"/>
+        <!-- 10 * 1024 = 10 240 -->
     </bean>
 
     <bean id="componentNameProperty" class="org.jtalks.jcommune.model.entity.JCommuneProperty"

@@ -32,7 +32,7 @@
         <h1 class="pull-left logo-text">
             <c:choose>
                 <c:when test="${sessionScope.adminMode == true}">
-                    <span id="cmpDescription"><c:out value="${cmpDescription}"/></span>
+                    <span class="cursor-pointer" id="cmpDescription"><c:out value="${cmpDescription}"/></span>
                 </c:when>
                 <c:otherwise>                
                     <a class="invisible-link" href="${pageContext.request.contextPath}/"><c:out value="${cmpDescription}"/></a>

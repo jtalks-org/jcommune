@@ -35,7 +35,7 @@ public class ComponentInformation {
     private String description;
 
     @NotNull(message = "{validation.not_null}")
-    @Size(min = PARAM_MIN_SIZE, max = PARAM_MAX_SIZE, message = "{validation.param.length}")
+    @Size(min = 0, max = PARAM_MAX_SIZE, message = "{validation.param.length}")
     private String logoTooltip;
 
     private String logo;

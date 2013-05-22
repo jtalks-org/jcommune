@@ -44,9 +44,10 @@ function showForumConfigurationDialog(e) {
 Creates Forum Administration dialog
  */
 function createAdministrationDialog() {
+
     var bodyContent = '<div class="control-group"> \
             <div class="controls thumbnail-logo"> \
-                <img id="logoPreview" class="forum-logo" src="' + $root + '/admin/logo" alt=""/>  \
+                <img id="logoPreview" class="forum-logo" src="' + currentAdminValues.logoPreview + '" alt=""/>  \
             </div> \
             \
             \
@@ -114,6 +115,7 @@ function fillAdminDialogInputs() {
         $('#forum_name').val(cmpNameText);
         $('#forum_description').val(forumDescriptionText);
         $('#forum_logoTooltip').val(logoTooltipText);
+        $('#logoPreview').attr("src", $('#forumLogo').attr("src"));
     }
 }
 

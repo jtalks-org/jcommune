@@ -176,56 +176,59 @@ public class AdministrationControllerTest {
     }
 
     @Test
-    public void getForumLogoShouldRetrunDefaultLogoWhenLogoPropertyIsEmpty() {
-        MockHttpServletResponse response = new MockHttpServletResponse();
+    public void getForumLogoShouldReturnDefaultLogoWhenLogoPropertyIsEmpty() throws ImageProcessException {
         Component forumComponent = new Component();
         forumComponent.addProperty(AdministrationController.JCOMMUNE_LOGO_PARAM, "");
         when(componentService.getComponentOfForum()).thenReturn(forumComponent);
-        when(forumLogoService.getDefaultLogo()).thenReturn(new byte[0]);
+        when(forumLogoService.getDefaultLogo()).thenReturn(validImage);
+        when(imageControllerUtils.getImageDataInString64(validImage)).thenReturn("valid image");
 
-        administrationController.getForumLogo(response);
+        String imageString = administrationController.getForumLogo();
 
         verify(forumLogoService).getDefaultLogo();
+        assertEquals(imageString, "valid image");
     }
 
     @Test
-    public void getForumLogoShouldRetrunDefaultLogoWhenLogoPropertyIsNull() {
-        MockHttpServletResponse response = new MockHttpServletResponse();
+    public void getForumLogoShouldReturnDefaultLogoWhenLogoPropertyIsNull() throws ImageProcessException {
         Component forumComponent = new Component();
         when(componentService.getComponentOfForum()).thenReturn(forumComponent);
-        when(forumLogoService.getDefaultLogo()).thenReturn(new byte[0]);
+        when(forumLogoService.getDefaultLogo()).thenReturn(validImage);
+        when(imageControllerUtils.getImageDataInString64(validImage)).thenReturn("valid image");
 
-        administrationController.getForumLogo(response);
+        String imageString = administrationController.getForumLogo();
 
         verify(forumLogoService).getDefaultLogo();
+        assertEquals(imageString, "valid image");
     }
 
     @Test
-    public void getForumLogoShouldRetrunDefaultLogoWhenNoComponent() {
-        MockHttpServletResponse response = new MockHttpServletResponse();
+    public void getForumLogoShouldReturnDefaultLogoWhenNoComponent() throws ImageProcessException {
         when(componentService.getComponentOfForum()).thenReturn(null);
-        when(forumLogoService.getDefaultLogo()).thenReturn(new byte[0]);
+        when(forumLogoService.getDefaultLogo()).thenReturn(validImage);
+        when(imageControllerUtils.getImageDataInString64(validImage)).thenReturn("valid image");
 
-        administrationController.getForumLogo(response);
+        String imageString = administrationController.getForumLogo();
 
         verify(forumLogoService).getDefaultLogo();
+        assertEquals(imageString, "valid image");
     }
 
     @Test
-    public void getForumLogoShouldRetrunDefaultLogoWhenPropertyExists() throws IOException {
-        MockHttpServletResponse response = new MockHttpServletResponse();
-
+    public void getForumLogoShouldReturnPropertyLogoWhenPropertyExists() throws IOException, ImageProcessException {
         Component forumComponent = new Component();
-        String logo = "logo";
-        Base64Wrapper wrapper = new Base64Wrapper();
-        byte[] logoBytes = wrapper.decodeB64Bytes(logo);
 
-        forumComponent.addProperty(AdministrationController.JCOMMUNE_LOGO_PARAM, logo);
+        String logoProperty = "logo";
+        Base64Wrapper wrapper = new Base64Wrapper();
+        byte[] logoBytes = wrapper.decodeB64Bytes(logoProperty);
+
+        forumComponent.addProperty(AdministrationController.JCOMMUNE_LOGO_PARAM, logoProperty);
+        when(imageControllerUtils.getImageDataInString64(logoBytes)).thenReturn("valid image");
         when(componentService.getComponentOfForum()).thenReturn(forumComponent);
 
-        administrationController.getForumLogo(response);
+        String imageString = administrationController.getForumLogo();
 
-        assertEquals(response.getContentAsByteArray(), logoBytes);
         verify(forumLogoService, never()).getDefaultLogo();
+        assertEquals(imageString, "valid image");
     }
 }

@@ -134,13 +134,9 @@ public class AdministrationController extends ImageUploadController {
     }
 
     /**
-     * handler returning logo of the forum
-     * @param response server response object
+     * Returns logo image data in String64
      */
-    @RequestMapping(value = "/admin/logo", method = RequestMethod.GET)
-    public void getForumLogo(HttpServletResponse response) {
-        response.setContentType("image/jpeg");
-
+    public String getForumLogo() throws ImageProcessException {
         Component forumComponent = componentService.getComponentOfForum();
         String logoProperty = null;
         if (forumComponent != null) {
@@ -155,12 +151,7 @@ public class AdministrationController extends ImageUploadController {
             logoBytes = wrapper.decodeB64Bytes(logoProperty);
         }
 
-        try {
-            OutputStream stream = response.getOutputStream();
-            stream.write(logoBytes);
-        } catch (IOException e) {
-            LOGGER.error("Failed to write data in forum logo response", e);
-        }
+        return  imageControllerUtils.getImageDataInString64(logoBytes);
     }
 
     /**
