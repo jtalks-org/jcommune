@@ -239,7 +239,7 @@
                         
                         <span class="contact" title="<c:out value='${contact.type.typeName}'/>">
                             <img src="${pageContext.request.contextPath}${contact.type.icon}">
-                                ${contact.displayValue}
+                            <jtalks:prepareLink incomingLink='${contact.displayValue}'/>
                         </span>
                 </li>
             </c:forEach>

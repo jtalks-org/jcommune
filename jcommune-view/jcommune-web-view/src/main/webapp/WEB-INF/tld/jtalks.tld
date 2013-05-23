@@ -112,6 +112,17 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+
+    <tag>
+        <name>prepareLink</name>
+        <tag-class>org.jtalks.jcommune.web.tags.LinksPreparer</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>incomingLink</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
     
     <tag>
         <description>
