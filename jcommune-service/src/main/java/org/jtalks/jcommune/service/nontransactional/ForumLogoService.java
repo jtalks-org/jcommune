@@ -14,10 +14,12 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.Validate;
 import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,12 +58,17 @@ public class ForumLogoService extends BaseImageService {
      */
     public byte[] getDefaultLogo() {
         byte[] result = new byte[0];
-        InputStream stream = ForumLogoService.class.getClassLoader().getResourceAsStream(defaultLogoPath);
+        ClassPathResource logoClassPathSource = new ClassPathResource(defaultLogoPath);
+        InputStream stream = null;
         try {
+            stream = logoClassPathSource.getInputStream();
             result = new byte[stream.available()];
             Validate.isTrue(stream.read(result) > 0);
         } catch (IOException e) {
             LOGGER.error("Failed to load default logo", e);
+        }
+        finally {
+            IOUtils.closeQuietly(stream);
         }
         return result;
     }

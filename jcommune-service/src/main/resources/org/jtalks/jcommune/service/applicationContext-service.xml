@@ -84,7 +84,7 @@
     <bean id="forumLogoService" class="org.jtalks.jcommune.service.nontransactional.ForumLogoService">
         <constructor-arg ref="imagePreprocessor"/>
         <constructor-arg ref="base64Wrapper"/>
-        <constructor-arg value="org/jtalks/jcommune/service/jcommune.jpeg"/>
+        <constructor-arg value="org/jtalks/jcommune/service/jcommune-logo.jpeg"/>
         <constructor-arg ref="forumLogoMaxSizeProperty"/>
     </bean>
 

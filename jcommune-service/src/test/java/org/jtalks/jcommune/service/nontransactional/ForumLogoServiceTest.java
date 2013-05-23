@@ -44,7 +44,7 @@ public class ForumLogoServiceTest {
         forumLogoService = new ForumLogoService(
                 imageUtils,
                 base64Wrapper,
-                "org/jtalks/jcommune/service/jcommune.jpeg",
+                "org/jtalks/jcommune/service/jcommune-logo.jpeg",
                 logoSizeProperty);
     }
 
