@@ -38,7 +38,7 @@
       <c:if test="${not empty forumComponent}">
         <jtalks:hasPermission permission="GeneralPermission.ADMIN"
                             targetId="${forumComponent.id}" targetType="COMPONENT">
-          <c:if test="${empty logotTooltip}">
+          <c:if test="${empty toolTip}">
               <c:set var="toolTip"> <spring:message code="label.changeLogo"/> </c:set>
           </c:if>
         </jtalks:hasPermission>

@@ -228,6 +228,8 @@ function addRemoveLogoHandler() {
             }
         });
 
+        jDialog.dialog.find('.close').bind('click', createAdministrationDialog);
+
         $('#remove-logo-ok').focus();
 
     });
