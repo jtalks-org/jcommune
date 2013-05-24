@@ -24,8 +24,6 @@
     <title><c:out value="${topicDto.topic.branch.name}"/> - <spring:message code="h.new_topic"/></title>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-ui.min.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/datepicker/development-bundle/ui/i18n/jquery.ui.datepicker-ru.js"
-            type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/datepicker.js"
