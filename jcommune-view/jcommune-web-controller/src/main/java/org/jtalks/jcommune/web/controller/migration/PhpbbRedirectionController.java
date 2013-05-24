@@ -32,27 +32,14 @@ import javax.servlet.http.HttpServletResponse;
 public class PhpbbRedirectionController {
 
     /**
-     * Redirects topic URLs, assumes that topic ids
-     * haven't been changed during data migration
-     *
-     * @param id topic identifier from url
-     * @param response http response object to set headers on
-     * @param request http request to figure out the context path
-     */
-    @RequestMapping({"/ftopic{id}", "/ftopic{id}.php/**", "/ftopic{id}/**"})
-    public void showTopic(@PathVariable Long id, HttpServletResponse response, WebRequest request) {
-        String redirectUrl = request.getContextPath() +  "/topics/" + id;
-        setHttp301Headers(response, redirectUrl);
-    }
-
-    /**
      * http://www.javatalks.ru/ftopic2036-0.php
      * http://www.javatalks.ru/ftopic2036-0.php/topicname
      * @param topicParams example ftopic2036-0, where the last number is page, which is ignored in our case
      * @param response http response object to set headers on
      * @param request http request to figure out the context path
      */
-    @RequestMapping({"/ftopic{topicParams}.php", "/ftopic{topicParams}.php/**"})
+    @RequestMapping({"/ftopic{topicParams}", "/ftopic{topicParams}.php",
+                        "/ftopic{topicParams}/**", "/ftopic{topicParams}.php/**"})
     public void showFtopicWithAdditionalParams(@PathVariable String topicParams, HttpServletResponse response,
                                                WebRequest request) {
         String id = StringUtils.substringBefore(topicParams, "-");

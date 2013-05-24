@@ -45,7 +45,7 @@ public class PhpbbRedirectionControllerTest {
 
     @Test
     public void testShowTopic() {
-       controller.showTopic(1L, response, request);
+       controller.showTopicWithAdditionalParams("1", response, request);
        this.assertHeadersSet(CONTEXT + "/topics/1");
     }
     
@@ -53,6 +53,13 @@ public class PhpbbRedirectionControllerTest {
     public void testShowTopicWithAdditionalParams() {
        controller.showTopicWithAdditionalParams("14912-0", response, request);
        this.assertHeadersSet(CONTEXT + "/topics/14912");
+    }
+
+    @Test
+    public void testShowTopicWithSid(){
+        String additionalParams = "32044-0-0-asc-.php&sid=632e7bd4377d9d784b9fa67700f2";
+        controller.showTopicWithAdditionalParams(additionalParams, response, request);
+        this.assertHeadersSet(CONTEXT + "/topics/32044");
     }
 
     @Test
