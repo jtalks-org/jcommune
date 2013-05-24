@@ -7,6 +7,8 @@ import javax.validation.ConstraintValidatorContext;
 
 /**
  * Check that a string's trimmed length is not empty.
+ *
+ * @author Andrey Pogorelov
  */
 public class NullableNotBlankValidator implements ConstraintValidator<NullableNotBlank, String> {
 
@@ -27,7 +29,7 @@ public class NullableNotBlankValidator implements ConstraintValidator<NullableNo
      *         <code>min</code> and <code>max</code> values (inclusive), <code>false</code> otherwise.
      */
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        if ( s == null ) {
+        if (s == null) {
             return true;
         }
 
