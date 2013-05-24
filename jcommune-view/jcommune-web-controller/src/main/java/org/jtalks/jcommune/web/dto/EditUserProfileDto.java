@@ -53,6 +53,7 @@ public class EditUserProfileDto {
     @BbCodeNesting
     private String signature;
     private String currentUserPassword;
+    @NullableNotBlank(message = "{validation.not_null}")
     @Size(min = User.PASSWORD_MIN_LENGTH, max = User.PASSWORD_MAX_LENGTH)
     private String newUserPassword;
     private String newUserPasswordConfirm;

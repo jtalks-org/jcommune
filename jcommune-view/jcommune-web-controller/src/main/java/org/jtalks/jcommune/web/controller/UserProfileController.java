@@ -26,6 +26,7 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
+import org.jtalks.jcommune.web.validation.editors.DefaultStringEditor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
@@ -68,11 +69,14 @@ public class UserProfileController {
      * removes leading and trailing spaces from the submitted fields.
      * So, it ensures, that all validations will be applied to
      * trimmed field values only.
-     *
+     * <p/> There is no need for trim edit password fields,
+     * so they are processed with {@link DefaultStringEditor}
      * @param binder Binder object to be injected
      */
     @InitBinder
     public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, "newUserPassword", new DefaultStringEditor(true));
+        binder.registerCustomEditor(String.class, "newUserPasswordConfirm", new DefaultStringEditor(true));
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 

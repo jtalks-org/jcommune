@@ -45,6 +45,7 @@ public class RegisterUserDto {
     @Unique(entity = JCUser.class, field = "email", message = "{validation.duplicateemail}")
     private String email;
 
+    @NotBlank(message = "{validation.not_null}")
     @Size(min = User.PASSWORD_MIN_LENGTH, max = User.PASSWORD_MAX_LENGTH)
     private String password;
 
