@@ -181,7 +181,10 @@ public class UserProfileController {
     public ModelAndView saveEditedProfile(@Valid @ModelAttribute(EDITED_USER) EditUserProfileDto editedProfileDto,
                                     BindingResult result, HttpServletResponse response) throws NotFoundException {
         if (result.hasErrors()) {
-            return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedProfileDto);
+            JCUser editedUser = userService.get(editedProfileDto.getUserId());
+            ModelAndView mav = new ModelAndView(EDIT_PROFILE, EDITED_USER, editedProfileDto);
+            mav.addObject("contacts", editedUser.getUserContacts());
+            return mav;
         }
         long editedUserId = editedProfileDto.getUserId();
         checkPermissionsToEditProfile(editedUserId);

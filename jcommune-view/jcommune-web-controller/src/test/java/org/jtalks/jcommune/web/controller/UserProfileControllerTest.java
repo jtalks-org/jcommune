@@ -34,10 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Language;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
@@ -146,6 +143,18 @@ public class UserProfileControllerTest {
         assertEquals(dto.getLastName(), user.getLastName(), "Last name is not equal");
         assertEquals(dto.getEmail(), user.getEmail(), "Last name is not equal");
     }
+
+    @Test
+    public void startEditUserProfilePageShouldShowCorrectUserContacts() throws NotFoundException {
+        Long editedUserId = 1l;
+        JCUser user = getUser();
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.get(editedUserId)).thenReturn(user);
+
+        ModelAndView mav = profileController.startEditUserProfile(editedUserId);
+
+        assertModelAttributeAvailable(mav, "contacts");
+    }
     
     @Test(expectedExceptions = AccessDeniedException.class)
     public void startEditUserProfileShouldShowErrorIfUserDoesNotHavePermissionToEditOwnProfile() throws NotFoundException {
@@ -207,7 +216,8 @@ public class UserProfileControllerTest {
     public void saveEditedProfileWithValidationErrorsShouldShowThemToUser() throws NotFoundException {
         JCUser user = getUser();
         when(userService.getCurrentUser()).thenReturn(user);
-        //
+        when(userService.get(anyLong())).thenReturn(user);
+
         EditUserProfileDto dto = getEditUserProfileDto();
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
@@ -216,6 +226,20 @@ public class UserProfileControllerTest {
 
         assertViewName(mav, "editProfile");
         verify(userService, never()).saveEditedUserProfile(anyLong() , any(UserInfoContainer.class));
+    }
+
+    @Test
+    public void saveEditedProfileWithValidationErrorsShouldShowCorrectContactsToUser() throws NotFoundException {
+        JCUser user = getUser();
+        when(userService.getCurrentUser()).thenReturn(user);
+
+        EditUserProfileDto dto = getEditUserProfileDto();
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(true);
+        when(userService.get(anyLong())).thenReturn(user);
+        ModelAndView mav = profileController.saveEditedProfile(dto, bindingResult, new MockHttpServletResponse());
+
+        assertModelAttributeAvailable(mav, "contacts");
     }
     
     @Test(expectedExceptions = AccessDeniedException.class)
@@ -313,6 +337,8 @@ public class UserProfileControllerTest {
         newUser.setFirstName(FIRST_NAME);
         newUser.setLastName(LAST_NAME);
         newUser.setAvatar(avatarByteArray);
+        UserContact contact = new UserContact("test contact", new UserContactType());
+        newUser.addContact(contact);
         return newUser;
     }
 
