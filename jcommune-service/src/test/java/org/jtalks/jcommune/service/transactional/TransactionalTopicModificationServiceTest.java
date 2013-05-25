@@ -178,7 +178,8 @@ public class TransactionalTopicModificationServiceTest {
         
         Post answerPost = topicService.replyToTopic(TOPIC_ID, answerWithUserMentioning, BRANCH_ID);
         
-        //verify(mentionedUsers).notifyNewlyMentionedUsers(answerPost);
+        verify(userService).notifyNewlyMentionedUsers(answerPost);
+        verify(userService).markUsersAsAlreadyNotified(answerPost, postDao);
     }
 
     @Test(expectedExceptions = AccessDeniedException.class)
@@ -255,7 +256,8 @@ public class TransactionalTopicModificationServiceTest {
         
         Topic createdTopic = topicService.createTopic(topicWithUserNotification, answerBodyWithUserMentioning);
         
-        //verify(mentionedUsers).notifyNewlyMentionedUsers(createdTopic.getFirstPost());
+        verify(userService).notifyNewlyMentionedUsers(createdTopic.getFirstPost());
+        verify(userService).markUsersAsAlreadyNotified(createdTopic.getFirstPost(), postDao);
     }
 
     @Test
