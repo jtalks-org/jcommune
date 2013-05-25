@@ -14,19 +14,9 @@
  */
 package org.jtalks.jcommune.web.tags;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertEquals;
-
-import java.io.UnsupportedEncodingException;
-import java.util.Locale;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.chrono.ISOChronology;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -37,6 +27,17 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.FixedLocaleResolver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
+import java.io.UnsupportedEncodingException;
+import java.util.Locale;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
 
 /**
  * @author Evgeniy Naumenko
@@ -119,6 +120,12 @@ public class FormattedDateTagTest {
         tag.doEndTag();
         String output = ((MockHttpServletResponse) context.getResponse()).getContentAsString();
         assertEquals(output, "");
+    }
+
+    @Test
+    public void testSetValueCorrectlyConvertDstDatetime() throws JspException {
+        DateTime date = new DateTime(2011, 3, 27, 4, 34, 30, 0, ISOChronology.getInstance(DateTimeZone.forID("Europe/Berlin")));
+        tag.setValue(date);
     }
     
     private String render() throws JspException, UnsupportedEncodingException {

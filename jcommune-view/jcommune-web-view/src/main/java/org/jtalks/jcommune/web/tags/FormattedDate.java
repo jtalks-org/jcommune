@@ -98,7 +98,7 @@ public class FormattedDate extends FormatTag {
         if (value != null) {
             DateTime time = (DateTime) value;
             DateTimeZone zone = time.getZone();
-            long utcTime = zone.convertLocalToUTC(time.getMillis(), true);
+            long utcTime = zone.convertLocalToUTC(time.getMillis(), false);
             time = new DateTime(utcTime + offset);
             super.setValue(time);
         } else {
