@@ -20,6 +20,7 @@ import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
 import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.BranchDao;
+import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
@@ -94,6 +95,8 @@ public class TransactionalTopicModificationServiceTest {
     private BranchLastPostService branchLastPostService;
     @Mock
     private MentionedUsers mentionedUsers;
+    @Mock
+    private PostDao postDao;
 
     private CompoundAclBuilder<User> aclBuilder;
 
@@ -112,7 +115,8 @@ public class TransactionalTopicModificationServiceTest {
                 topicFetchService,
                 securityContextFacade,
                 permissionEvaluator,
-                branchLastPostService);
+                branchLastPostService,
+                postDao);
 
         user = new JCUser("username", "email@mail.com", "password");
         when(securityContextFacade.getContext()).thenReturn(securityContext);

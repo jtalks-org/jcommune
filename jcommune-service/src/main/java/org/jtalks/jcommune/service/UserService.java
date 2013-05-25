@@ -157,6 +157,7 @@ public interface UserService extends EntityService<JCUser> {
     /**
      * Parses the input of some post which contains [user] bb code,
      * and replace this bb codes with user profile links
+     * @return string with BB codes replaced by user profile links
      */
     String processUserBbCodesInPost(String postContent);
 
