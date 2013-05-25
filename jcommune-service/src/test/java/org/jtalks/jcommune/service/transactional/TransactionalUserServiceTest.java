@@ -23,18 +23,17 @@ import org.jtalks.common.model.entity.User;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
+import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.AvatarService;
-import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
-import org.jtalks.jcommune.service.nontransactional.EncryptionService;
-import org.jtalks.jcommune.service.nontransactional.MailService;
+import org.jtalks.jcommune.service.nontransactional.*;
 import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
@@ -48,15 +47,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
+import static java.text.MessageFormat.format;
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -92,6 +92,12 @@ public class TransactionalUserServiceTest {
     private static final byte[] AVATAR = new byte[10];
     private static final long USER_ID = 999L;
     private static final long MAX_REGISTRATION_TIMEOUT = 1000L;
+
+    private static final String MENTIONING_TEMPLATE = "This post contains not notified [user]%s[/user] mentioning " +
+            "and notified [user notified=true]%s[/user] mentioning";
+    private static final String MENTIONING_WITH_LINK_TO_PROFILE_TEMPALTE =
+            "This post contains not notified [user=%s]%s[/user] mentioning and notified [user=%s]%s[/user] mentioning";
+
 
     private UserService userService;
     @Mock
@@ -468,7 +474,7 @@ public class TransactionalUserServiceTest {
         verify(rememberMeServices, never()).loginSuccess(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Authentication.class));
     }
 
-    @Test
+    /*@Test
     public void testLoginFailUserNotFound() throws Exception {
         String username = "username";
 
@@ -481,7 +487,7 @@ public class TransactionalUserServiceTest {
         assertFalse(isAuthenticated);
         verify(userDao).getByUsername(username);
         verify(rememberMeServices, never()).loginSuccess(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Authentication.class));
-    }
+    } */
 
     private JCUser getUser(String username) {
         JCUser user = new JCUser(username, EMAIL, PASSWORD);
@@ -489,5 +495,82 @@ public class TransactionalUserServiceTest {
         user.setLastName(LAST_NAME);
         user.setAvatar(AVATAR);
         return user;
+    }
+
+    private void setupRequestAttributes() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setScheme("http");
+        request.setServerName("localhost");
+        request.setServerPort(8080);
+        request.setContextPath("/forum");
+        RequestContextHolder.setRequestAttributes(new ServletWebRequest(request));
+    }
+
+    /*@Test
+    public void processShouldAttachProfileLinkToExistUsers() throws NotFoundException {
+        String notNotifiedMentionedUserName = "Shogun";
+        String notifiedMentionedUserName = "jk1";
+        long notNotifiedMentionedUserId = 100L;
+        long notifiedMentionedUserId = 200L;
+        JCUser notNotifiedMentionedUser = getUser(notNotifiedMentionedUserName, notNotifiedMentionedUserId);
+        when(userDao.getByUsername(notNotifiedMentionedUserName)).thenReturn(notNotifiedMentionedUser);
+        JCUser notifiedMentionedUser = getUser(notifiedMentionedUserName, notifiedMentionedUserId);
+        when(userDao.getByUsername(notifiedMentionedUserName)).thenReturn(notifiedMentionedUser);
+        //
+        String expectedNotNotifiedUserProfile = "/forum/users/" + notNotifiedMentionedUserId;
+        String expectedNotifiedUserProfile = "/forum/users/" + notifiedMentionedUserId;
+        String notProcessedSource = format(MENTIONING_TEMPLATE, notNotifiedMentionedUserName, notifiedMentionedUserName);
+
+        MentionedUsers mentionedUsers = mock(MentionedUsers.class);
+        when(mentionedUsers.extractAllMentionedUsers(notProcessedSource))
+                .thenReturn(asSet(notNotifiedMentionedUserName, notifiedMentionedUserName));
+        String expectedAfterProcess = format(MENTIONING_WITH_LINK_TO_PROFILE_TEMPALTE,
+                expectedNotNotifiedUserProfile, notNotifiedMentionedUserName,
+                expectedNotifiedUserProfile, notifiedMentionedUserName);
+
+        String actualAfterProcess = userService.processUserBbCodesInPost(notProcessedSource);
+
+        assertEquals(actualAfterProcess, expectedAfterProcess);
+    } */
+
+    private JCUser getUser(String username, long userId) {
+        JCUser user = new JCUser(username, "sshogunn@gmail.com", "shogun password");
+        user.setId(userId);
+        return user;
+    }
+
+    @Test
+    public void processShouldNotAttachProfileLinkToNotExistUsers() throws NotFoundException {
+        String firstMentionedUserName = "Shogun";
+        String secondMentionedUserName = "jk1";
+        when(userDao.getByUsername(firstMentionedUserName)).thenReturn(null);
+        when(userDao.getByUsername(secondMentionedUserName)).thenReturn(null);
+        String notProcessedSource = format(MENTIONING_TEMPLATE, firstMentionedUserName, secondMentionedUserName);
+
+        MentionedUsers mentionedUsers = mock(MentionedUsers.class);
+        when(mentionedUsers.extractAllMentionedUsers(notProcessedSource))
+                .thenReturn(asSet(firstMentionedUserName, secondMentionedUserName));
+
+        String actualAfterProcess = userService.processUserBbCodesInPost(notProcessedSource);
+
+        assertEquals(actualAfterProcess, notProcessedSource);
+    }
+
+    @Test
+    public void notifyNewlyMentionedUsers() {
+
+        //MentionedUsers mentionedUsers = MentionedUsers.parse(post.getPostContent());
+        //mentionedUsers.notifyNewlyMentionedUsers(mailService, post, getDao());
+    }
+
+    @Test
+    public void markUsersAsAlreadyNotified() {
+
+        //MentionedUsers mentionedUsers = MentionedUsers.parse(post.getPostContent());
+        //mentionedUsers.markUsersAsAlreadyNotified(post, postDao);
+    }
+
+    public static <T> Set<T> asSet(T... values) {
+        return new HashSet<T>(Arrays.asList(values));
     }
 }

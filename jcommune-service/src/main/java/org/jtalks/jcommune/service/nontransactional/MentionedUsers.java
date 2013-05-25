@@ -121,7 +121,7 @@ public class MentionedUsers {
      * 
      * @return extracted users' names
      */
-    private Set<String> extractAllMentionedUsers(String canContainMentionedUsers) {
+    public Set<String> extractAllMentionedUsers(String canContainMentionedUsers) {
         return extractMentionedUsers(canContainMentionedUsers, ALL_MENTIONED_USERS_PATTERN);
     }
 
