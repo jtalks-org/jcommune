@@ -112,8 +112,7 @@ public class TransactionalTopicModificationServiceTest {
                 topicFetchService,
                 securityContextFacade,
                 permissionEvaluator,
-                branchLastPostService,
-                mentionedUsers);
+                branchLastPostService);
 
         user = new JCUser("username", "email@mail.com", "password");
         when(securityContextFacade.getContext()).thenReturn(securityContext);
@@ -175,7 +174,7 @@ public class TransactionalTopicModificationServiceTest {
         
         Post answerPost = topicService.replyToTopic(TOPIC_ID, answerWithUserMentioning, BRANCH_ID);
         
-        verify(mentionedUsers).notifyNewlyMentionedUsers(answerPost);
+        //verify(mentionedUsers).notifyNewlyMentionedUsers(answerPost);
     }
 
     @Test(expectedExceptions = AccessDeniedException.class)
@@ -252,7 +251,7 @@ public class TransactionalTopicModificationServiceTest {
         
         Topic createdTopic = topicService.createTopic(topicWithUserNotification, answerBodyWithUserMentioning);
         
-        verify(mentionedUsers).notifyNewlyMentionedUsers(createdTopic.getFirstPost());
+        //verify(mentionedUsers).notifyNewlyMentionedUsers(createdTopic.getFirstPost());
     }
 
     @Test

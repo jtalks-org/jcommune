@@ -98,8 +98,7 @@ public class TransactionalPostServiceTest {
                 notificationService,
                 lastReadPostService,
                 userService,
-                branchLastPostService,
-                mentionedUsers);
+                branchLastPostService);
     }
 
     @Test

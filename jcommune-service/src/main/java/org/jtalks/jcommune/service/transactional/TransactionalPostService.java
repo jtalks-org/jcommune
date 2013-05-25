@@ -51,7 +51,6 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     private LastReadPostService lastReadPostService;
     private UserService userService;
     private BranchLastPostService branchLastPostService;
-    private MentionedUsers mentionedUsers;
 
     /**
      * Create an instance of Post entity based service
@@ -63,7 +62,6 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * @param lastReadPostService   to modify last read post information when topic structure is changed
      * @param userService           to get current user
      * @param branchLastPostService to refresh the last post of the branch
-     * @param mentionedUsers    to notify all mentioned user
      */
     public TransactionalPostService(
             PostDao dao,
@@ -72,8 +70,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
             NotificationService notificationService,
             LastReadPostService lastReadPostService,
             UserService userService,
-            BranchLastPostService branchLastPostService,
-            MentionedUsers mentionedUsers) {
+            BranchLastPostService branchLastPostService) {
         super(dao);
         this.topicDao = topicDao;
         this.securityService = securityService;
@@ -81,7 +78,6 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         this.lastReadPostService = lastReadPostService;
         this.userService = userService;
         this.branchLastPostService = branchLastPostService;
-        this.mentionedUsers = mentionedUsers;
     }
 
     /**
@@ -108,7 +104,8 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
 
         this.getDao().saveOrUpdate(post);
         notificationService.topicChanged(post.getTopic());
-        mentionedUsers.notifyNewlyMentionedUsers(post);
+        userService.notifyNewlyMentionedUsers(post);
+        userService.markUsersAsAlreadyNotified(post, getDao());
 
         logger.debug("Post id={} updated.", post.getId());
     }

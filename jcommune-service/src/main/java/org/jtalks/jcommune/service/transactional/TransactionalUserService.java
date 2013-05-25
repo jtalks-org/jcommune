@@ -22,17 +22,16 @@ import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
+import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.AvatarService;
-import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
-import org.jtalks.jcommune.service.nontransactional.EncryptionService;
-import org.jtalks.jcommune.service.nontransactional.MailService;
+import org.jtalks.jcommune.service.nontransactional.*;
 import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +47,9 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * User service class. This class contains method needed to manipulate with User persistent entity.
@@ -328,5 +330,32 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
             LOGGER.warn(e.getMessage());
         }
         return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String processUserBbCodesInPost(String postContent) {
+        MentionedUsers mentionedUsers = MentionedUsers.parse(postContent);
+        return mentionedUsers.getTextWithProcessedUserTags(getDao());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void notifyNewlyMentionedUsers(Post post) {
+        MentionedUsers mentionedUsers = MentionedUsers.parse(post.getPostContent());
+        mentionedUsers.notifyNewlyMentionedUsers(mailService, post, getDao());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void markUsersAsAlreadyNotified(Post post, PostDao postDao) {
+        MentionedUsers mentionedUsers = MentionedUsers.parse(post.getPostContent());
+        mentionedUsers.markUsersAsAlreadyNotified(post, postDao);
     }
 }

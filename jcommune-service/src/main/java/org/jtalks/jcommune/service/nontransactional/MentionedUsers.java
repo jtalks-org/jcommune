@@ -16,19 +16,26 @@ package org.jtalks.jcommune.service.nontransactional;
 
 import static java.lang.String.format;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.dao.PostDao;
+import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -40,6 +47,8 @@ import org.jtalks.jcommune.model.entity.Post;
  *
  */
 public class MentionedUsers {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MentionedUsers.class);
+
     private static final Pattern ALL_MENTIONED_USERS_PATTERN = 
             Pattern.compile("\\[user\\].*?\\[/user\\]|\\[user notified=true\\].*?\\[/user\\]");
     private static final Pattern MENTIONED_AND_NOT_NOTIFIED_USERS_PATTERN = 
@@ -48,45 +57,78 @@ public class MentionedUsers {
     public static final String MENTIONED_AND_NOTIFIED_USER_TEMPLATE = "[user notified=true]%s[/user]";
     public static final String USER_WITH_LINK_TO_PROFILE_TEMPLATE = "[user=%s]%s[/user]";
 
-    private final MailService sendMailService;
-    private final UserDao userDao;
-    private final PostDao postDao;
-    
     /**
-     * @param sendMailService to send email notifications
-     * @param userDao to find mentioned user
-     * @param postDao to save post after some changes
+     * Content of the post
      */
-    public MentionedUsers(
-            MailService sendMailService,
-            UserDao userDao,
-            PostDao postDao) {
-        this.sendMailService = sendMailService;
-        this.userDao = userDao;
-        this.postDao = postDao;
+    private String postContent;
+
+    private MentionedUsers(String postContent) {
+        this.postContent = postContent;
     }
-    
+
+    /**
+     * Creates new instance of MentionedUsers based on the Post data
+     *
+     * @param postContent content of the post where user was mentioned
+     */
+    public static MentionedUsers parse(String postContent) {
+        return new MentionedUsers(postContent);
+    }
+
+    public void notifyNewlyMentionedUsers(MailService mailService, Post mentioningPost, UserDao userDao) {
+        Set<String> mentionedUsersNames = extractNotNotifiedMentionedUsers(postContent);
+        if (!CollectionUtils.isEmpty(mentionedUsersNames)) {
+            sendNotificationToMentionedUsers(mentionedUsersNames, mentioningPost, mailService, userDao);
+        }
+    }
+
+    public void markUsersAsAlreadyNotified(Post mentioningPost, PostDao postDao) {
+        Set<String> mentionedUsersNames = extractNotNotifiedMentionedUsers(postContent);
+        if (!CollectionUtils.isEmpty(mentionedUsersNames)) {
+            markUsersAsAlreadyNotified(mentionedUsersNames, mentioningPost, postDao);
+        }
+    }
+
+    public String getTextWithProcessedUserTags(UserDao userDao) {
+        Set<String> mentionedUsers = extractAllMentionedUsers(postContent);
+        Map<String, String> userToUserProfileLinkMap = new HashMap<String, String>();
+        for (String mentionedUser: mentionedUsers) {
+            String mentionedUserProfileLink = getLinkToUserProfile(mentionedUser, userDao);
+            if (mentionedUserProfileLink != null) {
+                userToUserProfileLinkMap.put(mentionedUser, mentionedUserProfileLink);
+            }
+        }
+        return addLinksToUserProfileForMentionedUsers(postContent, userToUserProfileLinkMap);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * Extract names of all users that were mentioned in passed text.
      * 
      * @return extracted users' names
      */
-    public Set<String> extractAllMentionedUsers(String canContainMentionedUsers) {
+    private Set<String> extractAllMentionedUsers(String canContainMentionedUsers) {
         return extractMentionedUsers(canContainMentionedUsers, ALL_MENTIONED_USERS_PATTERN);
     }
 
-    /**
-     * Extract names of users that haven't been mentioned from this post before and notify them.
-     * 
-     * @param mentioningPost where user was mentioned
-     */
-    public void notifyNewlyMentionedUsers(Post mentioningPost) {
-        String postContent = mentioningPost.getPostContent();
-        Set<String> mentionedUsersNames = extractNotNotifiedMentionedUsers(postContent);
-        if (!CollectionUtils.isEmpty(mentionedUsersNames)) {
-            sendNotificationToMentionedUsers(mentionedUsersNames, mentioningPost);
-        }
-    }
     
     /**
      * Extract names of users that were mentioned but not notified yet
@@ -117,6 +159,21 @@ public class MentionedUsers {
         } 
         return Collections.emptySet();
     }
+
+    /**
+     * Send notification for passed list of users.
+     *
+     * @param mentionedUsernames the set of names of mentioned users
+     * @param mentioningPost post where users where mentioned
+     */
+    private void sendNotificationToMentionedUsers(Set<String> mentionedUsernames, Post mentioningPost,
+                                                  MailService mailService, UserDao userDao) {
+        List<JCUser> mentionedUsers = userDao.getByUsernames(mentionedUsernames);
+
+        for (JCUser mentionedUser: mentionedUsers) {
+            sendNotificationToMentionedUser(mentionedUser, mentioningPost, mailService);
+        }
+    }
     
     /**
      * Send notification for passed list of users.
@@ -124,29 +181,93 @@ public class MentionedUsers {
      * @param mentionedUsernames the set of names of mentioned users
      * @param mentioningPost post where users where mentioned
      */
-    private void sendNotificationToMentionedUsers(Set<String> mentionedUsernames, Post mentioningPost) {
-        List<JCUser> mentionedUsers = userDao.getByUsernames(mentionedUsernames);
-        for (JCUser mentionedUser: mentionedUsers) {
-            sendNotificationToMentionedUser(mentionedUser, mentioningPost);
+    private void markUsersAsAlreadyNotified(Set<String> mentionedUsernames, Post mentioningPost, PostDao postDao) {
+        for (String user: mentionedUsernames) {
+            markUserAsAlreadyNotified(user, mentioningPost, postDao);
+        }
+    }
+
+    /**
+     * Send notification for passed user
+     *
+     * @param mentionedUser this user was mentioned, so he should receive notification(if notifications are enabled)
+     * @param mentioningPost post where users where mentioned
+     */
+    private void sendNotificationToMentionedUser(JCUser mentionedUser, Post mentioningPost, MailService sendMailService) {
+        boolean isOtherNotificationAlreadySent = mentioningPost.getTopicSubscribers().contains(mentionedUser);
+        if (!isOtherNotificationAlreadySent && mentionedUser.isMentioningNotificationsEnabled()) {
+            String username = mentionedUser.getUsername();
+            sendMailService.sendUserMentionedNotification(mentionedUser, mentioningPost.getId());
         }
     }
     
     /**
      * Send notification for passed user
      * 
-     * @param mentionedUser this user was mentioned, so he should receive notification(if notifications are enabled)
+     * @param username this user was mentioned, so he should receive notification(if notifications are enabled)
      * @param mentioningPost post where users where mentioned
      */
-    private void sendNotificationToMentionedUser(JCUser mentionedUser, Post mentioningPost) {
-        boolean isOtherNotificationAlreadySent = mentioningPost.getTopicSubscribers().contains(mentionedUser);
-        if (!isOtherNotificationAlreadySent && mentionedUser.isMentioningNotificationsEnabled()) {
-            String username = mentionedUser.getUsername();
+    private void markUserAsAlreadyNotified(String username, Post mentioningPost, PostDao postDao) {
             String initialUserMentioning = format(MENTIONED_NOT_NOTIFIED_USER_TEMPLATE, username);
             String notifiedUserMentioning = format(MENTIONED_AND_NOTIFIED_USER_TEMPLATE, username);
-            sendMailService.sendUserMentionedNotification(mentionedUser, mentioningPost.getId());
-            String newPostContent = mentioningPost.getPostContent().replace(initialUserMentioning, notifiedUserMentioning);
+
+            String newPostContent =
+                    mentioningPost.getPostContent().replace(initialUserMentioning, notifiedUserMentioning);
             mentioningPost.setPostContent(newPostContent);
             postDao.saveOrUpdate(mentioningPost);
-        } 
+    }
+
+    /**
+     * Get link to user's profile.
+     *
+     * @param username user's name
+     * @return null when user doesn't exist, otherwise link to user's profile
+     */
+    private String getLinkToUserProfile(String username, UserDao userDao) {
+        String userPofileLink = null;
+
+        JCUser user = userDao.getByUsername(username);
+        if (user != null) {
+            userPofileLink = getApplicationNameAsContextPath() + "/users/" + user.getId();
+            LOGGER.debug(username + " has the following url of profile -" + userPofileLink);
+        }
+        else {
+            LOGGER.debug("Mentioned user wasn't find: " + username);
+        }
+
+        return userPofileLink;
+    }
+
+    /**
+     * Get the name of application as context path.
+     *
+     * @return forum application name
+     */
+    private String getApplicationNameAsContextPath() {
+        RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
+        HttpServletRequest request = ((ServletRequestAttributes) attributes).getRequest();
+        return request.getContextPath();
+    }
+
+    /**
+     * Add links to users' profiles for mentioned users.
+     *
+     * @param source will be changed and all mentioned users in it will contain links to their profiles
+     * @param userToUserProfileLinkMap user to it links of profile map
+     * @return source with users with attached links to profiles
+     */
+    private String addLinksToUserProfileForMentionedUsers(
+            String source, Map<String, String> userToUserProfileLinkMap) {
+        String changedSource = source;
+        for (Map.Entry<String, String> userToLinkMap: userToUserProfileLinkMap.entrySet()) {
+            String username = userToLinkMap.getKey();
+            String userNotNotifiedBBCode = format(MENTIONED_NOT_NOTIFIED_USER_TEMPLATE, username);
+            String userNotifiedBBCode = format(MENTIONED_AND_NOTIFIED_USER_TEMPLATE, username);
+            String userBBCodeWithLink = format(
+                    USER_WITH_LINK_TO_PROFILE_TEMPLATE, userToLinkMap.getValue(), username);
+            changedSource = changedSource.replace(userNotNotifiedBBCode, userBBCodeWithLink);
+            changedSource = changedSource.replace(userNotifiedBBCode, userBBCodeWithLink);
+        }
+        return changedSource;
     }
 }

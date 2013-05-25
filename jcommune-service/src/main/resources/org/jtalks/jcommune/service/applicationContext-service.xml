@@ -128,7 +128,6 @@
         <constructor-arg ref="lastReadPostService"/>
         <constructor-arg ref="userService"/>
         <constructor-arg ref="branchLastPostService"/>
-        <constructor-arg ref="userMentionService" />
     </bean>
 
     <bean id="topicModificationService"
@@ -144,7 +143,6 @@
         <constructor-arg ref="securityContextFacade"/>
         <constructor-arg ref="aclGroupPermissionEvaluator"/>
         <constructor-arg ref="branchLastPostService"/>
-        <constructor-arg ref="userMentionService"/>
     </bean>
 
     <bean id="topicFetchService"
@@ -232,7 +230,6 @@
     
     <bean id="bbUserPreprocessor" class="org.jtalks.jcommune.service.bb2htmlprocessors.BbUserPreprocessor">
         <constructor-arg ref="userService"/>
-        <constructor-arg ref="userMentionService"/>
     </bean>
 
     <bean id="bbCodeService" class="org.jtalks.jcommune.service.nontransactional.BBCodeService">
@@ -290,12 +287,6 @@
         <constructor-arg ref="componentSapeOnMainPageEnableProperty"/>
         <constructor-arg ref="componentSapeShowDummyLinksProperty"/>
         <constructor-arg ref="componentSapeEnableServiceProperty"/>
-    </bean>
-    
-    <bean id="userMentionService" class="org.jtalks.jcommune.service.nontransactional.MentionedUsers">
-        <constructor-arg ref="mailService"/>
-        <constructor-arg ref="userDao"/>
-        <constructor-arg ref="postDao"/>
     </bean>
 
     <!--

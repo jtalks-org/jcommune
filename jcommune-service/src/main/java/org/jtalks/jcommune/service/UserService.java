@@ -18,7 +18,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jtalks.common.model.entity.User;
+import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -151,4 +153,23 @@ public interface UserService extends EntityService<JCUser> {
      */
     boolean loginUser(String username, String password,  boolean rememberMe, 
             HttpServletRequest request, HttpServletResponse response);
+
+    /**
+     * Parses the input of some post which contains [user] bb code,
+     * and replace this bb codes with user profile links
+     */
+    String processUserBbCodesInPost(String postContent);
+
+    /**
+     * Sends email to user that was mentioned in the post
+     * @param post post in which user was mentioned
+     */
+    void notifyNewlyMentionedUsers(Post post);
+
+    /**
+     * Changes post content to change user tag for users which were already notified
+     * @param post post in which user was mentioned
+     * @param postDao DAO object for working with Post objects
+     */
+    void markUsersAsAlreadyNotified(Post post, PostDao postDao);
 }
