@@ -16,9 +16,9 @@
 package org.jtalks.jcommune.service.bb2htmlprocessors;
 
 import static java.lang.String.format;
-import static org.jtalks.jcommune.service.nontransactional.UserMentionService.MENTIONED_AND_NOTIFIED_USER_TEMPLATE;
-import static org.jtalks.jcommune.service.nontransactional.UserMentionService.MENTIONED_NOT_NOTIFIED_USER_TEMPLATE;
-import static org.jtalks.jcommune.service.nontransactional.UserMentionService.USER_WITH_LINK_TO_PROFILE_TEMPLATE;
+import static org.jtalks.jcommune.service.nontransactional.MentionedUsers.MENTIONED_AND_NOTIFIED_USER_TEMPLATE;
+import static org.jtalks.jcommune.service.nontransactional.MentionedUsers.MENTIONED_NOT_NOTIFIED_USER_TEMPLATE;
+import static org.jtalks.jcommune.service.nontransactional.MentionedUsers.USER_WITH_LINK_TO_PROFILE_TEMPLATE;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.UserMentionService;
+import org.jtalks.jcommune.service.nontransactional.MentionedUsers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestAttributes;
@@ -48,15 +48,15 @@ import ru.perm.kefir.bbcode.TextProcessorAdapter;
 public class BbUserPreprocessor extends TextProcessorAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(BbUserPreprocessor.class);
     private final UserService userService;
-    private final UserMentionService userMentionService;
+    private final MentionedUsers mentionedUsers;
 
     /**
      * @param userService to check users' existence
-     * @param userMentionService to extract mentioned users
+     * @param mentionedUsers to extract mentioned users
      */
-    public BbUserPreprocessor(UserService userService, UserMentionService userMentionService) {
+    public BbUserPreprocessor(UserService userService, MentionedUsers mentionedUsers) {
         this.userService = userService;
-        this.userMentionService = userMentionService;
+        this.mentionedUsers = mentionedUsers;
     }
 
     /**
@@ -65,7 +65,7 @@ public class BbUserPreprocessor extends TextProcessorAdapter {
     @Override
     public CharSequence process(CharSequence source) {
         String notProcessedSource = source.toString();
-        Set<String> mentionedUsers = userMentionService.extractAllMentionedUsers(notProcessedSource);
+        Set<String> mentionedUsers = this.mentionedUsers.extractAllMentionedUsers(notProcessedSource);
         Map<String, String> userToUserProfileLinkMap = new HashMap<String, String>();
         for (String mentionedUser: mentionedUsers) {
             String mentionedUserProfileLink = getLinkToUserProfile(mentionedUser);

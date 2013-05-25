@@ -26,7 +26,7 @@ import java.util.Set;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.UserMentionService;
+import org.jtalks.jcommune.service.nontransactional.MentionedUsers;
 import org.mockito.Mock;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -47,14 +47,14 @@ public class BbUserPreprocessorTest {
     @Mock
     private UserService userService;
     @Mock
-    private UserMentionService userMentionService;
+    private MentionedUsers mentionedUsers;
     private BbUserPreprocessor userPreprocessor;
     
     
     @BeforeMethod
     public void init() {
         initMocks(this);
-        userPreprocessor = new BbUserPreprocessor(userService, userMentionService);
+        userPreprocessor = new BbUserPreprocessor(userService, mentionedUsers);
         //
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setScheme("http");
@@ -78,7 +78,7 @@ public class BbUserPreprocessorTest {
         String expectedNotNotifiedUserProfile = "/forum/users/" + notNotifiedMentionedUserId;
         String expectedNotifiedUserProfile = "/forum/users/" + notifiedMentionedUserId;
         String notProcessedSource = format(MENTIONING_TEMPLATE, notNotifiedMentionedUserName, notifiedMentionedUserName);
-        when(userMentionService.extractAllMentionedUsers(notProcessedSource))
+        when(mentionedUsers.extractAllMentionedUsers(notProcessedSource))
             .thenReturn(asSet(notNotifiedMentionedUserName, notifiedMentionedUserName));
         String expectedAfterProcess = format(MENTIONING_WITH_LINK_TO_PROFILE_TEMPALTE, 
                 expectedNotNotifiedUserProfile, notNotifiedMentionedUserName, 
@@ -102,7 +102,7 @@ public class BbUserPreprocessorTest {
         when(userService.getByUsername(firstMentionedUserName)).thenThrow(new NotFoundException());
         when(userService.getByUsername(secondMentionedUserName)).thenThrow(new NotFoundException());
         String notProcessedSource = format(MENTIONING_TEMPLATE, firstMentionedUserName, secondMentionedUserName);
-        when(userMentionService.extractAllMentionedUsers(notProcessedSource))
+        when(mentionedUsers.extractAllMentionedUsers(notProcessedSource))
             .thenReturn(asSet(firstMentionedUserName, secondMentionedUserName));
         
         String actualAfterProcess = userPreprocessor.process(notProcessedSource);

@@ -292,7 +292,7 @@
         <constructor-arg ref="componentSapeEnableServiceProperty"/>
     </bean>
     
-    <bean id="userMentionService" class="org.jtalks.jcommune.service.nontransactional.UserMentionService">
+    <bean id="userMentionService" class="org.jtalks.jcommune.service.nontransactional.MentionedUsers">
         <constructor-arg ref="mailService"/>
         <constructor-arg ref="userDao"/>
         <constructor-arg ref="postDao"/>

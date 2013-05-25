@@ -39,7 +39,7 @@ import org.jtalks.jcommune.model.entity.Post;
  * @author Anuar_Nurmakanov
  *
  */
-public class UserMentionService {
+public class MentionedUsers {
     private static final Pattern ALL_MENTIONED_USERS_PATTERN = 
             Pattern.compile("\\[user\\].*?\\[/user\\]|\\[user notified=true\\].*?\\[/user\\]");
     private static final Pattern MENTIONED_AND_NOT_NOTIFIED_USERS_PATTERN = 
@@ -57,7 +57,7 @@ public class UserMentionService {
      * @param userDao to find mentioned user
      * @param postDao to save post after some changes
      */
-    public UserMentionService(
+    public MentionedUsers(
             MailService sendMailService,
             UserDao userDao,
             PostDao postDao) {

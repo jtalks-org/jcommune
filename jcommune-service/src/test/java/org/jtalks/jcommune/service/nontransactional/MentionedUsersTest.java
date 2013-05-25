@@ -45,7 +45,7 @@ import org.testng.annotations.Test;
  * @author Anuar_Nurmakanov
  *
  */
-public class UserMentionServiceTest {
+public class MentionedUsersTest {
     @Mock
     private MailService mailService;
     @Mock
@@ -53,19 +53,19 @@ public class UserMentionServiceTest {
     @Mock 
     private PostDao postDao;
     
-    private UserMentionService userMentionService;
+    private MentionedUsers mentionedUsers;
  
     @BeforeMethod
     public void init() {
         initMocks(this);
-        userMentionService = new UserMentionService(mailService, userDao, postDao);
+        mentionedUsers = new MentionedUsers(mailService, userDao, postDao);
     }
     
     @Test
     public void extractMentionedUserShouldReturnEmptyListWhenPassedTextDoesNotContainMentioning() {
         String textWithoutUserMentioning = "This text mustn't contain user mentioning. Be carefull.";
         
-        Set<String> extractedUserNames = userMentionService.extractAllMentionedUsers(textWithoutUserMentioning);
+        Set<String> extractedUserNames = mentionedUsers.extractAllMentionedUsers(textWithoutUserMentioning);
         
         assertTrue(CollectionUtils.isEmpty(extractedUserNames), "Passed user should not contain any user mentioning.");
     }
@@ -76,7 +76,7 @@ public class UserMentionServiceTest {
         		"second [user notified=true]masyan[/user]," +
         		"third [user]jk1[/user]";
         
-        Set<String> extractedUserNames = userMentionService.extractAllMentionedUsers(textWithUsersMentioning);
+        Set<String> extractedUserNames = mentionedUsers.extractAllMentionedUsers(textWithUsersMentioning);
         
         assertTrue(extractedUserNames.size() == 3, "Passed text should contain 3 user mentioning.");
         assertTrue(extractedUserNames.contains("Shogun"), "Shogun is mentioned, so he should be extracted.");
@@ -94,7 +94,7 @@ public class UserMentionServiceTest {
         when(userDao.getByUsernames(asSet("Shogun", "jk1", "masyan")))
             .thenReturn(users);
         
-        userMentionService.notifyNewlyMentionedUsers(mentioningPost);
+        mentionedUsers.notifyNewlyMentionedUsers(mentioningPost);
         
         verify(mailService, times(users.size()))
             .sendUserMentionedNotification(any(JCUser.class), anyLong());
@@ -106,7 +106,7 @@ public class UserMentionServiceTest {
         when(userDao.getByUsernames(asSet("Shogun")))
             .thenReturn(asList(getJCUser("Shogun", true)));
             
-        userMentionService.notifyNewlyMentionedUsers(mentioningPost);
+        mentionedUsers.notifyNewlyMentionedUsers(mentioningPost);
         
         assertEquals(mentioningPost.getPostContent(), "In this text we have user mentioning [user notified=true]Shogun[/user]",
                 "After sending email [user][/user] tag shoud be changed to [user notified=true][/user]");
@@ -120,7 +120,7 @@ public class UserMentionServiceTest {
         JCUser mentionedUser = getJCUser("Shogun", false);
         when(userDao.getByUsernames(asSet("Shogun"))).thenReturn(asList(mentionedUser));
         
-        userMentionService.notifyNewlyMentionedUsers(mentioningPost);
+        mentionedUsers.notifyNewlyMentionedUsers(mentioningPost);
         
         assertEquals(mentioningPost.getPostContent(), textWithUsersMentioning,
                 "After sending email [user][/user] tag shoudn't be changed");
@@ -138,7 +138,7 @@ public class UserMentionServiceTest {
         when(userDao.getByUsernames(asSet("Shogun", "jk1", "masyan")))
             .thenReturn(Collections.<JCUser> emptyList());
         
-        userMentionService.notifyNewlyMentionedUsers(mentioningPost);
+        mentionedUsers.notifyNewlyMentionedUsers(mentioningPost);
         
         assertEquals(mentioningPost.getPostContent(), textWithUsersMentioning,
                 "After sending email [user][/user] tag shoudn't be changed");
@@ -161,7 +161,7 @@ public class UserMentionServiceTest {
         when(userDao.getByUsernames(asSet("Shogun")))
             .thenReturn(asList(mentionedUser));
         
-        userMentionService.notifyNewlyMentionedUsers(mentioningPost);
+        mentionedUsers.notifyNewlyMentionedUsers(mentioningPost);
         
         assertEquals(mentioningPost.getPostContent(), textWithUsersMentioning,
                 "After sending email [user][/user] tag shoudn't be changed");

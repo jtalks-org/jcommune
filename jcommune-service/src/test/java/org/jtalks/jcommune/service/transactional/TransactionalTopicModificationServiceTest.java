@@ -25,7 +25,7 @@ import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
-import org.jtalks.jcommune.service.nontransactional.UserMentionService;
+import org.jtalks.jcommune.service.nontransactional.MentionedUsers;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -93,7 +93,7 @@ public class TransactionalTopicModificationServiceTest {
     @Mock
     private BranchLastPostService branchLastPostService;
     @Mock
-    private UserMentionService userMentionService;
+    private MentionedUsers mentionedUsers;
 
     private CompoundAclBuilder<User> aclBuilder;
 
@@ -113,7 +113,7 @@ public class TransactionalTopicModificationServiceTest {
                 securityContextFacade,
                 permissionEvaluator,
                 branchLastPostService,
-                userMentionService);
+                mentionedUsers);
 
         user = new JCUser("username", "email@mail.com", "password");
         when(securityContextFacade.getContext()).thenReturn(securityContext);
@@ -175,7 +175,7 @@ public class TransactionalTopicModificationServiceTest {
         
         Post answerPost = topicService.replyToTopic(TOPIC_ID, answerWithUserMentioning, BRANCH_ID);
         
-        verify(userMentionService).notifyNewlyMentionedUsers(answerPost);
+        verify(mentionedUsers).notifyNewlyMentionedUsers(answerPost);
     }
 
     @Test(expectedExceptions = AccessDeniedException.class)
@@ -252,7 +252,7 @@ public class TransactionalTopicModificationServiceTest {
         
         Topic createdTopic = topicService.createTopic(topicWithUserNotification, answerBodyWithUserMentioning);
         
-        verify(userMentionService).notifyNewlyMentionedUsers(createdTopic.getFirstPost());
+        verify(mentionedUsers).notifyNewlyMentionedUsers(createdTopic.getFirstPost());
     }
 
     @Test

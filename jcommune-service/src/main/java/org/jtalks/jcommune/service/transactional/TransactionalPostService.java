@@ -27,7 +27,7 @@ import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
-import org.jtalks.jcommune.service.nontransactional.UserMentionService;
+import org.jtalks.jcommune.service.nontransactional.MentionedUsers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -51,7 +51,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     private LastReadPostService lastReadPostService;
     private UserService userService;
     private BranchLastPostService branchLastPostService;
-    private UserMentionService userMentionService;
+    private MentionedUsers mentionedUsers;
 
     /**
      * Create an instance of Post entity based service
@@ -63,7 +63,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * @param lastReadPostService   to modify last read post information when topic structure is changed
      * @param userService           to get current user
      * @param branchLastPostService to refresh the last post of the branch
-     * @param userMentionService    to notify all mentioned user
+     * @param mentionedUsers    to notify all mentioned user
      */
     public TransactionalPostService(
             PostDao dao,
@@ -73,7 +73,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
             LastReadPostService lastReadPostService,
             UserService userService,
             BranchLastPostService branchLastPostService,
-            UserMentionService userMentionService) {
+            MentionedUsers mentionedUsers) {
         super(dao);
         this.topicDao = topicDao;
         this.securityService = securityService;
@@ -81,7 +81,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         this.lastReadPostService = lastReadPostService;
         this.userService = userService;
         this.branchLastPostService = branchLastPostService;
-        this.userMentionService = userMentionService;
+        this.mentionedUsers = mentionedUsers;
     }
 
     /**
@@ -108,7 +108,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
 
         this.getDao().saveOrUpdate(post);
         notificationService.topicChanged(post.getTopic());
-        userMentionService.notifyNewlyMentionedUsers(post);
+        mentionedUsers.notifyNewlyMentionedUsers(post);
 
         logger.debug("Post id={} updated.", post.getId());
     }

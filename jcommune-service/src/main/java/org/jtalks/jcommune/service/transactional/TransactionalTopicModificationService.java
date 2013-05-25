@@ -23,7 +23,7 @@ import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
-import org.jtalks.jcommune.service.nontransactional.UserMentionService;
+import org.jtalks.jcommune.service.nontransactional.MentionedUsers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
@@ -61,7 +61,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
     private PermissionEvaluator permissionEvaluator;
     private SecurityContextFacade securityContextFacade;
     private BranchLastPostService branchLastPostService;
-    private UserMentionService userMentionService;
+    private MentionedUsers mentionedUsers;
 
     /**
      * Create an instance of User entity based service
@@ -88,7 +88,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
                                                  SecurityContextFacade securityContextFacade,
                                                  PermissionEvaluator permissionEvaluator,
                                                  BranchLastPostService branchLastPostService,
-                                                 UserMentionService userMentionService) {
+                                                 MentionedUsers mentionedUsers) {
         this.dao = dao;
         this.securityService = securityService;
         this.branchDao = branchDao;
@@ -100,7 +100,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         this.securityContextFacade = securityContextFacade;
         this.permissionEvaluator = permissionEvaluator;
         this.branchLastPostService = branchLastPostService;
-        this.userMentionService = userMentionService;
+        this.mentionedUsers = mentionedUsers;
     }
 
     /**
@@ -129,7 +129,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
 
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(currentUser).on(answer).flush();
         notificationService.topicChanged(topic);
-        userMentionService.notifyNewlyMentionedUsers(answer);
+        mentionedUsers.notifyNewlyMentionedUsers(answer);
         logger.debug("New post in topic. Topic id={}, Post id={}, Post author={}",
                 new Object[]{topicId, answer.getId(), currentUser.getUsername()});
 
@@ -181,7 +181,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         createOrUpdatePoll(topicDto.getPoll(), topic);
 
         dao.saveOrUpdate(topic);
-        userMentionService.notifyNewlyMentionedUsers(topic.getFirstPost());
+        mentionedUsers.notifyNewlyMentionedUsers(topic.getFirstPost());
         
         logger.debug("Created new topic id={}, branch id={}, author={}",
                 new Object[]{topic.getId(), branch.getId(), currentUser.getUsername()});
