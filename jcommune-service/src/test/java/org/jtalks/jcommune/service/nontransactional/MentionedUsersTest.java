@@ -21,6 +21,9 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.mockito.Mock;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -182,6 +185,15 @@ public class MentionedUsersTest {
         post.setTopic(new Topic());
         post.setId(id); 
         return post;
+    }
+
+    private void setupRequestAttributes() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setScheme("http");
+        request.setServerName("localhost");
+        request.setServerPort(8080);
+        request.setContextPath("/forum");
+        RequestContextHolder.setRequestAttributes(new ServletWebRequest(request));
     }
 
     public static <T> Set<T> asSet(T... values) {

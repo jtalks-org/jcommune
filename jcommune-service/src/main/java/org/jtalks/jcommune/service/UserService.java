@@ -163,14 +163,9 @@ public interface UserService extends EntityService<JCUser> {
 
     /**
      * Sends email to user that was mentioned in the post
+     * and mark BB code as already notified users
      * @param post post in which user was mentioned
      */
-    void notifyNewlyMentionedUsers(Post post);
+    void notifyAndMarkNewlyMentionedUsers(Post post);
 
-    /**
-     * Changes post content to change user tag for users which were already notified
-     * @param post post in which user was mentioned
-     * @param postDao DAO object for working with Post objects
-     */
-    void markUsersAsAlreadyNotified(Post post, PostDao postDao);
 }

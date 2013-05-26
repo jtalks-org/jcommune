@@ -61,7 +61,6 @@ public class TransactionalTopicModificationService implements TopicModificationS
     private PermissionEvaluator permissionEvaluator;
     private SecurityContextFacade securityContextFacade;
     private BranchLastPostService branchLastPostService;
-    private final PostDao postDao;
 
     /**
      * Create an instance of User entity based service
@@ -77,7 +76,6 @@ public class TransactionalTopicModificationService implements TopicModificationS
      * @param securityContextFacade authentication object retrieval
      * @param permissionEvaluator   for authorization purposes
      * @param branchLastPostService to refresh the last post of the branch
-     * @param postDao               to notify users mentioned in posts
      */
     public TransactionalTopicModificationService(TopicDao dao, SecurityService securityService,
                                                  BranchDao branchDao,
@@ -88,8 +86,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
                                                  TopicFetchService topicFetchService,
                                                  SecurityContextFacade securityContextFacade,
                                                  PermissionEvaluator permissionEvaluator,
-                                                 BranchLastPostService branchLastPostService,
-                                                 PostDao postDao) {
+                                                 BranchLastPostService branchLastPostService) {
         this.dao = dao;
         this.securityService = securityService;
         this.branchDao = branchDao;
@@ -101,7 +98,6 @@ public class TransactionalTopicModificationService implements TopicModificationS
         this.securityContextFacade = securityContextFacade;
         this.permissionEvaluator = permissionEvaluator;
         this.branchLastPostService = branchLastPostService;
-        this.postDao = postDao;
     }
 
     /**
@@ -131,8 +127,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(currentUser).on(answer).flush();
         notificationService.topicChanged(topic);
 
-        userService.notifyNewlyMentionedUsers(answer);
-        userService.markUsersAsAlreadyNotified(answer, postDao);
+        userService.notifyAndMarkNewlyMentionedUsers(answer);
 
         logger.debug("New post in topic. Topic id={}, Post id={}, Post author={}",
                 new Object[]{topicId, answer.getId(), currentUser.getUsername()});
@@ -185,8 +180,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         createOrUpdatePoll(topicDto.getPoll(), topic);
 
         dao.saveOrUpdate(topic);
-        userService.notifyNewlyMentionedUsers(topic.getFirstPost());
-        userService.markUsersAsAlreadyNotified(topic.getFirstPost(), postDao);
+        userService.notifyAndMarkNewlyMentionedUsers(topic.getFirstPost());
         
         logger.debug("Created new topic id={}, branch id={}, author={}",
                 new Object[]{topic.getId(), branch.getId(), currentUser.getUsername()});

@@ -61,6 +61,7 @@ import java.util.Set;
  * @author Alexandre Teterin
  * @author Evgeniy Naumenko
  * @author Mikhail Zaitsev
+ * @author Andrei Alikov
  */
 public class TransactionalUserService extends AbstractTransactionalEntityService<JCUser, UserDao>
         implements UserService {
@@ -76,6 +77,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     private SecurityContextHolderFacade securityFacade;
     private RememberMeServices rememberMeServices;
     private SessionAuthenticationStrategy sessionStrategy;
+    private final PostDao postDao;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalUserService.class);
 
@@ -106,7 +108,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
                                     AuthenticationManager authenticationManager,
                                     SecurityContextHolderFacade securityFacade,
                                     RememberMeServices rememberMeServices,
-                                    SessionAuthenticationStrategy sessionStrategy) {
+                                    SessionAuthenticationStrategy sessionStrategy,
+                                    PostDao postDao) {
         super(dao);
         this.groupDao = groupDao;
         this.securityService = securityService;
@@ -118,6 +121,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         this.securityFacade = securityFacade;
         this.rememberMeServices = rememberMeServices;
         this.sessionStrategy = sessionStrategy;
+        this.postDao = postDao;
     }
 
     /**
@@ -345,17 +349,9 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public void notifyNewlyMentionedUsers(Post post) {
+    public void notifyAndMarkNewlyMentionedUsers(Post post) {
         MentionedUsers mentionedUsers = MentionedUsers.parse(post.getPostContent());
         mentionedUsers.notifyNewlyMentionedUsers(mailService, post, getDao());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void markUsersAsAlreadyNotified(Post post, PostDao postDao) {
-        MentionedUsers mentionedUsers = MentionedUsers.parse(post.getPostContent());
         mentionedUsers.markUsersAsAlreadyNotified(post, postDao);
     }
 }

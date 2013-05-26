@@ -23,6 +23,7 @@ import org.jtalks.common.model.entity.User;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
+import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -45,8 +46,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletWebRequest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -54,6 +53,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
+import static java.lang.String.format;
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -62,8 +62,6 @@ import static org.mockito.Matchers.matches;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.*;
-
-import static java.lang.String.format;
 
 /**
  * @author Kirill Afonin
@@ -125,6 +123,8 @@ public class TransactionalUserServiceTest {
     private RememberMeServices rememberMeServices;
     @Mock
     private SessionAuthenticationStrategy sessionStrategy;
+    @Mock
+    private PostDao postDao;
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -145,7 +145,8 @@ public class TransactionalUserServiceTest {
                 authenticationManager,
                 securityFacade,
                 rememberMeServices,
-                sessionStrategy);
+                sessionStrategy,
+                postDao);
 
     }
 
@@ -494,15 +495,6 @@ public class TransactionalUserServiceTest {
         user.setLastName(LAST_NAME);
         user.setAvatar(AVATAR);
         return user;
-    }
-
-    private void setupRequestAttributes() {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setScheme("http");
-        request.setServerName("localhost");
-        request.setServerPort(8080);
-        request.setContextPath("/forum");
-        RequestContextHolder.setRequestAttributes(new ServletWebRequest(request));
     }
 
     @Test

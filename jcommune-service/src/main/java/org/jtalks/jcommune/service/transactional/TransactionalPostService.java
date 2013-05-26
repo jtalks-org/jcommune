@@ -104,8 +104,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
 
         this.getDao().saveOrUpdate(post);
         notificationService.topicChanged(post.getTopic());
-        userService.notifyNewlyMentionedUsers(post);
-        userService.markUsersAsAlreadyNotified(post, getDao());
+        userService.notifyAndMarkNewlyMentionedUsers(post);
 
         logger.debug("Post id={} updated.", post.getId());
     }

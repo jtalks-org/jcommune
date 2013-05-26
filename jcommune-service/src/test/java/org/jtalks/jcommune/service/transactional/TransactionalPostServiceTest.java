@@ -140,8 +140,7 @@ public class TransactionalPostServiceTest {
 
         verify(postDao).saveOrUpdate(post);
 
-        verify(userService).markUsersAsAlreadyNotified(post, postDao);
-        verify(userService).notifyNewlyMentionedUsers(post);
+        verify(userService).notifyAndMarkNewlyMentionedUsers(post);
     }
 
     @Test(expectedExceptions = AccessDeniedException.class)
