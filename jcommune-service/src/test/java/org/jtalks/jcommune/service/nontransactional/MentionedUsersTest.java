@@ -91,8 +91,8 @@ public class MentionedUsersTest {
         when(userDao.getByUsernames(asSet("Shogun", "jk1", "masyan")))
             .thenReturn(users);
 
-        MentionedUsers mentionedUsers = MentionedUsers.parse(textWithUsersMentioning);
-        mentionedUsers.notifyNewlyMentionedUsers(mailService, mentioningPost, userDao);
+        MentionedUsers mentionedUsers = MentionedUsers.parse(mentioningPost);
+        mentionedUsers.notifyNewlyMentionedUsers(mailService, userDao);
         
         verify(mailService, times(users.size()))
             .sendUserMentionedNotification(any(JCUser.class), anyLong());
@@ -104,10 +104,10 @@ public class MentionedUsersTest {
         when(userDao.getByUsernames(asSet("Shogun")))
             .thenReturn(asList(getJCUser("Shogun", true)));
 
-        MentionedUsers mentionedUsers = MentionedUsers.parse(mentioningPost.getPostContent());
+        MentionedUsers mentionedUsers = MentionedUsers.parse(mentioningPost);
 
-        mentionedUsers.notifyNewlyMentionedUsers(mailService, mentioningPost, userDao);
-        mentionedUsers.markUsersAsAlreadyNotified(mentioningPost, postDao);
+        mentionedUsers.notifyNewlyMentionedUsers(mailService, userDao);
+        mentionedUsers.markUsersAsAlreadyNotified(postDao);
         
         assertEquals(mentioningPost.getPostContent(), "In this text we have user mentioning [user notified=true]Shogun[/user]",
                 "After sending email [user][/user] tag shoud be changed to [user notified=true][/user]");
@@ -121,8 +121,8 @@ public class MentionedUsersTest {
         JCUser mentionedUser = getJCUser("Shogun", false);
         when(userDao.getByUsernames(asSet("Shogun"))).thenReturn(asList(mentionedUser));
 
-        MentionedUsers mentionedUsers = MentionedUsers.parse(mentioningPost.getPostContent());
-        mentionedUsers.notifyNewlyMentionedUsers(mailService, mentioningPost, userDao);
+        MentionedUsers mentionedUsers = MentionedUsers.parse(mentioningPost);
+        mentionedUsers.notifyNewlyMentionedUsers(mailService, userDao);
         
         assertEquals(mentioningPost.getPostContent(), textWithUsersMentioning,
                 "After sending email [user][/user] tag shoudn't be changed");
@@ -140,8 +140,8 @@ public class MentionedUsersTest {
         when(userDao.getByUsernames(asSet("Shogun", "jk1", "masyan")))
             .thenReturn(Collections.<JCUser> emptyList());
 
-        MentionedUsers mentionedUsers = MentionedUsers.parse(mentioningPost.getPostContent());
-        mentionedUsers.notifyNewlyMentionedUsers(mailService, mentioningPost, userDao);
+        MentionedUsers mentionedUsers = MentionedUsers.parse(mentioningPost);
+        mentionedUsers.notifyNewlyMentionedUsers(mailService, userDao);
         
         assertEquals(mentioningPost.getPostContent(), textWithUsersMentioning,
                 "After sending email [user][/user] tag shoudn't be changed");
@@ -164,8 +164,8 @@ public class MentionedUsersTest {
         when(userDao.getByUsernames(asSet("Shogun")))
             .thenReturn(asList(mentionedUser));
 
-        MentionedUsers mentionedUsers = MentionedUsers.parse(mentioningPost.getPostContent());
-        mentionedUsers.notifyNewlyMentionedUsers(mailService, mentioningPost, userDao);
+        MentionedUsers mentionedUsers = MentionedUsers.parse(mentioningPost);
+        mentionedUsers.notifyNewlyMentionedUsers(mailService, userDao);
         
         assertEquals(mentioningPost.getPostContent(), textWithUsersMentioning,
                 "After sending email [user][/user] tag shoudn't be changed");

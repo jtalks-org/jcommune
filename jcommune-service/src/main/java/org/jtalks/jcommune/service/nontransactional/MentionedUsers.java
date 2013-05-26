@@ -59,8 +59,18 @@ public class MentionedUsers {
      */
     private String postContent;
 
+    /**
+     * Post with mentioned users
+     */
+    private Post post;
+
     private MentionedUsers(String postContent) {
         this.postContent = postContent;
+    }
+
+    private MentionedUsers(Post post) {
+        this.post = post;
+        this.postContent = post.getPostContent();
     }
 
     /**
@@ -73,27 +83,42 @@ public class MentionedUsers {
     }
 
     /**
+     * Creates new instance of MentionedUsers based on the Post data
+     *
+     * @param post the post where user was mentioned
+     */
+    public static MentionedUsers parse(Post post) {
+        return new MentionedUsers(post);
+    }
+
+    /**
      * Sends notifications to all notified users
      * @param mailService service for sending e-mails to users
-     * @param mentioningPost post in which users were mentioned
      * @param userDao service for user related operations
      */
-    public void notifyNewlyMentionedUsers(MailService mailService, Post mentioningPost, UserDao userDao) {
+    public void notifyNewlyMentionedUsers(MailService mailService, UserDao userDao) {
+        if (post == null) {
+            throw new IllegalStateException();
+        }
+
         Set<String> mentionedUsersNames = extractNotNotifiedMentionedUsers(postContent);
         if (!CollectionUtils.isEmpty(mentionedUsersNames)) {
-            sendNotificationToMentionedUsers(mentionedUsersNames, mentioningPost, mailService, userDao);
+            sendNotificationToMentionedUsers(mentionedUsersNames, mailService, userDao);
         }
     }
 
     /**
      * Marks all users in user BB codes as already notified
-     * @param mentioningPost post in which users were mentioned
      * @param postDao service for post related operations
      */
-    public void markUsersAsAlreadyNotified(Post mentioningPost, PostDao postDao) {
+    public void markUsersAsAlreadyNotified(PostDao postDao) {
+        if (post == null) {
+            throw new IllegalStateException();
+        }
+
         Set<String> mentionedUsersNames = extractNotNotifiedMentionedUsers(postContent);
         if (!CollectionUtils.isEmpty(mentionedUsersNames)) {
-            markUsersAsAlreadyNotified(mentionedUsersNames, mentioningPost, postDao);
+            markUsersAsAlreadyNotified(mentionedUsersNames, postDao);
         }
     }
 
@@ -160,16 +185,15 @@ public class MentionedUsers {
      * Send notification for passed list of users.
      *
      * @param mentionedUsernames the set of names of mentioned users
-     * @param mentioningPost post where users where mentioned
      * @param mailService service for sending e-mails
      * @param userDao service for working with JCUser objects
      */
-    private void sendNotificationToMentionedUsers(Set<String> mentionedUsernames, Post mentioningPost,
+    private void sendNotificationToMentionedUsers(Set<String> mentionedUsernames,
                                                   MailService mailService, UserDao userDao) {
         List<JCUser> mentionedUsers = userDao.getByUsernames(mentionedUsernames);
 
         for (JCUser mentionedUser: mentionedUsers) {
-            sendNotificationToMentionedUser(mentionedUser, mentioningPost, mailService);
+            sendNotificationToMentionedUser(mentionedUser, mailService);
         }
     }
     
@@ -177,12 +201,11 @@ public class MentionedUsers {
      * Send notification for passed list of users.
      * 
      * @param mentionedUsernames the set of names of mentioned users
-     * @param mentioningPost post where users where mentioned
      * @param postDao service for working with Post objects
      */
-    private void markUsersAsAlreadyNotified(Set<String> mentionedUsernames, Post mentioningPost, PostDao postDao) {
+    private void markUsersAsAlreadyNotified(Set<String> mentionedUsernames, PostDao postDao) {
         for (String user: mentionedUsernames) {
-            markUserAsAlreadyNotified(user, mentioningPost, postDao);
+            markUserAsAlreadyNotified(user, postDao);
         }
     }
 
@@ -190,15 +213,13 @@ public class MentionedUsers {
      * Send notification for passed user
      *
      * @param mentionedUser this user was mentioned, so he should receive notification(if notifications are enabled)
-     * @param mentioningPost post where users where mentioned
      * @param sendMailService service for sending e-mails
      */
-    private void sendNotificationToMentionedUser(JCUser mentionedUser, Post mentioningPost,
+    private void sendNotificationToMentionedUser(JCUser mentionedUser,
                                                  MailService sendMailService) {
-        boolean isOtherNotificationAlreadySent = mentioningPost.getTopicSubscribers().contains(mentionedUser);
+        boolean isOtherNotificationAlreadySent = post.getTopicSubscribers().contains(mentionedUser);
         if (!isOtherNotificationAlreadySent && mentionedUser.isMentioningNotificationsEnabled()) {
-            String username = mentionedUser.getUsername();
-            sendMailService.sendUserMentionedNotification(mentionedUser, mentioningPost.getId());
+            sendMailService.sendUserMentionedNotification(mentionedUser, post.getId());
         }
     }
     
@@ -206,17 +227,16 @@ public class MentionedUsers {
      * Send notification for passed user
      * 
      * @param username this user was mentioned, so he should receive notification(if notifications are enabled)
-     * @param mentioningPost post where users where mentioned
      * @param postDao service for working with Post objects
      */
-    private void markUserAsAlreadyNotified(String username, Post mentioningPost, PostDao postDao) {
+    private void markUserAsAlreadyNotified(String username, PostDao postDao) {
             String initialUserMentioning = format(MENTIONED_NOT_NOTIFIED_USER_TEMPLATE, username);
             String notifiedUserMentioning = format(MENTIONED_AND_NOTIFIED_USER_TEMPLATE, username);
 
             String newPostContent =
-                    mentioningPost.getPostContent().replace(initialUserMentioning, notifiedUserMentioning);
-            mentioningPost.setPostContent(newPostContent);
-            postDao.saveOrUpdate(mentioningPost);
+                    post.getPostContent().replace(initialUserMentioning, notifiedUserMentioning);
+            post.setPostContent(newPostContent);
+            postDao.saveOrUpdate(post);
     }
 
     /**

@@ -350,8 +350,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      */
     @Override
     public void notifyAndMarkNewlyMentionedUsers(Post post) {
-        MentionedUsers mentionedUsers = MentionedUsers.parse(post.getPostContent());
-        mentionedUsers.notifyNewlyMentionedUsers(mailService, post, getDao());
-        mentionedUsers.markUsersAsAlreadyNotified(post, postDao);
+        MentionedUsers mentionedUsers = MentionedUsers.parse(post);
+        mentionedUsers.notifyNewlyMentionedUsers(mailService, getDao());
+        mentionedUsers.markUsersAsAlreadyNotified(postDao);
     }
 }
