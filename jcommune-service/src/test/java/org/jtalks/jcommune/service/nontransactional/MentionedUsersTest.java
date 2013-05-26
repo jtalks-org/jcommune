@@ -92,10 +92,8 @@ public class MentionedUsersTest {
             .thenReturn(users);
 
         MentionedUsers mentionedUsers = MentionedUsers.parse(mentioningPost);
-        mentionedUsers.notifyNewlyMentionedUsers(mailService, userDao);
-        
-        verify(mailService, times(users.size()))
-            .sendUserMentionedNotification(any(JCUser.class), anyLong());
+        List<JCUser> notifiedUsers = mentionedUsers.getNewUsersToNotify(userDao);
+        assertEquals(notifiedUsers, users);
     }
     
     @Test
@@ -106,7 +104,6 @@ public class MentionedUsersTest {
 
         MentionedUsers mentionedUsers = MentionedUsers.parse(mentioningPost);
 
-        mentionedUsers.notifyNewlyMentionedUsers(mailService, userDao);
         mentionedUsers.markUsersAsAlreadyNotified(postDao);
         
         assertEquals(mentioningPost.getPostContent(), "In this text we have user mentioning [user notified=true]Shogun[/user]",
@@ -122,12 +119,11 @@ public class MentionedUsersTest {
         when(userDao.getByUsernames(asSet("Shogun"))).thenReturn(asList(mentionedUser));
 
         MentionedUsers mentionedUsers = MentionedUsers.parse(mentioningPost);
-        mentionedUsers.notifyNewlyMentionedUsers(mailService, userDao);
+        List<JCUser> usersToNotify = mentionedUsers.getNewUsersToNotify(userDao);
         
         assertEquals(mentioningPost.getPostContent(), textWithUsersMentioning,
                 "After sending email [user][/user] tag shoudn't be changed");
-        verify(mailService, never())
-            .sendUserMentionedNotification(any(JCUser.class), anyLong());
+        assertEquals(usersToNotify.size(), 0);
         verify(postDao, never()).saveOrUpdate(mentioningPost);
     }
     
@@ -141,12 +137,11 @@ public class MentionedUsersTest {
             .thenReturn(Collections.<JCUser> emptyList());
 
         MentionedUsers mentionedUsers = MentionedUsers.parse(mentioningPost);
-        mentionedUsers.notifyNewlyMentionedUsers(mailService, userDao);
+        List<JCUser> usersToNotify = mentionedUsers.getNewUsersToNotify(userDao);
         
         assertEquals(mentioningPost.getPostContent(), textWithUsersMentioning,
                 "After sending email [user][/user] tag shoudn't be changed");
-        verify(mailService, never())
-            .sendUserMentionedNotification(any(JCUser.class), anyLong());
+        assertEquals(usersToNotify.size(), 0);
         verify(postDao, never()).saveOrUpdate(mentioningPost);
     }
     
@@ -165,12 +160,11 @@ public class MentionedUsersTest {
             .thenReturn(asList(mentionedUser));
 
         MentionedUsers mentionedUsers = MentionedUsers.parse(mentioningPost);
-        mentionedUsers.notifyNewlyMentionedUsers(mailService, userDao);
+        List<JCUser> usersToNotify = mentionedUsers.getNewUsersToNotify(userDao);
         
         assertEquals(mentioningPost.getPostContent(), textWithUsersMentioning,
                 "After sending email [user][/user] tag shoudn't be changed");
-        verify(mailService, never())
-            .sendUserMentionedNotification(any(JCUser.class), anyLong());
+        assertEquals(usersToNotify.size(), 0);
         verify(postDao, never()).saveOrUpdate(mentioningPost);
     }
     
@@ -183,7 +177,7 @@ public class MentionedUsersTest {
     @Test(expectedExceptions = IllegalStateException.class)
     public void mentionedUserNotifyNewlyMentionedShouldThrowExceptionWhenNotCreatedBasedOnPost() {
         MentionedUsers mentionedUsers = MentionedUsers.parse("");
-        mentionedUsers.notifyNewlyMentionedUsers(mailService, userDao);
+        mentionedUsers.getNewUsersToNotify(userDao);
     }
 
     @Test(expectedExceptions = IllegalStateException.class)

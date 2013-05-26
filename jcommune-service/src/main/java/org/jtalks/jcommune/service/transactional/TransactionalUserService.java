@@ -46,10 +46,7 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * User service class. This class contains method needed to manipulate with User persistent entity.
@@ -351,7 +348,12 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     @Override
     public void notifyAndMarkNewlyMentionedUsers(Post post) {
         MentionedUsers mentionedUsers = MentionedUsers.parse(post);
-        mentionedUsers.notifyNewlyMentionedUsers(mailService, getDao());
+        List<JCUser> usersToNotify = mentionedUsers.getNewUsersToNotify(getDao());
+
+        for (JCUser user : usersToNotify) {
+            mailService.sendUserMentionedNotification(user, post.getId());
+        }
+
         mentionedUsers.markUsersAsAlreadyNotified(postDao);
     }
 }

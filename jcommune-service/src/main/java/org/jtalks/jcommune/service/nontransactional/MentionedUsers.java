@@ -92,20 +92,22 @@ public class MentionedUsers {
     }
 
     /**
-     * Sends notifications to all notified users
-     * @param mailService service for sending e-mails to users
+     * Get list of the users which have to receive notification
      * @param userDao service for user related operations
+     * @return list of the users which should be notified that they were mentioned
      * @throws IllegalStateException when instance was not created based on Post object
      */
-    public void notifyNewlyMentionedUsers(MailService mailService, UserDao userDao) {
+    public List<JCUser> getNewUsersToNotify(UserDao userDao) {
         if (post == null) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("To call this method you should create class with Post type parameter");
         }
 
         Set<String> mentionedUsersNames = extractNotNotifiedMentionedUsers(postContent);
         if (!CollectionUtils.isEmpty(mentionedUsersNames)) {
-            sendNotificationToMentionedUsers(mentionedUsersNames, mailService, userDao);
+            return getNewUsersToNotify(mentionedUsersNames, userDao);
         }
+
+        return Collections.EMPTY_LIST;
     }
 
     /**
@@ -115,7 +117,7 @@ public class MentionedUsers {
      */
     public void markUsersAsAlreadyNotified(PostDao postDao) {
         if (post == null) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("To call this method you should create class with Post type parameter");
         }
 
         Set<String> mentionedUsersNames = extractNotNotifiedMentionedUsers(postContent);
@@ -184,23 +186,40 @@ public class MentionedUsers {
     }
 
     /**
-     * Send notification for passed list of users.
-     *
+     * Gets list of users which should be notified
      * @param mentionedUsernames the set of names of mentioned users
-     * @param mailService service for sending e-mails
      * @param userDao service for working with JCUser objects
+     * @return list of users which should be notified
      */
-    private void sendNotificationToMentionedUsers(Set<String> mentionedUsernames,
-                                                  MailService mailService, UserDao userDao) {
+    private List<JCUser> getNewUsersToNotify(Set<String> mentionedUsernames, UserDao userDao) {
         List<JCUser> mentionedUsers = userDao.getByUsernames(mentionedUsernames);
+        List<JCUser> usersToNotify = new ArrayList<JCUser>();
 
         for (JCUser mentionedUser: mentionedUsers) {
-            sendNotificationToMentionedUser(mentionedUser, mailService);
+            if (shouldNotificationBeSent(mentionedUser)) {
+                usersToNotify.add(mentionedUser);
+            }
         }
+
+        return usersToNotify;
+    }
+
+    /**
+     * Determines if it is needed to send notification to the user
+     * @param mentionedUser this user was mentioned
+     * @return true if we need to send notification and false otherwise
+     */
+    private boolean shouldNotificationBeSent(JCUser mentionedUser) {
+        boolean isOtherNotificationAlreadySent = post.getTopicSubscribers().contains(mentionedUser);
+        if (!isOtherNotificationAlreadySent && mentionedUser.isMentioningNotificationsEnabled()) {
+            return true;
+        }
+
+        return false;
     }
     
     /**
-     * Send notification for passed list of users.
+     * Mark user tags as already notified
      * 
      * @param mentionedUsernames the set of names of mentioned users
      * @param postDao service for working with Post objects
@@ -212,23 +231,9 @@ public class MentionedUsers {
     }
 
     /**
-     * Send notification for passed user
-     *
-     * @param mentionedUser this user was mentioned, so he should receive notification(if notifications are enabled)
-     * @param sendMailService service for sending e-mails
-     */
-    private void sendNotificationToMentionedUser(JCUser mentionedUser,
-                                                 MailService sendMailService) {
-        boolean isOtherNotificationAlreadySent = post.getTopicSubscribers().contains(mentionedUser);
-        if (!isOtherNotificationAlreadySent && mentionedUser.isMentioningNotificationsEnabled()) {
-            sendMailService.sendUserMentionedNotification(mentionedUser, post.getId());
-        }
-    }
-    
-    /**
-     * Send notification for passed user
+     * Change BB user tag to mark user as already notified
      * 
-     * @param username this user was mentioned, so he should receive notification(if notifications are enabled)
+     * @param username this user was mentioned
      * @param postDao service for working with Post objects
      */
     private void markUserAsAlreadyNotified(String username, PostDao postDao) {
@@ -253,10 +258,10 @@ public class MentionedUsers {
         JCUser user = userDao.getByUsername(username);
         if (user != null) {
             userPofileLink = getApplicationNameAsContextPath() + "/users/" + user.getId();
-            LOGGER.debug(username + " has the following url of profile -" + userPofileLink);
+            LOGGER.debug("{} has the following url of profile - {}" , username, userPofileLink);
         }
         else {
-            LOGGER.debug("Mentioned user wasn't find: " + username);
+            LOGGER.debug("Mentioned user wasn't find: {}", username);
         }
 
         return userPofileLink;
