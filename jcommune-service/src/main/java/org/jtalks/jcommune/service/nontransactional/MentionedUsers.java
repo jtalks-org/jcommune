@@ -95,6 +95,7 @@ public class MentionedUsers {
      * Sends notifications to all notified users
      * @param mailService service for sending e-mails to users
      * @param userDao service for user related operations
+     * @throws IllegalStateException when instance was not created based on Post object
      */
     public void notifyNewlyMentionedUsers(MailService mailService, UserDao userDao) {
         if (post == null) {
@@ -110,6 +111,7 @@ public class MentionedUsers {
     /**
      * Marks all users in user BB codes as already notified
      * @param postDao service for post related operations
+     * @throws IllegalStateException when instance was not created based on Post object
      */
     public void markUsersAsAlreadyNotified(PostDao postDao) {
         if (post == null) {

@@ -547,20 +547,6 @@ public class TransactionalUserServiceTest {
         assertEquals(actualAfterProcess, notProcessedSource);
     }
 
-    @Test
-    public void notifyNewlyMentionedUsers() {
-
-        //MentionedUsers mentionedUsers = MentionedUsers.parse(post.getPostContent());
-        //mentionedUsers.notifyNewlyMentionedUsers(mailService, post, getDao());
-    }
-
-    @Test
-    public void markUsersAsAlreadyNotified() {
-
-        //MentionedUsers mentionedUsers = MentionedUsers.parse(post.getPostContent());
-        //mentionedUsers.markUsersAsAlreadyNotified(post, postDao);
-    }
-
     public static <T> Set<T> asSet(T... values) {
         return new HashSet<T>(Arrays.asList(values));
     }

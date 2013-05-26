@@ -179,7 +179,19 @@ public class MentionedUsersTest {
         user.setMentioningNotificationsEnabled(isMentioningEnabled);
         return user;
     }
-    
+
+    @Test(expectedExceptions = IllegalStateException.class)
+    public void mentionedUserNotifyNewlyMentionedShouldThrowExceptionWhenNotCreatedBasedOnPost() {
+        MentionedUsers mentionedUsers = MentionedUsers.parse("");
+        mentionedUsers.notifyNewlyMentionedUsers(mailService, userDao);
+    }
+
+    @Test(expectedExceptions = IllegalStateException.class)
+    public void mentionedUserMarkAsNotifiedShouldThrowExceptionWhenNotCreatedBasedOnPost() {
+        MentionedUsers mentionedUsers = MentionedUsers.parse("");
+        mentionedUsers.markUsersAsAlreadyNotified(postDao);
+    }
+
     private Post getPost(long id, String content) {
         Post post = new Post(null, content);
         post.setTopic(new Topic());
