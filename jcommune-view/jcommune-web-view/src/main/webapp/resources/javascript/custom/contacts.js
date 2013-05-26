@@ -227,10 +227,15 @@ $(document).ready(function () {
                         async: false,
                         data: JSON.stringify(contact),
                         success: function (data) {
-                            //populate contact template and append to page
-                            $("#contacts").append(getContactHtml(data));
-                            bindDeleteHandler();
-                            jDialog.closeDialog();
+                            if(data.status === 'SUCCESS'){
+                                //populate contact template and append to page
+                                $("#contacts").append(getContactHtml(data.result));
+                                bindDeleteHandler();
+                                jDialog.closeDialog();
+                            }else{
+                                ErrorUtils.addErrorMessage('#contact', $labelValidationUsercontactNotMatch);
+                                AddContact.isValueValid = false;
+                            }
                         },
                         error: function (data) {
                             ErrorUtils.addErrorMessage('#contact', $labelValidationUsercontactNotMatch);

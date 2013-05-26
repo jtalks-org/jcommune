@@ -14,24 +14,25 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
 import org.jtalks.jcommune.service.UserContactsService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.UserContactDto;
+import org.jtalks.jcommune.web.dto.json.JsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.mockito.Mock;
+import org.springframework.validation.BindingResult;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
 
 /**
  * @author Michael Gamov
@@ -41,6 +42,8 @@ public class UserContactsControllerTest {
     private static final String TYPENAME = "Some type";
     private static final String ICON = "/some/icon/path";
 
+    @Mock
+    private BindingResult result;
     private UserContactsController controller;
 
     @Mock
@@ -84,12 +87,36 @@ public class UserContactsControllerTest {
     	incomingContactDto.setTypeId(contactType.getId());
     	
     	when(service.addContact(ownerId, contact.getValue(), contact.getType().getId())).thenReturn(contact);
-    	
-    	UserContactDto contactDto = controller.addContact(incomingContactDto);
-    	
+
+        JsonResponse response = controller.addContact(incomingContactDto, result);
+
+        UserContactDto contactDto = (UserContactDto) response.getResult();
     	assertEquals(contactDto.getTypeId(), contactType.getId(), "Type of contact should be the same.");
     	assertEquals(contactDto.getValue(), contact.getValue(), "Type of contact should be the same.");
     	assertEquals(contactDto.getOwnerId(), Long.valueOf(owner.getId()), "Owner id should be the same.");
+    }
+
+    @Test
+    public void testAddContactFailed() throws NotFoundException {
+        UserContactType contactType = new UserContactType();
+        contactType.setTypeName(TYPENAME);
+        long ownerId = 1l;
+        JCUser owner = new JCUser("username", "email", "password");
+        owner.setId(ownerId);
+        UserContact contact = new UserContact("gateway", contactType);
+        contact.setOwner(owner);
+
+        UserContactDto incomingContactDto = new UserContactDto();
+        incomingContactDto.setOwnerId(owner.getId());
+        incomingContactDto.setValue(contact.getValue());
+        incomingContactDto.setTypeId(contactType.getId());
+
+        when(service.addContact(ownerId, contact.getValue(), contact.getType().getId())).thenReturn(contact);
+        when(result.hasErrors()).thenReturn(true);
+
+        JsonResponse response = controller.addContact(incomingContactDto, result);
+
+        assertEquals(response.getStatus(), JsonResponseStatus.FAIL, "Status should be FAIL.");
     }
     
     @Test

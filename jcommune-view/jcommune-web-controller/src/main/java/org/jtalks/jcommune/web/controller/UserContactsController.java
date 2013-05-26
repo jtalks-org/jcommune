@@ -19,17 +19,16 @@ import org.jtalks.jcommune.model.entity.UserContactType;
 import org.jtalks.jcommune.service.UserContactsService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.UserContactDto;
+import org.jtalks.jcommune.web.dto.json.FailValidationJsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.List;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * This controller handles creation and deletion of user contacts.
@@ -68,13 +67,17 @@ public class UserContactsController {
      * @throws NotFoundException when contact type was not found
      */
     @RequestMapping(value="/contacts/add", method = RequestMethod.POST)
-    @ResponseBody 
-    public UserContactDto addContact(@Valid @RequestBody UserContactDto userContact) throws NotFoundException {
+    @ResponseBody
+    public JsonResponse addContact(@Valid @RequestBody UserContactDto userContact,
+                                                     BindingResult result) throws NotFoundException {
+        if(result.hasErrors()){
+            return new FailValidationJsonResponse(result.getAllErrors());
+        }
         UserContact addedContact = service.addContact(
                 userContact.getOwnerId(),
                 userContact.getValue(),
                 userContact.getTypeId());
-        return new UserContactDto(addedContact);
+        return new JsonResponse(JsonResponseStatus.SUCCESS, new UserContactDto(addedContact));
     }
     
     /**
