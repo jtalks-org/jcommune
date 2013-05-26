@@ -23,12 +23,10 @@ import org.jtalks.common.model.entity.User;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
-import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
-import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
@@ -56,7 +54,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
-import static java.text.MessageFormat.format;
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -65,6 +62,8 @@ import static org.mockito.Matchers.matches;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.*;
+
+import static java.lang.String.format;
 
 /**
  * @author Kirill Afonin
@@ -474,7 +473,7 @@ public class TransactionalUserServiceTest {
         verify(rememberMeServices, never()).loginSuccess(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Authentication.class));
     }
 
-    /*@Test
+    @Test
     public void testLoginFailUserNotFound() throws Exception {
         String username = "username";
 
@@ -487,7 +486,7 @@ public class TransactionalUserServiceTest {
         assertFalse(isAuthenticated);
         verify(userDao).getByUsername(username);
         verify(rememberMeServices, never()).loginSuccess(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Authentication.class));
-    } */
+    }
 
     private JCUser getUser(String username) {
         JCUser user = new JCUser(username, EMAIL, PASSWORD);
@@ -506,7 +505,7 @@ public class TransactionalUserServiceTest {
         RequestContextHolder.setRequestAttributes(new ServletWebRequest(request));
     }
 
-    /*@Test
+    @Test
     public void processShouldAttachProfileLinkToExistUsers() throws NotFoundException {
         String notNotifiedMentionedUserName = "Shogun";
         String notifiedMentionedUserName = "jk1";
@@ -531,7 +530,7 @@ public class TransactionalUserServiceTest {
         String actualAfterProcess = userService.processUserBbCodesInPost(notProcessedSource);
 
         assertEquals(actualAfterProcess, expectedAfterProcess);
-    } */
+    }
 
     private JCUser getUser(String username, long userId) {
         JCUser user = new JCUser(username, "sshogunn@gmail.com", "shogun password");
