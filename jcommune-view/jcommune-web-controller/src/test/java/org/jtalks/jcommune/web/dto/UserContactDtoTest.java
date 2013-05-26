@@ -30,6 +30,7 @@ public class UserContactDtoTest {
 	//help test values
 	private static final String CONTACT_TEST_VALUE = "10-10-10";
 	private static final Long USER_ID_TEST_VALUE = Long.valueOf(1);
+    private static final Long CONTACT_ID_TEST_VALUE = Long.valueOf(2);
 	private UserContactType contactType;
 	private JCUser user;
 	//main test value
@@ -58,4 +59,22 @@ public class UserContactDtoTest {
 		assertEquals(contactDto.getTypeId(), contactType.getId(), 
 				"The problem of copying data. Value - type.");
 	}
+
+    @Test
+    public void testCreateContactWithSetters() {
+        UserContactDto contactDto = new UserContactDto();
+        contactDto.setValue(CONTACT_TEST_VALUE);
+        contactDto.setOwnerId(USER_ID_TEST_VALUE);
+        contactDto.setTypeId(contactType.getId());
+        contactDto.setId(CONTACT_ID_TEST_VALUE);
+
+        assertEquals(contactDto.getValue(), CONTACT_TEST_VALUE,
+                "The problem of copying data. Value - value.");
+        assertEquals(contactDto.getOwnerId(), USER_ID_TEST_VALUE,
+                "The problem of copying data. Value - ownerId.");
+        assertEquals(contactDto.getTypeId(), contactType.getId(),
+                "The problem of copying data. Value - type.");
+        assertEquals(contactDto.getId(), CONTACT_ID_TEST_VALUE,
+                "The problem of copying data. Value - id.");
+    }
 }

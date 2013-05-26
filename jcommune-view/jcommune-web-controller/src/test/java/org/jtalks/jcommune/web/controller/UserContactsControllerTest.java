@@ -58,9 +58,7 @@ public class UserContactsControllerTest {
     @Test
     public void testGetContactTypes() {
         List<UserContactType> expectedTypes = new ArrayList<UserContactType>();
-        UserContactType expectedType = new UserContactType();
-        expectedType.setIcon(ICON);
-        expectedType.setTypeName(TYPENAME);
+        UserContactType expectedType = createUserContactType();
         expectedTypes.add(expectedType);
         
         when(service.getAvailableContactTypes()).thenReturn(expectedTypes);
@@ -73,19 +71,11 @@ public class UserContactsControllerTest {
 
     @Test
     public void testAddContactSuccess() throws NotFoundException {
-    	UserContactType contactType = new UserContactType();
-    	contactType.setTypeName(TYPENAME);
     	long ownerId = 1l;
-        JCUser owner = new JCUser("username", "email", "password");
-        owner.setId(ownerId);
-    	UserContact contact = new UserContact("gateway", contactType);
-    	contact.setOwner(owner);
-    	
-    	UserContactDto incomingContactDto = new UserContactDto();
-    	incomingContactDto.setOwnerId(owner.getId());
-    	incomingContactDto.setValue(contact.getValue());
-    	incomingContactDto.setTypeId(contactType.getId());
-    	
+        UserContactType contactType = createUserContactType();
+        UserContact contact = createUserContact(ownerId, contactType);
+        UserContactDto incomingContactDto = new UserContactDto(contact);
+
     	when(service.addContact(ownerId, contact.getValue(), contact.getType().getId())).thenReturn(contact);
 
         JsonResponse response = controller.addContact(incomingContactDto, result);
@@ -93,25 +83,13 @@ public class UserContactsControllerTest {
         UserContactDto contactDto = (UserContactDto) response.getResult();
     	assertEquals(contactDto.getTypeId(), contactType.getId(), "Type of contact should be the same.");
     	assertEquals(contactDto.getValue(), contact.getValue(), "Type of contact should be the same.");
-    	assertEquals(contactDto.getOwnerId(), Long.valueOf(owner.getId()), "Owner id should be the same.");
+    	assertEquals(contactDto.getOwnerId(), Long.valueOf(ownerId), "Owner id should be the same.");
     }
 
     @Test
-    public void testAddContactFailed() throws NotFoundException {
-        UserContactType contactType = new UserContactType();
-        contactType.setTypeName(TYPENAME);
-        long ownerId = 1l;
-        JCUser owner = new JCUser("username", "email", "password");
-        owner.setId(ownerId);
-        UserContact contact = new UserContact("gateway", contactType);
-        contact.setOwner(owner);
-
+    public void testAddContactShouldFailIfValidationErrorsOccurs() throws NotFoundException {
         UserContactDto incomingContactDto = new UserContactDto();
-        incomingContactDto.setOwnerId(owner.getId());
-        incomingContactDto.setValue(contact.getValue());
-        incomingContactDto.setTypeId(contactType.getId());
 
-        when(service.addContact(ownerId, contact.getValue(), contact.getType().getId())).thenReturn(contact);
         when(result.hasErrors()).thenReturn(true);
 
         JsonResponse response = controller.addContact(incomingContactDto, result);
@@ -136,5 +114,20 @@ public class UserContactsControllerTest {
         doThrow(new NotFoundException()).when(service).removeContact(contactOwnerId, contactId);
         
         controller.removeContact(contactOwnerId, contactId);
+    }
+
+    private UserContact createUserContact(long ownerId, UserContactType contactType){
+        JCUser owner = new JCUser("username", "email", "password");
+        owner.setId(ownerId);
+        UserContact contact = new UserContact("gateway", contactType);
+        contact.setOwner(owner);
+        return contact;
+    }
+
+    private UserContactType createUserContactType(){
+        UserContactType userContactType = new UserContactType();
+        userContactType.setIcon(ICON);
+        userContactType.setTypeName(TYPENAME);
+        return userContactType;
     }
 }
