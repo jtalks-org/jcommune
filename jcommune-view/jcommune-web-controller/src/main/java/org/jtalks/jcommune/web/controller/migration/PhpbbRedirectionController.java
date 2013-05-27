@@ -94,6 +94,18 @@ public class PhpbbRedirectionController {
     }
 
     /**
+     * Redirects search URL's to default search page
+     *
+     * @param response http response object to set headers on
+     * @param request http request to figure out the context path
+     */
+    @RequestMapping("/search.php")
+    public void showSearch(HttpServletResponse response, WebRequest request) {
+        String redirectUrl = request.getContextPath() +  "/search/?searchText=";
+        setHttp301Headers(response, redirectUrl);
+    }
+
+    /**
      * Method sets Http 301 Moved permanently http headers to
      * indicate this URL should be changed if indexed elsewhere.
      * When used instead of plain redirect it allows graceful

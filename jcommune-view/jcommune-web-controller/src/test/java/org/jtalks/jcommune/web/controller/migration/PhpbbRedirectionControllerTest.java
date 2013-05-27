@@ -44,6 +44,12 @@ public class PhpbbRedirectionControllerTest {
     }
 
     @Test
+    public void testSearch() {
+        controller.showSearch(response, request);
+        this.assertHeadersSet(CONTEXT + "/search/?searchText=");
+    }
+
+    @Test
     public void testShowTopic() {
        controller.showTopicWithAdditionalParams("1", response, request);
        this.assertHeadersSet(CONTEXT + "/topics/1");
