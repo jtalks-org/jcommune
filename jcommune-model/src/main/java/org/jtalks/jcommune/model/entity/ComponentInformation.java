@@ -15,6 +15,8 @@
 
 package org.jtalks.jcommune.model.entity;
 
+import org.jtalks.common.model.entity.Component;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -23,19 +25,18 @@ import javax.validation.constraints.Size;
  * @author Andrei Alikov
  */
 public class ComponentInformation {
-    private static final int PARAM_MAX_SIZE = 255;
     private static final int PARAM_MIN_SIZE = 1;
 
     @NotNull(message = "{validation.not_null}")
-    @Size(min = PARAM_MIN_SIZE, max = PARAM_MAX_SIZE, message = "{validation.param.length}")
+    @Size(min = PARAM_MIN_SIZE, max = Component.COMPONENT_NAME_MAX_LENGTH, message = "{validation.param.length}")
     private String name;
 
     @NotNull(message = "{validation.not_null}")
-    @Size(min = PARAM_MIN_SIZE, max = PARAM_MAX_SIZE, message = "{validation.param.length}")
+    @Size(min = PARAM_MIN_SIZE, max = Component.COMPONENT_DESCRIPTION_MAX_LENGTH, message = "{validation.param.length}")
     private String description;
 
     @NotNull(message = "{validation.not_null}")
-    @Size(min = 0, max = PARAM_MAX_SIZE, message = "{validation.param.length}")
+    @Size(min = 0, max = Component.COMPONENT_DESCRIPTION_MAX_LENGTH, message = "{validation.param.length}")
     private String logoTooltip;
 
     private String logo;

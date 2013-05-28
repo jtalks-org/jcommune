@@ -36,6 +36,8 @@ $(function () {
 function showForumConfigurationDialog(e) {
     // prevent from following link
     e.preventDefault();
+
+    currentAdminValues.valid = false
     // create the Dialog
     createAdministrationDialog();
 }
@@ -221,6 +223,7 @@ function addRemoveLogoHandler() {
             firstFocus : false,
             footerContent: footerContent,
             maxWidth: 300,
+            maxHeight: 500,
             tabNavigation: ['#remove-logo-ok','#remove-logo-cancel'],
             handlers: {
                 '#remove-logo-ok': {'click': submitFunc},
@@ -284,7 +287,6 @@ function sendForumConfiguration(e) {
             else {
                 jDialog.prepareDialog(jDialog.dialog);
                 jDialog.showErrors(jDialog.dialog, resp.result, "forum_", "");
-                jDialog.resizeDialog(jDialog.dialog);
             }
         },
         error: function (data) {
