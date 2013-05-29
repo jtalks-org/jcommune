@@ -177,7 +177,7 @@ public class UserProfileController {
      * @return in case of errors return back to edit profile page, in another case return to user details page
      * @throws NotFoundException if edited user doesn't exist in system
      */
-    @RequestMapping(value = "/users/edit", method = RequestMethod.POST)
+    @RequestMapping(value = "/users/edit/**", method = RequestMethod.POST)
     public ModelAndView saveEditedProfile(@Valid @ModelAttribute(EDITED_USER) EditUserProfileDto editedProfileDto,
                                     BindingResult result, HttpServletResponse response) throws NotFoundException {
         if (result.hasErrors()) {

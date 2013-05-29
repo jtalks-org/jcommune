@@ -42,7 +42,7 @@
 <div class="container">
     <div id="editUserDetails" class="userprofile user-profile-container">
         <form:form id="editProfileForm" name="editProfileForm"
-                   action="${pageContext.request.contextPath}/users/edit"
+                   action="${pageContext.request.contextPath}/users/edit/${editedUser.userId}"
                    modelAttribute="editedUser" method="POST"
                    class="form-horizontal">
 
