@@ -38,6 +38,25 @@ $(function () {
         var footerContent = '<button id="signin-submit-button" class="btn btn-primary" name="commit"> \
             ' + $labelSignin + '</button>';
 
+        var submitDialog = function(e){
+            if (e.keyCode == enterCode) {
+                //if focus on username then select password field
+                if ($(e.target).is('#j_username')) {
+                    e.preventDefault();
+                    if($.browser.mozilla){
+                        setTimeout(function(){
+                            jDialog.dialog.find('#j_password').focus();
+                        }, 0);
+                    }
+                    else {
+                        jDialog.dialog.find('#j_password').focus();
+                    }
+                }
+            }
+            if ((e.keyCode || e.charCode) == escCode) {
+                jDialog.dialog.find('.close').click();
+            }
+        };
 
         jDialog.createDialog({
             dialogId: 'signin-modal-dialog',
@@ -49,7 +68,8 @@ $(function () {
                 '#signin-submit-button'],
             handlers: {
                 '#signin-submit-button': {'click': sendLoginPost}
-            }
+            },
+            dialogKeydown: submitDialog
         });
     });
 });
