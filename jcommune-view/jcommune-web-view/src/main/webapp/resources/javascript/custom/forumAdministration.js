@@ -85,6 +85,7 @@ function createAdministrationDialog() {
         bodyContent: bodyContent,
         footerContent: footerContent,
         maxWidth: 350,
+        maxHeight: 500,
         tabNavigation: ['#forum_name','#forum_description','#forum_logoTooltip'],
         handlers: {
             '#administration-submit-button': {'click': sendForumConfiguration},
