@@ -50,7 +50,12 @@ public class TransactionalComponentService extends AbstractTransactionalEntitySe
      * {@inheritDoc}
      */
     @Override
+    @PreAuthorize("hasPermission(#componentInformation.id, 'COMPONENT', 'GeneralPermission.ADMIN')")
     public void setComponentInformation(ComponentInformation componentInformation) {
+        if (componentInformation.getId() != getComponentOfForum().getId()) {
+            throw new IllegalArgumentException(
+                    "Service should work with the same component as the componentInformation argument.");
+        }
         getDao().setComponentInformation(componentInformation);
     }
 }

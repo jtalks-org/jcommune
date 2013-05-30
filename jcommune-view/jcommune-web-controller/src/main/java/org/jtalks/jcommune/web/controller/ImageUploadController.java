@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.Locale;
 
 public class ImageUploadController {
+
     private MessageSource messageSource;
 
     static final String WRONG_FORMAT_RESOURCE_MESSAGE = "image.wrong.format";
@@ -80,5 +81,13 @@ public class ImageUploadController {
     public FailJsonResponse handleImageProcessException(ImageProcessException e, Locale locale) {
         String errorMessage = messageSource.getMessage(COMMON_ERROR_RESOURCE_MESSAGE, null, locale);
         return new FailJsonResponse(JsonResponseReason.INTERNAL_SERVER_ERROR, errorMessage);
+    }
+
+    /**
+     * Gets service for resolving messages
+     * @return service for resolving messages
+     */
+    public MessageSource getMessageSource() {
+        return messageSource;
     }
 }

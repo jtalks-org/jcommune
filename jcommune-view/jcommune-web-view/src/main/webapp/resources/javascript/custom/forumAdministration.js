@@ -286,8 +286,15 @@ function sendForumConfiguration(e) {
                 location.reload();
             }
             else {
-                jDialog.prepareDialog(jDialog.dialog);
-                jDialog.showErrors(jDialog.dialog, resp.result, "forum_", "");
+                if (resp.result instanceof Array) {
+                    jDialog.prepareDialog(jDialog.dialog);
+                    jDialog.showErrors(jDialog.dialog, resp.result, "forum_", "");
+                } else {
+                    jDialog.createDialog({
+                        type: jDialog.alertType,
+                        bodyMessage: resp.result
+                    });
+                }
             }
         },
         error: function (data) {

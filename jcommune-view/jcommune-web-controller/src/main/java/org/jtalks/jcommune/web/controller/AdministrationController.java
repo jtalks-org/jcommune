@@ -23,14 +23,13 @@ import org.jtalks.jcommune.service.nontransactional.ForumLogoService;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.util.ImageControllerUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -42,8 +41,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -52,7 +51,6 @@ import java.util.Map;
  */
 @Controller
 public class AdministrationController extends ImageUploadController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AdministrationController.class);
     /**
      * Parameter name for forum logo
      */
@@ -62,6 +60,7 @@ public class AdministrationController extends ImageUploadController {
      * Session's marker attribute name for Administration mode
      */
     public static final String ADMIN_ATTRIBUTE_NAME = "adminMode";
+    private static final String ACCESS_DENIED_MESSAGE = "access.denied";
 
     private final ComponentService componentService;
     private final ImageControllerUtils imageControllerUtils;
@@ -96,7 +95,6 @@ public class AdministrationController extends ImageUploadController {
      * @return redirect back to previous page
      */
     @RequestMapping(value = "/admin/enter", method = RequestMethod.GET)
-    @PreAuthorize("hasPermission(#componentService.componentOfForum.id, 'COMPONENT', 'GeneralPermission.ADMIN')")
     public String enterAdministrationMode(HttpServletRequest request) {
         request.getSession().setAttribute(ADMIN_ATTRIBUTE_NAME, true);
 
@@ -122,13 +120,19 @@ public class AdministrationController extends ImageUploadController {
      */
     @RequestMapping(value = "/admin/edit", method = RequestMethod.POST)
     @ResponseBody
-    @PreAuthorize("hasPermission(#componentService.componentOfForum.id, 'COMPONENT', 'GeneralPermission.ADMIN')")
-    public JsonResponse setForumInformation(@Valid @RequestBody ComponentInformation componentInformation, BindingResult result) {
+    public JsonResponse setForumInformation(@Valid @RequestBody ComponentInformation componentInformation,
+                                            BindingResult result, Locale locale) {
         if (result.hasErrors()) {
             return new JsonResponse(JsonResponseStatus.FAIL, result.getAllErrors());
         }
 
-        componentService.setComponentInformation(componentInformation);
+        componentInformation.setId(componentService.getComponentOfForum().getId());
+        try {
+            componentService.setComponentInformation(componentInformation);
+        } catch (AccessDeniedException e) {
+            String errorMessage = getMessageSource().getMessage(ACCESS_DENIED_MESSAGE, null, locale);
+            return new JsonResponse(JsonResponseStatus.FAIL, errorMessage);
+        }
 
         return new JsonResponse(JsonResponseStatus.SUCCESS, null);
     }

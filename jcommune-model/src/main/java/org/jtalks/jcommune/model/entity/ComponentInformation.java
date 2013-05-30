@@ -27,6 +27,8 @@ import javax.validation.constraints.Size;
 public class ComponentInformation {
     private static final int PARAM_MIN_SIZE = 1;
 
+    private Long id;
+
     @NotNull(message = "{validation.not_null}")
     @Size(min = PARAM_MIN_SIZE, max = Component.COMPONENT_NAME_MAX_LENGTH, message = "{validation.param.length}")
     private String name;
@@ -103,5 +105,21 @@ public class ComponentInformation {
      */
     public void setLogoTooltip(String logoTooltip) {
         this.logoTooltip = logoTooltip.trim();
+    }
+
+    /**
+     * Gets component id
+     * @return component id
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * Sets the component id
+     * @param id new component id
+     */
+    public void setId(Long id) {
+        this.id = id;
     }
 }

@@ -45,6 +45,7 @@ import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 
 import static org.jgroups.util.Util.assertTrue;
 import static org.mockito.Matchers.any;
@@ -128,7 +129,7 @@ public class AdministrationControllerTest {
     public void validForumInformationShouldProduceSuccessResponse() {
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(new Object(), "");
         ComponentInformation ci = new ComponentInformation();
-        JsonResponse response = administrationController.setForumInformation(ci, bindingResult);
+        JsonResponse response = administrationController.setForumInformation(ci, bindingResult, Locale.UK);
 
         verify(componentService).setComponentInformation(ci);
         assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
@@ -138,7 +139,8 @@ public class AdministrationControllerTest {
     public void invalidForumInformationShouldProduceFailResponse() {
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(new Object(), "");
         bindingResult.addError(new ObjectError("name", "message"));
-        JsonResponse response = administrationController.setForumInformation(new ComponentInformation(), bindingResult);
+        JsonResponse response = administrationController.setForumInformation(new ComponentInformation(), bindingResult,
+                                                                                Locale.UK);
 
         assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
     }
