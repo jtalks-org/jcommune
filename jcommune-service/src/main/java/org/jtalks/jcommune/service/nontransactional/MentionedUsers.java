@@ -136,9 +136,7 @@ public class MentionedUsers {
         Map<String, String> userToUserProfileLinkMap = new HashMap<String, String>();
         for (String mentionedUser: mentionedUsers) {
             String mentionedUserProfileLink = getLinkToUserProfile(mentionedUser, userDao);
-            if (mentionedUserProfileLink != null) {
-                userToUserProfileLinkMap.put(mentionedUser, mentionedUserProfileLink);
-            }
+            userToUserProfileLinkMap.put(mentionedUser, mentionedUserProfileLink);
         }
         return addLinksToUserProfileForMentionedUsers(postContent, userToUserProfileLinkMap);
     }
@@ -256,7 +254,7 @@ public class MentionedUsers {
         String userPofileLink = null;
 
         JCUser user = userDao.getByUsername(username);
-        if (user != null) {
+        if (user != null && user.getUsername().equals(username)) {
             userPofileLink = getApplicationNameAsContextPath() + "/users/" + user.getId();
             LOGGER.debug("{} has the following url of profile - {}" , username, userPofileLink);
         }
@@ -292,8 +290,10 @@ public class MentionedUsers {
             String username = userToLinkMap.getKey();
             String userNotNotifiedBBCode = format(MENTIONED_NOT_NOTIFIED_USER_TEMPLATE, username);
             String userNotifiedBBCode = format(MENTIONED_AND_NOTIFIED_USER_TEMPLATE, username);
-            String userBBCodeWithLink = format(
-                    USER_WITH_LINK_TO_PROFILE_TEMPLATE, userToLinkMap.getValue(), username);
+            String userBBCodeWithLink = username;
+            if (userToLinkMap.getValue() != null) {
+                userBBCodeWithLink = format(USER_WITH_LINK_TO_PROFILE_TEMPLATE, userToLinkMap.getValue(), username);
+            }
             changedSource = changedSource.replace(userNotNotifiedBBCode, userBBCodeWithLink);
             changedSource = changedSource.replace(userNotifiedBBCode, userBBCodeWithLink);
         }

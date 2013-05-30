@@ -92,6 +92,8 @@ public class TransactionalUserServiceTest {
 
     private static final String MENTIONING_TEMPLATE = "This post contains not notified [user]%s[/user] mentioning " +
             "and notified [user notified=true]%s[/user] mentioning";
+    private static final String MENTIONING_MESSAGE_WHEN_USER_NOT_FOUND = "This post contains not notified %s mentioning " +
+            "and notified %s mentioning";
     private static final String MENTIONING_WITH_LINK_TO_PROFILE_TEMPALTE =
             "This post contains not notified [user=%s]%s[/user] mentioning and notified [user=%s]%s[/user] mentioning";
 
@@ -544,7 +546,10 @@ public class TransactionalUserServiceTest {
 
         String actualAfterProcess = userService.processUserBbCodesInPost(notProcessedSource);
 
-        assertEquals(actualAfterProcess, notProcessedSource);
+        String msgWithNotFoundUsers = format(MENTIONING_MESSAGE_WHEN_USER_NOT_FOUND, firstMentionedUserName,
+                            secondMentionedUserName);
+
+        assertEquals(actualAfterProcess, msgWithNotFoundUsers);
     }
 
     public static <T> Set<T> asSet(T... values) {
