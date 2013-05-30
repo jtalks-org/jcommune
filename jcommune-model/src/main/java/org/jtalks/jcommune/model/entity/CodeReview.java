@@ -28,6 +28,7 @@ import java.util.Set;
  */
 public class CodeReview extends Entity implements SubscriptionAwareEntity {
 
+    public static final String URL_SUFFIX = "/topics/";
     private Topic topic;
     private List<CodeReviewComment> comments = new ArrayList<CodeReviewComment>();
 
@@ -44,6 +45,11 @@ public class CodeReview extends Entity implements SubscriptionAwareEntity {
      */
     public void setSubscribers(Set<JCUser> subscribers) {
         topic.setSubscribers(subscribers);
+    }
+
+    @Override
+    public String prepareUrlSuffix() {
+        return URL_SUFFIX + topic.getId();
     }
 
     /**

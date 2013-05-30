@@ -14,34 +14,10 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
-import static org.jtalks.jcommune.model.entity.JCommuneProperty.SENDING_NOTIFICATIONS_ENABLED;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-
-import java.io.IOException;
-
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-
 import org.apache.velocity.app.VelocityEngine;
 import org.jtalks.common.model.entity.Property;
 import org.jtalks.jcommune.model.dao.PropertyDao;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.CodeReview;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.JCommuneProperty;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.PrivateMessage;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.ArgumentCaptor;
@@ -56,6 +32,20 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import java.io.IOException;
+
+import static org.jtalks.jcommune.model.entity.JCommuneProperty.SENDING_NOTIFICATIONS_ENABLED;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 /**
  * Test for {@link MailService}.
@@ -159,7 +149,7 @@ public class MailServiceTest {
         post.setId(1);
         topic.addPost(post);
 
-        service.sendTopicUpdatesOnSubscription(user, topic);
+        service.sendUpdatesOnSubscription(user, topic);
 
         this.checkMailCredentials();
         assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/posts/1"));
@@ -171,7 +161,7 @@ public class MailServiceTest {
         post.setId(1);
         topic.addPost(post);
 
-        service.sendTopicUpdatesOnSubscription(user, topic);
+        service.sendUpdatesOnSubscription(user, topic);
 
         this.checkMailCredentials();
         assertTrue(this.getMimeMailSubject().contains("title Topic"));
@@ -181,7 +171,7 @@ public class MailServiceTest {
     public void testSendBranchUpdateEmail() throws MailingFailedException, IOException, MessagingException {
         branch.setId(1);
 
-        service.sendBranchUpdatesOnSubscription(user, branch);
+        service.sendUpdatesOnSubscription(user, branch);
 
         this.checkMailCredentials();
         assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/branches/1"));
@@ -190,7 +180,7 @@ public class MailServiceTest {
     @Test
     public void testSendBranchUpdateEmail_CheckTitleInSubject() throws MessagingException, IOException {
         branch.setId(1);
-        service.sendBranchUpdatesOnSubscription(user, branch);
+        service.sendUpdatesOnSubscription(user, branch);
         this.checkMailCredentials();
         assertTrue(this.getMimeMailSubject().contains("title Branch"));
     }
@@ -236,7 +226,7 @@ public class MailServiceTest {
         Exception fail = new MailSendException("");
         doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
 
-        service.sendTopicUpdatesOnSubscription(user, topic);
+        service.sendUpdatesOnSubscription(user, topic);
     }
 
     @Test
@@ -244,7 +234,7 @@ public class MailServiceTest {
         Exception fail = new MailSendException("");
         doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
 
-        service.sendBranchUpdatesOnSubscription(user, branch);
+        service.sendUpdatesOnSubscription(user, branch);
     }
 
     @Test

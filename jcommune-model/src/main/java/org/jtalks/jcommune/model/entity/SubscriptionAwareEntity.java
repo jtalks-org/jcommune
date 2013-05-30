@@ -29,7 +29,7 @@ public interface SubscriptionAwareEntity {
      *
      * @return users to send notifications on update to
      */
-    public Set<JCUser> getSubscribers();
+    Set<JCUser> getSubscribers();
 
     /**
      * Sets subscribers list for this branch.
@@ -37,5 +37,16 @@ public interface SubscriptionAwareEntity {
      *
      * @param subscribers users to send notifications on update to
      */
-    public void setSubscribers(Set<JCUser> subscribers);
+    void setSubscribers(Set<JCUser> subscribers);
+
+    /**
+     * Prepares entity specific URL suffix.
+     * <p>
+     * For example: "/branches/", "/posts/".
+     * </p>
+     *
+     * @return URL suffix.
+     */
+    String prepareUrlSuffix();
+
 }

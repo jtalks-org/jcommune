@@ -46,9 +46,6 @@ import java.util.Map;
  */
 public class MailService {
 
-    public static final String TOPICS = "/topics/";
-    public static final String TOPIC = "Topic";
-    public static final String TOPIC_CR = "Topic (code review)";
     private final JavaMailSender mailSender;
     private final String from;
     private final VelocityEngine velocityEngine;
@@ -116,105 +113,30 @@ public class MailService {
         LOGGER.info("Password recovery email sent for {}", name);
     }
 
-    /**
-     * Sends update notification to user specified, e.g. when some new
-     * posts were added to the topic. This method won't check if user
-     * is subscribed to the particular notification or not.
-     *
-     * @param recipient a person to be notified about updates by email
-     * @param topic     topic changed (to include more detailes in email)
-     */
-    //todo may be is needed to replace it to sendUpdatesOnSubscription(JCUser recipient, SubscriptionAwareEntity entity)
-    public void sendTopicUpdatesOnSubscription(JCUser recipient, Topic topic) {
-        try {
-            String urlSuffix = "/posts/" + topic.getLastPost().getId();
-            String url = this.getDeploymentRootUrl() + urlSuffix;
-            Locale locale = recipient.getLanguage().getLocale();
-            Map<String, Object> model = new HashMap<String, Object>();
-            model.put(LINK, url);
-            model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
-            sendEmailOnForumUpdates(recipient, model, locale, topic);
-        } catch (MailingFailedException e) {
-            LOGGER.error(String.format(LOG_TEMPLATE, "Topic", topic.getId(), recipient.getUsername()));
-        }
-    }
 
     /**
-     * Sends update notification to user specified if code review subscription was update, e.g. when some new
+     * Sends update notification to user specified if
+     * {@link SubscriptionAwareEntity} was updated, e.g. when some new
      * information were added to the subscribed entity. This method won't check if user
      * is subscribed to the particular notification or not.
      *
      * @param recipient a person to be notified about updates by email
      * @param entity    changed subscribed entity.
      */
-    //todo may need to rename the method to sendUpdatesOnSubscriptionCodeReview
     public void sendUpdatesOnSubscription(JCUser recipient, SubscriptionAwareEntity entity) {
-        String entityDisplayValue = prepareEntityDisplayValue(entity);
         try {
-            String urlSuffix = prepareSuffix(entity);
+            String urlSuffix = entity.prepareUrlSuffix();
             String url = this.getDeploymentRootUrl() + urlSuffix;
             Locale locale = recipient.getLanguage().getLocale();
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(LINK, url);
             model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
-            sendEmailOnForumUpdates(recipient, model, locale, (CodeReview) entity);
+            sendEmailOnForumUpdates(recipient, model, locale, (Entity) entity);
         } catch (MailingFailedException e) {
-            LOGGER.error(String.format(LOG_TEMPLATE, entityDisplayValue, ((Entity) entity).getId(),
+            LOGGER.error(String.format(LOG_TEMPLATE,
+                    entity.getClass().getCanonicalName(),
+                    ((Entity) entity).getId(),
                     recipient.getUsername()));
-        }
-    }
-
-    /**
-     * Prepares log display value for specified entity.
-     *
-     * @param entity entity to prepare display value.
-     * @return log display value.
-     */
-    private String prepareEntityDisplayValue(SubscriptionAwareEntity entity) {
-        String result = "";
-        if (entity instanceof CodeReview) {
-            result = TOPIC_CR;
-        }
-        return result;
-    }
-
-    /**
-     * Prepares URL suffix for specified entity.
-     * <p>
-     * For example: "/branches/", "/posts/".
-     * </p>
-     *
-     * @param entity entity to prepare URL suffix.
-     * @return URL suffix.
-     */
-    private String prepareSuffix(SubscriptionAwareEntity entity) {
-        String result = "";
-        if (entity instanceof CodeReview) {
-            result = TOPICS + ((CodeReview) entity).getTopic().getId();
-        }
-        return result;
-    }
-
-    /**
-     * Sends update notification to user specified, e.g. when some new
-     * posts were added to the topic. This method won't check if user
-     * is subscribed to the particular notification or not.
-     *
-     * @param recipient a person to be notified about updates by email
-     * @param branch    branch changed (to include more detailes in email)
-     */
-    //todo may be is needed to replace it to sendUpdatesOnSubscription(JCUser recipient, SubscriptionAwareEntity entity)
-    public void sendBranchUpdatesOnSubscription(JCUser recipient, Branch branch) {
-        try {
-            String urlSuffix = "/branches/" + branch.getId();
-            String url = this.getDeploymentRootUrl() + urlSuffix;
-            Locale locale = recipient.getLanguage().getLocale();
-            Map<String, Object> model = new HashMap<String, Object>();
-            model.put(LINK, url);
-            model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
-            sendEmailOnForumUpdates(recipient, model, locale, branch);
-        } catch (MailingFailedException e) {
-            LOGGER.error(String.format(LOG_TEMPLATE, "Branch", branch.getId(), recipient.getUsername()));
         }
     }
 

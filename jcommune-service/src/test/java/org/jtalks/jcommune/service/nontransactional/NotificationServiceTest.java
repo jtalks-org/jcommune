@@ -17,11 +17,7 @@ package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.common.model.entity.Property;
 import org.jtalks.jcommune.model.dao.PropertyDao;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.CodeReview;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.JCommuneProperty;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.mockito.Mock;
@@ -29,14 +25,11 @@ import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.jtalks.jcommune.model.entity.JCommuneProperty.SENDING_NOTIFICATIONS_ENABLED;
+import static org.jtalks.jcommune.model.entity.JCommuneProperty
+        .SENDING_NOTIFICATIONS_ENABLED;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 
@@ -125,11 +118,12 @@ public class NotificationServiceTest {
         topic.getSubscribers().add(user2);
         topic.getSubscribers().add(currentUser);
 
-        service.topicChanged(topic);
+        service.subscribedEntityChanged(topic);
 
-        verify(mailService, times(2)).sendTopicUpdatesOnSubscription(any(JCUser.class), eq(topic));
-        verify(mailService).sendTopicUpdatesOnSubscription(user1, topic);
-        verify(mailService).sendTopicUpdatesOnSubscription(user2, topic);
+        verify(mailService, times(2)).sendUpdatesOnSubscription(
+                any(JCUser.class), eq(topic));
+        verify(mailService).sendUpdatesOnSubscription(user1, topic);
+        verify(mailService).sendUpdatesOnSubscription(user2, topic);
         assertEquals(topic.getSubscribers().size(), 3);
     }
     
@@ -138,9 +132,10 @@ public class NotificationServiceTest {
         prepareDisabledProperty();
         topic.getSubscribers().add(user1);
 
-        service.topicChanged(topic);
+        service.subscribedEntityChanged(topic);
 
-        verify(mailService, Mockito.never()).sendTopicUpdatesOnSubscription(user1, topic);
+        verify(mailService, Mockito.never()).sendUpdatesOnSubscription(user1,
+                topic);
     }
 
     @Test
@@ -150,11 +145,12 @@ public class NotificationServiceTest {
         branch.getSubscribers().add(user2);
         branch.getSubscribers().add(currentUser);
 
-        service.branchChanged(branch);
+        service.subscribedEntityChanged(branch);
 
-        verify(mailService, times(2)).sendBranchUpdatesOnSubscription(any(JCUser.class), eq(branch));
-        verify(mailService).sendBranchUpdatesOnSubscription(user1, branch);
-        verify(mailService).sendBranchUpdatesOnSubscription(user2, branch);
+        verify(mailService, times(2)).sendUpdatesOnSubscription(
+                any(JCUser.class), eq(branch));
+        verify(mailService).sendUpdatesOnSubscription(user1, branch);
+        verify(mailService).sendUpdatesOnSubscription(user2, branch);
         assertEquals(branch.getSubscribers().size(), 3);
     }
     
@@ -163,9 +159,10 @@ public class NotificationServiceTest {
         prepareDisabledProperty();
         branch.getSubscribers().add(user1);
 
-        service.branchChanged(branch);
+        service.subscribedEntityChanged(branch);
 
-        verify(mailService, Mockito.never()).sendBranchUpdatesOnSubscription(user1, branch);
+        verify(mailService, Mockito.never()).sendUpdatesOnSubscription(user1,
+                branch);
     }
 
     @Test
@@ -175,9 +172,9 @@ public class NotificationServiceTest {
         topic.getSubscribers().add(user1);
         topic.getSubscribers().add(user2);
 
-        service.topicChanged(topic);
+        service.subscribedEntityChanged(topic);
 
-        verify(mailService).sendTopicUpdatesOnSubscription(user2, topic);
+        verify(mailService).sendUpdatesOnSubscription(user2, topic);
         verifyNoMoreInteractions(mailService);
     }
 
@@ -188,16 +185,16 @@ public class NotificationServiceTest {
         branch.getSubscribers().add(user1);
         branch.getSubscribers().add(user2);
 
-        service.branchChanged(branch);
+        service.subscribedEntityChanged(branch);
 
-        verify(mailService).sendBranchUpdatesOnSubscription(user2, branch);
+        verify(mailService).sendUpdatesOnSubscription(user2, branch);
         verifyNoMoreInteractions(mailService);
     }
 
     @Test
     public void testTopicChangedNoSubscribers() {
         prepareEnabledProperty();
-        service.topicChanged(topic);
+        service.subscribedEntityChanged(topic);
 
         verifyZeroInteractions(mailService);
     }
@@ -205,7 +202,7 @@ public class NotificationServiceTest {
     @Test
     public void testBranchChangedNoSubscribers() {
         prepareEnabledProperty();
-        service.branchChanged(branch);
+        service.subscribedEntityChanged(branch);
 
         verifyZeroInteractions(mailService);
     }

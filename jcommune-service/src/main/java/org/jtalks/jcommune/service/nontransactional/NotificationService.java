@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
-import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.jtalks.jcommune.model.entity.SubscriptionAwareEntity;
@@ -54,43 +53,6 @@ public class NotificationService {
         this.userService = userService;
         this.mailService = mailService;
         this.notificationsEnabledProperty = notificationsEnabledProperty;
-    }
-
-    /**
-     * Notifies subscribers that the certain topic has been changed by email.
-     * Call of this method will also trigger enclosing branch update event.
-     *
-     * @param topic topic changed
-     */
-    //todo may be is needed to replace it to subscribedEntityChanged(SubscriptionAwareEntity entity)
-    public void topicChanged(Topic topic) {
-        if (notificationsEnabledProperty.booleanValue()) {
-            JCUser current = userService.getCurrentUser();
-            for (JCUser user : topic.getSubscribers()) {
-                if (!user.equals(current)) {
-                    mailService.sendTopicUpdatesOnSubscription(user, topic);
-                }
-            }
-        }
-    }
-
-    /**
-     * Notifies subscribers about branch updates by email.
-     * If mailing failed this implementation simply continues
-     * with other subscribers.
-     *
-     * @param branch branch changed
-     */
-    //todo may be is needed to replace it to subscribedEntityChanged(SubscriptionAwareEntity entity)
-    public void branchChanged(Branch branch) {
-        if (notificationsEnabledProperty.booleanValue()) {
-            JCUser current = userService.getCurrentUser();
-            for (JCUser user : branch.getSubscribers()) {
-                if (!user.equals(current)){ 
-                    mailService.sendBranchUpdatesOnSubscription(user, branch);
-                }
-            }
-        }
     }
 
     /**

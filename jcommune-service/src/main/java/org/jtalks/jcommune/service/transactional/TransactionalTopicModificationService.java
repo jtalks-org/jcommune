@@ -18,7 +18,6 @@ import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.BranchDao;
-import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
@@ -125,7 +124,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         branchDao.saveOrUpdate(branch);
 
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(currentUser).on(answer).flush();
-        notificationService.topicChanged(topic);
+        notificationService.subscribedEntityChanged(topic);
 
         userService.notifyAndMarkNewlyMentionedUsers(answer);
 
@@ -174,7 +173,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(topic).flush();
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(first).flush();
 
-        notificationService.branchChanged(branch);
+        notificationService.subscribedEntityChanged(branch);
 
         subscribeOnTopicIfNotificationsEnabled(topic, currentUser);
         createOrUpdatePoll(topicDto.getPoll(), topic);
@@ -212,7 +211,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(topic).flush();
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(first).flush();
 
-        notificationService.branchChanged(branch);
+        notificationService.subscribedEntityChanged(branch);
 
         subscribeOnTopicIfNotificationsEnabled(topic, currentUser);
 
@@ -258,7 +257,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         post.updateModificationDate();
         this.createOrUpdatePoll(poll, topic);
         dao.saveOrUpdate(topic);
-        notificationService.topicChanged(topic);
+        notificationService.subscribedEntityChanged(topic);
         JCUser currentUser = userService.getCurrentUser();
         subscribeOnTopicIfNotificationsEnabled(topic, currentUser);
         logger.debug("Topic id={} updated", topic.getId());
@@ -310,7 +309,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
     @Override
     public void deleteTopic(Topic topic) throws NotFoundException {
         Branch branch = deleteTopicSilent(topic);
-        notificationService.branchChanged(branch);
+        notificationService.subscribedEntityChanged(branch);
 
         logger.info("Deleted topic \"{}\". Topic id: {}", topic.getTitle(), topic.getId());
     }

@@ -14,22 +14,8 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import org.apache.solr.analysis.LowerCaseFilterFactory;
-import org.apache.solr.analysis.SnowballPorterFilterFactory;
-import org.apache.solr.analysis.StandardFilterFactory;
-import org.apache.solr.analysis.StandardTokenizerFactory;
-import org.apache.solr.analysis.StopFilterFactory;
-import org.hibernate.search.annotations.Analyzer;
-import org.hibernate.search.annotations.AnalyzerDef;
-import org.hibernate.search.annotations.AnalyzerDefs;
-import org.hibernate.search.annotations.DocumentId;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Fields;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.search.annotations.Parameter;
-import org.hibernate.search.annotations.TokenFilterDef;
-import org.hibernate.search.annotations.TokenizerDef;
+import org.apache.solr.analysis.*;
+import org.hibernate.search.annotations.*;
 import org.hibernate.validator.constraints.NotBlank;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
@@ -128,7 +114,8 @@ import java.util.Set;
 public class Topic extends Entity implements SubscriptionAwareEntity {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(Topic.class);
-    
+    public static final String URL_SUFFIX = "/posts/";
+
     private DateTime creationDate;
     private DateTime modificationDate;
     private JCUser topicStarter;
@@ -530,6 +517,11 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      */
     public void setSubscribers(Set<JCUser> subscribers) {
         this.subscribers = subscribers;
+    }
+
+    @Override
+    public String prepareUrlSuffix() {
+        return URL_SUFFIX + getLastPost().getId();
     }
 
     /**

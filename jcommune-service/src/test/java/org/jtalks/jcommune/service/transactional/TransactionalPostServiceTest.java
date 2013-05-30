@@ -24,8 +24,8 @@ import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.service.nontransactional.MentionedUsers;
+import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -136,7 +136,7 @@ public class TransactionalPostServiceTest {
 
         assertEquals(post.getPostContent(), newBody);
 
-        verify(notificationService).topicChanged(topic);
+        verify(notificationService).subscribedEntityChanged(topic);
 
         verify(postDao).saveOrUpdate(post);
 
@@ -189,7 +189,7 @@ public class TransactionalPostServiceTest {
         assertEquals(topic.getModificationDate(), topic.getFirstPost().getModificationDate());
         verify(topicDao).saveOrUpdate(topic);
         verify(securityService).deleteFromAcl(postForDelete);
-        verify(notificationService).topicChanged(topic);
+        verify(notificationService).subscribedEntityChanged(topic);
     }
 
     @Test
@@ -217,7 +217,7 @@ public class TransactionalPostServiceTest {
         assertEquals(topic.getModificationDate(), topic.getFirstPost().getModificationDate());
         verify(topicDao).saveOrUpdate(topic);
         verify(securityService).deleteFromAcl(postForDelete);
-        verify(notificationService).topicChanged(topic);
+        verify(notificationService).subscribedEntityChanged(topic);
 
     }
 

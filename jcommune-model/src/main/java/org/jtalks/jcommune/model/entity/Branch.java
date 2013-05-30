@@ -14,14 +14,13 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import ch.lambdaj.Lambda;
+import org.apache.commons.lang.Validate;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.apache.commons.lang.Validate;
-
-import ch.lambdaj.Lambda;
 
 /**
  * Forum branch that contains topics related to branch theme.
@@ -35,6 +34,7 @@ import ch.lambdaj.Lambda;
 public class Branch extends org.jtalks.common.model.entity.Branch
         implements SubscriptionAwareEntity {
 
+    public static final String URL_SUFFIX = "/branches/";
     private List<Topic> topics = new ArrayList<Topic>();
     private Set<JCUser> subscribers = new HashSet<JCUser>();
 
@@ -178,6 +178,11 @@ public class Branch extends org.jtalks.common.model.entity.Branch
      */
     public void setSubscribers(Set<JCUser> subscribers) {
         this.subscribers = subscribers;
+    }
+
+    @Override
+    public String prepareUrlSuffix() {
+        return URL_SUFFIX + getId();
     }
 
     /**

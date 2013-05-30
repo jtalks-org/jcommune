@@ -25,8 +25,8 @@ import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.service.nontransactional.MentionedUsers;
+import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -138,7 +138,7 @@ public class TransactionalTopicModificationServiceTest {
         verify(aclBuilder).grant(GeneralPermission.WRITE);
         verify(aclBuilder).to(user);
         verify(aclBuilder).on(createdPost);
-        verify(notificationService).topicChanged(answeredTopic);
+        verify(notificationService).subscribedEntityChanged(answeredTopic);
     }
 
     @Test
@@ -211,7 +211,7 @@ public class TransactionalTopicModificationServiceTest {
         verify(aclBuilder).grant(GeneralPermission.WRITE);
         verify(aclBuilder).to(user);
         verify(aclBuilder).on(createdPost);
-        verify(notificationService).topicChanged(answeredTopic);
+        verify(notificationService).subscribedEntityChanged(answeredTopic);
     }
 
     @Test
@@ -342,7 +342,7 @@ public class TransactionalTopicModificationServiceTest {
             throws NotFoundException {
         verify(branchDao).saveOrUpdate(branch);
         verify(aclBuilder, times(2)).grant(GeneralPermission.WRITE);
-        verify(notificationService).branchChanged(branch);
+        verify(notificationService).subscribedEntityChanged(branch);
     }
 
     @Test
@@ -363,7 +363,7 @@ public class TransactionalTopicModificationServiceTest {
         assertEquals(user.getPostCount(), 0);
         verify(branchDao).saveOrUpdate(branch);
         verify(securityService).deleteFromAcl(Topic.class, TOPIC_ID);
-        verify(notificationService).branchChanged(branch);
+        verify(notificationService).subscribedEntityChanged(branch);
     }
 
 
@@ -453,7 +453,7 @@ public class TransactionalTopicModificationServiceTest {
 
         topicService.updateTopic(topic, null);
 
-        verify(notificationService).topicChanged(topic);
+        verify(notificationService).subscribedEntityChanged(topic);
         verify(subscriptionService).toggleTopicSubscription(topic);
     }
 
@@ -469,7 +469,7 @@ public class TransactionalTopicModificationServiceTest {
 
         topicService.updateTopic(topic, null);
 
-        verify(notificationService).topicChanged(topic);
+        verify(notificationService).subscribedEntityChanged(topic);
     }
 
     @Test
@@ -485,7 +485,7 @@ public class TransactionalTopicModificationServiceTest {
 
         topicService.updateTopic(topic, null);
 
-        verify(notificationService).topicChanged(topic);
+        verify(notificationService).subscribedEntityChanged(topic);
         verify(subscriptionService).toggleTopicSubscription(topic);
     }
 
@@ -501,7 +501,7 @@ public class TransactionalTopicModificationServiceTest {
 
         topicService.updateTopic(topic, null);
 
-        verify(notificationService).topicChanged(topic);
+        verify(notificationService).subscribedEntityChanged(topic);
     }
 
     @Test
@@ -518,7 +518,7 @@ public class TransactionalTopicModificationServiceTest {
         topicService.updateTopic(topic, null);
 
         verify(topicDao).saveOrUpdate(topic);
-        verify(notificationService).topicChanged(topic);
+        verify(notificationService).subscribedEntityChanged(topic);
     }
 
     @Test(expectedExceptions = AccessDeniedException.class)
