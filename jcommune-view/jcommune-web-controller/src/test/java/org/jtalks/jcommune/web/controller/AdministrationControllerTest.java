@@ -127,6 +127,10 @@ public class AdministrationControllerTest {
 
     @Test
     public void validForumInformationShouldProduceSuccessResponse() {
+        Component component = new Component();
+        component.setId(1L);
+        when(componentService.getComponentOfForum()).thenReturn(component);
+
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(new Object(), "");
         ComponentInformation ci = new ComponentInformation();
         JsonResponse response = administrationController.setForumInformation(ci, bindingResult, Locale.UK);
