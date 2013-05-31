@@ -22,7 +22,6 @@ import org.jtalks.jcommune.web.validation.annotations.Captcha;
 import org.jtalks.jcommune.web.validation.annotations.Matches;
 import org.jtalks.jcommune.web.validation.annotations.Unique;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -35,14 +34,15 @@ import javax.validation.constraints.Size;
 @Matches(field = "password", verifyField = "passwordConfirm", message = "{password_not_matches}")
 public class RegisterUserDto {
 
+    @NotBlank(message = "{validation.not_null}")
     @Size(min = User.USERNAME_MIN_LENGTH, max = User.USERNAME_MAX_LENGTH, message = "{validation.username.length}")
-    @Unique(entity = JCUser.class, field = "username", message = "{validation.duplicateuser}", ignoreCase=true)
+    @Unique(entity = JCUser.class, field = "username", message = "{validation.duplicateuser}", ignoreCase = true)
     private String username;
 
     @NotBlank(message = "{validation.not_null}")
     @Size(max = User.EMAIL_MAX_LENGTH, message = "{validation.email.length}")
     @Email(message = "{validation.email.wrong.format}")
-    @Unique(entity = JCUser.class, field = "email", message = "{validation.duplicateemail}")
+    @Unique(entity = JCUser.class, field = "email", message = "{validation.duplicateemail}", ignoreCase = true)
     private String email;
 
     @NotBlank(message = "{validation.not_null}")
@@ -63,13 +63,11 @@ public class RegisterUserDto {
 
     /**
      * Set username.
-     * We trim username, so it is not possible
-     * to create user with spaces in username, for ex. 'username ' and ' username'
      *
      * @param username username
      */
     public void setUsername(String username) {
-        this.username = username.trim();
+        this.username = username;
     }
 
     /**
