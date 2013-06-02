@@ -20,6 +20,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <div class="navbar navbar-fixed-top">
   <div class="navbar-inner">
@@ -48,7 +49,7 @@
         <a href="${pageContext.request.contextPath}/">
           <img id="${sessionScope.adminMode == true ? 'forumLogo' : ''}" class="forum-logo cursor-pointer"
              src="${forumLogo}"
-             title="${toolTip}" alt="${toolTip}"/>
+             title="${fn:escapeXml(toolTip)}" alt="${fn:escapeXml(toolTip)}"/>
         </a>
       </div>
 

@@ -55,7 +55,7 @@ function createAdministrationDialog() {
             \
             <div class="logo-manage-buttons-container"> \
                 <div class="logo-manage-buttons"> \
-                    <a id="upload" href="#" class="btn btn-mini"> \
+                    <a id="upload-logo" href="#" class="btn btn-mini"> \
                         <i class="icon-picture"></i>  \
                         '+ $labelUploadLogo + ' \
                     </a>  \
@@ -70,7 +70,7 @@ function createAdministrationDialog() {
         </div>  \
         <hr class="admin-dialog-hr"> \
         <form:hidden id="logo" path="logo"/> \
-        ' + Utils.createFormElement($labelForumTitle, 'forum_name', 'text', 'dialog-input')
+        ' + Utils.createFormElement($labelForumTitle, 'forum_name', 'text', 'first dialog-input')
         + Utils.createFormElement($labelForumDescription, 'forum_description', 'text', 'dialog-input')
         + Utils.createFormElement($labelLogoTooltip, 'forum_logoTooltip', 'text', 'dialog-input') + ' \
             <div class="clearfix"';
@@ -86,12 +86,22 @@ function createAdministrationDialog() {
         footerContent: footerContent,
         maxWidth: 350,
         maxHeight: 500,
-        tabNavigation: ['#forum_name','#forum_description','#forum_logoTooltip'],
+        firstFocus: true,
+        tabNavigation: ['#upload-logo', '#removeLogo', '#forum_name', '#forum_description','#forum_logoTooltip',
+                        '#administration-submit-button', '#administration-cancel-button'],
         handlers: {
             '#administration-submit-button': {'click': sendForumConfiguration},
             '#administration-cancel-button': {'static':'close'}
         }
     });
+
+    var tabFunc = function (e) {
+        if (document.activeElement.id == jDialog.options.dialogId && (e.keyCode || e.charCode) == tabCode) {
+            e.preventDefault();
+            $("#upload-logo").focus();
+        }
+    }
+    $("#" + jDialog.options.dialogId).on('keydown', tabFunc);
 
     fillAdminDialogInputs();
     addRemoveLogoHandler();
@@ -144,7 +154,7 @@ function createUploader() {
     }
 
     var uploader = new qq.FileUploaderBasic({
-        button: $("#upload").get(0),
+        button: $("#upload-logo").get(0),
         //server side uploading handler
         action: action,
         //

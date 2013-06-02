@@ -20,6 +20,7 @@
     </decorator>
     <excludes>
         <pattern>/users/IFrameAvatarpreview*</pattern>
+        <pattern>/admin/logo/IFrameLogoPreview*</pattern>
         <pattern>/posts/bbToHtml</pattern>
     </excludes>
 </decorators>

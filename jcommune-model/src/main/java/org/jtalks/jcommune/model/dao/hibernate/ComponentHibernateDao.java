@@ -58,6 +58,8 @@ public class ComponentHibernateDao extends GenericDao<Component> implements Comp
         forumComponent.setName(componentInformation.getName());
         forumComponent.setDescription(componentInformation.getDescription());
         forumComponent.setProperty(LOGO_TOOLTIP_PROPERTY, componentInformation.getLogoTooltip());
-        forumComponent.setProperty(LOGO_PROPERTY, componentInformation.getLogo());
+        if (!componentInformation.getLogo().isEmpty()) {
+            forumComponent.setProperty(LOGO_PROPERTY, componentInformation.getLogo());
+        }
     }
 }
