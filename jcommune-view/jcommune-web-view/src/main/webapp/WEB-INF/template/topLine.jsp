@@ -46,10 +46,11 @@
       </c:if>
 
       <div class="logo-container">
-        <a href="${pageContext.request.contextPath}/">
+        <a href="${pageContext.request.contextPath}/" title="${fn:escapeXml(toolTip)}"
+           data-toggle="tooltip" data-placement="right" >
           <img id="${sessionScope.adminMode == true ? 'forumLogo' : ''}" class="forum-logo cursor-pointer"
-             src="${forumLogo}"
-             title="${fn:escapeXml(toolTip)}" alt="${fn:escapeXml(toolTip)}"/>
+             src="${forumLogo}" data-toggle="tooltip" data-placement="bottom"
+             alt="${fn:escapeXml(toolTip)}"/>
         </a>
       </div>
 
