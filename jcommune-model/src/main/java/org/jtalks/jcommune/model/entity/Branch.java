@@ -180,6 +180,12 @@ public class Branch extends org.jtalks.common.model.entity.Branch
         this.subscribers = subscribers;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>
+     * The target URL has the next format http://{forum root}/branches/{id}
+     */
     @Override
     public String prepareUrlSuffix() {
         return URL_SUFFIX + getId();

@@ -47,6 +47,12 @@ public class CodeReview extends Entity implements SubscriptionAwareEntity {
         topic.setSubscribers(subscribers);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>
+     * The target URL has the next format http://{forum root}/topics/{id}
+     */
     @Override
     public String prepareUrlSuffix() {
         return URL_SUFFIX + topic.getId();

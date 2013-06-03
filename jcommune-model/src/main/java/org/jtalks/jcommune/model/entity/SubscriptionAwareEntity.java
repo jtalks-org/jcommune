@@ -40,10 +40,9 @@ public interface SubscriptionAwareEntity {
     void setSubscribers(Set<JCUser> subscribers);
 
     /**
-     * Prepares entity specific URL suffix.
-     * <p>
-     * For example: "/branches/", "/posts/".
-     * </p>
+     * If user want to see subscription object changes
+     * he/she will forwarding to particular forum location.
+     * This method prepares the URL suffix for this location - string after http://{forum root}.
      *
      * @return URL suffix.
      */

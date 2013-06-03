@@ -519,6 +519,12 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
         this.subscribers = subscribers;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>
+     * The target URL has the next format http://{forum root}/posts/{id}
+     */
     @Override
     public String prepareUrlSuffix() {
         return URL_SUFFIX + getLastPost().getId();
