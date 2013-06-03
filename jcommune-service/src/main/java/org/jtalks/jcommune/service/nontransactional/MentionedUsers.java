@@ -54,6 +54,21 @@ public class MentionedUsers {
     public static final String MENTIONED_AND_NOTIFIED_USER_TEMPLATE = "[user notified=true]%s[/user]";
     public static final String USER_WITH_LINK_TO_PROFILE_TEMPLATE = "[user=%s]%s[/user]";
 
+
+    private static final String CLOSE_BRACKET_CODE_PLACEHOLDER = "@w0956756wo@";
+    private static final String OPEN_BRACKET_CODE_PLACEHOLDER = "@ywdffgg434y@";
+    private static final String SLASH_CODE_PLACEHOLDER = "14@123435vggv4f";
+    private static final String LOWER_THEN_PLACEHOLDER = "gertfgertgf@@@@@#4324234";
+
+    private static final Map<String, String> CHARS_PLACEHOLDERS = new HashMap<String, String>();
+
+    static {
+        CHARS_PLACEHOLDERS.put("[", OPEN_BRACKET_CODE_PLACEHOLDER);
+        CHARS_PLACEHOLDERS.put("]", CLOSE_BRACKET_CODE_PLACEHOLDER);
+        CHARS_PLACEHOLDERS.put("\\", SLASH_CODE_PLACEHOLDER);
+        CHARS_PLACEHOLDERS.put("<", LOWER_THEN_PLACEHOLDER);
+    }
+
     /**
      * Content of the post
      */
@@ -63,6 +78,8 @@ public class MentionedUsers {
      * Post with mentioned users
      */
     private Post post;
+
+    private boolean usesUsernameEncoding = false;
 
     private MentionedUsers(String postContent) {
         this.postContent = postContent;
@@ -176,11 +193,45 @@ public class MentionedUsers {
             while (matcher.find()) {
                 String userBBCode = matcher.group();
                 String mentionedUser = userBBCode.replaceAll("\\[.*?\\]", StringUtils.EMPTY);
-                mentionedUsernames.add(mentionedUser);
+                mentionedUsernames.add(decodeUsername(mentionedUser));
             }
             return mentionedUsernames;
         } 
         return Collections.emptySet();
+    }
+
+    /**
+     *
+     * @param encodedUsername
+     * @return
+     */
+    private String decodeUsername(String encodedUsername) {
+        String decodeUserName = encodedUsername;
+        for (Map.Entry<String, String> decodeEntry : CHARS_PLACEHOLDERS.entrySet()) {
+            decodeUserName = decodeUserName.replace(decodeEntry.getValue(), decodeEntry.getKey());
+        }
+
+        if (!encodedUsername.equals(decodeUserName)) {
+            usesUsernameEncoding = true;
+        }
+
+        return decodeUserName;
+    }
+
+    /**
+     *
+     * @param decodedUsername
+     * @return
+     */
+    private String encodeUsername(String decodedUsername) {
+        String encodeUserName = decodedUsername;
+
+        if (usesUsernameEncoding) {
+            for (Map.Entry<String, String> decodeEntry : CHARS_PLACEHOLDERS.entrySet()) {
+                encodeUserName = encodeUserName.replace(decodeEntry.getKey(), decodeEntry.getValue());
+            }
+        }
+        return encodeUserName;
     }
 
     /**
@@ -287,7 +338,7 @@ public class MentionedUsers {
             String source, Map<String, String> userToUserProfileLinkMap) {
         String changedSource = source;
         for (Map.Entry<String, String> userToLinkMap: userToUserProfileLinkMap.entrySet()) {
-            String username = userToLinkMap.getKey();
+            String username = encodeUsername(userToLinkMap.getKey());
             String userNotNotifiedBBCode = format(MENTIONED_NOT_NOTIFIED_USER_TEMPLATE, username);
             String userNotifiedBBCode = format(MENTIONED_AND_NOTIFIED_USER_TEMPLATE, username);
             String userBBCodeWithLink = username;
