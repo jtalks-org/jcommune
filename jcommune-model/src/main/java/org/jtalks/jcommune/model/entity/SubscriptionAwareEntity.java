@@ -17,34 +17,31 @@ package org.jtalks.jcommune.model.entity;
 import java.util.Set;
 
 /**
- * Encapsulates subscription management details.
- * All the entities with subscription allowed should extend this class instead
- * of implementing subscription handling on their own.
+ * Encapsulates subscription management details. All the entities with subscription allowed should implement this
+ * interface instead of implementing a custom subscription handling on their own.
  */
 public interface SubscriptionAwareEntity {
 
     /**
-     * Returns users subscribed to get email notifications
-     * about this entity's updates
+     * Returns users subscribed to get email notifications about this entity's updates
      *
      * @return users to send notifications on update to
      */
     Set<JCUser> getSubscribers();
 
     /**
-     * Sets subscribers list for this branch.
-     * For Hibernate use only.
+     * Sets subscribers list for this branch. For Hibernate use only.
      *
      * @param subscribers users to send notifications on update to
      */
     void setSubscribers(Set<JCUser> subscribers);
 
     /**
-     * If user want to see subscription object changes
-     * he/she will forwarding to particular forum location.
-     * This method prepares the URL suffix for this location - string after http://{forum root}.
+     * If user wants to see subscription updates she will get a notification with a link to particular forum location.
+     * This method prepares a URL suffix to this location. Example: http://javatalks.ru/{url_suffix}/12. Url suffix is
+     * different for branches, topics, code reviews, etc.
      *
-     * @return URL suffix.
+     * @return URL suffix
      */
     String prepareUrlSuffix();
 
