@@ -22,11 +22,16 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.util.UriUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -69,6 +74,8 @@ public class MentionedUsers {
         CHARS_PLACEHOLDERS.put("<", LOWER_THEN_PLACEHOLDER);
     }
 
+    private final Map<String, String> encodedUserNames = new HashMap<String, String>();
+
     /**
      * Content of the post
      */
@@ -78,8 +85,6 @@ public class MentionedUsers {
      * Post with mentioned users
      */
     private Post post;
-
-    private boolean usesUsernameEncoding = false;
 
     private MentionedUsers(String postContent) {
         this.postContent = postContent;
@@ -207,13 +212,17 @@ public class MentionedUsers {
      */
     private String decodeUsername(String encodedUsername) {
         String decodeUserName = encodedUsername;
+
+        Object jsDecodedName = invokeJavaScript("decodeURI", encodedUsername.replace("\\", "\\\\"));
+        if (jsDecodedName != null) {
+            decodeUserName = jsDecodedName.toString();
+        }
+
         for (Map.Entry<String, String> decodeEntry : CHARS_PLACEHOLDERS.entrySet()) {
             decodeUserName = decodeUserName.replace(decodeEntry.getValue(), decodeEntry.getKey());
         }
 
-        if (!encodedUsername.equals(decodeUserName)) {
-            usesUsernameEncoding = true;
-        }
+        encodedUserNames.put(decodeUserName, encodedUsername);
 
         return decodeUserName;
     }
@@ -224,14 +233,33 @@ public class MentionedUsers {
      * @return
      */
     private String encodeUsername(String decodedUsername) {
-        String encodeUserName = decodedUsername;
+        return encodedUserNames.get(decodedUsername);
+    }
 
-        if (usesUsernameEncoding) {
-            for (Map.Entry<String, String> decodeEntry : CHARS_PLACEHOLDERS.entrySet()) {
-                encodeUserName = encodeUserName.replace(decodeEntry.getKey(), decodeEntry.getValue());
-            }
+    /**
+     * Invokes JavaScript function via built-in JavaScript engine
+     * @param functionName name of the function to be invoked
+     * @param arguments arguments of the function joined in one string
+     * @return result of the invocation or null if some error happened
+     */
+    private Object invokeJavaScript(String functionName, String arguments) {
+        Object result = null;
+
+        ScriptEngineManager factory = new ScriptEngineManager();
+        ScriptEngine engine = factory.getEngineByName("JavaScript");
+
+        if (engine == null) {
+            LOGGER.error("JavaScript engige was not found.");
+            return result;
         }
-        return encodeUserName;
+
+        try {
+            result = engine.eval(functionName + "('" + arguments + "')").toString();
+        } catch (ScriptException e) {
+            LOGGER.error("Error while invoking JavaScript function.", e);
+        }
+
+        return result;
     }
 
     /**
