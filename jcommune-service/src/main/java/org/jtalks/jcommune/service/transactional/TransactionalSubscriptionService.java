@@ -22,6 +22,8 @@ import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.Collection;
+
 /**
  * Implements database-backed durable subscriptions on forum object's updates.
  * All the subscriptions are performed on behalf of the current user, so there
@@ -92,6 +94,20 @@ public class TransactionalSubscriptionService implements SubscriptionService {
             entityToSubscribe.getSubscribers().add(current);
         }
         saveChanges(entityToSubscribe);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<JCUser> getAllowedSubscribers(SubscriptionAwareEntity entity){
+        if (entity instanceof Topic) {
+            return this.topicDao.getAllowedSubscribers(entity);
+        } else if (entity instanceof CodeReview) {
+            return this.topicDao.getAllowedSubscribers(((CodeReview) entity).getTopic());
+        } else{
+            return this.branchDao.getAllowedSubscribers(entity);
+        }
     }
 
     private void saveChanges(SubscriptionAwareEntity entityToSubscribe) {

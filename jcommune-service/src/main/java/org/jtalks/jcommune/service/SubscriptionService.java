@@ -15,8 +15,11 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.SubscriptionAwareEntity;
 import org.jtalks.jcommune.model.entity.Topic;
+
+import java.util.Collection;
 
 /**
  * This service enables or disables updates subscription by email.
@@ -60,5 +63,14 @@ public interface SubscriptionService {
      */
     void toggleSubscription(SubscriptionAwareEntity entityToSubscribe);
 
+    /**
+     * Get subscribers for specified entity with allowed permission to read.
+     *
+     *
+     *
+     * @param entity the Topic or Branch or CodeReview
+     * @return subscribers with allowed permission
+     */
+    Collection<JCUser> getAllowedSubscribers(SubscriptionAwareEntity entity);
 
 }

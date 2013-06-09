@@ -26,6 +26,8 @@ import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.Collections;
+
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -112,5 +114,26 @@ public class TransactionalSubscriptionServiceTest {
         service.toggleSubscription(codeReview);
         assertFalse(codeReview.getSubscribers().contains(user));
         verify(codeReviewDao).saveOrUpdate(codeReview);
+    }
+
+    @Test
+    public void testGetAllowedSubscribersForTopic() {
+        when(topicDao.getAllowedSubscribers(topic)).thenReturn(Collections.singleton(user));
+        assertTrue(service.getAllowedSubscribers(topic).contains(user));
+        verify(topicDao).getAllowedSubscribers(topic);
+    }
+
+    @Test
+    public void testGetAllowedSubscribersForCodeReview() {
+        when(topicDao.getAllowedSubscribers(codeReview.getTopic())).thenReturn(Collections.singleton(user));
+        assertTrue(service.getAllowedSubscribers(codeReview).contains(user));
+        verify(topicDao).getAllowedSubscribers(codeReview.getTopic());
+    }
+
+    @Test
+    public void testGetAllowedSubscribersForBranch() {
+        when(branchDao.getAllowedSubscribers(branch)).thenReturn(Collections.singleton(user));
+        assertTrue(service.getAllowedSubscribers(branch).contains(user));
+        verify(branchDao).getAllowedSubscribers(branch);
     }
 }

@@ -274,4 +274,25 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
 
         assertEquals(actualState, expectedState, "State of unread posts in the branch is wrong");
     }
+
+    @Test
+    public void testGetSubscribersWithAllowedPermission(){
+        JCUser subscriber = PersistedObjectsFactory.getDefaultUserWithGroups();
+        branch.getSubscribers().add(subscriber);
+        session.save(branch);
+        assertEquals(dao.getAllowedSubscribers(branch).size(), 1,
+            "Should return subscribers which are contained in any group with VIEW_TOPIC permission.");
+    }
+
+    @Test
+    public void testGetSubscribersWithDisallowedPermission(){
+        JCUser subscriber = PersistedObjectsFactory.getDefaultUserWithGroups();
+        branch.getSubscribers().add(subscriber);
+        session.save(branch);
+        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
+                branch.getId(), String.valueOf(subscriber.getGroups().get(0).getId()), false);
+
+        assertEquals(dao.getAllowedSubscribers(branch).size(), 0,
+            "Should not return subscribers which are contained in any group with disallowed VIEW_TOPIC permission.");
+    }
 }

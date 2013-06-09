@@ -19,8 +19,11 @@ import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.entity.Branch;
 import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.SubscriptionAwareEntity;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.data.domain.Page;
+
+import java.util.Collection;
 
 /**
  * DAO for the {@link Topic} objects.
@@ -82,4 +85,12 @@ public interface TopicDao extends Crud<Topic> {
      * @return count of topics in the branch
      */
     int countTopics(Branch branch);
+
+    /**
+     * Get subscribers for specified topic with allowed permission to read this topic.
+     *
+     * @param entity the topic
+     * @return subscribers with allowed permission
+     */
+    Collection<JCUser> getAllowedSubscribers(SubscriptionAwareEntity entity);
 }
