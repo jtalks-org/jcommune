@@ -4,7 +4,7 @@
     <parent>
         <artifactId>jcommune-view</artifactId>
         <groupId>org.jtalks.jcommune</groupId>
-        <version>1.7</version>
+        <version>1.8-SNAPSHOT</version>
     </parent>
     <artifactId>jcommune-web-view</artifactId>
     <packaging>war</packaging>
