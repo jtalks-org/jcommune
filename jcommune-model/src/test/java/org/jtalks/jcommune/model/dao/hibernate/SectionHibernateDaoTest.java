@@ -19,11 +19,13 @@ import org.hibernate.SessionFactory;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
+import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
+import org.springframework.test.context.testng
+        .AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
@@ -48,6 +50,8 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
     private SessionFactory sessionFactory;
     @Autowired
     private SectionDao dao;
+    @Autowired
+    private BranchDao branchDao;
     private Session session;
 
     @BeforeMethod
@@ -97,6 +101,21 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
         Section result = dao.get(-567890L);
 
         assertNull(result);
+    }
+
+    @Test
+    public void testBranchesCascadingDeletesFromSection() {
+        Branch actualBranch = ObjectsFactory.getDefaultBranch();
+        Section section = ObjectsFactory.getDefaultSection();
+        section.addOrUpdateBranch(actualBranch);
+        branchDao.saveOrUpdate(actualBranch);
+        dao.saveOrUpdate(section);
+        Branch expectedBranch = branchDao.get(actualBranch.getId());
+        assertEquals(expectedBranch.getName(), actualBranch.getName());
+        section.deleteBranch(actualBranch);
+        dao.saveOrUpdate(section);
+        expectedBranch = branchDao.get(actualBranch.getId());
+        assertNull(expectedBranch);
     }
 
     @Test
