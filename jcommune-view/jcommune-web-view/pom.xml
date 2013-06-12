@@ -144,6 +144,8 @@
                 <version>2.3</version>
                 <!--Substitutes version number into a source code to show it on the page-->
                 <configuration>
+                    <!--useCache=true needed for maven replacer plugin to access resources,
+                        as well as prepare-package phase and goal exploded in execution-->
                     <useCache>true</useCache>
                 </configuration>
                 <executions>
@@ -171,6 +173,7 @@
                 </executions>
             </plugin>
             <plugin>
+                <!--Replacer plugin allows us to reduce the size of jsp pages by about 30%-->
                 <groupId>com.google.code.maven-replacer-plugin</groupId>
                 <artifactId>replacer</artifactId>
                 <version>1.5.2</version>
@@ -185,6 +188,7 @@
                 <configuration>
                     <basedir>${project.build.directory}</basedir>
                     <includes>
+                        <!--Scan all jsp and tag files for get rid of spaces-->
                         <include>${project.build.finalName}/WEB-INF/**/*.jsp</include>
                         <include>${project.build.finalName}/WEB-INF/**/*.tag</include>
                     </includes>
@@ -194,9 +198,11 @@
                     <unescape>true</unescape>
                     <replacements>
                         <replacement>
+                            <!--Replace two or more spaces, tabs and line breaks with one space-->
                             <token>(.)\s{2,}(.)</token>
                             <value>$1 $2</value>
                         </replacement>
+                        <!--Remove all new line characters(Windows and Unix)-->
                         <replacement>
                             <token>\r\n|\n</token>
                             <value></value>
