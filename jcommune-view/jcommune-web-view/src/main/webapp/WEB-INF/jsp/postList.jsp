@@ -366,7 +366,7 @@
 <div id="users-stats" class="well forum-user-stats-container">
     <jtalks:moderators moderators="${topic.branch.moderatorsGroup.users}" />
     <br/>
-    <strong><spring:message code="label.branch.now_browsing"/></strong>
+    <strong><spring:message code="label.topic.now_browsing"/></strong>
     <jtalks:users users="${viewList}" branch="${topic.branch}"/>
 </div>
 <%-- END OF Users --%>

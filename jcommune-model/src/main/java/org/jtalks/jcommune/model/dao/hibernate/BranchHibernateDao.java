@@ -19,8 +19,12 @@ import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.SubscriptionAwareEntity;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Hibernate DAO implementation for operations with a {@link Branch}.
@@ -76,5 +80,19 @@ public class BranchHibernateDao extends GenericDao<Branch>
                 .setParameter("branch", branch.getId())
                 .uniqueResult();
         return count.intValue() > 0 ? true : false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<JCUser> getAllowedSubscribers(SubscriptionAwareEntity entity){
+        // use set for remove duplicates
+        @SuppressWarnings("unchecked")
+        Set<JCUser> foundUsers = new HashSet(session()
+                .getNamedQuery("getAllowedSubscribersForBranch")
+                .setParameter("branch", entity)
+                .list());
+        return foundUsers;
     }
 }

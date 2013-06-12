@@ -59,6 +59,15 @@ public final class PersistedObjectsFactory {
         return newTopic;
     }
 
+    public static void createAndSaveViewTopicsBranchesEntity(Long branchId, String sid, Boolean granting) {
+        ViewTopicsBranches viewTopicsBranches = new ViewTopicsBranches();
+        viewTopicsBranches.setBranchId(branchId);
+        viewTopicsBranches.setSid(sid);
+        viewTopicsBranches.setGranting(granting);
+
+        session.save(viewTopicsBranches);
+    }
+
     /**
      * Create the PrivateMessage with filled required fields.
      *

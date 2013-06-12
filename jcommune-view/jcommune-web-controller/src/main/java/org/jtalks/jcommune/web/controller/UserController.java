@@ -23,10 +23,13 @@ import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
+import org.jtalks.jcommune.web.validation.editors.DefaultStringEditor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -66,6 +69,22 @@ public class UserController {
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    /**
+     * This method turns the trim binder on. Trim binder
+     * removes leading and trailing spaces from the submitted fields.
+     * So, it ensures, that all validations will be applied to
+     * trimmed field values only.
+     * <p/> There is no need for trim edit password fields,
+     * so they are processed with {@link DefaultStringEditor}
+     * @param binder Binder object to be injected
+     */
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+        binder.registerCustomEditor(String.class, "password", new DefaultStringEditor(true));
+        binder.registerCustomEditor(String.class, "passwordConfirm", new DefaultStringEditor(true));
     }
 
     /**

@@ -67,37 +67,37 @@ $labelNotSpecified = '<spring:message code="label.not.specified" htmlEscape="tru
 
 $labelError500Detail = '<spring:message code="label.500.detail" htmlEscape="true"/>';
 
-$labelRegistration = '<spring:message code="label.signup" htmlEscape="true"/>'
-$labelUsername = '<spring:message code="label.username" htmlEscape="true"/>'
-$labelEmail = '<spring:message code="label.tip.email" htmlEscape="true"/>'
-$labelPassword = '<spring:message code="label.password" htmlEscape="true"/>'
-$labelPasswordConfirmation = '<spring:message code="label.confirmation" htmlEscape="true"/>'
-$signupButtonLabel = '<spring:message code="label.signup" htmlEscape="true"/>'
-$labelCaptcha = '<spring:message code="label.tip.captcha" htmlEscape="true"/>'
-$labelRememberMe = '<spring:message code="label.auto_logon" htmlEscape="true"/>'
-$labelRestorePassword = '<spring:message code="label.restorePassword.prompt" htmlEscape="true"/>'
-$labelSignin = '<spring:message code="label.signin" htmlEscape="true"/>'
-$labelLoginError = '<spring:message code="label.login_error" htmlEscape="true"/>'
+$labelRegistration = '<spring:message code="label.signup" htmlEscape="true"/>';
+$labelUsername = '<spring:message code="label.username" htmlEscape="true"/>';
+$labelEmail = '<spring:message code="label.tip.email" htmlEscape="true"/>';
+$labelPassword = '<spring:message code="label.password" htmlEscape="true"/>';
+$labelPasswordConfirmation = '<spring:message code="label.confirmation" htmlEscape="true"/>';
+$signupButtonLabel = '<spring:message code="label.signup" htmlEscape="true"/>';
+$labelCaptcha = '<spring:message code="label.tip.captcha" htmlEscape="true"/>';
+$labelRememberMe = '<spring:message code="label.auto_logon" htmlEscape="true"/>';
+$labelRestorePassword = '<spring:message code="label.restorePassword.prompt" htmlEscape="true"/>';
+$labelSignin = '<spring:message code="label.signin" htmlEscape="true"/>';
+$labelLoginError = '<spring:message code="label.login_error" htmlEscape="true"/>';
 
-$labelCancel = '<spring:message code="label.cancel" htmlEscape="true"/>'
-$labelOk = '<spring:message code="label.ok" htmlEscape="true"/>'
-$labelTopicMove = '<spring:message code="label.topic.move" htmlEscape="true"/>'
-$labelTopicMoveFull = '<spring:message code="label.topic.move.full" htmlEscape="true"/>'
+$labelCancel = '<spring:message code="label.cancel" htmlEscape="true"/>';
+$labelOk = '<spring:message code="label.ok" htmlEscape="true"/>';
+$labelTopicMove = '<spring:message code="label.topic.move" htmlEscape="true"/>';
+$labelTopicMoveFull = '<spring:message code="label.topic.move.full" htmlEscape="true"/>';
 
-$labelReviewSays = '<spring:message code="label.review.says" htmlEscape="true"/>'
+$labelReviewSays = '<spring:message code="label.review.says" htmlEscape="true"/>';
 
-$labelUnexpectedError = '<spring:message code="label.unexpected.error" htmlEscape="true"/>'
-$labelAdd = '<spring:message code="label.add" htmlEscape="true"/>'
-$labelEdit = '<spring:message code="label.edit" htmlEscape="true"/>'
-$labelKeymapsReview = '<spring:message code="label.keymaps.review" htmlEscape="true"/>'
-$labelTopicWasRemoved = '<spring:message code="label.topicWasRemoved" htmlEscape="true"/>'
-$labelYouDontHavePermissions = '<spring:message code="label.topicYouDontHavePermissions" htmlEscape="true"/>'
+$labelUnexpectedError = '<spring:message code="label.unexpected.error" htmlEscape="true"/>';
+$labelAdd = '<spring:message code="label.add" htmlEscape="true"/>';
+$labelEdit = '<spring:message code="label.edit" htmlEscape="true"/>';
+$labelKeymapsReview = '<spring:message code="label.keymaps.review" htmlEscape="true"/>';
+$labelTopicWasRemoved = '<spring:message code="label.topicWasRemoved" htmlEscape="true"/>';
+$labelYouDontHavePermissions = '<spring:message code="label.topicYouDontHavePermissions" htmlEscape="true"/>';
 
-$labelLinksEditor='<spring:message code="label.linksEditor" htmlEscape="true"/>'
-$labelTitle='<spring:message code="label.title" htmlEscape="true"/>'
-$labelHint='<spring:message code="label.hint" htmlEscape="true"/>'
-$labelSave='<spring:message code="label.save" htmlEscape="true"/>'
-$labelDeleteMainLink='<spring:message code="label.deleteMainLink" htmlEscape="true"/>'
+$labelLinksEditor='<spring:message code="label.linksEditor" htmlEscape="true"/>';
+$labelTitle='<spring:message code="label.title" htmlEscape="true"/>';
+$labelHint='<spring:message code="label.hint" htmlEscape="true"/>';
+$labelSave='<spring:message code="label.save" htmlEscape="true"/>';
+$labelDeleteMainLink='<spring:message code="label.deleteMainLink" htmlEscape="true"/>';
 $labelErrorLinkSave = '<spring:message code="label.link.error.save" htmlEscape="true"/>';
 $labelErrorLinkDelete = '<spring:message code="label.link.error.save" htmlEscape="true"/>';
 $linksEditIcon = '<spring:message code="label.linksEditIcon" htmlEscape="true"/>';

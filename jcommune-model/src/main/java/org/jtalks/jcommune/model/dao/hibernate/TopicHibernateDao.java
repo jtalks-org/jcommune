@@ -28,12 +28,12 @@ import org.jtalks.common.model.entity.Group;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.SubscriptionAwareEntity;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Hibernate DAO implementation from the {@link Topic}.
@@ -236,5 +236,19 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
                 .setParameter(BRANCH, branch)
                 .uniqueResult();
         return count.intValue();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<JCUser> getAllowedSubscribers(SubscriptionAwareEntity entity){
+        // use set for remove duplicates
+        @SuppressWarnings("unchecked")
+        Set<JCUser> foundUsers = new HashSet<JCUser>(session()
+                .getNamedQuery("getAllowedSubscribersForTopic")
+                .setParameter("topic", entity)
+                .list());
+        return foundUsers;
     }
 }

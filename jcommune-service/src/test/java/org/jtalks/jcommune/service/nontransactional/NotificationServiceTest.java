@@ -18,6 +18,7 @@ package org.jtalks.jcommune.service.nontransactional;
 import org.jtalks.common.model.entity.Property;
 import org.jtalks.jcommune.model.dao.PropertyDao;
 import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.mockito.Mock;
@@ -45,6 +46,8 @@ public class NotificationServiceTest {
     @Mock
     private UserService userService;
     @Mock
+    private SubscriptionService subscriptionService;
+    @Mock
     private PropertyDao propertyDao;
     private JCommuneProperty notificationsEnabledProperty = SENDING_NOTIFICATIONS_ENABLED;
     private NotificationService service;
@@ -67,6 +70,7 @@ public class NotificationServiceTest {
         service = new NotificationService(
                 userService,
                 mailService,
+                subscriptionService,
                 notificationsEnabledProperty);
         topic = new Topic(user1, "title");
         branch = new Branch("name", "description");
@@ -84,6 +88,7 @@ public class NotificationServiceTest {
         topic.getSubscribers().add(user1);
         topic.getSubscribers().add(user2);
         topic.getSubscribers().add(currentUser);
+        when(subscriptionService.getAllowedSubscribers(codeReview)).thenReturn(codeReview.getSubscribers());
 
         service.subscribedEntityChanged(codeReview);
 
@@ -117,6 +122,7 @@ public class NotificationServiceTest {
         topic.getSubscribers().add(user1);
         topic.getSubscribers().add(user2);
         topic.getSubscribers().add(currentUser);
+        when(subscriptionService.getAllowedSubscribers(topic)).thenReturn(topic.getSubscribers());
 
         service.subscribedEntityChanged(topic);
 
@@ -126,7 +132,7 @@ public class NotificationServiceTest {
         verify(mailService).sendUpdatesOnSubscription(user2, topic);
         assertEquals(topic.getSubscribers().size(), 3);
     }
-    
+
     @Test
     public void testTopicChanedWithDisabledNotifcations() {
         prepareDisabledProperty();
@@ -144,6 +150,7 @@ public class NotificationServiceTest {
         branch.getSubscribers().add(user1);
         branch.getSubscribers().add(user2);
         branch.getSubscribers().add(currentUser);
+        when(subscriptionService.getAllowedSubscribers(branch)).thenReturn(branch.getSubscribers());
 
         service.subscribedEntityChanged(branch);
 
@@ -153,7 +160,7 @@ public class NotificationServiceTest {
         verify(mailService).sendUpdatesOnSubscription(user2, branch);
         assertEquals(branch.getSubscribers().size(), 3);
     }
-    
+
     @Test
     public void testBranchChangedWithDisabledNotifications() {
         prepareDisabledProperty();
@@ -171,6 +178,7 @@ public class NotificationServiceTest {
         when(userService.getCurrentUser()).thenReturn(user1);
         topic.getSubscribers().add(user1);
         topic.getSubscribers().add(user2);
+        when(subscriptionService.getAllowedSubscribers(topic)).thenReturn(topic.getSubscribers());
 
         service.subscribedEntityChanged(topic);
 
@@ -184,6 +192,7 @@ public class NotificationServiceTest {
         when(userService.getCurrentUser()).thenReturn(user1);
         branch.getSubscribers().add(user1);
         branch.getSubscribers().add(user2);
+        when(subscriptionService.getAllowedSubscribers(branch)).thenReturn(branch.getSubscribers());
 
         service.subscribedEntityChanged(branch);
 
@@ -234,7 +243,7 @@ public class NotificationServiceTest {
         verify(mailService).sendTopicMovedMail(user3, TOPIC_ID);
         assertEquals(branch.getSubscribers().size(), 3);
     }
-    
+
     @Test
     public void testTopicMovedWithDisabledNotifications() {
         prepareDisabledProperty();

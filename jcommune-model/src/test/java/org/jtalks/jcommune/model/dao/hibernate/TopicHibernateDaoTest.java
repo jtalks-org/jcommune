@@ -118,14 +118,6 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         return topics;
     }
 
-    private void createAndSaveViewTopicsBranchesEntity(Long branchId, String sid, Boolean granting) {
-        ViewTopicsBranches viewTopicsBranches = new ViewTopicsBranches();
-        viewTopicsBranches.setBranchId(branchId);
-        viewTopicsBranches.setSid(sid);
-        viewTopicsBranches.setGranting(granting);
-
-        session.save(viewTopicsBranches);
-    }
 
     /*===== TopicDao specific methods =====*/
 
@@ -152,7 +144,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
         JCUser user = new JCUser("Current", null, null);
         user.setGroups(ObjectsFactory.getDefaultGroupList());
-        createAndSaveViewTopicsBranchesEntity(createdTopicList.get(0).getBranch().getId(),
+        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(createdTopicList.get(0).getBranch().getId(),
                 String.valueOf(user.getGroups().get(0).getId()), true);
         Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest, user);
 
@@ -169,7 +161,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
         JCUser user = new JCUser("Current", null, null);
         user.setGroups(ObjectsFactory.getDefaultGroupList());
-        createAndSaveViewTopicsBranchesEntity(createdTopicList.get(0).getBranch().getId(),
+        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(createdTopicList.get(0).getBranch().getId(),
                 String.valueOf(user.getGroups().get(0).getId()), true);
         Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest, user);
 
@@ -188,7 +180,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
         JCUser user = new JCUser("Current", null, null);
         user.setGroups(ObjectsFactory.getDefaultGroupList());
-        createAndSaveViewTopicsBranchesEntity(createdTopicList.get(0).getBranch().getId(),
+        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(createdTopicList.get(0).getBranch().getId(),
                 String.valueOf(user.getGroups().get(0).getId()), true);
         Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest, user);
 
@@ -205,7 +197,8 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(lastPage, pageSize);
         DateTime lastLogin = new DateTime().minusDays(1);
 
-        createAndSaveViewTopicsBranchesEntity(createdTopicList.get(0).getBranch().getId(), "anonymousUser", true);
+        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
+                createdTopicList.get(0).getBranch().getId(), "anonymousUser", true);
         Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest, new AnonymousUser());
 
         assertThat("Topics should be paginated for anonymous group", page, hasPages());
@@ -219,7 +212,8 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(0, pageSize);
         DateTime lastLogin = new DateTime().minusDays(1);
 
-        createAndSaveViewTopicsBranchesEntity(createdTopicList.get(0).getBranch().getId(), "anonymousUser", true);
+        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
+                createdTopicList.get(0).getBranch().getId(), "anonymousUser", true);
         Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest, new AnonymousUser());
 
         assertThat("Topics should be paginated for anonymous group", page, hasPages());
@@ -235,7 +229,8 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1000, pageSize);
         DateTime lastLogin = new DateTime().minusDays(1);
 
-        createAndSaveViewTopicsBranchesEntity(createdTopicList.get(0).getBranch().getId(), "anonymousUser", true);
+        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
+                createdTopicList.get(0).getBranch().getId(), "anonymousUser", true);
         Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest, new AnonymousUser());
 
         assertThat("Topics should be paginated for anonymous group", page, hasPages());
@@ -251,7 +246,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(lastPage, pageSize);
         DateTime lastLogin = new DateTime().minusDays(1);
 
-        createAndSaveViewTopicsBranchesEntity(22l, "noneExistingGroup", true);
+        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(22l, "noneExistingGroup", true);
         Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest, new AnonymousUser());
 
         assertThat("Topics shouldn't be paginated for none existing group", page, not(hasPages()));
@@ -315,16 +310,9 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         branch.addTopic(ObjectsFactory.getTopic(author, 2));
         session.save(branch);
 
-        ViewTopicsBranches viewTopicsBranches = new ViewTopicsBranches();
-        viewTopicsBranches.setBranchId(branch.getId());
-        viewTopicsBranches.setGranting(true);
-        viewTopicsBranches.setSid(String.valueOf(author.getGroups().get(0).getId()));
-        session.save(viewTopicsBranches);
-        ViewTopicsBranches viewTopicsBranchesForAnonymous = new ViewTopicsBranches();
-        viewTopicsBranchesForAnonymous.setBranchId(branch.getId());
-        viewTopicsBranchesForAnonymous.setGranting(true);
-        viewTopicsBranchesForAnonymous.setSid("anonymousUser");
-        session.save(viewTopicsBranchesForAnonymous);
+        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(branch.getId(),
+                String.valueOf(author.getGroups().get(0).getId()), true);
+        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(branch.getId(), "anonymousUser", true);
 
         return author;
     }
@@ -481,5 +469,34 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
         assertNull(dao.get(topic.getId()));
         assertNull(session.get(CodeReview.class, reviewId));
+    }
+
+    @Test
+    public void testGetSubscribersWithAllowedPermission(){
+        Topic topic = createAndSaveTopicWithSubscribers();
+
+        assertEquals(dao.getAllowedSubscribers(topic).size(), 1,
+            "Should return subscribers which are contained in any group with VIEW_TOPIC permission.");
+    }
+
+    @Test
+    public void testGetSubscribersWithDisallowedPermission(){
+        Topic topic = createAndSaveTopicWithSubscribers();
+        JCUser subscriber = topic.getTopicStarter();
+        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
+                topic.getBranch().getId(), String.valueOf(subscriber.getGroups().get(0).getId()), false);
+
+        assertEquals(dao.getAllowedSubscribers(topic).size(), 0,
+            "Should not return subscribers which are contained in any group with disallowed VIEW_TOPIC permission.");
+    }
+
+    private Topic createAndSaveTopicWithSubscribers(){
+        JCUser subscriber = PersistedObjectsFactory.getDefaultUserWithGroups();
+        Branch branch = ObjectsFactory.getDefaultBranch();
+        Topic topic = ObjectsFactory.getTopic(subscriber, 5);
+        topic.getSubscribers().add(subscriber);
+        branch.addTopic(topic);
+        session.save(branch);
+        return topic;
     }
 }

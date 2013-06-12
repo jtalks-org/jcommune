@@ -17,7 +17,9 @@ package org.jtalks.jcommune.model.dao;
 import org.jtalks.common.model.dao.Crud;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.SubscriptionAwareEntity;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -57,4 +59,12 @@ public interface BranchDao extends Crud<Branch> {
      * @return state of unread posts in the branch for user
      */
     boolean isUnreadPostsInBranch(Branch branch, JCUser user);
+
+    /**
+     * Get subscribers for specified branch with allowed permission to read this branch.
+     *
+     * @param entity the branch
+     * @return subscribers with allowed permission
+     */
+    Collection<JCUser> getAllowedSubscribers(SubscriptionAwareEntity entity);
 }

@@ -60,6 +60,6 @@ public class UniqueValidatorTest {
 
     @Test
     public void testNullValue() {
-        assertFalse(validator.isValid(null, null));
+        assertTrue(validator.isValid(null, null));
     }
 }

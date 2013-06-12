@@ -24,11 +24,14 @@ import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
+import org.jtalks.jcommune.web.validation.editors.DefaultStringEditor;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -62,6 +65,24 @@ public class UserControllerTest {
         when(securityFacade.getContext()).thenReturn(securityContext);
 
         userController = new UserController(userService);
+    }
+
+    @Test
+    public void testInitBinderStringTrimmerEditor() {
+        WebDataBinder binder = mock(WebDataBinder.class);
+
+        userController.initBinder(binder);
+
+        verify(binder).registerCustomEditor(eq(String.class), any(StringTrimmerEditor.class));
+    }
+
+    @Test
+    public void testInitBinderDefaultStringEditor() {
+        WebDataBinder binder = mock(WebDataBinder.class);
+
+        userController.initBinder(binder);
+
+        verify(binder).registerCustomEditor(eq(String.class), any(DefaultStringEditor.class));
     }
 
     @Test

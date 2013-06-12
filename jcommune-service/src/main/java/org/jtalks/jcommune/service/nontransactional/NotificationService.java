@@ -18,8 +18,10 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.jtalks.jcommune.model.entity.SubscriptionAwareEntity;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.UserService;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,6 +41,7 @@ public class NotificationService {
 
     private UserService userService;
     private MailService mailService;
+    SubscriptionService subscriptionService;
     private JCommuneProperty notificationsEnabledProperty;
 
     /**
@@ -49,9 +52,11 @@ public class NotificationService {
     public NotificationService(
             UserService userService,
             MailService mailService,
+            SubscriptionService subscriptionService,
             JCommuneProperty notificationsEnabledProperty) {
         this.userService = userService;
         this.mailService = mailService;
+        this.subscriptionService = subscriptionService;
         this.notificationsEnabledProperty = notificationsEnabledProperty;
     }
 
@@ -65,7 +70,8 @@ public class NotificationService {
     public void subscribedEntityChanged(SubscriptionAwareEntity entity) {
         if (notificationsEnabledProperty.booleanValue()) {
             JCUser current = userService.getCurrentUser();
-            for (JCUser user : entity.getSubscribers()) {
+            Collection<JCUser> subscribers = subscriptionService.getAllowedSubscribers(entity);
+            for (JCUser user : subscribers) {
                 if (!user.equals(current)) {
                     mailService.sendUpdatesOnSubscription(user, entity);
                 }
