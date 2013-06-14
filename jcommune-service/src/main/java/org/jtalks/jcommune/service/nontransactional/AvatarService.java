@@ -43,8 +43,6 @@ import java.util.Locale;
  */
 public class AvatarService extends BaseImageService {
 
-    public static final String HTTP_HEADER_DATETIME_PATTERN = "E, dd MMM yyyy HH:mm:ss z";
-
     private String defaultAvatarPath;
     private static final Logger LOGGER = LoggerFactory.getLogger(AvatarService.class);
 
@@ -83,28 +81,5 @@ public class AvatarService extends BaseImageService {
         }
         return result;
     }
-    
-    /**
-     * Check 'If-Modified-Since' header in the request and converts it to 
-     * {@link java.util.Date} representation
-     * @param ifModifiedSinceHeader - value of 'If-Modified-Since' header in 
-     *      string form
-     * @return If-Modified-Since header or Jan 1, 1970 if it is not set or
-     *      can't be parsed
-     */
-    public Date getIfModifiedSineDate(String ifModifiedSinceHeader) {
-        Date ifModifiedSinceDate = new Date(0);
-        if (ifModifiedSinceHeader != null) {
-            try {
-                DateFormat dateFormat = new SimpleDateFormat(
-                        HTTP_HEADER_DATETIME_PATTERN,
-                        Locale.US); 
-                ifModifiedSinceDate = dateFormat.parse(ifModifiedSinceHeader);
-            } catch (ParseException e) {
-                LOGGER.error("Failed to parse value of 'If-Modified-Since' header from string form.", e);
-            }
-        }
-        
-        return ifModifiedSinceDate;
-    }
+
 }

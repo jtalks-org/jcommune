@@ -29,8 +29,13 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Service class for image related operations
@@ -39,6 +44,8 @@ public class BaseImageService {
     private static final List<String> VALID_IMAGE_TYPES = Arrays.asList("image/jpeg", "image/png", "image/gif");
     /** user-friendly string with all valid image types */
     private static final String VALID_IMAGE_EXTENSIONS = "*.jpeg, *.jpg, *.gif, *.png";
+
+    public static final String HTTP_HEADER_DATETIME_PATTERN = "E, dd MMM yyyy HH:mm:ss z";
 
     private ImageUtils imageUtils;
     private Base64Wrapper base64Wrapper;
@@ -126,5 +133,29 @@ public class BaseImageService {
             LOGGER.debug("File has too big size. Must be less than {} bytes", maxSize);
             throw new ImageSizeException(maxSize);
         }
+    }
+
+    /**
+     * Check 'If-Modified-Since' header in the request and converts it to
+     * {@link java.util.Date} representation
+     * @param ifModifiedSinceHeader - value of 'If-Modified-Since' header in
+     *      string form
+     * @return If-Modified-Since header or Jan 1, 1970 if it is not set or
+     *      can't be parsed
+     */
+    public Date getIfModifiedSineDate(String ifModifiedSinceHeader) {
+        Date ifModifiedSinceDate = new Date(0);
+        if (ifModifiedSinceHeader != null) {
+            try {
+                DateFormat dateFormat = new SimpleDateFormat(
+                        HTTP_HEADER_DATETIME_PATTERN,
+                        Locale.US);
+                ifModifiedSinceDate = dateFormat.parse(ifModifiedSinceHeader);
+            } catch (ParseException e) {
+                LOGGER.error("Failed to parse value of 'If-Modified-Since' header from string form.", e);
+            }
+        }
+
+        return ifModifiedSinceDate;
     }
 }

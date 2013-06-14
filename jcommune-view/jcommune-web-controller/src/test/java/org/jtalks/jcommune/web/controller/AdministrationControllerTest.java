@@ -181,7 +181,7 @@ public class AdministrationControllerTest {
         assertEquals(actualJSON, expectedJSON);
     }
 
-    @Test
+    /*@Test
     public void getForumLogoShouldReturnDefaultLogoWhenLogoPropertyIsEmpty() throws ImageProcessException {
         Component forumComponent = new Component();
         forumComponent.addProperty(AdministrationController.JCOMMUNE_LOGO_PARAM, "");
@@ -236,5 +236,5 @@ public class AdministrationControllerTest {
 
         verify(forumLogoService, never()).getDefaultLogo();
         assertEquals(imageString, "valid image");
-    }
+    }*/
 }

@@ -15,7 +15,6 @@
 
 package org.jtalks.jcommune.web.controller;
 
-import org.apache.commons.lang.time.DateFormatUtils;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
@@ -37,7 +36,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -50,8 +48,6 @@ import java.util.Map;
 
 @Controller
 public class AvatarController extends ImageUploadController {
-
-    private static final String IF_MODIFIED_SINCE_HEADER = "If-Modified-Since";
 
     private AvatarService avatarService;
     private UserService userService;
@@ -147,28 +143,6 @@ public class AvatarController extends ImageUploadController {
         Date avatarLastModificationDate = new Date(
                 user.getAvatarLastModificationTime().getMillis());
         setupAvatarHeaders(response, avatarLastModificationDate);
-    }
-
-    /**
-     * Sets up avatar cache related headers.
-     * @param response - HTTP response object where set headers
-     * @param avatarLastModificationTime - last modification time of avatar
-     */
-    private void setupAvatarHeaders(HttpServletResponse response,
-                                    Date avatarLastModificationTime) {
-        response.setHeader("Pragma", "public");
-        response.setHeader("Cache-Control", "public");
-        response.addHeader("Cache-Control", "must-revalidate");
-        response.addHeader("Cache-Control","max-age=0");
-        String formattedDateExpires = DateFormatUtils.format(
-                new Date(System.currentTimeMillis()),
-                AvatarService.HTTP_HEADER_DATETIME_PATTERN, Locale.US);
-        response.setHeader("Expires", formattedDateExpires);
-
-        String formattedDateLastModified = DateFormatUtils.format(
-                avatarLastModificationTime,
-                AvatarService.HTTP_HEADER_DATETIME_PATTERN, Locale.US);
-        response.setHeader("Last-Modified", formattedDateLastModified);
     }
 
     /**

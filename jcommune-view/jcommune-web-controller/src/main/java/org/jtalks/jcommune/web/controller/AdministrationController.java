@@ -137,11 +137,23 @@ public class AdministrationController extends ImageUploadController {
         return new JsonResponse(JsonResponseStatus.SUCCESS, null);
     }
 
+    @RequestMapping(value = "/admin/logo", method = RequestMethod.GET)
+    public void forumLogoRequest(HttpServletRequest request, HttpServletResponse response) {
+        byte[] logo = getLogoBytes();
+        response.setContentType("image/jpeg");
+        response.setContentLength(logo.length);
+        try {
+            response.getOutputStream().write(logo);
+        } catch (IOException e) {
+
+        }
+    }
+
     /**
      * Returns logo image data in String64
      * @return current forum logo image data in String64 format appropriate for "src" attribute of <img> tag
      */
-    public String getForumLogo() throws ImageProcessException {
+    private byte[] getLogoBytes() {
         Component forumComponent = componentService.getComponentOfForum();
         String logoProperty = null;
         if (forumComponent != null) {
@@ -156,7 +168,7 @@ public class AdministrationController extends ImageUploadController {
             logoBytes = wrapper.decodeB64Bytes(logoProperty);
         }
 
-        return  imageControllerUtils.getImageDataInString64(logoBytes);
+        return logoBytes;
     }
 
     /**

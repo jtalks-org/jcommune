@@ -16,15 +16,20 @@
 package org.jtalks.jcommune.web.controller;
 
 
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.jtalks.jcommune.service.exceptions.ImageFormatException;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.jtalks.jcommune.service.exceptions.ImageSizeException;
+import org.jtalks.jcommune.service.nontransactional.AvatarService;
+import org.jtalks.jcommune.service.nontransactional.BaseImageService;
 import org.jtalks.jcommune.web.dto.json.FailJsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseReason;
 import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.Locale;
 
 public class ImageUploadController {
@@ -34,6 +39,8 @@ public class ImageUploadController {
     static final String WRONG_FORMAT_RESOURCE_MESSAGE = "image.wrong.format";
     static final String WRONG_SIZE_RESOURCE_MESSAGE = "image.wrong.size";
     static final String COMMON_ERROR_RESOURCE_MESSAGE = "avatar.500.common.error";
+
+    protected static final String IF_MODIFIED_SINCE_HEADER = "If-Modified-Since";
 
     public ImageUploadController(MessageSource messageSource) {
         this.messageSource = messageSource;
@@ -89,5 +96,27 @@ public class ImageUploadController {
      */
     public MessageSource getMessageSource() {
         return messageSource;
+    }
+
+    /**
+     * Sets up avatar cache related headers.
+     * @param response - HTTP response object where set headers
+     * @param avatarLastModificationTime - last modification time of avatar
+     */
+    protected void setupAvatarHeaders(HttpServletResponse response,
+                                    Date avatarLastModificationTime) {
+        response.setHeader("Pragma", "public");
+        response.setHeader("Cache-Control", "public");
+        response.addHeader("Cache-Control", "must-revalidate");
+        response.addHeader("Cache-Control","max-age=0");
+        String formattedDateExpires = DateFormatUtils.format(
+                new Date(System.currentTimeMillis()),
+                BaseImageService.HTTP_HEADER_DATETIME_PATTERN, Locale.US);
+        response.setHeader("Expires", formattedDateExpires);
+
+        String formattedDateLastModified = DateFormatUtils.format(
+                avatarLastModificationTime,
+                BaseImageService.HTTP_HEADER_DATETIME_PATTERN, Locale.US);
+        response.setHeader("Last-Modified", formattedDateLastModified);
     }
 }
