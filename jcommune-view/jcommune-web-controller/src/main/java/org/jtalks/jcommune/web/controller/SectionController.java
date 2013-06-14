@@ -105,14 +105,15 @@ public class SectionController {
     }
 
     /**
-     * Provides all sections as a JSON array.
+     * Provides all available for move topic sections as a JSON array.
      *
+     * @param currentTopicId id of topic that we want to move
      * @return sections list
      */
-    @RequestMapping(value = "/sections/json", method = RequestMethod.GET)
+    @RequestMapping(value = "/sections/json/{currentTopicId}", method = RequestMethod.GET)
     @ResponseBody
-    public SectionDto[] sectionList() {
-        List<Section> sections = sectionService.getAll();
+    public SectionDto[] sectionList(@PathVariable("currentTopicId") long currentTopicId) {
+        List<Section> sections = sectionService.getAllAvailableSections(currentTopicId);
         List<SectionDto> dtos = project(sections, SectionDto.class,
                 on(Section.class).getId(),
                 on(Section.class).getName());

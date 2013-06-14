@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -179,14 +180,13 @@ public class BranchControllerTest {
     @Test
     public void testGetBranchesFromSection() throws NotFoundException {
         long sectionId = 1L;
-        long branchId = 1L;
         List<Branch> branches = new ArrayList<Branch>();
-        Branch branch = new Branch("name", "description");
-        branch.setId(branchId);
+        Branch branch = createDefaultBranch();
         branches.add(branch);
-        when(branchService.getBranchesInSection(sectionId)).thenReturn(branches);
+        when(branchService.getAvailableBranchesInSection(sectionId,
+                branch.getTopics().get(0).getId())).thenReturn(branches);
 
-        BranchDto[] branchDtoArray = controller.getBranchesFromSection(sectionId);
+        BranchDto[] branchDtoArray = controller.getBranchesFromSection(sectionId, branch.getTopics().get(0).getId());
 
         assertEquals(branchDtoArray.length, branches.size());
         assertEquals(branchDtoArray[0].getId(), branch.getId());
@@ -195,17 +195,28 @@ public class BranchControllerTest {
 
     @Test
     public void testGetAllBranches() throws NotFoundException {
-        long branchId = 1L;
         List<Branch> branches = new ArrayList<Branch>();
-        Branch branch = new Branch("name", "description");
-        branch.setId(branchId);
+        Branch branch = createDefaultBranch();
         branches.add(branch);
-        when(branchService.getAllBranches()).thenReturn(branches);
+        when(branchService.getAllAvailableBranches(branch.getTopics().get(0).getId())).thenReturn(branches);
 
-        BranchDto[] branchDtoArray = controller.getAllBranches();
+        BranchDto[] branchDtoArray = controller.getAllBranches(branch.getTopics().get(0).getId());
 
         assertEquals(branchDtoArray.length, branches.size());
         assertEquals(branchDtoArray[0].getId(), branch.getId());
         assertEquals(branchDtoArray[0].getName(), branch.getName());
     }
+
+    private Branch createDefaultBranch(){
+        long branchId = 1L;
+        long topicId = 1L;
+        JCUser user = new JCUser("username", "email", "password");
+        Topic topic = new Topic(user, "Topic title");
+        topic.setId(topicId);
+        Branch branch = new Branch("name", "description");
+        branch.setId(branchId);
+        branch.addTopic(topic);
+        return branch;
+    }
+
 }

@@ -31,21 +31,23 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 public interface BranchService extends EntityService<Branch> {
 
     /**
-     * Get all existing branches.
+     * Get all available for move topic branches.
      *
+     * @param currentTopicId topic id that we want to move
      * @return list of {@code Branch} objects
      */
-    List<Branch> getAllBranches();
+    List<Branch> getAllAvailableBranches(long currentTopicId);
 
     /**
-     * Get branches from section.
+     * Get available for move topic branches in section.
      *
      * @param sectionId section id from which we obtain branches
+     * @param currentTopicId topic id that we want to move
      * @return list of {@code Branch} objects
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when section not found
      */
-    List<Branch> getBranchesInSection(long sectionId) throws NotFoundException;
+    List<Branch> getAvailableBranchesInSection(long sectionId, long currentTopicId) throws NotFoundException;
     
     /**
      * Fills the statistical information for each branch from the list:

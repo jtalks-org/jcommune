@@ -31,7 +31,7 @@ $(function () {
 
         topicId = $(this).attr('data-topicId');
 
-        $.getJSON(baseUrl + "/sections/json", function (sections) {
+        $.getJSON(baseUrl + "/sections/json/" + topicId, function (sections) {
             var branchNameLive = function (e) {
                 e.preventDefault();
                 disableMoveButton(false);
@@ -131,7 +131,7 @@ $(function () {
      */
     function displayBranchesFromSection(sectionId, eliminatedBranchId) {
         $.ajax({
-            url: baseUrl + '/branches/json/' + sectionId,
+            url: baseUrl + '/branches/json/' +topicId + '/' + sectionId,
             success: function (branches) {
                 rebuildBranchesList(branches, eliminatedBranchId);
             }
@@ -143,7 +143,7 @@ $(function () {
      */
     function displayAllBranches(eliminatedBranchId) {
         $.ajax({
-            url: baseUrl + '/branches/json',
+            url: baseUrl + '/branches/json/' + topicId,
             success: function (branches) {
                 rebuildBranchesList(branches, eliminatedBranchId);
             }

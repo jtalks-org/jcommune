@@ -156,28 +156,32 @@ public class BranchController {
     }
 
     /**
-     * Provides all branches from section with given sectionId as JSON array.
+     * Provides all available for move topic branches from section with given sectionId as JSON array.
      *
+     * @param currentTopicId id of topic that we want to move
      * @param sectionId id of section
      * @return branches dto array
      * @throws NotFoundException when section with given id not found
      */
-    @RequestMapping("/branches/json/{sectionId}")
+    @RequestMapping("/branches/json/{currentTopicId}/{sectionId}")
     @ResponseBody
-    public BranchDto[] getBranchesFromSection(@PathVariable long sectionId) throws NotFoundException {
-        List<Branch> branches = branchService.getBranchesInSection(sectionId);
+    public BranchDto[] getBranchesFromSection(@PathVariable("currentTopicId") long currentTopicId,
+                                              @PathVariable("sectionId") long sectionId) throws NotFoundException {
+
+        List<Branch> branches = branchService.getAvailableBranchesInSection(sectionId, currentTopicId);
         return convertBranchesListToBranchDtoArray(branches);
     }
 
     /**
-     * Get all existing branches as JSON array.
+     * Get all available for move topic branches as JSON array.
      *
+     * @param currentTopicId id of topic that we want to move
      * @return branches dto array
      */
-    @RequestMapping("/branches/json")
+    @RequestMapping("/branches/json/{currentTopicId}")
     @ResponseBody
-    public BranchDto[] getAllBranches() {
-        List<Branch> branches = branchService.getAllBranches();
+    public BranchDto[] getAllBranches(@PathVariable("currentTopicId") long currentTopicId) {
+        List<Branch> branches = branchService.getAllAvailableBranches(currentTopicId);
         return convertBranchesListToBranchDtoArray(branches);
     }
 

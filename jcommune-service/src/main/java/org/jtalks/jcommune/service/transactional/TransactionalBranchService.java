@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service.transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jtalks.common.model.entity.Section;
@@ -22,6 +23,7 @@ import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicModificationService;
@@ -47,6 +49,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
     private SectionDao sectionDao;
     private TopicDao topicDao;
     private TopicModificationService topicService;
+    private UserService userService;
 
     /**
      * Create an instance of entity based service
@@ -67,31 +70,42 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
         this.sectionDao = sectionDao;
         this.topicDao = topicDao;
         this.topicService = topicService;
+        this.userService = userService;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<Branch> getAllBranches() {
-        return this.getDao().getAllBranches();
+    public List<Branch> getAllAvailableBranches(long currentTopicId) {
+        JCUser user = userService.getCurrentUser();
+        if(user.getGroups().isEmpty()){
+            return Collections.EMPTY_LIST;
+        }
+        List<Branch> branches = new ArrayList<Branch>(this.getDao().getAllAvailableBranches(user));
+        Topic topic = topicDao.get(currentTopicId);
+        branches.remove(topic.getBranch());
+        return branches;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<Branch> getBranchesInSection(long sectionId) throws NotFoundException {
+    public List<Branch> getAvailableBranchesInSection(long sectionId, long currentTopicId) throws NotFoundException {
         if (!sectionDao.isExist(sectionId)) {
             throw new NotFoundException("Section with id: " + sectionId + " not found");
         }
 
-        Section section = sectionDao.get(sectionId);
-        List<Branch> jcommuneBranches = new ArrayList<Branch>();
-        for (org.jtalks.common.model.entity.Branch commonBranch : section.getBranches()) {
-            jcommuneBranches.add((Branch) commonBranch);
+        JCUser user = userService.getCurrentUser();
+        if(user.getGroups().isEmpty()){
+            return Collections.EMPTY_LIST;
         }
-        return jcommuneBranches;
+        Section section = sectionDao.get(sectionId);
+        List<Branch> branches = new ArrayList<Branch>(this.getDao().getAllAvailableBranchesInSection(user, section));
+        Topic topic = topicDao.get(currentTopicId);
+        branches.remove(topic.getBranch());
+        return branches;
     }
 
     /**

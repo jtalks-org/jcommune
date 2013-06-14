@@ -120,4 +120,19 @@ public class SectionHibernateDao extends GenericDao<Section> implements SectionD
         }
         return ids;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Section> getAllAvailableForMoveTopicSections(JCUser user, long topicId){
+        List<String> groupIds = new ArrayList(getEntityIdsStrings(new ArrayList<Entity>(user.getGroups())));
+        List<Section> sections = session()
+                .getNamedQuery("getAllAvailableForMoveTopicSections")
+                .setParameterList("groupIds", groupIds)
+                .setParameter("topicId", topicId)
+                .list();
+        return sections;
+    }
 }

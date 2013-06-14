@@ -17,6 +17,7 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.common.model.entity.Branch;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.dao.SectionDao;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.UserService;
@@ -26,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -61,8 +63,22 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
     @Override
     public List<Section> getAll() {
         return this.getDao().getAll();
-    } 
-    
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Section> getAllAvailableSections(long currentTopicId) {
+        JCUser user = userService.getCurrentUser();
+        if(user.getGroups().isEmpty()){
+            return Collections.EMPTY_LIST;
+        }
+        List<Section> sections = new ArrayList<Section>(this.getDao()
+                .getAllAvailableForMoveTopicSections(user, currentTopicId));
+        return sections;
+    }
+
     /**
      * {@inheritDoc}
      */

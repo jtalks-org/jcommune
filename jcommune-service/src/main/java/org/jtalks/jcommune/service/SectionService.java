@@ -65,4 +65,11 @@ public interface SectionService extends EntityService<Section> {
      * @throws AccessDeniedException throw if there is no permission for access
      */
     void ifSectionIsVisible(Section section) throws AccessDeniedException;
+
+    /**
+     * Get all available for move topic sections.
+     *
+     * @param currentTopicId topic id that we want to move
+     */
+    List<Section> getAllAvailableSections(long currentTopicId);
 }

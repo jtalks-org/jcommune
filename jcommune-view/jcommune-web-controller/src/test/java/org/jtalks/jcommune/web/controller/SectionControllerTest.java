@@ -130,11 +130,12 @@ public class SectionControllerTest {
     public void testSectionList() {
         List<Section> sections = new ArrayList<Section>();
         long sectionId = 1L;
+        long topicId = 1L;
         Section section = new Section("section name");
         section.setId(sectionId);
         sections.add(section);
-        when(sectionService.getAll()).thenReturn(sections);
-        SectionDto[] sectionDtoArray = controller.sectionList();
+        when(sectionService.getAllAvailableSections(topicId)).thenReturn(sections);
+        SectionDto[] sectionDtoArray = controller.sectionList(topicId);
 
         assertEquals(sectionDtoArray.length, sections.size());
         assertEquals(sectionDtoArray[0].getId(), section.getId());

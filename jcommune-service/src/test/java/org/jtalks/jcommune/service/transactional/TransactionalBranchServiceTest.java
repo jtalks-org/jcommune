@@ -14,14 +14,12 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.entity.AnonymousUser;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicModificationService;
 import org.jtalks.jcommune.service.UserService;
@@ -52,6 +50,7 @@ public class TransactionalBranchServiceTest {
     private static final String BRANCH_NAME = "branch name";
     private static final String BRANCH_DESCRIPTION = "branch description";
     private static final long SECTION_ID = 1L;
+    private static final long TOPIC_ID = 1L;
 
     @Mock
     private BranchDao branchDao;
@@ -98,32 +97,78 @@ public class TransactionalBranchServiceTest {
 
     @Test
     public void testGetBranchesInSection() throws NotFoundException {
-        List<Branch> list = Collections.singletonList(new Branch(BRANCH_NAME, BRANCH_DESCRIPTION));
+        JCUser user = new JCUser("username", "email", "password");
+        user.getGroups().add(new Group("Registered Users"));
+        List<Branch> branches = createBranchList(user);
+
         Section section = new Section("section");
-        for (Branch branch : list) {
+        for (Branch branch : branches) {
             section.addOrUpdateBranch(branch);
         }
-        when(sectionDao.isExist(Matchers.anyLong())).thenReturn(true);
-        when(sectionDao.get(Matchers.anyLong())).thenReturn(section);
 
-        List<Branch> result = branchService.getBranchesInSection(SECTION_ID);
-        assertEquals(list, result);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(sectionDao.isExist(SECTION_ID)).thenReturn(true);
+        when(sectionDao.get(SECTION_ID)).thenReturn(section);
+        when(branchDao.getAllAvailableBranchesInSection(user, section)).thenReturn(branches);
+        when(topicDao.get(TOPIC_ID)).thenReturn(branches.get(0).getTopics().get(0));
+
+        List<Branch> result = branchService.getAvailableBranchesInSection(SECTION_ID, TOPIC_ID);
+        assertEquals(result.size(), branches.size() - 1, "Topic shouldn't be accessible for move to the same branch.");
+    }
+
+    @Test
+    public void testGetBranchesInSectionUserHasNotAnyPermissions() throws NotFoundException {
+        JCUser user = new JCUser("username", "email", "password");
+        List<Branch> branches = createBranchList(user);
+
+        Section section = new Section("section");
+        for (Branch branch : branches) {
+            section.addOrUpdateBranch(branch);
+        }
+
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(sectionDao.isExist(SECTION_ID)).thenReturn(true);
+
+        List<Branch> result = branchService.getAvailableBranchesInSection(SECTION_ID, TOPIC_ID);
+        assertEquals(result.size(), 0, "User shouldn't see any branch without permissions.");
     }
 
     @Test(expectedExceptions = {NotFoundException.class})
     public void testGetBranchesInSectionFail() throws NotFoundException {
         when(sectionDao.isExist(Matchers.<Long>any())).thenReturn(false);
-        branchService.getBranchesInSection(BRANCH_ID);
+        branchService.getAvailableBranchesInSection(SECTION_ID, TOPIC_ID);
     }
 
     @Test
-    public void testGetAllBranches() {
-        List<Branch> list = Collections.singletonList(new Branch(BRANCH_NAME, BRANCH_DESCRIPTION));
+    public void testGetAllAvailableBranches() {
+        JCUser user = new JCUser("username", "email", "password");
+        user.getGroups().add(new Group("Registered Users"));
+        List<Branch> branches = createBranchList(user);
 
-        when(branchDao.getAllBranches()).thenReturn(list);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(branchDao.getAllAvailableBranches(user)).thenReturn(branches);
+        when(topicDao.get(TOPIC_ID)).thenReturn(branches.get(0).getTopics().get(0));
 
-        List<Branch> result = branchService.getAllBranches();
-        assertEquals(list, result);
+        List<Branch> result = branchService.getAllAvailableBranches(TOPIC_ID);
+        assertEquals(result.size(), branches.size() - 1, "Topic shouldn't be accessible for move to the same branch.");
+    }
+
+    @Test
+    public void testGetAllAvailableBranchesUserHasNotAnyPermissions() {
+        JCUser user = new JCUser("username", "email", "password");
+        createBranchList(user);
+        when(userService.getCurrentUser()).thenReturn(user);
+
+        List<Branch> result = branchService.getAllAvailableBranches(TOPIC_ID);
+        assertEquals(result.size(), 0, "User shouldn't see any branch without permissions.");
+    }
+
+    private List<Branch> createBranchList(JCUser user){
+        List<Branch> branches = ObjectsFactory.getDefaultBranchList();
+        Topic topic = ObjectsFactory.getTopic(user, 1);
+        topic.setBranch(branches.get(0));
+        branches.get(0).addTopic(topic);
+        return branches;
     }
 
     @Test

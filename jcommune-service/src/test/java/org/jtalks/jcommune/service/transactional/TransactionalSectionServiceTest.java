@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.model.entity.Branch;
+import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -43,6 +44,7 @@ import static org.testng.Assert.assertTrue;
  */
 public class TransactionalSectionServiceTest {
     final long SECTION_ID = 1L;
+    final long TOPIC_ID = 1L;
     final String SECTION_NAME = "section name";
     final String USER_NAME = "user name";
     final String USER_PASSWORD = "password";
@@ -91,6 +93,31 @@ public class TransactionalSectionServiceTest {
 
         assertEquals(actualSectionList, expectedSectionList);
         verify(sectionDao).getAll();
+    }
+
+    @Test
+    public void getAllAvailableSectionsForUserNotComprisedInAnyGroup(){
+        JCUser user = new JCUser(USER_NAME, EMAIL, USER_PASSWORD);
+
+        when(userService.getCurrentUser()).thenReturn(user);
+
+        List<Section> actualSectionList = sectionService.getAllAvailableSections(TOPIC_ID);
+        assertEquals(actualSectionList, Collections.EMPTY_LIST,
+                "Should return empty sections list if user hasn't any permissions.");
+    }
+
+    @Test
+    public void getAllAvailableSections(){
+        List<Section> expectedSectionList = new ArrayList<Section>();
+        expectedSectionList.add(new Section(SECTION_NAME));
+        JCUser user = new JCUser(USER_NAME, EMAIL, USER_PASSWORD);
+        user.getGroups().add(new Group("Registered Users"));
+
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(sectionDao.getAllAvailableForMoveTopicSections(user, TOPIC_ID)).thenReturn(expectedSectionList);
+
+        List<Section> actualSectionList = sectionService.getAllAvailableSections(TOPIC_ID);
+        assertEquals(actualSectionList, expectedSectionList, "Should return all available sections.");
     }
     
     @Test
