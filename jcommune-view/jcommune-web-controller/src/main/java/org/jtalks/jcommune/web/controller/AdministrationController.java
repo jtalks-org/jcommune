@@ -23,6 +23,8 @@ import org.jtalks.jcommune.service.nontransactional.ForumLogoService;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.util.ImageControllerUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
@@ -30,7 +32,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +42,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -61,6 +63,8 @@ public class AdministrationController extends ImageUploadController {
      */
     public static final String ADMIN_ATTRIBUTE_NAME = "adminMode";
     private static final String ACCESS_DENIED_MESSAGE = "access.denied";
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdministrationController.class);
 
     private final ComponentService componentService;
     private final ImageControllerUtils imageControllerUtils;
@@ -139,14 +143,24 @@ public class AdministrationController extends ImageUploadController {
 
     @RequestMapping(value = "/admin/logo", method = RequestMethod.GET)
     public void forumLogoRequest(HttpServletRequest request, HttpServletResponse response) {
-        byte[] logo = getLogoBytes();
-        response.setContentType("image/jpeg");
-        response.setContentLength(logo.length);
-        try {
-            response.getOutputStream().write(logo);
-        } catch (IOException e) {
 
+        Date forumModificationDate = componentService.getComponentModificationTime();
+
+        Date ifModifiedDate = getIfModifiedSineDate(request.getHeader(IF_MODIFIED_SINCE_HEADER));
+        if (!forumModificationDate.after(ifModifiedDate)) {
+            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+        } else {
+            byte[] logo = getLogoBytes();
+            response.setContentType("image/jpeg");
+            response.setContentLength(logo.length);
+            try {
+                response.getOutputStream().write(logo);
+            } catch (IOException e) {
+                LOGGER.error("Can't write to the output stream. ", e);
+            }
         }
+
+        setupAvatarHeaders(response, forumModificationDate);
     }
 
     /**

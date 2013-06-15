@@ -17,6 +17,8 @@ package org.jtalks.jcommune.service;
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
 
+import java.util.Date;
+
 /**
  * Provides an ability to work with component of forum.
  * 
@@ -36,4 +38,10 @@ public interface ComponentService {
      * @param componentInformation administrative information about component
      */
     void setComponentInformation(ComponentInformation componentInformation);
+
+    /**
+     * Gets last time when forum administration information was modified
+     * @return last time when forum administration information was modified
+     */
+    Date getComponentModificationTime();
 }

@@ -18,6 +18,8 @@ import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
 
+import java.util.Date;
+
 /**
  * Interface allows to make basic CRUD operations with the {@link org.jtalks.common.model.entity.Component}
  * objects.
@@ -37,4 +39,10 @@ public interface ComponentDao extends Crud<Component> {
      * @param componentInformation main information about component
      */
     void setComponentInformation(ComponentInformation componentInformation);
+
+    /**
+     * Gets last time when forum administration information was modified
+     * @return last time when forum administration information was modified
+     */
+    Date getComponentModificationTime();
 }

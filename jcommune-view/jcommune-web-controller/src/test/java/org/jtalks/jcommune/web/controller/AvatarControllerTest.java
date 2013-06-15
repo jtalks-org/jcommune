@@ -112,10 +112,10 @@ public class AvatarControllerTest {
         user.setAvatar(validAvatar);
         user.setAvatarLastModificationTime(new DateTime(1000));
         when(userService.get(anyLong())).thenReturn(user);
-        when(avatarService.getIfModifiedSineDate(anyString()))
-            .thenReturn(new Date(0));
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader(avatarController.IF_MODIFIED_SINCE_HEADER, new Date(0));
 
-        avatarController.renderAvatar(new MockHttpServletRequest(), response, 0L);
+        avatarController.renderAvatar(request, response, 0L);
 
         assertEquals(response.getContentType(), "image/jpeg");
         assertEquals(response.getContentLength(), validAvatar.length);
@@ -136,10 +136,11 @@ public class AvatarControllerTest {
         user.setAvatarLastModificationTime(new DateTime(0));
         when(userService.get(anyLong())).thenReturn(user);
         MockHttpServletResponse response = new MockHttpServletResponse();
-        when(avatarService.getIfModifiedSineDate(anyString()))
-            .thenReturn(new Date(1000));
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader(avatarController.IF_MODIFIED_SINCE_HEADER, new Date(1000));
 
-        avatarController.renderAvatar(new MockHttpServletRequest(), response, 0L);
+
+        avatarController.renderAvatar(request, response, 0L);
 
         assertEquals(response.getStatus(), HttpServletResponse.SC_NOT_MODIFIED);
         assertNotSame(response.getContentAsByteArray(), validAvatar);

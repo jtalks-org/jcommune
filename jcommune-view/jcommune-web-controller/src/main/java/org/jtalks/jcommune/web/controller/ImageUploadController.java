@@ -20,15 +20,18 @@ import org.apache.commons.lang.time.DateFormatUtils;
 import org.jtalks.jcommune.service.exceptions.ImageFormatException;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.jtalks.jcommune.service.exceptions.ImageSizeException;
-import org.jtalks.jcommune.service.nontransactional.AvatarService;
-import org.jtalks.jcommune.service.nontransactional.BaseImageService;
 import org.jtalks.jcommune.web.dto.json.FailJsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseReason;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
@@ -41,6 +44,9 @@ public class ImageUploadController {
     static final String COMMON_ERROR_RESOURCE_MESSAGE = "avatar.500.common.error";
 
     protected static final String IF_MODIFIED_SINCE_HEADER = "If-Modified-Since";
+    static final String HTTP_HEADER_DATETIME_PATTERN = "E, dd MMM yyyy HH:mm:ss z";
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ImageUploadController.class);
 
     public ImageUploadController(MessageSource messageSource) {
         this.messageSource = messageSource;
@@ -111,12 +117,36 @@ public class ImageUploadController {
         response.addHeader("Cache-Control","max-age=0");
         String formattedDateExpires = DateFormatUtils.format(
                 new Date(System.currentTimeMillis()),
-                BaseImageService.HTTP_HEADER_DATETIME_PATTERN, Locale.US);
+                HTTP_HEADER_DATETIME_PATTERN, Locale.US);
         response.setHeader("Expires", formattedDateExpires);
 
         String formattedDateLastModified = DateFormatUtils.format(
                 avatarLastModificationTime,
-                BaseImageService.HTTP_HEADER_DATETIME_PATTERN, Locale.US);
+                HTTP_HEADER_DATETIME_PATTERN, Locale.US);
         response.setHeader("Last-Modified", formattedDateLastModified);
+    }
+
+    /**
+     * Check 'If-Modified-Since' header in the request and converts it to
+     * {@link java.util.Date} representation
+     * @param ifModifiedSinceHeader - value of 'If-Modified-Since' header in
+     *      string form
+     * @return If-Modified-Since header or Jan 1, 1970 if it is not set or
+     *      can't be parsed
+     */
+    public Date getIfModifiedSineDate(String ifModifiedSinceHeader) {
+        Date ifModifiedSinceDate = new Date(0);
+        if (ifModifiedSinceHeader != null) {
+            try {
+                DateFormat dateFormat = new SimpleDateFormat(
+                        HTTP_HEADER_DATETIME_PATTERN,
+                        Locale.US);
+                ifModifiedSinceDate = dateFormat.parse(ifModifiedSinceHeader);
+            } catch (ParseException e) {
+                LOGGER.error("Failed to parse value of 'If-Modified-Since' header from string form.", e);
+            }
+        }
+
+        return ifModifiedSinceDate;
     }
 }

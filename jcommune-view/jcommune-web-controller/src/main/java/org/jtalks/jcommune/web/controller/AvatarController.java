@@ -130,7 +130,7 @@ public class AvatarController extends ImageUploadController {
             throws NotFoundException, IOException {
         JCUser user = userService.get(id);
         
-        Date ifModifiedDate = avatarService.getIfModifiedSineDate(request.getHeader(IF_MODIFIED_SINCE_HEADER));
+        Date ifModifiedDate = getIfModifiedSineDate(request.getHeader(IF_MODIFIED_SINCE_HEADER));
         if (!user.getAvatarLastModificationTime().isAfter(ifModifiedDate.getTime())) {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
         } else {

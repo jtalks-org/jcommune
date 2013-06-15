@@ -15,26 +15,12 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.apache.commons.lang.Validate;
-import org.apache.tika.Tika;
 import org.jtalks.jcommune.model.entity.JCommuneProperty;
-import org.jtalks.jcommune.service.exceptions.ImageFormatException;
-import org.jtalks.jcommune.service.exceptions.ImageProcessException;
-import org.jtalks.jcommune.service.exceptions.ImageSizeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * Service for avatar related operations

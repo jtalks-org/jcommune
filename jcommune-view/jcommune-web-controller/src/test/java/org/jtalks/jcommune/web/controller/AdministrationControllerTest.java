@@ -19,32 +19,33 @@ import org.jtalks.common.model.entity.ComponentType;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
-import org.jtalks.jcommune.service.nontransactional.AvatarService;
-import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.ForumLogoService;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.util.ImageControllerUtils;
-import org.jtalks.jcommune.web.util.JSONUtils;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.multipart.MultipartFile;
+import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 import static org.jgroups.util.Util.assertTrue;
@@ -52,8 +53,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
+import static org.testng.Assert.*;
 
 /**
  * @author Andrei Alikov
@@ -179,6 +179,51 @@ public class AdministrationControllerTest {
 
         verify(forumLogoService).getDefaultLogo();
         assertEquals(actualJSON, expectedJSON);
+    }
+
+    @Test
+    public void renderAvatarShouldReturnModifiedAvatarInResponse() throws IOException {
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        when(componentService.getComponentModificationTime()).thenReturn(new Date(1000));
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader(administrationController.IF_MODIFIED_SINCE_HEADER, new Date(0));
+
+        when(forumLogoService.getDefaultLogo()).thenReturn(validImage);
+
+        administrationController.forumLogoRequest(request, response);
+
+        assertEquals(response.getContentType(), "image/jpeg");
+        assertEquals(response.getContentLength(), validImage.length);
+        assertEquals(response.getContentAsByteArray(), validImage);
+        assertEquals(response.getHeader("Pragma"), "public");
+        List<String> cacheControlHeaders = response.getHeaders("Cache-Control");
+        Assert.assertTrue(cacheControlHeaders.contains("public"));
+        Assert.assertTrue(cacheControlHeaders.contains("must-revalidate"));
+        Assert.assertTrue(cacheControlHeaders.contains("max-age=0"));
+        assertNotNull(response.getHeader("Expires"));//System.currentTimeMillis() is used
+        assertNotNull(response.getHeader("Last-Modified"));// depends on current timezone
+    }
+
+    @Test
+    public void renderAvatarShouldNotReturnNotModifiedAvatarInResponse() throws IOException {
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        when(componentService.getComponentModificationTime()).thenReturn(new Date(0));
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader(administrationController.IF_MODIFIED_SINCE_HEADER, new Date(1000));
+
+        when(forumLogoService.getDefaultLogo()).thenReturn(validImage);
+
+        administrationController.forumLogoRequest(request, response);
+
+        assertEquals(response.getStatus(), HttpServletResponse.SC_NOT_MODIFIED);
+        assertNotSame(response.getContentAsByteArray(), validImage);
+        assertEquals(response.getHeader("Pragma"), "public");
+        List<String> cacheControlHeaders = response.getHeaders("Cache-Control");
+        Assert.assertTrue(cacheControlHeaders.contains("public"));
+        Assert.assertTrue(cacheControlHeaders.contains("must-revalidate"));
+        Assert.assertTrue(cacheControlHeaders.contains("max-age=0"));
+        assertNotNull(response.getHeader("Expires"));//System.currentTimeMillis() is used
+        assertNotNull(response.getHeader("Last-Modified"));// depends on current timezone
     }
 
     /*@Test

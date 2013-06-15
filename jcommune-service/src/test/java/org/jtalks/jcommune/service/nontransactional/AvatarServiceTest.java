@@ -15,35 +15,16 @@
 
 package org.jtalks.jcommune.service.nontransactional;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.time.DateFormatUtils;
 import org.jtalks.common.model.entity.Property;
 import org.jtalks.jcommune.model.dao.PropertyDao;
 import org.jtalks.jcommune.model.entity.JCommuneProperty;
-import org.jtalks.jcommune.service.exceptions.ImageFormatException;
-import org.jtalks.jcommune.service.exceptions.ImageProcessException;
-import org.jtalks.jcommune.service.exceptions.ImageSizeException;
 import org.mockito.Mock;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Alexandre Teterin
@@ -83,26 +64,5 @@ public class AvatarServiceTest {
         byte[] avatar = avatarService.getDefaultAvatar();
 
         assertTrue(avatar.length > 0);
-    }
-    
-    @Test
-    public void testGetIfModifiedSinceDate() {
-        long currentMillis = System.currentTimeMillis();
-        long currentTimeIgnoreMillis = (currentMillis / 1000) * 1000; 
-        Date date = new Date(currentTimeIgnoreMillis);
-        String dateAsString = DateFormatUtils.format(date, 
-                AvatarService.HTTP_HEADER_DATETIME_PATTERN,
-                Locale.US);
-        
-        Date result = avatarService.getIfModifiedSineDate(dateAsString);
-        
-        assertEquals(result.getTime(), date.getTime());
-    }
-    
-    @Test
-    public void testGetIfModifiedSinceDateNullHeader() {
-        Date result = avatarService.getIfModifiedSineDate(null);
-        
-        assertEquals(result, new Date(0));
     }
 }
