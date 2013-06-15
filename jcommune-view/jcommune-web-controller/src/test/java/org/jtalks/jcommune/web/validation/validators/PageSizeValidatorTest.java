@@ -52,7 +52,7 @@ public class PageSizeValidatorTest {
         int rowSize = 1;
         Object[][] validPageSizes = new Object[JCUser.PAGE_SIZES_AVAILABLE.length][rowSize];
         for (int i = 0; i < JCUser.PAGE_SIZES_AVAILABLE.length; i++) {
-            validPageSizes[i][rowSize] = JCUser.PAGE_SIZES_AVAILABLE[i];
+            validPageSizes[i][rowSize - 1] = JCUser.PAGE_SIZES_AVAILABLE[i];
         }
         return validPageSizes;
     }
