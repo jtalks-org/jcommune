@@ -76,13 +76,13 @@ public class BaseImageServiceTest {
             byte[] processedImageBytes,
             String expectedBase64String) throws ImageProcessException {
         when(imageUtils.convertByteArrayToImage(originalImageBytes)).thenReturn(inputImage);
-        when(imageUtils.preprocessImage(inputImage)).thenReturn(processedImageBytes);
+        when(imageUtils.preprocessImage(inputImage, "jpeg")).thenReturn(processedImageBytes);
         when(base64Wrapper.encodeB64Bytes(processedImageBytes)).thenReturn(expectedBase64String);
 
-        String resultBase64String = baseImageService.convertBytesToBase64String(originalImageBytes);
+        String resultBase64String = baseImageService.convertBytesToBase64String(originalImageBytes, "jpeg");
 
         verify(imageUtils).convertByteArrayToImage(originalImageBytes);
-        verify(imageUtils).preprocessImage(inputImage);
+        verify(imageUtils).preprocessImage(inputImage, "jpeg");
         verify(base64Wrapper).encodeB64Bytes(processedImageBytes);
         assertEquals(resultBase64String, expectedBase64String);
     }
@@ -101,7 +101,7 @@ public class BaseImageServiceTest {
 
         ImageUtils imageUtils = new ImageUtils(new Base64Wrapper());
         BufferedImage inputImage = imageUtils.convertByteArrayToImage(originalImageBytes);
-        byte[] processedImageBytes = imageUtils.preprocessImage(inputImage);
+        byte[] processedImageBytes = imageUtils.preprocessImage(inputImage, "jpeg");
         String expectedBase64String = new Base64Wrapper().encodeB64Bytes(processedImageBytes);
 
         return new Object[][]{
@@ -114,14 +114,14 @@ public class BaseImageServiceTest {
         byte[] imageBytes = {8, 2};
         when(imageUtils.convertByteArrayToImage(imageBytes)).thenReturn(null);
 
-        baseImageService.convertBytesToBase64String(imageBytes);
+        baseImageService.convertBytesToBase64String(imageBytes, "jpeg");
 
         verify(imageUtils).convertByteArrayToImage(imageBytes);
     }
 
     @Test(expectedExceptions = {IllegalArgumentException.class})
     public void convertBytesToBase64StringShouldNotWorkWithPassedNull() throws ImageProcessException {
-        baseImageService.convertBytesToBase64String(null);
+        baseImageService.convertBytesToBase64String(null, null);
     }
 
     @Test(expectedExceptions = ImageFormatException.class, dataProvider = "invalidFormatValues")

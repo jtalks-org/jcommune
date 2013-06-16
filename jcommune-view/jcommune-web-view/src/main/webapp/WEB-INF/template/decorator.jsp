@@ -46,8 +46,8 @@
         href="${pageContext.request.contextPath}/resources/css/i18n/<spring:message code="locale.code"/>.css"/>
   <link rel="stylesheet" type="text/css" media="screen, projection"
         href='${pageContext.request.contextPath}/resources/css/fonts-googleapis-com.css'/>
-  <link rel="shortcut icon" type="image/x-icon" href="${pageContext.request.contextPath}/resources/images/favicon.ico"/>
-  <link rel="icon" type="image/png" href="${pageContext.request.contextPath}/resources/images/favicon.png"/>
+  <link rel="shortcut icon" type="image/x-icon" href="${pageContext.request.contextPath}/admin/icon/ico"/>
+  <link rel="icon" type="image/png" href="${pageContext.request.contextPath}/admin/icon/png"/>
   <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-1.7.min.js"></script>
   <script src="${pageContext.request.contextPath}/resources/javascript/custom/keymaps.js"></script>
   <script src='${pageContext.request.contextPath}/resources/javascript/custom/dialog.js'></script>

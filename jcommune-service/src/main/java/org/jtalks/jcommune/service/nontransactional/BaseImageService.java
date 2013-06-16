@@ -65,16 +65,17 @@ public class BaseImageService {
      * Perform bytes data to string conversion
      *  (todo: wtf? it does tons of things, correct method name and description)
      * @param bytes for conversion
+     * @param format target image format e.g. "jpeg" or "png"
      * @return result string
      * @throws org.jtalks.jcommune.service.exceptions.ImageProcessException common image processing error
      */
-    public String convertBytesToBase64String(byte[] bytes) throws ImageProcessException {
+    public String convertBytesToBase64String(byte[] bytes, String format) throws ImageProcessException {
         Validate.notNull(bytes, "Incoming byte array cannot be null");
         BufferedImage image = imageUtils.convertByteArrayToImage(bytes);
         if (image == null) { // something went wrong during conversion
             throw new ImageProcessException();
         }
-        byte[] outputImage = imageUtils.preprocessImage(image);
+        byte[] outputImage = imageUtils.preprocessImage(image, format);
         return base64Wrapper.encodeB64Bytes(outputImage);
     }
 

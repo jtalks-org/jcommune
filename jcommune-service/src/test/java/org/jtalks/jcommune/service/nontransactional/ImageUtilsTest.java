@@ -57,7 +57,7 @@ public class ImageUtilsTest {
 
     @Test(dataProvider = "validDataForImageToByteArrayTest")
     public void testConvertImageToByteArrayForValidData(Image image, byte[] expected) throws ImageProcessException {
-        byte[] actual = imageUtils.convertImageToByteArray(image);
+        byte[] actual = imageUtils.convertImageToByteArray(image, "jpeg");
         assertEquals(actual, expected);
     }
 
@@ -65,15 +65,15 @@ public class ImageUtilsTest {
     public void testConvertByteArrayToImageForValidData(byte[] bytes, BufferedImage expected) throws ImageProcessException {
         BufferedImage actual = imageUtils.convertByteArrayToImage(bytes);
 
-        byte[] actualResult = imageUtils.convertImageToByteArray(actual);
-        byte[] expectedResult = imageUtils.convertImageToByteArray(expected);
+        byte[] actualResult = imageUtils.convertImageToByteArray(actual, "jpeg");
+        byte[] expectedResult = imageUtils.convertImageToByteArray(expected, "jpeg");
 
         assertEquals(actualResult, expectedResult);
     }
     
     @Test(expectedExceptions = {IllegalArgumentException.class})
     public void convertImageToByteArrayShouldNotWorkWithPassedNull() throws ImageProcessException {
-        imageUtils.convertImageToByteArray(null);
+        imageUtils.convertImageToByteArray(null, null);
     }
 
     @Test(dataProvider = "parameterResizeImage")

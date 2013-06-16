@@ -59,12 +59,23 @@ public class AdministrationController extends ImageUploadController {
     public static final String JCOMMUNE_LOGO_PARAM = "jcommune.logo";
 
     /**
+     * Parameter name for forum fav icon in ico format
+     */
+    public static final String JCOMMUNE_FAVICON_ICO_PARAM = "jcommune.favicon.ico";
+
+    /**
+     * Parameter name for forum fav icon in png format
+     */
+    public static final String JCOMMUNE_FAVICON_PNG_PARAM = "jcommune.favicon.png";
+
+    /**
      * Session's marker attribute name for Administration mode
      */
     public static final String ADMIN_ATTRIBUTE_NAME = "adminMode";
     private static final String ACCESS_DENIED_MESSAGE = "access.denied";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdministrationController.class);
+    public static final String PNG_FORMAT = "png";
 
     private final ComponentService componentService;
     private final ImageControllerUtils imageControllerUtils;
@@ -131,6 +142,13 @@ public class AdministrationController extends ImageUploadController {
         }
 
         componentInformation.setId(componentService.getComponentOfForum().getId());
+
+        if (componentInformation.getIcon() != null && !componentInformation.getIcon().isEmpty()) {
+            Base64Wrapper wrapper = new Base64Wrapper();
+            byte[] favIcon = wrapper.decodeB64Bytes(componentInformation.getIcon());
+            componentInformation.setIconICO(imageControllerUtils.convertImageToIcoInString64(favIcon));
+        }
+
         try {
             componentService.setComponentInformation(componentInformation);
         } catch (AccessDeniedException e) {
@@ -142,7 +160,7 @@ public class AdministrationController extends ImageUploadController {
     }
 
     @RequestMapping(value = "/admin/logo", method = RequestMethod.GET)
-    public void forumLogoRequest(HttpServletRequest request, HttpServletResponse response) {
+    public void getForumLogo(HttpServletRequest request, HttpServletResponse response) {
 
         Date forumModificationDate = componentService.getComponentModificationTime();
 
@@ -242,6 +260,139 @@ public class AdministrationController extends ImageUploadController {
                                             HttpServletResponse response) throws ImageProcessException {
         Map<String, String> responseContent = new HashMap<String, String>();
         imageControllerUtils.prepareResponse(bytes, response, responseContent);
+        return responseContent;
+    }
+
+
+    @RequestMapping(value = "/admin/icon/ico", method = RequestMethod.GET)
+    public void getFavIconICO(HttpServletRequest request, HttpServletResponse response) {
+
+        Date forumModificationDate = componentService.getComponentModificationTime();
+
+        Date ifModifiedDate = getIfModifiedSineDate(request.getHeader(IF_MODIFIED_SINCE_HEADER));
+        if (!forumModificationDate.after(ifModifiedDate)) {
+            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+        } else {
+            byte[] icon = getIconIcoBytes();
+            response.setContentType("image/x-icon");
+            response.setContentLength(icon.length);
+            try {
+                response.getOutputStream().write(icon);
+            } catch (IOException e) {
+                LOGGER.error("Can't write to the output stream. ", e);
+            }
+        }
+
+        setupAvatarHeaders(response, forumModificationDate);
+    }
+
+    private byte[] getIconIcoBytes() {
+        Component forumComponent = componentService.getComponentOfForum();
+        String iconProperty = null;
+        if (forumComponent != null) {
+            iconProperty = forumComponent.getProperty(JCOMMUNE_FAVICON_ICO_PARAM);
+        }
+        byte[] iconBytes = null;
+
+        if (iconProperty == null || iconProperty.isEmpty()) {
+            iconBytes = forumLogoService.getDefaultIconICO();
+        } else {
+            Base64Wrapper wrapper = new Base64Wrapper();
+            iconBytes = wrapper.decodeB64Bytes(iconProperty);
+        }
+
+        return iconBytes;
+    }
+
+    @RequestMapping(value = "/admin/icon/png", method = RequestMethod.GET)
+    public void getFavIconPNG(HttpServletRequest request, HttpServletResponse response) {
+
+        Date forumModificationDate = componentService.getComponentModificationTime();
+
+        Date ifModifiedDate = getIfModifiedSineDate(request.getHeader(IF_MODIFIED_SINCE_HEADER));
+        if (!forumModificationDate.after(ifModifiedDate)) {
+            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+        } else {
+            byte[] icon = getIconPngBytes();
+            response.setContentType("image/png");
+            response.setContentLength(icon.length);
+            try {
+                response.getOutputStream().write(icon);
+            } catch (IOException e) {
+                LOGGER.error("Can't write to the output stream. ", e);
+            }
+        }
+
+        setupAvatarHeaders(response, forumModificationDate);
+    }
+
+    private byte[] getIconPngBytes() {
+        Component forumComponent = componentService.getComponentOfForum();
+        String iconProperty = null;
+        if (forumComponent != null) {
+            iconProperty = forumComponent.getProperty(JCOMMUNE_FAVICON_PNG_PARAM);
+        }
+        byte[] iconBytes = null;
+
+        if (iconProperty == null || iconProperty.isEmpty()) {
+            iconBytes = forumLogoService.getDefaultIconPNG();
+        } else {
+            Base64Wrapper wrapper = new Base64Wrapper();
+            iconBytes = wrapper.decodeB64Bytes(iconProperty);
+        }
+
+        return iconBytes;
+    }
+
+    /**
+     * Gets default fav icon in JSON containing image data in String64 format
+     * @return JSON string containing default fav icon in String64 format
+     * @throws IOException
+     * @throws ImageProcessException
+     */
+    @RequestMapping(value = "/admin/defaultIcon", method = RequestMethod.GET)
+    @ResponseBody
+    public String getDefaultIconInJson() throws IOException, ImageProcessException {
+        Map<String, String> responseContent = new HashMap<String, String>();
+        imageControllerUtils.prepareNormalResponse(forumLogoService.getDefaultIconPNG(), responseContent, PNG_FORMAT);
+        return imageControllerUtils.getResponceJSONString(responseContent);
+    }
+
+    /**
+     * Process Fav Icon file from request and return fav icon preview in response.
+     * Used for IE, Opera specific request processing.
+     *
+     * @param file file, that contains uploaded image
+     * @return ResponseEntity
+     * @throws IOException           defined in the JsonFactory implementation,
+     *                               caller must implement exception processing
+     * @throws org.jtalks.jcommune.service.exceptions.ImageProcessException if error occurred while image processing
+     */
+    @RequestMapping(value = "/admin/icon/IFrameFavIconPreview", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<String> uploadFavIcon(
+            @RequestParam(value = "qqfile") MultipartFile file) throws IOException, ImageProcessException {
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setContentType(MediaType.TEXT_HTML);
+        Map<String, String> responseContent = new HashMap<String, String>();
+        return imageControllerUtils.prepareResponse(file, responseHeaders, responseContent, PNG_FORMAT);
+    }
+
+    /**
+     * Process Fav Icon file from request and return icon preview in response.
+     * Used for FF, Chrome specific request processing
+     *
+     * @param bytes    input icon data
+     * @param response servlet response
+     * @return response content
+     * @throws ImageProcessException if error occurred while image processing
+     */
+    @RequestMapping(value = "/admin/icon/XHRFavIconPreview", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, String> uploadFavIcon(@RequestBody byte[] bytes,
+                                          HttpServletResponse response) throws ImageProcessException {
+        Map<String, String> responseContent = new HashMap<String, String>();
+        imageControllerUtils.prepareResponse(bytes, response, responseContent, PNG_FORMAT);
         return responseContent;
     }
 }

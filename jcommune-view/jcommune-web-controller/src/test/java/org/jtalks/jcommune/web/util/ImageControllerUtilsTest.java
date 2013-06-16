@@ -75,7 +75,7 @@ public class ImageControllerUtilsTest {
             throws IOException, ImageProcessException {
         MultipartFile file = new MockMultipartFile("qqfile", validAvatar);
         String expectedBody = "{\"srcPrefix\":\"data:image/jpeg;base64,\",\"srcImage\":\"srcImage\",\"success\":\"true\"}";
-        when(avatarService.convertBytesToBase64String(validAvatar)).thenReturn(IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
+        when(avatarService.convertBytesToBase64String(validAvatar, "jpeg")).thenReturn(IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
         when(imageControllerUtils.getResponceJSONString(Matchers.anyMap())).thenReturn(expectedBody);
         Map<String, String> responseContent = new HashMap<String, String>();
         HttpHeaders responseHeaders = new HttpHeaders();
@@ -93,7 +93,7 @@ public class ImageControllerUtilsTest {
 
     @Test
     public void uploadAvatarForChromeAndFFShouldReturnPreviewInResponce() throws ImageProcessException {
-        when(avatarService.convertBytesToBase64String(validAvatar)).thenReturn(IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
+        when(avatarService.convertBytesToBase64String(validAvatar, "jpeg")).thenReturn(IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
         MockHttpServletResponse response = new MockHttpServletResponse();
         Map<String, String> responseContent = new HashMap<String, String>();
 
@@ -102,7 +102,7 @@ public class ImageControllerUtilsTest {
         verify(avatarService).validateImageFormat(validAvatar);
         verify(avatarService).validateImageSize(validAvatar);
         assertEquals(responseContent.get(imageControllerUtils.STATUS), "SUCCESS");
-        assertEquals(responseContent.get(imageControllerUtils.SRC_PREFIX), ImageUtils.HTML_SRC_TAG_PREFIX);
+        assertEquals(responseContent.get(imageControllerUtils.SRC_PREFIX), ImageUtils.getHtmlSrcImagePrefix("jpeg"));
         assertEquals(responseContent.get(imageControllerUtils.SRC_IMAGE), IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
         assertEquals(response.getStatus(), HttpServletResponse.SC_OK);
     }

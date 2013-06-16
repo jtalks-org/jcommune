@@ -56,6 +56,16 @@ public class ComponentHibernateDao extends GenericDao<Component> implements Comp
     public static final String COMPONENT_INFO_CHANGE_DATE_PROPERTY = "jcommune.logo_change_date";
 
     /**
+     * Parameter name for forum fav icon in ico format
+     */
+    public static final String COMPONENT_FAVICON_ICO_PARAM = "jcommune.favicon.ico";
+
+    /**
+     * Parameter name for forum fav icon in png format
+     */
+    public static final String COMPONENT_FAVICON_PNG_PARAM = "jcommune.favicon.png";
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -74,6 +84,14 @@ public class ComponentHibernateDao extends GenericDao<Component> implements Comp
         forumComponent.setProperty(LOGO_TOOLTIP_PROPERTY, componentInformation.getLogoTooltip());
         if (!componentInformation.getLogo().isEmpty()) {
             forumComponent.setProperty(LOGO_PROPERTY, componentInformation.getLogo());
+        }
+
+        if (!componentInformation.getIcon().isEmpty()) {
+            forumComponent.setProperty(COMPONENT_FAVICON_PNG_PARAM, componentInformation.getIcon());
+        }
+
+        if (!componentInformation.getIconICO().isEmpty()) {
+            forumComponent.setProperty(COMPONENT_FAVICON_ICO_PARAM, componentInformation.getIconICO());
         }
 
         String formattedDateLastModified = DateFormatUtils.format(

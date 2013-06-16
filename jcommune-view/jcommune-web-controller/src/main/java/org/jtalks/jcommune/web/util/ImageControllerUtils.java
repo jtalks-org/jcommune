@@ -38,6 +38,8 @@ public class ImageControllerUtils {
     public static final String SRC_PREFIX = "srcPrefix";
     public static final String SRC_IMAGE = "srcImage";
 
+    private static final String DEFAULT_IMAGE_FORMAT = "jpeg";
+
     private BaseImageService baseImageService;
     private JSONUtils jsonUtils;
 
@@ -51,7 +53,7 @@ public class ImageControllerUtils {
     }
 
     /**
-     * Prepare valid response after image processing
+     * Prepare valid response after image processing in default image format
      *
      * @param file            file, that contains uploaded image
      * @param responseHeaders response HTTP headers
@@ -64,10 +66,28 @@ public class ImageControllerUtils {
             MultipartFile file,
             HttpHeaders responseHeaders,
             Map<String, String> responseContent) throws IOException, ImageProcessException {
+        return prepareResponse(file, responseHeaders, responseContent, DEFAULT_IMAGE_FORMAT);
+    }
+
+    /**
+     * Prepare valid response after image processing
+     *
+     * @param file            file, that contains uploaded image
+     * @param responseHeaders response HTTP headers
+     * @param responseContent response content
+     * @param format target image format e.g. "jpeg" or "png"
+     * @return ResponseEntity with image processing results
+     * @throws java.io.IOException           defined in the JsonFactory implementation, caller must implement exception processing
+     * @throws org.jtalks.jcommune.service.exceptions.ImageProcessException if error occurred while image processing
+     */
+    public ResponseEntity<String> prepareResponse(
+            MultipartFile file,
+            HttpHeaders responseHeaders,
+            Map<String, String> responseContent, String format) throws IOException, ImageProcessException {
         baseImageService.validateImageFormat(file);
         byte[] bytes = file.getBytes();
         baseImageService.validateImageSize(bytes);
-        prepareNormalResponse(bytes, responseContent);
+        prepareNormalResponse(bytes, responseContent, format);
         String body = getResponceJSONString(responseContent);
         return new ResponseEntity<String>(body, responseHeaders, HttpStatus.OK);
     }
@@ -77,7 +97,7 @@ public class ImageControllerUtils {
     }
 
     /**
-     * Prepare valid response after image processing
+     * Prepare valid response after image processing in the default image format
      *
      * @param bytes           input image data
      * @param response        resulting response
@@ -85,12 +105,39 @@ public class ImageControllerUtils {
      * @throws ImageProcessException if it's impossible to form correct image response
      */
     public void prepareResponse(byte[] bytes,
+                                HttpServletResponse response,
+                                Map<String, String> responseContent) throws ImageProcessException {
+        prepareResponse(bytes, response, responseContent, DEFAULT_IMAGE_FORMAT);
+    }
+
+    /**
+     * Prepare valid response after image processing
+     *
+     * @param bytes           input image data
+     * @param response        resulting response
+     * @param responseContent with emage processing results
+     * @param format target image format e.g. "jpeg" or "png"
+     * @throws ImageProcessException if it's impossible to form correct image response
+     */
+    public void prepareResponse(byte[] bytes,
                                  HttpServletResponse response,
-                                 Map<String, String> responseContent) throws ImageProcessException {
+                                 Map<String, String> responseContent, String format) throws ImageProcessException {
         baseImageService.validateImageFormat(bytes);
         baseImageService.validateImageSize(bytes);
-        prepareNormalResponse(bytes, responseContent);
+        prepareNormalResponse(bytes, responseContent, format);
         response.setStatus(HttpServletResponse.SC_OK);
+    }
+
+    /**
+     * Used for prepare normal response in the default image format
+     *
+     * @param bytes           input image data
+     * @param responseContent response payload
+     * @throws ImageProcessException due to common image processing error
+     */
+    public void prepareNormalResponse(byte[] bytes,
+                                      Map<String, String> responseContent) throws ImageProcessException {
+        prepareNormalResponse(bytes, responseContent, DEFAULT_IMAGE_FORMAT);
     }
 
     /**
@@ -98,23 +145,19 @@ public class ImageControllerUtils {
      *
      * @param bytes           input image data
      * @param responseContent response payload
+     * @param format target image format e.g. "jpeg" or "png"
      * @throws ImageProcessException due to common image processing error
      */
     public void prepareNormalResponse(byte[] bytes,
-                                       Map<String, String> responseContent) throws ImageProcessException {
-        String srcImage = baseImageService.convertBytesToBase64String(bytes);
+                                       Map<String, String> responseContent,
+                                       String format) throws ImageProcessException {
+        String srcImage = baseImageService.convertBytesToBase64String(bytes, format);
         responseContent.put(STATUS, String.valueOf(JsonResponseStatus.SUCCESS));
-        responseContent.put(SRC_PREFIX, ImageUtils.HTML_SRC_TAG_PREFIX);
+        responseContent.put(SRC_PREFIX, ImageUtils.getHtmlSrcImagePrefix(format));
         responseContent.put(SRC_IMAGE, srcImage);
     }
 
-    /**
-     * Converts raw image data to format appropriate for "src" attribute of <img> tag
-     * @param imageData raw image data appropriate for "src" attribute of <img> tag
-     * @return string with image data
-     * @throws ImageProcessException
-     */
-    public String getImageDataInString64(byte[] imageData) throws ImageProcessException {
-        return  ImageUtils.HTML_SRC_TAG_PREFIX + baseImageService.convertBytesToBase64String(imageData);
+    public String convertImageToIcoInString64(byte[] imageBytes) {
+        return "";
     }
 }

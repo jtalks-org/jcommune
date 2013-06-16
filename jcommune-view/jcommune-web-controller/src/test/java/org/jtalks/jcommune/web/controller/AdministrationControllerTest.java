@@ -172,7 +172,7 @@ public class AdministrationControllerTest {
     public void getDefaultLogoShouldReturnDefaultAvatarInBase64String() throws IOException, ImageProcessException {
         String expectedJSON = "{\"team\": \"larks\"}";
         when(forumLogoService.getDefaultLogo()).thenReturn(validImage);
-        when(forumLogoService.convertBytesToBase64String(validImage)).thenReturn(IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
+        when(forumLogoService.convertBytesToBase64String(validImage, "jpeg")).thenReturn(IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
         when(imageControllerUtils.getResponceJSONString(Matchers.anyMap())).thenReturn(expectedJSON);
 
         String actualJSON = administrationController.getDefaultLogoInJson();
@@ -190,7 +190,7 @@ public class AdministrationControllerTest {
 
         when(forumLogoService.getDefaultLogo()).thenReturn(validImage);
 
-        administrationController.forumLogoRequest(request, response);
+        administrationController.getForumLogo(request, response);
 
         assertEquals(response.getContentType(), "image/jpeg");
         assertEquals(response.getContentLength(), validImage.length);
@@ -213,7 +213,7 @@ public class AdministrationControllerTest {
 
         when(forumLogoService.getDefaultLogo()).thenReturn(validImage);
 
-        administrationController.forumLogoRequest(request, response);
+        administrationController.getForumLogo(request, response);
 
         assertEquals(response.getStatus(), HttpServletResponse.SC_NOT_MODIFIED);
         assertNotSame(response.getContentAsByteArray(), validImage);

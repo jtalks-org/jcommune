@@ -44,7 +44,7 @@ public class ImageUtils {
      * This prefix is used when specifying image as a byte array in SRC attribute
      * of IMG HTML tag. Used in AJAX avatar preview.
      */
-    public static final String HTML_SRC_TAG_PREFIX = "data:image/jpeg;base64,";
+    private static final String HTML_SRC_TAG_PREFIX = "data:image/{0};base64,";
     public static final int AVATAR_MAX_HEIGHT = 100;
     public static final int AVATAR_MAX_WIDTH = 100;
     public static final int IMAGE_JPEG = 0;
@@ -67,18 +67,28 @@ public class ImageUtils {
     }
 
     /**
+     * Gets prefix for "src" attribute of the "img" tag representing the image format
+     * @param format target image format e.g. "jpeg" or "png"
+     * @return
+     */
+    public static String getHtmlSrcImagePrefix(String format) {
+        return  String.format(HTML_SRC_TAG_PREFIX, format);
+    }
+
+    /**
      * Converts image to byte array.
      *
      * @param image input image, not null
+     * @param format target image format e.g. "jpeg" or "png"
      * @return byte array obtained from image
      * @throws ImageProcessException if an I/O error occurs
      */
-    public byte[] convertImageToByteArray(Image image) throws ImageProcessException {
+    public byte[] convertImageToByteArray(Image image, String format) throws ImageProcessException {
         Validate.notNull(image, "Incoming image cannot be null");
         byte[] result;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            ImageIO.write((RenderedImage) image, "jpeg", baos);
+            ImageIO.write((RenderedImage) image, format, baos);
             baos.flush();
             result = baos.toByteArray();
             baos.close();
@@ -144,13 +154,18 @@ public class ImageUtils {
      * Perform image resizing and processing
      *
      * @param image for processing
+     * @param format target image format e.g. "jpeg" or "png"
      * @return processed image bytes
      * @throws ImageProcessException image processing problem
      */
-    public byte[] preprocessImage(Image image) throws ImageProcessException {
+    public byte[] preprocessImage(Image image, String format) throws ImageProcessException {
         byte[] result;
-        Image outputImage = resizeImage((BufferedImage) image, IMAGE_JPEG, AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
-        result = convertImageToByteArray(outputImage);
+        int type = IMAGE_JPEG;
+        if (format.equals("png")) {
+            type = IMAGE_PNG;
+        }
+        Image outputImage = resizeImage((BufferedImage) image, type, AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
+        result = convertImageToByteArray(outputImage, format);
         return result;
     }
 

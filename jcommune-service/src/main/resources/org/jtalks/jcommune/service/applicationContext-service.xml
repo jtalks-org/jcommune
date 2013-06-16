@@ -85,6 +85,8 @@
         <constructor-arg ref="imagePreprocessor"/>
         <constructor-arg ref="base64Wrapper"/>
         <constructor-arg value="org/jtalks/jcommune/service/jcommune-logo.jpeg"/>
+        <constructor-arg value="org/jtalks/jcommune/service/favicon.ico"/>
+        <constructor-arg value="org/jtalks/jcommune/service/favicon.png"/>
         <constructor-arg ref="forumLogoMaxSizeProperty"/>
     </bean>
 

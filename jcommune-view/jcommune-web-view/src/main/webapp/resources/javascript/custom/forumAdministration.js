@@ -23,7 +23,8 @@ var currentAdminValues = {
    'logoTooltip': null,
    'logo': null,
    'logoPreview': null,
-    'valid' : false
+   'iconPreview': null,
+   'valid' : false
 }
 
 
@@ -49,7 +50,7 @@ function createAdministrationDialog() {
 
     var bodyContent = '<div class="control-group"> \
             <div class="controls thumbnail-logo"> \
-                <img id="logoPreview" class="forum-logo" src="' + currentAdminValues.logoPreview + '" alt=""/>  \
+                <img id="logoPreview" class="forum-logo" src="" alt=""/>  \
             </div> \
             \
             \
@@ -65,11 +66,32 @@ function createAdministrationDialog() {
                     </a> \
                 </div> \
             </div>  \
-            \
-            \
         </div>  \
         <hr class="admin-dialog-hr"> \
+        \
+        <div class="control-group"> \
+            <div class="controls thumbnail-logo"> \
+                <img id="iconPreview" class="forum-logo" src="" alt=""/>  \
+            </div> \
+            \
+            \
+            <div class="logo-manage-buttons-container"> \
+                <div class="logo-manage-buttons"> \
+                    <a id="upload-icon" href="#" class="btn btn-mini"> \
+                        <i class="icon-picture"></i>  \
+                        '+ $labelUploadFavIcon + ' \
+                    </a>  \
+                    <a id="removeIcon" href="#" class="btn btn-mini btn-danger" \
+                        title='+ $labelRemoveFavIcon + '> \
+                        <i class="icon-remove icon-white"></i> \
+                    </a> \
+                </div> \
+            </div>  \
+        </div>  \
+        <hr class="admin-dialog-hr"> \
+        \
         <form:hidden id="logo" path="logo"/> \
+        <form:hidden id="icon" path="icon"/> \
         ' + Utils.createFormElement($labelForumTitle, 'forum_name', 'text', 'first dialog-input')
         + Utils.createFormElement($labelForumDescription, 'forum_description', 'text', 'dialog-input')
         + Utils.createFormElement($labelLogoTooltip, 'forum_logoTooltip', 'text', 'dialog-input') + ' \
@@ -87,7 +109,8 @@ function createAdministrationDialog() {
         maxWidth: 350,
         maxHeight: 500,
         firstFocus: true,
-        tabNavigation: ['#upload-logo', '#removeLogo', '#forum_name', '#forum_description','#forum_logoTooltip',
+        tabNavigation: ['#upload-logo', '#removeLogo', '#upload-icon', '#removeIcon', '#forum_name',
+                        '#forum_description','#forum_logoTooltip',
                         '#administration-submit-button', '#administration-cancel-button'],
         handlers: {
             '#administration-submit-button': {'click': sendForumConfiguration},
@@ -105,7 +128,22 @@ function createAdministrationDialog() {
 
     fillAdminDialogInputs();
     addRemoveLogoHandler();
-    createUploader();
+    addRemoveFavIconHandler();
+    createLogoUploader();
+    createIconUploader();
+}
+
+function getFavIconUrl(){
+    var favIconUrl;
+    var linkNodesList = document.getElementsByTagName("link");
+    for (var i = 0; i < linkNodesList.length; i++)
+    {
+        if(linkNodesList[i].getAttribute("rel") == "icon")
+        {
+            favIconUrl = linkNodesList[i].getAttribute("href");
+        }
+    }
+    return favIconUrl;
 }
 
 /*
@@ -119,6 +157,7 @@ function fillAdminDialogInputs() {
         $('#forum_logoTooltip').val(currentAdminValues.logoTooltip);
         $('#logoPreview').attr('src', currentAdminValues.logoPreview);
         $('#logo').val(currentAdminValues.logo);
+        $('#icon').val(currentAdminValues.icon);
     }
     else {
         var cmpNameText = $("#cmpName").text();
@@ -129,13 +168,14 @@ function fillAdminDialogInputs() {
         $('#forum_description').val(forumDescriptionText);
         $('#forum_logoTooltip').val(logoTooltipText);
         $('#logoPreview').attr("src", $('#forumLogo').attr("src"));
+        $('#iconPreview').attr("src", getFavIconUrl());
     }
 }
 
 /*
 Creates uploader for uploading logo to the server
  */
-function createUploader() {
+function createLogoUploader() {
     //defined the URL for appropriate logo processing depending on client browser:
     // Opera, IE - multipart file using iFrame
     // Chrome, Opera - byte [] using XHR
@@ -175,6 +215,78 @@ function createUploader() {
                 //if server side logo uploading successful  a processed image displayed
                 $('#logoPreview').attr('src', responseJSON.srcPrefix + responseJSON.srcImage);
                 $('#logo').attr('value', responseJSON.srcImage);
+            } else {
+                saveInputValues();
+                // display error message
+                jDialog.createDialog({
+                    type: jDialog.alertType,
+                    bodyMessage: responseJSON.result
+                });
+                $('#' + jDialog.options.alertDefaultBut).on('click', createAdministrationDialog);
+            }
+
+        },
+        onError: function(id, filename, xhr) {
+            if (xhr.status == 413) {
+                saveInputValues();
+                jDialog.createDialog({
+                    type: jDialog.alertType,
+                    bodyMessage: $labelImageWrongSizeJs
+                });
+                $('#' + jDialog.options.alertDefaultBut).on('click', createAdministrationDialog);
+                return false;
+            }
+        },
+        debug: false,
+        messages: {
+            emptyError: $fileIsEmpty
+        }
+    });
+}
+
+/*
+ Creates uploader for uploading icon to the server
+ */
+function createIconUploader() {
+    //defined the URL for appropriate logo processing depending on client browser:
+    // Opera, IE - multipart file using iFrame
+    // Chrome, Opera - byte [] using XHR
+    var action;
+    //this parameter tells to valums file uploader the appropriate content type
+    //if encoding != multipart, it will use "application/octet-stream" content type
+    //otherwise it will use "multipart/form-data"
+    var encoding = "not-multipart";
+    if (navigator.appName.indexOf("Microsoft") != -1 ||
+        navigator.appName.indexOf("Opera") != -1) {
+        action = $root + '/admin/icon/IFrameFavIconPreview';
+        encoding = "multipart";
+    }
+    else {
+        action = $root + '/admin/icon/XHRFavIconPreview';
+    }
+
+    var uploader = new qq.FileUploaderBasic({
+        button: $("#upload-icon").get(0),
+        //server side uploading handler
+        action: action,
+        //
+        encoding: encoding,
+        //is multiple file upload available
+        multiple: false,
+        onSubmit: function (id, filename) {
+        },
+        onProgress: function (id, filename, loaded, total) {
+        },
+        onComplete: function (id, filename, responseJSON) {
+            // response is empty when response status is not 200
+            if (jQuery.isEmptyObject(responseJSON)) {
+                return;
+            }
+            //
+            if (responseJSON.status == "SUCCESS") {
+                //if server side icon uploading successful  a processed image displayed
+                $('#iconPreview').attr('src', responseJSON.srcPrefix + responseJSON.srcImage);
+                $('#icon').attr('value', responseJSON.srcImage);
             } else {
                 saveInputValues();
                 // display error message
@@ -250,6 +362,51 @@ function addRemoveLogoHandler() {
 }
 
 /*
+ Adds handler for "Remove Icon" button
+ */
+function addRemoveFavIconHandler() {
+    //remove logo handler
+    $('#removeIcon').click(function () {
+        saveInputValues();
+
+        var footerContent = ' \
+            <button id="remove-icon-cancel" class="btn">' + $labelCancel + '</button> \
+            <button id="remove-icon-ok" class="btn btn-primary">' + $labelOk + '</button>';
+
+        var submitFunc = function (e) {
+            e.preventDefault();
+            $.getJSON($root + "/admin/defaultIcon", function (responseJSON) {
+                // save icon information and show main dialog again
+                currentAdminValues.iconPreview = responseJSON.srcPrefix + responseJSON.srcImage;
+                currentAdminValues.icon = responseJSON.srcImage;
+
+                createAdministrationDialog();
+            });
+            jDialog.closeDialog();
+        };
+
+        jDialog.createDialog({
+            type: jDialog.confirmType,
+            bodyMessage : $labelDeleteLogoConfirmation,
+            firstFocus : false,
+            footerContent: footerContent,
+            maxWidth: 300,
+            maxHeight: 500,
+            tabNavigation: ['#remove-icon-ok','#remove-icon-cancel'],
+            handlers: {
+                '#remove-icon-ok': {'click': submitFunc},
+                '#remove-icon-cancel': {'click': createAdministrationDialog}
+            }
+        });
+
+        jDialog.dialog.find('.close').bind('click', createAdministrationDialog);
+
+        $('#remove-icon-ok').focus();
+
+    });
+}
+
+/*
 Copies values for Forum Name, Description and Logo from the Dialog
  */
 function saveInputValues() {
@@ -257,13 +414,17 @@ function saveInputValues() {
     var forumDescriptionElement = jDialog.dialog.find('#forum_description');
     var logoTooltipElement = jDialog.dialog.find('#forum_logoTooltip');
     var logoElement = jDialog.dialog.find('#logo');
+    var iconElement = jDialog.dialog.find('#icon');
     var logoPreview = jDialog.dialog.find('#logoPreview');
+    var iconPreview = jDialog.dialog.find('#iconPreview');
 
     currentAdminValues.forumName = forumNameElement.val();
     currentAdminValues.forumDescription = forumDescriptionElement.val();
     currentAdminValues.logoTooltip = logoTooltipElement.val();
     currentAdminValues.logo = logoElement.val();
     currentAdminValues.logoPreview = logoPreview.attr("src");
+    currentAdminValues.icon = iconElement.val();
+    currentAdminValues.iconPreview = iconPreview.attr("src");
     currentAdminValues.valid = true;
 }
 
@@ -282,6 +443,7 @@ function sendForumConfiguration(e) {
     componentInformation.description = currentAdminValues.forumDescription;
     componentInformation.logoTooltip = currentAdminValues.logoTooltip;
     componentInformation.logo = currentAdminValues.logo;
+    componentInformation.icon = currentAdminValues.icon;
 
     jDialog.dialog.find('*').attr('disabled', true);
 

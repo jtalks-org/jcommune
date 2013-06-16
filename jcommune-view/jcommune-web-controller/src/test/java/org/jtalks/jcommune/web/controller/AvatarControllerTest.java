@@ -164,7 +164,7 @@ public class AvatarControllerTest {
     public void getDefaultAvatarShouldReturnDefaultAvatarInBase64String() throws IOException, ImageProcessException {
         String expectedJSON = "{\"team\": \"larks\"}";
         when(avatarService.getDefaultAvatar()).thenReturn(validAvatar);
-        when(avatarService.convertBytesToBase64String(validAvatar)).thenReturn(IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
+        when(avatarService.convertBytesToBase64String(validAvatar, "jpeg")).thenReturn(IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
         when(imageControllerUtils.getResponceJSONString(Matchers.anyMap())).thenReturn(expectedJSON);
 
         String actualJSON = avatarController.getDefaultAvatar();

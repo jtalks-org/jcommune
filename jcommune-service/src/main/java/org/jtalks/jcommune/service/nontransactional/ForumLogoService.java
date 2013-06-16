@@ -30,6 +30,8 @@ import java.io.InputStream;
  */
 public class ForumLogoService extends BaseImageService {
     private String defaultLogoPath;
+    private String defaultFavIconPathICO;
+    private String defaultFavIconPathPNG;
     private static final Logger LOGGER = LoggerFactory.getLogger(ForumLogoService.class);
 
     /**
@@ -44,9 +46,13 @@ public class ForumLogoService extends BaseImageService {
             ImageUtils imageUtils,
             Base64Wrapper base64Wrapper,
             String defaultLogoPath,
+            String defaultFavIconPathICO,
+            String defaultFavIconPathPNG,
             JCommuneProperty logoSizeProperty) {
         super(imageUtils, base64Wrapper, logoSizeProperty);
         this.defaultLogoPath = defaultLogoPath;
+        this.defaultFavIconPathICO = defaultFavIconPathICO;
+        this.defaultFavIconPathPNG = defaultFavIconPathPNG;
     }
 
 
@@ -58,14 +64,53 @@ public class ForumLogoService extends BaseImageService {
      */
     public byte[] getDefaultLogo() {
         byte[] result = new byte[0];
-        ClassPathResource logoClassPathSource = new ClassPathResource(defaultLogoPath);
-        InputStream stream = null;
         try {
-            stream = logoClassPathSource.getInputStream();
-            result = new byte[stream.available()];
-            Validate.isTrue(stream.read(result) > 0);
+            result = getFileBytes(defaultLogoPath);
         } catch (IOException e) {
             LOGGER.error("Failed to load default logo", e);
+        }
+
+        return result;
+    }
+
+    /**
+     * Gets the default fav icon in the ICO format (for IE browser)
+     * @return byte array with icon data
+     */
+    public byte[] getDefaultIconICO() {
+        byte[] result = new byte[0];
+        try {
+            result = getFileBytes(defaultFavIconPathICO);
+        } catch (IOException e) {
+            LOGGER.error("Failed to load fav icon in ICO format", e);
+        }
+
+        return result;
+    }
+
+    /**
+     * Gets the default fav icon in the PNG format (for non-IE browser)
+     * @return byte array with icon data
+     */
+    public byte[] getDefaultIconPNG() {
+        byte[] result = new byte[0];
+        try {
+            result = getFileBytes(defaultFavIconPathPNG);
+        } catch (IOException e) {
+            LOGGER.error("Failed to load default icon in PNG format", e);
+        }
+
+        return result;
+    }
+
+    private byte[] getFileBytes(String classPath) throws IOException {
+        byte[] result = new byte[0];
+        ClassPathResource fileClassPathSource = new ClassPathResource(classPath);
+        InputStream stream = null;
+        try {
+            stream = fileClassPathSource.getInputStream();
+            result = new byte[stream.available()];
+            Validate.isTrue(stream.read(result) > 0);
         }
         finally {
             IOUtils.closeQuietly(stream);

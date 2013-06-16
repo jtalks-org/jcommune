@@ -45,6 +45,8 @@ public class ForumLogoServiceTest {
                 imageUtils,
                 base64Wrapper,
                 "org/jtalks/jcommune/service/jcommune-logo.jpeg",
+                "org/jtalks/jcommune/service/favicon.ico",
+                "org/jtalks/jcommune/service/favicon.png",
                 logoSizeProperty);
     }
 
