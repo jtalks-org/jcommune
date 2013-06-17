@@ -29,7 +29,11 @@
         <one-to-one name="topic" constrained="true" property-ref="codeReview"
                     class="Topic" />
 
-        <bag name="comments" cascade="all-delete-orphan" order-by="CREATION_DATE">
+      <!--saving comments performing due inverse="true"
+      and we use only cascade="delete, delete-orphan" for deletion comments
+      so we don't need additional UPDATE statements for comments
+      while processing code review (saving, updating, merging... )   -->
+      <bag name="comments" cascade="delete, delete-orphan" inverse="true" order-by="CREATION_DATE">
             <cache usage="nonstrict-read-write"/>
             <key column="CODE_REVIEW_ID" foreign-key="FK_CRC_CODE_REVIEW"/>
             <one-to-many class="CodeReviewComment"/>

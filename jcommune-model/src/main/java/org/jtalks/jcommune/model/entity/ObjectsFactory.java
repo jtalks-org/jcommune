@@ -162,14 +162,13 @@ public final class ObjectsFactory {
         CodeReview review = new CodeReview();
         review.setId(1L);
 
-        List<CodeReviewComment> comments = new ArrayList<CodeReviewComment>();
         CodeReviewComment comment1 = new CodeReviewComment();
         comment1.setId(1L);
         comment1.setAuthor(getDefaultUser());
         comment1.setBody("Comment1 body");
         comment1.setLineNumber(1);
         comment1.setCreationDate(new DateTime(1));
-        comments.add(comment1);
+        review.addComment(comment1);
 
         CodeReviewComment comment2 = new CodeReviewComment();
         comment2.setId(2L);
@@ -177,9 +176,8 @@ public final class ObjectsFactory {
         comment2.setBody("Comment2 body");
         comment2.setLineNumber(2);
         comment2.setCreationDate(new DateTime(2));
-        comments.add(comment2);
+        review.addComment(comment2);
 
-        review.setComments(comments);
 
         return review;
     }

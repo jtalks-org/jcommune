@@ -49,9 +49,11 @@ public class CodeReviewComment extends Entity {
     }
 
     /**
+     * For Hibernate use only. For adding comment to code review use
+     * the {@link CodeReview#addComment(CodeReviewComment)}
      * @param codeReview the code review.
      */
-    public void setCodeReview(CodeReview codeReview) {
+    void setCodeReview(CodeReview codeReview) {
         this.codeReview = codeReview;
     }
 

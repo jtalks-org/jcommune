@@ -28,8 +28,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-
 import static org.jgroups.util.Util.assertFalse;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -91,12 +89,10 @@ public class TransactionalCodeReviewServiceTest {
     @Test
     public void testDeleteCommentSuccess() throws AccessDeniedException, NotFoundException {
         CodeReview codeReview = new CodeReview();
-        ArrayList<CodeReviewComment> codeReviewComments = new ArrayList<CodeReviewComment>();
         CodeReviewComment reviewComment = createCodeReviewComment(String.valueOf(CR_ID));
-        codeReviewComments.add(reviewComment);
-        codeReviewComments.add(createCodeReviewComment("134"));
-        codeReviewComments.add(createCodeReviewComment("1341"));
-        codeReview.setComments(codeReviewComments);
+        codeReview.addComment(reviewComment);
+        codeReview.addComment(createCodeReviewComment("134"));
+        codeReview.addComment(createCodeReviewComment("1341"));
         int oldSize = codeReview.getComments().size();
 
         codeReviewService.deleteComment(reviewComment, codeReview);

@@ -14,16 +14,14 @@
  */
 package org.jtalks.jcommune.web.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 /**
  * 
@@ -58,14 +56,13 @@ public class CodeReviewDtoTest {
         CodeReview review = new CodeReview();
         review.setId(REVIEW_ID);
         
-        List<CodeReviewComment> comments = new ArrayList<CodeReviewComment>();
         CodeReviewComment comment1 = new CodeReviewComment();
         comment1.setId(1L);
         comment1.setAuthor(new JCUser("username1", "mail1", "password1" ));
         comment1.setBody("Comment1 body");
         comment1.setLineNumber(1);
         comment1.setCreationDate(new DateTime(1));
-        comments.add(comment1);
+        review.addComment(comment1);
         
         CodeReviewComment comment2 = new CodeReviewComment();
         comment2.setId(2L);
@@ -73,10 +70,8 @@ public class CodeReviewDtoTest {
         comment2.setBody("Comment2 body");
         comment2.setLineNumber(2);
         comment2.setCreationDate(new DateTime(2));
-        comments.add(comment2);
-        
-        review.setComments(comments);
-        
+        review.addComment(comment1);
+
         return review;
     }
     
