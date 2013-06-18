@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import net.sf.image4j.codec.ico.ICOEncoder;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.Validate;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
@@ -47,8 +48,6 @@ public class ImageUtils {
     private static final String HTML_SRC_TAG_PREFIX = "data:image/{0};base64,";
     public static final int AVATAR_MAX_HEIGHT = 100;
     public static final int AVATAR_MAX_WIDTH = 100;
-    public static final int IMAGE_JPEG = 0;
-    public static final int IMAGE_PNG = 1;
     private static final int ALPHA_CHANNEL_MASK = 0xFF000000;
     private static final int RED_CHANNEL_MASK = 0x00FF0000;
     private static final int GREEN_CHANNEL_MASK = 0x0000FF00;
@@ -87,14 +86,20 @@ public class ImageUtils {
         Validate.notNull(image, "Incoming image cannot be null");
         byte[] result;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
         try {
-            ImageIO.write((RenderedImage) image, format, baos);
+            if (format.equals("ico")) {
+                ICOEncoder.write((BufferedImage)image, 32, baos);
+            } else {
+                ImageIO.write((RenderedImage) image, format, baos);
+            }
             baos.flush();
             result = baos.toByteArray();
             baos.close();
         } catch (IOException e) {
             throw new ImageProcessException(e);
         }
+
         return result;
     }
 
@@ -160,9 +165,9 @@ public class ImageUtils {
      */
     public byte[] preprocessImage(Image image, String format) throws ImageProcessException {
         byte[] result;
-        int type = IMAGE_JPEG;
-        if (format.equals("png")) {
-            type = IMAGE_PNG;
+        int type = BufferedImage.TYPE_INT_RGB;
+        if (format.equals("png") || format.equals("ico")) {
+            type = BufferedImage.TYPE_INT_ARGB;
         }
         Image outputImage = resizeImage((BufferedImage) image, type, AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
         result = convertImageToByteArray(outputImage, format);
@@ -189,15 +194,10 @@ public class ImageUtils {
      * @param source The image to convert
      * @param width  The desired image width
      * @param height The desired image height
-     * @param type   int code jpeg, png or gif
+     * @param imageType   int code RGB or ARGB
      * @return bufferedImage The resized image
      */
-    private BufferedImage createBufferedImage(BufferedImage source, int type, int width, int height) {
-        int imageType = BufferedImage.TYPE_INT_RGB;
-        if (type == IMAGE_PNG && hasAlpha(source)) {
-            imageType = BufferedImage.TYPE_INT_ARGB;
-        }
-
+    private BufferedImage createBufferedImage(BufferedImage source, int imageType, int width, int height) {
         BufferedImage bufferedImage = new BufferedImage(width, height, imageType);
 
         int sourceX;

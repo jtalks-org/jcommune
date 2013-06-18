@@ -94,8 +94,8 @@ public class ImageUtilsTest {
     	int widthWithAspectRationMoreThatOne = 5;
     	int heightWithAspectRatioMoreThatOne = 4;
     	return new Object[][] {
-    			{widthWithAspectRatioOne, heightWithAspectRatioOne, ImageUtils.IMAGE_JPEG},
-    			{widthWithAspectRationMoreThatOne, heightWithAspectRatioMoreThatOne, ImageUtils.IMAGE_PNG}
+    			{widthWithAspectRatioOne, heightWithAspectRatioOne, BufferedImage.TYPE_INT_RGB},
+    			{widthWithAspectRationMoreThatOne, heightWithAspectRatioMoreThatOne, BufferedImage.TYPE_INT_ARGB}
     	};
     }
 

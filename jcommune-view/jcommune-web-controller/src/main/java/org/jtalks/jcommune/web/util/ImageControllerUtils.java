@@ -157,7 +157,7 @@ public class ImageControllerUtils {
         responseContent.put(SRC_IMAGE, srcImage);
     }
 
-    public String convertImageToIcoInString64(byte[] imageBytes) {
-        return "";
+    public String convertImageToIcoInString64(byte[] imageBytes) throws ImageProcessException {
+        return baseImageService.convertBytesToBase64String(imageBytes, "ico");
     }
 }

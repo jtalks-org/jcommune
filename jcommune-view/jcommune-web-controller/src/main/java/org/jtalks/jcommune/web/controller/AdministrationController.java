@@ -146,7 +146,11 @@ public class AdministrationController extends ImageUploadController {
         if (componentInformation.getIcon() != null && !componentInformation.getIcon().isEmpty()) {
             Base64Wrapper wrapper = new Base64Wrapper();
             byte[] favIcon = wrapper.decodeB64Bytes(componentInformation.getIcon());
-            componentInformation.setIconICO(imageControllerUtils.convertImageToIcoInString64(favIcon));
+            try {
+                componentInformation.setIconICO(imageControllerUtils.convertImageToIcoInString64(favIcon));
+            } catch (ImageProcessException e) {
+                LOGGER.error("Can't convert fav icon to *.ico format", e);
+            }
         }
 
         try {
