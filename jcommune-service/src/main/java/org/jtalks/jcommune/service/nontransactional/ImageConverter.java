@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
-import net.sf.image4j.codec.ico.ICOEncoder;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.Validate;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
@@ -25,29 +24,25 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
-import java.awt.image.RenderedImage;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 /**
- * Class for preparing image to save.
+ * Class for converting image and saving it in the target format.
+ * Subclasses should define how to save image and what type target image will have
  * Some methods were taken from JForum: http://jforum.net/
  *
  * @author Eugeny Batov
  * @author Alexandre Teterin
+ * @author Andrei Alikov
  */
 @Component
-public class ImageUtils {
+public abstract class ImageConverter {
 
     /**
      * This prefix is used when specifying image as a byte array in SRC attribute
      * of IMG HTML tag. Used in AJAX avatar preview.
      */
-    private static final String HTML_SRC_TAG_PREFIX = "data:image/{0};base64,";
-    public static final int AVATAR_MAX_HEIGHT = 100;
-    public static final int AVATAR_MAX_WIDTH = 100;
+    protected static final String HTML_SRC_TAG_PREFIX = "data:image/{0};base64,";
     private static final int ALPHA_CHANNEL_MASK = 0xFF000000;
     private static final int RED_CHANNEL_MASK = 0x00FF0000;
     private static final int GREEN_CHANNEL_MASK = 0x0000FF00;
@@ -58,41 +53,40 @@ public class ImageUtils {
 
     private Base64Wrapper base64Wrapper;
 
+    private final int maxImageWidth;
+    private final  int maxImageHeight;
+
     /**
      * @param base64Wrapper to perform image data encoding, essential for embedding an image into HTML page
+     * @param maxImageHeight maximum image height after pre processing
+     * @param maxImageWidth  maximum image width after pre processing
      */
-    public ImageUtils(Base64Wrapper base64Wrapper) {
+    public ImageConverter(Base64Wrapper base64Wrapper, int maxImageWidth, int maxImageHeight) {
         this.base64Wrapper = base64Wrapper;
+        this.maxImageWidth = maxImageWidth;
+        this.maxImageHeight = maxImageHeight;
     }
 
     /**
      * Gets prefix for "src" attribute of the "img" tag representing the image format
-     * @param format target image format e.g. "jpeg" or "png"
-     * @return
+     * @return prefix for "src" attribute of the "img" tag representing the image format
      */
-    public static String getHtmlSrcImagePrefix(String format) {
-        return  String.format(HTML_SRC_TAG_PREFIX, format);
-    }
+    public abstract String getHtmlSrcImagePrefix();
 
     /**
      * Converts image to byte array.
      *
      * @param image input image, not null
-     * @param format target image format e.g. "jpeg" or "png"
      * @return byte array obtained from image
      * @throws ImageProcessException if an I/O error occurs
      */
-    public byte[] convertImageToByteArray(Image image, String format) throws ImageProcessException {
+    public byte[] convertImageToByteArray(BufferedImage image) throws ImageProcessException {
         Validate.notNull(image, "Incoming image cannot be null");
         byte[] result;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         try {
-            if (format.equals("ico")) {
-                ICOEncoder.write((BufferedImage)image, 32, baos);
-            } else {
-                ImageIO.write((RenderedImage) image, format, baos);
-            }
+            saveImageToStream(image, baos);
             baos.flush();
             result = baos.toByteArray();
             baos.close();
@@ -102,6 +96,14 @@ public class ImageUtils {
 
         return result;
     }
+
+    /**
+     * Saves image to the stream
+     * @param image image to be saved
+     * @param stream output stream
+     * @throws IOException
+     */
+    protected abstract void saveImageToStream(BufferedImage image, OutputStream stream) throws IOException;
 
     /**
      * Perform byte data conversion to BufferedImage.
@@ -159,21 +161,22 @@ public class ImageUtils {
      * Perform image resizing and processing
      *
      * @param image for processing
-     * @param format target image format e.g. "jpeg" or "png"
      * @return processed image bytes
      * @throws ImageProcessException image processing problem
      */
-    public byte[] preprocessImage(Image image, String format) throws ImageProcessException {
+    public byte[] preprocessImage(BufferedImage image) throws ImageProcessException {
         byte[] result;
-        int type = BufferedImage.TYPE_INT_RGB;
-        if (format.equals("png") || format.equals("ico")) {
-            type = BufferedImage.TYPE_INT_ARGB;
-        }
-        Image outputImage = resizeImage((BufferedImage) image, type, AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
-        result = convertImageToByteArray(outputImage, format);
+
+        BufferedImage outputImage = resizeImage(image, getImageType(), maxImageWidth, maxImageHeight);
+        result = convertImageToByteArray(outputImage);
         return result;
     }
 
+    /**
+     * Gets the type of the result image (see {@link BufferedImage} documentation)
+     * @return the type of the result image
+     */
+    protected abstract int getImageType();
 
     /**
      * Perform preparing content for SRC attribute of the IMG HTML tag

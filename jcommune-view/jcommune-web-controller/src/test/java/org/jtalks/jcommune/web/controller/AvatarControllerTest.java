@@ -19,7 +19,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.AvatarService;
+import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.jtalks.jcommune.web.util.ImageControllerUtils;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -59,8 +59,6 @@ public class AvatarControllerTest {
     private static final String IMAGE_BYTE_ARRAY_IN_BASE_64_STRING = "it's dummy string";
     //
     @Mock
-    private AvatarService avatarService;
-    @Mock
     private UserService userService;
     @Mock
     private MessageSource messageSource;
@@ -82,7 +80,7 @@ public class AvatarControllerTest {
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
-        avatarController = new AvatarController(avatarService,  userService, imageControllerUtils, messageSource);
+        avatarController = new AvatarController(userService, imageControllerUtils, messageSource);
     }
 
     @Test
@@ -163,13 +161,12 @@ public class AvatarControllerTest {
     @SuppressWarnings("unchecked")
     public void getDefaultAvatarShouldReturnDefaultAvatarInBase64String() throws IOException, ImageProcessException {
         String expectedJSON = "{\"team\": \"larks\"}";
-        when(avatarService.getDefaultAvatar()).thenReturn(validAvatar);
-        when(avatarService.convertBytesToBase64String(validAvatar, "jpeg")).thenReturn(IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
+        when(imageControllerUtils.getDefaultImage()).thenReturn(validAvatar);
+        when(imageControllerUtils.convertImageToIcoInString64(validAvatar)).thenReturn(IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
         when(imageControllerUtils.getResponceJSONString(Matchers.anyMap())).thenReturn(expectedJSON);
 
         String actualJSON = avatarController.getDefaultAvatar();
 
-        verify(avatarService).getDefaultAvatar();
         assertEquals(actualJSON, expectedJSON);
     }
 }

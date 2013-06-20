@@ -40,7 +40,7 @@ import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
-import org.jtalks.jcommune.service.nontransactional.ImageUtils;
+import org.jtalks.jcommune.service.nontransactional.ImageConverter;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
@@ -80,7 +80,7 @@ public class UserProfileControllerTest {
     @Mock
     private BreadcrumbBuilder breadcrumbBuilder;
     @Mock
-    private ImageUtils imageUtils;
+    private ImageConverter imageConverter;
     @Mock
     private PostService postService;
     @Mock
@@ -99,7 +99,7 @@ public class UserProfileControllerTest {
         profileController = new UserProfileController(
                 userService,
                 breadcrumbBuilder,
-                imageUtils,
+                imageConverter,
                 postService);
     }
 

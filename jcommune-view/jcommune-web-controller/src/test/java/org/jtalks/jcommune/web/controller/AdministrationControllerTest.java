@@ -19,7 +19,7 @@ import org.jtalks.common.model.entity.ComponentType;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
-import org.jtalks.jcommune.service.nontransactional.ForumLogoService;
+import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.util.ImageControllerUtils;
@@ -76,10 +76,14 @@ public class AdministrationControllerTest {
     MessageSource messageSource;
 
     @Mock
-    ForumLogoService forumLogoService;
+    ImageControllerUtils logoControllerUtils;
 
     @Mock
-    ImageControllerUtils imageControllerUtils;
+    ImageControllerUtils favIconPngControllerUtils;
+
+    @Mock
+    ImageControllerUtils favIconIcoControllerUtils;
+
     //
     private AdministrationController administrationController;
 
@@ -90,8 +94,9 @@ public class AdministrationControllerTest {
         Component component = new Component("Forum", "Cool Forum", ComponentType.FORUM);
         component.setId(42);
 
-        administrationController = new AdministrationController(componentService, imageControllerUtils,
-                                                    messageSource, forumLogoService);
+        administrationController = new AdministrationController(componentService, logoControllerUtils,
+                                                    favIconPngControllerUtils, favIconIcoControllerUtils,
+                                                    messageSource);
     }
 
     @Test
@@ -156,7 +161,7 @@ public class AdministrationControllerTest {
 
         ResponseEntity<String> actualResponseEntity = administrationController.uploadLogo(file);
 
-        verify(imageControllerUtils).prepareResponse(eq(file), any(HttpHeaders.class), any(HashMap.class));
+        verify(logoControllerUtils).prepareResponse(eq(file), any(HttpHeaders.class), any(HashMap.class));
     }
 
     @Test
@@ -165,19 +170,18 @@ public class AdministrationControllerTest {
 
         administrationController.uploadLogo(validImage, response);
 
-        verify(imageControllerUtils).prepareResponse(eq(validImage), eq(response), any(HashMap.class));
+        verify(logoControllerUtils).prepareResponse(eq(validImage), eq(response), any(HashMap.class));
     }
 
     @Test
     public void getDefaultLogoShouldReturnDefaultAvatarInBase64String() throws IOException, ImageProcessException {
         String expectedJSON = "{\"team\": \"larks\"}";
-        when(forumLogoService.getDefaultLogo()).thenReturn(validImage);
-        when(forumLogoService.convertBytesToBase64String(validImage, "jpeg")).thenReturn(IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
-        when(imageControllerUtils.getResponceJSONString(Matchers.anyMap())).thenReturn(expectedJSON);
+        when(logoControllerUtils.getDefaultImage()).thenReturn(validImage);
+        when(logoControllerUtils.convertImageToIcoInString64(validImage)).thenReturn(IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
+        when(logoControllerUtils.getResponceJSONString(Matchers.anyMap())).thenReturn(expectedJSON);
 
         String actualJSON = administrationController.getDefaultLogoInJson();
 
-        verify(forumLogoService).getDefaultLogo();
         assertEquals(actualJSON, expectedJSON);
     }
 
@@ -188,7 +192,7 @@ public class AdministrationControllerTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(administrationController.IF_MODIFIED_SINCE_HEADER, new Date(0));
 
-        when(forumLogoService.getDefaultLogo()).thenReturn(validImage);
+        when(logoControllerUtils.getDefaultImage()).thenReturn(validImage);
 
         administrationController.getForumLogo(request, response);
 
@@ -211,7 +215,7 @@ public class AdministrationControllerTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(administrationController.IF_MODIFIED_SINCE_HEADER, new Date(1000));
 
-        when(forumLogoService.getDefaultLogo()).thenReturn(validImage);
+        when(logoControllerUtils.getDefaultImage()).thenReturn(validImage);
 
         administrationController.getForumLogo(request, response);
 

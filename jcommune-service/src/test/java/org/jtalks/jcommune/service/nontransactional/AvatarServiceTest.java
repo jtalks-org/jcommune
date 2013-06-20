@@ -34,13 +34,13 @@ public class AvatarServiceTest {
     private static final int AVATAR_MAX_SIZE = 1000;
     private JCommuneProperty avatarSizeProperty = JCommuneProperty.AVATAR_MAX_SIZE;
     @Mock
-    private ImageUtils imageUtils;
+    private ImageConverter imageConverter;
     @Mock
     private Base64Wrapper base64Wrapper;
     @Mock
     private PropertyDao propertyDao;
     //
-    private AvatarService avatarService;
+    private ImageService avatarService;
     
 
     @BeforeMethod
@@ -50,8 +50,8 @@ public class AvatarServiceTest {
         avatarSizeProperty.setPropertyDao(propertyDao);
         when(propertyDao.getByName(PROPERTY_NAME))
             .thenReturn(new Property(PROPERTY_NAME, String.valueOf(AVATAR_MAX_SIZE)));
-        avatarService = new AvatarService(
-                imageUtils,
+        avatarService = new ImageService(
+                imageConverter,
                 base64Wrapper,
                 "org/jtalks/jcommune/service/avatar.gif",
                 avatarSizeProperty);
@@ -61,7 +61,7 @@ public class AvatarServiceTest {
 
     @Test
     public void getDefaultAvatarShouldReturnNotEmptyAvatar() {
-        byte[] avatar = avatarService.getDefaultAvatar();
+        byte[] avatar = avatarService.getDefaultImage();
 
         assertTrue(avatar.length > 0);
     }

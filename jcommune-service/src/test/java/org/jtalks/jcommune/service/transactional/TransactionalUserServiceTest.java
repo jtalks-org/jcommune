@@ -108,7 +108,7 @@ public class TransactionalUserServiceTest {
     @Mock
     private MailService mailService;
     @Mock
-    private AvatarService avatarService;
+    private ImageService avatarService;
     @Mock
     private Base64Wrapper base64Wrapper;
     @Mock
