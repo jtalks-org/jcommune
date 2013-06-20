@@ -27,7 +27,7 @@ import java.awt.image.PixelGrabber;
 import java.io.*;
 
 /**
- * Class for converting image and saving it in the target format.
+ * Class for converting image and saving it in the target format in the byte array.
  * Subclasses should define how to save image and what type target image will have
  * Some methods were taken from JForum: http://jforum.net/
  *
@@ -126,16 +126,14 @@ public abstract class ImageConverter {
     }
 
     /**
-     * Resizes an image.
+     * Resizes an image if its width or height is bigger than maximum value specified in the constructor.
      *
      * @param image     The image to resize
-     * @param maxWidth  The image's max width
-     * @param maxHeight The image's max height
      * @param type      int code jpeg, png or gif
-     * @return A resized <code>BufferedImage</code>
+     * @return A <code>BufferedImage</code> having width and height less or equal then maximum
      */
-    public BufferedImage resizeImage(BufferedImage image, int type, int maxWidth, int maxHeight) {
-        Dimension largestDimension = new Dimension(maxWidth, maxHeight);
+    public BufferedImage resizeImage(BufferedImage image, int type) {
+        Dimension largestDimension = new Dimension(maxImageWidth, maxImageHeight);
 
         // Original size
         int imageWidth = image.getWidth(null);
@@ -143,7 +141,7 @@ public abstract class ImageConverter {
 
         float aspectRatio = (float) imageWidth / imageHeight;
 
-        if (imageWidth > maxWidth || imageHeight > maxHeight) {
+        if (imageWidth > largestDimension.width || imageHeight > largestDimension.height) {
             if ((float) largestDimension.width / largestDimension.height > aspectRatio) {
                 largestDimension.width = (int) Math.ceil(largestDimension.height * aspectRatio);
             } else {
@@ -167,7 +165,7 @@ public abstract class ImageConverter {
     public byte[] preprocessImage(BufferedImage image) throws ImageProcessException {
         byte[] result;
 
-        BufferedImage outputImage = resizeImage(image, getImageType(), maxImageWidth, maxImageHeight);
+        BufferedImage outputImage = resizeImage(image, getImageType());
         result = convertImageToByteArray(outputImage);
         return result;
     }

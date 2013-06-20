@@ -35,7 +35,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Service class for image related operations
+ * Service class for uploaded image related operations
  *
  * @author Alexandre Teterin
  * @author Andrei Alikov
@@ -55,7 +55,7 @@ public class ImageService {
     /**
      * Create ImageService instance
      *
-     * @param imageConverter        object for image processing
+     * @param imageConverter        object for image pre processing
      * @param base64Wrapper     to encode/decode image passed from the client side
      * @param defaultImagePath class path to load default image
      * @param imageSizeProperty let us know the limitation of image max size
@@ -81,7 +81,7 @@ public class ImageService {
         try {
             result = getFileBytes(defaultImagePath);
         } catch (IOException e) {
-            LOGGER.error("Failed to load default logo", e);
+            LOGGER.error("Failed to load default image", e);
         }
 
         return result;
@@ -160,7 +160,7 @@ public class ImageService {
      * @return content of the loaded file
      * @throws IOException
      */
-    protected byte[] getFileBytes(String classPath) throws IOException {
+    private byte[] getFileBytes(String classPath) throws IOException {
         byte[] result = new byte[0];
         ClassPathResource fileClassPathSource = new ClassPathResource(classPath);
         InputStream stream = null;

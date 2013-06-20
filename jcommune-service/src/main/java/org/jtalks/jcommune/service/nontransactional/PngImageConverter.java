@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
+ * Class for converting source image to the PNG format
  * @author Andrei Alikov
  */
 public class PngImageConverter extends ImageConverter {

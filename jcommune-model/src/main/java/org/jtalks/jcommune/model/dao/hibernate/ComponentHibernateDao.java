@@ -51,9 +51,17 @@ public class ComponentHibernateDao extends GenericDao<Component> implements Comp
         super(sessionFactory, Component.class);
     }
 
+    /**
+     * Parameter name for forum logo tooltip
+     */
     public static final String LOGO_TOOLTIP_PROPERTY = "jcommune.logo_tooltip";
+
+    /**
+     * Parameter name for forum logo
+     */
     public static final String LOGO_PROPERTY = "jcommune.logo";
-    public static final String COMPONENT_INFO_CHANGE_DATE_PROPERTY = "jcommune.logo_change_date";
+
+    private static final String COMPONENT_INFO_CHANGE_DATE_PROPERTY = "jcommune.logo_change_date";
 
     /**
      * Parameter name for forum fav icon in ico format

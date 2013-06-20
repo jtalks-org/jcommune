@@ -80,9 +80,10 @@ public class ImageConverterTest {
     public void testResizeImage(int maxWidth, int maxHeight, int imageType) throws IOException {
         int expectedWidth = 4;
         int expectedHeight = 4;
+        imageConverter = new JpegImageConverter(base64, maxWidth, maxHeight);
         BufferedImage originalImage = ImageIO.read(new MockMultipartFile("test_image", "test_image", "image/png",
                 originalImageByteArray).getInputStream());
-        Image modifiedImage = imageConverter.resizeImage(originalImage, imageType, maxWidth, maxHeight);
+        Image modifiedImage = imageConverter.resizeImage(originalImage, imageType);
         assertEquals(modifiedImage.getWidth(null), expectedWidth);
         assertEquals(modifiedImage.getHeight(null), expectedHeight);
     }

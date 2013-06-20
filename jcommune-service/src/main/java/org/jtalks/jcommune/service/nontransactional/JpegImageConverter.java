@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
+ * Class for converting source image to the JPEG format
  * @author Andrei Alikov
  */
 public class JpegImageConverter extends ImageConverter {
