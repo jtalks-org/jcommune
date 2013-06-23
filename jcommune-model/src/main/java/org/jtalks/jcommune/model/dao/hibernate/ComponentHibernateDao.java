@@ -61,7 +61,7 @@ public class ComponentHibernateDao extends GenericDao<Component> implements Comp
      */
     public static final String LOGO_PROPERTY = "jcommune.logo";
 
-    private static final String COMPONENT_INFO_CHANGE_DATE_PROPERTY = "jcommune.logo_change_date";
+    private static final String COMPONENT_INFO_CHANGE_DATE_PROPERTY = "jcommune.info_change_date";
 
     /**
      * Parameter name for forum fav icon in ico format
@@ -102,10 +102,13 @@ public class ComponentHibernateDao extends GenericDao<Component> implements Comp
             forumComponent.setProperty(COMPONENT_FAVICON_ICO_PARAM, componentInformation.getIconICO());
         }
 
-        String formattedDateLastModified = DateFormatUtils.format(
-                Calendar.getInstance(),
-                PROPERTY_DATETIME_PATTERN, Locale.US);
-        forumComponent.setProperty(COMPONENT_INFO_CHANGE_DATE_PROPERTY, formattedDateLastModified);
+        // we don't need milliseconds - in some cases
+        // i.e. in HTTP headers dates are stored in seconds
+        // - in this case it is hard to compare two dates
+        Calendar now = Calendar.getInstance();
+        now.set(Calendar.MILLISECOND, 0);
+        String timeInMillis = String.valueOf(now.getTimeInMillis());
+        forumComponent.setProperty(COMPONENT_INFO_CHANGE_DATE_PROPERTY, timeInMillis);
     }
 
     /**
@@ -120,16 +123,8 @@ public class ComponentHibernateDao extends GenericDao<Component> implements Comp
         String dateString = getComponent().getProperty(COMPONENT_INFO_CHANGE_DATE_PROPERTY);
         Date modificationDate = new Date();
 
-        DateFormat dateFormat = new SimpleDateFormat(
-                PROPERTY_DATETIME_PATTERN,
-                Locale.US);
-
         if (dateString != null) {
-            try {
-                modificationDate = dateFormat.parse(dateString);
-            } catch (ParseException e) {
-                LOGGER.error("Can't parse last forum information modification date from the property", e);
-            }
+            modificationDate.setTime(Long.parseLong(dateString));
         }
 
         return modificationDate;
