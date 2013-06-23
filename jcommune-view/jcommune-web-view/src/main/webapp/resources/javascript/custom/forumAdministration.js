@@ -388,7 +388,7 @@ function addRemoveFavIconHandler() {
 
         jDialog.createDialog({
             type: jDialog.confirmType,
-            bodyMessage : $labelDeleteLogoConfirmation,
+            bodyMessage : $labelDeleteIconConfirmation,
             firstFocus : false,
             footerContent: footerContent,
             maxWidth: 300,
