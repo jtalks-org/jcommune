@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
+ * Class containing utility method for controller working with
+ * uploaded images
  * @author Alexandre Teterin
  * @author Anuar Nurmakanov
  */

@@ -46,7 +46,7 @@ public class ImageControllerUtilsTest {
     ImageControllerUtils imageControllerUtils;
 
     @Mock
-    private ImageService avatarService;
+    private ImageService imageService;
     @Mock
     private JSONUtils jsonUtils;
 
@@ -65,7 +65,7 @@ public class ImageControllerUtilsTest {
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
-        imageControllerUtils = new ImageControllerUtils(avatarService, jsonUtils);
+        imageControllerUtils = new ImageControllerUtils(imageService, jsonUtils);
     }
 
     @Test
@@ -74,7 +74,7 @@ public class ImageControllerUtilsTest {
             throws IOException, ImageProcessException {
         MultipartFile file = new MockMultipartFile("qqfile", validAvatar);
         String expectedBody = "{\"srcPrefix\":\"data:image/jpeg;base64,\",\"srcImage\":\"srcImage\",\"success\":\"true\"}";
-        when(avatarService.preProcessAndEncodeInString64(validAvatar)).thenReturn(IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
+        when(imageService.preProcessAndEncodeInString64(validAvatar)).thenReturn(IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
         when(imageControllerUtils.getResponceJSONString(Matchers.anyMap())).thenReturn(expectedBody);
         Map<String, String> responseContent = new HashMap<String, String>();
         HttpHeaders responseHeaders = new HttpHeaders();
@@ -82,8 +82,8 @@ public class ImageControllerUtilsTest {
 
         ResponseEntity<String> actualResponseEntity = imageControllerUtils.prepareResponse(file, responseHeaders, responseContent);
 
-        verify(avatarService).validateImageFormat(file);
-        verify(avatarService).validateImageSize(file.getBytes());
+        verify(imageService).validateImageFormat(file);
+        verify(imageService).validateImageSize(file.getBytes());
         assertEquals(actualResponseEntity.getStatusCode(), HttpStatus.OK);
         assertEquals(actualResponseEntity.getBody(), expectedBody);
         HttpHeaders headers = actualResponseEntity.getHeaders();
@@ -92,18 +92,40 @@ public class ImageControllerUtilsTest {
 
     @Test
     public void uploadAvatarForChromeAndFFShouldReturnPreviewInResponce() throws ImageProcessException {
-        when(avatarService.preProcessAndEncodeInString64(validAvatar)).thenReturn(IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
-        when(avatarService.getHtmlSrcImagePrefix()).thenReturn("jpeg");
+        when(imageService.preProcessAndEncodeInString64(validAvatar)).thenReturn(IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
+        when(imageService.getHtmlSrcImagePrefix()).thenReturn("jpeg");
         MockHttpServletResponse response = new MockHttpServletResponse();
         Map<String, String> responseContent = new HashMap<String, String>();
 
         imageControllerUtils.prepareResponse(validAvatar, response, responseContent);
 
-        verify(avatarService).validateImageFormat(validAvatar);
-        verify(avatarService).validateImageSize(validAvatar);
+        verify(imageService).validateImageFormat(validAvatar);
+        verify(imageService).validateImageSize(validAvatar);
         assertEquals(responseContent.get(imageControllerUtils.STATUS), "SUCCESS");
         assertEquals(responseContent.get(imageControllerUtils.SRC_PREFIX), "jpeg");
         assertEquals(responseContent.get(imageControllerUtils.SRC_IMAGE), IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
         assertEquals(response.getStatus(), HttpServletResponse.SC_OK);
+    }
+
+    @Test
+    public void validImageShouldGenerateValidNormalResponse() throws ImageProcessException {
+        when(imageService.preProcessAndEncodeInString64(validAvatar)).thenReturn(IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
+        when(imageService.getHtmlSrcImagePrefix()).thenReturn("jpeg");
+        Map<String, String> responseContent = new HashMap<String, String>();
+
+        imageControllerUtils.prepareNormalResponse(validAvatar, responseContent);
+
+        assertEquals(responseContent.get(imageControllerUtils.STATUS), "SUCCESS");
+        assertEquals(responseContent.get(imageControllerUtils.SRC_PREFIX), "jpeg");
+        assertEquals(responseContent.get(imageControllerUtils.SRC_IMAGE), IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
+    }
+
+    @Test
+    public void getDefaultImageShouldReturnDefaultImageOfImageService() {
+        when(imageService.getDefaultImage()).thenReturn(validAvatar);
+
+        byte[] image = imageControllerUtils.getDefaultImage();
+
+        assertEquals(validAvatar, image);
     }
 }

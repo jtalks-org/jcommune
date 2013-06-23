@@ -40,6 +40,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 public class ImageServiceTest {
 
@@ -66,8 +67,14 @@ public class ImageServiceTest {
         imageService = new ImageService(
                 imageConverter,
                 base64Wrapper,
-                "",
+                "org/jtalks/jcommune/service/avatar.gif",
                 imageSizeProperty);
+    }
+
+    @Test
+    public void getDefaultImageShouldReturnNotEmptyImage() {
+        byte[] avatar = imageService.getDefaultImage();
+        assertTrue(avatar.length > 0);
     }
 
     @Test(dataProvider = "validImageBytesValues")
@@ -111,7 +118,8 @@ public class ImageServiceTest {
     }
 
     @Test(expectedExceptions = ImageProcessException.class)
-    public void convertBytesToBase64StringShouldNotContinueWhenPassedImageByteArrayIsIncorrect() throws ImageProcessException {
+    public void convertBytesToBase64StringShouldNotContinueWhenPassedImageByteArrayIsIncorrect()
+            throws ImageProcessException {
         byte[] imageBytes = {8, 2};
         when(imageConverter.convertByteArrayToImage(imageBytes)).thenReturn(null);
 
@@ -126,7 +134,8 @@ public class ImageServiceTest {
     }
 
     @Test(expectedExceptions = ImageFormatException.class, dataProvider = "invalidFormatValues")
-    public void validateImageFormatShouldNotConsiderIncorrectFormatsAsValid(MultipartFile file) throws ImageFormatException {
+    public void validateImageFormatShouldNotConsiderIncorrectFormatsAsValid(MultipartFile file)
+            throws ImageFormatException {
         imageService.validateImageFormat(file);
     }
 
@@ -228,5 +237,14 @@ public class ImageServiceTest {
         byte[] bytes = new byte[IMAGE_MAX_SIZE];
 
         imageService.validateImageSize(bytes);
+    }
+
+    @Test
+    public void serviceShouldReturnPrefixOfImageConverter() {
+        when(imageConverter.getHtmlSrcImagePrefix()).thenReturn("tiff");
+
+        String prefix = imageService.getHtmlSrcImagePrefix();
+
+        assertEquals(prefix, "tiff");
     }
 }

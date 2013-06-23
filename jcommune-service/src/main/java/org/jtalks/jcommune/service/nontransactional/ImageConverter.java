@@ -54,7 +54,7 @@ public abstract class ImageConverter {
     private Base64Wrapper base64Wrapper;
 
     private final int maxImageWidth;
-    private final  int maxImageHeight;
+    private final int maxImageHeight;
 
     /**
      * @param base64Wrapper to perform image data encoding, essential for embedding an image into HTML page

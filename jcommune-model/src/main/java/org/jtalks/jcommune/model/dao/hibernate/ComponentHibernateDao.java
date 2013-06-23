@@ -113,6 +113,10 @@ public class ComponentHibernateDao extends GenericDao<Component> implements Comp
      */
     @Override
     public Date getComponentModificationTime() {
+        if (getComponent() == null) {
+            return new Date();
+        }
+
         String dateString = getComponent().getProperty(COMPONENT_INFO_CHANGE_DATE_PROPERTY);
         Date modificationDate = new Date();
 

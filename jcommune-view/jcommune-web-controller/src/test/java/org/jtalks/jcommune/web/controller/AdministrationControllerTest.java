@@ -16,9 +16,11 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.common.model.entity.ComponentType;
+import org.jtalks.jcommune.model.dao.hibernate.ComponentHibernateDao;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
+import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
@@ -186,7 +188,7 @@ public class AdministrationControllerTest {
     }
 
     @Test
-    public void renderAvatarShouldReturnModifiedAvatarInResponse() throws IOException {
+    public void renderLogoShouldReturnModifiedLogoInResponse() throws IOException {
         MockHttpServletResponse response = new MockHttpServletResponse();
         when(componentService.getComponentModificationTime()).thenReturn(new Date(1000));
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -209,7 +211,7 @@ public class AdministrationControllerTest {
     }
 
     @Test
-    public void renderAvatarShouldNotReturnNotModifiedAvatarInResponse() throws IOException {
+    public void renderLogoShouldNotReturnNotModifiedLogoInResponse() throws IOException {
         MockHttpServletResponse response = new MockHttpServletResponse();
         when(componentService.getComponentModificationTime()).thenReturn(new Date(0));
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -230,43 +232,46 @@ public class AdministrationControllerTest {
         assertNotNull(response.getHeader("Last-Modified"));// depends on current timezone
     }
 
-    /*@Test
+    @Test
     public void getForumLogoShouldReturnDefaultLogoWhenLogoPropertyIsEmpty() throws ImageProcessException {
         Component forumComponent = new Component();
-        forumComponent.addProperty(AdministrationController.JCOMMUNE_LOGO_PARAM, "");
+        forumComponent.addProperty(ComponentHibernateDao.LOGO_PROPERTY, "");
         when(componentService.getComponentOfForum()).thenReturn(forumComponent);
-        when(forumLogoService.getDefaultLogo()).thenReturn(validImage);
-        when(imageControllerUtils.getImageDataInString64(validImage)).thenReturn("valid image");
+        when(componentService.getComponentModificationTime()).thenReturn(new Date());
+        when(logoControllerUtils.getDefaultImage()).thenReturn(validImage);
 
-        String imageString = administrationController.getForumLogo();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        administrationController.getForumLogo(new MockHttpServletRequest(), response);
 
-        verify(forumLogoService).getDefaultLogo();
-        assertEquals(imageString, "valid image");
+        verify(logoControllerUtils).getDefaultImage();
+        assertEquals(response.getContentAsByteArray(), validImage);
     }
 
     @Test
     public void getForumLogoShouldReturnDefaultLogoWhenLogoPropertyIsNull() throws ImageProcessException {
         Component forumComponent = new Component();
         when(componentService.getComponentOfForum()).thenReturn(forumComponent);
-        when(forumLogoService.getDefaultLogo()).thenReturn(validImage);
-        when(imageControllerUtils.getImageDataInString64(validImage)).thenReturn("valid image");
+        when(componentService.getComponentModificationTime()).thenReturn(new Date());
+        when(logoControllerUtils.getDefaultImage()).thenReturn(validImage);
 
-        String imageString = administrationController.getForumLogo();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        administrationController.getForumLogo(new MockHttpServletRequest(), response);
 
-        verify(forumLogoService).getDefaultLogo();
-        assertEquals(imageString, "valid image");
+        verify(logoControllerUtils).getDefaultImage();
+        assertEquals(response.getContentAsByteArray(), validImage);
     }
 
     @Test
     public void getForumLogoShouldReturnDefaultLogoWhenNoComponent() throws ImageProcessException {
         when(componentService.getComponentOfForum()).thenReturn(null);
-        when(forumLogoService.getDefaultLogo()).thenReturn(validImage);
-        when(imageControllerUtils.getImageDataInString64(validImage)).thenReturn("valid image");
+        when(componentService.getComponentModificationTime()).thenReturn(new Date());
+        when(logoControllerUtils.getDefaultImage()).thenReturn(validImage);
 
-        String imageString = administrationController.getForumLogo();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        administrationController.getForumLogo(new MockHttpServletRequest(), response);
 
-        verify(forumLogoService).getDefaultLogo();
-        assertEquals(imageString, "valid image");
+        verify(logoControllerUtils).getDefaultImage();
+        assertEquals(response.getContentAsByteArray(), validImage);
     }
 
     @Test
@@ -277,13 +282,250 @@ public class AdministrationControllerTest {
         Base64Wrapper wrapper = new Base64Wrapper();
         byte[] logoBytes = wrapper.decodeB64Bytes(logoProperty);
 
-        forumComponent.addProperty(AdministrationController.JCOMMUNE_LOGO_PARAM, logoProperty);
-        when(imageControllerUtils.getImageDataInString64(logoBytes)).thenReturn("valid image");
+        forumComponent.addProperty(ComponentHibernateDao.LOGO_PROPERTY, logoProperty);
         when(componentService.getComponentOfForum()).thenReturn(forumComponent);
+        when(componentService.getComponentModificationTime()).thenReturn(new Date());
 
-        String imageString = administrationController.getForumLogo();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        administrationController.getForumLogo(new MockHttpServletRequest(), response);
 
-        verify(forumLogoService, never()).getDefaultLogo();
-        assertEquals(imageString, "valid image");
-    }*/
+        verify(logoControllerUtils, never()).getDefaultImage();
+        assertEquals(response.getContentAsByteArray(), logoBytes);
+    }
+
+
+    @Test
+    public void getFavIconPNGShouldReturnDefaultIconWhenIconPropertyIsEmpty() throws ImageProcessException {
+        Component forumComponent = new Component();
+        forumComponent.addProperty(ComponentHibernateDao.COMPONENT_FAVICON_PNG_PARAM, "");
+        when(componentService.getComponentOfForum()).thenReturn(forumComponent);
+        when(componentService.getComponentModificationTime()).thenReturn(new Date());
+        when(favIconPngControllerUtils.getDefaultImage()).thenReturn(validImage);
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        administrationController.getFavIconPNG(new MockHttpServletRequest(), response);
+
+        verify(favIconPngControllerUtils).getDefaultImage();
+        assertEquals(response.getContentAsByteArray(), validImage);
+    }
+
+    @Test
+    public void getFavIconPNGShouldReturnDefaultIconWhenIconPropertyIsNull() throws ImageProcessException {
+        Component forumComponent = new Component();
+        when(componentService.getComponentOfForum()).thenReturn(forumComponent);
+        when(componentService.getComponentModificationTime()).thenReturn(new Date());
+        when(favIconPngControllerUtils.getDefaultImage()).thenReturn(validImage);
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        administrationController.getFavIconPNG(new MockHttpServletRequest(), response);
+
+        verify(favIconPngControllerUtils).getDefaultImage();
+        assertEquals(response.getContentAsByteArray(), validImage);
+    }
+
+    @Test
+    public void getFavIconPNGShouldReturnDefaultIconWhenNoComponent() throws ImageProcessException {
+        when(componentService.getComponentOfForum()).thenReturn(null);
+        when(componentService.getComponentModificationTime()).thenReturn(new Date());
+        when(favIconPngControllerUtils.getDefaultImage()).thenReturn(validImage);
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        administrationController.getFavIconPNG(new MockHttpServletRequest(), response);
+
+        verify(favIconPngControllerUtils).getDefaultImage();
+        assertEquals(response.getContentAsByteArray(), validImage);
+    }
+
+    @Test
+    public void getFavIconPNGLogoShouldReturnPropertyIconWhenPropertyExists() throws IOException, ImageProcessException {
+        Component forumComponent = new Component();
+
+        String logoProperty = "logo";
+        Base64Wrapper wrapper = new Base64Wrapper();
+        byte[] logoBytes = wrapper.decodeB64Bytes(logoProperty);
+
+        forumComponent.addProperty(ComponentHibernateDao.COMPONENT_FAVICON_PNG_PARAM, logoProperty);
+        when(componentService.getComponentOfForum()).thenReturn(forumComponent);
+        when(componentService.getComponentModificationTime()).thenReturn(new Date());
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        administrationController.getFavIconPNG(new MockHttpServletRequest(), response);
+
+        verify(favIconPngControllerUtils, never()).getDefaultImage();
+        assertEquals(response.getContentAsByteArray(), logoBytes);
+    }
+
+
+
+
+    @Test
+    public void getFavIconICOShouldReturnDefaultIconWhenIconPropertyIsEmpty() throws ImageProcessException {
+        Component forumComponent = new Component();
+        forumComponent.addProperty(ComponentHibernateDao.COMPONENT_FAVICON_PNG_PARAM, "");
+        when(componentService.getComponentOfForum()).thenReturn(forumComponent);
+        when(componentService.getComponentModificationTime()).thenReturn(new Date());
+        when(favIconIcoControllerUtils.getDefaultImage()).thenReturn(validImage);
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        administrationController.getFavIconICO(new MockHttpServletRequest(), response);
+
+        verify(favIconIcoControllerUtils).getDefaultImage();
+        assertEquals(response.getContentAsByteArray(), validImage);
+    }
+
+    @Test
+    public void getFavIconICOShouldReturnDefaultIconWhenIconPropertyIsNull() throws ImageProcessException {
+        Component forumComponent = new Component();
+        when(componentService.getComponentOfForum()).thenReturn(forumComponent);
+        when(componentService.getComponentModificationTime()).thenReturn(new Date());
+        when(favIconIcoControllerUtils.getDefaultImage()).thenReturn(validImage);
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        administrationController.getFavIconICO(new MockHttpServletRequest(), response);
+
+        verify(favIconIcoControllerUtils).getDefaultImage();
+        assertEquals(response.getContentAsByteArray(), validImage);
+    }
+
+    @Test
+    public void getFavIconICOShouldReturnDefaultIconWhenNoComponent() throws ImageProcessException {
+        when(componentService.getComponentOfForum()).thenReturn(null);
+        when(componentService.getComponentModificationTime()).thenReturn(new Date());
+        when(favIconIcoControllerUtils.getDefaultImage()).thenReturn(validImage);
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        administrationController.getFavIconICO(new MockHttpServletRequest(), response);
+
+        verify(favIconIcoControllerUtils).getDefaultImage();
+        assertEquals(response.getContentAsByteArray(), validImage);
+    }
+
+    @Test
+    public void getFavIconICOLogoShouldReturnPropertyIconWhenPropertyExists() throws IOException, ImageProcessException {
+        Component forumComponent = new Component();
+
+        String logoProperty = "logo";
+        Base64Wrapper wrapper = new Base64Wrapper();
+        byte[] logoBytes = wrapper.decodeB64Bytes(logoProperty);
+
+        forumComponent.addProperty(ComponentHibernateDao.COMPONENT_FAVICON_ICO_PARAM, logoProperty);
+        when(componentService.getComponentOfForum()).thenReturn(forumComponent);
+        when(componentService.getComponentModificationTime()).thenReturn(new Date());
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        administrationController.getFavIconICO(new MockHttpServletRequest(), response);
+
+        verify(favIconIcoControllerUtils, never()).getDefaultImage();
+        assertEquals(response.getContentAsByteArray(), logoBytes);
+    }
+
+
+    @Test
+    public void iconPngRequestShouldReturnModifiedIconInResponse() throws IOException {
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        when(componentService.getComponentModificationTime()).thenReturn(new Date(1000));
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader(administrationController.IF_MODIFIED_SINCE_HEADER, new Date(0));
+
+        when(favIconPngControllerUtils.getDefaultImage()).thenReturn(validImage);
+
+        administrationController.getFavIconPNG(request, response);
+
+        assertEquals(response.getContentType(), "image/png");
+        assertEquals(response.getContentLength(), validImage.length);
+        assertEquals(response.getContentAsByteArray(), validImage);
+        assertEquals(response.getHeader("Pragma"), "public");
+        List<String> cacheControlHeaders = response.getHeaders("Cache-Control");
+        Assert.assertTrue(cacheControlHeaders.contains("public"));
+        Assert.assertTrue(cacheControlHeaders.contains("must-revalidate"));
+        Assert.assertTrue(cacheControlHeaders.contains("max-age=0"));
+        assertNotNull(response.getHeader("Expires"));//System.currentTimeMillis() is used
+        assertNotNull(response.getHeader("Last-Modified"));// depends on current timezone
+    }
+
+    @Test
+    public void iconPngRequestShouldNotReturnModifiedIconInResponse() throws IOException {
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        when(componentService.getComponentModificationTime()).thenReturn(new Date(0));
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader(administrationController.IF_MODIFIED_SINCE_HEADER, new Date(1000));
+
+        when(favIconPngControllerUtils.getDefaultImage()).thenReturn(validImage);
+
+        administrationController.getFavIconPNG(request, response);
+
+        assertEquals(response.getStatus(), HttpServletResponse.SC_NOT_MODIFIED);
+        assertNotSame(response.getContentAsByteArray(), validImage);
+        assertEquals(response.getHeader("Pragma"), "public");
+        List<String> cacheControlHeaders = response.getHeaders("Cache-Control");
+        Assert.assertTrue(cacheControlHeaders.contains("public"));
+        Assert.assertTrue(cacheControlHeaders.contains("must-revalidate"));
+        Assert.assertTrue(cacheControlHeaders.contains("max-age=0"));
+        assertNotNull(response.getHeader("Expires"));//System.currentTimeMillis() is used
+        assertNotNull(response.getHeader("Last-Modified"));// depends on current timezone
+    }
+
+    @Test
+    public void iconIcoRequestShouldReturnModifiedIconInResponse() throws IOException {
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        when(componentService.getComponentModificationTime()).thenReturn(new Date(1000));
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader(administrationController.IF_MODIFIED_SINCE_HEADER, new Date(0));
+
+        when(favIconIcoControllerUtils.getDefaultImage()).thenReturn(validImage);
+
+        administrationController.getFavIconICO(request, response);
+
+        assertEquals(response.getContentType(), "image/x-icon");
+        assertEquals(response.getContentLength(), validImage.length);
+        assertEquals(response.getContentAsByteArray(), validImage);
+        assertEquals(response.getHeader("Pragma"), "public");
+        List<String> cacheControlHeaders = response.getHeaders("Cache-Control");
+        Assert.assertTrue(cacheControlHeaders.contains("public"));
+        Assert.assertTrue(cacheControlHeaders.contains("must-revalidate"));
+        Assert.assertTrue(cacheControlHeaders.contains("max-age=0"));
+        assertNotNull(response.getHeader("Expires"));//System.currentTimeMillis() is used
+        assertNotNull(response.getHeader("Last-Modified"));// depends on current timezone
+    }
+
+    @Test
+    public void iconIcoRequestShouldNotReturnModifiedIconInResponse() throws IOException {
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        when(componentService.getComponentModificationTime()).thenReturn(new Date(0));
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader(administrationController.IF_MODIFIED_SINCE_HEADER, new Date(1000));
+
+        when(favIconIcoControllerUtils.getDefaultImage()).thenReturn(validImage);
+
+        administrationController.getFavIconICO(request, response);
+
+        assertEquals(response.getStatus(), HttpServletResponse.SC_NOT_MODIFIED);
+        assertNotSame(response.getContentAsByteArray(), validImage);
+        assertEquals(response.getHeader("Pragma"), "public");
+        List<String> cacheControlHeaders = response.getHeaders("Cache-Control");
+        Assert.assertTrue(cacheControlHeaders.contains("public"));
+        Assert.assertTrue(cacheControlHeaders.contains("must-revalidate"));
+        Assert.assertTrue(cacheControlHeaders.contains("max-age=0"));
+        assertNotNull(response.getHeader("Expires"));//System.currentTimeMillis() is used
+        assertNotNull(response.getHeader("Last-Modified"));// depends on current timezone
+    }
+
+    @Test
+    public void uploadIconForOperaAndIEShouldReturnPreviewInResponce()
+            throws IOException, ImageProcessException {
+        MultipartFile file = new MockMultipartFile("qqfile", validImage);
+
+        ResponseEntity<String> actualResponseEntity = administrationController.uploadFavIcon(file);
+
+        verify(favIconPngControllerUtils).prepareResponse(eq(file), any(HttpHeaders.class), any(HashMap.class));
+    }
+
+    @Test
+    public void uploadIconForChromeAndFFShouldReturnPreviewInResponce() throws ImageProcessException {
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        administrationController.uploadFavIcon(validImage, response);
+
+        verify(favIconPngControllerUtils).prepareResponse(eq(validImage), eq(response), any(HashMap.class));
+    }
 }
