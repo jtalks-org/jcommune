@@ -96,7 +96,7 @@
     </bean>
 
     <bean id="favIconServiceICO" class="org.jtalks.jcommune.service.nontransactional.ImageService">
-        <constructor-arg ref="favIconPngPreprocessor"/>
+        <constructor-arg ref="favIconIcoPreprocessor"/>
         <constructor-arg ref="base64Wrapper"/>
         <constructor-arg value="org/jtalks/jcommune/service/favicon.ico"/>
         <constructor-arg ref="forumLogoMaxSizeProperty"/>
