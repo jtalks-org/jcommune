@@ -156,6 +156,7 @@ function fillAdminDialogInputs() {
         $('#forum_description').val(currentAdminValues.forumDescription);
         $('#forum_logoTooltip').val(currentAdminValues.logoTooltip);
         $('#logoPreview').attr('src', currentAdminValues.logoPreview);
+        $('#iconPreview').attr('src', currentAdminValues.iconPreview);
         $('#logo').val(currentAdminValues.logo);
         $('#icon').val(currentAdminValues.icon);
     }
