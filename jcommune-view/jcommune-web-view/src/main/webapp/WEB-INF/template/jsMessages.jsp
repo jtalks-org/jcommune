@@ -116,3 +116,6 @@ $labelAdministration = '<spring:message code="label.administration" htmlEscape="
 $labelDeleteLogoConfirmation = '<spring:message code="label.deleteLogoConfirmation" htmlEscape="true"/>';
 $labelUploadLogo = '<spring:message code="label.uploadLogo" htmlEscape="true"/>';
 $labelRemoveLogo = '<spring:message code="label.deleteLogo" htmlEscape="true"/>';
+$labelUploadFavIcon = '<spring:message code="label.uploadFavIcon" htmlEscape="true"/>';
+$labelRemoveFavIcon = '<spring:message code="label.deleteFavIcon" htmlEscape="true"/>';
+$labelDeleteIconConfirmation = '<spring:message code="label.deleteIconConfirmation" htmlEscape="true"/>';

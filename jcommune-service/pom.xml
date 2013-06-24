@@ -107,6 +107,13 @@
       <groupId>org.jtalks.common</groupId>
       <artifactId>jtalks-common-security</artifactId>
     </dependency>
+
+
+    <dependency>
+        <groupId>org.jclarion</groupId>
+        <artifactId>image4j</artifactId>
+        <version>0.7</version>
+    </dependency>
   </dependencies>
 
   <properties>

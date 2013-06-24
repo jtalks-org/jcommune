@@ -16,6 +16,7 @@
 package org.jtalks.jcommune.web.controller;
 
 
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.jtalks.jcommune.service.exceptions.ImageFormatException;
 import org.jtalks.jcommune.service.exceptions.ImageSizeException;
 import org.jtalks.jcommune.web.dto.json.FailJsonResponse;
@@ -27,6 +28,7 @@ import org.springframework.context.MessageSource;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.Date;
 import java.util.Locale;
 
 import static org.mockito.Mockito.when;
@@ -100,5 +102,26 @@ public class ImageUploadControllerTest {
         assertEquals(result.getStatus(), JsonResponseStatus.FAIL, "We have an exception, so we should get false value.");
         assertEquals(result.getReason(), JsonResponseReason.INTERNAL_SERVER_ERROR, "Failture reason should be validation");
         assertEquals(result.getResult(), expectedMessage, "Result contains incorrect message.");
+    }
+
+    @Test
+    public void testGetIfModifiedSinceDate() {
+        long currentMillis = System.currentTimeMillis();
+        long currentTimeIgnoreMillis = (currentMillis / 1000) * 1000;
+        Date date = new Date(currentTimeIgnoreMillis);
+        String dateAsString = DateFormatUtils.format(date,
+                ImageUploadController.HTTP_HEADER_DATETIME_PATTERN,
+                Locale.US);
+
+        Date result = imageUploadController.getIfModifiedSineDate(dateAsString);
+
+        assertEquals(result.getTime(), date.getTime());
+    }
+
+    @Test
+    public void testGetIfModifiedSinceDateNullHeader() {
+        Date result = imageUploadController.getIfModifiedSineDate(null);
+
+        assertEquals(result, new Date(0));
     }
 }

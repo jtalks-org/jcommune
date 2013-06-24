@@ -35,11 +35,13 @@ public class PropertiesInterceptor extends HandlerInterceptorAdapter {
     private static final String PARAM_CMP_DESCRIPTION = "cmpDescription";
     private static final String PARAM_SHOW_DUMMY_LINKS = "sapeShowDummyLinks";
     private static final String PARAM_LOGO_TOOLTIP = "logoTooltip";
+    private static final String PARAM_ADMIN_INFO_CHANGE_DATE = "infoChangeDate";
     
     private JCommuneProperty componentNameProperty;
     private JCommuneProperty componentDescriptionProperty;
     private JCommuneProperty sapeShowDummyLinksProperty;
     private JCommuneProperty logoTooltipProperty;
+    private JCommuneProperty adminInfoChangeDateProperty;
 
     /**
      * @param componentDescriptionProperty component description property
@@ -50,11 +52,13 @@ public class PropertiesInterceptor extends HandlerInterceptorAdapter {
     public PropertiesInterceptor(JCommuneProperty componentNameProperty,
                                  JCommuneProperty componentDescriptionProperty,
                                  JCommuneProperty sapeShowDummyLinksProperty,
-                                 JCommuneProperty logoTooltipProperty) {
+                                 JCommuneProperty logoTooltipProperty,
+                                 JCommuneProperty adminInfoChangeDateProperty) {
         this.componentDescriptionProperty = componentDescriptionProperty;
         this.componentNameProperty = componentNameProperty;
         this.sapeShowDummyLinksProperty = sapeShowDummyLinksProperty;
         this.logoTooltipProperty =  logoTooltipProperty;
+        this.adminInfoChangeDateProperty = adminInfoChangeDateProperty;
     }
 
     /**
@@ -75,6 +79,7 @@ public class PropertiesInterceptor extends HandlerInterceptorAdapter {
             modelAndView.addObject(PARAM_CMP_DESCRIPTION, componentDescriptionProperty.getValueOfComponent());
             modelAndView.addObject(PARAM_SHOW_DUMMY_LINKS, sapeShowDummyLinksProperty.booleanValue());
             modelAndView.addObject(PARAM_LOGO_TOOLTIP, logoTooltipProperty.getValue());
+            modelAndView.addObject(PARAM_ADMIN_INFO_CHANGE_DATE, adminInfoChangeDateProperty.getValue());
         }
     }
 }

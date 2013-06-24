@@ -20,6 +20,8 @@ import org.jtalks.jcommune.model.entity.ComponentInformation;
 import org.jtalks.jcommune.service.ComponentService;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.Date;
+
 /**
  * The implementation of {@link ComponentService}.
  * 
@@ -57,5 +59,13 @@ public class TransactionalComponentService extends AbstractTransactionalEntitySe
                     "Service should work with the same component as the componentInformation argument.");
         }
         getDao().setComponentInformation(componentInformation);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Date getComponentModificationTime() {
+        return getDao().getComponentModificationTime();
     }
 }

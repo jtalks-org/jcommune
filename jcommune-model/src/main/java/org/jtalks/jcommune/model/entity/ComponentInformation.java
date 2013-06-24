@@ -43,6 +43,10 @@ public class ComponentInformation {
 
     private String logo;
 
+    private String icon;
+
+    private String iconICO;
+
     /**
      * Gets the string with encoded logo picture
      * @return the string with encoded logo picture
@@ -121,5 +125,37 @@ public class ComponentInformation {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * Gets component fav icon
+     * @return string with new encoded icon picture
+     */
+    public String getIcon() {
+        return icon;
+    }
+
+    /**
+     * Sets component fav icon
+     * @param icon string with new encoded icon picture
+     */
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    /**
+     * Gets component fav icon in the .ico format
+     * @return string with new encoded icon picture
+     */
+    public String getIconICO() {
+        return iconICO;
+    }
+
+    /**
+     * Sets component fav icon in the .ico format
+     * @param iconICO string with new encoded icon picture
+     */
+    public void setIconICO(String iconICO) {
+        this.iconICO = iconICO;
     }
 }

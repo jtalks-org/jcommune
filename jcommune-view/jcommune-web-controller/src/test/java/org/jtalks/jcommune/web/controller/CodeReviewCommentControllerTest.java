@@ -14,21 +14,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
@@ -38,11 +23,7 @@ import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.web.dto.CodeReviewCommentDto;
-import org.jtalks.jcommune.web.dto.json.FailJsonResponse;
-import org.jtalks.jcommune.web.dto.json.FailValidationJsonResponse;
-import org.jtalks.jcommune.web.dto.json.JsonResponse;
-import org.jtalks.jcommune.web.dto.json.JsonResponseReason;
-import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
+import org.jtalks.jcommune.web.dto.json.*;
 import org.mockito.Mock;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.access.AccessDeniedException;
@@ -50,6 +31,15 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.*;
 
 /**
  * @author Vyacheslav Mishcheryakov
@@ -257,7 +247,7 @@ public class CodeReviewCommentControllerTest {
         comment.setId(COMMENT_ID);
         comment.setBody(COMMENT_BODY);
         comment.setLineNumber(COMMENT_LINE_NUMBER);
-        comment.setCodeReview(codeReview);
+        codeReview.addComment(comment);
 
         JCUser user = currentUser();
         comment.setAuthor(user);

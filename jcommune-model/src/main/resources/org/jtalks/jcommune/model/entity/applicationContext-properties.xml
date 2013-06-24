@@ -142,4 +142,12 @@
         <property name="defaultValue" value=""/>
     </bean>
 
+    <bean id="componentInfoChangeDateProperty" class="org.jtalks.jcommune.model.entity.JCommuneProperty"
+          factory-method="valueOf">
+        <constructor-arg type="java.lang.String" value="INFO_CHANGE_DATE"/>
+        <property name="propertyDao" ref="propertyDao"/>
+        <property name="name" value="jcommune.info_change_date"/>
+        <property name="defaultValue" value="0"/>
+    </bean>
+
 </beans>

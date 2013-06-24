@@ -19,7 +19,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.AvatarService;
+import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.jtalks.jcommune.web.util.ImageControllerUtils;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -59,8 +59,6 @@ public class AvatarControllerTest {
     private static final String IMAGE_BYTE_ARRAY_IN_BASE_64_STRING = "it's dummy string";
     //
     @Mock
-    private AvatarService avatarService;
-    @Mock
     private UserService userService;
     @Mock
     private MessageSource messageSource;
@@ -82,7 +80,7 @@ public class AvatarControllerTest {
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
-        avatarController = new AvatarController(avatarService,  userService, imageControllerUtils, messageSource);
+        avatarController = new AvatarController(userService, imageControllerUtils, messageSource);
     }
 
     @Test
@@ -112,10 +110,10 @@ public class AvatarControllerTest {
         user.setAvatar(validAvatar);
         user.setAvatarLastModificationTime(new DateTime(1000));
         when(userService.get(anyLong())).thenReturn(user);
-        when(avatarService.getIfModifiedSineDate(anyString()))
-            .thenReturn(new Date(0));
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader(avatarController.IF_MODIFIED_SINCE_HEADER, new Date(0));
 
-        avatarController.renderAvatar(new MockHttpServletRequest(), response, 0L);
+        avatarController.renderAvatar(request, response, 0L);
 
         assertEquals(response.getContentType(), "image/jpeg");
         assertEquals(response.getContentLength(), validAvatar.length);
@@ -136,10 +134,11 @@ public class AvatarControllerTest {
         user.setAvatarLastModificationTime(new DateTime(0));
         when(userService.get(anyLong())).thenReturn(user);
         MockHttpServletResponse response = new MockHttpServletResponse();
-        when(avatarService.getIfModifiedSineDate(anyString()))
-            .thenReturn(new Date(1000));
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader(avatarController.IF_MODIFIED_SINCE_HEADER, new Date(1000));
 
-        avatarController.renderAvatar(new MockHttpServletRequest(), response, 0L);
+
+        avatarController.renderAvatar(request, response, 0L);
 
         assertEquals(response.getStatus(), HttpServletResponse.SC_NOT_MODIFIED);
         assertNotSame(response.getContentAsByteArray(), validAvatar);
@@ -162,13 +161,12 @@ public class AvatarControllerTest {
     @SuppressWarnings("unchecked")
     public void getDefaultAvatarShouldReturnDefaultAvatarInBase64String() throws IOException, ImageProcessException {
         String expectedJSON = "{\"team\": \"larks\"}";
-        when(avatarService.getDefaultAvatar()).thenReturn(validAvatar);
-        when(avatarService.convertBytesToBase64String(validAvatar)).thenReturn(IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
+        when(imageControllerUtils.getDefaultImage()).thenReturn(validAvatar);
+        when(imageControllerUtils.convertImageToIcoInString64(validAvatar)).thenReturn(IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
         when(imageControllerUtils.getResponceJSONString(Matchers.anyMap())).thenReturn(expectedJSON);
 
         String actualJSON = avatarController.getDefaultAvatar();
 
-        verify(avatarService).getDefaultAvatar();
         assertEquals(actualJSON, expectedJSON);
     }
 }

@@ -16,8 +16,7 @@
 package org.jtalks.jcommune.web.util;
 
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
-import org.jtalks.jcommune.service.nontransactional.BaseImageService;
-import org.jtalks.jcommune.service.nontransactional.ImageUtils;
+import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,10 +25,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Class containing utility method for controller working with
+ * uploaded images
  * @author Alexandre Teterin
  * @author Anuar Nurmakanov
  */
@@ -39,15 +39,16 @@ public class ImageControllerUtils {
     public static final String SRC_PREFIX = "srcPrefix";
     public static final String SRC_IMAGE = "srcImage";
 
-    private BaseImageService baseImageService;
+
+    private ImageService imageService;
     private JSONUtils jsonUtils;
 
     /**
      *
      */
-    public ImageControllerUtils(BaseImageService baseImageService,
+    public ImageControllerUtils(ImageService imageService,
                                     JSONUtils jsonUtils) {
-        this.baseImageService = baseImageService;
+        this.imageService = imageService;
         this.jsonUtils = jsonUtils;
     }
 
@@ -65,9 +66,9 @@ public class ImageControllerUtils {
             MultipartFile file,
             HttpHeaders responseHeaders,
             Map<String, String> responseContent) throws IOException, ImageProcessException {
-        baseImageService.validateImageFormat(file);
+        imageService.validateImageFormat(file);
         byte[] bytes = file.getBytes();
-        baseImageService.validateImageSize(bytes);
+        imageService.validateImageSize(bytes);
         prepareNormalResponse(bytes, responseContent);
         String body = getResponceJSONString(responseContent);
         return new ResponseEntity<String>(body, responseHeaders, HttpStatus.OK);
@@ -88,8 +89,8 @@ public class ImageControllerUtils {
     public void prepareResponse(byte[] bytes,
                                  HttpServletResponse response,
                                  Map<String, String> responseContent) throws ImageProcessException {
-        baseImageService.validateImageFormat(bytes);
-        baseImageService.validateImageSize(bytes);
+        imageService.validateImageFormat(bytes);
+        imageService.validateImageSize(bytes);
         prepareNormalResponse(bytes, responseContent);
         response.setStatus(HttpServletResponse.SC_OK);
     }
@@ -103,19 +104,22 @@ public class ImageControllerUtils {
      */
     public void prepareNormalResponse(byte[] bytes,
                                        Map<String, String> responseContent) throws ImageProcessException {
-        String srcImage = baseImageService.convertBytesToBase64String(bytes);
+        String srcImage = imageService.preProcessAndEncodeInString64(bytes);
         responseContent.put(STATUS, String.valueOf(JsonResponseStatus.SUCCESS));
-        responseContent.put(SRC_PREFIX, ImageUtils.HTML_SRC_TAG_PREFIX);
+        responseContent.put(SRC_PREFIX, imageService.getHtmlSrcImagePrefix());
         responseContent.put(SRC_IMAGE, srcImage);
     }
 
+    public String convertImageToIcoInString64(byte[] imageBytes) throws ImageProcessException {
+        return imageService.preProcessAndEncodeInString64(imageBytes);
+    }
+
     /**
-     * Converts raw image data to format appropriate for "src" attribute of <img> tag
-     * @param imageData raw image data appropriate for "src" attribute of <img> tag
-     * @return string with image data
-     * @throws ImageProcessException
+     * Returns default image to be used when custom image is not set
+     *
+     * @return byte array-stored image
      */
-    public String getImageDataInString64(byte[] imageData) throws ImageProcessException {
-        return  ImageUtils.HTML_SRC_TAG_PREFIX + baseImageService.convertBytesToBase64String(imageData);
+    public byte[] getDefaultImage() {
+        return imageService.getDefaultImage();
     }
 }

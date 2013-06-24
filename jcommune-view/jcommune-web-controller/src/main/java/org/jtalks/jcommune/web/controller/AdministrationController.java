@@ -15,22 +15,21 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.common.model.entity.Component;
+import org.jtalks.jcommune.model.dao.hibernate.ComponentHibernateDao;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
-import org.jtalks.jcommune.service.nontransactional.ForumLogoService;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.util.ImageControllerUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +40,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -48,13 +48,10 @@ import java.util.Map;
 /**
  * @author Andrei Alikov
  * Controller for processing forum administration related requests
+ * such as setting up Forum title, description, logo and fav icon
  */
 @Controller
 public class AdministrationController extends ImageUploadController {
-    /**
-     * Parameter name for forum logo
-     */
-    public static final String JCOMMUNE_LOGO_PARAM = "jcommune.logo";
 
     /**
      * Session's marker attribute name for Administration mode
@@ -62,9 +59,12 @@ public class AdministrationController extends ImageUploadController {
     public static final String ADMIN_ATTRIBUTE_NAME = "adminMode";
     private static final String ACCESS_DENIED_MESSAGE = "access.denied";
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdministrationController.class);
+
     private final ComponentService componentService;
-    private final ImageControllerUtils imageControllerUtils;
-    private final ForumLogoService forumLogoService;
+    private final ImageControllerUtils logoControllerUtils;
+    private final ImageControllerUtils favIconPngControllerUtils;
+    private final ImageControllerUtils favIconIcoControllerUtils;
 
     @Autowired
     ServletContext servletContext;
@@ -72,20 +72,25 @@ public class AdministrationController extends ImageUploadController {
     /**
      * Creates instance of the service
      * @param componentService service to work with the forum component
-     * @param imageControllerUtils utility object for image-related functions
+     * @param logoControllerUtils utility object for logo converting functions
+     * @param favIconPngControllerUtils utility object for fav icon converting (to PNG format) functions
+     * @param favIconIcoControllerUtils utility object for fav icon converting (to ICO format) functions
      * @param messageSource to resolve locale-dependent messages
-     * @param forumLogoService service for forum logo related operations
      */
     @Autowired
     public AdministrationController(ComponentService componentService,
                                     @Qualifier("forumLogoControllerUtils")
-                                    ImageControllerUtils imageControllerUtils,
-                                    MessageSource messageSource,
-                                    ForumLogoService forumLogoService) {
+                                    ImageControllerUtils logoControllerUtils,
+                                    @Qualifier("favIconPngControllerUtils")
+                                    ImageControllerUtils favIconPngControllerUtils,
+                                    @Qualifier("favIconIcoControllerUtils")
+                                    ImageControllerUtils favIconIcoControllerUtils,
+                                    MessageSource messageSource) {
         super(messageSource);
         this.componentService = componentService;
-        this.imageControllerUtils = imageControllerUtils;
-        this.forumLogoService = forumLogoService;
+        this.logoControllerUtils = logoControllerUtils;
+        this.favIconIcoControllerUtils = favIconIcoControllerUtils;
+        this.favIconPngControllerUtils = favIconPngControllerUtils;
     }
 
     /**
@@ -127,6 +132,17 @@ public class AdministrationController extends ImageUploadController {
         }
 
         componentInformation.setId(componentService.getComponentOfForum().getId());
+
+        if (componentInformation.getIcon() != null && !componentInformation.getIcon().isEmpty()) {
+            Base64Wrapper wrapper = new Base64Wrapper();
+            byte[] favIcon = wrapper.decodeB64Bytes(componentInformation.getIcon());
+            try {
+                componentInformation.setIconICO(favIconIcoControllerUtils.convertImageToIcoInString64(favIcon));
+            } catch (ImageProcessException e) {
+                LOGGER.error("Can't convert fav icon to *.ico format", e);
+            }
+        }
+
         try {
             componentService.setComponentInformation(componentInformation);
         } catch (AccessDeniedException e) {
@@ -137,38 +153,14 @@ public class AdministrationController extends ImageUploadController {
         return new JsonResponse(JsonResponseStatus.SUCCESS, null);
     }
 
-    @RequestMapping(value = "/admin/logo", method = RequestMethod.GET)
-    public void forumLogoRequest(HttpServletRequest request, HttpServletResponse response) {
-        byte[] logo = getLogoBytes();
-        response.setContentType("image/jpeg");
-        response.setContentLength(logo.length);
-        try {
-            response.getOutputStream().write(logo);
-        } catch (IOException e) {
-
-        }
-    }
-
     /**
-     * Returns logo image data in String64
-     * @return current forum logo image data in String64 format appropriate for "src" attribute of <img> tag
+     * Gets current forum logo
+     * @param request http request
+     * @param response http response
      */
-    private byte[] getLogoBytes() {
-        Component forumComponent = componentService.getComponentOfForum();
-        String logoProperty = null;
-        if (forumComponent != null) {
-            logoProperty = forumComponent.getProperty(JCOMMUNE_LOGO_PARAM);
-        }
-        byte[] logoBytes = null;
-
-        if (logoProperty == null || logoProperty.isEmpty()) {
-            logoBytes = forumLogoService.getDefaultLogo();
-        } else {
-            Base64Wrapper wrapper = new Base64Wrapper();
-            logoBytes = wrapper.decodeB64Bytes(logoProperty);
-        }
-
-        return logoBytes;
+    @RequestMapping(value = "/admin/logo", method = RequestMethod.GET)
+    public void getForumLogo(HttpServletRequest request, HttpServletResponse response) {
+        processImageRequest(request, response, ComponentHibernateDao.LOGO_PROPERTY, logoControllerUtils, "image/jpeg");
     }
 
     /**
@@ -180,13 +172,17 @@ public class AdministrationController extends ImageUploadController {
     @RequestMapping(value = "/admin/defaultLogo", method = RequestMethod.GET)
     @ResponseBody
     public String getDefaultLogoInJson() throws IOException, ImageProcessException {
+        return  getDefaultImageInJSON(logoControllerUtils);
+    }
+
+    private String getDefaultImageInJSON(ImageControllerUtils imageUtils) throws ImageProcessException, IOException {
         Map<String, String> responseContent = new HashMap<String, String>();
-        imageControllerUtils.prepareNormalResponse(forumLogoService.getDefaultLogo(), responseContent);
-        return imageControllerUtils.getResponceJSONString(responseContent);
+        imageUtils.prepareNormalResponse(imageUtils.getDefaultImage(), responseContent);
+        return imageUtils.getResponceJSONString(responseContent);
     }
 
     /**
-     * returns redirect string to previous page
+     * Returns redirect string to previous page
      * @param request Client HTTP request
      */
     private String getRedirectToPrevPage(HttpServletRequest request) {
@@ -207,10 +203,7 @@ public class AdministrationController extends ImageUploadController {
     @ResponseBody
     public ResponseEntity<String> uploadLogo(
             @RequestParam(value = "qqfile") MultipartFile file) throws IOException, ImageProcessException {
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.setContentType(MediaType.TEXT_HTML);
-        Map<String, String> responseContent = new HashMap<String, String>();
-        return imageControllerUtils.prepareResponse(file, responseHeaders, responseContent);
+        return createPreviewOfImage(file, logoControllerUtils);
     }
 
     /**
@@ -226,8 +219,113 @@ public class AdministrationController extends ImageUploadController {
     @ResponseBody
     public Map<String, String> uploadLogo(@RequestBody byte[] bytes,
                                             HttpServletResponse response) throws ImageProcessException {
-        Map<String, String> responseContent = new HashMap<String, String>();
-        imageControllerUtils.prepareResponse(bytes, response, responseContent);
-        return responseContent;
+        return createPreviewOfImage(bytes, response, logoControllerUtils);
+    }
+
+    /**
+     * Gets current forum fav icon in the IE format
+     * @param request http request
+     * @param response http response
+     */
+    @RequestMapping(value = "/admin/icon/ico", method = RequestMethod.GET)
+    public void getFavIconICO(HttpServletRequest request, HttpServletResponse response) {
+        processImageRequest(request, response, ComponentHibernateDao.COMPONENT_FAVICON_ICO_PARAM,
+                favIconIcoControllerUtils, "image/x-icon");
+    }
+
+    /**
+     * Gets current forum fav icon in the PNG format (for all browsers except IE)
+     * @param request http request
+     * @param response http response
+     */
+    @RequestMapping(value = "/admin/icon/png", method = RequestMethod.GET)
+    public void getFavIconPNG(HttpServletRequest request, HttpServletResponse response) {
+        processImageRequest(request, response, ComponentHibernateDao.COMPONENT_FAVICON_PNG_PARAM,
+                favIconPngControllerUtils, "image/png");
+    }
+
+    private void processImageRequest(HttpServletRequest request, HttpServletResponse response,
+                                     String propertyName, ImageControllerUtils imageControllerUtils,
+                                     String contentType) {
+        Date forumModificationDate = componentService.getComponentModificationTime();
+
+        Date ifModifiedDate = getIfModifiedSineDate(request.getHeader(IF_MODIFIED_SINCE_HEADER));
+        if (!forumModificationDate.after(ifModifiedDate)) {
+            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+        } else {
+            byte[] image = loadImageFromProperties(propertyName, imageControllerUtils);
+            response.setContentType(contentType);
+            response.setContentLength(image.length);
+            try {
+                response.getOutputStream().write(image);
+            } catch (IOException e) {
+                LOGGER.error("Can't write image to the output stream. ", e);
+            }
+        }
+
+        setupAvatarHeaders(response, forumModificationDate);
+    }
+
+    private byte[] loadImageFromProperties(String propertyName, ImageControllerUtils imageControllerUtils) {
+        Component forumComponent = componentService.getComponentOfForum();
+        String imageProperty = null;
+        if (forumComponent != null) {
+            imageProperty = forumComponent.getProperty(propertyName);
+        }
+        byte[] imageBytes = null;
+
+        if (imageProperty == null || imageProperty.isEmpty()) {
+            imageBytes = imageControllerUtils.getDefaultImage();
+        } else {
+            Base64Wrapper wrapper = new Base64Wrapper();
+            imageBytes = wrapper.decodeB64Bytes(imageProperty);
+        }
+
+        return imageBytes;
+    }
+
+    /**
+     * Gets default fav icon in JSON containing image data in String64 format
+     * @return JSON string containing default fav icon in String64 format
+     * @throws IOException
+     * @throws ImageProcessException
+     */
+    @RequestMapping(value = "/admin/defaultIcon", method = RequestMethod.GET)
+    @ResponseBody
+    public String getDefaultIconInJson() throws IOException, ImageProcessException {
+        return  getDefaultImageInJSON(favIconPngControllerUtils);
+    }
+
+    /**
+     * Process Fav Icon file from request and return fav icon preview in response.
+     * Used for IE, Opera specific request processing.
+     *
+     * @param file file, that contains uploaded image
+     * @return ResponseEntity
+     * @throws IOException           defined in the JsonFactory implementation,
+     *                               caller must implement exception processing
+     * @throws org.jtalks.jcommune.service.exceptions.ImageProcessException if error occurred while image processing
+     */
+    @RequestMapping(value = "/admin/icon/IFrameFavIconPreview", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<String> uploadFavIcon(
+            @RequestParam(value = "qqfile") MultipartFile file) throws IOException, ImageProcessException {
+        return createPreviewOfImage(file, favIconPngControllerUtils);
+    }
+
+    /**
+     * Process Fav Icon file from request and return icon preview in response.
+     * Used for FF, Chrome specific request processing
+     *
+     * @param bytes    input icon data
+     * @param response servlet response
+     * @return response content
+     * @throws ImageProcessException if error occurred while image processing
+     */
+    @RequestMapping(value = "/admin/icon/XHRFavIconPreview", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, String> uploadFavIcon(@RequestBody byte[] bytes,
+                                          HttpServletResponse response) throws ImageProcessException {
+        return createPreviewOfImage(bytes, response, favIconPngControllerUtils);
     }
 }

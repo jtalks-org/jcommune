@@ -19,13 +19,10 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.web.util.ImageControllerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -40,37 +37,33 @@ import java.util.Map;
 
 /**
  * Controller for processing avatar related request.
- * todo: this class is too complex, we need to move some logic either to service or to a helper bean
  *
  * @author Alexandre Teterin
  * @author Anuar Nurmakanov
+ * @author Andrei Alikov
  */
 
 @Controller
 public class AvatarController extends ImageUploadController {
 
-    private AvatarService avatarService;
     private UserService userService;
     private ImageControllerUtils imageControllerUtils;
 
     /**
      * Constructor for controller instantiating, dependencies injected via autowiring.
      *
-     * @param avatarService for avatar manipulation
      * @param userService   to manipulate user-related data
      * @param imageControllerUtils utility object for image-related functions
      * @param messageSource to resolve locale-dependent messages
      */
     @Autowired
     public AvatarController(
-            AvatarService avatarService,
             UserService userService,
             @Qualifier("avatarControllerUtils")
             ImageControllerUtils imageControllerUtils,
             MessageSource messageSource) {
         super(messageSource);
 
-        this.avatarService = avatarService;
         this.userService = userService;
         this.imageControllerUtils = imageControllerUtils;
     }
@@ -89,10 +82,7 @@ public class AvatarController extends ImageUploadController {
     @ResponseBody
     public ResponseEntity<String> uploadAvatar(
             @RequestParam(value = "qqfile") MultipartFile file) throws IOException, ImageProcessException {
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.setContentType(MediaType.TEXT_HTML);
-        Map<String, String> responseContent = new HashMap<String, String>();
-        return imageControllerUtils.prepareResponse(file, responseHeaders, responseContent);
+        return createPreviewOfImage(file, imageControllerUtils);
     }
 
     /**
@@ -108,9 +98,7 @@ public class AvatarController extends ImageUploadController {
     @ResponseBody
     public Map<String, String> uploadAvatar(@RequestBody byte[] bytes,
                                             HttpServletResponse response) throws ImageProcessException {
-        Map<String, String> responseContent = new HashMap<String, String>();
-        imageControllerUtils.prepareResponse(bytes, response, responseContent);
-        return responseContent;
+        return createPreviewOfImage(bytes, response, imageControllerUtils);
     }
 
     /**
@@ -130,7 +118,7 @@ public class AvatarController extends ImageUploadController {
             throws NotFoundException, IOException {
         JCUser user = userService.get(id);
         
-        Date ifModifiedDate = avatarService.getIfModifiedSineDate(request.getHeader(IF_MODIFIED_SINCE_HEADER));
+        Date ifModifiedDate = getIfModifiedSineDate(request.getHeader(IF_MODIFIED_SINCE_HEADER));
         if (!user.getAvatarLastModificationTime().isAfter(ifModifiedDate.getTime())) {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
         } else {
@@ -156,7 +144,7 @@ public class AvatarController extends ImageUploadController {
     @ResponseBody
     public String getDefaultAvatar() throws ImageProcessException, IOException {
         Map<String, String> responseContent = new HashMap<String, String>();
-        imageControllerUtils.prepareNormalResponse(avatarService.getDefaultAvatar(), responseContent);
+        imageControllerUtils.prepareNormalResponse(imageControllerUtils.getDefaultImage(), responseContent);
         return imageControllerUtils.getResponceJSONString(responseContent);
     }
 }

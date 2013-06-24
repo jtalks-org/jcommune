@@ -20,11 +20,7 @@ import static org.testng.Assert.assertEquals;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 import javax.imageio.ImageIO;
 
@@ -41,48 +37,33 @@ import org.testng.annotations.Test;
  * @author Eugeny Batov
  * @author Alexandre Teterin
  */
-public class ImageUtilsTest {
+public class ImageConverterTest {
 
     @Mock
     private Base64Wrapper base64;
-    private ImageUtils imageUtils;
+    private ImageConverter imageConverter;
     private byte[] byteArray = new byte[]{1, 2, 3};
 
 
     @BeforeClass
     public void init() throws IOException {
         initMocks(this);
-        imageUtils = new ImageUtils(base64);
-    }
-
-    @Test(dataProvider = "validDataForImageToByteArrayTest")
-    public void testConvertImageToByteArrayForValidData(Image image, byte[] expected) throws ImageProcessException {
-        byte[] actual = imageUtils.convertImageToByteArray(image);
-        assertEquals(actual, expected);
-    }
-
-    @Test(dataProvider = "validDataForConvertByteArrayToImageTest")
-    public void testConvertByteArrayToImageForValidData(byte[] bytes, BufferedImage expected) throws ImageProcessException {
-        BufferedImage actual = imageUtils.convertByteArrayToImage(bytes);
-
-        byte[] actualResult = imageUtils.convertImageToByteArray(actual);
-        byte[] expectedResult = imageUtils.convertImageToByteArray(expected);
-
-        assertEquals(actualResult, expectedResult);
+        imageConverter = createMockImageConverter(100, 100);
     }
     
     @Test(expectedExceptions = {IllegalArgumentException.class})
     public void convertImageToByteArrayShouldNotWorkWithPassedNull() throws ImageProcessException {
-        imageUtils.convertImageToByteArray(null);
+        imageConverter.convertImageToByteArray(null);
     }
 
     @Test(dataProvider = "parameterResizeImage")
     public void testResizeImage(int maxWidth, int maxHeight, int imageType) throws IOException {
         int expectedWidth = 4;
         int expectedHeight = 4;
+        imageConverter = createMockImageConverter(maxWidth, maxHeight);
         BufferedImage originalImage = ImageIO.read(new MockMultipartFile("test_image", "test_image", "image/png",
                 originalImageByteArray).getInputStream());
-        Image modifiedImage = imageUtils.resizeImage(originalImage, imageType, maxWidth, maxHeight);
+        Image modifiedImage = imageConverter.resizeImage(originalImage, imageType);
         assertEquals(modifiedImage.getWidth(null), expectedWidth);
         assertEquals(modifiedImage.getHeight(null), expectedHeight);
     }
@@ -94,8 +75,8 @@ public class ImageUtilsTest {
     	int widthWithAspectRationMoreThatOne = 5;
     	int heightWithAspectRatioMoreThatOne = 4;
     	return new Object[][] {
-    			{widthWithAspectRatioOne, heightWithAspectRatioOne, ImageUtils.IMAGE_JPEG},
-    			{widthWithAspectRationMoreThatOne, heightWithAspectRatioMoreThatOne, ImageUtils.IMAGE_PNG}
+    			{widthWithAspectRatioOne, heightWithAspectRatioOne, BufferedImage.TYPE_INT_RGB},
+    			{widthWithAspectRationMoreThatOne, heightWithAspectRatioMoreThatOne, BufferedImage.TYPE_INT_ARGB}
     	};
     }
 
@@ -104,7 +85,7 @@ public class ImageUtilsTest {
         String source = "source";
         when(base64.encodeB64Bytes(Matchers.<byte[]>any())).thenReturn(source);
 
-        String actual = imageUtils.prepareHtmlImgSrc(originalImageByteArray);
+        String actual = imageConverter.prepareHtmlImgSrc(originalImageByteArray);
 
         assertEquals(actual, source);
     }
@@ -120,30 +101,6 @@ public class ImageUtilsTest {
     };
 
     @DataProvider
-    private Object[][] validDataForImageToByteArrayTest() throws IOException {
-        Image image = new BufferedImage(100, 100, BufferedImage.TYPE_3BYTE_BGR);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write((RenderedImage) image, "jpeg", baos);
-        baos.flush();
-        byte[] result = baos.toByteArray();
-        baos.close();
-
-        return new Object[][]{
-                {image, result}
-        };
-    }
-
-    @DataProvider
-    private Object[][] validDataForConvertByteArrayToImageTest() throws IOException {
-        BufferedImage result;
-        BufferedInputStream bis = new BufferedInputStream(new ByteArrayInputStream(originalImageByteArray));
-        result = ImageIO.read(bis);
-        return new Object[][]{
-                {originalImageByteArray, result}
-        };
-    }
-
-    @DataProvider
     private Object[][] rangeStringByteData() throws IOException {
         String inputData = Base64.encodeBase64String(byteArray);
         byte[] outputData = Base64.decodeBase64(inputData);
@@ -151,6 +108,24 @@ public class ImageUtilsTest {
         return new Object[][]{
                 {inputData, outputData},
                 {null, null}
+        };
+    }
+
+    private ImageConverter createMockImageConverter(int maxWidth, int maxHeight) {
+        return new ImageConverter(base64, maxWidth, maxHeight) {
+            @Override
+            public String getHtmlSrcImagePrefix() {
+                return null;
+            }
+
+            @Override
+            protected void saveImageToStream(BufferedImage image, OutputStream stream) throws IOException {
+            }
+
+            @Override
+            protected int getImageType() {
+                return BufferedImage.TYPE_3BYTE_BGR;
+            }
         };
     }
 }

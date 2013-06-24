@@ -23,11 +23,12 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.ImageUtils;
+import org.jtalks.jcommune.service.nontransactional.ImageConverter;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.validation.editors.DefaultStringEditor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -61,7 +62,7 @@ public class UserProfileController {
 
     private UserService userService;
     private BreadcrumbBuilder breadcrumbBuilder;
-    private ImageUtils imageUtils;
+    private ImageConverter imageConverter;
     private PostService postService;
 
     /**
@@ -83,17 +84,18 @@ public class UserProfileController {
     /**
      * @param userService       to get current user and user by id
      * @param breadcrumbBuilder the object which provides actions on {@link BreadcrumbBuilder} entity
-     * @param imageUtils        to prepare user avatar for view
+     * @param imageConverter        to prepare user avatar for view
      * @param postService       to get all user's posts
      */
     @Autowired
     public UserProfileController(UserService userService,
                                  BreadcrumbBuilder breadcrumbBuilder,
-                                 ImageUtils imageUtils,
+                                 @Qualifier("avatarPreprocessor")
+                                 ImageConverter imageConverter,
                                  PostService postService) {
         this.userService = userService;
         this.breadcrumbBuilder = breadcrumbBuilder;
-        this.imageUtils = imageUtils;
+        this.imageConverter = imageConverter;
         this.postService = postService;
     }
 
@@ -162,7 +164,7 @@ public class UserProfileController {
     private EditUserProfileDto convertUserForView(JCUser user) {
         EditUserProfileDto editUserProfileDto = new EditUserProfileDto(user);
         byte[] avatar = user.getAvatar();
-        editUserProfileDto.setAvatar(imageUtils.prepareHtmlImgSrc(avatar));
+        editUserProfileDto.setAvatar(imageConverter.prepareHtmlImgSrc(avatar));
         return editUserProfileDto;
     }
 

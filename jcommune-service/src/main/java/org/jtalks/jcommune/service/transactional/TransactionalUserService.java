@@ -67,7 +67,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     private SecurityService securityService;
     private MailService mailService;
     private Base64Wrapper base64Wrapper;
-    private AvatarService avatarService;
+    private ImageService avatarService;
     //Important, use for every password creation.
     private EncryptionService encryptionService;
     private AuthenticationManager authenticationManager;
@@ -100,7 +100,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
                                     SecurityService securityService,
                                     MailService mailService,
                                     Base64Wrapper base64Wrapper,
-                                    AvatarService avatarService,
+                                    ImageService avatarService,
                                     EncryptionService encryptionService,
                                     AuthenticationManager authenticationManager,
                                     SecurityContextHolderFacade securityFacade,
@@ -173,7 +173,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         user.setPassword(encodedPassword);
         //
         user.setRegistrationDate(new DateTime());
-        user.setAvatar(avatarService.getDefaultAvatar());
+        user.setAvatar(avatarService.getDefaultImage());
         this.getDao().saveOrUpdate(user);
         mailService.sendAccountActivationMail(user);
         LOGGER.info("JCUser registered: {}", user.getUsername());
