@@ -53,7 +53,6 @@
   <script src='${pageContext.request.contextPath}/resources/javascript/custom/dialog.js'></script>
   <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery.prettyPhoto.js"></script>
   <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery.truncate.js"></script>
-  <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery.offtmp.js"></script>
   <script src="${pageContext.request.contextPath}/resources/javascript/custom/URLBuilder.js"></script>
   <script src="${pageContext.request.contextPath}/resources/javascript/custom/registration.js"></script>
   <script src="${pageContext.request.contextPath}/resources/javascript/custom/mainLinksEditor.js"></script>
@@ -69,7 +68,6 @@
   <script src="${pageContext.request.contextPath}/resources/javascript/licensed/prettify/prettify.js"></script>
   <script src="${pageContext.request.contextPath}/resources/javascript/custom/topline.js"></script>
   <script src="${pageContext.request.contextPath}/resources/javascript/custom/search.js"></script>
-  <script src="${pageContext.request.contextPath}/resources/javascript/custom/componentClickEventDisabler.js"></script>
   <script src="${pageContext.request.contextPath}/resources/javascript/custom/banner.js"></script>
   <script src="${pageContext.request.contextPath}/resources/javascript/licensed/html5placeholder.jquery.js"></script>
   <script src="${pageContext.request.contextPath}/resources/javascript/custom/events.js"></script>

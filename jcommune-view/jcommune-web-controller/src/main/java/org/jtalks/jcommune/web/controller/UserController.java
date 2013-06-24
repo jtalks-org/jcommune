@@ -80,7 +80,7 @@ public class UserController {
      * so they are processed with {@link DefaultStringEditor}
      * @param binder Binder object to be injected
      */
-    @InitBinder
+    @InitBinder({"dto", "newUser"})
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
         binder.registerCustomEditor(String.class, "password", new DefaultStringEditor(true));
@@ -247,6 +247,18 @@ public class UserController {
         } else {
             return new JsonResponse(JsonResponseStatus.FAIL);
         }
+    }
+
+    /**
+     * Get usernames by pattern
+     *
+     * @param pattern some part of username
+     * @return list of usernames as json
+     */
+    @RequestMapping(value = "/usernames", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResponse usernameList(@RequestParam("pattern") String pattern){
+        return new JsonResponse(JsonResponseStatus.SUCCESS, userService.getUsernames(pattern));
     }
 
 }

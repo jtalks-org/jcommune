@@ -177,4 +177,7 @@
        value="<spring:message code="label.answer.preview"/>" onclick="SwitchEditor();return null;"/>
 <script type="text/javascript">
     initEditor("tbMsg", "editorBBCODEdiv", "htmlContent");
+    if(initContextMenu){
+        initContextMenu("tbMsg");
+    }
 </script>
