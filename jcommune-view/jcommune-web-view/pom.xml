@@ -198,9 +198,9 @@
                     <unescape>true</unescape>
                     <replacements>
                         <replacement>
-                            <!--Replace two or more spaces, tabs and line breaks with one space-->
-                            <token>(.)\s{2,}(.)</token>
-                            <value>$1 $2</value>
+                            <!--Remove spaces, tabs and line breaks between tags-->
+                            <token>&gt;\s*&lt;</token>
+                            <value>&gt;&lt;</value>
                         </replacement>
                         <!--Remove all new line characters(Windows and Unix)-->
                         <replacement>
