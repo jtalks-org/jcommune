@@ -33,6 +33,7 @@ import java.util.Date;
  * The implementation of {@link ComponentService}.
  *
  * @author Anuar_Nurmakanov
+ * @author Andrei Alikov
  */
 public class TransactionalComponentService extends AbstractTransactionalEntityService<Component, ComponentDao>
         implements ComponentService {
@@ -42,7 +43,7 @@ public class TransactionalComponentService extends AbstractTransactionalEntitySe
     public static final String COMPONENT_FAVICON_ICO_PARAM = "jcommune.favicon.ico";
     public static final String COMPONENT_FAVICON_PNG_PARAM = "jcommune.favicon.png";
 
-    private static final String COMPONENT_INFO_CHANGE_DATE_PROPERTY = "jcommune.info_change_date";
+    protected static final String COMPONENT_INFO_CHANGE_DATE_PROPERTY = "jcommune.info_change_date";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalComponentService.class);
 
@@ -84,10 +85,6 @@ public class TransactionalComponentService extends AbstractTransactionalEntitySe
 
         if (!StringUtils.isEmpty(componentInformation.getLogo())) {
             forumComponent.setProperty(LOGO_PROPERTY, componentInformation.getLogo());
-        }
-
-        if (!StringUtils.isEmpty(componentInformation.getIcon())) {
-
         }
 
         if (!StringUtils.isEmpty(componentInformation.getIcon())) {
