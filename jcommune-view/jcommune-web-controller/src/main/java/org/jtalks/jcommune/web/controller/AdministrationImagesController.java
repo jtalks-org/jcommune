@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,6 +40,7 @@ import java.util.Map;
 /**
  * @author Andrei Alikov
  */
+@Controller
 public class AdministrationImagesController extends ImageUploadController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdministrationImagesController.class);
