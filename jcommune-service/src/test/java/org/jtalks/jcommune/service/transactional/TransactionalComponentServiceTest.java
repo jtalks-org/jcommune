@@ -17,6 +17,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.jtalks.jcommune.model.dao.ComponentDao;
+import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -29,12 +30,14 @@ import org.testng.annotations.Test;
 public class TransactionalComponentServiceTest {
     @Mock
     private ComponentDao componentDao;
+    @Mock
+    private ImageService imageService;
     private TransactionalComponentService componentService;
     
     @BeforeMethod
     public void init() {
         initMocks(this);
-        componentService = new TransactionalComponentService(componentDao);
+        componentService = new TransactionalComponentService(imageService, componentDao);
     }
     
     @Test

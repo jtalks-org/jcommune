@@ -16,33 +16,32 @@ package org.jtalks.jcommune.service;
 
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
-import org.jtalks.jcommune.service.nontransactional.ImageService;
 
 import java.util.Date;
 
 /**
  * Provides an ability to work with component of forum.
- * 
- * @author Anuar_Nurmakanov
  *
+ * @author Anuar_Nurmakanov
  */
 public interface ComponentService {
     /**
      * Get component of forum.
-     * 
+     *
      * @return component of forum.
      */
     Component getComponentOfForum();
 
     /**
      * Sets administrative information about the component
+     *
      * @param componentInformation administrative information about component
-     * @param icoFormatImageService service for converting icon to ICO format
      */
-    void setComponentInformation(ComponentInformation componentInformation, ImageService icoFormatImageService);
+    void setComponentInformation(ComponentInformation componentInformation);
 
     /**
      * Gets last time when forum administration information was modified
+     *
      * @return last time when forum administration information was modified
      */
     Date getComponentModificationTime();

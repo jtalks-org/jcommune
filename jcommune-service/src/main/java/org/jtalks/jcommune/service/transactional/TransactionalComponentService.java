@@ -46,13 +46,17 @@ public class TransactionalComponentService extends AbstractTransactionalEntitySe
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalComponentService.class);
 
+    private final ImageService icoFormatImageService;
+
     /**
      * Constructs an instance with required fields.
      *
-     * @param dao to get component
+     * @param icoFormatImageService service for converting icon to ICO format
+     * @param dao                   to get component
      */
-    public TransactionalComponentService(ComponentDao dao) {
+    public TransactionalComponentService(ImageService icoFormatImageService, ComponentDao dao) {
         super(dao);
+        this.icoFormatImageService = icoFormatImageService;
     }
 
     /**
@@ -68,7 +72,7 @@ public class TransactionalComponentService extends AbstractTransactionalEntitySe
      */
     @Override
     @PreAuthorize("hasPermission(#componentInformation.id, 'COMPONENT', 'GeneralPermission.ADMIN')")
-    public void setComponentInformation(ComponentInformation componentInformation, ImageService icoFormatImageService) {
+    public void setComponentInformation(ComponentInformation componentInformation) {
         if (componentInformation.getId() != getComponentOfForum().getId()) {
             throw new IllegalArgumentException(
                     "Service should work with the same component as the componentInformation argument.");
