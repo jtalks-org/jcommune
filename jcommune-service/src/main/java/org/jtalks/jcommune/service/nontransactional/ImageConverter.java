@@ -70,6 +70,15 @@ public class ImageConverter {
     }
 
     /**
+     * Gets target format of this converter
+     * @return target image format
+     */
+    public String getFormat() {
+        return format;
+    }
+
+
+    /**
      * Gets prefix for "src" attribute of the "img" tag representing the image format
      *
      * @return prefix for "src" attribute of the "img" tag representing the image format
