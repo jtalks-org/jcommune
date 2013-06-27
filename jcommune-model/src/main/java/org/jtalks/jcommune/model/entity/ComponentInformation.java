@@ -45,7 +45,7 @@ public class ComponentInformation {
 
     private String icon;
 
-    private String iconICO;
+    private String iconInIcoFormat;
 
     /**
      * Gets the string with encoded logo picture
@@ -147,15 +147,15 @@ public class ComponentInformation {
      * Gets component fav icon in the .ico format
      * @return string with new encoded icon picture
      */
-    public String getIconICO() {
-        return iconICO;
+    public String getIconInIcoFormat() {
+        return iconInIcoFormat;
     }
 
     /**
      * Sets component fav icon in the .ico format
-     * @param iconICO string with new encoded icon picture
+     * @param iconInIcoFormat string with new encoded icon picture
      */
-    public void setIconICO(String iconICO) {
-        this.iconICO = iconICO;
+    public void setIconInIcoFormat(String iconInIcoFormat) {
+        this.iconInIcoFormat = iconInIcoFormat;
     }
 }

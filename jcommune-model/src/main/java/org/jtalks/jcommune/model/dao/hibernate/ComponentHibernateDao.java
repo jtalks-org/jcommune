@@ -16,22 +16,14 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateFormatUtils;
 import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.dao.ComponentDao;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * The implementation of {@link org.jtalks.jcommune.model.dao.ComponentDao} based on Hibernate.
@@ -83,8 +75,8 @@ public class ComponentHibernateDao extends GenericDao<Component> implements Comp
             forumComponent.setProperty(COMPONENT_FAVICON_PNG_PARAM, componentInformation.getIcon());
         }
 
-        if (!StringUtils.isEmpty(componentInformation.getIconICO())) {
-            forumComponent.setProperty(COMPONENT_FAVICON_ICO_PARAM, componentInformation.getIconICO());
+        if (!StringUtils.isEmpty(componentInformation.getIconInIcoFormat())) {
+            forumComponent.setProperty(COMPONENT_FAVICON_ICO_PARAM, componentInformation.getIconInIcoFormat());
         }
 
         DateTime now = new DateTime();
