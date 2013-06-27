@@ -243,6 +243,19 @@ public class UserControllerTest {
                 any(HttpServletRequest.class), any(HttpServletResponse.class));
     }
 
+    @Test
+    public void testGetUsernameListSuccess(){
+        String pattern = "us";
+        List<String> usernames = new ArrayList<String>();
+        usernames.add("user1");
+        usernames.add("user2");
+        usernames.add("user3");
+        when(userService.getUsernames(pattern)).thenReturn(usernames);
+
+        JsonResponse response = userController.usernameList(pattern);
+        assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
+    }
+
     private void assertNullFields(RegisterUserDto dto) {
         assertNull(dto.getEmail());
         assertNull(dto.getUsername());

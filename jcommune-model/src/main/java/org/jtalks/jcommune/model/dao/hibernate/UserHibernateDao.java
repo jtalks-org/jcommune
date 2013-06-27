@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.common.model.entity.User;
@@ -131,13 +130,13 @@ public class UserHibernateDao extends GenericDao<JCUser>
      */
     @SuppressWarnings("unchecked")
     @Override
-    public List<JCUser> getUsernames(String pattern, int count){
+    public List<String> getUsernames(String pattern, int count) {
+        pattern = pattern.replace("%", "\\%").replace("\\", "\\\\").replace("_", "\\_");
         return session()
-                .createCriteria(JCUser.class)
-                .add(Restrictions.like("username", "%" + pattern + "%").ignoreCase())
-                .add(Restrictions.eq("enabled", true))
+                .getNamedQuery("getUsernames")
+                .setParameter("pattern", "%" + pattern + "%")
+                .setParameter("enabled", true)
                 .setMaxResults(count)
-                .addOrder(Property.forName("username").asc())
                 .list();
     }
 }

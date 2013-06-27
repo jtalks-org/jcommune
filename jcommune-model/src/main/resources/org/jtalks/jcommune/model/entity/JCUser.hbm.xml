@@ -85,4 +85,8 @@
     </query>
     <query name="getByUsernames"><![CDATA[FROM JCUser WHERE username in (:usernames)]]></query>
 
+    <query name="getUsernames"><![CDATA[select username from JCUser
+            where username like (:pattern) and enabled = (:enabled) order by username]]>
+    </query>
+
 </hibernate-mapping>

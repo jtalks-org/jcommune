@@ -155,7 +155,7 @@ public class TransactionalUserServiceTest {
     @Test
     public void getByUsernameShouldReturnUserWithPassedNameFromRepository() throws NotFoundException {
         JCUser expectedUser = getUser(USERNAME);
-        ;
+
         when(userDao.getByUsername(USERNAME)).thenReturn(expectedUser);
 
         JCUser result = userService.getByUsername(USERNAME);
@@ -391,7 +391,7 @@ public class TransactionalUserServiceTest {
     @Test
     public void testGetCurrentUser() {
         JCUser expected = getUser(USERNAME);
-        ;
+
         when(securityService.getCurrentUserUsername()).thenReturn(USERNAME);
         when(userDao.getByUsername(USERNAME)).thenReturn(expected);
 
@@ -550,6 +550,19 @@ public class TransactionalUserServiceTest {
                             secondMentionedUserName);
 
         assertEquals(actualAfterProcess, msgWithNotFoundUsers);
+    }
+
+    @Test
+    public void testGetUsernames() {
+        String usernamePattern = "Us";
+        int usernameCount = 10;
+        List<String> usernames = new ArrayList<String>();
+        usernames.add("User1");
+        usernames.add("User2");
+        usernames.add("User3");
+        when(userDao.getUsernames(usernamePattern, usernameCount)).thenReturn(usernames);
+
+        assertEquals(userService.getUsernames(usernamePattern).size(), 3);
     }
 
     public static <T> Set<T> asSet(T... values) {

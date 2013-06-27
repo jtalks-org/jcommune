@@ -20,91 +20,101 @@
  *        textarea-helper.js - for get caret position
  */
 
-var baseUrl = $root;
+jQuery(document).ready(function () {
+    var baseUrl = $root;
 
-function initContextMenu(id){
-    $('#' +id).keyup(autocompleteOnChange);
-}
+    $('#tbMsg').keyup(autocompleteOnChange);
 
-function autocompleteOnChange(e){
-    var sel_start = $(e.currentTarget).getSelection().start;
-    var val = $(e.currentTarget).val().substr(0, sel_start);
-    if(val.indexOf("@") >= 0){
-        var pattern = val.split("@").pop();
-        var lastAtPos = val.lastIndexOf("@");
-        var keycodeApproved = (e.keyCode != 38 && e.keyCode != 40 && e.keyCode != 13 && e.keyCode != 27);
-        var posApproved = (lastAtPos == 0 || val.charAt(lastAtPos - 1) == " ");
-        if(keycodeApproved){
-            if(posApproved && pattern.length > 0 && pattern.match("^[a-zA-Z0-9]*")){
-                getContextMenu(pattern, e.currentTarget);
-            } else {
-                hideContextMenu(e.currentTarget);
+    function autocompleteOnChange(e) {
+        var selStart = $(e.target).getSelection().start;
+        var textBeforePattern = $(e.target).val().substr(0, selStart);
+        if (textBeforePattern.indexOf('@') >= 0) {
+            var pattern = textBeforePattern.split('@').pop();
+            var lastAtPos = textBeforePattern.lastIndexOf('@');
+            var keycodeApproved = (e.keyCode != upCode && e.keyCode != downCode  && e.keyCode != enterCode && e.keyCode != escCode);
+            var posApproved = (lastAtPos == 0 || textBeforePattern.charAt(lastAtPos - 1) == ' ');
+            if (keycodeApproved) {
+                if (posApproved && pattern.length > 0) {
+                    getContextMenu(pattern, e.target);
+                } else {
+                    hideContextMenu(e.target);
+                }
             }
+        }else{
+            hideContextMenu(e.target);
         }
-    }else{
-        hideContextMenu(e.currentTarget);
     }
-}
 
-function getContextMenu(pattern, el){
-    $.ajax({
-        type: "POST",
-        url: baseUrl + '/usernames',
-        data: {pattern: pattern},
-        success: function (data) {
-            if(data.result && data.result.length > 0){
-                var items = {};
-                $.each(data.result, function(key, value){
-                    var val = value.replace(pattern, '<b>' + pattern + '</b>');
-                    items[value] = {name: val};
-                });
-                createContextMenu(el, items);
-            } else {
+    function getContextMenu(pattern, el) {
+        $.ajax({
+            type: 'POST',
+            url: baseUrl + '/usernames',
+            data: {pattern: pattern},
+            success: function (data) {
+                if (data.result && data.result.length > 0) {
+                    var items = {};
+                    $.each(data.result, function(key, value) {
+                        var val = value.replace(pattern, '<b>' + pattern + '</b>');
+                        items[value] = {name: val};
+                    });
+                    createContextMenu(el, items);
+                } else {
+                    hideContextMenu(el);
+                }
+            }
+        });
+    }
+
+    function hideContextMenu(el) {
+        // 'destroy' doesn't remove class 'context-menu-active' from contextMenu target,
+        // so we call 'hide' before him
+        //(need more elegant solution, as example - rewrite some functionality of contextMenu plugin)
+        if ($('.autocompleteContextMenu').size() > 0 && $(el).hasClass('context-menu-active')) {
+            $(el).contextMenu('hide');
+        }
+        $.contextMenu('destroy');
+    }
+
+    function createContextMenu(el, items) {
+        hideContextMenu(el);
+        $.contextMenu({
+            selector: '#' + el.id,
+            trigger: 'none',
+            className: 'autocompleteContextMenu',
+            callback: function(key, options) {
+                var selection = $(el).getSelection();
+                var val = $(el).val().substr(0, selection.start);
+                var lastAtPos = val.lastIndexOf("@");
+                el.value = el.value.slice(0, lastAtPos) + '[user]' + key + '[/user]' + el.value.slice(selection.end);
                 hideContextMenu(el);
-            }
-        }
-    });
-}
-
-function hideContextMenu(el){
-    // 'destroy' doesn't remove class 'context-menu-active' from contextMenu target,
-    // so we call 'hide' before him
-    //(need more elegant solution, as example - rewrite some functionality of contextMenu plugin)
-    if($('.autocompleteContextMenu').size() > 0 && $(el).hasClass('context-menu-active')){
-        $(el).contextMenu('hide');
-    }
-    $.contextMenu('destroy');
-}
-
-function createContextMenu(el, items){
-    hideContextMenu(el);
-    $.contextMenu({
-        selector: '#' + el.id,
-        trigger: 'none',
-        className: 'autocompleteContextMenu',
-        callback: function(key, options) {
-            var selection = $(el).getSelection();
-            var val = $(el).val().substr(0, selection.start);
-            var lastAtPos = val.lastIndexOf("@");
-            el.value = el.value.slice(0, lastAtPos) + '[user]' + key + '[/user]' + el.value.slice(selection.end);
-            hideContextMenu(el);
-        },
-        items: items
-    });
-    if($.browser.mozilla){
-        setTimeout(function(){
+            },
+            items: items
+        });
+        if ($.browser.mozilla) {
+            setTimeout(function() {
+                showContextMenu(el);
+            }, 0);
+        } else {
             showContextMenu(el);
-        }, 0);
-    }else {
-        showContextMenu(el);
+        }
     }
 
-}
+    function showContextMenu(el) {
+        //context menu coordinates
+        var xPos;
+        var yPos;
+        var rowHeight = 24;
+        var offsetMenuInTextArea = $(el).textareaHelper('caretPos');
+        if ($.browser.opera) {
+            xPos = offsetMenuInTextArea.left;
+            yPos = offsetMenuInTextArea.top + rowHeight;
+        } else {
+            var textAreaOffset = $(el).offset();
+            xPos = textAreaOffset.left + offsetMenuInTextArea.left;
+            yPos = textAreaOffset.top + offsetMenuInTextArea.top + rowHeight;
+        }
 
-function showContextMenu(el){
-    var elPos = $(el).offset();
-    var pos = $(el).textareaHelper('caretPos');
-    var xPos = elPos.left + pos.left;
-    var yPos = elPos.top + pos.top + 24;
-    $('#' + el.id).contextMenu({x: xPos, y: yPos});
-}
+        $('#' + el.id).contextMenu({x: xPos, y: yPos});
+    }
+
+});
