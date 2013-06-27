@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service;
 
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
+import org.jtalks.jcommune.service.nontransactional.ImageService;
 
 import java.util.Date;
 
@@ -36,8 +37,9 @@ public interface ComponentService {
     /**
      * Sets administrative information about the component
      * @param componentInformation administrative information about component
+     * @param icoFormatImageService service for converting icon to ICO format
      */
-    void setComponentInformation(ComponentInformation componentInformation);
+    void setComponentInformation(ComponentInformation componentInformation, ImageService icoFormatImageService);
 
     /**
      * Gets last time when forum administration information was modified

@@ -22,6 +22,7 @@ import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.ImageService;
+import org.jtalks.jcommune.service.transactional.TransactionalComponentService;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.util.ImageControllerUtils;
@@ -86,6 +87,9 @@ public class AdministrationControllerTest {
     @Mock
     ImageControllerUtils favIconIcoControllerUtils;
 
+    @Mock
+    ImageService iconImageService;
+
     //
     private AdministrationController administrationController;
 
@@ -140,9 +144,10 @@ public class AdministrationControllerTest {
 
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(new Object(), "");
         ComponentInformation ci = new ComponentInformation();
+        when(favIconIcoControllerUtils.getImageService()).thenReturn(iconImageService);
         JsonResponse response = administrationController.setForumInformation(ci, bindingResult, Locale.UK);
 
-        verify(componentService).setComponentInformation(ci);
+        verify(componentService).setComponentInformation(ci, iconImageService);
         assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
     }
 
@@ -235,7 +240,7 @@ public class AdministrationControllerTest {
     @Test
     public void getForumLogoShouldReturnDefaultLogoWhenLogoPropertyIsEmpty() throws ImageProcessException {
         Component forumComponent = new Component();
-        forumComponent.addProperty(ComponentHibernateDao.LOGO_PROPERTY, "");
+        forumComponent.addProperty(TransactionalComponentService.LOGO_PROPERTY, "");
         when(componentService.getComponentOfForum()).thenReturn(forumComponent);
         when(componentService.getComponentModificationTime()).thenReturn(new Date());
         when(logoControllerUtils.getDefaultImage()).thenReturn(validImage);
@@ -282,7 +287,7 @@ public class AdministrationControllerTest {
         Base64Wrapper wrapper = new Base64Wrapper();
         byte[] logoBytes = wrapper.decodeB64Bytes(logoProperty);
 
-        forumComponent.addProperty(ComponentHibernateDao.LOGO_PROPERTY, logoProperty);
+        forumComponent.addProperty(TransactionalComponentService.LOGO_PROPERTY, logoProperty);
         when(componentService.getComponentOfForum()).thenReturn(forumComponent);
         when(componentService.getComponentModificationTime()).thenReturn(new Date());
 
@@ -297,7 +302,7 @@ public class AdministrationControllerTest {
     @Test
     public void getFavIconPNGShouldReturnDefaultIconWhenIconPropertyIsEmpty() throws ImageProcessException {
         Component forumComponent = new Component();
-        forumComponent.addProperty(ComponentHibernateDao.COMPONENT_FAVICON_PNG_PARAM, "");
+        forumComponent.addProperty(TransactionalComponentService.COMPONENT_FAVICON_PNG_PARAM, "");
         when(componentService.getComponentOfForum()).thenReturn(forumComponent);
         when(componentService.getComponentModificationTime()).thenReturn(new Date());
         when(favIconPngControllerUtils.getDefaultImage()).thenReturn(validImage);
@@ -344,7 +349,7 @@ public class AdministrationControllerTest {
         Base64Wrapper wrapper = new Base64Wrapper();
         byte[] logoBytes = wrapper.decodeB64Bytes(logoProperty);
 
-        forumComponent.addProperty(ComponentHibernateDao.COMPONENT_FAVICON_PNG_PARAM, logoProperty);
+        forumComponent.addProperty(TransactionalComponentService.COMPONENT_FAVICON_PNG_PARAM, logoProperty);
         when(componentService.getComponentOfForum()).thenReturn(forumComponent);
         when(componentService.getComponentModificationTime()).thenReturn(new Date());
 
@@ -361,7 +366,7 @@ public class AdministrationControllerTest {
     @Test
     public void getFavIconICOShouldReturnDefaultIconWhenIconPropertyIsEmpty() throws ImageProcessException {
         Component forumComponent = new Component();
-        forumComponent.addProperty(ComponentHibernateDao.COMPONENT_FAVICON_PNG_PARAM, "");
+        forumComponent.addProperty(TransactionalComponentService.COMPONENT_FAVICON_PNG_PARAM, "");
         when(componentService.getComponentOfForum()).thenReturn(forumComponent);
         when(componentService.getComponentModificationTime()).thenReturn(new Date());
         when(favIconIcoControllerUtils.getDefaultImage()).thenReturn(validImage);
@@ -408,7 +413,7 @@ public class AdministrationControllerTest {
         Base64Wrapper wrapper = new Base64Wrapper();
         byte[] logoBytes = wrapper.decodeB64Bytes(logoProperty);
 
-        forumComponent.addProperty(ComponentHibernateDao.COMPONENT_FAVICON_ICO_PARAM, logoProperty);
+        forumComponent.addProperty(TransactionalComponentService.COMPONENT_FAVICON_ICO_PARAM, logoProperty);
         when(componentService.getComponentOfForum()).thenReturn(forumComponent);
         when(componentService.getComponentModificationTime()).thenReturn(new Date());
 

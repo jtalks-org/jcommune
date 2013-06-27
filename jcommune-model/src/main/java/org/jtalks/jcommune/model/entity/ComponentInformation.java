@@ -22,6 +22,7 @@ import javax.validation.constraints.Size;
 
 /**
  * Class keeping administrative information about the component
+ *
  * @author Andrei Alikov
  */
 public class ComponentInformation {
@@ -45,10 +46,10 @@ public class ComponentInformation {
 
     private String icon;
 
-    private String iconInIcoFormat;
 
     /**
      * Gets the string with encoded logo picture
+     *
      * @return the string with encoded logo picture
      */
     public String getLogo() {
@@ -57,6 +58,7 @@ public class ComponentInformation {
 
     /**
      * sets the string with encoded logo picture
+     *
      * @param logo string with new encoded logo picture
      */
     public void setLogo(String logo) {
@@ -65,6 +67,7 @@ public class ComponentInformation {
 
     /**
      * Gets the name of the component
+     *
      * @return name of the component
      */
     public String getName() {
@@ -73,6 +76,7 @@ public class ComponentInformation {
 
     /**
      * Sets the name of the component
+     *
      * @param name new name of the component
      */
     public void setName(String name) {
@@ -81,6 +85,7 @@ public class ComponentInformation {
 
     /**
      * Gets the description of the component
+     *
      * @return description of the component
      */
     public String getDescription() {
@@ -89,6 +94,7 @@ public class ComponentInformation {
 
     /**
      * Sets the description of the component
+     *
      * @param description new description of the component
      */
     public void setDescription(String description) {
@@ -97,6 +103,7 @@ public class ComponentInformation {
 
     /**
      * Gets the tooltip for the component logo
+     *
      * @return tooltip for the component logo
      */
     public String getLogoTooltip() {
@@ -105,6 +112,7 @@ public class ComponentInformation {
 
     /**
      * Sets the tooltip for the component logo
+     *
      * @param logoTooltip new tooltip for the component logo
      */
     public void setLogoTooltip(String logoTooltip) {
@@ -113,6 +121,7 @@ public class ComponentInformation {
 
     /**
      * Gets component id
+     *
      * @return component id
      */
     public Long getId() {
@@ -121,6 +130,7 @@ public class ComponentInformation {
 
     /**
      * Sets the component id
+     *
      * @param id new component id
      */
     public void setId(Long id) {
@@ -129,6 +139,7 @@ public class ComponentInformation {
 
     /**
      * Gets component fav icon
+     *
      * @return string with new encoded icon picture
      */
     public String getIcon() {
@@ -137,25 +148,10 @@ public class ComponentInformation {
 
     /**
      * Sets component fav icon
+     *
      * @param icon string with new encoded icon picture
      */
     public void setIcon(String icon) {
         this.icon = icon;
-    }
-
-    /**
-     * Gets component fav icon in the .ico format
-     * @return string with new encoded icon picture
-     */
-    public String getIconInIcoFormat() {
-        return iconInIcoFormat;
-    }
-
-    /**
-     * Sets component fav icon in the .ico format
-     * @param iconInIcoFormat string with new encoded icon picture
-     */
-    public void setIconInIcoFormat(String iconInIcoFormat) {
-        this.iconInIcoFormat = iconInIcoFormat;
     }
 }
