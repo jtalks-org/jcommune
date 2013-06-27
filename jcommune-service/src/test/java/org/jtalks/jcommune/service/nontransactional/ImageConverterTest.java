@@ -14,33 +14,33 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.*;
-
-import javax.imageio.ImageIO;
-
+import net.sf.image4j.codec.ico.ICOEncoder;
 import org.apache.commons.codec.binary.Base64;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
-import org.mockito.Matchers;
-import org.mockito.Mock;
 import org.springframework.mock.web.MockMultipartFile;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
+
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
 
 /**
  * @author Eugeny Batov
  * @author Alexandre Teterin
  */
 public class ImageConverterTest {
+    private static final int DEFAULT_MAX_WIDTH = 100;
+    private static final int DEFAULT_MAX_HEIGHT = 100;
 
-    @Mock
-    private Base64Wrapper base64;
+    private static final int ICON_MAX_WIDTH = 32;
+    private static final int ICON_MAX_HEIGHT = 32;
+
     private ImageConverter imageConverter;
     private byte[] byteArray = new byte[]{1, 2, 3};
 
@@ -48,44 +48,45 @@ public class ImageConverterTest {
     @BeforeClass
     public void init() throws IOException {
         initMocks(this);
-        imageConverter = createMockImageConverter(100, 100);
+        imageConverter = new ImageConverter("jpeg", BufferedImage.TYPE_INT_RGB, DEFAULT_MAX_WIDTH, DEFAULT_MAX_HEIGHT);
     }
-    
+
     @Test(expectedExceptions = {IllegalArgumentException.class})
     public void convertImageToByteArrayShouldNotWorkWithPassedNull() throws ImageProcessException {
         imageConverter.convertImageToByteArray(null);
     }
 
     @Test(dataProvider = "parameterResizeImage")
-    public void testResizeImage(int maxWidth, int maxHeight, int imageType) throws IOException {
+    public void testResizeImage(int maxWidth, int maxHeight, int imageType, String format) throws IOException {
         int expectedWidth = 4;
         int expectedHeight = 4;
-        imageConverter = createMockImageConverter(maxWidth, maxHeight);
+        imageConverter = new ImageConverter(format, imageType, maxWidth, maxHeight);
         BufferedImage originalImage = ImageIO.read(new MockMultipartFile("test_image", "test_image", "image/png",
                 originalImageByteArray).getInputStream());
         Image modifiedImage = imageConverter.resizeImage(originalImage, imageType);
         assertEquals(modifiedImage.getWidth(null), expectedWidth);
         assertEquals(modifiedImage.getHeight(null), expectedHeight);
     }
-    
+
     @DataProvider(name = "parameterResizeImage")
     public Object[][] parameterResizeImage() {
-    	int widthWithAspectRatioOne = 4;
-    	int heightWithAspectRatioOne = 4;
-    	int widthWithAspectRationMoreThatOne = 5;
-    	int heightWithAspectRatioMoreThatOne = 4;
-    	return new Object[][] {
-    			{widthWithAspectRatioOne, heightWithAspectRatioOne, BufferedImage.TYPE_INT_RGB},
-    			{widthWithAspectRationMoreThatOne, heightWithAspectRatioMoreThatOne, BufferedImage.TYPE_INT_ARGB}
-    	};
+        int widthWithAspectRatioOne = 4;
+        int heightWithAspectRatioOne = 4;
+        int widthWithAspectRationMoreThatOne = 5;
+        int heightWithAspectRatioMoreThatOne = 4;
+        return new Object[][]{
+                {widthWithAspectRatioOne, heightWithAspectRatioOne, BufferedImage.TYPE_INT_RGB, "jpeg"},
+                {widthWithAspectRationMoreThatOne, heightWithAspectRatioMoreThatOne, BufferedImage.TYPE_INT_ARGB, "png"}
+        };
     }
 
     @Test
     public void testPrepareHtmlImgSrc() {
-        String source = "source";
-        when(base64.encodeB64Bytes(Matchers.<byte[]>any())).thenReturn(source);
+        String source = "QUFBQUJBQ0FB";
+        Base64Wrapper base64Wrapper = new Base64Wrapper();
+        byte[] sourceBytes = base64Wrapper.decodeB64Bytes(source);
 
-        String actual = imageConverter.prepareHtmlImgSrc(originalImageByteArray);
+        String actual = imageConverter.prepareHtmlImgSrc(sourceBytes);
 
         assertEquals(actual, source);
     }
@@ -111,21 +112,86 @@ public class ImageConverterTest {
         };
     }
 
-    private ImageConverter createMockImageConverter(int maxWidth, int maxHeight) {
-        return new ImageConverter(base64, maxWidth, maxHeight) {
-            @Override
-            public String getHtmlSrcImagePrefix() {
-                return null;
-            }
+    @Test(dataProvider = "validDataForConvertByteArrayToImageTest")
+    public void testConvertByteArrayToImageForValidData(byte[] bytes, BufferedImage expected)
+            throws ImageProcessException {
+        BufferedImage actual = imageConverter.convertByteArrayToImage(bytes);
 
-            @Override
-            protected void saveImageToStream(BufferedImage image, OutputStream stream) throws IOException {
-            }
+        byte[] actualResult = imageConverter.convertImageToByteArray(actual);
+        byte[] expectedResult = imageConverter.convertImageToByteArray(expected);
 
-            @Override
-            protected int getImageType() {
-                return BufferedImage.TYPE_3BYTE_BGR;
-            }
+        assertEquals(actualResult, expectedResult);
+    }
+
+    @DataProvider
+    private Object[][] validDataForConvertByteArrayToImageTest() throws IOException {
+        BufferedInputStream bis = new BufferedInputStream(new ByteArrayInputStream(originalImageByteArray));
+        BufferedImage result = ImageIO.read(bis);
+        return new Object[][]{
+                {originalImageByteArray, result}
+        };
+    }
+
+    @Test(dataProvider = "validDataForImageToByteArrayTest")
+    public void testConvertImageToByteArrayForValidData(BufferedImage image, byte[] expected, String format)
+            throws ImageProcessException {
+        imageConverter = ImageConverter.createConverter(format, DEFAULT_MAX_WIDTH, DEFAULT_MAX_HEIGHT);
+        byte[] actual = imageConverter.convertImageToByteArray(image);
+        assertEquals(actual, expected);
+    }
+
+    @DataProvider
+    private Object[][] validDataForImageToByteArrayTest() throws IOException {
+        BufferedImage image = new BufferedImage(DEFAULT_MAX_WIDTH, DEFAULT_MAX_HEIGHT, BufferedImage.TYPE_INT_RGB);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] result = null;
+        try {
+            ImageIO.write(image, "jpeg", baos);
+            baos.flush();
+            result = baos.toByteArray();
+        } finally {
+            baos.close();
+        }
+
+        BufferedImage imagePng = new BufferedImage(DEFAULT_MAX_WIDTH, DEFAULT_MAX_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        baos = new ByteArrayOutputStream();
+        byte[] resultPng = null;
+        try {
+            ImageIO.write(imagePng, "png", baos);
+            baos.flush();
+            resultPng = baos.toByteArray();
+        } finally {
+            baos.close();
+        }
+
+        BufferedImage imageIco = new BufferedImage(ICON_MAX_WIDTH, ICON_MAX_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        baos = new ByteArrayOutputStream();
+        byte[] resultIco = null;
+        try {
+            ICOEncoder.write(imageIco, 32, baos);
+            baos.flush();
+            resultIco = baos.toByteArray();
+        } finally {
+            baos.close();
+        }
+
+        return new Object[][]{
+                {image, result, "jpeg"}, {imagePng, resultPng, "png"}, {imageIco, resultIco, "ico"}
+        };
+    }
+
+
+    @Test(dataProvider = "imageFormats")
+    public void createConverterMethodShouldReturnConverterWithSpecifiedType(String imageFormat) {
+        ImageConverter converter = ImageConverter.createConverter(imageFormat, DEFAULT_MAX_WIDTH, DEFAULT_MAX_HEIGHT);
+
+        assertEquals(converter.getFormat(), imageFormat);
+    }
+
+    @DataProvider(name = "imageFormats")
+    private Object[][] imageFormats() {
+        return new Object[][]{
+                {"jpeg"}, {"png"}, {"ico"}
         };
     }
 }

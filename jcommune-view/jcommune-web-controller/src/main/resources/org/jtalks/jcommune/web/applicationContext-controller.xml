@@ -59,39 +59,23 @@
     </bean>
 
     <bean id="avatarControllerUtils"  class="org.jtalks.jcommune.web.util.ImageControllerUtils">
-        <constructor-arg>
-            <ref bean="avatarService"/>
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="jsonUtils"/>
-        </constructor-arg>
+        <constructor-arg ref="avatarService"/>
+        <constructor-arg ref="jsonUtils"/>
     </bean>
 
     <bean id="forumLogoControllerUtils"  class="org.jtalks.jcommune.web.util.ImageControllerUtils">
-        <constructor-arg>
-            <ref bean="forumLogoService"/>
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="jsonUtils"/>
-        </constructor-arg>
+        <constructor-arg ref="forumLogoService"/>
+        <constructor-arg ref="jsonUtils"/>
     </bean>
 
     <bean id="favIconIcoControllerUtils"  class="org.jtalks.jcommune.web.util.ImageControllerUtils">
-        <constructor-arg>
-            <ref bean="favIconServiceICO"/>
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="jsonUtils"/>
-        </constructor-arg>
+        <constructor-arg ref="favIconServiceIco"/>
+        <constructor-arg ref="jsonUtils"/>
     </bean>
 
     <bean id="favIconPngControllerUtils"  class="org.jtalks.jcommune.web.util.ImageControllerUtils">
-        <constructor-arg>
-            <ref bean="favIconServicePNG"/>
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="jsonUtils"/>
-        </constructor-arg>
+        <constructor-arg ref="favIconServicePng"/>
+        <constructor-arg ref="jsonUtils"/>
     </bean>
     
     <bean id="rememberMeCookieDecoder" 

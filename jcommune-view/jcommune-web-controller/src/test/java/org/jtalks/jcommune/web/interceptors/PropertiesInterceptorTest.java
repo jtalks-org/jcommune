@@ -48,7 +48,7 @@ public class PropertiesInterceptorTest {
     private JCommuneProperty cmpDescription = JCommuneProperty.CMP_DESCRIPTION;
     private JCommuneProperty sapeShowDummyLinks = JCommuneProperty.CMP_SAPE_SHOW_DUMMY_LINKS;
     private JCommuneProperty logoToolTip = JCommuneProperty.LOGO_TOOLTIP;
-    private JCommuneProperty lastChangeDate = JCommuneProperty.INFO_CHANGE_DATE;
+    private JCommuneProperty lastChangeDate = JCommuneProperty.ADMIN_INFO_LAST_UPDATE_TIME;
 
     @Mock
     private ComponentDao componentDao;

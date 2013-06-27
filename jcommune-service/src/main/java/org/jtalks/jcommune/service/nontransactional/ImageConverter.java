@@ -14,16 +14,14 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import net.sf.image4j.codec.ico.ICOEncoder;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.Validate;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
-import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
-import java.awt.Dimension;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.PixelGrabber;
 import java.io.*;
 
 /**
@@ -35,8 +33,7 @@ import java.io.*;
  * @author Alexandre Teterin
  * @author Andrei Alikov
  */
-@Component
-public abstract class ImageConverter {
+public class ImageConverter {
 
     /**
      * This prefix is used when specifying image as a byte array in SRC attribute
@@ -48,30 +45,62 @@ public abstract class ImageConverter {
     private static final int GREEN_CHANNEL_MASK = 0x0000FF00;
     private static final int BLUE_CHANNEL_MASK = 0x000000FF;
     private static final int BIT = 8;
-    private static final int TWO_BITS = 16;
-    private static final int THREE_BITS = 24;
+    private static final int TWO_BITS = BIT * 2;
+    private static final int THREE_BITS = BIT * 3;
+    private static final int ARGB_BITS_COUNT = BIT * 4;
 
-    private Base64Wrapper base64Wrapper;
+    private final Base64Wrapper base64Wrapper = new Base64Wrapper();
 
     private final int maxImageWidth;
     private final int maxImageHeight;
+    private final String format;
+    private final int imageType;
 
     /**
-     * @param base64Wrapper to perform image data encoding, essential for embedding an image into HTML page
-     * @param maxImageHeight maximum image height after pre processing
+     * @param format format of the target image
+     * @param imageType image type of the target image (see {@link BufferedImage} documentation)
      * @param maxImageWidth  maximum image width after pre processing
+     * @param maxImageHeight maximum image height after pre processing
      */
-    public ImageConverter(Base64Wrapper base64Wrapper, int maxImageWidth, int maxImageHeight) {
-        this.base64Wrapper = base64Wrapper;
+    public ImageConverter(String format, int imageType, int maxImageWidth, int maxImageHeight) {
+        this.format = format;
+        this.imageType = imageType;
         this.maxImageWidth = maxImageWidth;
         this.maxImageHeight = maxImageHeight;
     }
 
     /**
+     * Gets target format of this converter
+     * @return target image format
+     */
+    public String getFormat() {
+        return format;
+    }
+
+
+    /**
      * Gets prefix for "src" attribute of the "img" tag representing the image format
+     *
      * @return prefix for "src" attribute of the "img" tag representing the image format
      */
-    public abstract String getHtmlSrcImagePrefix();
+    public String getHtmlSrcImagePrefix() {
+        return  String.format(HTML_SRC_TAG_PREFIX, format);
+    }
+
+    /**
+     * @param format format of the target image
+     * @param maxImageWidth  maximum image width after pre processing
+     * @param maxImageHeight maximum image height after pre processing
+     */
+    public static ImageConverter createConverter(String format, int maxImageWidth, int maxImageHeight) {
+        int imageType = BufferedImage.TYPE_INT_ARGB;
+        if (format.equals("jpeg")) {
+            imageType = BufferedImage.TYPE_INT_RGB;
+        }
+
+        return new ImageConverter(format, imageType, maxImageWidth, maxImageHeight);
+    }
+
 
     /**
      * Converts image to byte array.
@@ -86,24 +115,22 @@ public abstract class ImageConverter {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         try {
-            saveImageToStream(image, baos);
+            if (format.equals("ico")) {
+                ICOEncoder.write(image, ARGB_BITS_COUNT, baos);
+            } else {
+                ImageIO.write(image, format, baos);
+            }
+
             baos.flush();
             result = baos.toByteArray();
-            baos.close();
         } catch (IOException e) {
             throw new ImageProcessException(e);
+        } finally {
+            IOUtils.closeQuietly(baos);
         }
 
         return result;
     }
-
-    /**
-     * Saves image to the stream
-     * @param image image to be saved
-     * @param stream output stream
-     * @throws IOException
-     */
-    protected abstract void saveImageToStream(BufferedImage image, OutputStream stream) throws IOException;
 
     /**
      * Perform byte data conversion to BufferedImage.
@@ -128,8 +155,8 @@ public abstract class ImageConverter {
     /**
      * Resizes an image if its width or height is bigger than maximum value specified in the constructor.
      *
-     * @param image     The image to resize
-     * @param type      int code jpeg, png or gif
+     * @param image The image to resize
+     * @param type  int code jpeg, png or gif
      * @return A <code>BufferedImage</code> having width and height less or equal then maximum
      */
     public BufferedImage resizeImage(BufferedImage image, int type) {
@@ -165,22 +192,17 @@ public abstract class ImageConverter {
     public byte[] preprocessImage(BufferedImage image) throws ImageProcessException {
         byte[] result;
 
-        BufferedImage outputImage = resizeImage(image, getImageType());
+        BufferedImage outputImage = resizeImage(image, imageType);
         result = convertImageToByteArray(outputImage);
         return result;
     }
 
     /**
-     * Gets the type of the result image (see {@link BufferedImage} documentation)
-     * @return the type of the result image
-     */
-    protected abstract int getImageType();
-
-    /**
-     * Perform preparing content for SRC attribute of the IMG HTML tag
+     * Uploaded bytes are converted into base64 string,
+     * so that it can be passed via HTTP protocol and form HTML page.
      *
-     * @param avatar image payload
-     * @return SRC attribute content
+     * @param avatar bytes of the uploaded image
+     * @return encoded image in base64
      */
     public String prepareHtmlImgSrc(byte[] avatar) {
         return base64Wrapper.encodeB64Bytes(avatar);
@@ -192,10 +214,10 @@ public abstract class ImageConverter {
      * that do not have the X11 libraries installed, which are required for the AWT subsystem to
      * operate. The resulting image will be smoothly scaled using bilinear filtering.
      *
-     * @param source The image to convert
-     * @param width  The desired image width
-     * @param height The desired image height
-     * @param imageType   int code RGB or ARGB
+     * @param source    The image to convert
+     * @param width     The desired image width
+     * @param height    The desired image height
+     * @param imageType int code RGB or ARGB
      * @return bufferedImage The resized image
      */
     private BufferedImage createBufferedImage(BufferedImage source, int imageType, int width, int height) {
@@ -264,22 +286,5 @@ public abstract class ImageConverter {
                 | ((int) (green1 * (1.0 - distance) + green2 * distance) << BIT)
                 | (int) (blue1 * (1.0 - distance) + blue2 * distance);
     }
-
-    /**
-     * Determines if the image has transparent pixels.
-     *
-     * @param image The image to check for transparent pixel.s
-     * @return <code>true</code> of <code>false</code>, according to the result
-     */
-    private boolean hasAlpha(Image image) {
-        PixelGrabber pg = new PixelGrabber(image, 0, 0, 1, 1, false);
-        try {
-            pg.grabPixels();
-        } catch (InterruptedException e) {
-            return false;
-        }
-        return pg.getColorModel().hasAlpha();
-    }
-
 
 }

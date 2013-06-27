@@ -107,7 +107,7 @@ public class ImageServiceTest {
                 36, 71, 49, 115, -89, 85, 0, 0, 0, 0, 73, 69, 78, 68, -82, 66, 96, -126
         };
 
-        ImageConverter imageConverter = new JpegImageConverter(new Base64Wrapper(), 100, 100);
+        ImageConverter imageConverter = new ImageConverter("jpeg", BufferedImage.TYPE_INT_RGB, 100, 100);
         BufferedImage inputImage = imageConverter.convertByteArrayToImage(originalImageBytes);
         byte[] processedImageBytes = imageConverter.preprocessImage(inputImage);
         String expectedBase64String = new Base64Wrapper().encodeB64Bytes(processedImageBytes);

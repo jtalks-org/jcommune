@@ -47,25 +47,25 @@ import java.util.Map;
 public class AvatarController extends ImageUploadController {
 
     private UserService userService;
-    private ImageControllerUtils imageControllerUtils;
+    private ImageControllerUtils avatarControllerUtils;
 
     /**
      * Constructor for controller instantiating, dependencies injected via autowiring.
      *
      * @param userService   to manipulate user-related data
-     * @param imageControllerUtils utility object for image-related functions
+     * @param avatarControllerUtils utility object for image-related functions
      * @param messageSource to resolve locale-dependent messages
      */
     @Autowired
     public AvatarController(
             UserService userService,
             @Qualifier("avatarControllerUtils")
-            ImageControllerUtils imageControllerUtils,
+            ImageControllerUtils avatarControllerUtils,
             MessageSource messageSource) {
         super(messageSource);
 
         this.userService = userService;
-        this.imageControllerUtils = imageControllerUtils;
+        this.avatarControllerUtils = avatarControllerUtils;
     }
 
     /**
@@ -82,7 +82,7 @@ public class AvatarController extends ImageUploadController {
     @ResponseBody
     public ResponseEntity<String> uploadAvatar(
             @RequestParam(value = "qqfile") MultipartFile file) throws IOException, ImageProcessException {
-        return createPreviewOfImage(file, imageControllerUtils);
+        return createPreviewOfImage(file, avatarControllerUtils);
     }
 
     /**
@@ -98,7 +98,7 @@ public class AvatarController extends ImageUploadController {
     @ResponseBody
     public Map<String, String> uploadAvatar(@RequestBody byte[] bytes,
                                             HttpServletResponse response) throws ImageProcessException {
-        return createPreviewOfImage(bytes, response, imageControllerUtils);
+        return createPreviewOfImage(bytes, response, avatarControllerUtils);
     }
 
     /**
@@ -144,7 +144,7 @@ public class AvatarController extends ImageUploadController {
     @ResponseBody
     public String getDefaultAvatar() throws ImageProcessException, IOException {
         Map<String, String> responseContent = new HashMap<String, String>();
-        imageControllerUtils.prepareNormalResponse(imageControllerUtils.getDefaultImage(), responseContent);
-        return imageControllerUtils.getResponceJSONString(responseContent);
+        avatarControllerUtils.prepareNormalResponse(avatarControllerUtils.getDefaultImage(), responseContent);
+        return avatarControllerUtils.getResponceJSONString(responseContent);
     }
 }
