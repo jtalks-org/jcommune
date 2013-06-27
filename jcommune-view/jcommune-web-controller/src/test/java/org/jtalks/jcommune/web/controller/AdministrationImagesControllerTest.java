@@ -141,13 +141,7 @@ public class AdministrationImagesControllerTest {
         assertEquals(response.getContentType(), "image/jpeg");
         assertEquals(response.getContentLength(), validImage.length);
         assertEquals(response.getContentAsByteArray(), validImage);
-        assertEquals(response.getHeader("Pragma"), "public");
-        List<String> cacheControlHeaders = response.getHeaders("Cache-Control");
-        Assert.assertTrue(cacheControlHeaders.contains("public"));
-        Assert.assertTrue(cacheControlHeaders.contains("must-revalidate"));
-        Assert.assertTrue(cacheControlHeaders.contains("max-age=0"));
-        assertNotNull(response.getHeader("Expires"));//System.currentTimeMillis() is used
-        assertNotNull(response.getHeader("Last-Modified"));// depends on current timezone
+        checkResponse(response);
     }
 
     @Test
@@ -163,13 +157,7 @@ public class AdministrationImagesControllerTest {
 
         assertEquals(response.getStatus(), HttpServletResponse.SC_NOT_MODIFIED);
         assertNotSame(response.getContentAsByteArray(), validImage);
-        assertEquals(response.getHeader("Pragma"), "public");
-        List<String> cacheControlHeaders = response.getHeaders("Cache-Control");
-        Assert.assertTrue(cacheControlHeaders.contains("public"));
-        Assert.assertTrue(cacheControlHeaders.contains("must-revalidate"));
-        Assert.assertTrue(cacheControlHeaders.contains("max-age=0"));
-        assertNotNull(response.getHeader("Expires"));//System.currentTimeMillis() is used
-        assertNotNull(response.getHeader("Last-Modified"));// depends on current timezone
+        checkResponse(response);
     }
 
     @Test
@@ -372,13 +360,7 @@ public class AdministrationImagesControllerTest {
         assertEquals(response.getContentType(), "image/png");
         assertEquals(response.getContentLength(), validImage.length);
         assertEquals(response.getContentAsByteArray(), validImage);
-        assertEquals(response.getHeader("Pragma"), "public");
-        List<String> cacheControlHeaders = response.getHeaders("Cache-Control");
-        Assert.assertTrue(cacheControlHeaders.contains("public"));
-        Assert.assertTrue(cacheControlHeaders.contains("must-revalidate"));
-        Assert.assertTrue(cacheControlHeaders.contains("max-age=0"));
-        assertNotNull(response.getHeader("Expires"));//System.currentTimeMillis() is used
-        assertNotNull(response.getHeader("Last-Modified"));// depends on current timezone
+        checkResponse(response);
     }
 
     @Test
@@ -394,13 +376,7 @@ public class AdministrationImagesControllerTest {
 
         assertEquals(response.getStatus(), HttpServletResponse.SC_NOT_MODIFIED);
         assertNotSame(response.getContentAsByteArray(), validImage);
-        assertEquals(response.getHeader("Pragma"), "public");
-        List<String> cacheControlHeaders = response.getHeaders("Cache-Control");
-        Assert.assertTrue(cacheControlHeaders.contains("public"));
-        Assert.assertTrue(cacheControlHeaders.contains("must-revalidate"));
-        Assert.assertTrue(cacheControlHeaders.contains("max-age=0"));
-        assertNotNull(response.getHeader("Expires"));//System.currentTimeMillis() is used
-        assertNotNull(response.getHeader("Last-Modified"));// depends on current timezone
+        checkResponse(response);
     }
 
     @Test
@@ -417,13 +393,7 @@ public class AdministrationImagesControllerTest {
         assertEquals(response.getContentType(), "image/x-icon");
         assertEquals(response.getContentLength(), validImage.length);
         assertEquals(response.getContentAsByteArray(), validImage);
-        assertEquals(response.getHeader("Pragma"), "public");
-        List<String> cacheControlHeaders = response.getHeaders("Cache-Control");
-        Assert.assertTrue(cacheControlHeaders.contains("public"));
-        Assert.assertTrue(cacheControlHeaders.contains("must-revalidate"));
-        Assert.assertTrue(cacheControlHeaders.contains("max-age=0"));
-        assertNotNull(response.getHeader("Expires"));//System.currentTimeMillis() is used
-        assertNotNull(response.getHeader("Last-Modified"));// depends on current timezone
+        checkResponse(response);
     }
 
     @Test
@@ -439,13 +409,18 @@ public class AdministrationImagesControllerTest {
 
         assertEquals(response.getStatus(), HttpServletResponse.SC_NOT_MODIFIED);
         assertNotSame(response.getContentAsByteArray(), validImage);
+        checkResponse(response);
+
+    }
+
+    private void checkResponse(MockHttpServletResponse response) {
         assertEquals(response.getHeader("Pragma"), "public");
         List<String> cacheControlHeaders = response.getHeaders("Cache-Control");
         Assert.assertTrue(cacheControlHeaders.contains("public"));
         Assert.assertTrue(cacheControlHeaders.contains("must-revalidate"));
         Assert.assertTrue(cacheControlHeaders.contains("max-age=0"));
-        assertNotNull(response.getHeader("Expires"));//System.currentTimeMillis() is used
-        assertNotNull(response.getHeader("Last-Modified"));// depends on current timezone
+        assertNotNull(response.getHeader("Expires"));
+        assertNotNull(response.getHeader("Last-Modified"));
     }
 
     @Test
