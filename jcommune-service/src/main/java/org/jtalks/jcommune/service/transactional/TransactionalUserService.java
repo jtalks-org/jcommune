@@ -94,6 +94,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      *                          not
      * @param sessionStrategy   used in login logic to call onAuthentication hook
      *                          which stored this user to online uses list.
+     * @param postDao           for operations with posts
      */
     public TransactionalUserService(UserDao dao, 
                                     GroupDao groupDao,
@@ -340,7 +341,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
                 result = true;
             }
         } catch (NotFoundException e) {
-            //TODO why do we catch it? Anyway, we must even if log it
+            LOGGER.warn("User was not found during login process, username = " + username);
         } catch (AuthenticationException e) {
             LOGGER.warn(e.getMessage());
         }

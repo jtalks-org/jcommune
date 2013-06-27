@@ -17,15 +17,8 @@
 Object storing input values in the dialog.
 Used to keep values when logo removing dialog is showed
  */
-var currentAdminValues = {
-   'forumName': null,
-   'forumDescription': null,
-   'logoTooltip': null,
-   'logo': null,
-   'logoPreview': null,
-   'iconPreview': null,
-   'valid' : false
-}
+var currentAdminValues = getCurrentAdminValues();
+const REQUEST_ENTITY_TOO_LARGE = 413;
 
 
 $(function () {
@@ -34,11 +27,24 @@ $(function () {
     $("#forumLogo").on('click', showForumConfigurationDialog);
 });
 
+function getCurrentAdminValues() {
+    return {
+        forumName: $('#cmpName').text() || "",
+        forumDescription: $('#descriptionHolder').text() || "",
+        logoTooltip: $("#logoTooltipHolder").text() || "",
+        logoPreview: $('#forumLogo').attr("src"),
+        iconPreview: getFavIconUrl() || "",
+        logo: null,
+        icon: null
+    }
+}
+
 function showForumConfigurationDialog(e) {
     // prevent from following link
     e.preventDefault();
 
-    currentAdminValues.valid = false
+    currentAdminValues = getCurrentAdminValues();
+
     // create the Dialog
     createAdministrationDialog();
 }
@@ -56,7 +62,7 @@ function createAdministrationDialog() {
             \
             <div class="logo-manage-buttons-container"> \
                 <div class="logo-manage-buttons"> \
-                    <a id="upload-logo" href="#" class="btn btn-mini"> \
+                    <a id="uploadLogo" href="#" class="btn btn-mini"> \
                         <i class="icon-picture"></i>  \
                         '+ $labelUploadLogo + ' \
                     </a>  \
@@ -77,7 +83,7 @@ function createAdministrationDialog() {
             \
             <div class="logo-manage-buttons-container"> \
                 <div class="logo-manage-buttons"> \
-                    <a id="upload-icon" href="#" class="btn btn-mini"> \
+                    <a id="uploadIcon" href="#" class="btn btn-mini"> \
                         <i class="icon-picture"></i>  \
                         '+ $labelUploadFavIcon + ' \
                     </a>  \
@@ -92,14 +98,14 @@ function createAdministrationDialog() {
         \
         <form:hidden id="logo" path="logo"/> \
         <form:hidden id="icon" path="icon"/> \
-        ' + Utils.createFormElement($labelForumTitle, 'forum_name', 'text', 'first dialog-input')
-        + Utils.createFormElement($labelForumDescription, 'forum_description', 'text', 'dialog-input')
-        + Utils.createFormElement($labelLogoTooltip, 'forum_logoTooltip', 'text', 'dialog-input') + ' \
+        ' + Utils.createFormElement($labelForumTitle, 'forumName', 'text', 'first dialog-input')
+        + Utils.createFormElement($labelForumDescription, 'forumDescription', 'text', 'dialog-input')
+        + Utils.createFormElement($labelLogoTooltip, 'forumLogoTooltip', 'text', 'dialog-input') + ' \
             <div class="clearfix"';
 
     var footerContent = ' \
-            <button id="administration-cancel-button" class="btn">' + $labelCancel + '</button> \
-            <button id="administration-submit-button" class="btn btn-primary">' + $labelSaveChanges + '</button>';
+            <button id="administrationCancelButton" class="btn">' + $labelCancel + '</button> \
+            <button id="administrationSubmitButton" class="btn btn-primary">' + $labelSaveChanges + '</button>';
 
     jDialog.createDialog({
         dialogId: 'administration-modal-dialog',
@@ -109,19 +115,18 @@ function createAdministrationDialog() {
         maxWidth: 350,
         maxHeight: 500,
         firstFocus: true,
-        tabNavigation: ['#upload-logo', '#removeLogo', '#upload-icon', '#removeIcon', '#forum_name',
-                        '#forum_description','#forum_logoTooltip',
-                        '#administration-submit-button', '#administration-cancel-button'],
+        tabNavigation: ['#forumDescription','#forumLogoTooltip',
+                        '#administrationSubmitButton', '#administrationCancelButton'],
         handlers: {
-            '#administration-submit-button': {'click': sendForumConfiguration},
-            '#administration-cancel-button': {'static':'close'}
+            '#administrationSubmitButton': {'click': sendForumConfiguration},
+            '#administrationCancelButton': {'static':'close'}
         }
     });
 
     var tabFunc = function (e) {
         if (document.activeElement.id == jDialog.options.dialogId && (e.keyCode || e.charCode) == tabCode) {
             e.preventDefault();
-            $("#upload-logo").focus();
+            $("#uploadLogo").focus();
         }
     }
     $("#" + jDialog.options.dialogId).on('keydown', tabFunc);
@@ -135,14 +140,13 @@ function createAdministrationDialog() {
 
 function getFavIconUrl(){
     var favIconUrl;
-    var linkNodesList = document.getElementsByTagName("link");
-    for (var i = 0; i < linkNodesList.length; i++)
-    {
-        if(linkNodesList[i].getAttribute("rel") == "icon")
-        {
-            favIconUrl = linkNodesList[i].getAttribute("href");
+
+    $('link').each(function(indx, element){
+        if ($(element).attr("rel") == "icon") {
+            favIconUrl = $(element).attr("href");
         }
-    }
+    });
+
     return favIconUrl;
 }
 
@@ -151,191 +155,125 @@ Fills inputs with current information or with
 information stored before logo removing dialog was showed
  */
 function fillAdminDialogInputs() {
-    if (currentAdminValues.valid == true) {
-        $('#forum_name').val(currentAdminValues.forumName);
-        $('#forum_description').val(currentAdminValues.forumDescription);
-        $('#forum_logoTooltip').val(currentAdminValues.logoTooltip);
-        $('#logoPreview').attr('src', currentAdminValues.logoPreview);
-        $('#iconPreview').attr('src', currentAdminValues.iconPreview);
-        $('#logo').val(currentAdminValues.logo);
-        $('#icon').val(currentAdminValues.icon);
+    $('#forumName').val(currentAdminValues.forumName);
+    $('#forumDescription').val(currentAdminValues.forumDescription);
+    $('#forumLogoTooltip').val(currentAdminValues.logoTooltip);
+    $('#logoPreview').attr('src', currentAdminValues.logoPreview);
+    $('#iconPreview').attr('src', currentAdminValues.iconPreview);
+    $('#logo').val(currentAdminValues.logo);
+    $('#icon').val(currentAdminValues.icon);
+}
+
+/*
+ Creates uploader for uploading image to the server
+ */
+function createUploader(IFrameActionUrl, XhrActionUrl, uploadButtonId, onSuccessResponse) {
+    //defined the URL for appropriate logo processing depending on client browser:
+    // Opera, IE - multipart file using iFrame
+    // Chrome, Opera - byte [] using XHR
+    var action;
+    //this parameter tells to valums file uploader the appropriate content type
+    //if encoding != multipart, it will use "application/octet-stream" content type
+    //otherwise it will use "multipart/form-data"
+    var encoding = "not-multipart";
+    if (navigator.appName.indexOf("Microsoft") != -1 ||
+        navigator.appName.indexOf("Opera") != -1) {
+        action = IFrameActionUrl;
+        encoding = "multipart";
     }
     else {
-        var cmpNameText = $("#cmpName").text();
-        var forumDescriptionText = $("#descriptionHolder").text();
-        var logoTooltipText = $("#logoTooltipHolder").text();
-
-        $('#forum_name').val(cmpNameText);
-        $('#forum_description').val(forumDescriptionText);
-        $('#forum_logoTooltip').val(logoTooltipText);
-        $('#logoPreview').attr("src", $('#forumLogo').attr("src"));
-        $('#iconPreview').attr("src", getFavIconUrl());
+        action = XhrActionUrl;
     }
+
+    var uploader = new qq.FileUploaderBasic({
+        button: $("#" + uploadButtonId).get(0),
+        //server side uploading handler
+        action: action,
+        //
+        encoding: encoding,
+        //is multiple file upload available
+        multiple: false,
+        onSubmit: function (id, filename) {
+        },
+        onProgress: function (id, filename, loaded, total) {
+        },
+        onComplete: function (id, filename, responseJSON) {
+            // response is empty when response status is not 200
+            if (jQuery.isEmptyObject(responseJSON)) {
+                return;
+            }
+            //
+            if (responseJSON.status == "SUCCESS") {
+                onSuccessResponse(responseJSON);
+            } else {
+                saveInputValues();
+                // display error message
+                jDialog.createDialog({
+                    type: jDialog.alertType,
+                    bodyMessage: responseJSON.result
+                });
+                $('#' + jDialog.options.alertDefaultBut).on('click', createAdministrationDialog);
+            }
+
+        },
+        onError: function(id, filename, xhr) {
+            if (xhr.status == REQUEST_ENTITY_TOO_LARGE) {
+                saveInputValues();
+                jDialog.createDialog({
+                    type: jDialog.alertType,
+                    bodyMessage: $labelImageWrongSizeJs
+                });
+                $('#' + jDialog.options.alertDefaultBut).on('click', createAdministrationDialog);
+                return false;
+            }
+        },
+        debug: false,
+        messages: {
+            emptyError: $fileIsEmpty
+        }
+    });
 }
 
 /*
 Creates uploader for uploading logo to the server
  */
 function createLogoUploader() {
-    //defined the URL for appropriate logo processing depending on client browser:
-    // Opera, IE - multipart file using iFrame
-    // Chrome, Opera - byte [] using XHR
-    var action;
-    //this parameter tells to valums file uploader the appropriate content type
-    //if encoding != multipart, it will use "application/octet-stream" content type
-    //otherwise it will use "multipart/form-data"
-    var encoding = "not-multipart";
-    if (navigator.appName.indexOf("Microsoft") != -1 ||
-        navigator.appName.indexOf("Opera") != -1) {
-        action = $root + '/admin/logo/IFrameLogoPreview';
-        encoding = "multipart";
-    }
-    else {
-        action = $root + '/admin/logo/XHRlogoPreview';
-    }
-
-    var uploader = new qq.FileUploaderBasic({
-        button: $("#upload-logo").get(0),
-        //server side uploading handler
-        action: action,
-        //
-        encoding: encoding,
-        //is multiple file upload available
-        multiple: false,
-        onSubmit: function (id, filename) {
-        },
-        onProgress: function (id, filename, loaded, total) {
-        },
-        onComplete: function (id, filename, responseJSON) {
-            // response is empty when response status is not 200
-            if (jQuery.isEmptyObject(responseJSON)) {
-                return;
-            }
-            //
-            if (responseJSON.status == "SUCCESS") {
-                //if server side logo uploading successful  a processed image displayed
-                $('#logoPreview').attr('src', responseJSON.srcPrefix + responseJSON.srcImage);
-                $('#logo').attr('value', responseJSON.srcImage);
-            } else {
-                saveInputValues();
-                // display error message
-                jDialog.createDialog({
-                    type: jDialog.alertType,
-                    bodyMessage: responseJSON.result
-                });
-                $('#' + jDialog.options.alertDefaultBut).on('click', createAdministrationDialog);
-            }
-
-        },
-        onError: function(id, filename, xhr) {
-            if (xhr.status == 413) {
-                saveInputValues();
-                jDialog.createDialog({
-                    type: jDialog.alertType,
-                    bodyMessage: $labelImageWrongSizeJs
-                });
-                $('#' + jDialog.options.alertDefaultBut).on('click', createAdministrationDialog);
-                return false;
-            }
-        },
-        debug: false,
-        messages: {
-            emptyError: $fileIsEmpty
+    createUploader($root + '/admin/logo/IFrameLogoPreview', $root + '/admin/logo/XHRlogoPreview', "uploadLogo",
+        function(responseJSON) {
+            $('#logoPreview').attr('src', responseJSON.srcPrefix + responseJSON.srcImage);
+            $('#logo').attr('value', responseJSON.srcImage);
         }
-    });
+    );
 }
 
 /*
  Creates uploader for uploading icon to the server
  */
 function createIconUploader() {
-    //defined the URL for appropriate logo processing depending on client browser:
-    // Opera, IE - multipart file using iFrame
-    // Chrome, Opera - byte [] using XHR
-    var action;
-    //this parameter tells to valums file uploader the appropriate content type
-    //if encoding != multipart, it will use "application/octet-stream" content type
-    //otherwise it will use "multipart/form-data"
-    var encoding = "not-multipart";
-    if (navigator.appName.indexOf("Microsoft") != -1 ||
-        navigator.appName.indexOf("Opera") != -1) {
-        action = $root + '/admin/icon/IFrameFavIconPreview';
-        encoding = "multipart";
-    }
-    else {
-        action = $root + '/admin/icon/XHRFavIconPreview';
-    }
-
-    var uploader = new qq.FileUploaderBasic({
-        button: $("#upload-icon").get(0),
-        //server side uploading handler
-        action: action,
-        //
-        encoding: encoding,
-        //is multiple file upload available
-        multiple: false,
-        onSubmit: function (id, filename) {
-        },
-        onProgress: function (id, filename, loaded, total) {
-        },
-        onComplete: function (id, filename, responseJSON) {
-            // response is empty when response status is not 200
-            if (jQuery.isEmptyObject(responseJSON)) {
-                return;
-            }
-            //
-            if (responseJSON.status == "SUCCESS") {
-                //if server side icon uploading successful  a processed image displayed
-                $('#iconPreview').attr('src', responseJSON.srcPrefix + responseJSON.srcImage);
-                $('#icon').attr('value', responseJSON.srcImage);
-            } else {
-                saveInputValues();
-                // display error message
-                jDialog.createDialog({
-                    type: jDialog.alertType,
-                    bodyMessage: responseJSON.result
-                });
-                $('#' + jDialog.options.alertDefaultBut).on('click', createAdministrationDialog);
-            }
-
-        },
-        onError: function(id, filename, xhr) {
-            if (xhr.status == 413) {
-                saveInputValues();
-                jDialog.createDialog({
-                    type: jDialog.alertType,
-                    bodyMessage: $labelImageWrongSizeJs
-                });
-                $('#' + jDialog.options.alertDefaultBut).on('click', createAdministrationDialog);
-                return false;
-            }
-        },
-        debug: false,
-        messages: {
-            emptyError: $fileIsEmpty
+    createUploader($root + '/admin/icon/IFrameFavIconPreview', $root + '/admin/icon/XHRFavIconPreview', "uploadIcon",
+        function(responseJSON) {
+            $('#iconPreview').attr('src', responseJSON.srcPrefix + responseJSON.srcImage);
+            $('#icon').attr('value', responseJSON.srcImage);
         }
-    });
+    );
 }
 
 /*
-Adds handler for "Remove Logo" button
+ Adds handler for remove image button
  */
-function addRemoveLogoHandler() {
-    //remove logo handler
-    $('#removeLogo').click(function () {
+function addRestoreDefaultImageHandler(buttonId, defaultImageUrl, onSuccess) {
+    //remove image handler
+    $('#' + buttonId).click(function () {
         saveInputValues();
 
         var footerContent = ' \
-            <button id="remove-logo-cancel" class="btn">' + $labelCancel + '</button> \
-            <button id="remove-logo-ok" class="btn btn-primary">' + $labelOk + '</button>';
+            <button id="restoreDefaultCancel" class="btn">' + $labelCancel + '</button> \
+            <button id="restoreDefaultOk" class="btn btn-primary">' + $labelOk + '</button>';
 
         var submitFunc = function (e) {
             e.preventDefault();
-            $.getJSON($root + "/admin/defaultLogo", function (responseJSON) {
-                // save logo information and show main dialog again
-                currentAdminValues.logoPreview = responseJSON.srcPrefix + responseJSON.srcImage;
-                currentAdminValues.logo = responseJSON.srcImage;
-
+            $.getJSON(defaultImageUrl, function (responseJSON) {
+                onSuccess(responseJSON);
                 createAdministrationDialog();
             });
             jDialog.closeDialog();
@@ -348,85 +286,57 @@ function addRemoveLogoHandler() {
             footerContent: footerContent,
             maxWidth: 300,
             maxHeight: 500,
-            tabNavigation: ['#remove-logo-ok','#remove-logo-cancel'],
+            tabNavigation: ['#restoreDefaultOk','#restoreDefaultCancel'],
             handlers: {
-                '#remove-logo-ok': {'click': submitFunc},
-                '#remove-logo-cancel': {'click': createAdministrationDialog}
+                '#restoreDefaultOk': {'click': submitFunc},
+                '#restoreDefaultCancel': {'click': createAdministrationDialog}
             }
         });
 
         jDialog.dialog.find('.close').bind('click', createAdministrationDialog);
 
-        $('#remove-logo-ok').focus();
+        $('#restoreDefaultOk').focus();
 
     });
+}
+
+/*
+Adds handler for "Remove Logo" button
+ */
+function addRemoveLogoHandler() {
+    addRestoreDefaultImageHandler("removeLogo", $root + "/admin/defaultLogo",
+        function(responseJSON) {
+            currentAdminValues.logoPreview = responseJSON.srcPrefix + responseJSON.srcImage;
+            currentAdminValues.logo = responseJSON.srcImage;
+        }
+    );
 }
 
 /*
  Adds handler for "Remove Icon" button
  */
 function addRemoveFavIconHandler() {
-    //remove logo handler
-    $('#removeIcon').click(function () {
-        saveInputValues();
-
-        var footerContent = ' \
-            <button id="remove-icon-cancel" class="btn">' + $labelCancel + '</button> \
-            <button id="remove-icon-ok" class="btn btn-primary">' + $labelOk + '</button>';
-
-        var submitFunc = function (e) {
-            e.preventDefault();
-            $.getJSON($root + "/admin/defaultIcon", function (responseJSON) {
-                // save icon information and show main dialog again
-                currentAdminValues.iconPreview = responseJSON.srcPrefix + responseJSON.srcImage;
-                currentAdminValues.icon = responseJSON.srcImage;
-
-                createAdministrationDialog();
-            });
-            jDialog.closeDialog();
-        };
-
-        jDialog.createDialog({
-            type: jDialog.confirmType,
-            bodyMessage : $labelDeleteIconConfirmation,
-            firstFocus : false,
-            footerContent: footerContent,
-            maxWidth: 300,
-            maxHeight: 500,
-            tabNavigation: ['#remove-icon-ok','#remove-icon-cancel'],
-            handlers: {
-                '#remove-icon-ok': {'click': submitFunc},
-                '#remove-icon-cancel': {'click': createAdministrationDialog}
-            }
-        });
-
-        jDialog.dialog.find('.close').bind('click', createAdministrationDialog);
-
-        $('#remove-icon-ok').focus();
-
-    });
+    addRestoreDefaultImageHandler("removeIcon", $root + "/admin/defaultIcon",
+        function(responseJSON) {
+            currentAdminValues.iconPreview = responseJSON.srcPrefix + responseJSON.srcImage;
+            currentAdminValues.icon = responseJSON.srcImage;
+        }
+    );
 }
 
 /*
 Copies values for Forum Name, Description and Logo from the Dialog
  */
 function saveInputValues() {
-    var forumNameElement = jDialog.dialog.find('#forum_name');
-    var forumDescriptionElement = jDialog.dialog.find('#forum_description');
-    var logoTooltipElement = jDialog.dialog.find('#forum_logoTooltip');
-    var logoElement = jDialog.dialog.find('#logo');
-    var iconElement = jDialog.dialog.find('#icon');
-    var logoPreview = jDialog.dialog.find('#logoPreview');
-    var iconPreview = jDialog.dialog.find('#iconPreview');
-
-    currentAdminValues.forumName = forumNameElement.val();
-    currentAdminValues.forumDescription = forumDescriptionElement.val();
-    currentAdminValues.logoTooltip = logoTooltipElement.val();
-    currentAdminValues.logo = logoElement.val();
-    currentAdminValues.logoPreview = logoPreview.attr("src");
-    currentAdminValues.icon = iconElement.val();
-    currentAdminValues.iconPreview = iconPreview.attr("src");
-    currentAdminValues.valid = true;
+    currentAdminValues = {
+        forumName: jDialog.dialog.find('#forumName').val(),
+        forumDescription: jDialog.dialog.find('#forumDescription').val(),
+        logoTooltip: jDialog.dialog.find('#forumLogoTooltip').val(),
+        logo: jDialog.dialog.find('#logo').val(),
+        logoPreview: jDialog.dialog.find('#logoPreview').attr("src"),
+        icon: jDialog.dialog.find('#icon').val(),
+        iconPreview: jDialog.dialog.find('#iconPreview').attr("src")
+    }
 }
 
 /**
@@ -437,7 +347,6 @@ function sendForumConfiguration(e) {
     e.preventDefault();
 
     saveInputValues();
-    currentAdminValues.valid = false;
 
     var componentInformation = {};
     componentInformation.name = currentAdminValues.forumName;
@@ -461,7 +370,7 @@ function sendForumConfiguration(e) {
             else {
                 if (resp.result instanceof Array) {
                     jDialog.prepareDialog(jDialog.dialog);
-                    jDialog.showErrors(jDialog.dialog, resp.result, "forum_", "");
+                    jDialog.showErrors(jDialog.dialog, resp.result, "forum", "");
                 } else {
                     jDialog.createDialog({
                         type: jDialog.alertType,

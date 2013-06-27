@@ -515,7 +515,7 @@ public class AdministrationControllerTest {
             throws IOException, ImageProcessException {
         MultipartFile file = new MockMultipartFile("qqfile", validImage);
 
-        ResponseEntity<String> actualResponseEntity = administrationController.uploadFavIcon(file);
+        administrationController.uploadFavIcon(file);
 
         verify(favIconPngControllerUtils).prepareResponse(eq(file), any(HttpHeaders.class), any(HashMap.class));
     }

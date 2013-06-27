@@ -15,8 +15,10 @@
 
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.hibernate.SessionFactory;
+import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.dao.ComponentDao;
@@ -41,8 +43,13 @@ import java.util.Locale;
  */
 public class ComponentHibernateDao extends GenericDao<Component> implements ComponentDao {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ComponentHibernateDao.class);
-    private static final String PROPERTY_DATETIME_PATTERN = "E, dd MMM yyyy HH:mm:ss z";
+    public static final String LOGO_TOOLTIP_PROPERTY = "jcommune.logo_tooltip";
+    public static final String LOGO_PROPERTY = "jcommune.logo";
+    public static final String COMPONENT_FAVICON_ICO_PARAM = "jcommune.favicon.ico";
+    public static final String COMPONENT_FAVICON_PNG_PARAM = "jcommune.favicon.png";
+
+    private static final String COMPONENT_INFO_CHANGE_DATE_PROPERTY = "jcommune.info_change_date";
+
 
     /**
      * @param sessionFactory The SessionFactory.
@@ -50,28 +57,6 @@ public class ComponentHibernateDao extends GenericDao<Component> implements Comp
     public ComponentHibernateDao(SessionFactory sessionFactory) {
         super(sessionFactory, Component.class);
     }
-
-    /**
-     * Parameter name for forum logo tooltip
-     */
-    public static final String LOGO_TOOLTIP_PROPERTY = "jcommune.logo_tooltip";
-
-    /**
-     * Parameter name for forum logo
-     */
-    public static final String LOGO_PROPERTY = "jcommune.logo";
-
-    private static final String COMPONENT_INFO_CHANGE_DATE_PROPERTY = "jcommune.info_change_date";
-
-    /**
-     * Parameter name for forum fav icon in ico format
-     */
-    public static final String COMPONENT_FAVICON_ICO_PARAM = "jcommune.favicon.ico";
-
-    /**
-     * Parameter name for forum fav icon in png format
-     */
-    public static final String COMPONENT_FAVICON_PNG_PARAM = "jcommune.favicon.png";
 
     /**
      * {@inheritDoc}
@@ -90,25 +75,21 @@ public class ComponentHibernateDao extends GenericDao<Component> implements Comp
         forumComponent.setName(componentInformation.getName());
         forumComponent.setDescription(componentInformation.getDescription());
         forumComponent.setProperty(LOGO_TOOLTIP_PROPERTY, componentInformation.getLogoTooltip());
-        if (componentInformation.getLogo() != null && !componentInformation.getLogo().isEmpty()) {
+        if (!StringUtils.isEmpty(componentInformation.getLogo())) {
             forumComponent.setProperty(LOGO_PROPERTY, componentInformation.getLogo());
         }
 
-        if (componentInformation.getIcon() != null && !componentInformation.getIcon().isEmpty()) {
+        if (!StringUtils.isEmpty(componentInformation.getIcon())) {
             forumComponent.setProperty(COMPONENT_FAVICON_PNG_PARAM, componentInformation.getIcon());
         }
 
-        if (componentInformation.getIconICO() != null && !componentInformation.getIconICO().isEmpty()) {
+        if (!StringUtils.isEmpty(componentInformation.getIconICO())) {
             forumComponent.setProperty(COMPONENT_FAVICON_ICO_PARAM, componentInformation.getIconICO());
         }
 
-        // we don't need milliseconds - in some cases
-        // i.e. in HTTP headers dates are stored in seconds
-        // - in this case it is hard to compare two dates
-        Calendar now = Calendar.getInstance();
-        now.set(Calendar.MILLISECOND, 0);
-        String timeInMillis = String.valueOf(now.getTimeInMillis());
-        forumComponent.setProperty(COMPONENT_INFO_CHANGE_DATE_PROPERTY, timeInMillis);
+        DateTime now = new DateTime();
+        now = now.withMillisOfSecond(0);
+        forumComponent.setProperty(COMPONENT_INFO_CHANGE_DATE_PROPERTY, String.valueOf(now.getMillis()));
     }
 
     /**
@@ -116,16 +97,16 @@ public class ComponentHibernateDao extends GenericDao<Component> implements Comp
      */
     @Override
     public Date getComponentModificationTime() {
-        if (getComponent() == null) {
-            return new Date();
-        }
-
-        String dateString = getComponent().getProperty(COMPONENT_INFO_CHANGE_DATE_PROPERTY);
         Date modificationDate = new Date();
 
-        if (dateString != null) {
-            modificationDate.setTime(Long.parseLong(dateString));
+        if (getComponent() != null) {
+            String dateString = getComponent().getProperty(COMPONENT_INFO_CHANGE_DATE_PROPERTY);
+
+            if (dateString != null) {
+                modificationDate.setTime(Long.parseLong(dateString));
+            }
         }
+
 
         return modificationDate;
     }

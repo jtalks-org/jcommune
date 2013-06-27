@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.apache.commons.lang.StringUtils;
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.dao.hibernate.ComponentHibernateDao;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
@@ -133,7 +134,7 @@ public class AdministrationController extends ImageUploadController {
 
         componentInformation.setId(componentService.getComponentOfForum().getId());
 
-        if (componentInformation.getIcon() != null && !componentInformation.getIcon().isEmpty()) {
+        if (!StringUtils.isEmpty(componentInformation.getIcon())) {
             Base64Wrapper wrapper = new Base64Wrapper();
             byte[] favIcon = wrapper.decodeB64Bytes(componentInformation.getIcon());
             try {
