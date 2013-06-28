@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
@@ -51,6 +52,14 @@ public class AdministrationImagesController extends ImageUploadController {
     private final ComponentService componentService;
 
     /**
+     * We need this start time because there might be case when time of the last modification
+     * of the forum information (logo, icon) was not set (may be even there is no Component for the forum),
+     * but we need to use some constant time to decide if we should return "Not Modified" in response to
+     * logo or fav icon request.
+     */
+    private final Date startTime;
+
+    /**
      * Creates instance of the service
      *
      * @param componentService          service to work with the forum component
@@ -73,6 +82,9 @@ public class AdministrationImagesController extends ImageUploadController {
         this.logoControllerUtils = logoControllerUtils;
         this.favIconIcoControllerUtils = favIconIcoControllerUtils;
         this.favIconPngControllerUtils = favIconPngControllerUtils;
+
+        DateTime now = new DateTime();
+        startTime = now.withMillisOfSecond(0).toDate();
     }
 
     /**
@@ -170,7 +182,12 @@ public class AdministrationImagesController extends ImageUploadController {
                                      String contentType) {
         Date forumModificationDate = componentService.getComponentModificationTime();
 
+        if (forumModificationDate == null) {
+            forumModificationDate = startTime;
+        }
+
         Date ifModifiedDate = getIfModifiedSineDate(request.getHeader(IF_MODIFIED_SINCE_HEADER));
+
         if (!forumModificationDate.after(ifModifiedDate)) {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
         } else {

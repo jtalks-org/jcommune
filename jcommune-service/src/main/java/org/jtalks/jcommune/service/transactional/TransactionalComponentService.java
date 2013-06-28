@@ -110,13 +110,13 @@ public class TransactionalComponentService extends AbstractTransactionalEntitySe
      */
     @Override
     public Date getComponentModificationTime() {
-        Date modificationDate = new Date();
+        Date modificationDate = null;
 
         if (getDao().getComponent() != null) {
             String dateString = getDao().getComponent().getProperty(COMPONENT_INFO_CHANGE_DATE_PROPERTY);
 
             if (dateString != null) {
-                modificationDate.setTime(Long.parseLong(dateString));
+                modificationDate = new Date(Long.parseLong(dateString));
             }
         }
 

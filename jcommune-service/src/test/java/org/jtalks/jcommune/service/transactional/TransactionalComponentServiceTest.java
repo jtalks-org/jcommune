@@ -32,6 +32,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 
 /**
  * @author Anuar_Nurmakanov
@@ -176,6 +177,18 @@ public class TransactionalComponentServiceTest {
         Date modificationTime = componentService.getComponentModificationTime();
 
         assertEquals(modificationTime.getTime(), lastModificationTime);
+    }
+
+    @Test
+    public void getComponentModificationTimeShouldReturnNullIfNotExists() {
+
+        when(componentDao.getComponent()).thenReturn(component);
+        when(component.getProperty(TransactionalComponentService.COMPONENT_INFO_CHANGE_DATE_PROPERTY))
+                .thenReturn(null);
+
+        Date modificationTime = componentService.getComponentModificationTime();
+
+        assertNull(modificationTime);
     }
 }
     
