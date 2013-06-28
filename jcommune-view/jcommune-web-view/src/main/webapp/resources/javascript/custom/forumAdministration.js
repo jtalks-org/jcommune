@@ -115,7 +115,7 @@ function createAdministrationDialog() {
         maxWidth: 350,
         maxHeight: 500,
         firstFocus: true,
-        tabNavigation: ['#forumDescription','#forumLogoTooltip',
+        tabNavigation: ['#forumName', '#forumDescription','#forumLogoTooltip',
                         '#administrationSubmitButton', '#administrationCancelButton'],
         handlers: {
             '#administrationSubmitButton': {'click': sendForumConfiguration},
