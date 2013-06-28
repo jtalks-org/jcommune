@@ -311,24 +311,44 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
     @Test
     public void getUsernamesResultCount() {
-        String usernamePattern = "us";
+        String usernamePattern = "Us";
         int resultCount = 2;
-        List<JCUser> users = new ArrayList<JCUser>();
-        users.add(createUser("user1", true));
-        users.add(createUser("user2", true));
-        users.add(createUser("user3", true));
+        createUser("User1", true);
+        createUser("uSer2", true);
+        createUser("user3", true);
         assertEquals(dao.getUsernames(usernamePattern, resultCount).size(), 2);
     }
 
     @Test
     public void getUsernamesEnabledUsers() {
-        String usernamePattern = "us";
+        String usernamePattern = "Us";
         int resultCount = 5;
-        List<JCUser> users = new ArrayList<JCUser>();
-        users.add(createUser("user1", true));
-        users.add(createUser("user2", true));
-        users.add(createUser("user3", false));
+        createUser("User1", true);
+        createUser("uSer2", true);
+        createUser("user3", false);
         assertEquals(dao.getUsernames(usernamePattern, resultCount).size(), 2);
+    }
+
+    @Test
+    public void getUsernamesWithSpecialCharacters() {
+        String usernamePattern = "@/|\"&' <>#${}()";
+        int resultCount = 5;
+        createUserWithMail("Some_user1", "user1@mail.com", true);
+        createUserWithMail("user2", "user2@mail.com", true);
+        createUserWithMail("@/|\"&' <>#${}()", "user3@mail.com", true);
+
+        assertEquals(dao.getUsernames(usernamePattern, resultCount).size(), 1);
+    }
+
+    @Test
+    public void specialCharactersShouldBeEscapedCorrectly() {
+        String usernamePattern = "_us%";
+        int resultCount = 5;
+        createUserWithMail("Some_user1", "user1@mail.com", true);
+        createUserWithMail("user2", "user2@mail.com", true);
+        createUserWithMail("Some_us%2r", "user3@mail.com", true);
+
+        assertEquals(dao.getUsernames(usernamePattern, resultCount).size(), 1);
     }
     
     private JCUser givenJCUserWithUsernameStoredInDb(String username) {
@@ -338,10 +358,14 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         return expected;
     }
 
-    private JCUser createUser(String username, boolean enabled){
-        JCUser user = new JCUser(username, username + "@mail.com", username + "pass");
+    private JCUser createUserWithMail(String username, String email, boolean enabled){
+        JCUser user = new JCUser(username, email, username + "pass");
         user.setEnabled(enabled);
         session.persist(user);
         return user;
+    }
+
+    private JCUser createUser(String username, boolean enabled){
+        return createUserWithMail(username, username + "@mail.com", enabled);
     }
 }

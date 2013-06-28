@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -556,10 +557,7 @@ public class TransactionalUserServiceTest {
     public void testGetUsernames() {
         String usernamePattern = "Us";
         int usernameCount = 10;
-        List<String> usernames = new ArrayList<String>();
-        usernames.add("User1");
-        usernames.add("User2");
-        usernames.add("User3");
+        List<String> usernames = Lists.newArrayList("User1", "User2", "User3");
         when(userDao.getUsernames(usernamePattern, usernameCount)).thenReturn(usernames);
 
         assertEquals(userService.getUsernames(usernamePattern).size(), 3);
