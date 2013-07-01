@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import com.google.common.collect.Lists;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -246,10 +247,7 @@ public class UserControllerTest {
     @Test
     public void testGetUsernameListSuccess(){
         String pattern = "us";
-        List<String> usernames = new ArrayList<String>();
-        usernames.add("user1");
-        usernames.add("user2");
-        usernames.add("user3");
+        List<String> usernames = Lists.newArrayList("User1", "User2", "User3");
         when(userService.getUsernames(pattern)).thenReturn(usernames);
 
         JsonResponse response = userController.usernameList(pattern);
