@@ -18,7 +18,7 @@ Object storing input values in the dialog.
 Used to keep values when logo removing dialog is showed
  */
 var currentAdminValues = getCurrentAdminValues();
-const REQUEST_ENTITY_TOO_LARGE = 413;
+var REQUEST_ENTITY_TOO_LARGE = 413;
 
 
 $(function () {

@@ -182,16 +182,17 @@ public class ImageConverterTest {
 
 
     @Test(dataProvider = "imageFormats")
-    public void createConverterMethodShouldReturnConverterWithSpecifiedType(String imageFormat) {
+    public void createConverterMethodShouldReturnConverterWithSpecifiedType(String imageFormat, String imgPrefix) {
         ImageConverter converter = ImageConverter.createConverter(imageFormat, DEFAULT_MAX_WIDTH, DEFAULT_MAX_HEIGHT);
 
         assertEquals(converter.getFormat(), imageFormat);
+        assertEquals(converter.getHtmlSrcImagePrefix(), imgPrefix);
     }
 
     @DataProvider(name = "imageFormats")
     private Object[][] imageFormats() {
         return new Object[][]{
-                {"jpeg"}, {"png"}, {"ico"}
+                {"jpeg", "data:image/jpeg;base64,"}, {"png", "data:image/png;base64,"}, {"ico", "data:image/ico;base64,"}
         };
     }
 }

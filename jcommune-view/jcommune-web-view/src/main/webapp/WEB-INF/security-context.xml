@@ -85,6 +85,10 @@
 
         <security:logout logout-url="/logout" logout-success-url="/" invalidate-session="true"/>
         <security:remember-me data-source-ref="dataSource" key="JTalks" services-alias="rememberMeServices"/>
+
+        <security:intercept-url pattern="/admin/enter" access="isAuthenticated()"/>
+        <security:intercept-url pattern="/admin/exit" access="isAuthenticated()"/>
+        <security:intercept-url pattern="/admin/edit" access="isAuthenticated()"/>
     </security:http>
 
     <bean id="successAuthHandler" class="org.jtalks.jcommune.web.util.SuccessfulAuthenticationHandler">

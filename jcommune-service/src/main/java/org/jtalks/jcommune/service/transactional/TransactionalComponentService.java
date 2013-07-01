@@ -122,4 +122,13 @@ public class TransactionalComponentService extends AbstractTransactionalEntitySe
 
         return modificationDate;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
+    public void checkPermissionsForComponent(long componentId) {
+
+    }
 }
