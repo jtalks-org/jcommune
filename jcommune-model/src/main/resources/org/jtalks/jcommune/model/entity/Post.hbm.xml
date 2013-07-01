@@ -55,7 +55,7 @@
     </query>
     
     <query name="getPostsInTopic">
-        <![CDATA[FROM Post WHERE topic = :topic]]>
+        <![CDATA[FROM Post WHERE topic = :topic ORDER BY creationDate]]>
     </query>
     
     <query name="getLastPostForBranch">
