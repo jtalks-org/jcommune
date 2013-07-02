@@ -45,4 +45,11 @@ public interface ComponentService {
      * @return last time when forum administration information was modified
      */
     Date getComponentModificationTime();
+
+    /**
+     * Check if currently logged user has permissions for administrative
+     * functions for given component by its id
+     * @param componentId id of the component
+     */
+    void checkPermissionsForComponent(long componentId);
 }

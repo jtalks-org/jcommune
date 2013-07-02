@@ -71,6 +71,10 @@ public class AdministrationController {
      */
     @RequestMapping(value = "/admin/enter", method = RequestMethod.GET)
     public String enterAdministrationMode(HttpServletRequest request) {
+        if (componentService.getComponentOfForum() != null) {
+            long componentId = componentService.getComponentOfForum().getId();
+            componentService.checkPermissionsForComponent(componentId);
+        }
         request.getSession().setAttribute(ADMIN_ATTRIBUTE_NAME, true);
 
         return getRedirectToPrevPage(request);
