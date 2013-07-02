@@ -31,8 +31,11 @@ jQuery(document).ready(function () {
         if (textBeforePattern.indexOf('@') >= 0) {
             var pattern = textBeforePattern.split('@').pop();
             var lastAtPos = textBeforePattern.lastIndexOf('@');
-            var keycodeApproved = (e.keyCode != upCode && e.keyCode != downCode  && e.keyCode != enterCode && e.keyCode != escCode);
-            var posApproved = (lastAtPos == 0 || textBeforePattern.charAt(lastAtPos - 1) == ' ');
+            var keycodeApproved = (e.keyCode != upCode && e.keyCode != downCode
+                                && e.keyCode != enterCode && e.keyCode != escCode);
+            // show contextMenu only if there are space or new line before @, or @ is a first symbol in post/pm
+            var posApproved = (lastAtPos == 0 || textBeforePattern.charAt(lastAtPos - 1) == ' '
+                                || textBeforePattern.charAt(lastAtPos - 1) == '\n');
             if (keycodeApproved) {
                 if (posApproved && pattern.length > 0) {
                     getContextMenu(pattern, e.target);
@@ -40,7 +43,7 @@ jQuery(document).ready(function () {
                     hideContextMenu(e.target);
                 }
             }
-        }else{
+        } else {
             hideContextMenu(e.target);
         }
     }
@@ -53,9 +56,9 @@ jQuery(document).ready(function () {
             success: function (data) {
                 if (data.result && data.result.length > 0) {
                     var items = {};
-                    $.each(data.result, function(key, value) {
-                        var val = value.replace(pattern, '<b>' + pattern + '</b>');
-                        items[value] = {name: val};
+                    $.each(data.result, function (key, username) {
+                        username = escapeHtml(username);
+                        items[username] = {name: username};
                     });
                     createContextMenu(el, items);
                 } else {
@@ -63,6 +66,24 @@ jQuery(document).ready(function () {
                 }
             }
         });
+    }
+
+    function escapeHtml(unsafe) {
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function escapeHtmlReverse(safe) {
+        return safe
+            .replace(/&amp;/g, "&")
+            .replace(/&lt;/g, "<")
+            .replace(/&gt;/g, ">")
+            .replace(/&quot;/g, "\"")
+            .replace(/&#039;/g, "'");
     }
 
     function hideContextMenu(el) {
@@ -81,17 +102,18 @@ jQuery(document).ready(function () {
             selector: '#' + el.id,
             trigger: 'none',
             className: 'autocompleteContextMenu',
-            callback: function(key, options) {
+            callback: function (username, options) {
                 var selection = $(el).getSelection();
                 var val = $(el).val().substr(0, selection.start);
                 var lastAtPos = val.lastIndexOf("@");
-                el.value = el.value.slice(0, lastAtPos) + '[user]' + key + '[/user]' + el.value.slice(selection.end);
+                username = escapeHtmlReverse(username);
+                el.value = el.value.slice(0, lastAtPos) + '[user]' + username + '[/user]' + el.value.slice(selection.end);
                 hideContextMenu(el);
             },
             items: items
         });
         if ($.browser.mozilla) {
-            setTimeout(function() {
+            setTimeout(function () {
                 showContextMenu(el);
             }, 0);
         } else {
