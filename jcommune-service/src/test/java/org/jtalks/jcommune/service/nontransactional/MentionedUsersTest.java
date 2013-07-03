@@ -32,18 +32,12 @@ import java.util.*;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-/**
- * 
- * @author Anuar_Nurmakanov
- *
- */
+/** @author Anuar_Nurmakanov */
 public class MentionedUsersTest {
     private static final String MENTIONING_TEMPLATE = "This post contains not notified [user]%s[/user] mentioning " +
             "and notified [user notified=true]%s[/user] mentioning";
@@ -54,57 +48,49 @@ public class MentionedUsersTest {
     private MailService mailService;
     @Mock
     private UserDao userDao;
-    @Mock 
+    @Mock
     private PostDao postDao;
- 
+
     @BeforeMethod
     public void init() {
         initMocks(this);
     }
-    
+
     @Test
-    public void extractMentionedUserShouldReturnEmptyListWhenPassedTextDoesNotContainMentioning() {
-        String textWithoutUserMentioning = "This text mustn't contain user mentioning. Be carefull.";
+    public void extractMentionedUserShouldNotRecognizeUsersIfTextWithoutBbCodes() {
+        String textWithoutUserMentioning = "This text mustn't contain user mentioning. Be careful.";
 
         MentionedUsers mentionedUsers = MentionedUsers.parse(textWithoutUserMentioning);
-
         Set<String> extractedUserNames = mentionedUsers.extractAllMentionedUsers(textWithoutUserMentioning);
-        
+
         assertTrue(CollectionUtils.isEmpty(extractedUserNames), "Passed user should not contain any user mentioning.");
     }
 
     @Test
-    public void extractMentionedUserShouldReturnAllMentionedUserInBBCodes() {
+    public void extractMentionedUserShouldRecognizeMultipleUsersInBbCodes() {
         String textWithUsersMentioning = "In this text we have 3 user mentioning: first [user]Shogun[/user]," +
-        		"second [user notified=true]masyan[/user]," +
-        		"third [user]jk1[/user]";
+                "second [user notified=true]masyan[/user]," +
+                "third [user]jk1[/user]";
 
         MentionedUsers mentionedUsers = MentionedUsers.parse(textWithUsersMentioning);
         Set<String> extractedUserNames = mentionedUsers.extractAllMentionedUsers(textWithUsersMentioning);
-        
-        assertTrue(extractedUserNames.size() == 3, "Passed text should contain 3 user mentioning.");
-        assertTrue(extractedUserNames.contains("Shogun"), "Shogun is mentioned, so he should be extracted.");
-        assertTrue(extractedUserNames.contains("masyan"), "masyan is mentioned, so he should be extracted.");
-        assertTrue(extractedUserNames.contains("jk1"), "jk1 is mentioned, so he should be extracted.");
+
+        assertTrue(extractedUserNames.containsAll(asList("Shogun", "masyan", "jk1")));
     }
 
     @Test
     public void extractMentionedUserShouldReturnAllMentionedCyrillicUserInBBCodes() {
-        String textWithUsersMentioning = "In this text we have 3 user mentioning: first [user]Иванов[/user]," +
-                "second [user notified=true]Петров[/user]," +
-                "third [user]Сидоров[/user]";
+        String textWithUsersMentioning = "In this text we have 1 user mentioning: first [user]Иванов[/user]";
 
         MentionedUsers mentionedUsers = MentionedUsers.parse(textWithUsersMentioning);
         Set<String> extractedUserNames = mentionedUsers.extractAllMentionedUsers(textWithUsersMentioning);
 
-        assertTrue(extractedUserNames.size() == 3, "Passed text should contain 3 user mentioning.");
-        assertTrue(extractedUserNames.contains("Иванов"), "Иванов is mentioned, so he should be extracted.");
-        assertTrue(extractedUserNames.contains("Петров"), "Петров is mentioned, so he should be extracted.");
-        assertTrue(extractedUserNames.contains("Сидоров"), "Сидоров is mentioned, so he should be extracted.");
+        assertEquals(extractedUserNames.iterator().next(), "Иванов",
+                "MentionedUsers should extract cyrillic usernames from [user] bb code");
     }
 
     @Test
-    public void extractMentionedUserShouldReturnAllMentionedScpecialCharactersUserInBBCodes() {
+    public void extractMentionedUserShouldReturnAllMentionedSpecialCharactersUserInBBCodes() {
         String textWithUsersMentioning = "In this text we have 3 user mentioning: first [user]<yak[/user]," +
                 "second [user notified=true]\\yak[/user]," +
                 "third [user]]yak[/user]";
@@ -113,26 +99,26 @@ public class MentionedUsersTest {
         Set<String> extractedUserNames = mentionedUsers.extractAllMentionedUsers(textWithUsersMentioning);
 
         assertTrue(extractedUserNames.size() == 3, "Passed text should contain 3 user mentioning.");
-        assertTrue(extractedUserNames.contains("<yak"), "<yak is mentioned, so he should be extracted.");
-        assertTrue(extractedUserNames.contains("\\yak"), "\\yak is mentioned, so he should be extracted.");
-        assertTrue(extractedUserNames.contains("]yak"), "]yak is mentioned, so he should be extracted.");
+        assertTrue(extractedUserNames.contains("<yak"), "< in username prevented username from being recognized.");
+        assertTrue(extractedUserNames.contains("\\yak"), "\\ in username prevented username from being recognized.");
+        assertTrue(extractedUserNames.contains("]yak"), "] in username prevented username from being recognized.");
     }
 
     @Test
-     public void extractMentionedUserShouldReturnAllMentionedUserWithSpacesInBBCodes() {
-        String textWithUsersMentioning = "In this text we have 3 user mentioning: first [user]и в а н о в[/user]," +
-                "second [user notified=true]\\y a k[/user]," +
-                "third [user]y a k[/user]";
+    public void extractMentionedUserShouldReturnAllMentionedUserWithSpacesInBBCodes() {
+        String textWithUsersMentioning = "In this text we have 1 user mentioning: first [user]и в а н о в[/user]";
 
         MentionedUsers mentionedUsers = MentionedUsers.parse(textWithUsersMentioning);
         Set<String> extractedUserNames = mentionedUsers.extractAllMentionedUsers(textWithUsersMentioning);
 
-        assertTrue(extractedUserNames.size() == 3, "Passed text should contain 3 user mentioning.");
-        assertTrue(extractedUserNames.contains("и в а н о в"), "и в а н о в is mentioned, so he should be extracted.");
-        assertTrue(extractedUserNames.contains("\\y a k"), "\\y a k is mentioned, so he should be extracted.");
-        assertTrue(extractedUserNames.contains("y a k"), "y a k is mentioned, so he should be extracted.");
+        assertTrue(extractedUserNames.contains("и в а н о в"), "MentionedUsers should extract usernames with spaces");
     }
 
+    /**
+     * When data is sent to the server for the preview, there is a hack that coverts some special symbols into
+     * unrecognizable character sequence. This replacement was implemented as a temporal solution, but still is there,
+     * until it's present, we have to decode those symbols in order to find a user there.
+     */
     @Test
     public void extractMentionedUserShouldReturnAllMentionedEncodedUserInBBCodes() {
         String textWithUsersMentioning = "In this text we have 4 user mentioning: " +
@@ -152,7 +138,7 @@ public class MentionedUsersTest {
     }
 
     @Test
-    public void extractMentionedUserShouldReturnAllMentionedEncodedByEncodeURIUserInBBCodes() {
+    public void extractMentionedUserShouldRecognizedEncodedInUriNames() {
         String textWithUsersMentioning = "In this text we have 2 user mentioning: " +
                 "first [user]%D0%B8%D0%B2%D0%B0%D0%BD%D0%BE%D0%B2[/user]" +
                 "second [user]%5Cyak[/user]";
@@ -160,98 +146,78 @@ public class MentionedUsersTest {
         MentionedUsers mentionedUsers = MentionedUsers.parse(textWithUsersMentioning);
         Set<String> extractedUserNames = mentionedUsers.extractAllMentionedUsers(textWithUsersMentioning);
 
-        assertTrue(extractedUserNames.size() == 2, "Passed text should contain 2 user mentioning.");
         assertTrue(extractedUserNames.contains("иванов"), "иванов is mentioned, so he should be extracted.");
         assertTrue(extractedUserNames.contains("\\yak"), "\\yak is mentioned, so he should be extracted.");
     }
-    
+
     @Test
-    public void notifyNewlyhouldSendEmailForNewlyMentionedUsers() {
-        String textWithUsersMentioning = "In this text we have 3 user mentioning: first [user]Shogun[/user]," +
-                "second [user]jk1[/user], third [user]masyan[/user]";
-        Post mentioningPost = getPost(25L, textWithUsersMentioning);
-        List<JCUser> users = asList(
-                getJCUser("Shogun", true), getJCUser("jk1", true), getJCUser("masyan", true));
-        when(userDao.getByUsernames(asSet("Shogun", "jk1", "masyan")))
-            .thenReturn(users);
+    public void notifyNewlyShouldSendEmailForNewlyMentionedUsers() {
+        Post mentioningPost = getPost(1L, "In this text we have 3 user mentioning: first [user]Shogun[/user]");
+        when(userDao.getByUsernames(asSet("Shogun"))).thenReturn(asList(getJCUser("Shogun", true)));
 
         MentionedUsers mentionedUsers = MentionedUsers.parse(mentioningPost);
         List<JCUser> notifiedUsers = mentionedUsers.getNewUsersToNotify(userDao);
-        assertEquals(notifiedUsers, users);
+        assertEquals(notifiedUsers.get(0).getUsername(), "Shogun");
     }
-    
+
+    /**
+     * When a user was notified about him being mentioned in a post, the post should change [user] bb code to
+     * [user notified=true] in order not to notify him again.
+     */
     @Test
-    public void notifyNewlyMentionedUsersShouldMarkBBCodesOfNotfiiedUsers() {
-        Post mentioningPost = getPost(25L, "In this text we have user mentioning [user]Shogun[/user]");
-        when(userDao.getByUsernames(asSet("Shogun")))
-            .thenReturn(asList(getJCUser("Shogun", true)));
+    public void notifyNewlyMentionedUsersShouldMarkBbAsNotified() {
+        Post mentioningPost = getPost(1L, "text [user]Shogun[/user]text");
+        when(userDao.getByUsernames(asSet("Shogun"))).thenReturn(asList(getJCUser("Shogun", true)));
 
-        MentionedUsers mentionedUsers = MentionedUsers.parse(mentioningPost);
+        MentionedUsers.parse(mentioningPost).markUsersAsAlreadyNotified(postDao);
 
-        mentionedUsers.markUsersAsAlreadyNotified(postDao);
-        
-        assertEquals(mentioningPost.getPostContent(), "In this text we have user mentioning [user notified=true]Shogun[/user]",
-                "After sending email [user][/user] tag shoud be changed to [user notified=true][/user]");
+        assertEquals(mentioningPost.getPostContent(), "text [user notified=true]Shogun[/user]text",
+                "After sending email [user][/user] tag should be changed to [user notified=true][/user]");
         verify(postDao).saveOrUpdate(mentioningPost);
     }
-    
+
     @Test
     public void notifyNewlyMentionedUsersShouldNotNotifyNotAgreedWithNotificationsUsers() {
-        String textWithUsersMentioning = "In this text we have 1 user mentioning - [user]Shogun[/user]";
-        Post mentioningPost = getPost(25L, textWithUsersMentioning);
+        Post mentioningPost = getPost(1L, "[user]Shogun[/user]");
         JCUser mentionedUser = getJCUser("Shogun", false);
         when(userDao.getByUsernames(asSet("Shogun"))).thenReturn(asList(mentionedUser));
 
-        MentionedUsers mentionedUsers = MentionedUsers.parse(mentioningPost);
-        List<JCUser> usersToNotify = mentionedUsers.getNewUsersToNotify(userDao);
-        
-        assertEquals(mentioningPost.getPostContent(), textWithUsersMentioning,
-                "After sending email [user][/user] tag shoudn't be changed");
-        assertEquals(usersToNotify.size(), 0);
+        List<JCUser> usersToNotify = MentionedUsers.parse(mentioningPost).getNewUsersToNotify(userDao);
+
+        assertEquals(mentioningPost.getPostContent(), "[user]Shogun[/user]",
+                "After sending email [user][/user] tag shouldn't be changed");
+        assertTrue(usersToNotify.isEmpty());
         verify(postDao, never()).saveOrUpdate(mentioningPost);
     }
-    
+
     @Test
     public void notifyNewlyMentionedUsersShouldNotSendWhenUsersWereNotFound() {
-        String textWithUsersMentioning = "In this text we have 3 user mentioning: first [user]Shogun[/user]," +
-                "second [user]masyan[/user]," +
-                "third [user]jk1[/user]";
-        Post mentioningPost = getPost(25L, textWithUsersMentioning);
-        when(userDao.getByUsernames(asSet("Shogun", "jk1", "masyan")))
-            .thenReturn(Collections.<JCUser> emptyList());
+        Post mentioningPost = getPost(1L, "[user]Shogun[/user]");
+        when(userDao.getByUsernames(asSet("Shogun"))).thenReturn(Collections.<JCUser>emptyList());
 
-        MentionedUsers mentionedUsers = MentionedUsers.parse(mentioningPost);
-        List<JCUser> usersToNotify = mentionedUsers.getNewUsersToNotify(userDao);
-        
-        assertEquals(mentioningPost.getPostContent(), textWithUsersMentioning,
-                "After sending email [user][/user] tag shoudn't be changed");
+        List<JCUser> usersToNotify = MentionedUsers.parse(mentioningPost).getNewUsersToNotify(userDao);
+
+        assertEquals(mentioningPost.getPostContent(), "[user]Shogun[/user]",
+                "[user] code shouldn't be if user not found");
         assertEquals(usersToNotify.size(), 0);
         verify(postDao, never()).saveOrUpdate(mentioningPost);
     }
-    
+
     @Test
     public void notifyNewlyMentionedUsersShouldNotSendIfUserIsSubscriberOfTopic() {
-        String textWithUsersMentioning = 
-                "In this text we have 1 user mentioning - [user]Shogun[/user]";
         JCUser mentionedUser = getJCUser("Shogun", true);
-        //
-        Post mentioningPost = getPost(25L, textWithUsersMentioning);
-        Set<JCUser> topicSubscribers = new HashSet<JCUser>();
-        topicSubscribers.add(mentionedUser);
-        mentioningPost.getTopic().setSubscribers(topicSubscribers);
-        //
-        when(userDao.getByUsernames(asSet("Shogun")))
-            .thenReturn(asList(mentionedUser));
+        Post mentioningPost = getPost(1L, "[user]Shogun[/user]");
+        mentioningPost.getTopic().setSubscribers(asSet(mentionedUser));
+        when(userDao.getByUsernames(asSet("Shogun"))).thenReturn(asList(mentionedUser));
 
-        MentionedUsers mentionedUsers = MentionedUsers.parse(mentioningPost);
-        List<JCUser> usersToNotify = mentionedUsers.getNewUsersToNotify(userDao);
-        
-        assertEquals(mentioningPost.getPostContent(), textWithUsersMentioning,
-                "After sending email [user][/user] tag shoudn't be changed");
+        List<JCUser> usersToNotify = MentionedUsers.parse(mentioningPost).getNewUsersToNotify(userDao);
+
+        assertEquals(mentioningPost.getPostContent(), "[user]Shogun[/user]",
+                "[user][/user] code should not be changed if user was subscribed.");
         assertEquals(usersToNotify.size(), 0);
         verify(postDao, never()).saveOrUpdate(mentioningPost);
     }
-    
+
     private JCUser getJCUser(String name, boolean isMentioningEnabled) {
         JCUser user = new JCUser(name, "email@gmail.com", "password");
         user.setMentioningNotificationsEnabled(isMentioningEnabled);
@@ -273,7 +239,7 @@ public class MentionedUsersTest {
     private Post getPost(long id, String content) {
         Post post = new Post(null, content);
         post.setTopic(new Topic());
-        post.setId(id); 
+        post.setId(id);
         return post;
     }
 
