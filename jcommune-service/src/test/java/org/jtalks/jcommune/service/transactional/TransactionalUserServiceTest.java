@@ -422,16 +422,9 @@ public class TransactionalUserServiceTest {
         when(expectedToken.isAuthenticated()).thenReturn(true);
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(expectedToken);
 
-        boolean isAuthenticated = userService.loginUser(username,
-                PASSWORD, false, httpRequest, httpResponse);
+        boolean isAuthenticated = userService.loginUser(username, PASSWORD, false, httpRequest, httpResponse);
 
         assertTrue(isAuthenticated);
-        verify(userDao).getByUsername(username);
-        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
-        verify(securityContext).setAuthentication(expectedToken);
-        verify(rememberMeServices, never()).loginSuccess(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Authentication.class));
-        verify(sessionStrategy).onAuthentication(any(Authentication.class),
-                any(HttpServletRequest.class), any(HttpServletResponse.class));
     }
 
     @Test
@@ -449,12 +442,6 @@ public class TransactionalUserServiceTest {
                 PASSWORD, true, httpRequest, httpResponse);
 
         assertTrue(isAuthenticated);
-        verify(userDao).getByUsername(username);
-        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
-        verify(securityContext).setAuthentication(expectedToken);
-        verify(rememberMeServices).loginSuccess(eq(httpRequest), eq(httpResponse), any(UsernamePasswordAuthenticationToken.class));
-        verify(sessionStrategy).onAuthentication(any(Authentication.class),
-                any(HttpServletRequest.class), any(HttpServletResponse.class));
     }
 
     @Test
@@ -488,8 +475,6 @@ public class TransactionalUserServiceTest {
                 PASSWORD, true, httpRequest, httpResponse);
 
         assertFalse(isAuthenticated);
-        verify(userDao).getByUsername(username);
-        verify(rememberMeServices, never()).loginSuccess(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Authentication.class));
     }
 
     private JCUser getUser(String username) {
