@@ -31,6 +31,17 @@
             src="${pageContext.request.contextPath}/resources/javascript/custom/updateSaveButtonStateOnPmForm.js"></script>
     <script
             src="${pageContext.request.contextPath}/resources/javascript/custom/leaveConfirm.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/contextMenu.js"
+            type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/contextmenu/js/jquery.contextMenu.js"
+            type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/contextmenu/js/jquery-fieldselection.js"
+            type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/contextmenu/js/textarea-helper.js"
+            type="text/javascript"></script>
+    <link rel="stylesheet"
+          href="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/contextmenu/css/jquery.contextMenu.css"
+          type="text/css" media="all"/>
 </head>
 <body>
 

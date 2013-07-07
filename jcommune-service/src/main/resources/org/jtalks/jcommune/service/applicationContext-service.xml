@@ -74,26 +74,62 @@
     </bean>
     <!--Declaration services bean -->
 
-    <bean id="avatarService" class="org.jtalks.jcommune.service.nontransactional.AvatarService">
-        <constructor-arg ref="imagePreprocessor"/>
-        <constructor-arg ref="base64Wrapper"/>
-        <constructor-arg value="org/jtalks/jcommune/service/avatar.gif"/>
-        <constructor-arg ref="avatarMaxSizeProperty"/>
+    <bean id="avatarService" class="org.jtalks.jcommune.service.nontransactional.ImageService">
+        <constructor-arg index="0" ref="avatarPreprocessor"/>
+        <constructor-arg index="1" ref="base64Wrapper"/>
+        <constructor-arg index="2" value="org/jtalks/jcommune/service/avatar.gif"/>
+        <constructor-arg index="3" ref="avatarMaxSizeProperty"/>
     </bean>
 
-    <bean id="forumLogoService" class="org.jtalks.jcommune.service.nontransactional.ForumLogoService">
-        <constructor-arg ref="imagePreprocessor"/>
-        <constructor-arg ref="base64Wrapper"/>
-        <constructor-arg value="org/jtalks/jcommune/service/jcommune-logo.jpeg"/>
-        <constructor-arg value="org/jtalks/jcommune/service/favicon.ico"/>
-        <constructor-arg value="org/jtalks/jcommune/service/favicon.png"/>
-        <constructor-arg ref="forumLogoMaxSizeProperty"/>
+    <bean id="forumLogoService" class="org.jtalks.jcommune.service.nontransactional.ImageService">
+        <constructor-arg index="0" ref="logoPreprocessor"/>
+        <constructor-arg index="1" ref="base64Wrapper"/>
+        <constructor-arg index="2" value="org/jtalks/jcommune/service/jcommune-logo.jpeg"/>
+        <constructor-arg index="3" ref="forumLogoMaxSizeProperty"/>
+    </bean>
+
+    <bean id="favIconServicePng" class="org.jtalks.jcommune.service.nontransactional.ImageService">
+        <constructor-arg index="0" ref="favIconPngPreprocessor"/>
+        <constructor-arg index="1" ref="base64Wrapper"/>
+        <constructor-arg index="2" value="org/jtalks/jcommune/service/favicon.png"/>
+        <constructor-arg index="3" ref="forumLogoMaxSizeProperty"/>
+    </bean>
+
+    <bean id="favIconServiceIco" class="org.jtalks.jcommune.service.nontransactional.ImageService">
+        <constructor-arg index="0" ref="favIconIcoPreprocessor"/>
+        <constructor-arg index="1" ref="base64Wrapper"/>
+        <constructor-arg index="2" value="org/jtalks/jcommune/service/favicon.ico"/>
+        <constructor-arg index="3" ref="forumLogoMaxSizeProperty"/>
     </bean>
 
     <bean id="base64Wrapper" class="org.jtalks.jcommune.service.nontransactional.Base64Wrapper"/>
 
-    <bean id="imagePreprocessor" class="org.jtalks.jcommune.service.nontransactional.ImageUtils">
-        <constructor-arg ref="base64Wrapper"/>
+    <bean id="avatarPreprocessor" class="org.jtalks.jcommune.service.nontransactional.ImageConverter"
+          factory-method="createConverter">
+        <constructor-arg value="jpeg"/>
+        <constructor-arg value="100"/>
+        <constructor-arg value="100"/>
+    </bean>
+
+    <bean id="logoPreprocessor" class="org.jtalks.jcommune.service.nontransactional.ImageConverter"
+          factory-method="createConverter">
+        <constructor-arg value="jpeg"/>
+        <constructor-arg value="34"/>
+        <constructor-arg value="31"/>
+    </bean>
+
+    <bean id="favIconPngPreprocessor" class="org.jtalks.jcommune.service.nontransactional.ImageConverter"
+          factory-method="createConverter">
+        <constructor-arg value="png"/>
+        <constructor-arg value="32"/>
+        <constructor-arg value="32"/>
+    </bean>
+
+    <bean id="favIconIcoPreprocessor" class="org.jtalks.jcommune.service.nontransactional.ImageConverter"
+          factory-method="createConverter">
+        <constructor-arg value="ico"/>
+        <constructor-arg value="32"/>
+        <constructor-arg value="32"/>
     </bean>
 
     <bean id="locationService" class="org.jtalks.jcommune.service.nontransactional.LocationService">
@@ -279,6 +315,7 @@
     </bean>
 
     <bean id="componentService" class="org.jtalks.jcommune.service.transactional.TransactionalComponentService">
+        <constructor-arg ref="favIconServiceIco"/>
         <constructor-arg ref="componentDao"/>
     </bean>
 

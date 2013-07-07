@@ -15,6 +15,7 @@
 
 package org.jtalks.jcommune.service.nontransactional;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.tika.Tika;
 import org.jtalks.jcommune.model.entity.JCommuneProperty;
@@ -23,6 +24,7 @@ import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.jtalks.jcommune.service.exceptions.ImageSizeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.image.BufferedImage;
@@ -33,49 +35,72 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Service class for image related operations
+ * Service class for uploaded image related operations
+ *
+ * @author Alexandre Teterin
+ * @author Andrei Alikov
+ *
  */
-public class BaseImageService {
+public class ImageService {
     private static final List<String> VALID_IMAGE_TYPES = Arrays.asList("image/jpeg", "image/png", "image/gif");
     /** user-friendly string with all valid image types */
     private static final String VALID_IMAGE_EXTENSIONS = "*.jpeg, *.jpg, *.gif, *.png";
 
-    private ImageUtils imageUtils;
+    private ImageConverter imageConverter;
     private Base64Wrapper base64Wrapper;
     private JCommuneProperty imageSizeProperty;
-    private static final Logger LOGGER = LoggerFactory.getLogger(BaseImageService.class);
+    private String defaultImagePath;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ImageService.class);
 
     /**
-     * Create BaseImageService instance
+     * Create ImageService instance
      *
-     * @param imageUtils        object for image processing
+     * @param imageConverter        object for image pre processing
      * @param base64Wrapper     to encode/decode image passed from the client side
+     * @param defaultImagePath class path to load default image
      * @param imageSizeProperty let us know the limitation of image max size
      */
-    public BaseImageService(
-            ImageUtils imageUtils,
+    public ImageService(
+            ImageConverter imageConverter,
             Base64Wrapper base64Wrapper,
+            String defaultImagePath,
             JCommuneProperty imageSizeProperty) {
-        this.imageUtils = imageUtils;
+        this.imageConverter = imageConverter;
         this.base64Wrapper = base64Wrapper;
         this.imageSizeProperty = imageSizeProperty;
+        this.defaultImagePath = defaultImagePath;
     }
 
     /**
-     * Perform bytes data to string conversion
-     *  (todo: wtf? it does tons of things, correct method name and description)
-     * @param bytes for conversion
-     * @param format target image format e.g. "jpeg" or "png"
-     * @return result string
+     * Returns default image to be used when custom image is not set
+     *
+     * @return byte array-stored image
+     */
+    public byte[] getDefaultImage() {
+        byte[] result = new byte[0];
+        try {
+            result = getFileBytes(defaultImagePath);
+        } catch (IOException e) {
+            LOGGER.error("Failed to load default image", e);
+        }
+
+        return result;
+    }
+
+    /**
+     * Pre process image to fit maximum size and be in the target format and
+     * convert the contents of the result image into String64 format
+     * @param bytes image for conversion
+     * @return result string64 format
      * @throws org.jtalks.jcommune.service.exceptions.ImageProcessException common image processing error
      */
-    public String convertBytesToBase64String(byte[] bytes, String format) throws ImageProcessException {
+    public String preProcessAndEncodeInString64(byte[] bytes) throws ImageProcessException {
         Validate.notNull(bytes, "Incoming byte array cannot be null");
-        BufferedImage image = imageUtils.convertByteArrayToImage(bytes);
+        BufferedImage image = imageConverter.convertByteArrayToImage(bytes);
         if (image == null) { // something went wrong during conversion
             throw new ImageProcessException();
         }
-        byte[] outputImage = imageUtils.preprocessImage(image, format);
+        byte[] outputImage = imageConverter.preprocessImage(image);
         return base64Wrapper.encodeB64Bytes(outputImage);
     }
 
@@ -129,4 +154,32 @@ public class BaseImageService {
         }
     }
 
+    /**
+     * Gets content of the file by its classpath
+     * @param classPath classpath of the file to be loaded
+     * @return content of the loaded file
+     * @throws IOException
+     */
+    private byte[] getFileBytes(String classPath) throws IOException {
+        byte[] result = new byte[0];
+        ClassPathResource fileClassPathSource = new ClassPathResource(classPath);
+        InputStream stream = null;
+        try {
+            stream = fileClassPathSource.getInputStream();
+            result = new byte[stream.available()];
+            Validate.isTrue(stream.read(result) > 0);
+        }
+        finally {
+            IOUtils.closeQuietly(stream);
+        }
+        return result;
+    }
+
+    /**
+     * Gets prefix for "src" attribute of the "img" tag representing the image format
+     * @return prefix for "src" attribute of the "img" tag representing the image format
+     */
+    public String getHtmlSrcImagePrefix() {
+        return imageConverter.getHtmlSrcImagePrefix();
+    }
 }

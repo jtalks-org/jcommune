@@ -18,12 +18,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jtalks.common.model.entity.User;
-import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+
+import java.util.List;
 
 /**
  * This interface should have methods which give us more abilities in manipulating User persistent entity.
@@ -168,4 +169,9 @@ public interface UserService extends EntityService<JCUser> {
      */
     void notifyAndMarkNewlyMentionedUsers(Post post);
 
+    /**
+     * Get usernames by pattern
+     * @param pattern part of username
+     */
+    List<String> getUsernames(String pattern);
 }

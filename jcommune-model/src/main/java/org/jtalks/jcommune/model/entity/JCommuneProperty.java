@@ -94,7 +94,12 @@ public enum JCommuneProperty {
      */
     LOGO_TOOLTIP,
     /** Maximum size of the forum logo */
-    FORUM_LOGO_MAX_SIZE
+    FORUM_LOGO_MAX_SIZE,
+    /**
+     * Keeps the date of the last modification of the forum admin information
+     * such as logo or favorite icon
+     */
+    ADMIN_INFO_LAST_UPDATE_TIME
     ;
 
 

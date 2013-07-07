@@ -16,8 +16,7 @@
 package org.jtalks.jcommune.web.util;
 
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
-import org.jtalks.jcommune.service.nontransactional.BaseImageService;
-import org.jtalks.jcommune.service.nontransactional.ImageUtils;
+import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -29,6 +28,9 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
+ * Class containing utility method for controller working with
+ * uploaded images
+ *
  * @author Alexandre Teterin
  * @author Anuar Nurmakanov
  */
@@ -38,35 +40,18 @@ public class ImageControllerUtils {
     public static final String SRC_PREFIX = "srcPrefix";
     public static final String SRC_IMAGE = "srcImage";
 
-    private static final String DEFAULT_IMAGE_FORMAT = "jpeg";
 
-    private BaseImageService baseImageService;
+    private ImageService imageService;
     private JSONUtils jsonUtils;
 
     /**
-     *
+     * @param imageService object for working with uploaded images
+     * @param jsonUtils    object for preparing JSON repsonse
      */
-    public ImageControllerUtils(BaseImageService baseImageService,
-                                    JSONUtils jsonUtils) {
-        this.baseImageService = baseImageService;
+    public ImageControllerUtils(ImageService imageService,
+                                JSONUtils jsonUtils) {
+        this.imageService = imageService;
         this.jsonUtils = jsonUtils;
-    }
-
-    /**
-     * Prepare valid response after image processing in default image format
-     *
-     * @param file            file, that contains uploaded image
-     * @param responseHeaders response HTTP headers
-     * @param responseContent response content
-     * @return ResponseEntity with image processing results
-     * @throws java.io.IOException           defined in the JsonFactory implementation, caller must implement exception processing
-     * @throws org.jtalks.jcommune.service.exceptions.ImageProcessException if error occurred while image processing
-     */
-    public ResponseEntity<String> prepareResponse(
-            MultipartFile file,
-            HttpHeaders responseHeaders,
-            Map<String, String> responseContent) throws IOException, ImageProcessException {
-        return prepareResponse(file, responseHeaders, responseContent, DEFAULT_IMAGE_FORMAT);
     }
 
     /**
@@ -75,19 +60,19 @@ public class ImageControllerUtils {
      * @param file            file, that contains uploaded image
      * @param responseHeaders response HTTP headers
      * @param responseContent response content
-     * @param format target image format e.g. "jpeg" or "png"
      * @return ResponseEntity with image processing results
-     * @throws java.io.IOException           defined in the JsonFactory implementation, caller must implement exception processing
-     * @throws org.jtalks.jcommune.service.exceptions.ImageProcessException if error occurred while image processing
+     * @throws java.io.IOException defined in the JsonFactory implementation, caller must implement exception processing
+     * @throws org.jtalks.jcommune.service.exceptions.ImageProcessException
+     *                             if error occurred while image processing
      */
     public ResponseEntity<String> prepareResponse(
             MultipartFile file,
             HttpHeaders responseHeaders,
-            Map<String, String> responseContent, String format) throws IOException, ImageProcessException {
-        baseImageService.validateImageFormat(file);
+            Map<String, String> responseContent) throws IOException, ImageProcessException {
+        imageService.validateImageFormat(file);
         byte[] bytes = file.getBytes();
-        baseImageService.validateImageSize(bytes);
-        prepareNormalResponse(bytes, responseContent, format);
+        imageService.validateImageSize(bytes);
+        prepareNormalResponse(bytes, responseContent);
         String body = getResponceJSONString(responseContent);
         return new ResponseEntity<String>(body, responseHeaders, HttpStatus.OK);
     }
@@ -97,7 +82,7 @@ public class ImageControllerUtils {
     }
 
     /**
-     * Prepare valid response after image processing in the default image format
+     * Prepare valid response after image processing
      *
      * @param bytes           input image data
      * @param response        resulting response
@@ -107,37 +92,10 @@ public class ImageControllerUtils {
     public void prepareResponse(byte[] bytes,
                                 HttpServletResponse response,
                                 Map<String, String> responseContent) throws ImageProcessException {
-        prepareResponse(bytes, response, responseContent, DEFAULT_IMAGE_FORMAT);
-    }
-
-    /**
-     * Prepare valid response after image processing
-     *
-     * @param bytes           input image data
-     * @param response        resulting response
-     * @param responseContent with emage processing results
-     * @param format target image format e.g. "jpeg" or "png"
-     * @throws ImageProcessException if it's impossible to form correct image response
-     */
-    public void prepareResponse(byte[] bytes,
-                                 HttpServletResponse response,
-                                 Map<String, String> responseContent, String format) throws ImageProcessException {
-        baseImageService.validateImageFormat(bytes);
-        baseImageService.validateImageSize(bytes);
-        prepareNormalResponse(bytes, responseContent, format);
+        imageService.validateImageFormat(bytes);
+        imageService.validateImageSize(bytes);
+        prepareNormalResponse(bytes, responseContent);
         response.setStatus(HttpServletResponse.SC_OK);
-    }
-
-    /**
-     * Used for prepare normal response in the default image format
-     *
-     * @param bytes           input image data
-     * @param responseContent response payload
-     * @throws ImageProcessException due to common image processing error
-     */
-    public void prepareNormalResponse(byte[] bytes,
-                                      Map<String, String> responseContent) throws ImageProcessException {
-        prepareNormalResponse(bytes, responseContent, DEFAULT_IMAGE_FORMAT);
     }
 
     /**
@@ -145,19 +103,35 @@ public class ImageControllerUtils {
      *
      * @param bytes           input image data
      * @param responseContent response payload
-     * @param format target image format e.g. "jpeg" or "png"
      * @throws ImageProcessException due to common image processing error
      */
     public void prepareNormalResponse(byte[] bytes,
-                                       Map<String, String> responseContent,
-                                       String format) throws ImageProcessException {
-        String srcImage = baseImageService.convertBytesToBase64String(bytes, format);
+                                      Map<String, String> responseContent) throws ImageProcessException {
+        String srcImage = imageService.preProcessAndEncodeInString64(bytes);
         responseContent.put(STATUS, String.valueOf(JsonResponseStatus.SUCCESS));
-        responseContent.put(SRC_PREFIX, ImageUtils.getHtmlSrcImagePrefix(format));
+        responseContent.put(SRC_PREFIX, imageService.getHtmlSrcImagePrefix());
         responseContent.put(SRC_IMAGE, srcImage);
     }
 
-    public String convertImageToIcoInString64(byte[] imageBytes) {
-        return "";
+    public String convertImageToIcoInString64(byte[] imageBytes) throws ImageProcessException {
+        return imageService.preProcessAndEncodeInString64(imageBytes);
+    }
+
+    /**
+     * Returns default image to be used when custom image is not set
+     *
+     * @return byte array-stored image
+     */
+    public byte[] getDefaultImage() {
+        return imageService.getDefaultImage();
+    }
+
+    /**
+     * Gets object for working with uploaded images
+     *
+     * @return object for working with uploaded images
+     */
+    public ImageService getImageService() {
+        return imageService;
     }
 }

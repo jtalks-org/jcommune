@@ -162,7 +162,7 @@
 
     <%-- Users --%>
     <div id="users-stats" class="well forum-sections-userstats-container">
-        <strong><spring:message code="label.onlineUsersInfo.visitors"/> </strong>
+        <strong><spring:message code="label.onlineUsersInfo.visitors"/></strong>
         <span class='test-visitors-total'>
             <c:out value="${visitors}"/>
         </span>,

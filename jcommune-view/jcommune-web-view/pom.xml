@@ -4,7 +4,7 @@
     <parent>
         <artifactId>jcommune-view</artifactId>
         <groupId>org.jtalks.jcommune</groupId>
-        <version>1.8-SNAPSHOT</version>
+        <version>1.9-SNAPSHOT</version>
     </parent>
     <artifactId>jcommune-web-view</artifactId>
     <packaging>war</packaging>
@@ -205,7 +205,7 @@
                         <!--Remove all new line characters(Windows and Unix)-->
                         <replacement>
                             <token>\r\n|\n</token>
-                            <value></value>
+                            <value />
                         </replacement>
                     </replacements>
                 </configuration>

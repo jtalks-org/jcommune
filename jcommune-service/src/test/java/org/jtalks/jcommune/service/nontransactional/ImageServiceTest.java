@@ -40,20 +40,21 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
-public class BaseImageServiceTest {
+public class ImageServiceTest {
 
     private static final String PROPERTY_NAME = "property";
     private static final int IMAGE_MAX_SIZE = 1000;
     private JCommuneProperty imageSizeProperty = JCommuneProperty.AVATAR_MAX_SIZE;
     @Mock
-    private ImageUtils imageUtils;
+    private ImageConverter imageConverter;
     @Mock
     private Base64Wrapper base64Wrapper;
     @Mock
     private PropertyDao propertyDao;
     //
-    private BaseImageService baseImageService;
+    private ImageService imageService;
 
 
     @BeforeMethod
@@ -63,10 +64,17 @@ public class BaseImageServiceTest {
         imageSizeProperty.setPropertyDao(propertyDao);
         when(propertyDao.getByName(PROPERTY_NAME))
                 .thenReturn(new Property(PROPERTY_NAME, String.valueOf(IMAGE_MAX_SIZE)));
-        baseImageService = new BaseImageService(
-                imageUtils,
+        imageService = new ImageService(
+                imageConverter,
                 base64Wrapper,
+                "org/jtalks/jcommune/service/avatar.gif",
                 imageSizeProperty);
+    }
+
+    @Test
+    public void getDefaultImageShouldReturnNotEmptyImage() {
+        byte[] avatar = imageService.getDefaultImage();
+        assertTrue(avatar.length > 0);
     }
 
     @Test(dataProvider = "validImageBytesValues")
@@ -75,14 +83,14 @@ public class BaseImageServiceTest {
             BufferedImage inputImage,
             byte[] processedImageBytes,
             String expectedBase64String) throws ImageProcessException {
-        when(imageUtils.convertByteArrayToImage(originalImageBytes)).thenReturn(inputImage);
-        when(imageUtils.preprocessImage(inputImage, "jpeg")).thenReturn(processedImageBytes);
+        when(imageConverter.convertByteArrayToImage(originalImageBytes)).thenReturn(inputImage);
+        when(imageConverter.preprocessImage(inputImage)).thenReturn(processedImageBytes);
         when(base64Wrapper.encodeB64Bytes(processedImageBytes)).thenReturn(expectedBase64String);
 
-        String resultBase64String = baseImageService.convertBytesToBase64String(originalImageBytes, "jpeg");
+        String resultBase64String = imageService.preProcessAndEncodeInString64(originalImageBytes);
 
-        verify(imageUtils).convertByteArrayToImage(originalImageBytes);
-        verify(imageUtils).preprocessImage(inputImage, "jpeg");
+        verify(imageConverter).convertByteArrayToImage(originalImageBytes);
+        verify(imageConverter).preprocessImage(inputImage);
         verify(base64Wrapper).encodeB64Bytes(processedImageBytes);
         assertEquals(resultBase64String, expectedBase64String);
     }
@@ -99,9 +107,9 @@ public class BaseImageServiceTest {
                 36, 71, 49, 115, -89, 85, 0, 0, 0, 0, 73, 69, 78, 68, -82, 66, 96, -126
         };
 
-        ImageUtils imageUtils = new ImageUtils(new Base64Wrapper());
-        BufferedImage inputImage = imageUtils.convertByteArrayToImage(originalImageBytes);
-        byte[] processedImageBytes = imageUtils.preprocessImage(inputImage, "jpeg");
+        ImageConverter imageConverter = new ImageConverter("jpeg", BufferedImage.TYPE_INT_RGB, 100, 100);
+        BufferedImage inputImage = imageConverter.convertByteArrayToImage(originalImageBytes);
+        byte[] processedImageBytes = imageConverter.preprocessImage(inputImage);
         String expectedBase64String = new Base64Wrapper().encodeB64Bytes(processedImageBytes);
 
         return new Object[][]{
@@ -110,23 +118,25 @@ public class BaseImageServiceTest {
     }
 
     @Test(expectedExceptions = ImageProcessException.class)
-    public void convertBytesToBase64StringShouldNotContinueWhenPassedImageByteArrayIsIncorrect() throws ImageProcessException {
+    public void convertBytesToBase64StringShouldNotContinueWhenPassedImageByteArrayIsIncorrect()
+            throws ImageProcessException {
         byte[] imageBytes = {8, 2};
-        when(imageUtils.convertByteArrayToImage(imageBytes)).thenReturn(null);
+        when(imageConverter.convertByteArrayToImage(imageBytes)).thenReturn(null);
 
-        baseImageService.convertBytesToBase64String(imageBytes, "jpeg");
+        imageService.preProcessAndEncodeInString64(imageBytes);
 
-        verify(imageUtils).convertByteArrayToImage(imageBytes);
+        verify(imageConverter).convertByteArrayToImage(imageBytes);
     }
 
     @Test(expectedExceptions = {IllegalArgumentException.class})
     public void convertBytesToBase64StringShouldNotWorkWithPassedNull() throws ImageProcessException {
-        baseImageService.convertBytesToBase64String(null, null);
+        imageService.preProcessAndEncodeInString64(null);
     }
 
     @Test(expectedExceptions = ImageFormatException.class, dataProvider = "invalidFormatValues")
-    public void validateImageFormatShouldNotConsiderIncorrectFormatsAsValid(MultipartFile file) throws ImageFormatException {
-        baseImageService.validateImageFormat(file);
+    public void validateImageFormatShouldNotConsiderIncorrectFormatsAsValid(MultipartFile file)
+            throws ImageFormatException {
+        imageService.validateImageFormat(file);
     }
 
     @DataProvider
@@ -146,7 +156,7 @@ public class BaseImageServiceTest {
     @Test(dataProvider = "validFormatValues")
     public void validateImageFormatShouldConsiderCorrectFormatsFromOperaAndIEAsValid(MultipartFile file)
             throws ImageFormatException {
-        baseImageService.validateImageFormat(file);
+        imageService.validateImageFormat(file);
     }
 
     @DataProvider
@@ -170,18 +180,18 @@ public class BaseImageServiceTest {
     @Test(expectedExceptions = {IllegalArgumentException.class})
     public void validateImageFormatInFileShouldNotWorkWithPassedNull() throws ImageFormatException {
         MultipartFile nullMultipartFile = null;
-        baseImageService.validateImageFormat(nullMultipartFile);
+        imageService.validateImageFormat(nullMultipartFile);
     }
 
     @Test(expectedExceptions = {IllegalArgumentException.class})
     public void validateImageFormatInByteArrayShouldNotWorkWithPassedNull() throws ImageFormatException {
         byte[] nullByteArray = null;
-        baseImageService.validateImageFormat(nullByteArray);
+        imageService.validateImageFormat(nullByteArray);
     }
 
     @Test(dataProvider = "validFormatValuesForChromeFF")
     public void validateImageFormatShouldProcessValidValuesForChromeFF(byte[] bytes) throws ImageFormatException {
-        baseImageService.validateImageFormat(bytes);
+        imageService.validateImageFormat(bytes);
     }
 
     @DataProvider
@@ -196,7 +206,7 @@ public class BaseImageServiceTest {
 
     @Test(dataProvider = "invalidFormatValuesForChromeFF", expectedExceptions = ImageFormatException.class)
     public void validateImageFormatShouldNotProcessInvalidValuesForChromeFF(byte[] bytes) throws ImageFormatException {
-        baseImageService.validateImageFormat(bytes);
+        imageService.validateImageFormat(bytes);
     }
 
     @DataProvider
@@ -212,20 +222,29 @@ public class BaseImageServiceTest {
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void validateImageSizeSholdNotContinueWithPassedNullValue() throws ImageSizeException {
-        baseImageService.validateImageSize(null);
+        imageService.validateImageSize(null);
     }
 
     @Test(expectedExceptions = ImageSizeException.class)
     public void validateImageSizeShouldNotConsiderAvatarWithIncorrectSizeAsValid() throws Exception {
         byte[] bytes = new byte[IMAGE_MAX_SIZE * 2];
 
-        baseImageService.validateImageSize(bytes);
+        imageService.validateImageSize(bytes);
     }
 
     @Test
     public void validateImageSizeShouldConsiderAvatarWithCorrectSizeAsValid() throws ImageSizeException {
         byte[] bytes = new byte[IMAGE_MAX_SIZE];
 
-        baseImageService.validateImageSize(bytes);
+        imageService.validateImageSize(bytes);
+    }
+
+    @Test
+    public void serviceShouldReturnPrefixOfImageConverter() {
+        when(imageConverter.getHtmlSrcImagePrefix()).thenReturn("tiff");
+
+        String prefix = imageService.getHtmlSrcImagePrefix();
+
+        assertEquals(prefix, "tiff");
     }
 }

@@ -90,9 +90,11 @@ public class CodeReview extends Entity implements SubscriptionAwareEntity {
     }
 
     /**
+     * For Hibernate use only. For adding comment to code review use
+     * the {@link CodeReview#addComment(CodeReviewComment)}
      * @param comments the comments to set
      */
-    public void setComments(List<CodeReviewComment> comments) {
+    void setComments(List<CodeReviewComment> comments) {
         this.comments = comments;
     }
     
@@ -101,6 +103,7 @@ public class CodeReview extends Entity implements SubscriptionAwareEntity {
      * @param comment comment to add
      */
     public void addComment(CodeReviewComment comment) {
+        comment.setCodeReview(this);
         comments.add(comment);
     }
     

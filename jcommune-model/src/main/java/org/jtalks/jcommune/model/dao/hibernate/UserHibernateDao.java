@@ -19,6 +19,7 @@ import org.hibernate.criterion.Restrictions;
 import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.dao.utils.SqlLikeEscaper;
 import org.jtalks.jcommune.model.entity.JCUser;
 
 import java.util.Collection;
@@ -123,5 +124,19 @@ public class UserHibernateDao extends GenericDao<JCUser>
                 .setParameterList("usernames", usernames)
                 .list();
         return foundUsers;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<String> getUsernames(String pattern, int count) {
+        pattern = SqlLikeEscaper.escapeControlCharacters(pattern);
+        return session()
+                .getNamedQuery("getEnabledUsersNames")
+                .setParameter("pattern", "%" + pattern.toLowerCase() + "%")
+                .setMaxResults(count)
+                .list();
     }
 }

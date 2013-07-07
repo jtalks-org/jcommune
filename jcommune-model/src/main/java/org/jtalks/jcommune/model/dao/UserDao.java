@@ -85,4 +85,14 @@ public interface UserDao extends org.jtalks.common.model.dao.UserDao<JCUser> {
      * @return the list of found users
      */
     List<JCUser> getByUsernames(Set<String> usernames);
+
+    /**
+     * Get user names by part of user name.
+     * Also does some formatting to pattern.
+     *
+     * @param pattern part of user name
+     * @param count max count of user names
+     * @return the list of found user names
+     */
+    List<String> getUsernames(String pattern, int count);
 }

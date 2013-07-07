@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -108,7 +109,7 @@ public class TransactionalUserServiceTest {
     @Mock
     private MailService mailService;
     @Mock
-    private AvatarService avatarService;
+    private ImageService avatarService;
     @Mock
     private Base64Wrapper base64Wrapper;
     @Mock
@@ -155,7 +156,7 @@ public class TransactionalUserServiceTest {
     @Test
     public void getByUsernameShouldReturnUserWithPassedNameFromRepository() throws NotFoundException {
         JCUser expectedUser = getUser(USERNAME);
-        ;
+
         when(userDao.getByUsername(USERNAME)).thenReturn(expectedUser);
 
         JCUser result = userService.getByUsername(USERNAME);
@@ -391,7 +392,7 @@ public class TransactionalUserServiceTest {
     @Test
     public void testGetCurrentUser() {
         JCUser expected = getUser(USERNAME);
-        ;
+
         when(securityService.getCurrentUserUsername()).thenReturn(USERNAME);
         when(userDao.getByUsername(USERNAME)).thenReturn(expected);
 
@@ -421,16 +422,9 @@ public class TransactionalUserServiceTest {
         when(expectedToken.isAuthenticated()).thenReturn(true);
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(expectedToken);
 
-        boolean isAuthenticated = userService.loginUser(username,
-                PASSWORD, false, httpRequest, httpResponse);
+        boolean isAuthenticated = userService.loginUser(username, PASSWORD, false, httpRequest, httpResponse);
 
         assertTrue(isAuthenticated);
-        verify(userDao).getByUsername(username);
-        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
-        verify(securityContext).setAuthentication(expectedToken);
-        verify(rememberMeServices, never()).loginSuccess(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Authentication.class));
-        verify(sessionStrategy).onAuthentication(any(Authentication.class),
-                any(HttpServletRequest.class), any(HttpServletResponse.class));
     }
 
     @Test
@@ -448,12 +442,6 @@ public class TransactionalUserServiceTest {
                 PASSWORD, true, httpRequest, httpResponse);
 
         assertTrue(isAuthenticated);
-        verify(userDao).getByUsername(username);
-        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
-        verify(securityContext).setAuthentication(expectedToken);
-        verify(rememberMeServices).loginSuccess(eq(httpRequest), eq(httpResponse), any(UsernamePasswordAuthenticationToken.class));
-        verify(sessionStrategy).onAuthentication(any(Authentication.class),
-                any(HttpServletRequest.class), any(HttpServletResponse.class));
     }
 
     @Test
@@ -487,8 +475,6 @@ public class TransactionalUserServiceTest {
                 PASSWORD, true, httpRequest, httpResponse);
 
         assertFalse(isAuthenticated);
-        verify(userDao).getByUsername(username);
-        verify(rememberMeServices, never()).loginSuccess(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Authentication.class));
     }
 
     private JCUser getUser(String username) {
@@ -550,6 +536,16 @@ public class TransactionalUserServiceTest {
                             secondMentionedUserName);
 
         assertEquals(actualAfterProcess, msgWithNotFoundUsers);
+    }
+
+    @Test
+    public void testGetUsernames() {
+        String usernamePattern = "Us";
+        int usernameCount = 10;
+        List<String> usernames = Lists.newArrayList("User1", "User2", "User3");
+        when(userDao.getUsernames(usernamePattern, usernameCount)).thenReturn(usernames);
+
+        assertEquals(userService.getUsernames(usernamePattern).size(), 3);
     }
 
     public static <T> Set<T> asSet(T... values) {

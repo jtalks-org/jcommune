@@ -67,7 +67,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     private SecurityService securityService;
     private MailService mailService;
     private Base64Wrapper base64Wrapper;
-    private AvatarService avatarService;
+    private ImageService avatarService;
     //Important, use for every password creation.
     private EncryptionService encryptionService;
     private AuthenticationManager authenticationManager;
@@ -94,13 +94,14 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      *                          not
      * @param sessionStrategy   used in login logic to call onAuthentication hook
      *                          which stored this user to online uses list.
+     * @param postDao           for operations with posts
      */
     public TransactionalUserService(UserDao dao, 
                                     GroupDao groupDao,
                                     SecurityService securityService,
                                     MailService mailService,
                                     Base64Wrapper base64Wrapper,
-                                    AvatarService avatarService,
+                                    ImageService avatarService,
                                     EncryptionService encryptionService,
                                     AuthenticationManager authenticationManager,
                                     SecurityContextHolderFacade securityFacade,
@@ -153,13 +154,22 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
+    public List<String> getUsernames(String pattern) {
+        int usernameCount = 10;
+        return getDao().getUsernames(pattern, usernameCount);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public JCUser registerUser(JCUser user) {
         //encrypt password
         String encodedPassword = encryptionService.encryptPassword(user.getPassword());
         user.setPassword(encodedPassword);
         //
         user.setRegistrationDate(new DateTime());
-        user.setAvatar(avatarService.getDefaultAvatar());
+        user.setAvatar(avatarService.getDefaultImage());
         this.getDao().saveOrUpdate(user);
         mailService.sendAccountActivationMail(user);
         LOGGER.info("JCUser registered: {}", user.getUsername());
@@ -326,7 +336,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
                 result = true;
             }
         } catch (NotFoundException e) {
-            //TODO why do we catch it? Anyway, we must even if log it
+            LOGGER.warn("User was not found during login process, username = " + username);
         } catch (AuthenticationException e) {
             LOGGER.warn(e.getMessage());
         }

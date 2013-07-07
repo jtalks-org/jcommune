@@ -36,16 +36,19 @@ public class PropertiesInterceptorTest {
     private static final String PARAM_CMP_DESCRIPTION = "cmpDescription";
     private static final String PARAM_SAPE_SHOW_DUMMY_LINKS = "sapeShowDummyLinks";
     private static final String PARAM_LOGO_TOOLTIP = "logoTooltip";
+    private static final String PARAM_LAST_INFO_CHAGE = "infoChangeDate";
     
     private static final String CMP_NAME = PARAM_CMP_NAME;
     private static final String CMP_DESCRIPTION = PARAM_CMP_DESCRIPTION;
     private static final boolean SAPE_SHOW_DUMMY_LINKS = false;
     private static final String LOGO_TOOLTIP = PARAM_LOGO_TOOLTIP;
+    private static final String LAST_CHANGE_DATE = "2013.01.10 00:00:00";
     
     private JCommuneProperty cmpName = JCommuneProperty.CMP_NAME;
     private JCommuneProperty cmpDescription = JCommuneProperty.CMP_DESCRIPTION;
     private JCommuneProperty sapeShowDummyLinks = JCommuneProperty.CMP_SAPE_SHOW_DUMMY_LINKS;
     private JCommuneProperty logoToolTip = JCommuneProperty.LOGO_TOOLTIP;
+    private JCommuneProperty lastChangeDate = JCommuneProperty.ADMIN_INFO_LAST_UPDATE_TIME;
 
     @Mock
     private ComponentDao componentDao;
@@ -57,22 +60,25 @@ public class PropertiesInterceptorTest {
         initMocks(this);
         
         propertiesInterceptor = new PropertiesInterceptor(cmpName, 
-                cmpDescription, sapeShowDummyLinks, logoToolTip);
+                cmpDescription, sapeShowDummyLinks, logoToolTip, lastChangeDate);
         
         cmpName.setName("cmp.name");
         cmpDescription.setName("cmp.description");
         sapeShowDummyLinks.setName("sape.show.dummy.links");
         logoToolTip.setName("sape.show.dummy.links");
+        lastChangeDate.setName("last.change.date");
         
         cmpName.setDefaultValue(CMP_NAME);
         cmpDescription.setDefaultValue(CMP_DESCRIPTION);
         sapeShowDummyLinks.setDefaultValue(String.valueOf(SAPE_SHOW_DUMMY_LINKS));
         logoToolTip.setDefaultValue(LOGO_TOOLTIP);
+        lastChangeDate.setDefaultValue(LAST_CHANGE_DATE);
         
         cmpName.setComponentDao(componentDao);
         cmpDescription.setComponentDao(componentDao);
         sapeShowDummyLinks.setComponentDao(componentDao);
         logoToolTip.setComponentDao(componentDao);
+        lastChangeDate.setComponentDao(componentDao);
     }
     
     
@@ -85,11 +91,13 @@ public class PropertiesInterceptorTest {
         String cmpDescription = assertAndReturnModelAttributeOfType(mav, PARAM_CMP_DESCRIPTION, String.class);
         boolean showDummyLinks = assertAndReturnModelAttributeOfType(mav, PARAM_SAPE_SHOW_DUMMY_LINKS, Boolean.class);
         String logoTooltip = assertAndReturnModelAttributeOfType(mav, PARAM_LOGO_TOOLTIP, String.class);
+        String lastChangeDate = assertAndReturnModelAttributeOfType(mav, PARAM_LAST_INFO_CHAGE, String.class);
         
         assertEquals(cmpName, CMP_NAME);
         assertEquals(cmpDescription, CMP_DESCRIPTION);
         assertEquals(showDummyLinks, SAPE_SHOW_DUMMY_LINKS);
         assertEquals(logoTooltip, LOGO_TOOLTIP);
+        assertEquals(lastChangeDate, LAST_CHANGE_DATE);
     }
     
     @Test
@@ -106,6 +114,7 @@ public class PropertiesInterceptorTest {
         assertNull(mav.getModel().get(PARAM_CMP_DESCRIPTION));
         assertNull(mav.getModel().get(PARAM_SAPE_SHOW_DUMMY_LINKS));
         assertNull(mav.getModel().get(PARAM_LOGO_TOOLTIP));
+        assertNull(mav.getModel().get(PARAM_LAST_INFO_CHAGE));
     }
     
     

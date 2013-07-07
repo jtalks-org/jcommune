@@ -21,27 +21,35 @@ import java.util.Date;
 
 /**
  * Provides an ability to work with component of forum.
- * 
- * @author Anuar_Nurmakanov
  *
+ * @author Anuar_Nurmakanov
  */
 public interface ComponentService {
     /**
      * Get component of forum.
-     * 
+     *
      * @return component of forum.
      */
     Component getComponentOfForum();
 
     /**
      * Sets administrative information about the component
+     *
      * @param componentInformation administrative information about component
      */
     void setComponentInformation(ComponentInformation componentInformation);
 
     /**
      * Gets last time when forum administration information was modified
+     *
      * @return last time when forum administration information was modified
      */
     Date getComponentModificationTime();
+
+    /**
+     * Check if currently logged user has permissions for administrative
+     * functions for given component by its id
+     * @param componentId id of the component
+     */
+    void checkPermissionsForComponent(long componentId);
 }

@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import com.google.common.collect.Lists;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -241,6 +242,16 @@ public class UserControllerTest {
         assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
         verify(userService).loginUser(anyString(), anyString(), eq(false),
                 any(HttpServletRequest.class), any(HttpServletResponse.class));
+    }
+
+    @Test
+    public void testGetUsernameListSuccess(){
+        String pattern = "us";
+        List<String> usernames = Lists.newArrayList("User1", "User2", "User3");
+        when(userService.getUsernames(pattern)).thenReturn(usernames);
+
+        JsonResponse response = userController.usernameList(pattern);
+        assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
     }
 
     private void assertNullFields(RegisterUserDto dto) {

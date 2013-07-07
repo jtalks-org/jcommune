@@ -250,45 +250,35 @@ public final class PersistedObjectsFactory {
      */
     public static CodeReview getDefaultCodeReview() {
         CodeReview review = new CodeReview();
+        persist(review);
 
-        List<CodeReviewComment> comments = new ArrayList<CodeReviewComment>();
         CodeReviewComment comment1 = new CodeReviewComment();
         comment1.setAuthor(getUser("user1", "mail1@mail.ru"));
         comment1.setBody("Comment1 body");
         comment1.setLineNumber(1);
         comment1.setCreationDate(new DateTime(1));
-        comment1.setCodeReview(review);
-        comments.add(comment1);
+        review.addComment(comment1);
+        persist(comment1);
 
         CodeReviewComment comment2 = new CodeReviewComment();
         comment2.setAuthor(getUser("user2", "mail2@mail.ru"));
         comment2.setBody("Comment2 body");
         comment2.setLineNumber(2);
         comment2.setCreationDate(new DateTime(2));
-        comment2.setCodeReview(review);
-        comments.add(comment2);
+        review.addComment(comment2);
+        persist(comment2);
 
-        review.setComments(comments);
 
-        persist(review);
         return review;
     }
     
     /**
-     * Create code review comment and persist it to session
+     * Return first code review comment from persisted code review.
      *
-     * @return persisted code review comment entity
+     * @return first code review comment from persisted code review.
      */
     public static CodeReviewComment getDefaultCodeReviewComment() {
-        CodeReviewComment comment = new CodeReviewComment();
-        comment.setAuthor(getDefaultUser());
-        comment.setBody("body");
-        comment.setLineNumber(1);
-        comment.setCreationDate(new DateTime(1));
-        comment.setCodeReview(getDefaultCodeReview());
-
-        persist(comment);
-        return comment;
+        return getDefaultCodeReview().getComments().get(0);
     }
     
     public static Component getDefaultComponent() {
