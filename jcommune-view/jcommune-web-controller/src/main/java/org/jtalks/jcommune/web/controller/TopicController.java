@@ -199,16 +199,18 @@ public class TopicController {
      */
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.GET)
     public ModelAndView showTopicPage(@PathVariable(TOPIC_ID) Long topicId,
-                                      @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                      @RequestParam(value = "page", defaultValue = "1", required = false) String page,
                                       @RequestParam(value = PAGING_ENABLED, defaultValue = "true",
                                               required = false) Boolean pagingEnabled) throws NotFoundException {
-
+        int parsedPage = page.matches("\\d+") ?
+                Integer.valueOf(page)
+                : 1;//if page is not an integer redirect user to first topic page
         Topic topic = topicFetchService.get(topicId);
         topicFetchService.checkViewTopicPermission(topic.getBranch().getId());
-        Page<Post> postsPage = postService.getPosts(topic, page, pagingEnabled);
+        Page<Post> postsPage = postService.getPosts(topic, parsedPage, pagingEnabled);
         JCUser currentUser = userService.getCurrentUser();
         Integer lastReadPostIndex = lastReadPostService.getLastReadPostForTopic(topic);
-        lastReadPostService.markTopicPageAsRead(topic, page, pagingEnabled);
+        lastReadPostService.markTopicPageAsRead(topic, parsedPage, pagingEnabled);
         return new ModelAndView("postList")
                 .addObject("viewList", locationService.getUsersViewing(topic))
                 .addObject("usersOnline", sessionRegistry.getAllPrincipals())
