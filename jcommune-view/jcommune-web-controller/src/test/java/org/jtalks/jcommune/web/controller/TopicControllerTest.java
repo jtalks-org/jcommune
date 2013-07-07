@@ -149,35 +149,6 @@ public class TopicControllerTest {
     }
 
     @Test
-    public void showTopicPageShouldRedirectToFirstPageIfSpecifiedPageIsNotAnInteger() throws NotFoundException {
-        String page = "garbage";
-        boolean pagingEnabled = true;
-        Topic topic = new Topic(null, null);
-        branch.addTopic(topic);
-        Page<Post> postsPage = new PageImpl<Post>(Collections.<Post>emptyList());
-        //
-        when(userService.getCurrentUser()).thenReturn(user);
-        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
-        when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
-        int firstPageNumber = 1;
-        when(postService.getPosts(topic, firstPageNumber, pagingEnabled)).thenReturn(postsPage);
-
-        ModelAndView mav = controller.showTopicPage(TOPIC_ID, page, pagingEnabled);
-
-        verify(topicFetchService).get(TOPIC_ID);
-        verify(topicFetchService).checkViewTopicPermission(branch.getId());
-        verify(breadcrumbBuilder).getForumBreadcrumb(topic);
-        verify(lastReadPostService).markTopicPageAsRead(topic, firstPageNumber, pagingEnabled);
-        //
-        assertViewName(mav, "postList");
-        assertAndReturnModelAttributeOfType(mav, "postsPage", Page.class);
-        //
-        Topic actualTopic = assertAndReturnModelAttributeOfType(mav, "topic", Topic.class);
-        assertEquals(actualTopic, topic);
-        assertModelAttributeAvailable(mav, "breadcrumbList");
-    }
-
-    @Test
     public void createTopicShouldPassAndRedirectToNewTopicIfItIsValid() throws Exception {
         Branch branch = createBranch();
         Topic topic = createTopic();
