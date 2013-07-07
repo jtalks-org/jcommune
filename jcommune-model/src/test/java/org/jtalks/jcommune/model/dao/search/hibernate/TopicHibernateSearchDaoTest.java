@@ -56,7 +56,7 @@ import org.testng.annotations.Test;
 public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpringContextTests {
 	private static final int PAGE_SIZE = 50;
     private static final String TOPIC_CONTENT = "topicContent";
-    private static final JCommunePageRequest DEFAULT_PAGE_REQUEST = JCommunePageRequest.createWithPagingEnabled(1, 50);
+    private static final JCommunePageRequest DEFAULT_PAGE_REQUEST = JCommunePageRequest.createPageRequest(1, 50);
     @Autowired
 	private SessionFactory sessionFactory;
 	@Autowired
@@ -104,7 +104,7 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
         int pageCount = 2;
         int pageSize = totalSize/pageCount;
         String searchText = "JCommune";
-        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1, pageSize);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, pageSize);
         List<Topic> topicList = PersistedObjectsFactory.createAndSaveTopicList(totalSize);
         for(Topic topic: topicList) {
             topic.setTitle(searchText);
@@ -160,7 +160,7 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
         saveAndFlushIndexes(Arrays.asList(expectedTopic));
         configureMocks(TOPIC_CONTENT, TOPIC_CONTENT);
         
-        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(-1, PAGE_SIZE);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(-1, PAGE_SIZE);
         Page<Topic> searchResultPage = topicSearchDao.searchByTitleAndContent(
                 TOPIC_CONTENT, pageRequest);
         
@@ -180,7 +180,7 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
         saveAndFlushIndexes(Arrays.asList(expectedTopic));
         configureMocks(TOPIC_CONTENT, TOPIC_CONTENT);
         
-        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(1000, 50);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1000, 50);
         Page<Topic> searchResultPage = topicSearchDao.searchByTitleAndContent(
                 TOPIC_CONTENT, pageRequest);
         

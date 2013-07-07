@@ -123,7 +123,6 @@ public class TopicControllerTest {
     @Test
     public void showTopicPageShouldShowListOfPostsWithUpdatedInfoAboutLastReadPosts() throws NotFoundException {
         String page = "1";
-        boolean pagingEnabled = true;
         Topic topic = new Topic(null, null);
         branch.addTopic(topic);
         Page<Post> postsPage = new PageImpl<Post>(Collections.<Post>emptyList());
@@ -131,14 +130,14 @@ public class TopicControllerTest {
         when(userService.getCurrentUser()).thenReturn(user);
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
-        when(postService.getPosts(topic, Integer.valueOf(page), pagingEnabled)).thenReturn(postsPage);
+        when(postService.getPosts(topic, Integer.valueOf(page))).thenReturn(postsPage);
 
-        ModelAndView mav = controller.showTopicPage(TOPIC_ID, page, pagingEnabled);
+        ModelAndView mav = controller.showTopicPage(TOPIC_ID, page);
 
         verify(topicFetchService).get(TOPIC_ID);
         verify(topicFetchService).checkViewTopicPermission(branch.getId());
         verify(breadcrumbBuilder).getForumBreadcrumb(topic);
-        verify(lastReadPostService).markTopicPageAsRead(topic, Integer.valueOf(page), pagingEnabled);
+        verify(lastReadPostService).markTopicPageAsRead(topic, Integer.valueOf(page));
         //
         assertViewName(mav, "postList");
         assertAndReturnModelAttributeOfType(mav, "postsPage", Page.class);

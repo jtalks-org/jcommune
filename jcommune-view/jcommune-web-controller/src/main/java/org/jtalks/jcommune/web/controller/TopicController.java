@@ -199,18 +199,16 @@ public class TopicController {
      */
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.GET)
     public ModelAndView showTopicPage(@PathVariable(TOPIC_ID) Long topicId,
-                                      @RequestParam(value = "page", defaultValue = "1", required = false) String page,
-                                      @RequestParam(value = PAGING_ENABLED, defaultValue = "true",
-                                              required = false) Boolean pagingEnabled) throws NotFoundException {
+                                      @RequestParam(value = "page", defaultValue = "1", required = false) String page) throws NotFoundException {
         JCUser currentUser = userService.getCurrentUser();
         Topic topic = topicFetchService.get(topicId);
 
         int requestedPage = prepareRequestedPage(page, currentUser.getPageSize(), topic.getPostCount());
 
         topicFetchService.checkViewTopicPermission(topic.getBranch().getId());
-        Page<Post> postsPage = postService.getPosts(topic, requestedPage, pagingEnabled);
+        Page<Post> postsPage = postService.getPosts(topic, requestedPage);
         Integer lastReadPostIndex = lastReadPostService.getLastReadPostForTopic(topic);
-        lastReadPostService.markTopicPageAsRead(topic, requestedPage, pagingEnabled);
+        lastReadPostService.markTopicPageAsRead(topic, requestedPage);
         return new ModelAndView("postList")
                 .addObject("viewList", locationService.getUsersViewing(topic))
                 .addObject("usersOnline", sessionRegistry.getAllPrincipals())
@@ -218,8 +216,7 @@ public class TopicController {
                 .addObject("topic", topic)
                 .addObject("subscribed", topic.getSubscribers().contains(currentUser))
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic))
-                .addObject("lastReadPost", lastReadPostIndex)
-                .addObject("pagingEnabled", pagingEnabled);
+                .addObject("lastReadPost", lastReadPostIndex);
     }
 
     /**

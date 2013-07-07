@@ -93,20 +93,16 @@ public class BranchController {
      *
      * @param branchId      branch for display
      * @param page          page
-     * @param pagingEnabled number of posts on the page
      * @return {@code ModelAndView} with topics list and vars for pagination
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
      */
     @RequestMapping(value = "/branches/{branchId}", method = RequestMethod.GET)
     public ModelAndView showPage(@PathVariable("branchId") long branchId,
-                                 @RequestParam(value = PAGE, defaultValue = "1", required = false) int page,
-                                 @RequestParam(value = PAGING_ENABLED, defaultValue = "true",
-                                         required = false) Boolean pagingEnabled
-    ) throws NotFoundException {
+                                 @RequestParam(value = PAGE, defaultValue = "1", required = false) int page) throws NotFoundException {
 
         Branch branch = branchService.get(branchId);
-        Page<Topic> topicsPage = topicFetchService.getTopics(branch, page, pagingEnabled);
+        Page<Topic> topicsPage = topicFetchService.getTopics(branch, page);
         lastReadPostService.fillLastReadPostForTopics(topicsPage.getContent());
 
         JCUser currentUser = userService.getCurrentUser();
@@ -115,7 +111,6 @@ public class BranchController {
         return new ModelAndView("topicList")
                 .addObject("viewList", locationService.getUsersViewing(branch))
                 .addObject("branch", branch)
-                .addObject(PAGING_ENABLED, pagingEnabled)
                 .addObject("topicsPage", topicsPage)
                 .addObject("breadcrumbList", breadcrumbs)
                 .addObject("subscribed", branch.getSubscribers().contains(currentUser));

@@ -376,7 +376,7 @@ public class TransactionalPostServiceTest {
                 Matchers.any(Topic.class), Matchers.any(JCommunePageRequest.class)))
                 .thenReturn(expectedPage);
 
-        Page<Post> actualPage = postService.getPosts(topic, pageSize, true);
+        Page<Post> actualPage = postService.getPosts(topic, pageSize);
 
         assertEquals(actualPage, expectedPage, "Service returned incorrect data for one page of posts");
         verify(postDao).getPosts(
