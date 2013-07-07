@@ -202,15 +202,15 @@ public class TopicController {
                                       @RequestParam(value = "page", defaultValue = "1", required = false) String page,
                                       @RequestParam(value = PAGING_ENABLED, defaultValue = "true",
                                               required = false) Boolean pagingEnabled) throws NotFoundException {
-        int parsedPage = page.matches("\\d+") ?
-                Integer.valueOf(page)
-                : 1;//if page is not an integer redirect user to first topic page
-        Topic topic = topicFetchService.get(topicId);
-        topicFetchService.checkViewTopicPermission(topic.getBranch().getId());
-        Page<Post> postsPage = postService.getPosts(topic, parsedPage, pagingEnabled);
         JCUser currentUser = userService.getCurrentUser();
+        Topic topic = topicFetchService.get(topicId);
+
+        int requestedPage = prepareRequestedPage(page, currentUser.getPageSize(), topic.getPostCount());
+
+        topicFetchService.checkViewTopicPermission(topic.getBranch().getId());
+        Page<Post> postsPage = postService.getPosts(topic, requestedPage, pagingEnabled);
         Integer lastReadPostIndex = lastReadPostService.getLastReadPostForTopic(topic);
-        lastReadPostService.markTopicPageAsRead(topic, parsedPage, pagingEnabled);
+        lastReadPostService.markTopicPageAsRead(topic, requestedPage, pagingEnabled);
         return new ModelAndView("postList")
                 .addObject("viewList", locationService.getUsersViewing(topic))
                 .addObject("usersOnline", sessionRegistry.getAllPrincipals())
@@ -220,6 +220,27 @@ public class TopicController {
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic))
                 .addObject("lastReadPost", lastReadPostIndex)
                 .addObject("pagingEnabled", pagingEnabled);
+    }
+
+    /**
+     * Validate and return requested topic page.
+     * @param page a requested page as a string provided by user
+     * @param pageSize the user profile page size.
+     * @param postCount the topic post count.
+     * @return requested topic page, if specified page is not valid return 1.
+     */
+    int prepareRequestedPage(String page, int pageSize, int postCount) {
+        int result = 1;
+        int maxPageInTopic = postCount % pageSize == 0 ?
+                postCount / pageSize
+                : (postCount / pageSize) + 1;
+        if (page.matches("\\d+")) {
+            int requestedPage = Integer.valueOf(page);
+            if (requestedPage <= maxPageInTopic) {
+                result = requestedPage;
+            }
+        }
+        return  result;
     }
 
     /**

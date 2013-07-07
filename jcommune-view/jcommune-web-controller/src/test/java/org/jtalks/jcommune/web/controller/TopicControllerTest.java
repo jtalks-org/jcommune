@@ -148,7 +148,7 @@ public class TopicControllerTest {
     }
 
     @Test
-    public void showTopicPageShouldRedirectToFirstPageIfSpecifiedPageIsNotValid() throws NotFoundException {
+    public void showTopicPageShouldRedirectToFirstPageIfSpecifiedPageIsNotAnInteger() throws NotFoundException {
         String page = "garbage";
         boolean pagingEnabled = true;
         Topic topic = new Topic(null, null);
@@ -190,6 +190,36 @@ public class TopicControllerTest {
         verify(topicModificationService).createTopic(topic, TOPIC_CONTENT);
         //
         assertViewName(mav, "redirect:/topics/1");
+    }
+
+    @Test
+    public void testPrepareRequestedPageShouldReturnProvidedPageNumberInStringFormatAsInt() {
+        String page = "2";
+        int pageSize = 10;
+        int postCount = 19;
+        int expected = 2;
+        int actual = controller.prepareRequestedPage(page, pageSize, postCount);
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    public void testPrepareRequestedPageShouldReturnOneIfProvidedPageNumberNotANumber() {
+        String page = "qq";
+        int pageSize = 10;
+        int postCount = 19;
+        int expected = 1;
+        int actual = controller.prepareRequestedPage(page, pageSize, postCount);
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    public void testPrepareRequestedPageShouldReturnOneIfProvidedPageNumberMoreThanMaxPageNumber() {
+        String page = "77";
+        int pageSize = 10;
+        int postCount = 19;
+        int expected = 1;
+        int actual = controller.prepareRequestedPage(page, pageSize, postCount);
+        assertEquals(actual, expected);
     }
 
     @Test
