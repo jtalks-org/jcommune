@@ -26,9 +26,7 @@ import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
-import org.jtalks.jcommune.model.entity.AnonymousUser;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Language;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
@@ -47,6 +45,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -55,6 +55,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 import static java.lang.String.format;
+import static java.util.Arrays.asList;
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -95,8 +96,6 @@ public class TransactionalUserServiceTest {
             "and notified [user notified=true]%s[/user] mentioning";
     private static final String MENTIONING_MESSAGE_WHEN_USER_NOT_FOUND = "This post contains not notified %s mentioning " +
             "and notified %s mentioning";
-    private static final String MENTIONING_WITH_LINK_TO_PROFILE_TEMPALTE =
-            "This post contains not notified [user=%s]%s[/user] mentioning and notified [user=%s]%s[/user] mentioning";
 
 
     private UserService userService;
@@ -115,8 +114,6 @@ public class TransactionalUserServiceTest {
     @Mock
     private EncryptionService encryptionService;
     @Mock
-    private CompoundAclBuilder<User> aclBuilder;
-    @Mock
     private AuthenticationManager authenticationManager;
     @Mock
     private SecurityContextHolderFacade securityFacade;
@@ -134,7 +131,7 @@ public class TransactionalUserServiceTest {
         initMocks(this);
         when(encryptionService.encryptPassword(PASSWORD))
                 .thenReturn(PASSWORD_MD5_HASH);
-        aclBuilder = mockAclBuilder();
+        CompoundAclBuilder<User> aclBuilder = mockAclBuilder();
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
         when(securityFacade.getContext()).thenReturn(securityContext);
         userService = new TransactionalUserService(
@@ -155,7 +152,7 @@ public class TransactionalUserServiceTest {
 
     @Test
     public void getByUsernameShouldReturnUserWithPassedNameFromRepository() throws NotFoundException {
-        JCUser expectedUser = getUser(USERNAME);
+        JCUser expectedUser = user(USERNAME);
 
         when(userDao.getByUsername(USERNAME)).thenReturn(expectedUser);
 
@@ -173,7 +170,7 @@ public class TransactionalUserServiceTest {
 
     @Test
     public void registerUserShouldSaveHimInRepository() {
-        JCUser user = getUser(USERNAME);
+        JCUser user = user(USERNAME);
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
 
         JCUser registeredUser = userService.registerUser(user);
@@ -189,7 +186,7 @@ public class TransactionalUserServiceTest {
 
     @Test
     public void editUserProfileShouldUpdateHimAndSaveInRepository() throws NotFoundException {
-        JCUser user = getUser(USERNAME);
+        JCUser user = user(USERNAME);
         when(securityService.getCurrentUserUsername()).thenReturn(StringUtils.EMPTY);
         when(userDao.getByUsername(anyString())).thenReturn(user);
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
@@ -228,7 +225,7 @@ public class TransactionalUserServiceTest {
 
     @Test
     public void editUserProfileShouldNotChangePasswordToNull() throws NotFoundException {
-        JCUser user = getUser(USERNAME);
+        JCUser user = user(USERNAME);
         when(securityService.getCurrentUserUsername()).thenReturn(StringUtils.EMPTY);
         when(userDao.getByUsername(anyString())).thenReturn(user);
         when(encryptionService.encryptPassword(null)).thenReturn(null);
@@ -237,7 +234,7 @@ public class TransactionalUserServiceTest {
         String newAvatar = new String(new byte[12]);
         String newPassword = null;
         UserInfoContainer userInfo = new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, newPassword, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE, MENTIONING_NOTIFICATIONS_ENABLED, 
+                PASSWORD, newPassword, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE, MENTIONING_NOTIFICATIONS_ENABLED,
                 LOCATION);
 
         JCUser editedUser = userService.saveEditedUserProfile(USER_ID, userInfo);
@@ -247,7 +244,7 @@ public class TransactionalUserServiceTest {
 
     @Test
     public void testEditUserProfileSameEmail() throws Exception {
-        JCUser user = getUser(USERNAME);
+        JCUser user = user(USERNAME);
         when(securityService.getCurrentUserUsername()).thenReturn("");
         when(userDao.getByUsername(anyString())).thenReturn(user);
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
@@ -391,7 +388,7 @@ public class TransactionalUserServiceTest {
 
     @Test
     public void testGetCurrentUser() {
-        JCUser expected = getUser(USERNAME);
+        JCUser expected = user(USERNAME);
 
         when(securityService.getCurrentUserUsername()).thenReturn(USERNAME);
         when(userDao.getByUsername(USERNAME)).thenReturn(expected);
@@ -412,7 +409,7 @@ public class TransactionalUserServiceTest {
 
     @Test
     public void testLoginSuccess() throws Exception {
-        JCUser user = getUser(USERNAME);
+        JCUser user = user(USERNAME);
         String username = "username";
         when(userDao.getByUsername(username)).thenReturn(user);
 
@@ -477,45 +474,16 @@ public class TransactionalUserServiceTest {
         assertFalse(isAuthenticated);
     }
 
-    private JCUser getUser(String username) {
-        JCUser user = new JCUser(username, EMAIL, PASSWORD);
-        user.setFirstName(FIRST_NAME);
-        user.setLastName(LAST_NAME);
-        user.setAvatar(AVATAR);
-        return user;
-    }
-
     @Test
-    public void processShouldAttachProfileLinkToExistUsers() throws NotFoundException {
-        String notNotifiedMentionedUserName = "Shogun";
-        String notifiedMentionedUserName = "jk1";
-        long notNotifiedMentionedUserId = 100L;
-        long notifiedMentionedUserId = 200L;
-        JCUser notNotifiedMentionedUser = getUser(notNotifiedMentionedUserName, notNotifiedMentionedUserId);
-        when(userDao.getByUsername(notNotifiedMentionedUserName)).thenReturn(notNotifiedMentionedUser);
-        JCUser notifiedMentionedUser = getUser(notifiedMentionedUserName, notifiedMentionedUserId);
-        when(userDao.getByUsername(notifiedMentionedUserName)).thenReturn(notifiedMentionedUser);
-        //
-        String expectedNotNotifiedUserProfile = "/forum/users/" + notNotifiedMentionedUserId;
-        String expectedNotifiedUserProfile = "/forum/users/" + notifiedMentionedUserId;
-        String notProcessedSource = format(MENTIONING_TEMPLATE, notNotifiedMentionedUserName, notifiedMentionedUserName);
+    public void userShouldBeNotifiedWhenMentioned() {
+        JCUser toBeNotified = user("to-be-notified");
+        when(userDao.getByUsernames(asSet("to-be-notified"))).thenReturn(asList(toBeNotified));
+        boundMockHttpRequestToThread("web-context-path");
 
-        MentionedUsers mentionedUsers = mock(MentionedUsers.class);
-        when(mentionedUsers.extractAllMentionedUsers(notProcessedSource))
-                .thenReturn(asSet(notNotifiedMentionedUserName, notifiedMentionedUserName));
-        String expectedAfterProcess = format(MENTIONING_WITH_LINK_TO_PROFILE_TEMPALTE,
-                expectedNotNotifiedUserProfile, notNotifiedMentionedUserName,
-                expectedNotifiedUserProfile, notifiedMentionedUserName);
+        Post post = post(toBeNotified, "[user]to-be-notified[/user]");
+        userService.notifyAndMarkNewlyMentionedUsers(post);
 
-        String actualAfterProcess = userService.processUserBbCodesInPost(notProcessedSource);
-
-        assertEquals(actualAfterProcess, expectedAfterProcess);
-    }
-
-    private JCUser getUser(String username, long userId) {
-        JCUser user = new JCUser(username, "sshogunn@gmail.com", "shogun password");
-        user.setId(userId);
-        return user;
+        verify(mailService).sendUserMentionedNotification(toBeNotified, post.getId());
     }
 
     @Test
@@ -533,7 +501,7 @@ public class TransactionalUserServiceTest {
         String actualAfterProcess = userService.processUserBbCodesInPost(notProcessedSource);
 
         String msgWithNotFoundUsers = format(MENTIONING_MESSAGE_WHEN_USER_NOT_FOUND, firstMentionedUserName,
-                            secondMentionedUserName);
+                secondMentionedUserName);
 
         assertEquals(actualAfterProcess, msgWithNotFoundUsers);
     }
@@ -549,6 +517,31 @@ public class TransactionalUserServiceTest {
     }
 
     public static <T> Set<T> asSet(T... values) {
-        return new HashSet<T>(Arrays.asList(values));
+        return new HashSet<T>(asList(values));
+    }
+
+    private void boundMockHttpRequestToThread(String contextPath) {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setScheme("http");
+        request.setServerName("testing.com");
+        request.setServerPort(1234);
+        request.setContextPath(contextPath);
+        RequestContextHolder.setRequestAttributes(new ServletWebRequest(request));
+    }
+
+    private JCUser user(String username) {
+        JCUser user = new JCUser(username, EMAIL, PASSWORD);
+        user.setFirstName(FIRST_NAME);
+        user.setLastName(LAST_NAME);
+        user.setAvatar(AVATAR);
+        user.setMentioningNotificationsEnabled(true);
+        return user;
+    }
+
+    private Post post(JCUser toBeNotified, String postContent) {
+        Post post = new Post(toBeNotified, postContent);
+        post.setId(new Random(10000).nextLong());
+        post.setTopic(new Topic());
+        return post;
     }
 }
