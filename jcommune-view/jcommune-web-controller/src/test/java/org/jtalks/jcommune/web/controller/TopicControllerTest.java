@@ -124,6 +124,8 @@ public class TopicControllerTest {
     public void showTopicPageShouldShowListOfPostsWithUpdatedInfoAboutLastReadPosts() throws NotFoundException {
         String page = "1";
         Topic topic = new Topic(null, null);
+        Post post = new Post(user, "content");
+        topic.addPost(post);
         branch.addTopic(topic);
         Page<Post> postsPage = new PageImpl<Post>(Collections.<Post>emptyList());
         //
@@ -165,7 +167,7 @@ public class TopicControllerTest {
     }
 
     @Test
-    public void testPrepareRequestedPageShouldReturnProvidedPageNumberInStringFormatAsInt() {
+    public void testPrepareRequestedPageValidCase() {
         String page = "2";
         int pageSize = 10;
         int postCount = 19;
@@ -175,7 +177,7 @@ public class TopicControllerTest {
     }
 
     @Test
-    public void testPrepareRequestedPageShouldReturnOneIfProvidedPageNumberNotANumber() {
+    public void testPrepareRequestedNotANumberCase() {
         String page = "qq";
         int pageSize = 10;
         int postCount = 19;
@@ -185,11 +187,11 @@ public class TopicControllerTest {
     }
 
     @Test
-    public void testPrepareRequestedPageShouldReturnOneIfProvidedPageNumberMoreThanMaxPageNumber() {
+    public void testPrepareRequestedMoreThanMaxPageNumberCase() {
         String page = "77";
         int pageSize = 10;
         int postCount = 19;
-        int expected = 1;
+        int expected = 2;
         int actual = controller.prepareRequestedPage(page, pageSize, postCount);
         assertEquals(actual, expected);
     }

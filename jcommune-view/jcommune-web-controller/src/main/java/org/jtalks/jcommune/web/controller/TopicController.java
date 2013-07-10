@@ -222,7 +222,12 @@ public class TopicController {
      * @param page a requested page as a string provided by user
      * @param pageSize the user profile page size.
      * @param postCount the topic post count.
-     * @return requested topic page, if specified page is not valid return 1.
+     * @return <ul>
+     *     <li>requested topic page, if specified page valid;</li>
+     *     <li>max page, if specified page is greater then max page;</li>
+     *     <li>1, if specified page is not a number.</li>
+     * </ul>
+     *
      */
     int prepareRequestedPage(String page, int pageSize, int postCount) {
         int result = 1;
@@ -233,6 +238,8 @@ public class TopicController {
             int requestedPage = Integer.valueOf(page);
             if (requestedPage <= maxPageInTopic) {
                 result = requestedPage;
+            } else {
+                result = maxPageInTopic;
             }
         }
         return  result;
