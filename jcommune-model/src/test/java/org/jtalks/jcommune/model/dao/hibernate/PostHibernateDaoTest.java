@@ -102,7 +102,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     /* PostDao specific methods */
 
     @Test
-    public void testPostOfUserWithEnabledPaging() {
+    public void testPostOfUser() {
         int totalSize = 50;
         int pageCount = 2;
         int pageSize = totalSize / pageCount;
@@ -112,16 +112,43 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser author = posts.get(0).getUserCreated();
 
         Page<Post> postsPage = dao.getUserPosts(author, pageRequest);
-        List<Post> postList = postsPage.getContent();
-        for (int i = 1; i < postList.size(); i++) {
-            DateTime creationDatePrevious = postList.get(i - 1).getCreationDate();
-            DateTime creationDate = postList.get(i).getCreationDate();
-            assertTrue(creationDatePrevious.compareTo(creationDate) >= 0);
-        }
 
         assertEquals(postsPage.getContent().size(), pageSize, "Incorrect count of posts in one page.");
         assertEquals(postsPage.getTotalElements(), totalSize, "Incorrect total count.");
         assertEquals(postsPage.getTotalPages(), pageCount, "Incorrect count of pages.");
+    }
+
+    @Test
+    public void testReturnedUserPostListIsSortedInDescOrderByDate() {
+        int totalSize = 50;
+        int pageCount = 2;
+        int pageSize = totalSize / pageCount;
+
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, pageSize);
+        List<Post> posts = PersistedObjectsFactory.createAndSavePostList(totalSize);
+        JCUser author = posts.get(0).getUserCreated();
+
+        Page<Post> postsPage = dao.getUserPosts(author, pageRequest);
+
+        boolean asc = false;
+        assertTrue(isPostListSortedByDate(postsPage.getContent(), asc));
+    }
+
+
+    private boolean isPostListSortedByDate(List<Post> postList, boolean asc) {
+        boolean result = false;
+        for (int i = 1; i < postList.size(); i++) {
+            DateTime creationDatePrevious = postList.get(i - 1).getCreationDate();
+            DateTime creationDate = postList.get(i).getCreationDate();
+            if (asc) {
+                result = creationDatePrevious.compareTo(creationDate) <= 0;
+                if (!result) break;
+            } else {
+                result = creationDatePrevious.compareTo(creationDate) >= 0;
+                if (!result) break;
+            }
+        }
+        return result;
     }
 
     @Test
