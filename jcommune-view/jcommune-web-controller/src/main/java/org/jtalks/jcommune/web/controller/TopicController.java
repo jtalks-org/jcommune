@@ -60,7 +60,6 @@ public class TopicController {
     public static final String TOPIC_ID = "topicId";
     public static final String BRANCH_ID = "branchId";
     public static final String BREADCRUMB_LIST = "breadcrumbList";
-    private static final String PAGING_ENABLED = "pagingEnabled";
     private static final String SUBMIT_URL = "submitUrl";
     private static final String TOPIC_VIEW = "topicForm";
     private static final String TOPIC_DTO = "topicDto";
@@ -193,7 +192,6 @@ public class TopicController {
      *
      * @param topicId       the id of selected Topic
      * @param page          page
-     * @param pagingEnabled if output data should be divided by pages
      * @return {@code ModelAndView}
      * @throws NotFoundException when topic or branch not found
      */

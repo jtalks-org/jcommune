@@ -54,7 +54,6 @@ import org.springframework.web.servlet.ModelAndView;
 public class BranchController {
 
     public static final String PAGE = "page";
-    public static final String PAGING_ENABLED = "pagingEnabled";
     private BranchService branchService;
     private TopicFetchService topicFetchService;
     private LastReadPostService lastReadPostService;
@@ -130,8 +129,7 @@ public class BranchController {
 
         return new ModelAndView("recent")
                 .addObject("topicsPage", topicsPage)
-                .addObject("topics", topicsPage.getContent())  // for rssViewer
-                .addObject(PAGING_ENABLED, true);
+                .addObject("topics", topicsPage.getContent());  // for rssViewer
     }
 
     /**
@@ -146,8 +144,7 @@ public class BranchController {
         Page<Topic> topicsPage = topicFetchService.getUnansweredTopics(page);
         lastReadPostService.fillLastReadPostForTopics(topicsPage.getContent());
         return new ModelAndView("unansweredTopics")
-                .addObject("topicsPage", topicsPage)
-                .addObject(PAGING_ENABLED, true);
+                .addObject("topicsPage", topicsPage);
     }
 
     /**

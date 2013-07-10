@@ -33,8 +33,7 @@
         <div class="span11">
             <div class="pagination pull-right forum-pagination">
                 <ul>
-                    <jtalks:pagination uri="" page="${outboxPage}" numberLink="3"
-                                       pagingEnabled="true"/>
+                    <jtalks:pagination uri="" page="${outboxPage}" numberLink="3"/>
                 </ul>
             </div>
         </div>
@@ -123,8 +122,7 @@
         <div class="span11">
             <div class="pagination pull-right forum-pagination">
                 <ul>
-                    <jtalks:pagination uri="" page="${outboxPage}" numberLink="3"
-                                       pagingEnabled="true"/>
+                    <jtalks:pagination uri="" page="${outboxPage}" numberLink="3"/>
                 </ul>
             </div>
         </div>

@@ -149,7 +149,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public Page<Post> getPostsOfUser(JCUser userCreated, int page, boolean pagingEnabled) {
+    public Page<Post> getPostsOfUser(JCUser userCreated, int page) {
         JCommunePageRequest pageRequest = new JCommunePageRequest(
                 page, userService.getCurrentUser().getPageSize());
         return this.getDao().getUserPosts(userCreated, pageRequest);
