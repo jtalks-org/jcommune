@@ -112,6 +112,12 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser author = posts.get(0).getUserCreated();
 
         Page<Post> postsPage = dao.getUserPosts(author, pageRequest);
+        List<Post> postList = postsPage.getContent();
+        for (int i = 1; i < postList.size(); i++) {
+            DateTime creationDatePrevious = postList.get(i - 1).getCreationDate();
+            DateTime creationDate = postList.get(i).getCreationDate();
+            assertTrue(creationDatePrevious.compareTo(creationDate) >= 0);
+        }
 
         assertEquals(postsPage.getContent().size(), pageSize, "Incorrect count of posts in one page.");
         assertEquals(postsPage.getTotalElements(), totalSize, "Incorrect total count.");
@@ -129,6 +135,12 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser author = posts.get(0).getUserCreated();
 
         Page<Post> postsPage = dao.getUserPosts(author, pageRequest);
+        List<Post> postList = postsPage.getContent();
+        for (int i = 1; i < postList.size(); i++) {
+            DateTime creationDatePrevious = postList.get(i - 1).getCreationDate();
+            DateTime creationDate = postList.get(i).getCreationDate();
+            assertTrue(creationDatePrevious.compareTo(creationDate) >= 0);
+        }
 
         assertEquals(postsPage.getContent().size(), pageSize, "Incorrect count of posts in one page.");
         assertEquals(postsPage.getTotalElements(), totalSize, "Incorrect total count.");
