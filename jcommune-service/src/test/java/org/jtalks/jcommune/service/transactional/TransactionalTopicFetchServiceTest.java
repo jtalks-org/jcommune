@@ -137,7 +137,7 @@ public class TransactionalTopicFetchServiceTest {
                 Matchers.any(Branch.class), Matchers.any(JCommunePageRequest.class)))
                 .thenReturn(expectedPage);
 
-        Page<Topic> actualPage = topicFetchService.getTopics(branch, pageSize, true);
+        Page<Topic> actualPage = topicFetchService.getTopics(branch, pageSize);
 
         assertEquals(actualPage, expectedPage, "Service returned incorrect data for one page of topics");
         verify(topicDao).getTopics(

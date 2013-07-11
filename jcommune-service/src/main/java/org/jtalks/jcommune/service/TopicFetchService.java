@@ -28,12 +28,10 @@ public interface TopicFetchService extends EntityService<Topic>{
      *
      * @param branch        for this branch we will find topics
      * @param page          page number, for which we will find topics
-     * @param pagingEnabled if true, then it returns topics for one page, otherwise it
-     *                      return all topics in the branch
      * @return object that contains topics for one page(note, that one page may contain
      *         all topics) and information for pagination
      */
-    Page<Topic> getTopics(Branch branch, int page, boolean pagingEnabled);
+    Page<Topic> getTopics(Branch branch, int page);
 
     /**
      * Get topics that have been updated in the last 24 hours.

@@ -68,7 +68,7 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
     @Override
     public Page<Topic> getRecentTopics(int page) {
         int pageSize = userService.getCurrentUser().getPageSize();
-        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(page, pageSize);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(page, pageSize);
         DateTime date24HoursAgo = new DateTime().minusDays(1);
         return this.getDao().getTopicsUpdatedSince(date24HoursAgo, pageRequest, userService.getCurrentUser());
     }
@@ -79,7 +79,7 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
     @Override
     public Page<Topic> getUnansweredTopics(int page) {
         int pageSize = userService.getCurrentUser().getPageSize();
-        JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(page, pageSize);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(page, pageSize);
         return this.getDao().getUnansweredTopics(pageRequest, userService.getCurrentUser());
     }
 
@@ -87,9 +87,9 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
      * {@inheritDoc}
      */
     @Override
-    public Page<Topic> getTopics(Branch branch, int page, boolean pagingEnabled) {
+    public Page<Topic> getTopics(Branch branch, int page) {
         int pageSize = userService.getCurrentUser().getPageSize();
-        JCommunePageRequest pageRequest = new JCommunePageRequest(page, pageSize, pagingEnabled);
+        JCommunePageRequest pageRequest = new JCommunePageRequest(page, pageSize);
         return getDao().getTopics(branch, pageRequest);
     }
 
@@ -100,7 +100,7 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
     public Page<Topic> searchByTitleAndContent(String phrase, int page) {
         if (!StringUtils.isEmpty(phrase)) {
             int pageSize = userService.getCurrentUser().getPageSize();
-            JCommunePageRequest pageRequest = JCommunePageRequest.createWithPagingEnabled(page, pageSize);
+            JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(page, pageSize);
             // hibernate search refuses to process long string throwing error
             String normalizedPhrase = StringUtils.left(phrase, 50);
             return searchDao.searchByTitleAndContent(normalizedPhrase, pageRequest);

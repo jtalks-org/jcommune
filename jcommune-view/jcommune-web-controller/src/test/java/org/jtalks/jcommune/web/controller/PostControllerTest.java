@@ -14,11 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.CodeReview;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
@@ -37,21 +33,13 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
-import java.util.List;
 
+import static java.util.Arrays.asList;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -81,7 +69,6 @@ public class PostControllerTest {
     public static final long POST_ID = 1;
     public static final long TOPIC_ID = 1L;
     private static final Long BRANCH_ID = 1L;
-    public static final long PAGE = 1L;
     private final String POST_CONTENT = "postContent";
     private Post post;
     private JCUser user = new JCUser("username", "email@mail.com", "password");
@@ -95,26 +82,17 @@ public class PostControllerTest {
         Branch branch = new Branch("branch", "branch");
         branch.setId(BRANCH_ID);
 
+        Topic topic = new Topic(user, "title");
+        topic.setBranch(branch);
+        topic.setId(TOPIC_ID);
 
-        Topic topic = mock(Topic.class);
-        when(topic.getBranch()).thenReturn(branch);
-        when(topic.getId()).thenReturn(TOPIC_ID);
-        when(topic.getTitle()).thenReturn("title");
-        when(topic.getTopicStarter()).thenReturn(user);
-
-        post = mock(Post.class);
-        when(post.getId()).thenReturn(POST_ID);
-        when(post.getUserCreated()).thenReturn(user);
-        when(post.getPostContent()).thenReturn(POST_CONTENT);
-        when(post.getTopic()).thenReturn(topic);
-        List<Post> posts = new ArrayList<Post>();
-        posts.add(post);
-        when(topic.getPosts()).thenReturn(posts);
+        post = new Post(user, POST_CONTENT);
+        post.setId(POST_ID);
+        post.setTopic(topic);
+        topic.getPosts().addAll(asList(post));
 
         when(postService.get(POST_ID)).thenReturn(post);
-
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
-
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
 
         controller = new PostController(

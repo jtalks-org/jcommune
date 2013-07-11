@@ -88,7 +88,6 @@ public class PrivateMessageControllerTest {
     @Test
     public void inboxPage() {
         int page = 1;
-        boolean pagingEnabled = true;
         List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(JC_USER, JC_USER,
                 "Message title", "Private message body"));
         Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
@@ -128,7 +127,6 @@ public class PrivateMessageControllerTest {
     @Test
     public void draftsPage() {
         int page = 1;
-        boolean pagingEnabled = true;
         List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(JC_USER, JC_USER,
                 "Message title", "Private message body"));
         Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);

@@ -56,7 +56,7 @@
         <c:when test="${topicsPage.totalPages > 1}">
           <div class="pagination pull-right forum-pagination">
             <ul>
-              <jtalks:pagination uri="${branch.id}" page="${topicsPage}" pagingEnabled="${pagingEnabled}"/>
+              <jtalks:pagination uri="${branch.id}" page="${topicsPage}"/>
             </ul>
           </div>
         </c:when>
@@ -178,7 +178,7 @@
     <div class="span12">
       <div class="pagination pull-right forum-pagination">
         <ul>
-          <jtalks:pagination uri="" page="${topicsPage}" pagingEnabled="${pagingEnabled}"/>
+          <jtalks:pagination uri="" page="${topicsPage}"/>
         </ul>
       </div>
     </div>
