@@ -21,7 +21,7 @@ import org.hibernate.SessionFactory;
  *
  * @author Evgeny Naumenko
  */
-public interface DatabaseAwarePlugin {
+public interface DatabaseAwarePlugin extends Plugin {
 
     /**
      *

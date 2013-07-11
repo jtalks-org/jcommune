@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.plugin.auth.poulpe;
 
 import org.jtalks.common.model.entity.Property;
-import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.model.plugins.SimpleAuthenticationPlugin;
 
 import java.util.Collections;
@@ -24,7 +23,7 @@ import java.util.List;
 /**
  *
  */
-public class PoulpeAuthPlugin implements Plugin, SimpleAuthenticationPlugin {
+public class PoulpeAuthPlugin implements SimpleAuthenticationPlugin {
 
     @Override
     public boolean authenticate(String login, String password) {
