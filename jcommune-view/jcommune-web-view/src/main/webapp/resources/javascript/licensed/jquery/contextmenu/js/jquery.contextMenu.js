@@ -345,6 +345,7 @@ var // currently active contextMenu trigger
 
         // click on layer to hide contextMenu
         layerClick: function(e) {
+            $('.context-menu-active').addClass('resetPattern');
             var $this = $(this),
                 root = $this.data('contextMenuRoot'),
                 mouseup = false,
@@ -489,18 +490,18 @@ var // currently active contextMenu trigger
 //                    }
 //                    break;
 
-                case 35: // end
-                case 36: // home
-                    if (opt.$selected && opt.$selected.find('input, textarea, select').length) {
-                        return;
-                    } else {
-                        (opt.$selected && opt.$selected.parent() || opt.$menu)
-                            .children(':not(.disabled, .not-selectable)')[e.keyCode == 36 ? 'first' : 'last']()
-                            .trigger('contextmenu:focus');
-                        e.preventDefault();
-                        return;
-                    }
-                    break;
+//                case 35: // end
+//                case 36: // home
+//                    if (opt.$selected && opt.$selected.find('input, textarea, select').length) {
+//                        return;
+//                    } else {
+//                        (opt.$selected && opt.$selected.parent() || opt.$menu)
+//                            .children(':not(.disabled, .not-selectable)')[e.keyCode == 36 ? 'first' : 'last']()
+//                            .trigger('contextmenu:focus');
+//                        e.preventDefault();
+//                        return;
+//                    }
+//                    break;
 
                 case 13: // enter
                     handle.keyStop(e, opt);
@@ -516,11 +517,11 @@ var // currently active contextMenu trigger
                     return;
 
                 //case 32: // space
-                case 33: // page up
-                case 34: // page down
-                    // prevent browser from scrolling down while menu is visible
-                    handle.keyStop(e, opt);
-                    return;
+//                case 33: // page up
+//                case 34: // page down
+//                    // prevent browser from scrolling down while menu is visible
+//                    handle.keyStop(e, opt);
+//                    return;
 
                 case 27: // esc
                     handle.keyStop(e, opt);
@@ -1388,6 +1389,7 @@ $.contextMenu = function(operation, options) {
                     $(o.context).off(o.ns);
                 });
 
+                $('.context-menu-active').removeClass('context-menu-active');
                 namespaces = {};
                 menus = {};
                 counter = 0;

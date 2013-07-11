@@ -36,7 +36,7 @@
     <div class="span9">
       <div class="pagination pull-right forum-pagination">
         <ul>
-          <jtalks:pagination uri="${uri}" page="${searchResultPage}" pagingEnabled="${pagingEnabled}"/>
+          <jtalks:pagination uri="${uri}" page="${searchResultPage}"/>
         </ul>
       </div>
     </div>
@@ -137,7 +137,7 @@
     <div class="span12">
       <div class="pagination pull-right forum-pagination">
         <ul>
-          <jtalks:pagination uri="${uri}" page="${searchResultPage}" pagingEnabled="${pagingEnabled}"/>
+          <jtalks:pagination uri="${uri}" page="${searchResultPage}"/>
         </ul>
       </div>
     </div>

@@ -58,11 +58,9 @@ public class PostHibernateDao extends GenericDao<Post> implements PostDao {
         Query query = session()
                 .getNamedQuery("getPostsOfUser")
                 .setParameter("userCreated", author);
-        if (pageRequest.isPagingEnabled()) {
-            pageRequest.adjustPageNumber(totalCount.intValue());
-            query.setFirstResult(pageRequest.getOffset());
-            query.setMaxResults(pageRequest.getPageSize());
-        }
+        pageRequest.adjustPageNumber(totalCount.intValue());
+        query.setFirstResult(pageRequest.getOffset());
+        query.setMaxResults(pageRequest.getPageSize());
         @SuppressWarnings("unchecked")
         List<Post> posts = (List<Post>) query.list();
         return new PageImpl<Post>(posts, pageRequest, totalCount.intValue());
@@ -80,11 +78,9 @@ public class PostHibernateDao extends GenericDao<Post> implements PostDao {
         Query query = session()
                 .getNamedQuery("getPostsInTopic")
                 .setParameter(TOPIC_PARAMETER_NAME, topic);
-        if (pageRequest.isPagingEnabled()) {
-            pageRequest.adjustPageNumber(totalCount.intValue());
-            query.setFirstResult(pageRequest.getOffset());
-            query.setMaxResults(pageRequest.getPageSize());
-        }
+        pageRequest.adjustPageNumber(totalCount.intValue());
+        query.setFirstResult(pageRequest.getOffset());
+        query.setMaxResults(pageRequest.getPageSize());
         @SuppressWarnings("unchecked")
         List<Post> posts = (List<Post>) query.list();
         return new PageImpl<Post>(posts, pageRequest, totalCount.intValue());

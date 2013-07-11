@@ -86,20 +86,19 @@ public class BranchControllerTest {
     public void showPage() throws NotFoundException {
         long branchId = 1L;
         int page = 2;
-        boolean pagingEnabled = true;
         Branch branch = new Branch("name", "description");
         branch.setId(branchId);
         Pageable pageRequest = new PageRequest(page, 5);
         Page<Topic> topicsPage = new PageImpl<Topic>(Collections.<Topic> emptyList(), pageRequest, 0);
         //set expectations
         when(branchService.get(branchId)).thenReturn(branch);
-        when(topicFetchService.getTopics(branch, page, pagingEnabled)).thenReturn(topicsPage);
+        when(topicFetchService.getTopics(branch, page)).thenReturn(topicsPage);
         when(breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)))
                 .thenReturn(new ArrayList<Breadcrumb>());
         when(forumStatisticsProvider.getOnlineRegisteredUsers()).thenReturn(new ArrayList<Object>());
 
         //invoke the object under test
-        ModelAndView mav = controller.showPage(branchId, page, pagingEnabled);
+        ModelAndView mav = controller.showPage(branchId, page);
 
         //check expectations
         verify(breadcrumbBuilder).getForumBreadcrumb(branchService.get(branchId));
@@ -159,7 +158,6 @@ public class BranchControllerTest {
     public void testViewList() throws NotFoundException {
         long branchId = 1L;
         int page = 2;
-        boolean pagingEnabled = true;
         Pageable pageRequest = new PageRequest(page, 5);
         Page<Topic> topicsPage = new PageImpl<Topic>(Collections.<Topic> emptyList(), pageRequest, 0);
         Branch branch = new Branch("name", "description");
@@ -169,9 +167,9 @@ public class BranchControllerTest {
         when(breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)))
                 .thenReturn(new ArrayList<Breadcrumb>());
         when(forumStatisticsProvider.getOnlineRegisteredUsers()).thenReturn(new ArrayList<Object>());
-        when(topicFetchService.getTopics(branch, page, pagingEnabled)).thenReturn(topicsPage);
+        when(topicFetchService.getTopics(branch, page)).thenReturn(topicsPage);
 
-        ModelAndView mav = controller.showPage(branchId, page, pagingEnabled);
+        ModelAndView mav = controller.showPage(branchId, page);
 
         List<?> actualViewList = assertAndReturnModelAttributeOfType(mav, "viewList", List.class);
         assertEquals(actualViewList, new ArrayList<String>());

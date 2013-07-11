@@ -82,7 +82,7 @@ public class TransactionalPrivateMessageService
     public Page<PrivateMessage> getInboxForCurrentUser(int page) {
         JCUser currentUser = userService.getCurrentUser();
         JCommunePageRequest pageRequest = new JCommunePageRequest(page,
-                currentUser.getPageSize(), true);
+                currentUser.getPageSize());
         return this.getDao().getAllForUser(currentUser, pageRequest);
     }
 
@@ -93,7 +93,7 @@ public class TransactionalPrivateMessageService
     public Page<PrivateMessage> getOutboxForCurrentUser(int page) {
         JCUser currentUser = userService.getCurrentUser();
         JCommunePageRequest pageRequest = new JCommunePageRequest(page,
-                currentUser.getPageSize(), true);
+                currentUser.getPageSize());
         return this.getDao().getAllFromUser(currentUser, pageRequest);
     }
 
@@ -132,7 +132,7 @@ public class TransactionalPrivateMessageService
     public Page<PrivateMessage> getDraftsForCurrentUser(int page) {
         JCUser currentUser = userService.getCurrentUser();
         JCommunePageRequest pageRequest = new JCommunePageRequest(page,
-                currentUser.getPageSize(), true);
+                currentUser.getPageSize());
         return this.getDao().getDraftsForUser(currentUser, pageRequest);
     }
 

@@ -130,7 +130,7 @@ public class TransactionalLastReadPostServiceTest {
 
         Topic topic = this.createTestTopic();
 
-        lastReadPostService.markTopicPageAsRead(topic, 1, true);
+        lastReadPostService.markTopicPageAsRead(topic, 1);
         verifyZeroInteractions(lastReadPostDao);
     }
 
@@ -142,7 +142,7 @@ public class TransactionalLastReadPostServiceTest {
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
 
-        lastReadPostService.markTopicPageAsRead(topic, 1, false);
+        lastReadPostService.markTopicPageAsRead(topic, 1);
 
         verify(lastReadPostDao).saveOrUpdate(post);
     }
@@ -155,7 +155,7 @@ public class TransactionalLastReadPostServiceTest {
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
 
-        lastReadPostService.markTopicPageAsRead(topic, 1, false);
+        lastReadPostService.markTopicPageAsRead(topic, 1);
 
         verify(lastReadPostDao).saveOrUpdate(post);
     }
@@ -168,7 +168,7 @@ public class TransactionalLastReadPostServiceTest {
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
 
-        lastReadPostService.markTopicPageAsRead(topic, 1, false);
+        lastReadPostService.markTopicPageAsRead(topic, 1);
 
         verify(lastReadPostDao, never()).saveOrUpdate(post);
     }
@@ -179,7 +179,7 @@ public class TransactionalLastReadPostServiceTest {
         user.setPageSize(3);
         when(userService.getCurrentUser()).thenReturn(user);
 
-        lastReadPostService.markTopicPageAsRead(topic, 2, true);
+        lastReadPostService.markTopicPageAsRead(topic, 2);
 
         verify(lastReadPostDao).saveOrUpdate(argThat(
                 new LastReadPostMatcher(topic, 5)));
@@ -192,7 +192,7 @@ public class TransactionalLastReadPostServiceTest {
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
 
-        lastReadPostService.markTopicPageAsRead(topic, 1, false);
+        lastReadPostService.markTopicPageAsRead(topic, 1);
 
         verify(lastReadPostDao).saveOrUpdate(argThat(
                 new LastReadPostMatcher(topic, topic.getPostCount() - 1)));
@@ -205,7 +205,7 @@ public class TransactionalLastReadPostServiceTest {
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
 
-        lastReadPostService.markTopicPageAsRead(topic, 1, false);
+        lastReadPostService.markTopicPageAsRead(topic, 1);
 
         verify(lastReadPostDao).saveOrUpdate(argThat(
                 new LastReadPostMatcher(topic, topic.getPostCount() - 1)));
