@@ -8,7 +8,7 @@
   <Environment name="JCOMMUNE_DB_USER" value="root" type="java.lang.String"/>
   <Environment name="JCOMMUNE_DB_PASSWORD" value="root" type="java.lang.String"/>
   <Environment name="JCOMMUNE_DB_URL" type="java.lang.String"
-               value="jdbc:mysql://localhost/jtalks?characterEncoding=UTF-8"/>
+               value="jdbc:mysql://localhost:3306/jtalks?characterEncoding=UTF-8"/>
 
   <!-- SMTP server that's used to send mails to the end user (e.g. during registration) -->
   <!-- Please, don't use these credentials if possible (and don't use it for bad things ;)), -->
