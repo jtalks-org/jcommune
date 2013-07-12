@@ -43,7 +43,8 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.ModelAndViewAssert.*;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 /**
  * @author Teterin Alexandre
@@ -119,13 +120,12 @@ public class TopicControllerTest {
         assertViewName(actualMav, "redirect:/branches/" + BRANCH_ID);
         verify(topicModificationService).deleteTopic(topic);
     }
-
+    //TODO: this has to be improved - too complicated test!
     @Test
     public void showTopicPageShouldShowListOfPostsWithUpdatedInfoAboutLastReadPosts() throws NotFoundException {
         String page = "1";
         Topic topic = new Topic(null, null);
-        Post post = new Post(user, "content");
-        topic.addPost(post);
+        topic.addPost(new Post(user, "content"));
         branch.addTopic(topic);
         Page<Post> postsPage = new PageImpl<Post>(Collections.<Post>emptyList());
         //
@@ -136,9 +136,7 @@ public class TopicControllerTest {
 
         ModelAndView mav = controller.showTopicPage(TOPIC_ID, page);
 
-        verify(topicFetchService).get(TOPIC_ID);
         verify(topicFetchService).checkViewTopicPermission(branch.getId());
-        verify(breadcrumbBuilder).getForumBreadcrumb(topic);
         verify(lastReadPostService).markTopicPageAsRead(topic, Integer.valueOf(page));
         //
         assertViewName(mav, "postList");
