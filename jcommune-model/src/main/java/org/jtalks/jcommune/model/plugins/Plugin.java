@@ -23,7 +23,7 @@ import java.util.List;
  */
 public interface Plugin {
 
-    public enum State {LOADED, CONFIGURED, ACTIVE, ERROR}
+    public enum State {LOADED, CONFIGURED, ENABLED, IN_ERROR}
 
     public boolean supportsJCommuneVersion(String version);
 

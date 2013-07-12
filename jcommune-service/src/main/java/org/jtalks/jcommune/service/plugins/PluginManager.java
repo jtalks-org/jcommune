@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service.plugins;
 
 import com.google.common.collect.Lists;
+import org.apache.commons.lang.Validate;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URLClassLoader;
 import java.nio.file.*;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -37,15 +39,25 @@ public class PluginManager {
 
     private URLClassLoader classLoader;
     private WatchKey watchKey;
-    private String folderPath;
+    private String folder;
     private List<Plugin> plugins;
 
     public PluginManager(String folderPath) throws IOException {
-        this.folderPath = folderPath;
-        Path path = Paths.get(folderPath);
+        Validate.notEmpty(folderPath);
+        this.folder = this.resolveUserHome(folderPath);
+        Path path = Paths.get(folder);
         WatchService watcher = FileSystems.getDefault().newWatchService();
         watchKey = path.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
         this.initPluginList();
+    }
+
+    private String resolveUserHome(String path) {
+        if (path.contains("~")) {
+            String home = System.getProperty("user.home");
+            return path.replace("~", home);
+        } else {
+            return path;
+        }
     }
 
     /**
@@ -53,13 +65,21 @@ public class PluginManager {
      * references and always use this method to obtain a plugin reference as needed.
      * Violation of this simple rule may cause memory leaks.
      *
-     * todo: filtering by type
-     *
      * @return list of plugins available at the moment
      */
-    public synchronized List<Plugin> getPlugins() {
+    public synchronized List<Plugin> getPlugins(PluginFilter... filters) {
         this.synchronizePluginList();
-        return plugins;
+        List<Plugin> filtered = new ArrayList<Plugin>(plugins.size());
+        plugins:
+        for (Plugin plugin : plugins) {
+            for (PluginFilter filter : filters) {
+                if (!filter.accept(plugin)) {
+                    continue plugins;
+                }
+            }
+            filtered.add(plugin);
+        }
+        return filtered;
     }
 
     private void synchronizePluginList() {
@@ -79,8 +99,8 @@ public class PluginManager {
         }
     }
 
-    private synchronized  void initPluginList() {
-        classLoader = new PluginClassLoader(folderPath);
+    private synchronized void initPluginList() {
+        classLoader = new PluginClassLoader(folder);
         ServiceLoader<Plugin> pluginLoader = ServiceLoader.load(Plugin.class, classLoader);
         Iterator<Plugin> iterator = pluginLoader.iterator();
         plugins = Lists.newArrayList(iterator);
