@@ -120,7 +120,7 @@ public class TopicControllerTest {
         assertViewName(actualMav, "redirect:/branches/" + BRANCH_ID);
         verify(topicModificationService).deleteTopic(topic);
     }
-    //TODO: this has to be improved - too complicated test!
+    //TODO: this has to be improved - too complicated test!=
     @Test
     public void showTopicPageShouldShowListOfPostsWithUpdatedInfoAboutLastReadPosts() throws NotFoundException {
         String page = "1";
