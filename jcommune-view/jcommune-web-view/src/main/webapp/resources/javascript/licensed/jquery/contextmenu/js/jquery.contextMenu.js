@@ -13,36 +13,11 @@
  */
 
 (function($, undefined){
-    
-    // TODO: -
-        // ARIA stuff: menuitem, menuitemcheckbox und menuitemradio
-        // create <menu> structure if $.support[htmlCommand || htmlMenuitem] and !opt.disableNative
 
 // determine html5 compatibility
 $.support.htmlMenuitem = ('HTMLMenuItemElement' in window);
 $.support.htmlCommand = ('HTMLCommandElement' in window);
 $.support.eventSelectstart = ("onselectstart" in document.documentElement);
-/* // should the need arise, test for css user-select
-$.support.cssUserSelect = (function(){
-    var t = false,
-        e = document.createElement('div');
-    
-    $.each('Moz|Webkit|Khtml|O|ms|Icab|'.split('|'), function(i, prefix) {
-        var propCC = prefix + (prefix ? 'U' : 'u') + 'serSelect',
-            prop = (prefix ? ('-' + prefix.toLowerCase() + '-') : '') + 'user-select';
-            
-        e.style.cssText = prop + ': text;';
-        if (e.style[propCC] == 'text') {
-            t = true;
-            return false;
-        }
-        
-        return true;
-    });
-    
-    return t;
-})();
-*/
 
 if (!$.ui || !$.ui.widget) {
     // duck punch $.cleanData like jQueryUI does to get that remove event
@@ -461,48 +436,6 @@ var // currently active contextMenu trigger
                     }
                     break;
 
-//                case 37: // left
-//                    handle.keyStop(e, opt);
-//                    if (opt.isInput || !opt.$selected || !opt.$selected.length) {
-//                        break;
-//                    }
-//
-//                    if (!opt.$selected.parent().hasClass('context-menu-root')) {
-//                        var $parent = opt.$selected.parent().parent();
-//                        opt.$selected.trigger('contextmenu:blur');
-//                        opt.$selected = $parent;
-//                        return;
-//                    }
-//                    break;
-
-//                case 39: // right
-//                    handle.keyStop(e, opt);
-//                    if (opt.isInput || !opt.$selected || !opt.$selected.length) {
-//                        break;
-//                    }
-//
-//                    var itemdata = opt.$selected.data('contextMenu') || {};
-//                    if (itemdata.$menu && opt.$selected.hasClass('context-menu-submenu')) {
-//                        opt.$selected = null;
-//                        itemdata.$selected = null;
-//                        itemdata.$menu.trigger('nextcommand');
-//                        return;
-//                    }
-//                    break;
-
-//                case 35: // end
-//                case 36: // home
-//                    if (opt.$selected && opt.$selected.find('input, textarea, select').length) {
-//                        return;
-//                    } else {
-//                        (opt.$selected && opt.$selected.parent() || opt.$menu)
-//                            .children(':not(.disabled, .not-selectable)')[e.keyCode == 36 ? 'first' : 'last']()
-//                            .trigger('contextmenu:focus');
-//                        e.preventDefault();
-//                        return;
-//                    }
-//                    break;
-
                 case 13: // enter
                     handle.keyStop(e, opt);
                     if (opt.isInput) {
@@ -515,13 +448,6 @@ var // currently active contextMenu trigger
                     opt.$selected && opt.$selected.trigger('mouseup');
 
                     return;
-
-                //case 32: // space
-//                case 33: // page up
-//                case 34: // page down
-//                    // prevent browser from scrolling down while menu is visible
-//                    handle.keyStop(e, opt);
-//                    return;
 
                 case 27: // esc
                     handle.keyStop(e, opt);
