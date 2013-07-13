@@ -5,13 +5,13 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jtalks.jcommune</groupId>
-    <artifactId>jcommune-plugins</artifactId>
+    <artifactId>jcommune-pluginConfigurations</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
         <module>jcommune-auth-poulpe</module>
-        <module>jcommune-dummy-plugin</module>
+        <module>jcommune-dummy-pluginConfiguration</module>
     </modules>
 
 </project>

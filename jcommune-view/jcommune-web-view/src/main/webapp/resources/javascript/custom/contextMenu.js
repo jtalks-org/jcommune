@@ -72,7 +72,7 @@ jQuery(document).ready(function () {
         atPosition = -1;
     }
 
-    function getContextMenu(pattern, textarea) {
+    function getContextMenu(pattern, contextMenuTarget) {
         $.ajax({
             type: 'POST',
             url: baseUrl + '/usernames',
@@ -84,7 +84,7 @@ jQuery(document).ready(function () {
                         username = escapeHtml(username);
                         items[username] = {name: username};
                     });
-                    createContextMenu(textarea, items);
+                    createContextMenu(contextMenuTarget, items);
                 } else {
                     hideContextMenu();
                 }
@@ -114,19 +114,19 @@ jQuery(document).ready(function () {
         $.contextMenu('destroy');
     }
 
-    function createContextMenu(textarea, items) {
+    function createContextMenu(contextMenuTarget, items) {
         hideContextMenu();
         $.contextMenu({
-            selector: '#' + textarea.id,
+            selector: '#' + contextMenuTarget.id,
             trigger: 'none',
             className: 'autocompleteContextMenu',
             callback: function (username, options) {
-                var selection = $(textarea).getSelection();
-                var textBeforeCaretPos = $(textarea).val().substr(0, selection.start);
+                var selection = $(contextMenuTarget).getSelection();
+                var textBeforeCaretPos = $(contextMenuTarget).val().substr(0, selection.start);
                 var lastAtPos = (atPosition >= 0 ? atPosition : textBeforeCaretPos.lastIndexOf('@'));
                 username = escapeHtmlReverse(username);
-                textarea.value = textarea.value.slice(0, lastAtPos) + '[user]' + username + '[/user]'
-                    + textarea.value.slice(selection.end);
+                contextMenuTarget.value = contextMenuTarget.value.slice(0, lastAtPos) + '[user]' + username + '[/user]'
+                    + contextMenuTarget.value.slice(selection.end);
                 hideContextMenu();
                 resetAutocompletePattern();
             },
@@ -134,10 +134,10 @@ jQuery(document).ready(function () {
         });
         if ($.browser.mozilla) {
             setTimeout(function () {
-                showContextMenu(textarea);
+                showContextMenu(contextMenuTarget);
             }, 0);
         } else {
-            showContextMenu(textarea);
+            showContextMenu(contextMenuTarget);
         }
     }
 

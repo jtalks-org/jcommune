@@ -62,7 +62,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
     private BranchLastPostService branchLastPostService;
 
     /**
-     * Create an instance of User entity based service
+     * Create an instance of User entity based service.
      *
      * @param dao                   data access object, which should be able do all CRUD operations with topic entity
      * @param securityService       {@link org.jtalks.common.security.SecurityService} for retrieving current user
@@ -257,7 +257,6 @@ public class TransactionalTopicModificationService implements TopicModificationS
         post.updateModificationDate();
         this.createOrUpdatePoll(poll, topic);
         dao.saveOrUpdate(topic);
-        notificationService.subscribedEntityChanged(topic);
         JCUser currentUser = userService.getCurrentUser();
         subscribeOnTopicIfNotificationsEnabled(topic, currentUser);
         logger.debug("Topic id={} updated", topic.getId());
