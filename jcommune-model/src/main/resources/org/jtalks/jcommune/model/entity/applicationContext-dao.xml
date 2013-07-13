@@ -118,6 +118,10 @@
     <constructor-arg name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
+  <bean id="pluginDao" class="org.jtalks.jcommune.model.dao.hibernate.PluginHibernateDao">
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+
   <!-- Declaration of Hibernate Search DAO beans -->
   <bean id="topicSearchDao"
         class="org.jtalks.jcommune.model.dao.search.hibernate.TopicHibernateSearchDao">

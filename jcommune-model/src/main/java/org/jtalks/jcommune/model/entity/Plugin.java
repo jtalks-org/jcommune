@@ -25,8 +25,17 @@ import java.util.List;
  */
 public class Plugin extends Entity {
     private String name;
-    private boolean isActive;
+    private boolean active;
     private List<PluginProperty> properties;
+
+    public Plugin() {
+    }
+
+    public Plugin(String name, boolean active, List<PluginProperty> properties) {
+        this.name = name;
+        this.active = active;
+        this.properties = properties;
+    }
 
     public String getName() {
         return name;
@@ -37,11 +46,11 @@ public class Plugin extends Entity {
     }
 
     public boolean isActive() {
-        return isActive;
+        return active;
     }
 
     public void setActive(boolean active) {
-        isActive = active;
+        this.active = active;
     }
 
     public List<PluginProperty> getProperties() {
