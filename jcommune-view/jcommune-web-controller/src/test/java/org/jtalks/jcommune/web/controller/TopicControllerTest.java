@@ -43,7 +43,8 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.ModelAndViewAssert.*;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 /**
  * @author Teterin Alexandre
@@ -119,26 +120,24 @@ public class TopicControllerTest {
         assertViewName(actualMav, "redirect:/branches/" + BRANCH_ID);
         verify(topicModificationService).deleteTopic(topic);
     }
-
+    //TODO: this has to be improved - too complicated test!=
     @Test
     public void showTopicPageShouldShowListOfPostsWithUpdatedInfoAboutLastReadPosts() throws NotFoundException {
         String page = "1";
-        boolean pagingEnabled = true;
         Topic topic = new Topic(null, null);
+        topic.addPost(new Post(user, "content"));
         branch.addTopic(topic);
         Page<Post> postsPage = new PageImpl<Post>(Collections.<Post>emptyList());
         //
         when(userService.getCurrentUser()).thenReturn(user);
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
-        when(postService.getPosts(topic, Integer.valueOf(page), pagingEnabled)).thenReturn(postsPage);
+        when(postService.getPosts(topic, Integer.valueOf(page))).thenReturn(postsPage);
 
-        ModelAndView mav = controller.showTopicPage(TOPIC_ID, page, pagingEnabled);
+        ModelAndView mav = controller.showTopicPage(TOPIC_ID, page);
 
-        verify(topicFetchService).get(TOPIC_ID);
         verify(topicFetchService).checkViewTopicPermission(branch.getId());
-        verify(breadcrumbBuilder).getForumBreadcrumb(topic);
-        verify(lastReadPostService).markTopicPageAsRead(topic, Integer.valueOf(page), pagingEnabled);
+        verify(lastReadPostService).markTopicPageAsRead(topic, Integer.valueOf(page));
         //
         assertViewName(mav, "postList");
         assertAndReturnModelAttributeOfType(mav, "postsPage", Page.class);
@@ -166,7 +165,7 @@ public class TopicControllerTest {
     }
 
     @Test
-    public void testPrepareRequestedPageShouldReturnProvidedPageNumberInStringFormatAsInt() {
+    public void testPrepareRequestedPageValidCase() {
         String page = "2";
         int pageSize = 10;
         int postCount = 19;
@@ -176,7 +175,7 @@ public class TopicControllerTest {
     }
 
     @Test
-    public void testPrepareRequestedPageShouldReturnOneIfProvidedPageNumberNotANumber() {
+    public void testPrepareRequestedNotANumberCase() {
         String page = "qq";
         int pageSize = 10;
         int postCount = 19;
@@ -186,11 +185,11 @@ public class TopicControllerTest {
     }
 
     @Test
-    public void testPrepareRequestedPageShouldReturnOneIfProvidedPageNumberMoreThanMaxPageNumber() {
+    public void testPrepareRequestedMoreThanMaxPageNumberCase() {
         String page = "77";
         int pageSize = 10;
         int postCount = 19;
-        int expected = 1;
+        int expected = 2;
         int actual = controller.prepareRequestedPage(page, pageSize, postCount);
         assertEquals(actual, expected);
     }

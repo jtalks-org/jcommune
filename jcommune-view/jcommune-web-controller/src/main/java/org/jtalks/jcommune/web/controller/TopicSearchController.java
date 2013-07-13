@@ -45,8 +45,6 @@ public class TopicSearchController {
      */
     public static final String SEARCH_TEXT_ATTRIBUTE_NAME = "searchText";
 
-    public static final String PAGING_ENABLED = "pagingEnabled";
-
     private static final String SEARCH_RESULT_VIEW_NAME = "searchResult";
 
     private TopicFetchService topicSearchService;
@@ -113,7 +111,6 @@ public class TopicSearchController {
         return new ModelAndView(SEARCH_RESULT_VIEW_NAME).
                 addObject(SEARCH_RESULT_ATTRIBUTE_NAME, searchResultPage).
                 addObject(URI_ATTRIBUTE_NAME, searchText).
-                addObject(SEARCH_TEXT_ATTRIBUTE_NAME, searchText).
-                addObject(PAGING_ENABLED, true);
+                addObject(SEARCH_TEXT_ATTRIBUTE_NAME, searchText);
     }
 }

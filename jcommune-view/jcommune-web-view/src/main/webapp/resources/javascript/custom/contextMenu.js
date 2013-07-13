@@ -22,33 +22,57 @@
 
 jQuery(document).ready(function () {
     var baseUrl = $root;
+    //saved position of '@' character, -1 mean not exist
+    var atPosition = -1;
 
     $('#tbMsg').keyup(autocompleteOnChange);
 
     function autocompleteOnChange(e) {
         var selStart = $(e.target).getSelection().start;
-        var textBeforePattern = $(e.target).val().substr(0, selStart);
-        if (textBeforePattern.indexOf('@') >= 0) {
-            var pattern = textBeforePattern.split('@').pop();
-            var lastAtPos = textBeforePattern.lastIndexOf('@');
+        var textBeforeCaretPos = $(e.target).val().substr(0, selStart);
+        //exclude situation when '@' exists in previously added username
+        var lastAddedUsernamePos = textBeforeCaretPos.lastIndexOf('[/user]');
+        var lastAtPos = textBeforeCaretPos.lastIndexOf('@');
+        if (lastAtPos >= 0 && lastAtPos > lastAddedUsernamePos) {
+            // When user clicks on the page area we add 'resetPattern' class to the textarea element.
+            // Here we reset saved pattern and remove this temporary class.
+            if ($(e.target).hasClass('resetPattern')) {
+                resetAutocompletePattern();
+                $(e.target).removeClass('resetPattern');
+            }
+            if (atPosition >= 0) {
+                lastAtPos = atPosition;
+            }
+            var pattern = textBeforeCaretPos.substr(lastAtPos + 1);
             var keycodeApproved = (e.keyCode != upCode && e.keyCode != downCode
-                                && e.keyCode != enterCode && e.keyCode != escCode);
+                && e.keyCode != enterCode && e.keyCode != escCode);
             // show contextMenu only if there are space or new line before @, or @ is a first symbol in post/pm
-            var posApproved = (lastAtPos == 0 || textBeforePattern.charAt(lastAtPos - 1) == ' '
-                                || textBeforePattern.charAt(lastAtPos - 1) == '\n');
+            var posApproved = (lastAtPos == 0 || textBeforeCaretPos.charAt(lastAtPos - 1) == ' '
+                || textBeforeCaretPos.charAt(lastAtPos - 1) == '\n');
             if (keycodeApproved) {
-                if (posApproved && pattern.length > 0) {
-                    getContextMenu(pattern, e.target);
+                if (posApproved) {
+                    atPosition = lastAtPos;
+                    if (pattern.length > 0) {
+                        getContextMenu(pattern, e.target);
+                    }
                 } else {
-                    hideContextMenu(e.target);
+                    hideContextMenu();
                 }
             }
+            if (e.keyCode == enterCode || e.keyCode == escCode) {
+                resetAutocompletePattern();
+            }
         } else {
-            hideContextMenu(e.target);
+            hideContextMenu();
+            resetAutocompletePattern();
         }
     }
 
-    function getContextMenu(pattern, el) {
+    function resetAutocompletePattern() {
+        atPosition = -1;
+    }
+
+    function getContextMenu(pattern, contextMenuTarget) {
         $.ajax({
             type: 'POST',
             url: baseUrl + '/usernames',
@@ -60,9 +84,9 @@ jQuery(document).ready(function () {
                         username = escapeHtml(username);
                         items[username] = {name: username};
                     });
-                    createContextMenu(el, items);
+                    createContextMenu(contextMenuTarget, items);
                 } else {
-                    hideContextMenu(el);
+                    hideContextMenu();
                 }
             }
         });
@@ -86,38 +110,34 @@ jQuery(document).ready(function () {
             .replace(/&#039;/g, "'");
     }
 
-    function hideContextMenu(el) {
-        // 'destroy' doesn't remove class 'context-menu-active' from contextMenu target,
-        // so we call 'hide' before him
-        //(need more elegant solution, as example - rewrite some functionality of contextMenu plugin)
-        if ($('.autocompleteContextMenu').size() > 0 && $(el).hasClass('context-menu-active')) {
-            $(el).contextMenu('hide');
-        }
+    function hideContextMenu() {
         $.contextMenu('destroy');
     }
 
-    function createContextMenu(el, items) {
-        hideContextMenu(el);
+    function createContextMenu(contextMenuTarget, items) {
+        hideContextMenu();
         $.contextMenu({
-            selector: '#' + el.id,
+            selector: '#' + contextMenuTarget.id,
             trigger: 'none',
             className: 'autocompleteContextMenu',
             callback: function (username, options) {
-                var selection = $(el).getSelection();
-                var val = $(el).val().substr(0, selection.start);
-                var lastAtPos = val.lastIndexOf("@");
+                var selection = $(contextMenuTarget).getSelection();
+                var textBeforeCaretPos = $(contextMenuTarget).val().substr(0, selection.start);
+                var lastAtPos = (atPosition >= 0 ? atPosition : textBeforeCaretPos.lastIndexOf('@'));
                 username = escapeHtmlReverse(username);
-                el.value = el.value.slice(0, lastAtPos) + '[user]' + username + '[/user]' + el.value.slice(selection.end);
-                hideContextMenu(el);
+                contextMenuTarget.value = contextMenuTarget.value.slice(0, lastAtPos) + '[user]' + username + '[/user]'
+                    + contextMenuTarget.value.slice(selection.end);
+                hideContextMenu();
+                resetAutocompletePattern();
             },
             items: items
         });
         if ($.browser.mozilla) {
             setTimeout(function () {
-                showContextMenu(el);
+                showContextMenu(contextMenuTarget);
             }, 0);
         } else {
-            showContextMenu(el);
+            showContextMenu(contextMenuTarget);
         }
     }
 

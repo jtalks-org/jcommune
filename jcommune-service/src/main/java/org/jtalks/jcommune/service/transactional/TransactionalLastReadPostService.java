@@ -146,11 +146,11 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      */
     @Override
     @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.VIEW_TOPICS')")
-    public void markTopicPageAsRead(Topic topic, int pageNum, boolean pagingEnabled) {
+    public void markTopicPageAsRead(Topic topic, int pageNum) {
         JCUser current = userService.getCurrentUser();
         // topics are always unread for anonymous users
         if (!current.isAnonymous()) {
-            int postIndex = this.calculatePostIndex(current, topic, pageNum, pagingEnabled);
+            int postIndex = this.calculatePostIndex(current, topic, pageNum);
             saveLastReadPost(current, topic, postIndex);
         }
     }
@@ -162,16 +162,11 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      * @param user          user to calculate index for
      * @param topic         topic to calculate index for
      * @param pageNum       page number co calculate last post seen by the user
-     * @param pagingEnabled if paging is enabled on page. If so, last post index in topic is returned
      * @return new last post index, counting from 0
      */
-    private int calculatePostIndex(JCUser user, Topic topic, int pageNum, boolean pagingEnabled) {
-        if (pagingEnabled) {  // last post on the page given
-            int maxPostIndex = user.getPageSize() * pageNum - 1;
-            return Math.min(topic.getPostCount() - 1, maxPostIndex);
-        } else {              // last post in the topic
-            return topic.getPostCount() - 1;
-        }
+    private int calculatePostIndex(JCUser user, Topic topic, int pageNum) {
+        int maxPostIndex = user.getPageSize() * pageNum - 1;
+        return Math.min(topic.getPostCount() - 1, maxPostIndex);
     }
 
     /**
