@@ -47,6 +47,6 @@ public class PoulpeAuthPlugin implements SimpleAuthenticationPlugin {
 
     @Override
     public State getState() {
-        return State.ACTIVE;
+        return State.ENABLED;
     }
 }

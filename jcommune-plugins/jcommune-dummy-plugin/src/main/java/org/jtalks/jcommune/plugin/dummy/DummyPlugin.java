@@ -38,6 +38,6 @@ public class DummyPlugin implements Plugin {
     }
 
     public State getState() {
-        return State.ACTIVE;
+        return State.ENABLED;
     }
 }
