@@ -18,8 +18,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.PluginDao;
-import org.jtalks.jcommune.model.entity.Plugin;
-import org.jtalks.jcommune.model.entity.PluginProperty;
+import org.jtalks.jcommune.model.entity.PluginConfiguration;
+import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -57,52 +57,52 @@ public class PluginHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
 
     @Test
     public void getShouldReturnPluginById() {
-        Plugin plugin = PersistedObjectsFactory.getDefaultPlugin();
+        PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPlugin();
 
-        Plugin foundPlugin = pluginDao.get(plugin.getId());
+        PluginConfiguration foundPluginConfiguration = pluginDao.get(pluginConfiguration.getId());
 
-        assertNotNull(foundPlugin);
-        assertEquals(foundPlugin.getId(), plugin.getId(),
-                "Get should return plugin by it ID, so found plugin must have the same ID as passed to get.");
+        assertNotNull(foundPluginConfiguration);
+        assertEquals(foundPluginConfiguration.getId(), pluginConfiguration.getId(),
+                "Get should return pluginConfiguration by it ID, so found pluginConfiguration must have the same ID as passed to get.");
     }
 
     @Test
     public void getWithPassedIdOfNonExistPluginShouldReturnNull() {
-        Plugin nonExistPlugin = pluginDao.get(-788888L);
+        PluginConfiguration nonExistPluginConfiguration = pluginDao.get(-788888L);
 
-        assertNull(nonExistPlugin, "Plugin doesn't exist, so get must return null");
+        assertNull(nonExistPluginConfiguration, "PluginConfiguration doesn't exist, so get must return null");
     }
 
     @Test
     public void saveOrUpdateShouldUpdatePluginProperties() {
-        String newPluginName = "Poulpe plugin";
-        Plugin plugin = PersistedObjectsFactory.getDefaultPlugin();
-        plugin.setName(newPluginName);
+        String newPluginName = "Poulpe pluginConfiguration";
+        PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPlugin();
+        pluginConfiguration.setName(newPluginName);
 
-        pluginDao.saveOrUpdate(plugin);
-        session.evict(plugin);
-        Plugin updatedPlugin = (Plugin) session.get(Plugin.class, plugin.getId());
+        pluginDao.saveOrUpdate(pluginConfiguration);
+        session.evict(pluginConfiguration);
+        PluginConfiguration updatedPluginConfiguration = (PluginConfiguration) session.get(PluginConfiguration.class, pluginConfiguration.getId());
 
-        assertEquals(updatedPlugin.getName(), newPluginName, "After update plugin properties must be updated.");
+        assertEquals(updatedPluginConfiguration.getName(), newPluginName, "After update pluginConfiguration properties must be updated.");
     }
 
     @Test
     public void saveOrUpdateShouldSaveNewPlugin() {
-        Plugin newPlugin = new Plugin("New Plugin", true, Collections.<PluginProperty> emptyList());
+        PluginConfiguration newPluginConfiguration = new PluginConfiguration("New PluginConfiguration", true, Collections.<PluginConfigurationProperty> emptyList());
 
-        pluginDao.saveOrUpdate(newPlugin);
-        session.evict(newPlugin);
-        Plugin savedPlugin = (Plugin) session.get(Plugin.class, newPlugin.getId());
+        pluginDao.saveOrUpdate(newPluginConfiguration);
+        session.evict(newPluginConfiguration);
+        PluginConfiguration savedPluginConfiguration = (PluginConfiguration) session.get(PluginConfiguration.class, newPluginConfiguration.getId());
 
-        assertNotNull(savedPlugin, "Plugin should be found after persisting to database.");
+        assertNotNull(savedPluginConfiguration, "PluginConfiguration should be found after persisting to database.");
     }
 
     @Test(expectedExceptions = org.springframework.dao.DataIntegrityViolationException.class)
     public void saveOrUpdateWithNullValuesShouldNotSavePlugin() {
-        Plugin plugin = PersistedObjectsFactory.getDefaultPlugin();
-        session.save(plugin);
+        PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPlugin();
+        session.save(pluginConfiguration);
 
-        plugin.setName(null);
-        pluginDao.saveOrUpdate(plugin);
+        pluginConfiguration.setName(null);
+        pluginDao.saveOrUpdate(pluginConfiguration);
     }
 }

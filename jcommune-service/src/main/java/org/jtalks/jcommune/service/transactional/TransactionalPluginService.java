@@ -14,7 +14,8 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.jcommune.model.entity.Plugin;
+import org.jtalks.jcommune.model.entity.PluginConfiguration;
+import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 

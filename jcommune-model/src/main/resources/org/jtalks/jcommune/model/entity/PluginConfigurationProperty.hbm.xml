@@ -19,20 +19,15 @@
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
-    <class name="Plugin" table="PLUGIN">
+    <class name="org.jtalks.jcommune.model.entity.PluginConfigurationProperty" table="PLUGIN_PROPERTY">
         <cache usage="read-write"/>
         <id column="ID" name="id" unsaved-value="0">
             <generator class="native"/>
         </id>
         <property column="UUID" name="uuid" unique="true" not-null="true"/>
-        <property column="NAME" name="name" not-null="true"/>
-        <property column="IS_ACTIVE" name="active" not-null="true"/>
-
-        <list name="properties" cascade="all-delete-orphan">
-            <cache usage="nonstrict-read-write"/>
-            <key column="PLUGIN_ID" foreign-key="FK_PLUGIN"/>
-            <index column="LIST_INDEX"/>
-            <one-to-many class="org.jtalks.jcommune.model.entity.PluginProperty"/>
-        </list>
+        <property column="TYPE" name="type" not-null="true"/>
+        <property column="VALUE" name="value" not-null="true"/>
+        <many-to-one name="pluginConfiguration" column="PLUGIN_ID" not-null="false"
+                     foreign-key="FK_PLUGIN" class="org.jtalks.jcommune.model.entity.PluginConfiguration"/>
     </class>
 </hibernate-mapping>

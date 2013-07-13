@@ -17,17 +17,17 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.hibernate.SessionFactory;
 import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.jcommune.model.dao.PluginDao;
-import org.jtalks.jcommune.model.entity.Plugin;
+import org.jtalks.jcommune.model.entity.PluginConfiguration;
 
 /**
  *
  * @author Anuar_Nurmakanov
  */
-public class PluginHibernateDao extends GenericDao<Plugin> implements PluginDao {
+public class PluginHibernateDao extends GenericDao<PluginConfiguration> implements PluginDao {
     /**
      * @param sessionFactory The SessionFactory.
      */
     public PluginHibernateDao(SessionFactory sessionFactory) {
-        super(sessionFactory, Plugin.class);
+        super(sessionFactory, PluginConfiguration.class);
     }
 }

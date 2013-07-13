@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.service;
 
-import org.jtalks.jcommune.model.entity.Plugin;
+import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 import java.util.List;

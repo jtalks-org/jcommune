@@ -12,52 +12,40 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 package org.jtalks.jcommune.model.entity;
 
 import org.jtalks.common.model.entity.Entity;
-
-import java.util.List;
 
 /**
  *
  * @author Anuar Nurmakanov
  */
-public class Plugin extends Entity {
-    private String name;
-    private boolean active;
-    private List<PluginProperty> properties;
+public class PluginConfigurationProperty extends Entity {
+    private String type;
+    private String value;
+    private PluginConfiguration pluginConfiguration;
 
-    public Plugin() {
+    public String getType() {
+        return type;
     }
 
-    public Plugin(String name, boolean active, List<PluginProperty> properties) {
-        this.name = name;
-        this.active = active;
-        this.properties = properties;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public String getName() {
-        return name;
+    public String getValue() {
+        return value;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setValue(String value) {
+        this.value = value;
     }
 
-    public boolean isActive() {
-        return active;
+    public PluginConfiguration getPluginConfiguration() {
+        return pluginConfiguration;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public List<PluginProperty> getProperties() {
-        return properties;
-    }
-
-    public void setProperties(List<PluginProperty> properties) {
-        this.properties = properties;
+    public void setPluginConfiguration(PluginConfiguration pluginConfiguration) {
+        this.pluginConfiguration = pluginConfiguration;
     }
 }

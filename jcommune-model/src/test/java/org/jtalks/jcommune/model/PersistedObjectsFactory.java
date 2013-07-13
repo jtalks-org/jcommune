@@ -303,10 +303,10 @@ public final class PersistedObjectsFactory {
         return component;
     }
 
-    public static Plugin getDefaultPlugin() {
-        Plugin plugin = new Plugin("Default name", true, Collections.<PluginProperty> emptyList());
-        persist(plugin);
-        return plugin;
+    public static PluginConfiguration getDefaultPlugin() {
+        PluginConfiguration pluginConfiguration = new PluginConfiguration("Default name", true, Collections.<PluginConfigurationProperty> emptyList());
+        persist(pluginConfiguration);
+        return pluginConfiguration;
     }
 
     public static void createViewUnreadPostsInBranch() {
