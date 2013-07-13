@@ -39,6 +39,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -453,7 +454,7 @@ public class TransactionalTopicModificationServiceTest {
 
         topicService.updateTopic(topic, null);
 
-        verify(notificationService).subscribedEntityChanged(topic);
+        verify(notificationService, times(0)).subscribedEntityChanged(topic);
         verify(subscriptionService).toggleTopicSubscription(topic);
     }
 
@@ -469,7 +470,7 @@ public class TransactionalTopicModificationServiceTest {
 
         topicService.updateTopic(topic, null);
 
-        verify(notificationService).subscribedEntityChanged(topic);
+        verify(notificationService, times(0)).subscribedEntityChanged(topic);
     }
 
     @Test
@@ -485,7 +486,7 @@ public class TransactionalTopicModificationServiceTest {
 
         topicService.updateTopic(topic, null);
 
-        verify(notificationService).subscribedEntityChanged(topic);
+        verify(notificationService, times(0)).subscribedEntityChanged(topic);
         verify(subscriptionService).toggleTopicSubscription(topic);
     }
 
@@ -501,7 +502,59 @@ public class TransactionalTopicModificationServiceTest {
 
         topicService.updateTopic(topic, null);
 
-        verify(notificationService).subscribedEntityChanged(topic);
+        verify(notificationService, times(0)).subscribedEntityChanged(topic);
+    }
+
+    @Test
+    void testUpdateTopicWithEmptyPoll() throws NotFoundException {
+        when(userService.getCurrentUser()).thenReturn(user);
+
+        Topic topic = createTopic();
+        Post post = createPost();
+        topic.addPost(post);
+        Poll poll = new Poll();
+        topic.setPoll(poll);
+        when(userService.getCurrentUser()).thenReturn(user);
+
+        topicService.updateTopic(topic, poll);
+
+        verify(pollService, times(0)).createPoll(poll);
+        verify(pollService, times(0)).mergePollItems(poll, poll.getPollItems());
+        verify(notificationService, times(0)).subscribedEntityChanged(topic);
+    }
+
+    @Test
+    void testUpdateTopicWithPresetedPoll() throws NotFoundException {
+        when(userService.getCurrentUser()).thenReturn(user);
+
+        Topic topic = createTopic();
+        Post post = createPost();
+        topic.addPost(post);
+        Poll poll = createPoll();
+        topic.setPoll(poll);
+
+        when(userService.getCurrentUser()).thenReturn(user);
+
+        topicService.updateTopic(topic, poll);
+
+        verify(pollService).mergePollItems(poll, poll.getPollItems());
+        verify(notificationService, times(0)).subscribedEntityChanged(topic);
+    }
+
+    @Test
+    void testUpdateTopicWithNotPresetedPoll() throws NotFoundException {
+        when(userService.getCurrentUser()).thenReturn(user);
+
+        Topic topic = createTopic();
+        Post post = createPost();
+        topic.addPost(post);
+        Poll poll = createPoll();
+        when(userService.getCurrentUser()).thenReturn(user);
+
+        topicService.updateTopic(topic, poll);
+
+        verify(pollService).createPoll(poll);
+        verify(notificationService, times(0)).subscribedEntityChanged(topic);
     }
 
     @Test
@@ -518,7 +571,7 @@ public class TransactionalTopicModificationServiceTest {
         topicService.updateTopic(topic, null);
 
         verify(topicDao).saveOrUpdate(topic);
-        verify(notificationService).subscribedEntityChanged(topic);
+        verify(notificationService, times(0)).subscribedEntityChanged(topic);
     }
 
     @Test(expectedExceptions = AccessDeniedException.class)
@@ -622,6 +675,15 @@ public class TransactionalTopicModificationServiceTest {
         branch.setId(BRANCH_ID);
         branch.setUuid("uuid");
         return branch;
+    }
+
+    private Poll createPoll(){
+        Poll poll = new Poll();
+        poll.setTitle("title");
+
+        PollItem item = new PollItem("itemName");
+        poll.setPollItems(Arrays.asList(item));
+        return poll;
     }
 
     private Topic createTopic() {
