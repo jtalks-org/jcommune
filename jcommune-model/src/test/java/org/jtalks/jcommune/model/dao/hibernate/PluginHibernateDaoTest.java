@@ -17,10 +17,12 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
+import org.jtalks.jcommune.model.dao.PluginDao;
 import org.jtalks.jcommune.model.entity.Plugin;
 import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
@@ -38,11 +40,11 @@ import static org.testng.Assert.assertNull;
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
-public class PluginHibernateDaoTest {
+public class PluginHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
-    private PluginHibernateDao pluginHibernateDao;
+    private PluginDao pluginDao;
     private Session session;
 
     @BeforeMethod
@@ -57,7 +59,7 @@ public class PluginHibernateDaoTest {
     public void getShouldReturnPluginById() {
         Plugin plugin = PersistedObjectsFactory.getDefaultPlugin();
 
-        Plugin foundPlugin = pluginHibernateDao.get(plugin.getId());
+        Plugin foundPlugin = pluginDao.get(plugin.getId());
 
         assertNotNull(foundPlugin);
         assertEquals(foundPlugin.getId(), plugin.getId(),
@@ -66,7 +68,7 @@ public class PluginHibernateDaoTest {
 
     @Test
     public void getWithPassedIdOfNonExistPluginShouldReturnNull() {
-        Plugin nonExistPlugin = pluginHibernateDao.get(-788888L);
+        Plugin nonExistPlugin = pluginDao.get(-788888L);
 
         assertNull(nonExistPlugin, "Plugin doesn't exist, so get must return null");
     }
@@ -77,7 +79,7 @@ public class PluginHibernateDaoTest {
         Plugin plugin = PersistedObjectsFactory.getDefaultPlugin();
         plugin.setName(newPluginName);
 
-        pluginHibernateDao.saveOrUpdate(plugin);
+        pluginDao.saveOrUpdate(plugin);
         session.evict(plugin);
         Plugin updatedPlugin = (Plugin) session.get(Plugin.class, plugin.getId());
 
@@ -88,7 +90,7 @@ public class PluginHibernateDaoTest {
     public void saveOrUpdateShouldSaveNewPlugin() {
         Plugin newPlugin = new Plugin("New Plugin", true, Collections.<PluginProperty> emptyList());
 
-        pluginHibernateDao.saveOrUpdate(newPlugin);
+        pluginDao.saveOrUpdate(newPlugin);
         session.evict(newPlugin);
         Plugin savedPlugin = (Plugin) session.get(Plugin.class, newPlugin.getId());
 
@@ -101,6 +103,6 @@ public class PluginHibernateDaoTest {
         session.save(plugin);
 
         plugin.setName(null);
-        pluginHibernateDao.saveOrUpdate(plugin);
+        pluginDao.saveOrUpdate(plugin);
     }
 }

@@ -203,6 +203,8 @@
         </value>
         <value>/org/jtalks/jcommune/model/entity/Banner.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/ExternalLink.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/Plugin.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/PluginProperty.hbm.xml</value>
       </list>
     </property>
     <property name="hibernateProperties">
