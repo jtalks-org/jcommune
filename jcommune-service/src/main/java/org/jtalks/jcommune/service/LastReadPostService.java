@@ -37,9 +37,8 @@ public interface LastReadPostService {
      *
      * @param topic   topic to mark as read
      * @param pageNum page to mark as read
-     * @param pagingEnabled if paging has been enabled, will affect how many posts are to marked as read
      */
-    void markTopicPageAsRead(Topic topic, int pageNum, boolean pagingEnabled);
+    void markTopicPageAsRead(Topic topic, int pageNum);
 
     /**
      * Marks the whole topic as read for the current user.

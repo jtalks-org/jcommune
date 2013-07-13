@@ -221,7 +221,6 @@ public class UserProfileController {
      * even dots, which Spring MVC uses as file extension delimiters by default.
      *
      * @param page            number current page
-     * @param pagingEnabled   flag on/OffScreenImage paging
      * @param id database user identifier
      * @return post list of user
      * @throws NotFoundException if user with given id not found.
@@ -229,16 +228,12 @@ public class UserProfileController {
     @RequestMapping(value = "/users/{id}/postList", method = RequestMethod.GET)
     public ModelAndView showUserPostList(@PathVariable Long id,
                                          @RequestParam(value = "page", defaultValue = "1",
-                                                 required = false) int page,
-                                         @RequestParam(value = "pagingEnabled", defaultValue = "true", required = false
-                                         ) Boolean pagingEnabled
-    ) throws NotFoundException {
+                                                 required = false) int page) throws NotFoundException {
         JCUser user = userService.get(id);
-        Page<Post> postsPage = postService.getPostsOfUser(user, page, pagingEnabled);
+        Page<Post> postsPage = postService.getPostsOfUser(user, page);
         return new ModelAndView("userPostList")
                 .addObject("user", user)
                 .addObject("postsPage", postsPage)
-                .addObject("pagingEnabled", pagingEnabled)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
     }
 }

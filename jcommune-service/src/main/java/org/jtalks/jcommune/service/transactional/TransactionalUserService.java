@@ -154,14 +154,9 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public List<String> getUsernames(String pattern){
+    public List<String> getUsernames(String pattern) {
         int usernameCount = 10;
-        List<JCUser> users = getDao().getUsernames(pattern, usernameCount);
-        List<String> usernames = new ArrayList<String>();
-        for(JCUser user : users){
-            usernames.add(user.getUsername());
-        }
-        return usernames;
+        return getDao().getUsernames(pattern, usernameCount);
     }
 
     /**

@@ -35,6 +35,11 @@ import static org.testng.Assert.assertEquals;
  * @author Alexandre Teterin
  */
 public class ImageConverterTest {
+    private static final int DEFAULT_MAX_WIDTH = 100;
+    private static final int DEFAULT_MAX_HEIGHT = 100;
+
+    private static final int ICON_MAX_WIDTH = 32;
+    private static final int ICON_MAX_HEIGHT = 32;
 
     private ImageConverter imageConverter;
     private byte[] byteArray = new byte[]{1, 2, 3};
@@ -43,7 +48,7 @@ public class ImageConverterTest {
     @BeforeClass
     public void init() throws IOException {
         initMocks(this);
-        imageConverter = new ImageConverter("jpeg", BufferedImage.TYPE_INT_RGB, 100, 100);
+        imageConverter = new ImageConverter("jpeg", BufferedImage.TYPE_INT_RGB, DEFAULT_MAX_WIDTH, DEFAULT_MAX_HEIGHT);
     }
 
     @Test(expectedExceptions = {IllegalArgumentException.class})
@@ -52,10 +57,10 @@ public class ImageConverterTest {
     }
 
     @Test(dataProvider = "parameterResizeImage")
-    public void testResizeImage(int maxWidth, int maxHeight, int imageType) throws IOException {
+    public void testResizeImage(int maxWidth, int maxHeight, int imageType, String format) throws IOException {
         int expectedWidth = 4;
         int expectedHeight = 4;
-        imageConverter = new ImageConverter("jpeg", BufferedImage.TYPE_INT_RGB, maxWidth, maxHeight);
+        imageConverter = new ImageConverter(format, imageType, maxWidth, maxHeight);
         BufferedImage originalImage = ImageIO.read(new MockMultipartFile("test_image", "test_image", "image/png",
                 originalImageByteArray).getInputStream());
         Image modifiedImage = imageConverter.resizeImage(originalImage, imageType);
@@ -70,8 +75,8 @@ public class ImageConverterTest {
         int widthWithAspectRationMoreThatOne = 5;
         int heightWithAspectRatioMoreThatOne = 4;
         return new Object[][]{
-                {widthWithAspectRatioOne, heightWithAspectRatioOne, BufferedImage.TYPE_INT_RGB},
-                {widthWithAspectRationMoreThatOne, heightWithAspectRatioMoreThatOne, BufferedImage.TYPE_INT_ARGB}
+                {widthWithAspectRatioOne, heightWithAspectRatioOne, BufferedImage.TYPE_INT_RGB, "jpeg"},
+                {widthWithAspectRationMoreThatOne, heightWithAspectRatioMoreThatOne, BufferedImage.TYPE_INT_ARGB, "png"}
         };
     }
 
@@ -128,15 +133,16 @@ public class ImageConverterTest {
     }
 
     @Test(dataProvider = "validDataForImageToByteArrayTest")
-    public void testConvertImageToByteArrayForValidData(BufferedImage image, byte[] expected)
+    public void testConvertImageToByteArrayForValidData(BufferedImage image, byte[] expected, String format)
             throws ImageProcessException {
+        imageConverter = ImageConverter.createConverter(format, DEFAULT_MAX_WIDTH, DEFAULT_MAX_HEIGHT);
         byte[] actual = imageConverter.convertImageToByteArray(image);
         assertEquals(actual, expected);
     }
 
     @DataProvider
     private Object[][] validDataForImageToByteArrayTest() throws IOException {
-        BufferedImage image = new BufferedImage(32, 32, BufferedImage.TYPE_INT_RGB);
+        BufferedImage image = new BufferedImage(DEFAULT_MAX_WIDTH, DEFAULT_MAX_HEIGHT, BufferedImage.TYPE_INT_RGB);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] result = null;
         try {
@@ -147,8 +153,46 @@ public class ImageConverterTest {
             baos.close();
         }
 
+        BufferedImage imagePng = new BufferedImage(DEFAULT_MAX_WIDTH, DEFAULT_MAX_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        baos = new ByteArrayOutputStream();
+        byte[] resultPng = null;
+        try {
+            ImageIO.write(imagePng, "png", baos);
+            baos.flush();
+            resultPng = baos.toByteArray();
+        } finally {
+            baos.close();
+        }
+
+        BufferedImage imageIco = new BufferedImage(ICON_MAX_WIDTH, ICON_MAX_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        baos = new ByteArrayOutputStream();
+        byte[] resultIco = null;
+        try {
+            ICOEncoder.write(imageIco, 32, baos);
+            baos.flush();
+            resultIco = baos.toByteArray();
+        } finally {
+            baos.close();
+        }
+
         return new Object[][]{
-                {image, result}
+                {image, result, "jpeg"}, {imagePng, resultPng, "png"}, {imageIco, resultIco, "ico"}
+        };
+    }
+
+
+    @Test(dataProvider = "imageFormats")
+    public void createConverterMethodShouldReturnConverterWithSpecifiedType(String imageFormat, String imgPrefix) {
+        ImageConverter converter = ImageConverter.createConverter(imageFormat, DEFAULT_MAX_WIDTH, DEFAULT_MAX_HEIGHT);
+
+        assertEquals(converter.getFormat(), imageFormat);
+        assertEquals(converter.getHtmlSrcImagePrefix(), imgPrefix);
+    }
+
+    @DataProvider(name = "imageFormats")
+    private Object[][] imageFormats() {
+        return new Object[][]{
+                {"jpeg", "data:image/jpeg;base64,"}, {"png", "data:image/png;base64,"}, {"ico", "data:image/ico;base64,"}
         };
     }
 }

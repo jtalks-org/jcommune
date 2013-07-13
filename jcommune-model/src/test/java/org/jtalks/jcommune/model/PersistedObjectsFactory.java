@@ -23,6 +23,7 @@ import org.jtalks.common.model.entity.Property;
 import org.jtalks.jcommune.model.entity.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -300,6 +301,12 @@ public final class PersistedObjectsFactory {
 
         persist(component);
         return component;
+    }
+
+    public static Plugin getDefaultPlugin() {
+        Plugin plugin = new Plugin("Default name", true, Collections.<PluginProperty> emptyList());
+        persist(plugin);
+        return plugin;
     }
 
     public static void createViewUnreadPostsInBranch() {

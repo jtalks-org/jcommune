@@ -216,11 +216,9 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
         int totalCount = countTopics(branch);
         Query query = session().getNamedQuery("getTopicsInBranch")
                 .setParameter(BRANCH, branch);
-        if (pageRequest.isPagingEnabled()) {
-            pageRequest.adjustPageNumber(totalCount);
-            query = query.setFirstResult(pageRequest.getOffset())
-                    .setMaxResults(pageRequest.getPageSize());
-        }
+        pageRequest.adjustPageNumber(totalCount);
+        query = query.setFirstResult(pageRequest.getOffset())
+                .setMaxResults(pageRequest.getPageSize());
         @SuppressWarnings(UNCHECKED)
         List<Topic> topics = (List<Topic>) query.list();
         return new PageImpl<Topic>(topics, pageRequest, totalCount);

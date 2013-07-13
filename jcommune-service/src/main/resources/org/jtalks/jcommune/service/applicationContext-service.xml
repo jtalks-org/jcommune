@@ -315,6 +315,7 @@
     </bean>
 
     <bean id="componentService" class="org.jtalks.jcommune.service.transactional.TransactionalComponentService">
+        <constructor-arg ref="favIconServiceIco"/>
         <constructor-arg ref="componentDao"/>
     </bean>
 

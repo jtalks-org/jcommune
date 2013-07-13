@@ -126,8 +126,7 @@ public class NotificationServiceTest {
 
         service.subscribedEntityChanged(topic);
 
-        verify(mailService, times(2)).sendUpdatesOnSubscription(
-                any(JCUser.class), eq(topic));
+        verify(mailService, times(2)).sendUpdatesOnSubscription(any(JCUser.class), eq(topic));
         verify(mailService).sendUpdatesOnSubscription(user1, topic);
         verify(mailService).sendUpdatesOnSubscription(user2, topic);
         assertEquals(topic.getSubscribers().size(), 3);

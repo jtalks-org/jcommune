@@ -294,12 +294,12 @@ public class UserProfileControllerTest {
         //
         when(userService.getByUsername("username")).thenReturn(user);
         when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
-        when(postService.getPostsOfUser(any(JCUser.class), anyInt(), anyBoolean()))
+        when(postService.getPostsOfUser(any(JCUser.class), anyInt()))
             .thenReturn(postsPage);
         when(userService.getCurrentUser()).thenReturn(user);
         when(post.getTopic()).thenReturn(topic);
 
-        ModelAndView mav = profileController.showUserPostList(user.getId(), 1, true);
+        ModelAndView mav = profileController.showUserPostList(user.getId(), 1);
 
         verify(userService).get(user.getId());
         assertViewName(mav, "userPostList");

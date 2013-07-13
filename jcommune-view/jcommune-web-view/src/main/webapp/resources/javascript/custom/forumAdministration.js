@@ -18,7 +18,7 @@ Object storing input values in the dialog.
 Used to keep values when logo removing dialog is showed
  */
 var currentAdminValues = getCurrentAdminValues();
-const REQUEST_ENTITY_TOO_LARGE = 413;
+var REQUEST_ENTITY_TOO_LARGE = 413;
 
 
 $(function () {
@@ -115,7 +115,7 @@ function createAdministrationDialog() {
         maxWidth: 350,
         maxHeight: 500,
         firstFocus: true,
-        tabNavigation: ['#forumDescription','#forumLogoTooltip',
+        tabNavigation: ['#forumName', '#forumDescription','#forumLogoTooltip',
                         '#administrationSubmitButton', '#administrationCancelButton'],
         handlers: {
             '#administrationSubmitButton': {'click': sendForumConfiguration},

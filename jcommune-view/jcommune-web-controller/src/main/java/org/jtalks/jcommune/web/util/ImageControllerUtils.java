@@ -30,6 +30,7 @@ import java.util.Map;
 /**
  * Class containing utility method for controller working with
  * uploaded images
+ *
  * @author Alexandre Teterin
  * @author Anuar Nurmakanov
  */
@@ -44,10 +45,11 @@ public class ImageControllerUtils {
     private JSONUtils jsonUtils;
 
     /**
-     *
+     * @param imageService object for working with uploaded images
+     * @param jsonUtils    object for preparing JSON repsonse
      */
     public ImageControllerUtils(ImageService imageService,
-                                    JSONUtils jsonUtils) {
+                                JSONUtils jsonUtils) {
         this.imageService = imageService;
         this.jsonUtils = jsonUtils;
     }
@@ -59,8 +61,9 @@ public class ImageControllerUtils {
      * @param responseHeaders response HTTP headers
      * @param responseContent response content
      * @return ResponseEntity with image processing results
-     * @throws java.io.IOException           defined in the JsonFactory implementation, caller must implement exception processing
-     * @throws org.jtalks.jcommune.service.exceptions.ImageProcessException if error occurred while image processing
+     * @throws java.io.IOException defined in the JsonFactory implementation, caller must implement exception processing
+     * @throws org.jtalks.jcommune.service.exceptions.ImageProcessException
+     *                             if error occurred while image processing
      */
     public ResponseEntity<String> prepareResponse(
             MultipartFile file,
@@ -87,8 +90,8 @@ public class ImageControllerUtils {
      * @throws ImageProcessException if it's impossible to form correct image response
      */
     public void prepareResponse(byte[] bytes,
-                                 HttpServletResponse response,
-                                 Map<String, String> responseContent) throws ImageProcessException {
+                                HttpServletResponse response,
+                                Map<String, String> responseContent) throws ImageProcessException {
         imageService.validateImageFormat(bytes);
         imageService.validateImageSize(bytes);
         prepareNormalResponse(bytes, responseContent);
@@ -103,7 +106,7 @@ public class ImageControllerUtils {
      * @throws ImageProcessException due to common image processing error
      */
     public void prepareNormalResponse(byte[] bytes,
-                                       Map<String, String> responseContent) throws ImageProcessException {
+                                      Map<String, String> responseContent) throws ImageProcessException {
         String srcImage = imageService.preProcessAndEncodeInString64(bytes);
         responseContent.put(STATUS, String.valueOf(JsonResponseStatus.SUCCESS));
         responseContent.put(SRC_PREFIX, imageService.getHtmlSrcImagePrefix());
@@ -121,5 +124,14 @@ public class ImageControllerUtils {
      */
     public byte[] getDefaultImage() {
         return imageService.getDefaultImage();
+    }
+
+    /**
+     * Gets object for working with uploaded images
+     *
+     * @return object for working with uploaded images
+     */
+    public ImageService getImageService() {
+        return imageService;
     }
 }

@@ -31,10 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 import static org.testng.Assert.*;
@@ -311,11 +308,64 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         
         assertTrue(foundByUsernames.isEmpty(), "It should return empty list, cause found users not exist.");
     }
+
+    @Test
+    public void getUsernamesResultCount() {
+        String usernamePattern = "Us";
+        int resultCount = 2;
+        createUser("User1", true);
+        createUser("uSer2", true);
+        createUser("user3", true);
+        assertEquals(dao.getUsernames(usernamePattern, resultCount).size(), 2);
+    }
+
+    @Test
+    public void getUsernamesEnabledUsers() {
+        String usernamePattern = "Us";
+        int resultCount = 5;
+        createUser("User1", true);
+        createUser("uSer2", true);
+        createUser("user3", false);
+        assertEquals(dao.getUsernames(usernamePattern, resultCount).size(), 2);
+    }
+
+    @Test
+    public void getUsernamesWithSpecialCharacters() {
+        String usernamePattern = "@/|\"&' <>#${}()";
+        int resultCount = 5;
+        createUserWithMail("Some_user1", "user1@mail.com", true);
+        createUserWithMail("user2", "user2@mail.com", true);
+        createUserWithMail("@/|\"&' <>#${}()", "user3@mail.com", true);
+
+        assertEquals(dao.getUsernames(usernamePattern, resultCount).size(), 1);
+    }
+
+    @Test
+    public void specialCharactersShouldBeEscapedCorrectly() {
+        String usernamePattern = "_us%";
+        int resultCount = 5;
+        createUserWithMail("Some_user1", "user1@mail.com", true);
+        createUserWithMail("user2", "user2@mail.com", true);
+        createUserWithMail("Some_us%2r", "user3@mail.com", true);
+
+        assertEquals(dao.getUsernames(usernamePattern, resultCount).size(), 1);
+    }
     
     private JCUser givenJCUserWithUsernameStoredInDb(String username) {
         JCUser expected = new JCUser(username, username + "@mail.com", username + "pass");
         session.save(expected);
         session.clear();
         return expected;
+    }
+
+    private JCUser createUserWithMail(String username, String email, boolean enabled){
+        JCUser user = new JCUser(username, email, username + "pass");
+        user.setEnabled(enabled);
+        session.persist(user);
+        return user;
+    }
+
+    private JCUser createUser(String username, boolean enabled){
+        return createUserWithMail(username, username + "@mail.com", enabled);
     }
 }

@@ -20,6 +20,8 @@ var enterCode = 13;
 var charMin = 60;
 var charMax = 90;
 var tabCode = 9;
+var upCode = 38;
+var downCode = 40;
 
 Keymaps.review = function (e) {
     if (e.ctrlKey && e.keyCode == enterCode) {

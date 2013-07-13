@@ -20,91 +20,143 @@
  *        textarea-helper.js - for get caret position
  */
 
-var baseUrl = $root;
+jQuery(document).ready(function () {
+    var baseUrl = $root;
+    //saved position of '@' character, -1 mean not exist
+    var atPosition = -1;
 
-function initContextMenu(id){
-    $('#' +id).keyup(autocompleteOnChange);
-}
+    $('#tbMsg').keyup(autocompleteOnChange);
 
-function autocompleteOnChange(e){
-    var sel_start = $(e.currentTarget).getSelection().start;
-    var val = $(e.currentTarget).val().substr(0, sel_start);
-    if(val.indexOf("@") >= 0){
-        var pattern = val.split("@").pop();
-        var lastAtPos = val.lastIndexOf("@");
-        var keycodeApproved = (e.keyCode != 38 && e.keyCode != 40 && e.keyCode != 13 && e.keyCode != 27);
-        var posApproved = (lastAtPos == 0 || val.charAt(lastAtPos - 1) == " ");
-        if(keycodeApproved){
-            if(posApproved && pattern.length > 0 && pattern.match("^[a-zA-Z0-9]*")){
-                getContextMenu(pattern, e.currentTarget);
-            } else {
-                hideContextMenu(e.currentTarget);
+    function autocompleteOnChange(e) {
+        var selStart = $(e.target).getSelection().start;
+        var textBeforeCaretPos = $(e.target).val().substr(0, selStart);
+        //exclude situation when '@' exists in previously added username
+        var lastAddedUsernamePos = textBeforeCaretPos.lastIndexOf('[/user]');
+        var lastAtPos = textBeforeCaretPos.lastIndexOf('@');
+        if (lastAtPos >= 0 && lastAtPos > lastAddedUsernamePos) {
+            // When user clicks on the page area we add 'resetPattern' class to the textarea element.
+            // Here we reset saved pattern and remove this temporary class.
+            if ($(e.target).hasClass('resetPattern')) {
+                resetAutocompletePattern();
+                $(e.target).removeClass('resetPattern');
             }
-        }
-    }else{
-        hideContextMenu(e.currentTarget);
-    }
-}
-
-function getContextMenu(pattern, el){
-    $.ajax({
-        type: "POST",
-        url: baseUrl + '/usernames',
-        data: {pattern: pattern},
-        success: function (data) {
-            if(data.result && data.result.length > 0){
-                var items = {};
-                $.each(data.result, function(key, value){
-                    var val = value.replace(pattern, '<b>' + pattern + '</b>');
-                    items[value] = {name: val};
-                });
-                createContextMenu(el, items);
-            } else {
-                hideContextMenu(el);
+            if (atPosition >= 0) {
+                lastAtPos = atPosition;
             }
+            var pattern = textBeforeCaretPos.substr(lastAtPos + 1);
+            var keycodeApproved = (e.keyCode != upCode && e.keyCode != downCode
+                && e.keyCode != enterCode && e.keyCode != escCode);
+            // show contextMenu only if there are space or new line before @, or @ is a first symbol in post/pm
+            var posApproved = (lastAtPos == 0 || textBeforeCaretPos.charAt(lastAtPos - 1) == ' '
+                || textBeforeCaretPos.charAt(lastAtPos - 1) == '\n');
+            if (keycodeApproved) {
+                if (posApproved) {
+                    atPosition = lastAtPos;
+                    if (pattern.length > 0) {
+                        getContextMenu(pattern, e.target);
+                    }
+                } else {
+                    hideContextMenu();
+                }
+            }
+            if (e.keyCode == enterCode || e.keyCode == escCode) {
+                resetAutocompletePattern();
+            }
+        } else {
+            hideContextMenu();
+            resetAutocompletePattern();
         }
-    });
-}
-
-function hideContextMenu(el){
-    // 'destroy' doesn't remove class 'context-menu-active' from contextMenu target,
-    // so we call 'hide' before him
-    //(need more elegant solution, as example - rewrite some functionality of contextMenu plugin)
-    if($('.autocompleteContextMenu').size() > 0 && $(el).hasClass('context-menu-active')){
-        $(el).contextMenu('hide');
-    }
-    $.contextMenu('destroy');
-}
-
-function createContextMenu(el, items){
-    hideContextMenu(el);
-    $.contextMenu({
-        selector: '#' + el.id,
-        trigger: 'none',
-        className: 'autocompleteContextMenu',
-        callback: function(key, options) {
-            var selection = $(el).getSelection();
-            var val = $(el).val().substr(0, selection.start);
-            var lastAtPos = val.lastIndexOf("@");
-            el.value = el.value.slice(0, lastAtPos) + '[user]' + key + '[/user]' + el.value.slice(selection.end);
-            hideContextMenu(el);
-        },
-        items: items
-    });
-    if($.browser.mozilla){
-        setTimeout(function(){
-            showContextMenu(el);
-        }, 0);
-    }else {
-        showContextMenu(el);
     }
 
-}
+    function resetAutocompletePattern() {
+        atPosition = -1;
+    }
 
-function showContextMenu(el){
-    var elPos = $(el).offset();
-    var pos = $(el).textareaHelper('caretPos');
-    var xPos = elPos.left + pos.left;
-    var yPos = elPos.top + pos.top + 24;
-    $('#' + el.id).contextMenu({x: xPos, y: yPos});
-}
+    function getContextMenu(pattern, contextMenuTarget) {
+        $.ajax({
+            type: 'POST',
+            url: baseUrl + '/usernames',
+            data: {pattern: pattern},
+            success: function (data) {
+                if (data.result && data.result.length > 0) {
+                    var items = {};
+                    $.each(data.result, function (key, username) {
+                        username = escapeHtml(username);
+                        items[username] = {name: username};
+                    });
+                    createContextMenu(contextMenuTarget, items);
+                } else {
+                    hideContextMenu();
+                }
+            }
+        });
+    }
+
+    function escapeHtml(unsafe) {
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function escapeHtmlReverse(safe) {
+        return safe
+            .replace(/&amp;/g, "&")
+            .replace(/&lt;/g, "<")
+            .replace(/&gt;/g, ">")
+            .replace(/&quot;/g, "\"")
+            .replace(/&#039;/g, "'");
+    }
+
+    function hideContextMenu() {
+        $.contextMenu('destroy');
+    }
+
+    function createContextMenu(contextMenuTarget, items) {
+        hideContextMenu();
+        $.contextMenu({
+            selector: '#' + contextMenuTarget.id,
+            trigger: 'none',
+            className: 'autocompleteContextMenu',
+            callback: function (username, options) {
+                var selection = $(contextMenuTarget).getSelection();
+                var textBeforeCaretPos = $(contextMenuTarget).val().substr(0, selection.start);
+                var lastAtPos = (atPosition >= 0 ? atPosition : textBeforeCaretPos.lastIndexOf('@'));
+                username = escapeHtmlReverse(username);
+                contextMenuTarget.value = contextMenuTarget.value.slice(0, lastAtPos) + '[user]' + username + '[/user]'
+                    + contextMenuTarget.value.slice(selection.end);
+                hideContextMenu();
+                resetAutocompletePattern();
+            },
+            items: items
+        });
+        if ($.browser.mozilla) {
+            setTimeout(function () {
+                showContextMenu(contextMenuTarget);
+            }, 0);
+        } else {
+            showContextMenu(contextMenuTarget);
+        }
+    }
+
+    function showContextMenu(el) {
+        //context menu coordinates
+        var xPos;
+        var yPos;
+        var rowHeight = 24;
+        var offsetMenuInTextArea = $(el).textareaHelper('caretPos');
+        if ($.browser.opera) {
+            xPos = offsetMenuInTextArea.left;
+            yPos = offsetMenuInTextArea.top + rowHeight;
+        } else {
+            var textAreaOffset = $(el).offset();
+            xPos = textAreaOffset.left + offsetMenuInTextArea.left;
+            yPos = textAreaOffset.top + offsetMenuInTextArea.top + rowHeight;
+        }
+
+        $('#' + el.id).contextMenu({x: xPos, y: yPos});
+    }
+
+});

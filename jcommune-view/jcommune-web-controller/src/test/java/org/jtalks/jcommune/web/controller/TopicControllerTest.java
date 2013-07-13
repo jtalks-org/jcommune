@@ -120,25 +120,24 @@ public class TopicControllerTest {
         assertViewName(actualMav, "redirect:/branches/" + BRANCH_ID);
         verify(topicModificationService).deleteTopic(topic);
     }
-
+    //TODO: this has to be improved - too complicated test!=
     @Test
     public void showTopicPageShouldShowListOfPostsWithUpdatedInfoAboutLastReadPosts() throws NotFoundException {
-        int page = 2;
-        boolean pagingEnabled = true;
+        String page = "1";
         Topic topic = new Topic(null, null);
+        topic.addPost(new Post(user, "content"));
         branch.addTopic(topic);
         Page<Post> postsPage = new PageImpl<Post>(Collections.<Post>emptyList());
         //
+        when(userService.getCurrentUser()).thenReturn(user);
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
-        when(postService.getPosts(topic, page, pagingEnabled)).thenReturn(postsPage);
+        when(postService.getPosts(topic, Integer.valueOf(page))).thenReturn(postsPage);
 
-        ModelAndView mav = controller.showTopicPage(TOPIC_ID, page, pagingEnabled);
+        ModelAndView mav = controller.showTopicPage(TOPIC_ID, page);
 
-        verify(topicFetchService).get(TOPIC_ID);
         verify(topicFetchService).checkViewTopicPermission(branch.getId());
-        verify(breadcrumbBuilder).getForumBreadcrumb(topic);
-        verify(lastReadPostService).markTopicPageAsRead(topic, page, pagingEnabled);
+        verify(lastReadPostService).markTopicPageAsRead(topic, Integer.valueOf(page));
         //
         assertViewName(mav, "postList");
         assertAndReturnModelAttributeOfType(mav, "postsPage", Page.class);
@@ -163,6 +162,36 @@ public class TopicControllerTest {
         verify(topicModificationService).createTopic(topic, TOPIC_CONTENT);
         //
         assertViewName(mav, "redirect:/topics/1");
+    }
+
+    @Test
+    public void testPrepareRequestedPageValidCase() {
+        String page = "2";
+        int pageSize = 10;
+        int postCount = 19;
+        int expected = 2;
+        int actual = controller.prepareRequestedPage(page, pageSize, postCount);
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    public void testPrepareRequestedNotANumberCase() {
+        String page = "qq";
+        int pageSize = 10;
+        int postCount = 19;
+        int expected = 1;
+        int actual = controller.prepareRequestedPage(page, pageSize, postCount);
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    public void testPrepareRequestedMoreThanMaxPageNumberCase() {
+        String page = "77";
+        int pageSize = 10;
+        int postCount = 19;
+        int expected = 2;
+        int actual = controller.prepareRequestedPage(page, pageSize, postCount);
+        assertEquals(actual, expected);
     }
 
     @Test

@@ -29,16 +29,14 @@ public class JCommunePageRequest implements Pageable {
     
     private int pageNumber;
     private int pageSize;
-    private boolean pagingEnabled;
-    
+
     /**
      * Creates a new {@link JCommunePageRequest}. 
      * 
      * @param pageSize size of page
      * @param pageNumber page number
-     * @param pagingEnabled true if pagination is enabled, false if pagination is disabled
      */
-    public JCommunePageRequest(int pageNumber, int pageSize, boolean pagingEnabled) {
+    public JCommunePageRequest(int pageNumber, int pageSize) {
         if (pageSize <= 0) {
             throw new IllegalArgumentException("Page size must not be less than or equal to zero!");
         }
@@ -49,8 +47,6 @@ public class JCommunePageRequest implements Pageable {
             this.pageNumber = 1;
         }
         this.pageSize = pageSize;
-        this.pagingEnabled = pagingEnabled;
-        
     }
     
     /**
@@ -60,20 +56,10 @@ public class JCommunePageRequest implements Pageable {
      * @param pageSize size of page
      * @return an instance of {@link JCommunePageRequest} with enabled paging
      */
-    public static JCommunePageRequest createWithPagingEnabled(int pageNumber, int pageSize) {
-        return new JCommunePageRequest(pageNumber, pageSize, true);
+    public static JCommunePageRequest createPageRequest(int pageNumber, int pageSize) {
+        return new JCommunePageRequest(pageNumber, pageSize);
     }
-    
-    /**
-     * Create an instance of {@link JCommunePageRequest} with disabled paging.
-     * 
-     * @param pageSize size of page
-     * @param pageNumber page number
-     * @return an instance of {@link JCommunePageRequest} with disabled paging.
-     */
-    public static JCommunePageRequest createWithPagingDisabled(int pageNumber, int pageSize) {
-        return new JCommunePageRequest(pageNumber, pageSize, false);
-    }
+
     
     /**
      * {@inheritDoc}
@@ -103,22 +89,6 @@ public class JCommunePageRequest implements Pageable {
      */
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
-    }
-    
-    /**
-     * Get the flag, which is an indicator of enabling/disabling pagination.
-     * 
-     * @return true if pagination is enabled, false if pagination is disabled
-     */
-    public boolean isPagingEnabled() {
-        return pagingEnabled;
-    }
-    
-    /**
-     * @param pagingEnabled the pagingEnabled to set
-     */
-    public void setPagingEnabled(boolean pagingEnabled) {
-        this.pagingEnabled = pagingEnabled;
     }
 
     /**

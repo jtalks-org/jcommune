@@ -39,7 +39,7 @@ public class ImageConverter {
      * This prefix is used when specifying image as a byte array in SRC attribute
      * of IMG HTML tag. Used in AJAX avatar preview.
      */
-    protected static final String HTML_SRC_TAG_PREFIX = "data:image/{0};base64,";
+    protected static final String HTML_SRC_TAG_PREFIX = "data:image/%s;base64,";
     private static final int ALPHA_CHANNEL_MASK = 0xFF000000;
     private static final int RED_CHANNEL_MASK = 0x00FF0000;
     private static final int GREEN_CHANNEL_MASK = 0x0000FF00;
@@ -68,6 +68,15 @@ public class ImageConverter {
         this.maxImageWidth = maxImageWidth;
         this.maxImageHeight = maxImageHeight;
     }
+
+    /**
+     * Gets target format of this converter
+     * @return target image format
+     */
+    public String getFormat() {
+        return format;
+    }
+
 
     /**
      * Gets prefix for "src" attribute of the "img" tag representing the image format
