@@ -15,11 +15,31 @@
 package org.jtalks.jcommune.service.plugins;
 
 import org.jtalks.jcommune.model.plugins.Plugin;
+import org.junit.Ignore;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import java.io.IOException;
+import java.util.List;
+
+import static org.testng.AssertJUnit.assertEquals;
 
 /**
  *
  */
-public interface PluginFilter {
+@Ignore
+public class PluginManagerTest {
 
-    public boolean accept(Plugin plugin);
+    private PluginManager pluginManager;
+
+    @BeforeMethod
+    public void setUp() throws IOException {
+        pluginManager = new PluginManager("~");
+    }
+
+    @Test
+    public void testGetPlugins() throws Exception {
+        List<Plugin> plugins =  pluginManager.getPlugins();
+        assertEquals(0, plugins.size());
+    }
 }
