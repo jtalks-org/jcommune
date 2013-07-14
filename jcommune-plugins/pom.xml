@@ -5,7 +5,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jtalks.jcommune</groupId>
-    <artifactId>jcommune-plugin</artifactId>
+    <artifactId>jcommune-plugins</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
