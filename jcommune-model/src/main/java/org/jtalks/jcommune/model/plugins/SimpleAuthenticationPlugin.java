@@ -15,13 +15,24 @@
 package org.jtalks.jcommune.model.plugins;
 
 /**
+ * Interface for plugins providing basic authentication capabilities
+ * based on the login/password pair.
  *
  * todo: create more general interface for full featured authentication:
- * kerberos, x.509, OTP, etc. Spring Security API amy serve as an example. Robust
+ * kerberos, x.509, OTP, etc. Spring Security API may serve as an example. Robust
  * authentication interface should also provide some means to return different
  * operation outcomes and messages/bundle codes.
+ *
+ * @author Evgeny Naumenko
  */
 public interface SimpleAuthenticationPlugin extends Plugin {
 
+    /**
+     * Performs authentication attempt based on login/password pair
+     *
+     * @param login user login
+     * @param password user password
+     * @return true, if authentication was successful
+     */
     public boolean authenticate(String login, String password);
 }

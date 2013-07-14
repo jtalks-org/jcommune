@@ -38,18 +38,23 @@ import static java.nio.file.StandardWatchEventKinds.*;
 
 /**
  * @author Anuar_Nurmakanov
+ * @author Evgeny Naumenko
  */
 public class TransactionalPluginService
         extends AbstractTransactionalEntityService<PluginConfiguration, PluginDao>
         implements DisposableBean, PluginService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalPluginService.class);
-
     private URLClassLoader classLoader;
     private WatchKey watchKey;
     private String folder;
     private List<Plugin> plugins;
 
+    /**
+     * @param folderPath
+     * @param dao
+     * @throws IOException
+     */
     public TransactionalPluginService(String folderPath, PluginDao dao) throws IOException {
         super(dao);
         Validate.notEmpty(folderPath);
@@ -106,7 +111,7 @@ public class TransactionalPluginService
         List<Plugin> plugins = new ArrayList<>();
         for (Plugin plugin : pluginLoader) {
             String name = plugin.getName();
-            PluginConfiguration configuration = null;
+            PluginConfiguration configuration;
             try {
                 configuration = this.getDao().get(name);
             } catch (NotFoundException e) {
@@ -118,6 +123,9 @@ public class TransactionalPluginService
         this.plugins = plugins;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void updateConfiguration(PluginConfiguration pluginConfiguration) throws NotFoundException {
         String name = pluginConfiguration.getName();
         Plugin result;

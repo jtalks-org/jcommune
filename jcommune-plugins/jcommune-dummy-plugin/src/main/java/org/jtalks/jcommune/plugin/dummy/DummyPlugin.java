@@ -19,6 +19,7 @@ import org.jtalks.jcommune.model.plugins.StatefullPlugin;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -40,8 +41,9 @@ public class DummyPlugin extends StatefullPlugin {
     }
 
     @Override
-    protected void applyConfiguration(List<PluginConfigurationProperty> properties) {
+    protected Map<PluginConfigurationProperty, String> applyConfiguration(List<PluginConfigurationProperty> properties) {
         System.out.println("Configuring!");
+        return Collections.emptyMap();
     }
 
     @Override

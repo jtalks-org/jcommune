@@ -20,9 +20,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Map;
 
 /**
+ * Base class for plugins that have a typical lifecycle:
+ * <p> - When JCommune loads the plugin bytecode it's state is set to LOADED state
+ * <p> - Once configured from a database or from defaults plugin becomes CONFIGURED
+ * <p> - If plugin has been explicitly turned on from UI it is set to ENABLED
+ * <p> - Any problem on previous stages causes plugin to be IN_ERROR
  *
+ * Custom implementations may decide to extend Plugin interface directly
+ * if more sophisticated state transition logic is necessary
+ *
+ * @author Evgeny Naumenko
  */
 public abstract class StatefullPlugin implements Plugin {
 
@@ -30,6 +40,9 @@ public abstract class StatefullPlugin implements Plugin {
 
     private State state = State.LOADED;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void configure(PluginConfiguration configuration) {
         try {
@@ -48,10 +61,15 @@ public abstract class StatefullPlugin implements Plugin {
     }
 
     /**
+     * Configures plugin with pre-saved values from a database.
+     * Implementation should throw an exception from this method if configuration
+     * is insufficient, invalid or makes little sense.
      *
-     * @param properties
+     * @param properties configuration for plugin to apply
+     * @return configuration errors mapped for PCP given, empty map means OK
      */
-    protected abstract void applyConfiguration(List<PluginConfigurationProperty> properties);
+    protected abstract Map<PluginConfigurationProperty, String> applyConfiguration(
+            List<PluginConfigurationProperty> properties);
 
     /**
      * {@inheritDoc}

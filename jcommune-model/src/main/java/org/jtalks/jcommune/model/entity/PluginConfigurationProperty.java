@@ -22,11 +22,13 @@ import org.jtalks.common.model.entity.Entity;
  */
 public class PluginConfigurationProperty extends Entity {
     private String name;
-    private String type;
+    private Type type;
     private String value;
     private PluginConfiguration pluginConfiguration;
 
-    public PluginConfigurationProperty(String type, String value) {
+    public static enum Type {INT, BOOLEAN, STRING}
+
+    public PluginConfigurationProperty(Type type, String value) {
         this.type = type;
         this.value = value;
     }
@@ -42,11 +44,11 @@ public class PluginConfigurationProperty extends Entity {
         this.name = name;
     }
 
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Type type) {
         this.type = type;
     }
 

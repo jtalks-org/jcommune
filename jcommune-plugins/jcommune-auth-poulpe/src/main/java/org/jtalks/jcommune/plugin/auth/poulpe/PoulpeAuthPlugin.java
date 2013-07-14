@@ -21,6 +21,9 @@ import org.jtalks.jcommune.model.plugins.StatefullPlugin;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+
+import static org.jtalks.jcommune.model.entity.PluginConfigurationProperty.Type.STRING;
 
 /**
  *
@@ -49,14 +52,14 @@ public class PoulpeAuthPlugin extends StatefullPlugin implements SimpleAuthentic
 
     @Override
     public List<PluginConfigurationProperty> getDefaultConfiguration() {
-        PluginConfigurationProperty url = new PluginConfigurationProperty("String", "http://localhost:1234");
-        PluginConfigurationProperty login = new PluginConfigurationProperty("String", "login");
-        PluginConfigurationProperty password = new PluginConfigurationProperty("String", "password");
+        PluginConfigurationProperty url = new PluginConfigurationProperty(STRING, "http://localhost:1234");
+        PluginConfigurationProperty login = new PluginConfigurationProperty(STRING, "login");
+        PluginConfigurationProperty password = new PluginConfigurationProperty(STRING, "password");
         return Arrays.asList(url, login, password);
     }
 
     @Override
-    protected void applyConfiguration(List<PluginConfigurationProperty> properties) {
-        //apply configuration
+    protected Map<PluginConfigurationProperty, String> applyConfiguration(List<PluginConfigurationProperty> properties) {
+        return Collections.emptyMap();
     }
 }

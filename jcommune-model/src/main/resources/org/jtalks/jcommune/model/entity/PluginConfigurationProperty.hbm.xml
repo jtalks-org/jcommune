@@ -26,7 +26,13 @@
         </id>
         <property column="UUID" name="uuid" unique="true" not-null="true"/>
         <property column="NAME" name="name" unique="true" not-null="true"/>
-        <property column="TYPE" name="type" not-null="true"/>
+        <property column="TYPE" name="type"  not-null="true">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.jtalks.jcommune.model.entity.PluginConfigurationProperty$Type</param>
+                <!-- varchar -->
+                <param name="type">12</param>
+            </type>
+        </property>
         <property column="VALUE" name="value" not-null="true"/>
         <many-to-one name="pluginConfiguration" column="PLUGIN_ID" not-null="false"
                      foreign-key="FK_PLUGIN" class="org.jtalks.jcommune.model.entity.PluginConfiguration"/>
