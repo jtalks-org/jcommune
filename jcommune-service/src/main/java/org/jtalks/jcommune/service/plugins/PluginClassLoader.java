@@ -36,9 +36,9 @@ import java.util.List;
  *
  * @author Evgeny Naumenko
  */
-class PluginClassLoader  extends URLClassLoader {
+public class PluginClassLoader  extends URLClassLoader {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PluginManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PluginClassLoader.class);
 
     /**
      * @param folder lookup folder. It's non-recursive, so subfolders and it's content will be ignored

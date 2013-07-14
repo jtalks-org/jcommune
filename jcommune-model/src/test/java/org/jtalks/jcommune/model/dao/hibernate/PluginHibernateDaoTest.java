@@ -16,6 +16,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.PluginDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
@@ -30,9 +31,7 @@ import org.testng.annotations.Test;
 
 import java.util.Collections;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
+import static org.testng.Assert.*;
 
 /**
  * @author Anuar Nurmakanov
@@ -104,5 +103,20 @@ public class PluginHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
 
         pluginConfiguration.setName(null);
         pluginDao.saveOrUpdate(pluginConfiguration);
+    }
+
+    @Test
+    public void testGetByName() throws NotFoundException {
+        PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPlugin();
+        session.save(pluginConfiguration);
+
+        PluginConfiguration actual = pluginDao.get(pluginConfiguration.getName());
+
+        assertEquals(actual, pluginConfiguration);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void testGetByNonExistingName() throws NotFoundException {
+        pluginDao.get("Some fake name");
     }
 }
