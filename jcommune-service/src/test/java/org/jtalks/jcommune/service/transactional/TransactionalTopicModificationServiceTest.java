@@ -454,7 +454,6 @@ public class TransactionalTopicModificationServiceTest {
 
         topicService.updateTopic(topic, null);
 
-        verify(notificationService, times(0)).subscribedEntityChanged(topic);
         verify(subscriptionService).toggleTopicSubscription(topic);
     }
 
@@ -486,7 +485,6 @@ public class TransactionalTopicModificationServiceTest {
 
         topicService.updateTopic(topic, null);
 
-        verify(notificationService, times(0)).subscribedEntityChanged(topic);
         verify(subscriptionService).toggleTopicSubscription(topic);
     }
 
@@ -506,7 +504,7 @@ public class TransactionalTopicModificationServiceTest {
     }
 
     @Test
-    void testUpdateTopicWithEmptyPoll() throws NotFoundException {
+    void testUpdateTopicWithEmptyPollNotCreatePoll() throws NotFoundException {
         when(userService.getCurrentUser()).thenReturn(user);
 
         Topic topic = createTopic();
@@ -519,8 +517,22 @@ public class TransactionalTopicModificationServiceTest {
         topicService.updateTopic(topic, poll);
 
         verify(pollService, times(0)).createPoll(poll);
+    }
+
+    @Test
+    void testUpdateTopicWithEmptyPollNotMergePollItems() throws NotFoundException {
+        when(userService.getCurrentUser()).thenReturn(user);
+
+        Topic topic = createTopic();
+        Post post = createPost();
+        topic.addPost(post);
+        Poll poll = new Poll();
+        topic.setPoll(poll);
+        when(userService.getCurrentUser()).thenReturn(user);
+
+        topicService.updateTopic(topic, poll);
+
         verify(pollService, times(0)).mergePollItems(poll, poll.getPollItems());
-        verify(notificationService, times(0)).subscribedEntityChanged(topic);
     }
 
     @Test
@@ -538,7 +550,6 @@ public class TransactionalTopicModificationServiceTest {
         topicService.updateTopic(topic, poll);
 
         verify(pollService).mergePollItems(poll, poll.getPollItems());
-        verify(notificationService, times(0)).subscribedEntityChanged(topic);
     }
 
     @Test
@@ -554,7 +565,6 @@ public class TransactionalTopicModificationServiceTest {
         topicService.updateTopic(topic, poll);
 
         verify(pollService).createPoll(poll);
-        verify(notificationService, times(0)).subscribedEntityChanged(topic);
     }
 
     @Test
@@ -571,7 +581,6 @@ public class TransactionalTopicModificationServiceTest {
         topicService.updateTopic(topic, null);
 
         verify(topicDao).saveOrUpdate(topic);
-        verify(notificationService, times(0)).subscribedEntityChanged(topic);
     }
 
     @Test(expectedExceptions = AccessDeniedException.class)
