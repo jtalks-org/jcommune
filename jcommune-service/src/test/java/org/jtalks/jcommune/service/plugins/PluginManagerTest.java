@@ -17,7 +17,6 @@ package org.jtalks.jcommune.service.plugins;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.junit.Ignore;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.util.List;
@@ -37,7 +36,7 @@ public class PluginManagerTest {
         //pluginManager = new PluginManager("~", );
     }
 
-    @Test
+
     public void testGetPlugins() throws Exception {
         List<Plugin> plugins =  pluginManager.getPlugins();
         assertEquals(0, plugins.size());
