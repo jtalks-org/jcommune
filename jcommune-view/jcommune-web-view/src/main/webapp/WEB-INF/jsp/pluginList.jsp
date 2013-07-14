@@ -18,8 +18,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 
 <head>
     <meta name="description" content="<c:out value="${topic.title}"/>">
@@ -54,18 +52,16 @@
                             <%-- Plugin --%>
                             <tr>
                                 <td>
-                                    <br/>
-                                    <br/>
+                                    <c:out value="${plugin.name}"/>
                                 </td>
                                 <td>
-                                    <br/>
-                                    <br/>
+                                    <a href="${pageContext.request.contextPath}/plugins/${plugin.name}"
+                                       title="<spring:message code='label.tips.view_profile'/>">
+                                    </a>
                                 </td>
                                 <td>
-                                    <br/>
-                                        <form:checkbox path="" value="${plugin.state == 'ENABLED'}"
-                                                       class="form-check-radio-box script-has-tooltip" />
-                                    <br/>
+                                    <form:checkbox path="" value="${plugin.state == 'ENABLED'}"
+                                                   class="form-check-radio-box script-has-tooltip" />
                                 </td>
                             </tr>
                         </c:forEach>

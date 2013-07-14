@@ -88,6 +88,9 @@ public class PluginControllerTest {
         pluginController.configurePlugin(nonExistPluginId);
     }
 
+    /**
+     * Created for tests plugin.
+     */
     private static final class DummyPlugin implements Plugin {
         @Override
         public boolean supportsJCommuneVersion(String version) {
