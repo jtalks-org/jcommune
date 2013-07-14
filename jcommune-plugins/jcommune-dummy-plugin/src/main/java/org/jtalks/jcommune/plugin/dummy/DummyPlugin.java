@@ -25,6 +25,11 @@ import java.util.List;
  */
 public class DummyPlugin implements Plugin {
 
+    @Override
+    public String getName() {
+        return "Dummy plugin";
+    }
+
     public boolean supportsJCommuneVersion(String version) {
         return true;
     }

@@ -26,6 +26,11 @@ import java.util.List;
 public class PoulpeAuthPlugin implements SimpleAuthenticationPlugin {
 
     @Override
+    public String getName() {
+        return "Poulpe authentication plugin";
+    }
+
+    @Override
     public boolean authenticate(String login, String password) {
         return true;
     }

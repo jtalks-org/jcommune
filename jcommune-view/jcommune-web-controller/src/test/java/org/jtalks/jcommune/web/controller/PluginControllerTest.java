@@ -94,6 +94,11 @@ public class PluginControllerTest {
         }
 
         @Override
+        public String getName() {
+            return null;
+        }
+
+        @Override
         public List getConfiguration() {
             return null;
         }

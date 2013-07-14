@@ -27,6 +27,8 @@ public interface Plugin {
 
     public boolean supportsJCommuneVersion(String version);
 
+    public String getName();
+
     public List getConfiguration();
 
     public void configure(List<Property> properties);
