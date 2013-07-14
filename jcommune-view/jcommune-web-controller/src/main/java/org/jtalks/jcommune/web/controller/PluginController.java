@@ -14,10 +14,10 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.plugins.PluginManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,16 +34,19 @@ import java.util.List;
 @Controller
 @RequestMapping("/plugins")
 public class PluginController {
+
     private PluginService pluginService;
+    private PluginManager pluginManager;
 
     @Autowired
-    public PluginController(PluginService pluginService) {
+    public PluginController(PluginService pluginService, PluginManager pluginManager) {
         this.pluginService = pluginService;
+        this.pluginManager = pluginManager;
     }
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public ModelAndView getPlugins() {
-        List<Plugin> plugins = pluginService.getPlugins();
+        List<Plugin> plugins = pluginManager.getPlugins();
         return new ModelAndView("pluginsList")
                 .addObject("plugins", plugins);
     }

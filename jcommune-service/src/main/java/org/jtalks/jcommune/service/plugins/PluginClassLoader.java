@@ -28,14 +28,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Custom ClassLoader implementation to load classes from a specified folder.
+ * It's used as a discovery class loader for JCommune plugin code jars.
+ * <p>Limitations of current implementation:
+ * <p> - Only .jar files are supported
+ * <p> - Subfolders and their content is ignored, so scan is non-recursive
  *
+ * @author Evgeny Naumenko
  */
 class PluginClassLoader  extends URLClassLoader {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PluginManager.class);
 
+    /**
+     * @param folder lookup folder. It's non-recursive, so subfolders and it's content will be ignored
+     */
     public PluginClassLoader (String folder) {
         super(resolvePluginLocations(folder));
+        LOGGER.debug("Plugin class loader created for folder {}");
     }
 
     private static URL[] resolvePluginLocations(String folder) {
@@ -45,8 +55,12 @@ class PluginClassLoader  extends URLClassLoader {
         }
         FilenameFilter jarFilter = new SuffixFileFilter(".jar", IOCase.INSENSITIVE);
         File[] pluginJars = file.listFiles(jarFilter);
-        List<URL> urls = new ArrayList<URL>(pluginJars.length);
-        for (File jar : pluginJars){
+        return createUrls(pluginJars);
+    }
+
+    private static URL[] createUrls(File[] files){
+        List<URL> urls = new ArrayList<>(files.length);
+        for (File jar : files){
             try {
                 urls.add(jar.toURI().toURL());
             } catch (MalformedURLException e) {
