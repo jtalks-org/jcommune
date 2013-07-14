@@ -144,6 +144,14 @@ public class TransactionalPluginService
      * {@inheritDoc}
      */
     @Override
+    public PluginConfiguration getPluginConfiguration(String pluginName) throws NotFoundException {
+        return getDao().get(pluginName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void destroy() throws Exception {
         this.closeClassLoader();
     }

@@ -27,7 +27,9 @@ import java.util.List;
  */
 public interface PluginService extends EntityService<PluginConfiguration> {
 
-    public List<Plugin> getPlugins(PluginFilter... filters);
+    List<Plugin> getPlugins(PluginFilter... filters);
 
-    public void updateConfiguration(PluginConfiguration pluginConfiguration) throws NotFoundException;
+    void updateConfiguration(PluginConfiguration pluginConfiguration) throws NotFoundException;
+
+    PluginConfiguration getPluginConfiguration(String pluginName) throws NotFoundException;
 }
