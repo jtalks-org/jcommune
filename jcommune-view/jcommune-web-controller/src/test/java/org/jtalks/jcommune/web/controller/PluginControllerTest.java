@@ -55,7 +55,7 @@ public class PluginControllerTest {
     @Test
     public void getPluginsShouldReturnAllPlugins() {
         List<Plugin> expectedPlugins = Arrays.asList((Plugin) new DummyPlugin(), new DummyPlugin());
-        when(pluginService.getPlugins()).thenReturn(expectedPlugins);
+        when(pluginManager.getPlugins()).thenReturn(expectedPlugins);
 
         ModelAndView pluginsModelAndView = pluginController.getPlugins();
 
