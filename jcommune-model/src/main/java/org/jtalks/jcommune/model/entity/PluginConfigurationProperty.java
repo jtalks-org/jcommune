@@ -25,6 +25,14 @@ public class PluginConfigurationProperty extends Entity {
     private String value;
     private PluginConfiguration pluginConfiguration;
 
+    public PluginConfigurationProperty(String type, String value) {
+        this.type = type;
+        this.value = value;
+    }
+
+    public PluginConfigurationProperty() {
+    }
+
     public String getType() {
         return type;
     }

@@ -14,16 +14,18 @@
  */
 package org.jtalks.jcommune.plugin.auth.poulpe;
 
-import org.jtalks.common.model.entity.Property;
+import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
 import org.jtalks.jcommune.model.plugins.SimpleAuthenticationPlugin;
+import org.jtalks.jcommune.model.plugins.StatefullPlugin;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 /**
  *
  */
-public class PoulpeAuthPlugin implements SimpleAuthenticationPlugin {
+public class PoulpeAuthPlugin extends StatefullPlugin implements SimpleAuthenticationPlugin {
 
     @Override
     public String getName() {
@@ -41,17 +43,20 @@ public class PoulpeAuthPlugin implements SimpleAuthenticationPlugin {
     }
 
     @Override
-    public List getConfiguration() {
+    public List<PluginConfigurationProperty> getConfiguration() {
         return Collections.emptyList();
     }
 
     @Override
-    public void configure(List<Property> properties) {
-
+    public List<PluginConfigurationProperty> getDefaultConfiguration() {
+        PluginConfigurationProperty url = new PluginConfigurationProperty("String", "http://localhost:1234");
+        PluginConfigurationProperty login = new PluginConfigurationProperty("String", "login");
+        PluginConfigurationProperty password = new PluginConfigurationProperty("String", "password");
+        return Arrays.asList(url, login, password);
     }
 
     @Override
-    public State getState() {
-        return State.ENABLED;
+    protected void applyConfiguration(List<PluginConfigurationProperty> properties) {
+        //apply configuration
     }
 }

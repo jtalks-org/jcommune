@@ -14,7 +14,8 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.common.model.entity.Property;
+import org.jtalks.jcommune.model.entity.PluginConfiguration;
+import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -104,7 +105,13 @@ public class PluginControllerTest {
         }
 
         @Override
-        public void configure(List<Property> properties) {
+        public List<PluginConfigurationProperty> getDefaultConfiguration() {
+            return null;
+        }
+
+        @Override
+        public void configure(PluginConfiguration configuration) {
+
         }
 
         @Override

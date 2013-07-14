@@ -14,7 +14,8 @@
  */
 package org.jtalks.jcommune.model.plugins;
 
-import org.jtalks.common.model.entity.Property;
+import org.jtalks.jcommune.model.entity.PluginConfiguration;
+import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
 
 import java.util.List;
 
@@ -29,9 +30,11 @@ public interface Plugin {
 
     public String getName();
 
-    public List getConfiguration();
-
-    public void configure(List<Property> properties);
-
     public State getState();
+
+    public List<PluginConfigurationProperty> getConfiguration();
+
+    public List<PluginConfigurationProperty> getDefaultConfiguration();
+
+    public void configure(PluginConfiguration configuration);
 }

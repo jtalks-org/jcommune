@@ -14,8 +14,8 @@
  */
 package org.jtalks.jcommune.plugin.dummy;
 
-import org.jtalks.common.model.entity.Property;
-import org.jtalks.jcommune.model.plugins.Plugin;
+import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
+import org.jtalks.jcommune.model.plugins.StatefullPlugin;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,26 +23,29 @@ import java.util.List;
 /**
  *
  */
-public class DummyPlugin implements Plugin {
+public class DummyPlugin extends StatefullPlugin {
 
     @Override
     public String getName() {
         return "Dummy plugin";
     }
 
+    @Override
+    public List<PluginConfigurationProperty> getConfiguration() {
+        return Collections.emptyList();
+    }
+
     public boolean supportsJCommuneVersion(String version) {
         return true;
     }
 
-    public List<Property> getConfiguration() {
-        return Collections.EMPTY_LIST;
-    }
-
-    public void configure(List<Property> properties) {
+    @Override
+    protected void applyConfiguration(List<PluginConfigurationProperty> properties) {
         System.out.println("Configuring!");
     }
 
-    public State getState() {
-        return State.ENABLED;
+    @Override
+    public List<PluginConfigurationProperty> getDefaultConfiguration() {
+        return Collections.emptyList();
     }
 }
