@@ -21,6 +21,7 @@ import org.jtalks.common.model.entity.Entity;
  * @author Anuar Nurmakanov
  */
 public class PluginConfigurationProperty extends Entity {
+    private String name;
     private String type;
     private String value;
     private PluginConfiguration pluginConfiguration;
@@ -31,6 +32,14 @@ public class PluginConfigurationProperty extends Entity {
     }
 
     public PluginConfigurationProperty() {
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getType() {

@@ -25,6 +25,7 @@
             <generator class="native"/>
         </id>
         <property column="UUID" name="uuid" unique="true" not-null="true"/>
+        <property column="NAME" name="name" unique="true" not-null="true"/>
         <property column="TYPE" name="type" not-null="true"/>
         <property column="VALUE" name="value" not-null="true"/>
         <many-to-one name="pluginConfiguration" column="PLUGIN_ID" not-null="false"
