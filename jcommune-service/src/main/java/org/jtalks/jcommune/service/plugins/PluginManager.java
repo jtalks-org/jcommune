@@ -14,35 +14,36 @@
  */
 package org.jtalks.jcommune.service.plugins;
 
-import com.google.common.collect.Lists;
 import org.apache.commons.lang.Validate;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
 
 import java.io.IOException;
 import java.net.URLClassLoader;
 import java.nio.file.*;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
 
 import static java.nio.file.StandardWatchEventKinds.*;
 
 /**
- *
+ * @author Evgeny Naumenko
  */
-public class PluginManager {
+public class PluginManager implements DisposableBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PluginManager.class);
 
+    private PluginConfigurator configurator;
     private URLClassLoader classLoader;
     private WatchKey watchKey;
     private String folder;
     private List<Plugin> plugins;
 
-    public PluginManager(String folderPath) throws IOException {
+    public PluginManager(String folderPath, PluginConfigurator configurator) throws IOException {
+        this.configurator = configurator;
         Validate.notEmpty(folderPath);
         this.folder = this.resolveUserHome(folderPath);
         Path path = Paths.get(folder);
@@ -69,7 +70,7 @@ public class PluginManager {
      */
     public synchronized List<Plugin> getPlugins(PluginFilter... filters) {
         this.synchronizePluginList();
-        List<Plugin> filtered = new ArrayList<Plugin>(plugins.size());
+        List<Plugin> filtered = new ArrayList<>(plugins.size());
         plugins:
         for (Plugin plugin : plugins) {
             for (PluginFilter filter : filters) {
@@ -102,7 +103,19 @@ public class PluginManager {
     private synchronized void initPluginList() {
         classLoader = new PluginClassLoader(folder);
         ServiceLoader<Plugin> pluginLoader = ServiceLoader.load(Plugin.class, classLoader);
-        Iterator<Plugin> iterator = pluginLoader.iterator();
-        plugins = Lists.newArrayList(iterator);
+        List<Plugin> plugins = new ArrayList<>();
+        for (Plugin plugin : pluginLoader) {
+            configurator.configure(plugin);
+            plugins.add(plugin);
+        }
+        this.plugins = plugins;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void destroy() throws Exception {
+        this.closeClassLoader();
     }
 }

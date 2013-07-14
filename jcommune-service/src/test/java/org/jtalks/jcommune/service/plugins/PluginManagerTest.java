@@ -34,7 +34,7 @@ public class PluginManagerTest {
 
     @BeforeMethod
     public void setUp() throws IOException {
-        pluginManager = new PluginManager("~");
+        //pluginManager = new PluginManager("~", );
     }
 
     @Test

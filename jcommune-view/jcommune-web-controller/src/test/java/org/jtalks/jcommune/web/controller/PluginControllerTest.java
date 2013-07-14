@@ -18,6 +18,7 @@ import org.jtalks.common.model.entity.Property;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.plugins.PluginManager;
 import org.mockito.Mock;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
@@ -37,8 +38,11 @@ import static org.testng.Assert.assertEquals;
  * @author Anuar Nurmakanov
  */
 public class PluginControllerTest {
+
     @Mock
     private PluginService pluginService;
+    @Mock
+    private PluginManager pluginManager;
 
     private PluginController pluginController;
 
