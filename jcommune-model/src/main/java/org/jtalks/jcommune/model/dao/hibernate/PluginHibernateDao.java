@@ -15,7 +15,9 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.jtalks.common.model.dao.hibernate.GenericDao;
+import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.dao.PluginDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 
@@ -29,5 +31,21 @@ public class PluginHibernateDao extends GenericDao<PluginConfiguration> implemen
      */
     public PluginHibernateDao(SessionFactory sessionFactory) {
         super(sessionFactory, PluginConfiguration.class);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PluginConfiguration get(String name) throws NotFoundException {
+        PluginConfiguration configuration =
+                (PluginConfiguration) session().createCriteria(PluginConfiguration.class)
+                .add(Restrictions.eq("name", name) )
+                .uniqueResult();
+        if (configuration == null){
+            throw new NotFoundException(name + " plugin not found in a database");
+        } else {
+            return configuration;
+        }
     }
 }

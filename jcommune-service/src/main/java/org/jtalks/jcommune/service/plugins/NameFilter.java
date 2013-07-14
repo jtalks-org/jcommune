@@ -14,25 +14,24 @@
  */
 package org.jtalks.jcommune.service.plugins;
 
-import org.jtalks.jcommune.model.dao.PluginDao;
 import org.jtalks.jcommune.model.plugins.Plugin;
 
 /**
- * @author Evgeny Naumenko
+ *
  */
-public class PluginConfigurator {
+public class NameFilter implements PluginFilter {
 
-    private PluginDao dao;
+    private String name;
 
-    /**
-     *
-     * @param dao
-     */
-    public PluginConfigurator(PluginDao dao) {
-        this.dao = dao;
+    public NameFilter(String name) {
+        this.name = name;
     }
 
-    public void configure (Plugin plugin){
-        //dao to be updated
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean accept(Plugin plugin) {
+        return name.equals(plugin.getName());
     }
 }

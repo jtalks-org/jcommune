@@ -14,31 +14,137 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.apache.commons.lang.Validate;
+import org.jtalks.common.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.model.dao.PluginDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.service.PluginService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.plugins.NameFilter;
+import org.jtalks.jcommune.service.plugins.PluginClassLoader;
+import org.jtalks.jcommune.service.plugins.PluginFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
 
+import java.io.IOException;
+import java.net.URLClassLoader;
+import java.nio.file.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.ServiceLoader;
+
+import static java.nio.file.StandardWatchEventKinds.*;
 
 /**
  * @author Anuar_Nurmakanov
  */
-public class TransactionalPluginService implements PluginService {
+public class TransactionalPluginService
+        extends AbstractTransactionalEntityService<PluginConfiguration, PluginDao>
+        implements DisposableBean, PluginService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalPluginService.class);
+
+    private URLClassLoader classLoader;
+    private WatchKey watchKey;
+    private String folder;
+    private List<Plugin> plugins;
+
+    public TransactionalPluginService(String folderPath, PluginDao dao) throws IOException {
+        super(dao);
+        Validate.notEmpty(folderPath);
+        this.folder = this.resolveUserHome(folderPath);
+        Path path = Paths.get(folder);
+        WatchService watcher = FileSystems.getDefault().newWatchService();
+        watchKey = path.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
+        this.initPluginList();
+    }
+
+    private String resolveUserHome(String path) {
+        if (path.contains("~")) {
+            String home = System.getProperty("user.home");
+            return path.replace("~", home);
+        } else {
+            return path;
+        }
+    }
 
     /**
-     * {@inheritDoc}
+     * Returns actual list of plugins available. Client code should not cache the plugin
+     * references and always use this method to obtain a plugin reference as needed.
+     * Violation of this simple rule may cause memory leaks.
+     *
+     * @return list of plugins available at the moment
      */
-    @Override
-    public List<Plugin> getPlugins() {
-        return null;
+    public synchronized List<Plugin> getPlugins(PluginFilter... filters) {
+        this.synchronizePluginList();
+        List<Plugin> filtered = new ArrayList<>(plugins.size());
+        plugins:
+        for (Plugin plugin : plugins) {
+            for (PluginFilter filter : filters) {
+                if (!filter.accept(plugin)) {
+                    continue plugins;
+                }
+            }
+            filtered.add(plugin);
+        }
+        return filtered;
+    }
+
+    private void synchronizePluginList() {
+        List events = watchKey.pollEvents();
+        if (!events.isEmpty()) {
+            watchKey.reset();
+            this.closeClassLoader();
+            this.initPluginList();
+        }
+    }
+
+    private synchronized void initPluginList() {
+        classLoader = new PluginClassLoader(folder);
+        ServiceLoader<Plugin> pluginLoader = ServiceLoader.load(Plugin.class, classLoader);
+        List<Plugin> plugins = new ArrayList<>();
+        for (Plugin plugin : pluginLoader) {
+            String name = plugin.getName();
+            PluginConfiguration configuration = null;
+            try {
+                configuration = this.getDao().get(name);
+            } catch (NotFoundException e) {
+                configuration = new PluginConfiguration(name, false, plugin.getDefaultConfiguration());
+            }
+            plugin.configure(configuration);
+            plugins.add(plugin);
+        }
+        this.plugins = plugins;
+    }
+
+    public void updateConfiguration(PluginConfiguration pluginConfiguration) throws NotFoundException {
+        String name = pluginConfiguration.getName();
+        Plugin result;
+        List<Plugin> plugins1 = this.getPlugins(new NameFilter(name));
+        if (plugins1.isEmpty()) {
+            throw new NotFoundException("Plugin " + name + "is not loaded");
+        } else {
+            result = plugins1.get(0);
+        }
+        Plugin plugin = result;
+        plugin.configure(pluginConfiguration);
+        this.getDao().saveOrUpdate(pluginConfiguration);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Plugin getPlugin(long configuredPluginId) throws NotFoundException {
-        return null;
+    public void destroy() throws Exception {
+        this.closeClassLoader();
+    }
+
+    private void closeClassLoader() {
+        try {
+            classLoader.close();
+        } catch (IOException e) {
+            LOGGER.error("Failed to close plugin class loader", e);
+        }
     }
 }

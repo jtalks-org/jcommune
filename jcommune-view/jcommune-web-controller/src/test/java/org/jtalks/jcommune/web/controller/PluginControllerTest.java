@@ -19,7 +19,6 @@ import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.plugins.PluginManager;
 import org.mockito.Mock;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
@@ -42,21 +41,19 @@ public class PluginControllerTest {
 
     @Mock
     private PluginService pluginService;
-    @Mock
-    private PluginManager pluginManager;
 
     private PluginController pluginController;
 
     @BeforeMethod
     public void init() {
         initMocks(this);
-        this.pluginController = new PluginController(pluginService, pluginManager);
+        this.pluginController = new PluginController(pluginService);
     }
 
     @Test
     public void getPluginsShouldReturnAllPlugins() {
         List<Plugin> expectedPlugins = Arrays.asList((Plugin) new DummyPlugin(), new DummyPlugin());
-        when(pluginManager.getPlugins()).thenReturn(expectedPlugins);
+        when(pluginService.getPlugins()).thenReturn(expectedPlugins);
 
         ModelAndView pluginsModelAndView = pluginController.getPlugins();
 
@@ -69,21 +66,21 @@ public class PluginControllerTest {
     @Test
     public void configurePluginShouldMoveToPluginConfigurationPage() throws NotFoundException {
         long configuredPluginId = 25L;
-        Plugin expectedPlugin = new DummyPlugin();
-        when(pluginService.getPlugin(configuredPluginId)) .thenReturn(expectedPlugin);
+        PluginConfiguration expected = new PluginConfiguration();
+        when(pluginService.get(configuredPluginId)).thenReturn(expected);
 
         ModelAndView pluginConfigModelAndView = pluginController.configurePlugin(configuredPluginId);
 
         assertViewName(pluginConfigModelAndView, "pluginConfiguration");
         assertModelAttributeAvailable(pluginConfigModelAndView, "plugin");
-        Plugin actualPlugin = (Plugin) pluginConfigModelAndView.getModel().get("plugin");
-        assertEquals(actualPlugin, expectedPlugin, "Plugin should be returned from services.");
+        PluginConfiguration actualPlugin = (PluginConfiguration) pluginConfigModelAndView.getModel().get("plugin");
+        assertEquals(actualPlugin,expected, "Plugin should be returned from services.");
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     public void configurePluginWhenPluginWasNotFoundShouldShowNotFoundError() throws NotFoundException {
         long nonExistPluginId = 25L;
-        when(pluginService.getPlugin(nonExistPluginId)).thenThrow(new NotFoundException());
+        when(pluginService.get(nonExistPluginId)).thenThrow(new NotFoundException());
 
         pluginController.configurePlugin(nonExistPluginId);
     }

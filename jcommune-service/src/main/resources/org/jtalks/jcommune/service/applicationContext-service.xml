@@ -330,17 +330,9 @@
     </bean>
 
     <bean id="pluginService" class="org.jtalks.jcommune.service.transactional.TransactionalPluginService">
-    </bean>
-
-    <bean id="pluginConfigurator" class="org.jtalks.jcommune.service.plugins.PluginConfigurator">
+        <constructor-arg name="folderPath" value="${PLUGIN_FOLDER:~}"/>
         <constructor-arg name="dao" ref="pluginDao"/>
     </bean>
-
-    <bean id="pluginManager" class="org.jtalks.jcommune.service.plugins.PluginManager">
-        <constructor-arg name="folderPath" value="${PLUGIN_FOLDER:~}"/>
-        <constructor-arg name="configurator" ref="pluginConfigurator"/>
-    </bean>
-
 
     <!--
     Cache beans for user related data.

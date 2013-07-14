@@ -14,8 +14,10 @@
  */
 package org.jtalks.jcommune.service;
 
+import org.jtalks.common.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.plugins.Plugin;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.plugins.PluginFilter;
 
 import java.util.List;
 
@@ -23,8 +25,9 @@ import java.util.List;
  *
  * @author Anuar Nurmakanov
  */
-public interface PluginService {
-    List<Plugin> getPlugins();
+public interface PluginService extends EntityService<PluginConfiguration> {
 
-    Plugin getPlugin(long configuredPluginId) throws NotFoundException;
+    public List<Plugin> getPlugins(PluginFilter... filters);
+
+    public void updateConfiguration(PluginConfiguration pluginConfiguration) throws NotFoundException;
 }

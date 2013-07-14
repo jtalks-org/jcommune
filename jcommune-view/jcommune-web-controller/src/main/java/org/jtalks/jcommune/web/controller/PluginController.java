@@ -14,10 +14,10 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.plugins.PluginManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,25 +36,23 @@ import java.util.List;
 public class PluginController {
 
     private PluginService pluginService;
-    private PluginManager pluginManager;
 
     @Autowired
-    public PluginController(PluginService pluginService, PluginManager pluginManager) {
+    public PluginController(PluginService pluginService) {
         this.pluginService = pluginService;
-        this.pluginManager = pluginManager;
     }
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public ModelAndView getPlugins() {
-        List<Plugin> plugins = pluginManager.getPlugins();
+        List<Plugin> plugins = pluginService.getPlugins();
         return new ModelAndView("pluginsList")
                 .addObject("plugins", plugins);
     }
 
     @RequestMapping(value = "/configure/{pluginId}", method = RequestMethod.GET)
     public ModelAndView configurePlugin(@PathVariable long pluginId) throws NotFoundException {
-        Plugin plugin = pluginService.getPlugin(pluginId);
+        PluginConfiguration pluginConfiguration = pluginService.get(pluginId);
         return new ModelAndView("pluginConfiguration")
-                .addObject("plugin", plugin);
+                .addObject("plugin", pluginConfiguration);
     }
 }
