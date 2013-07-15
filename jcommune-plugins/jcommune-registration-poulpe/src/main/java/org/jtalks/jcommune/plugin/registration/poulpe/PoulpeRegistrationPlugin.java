@@ -19,6 +19,7 @@ import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
 
 import org.jtalks.jcommune.model.plugins.SimpleRegistrationPlugin;
+import org.jtalks.jcommune.model.plugins.StatefullPlugin;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.plugin.registration.poulpe.service.PoulpeRegistrationService;
@@ -37,7 +38,7 @@ import java.util.Map;
  *
  * @author Andrey Pogorelov
  */
-public class PoulpeRegistrationPlugin implements SimpleRegistrationPlugin {
+public class PoulpeRegistrationPlugin extends StatefullPlugin implements SimpleRegistrationPlugin {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private RegistrationService service;
@@ -89,6 +90,11 @@ public class PoulpeRegistrationPlugin implements SimpleRegistrationPlugin {
     public void configure(PluginConfiguration pluginConfiguration) {
         this.pluginConfiguration = pluginConfiguration;
         loadConfiguration();
+    }
+
+    @Override
+    protected void applyConfiguration(List<PluginConfigurationProperty> properties) {
+
     }
 
     @Override
