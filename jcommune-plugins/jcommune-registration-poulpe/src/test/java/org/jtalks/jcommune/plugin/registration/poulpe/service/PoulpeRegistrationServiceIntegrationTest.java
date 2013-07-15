@@ -17,11 +17,11 @@ package org.jtalks.jcommune.plugin.registration.poulpe.service;
 
 import com.xebialabs.restito.server.StubServer;
 import org.glassfish.grizzly.http.util.HttpStatus;
+import org.jtalks.jcommune.plugin.registration.poulpe.pojo.User;
 import org.restlet.resource.ClientResource;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import org.jtalks.poulpe.web.controller.rest.pojo.User;
 
 import static com.xebialabs.restito.builder.stub.StubHttp.whenHttp;
 import static com.xebialabs.restito.semantics.Action.status;

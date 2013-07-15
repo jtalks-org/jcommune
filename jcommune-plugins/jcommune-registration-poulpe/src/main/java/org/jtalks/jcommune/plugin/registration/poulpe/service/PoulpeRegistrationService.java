@@ -17,8 +17,8 @@ package org.jtalks.jcommune.plugin.registration.poulpe.service;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.jtalks.jcommune.plugin.registration.poulpe.exceptions.NoConnectionException;
-import org.jtalks.poulpe.web.controller.rest.pojo.Errors;
-import org.jtalks.poulpe.web.controller.rest.pojo.User;
+import org.jtalks.jcommune.plugin.registration.poulpe.pojo.Errors;
+import org.jtalks.jcommune.plugin.registration.poulpe.pojo.User;
 import org.restlet.Context;
 import org.restlet.data.ChallengeScheme;
 import org.restlet.data.Status;

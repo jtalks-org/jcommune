@@ -16,9 +16,9 @@
 package org.jtalks.jcommune.plugin.registration.poulpe.service;
 
 import org.jtalks.jcommune.plugin.registration.poulpe.exceptions.NoConnectionException;
-import org.jtalks.poulpe.web.controller.rest.pojo.Error;
-import org.jtalks.poulpe.web.controller.rest.pojo.Errors;
-import org.jtalks.poulpe.web.controller.rest.pojo.User;
+import org.jtalks.jcommune.plugin.registration.poulpe.pojo.Errors;
+import org.jtalks.jcommune.plugin.registration.poulpe.pojo.Error;
+import org.jtalks.jcommune.plugin.registration.poulpe.pojo.User;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.data.Method;

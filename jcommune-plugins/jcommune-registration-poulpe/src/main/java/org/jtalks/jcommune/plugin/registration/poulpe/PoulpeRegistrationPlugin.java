@@ -20,9 +20,9 @@ import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
 import org.jtalks.jcommune.model.plugins.SimpleRegistrationPlugin;
 
 import org.jtalks.jcommune.plugin.registration.poulpe.exceptions.NoConnectionException;
+import org.jtalks.jcommune.plugin.registration.poulpe.pojo.Errors;
 import org.jtalks.jcommune.plugin.registration.poulpe.service.PoulpeRegistrationService;
 import org.jtalks.jcommune.plugin.registration.poulpe.service.RegistrationService;
-import org.jtalks.poulpe.web.controller.rest.pojo.Errors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

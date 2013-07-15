@@ -22,11 +22,6 @@
             <artifactId>jcommune-web-controller</artifactId>
             <version>1.9-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>org.jtalks.poulpe</groupId>
-            <artifactId>poulpe-web-controller</artifactId>
-            <version>1.8-SNAPSHOT</version>
-        </dependency>
 
         <!-- TestNG & Mockito -->
         <dependency>

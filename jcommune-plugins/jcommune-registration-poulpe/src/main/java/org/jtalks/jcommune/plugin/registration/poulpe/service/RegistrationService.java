@@ -16,7 +16,7 @@
 package org.jtalks.jcommune.plugin.registration.poulpe.service;
 
 import org.jtalks.jcommune.plugin.registration.poulpe.exceptions.NoConnectionException;
-import org.jtalks.poulpe.web.controller.rest.pojo.Errors;
+import org.jtalks.jcommune.plugin.registration.poulpe.pojo.Errors;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
