@@ -21,6 +21,7 @@ import org.jtalks.jcommune.service.PluginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -54,5 +55,12 @@ public class PluginController {
         PluginConfiguration pluginConfiguration = pluginService.getPluginConfiguration(name);
         return new ModelAndView("pluginConfiguration")
                 .addObject("pluginConfiguration", pluginConfiguration);
+    }
+
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public ModelAndView updateConfiguration(@RequestBody PluginConfiguration newConfiguration) throws NotFoundException {
+        pluginService.updateConfiguration(newConfiguration);
+        return new ModelAndView("/plugins/configure/" + newConfiguration.getName())
+                .addObject("pluginConfiguration", newConfiguration);
     }
 }

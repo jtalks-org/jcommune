@@ -27,6 +27,7 @@ import org.testng.annotations.Test;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
@@ -83,6 +84,19 @@ public class PluginControllerTest {
         when(pluginService.getPluginConfiguration(nonExistPluginName)).thenThrow(new NotFoundException());
 
         pluginController.configurePlugin(nonExistPluginName);
+    }
+
+    @Test
+    public void updateConfigurationShouldUpdateItByCallingServiceLayer() throws NotFoundException {
+        String pluginName = "plugin";
+        PluginConfiguration newConfiguration = new PluginConfiguration();
+        newConfiguration.setName(pluginName);
+
+        ModelAndView resultModelAndView = pluginController.updateConfiguration(newConfiguration);
+
+        assertViewName(resultModelAndView, "/plugins/configure/" + pluginName);
+        assertModelAttributeAvailable(resultModelAndView, "pluginConfiguration");
+        verify(pluginService).updateConfiguration(newConfiguration);
     }
 
     /**
