@@ -498,7 +498,7 @@
                         <exclude>**/*.vm</exclude>
                         <exclude>**/.*</exclude>
                         <exclude>**/empty</exclude>
-                        <exclude>**/licensed/**</exclude>
+                        <exclude>**/lib/**</exclude>
                     </excludes>
                     <useDefaultExcludes>true</useDefaultExcludes>
                     <strictCheck>true</strictCheck>
