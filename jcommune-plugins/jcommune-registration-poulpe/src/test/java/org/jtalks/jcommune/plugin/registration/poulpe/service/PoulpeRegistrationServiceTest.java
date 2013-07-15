@@ -15,7 +15,7 @@
 
 package org.jtalks.jcommune.plugin.registration.poulpe.service;
 
-import org.jtalks.jcommune.plugin.registration.poulpe.exceptions.NoConnectionException;
+import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.plugin.registration.poulpe.pojo.Errors;
 import org.jtalks.jcommune.plugin.registration.poulpe.pojo.Error;
 import org.jtalks.jcommune.plugin.registration.poulpe.pojo.User;
@@ -30,6 +30,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -55,16 +57,17 @@ public class PoulpeRegistrationServiceTest {
     @Test
     public void testRegisterUserWithInvalidCredentials() throws Exception {
         Errors errors = new Errors();
-        errors.setErrorList(new ArrayList<Error>());
-        errors.getErrorList().add(createError("user.username.length_constraint_violation", null));
+        List<Error> errorList = new ArrayList<Error>();
+        errorList.add(createError("user.username.length_constraint_violation", null));
+        errors.setErrorList(errorList);
         JaxbRepresentation<Errors> errorsRepr = new JaxbRepresentation<Errors>(errors);
         ClientResource clientResource = createClientResource(Status.CLIENT_ERROR_BAD_REQUEST, errorsRepr);
 
         doReturn(clientResource).when(service).sendRegistrationRequest(any(User.class));
 
-        Errors result = service.registerUser("", "password", "email@email.ru");
+        Map<String, String> result = service.registerUser("", "password", "email@email.ru");
 
-        assertEquals(result.getErrorList().size(), 1, "User with invalid credentials shouldn't pass registration.");
+        assertEquals(result.size(), 1, "User with invalid credentials shouldn't pass registration.");
     }
 
     @Test(expectedExceptions = NoConnectionException.class)
@@ -82,7 +85,7 @@ public class PoulpeRegistrationServiceTest {
 
         doReturn(clientResource).when(service).sendRegistrationRequest(any(User.class));
 
-        Errors result = service.registerUser("username", "password", "email@email.ru");
+        Map<String, String> result = service.registerUser("username", "password", "email@email.ru");
 
         assertNull(result, "User with valid credentials should pass registration.");
     }

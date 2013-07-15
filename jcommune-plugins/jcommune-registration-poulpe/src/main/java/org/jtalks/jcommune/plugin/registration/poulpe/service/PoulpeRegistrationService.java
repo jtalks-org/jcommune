@@ -16,8 +16,9 @@
 package org.jtalks.jcommune.plugin.registration.poulpe.service;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.jtalks.jcommune.plugin.registration.poulpe.exceptions.NoConnectionException;
+import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.plugin.registration.poulpe.pojo.Errors;
+import org.jtalks.jcommune.plugin.registration.poulpe.pojo.Error;
 import org.jtalks.jcommune.plugin.registration.poulpe.pojo.User;
 import org.restlet.Context;
 import org.restlet.data.ChallengeScheme;
@@ -32,6 +33,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.IOException;
+import java.util.*;
 
 /**
  * This class contains method needed for communicate with Poulpe rest service.
@@ -57,7 +59,7 @@ public class PoulpeRegistrationService implements RegistrationService {
      * {@inheritDoc}
      */
     @Override
-    public Errors registerUser(String username, String password, String email)
+    public Map<String, String> registerUser(String username, String password, String email)
             throws IOException, NoConnectionException, JAXBException {
         User user = createUser(username, password, email);
         ClientResource clientResource = sendRegistrationRequest(user);
@@ -72,7 +74,8 @@ public class PoulpeRegistrationService implements RegistrationService {
      * @throws NoConnectionException
      * @throws IOException
      */
-    private Errors getResult(ClientResource clientResource) throws NoConnectionException, IOException, JAXBException {
+    private Map<String, String> getResult(ClientResource clientResource)
+            throws NoConnectionException, IOException, JAXBException {
         if (clientResource.getStatus() == Status.SUCCESS_OK) {
             return null;
         } else if (clientResource.getStatus().getCode() == Status.CLIENT_ERROR_BAD_REQUEST.getCode()
@@ -90,10 +93,28 @@ public class PoulpeRegistrationService implements RegistrationService {
      * @return errors
      * @throws IOException
      */
-    private Errors parseErrors(Representation repr) throws IOException, JAXBException {
+    private Map<String, String> parseErrors(Representation repr) throws IOException, JAXBException {
         JAXBContext context = JAXBContext.newInstance(Errors.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
-        return (Errors) unmarshaller.unmarshal(repr.getStream());
+        Errors errorsRepr = (Errors) unmarshaller.unmarshal(repr.getStream());
+
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("Validation", new Locale("en"));
+        Map<String, String> errors = new HashMap<>();
+        for (Error error : errorsRepr.getErrorList()) {
+            if (error.getCode() != null && !error.getCode().isEmpty()) {
+                String errorCode = resourceBundle.getString(error.getCode());
+                if (errorCode.contains("email")) {
+                    errors.put("email", errorCode);
+                } else if (errorCode.contains("username")) {
+                    errors.put("username", errorCode);
+                } else if (errorCode.contains("password")) {
+                    errors.put("password", errorCode);
+                }
+            } else {
+                errors.put("common", error.getMessage());
+            }
+        }
+        return errors;
     }
 
     /**
@@ -114,7 +135,6 @@ public class PoulpeRegistrationService implements RegistrationService {
 
     /**
      * Sends registration post request.
-     *
      *
      * @param user user entity for registration
      * @return ClientResource result

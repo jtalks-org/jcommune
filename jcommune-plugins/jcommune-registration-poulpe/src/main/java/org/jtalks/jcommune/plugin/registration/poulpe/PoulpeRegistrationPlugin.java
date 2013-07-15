@@ -17,10 +17,10 @@ package org.jtalks.jcommune.plugin.registration.poulpe;
 
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
-import org.jtalks.jcommune.model.plugins.SimpleRegistrationPlugin;
 
-import org.jtalks.jcommune.plugin.registration.poulpe.exceptions.NoConnectionException;
-import org.jtalks.jcommune.plugin.registration.poulpe.pojo.Errors;
+import org.jtalks.jcommune.model.plugins.SimpleRegistrationPlugin;
+import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
+import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.plugin.registration.poulpe.service.PoulpeRegistrationService;
 import org.jtalks.jcommune.plugin.registration.poulpe.service.RegistrationService;
 import org.slf4j.Logger;
@@ -30,6 +30,7 @@ import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Provides user registration service via Poulpe.
@@ -44,20 +45,17 @@ public class PoulpeRegistrationPlugin implements SimpleRegistrationPlugin {
     private State state;
 
     @Override
-    public boolean registerUser(String username, String password, String email) {
+    public Map<String, String> registerUser(String username, String password, String email)
+            throws NoConnectionException, UnexpectedErrorException {
         try {
-            Errors errors = service.registerUser(username, password, email);
-            if (errors != null) {
-                return false;
-            }
+            return service.registerUser(username, password, email);
         } catch (IOException | JAXBException e) {
             logger.error("Parse response error", e);
-            return false;
+            throw new UnexpectedErrorException(e);
         } catch (NoConnectionException e) {
             logger.error("Can't connect to Poulpe", e);
-            return false;
+            throw e;
         }
-        return true;
     }
 
     @Override

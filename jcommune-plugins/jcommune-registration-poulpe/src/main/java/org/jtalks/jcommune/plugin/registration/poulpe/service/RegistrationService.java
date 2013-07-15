@@ -15,11 +15,11 @@
 
 package org.jtalks.jcommune.plugin.registration.poulpe.service;
 
-import org.jtalks.jcommune.plugin.registration.poulpe.exceptions.NoConnectionException;
-import org.jtalks.jcommune.plugin.registration.poulpe.pojo.Errors;
+import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * Provides user registration via 3rd party system.
@@ -32,12 +32,13 @@ public interface RegistrationService {
      * Register user with specified data via Poulpe.
      * Returns errors if request failed, otherwise return null.
      *
+     *
      * @param username username
      * @param password password
      * @param email email
      * @return errors
      */
-    Errors registerUser(String username, String password, String email)
+    Map<String, String> registerUser(String username, String password, String email)
             throws IOException, NoConnectionException, JAXBException;
 
 }

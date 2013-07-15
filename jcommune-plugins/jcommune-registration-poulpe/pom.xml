@@ -19,6 +19,11 @@
         </dependency>
         <dependency>
             <groupId>org.jtalks.jcommune</groupId>
+            <artifactId>jcommune-service</artifactId>
+            <version>1.9-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jtalks.jcommune</groupId>
             <artifactId>jcommune-web-controller</artifactId>
             <version>1.9-SNAPSHOT</version>
         </dependency>

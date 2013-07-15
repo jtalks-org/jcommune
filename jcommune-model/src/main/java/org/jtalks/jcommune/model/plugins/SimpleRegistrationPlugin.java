@@ -15,7 +15,13 @@
 
 package org.jtalks.jcommune.model.plugins;
 
+import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
+import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
+
+import java.util.Map;
+
 public interface SimpleRegistrationPlugin extends Plugin {
 
-    public boolean registerUser(String login, String password, String email);
+    public Map<String, String> registerUser(String login, String password, String email)
+            throws NoConnectionException, UnexpectedErrorException;
 }
