@@ -22,39 +22,31 @@
 <head>
     <meta name="description" content="<c:out value="${topicDto.topic.branch.name}"/>">
     <title><c:out value="${topicDto.topic.branch.name}"/> - <spring:message code="h.new_topic"/></title>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-ui.min.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery-ui.min.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/lib/wysiwyg-bbcode/editor.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/datepicker.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/app/datepicker.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/pollPreview.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/app/pollPreview.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/leaveConfirm.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/contextMenu.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/contextmenu/js/jquery.contextMenu.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/jquery.contextMenu.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/contextmenu/js/jquery-fieldselection.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/jquery-fieldselection.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/contextmenu/js/textarea-helper.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/textarea-helper.js"
             type="text/javascript"></script>
     <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/contextmenu/css/jquery.contextMenu.css"
-          type="text/css" media="all"/>
-
-    <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/datepicker/development-bundle/themes/smoothness/jquery.ui.datepicker.css"
+          href="${pageContext.request.contextPath}/resources/css/lib/jquery.contextMenu.css"
           type="text/css" media="all"/>
     <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/styles/jquery-ui.css"
+          href="${pageContext.request.contextPath}/resources/css/lib/jquery-ui.css"
           type="text/css" media="all"/>
-    <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/datepicker/css/smoothness/jquery-ui-1.8.21.custom.css"
-          type="text/css" media="all"/>
-
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/bbeditorEffects.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/app/bbeditorEffects.js"
             type="text/javascript"></script>
 </head>
 <body>

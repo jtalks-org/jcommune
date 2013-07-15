@@ -37,42 +37,42 @@
 
   <%-- support of HTML5 elements for IE6-8 --%>
   <%--[if lt IE 9]>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/html5.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/lib/html5.js"></script>
   <![endif]--%>
 
   <link rel="stylesheet" type="text/css" media="screen, projection"
-        href="${pageContext.request.contextPath}/resources/css/screen.css"/>
+        href="${pageContext.request.contextPath}/resources/css/app/screen.css"/>
   <link rel="stylesheet" type="text/css" media="screen, projection"
-        href="${pageContext.request.contextPath}/resources/css/i18n/<spring:message code="locale.code"/>.css"/>
+        href="${pageContext.request.contextPath}/resources/css/app/i18n/<spring:message code="locale.code"/>.css"/>
   <link rel="stylesheet" type="text/css" media="screen, projection"
-        href='${pageContext.request.contextPath}/resources/css/fonts-googleapis-com.css'/>
+        href='${pageContext.request.contextPath}/resources/css/lib/fonts-googleapis-com.css'/>
   <link rel="shortcut icon" type="image/x-icon" href="${pageContext.request.contextPath}/admin/icon/ico?v=${infoChangeDate}"/>
   <link rel="icon" type="image/png" href="${pageContext.request.contextPath}/admin/icon/png?v=${infoChangeDate}"/>
-  <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-1.7.min.js"></script>
-  <script src="${pageContext.request.contextPath}/resources/javascript/custom/keymaps.js"></script>
-  <script src='${pageContext.request.contextPath}/resources/javascript/custom/dialog.js'></script>
-  <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery.prettyPhoto.js"></script>
-  <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery.truncate.js"></script>
-  <script src="${pageContext.request.contextPath}/resources/javascript/custom/URLBuilder.js"></script>
-  <script src="${pageContext.request.contextPath}/resources/javascript/custom/registration.js"></script>
-  <script src="${pageContext.request.contextPath}/resources/javascript/custom/mainLinksEditor.js"></script>
-  <script src='${pageContext.request.contextPath}/resources/javascript/custom/signin.js'></script>
-  <script src='${pageContext.request.contextPath}/resources/javascript/custom/global.js'></script>
-  <script src="${pageContext.request.contextPath}/resources/javascript/custom/antimultipost.js"></script>
-  <script src='${pageContext.request.contextPath}/resources/javascript/licensed/xregexp-min.js'></script>
-  <script src='${pageContext.request.contextPath}/resources/javascript/licensed/bootstrap.min.js'></script>
-  <script src='${pageContext.request.contextPath}/resources/javascript/custom/errorUtils.js'></script>
-  <script src='${pageContext.request.contextPath}/resources/javascript/custom/utils.js'></script>
-  <script src='${pageContext.request.contextPath}/resources/javascript/custom/dropdown.js'></script>
-  <script src='${pageContext.request.contextPath}/resources/javascript/custom/forumEffects.js'></script>
-  <script src="${pageContext.request.contextPath}/resources/javascript/licensed/prettify/prettify.js"></script>
-  <script src="${pageContext.request.contextPath}/resources/javascript/custom/topline.js"></script>
-  <script src="${pageContext.request.contextPath}/resources/javascript/custom/search.js"></script>
-  <script src="${pageContext.request.contextPath}/resources/javascript/custom/banner.js"></script>
-  <script src="${pageContext.request.contextPath}/resources/javascript/licensed/html5placeholder.jquery.js"></script>
-  <script src="${pageContext.request.contextPath}/resources/javascript/custom/events.js"></script>
-  <script src="${pageContext.request.contextPath}/resources/javascript/custom/forumAdministration.js"></script>
-  <script src="${pageContext.request.contextPath}/resources/javascript/licensed/fileuploader.js"></script>
+  <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery-1.7.min.js"></script>
+  <script src="${pageContext.request.contextPath}/resources/javascript/app/keymaps.js"></script>
+  <script src='${pageContext.request.contextPath}/resources/javascript/app/dialog.js'></script>
+  <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery.prettyPhoto.js"></script>
+  <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery.truncate.js"></script>
+  <script src="${pageContext.request.contextPath}/resources/javascript/app/URLBuilder.js"></script>
+  <script src="${pageContext.request.contextPath}/resources/javascript/app/registration.js"></script>
+  <script src="${pageContext.request.contextPath}/resources/javascript/app/mainLinksEditor.js"></script>
+  <script src='${pageContext.request.contextPath}/resources/javascript/app/signin.js'></script>
+  <script src='${pageContext.request.contextPath}/resources/javascript/app/global.js'></script>
+  <script src="${pageContext.request.contextPath}/resources/javascript/app/antimultipost.js"></script>
+  <script src='${pageContext.request.contextPath}/resources/javascript/lib/xregexp-min.js'></script>
+  <script src='${pageContext.request.contextPath}/resources/javascript/lib/bootstrap.min.js'></script>
+  <script src='${pageContext.request.contextPath}/resources/javascript/app/errorUtils.js'></script>
+  <script src='${pageContext.request.contextPath}/resources/javascript/app/utils.js'></script>
+  <script src='${pageContext.request.contextPath}/resources/javascript/app/dropdown.js'></script>
+  <script src='${pageContext.request.contextPath}/resources/javascript/app/forumEffects.js'></script>
+  <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/prettify.js"></script>
+  <script src="${pageContext.request.contextPath}/resources/javascript/app/topline.js"></script>
+  <script src="${pageContext.request.contextPath}/resources/javascript/app/search.js"></script>
+  <script src="${pageContext.request.contextPath}/resources/javascript/app/banner.js"></script>
+  <script src="${pageContext.request.contextPath}/resources/javascript/lib/html5placeholder.jquery.js"></script>
+  <script src="${pageContext.request.contextPath}/resources/javascript/app/events.js"></script>
+  <script src="${pageContext.request.contextPath}/resources/javascript/app/forumAdministration.js"></script>
+  <script src="${pageContext.request.contextPath}/resources/javascript/lib/fileuploader.js"></script>
   <decorator:head/>
   <title><decorator:title/></title>
 </head>

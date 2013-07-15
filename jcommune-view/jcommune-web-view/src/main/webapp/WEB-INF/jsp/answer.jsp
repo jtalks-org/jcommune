@@ -23,21 +23,21 @@
 <head>
     <meta name="description" content="<c:out value="${topic.title}"/>">
     <title><spring:message code="label.answer_to"/>: <c:out value="${topic.title}"/></title>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/lib/wysiwyg-bbcode/editor.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/leaveConfirm.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/bbeditorEffects.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/app/bbeditorEffects.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/contextMenu.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/contextmenu/js/jquery.contextMenu.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/jquery.contextMenu.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/contextmenu/js/jquery-fieldselection.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/jquery-fieldselection.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/contextmenu/js/textarea-helper.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/textarea-helper.js"
             type="text/javascript"></script>
     <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/contextmenu/css/jquery.contextMenu.css"
+          href="${pageContext.request.contextPath}/resources/css/lib/jquery.contextMenu.css"
           type="text/css" media="all"/>
 </head>
 <body>

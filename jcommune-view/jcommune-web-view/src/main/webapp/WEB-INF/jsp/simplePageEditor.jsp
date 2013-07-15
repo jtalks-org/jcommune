@@ -23,7 +23,7 @@
 <html>
 <head>
     <title><spring:message code="label.edit"/></title>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/lib/wysiwyg-bbcode/editor.js"
             type="text/javascript"></script>
 </head>
 <body>

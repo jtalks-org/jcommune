@@ -24,17 +24,17 @@
 <head>
     <meta name="description" content="<c:out value="${topic.title}"/>">
     <title><c:out value="${topic.title}"/></title>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/utils.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/app/utils.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/subscription.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/app/subscription.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/moveTopic.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/app/moveTopic.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/poll.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/app/poll.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/codeHighlighting.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/app/codeHighlighting.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/permissionService.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/app/permissionService.js"
             type="text/javascript"></script>
 </head>
 <body>

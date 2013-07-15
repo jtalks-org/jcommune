@@ -23,7 +23,7 @@
 <head>
     <meta name="description" content="<c:out value="${user.username}"/>">
     <title><spring:message code="label.postListOfUser"/> <c:out value="${user.username}"/></title>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/codeHighlighting.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/app/codeHighlighting.js"
             type="text/javascript"></script>
 </head>
 <body>

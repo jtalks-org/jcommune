@@ -22,7 +22,7 @@
 <html>
 <head>
     <title><spring:message code="label.signup"/></title>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/registration.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/app/registration.js"
             type="text/javascript"></script>
 </head>
 

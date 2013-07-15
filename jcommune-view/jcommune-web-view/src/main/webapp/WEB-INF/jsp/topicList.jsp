@@ -24,7 +24,7 @@
 <head>
   <meta name="description" content="<c:out value="${branch.name}"/>">
   <title><c:out value="${branch.name}"/> - <c:out value="${cmpDescription}"/></title>
-  <script src="${pageContext.request.contextPath}/resources/javascript/custom/subscription.js"
+  <script src="${pageContext.request.contextPath}/resources/javascript/app/subscription.js"
           type="text/javascript"></script>
 </head>
 <body>

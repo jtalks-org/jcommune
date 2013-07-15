@@ -26,13 +26,13 @@
     <meta name="description" content="<c:out value="${user.username}"/>">
 <title><spring:message code="label.user" /> - ${user.username}</title>
 <script
-    src="${pageContext.request.contextPath}/resources/javascript/licensed/json2.js"
+    src="${pageContext.request.contextPath}/resources/javascript/lib/json2.js"
     type="text/javascript"></script>
 <script
-    src="${pageContext.request.contextPath}/resources/javascript/custom/userProfileEffects.js"
+    src="${pageContext.request.contextPath}/resources/javascript/app/userProfileEffects.js"
     type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" media="screen, projection"
-    href="${pageContext.request.contextPath}/resources/css/profile.css" />
+    href="${pageContext.request.contextPath}/resources/css/app/profile.css" />
 
 </head>
 <body>

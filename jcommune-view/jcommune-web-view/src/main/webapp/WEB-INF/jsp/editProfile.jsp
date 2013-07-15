@@ -27,15 +27,15 @@
     <meta name="description" content="<c:out value="${label.user}"/>">
     <title><spring:message code="label.user"/> - "${auth}"</title>
     <script type="text/javascript"
-            src="${pageContext.request.contextPath}/resources/javascript/licensed/fileuploader.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/avatarUpload.js"
+            src="${pageContext.request.contextPath}/resources/javascript/lib/fileuploader.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/app/avatarUpload.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/contacts.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/app/contacts.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/userProfileEffects.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/app/userProfileEffects.js"
             type="text/javascript"></script>
     <link rel="stylesheet" type="text/css" media="screen, projection"
-          href="${pageContext.request.contextPath}/resources/css/profile.css"/>
+          href="${pageContext.request.contextPath}/resources/css/app/profile.css"/>
 </head>
 <body>
 

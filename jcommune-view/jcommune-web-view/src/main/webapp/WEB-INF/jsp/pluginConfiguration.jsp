@@ -22,9 +22,9 @@
 <head>
     <meta name="description" content="<c:out value="${topic.title}"/>">
     <%-- Add plugins --%>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/utils.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/app/utils.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/permissionService.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/app/permissionService.js"
             type="text/javascript"></script>
 </head>
 <body>

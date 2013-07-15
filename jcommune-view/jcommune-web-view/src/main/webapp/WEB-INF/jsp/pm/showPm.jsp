@@ -23,7 +23,7 @@
 
 <head>
     <script
-            src="${pageContext.request.contextPath}/resources/javascript/custom/privateMessages.js"></script>
+            src="${pageContext.request.contextPath}/resources/javascript/app/privateMessages.js"></script>
     <title><spring:message code="label.pm_title"/></title>
 </head>
 <body>

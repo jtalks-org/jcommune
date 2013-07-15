@@ -1,0 +1,730 @@
+body {
+    padding-top: 50px; /* 60px to make the container go all the way to the bottom of the topbar */
+    background-color: rgb(247, 247, 247);
+    background-image: url("../../images/fabric-plaid.png");
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.status-img {
+    height: 32px;
+    width: 32px
+}
+
+.status-img-small {
+    height: 24px;
+    width: 24px
+}
+
+.dropdown > a.lang-toggle {
+    padding: 0;
+    margin: 6px 2px 0px 15px;
+}
+
+ul.lang-menu li img {
+    vertical-align: middle;
+}
+
+#branch-header {
+    line-height: 3.2em;
+    overflow: hidden;
+}
+
+#branch-header h2 {
+    float: left;
+}
+
+#branch-header #right-block {
+    float: right;
+    overflow: hidden;
+}
+
+#branch-header #right-block a {
+    font-weight: bold;
+    padding-left: 2px;
+    color: rgb(85, 85, 85);
+}
+
+#recent-topics-header {
+    line-height: 3.2em;
+    overflow: hidden;
+}
+
+#recent-topics-header #right-block {
+    float: right;
+    overflow: hidden;
+}
+
+#recent-topics-header #right-block a {
+    font-weight: bold;
+    padding-left: 2px;
+    color: rgb(85, 85, 85);
+}
+
+.span9 #right-block {
+    float: right;
+    overflow: hidden;
+}
+
+.span9 #right-block a {
+    font-weight: bold;
+    padding-left: 2px;
+    color: rgb(85, 85, 85);
+}
+
+#mark-all-viewed {
+    font-weight: bold;
+    padding-right: 20px
+}
+
+#underlist-block {
+    overflow: auto;
+    width: 100%;
+}
+
+.container footer {
+    display: block;
+    margin-top: 45px;
+    padding: 35px 0px 36px;
+    border-top: 1px solid rgb(229, 229, 229);
+}
+
+.icon-palette {
+    background-image: url("../../images/palette-icon.png");
+    background-position: center;
+}
+
+.icon-strike {
+    background-image: url("../../images/strike-icon.png");
+    background-position: center;
+    padding-top: 2px;
+}
+
+.icon-underline {
+    background-image: url("../../images/underline-icon.png");
+    background-position: center;
+    padding-top: 2px;
+}
+
+.icon-add-row {
+    background-image: url("../../images/insert-row-icon.png");
+    background-position: center;
+}
+
+.icon-link {
+    background-image: url("../../images/link-icon.png");
+    background-position: center;
+}
+
+.icon-code {
+    background-image: url("../images/code-icon.png");
+    background-position: center;
+    padding-top: 1px;
+}
+
+.icon-icq {
+    background-image: url("../images/icq.png");
+    background-position: center;
+    height: 16px;
+    width: 16px;
+}
+
+.icon-skype {
+    background-image: url("../images/skype.png");
+    background-position: center;
+    height: 16px;
+    width: 16px;
+}
+
+.icon-mail {
+    background-image: url("../images/mail.png");
+    background-position: center;
+    height: 16px;
+    width: 16px;
+}
+
+.icon-quote {
+    background-image: url("../../images/quote-icon.png");
+    background-position: center;
+}
+
+.icon-online {
+    background-image: url("../../images/online-icon.png");
+    background-position: center;
+    vertical-align: baseline;
+    margin-right: 2px;
+}
+
+.icon-offline {
+    background-image: url("../../images/offline-icon.png");
+    background-position: center;
+    vertical-align: baseline;
+    margin-right: 2px;
+}
+
+#topics-table {
+    word-wrap: break-word;
+}
+
+#topics-table td {
+    padding-top: 4px;
+    padding-bottom: 6px;
+}
+
+#topics-table th {
+    vertical-align: middle;
+}
+
+#topics-table .status-col {
+    padding: 0px;
+    width: 32px;
+    max-width: 32px;
+    min-width: 32px;
+}
+
+#topics-table .status-col-small {
+    padding: 0px;
+    width: 24px;
+    max-width: 24px;
+    min-width: 24px;
+}
+
+#topics-table .author-col a {
+    font-size: 11px;
+}
+
+#topics-table .posted-in-col a {
+    font-size: 11px;
+}
+
+#topics-table .topics-posts {
+    font-size: 11px;
+}
+
+#topics-table .posts-views {
+    font-size: 11px;
+}
+
+#topics-table .created-by {
+    font-style: italic;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+#topics-table .latest-by {
+    font-size: 10px;
+}
+
+#topics-table .latest-by p {
+    margin: 0;
+    white-space: nowrap;
+    font-size: 10px;
+}
+
+#topics-table .latest-by .date {
+    color: rgb(51, 51, 51);
+}
+
+#topics-table .branch-title {
+    font-weight: bold;
+    line-height: 18px;
+    font-size: 14px;
+}
+
+#topics-table .title-col {
+    min-width: 200px;
+}
+
+.wraptocenter {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    width: 105px;
+    height: 105px;
+}
+
+.wraptocenter * {
+    vertical-align: middle;
+}
+
+.wraptocenter span {
+    display: inline-block;
+    height: 100%;
+    width: 1px;
+}
+
+.pm-text-box {
+    margin-top: 10px;
+    height: 350px;
+    padding: 8px;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(238, 238, 238);
+    box-shadow: 0pt 1px 2px rgba(0, 0, 0, 0.024) inset;
+    border-radius: 3px;
+    overflow-y: scroll;
+}
+
+@media (max-width: 479px) {
+    #topics-table .posts-views {
+        display: none;
+    }
+
+    #topics-table .latest-by {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .posts-views {
+        display: none;
+    }
+}
+
+@media (max-width: 979px) {
+    #topics-table .author-col {
+        display: none;
+    }
+
+    #topics-table .posted-in-col {
+        display: none;
+    }
+
+    .created-by {
+        font-style: italic;
+        font-size: 12px;
+        display: inline;
+        white-space: nowrap;
+    }
+}
+
+@media (min-width: 980px) {
+    #topics-table .author-col {
+        display: table-cell;
+    }
+
+    #topics-table .posted-in-col {
+        display: table-cell;
+    }
+
+    .created-by {
+        display: none;
+    }
+
+    #topics-table .posts-views {
+        display: table-cell;
+    }
+
+    #topics-table .posts-views-small {
+        display: table-cell;
+        text-align: center;
+        font-size: 11px;
+    }
+
+    #topics-table .posts-td-small {
+        max-width: 90px;
+    }
+}
+
+.post {
+    width: 100%;
+    text-align: left;
+    padding: 0px;
+    margin: 0px;
+}
+
+.post, .pm-text-box, #topicDto, #postDto, #privateMessageDto{
+    -webkit-tab-size: 4 !important;
+    -moz-tab-size: 4 !important;
+    -o-tab-size: 4 !important;
+    tab-size: 4 !important;
+}
+
+.post table td {
+    padding: 6px;
+}
+
+.post table .top-buttons, .post table .post-date {
+    padding: 3px;
+    line-height: 13px;
+}
+
+.post table .top-buttons {
+    text-align: right;
+    border-left: 0px;
+}
+
+.post table .userinfo {
+    max-width: 175px;
+    min-width: 175px;
+    vertical-align: top;
+}
+
+.post table .userinfo p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    -webkit-text-overflow: ellipsis;
+    -ms-text-overflow: ellipsis;
+    -moz-box-sizing: border-box;
+}
+
+/* attr to bootrap tooltip*/
+.post table .userinfo p a {
+    max-width: 175px;
+}
+
+.post table .userinfo div {
+    font: 11px verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+}
+
+.signature-conatiner {
+    white-space: normal;
+    text-align: left;
+}
+
+.cursor-pointer {
+    cursor: pointer !important;
+}
+
+.right-aligned {
+    float: right;
+}
+
+.left-aligned {
+    float: left;
+}
+
+.cleared {
+    clear: both;
+}
+
+@media (max-width: 480px) {
+    .upper-pagination {
+        display: none;
+    }
+}
+
+.shrink-to-fit {
+    width: 1px;
+    white-space: nowrap;
+}
+
+div.anchor {
+    position: relative;
+    z-index: -1000;
+    top: -50px;
+    left: -100px;
+    visibility: hidden;
+    width: 1px;
+    line-height: 0;
+}
+
+.modal .close {
+    padding: 0;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    -webkit-appearance: none;
+}
+
+.modal .modal-header {
+    background-color: rgb(245, 245, 245)
+}
+
+#signin-modal-dialog #signin-submit-button {
+    clear: left;
+    width: 100%;
+    height: 32px;
+    font-size: 13px;
+}
+
+#signin-modal-dialog div.control-group {
+    margin: 0 0 0 25px;
+}
+
+#signin-modal-dialog #rememberme-area {
+    margin: 0px 10px 9px 25px;
+}
+
+#signup-modal-dialog {
+    width: 350px;
+    max-height: none;
+}
+
+#signup-modal-dialog .help-block {
+    margin: 0px 5px;
+}
+
+#signup-modal-dialog input {
+    margin-bottom: 0px;
+}
+
+#signup-modal-dialog .controls {
+    margin-bottom: 7px;
+    margin-left: 20px;
+}
+
+#signup-modal-dialog .captcha-images img {
+    vertical-align: middle;
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+    padding-right: 0px;
+    padding-left: 0px;
+    -moz-box-sizing: border-box;
+}
+
+#captcha-img:hover,
+#captcha-refresh:hover {
+    cursor: hand;
+    cursor: pointer;
+}
+
+.post-update-mark {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 10px;
+    font-style: italic;
+    float: right;
+    margin-right: 5px
+}
+
+.review-container, #add-comment-form {
+    background-color: #FBF9EA;
+    border: 1px solid #E2E1D5;
+    border-radius: 5px 5px 5px 5px;
+    color: black;
+    padding: 5px;
+    margin: 5px;
+    white-space: normal;
+    overflow: hidden;
+}
+
+.review-container-content {
+    width: 100%;
+    resize: vertical;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+.review-container-controls-ok {
+    min-width: 100px;
+}
+
+.review-container-controls-cancel {
+    min-width: 100px;
+    margin-left: 10px;
+}
+
+.review-avatar-img {
+    width: 50px;
+    height: 50px;
+}
+
+.review-content {
+    margin-left: 60px;
+}
+
+.review-header {
+    font-style: italic;
+}
+
+.review-group {
+    background-color: #A0C0F0;
+    border-radius: 5px 5px 5px 5px;
+    padding: 1px 0;
+}
+
+.review-group-buttons {
+    padding: 0 0 4px 5px;
+}
+
+.keymaps-caption {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 10px;
+    font-style: italic;
+}
+
+.cursor-hand {
+    cursor: hand;
+    cursor: pointer;
+}
+
+.modal-body table {
+    width: 100%;
+}
+
+.modal-body .link-url {
+    visibility: hidden;
+    width: 0px;
+    max-width: 0px;
+    white-space: nowrap;
+}
+
+.modal-body .link-hint {
+    display: none;
+}
+
+.modal-body .link-title {
+    width: 300px;
+    max-width: 300px;
+}
+
+.modal-body .icon-pencil {
+    max-width: 20px;
+    min-width: 20px;
+    margin-right: 10px;
+}
+
+.modal-body .icon-trash {
+    max-width: 20px;
+    min-width: 20px;
+}
+
+.external-links-container {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.external-links-bar {
+    margin-bottom: 10px;
+}
+
+#main-links-editor .modal-body {
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    line-height: 30px;
+}
+
+.modal-body .help-block {
+    line-height: 15px !important;
+}
+
+#externalLinks a {
+    color: #000000;
+    font-size: 14px;
+}
+
+#externalLinks span:not(:last-child):after {
+    content: "|";
+}
+
+.remove-links {
+    max-width: 180px;
+    width: 180px;
+}
+
+.hide-element {
+    display: none !important;
+}
+
+.banner-textarea {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.sapeLinks {
+    min-height: 10px;
+    padding: 5px;
+    margin-bottom: 25px;
+    max-height: 100px;
+    overflow: hidden;
+    text-align: justify;
+    background-color: rgb(247, 247, 247);
+    background-image: url("../../images/solid.png");
+}
+
+#move-topic-editor {
+    min-width: 600px;
+    max-height: 400px;
+    overflow: hidden !important;
+}
+
+.padding-top-profile {
+    padding-top: 5px;
+}
+
+.topline-links[style*="display: none"] {
+    padding-left: 15px;
+    font-weight: bold;
+    color: #999999;
+    display: none !important;
+}
+
+.topline-links:not([style*="display: none"]) {
+    padding-left: 15px;
+    font-weight: bold;
+    color: #999999;
+    display: list-item !important;
+}
+
+.sape-div {
+    text-align: right;
+    margin-top: 7px;
+}
+
+.dialog-info {
+    font-size: 10px;
+    color: gray;
+    margin: 4px;
+    padding: 2px;
+    width: 100%;
+}
+
+.dialog-input {
+    width: 99%;
+}
+
+.dialog-color-picker {
+    margin-left: 35px;
+    height: 25px;
+    width: 25px;
+    border: solid 2px #666;
+    background-color: rgb(0, 0, 0);
+}
+
+.dialog-message {
+    padding: 5px;
+    text-align: center;
+}
+
+.pool-result {
+    width: 100%;
+    text-align: center;
+}
+
+.icon-password-exclamation {
+    margin-left: -20px;
+}
+
+.modal-tooltip-caps-lock .tooltip-arrow {
+    margin-left: 8px !important;
+}
+
+.btn-group .tooltip {
+    white-space: nowrap;
+}
+
+.thumbnail-logo {
+    max-height: 34px;
+    max-width: 31px;
+    padding: 10px 10px 10px 10px;
+}
+
+.forum-logo {
+    height: 31px;
+    width: 34px;
+}
+
+.logo-container {
+    float: left;
+    display: block;
+    padding: 5px 12px 0px 0px;
+    line-height: 1;
+}
