@@ -33,17 +33,17 @@
         <%-- List of plugins. --%>
         <table id="plugins-table" class="table table-row table-bordered">
             <c:choose>
-                <c:when test="${!(empty section.branches)}">
+                <c:when test="${!(empty plugins)}">
                     <thead>
                         <tr>
                             <th id="plugin-name">
-                                <spring:message code="label.section.header.branches"/>
+                                <spring:message code="label.plugins.plugin.name"/>
                             </th>
                             <th id="plugin-actions">
-                                <spring:message code="label.branch.header.topics_posts"/>
+                                <spring:message code="label.plugins.plugin.configure"/>
                             </th>
                             <th id="plugin-is-enabled">
-                                <spring:message code="label.branch.header.lastMessage"/>
+                                <spring:message code="label.plugins.plugin.is_enabled"/>
                             </th>
                         </tr>
                     </thead>

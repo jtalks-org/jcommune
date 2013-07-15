@@ -32,17 +32,17 @@
     <%-- List of plugins. --%>
     <table id="plugins-table" class="table table-row table-bordered">
         <c:choose>
-            <c:when test="${!(empty section.branches)}">
+            <c:when test="${!(empty pluginConfiguration.properties)}">
                 <thead>
                 <tr>
                     <th id="property-name">
-                        <spring:message code="label.section.header.branches"/>
+                        <spring:message code="label.plugins.plugin.property.name"/>
                     </th>
                     <th id="property-type">
-                        <spring:message code="label.branch.header.topics_posts"/>
+                        <spring:message code="label.plugins.plugin.property.type"/>
                     </th>
                     <th id="property-value">
-                        <spring:message code="label.branch.header.lastMessage"/>
+                        <spring:message code="label.plugins.plugin.property.value"/>
                     </th>
                 </tr>
                 </thead>
