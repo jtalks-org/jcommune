@@ -75,6 +75,8 @@
   <script src="${pageContext.request.contextPath}/resources/javascript/lib/fileuploader.js"></script>
   <decorator:head/>
   <title><decorator:title/></title>
+  <spring:message code="label.rssFeed" var="rssTitle"/>
+  <link rel="alternate" type="application/rss+xml" title="${rssTitle}" href="http://${pageContext.request.contextPath}/topics/recent.rss" />
 </head>
 <body>
 <jsp:include page="../template/topLine.jsp"/>
