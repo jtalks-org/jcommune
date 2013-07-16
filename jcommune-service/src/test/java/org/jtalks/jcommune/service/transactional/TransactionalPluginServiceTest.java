@@ -32,6 +32,7 @@ import static org.testng.Assert.assertEquals;
  * @author Anuar_Nurmakanov
  */
 public class TransactionalPluginServiceTest {
+    private static final long FAKE_COMPONENT_ID = 25L;
 
     @Mock
     private PluginDao pluginDao;
@@ -50,7 +51,7 @@ public class TransactionalPluginServiceTest {
         String pluginName = "plugin";
         when(pluginDao.get(pluginName)).thenReturn(expectedConfiguration);
 
-        PluginConfiguration actualConfiguration = pluginService.getPluginConfiguration(pluginName);
+        PluginConfiguration actualConfiguration = pluginService.getPluginConfiguration(pluginName, FAKE_COMPONENT_ID);
 
         assertEquals(actualConfiguration, expectedConfiguration, "Plugin configuration should be retrieved from database.");
     }
@@ -60,6 +61,6 @@ public class TransactionalPluginServiceTest {
         String pluginName = "plugin";
         when(pluginDao.get(pluginName)).thenThrow(new NotFoundException());
 
-        pluginService.getPluginConfiguration(pluginName);
+        pluginService.getPluginConfiguration(pluginName, FAKE_COMPONENT_ID);
     }
 }

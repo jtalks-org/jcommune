@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.plugins.Plugin;
+import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.PluginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,30 +38,39 @@ import java.util.List;
 public class PluginController {
 
     private PluginService pluginService;
+    private ComponentService componentService;
 
     @Autowired
-    public PluginController(PluginService pluginService) {
+    public PluginController(PluginService pluginService, ComponentService componentService) {
         this.pluginService = pluginService;
+        this.componentService = componentService;
     }
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public ModelAndView getPlugins() {
-        List<Plugin> plugins = pluginService.getPlugins();
+        long componentId = getForumComponentId();
+        List<Plugin> plugins = pluginService.getPlugins(componentId);
         return new ModelAndView("pluginsList")
                 .addObject("plugins", plugins);
     }
 
     @RequestMapping(value = "/configure/{name}", method = RequestMethod.GET)
     public ModelAndView configurePlugin(@PathVariable String name) throws NotFoundException {
-        PluginConfiguration pluginConfiguration = pluginService.getPluginConfiguration(name);
+        long componentId = getForumComponentId();
+        PluginConfiguration pluginConfiguration = pluginService.getPluginConfiguration(name, componentId);
         return new ModelAndView("pluginConfiguration")
                 .addObject("pluginConfiguration", pluginConfiguration);
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public ModelAndView updateConfiguration(@RequestBody PluginConfiguration newConfiguration) throws NotFoundException {
-        pluginService.updateConfiguration(newConfiguration);
+        long componentId = getForumComponentId();
+        pluginService.updateConfiguration(newConfiguration, componentId);
         return new ModelAndView("/plugins/configure/" + newConfiguration.getName())
                 .addObject("pluginConfiguration", newConfiguration);
+    }
+
+    private long getForumComponentId() {
+        return componentService.getComponentOfForum().getId();
     }
 }

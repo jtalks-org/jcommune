@@ -14,10 +14,12 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.common.model.entity.Component;
 import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
 import org.jtalks.jcommune.model.plugins.Plugin;
+import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.PluginService;
 import org.mockito.Mock;
 import org.springframework.web.servlet.ModelAndView;
@@ -42,19 +44,25 @@ public class PluginControllerTest {
 
     @Mock
     private PluginService pluginService;
+    @Mock
+    private ComponentService componentService;
 
     private PluginController pluginController;
 
     @BeforeMethod
     public void init() {
         initMocks(this);
-        this.pluginController = new PluginController(pluginService);
+        this.pluginController = new PluginController(pluginService, componentService);
     }
 
     @Test
     public void getPluginsShouldReturnAllPlugins() {
+        long componentId = 25L;
+        Component component = new Component();
+        component.setId(componentId);
+        when(componentService.getComponentOfForum()).thenReturn(component);
         List<Plugin> expectedPlugins = Arrays.asList((Plugin) new DummyPlugin(), new DummyPlugin());
-        when(pluginService.getPlugins()).thenReturn(expectedPlugins);
+        when(pluginService.getPlugins(componentId)).thenReturn(expectedPlugins);
 
         ModelAndView pluginsModelAndView = pluginController.getPlugins();
 
@@ -68,7 +76,11 @@ public class PluginControllerTest {
     public void configurePluginShouldMoveToPluginConfigurationPage() throws NotFoundException {
         String configuredPluginName = "plugin";
         PluginConfiguration expectedConfiguration = new PluginConfiguration();
-        when(pluginService.getPluginConfiguration(configuredPluginName)).thenReturn(expectedConfiguration);
+        long componentId = 25L;
+        Component component = new Component();
+        component.setId(componentId);
+        when(componentService.getComponentOfForum()).thenReturn(component);
+        when(pluginService.getPluginConfiguration(configuredPluginName, componentId)).thenReturn(expectedConfiguration);
 
         ModelAndView pluginConfigModelAndView = pluginController.configurePlugin(configuredPluginName);
 
@@ -80,14 +92,22 @@ public class PluginControllerTest {
 
     @Test(expectedExceptions = NotFoundException.class)
     public void configurePluginWhenPluginWasNotFoundShouldShowNotFoundError() throws NotFoundException {
+        long componentId = 25L;
+        Component component = new Component();
+        component.setId(componentId);
+        when(componentService.getComponentOfForum()).thenReturn(component);
         String nonExistPluginName = "non-exist";
-        when(pluginService.getPluginConfiguration(nonExistPluginName)).thenThrow(new NotFoundException());
+        when(pluginService.getPluginConfiguration(nonExistPluginName, componentId)).thenThrow(new NotFoundException());
 
         pluginController.configurePlugin(nonExistPluginName);
     }
 
     @Test
     public void updateConfigurationShouldUpdateItByCallingServiceLayer() throws NotFoundException {
+        long componentId = 25L;
+        Component component = new Component();
+        component.setId(componentId);
+        when(componentService.getComponentOfForum()).thenReturn(component);
         String pluginName = "plugin";
         PluginConfiguration newConfiguration = new PluginConfiguration();
         newConfiguration.setName(pluginName);
@@ -96,7 +116,7 @@ public class PluginControllerTest {
 
         assertViewName(resultModelAndView, "/plugins/configure/" + pluginName);
         assertModelAttributeAvailable(resultModelAndView, "pluginConfiguration");
-        verify(pluginService).updateConfiguration(newConfiguration);
+        verify(pluginService).updateConfiguration(newConfiguration, componentId);
     }
 
     /**

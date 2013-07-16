@@ -26,6 +26,7 @@ import org.jtalks.jcommune.service.plugins.PluginFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.io.IOException;
 import java.net.URLClassLoader;
@@ -81,7 +82,9 @@ public class TransactionalPluginService
      *
      * @return list of plugins available at the moment
      */
-    public synchronized List<Plugin> getPlugins(PluginFilter... filters) {
+    @Override
+    @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
+    public synchronized List<Plugin> getPlugins(long componentId, PluginFilter... filters) {
         this.synchronizePluginList();
         List<Plugin> filtered = new ArrayList<>(plugins.size());
         plugins:
@@ -126,10 +129,12 @@ public class TransactionalPluginService
     /**
      * {@inheritDoc}
      */
-    public void updateConfiguration(PluginConfiguration pluginConfiguration) throws NotFoundException {
+    @Override
+    @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
+    public void updateConfiguration(PluginConfiguration pluginConfiguration, long componentId) throws NotFoundException {
         String name = pluginConfiguration.getName();
         Plugin result;
-        List<Plugin> plugins1 = this.getPlugins(new NameFilter(name));
+        List<Plugin> plugins1 = this.getPlugins(componentId, new NameFilter(name));
         if (plugins1.isEmpty()) {
             throw new NotFoundException("Plugin " + name + "is not loaded");
         } else {
@@ -144,7 +149,8 @@ public class TransactionalPluginService
      * {@inheritDoc}
      */
     @Override
-    public PluginConfiguration getPluginConfiguration(String pluginName) throws NotFoundException {
+    @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
+    public PluginConfiguration getPluginConfiguration(String pluginName, long componentId) throws NotFoundException {
         return getDao().get(pluginName);
     }
 
