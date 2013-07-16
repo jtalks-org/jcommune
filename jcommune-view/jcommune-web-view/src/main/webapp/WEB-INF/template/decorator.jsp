@@ -46,9 +46,10 @@
         href="${pageContext.request.contextPath}/resources/css/app/i18n/<spring:message code="locale.code"/>.css"/>
   <link rel="stylesheet" type="text/css" media="screen, projection"
         href='${pageContext.request.contextPath}/resources/css/lib/fonts-googleapis-com.css'/>
-  <spring:message code="label.rssFeed" var="rssTitle"/>
+    <spring:message code="label.forum.title" var="forumTitle"/>
+    <spring:message code="label.rssFeed" var="rssTitle" arguments="${forumTitle}"/>
   <link rel="alternate" type="application/rss+xml" title="${rssTitle}"
-        href="${pageContext.request.contextPath}/recent.rss" />
+        href="${pageContext.request.contextPath}/topics/recent.rss"/>
   <link rel="shortcut icon" type="image/x-icon" href="${pageContext.request.contextPath}/admin/icon/ico?v=${infoChangeDate}"/>
   <link rel="icon" type="image/png" href="${pageContext.request.contextPath}/admin/icon/png?v=${infoChangeDate}"/>
   <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery-1.7.min.js"></script>
