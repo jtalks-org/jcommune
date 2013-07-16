@@ -46,6 +46,9 @@
         href="${pageContext.request.contextPath}/resources/css/app/i18n/<spring:message code="locale.code"/>.css"/>
   <link rel="stylesheet" type="text/css" media="screen, projection"
         href='${pageContext.request.contextPath}/resources/css/lib/fonts-googleapis-com.css'/>
+  <spring:message code="label.rssFeed" var="rssTitle"/>
+  <link rel="alternate" type="application/rss+xml" title="${rssTitle}"
+        href="${pageContext.request.contextPath}/recent.rss" />
   <link rel="shortcut icon" type="image/x-icon" href="${pageContext.request.contextPath}/admin/icon/ico?v=${infoChangeDate}"/>
   <link rel="icon" type="image/png" href="${pageContext.request.contextPath}/admin/icon/png?v=${infoChangeDate}"/>
   <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery-1.7.min.js"></script>
@@ -75,8 +78,6 @@
   <script src="${pageContext.request.contextPath}/resources/javascript/lib/fileuploader.js"></script>
   <decorator:head/>
   <title><decorator:title/></title>
-  <spring:message code="label.rssFeed" var="rssTitle"/>
-  <link rel="alternate" type="application/rss+xml" title="${rssTitle}" href="http://${pageContext.request.contextPath}/topics/recent.rss" />
 </head>
 <body>
 <jsp:include page="../template/topLine.jsp"/>
