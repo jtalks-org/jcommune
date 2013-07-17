@@ -18,10 +18,11 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 
 <head>
-    <meta name="description" content="<c:out value="${topic.title}"/>">
-    <%-- Add plugins --%>
+    <meta name="description" content="<c:out value="11"/>">
+    <%-- Add JS plugins --%>
     <c:set var="mode" value="${jsp.import.mode}"/>
     <c:choose>
         <c:when test="${mode eq 'prod'}">
@@ -36,46 +37,48 @@
     </c:choose>
 </head>
 <body>
-<c:set var="authenticated" value="${false}"/>
-<div class="container">
-    <%-- List of plugins. --%>
-    <table id="plugins-table" class="table table-row table-bordered">
-        <c:choose>
-            <c:when test="${!(empty plugins)}">
-                <thead>
-                <tr>
-                    <th id="plugin-name">
-                        <spring:message code="label.plugins.plugin.name"/>
-                    </th>
-                    <th id="plugin-actions">
-                        <spring:message code="label.plugins.plugin.configure"/>
-                    </th>
-                    <th id="plugin-is-enabled">
-                        <spring:message code="label.plugins.plugin.is_enabled"/>
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:forEach var="plugin" items="${plugins}" varStatus="i">
-                    <%-- Plugin --%>
+
+<jtalks:hasPermission targetId='${component.id}' targetType='COMPONENT' permission='GeneralPermission.ADMIN'>
+    <div class="container">
+        <%-- List of plugins. --%>
+        <table id="plugins-table" class="table table-row table-bordered">
+            <c:choose>
+                <c:when test="${!(empty plugins)}">
+                    <thead>
                     <tr>
-                        <td>
-                            <c:out value="${plugin.name}"/>
-                        </td>
-                        <td>
-                            <a href="${pageContext.request.contextPath}/plugins/${plugin.name}"
-                               title="<spring:message code='label.tips.view_profile'/>">
-                            </a>
-                        </td>
-                        <td>
-                            <form:checkbox path="" value="${plugin.state == 'ENABLED'}"
-                                           class="form-check-radio-box script-has-tooltip"/>
-                        </td>
+                        <th id="plugin-name">
+                            <spring:message code="label.plugins.plugin.name"/>
+                        </th>
+                        <th id="plugin-actions">
+                            <spring:message code="label.plugins.plugin.configure"/>
+                        </th>
+                        <th id="plugin-is-enabled">
+                            <spring:message code="label.plugins.plugin.is_enabled"/>
+                        </th>
                     </tr>
-                </c:forEach>
-                </tbody>
-            </c:when>
-        </c:choose>
-    </table>
-</div>
+                    </thead>
+                    <tbody>
+                    <c:forEach var="plugin" items="${plugins}" varStatus="i">
+                        <%-- Plugin --%>
+                        <tr>
+                            <td>
+                                <c:out value="${plugin.name}"/>
+                            </td>
+                            <td>
+                                <a href="${pageContext.request.contextPath}/plugins/${plugin.name}"
+                                   title="<spring:message code='label.tips.view_profile'/>">
+                                </a>
+                            </td>
+                            <td>
+                                <form:checkbox path="" value="${plugin.state == 'ENABLED'}"
+                                               class="form-check-radio-box script-has-tooltip"/>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </c:when>
+            </c:choose>
+        </table>
+    </div>
+</jtalks:hasPermission>
 </body>

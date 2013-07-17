@@ -18,10 +18,11 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 
 <head>
     <meta name="description" content="<c:out value="${topic.title}"/>">
-    <%-- Add plugins --%>
+    <%-- Add JS plugins --%>
     <c:set var="mode" value="${jsp.import.mode}"/>
     <c:choose>
         <c:when test="${mode eq 'prod'}">
@@ -37,42 +38,51 @@
 
 </head>
 <body>
-<div class="container">
-    <%-- List of plugins. --%>
-    <table id="plugins-table" class="table table-row table-bordered">
-        <c:choose>
-            <c:when test="${!(empty pluginConfiguration.properties)}">
-                <thead>
-                <tr>
-                    <th id="property-name">
-                        <spring:message code="label.plugins.plugin.property.name"/>
-                    </th>
-                    <th id="property-type">
-                        <spring:message code="label.plugins.plugin.property.type"/>
-                    </th>
-                    <th id="property-value">
-                        <spring:message code="label.plugins.plugin.property.value"/>
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:forEach var="property" items="${pluginConfiguration.properties}" varStatus="i">
-                    <%-- Property --%>
-                    <tr>
-                        <td>
-                            <c:out value="${property.name}"/>
-                        </td>
-                        <td>
-                            <c:out value="${property.type}"/>
-                        </td>
-                        <td>
-                            <c:out value="${property.value}"/>
-                        </td>
-                    </tr>
-                </c:forEach>
-                </tbody>
-            </c:when>
-        </c:choose>
-    </table>
-</div>
+    <jtalks:hasPermission targetId='${component.id}' targetType='COMPONENT' permission='GeneralPermission.ADMIN'>
+        <div class="container">
+            <%-- Plugin configuration properties. --%>
+            <form:form action="${pageContext.request.contextPath}${submitUrl}" method="POST" modelAttribute="${pluginConfiguration}">
+                <table id="plugins-table" class="table table-row table-bordered">
+                    <c:choose>
+                        <c:when test="${!(empty pluginConfiguration.properties)}">
+                            <%-- Header --%>
+                            <thead>
+                                <tr>
+                                    <th id="property-name">
+                                        <spring:message code="label.plugins.plugin.property.name"/>
+                                    </th>
+                                    <th id="property-type">
+                                        <spring:message code="label.plugins.plugin.property.type"/>
+                                    </th>
+                                    <th id="property-value">
+                                        <spring:message code="label.plugins.plugin.property.value"/>
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <%-- Content --%>
+                            <tbody>
+                                <form:hidden path="id" />
+                                <c:forEach var="property" items="${pluginConfiguration.properties}" varStatus="index">
+                                        <%-- Property --%>
+                                        <tr>
+                                            <td>
+                                                <c:out value="${property.name}"/>
+                                            </td>
+                                            <td>
+                                                <c:out value="${property.type}"/>
+                                            </td>
+                                            <td>
+                                                <form:input path="properties[${index}].value" />
+                                            </td>
+                                        </tr>
+                                </c:forEach>
+                            </tbody>
+                        </c:when>
+                    </c:choose>
+                </table>
+                <input type="submit" value="OK" />
+            </form:form>
+        </div>
+    </jtalks:hasPermission>
 </body>
