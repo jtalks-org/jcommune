@@ -58,7 +58,7 @@ public class PoulpeRegistrationServiceTest {
     public void testRegisterUserWithInvalidCredentials() throws Exception {
         Errors errors = new Errors();
         List<Error> errorList = new ArrayList<Error>();
-        errorList.add(createError("user.username.length_constraint_violation", null));
+        errorList.add(createError("validation.username.length", null));
         errors.setErrorList(errorList);
         JaxbRepresentation<Errors> errorsRepr = new JaxbRepresentation<Errors>(errors);
         ClientResource clientResource = createClientResource(Status.CLIENT_ERROR_BAD_REQUEST, errorsRepr);

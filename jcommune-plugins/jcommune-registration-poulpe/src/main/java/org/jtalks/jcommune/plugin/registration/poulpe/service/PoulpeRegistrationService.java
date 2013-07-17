@@ -103,11 +103,11 @@ public class PoulpeRegistrationService implements RegistrationService {
         for (Error error : errorsRepr.getErrorList()) {
             if (error.getCode() != null && !error.getCode().isEmpty()) {
                 String errorCode = resourceBundle.getString(error.getCode());
-                if (errorCode.contains("email")) {
+                if (error.getCode().contains("email")) {
                     errors.put("email", errorCode);
-                } else if (errorCode.contains("username")) {
+                } else if (error.getCode().contains("username")) {
                     errors.put("username", errorCode);
-                } else if (errorCode.contains("password")) {
+                } else if (error.getCode().contains("password")) {
                     errors.put("password", errorCode);
                 }
             } else {
