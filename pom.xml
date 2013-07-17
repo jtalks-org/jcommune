@@ -499,6 +499,7 @@
                         <exclude>**/.*</exclude>
                         <exclude>**/empty</exclude>
                         <exclude>**/lib/**</exclude>
+                        <exclude>**/wro/**</exclude>
                     </excludes>
                     <useDefaultExcludes>true</useDefaultExcludes>
                     <strictCheck>true</strictCheck>
