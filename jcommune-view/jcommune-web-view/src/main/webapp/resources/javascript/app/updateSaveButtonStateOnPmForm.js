@@ -30,15 +30,18 @@ function toggleSaveButtonEnabled(isContainSomething) {
 }
 
 $(document).ready(function () {
-    updateSaveButtonState();
     var mark_class = ".script-confirm-unsaved";
 
-    $("input" + mark_class + ", textarea" + mark_class).keyup(function () {
+    if ($("input" + mark_class + ", textarea" + mark_class).length > 0) {
         updateSaveButtonState();
-    });
 
-    $("input" + mark_class + ", textarea" + mark_class).keypress(function () {
-        updateSaveButtonState();
-    });
 
+        $("input" + mark_class + ", textarea" + mark_class).keyup(function () {
+            updateSaveButtonState();
+        });
+
+        $("input" + mark_class + ", textarea" + mark_class).keypress(function () {
+            updateSaveButtonState();
+        });
+    }
 });

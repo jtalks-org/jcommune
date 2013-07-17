@@ -585,4 +585,22 @@
         <pathtoHeader>${headerBaseDir}/header.txt</pathtoHeader>
         <commonVersion>0.53</commonVersion>
     </properties>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <jsp.import.mode>dev</jsp.import.mode>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <jsp.import.mode>prod</jsp.import.mode>
+            </properties>
+        </profile>
+    </profiles>
 </project>

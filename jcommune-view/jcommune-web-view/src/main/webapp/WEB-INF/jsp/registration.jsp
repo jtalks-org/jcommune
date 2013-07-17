@@ -22,8 +22,19 @@
 <html>
 <head>
     <title><spring:message code="label.signup"/></title>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/registration.js"
-            type="text/javascript"></script>
+
+    <c:set var="mode" value="${jsp.import.mode}"/>
+    <c:choose>
+        <c:when test="${mode eq 'prod'}">
+            <script type="text/javascript"
+                    src="${pageContext.request.contextPath}/resources/wro/registration.js?${project.version}"></script>
+        </c:when>
+
+        <c:otherwise>
+            <script src="${pageContext.request.contextPath}/resources/javascript/app/registration.js"></script>
+        </c:otherwise>
+    </c:choose>
+
 </head>
 
 <body>

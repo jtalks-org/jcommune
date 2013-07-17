@@ -30,5 +30,6 @@ logs
 /jcommune-view/jcommune-web-view/test-output
 /jcommune-view/jcommune-web-controller/bin
 /jcommune-view/jcommune-web-view/bin
+/jcommune-view/jcommune-web-view/src/main/webapp/resources/wro
 /jcommune-service/bin
 /jcommune-model/bin

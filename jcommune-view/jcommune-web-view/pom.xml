@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>jcommune-view</artifactId>
@@ -112,6 +113,29 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>ro.isdc.wro4j</groupId>
+                <artifactId>wro4j-maven-plugin</artifactId>
+                <version>1.7.0</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <targetGroups>main,pm,answer,cr,post,profile,plugin,registration,topic</targetGroups>
+                    <minimize>true</minimize>
+                    <destinationFolder>${basedir}/src/main/webapp/resources/wro</destinationFolder>
+                    <cssDestinationFolder>${basedir}/src/main/webapp/resources/wro</cssDestinationFolder>
+                    <jsDestinationFolder>${basedir}/src/main/webapp/resources/wro</jsDestinationFolder>
+                    <contextFolder>${basedir}/src/main/webapp/</contextFolder>
+                    <wroFile>${basedir}/wro.xml</wroFile>
+                    <ignoreMissingResources>false</ignoreMissingResources>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.codehaus.cargo</groupId>
                 <artifactId>cargo-maven2-plugin</artifactId>
                 <version>1.0.2</version>
@@ -147,6 +171,9 @@
                     <!--useCache=true needed for maven replacer plugin to access resources,
                         as well as prepare-package phase and goal exploded in execution-->
                     <useCache>true</useCache>
+                    <packagingExcludes>
+                        resources/css/app/**,resources/css/lib/**,resources/javascript/**
+                    </packagingExcludes>
                 </configuration>
                 <executions>
                     <execution>
@@ -205,7 +232,7 @@
                         <!--Remove all new line characters(Windows and Unix)-->
                         <replacement>
                             <token>\r\n|\n</token>
-                            <value />
+                            <value/>
                         </replacement>
                     </replacements>
                 </configuration>

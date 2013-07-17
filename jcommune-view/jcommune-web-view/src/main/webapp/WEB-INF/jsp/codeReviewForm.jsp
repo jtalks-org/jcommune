@@ -22,14 +22,18 @@
 <head>
     <meta name="description" content="<c:out value="${topicDto.topic.branch.name}"/>">
     <title><c:out value="${topicDto.topic.branch.name}"/> - <spring:message code="label.addCodeReview"/></title>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery-ui.min.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"
-            type="text/javascript"></script>
 
-    <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/resources/css/lib/jquery-ui.css"
-          type="text/css" media="all"/>
+    <c:set var="mode" value="${jsp.import.mode}"/>
+    <c:choose>
+        <c:when test="${mode eq 'prod'}">
+            <script type="text/javascript"
+                    src="${pageContext.request.contextPath}/resources/wro/cr.js?${project.version}"></script>
+        </c:when>
+
+        <c:otherwise>
+            <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
+        </c:otherwise>
+    </c:choose>
 </head>
 <body>
 <div class="container">
@@ -56,19 +60,19 @@
                              class="post" cssClass="help-inline"/>
             </div>
         </div>
-        
+
         <div class='control-group'>
             <spring:message code="placeholder.codereview.editor.content" var="placeholderEditorContent"/>
             <form:textarea path="bodyText" id="body" name="body" tabindex="200" style="width:100%;height: 350px"
-                          placeholder="${placeholderEditorContent}" class="script-confirm-unsaved"/>
+                           placeholder="${placeholderEditorContent}" class="script-confirm-unsaved"/>
             <br>
             <form:errors path="bodyText" cssClass="help-inline"/>
         </div>
-        
-         <input id="post" type="submit" class="btn btn-primary" accesskey="s" name="post" tabindex="300"
-                value="<spring:message code="label.save"/>"/>
+
+        <input id="post" type="submit" class="btn btn-primary" accesskey="s" name="post" tabindex="300"
+               value="<spring:message code="label.save"/>"/>
     </form:form>
-    
+
     <a href="${pageContext.request.contextPath}/branches/${branchId}" tabindex="1000" class='back-btn'>
         <i class="icon-arrow-left"></i>
         <spring:message code="label.back"/>

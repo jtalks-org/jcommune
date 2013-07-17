@@ -22,47 +22,42 @@
 <head>
     <meta name="description" content="<c:out value="${topicTitle}"/>">
     <title><spring:message code="label.answer_to"/>: <c:out value="${topicTitle}"/></title>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/wysiwyg-bbcode/editor.js"
-            type="text/javascript"></script>
-    <script
-            src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/bbeditorEffects.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/jquery.contextMenu.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/jquery-fieldselection.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/textarea-helper.js"
-            type="text/javascript"></script>
-    <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/resources/css/lib/jquery.contextMenu.css"
-          type="text/css" media="all"/>
+
+    <c:set var="mode" value="${jsp.import.mode}"/>
+    <c:choose>
+        <c:when test="${mode eq 'prod'}">
+            <script type="text/javascript"
+                    src="${pageContext.request.contextPath}/resources/wro/post.js?${project.version}"></script>
+        </c:when>
+
+        <c:otherwise>
+            <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
+        </c:otherwise>
+    </c:choose>
 </head>
 <body>
 
-    <div class="container">
-        <h2><a class="heading" href="${pageContext.request.contextPath}/topics/${topicId}">
-            <c:out value="${topicTitle}"/>
-        </a></h2>
+<div class="container">
+    <h2><a class="heading" href="${pageContext.request.contextPath}/topics/${topicId}">
+        <c:out value="${topicTitle}"/>
+    </a></h2>
 
-        <div id="answer">
-            <form:form action="${pageContext.request.contextPath}/posts/${postId}/edit?topicId=${topicId}"
-                       method="POST" modelAttribute="postDto" class='well anti-multipost'>
-                <form:hidden path="topicId"/>
-                <form:hidden path="id"/>
-                
-                <jtalks:bbeditor labelForAction="label.save"
-                                 postText="${postDto.bodyText}"
-                                 bodyParameterName="bodyText"
-                                 back="${pageContext.request.contextPath}/topics/${topicId}"/>
-            </form:form>
-            
-            <a href="${pageContext.request.contextPath}/topics/${topicId}" tabindex="500" class="back-btn">
-                <i class="icon-arrow-left"></i>
-                <spring:message code="label.back"/>
-            </a>
-        </div>
+    <div id="answer">
+        <form:form action="${pageContext.request.contextPath}/posts/${postId}/edit?topicId=${topicId}"
+                   method="POST" modelAttribute="postDto" class='well anti-multipost'>
+            <form:hidden path="topicId"/>
+            <form:hidden path="id"/>
+
+            <jtalks:bbeditor labelForAction="label.save"
+                             postText="${postDto.bodyText}"
+                             bodyParameterName="bodyText"
+                             back="${pageContext.request.contextPath}/topics/${topicId}"/>
+        </form:form>
+
+        <a href="${pageContext.request.contextPath}/topics/${topicId}" tabindex="500" class="back-btn">
+            <i class="icon-arrow-left"></i>
+            <spring:message code="label.back"/>
+        </a>
     </div>
+</div>
 </body>

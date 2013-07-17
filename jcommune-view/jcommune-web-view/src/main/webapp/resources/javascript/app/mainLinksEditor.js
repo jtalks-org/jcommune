@@ -65,7 +65,7 @@ $(function () {
          <span class="confirm-delete-text remove-links"></span> ';
 
     //add links when click to button navbar (fix show elements when refresh page)
-    $('.btn-navbar').on('click', function(){
+    $('.btn-navbar').on('click', function () {
         $('li.topline-links').show();
     });
 
@@ -74,9 +74,10 @@ $(function () {
         if (sizeMin && sizeMin == 'block') {
             //show in topLine
             $('span#externalLinks').parent('div').hide();
+            $('li.topline-links').attr('style', 'display: block !important');
         } else {
             //show in mainPage
-            $('li.topline-links').hide();
+            $('li.topline-links').attr('style', 'display: none !important');
             $('span#externalLinks').parent('div').show();
         }
     });

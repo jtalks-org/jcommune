@@ -23,25 +23,23 @@
 <sec:authentication property="principal.id" var="senderId"/>
 <head>
     <title><spring:message code="label.new_pm"/></title>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/wysiwyg-bbcode/editor.js"
-            type="text/javascript"></script>
-    <script
-            src="${pageContext.request.contextPath}/resources/javascript/app/privateMessages.js"></script>
-    <script
-            src="${pageContext.request.contextPath}/resources/javascript/app/updateSaveButtonStateOnPmForm.js"></script>
-    <script
-            src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/jquery.contextMenu.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/jquery-fieldselection.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/textarea-helper.js"
-            type="text/javascript"></script>
-    <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/resources/css/lib/jquery.contextMenu.css"
-          type="text/css" media="all"/>
+
+    <c:set var="mode" value="${jsp.import.mode}"/>
+    <c:choose>
+        <c:when test="${mode eq 'prod'}">
+            <script language="javascript"
+                    src="${pageContext.request.contextPath}/resources/wro/pm.js?${project.version}"></script>
+        </c:when>
+
+        <c:otherwise>
+            <script src="${pageContext.request.contextPath}/resources/javascript/app/privateMessages.js"></script>
+            <script src="${pageContext.request.contextPath}/resources/javascript/app/updateSaveButtonStateOnPmForm.js">
+            </script>
+            <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
+            <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"></script>
+        </c:otherwise>
+    </c:choose>
+
 </head>
 <body>
 
@@ -59,29 +57,29 @@
                        class="well anti-multipost">
                 <form:hidden path="id"/>
 
-            <div class='control-group'>
-                <div class='controls'>
-	                <spring:message code="label.pm.recipient" var="placeholderRecipient"/>
-	                <form:input class="span3 script-confirm-unsaved" path="recipient" tabindex="100"
-	                            placeholder="${placeholderRecipient}"/>
-	                <br/>
-	                <form:errors path="recipient" cssClass="help-inline"/>
+                <div class='control-group'>
+                    <div class='controls'>
+                        <spring:message code="label.pm.recipient" var="placeholderRecipient"/>
+                        <form:input class="span3 script-confirm-unsaved" path="recipient" tabindex="100"
+                                    placeholder="${placeholderRecipient}"/>
+                        <br/>
+                        <form:errors path="recipient" cssClass="help-inline"/>
+                    </div>
                 </div>
-            </div>
 
-            <div class='control-group'>
-                <div class='controls'>
-	                <spring:message code="label.pm.title" var="placeholderTitle"/>
-	                <form:input class="span8 script-confirm-unsaved" path="title" tabindex="101"
-	                            placeholder="${placeholderTitle}"/>
-	                <br/>
-	                <form:errors path="title" cssClass="help-inline"/>
+                <div class='control-group'>
+                    <div class='controls'>
+                        <spring:message code="label.pm.title" var="placeholderTitle"/>
+                        <form:input class="span8 script-confirm-unsaved" path="title" tabindex="101"
+                                    placeholder="${placeholderTitle}"/>
+                        <br/>
+                        <form:errors path="title" cssClass="help-inline"/>
+                    </div>
                 </div>
-            </div>
 
                 <c:set var="hasPermissionToSend" value="false"/>
                 <jtalks:hasPermission targetId='${senderId}' targetType='USER'
-                                                      permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
+                                      permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
                     <c:set var="hasPermissionToSend" value="true"/>
                 </jtalks:hasPermission>
 
@@ -92,7 +90,8 @@
                                  showSubmitButton="${hasPermissionToSend}"
                                  back="${pageContext.request.contextPath}/inbox"/>
 
-                <input id="savePM" type="submit" class="btn" tabindex="500" name="save_pm" value="<spring:message code="label.save"/>"
+                <input id="savePM" type="submit" class="btn" tabindex="500" name="save_pm"
+                       value="<spring:message code="label.save"/>"
                        onclick="document.editForm.action='${pageContext.request.contextPath}/pm/save';return true;"/>
 
             </form:form>

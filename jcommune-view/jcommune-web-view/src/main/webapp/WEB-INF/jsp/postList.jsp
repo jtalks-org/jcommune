@@ -24,18 +24,19 @@
 <head>
     <meta name="description" content="<c:out value="${topic.title}"/>">
     <title><c:out value="${topic.title}"/></title>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/utils.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/subscription.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/moveTopic.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/poll.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/codeHighlighting.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/permissionService.js"
-            type="text/javascript"></script>
+
+    <c:set var="mode" value="${jsp.import.mode}"/>
+    <c:choose>
+        <c:when test="${mode eq 'prod'}">
+            <script type="text/javascript"
+                    src="${pageContext.request.contextPath}/resources/wro/post.js?${project.version}"></script>
+        </c:when>
+
+        <c:otherwise>
+            <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
+        </c:otherwise>
+    </c:choose>
+
 </head>
 <body>
 
@@ -135,7 +136,7 @@
 </c:if>
 
 <%--We need different logic for code review and other posts because CR uses differnet phpBB processing--%>
-<c:remove var="isCodeReviewPost" scope="request"/>  
+<c:remove var="isCodeReviewPost" scope="request"/>
 <c:if test="${isFirstPost && (topic.codeReview != null)}">
     <c:set var="isCodeReviewPost" value="true" scope="request"/>
 </c:if>
@@ -364,7 +365,7 @@
 
 <%-- Users --%>
 <div id="users-stats" class="well forum-user-stats-container">
-    <jtalks:moderators moderators="${topic.branch.moderatorsGroup.users}" />
+    <jtalks:moderators moderators="${topic.branch.moderatorsGroup.users}"/>
     <br/>
     <strong><spring:message code="label.topic.now_browsing"/></strong>
     <jtalks:users users="${viewList}" branch="${topic.branch}"/>

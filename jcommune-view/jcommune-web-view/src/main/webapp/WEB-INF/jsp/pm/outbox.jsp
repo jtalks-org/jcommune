@@ -20,8 +20,23 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <head>
-    <script
-            src="${pageContext.request.contextPath}/resources/javascript/app/privateMessages.js"></script>
+
+    <c:set var="mode" value="${jsp.import.mode}"/>
+    <c:choose>
+        <c:when test="${mode eq 'prod'}">
+            <script language="javascript"
+                    src="${pageContext.request.contextPath}/resources/wro/pm.js?${project.version}"></script>
+        </c:when>
+
+        <c:otherwise>
+            <script src="${pageContext.request.contextPath}/resources/javascript/app/privateMessages.js"></script>
+            <script src="${pageContext.request.contextPath}/resources/javascript/app/updateSaveButtonStateOnPmForm.js">
+            </script>
+            <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
+            <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"></script>
+        </c:otherwise>
+    </c:choose>
+
     <title><spring:message code="label.outbox"/></title>
 </head>
 <body>

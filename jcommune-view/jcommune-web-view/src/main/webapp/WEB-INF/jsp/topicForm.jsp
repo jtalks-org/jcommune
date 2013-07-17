@@ -22,32 +22,33 @@
 <head>
     <meta name="description" content="<c:out value="${topicDto.topic.branch.name}"/>">
     <title><c:out value="${topicDto.topic.branch.name}"/> - <spring:message code="h.new_topic"/></title>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery-ui.min.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/wysiwyg-bbcode/editor.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/datepicker.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/pollPreview.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/jquery.contextMenu.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/jquery-fieldselection.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/textarea-helper.js"
-            type="text/javascript"></script>
-    <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/resources/css/lib/jquery.contextMenu.css"
-          type="text/css" media="all"/>
-    <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/resources/css/lib/jquery-ui.css"
-          type="text/css" media="all"/>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/bbeditorEffects.js"
-            type="text/javascript"></script>
+
+    <c:set var="mode" value="${jsp.import.mode}"/>
+    <c:choose>
+        <c:when test="${mode eq 'prod'}">
+            <script type="text/javascript"
+                    src="${pageContext.request.contextPath}/resources/wro/topic.js?${project.version}"></script>
+
+            <link rel="stylesheet" type="text/css" media="all"
+                  href="${pageContext.request.contextPath}/resources/wro/topic.css?${project.version}"/>
+        </c:when>
+
+        <c:otherwise>
+            <link rel="stylesheet" type="text/css" media="all"
+                  href="${pageContext.request.contextPath}/resources/css/lib/jquery-ui.css"/>
+
+            <link rel="stylesheet" type="text/css" media="all"
+                  href="${pageContext.request.contextPath}/resources/css/lib/jquery.contextMenu.css"/>
+
+            <script src="${pageContext.request.contextPath}/resources/javascript/app/datepicker.js"></script>
+            <script src="${pageContext.request.contextPath}/resources/javascript/app/pollPreview.js"></script>
+            <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
+            <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"></script>
+            <script src="${pageContext.request.contextPath}/resources/javascript/app/bbeditorEffects.js"></script>
+            <script src="${pageContext.request.contextPath}/resources/javascript/app/subscription.js"></script>
+        </c:otherwise>
+    </c:choose>
+
 </head>
 <body>
 <div class="container">

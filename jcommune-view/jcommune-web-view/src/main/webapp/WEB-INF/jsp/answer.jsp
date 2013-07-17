@@ -23,43 +23,46 @@
 <head>
     <meta name="description" content="<c:out value="${topic.title}"/>">
     <title><spring:message code="label.answer_to"/>: <c:out value="${topic.title}"/></title>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/wysiwyg-bbcode/editor.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/bbeditorEffects.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/jquery.contextMenu.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/jquery-fieldselection.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/textarea-helper.js"
-            type="text/javascript"></script>
-    <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/resources/css/lib/jquery.contextMenu.css"
-          type="text/css" media="all"/>
+
+    <c:set var="mode" value="${jsp.import.mode}"/>
+    <c:choose>
+        <c:when test="${mode eq 'prod'}">
+            <script type="text/javascript"
+                    src="${pageContext.request.contextPath}/resources/wro/answer.js?${project.version}"></script>
+        </c:when>
+
+        <c:otherwise>
+
+            <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
+            <script src="${pageContext.request.contextPath}/resources/javascript/app/bbeditorEffects.js"></script>
+            <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"></script>
+
+        </c:otherwise>
+    </c:choose>
+
 </head>
 <body>
-    <div class="container">
-        <h2><a class="heading" href="${pageContext.request.contextPath}/topics/${topic.id}"><c:out value="${topic.title}"/></a></h2>
-               
-        <form:form action="${pageContext.request.contextPath}/posts/new?topicId=${topicId}&page=${page}&branchId=${topic.branch.id}"
-                   method="POST" modelAttribute="postDto" class='well anti-multipost'>
-            <form:hidden path="topicId"/>
-            
-            <jtalks:bbeditor labelForAction="label.answer"
-                             postText="${postDto.bodyText}"
-                             bodyParameterName="bodyText"
-                             back="${pageContext.request.contextPath}/topics/${topicId}"/>
-        </form:form>
+<div class="container">
+    <h2><a class="heading" href="${pageContext.request.contextPath}/topics/${topic.id}"><c:out
+            value="${topic.title}"/></a></h2>
 
-        <a href="${pageContext.request.contextPath}/topics/${topicId}" tabindex="500" class="back-btn">
-            <i class="icon-arrow-left"></i>
-            <spring:message code="label.back"/>
-        </a>
-    </div>
-    <script>
-        Utils.focusFirstEl('#tbMsg');
-    </script>
+    <form:form
+            action="${pageContext.request.contextPath}/posts/new?topicId=${topicId}&page=${page}&branchId=${topic.branch.id}"
+            method="POST" modelAttribute="postDto" class='well anti-multipost'>
+        <form:hidden path="topicId"/>
+
+        <jtalks:bbeditor labelForAction="label.answer"
+                         postText="${postDto.bodyText}"
+                         bodyParameterName="bodyText"
+                         back="${pageContext.request.contextPath}/topics/${topicId}"/>
+    </form:form>
+
+    <a href="${pageContext.request.contextPath}/topics/${topicId}" tabindex="500" class="back-btn">
+        <i class="icon-arrow-left"></i>
+        <spring:message code="label.back"/>
+    </a>
+</div>
+<script>
+    Utils.focusFirstEl('#tbMsg');
+</script>
 </body>

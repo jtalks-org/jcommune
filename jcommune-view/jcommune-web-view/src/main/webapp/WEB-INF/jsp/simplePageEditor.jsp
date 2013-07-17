@@ -23,8 +23,6 @@
 <html>
 <head>
     <title><spring:message code="label.edit"/></title>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/wysiwyg-bbcode/editor.js"
-            type="text/javascript"></script>
 </head>
 <body>
 <div class="container">
@@ -40,7 +38,7 @@
 
 
             <div>
-                <form:input path="nameText" class="reg_input" type="text"/></br>
+                    <form:input path="nameText" class="reg_input" type="text"/></br>
                 <form:errors path="nameText" cssClass="error"/>
             </div>
 

@@ -23,8 +23,21 @@
 <head>
     <meta name="description" content="<c:out value="${user.username}"/>">
     <title><spring:message code="label.postListOfUser"/> <c:out value="${user.username}"/></title>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/codeHighlighting.js"
-            type="text/javascript"></script>
+    <c:set var="mode" value="${jsp.import.mode}"/>
+    <c:choose>
+        <c:when test="${mode eq 'prod'}">
+            <script type="text/javascript"
+                    src="${pageContext.request.contextPath}/resources/wro/profile.js?${project.version}"></script>
+        </c:when>
+
+        <c:otherwise>
+            <script src="${pageContext.request.contextPath}/resources/javascript/app/avatarUpload.js"></script>
+            <script src="${pageContext.request.contextPath}/resources/javascript/app/contacts.js"></script>
+            <script src="${pageContext.request.contextPath}/resources/javascript/app/userProfileEffects.js"></script>
+            <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"></script>
+            <script src="${pageContext.request.contextPath}/resources/javascript/app/codeHighlighting.js"></script>
+        </c:otherwise>
+    </c:choose>
 </head>
 <body>
 <div class="container">

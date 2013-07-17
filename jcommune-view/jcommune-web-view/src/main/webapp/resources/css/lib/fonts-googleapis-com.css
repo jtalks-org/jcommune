@@ -1,7 +1,8 @@
 @CHARSET "UTF-8";
-@font-face {
-  font-family: 'Carter One';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Carter One'), local('CarterOne'), url('http://themes.googleusercontent.com/static/fonts/carterone/v5/VjW2qt1pkqVtO22ObxgEBRsxEYwM7FgeyaSgU71cLG0.woff') format('woff');
-}
+@media screen, projection
+    @font-face {
+        font-family: 'Carter One';
+        font-style: normal;
+        font-weight: 400;
+        src: local('Carter One'), local('CarterOne'), url('http://themes.googleusercontent.com/static/fonts/carterone/v5/VjW2qt1pkqVtO22ObxgEBRsxEYwM7FgeyaSgU71cLG0.woff') format('woff');
+    }
