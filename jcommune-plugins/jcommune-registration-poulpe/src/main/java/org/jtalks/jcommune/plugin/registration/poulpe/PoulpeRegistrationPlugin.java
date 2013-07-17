@@ -29,9 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Provides user registration service via Poulpe.
@@ -77,11 +75,11 @@ public class PoulpeRegistrationPlugin extends StatefullPlugin implements SimpleR
     @Override
     public List<PluginConfigurationProperty> getDefaultConfiguration() {
         PluginConfigurationProperty url =
-                new PluginConfigurationProperty("String", "http://localhost/rest/private/user");
+                new PluginConfigurationProperty(PluginConfigurationProperty.Type.STRING, "http://localhost/rest/private/user");
         url.setName("PoulpeUrl");
-        PluginConfigurationProperty login = new PluginConfigurationProperty("String", "user");
+        PluginConfigurationProperty login = new PluginConfigurationProperty(PluginConfigurationProperty.Type.STRING, "user");
         login.setName("Login");
-        PluginConfigurationProperty password = new PluginConfigurationProperty("String", "1234");
+        PluginConfigurationProperty password = new PluginConfigurationProperty(PluginConfigurationProperty.Type.STRING, "1234");
         login.setName("Password");
         return Arrays.asList(url, login, password);
     }
@@ -93,8 +91,9 @@ public class PoulpeRegistrationPlugin extends StatefullPlugin implements SimpleR
     }
 
     @Override
-    protected void applyConfiguration(List<PluginConfigurationProperty> properties) {
-
+    protected Map<PluginConfigurationProperty, String> applyConfiguration(List<PluginConfigurationProperty> properties) {
+        this.pluginConfiguration.setProperties(properties);
+        return Collections.emptyMap();
     }
 
     @Override
