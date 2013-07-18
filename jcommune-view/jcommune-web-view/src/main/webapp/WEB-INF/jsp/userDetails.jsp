@@ -25,29 +25,6 @@
 <head>
   <meta name="description" content="<c:out value="${user.username}"/>">
   <title><spring:message code="label.user"/> - ${user.username}</title>
-
-  <c:set var="mode" value="${isJsCompressed}"/>
-  <c:choose>
-    <c:when test="${mode eq 'true'}">
-      <link rel="stylesheet" type="text/css" media="screen, projection"
-            href="${pageContext.request.contextPath}/resources/wro/profile.css?${project.version}"/>
-
-      <script type="text/javascript"
-              src="${pageContext.request.contextPath}/resources/wro/profile.js?${project.version}"></script>
-    </c:when>
-
-    <c:otherwise>
-      <link rel="stylesheet" type="text/css" media="screen, projection"
-            href="${pageContext.request.contextPath}/resources/css/app/profile.css"/>
-
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/avatarUpload.js"></script>
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/contacts.js"></script>
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/userProfileEffects.js"></script>
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"></script>
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/codeHighlighting.js"></script>
-    </c:otherwise>
-  </c:choose>
-
 </head>
 <body>
 <sec:authentication property="principal.username" var="auth"
