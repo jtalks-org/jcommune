@@ -96,6 +96,7 @@ public class TransactionalPluginService
             }
             filtered.add(plugin);
         }
+        LOGGER.debug("JCommune forum has {0} plugins now.", filtered.size());
         return filtered;
     }
 

@@ -47,7 +47,7 @@ public class PluginController {
     public ModelAndView getPlugins() {
         long componentId = getForumComponentId();
         List<Plugin> plugins = pluginService.getPlugins(componentId);
-        return new ModelAndView("pluginsList")
+        return new ModelAndView("pluginList")
                 .addObject("plugins", plugins);
     }
 

@@ -38,7 +38,7 @@
 
 </head>
 <body>
-    <jtalks:hasPermission targetId='${component.id}' targetType='COMPONENT' permission='GeneralPermission.ADMIN'>
+    <jtalks:hasPermission targetId='${forumComponent.id}' targetType='COMPONENT' permission='GeneralPermission.ADMIN'>
         <div class="container">
             <%-- Plugin configuration properties. --%>
             <form:form action="${pageContext.request.contextPath}${submitUrl}" method="POST" modelAttribute="${pluginConfiguration}">

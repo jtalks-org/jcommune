@@ -66,7 +66,7 @@ public class PluginControllerTest {
 
         ModelAndView pluginsModelAndView = pluginController.getPlugins();
 
-        assertViewName(pluginsModelAndView, "pluginsList");
+        assertViewName(pluginsModelAndView, "pluginList");
         assertModelAttributeAvailable(pluginsModelAndView, "plugins");
         List<Plugin> actualPlugins = (List<Plugin>) pluginsModelAndView.getModel().get("plugins");
         assertEquals(actualPlugins, expectedPlugins, "Plugins should be returned from services.");
