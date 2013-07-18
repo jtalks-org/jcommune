@@ -24,17 +24,17 @@ import java.util.List;
  */
 public interface Plugin {
 
-    public enum State {LOADED, CONFIGURED, ENABLED, IN_ERROR}
+    enum State {LOADED, CONFIGURED, ENABLED, IN_ERROR}
 
-    public boolean supportsJCommuneVersion(String version);
+    boolean supportsJCommuneVersion(String version);
 
-    public String getName();
+    String getName();
 
-    public State getState();
+    State getState();
 
-    public List<PluginConfigurationProperty> getConfiguration();
+    List<PluginConfigurationProperty> getConfiguration();
 
-    public List<PluginConfigurationProperty> getDefaultConfiguration();
+    List<PluginConfigurationProperty> getDefaultConfiguration();
 
-    public void configure(PluginConfiguration configuration);
+    void configure(PluginConfiguration configuration);
 }
