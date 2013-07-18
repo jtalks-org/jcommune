@@ -73,12 +73,12 @@ $(function () {
         var sizeMin = $('.btn-navbar').css('display');
         if (sizeMin && sizeMin == 'block') {
             //show in topLine
-            $('span#externalLinks').parent('div').hide();
+            $('#externalLinks').parent('div').hide();
             $('li.topline-links').attr('style', 'display: block !important');
         } else {
             //show in mainPage
             $('li.topline-links').attr('style', 'display: none !important');
-            $('span#externalLinks').parent('div').show();
+            $('#externalLinks').parent('div').show();
         }
     });
 

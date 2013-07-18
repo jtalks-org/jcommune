@@ -35,8 +35,8 @@
 	                <span id="mark-all-viewed">
 	                    <i class="icon-check"></i>
 	                    <a href="${pageContext.request.contextPath}/recent/forum/markread">
-                        <spring:message code="label.mark_all_topics_read"/>
-                      </a>
+                          <spring:message code="label.mark_all_topics_read"/>
+                        </a>
 	                </span>
         </sec:authorize>
       </div>
@@ -66,8 +66,8 @@
 		                    <span id="mark-all-viewed">
 		                        <i class="icon-check"></i>
 		                        <a href="${pageContext.request.contextPath}/recent/forum/markread">
-                              <spring:message code="label.mark_all_topics_read"/>
-                            </a>
+                                  <spring:message code="label.mark_all_topics_read"/>
+                                </a>
 		                    </span>
             </div>
           </sec:authorize>
@@ -89,11 +89,11 @@
           <th class="author-col shrink-to-fit"><spring:message code="label.branch.header.author"/></th>
           <th class="posted-in-col shrink-to-fit"><spring:message code="label.branch.header.branches"/></th>
           <th class="posts-views-small forum-posts-view-header shrink-to-fit"><spring:message
-              code="label.branch.header.posts"/></th>
+                  code="label.branch.header.posts"/></th>
           <th class="posts-views-small forum-posts-view-header shrink-to-fit"><spring:message
-              code="label.branch.header.views"/></th>
+                  code="label.branch.header.views"/></th>
           <th class="latest-by forum-latest-by-header shrink-to-fit"><spring:message
-              code="label.branch.header.lastMessage"/></th>
+                  code="label.branch.header.lastMessage"/></th>
         </tr>
         </thead>
         <tbody>
@@ -115,7 +115,7 @@
 
               <c:if test="${topic.hasPoll}">
                                <span class="sticky"><spring:message
-                                   code="label.marked_as_poll"/> </span>
+                                       code="label.marked_as_poll"/> </span>
               </c:if>
 
               <a href="${pageContext.request.contextPath}/topics/${topic.id}">

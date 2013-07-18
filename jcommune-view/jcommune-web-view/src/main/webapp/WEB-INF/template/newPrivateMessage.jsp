@@ -20,7 +20,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <sec:authentication property="principal.id" var="senderId"/>
 <jtalks:hasPermission targetId='${senderId}' targetType='USER' permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
-	<a href="${pageContext.request.contextPath}/pm/new?senderId=${senderId}"
-	   class="btn btn-primary btn-small pm_buttons">
-	    <spring:message code="label.new_pm"/></a>
+  <a href="${pageContext.request.contextPath}/pm/new?senderId=${senderId}"
+     class="btn btn-primary btn-small pm_buttons">
+    <spring:message code="label.new_pm"/></a>
 </jtalks:hasPermission>

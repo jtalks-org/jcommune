@@ -19,15 +19,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%--variables --%>
-<c:set var="visibleBranchesCount" value="0" />
+<c:set var="visibleBranchesCount" value="0"/>
 <%--calculate the count of visible branches --%>
 <c:forEach var="branch" items="${section.branches}" varStatus="i">
-	<jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' 
-                    permission='BranchPermission.VIEW_TOPICS'>
-  		<c:set var="visibleBranchesCount" value="${visibleBranchesCount + 1}" />
-    </jtalks:hasPermission>
+  <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
+                        permission='BranchPermission.VIEW_TOPICS'>
+    <c:set var="visibleBranchesCount" value="${visibleBranchesCount + 1}"/>
+  </jtalks:hasPermission>
 </c:forEach>
 <%--We must show the section that contains at least one visible branch --%>
 <c:if test="${visibleBranchesCount > 0}">
-	<jsp:doBody/>
+  <jsp:doBody/>
 </c:if>

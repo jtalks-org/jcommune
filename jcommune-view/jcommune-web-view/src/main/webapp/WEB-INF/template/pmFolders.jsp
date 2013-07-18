@@ -19,16 +19,16 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <div class="well pm_folders">
-    <ul class="nav nav-list">
-        <li class="nav-header"><spring:message code="label.pm.folders"/></li>
-        <li id="inbox_link"><a href="<c:out value="${pageContext.request.contextPath}"/>/inbox">
-            <i class="icon-inbox"></i>
-            <spring:message code="label.inbox"/></a></li>
-        <li id="outbox_link"><a href="<c:out value="${pageContext.request.contextPath}"/>/outbox">
-            <i class="icon-envelope"></i>
-            <spring:message code="label.outbox"/></a></li>
-        <li id="draft_link"><a href="<c:out value="${pageContext.request.contextPath}"/>/drafts">
-            <i class="icon-pencil"></i>
-            <spring:message code="label.drafts"/></a></li>
-    </ul>
+  <ul class="nav nav-list">
+    <li class="nav-header"><spring:message code="label.pm.folders"/></li>
+    <li id="inbox_link"><a href="<c:out value="${pageContext.request.contextPath}"/>/inbox">
+      <i class="icon-inbox"></i>
+      <spring:message code="label.inbox"/></a></li>
+    <li id="outbox_link"><a href="<c:out value="${pageContext.request.contextPath}"/>/outbox">
+      <i class="icon-envelope"></i>
+      <spring:message code="label.outbox"/></a></li>
+    <li id="draft_link"><a href="<c:out value="${pageContext.request.contextPath}"/>/drafts">
+      <i class="icon-pencil"></i>
+      <spring:message code="label.drafts"/></a></li>
+  </ul>
 </div>

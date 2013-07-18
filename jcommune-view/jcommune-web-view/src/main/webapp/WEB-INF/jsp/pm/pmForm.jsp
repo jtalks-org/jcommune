@@ -22,82 +22,65 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <sec:authentication property="principal.id" var="senderId"/>
 <head>
-    <title><spring:message code="label.new_pm"/></title>
-
-    <c:set var="mode" value="${jsp.import.mode}"/>
-    <c:choose>
-        <c:when test="${mode eq 'prod'}">
-            <script language="javascript"
-                    src="${pageContext.request.contextPath}/resources/wro/pm.js?${project.version}"></script>
-        </c:when>
-
-        <c:otherwise>
-            <script src="${pageContext.request.contextPath}/resources/javascript/app/privateMessages.js"></script>
-            <script src="${pageContext.request.contextPath}/resources/javascript/app/updateSaveButtonStateOnPmForm.js">
-            </script>
-            <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
-            <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"></script>
-        </c:otherwise>
-    </c:choose>
-
+  <title><spring:message code="label.new_pm"/></title>
 </head>
 <body>
 
 
 <div class="container">
-    <div class="row">
-        <div class="span2">
-            <jsp:include page="../../template/newPrivateMessage.jsp"/>
-            <jsp:include page="../../template/pmFolders.jsp"/>
-        </div>
-
-        <div class="span9">
-            <form:form action="${pageContext.request.contextPath}/pm"
-                       method="POST" modelAttribute="privateMessageDto" name="editForm"
-                       class="well anti-multipost">
-                <form:hidden path="id"/>
-
-                <div class='control-group'>
-                    <div class='controls'>
-                        <spring:message code="label.pm.recipient" var="placeholderRecipient"/>
-                        <form:input class="span3 script-confirm-unsaved" path="recipient" tabindex="100"
-                                    placeholder="${placeholderRecipient}"/>
-                        <br/>
-                        <form:errors path="recipient" cssClass="help-inline"/>
-                    </div>
-                </div>
-
-                <div class='control-group'>
-                    <div class='controls'>
-                        <spring:message code="label.pm.title" var="placeholderTitle"/>
-                        <form:input class="span8 script-confirm-unsaved" path="title" tabindex="101"
-                                    placeholder="${placeholderTitle}"/>
-                        <br/>
-                        <form:errors path="title" cssClass="help-inline"/>
-                    </div>
-                </div>
-
-                <c:set var="hasPermissionToSend" value="false"/>
-                <jtalks:hasPermission targetId='${senderId}' targetType='USER'
-                                      permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
-                    <c:set var="hasPermissionToSend" value="true"/>
-                </jtalks:hasPermission>
-
-
-                <jtalks:bbeditor labelForAction="label.send"
-                                 postText="${privateMessageDto.body}"
-                                 bodyParameterName="body"
-                                 showSubmitButton="${hasPermissionToSend}"
-                                 back="${pageContext.request.contextPath}/inbox"/>
-
-                <input id="savePM" type="submit" class="btn" tabindex="500" name="save_pm"
-                       value="<spring:message code="label.save"/>"
-                       onclick="document.editForm.action='${pageContext.request.contextPath}/pm/save';return true;"/>
-
-            </form:form>
-
-        </div>
+  <div class="row">
+    <div class="span2">
+      <jsp:include page="../../template/newPrivateMessage.jsp"/>
+      <jsp:include page="../../template/pmFolders.jsp"/>
     </div>
+
+    <div class="span9">
+      <form:form action="${pageContext.request.contextPath}/pm"
+                 method="POST" modelAttribute="privateMessageDto" name="editForm"
+                 class="well anti-multipost">
+        <form:hidden path="id"/>
+
+        <div class='control-group'>
+          <div class='controls'>
+            <spring:message code="label.pm.recipient" var="placeholderRecipient"/>
+            <form:input class="span3 script-confirm-unsaved" path="recipient" tabindex="100"
+                        placeholder="${placeholderRecipient}"/>
+            <br/>
+            <form:errors path="recipient" cssClass="help-inline"/>
+          </div>
+        </div>
+
+        <div class='control-group'>
+          <div class='controls'>
+            <spring:message code="label.pm.title" var="placeholderTitle"/>
+            <form:input class="span8 script-confirm-unsaved" path="title" tabindex="101"
+                        placeholder="${placeholderTitle}"/>
+            <br/>
+            <form:errors path="title" cssClass="help-inline"/>
+          </div>
+        </div>
+
+        <c:set var="hasPermissionToSend" value="false"/>
+        <jtalks:hasPermission targetId='${senderId}' targetType='USER'
+                              permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
+          <c:set var="hasPermissionToSend" value="true"/>
+        </jtalks:hasPermission>
+
+
+        <jtalks:bbeditor labelForAction="label.send"
+                         postText="${privateMessageDto.body}"
+                         bodyParameterName="body"
+                         showSubmitButton="${hasPermissionToSend}"
+                         back="${pageContext.request.contextPath}/inbox"/>
+
+        <input id="savePM" type="submit" class="btn" tabindex="500" name="save_pm"
+               value="<spring:message code="label.save"/>"
+               onclick="document.editForm.action='${pageContext.request.contextPath}/pm/save';return true;"/>
+
+      </form:form>
+
+    </div>
+  </div>
 </div>
 <div class="footer_buffer"></div>
 </body>

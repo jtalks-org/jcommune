@@ -54,13 +54,13 @@
           <th><spring:message code="label.branch.header.topics"/></th>
           <th class="author-col shrink-to-fit"><spring:message code="label.branch.header.author"/></th>
           <th class="posts-views-small forum-posts-view-header shrink-to-fit"><spring:message
-              code="label.branch.header.branches"/></th>
+                  code="label.branch.header.branches"/></th>
           <th class="posts-views-small forum-posts-view-header shrink-to-fit"><spring:message
-              code="label.branch.header.posts"/></th>
+                  code="label.branch.header.posts"/></th>
           <th class="posts-views-small forum-posts-view-header shrink-to-fit"><spring:message
-              code="label.branch.header.views"/></th>
+                  code="label.branch.header.views"/></th>
           <th class="latest-by forum-latest-by-header shrink-to-fit"><spring:message
-              code="label.branch.header.lastMessage"/></th>
+                  code="label.branch.header.lastMessage"/></th>
         </tr>
         </thead>
         <tbody>

@@ -20,139 +20,112 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <head>
-    <meta name="description" content="<c:out value="${topicDto.topic.branch.name}"/>">
-    <title><c:out value="${topicDto.topic.branch.name}"/> - <spring:message code="h.new_topic"/></title>
-
-    <c:set var="mode" value="${jsp.import.mode}"/>
-    <c:choose>
-        <c:when test="${mode eq 'prod'}">
-            <script type="text/javascript"
-                    src="${pageContext.request.contextPath}/resources/wro/topic.js?${project.version}"></script>
-
-            <link rel="stylesheet" type="text/css" media="all"
-                  href="${pageContext.request.contextPath}/resources/wro/topic.css?${project.version}"/>
-        </c:when>
-
-        <c:otherwise>
-            <link rel="stylesheet" type="text/css" media="all"
-                  href="${pageContext.request.contextPath}/resources/css/lib/jquery-ui.css"/>
-
-            <link rel="stylesheet" type="text/css" media="all"
-                  href="${pageContext.request.contextPath}/resources/css/lib/jquery.contextMenu.css"/>
-
-            <script src="${pageContext.request.contextPath}/resources/javascript/app/datepicker.js"></script>
-            <script src="${pageContext.request.contextPath}/resources/javascript/app/pollPreview.js"></script>
-            <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
-            <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"></script>
-            <script src="${pageContext.request.contextPath}/resources/javascript/app/bbeditorEffects.js"></script>
-            <script src="${pageContext.request.contextPath}/resources/javascript/app/subscription.js"></script>
-        </c:otherwise>
-    </c:choose>
-
+  <meta name="description" content="<c:out value="${topicDto.topic.branch.name}"/>">
+  <title><c:out value="${topicDto.topic.branch.name}"/> - <spring:message code="h.new_topic"/></title>
 </head>
 <body>
 <div class="container">
-    <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
+  <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
-    <div id="previewPoll" class="well">
+  <div id="previewPoll" class="well">
+  </div>
+  <form:form action="${pageContext.request.contextPath}${submitUrl}"
+             method="POST" modelAttribute="topicDto" class="well anti-multipost" enctype="multipart/form-data">
+    <div class='control-group hide-on-preview'>
+      <div class='controls'>
+        <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>
+        <form:input path="topic.title" id="subject" type="text" name="subject" size="45"
+                    maxlength="255" tabindex="100"
+                    class="span11 script-confirm-unsaved" placeholder="${topicTitlePlaceholder}"/>
+        <form:errors path="topic.title" id="subject" type="text" name="subject" size="45"
+                     maxlength="255"
+                     class="post" cssClass="help-inline"/>
+      </div>
     </div>
-    <form:form action="${pageContext.request.contextPath}${submitUrl}"
-               method="POST" modelAttribute="topicDto" class="well anti-multipost" enctype="multipart/form-data">
-        <div class='control-group hide-on-preview'>
-            <div class='controls'>
-                <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>
-                <form:input path="topic.title" id="subject" type="text" name="subject" size="45"
-                            maxlength="255" tabindex="100"
-                            class="span11 script-confirm-unsaved" placeholder="${topicTitlePlaceholder}"/>
-                <form:errors path="topic.title" id="subject" type="text" name="subject" size="45"
-                             maxlength="255"
-                             class="post" cssClass="help-inline"/>
-            </div>
+    <jtalks:hasPermission targetId='${branchId}' targetType='BRANCH'
+                          permission='BranchPermission.CREATE_STICKED_TOPICS'>
+      <div class='control-group hide-on-preview'>
+        <form:checkbox path="topic.sticked" value="true" tabindex="101"
+                       class="confirm-unsaved form-check-radio-box"/>
+        <label for='sticked' class='string optional'>
+          <spring:message code="label.sticked"/>
+        </label>
+
+        <form:errors path="topic.sticked"/>
+      </div>
+    </jtalks:hasPermission>
+
+    <jtalks:hasPermission targetId='${branchId}' targetType='BRANCH'
+                          permission='BranchPermission.CREATE_ANNOUNCEMENTS'>
+      <div class='control-group hide-on-preview'>
+        <form:checkbox path="topic.announcement" value="true" tabindex="102"
+                       class="script-confirm-unsaved form-check-radio-box"/>
+        <label for='announcement' class='string optional'>
+          <spring:message code="label.announcement"/>
+        </label>
+
+        <form:errors path="topic.announcement"/>
+      </div>
+    </jtalks:hasPermission>
+    <jtalks:bbeditor labelForAction="label.save"
+                     postText="${topicDto.bodyText}"
+                     bodyParameterName="bodyText"
+                     back="${pageContext.request.contextPath}/branches/${branchId}"/>
+    <br/>
+    <br/>
+
+    <div class='well hide-on-preview'>
+      <div id="editPoll">
+        <legend><spring:message code="label.poll.header"/></legend>
+
+        <div class='control-group'>
+          <spring:message code='label.poll.title' var='pollTitlePlaceholder'/>
+          <form:input path="topic.poll.title" tabindex="600" type="text" id="pollTitle"
+                      size="45" maxlength="255" placeholder="${pollTitlePlaceholder}"
+                      class="post script-confirm-unsaved"/>
+          <br>
+          <form:errors path="topic.poll.title" cssClass="help-inline"/>
         </div>
-        <jtalks:hasPermission targetId='${branchId}' targetType='BRANCH'
-                              permission='BranchPermission.CREATE_STICKED_TOPICS'>
-            <div class='control-group hide-on-preview'>
-                <form:checkbox path="topic.sticked" value="true" tabindex="101"
-                               class="confirm-unsaved form-check-radio-box"/>
-                <label for='sticked' class='string optional'>
-                    <spring:message code="label.sticked"/>
-                </label>
 
-                <form:errors path="topic.sticked"/>
-            </div>
-        </jtalks:hasPermission>
-
-        <jtalks:hasPermission targetId='${branchId}' targetType='BRANCH'
-                              permission='BranchPermission.CREATE_ANNOUNCEMENTS'>
-            <div class='control-group hide-on-preview'>
-                <form:checkbox path="topic.announcement" value="true" tabindex="102"
-                               class="script-confirm-unsaved form-check-radio-box"/>
-                <label for='announcement' class='string optional'>
-                    <spring:message code="label.announcement"/>
-                </label>
-
-                <form:errors path="topic.announcement"/>
-            </div>
-        </jtalks:hasPermission>
-        <jtalks:bbeditor labelForAction="label.save"
-                         postText="${topicDto.bodyText}"
-                         bodyParameterName="bodyText"
-                         back="${pageContext.request.contextPath}/branches/${branchId}"/>
-        <br/>
-        <br/>
-
-        <div class='well hide-on-preview'>
-            <div id="editPoll">
-                <legend><spring:message code="label.poll.header"/></legend>
-
-                <div class='control-group'>
-                    <spring:message code='label.poll.title' var='pollTitlePlaceholder'/>
-                    <form:input path="topic.poll.title" tabindex="600" type="text" id="pollTitle"
-                                size="45" maxlength="255" placeholder="${pollTitlePlaceholder}"
-                                class="post script-confirm-unsaved"/>
-                    <br>
-                    <form:errors path="topic.poll.title" cssClass="help-inline"/>
-                </div>
-
-                <div class='control-group'>
-                    <spring:message code='label.poll.options.title' var='optionsPlaceholder'/>
-                    <form:textarea path="topic.poll.pollItemsValue" tabindex="700" rows="8" id="pollItems"
-                                   class="post script-confirm-unsaved" placeholder="${optionsPlaceholder}"/>
-                    <br>
-                    <form:errors path="topic.poll.pollItems" cssClass="help-inline"/>
-                </div>
-
-                <div class='control-group'>
-                    <form:checkbox path="topic.poll.multipleAnswer" id="multipleChecker"
-                                   class="form-check-radio-box script-confirm-unsaved"
-                                   tabindex="800" value="${topicDto.poll.multipleAnswer}"/>
-                    <label for='multipleChecker' class='string optional'>
-                        <spring:message code="label.poll.multiple.title"/>
-                    </label>
-                </div>
-
-                <div class="control-group right-aligned">
-                    <spring:message code="label.poll.date"/>
-                    <spring:message code='label.poll.date.set' var='datePlaceholder'/>
-                    <form:input path="topic.poll.endingDateValue" tabindex="900" id="datepicker" type="text"
-                                readonly="true" placeholder="${datePlaceholder}"
-                                class="cursor-pointer script-confirm-unsaved"/>
-                    &nbsp;<i class="icon-trash cursor-pointer" id="deleteEndingDate"></i>
-                    <br>
-                    <form:errors path="topic.poll.endingDate" cssClass="help-inline"/>
-                </div>
-                    <%--Make parent div include floated divs explicitly, or they'll be shown out of parent container--%>
-                <div class="cleared"></div>
-            </div>
+        <div class='control-group'>
+          <spring:message code='label.poll.options.title' var='optionsPlaceholder'/>
+          <form:textarea path="topic.poll.pollItemsValue" tabindex="700" rows="8" id="pollItems"
+                         class="post script-confirm-unsaved" placeholder="${optionsPlaceholder}"/>
+          <br>
+          <form:errors path="topic.poll.pollItems" cssClass="help-inline"/>
         </div>
-    </form:form>
 
-    <a href="${pageContext.request.contextPath}/branches/${branchId}" tabindex="1000" class='back-btn'>
-        <i class="icon-arrow-left"></i>
-        <spring:message code="label.back"/>
-    </a>
+        <div class='control-group'>
+          <form:checkbox path="topic.poll.multipleAnswer" id="multipleChecker"
+                         class="form-check-radio-box script-confirm-unsaved"
+                         tabindex="800" value="${topicDto.poll.multipleAnswer}"/>
+          <label for='multipleChecker' class='string optional'>
+            <spring:message code="label.poll.multiple.title"/>
+          </label>
+        </div>
+
+        <div class="control-group right-aligned">
+          <spring:message code="label.poll.date"/>
+          <spring:message code='label.poll.date.set' var='datePlaceholder'/>
+          <form:input path="topic.poll.endingDateValue" tabindex="900" id="datepicker" type="text"
+                      readonly="true" placeholder="${datePlaceholder}"
+                      class="cursor-pointer script-confirm-unsaved"/>
+          &nbsp;<i class="icon-trash cursor-pointer" id="deleteEndingDate"></i>
+          <br>
+          <form:errors path="topic.poll.endingDate" cssClass="help-inline"/>
+        </div>
+          <%--Make parent div include floated divs explicitly, or they'll be shown out of parent container--%>
+        <div class="cleared"></div>
+      </div>
+    </div>
+  </form:form>
+
+  <a href="${pageContext.request.contextPath}/branches/${branchId}" tabindex="1000" class='back-btn'>
+    <i class="icon-arrow-left"></i>
+    <spring:message code="label.back"/>
+  </a>
 </div>
 <script>
-    Utils.focusFirstEl('#subject');
+  Utils.focusFirstEl('#subject');
 </script>
 </body>

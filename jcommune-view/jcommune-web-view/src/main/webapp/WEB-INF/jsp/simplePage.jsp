@@ -21,46 +21,46 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <head>
-    <meta name="description" content="<c:out value="${simplePageDto.nameText}"/>">
-    <title>
-        <c:out value="${simplePageDto.nameText}"/>
-    </title>
+  <meta name="description" content="<c:out value="${simplePageDto.nameText}"/>">
+  <title>
+    <c:out value="${simplePageDto.nameText}"/>
+  </title>
 
 </head>
 <body>
 <div class="container">
 
-    <div id="branch-header">
-        <h3>
-            <c:out value="${simplePageDto.nameText}"/>
-        </h3>
-    </div>
+  <div id="branch-header">
+    <h3>
+      <c:out value="${simplePageDto.nameText}"/>
+    </h3>
+  </div>
 
-    <div>
-        <div class="post">
-            <table class="table table-row table-bordered table-condensed">
-                <tr class="post-content-tr">
-                    <td class='post-content-td'>
-                        <div>
-                            <jtalks:bb2html bbCode="${simplePageDto.contentText}"/>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
-
-    <sec:authorize access="isAuthenticated()">
-        <sec:authentication property="principal.id" var="userId"/>
-        <jtalks:hasPermission targetId='${userId}' targetType='USER'
-                              permission='ProfilePermission.CREATE_FORUM_FAQ'>
+  <div>
+    <div class="post">
+      <table class="table table-row table-bordered table-condensed">
+        <tr class="post-content-tr">
+          <td class='post-content-td'>
             <div>
-                <a class="button" href="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}/edit">
-                    <spring:message code="label.edit"/>
-                </a>
+              <jtalks:bb2html bbCode="${simplePageDto.contentText}"/>
             </div>
-        </jtalks:hasPermission>
-    </sec:authorize>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <sec:authorize access="isAuthenticated()">
+    <sec:authentication property="principal.id" var="userId"/>
+    <jtalks:hasPermission targetId='${userId}' targetType='USER'
+                          permission='ProfilePermission.CREATE_FORUM_FAQ'>
+      <div>
+        <a class="button" href="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}/edit">
+          <spring:message code="label.edit"/>
+        </a>
+      </div>
+    </jtalks:hasPermission>
+  </sec:authorize>
 </div>
 
 <div class="footer_buffer">

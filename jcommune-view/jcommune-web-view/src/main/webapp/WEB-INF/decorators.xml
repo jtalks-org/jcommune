@@ -15,13 +15,13 @@
 
 -->
 <decorators defaultdir="/WEB-INF/template">
-    <decorator name="main" page="decorator.jsp">
-        <pattern>*</pattern>
-    </decorator>
-    <excludes>
-        <pattern>/users/IFrameAvatarpreview*</pattern>
-        <pattern>/admin/logo/IFrameLogoPreview*</pattern>
-        <pattern>/admin/icon/IFrameFavIconPreview*</pattern>
-        <pattern>/posts/bbToHtml</pattern>
-    </excludes>
+  <decorator name="main" page="decorator.jsp">
+    <pattern>*</pattern>
+  </decorator>
+  <excludes>
+    <pattern>/users/IFrameAvatarpreview*</pattern>
+    <pattern>/admin/logo/IFrameLogoPreview*</pattern>
+    <pattern>/admin/icon/IFrameFavIconPreview*</pattern>
+    <pattern>/posts/bbToHtml</pattern>
+  </excludes>
 </decorators>

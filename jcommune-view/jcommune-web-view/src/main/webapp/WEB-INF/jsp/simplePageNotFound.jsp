@@ -21,27 +21,27 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <html>
-    <head>
-        <title><spring:message code="label.404.title"/></title>
-    </head>
-    <body>
-    <div class="container">
-        <div class="text_errorpage">
+<head>
+  <title><spring:message code="label.404.title"/></title>
+</head>
+<body>
+<div class="container">
+  <div class="text_errorpage">
 
-            <h1><span class="error_errorpage"><spring:message code="label.404.title"/></span></h1>
-            <spring:message code="label.404.detail"/>
-            </br>
+    <h1><span class="error_errorpage"><spring:message code="label.404.title"/></span></h1>
+    <spring:message code="label.404.detail"/>
+    </br>
 
-            <sec:accesscontrollist hasPermission="20" domainObject="${currentUser}">
-                <a class="button" href="${pageContext.request.contextPath}/pages/create/${pagePathName}">
-                    Create
-                    <c:out value="${pagePathName}"/>
-                </a>
-                </br>
-            </sec:accesscontrollist>
+    <sec:accesscontrollist hasPermission="20" domainObject="${currentUser}">
+      <a class="button" href="${pageContext.request.contextPath}/pages/create/${pagePathName}">
+        Create
+        <c:out value="${pagePathName}"/>
+      </a>
+      </br>
+    </sec:accesscontrollist>
 
-            <a href="${pageContext.request.contextPath}/"><spring:message code="label.back2main"/></a>
-        </div>
-    </div>
-    </body>
+    <a href="${pageContext.request.contextPath}/"><spring:message code="label.back2main"/></a>
+  </div>
+</div>
+</body>
 </html>

@@ -24,50 +24,52 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 
 <div class="container">
-    <c:if test="${not empty banner}">
-        ${banner.content}
-    </c:if>
-    <c:if test="${not empty forumComponent and sessionScope.adminMode == true}">
-        <jtalks:hasPermission targetId="${forumComponent.id}" targetType="COMPONENT" permission="GeneralPermission.ADMIN">
-            <div class="pull-right">
-                <a href="#uploadBannerModal${position}" role="button" class="btn" data-toggle="modal">
-                    <c:choose>
-                        <c:when test="${empty banner}">
-                            <fmt:message key="label.banner.add"/>
-                        </c:when>
-                        <c:when test="${empty banner.content}">
-                            <fmt:message key="label.banner.add"/>
-                        </c:when>
-                        <c:otherwise>
-                            <fmt:message key="label.banner.edit"/>
-                        </c:otherwise>
-                    </c:choose>
-                    
-                </a>
-            </div>
-            <!-- Upload banner modal dialog -->
-            <form:form id="uploadBannerModal${position}" action="${pageContext.request.contextPath}/banners/upload"
-                        modelAttribute="uploadedBanner" method="POST" enctype="multipart/form-data"  class="modal hide fade"
-                        tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-top: -129.5px;">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" tabindex="-1">×</button>
-                    <h3 id="myModalLabel"><fmt:message key="label.banner.upload.dialog.header"/></h3>
-                </div>
-                <form:input type="hidden" path="positionOnPage" value="${position}"/>
-                <div class="modal-body">
-                    <jsp:setProperty name="uploadedBanner" property="content" value="${banner.content}"/>
-                    <form:textarea class="banner-textarea script-confirm-unsaved" path="content" id="body" name="body" tabindex="1"
-                                    style="width:100%;" rows="7" />
-                </div>
-                <div class="modal-footer">
-                    <button class="btn cancel" data-dismiss="modal" aria-hidden="true" tabindex="3">
-                        <fmt:message key="label.banner.upload.dialog.cancel" />
-                    </button>
-                    <button class="btn btn-primary" tabindex="2">
-                        <fmt:message key="label.banner.upload.dialog.save" />
-                    </button>
-                </div>
-            </form:form>
-        </jtalks:hasPermission>
-    </c:if>
+  <c:if test="${not empty banner}">
+    ${banner.content}
+  </c:if>
+  <c:if test="${not empty forumComponent and sessionScope.adminMode == true}">
+    <jtalks:hasPermission targetId="${forumComponent.id}" targetType="COMPONENT" permission="GeneralPermission.ADMIN">
+      <div class="pull-right">
+        <a href="#uploadBannerModal${position}" role="button" class="btn" data-toggle="modal">
+          <c:choose>
+            <c:when test="${empty banner}">
+              <fmt:message key="label.banner.add"/>
+            </c:when>
+            <c:when test="${empty banner.content}">
+              <fmt:message key="label.banner.add"/>
+            </c:when>
+            <c:otherwise>
+              <fmt:message key="label.banner.edit"/>
+            </c:otherwise>
+          </c:choose>
+
+        </a>
+      </div>
+      <!-- Upload banner modal dialog -->
+      <form:form id="uploadBannerModal${position}" action="${pageContext.request.contextPath}/banners/upload"
+                 modelAttribute="uploadedBanner" method="POST" enctype="multipart/form-data" class="modal hide fade"
+                 tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+                 style="margin-top: -129.5px;">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true" tabindex="-1">×</button>
+          <h3 id="myModalLabel"><fmt:message key="label.banner.upload.dialog.header"/></h3>
+        </div>
+        <form:input type="hidden" path="positionOnPage" value="${position}"/>
+        <div class="modal-body">
+          <jsp:setProperty name="uploadedBanner" property="content" value="${banner.content}"/>
+          <form:textarea class="banner-textarea script-confirm-unsaved" path="content" id="body" name="body"
+                         tabindex="1"
+                         style="width:100%;" rows="7"/>
+        </div>
+        <div class="modal-footer">
+          <button class="btn cancel" data-dismiss="modal" aria-hidden="true" tabindex="3">
+            <fmt:message key="label.banner.upload.dialog.cancel"/>
+          </button>
+          <button class="btn btn-primary" tabindex="2">
+            <fmt:message key="label.banner.upload.dialog.save"/>
+          </button>
+        </div>
+      </form:form>
+    </jtalks:hasPermission>
+  </c:if>
 </div>

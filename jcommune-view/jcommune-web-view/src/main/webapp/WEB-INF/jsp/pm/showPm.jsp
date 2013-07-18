@@ -22,54 +22,37 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <head>
-
-    <c:set var="mode" value="${jsp.import.mode}"/>
-    <c:choose>
-        <c:when test="${mode eq 'prod'}">
-            <script language="javascript"
-                    src="${pageContext.request.contextPath}/resources/wro/pm.js?${project.version}"></script>
-        </c:when>
-
-        <c:otherwise>
-            <script src="${pageContext.request.contextPath}/resources/javascript/app/privateMessages.js"></script>
-            <script src="${pageContext.request.contextPath}/resources/javascript/app/updateSaveButtonStateOnPmForm.js">
-            </script>
-            <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
-            <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"></script>
-        </c:otherwise>
-    </c:choose>
-
-    <title><spring:message code="label.pm_title"/></title>
+  <title><spring:message code="label.pm_title"/></title>
 </head>
 <body>
 
 <div class="container">
-    <h2><c:out value="${pm.title}"/></h2>
-    <hr/>
-    <div class="row">
-        <div class="span2">
-            <jsp:include page="../../template/newPrivateMessage.jsp"/>
-            <jsp:include page="../../template/pmFolders.jsp"/>
-        </div>
-        <!-- /span2 -->
-        <div class="span9">
-            <div class="pm_buttons">
-                <jtalks:hasPermission targetId='${user.id}' targetType='USER'
-                                      permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
-                    <c:if test="${(pm.userTo eq user)}">
-                        <a class="btn btn-primary"
-                           href="${pageContext.request.contextPath}/reply/${pm.id}?userId=${user.id}">
-                            <i class="icon-share-alt icon-white"></i>
-                            <spring:message code="label.reply"/>
-                        </a>
+  <h2><c:out value="${pm.title}"/></h2>
+  <hr/>
+  <div class="row">
+    <div class="span2">
+      <jsp:include page="../../template/newPrivateMessage.jsp"/>
+      <jsp:include page="../../template/pmFolders.jsp"/>
+    </div>
+    <!-- /span2 -->
+    <div class="span9">
+      <div class="pm_buttons">
+        <jtalks:hasPermission targetId='${user.id}' targetType='USER'
+                              permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
+          <c:if test="${(pm.userTo eq user)}">
+            <a class="btn btn-primary"
+               href="${pageContext.request.contextPath}/reply/${pm.id}?userId=${user.id}">
+              <i class="icon-share-alt icon-white"></i>
+              <spring:message code="label.reply"/>
+            </a>
 
-                        <a class="btn"
-                           href="${pageContext.request.contextPath}/quote/${pm.id}?userId=${user.id}">
-                            <i class="icon-quote"></i>
-                            <spring:message code="label.quote"/>
-                        </a>
-                    </c:if>
-                </jtalks:hasPermission>
+            <a class="btn"
+               href="${pageContext.request.contextPath}/quote/${pm.id}?userId=${user.id}">
+              <i class="icon-quote"></i>
+              <spring:message code="label.quote"/>
+            </a>
+          </c:if>
+        </jtalks:hasPermission>
 
                 <span class="del">
                     <a id="deleteOnePM"
@@ -77,39 +60,39 @@
                        href="${pageContext.request.contextPath}/pm"
                        data-confirmationMessage="<spring:message code="label.deletePMConfirmation"/>">
 
-                        <i class="icon-trash icon-white"></i>
-                        <spring:message code="label.delete"/>
+                      <i class="icon-trash icon-white"></i>
+                      <spring:message code="label.delete"/>
                     </a>
                     <input id="PMId" type="hidden" value="${pm.id}"/>
                     <form:form id="deleteForm" method="DELETE"/>
                 </span>
-                <!-- del -->
+        <!-- del -->
 
-            </div>
-            <!-- pm_buttons -->
+      </div>
+      <!-- pm_buttons -->
 
-            <div class="well pm_message_view">
-                <div class="row pm_message_detail">
-                    <div class="pull-left thumbnail pm_message_avatar">
-                        <img src="${pageContext.request.contextPath}/users/${pm.userFrom.id}/avatar" alt=""/>
-                    </div>
-                    <div class="pm_message_userTo_link">
-                        <a href="${pageContext.request.contextPath}/users/${pm.userFrom.id}">
-                            <i class="icon-white-user"></i><c:out value="${pm.userFrom.username}"/>
-                        </a>
-                        <br/>
-                        <span><i class="icon-white-calendar"></i><jtalks:format value="${pm.creationDate}"/></span>
-                    </div>
-                </div>
-                <div class="pm-text-box">
-                    <jtalks:postContent text="${pm.body}" signature="${pm.userFrom.signature}"/>
-                </div>
-            </div>
-
+      <div class="well pm_message_view">
+        <div class="row pm_message_detail">
+          <div class="pull-left thumbnail pm_message_avatar">
+            <img src="${pageContext.request.contextPath}/users/${pm.userFrom.id}/avatar" alt=""/>
+          </div>
+          <div class="pm_message_userTo_link">
+            <a href="${pageContext.request.contextPath}/users/${pm.userFrom.id}">
+              <i class="icon-white-user"></i><c:out value="${pm.userFrom.username}"/>
+            </a>
+            <br/>
+            <span><i class="icon-white-calendar"></i><jtalks:format value="${pm.creationDate}"/></span>
+          </div>
         </div>
+        <div class="pm-text-box">
+          <jtalks:postContent text="${pm.body}" signature="${pm.userFrom.signature}"/>
+        </div>
+      </div>
 
     </div>
-    <!-- /row -->
+
+  </div>
+  <!-- /row -->
 
 </div>
 <!-- /container -->

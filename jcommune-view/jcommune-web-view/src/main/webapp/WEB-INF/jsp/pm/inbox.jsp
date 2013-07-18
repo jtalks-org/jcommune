@@ -20,124 +20,108 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <head>
-    <c:set var="mode" value="${jsp.import.mode}"/>
-    <c:choose>
-        <c:when test="${mode eq 'prod'}">
-            <script language="javascript"
-                    src="${pageContext.request.contextPath}/resources/wro/pm.js?${project.version}"></script>
-        </c:when>
-
-        <c:otherwise>
-            <script src="${pageContext.request.contextPath}/resources/javascript/app/privateMessages.js"></script>
-            <script src="${pageContext.request.contextPath}/resources/javascript/app/updateSaveButtonStateOnPmForm.js">
-            </script>
-            <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
-            <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"></script>
-        </c:otherwise>
-    </c:choose>
-
-    <title><spring:message code="label.inbox"/></title>
+  <title><spring:message code="label.inbox"/></title>
 </head>
 <body>
 <div class="container">
-    <%-- Start of pagination --%>
-    <div class="row-fluid upper-pagination forum-pagination-container">
-        <div class="span11">
-            <div class="pagination pull-right forum-pagination">
-                <ul>
-                    <jtalks:pagination uri="" page="${inboxPage}" numberLink="3"/>
-                </ul>
-            </div>
-        </div>
+  <%-- Start of pagination --%>
+  <div class="row-fluid upper-pagination forum-pagination-container">
+    <div class="span11">
+      <div class="pagination pull-right forum-pagination">
+        <ul>
+          <jtalks:pagination uri="" page="${inboxPage}" numberLink="3"/>
+        </ul>
+      </div>
     </div>
-    <%-- End of pagination --%>
-    <hr/>
-    <div class="row">
-        <div class="span2">
-            <jsp:include page="../../template/newPrivateMessage.jsp"/>
-            <jsp:include page="../../template/pmFolders.jsp"/>
-        </div>
-        <!-- /span2 -->
+  </div>
+  <%-- End of pagination --%>
+  <hr/>
+  <div class="row">
+    <div class="span2">
+      <jsp:include page="../../template/newPrivateMessage.jsp"/>
+      <jsp:include page="../../template/pmFolders.jsp"/>
+    </div>
+    <!-- /span2 -->
 
-        <div class="span9">
-            <div class="pm_buttons del">
-                <a class="btn btn-danger" id="deleteCheckedPM"
-                   href="${pageContext.request.contextPath}/pm">
-                    <i class="icon-trash icon-white"></i>
-                    <spring:message code="label.delete"/>
+    <div class="span9">
+      <div class="pm_buttons del">
+        <a class="btn btn-danger" id="deleteCheckedPM"
+           href="${pageContext.request.contextPath}/pm">
+          <i class="icon-trash icon-white"></i>
+          <spring:message code="label.delete"/>
+        </a>
+        <form:form id="deleteForm" method="DELETE"/>
+      </div>
+
+      <table class="table table-bordered table-condensed">
+        <thead>
+        <tr>
+          <th class="pm_header_check">
+            <input type="checkbox" class="check_all"/></th>
+
+          <th class="pm_header_info"><i class="icon-white-user"></i>
+            <spring:message code="label.sender"/></th>
+
+          <th><i class="icon-white-font"></i> <spring:message code="label.pm.title"/></th>
+
+          <th class="pm_sending_date"><i class="icon-white-calendar"></i>
+            <spring:message code="label.sending_date"/></th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <c:choose>
+          <c:when test="${!(empty inboxPage.content)}">
+            <c:forEach var="pm" items="${inboxPage.content}">
+              <c:choose>
+                <c:when test="${pm.read}">
+                  <tr id="${pm.id}" class="mess" >
+                </c:when>
+                <c:otherwise>
+                  <tr id="${pm.id}" class="mess pm_unread">
+                </c:otherwise>
+              </c:choose>
+              <td><input type="checkbox" id="${pm.id}" class="checker"/></td>
+              <td class="pm_user_to_from">
+                <a href="${pageContext.request.contextPath}/users/${pm.userFrom.id}">
+                  <c:out value="${pm.userFrom.username}"/>
                 </a>
-                <form:form id="deleteForm" method="DELETE"/>
-            </div>
-
-            <table class="table table-bordered table-condensed">
-                <thead>
-                <tr>
-                    <th class="pm_header_check">
-                        <input type="checkbox" class="check_all"/></th>
-
-                    <th class="pm_header_info"><i class="icon-white-user"></i>
-                        <spring:message code="label.sender"/></th>
-
-                    <th><i class="icon-white-font"></i> <spring:message code="label.pm.title"/></th>
-
-                    <th class="pm_sending_date"><i class="icon-white-calendar"></i>
-                        <spring:message code="label.sending_date"/></th>
-                </tr>
-                </thead>
-
-                <tbody>
-
-                <c:choose>
-                    <c:when test="${!(empty inboxPage.content)}">
-                        <c:forEach var="pm" items="${inboxPage.content}">
-                            <c:choose>
-                                <c:when test="${pm.read}">
-                                    <tr id="${pm.id}" class="mess" >
-                                </c:when>
-                                <c:otherwise>
-                                    <tr id="${pm.id}" class="mess pm_unread">
-                                </c:otherwise>
-                            </c:choose>
-                            <td><input type="checkbox" id="${pm.id}" class="checker"/></td>
-                            <td class="pm_user_to_from">
-                                <a href="${pageContext.request.contextPath}/users/${pm.userFrom.id}">
-                                    <c:out value="${pm.userFrom.username}"/>
-                                </a>
-                            </td>
-                            <td>
-                                <a href="${pageContext.request.contextPath}/pm/inbox/${pm.id}">
-                                    <c:out value="${pm.title}"/></a>
-                            </td>
-                            <td>
-                                <jtalks:format value="${pm.creationDate}"/>
-                            </td>
-                            </tr>
-                        </c:forEach>
-                    </c:when>
-                    <c:otherwise>
-                        <tr>
-                            <td colspan="4"><spring:message code="label.inbox.empty"/></td>
-                        </tr>
-                    </c:otherwise>
-                </c:choose>
-                </tbody>
-            </table>
-        </div>
-        <!-- /span9 -->
+              </td>
+              <td>
+                <a href="${pageContext.request.contextPath}/pm/inbox/${pm.id}">
+                  <c:out value="${pm.title}"/></a>
+              </td>
+              <td>
+                <jtalks:format value="${pm.creationDate}"/>
+              </td>
+              </tr>
+            </c:forEach>
+          </c:when>
+          <c:otherwise>
+            <tr>
+              <td colspan="4"><spring:message code="label.inbox.empty"/></td>
+            </tr>
+          </c:otherwise>
+        </c:choose>
+        </tbody>
+      </table>
     </div>
-    <!-- /row -->
-    <hr/>
-    <%-- Start of pagination --%>
-    <div class="row-fluid upper-pagination forum-pagination-container">
-        <div class="span11">
-            <div class="pagination pull-right forum-pagination">
-                <ul>
-                    <jtalks:pagination uri="" page="${inboxPage}" numberLink="3"/>
-                </ul>
-            </div>
-        </div>
+    <!-- /span9 -->
+  </div>
+  <!-- /row -->
+  <hr/>
+  <%-- Start of pagination --%>
+  <div class="row-fluid upper-pagination forum-pagination-container">
+    <div class="span11">
+      <div class="pagination pull-right forum-pagination">
+        <ul>
+          <jtalks:pagination uri="" page="${inboxPage}" numberLink="3"/>
+        </ul>
+      </div>
     </div>
-    <%-- End of pagination --%>
+  </div>
+  <%-- End of pagination --%>
 </div>
 <!-- /container -->
 

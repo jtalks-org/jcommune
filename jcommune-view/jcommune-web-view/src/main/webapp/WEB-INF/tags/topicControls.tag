@@ -9,41 +9,42 @@
 <%--Users with this grant can post even in closed topics.--%>
 <c:set var="hasCloseTopicPermission" value="false"/>
 <c:if test='${topic.codeReview == null}'>
-    <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
-                      permission='BranchPermission.CLOSE_TOPICS'>
-        <c:set var="hasCloseTopicPermission" value="true"/>
-    </jtalks:hasPermission>
+  <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
+                        permission='BranchPermission.CLOSE_TOPICS'>
+    <c:set var="hasCloseTopicPermission" value="true"/>
+  </jtalks:hasPermission>
 </c:if>
 <%--User can post either if the topic is open, or he has a permission to close/open it--%>
 <c:if test="${(!topic.closed || hasCloseTopicPermission) && topic.codeReview == null}">
-    <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
-                          permission='BranchPermission.CREATE_POSTS'>
-        <a id="new-topic-btn" class="btn btn-primary"
-           href="${pageContext.request.contextPath}/posts/new?topicId=${topic.id}&branchId=${topic.branch.id}"
-           title="<spring:message code='label.tips.create_new_post'/>">
-            <spring:message code="label.answer"/>
-        </a>
-    </jtalks:hasPermission>
+  <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
+                        permission='BranchPermission.CREATE_POSTS'>
+    <a id="new-topic-btn" class="btn btn-primary"
+       href="${pageContext.request.contextPath}/posts/new?topicId=${topic.id}&branchId=${topic.branch.id}"
+       title="<spring:message code='label.tips.create_new_post'/>">
+      <spring:message code="label.answer"/>
+    </a>
+  </jtalks:hasPermission>
 </c:if>
 
 <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
                       permission='BranchPermission.MOVE_TOPICS'>
-               <a name="move_topic" href="#" class="btn" title="<spring:message code='label.tips.move_topic'/>" data-topicId="${topic.id}">
-                   <spring:message code="label.topic.move"/>
-               </a>
+  <a name="move_topic" href="#" class="btn" title="<spring:message code='label.tips.move_topic'/>"
+     data-topicId="${topic.id}">
+    <spring:message code="label.topic.move"/>
+  </a>
 </jtalks:hasPermission>
 
 <c:if test='${topic.codeReview == null && hasCloseTopicPermission}'>
-    <c:choose>
-        <c:when test="${topic.closed}">
-            <a name="open_topic" href="${pageContext.request.contextPath}/topics/${topic.id}/open" class="btn">
-                <spring:message code="label.topic.open"/>
-            </a>
-        </c:when>
-        <c:otherwise>
-            <a name="open_topic" href="${pageContext.request.contextPath}/topics/${topic.id}/close" class="btn">
-                <spring:message code="label.topic.close"/>
-            </a>
-        </c:otherwise>
-    </c:choose>
+  <c:choose>
+    <c:when test="${topic.closed}">
+      <a name="open_topic" href="${pageContext.request.contextPath}/topics/${topic.id}/open" class="btn">
+        <spring:message code="label.topic.open"/>
+      </a>
+    </c:when>
+    <c:otherwise>
+      <a name="open_topic" href="${pageContext.request.contextPath}/topics/${topic.id}/close" class="btn">
+        <spring:message code="label.topic.close"/>
+      </a>
+    </c:otherwise>
+  </c:choose>
 </c:if>

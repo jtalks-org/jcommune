@@ -20,57 +20,58 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <html>
 <head>
-    <title><spring:message code="label.signin"/></title>
+  <title><spring:message code="label.signin"/></title>
 </head>
 <body>
 
 <%-- Container --%>
 <div class="container form-login-related">
-    <form action='<c:url value="/j_spring_security_check"/>' method="POST" name="login-form" id="login-form" class="form-vertical">
-        <fieldset>
-            <legend><spring:message code="label.signin"/></legend>
-            
-            <div class="control-group">
-                <label for="j_username" class="control-label"><spring:message code="label.username"/> </label>
+  <form action='<c:url value="/j_spring_security_check"/>' method="POST" name="login-form" id="login-form"
+        class="form-vertical">
+    <fieldset>
+      <legend><spring:message code="label.signin"/></legend>
 
-                <div class="controls">
-                    <input class="reg_input" type="text" name="j_username" id="j_username" value="${sessionScope.username}">
-                </div>
-            </div>
-            
-            <div class="control-group">
-                <label for="j_password" class="control-label"><spring:message code="label.password"/> </label>
+      <div class="control-group">
+        <label for="j_username" class="control-label"><spring:message code="label.username"/> </label>
 
-                <div class="controls">
-                    <input type="password" name="j_password" id="j_password">
-                    <c:if test="${not empty param.login_error}">
+        <div class="controls">
+          <input class="reg_input" type="text" name="j_username" id="j_username" value="${sessionScope.username}">
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label for="j_password" class="control-label"><spring:message code="label.password"/> </label>
+
+        <div class="controls">
+          <input type="password" name="j_password" id="j_password">
+          <c:if test="${not empty param.login_error}">
                         <span class="help-inline">
                         	<c:choose>
-                        		<c:when test="${param.login_error == 1}">
-                        			<spring:message code="label.login_error"/>
-                        		</c:when>
-                        		<c:when test="${param.login_error == 2}">
-                        			<spring:message code="label.login_cookies_were_theft"/>
-                        		</c:when>
-                        	</c:choose>
+                              <c:when test="${param.login_error == 1}">
+                                <spring:message code="label.login_error"/>
+                              </c:when>
+                              <c:when test="${param.login_error == 2}">
+                                <spring:message code="label.login_cookies_were_theft"/>
+                              </c:when>
+                            </c:choose>
                             
                         </span>
-                    </c:if>
-                </div>
-            </div>
-            
-            <div class="control-group">
-                <input type="checkbox" name="_spring_security_remember_me" class="form-check-radio-box">
-                <label class="string optional"><spring:message code="label.auto_logon"/></label>
-            </div>
-            
-            <div class="form-actions">
-                <input type="submit" class="btn btn-primary" value="<spring:message code="label.signin"/>"/><br/>
-                <a href='<c:url value="/password/restore"/>'><spring:message
-                        code="label.restorePassword.prompt"/></a>
-            </div>
-        </fieldset>
-    </form>
+          </c:if>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <input type="checkbox" name="_spring_security_remember_me" class="form-check-radio-box">
+        <label class="string optional"><spring:message code="label.auto_logon"/></label>
+      </div>
+
+      <div class="form-actions">
+        <input type="submit" class="btn btn-primary" value="<spring:message code="label.signin"/>"/><br/>
+        <a href='<c:url value="/password/restore"/>'><spring:message
+                code="label.restorePassword.prompt"/></a>
+      </div>
+    </fieldset>
+  </form>
 </div>
 </body>
 </html>

@@ -20,65 +20,53 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <head>
-    <meta name="description" content="<c:out value="${topicDto.topic.branch.name}"/>">
-    <title><c:out value="${topicDto.topic.branch.name}"/> - <spring:message code="label.addCodeReview"/></title>
-
-    <c:set var="mode" value="${jsp.import.mode}"/>
-    <c:choose>
-        <c:when test="${mode eq 'prod'}">
-            <script type="text/javascript"
-                    src="${pageContext.request.contextPath}/resources/wro/cr.js?${project.version}"></script>
-        </c:when>
-
-        <c:otherwise>
-            <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
-        </c:otherwise>
-    </c:choose>
+  <meta name="description" content="<c:out value="${topicDto.topic.branch.name}"/>">
+  <title><c:out value="${topicDto.topic.branch.name}"/> - <spring:message code="label.addCodeReview"/></title>
 </head>
 <body>
 <div class="container">
-    <div id="branch-header">
-        <h3>
+  <div id="branch-header">
+    <h3>
             <span id="topicTitle">
                 <c:out value="${topicDto.topic.title}"/>
             </span>
-        </h3>
+    </h3>
+  </div>
+  <br>
+  <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
+
+  <form:form action="${pageContext.request.contextPath}${submitUrl}"
+             method="POST" modelAttribute="topicDto" class="well anti-multipost" enctype="multipart/form-data">
+    <div class='control-group hide-on-preview'>
+      <div class='controls'>
+        <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>
+        <form:input path="topic.title" id="subject" type="text" name="subject" size="45"
+                    maxlength="255" tabindex="100"
+                    class="span11 script-confirm-unsaved" placeholder="${topicTitlePlaceholder}"/>
+        <form:errors path="topic.title" id="subject" type="text" name="subject" size="45"
+                     maxlength="255"
+                     class="post" cssClass="help-inline"/>
+      </div>
     </div>
-    <br>
-    <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
-    <form:form action="${pageContext.request.contextPath}${submitUrl}"
-               method="POST" modelAttribute="topicDto" class="well anti-multipost" enctype="multipart/form-data">
-        <div class='control-group hide-on-preview'>
-            <div class='controls'>
-                <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>
-                <form:input path="topic.title" id="subject" type="text" name="subject" size="45"
-                            maxlength="255" tabindex="100"
-                            class="span11 script-confirm-unsaved" placeholder="${topicTitlePlaceholder}"/>
-                <form:errors path="topic.title" id="subject" type="text" name="subject" size="45"
-                             maxlength="255"
-                             class="post" cssClass="help-inline"/>
-            </div>
-        </div>
+    <div class='control-group'>
+      <spring:message code="placeholder.codereview.editor.content" var="placeholderEditorContent"/>
+      <form:textarea path="bodyText" id="body" name="body" tabindex="200" style="width:100%;height: 350px"
+                     placeholder="${placeholderEditorContent}" class="script-confirm-unsaved"/>
+      <br>
+      <form:errors path="bodyText" cssClass="help-inline"/>
+    </div>
 
-        <div class='control-group'>
-            <spring:message code="placeholder.codereview.editor.content" var="placeholderEditorContent"/>
-            <form:textarea path="bodyText" id="body" name="body" tabindex="200" style="width:100%;height: 350px"
-                           placeholder="${placeholderEditorContent}" class="script-confirm-unsaved"/>
-            <br>
-            <form:errors path="bodyText" cssClass="help-inline"/>
-        </div>
+    <input id="post" type="submit" class="btn btn-primary" accesskey="s" name="post" tabindex="300"
+           value="<spring:message code="label.save"/>"/>
+  </form:form>
 
-        <input id="post" type="submit" class="btn btn-primary" accesskey="s" name="post" tabindex="300"
-               value="<spring:message code="label.save"/>"/>
-    </form:form>
-
-    <a href="${pageContext.request.contextPath}/branches/${branchId}" tabindex="1000" class='back-btn'>
-        <i class="icon-arrow-left"></i>
-        <spring:message code="label.back"/>
-    </a>
+  <a href="${pageContext.request.contextPath}/branches/${branchId}" tabindex="1000" class='back-btn'>
+    <i class="icon-arrow-left"></i>
+    <spring:message code="label.back"/>
+  </a>
 </div>
 <script>
-    Utils.focusFirstEl('#subject');
+  Utils.focusFirstEl('#subject');
 </script>
 </body>

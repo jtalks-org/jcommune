@@ -25,18 +25,18 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <div class="word-wrap"><jtalks:bb2html bbCode="${text}"/>
-    <c:if test="${!empty modificationDate}">
-        <br/><br/>
+  <c:if test="${!empty modificationDate}">
+    <br/><br/>
         <span class="post-update-mark">
              <spring:message code="label.modify"/><jtalks:format value="${modificationDate}"/>
         </span>
-    </c:if>
+  </c:if>
 </div>
 <c:if test="${!empty signature}">
-    <div class="signature-conatiner">
-        <hr/>
+  <div class="signature-conatiner">
+    <hr/>
         <span class='signature'>
             <jtalks:bb2html bbCode="${signature}"/>
         </span>
-    </div>
+  </div>
 </c:if>

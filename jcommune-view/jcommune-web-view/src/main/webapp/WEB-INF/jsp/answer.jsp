@@ -21,48 +21,31 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 
 <head>
-    <meta name="description" content="<c:out value="${topic.title}"/>">
-    <title><spring:message code="label.answer_to"/>: <c:out value="${topic.title}"/></title>
-
-    <c:set var="mode" value="${jsp.import.mode}"/>
-    <c:choose>
-        <c:when test="${mode eq 'prod'}">
-            <script type="text/javascript"
-                    src="${pageContext.request.contextPath}/resources/wro/answer.js?${project.version}"></script>
-        </c:when>
-
-        <c:otherwise>
-
-            <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
-            <script src="${pageContext.request.contextPath}/resources/javascript/app/bbeditorEffects.js"></script>
-            <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"></script>
-
-        </c:otherwise>
-    </c:choose>
-
+  <meta name="description" content="<c:out value="${topic.title}"/>">
+  <title><spring:message code="label.answer_to"/>: <c:out value="${topic.title}"/></title>
 </head>
 <body>
 <div class="container">
-    <h2><a class="heading" href="${pageContext.request.contextPath}/topics/${topic.id}"><c:out
-            value="${topic.title}"/></a></h2>
+  <h2><a class="heading" href="${pageContext.request.contextPath}/topics/${topic.id}"><c:out
+          value="${topic.title}"/></a></h2>
 
-    <form:form
-            action="${pageContext.request.contextPath}/posts/new?topicId=${topicId}&page=${page}&branchId=${topic.branch.id}"
-            method="POST" modelAttribute="postDto" class='well anti-multipost'>
-        <form:hidden path="topicId"/>
+  <form:form
+          action="${pageContext.request.contextPath}/posts/new?topicId=${topicId}&page=${page}&branchId=${topic.branch.id}"
+          method="POST" modelAttribute="postDto" class='well anti-multipost'>
+    <form:hidden path="topicId"/>
 
-        <jtalks:bbeditor labelForAction="label.answer"
-                         postText="${postDto.bodyText}"
-                         bodyParameterName="bodyText"
-                         back="${pageContext.request.contextPath}/topics/${topicId}"/>
-    </form:form>
+    <jtalks:bbeditor labelForAction="label.answer"
+                     postText="${postDto.bodyText}"
+                     bodyParameterName="bodyText"
+                     back="${pageContext.request.contextPath}/topics/${topicId}"/>
+  </form:form>
 
-    <a href="${pageContext.request.contextPath}/topics/${topicId}" tabindex="500" class="back-btn">
-        <i class="icon-arrow-left"></i>
-        <spring:message code="label.back"/>
-    </a>
+  <a href="${pageContext.request.contextPath}/topics/${topicId}" tabindex="500" class="back-btn">
+    <i class="icon-arrow-left"></i>
+    <spring:message code="label.back"/>
+  </a>
 </div>
 <script>
-    Utils.focusFirstEl('#tbMsg');
+  Utils.focusFirstEl('#tbMsg');
 </script>
 </body>

@@ -17,16 +17,16 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <head>
-    <title><spring:message code="label.accessDenied.title"/></title>
+  <title><spring:message code="label.accessDenied.title"/></title>
 </head>
 <body>
-    <div class="container">
-        <div class="text_errorpage">
-            <h1><span class="error_errorpage"><spring:message code="label.accessDenied.title"/></span></h1>
-            <spring:message code="label.accessDenied.detail"/>
-            <br/>
-            <spring:message code="label.accessDenied.checkPrivilegies"/>&nbsp;
-            <a href="${pageContext.request.contextPath}/"><spring:message code="label.back2main"/></a>
-        </div>
-    </div>
+<div class="container">
+  <div class="text_errorpage">
+    <h1><span class="error_errorpage"><spring:message code="label.accessDenied.title"/></span></h1>
+    <spring:message code="label.accessDenied.detail"/>
+    <br/>
+    <spring:message code="label.accessDenied.checkPrivilegies"/>&nbsp;
+    <a href="${pageContext.request.contextPath}/"><spring:message code="label.back2main"/></a>
+  </div>
+</div>
 </body>

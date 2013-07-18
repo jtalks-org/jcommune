@@ -22,165 +22,165 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <head>
-    <meta name="description" content="<c:out value="${cmpDescription}"/>">
-    <title><c:out value="${cmpDescription}"/></title>
+  <meta name="description" content="<c:out value="${cmpDescription}"/>">
+  <title><c:out value="${cmpDescription}"/></title>
 </head>
 <body>
 <div class="container">
-    <div class="row forum-sections-header">
-        
-        <h1 class="pull-left logo-text">
-            <c:choose>
-                <c:when test="${sessionScope.adminMode == true}">
-                    <span class="cursor-pointer" id="cmpDescription"><c:out value="${cmpDescription}"/></span>
-                </c:when>
-                <c:otherwise>                
-                    <a class="invisible-link" href="${pageContext.request.contextPath}/"><c:out value="${cmpDescription}"/></a>
-                </c:otherwise>
-            </c:choose>
-        </h1>
+  <div class="row forum-sections-header">
 
-        <div class="pull-right">
+    <h1 class="pull-left logo-text">
+      <c:choose>
+        <c:when test="${sessionScope.adminMode == true}">
+          <span class="cursor-pointer" id="cmpDescription"><c:out value="${cmpDescription}"/></span>
+        </c:when>
+        <c:otherwise>
+          <a class="invisible-link" href="${pageContext.request.contextPath}/"><c:out value="${cmpDescription}"/></a>
+        </c:otherwise>
+      </c:choose>
+    </h1>
+
+    <div class="pull-right">
            <span class="forum-sections-header-actions">
                <a href="${pageContext.request.contextPath}/topics/recent" title=""
                   class="forum-sections-recent-unanswered">
-                   <spring:message code="label.recent"/>
+                 <spring:message code="label.recent"/>
                </a>
                <br/>
                <a href="${pageContext.request.contextPath}/topics/unanswered" title=""
                   class="forum-sections-recent-unanswered">
-                   <spring:message code="label.messagesWithoutAnswers"/>
+                 <spring:message code="label.messagesWithoutAnswers"/>
                </a>
            </span>
-            <a href="${pageContext.request.contextPath}/topics/recent.rss"
-               title="<spring:message code='label.tips.feed_subsription'/>">
-                <img src="${pageContext.request.contextPath}/resources/images/rss-icon.png" alt="" class="rss-icon">
-            </a>
-        </div>
+      <a href="${pageContext.request.contextPath}/topics/recent.rss"
+         title="<spring:message code='label.tips.feed_subsription'/>">
+        <img src="${pageContext.request.contextPath}/resources/images/rss-icon.png" alt="" class="rss-icon">
+      </a>
     </div>
-    <hr class="forum-pagination"/>
+  </div>
+  <hr class="forum-pagination"/>
 
-    <%-- Sections and branches --%>
-    <table id="topics-table" class="table table-row table-with-titles">
-        <tbody>
-        <c:set var="colspanOfSectionName" value="3"/>
-        <sec:authorize access="isAuthenticated()">
-            <%-- TODO: change to 4 during below fix about unread posts --%>
-            <c:set var="colspanOfSectionName" value="3"/>
-        </sec:authorize>
+  <%-- Sections and branches --%>
+  <table id="topics-table" class="table table-row table-with-titles">
+    <tbody>
+    <c:set var="colspanOfSectionName" value="3"/>
+    <sec:authorize access="isAuthenticated()">
+      <%-- TODO: change to 4 during below fix about unread posts --%>
+      <c:set var="colspanOfSectionName" value="3"/>
+    </sec:authorize>
 
-        <c:forEach var="section" items="${sectionList}">
-            <jtalks:isSectionVisible section="${section}">
-                <tr>
-                    <th colspan="${colspanOfSectionName}">
-                        <a href="${pageContext.request.contextPath}/sections/${section.id}">
-                            <c:out value="${section.name}"/>
-                        </a>
-                    </th>
-                </tr>
-                <c:forEach var="branch" items="${section.branches}" varStatus="i">
-                    <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
-                                          permission='BranchPermission.VIEW_TOPICS'>
-                        <tr>
-                                <%--TODO: fix in milstone 2--%>
-                                <%--<sec:authorize access="isAuthenticated()">--%>
-                                <%--<td class="status-col">--%>
-                                <%--<c:choose>--%>
-                                <%--<c:when test="${branch.unreadPosts}">--%>
-                                <%--<img class="status-img"--%>
-                                <%--src="${pageContext.request.contextPath}/resources/images/new-posts.png"--%>
-                                <%--title="<spring:message code="label.topic.new_posts"/>"/>--%>
-                                <%--</c:when>--%>
-                                <%--<c:otherwise>--%>
-                                <%--<img class="status-img"--%>
-                                <%--src="${pageContext.request.contextPath}/resources/images/no-new-posts.png"--%>
-                                <%--title="<spring:message code="label.topic.no_new_posts"/>"/>--%>
-                                <%--</c:otherwise>--%>
-                                <%--</c:choose>--%>
-                                <%--</td>--%>
-                                <%--</sec:authorize>--%>
-                            <td class="title-col">
-                                <a class="branch-title" href="${pageContext.request.contextPath}/branches/${branch.id}">
-                                    <c:out value="${branch.name}"/>
-                                </a>
-                                <br/>
+    <c:forEach var="section" items="${sectionList}">
+      <jtalks:isSectionVisible section="${section}">
+        <tr>
+          <th colspan="${colspanOfSectionName}">
+            <a href="${pageContext.request.contextPath}/sections/${section.id}">
+              <c:out value="${section.name}"/>
+            </a>
+          </th>
+        </tr>
+        <c:forEach var="branch" items="${section.branches}" varStatus="i">
+          <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
+                                permission='BranchPermission.VIEW_TOPICS'>
+            <tr>
+                <%--TODO: fix in milstone 2--%>
+                <%--<sec:authorize access="isAuthenticated()">--%>
+                <%--<td class="status-col">--%>
+                <%--<c:choose>--%>
+                <%--<c:when test="${branch.unreadPosts}">--%>
+                <%--<img class="status-img"--%>
+                <%--src="${pageContext.request.contextPath}/resources/images/new-posts.png"--%>
+                <%--title="<spring:message code="label.topic.new_posts"/>"/>--%>
+                <%--</c:when>--%>
+                <%--<c:otherwise>--%>
+                <%--<img class="status-img"--%>
+                <%--src="${pageContext.request.contextPath}/resources/images/no-new-posts.png"--%>
+                <%--title="<spring:message code="label.topic.no_new_posts"/>"/>--%>
+                <%--</c:otherwise>--%>
+                <%--</c:choose>--%>
+                <%--</td>--%>
+                <%--</sec:authorize>--%>
+              <td class="title-col">
+                <a class="branch-title" href="${pageContext.request.contextPath}/branches/${branch.id}">
+                  <c:out value="${branch.name}"/>
+                </a>
+                <br/>
                                     <span class="forum-sections-branch-description-container"><c:out
                                             value="${branch.description}"/></span>
-                                <br/>
+                <br/>
 
-                                <div class="forum-sections-moderators-container">
-                                    <jtalks:moderators moderators="${branch.moderatorsGroup.users}" visibleIfEmpty="false"/>
-                                </div>
-                            </td>
-                            <td class="topics-posts shrink-to-fit">
-                                <spring:message code="label.section.header.topics"/>: <span
-                                    class='test-topics-count'><c:out
-                                    value="${branch.topicCount}"/></span><br/>
-                                <spring:message code="label.section.header.messages"/>: <span
-                                    class='test-posts-count'><c:out
-                                    value="${branch.postCount}"/></span></td>
+                <div class="forum-sections-moderators-container">
+                  <jtalks:moderators moderators="${branch.moderatorsGroup.users}" visibleIfEmpty="false"/>
+                </div>
+              </td>
+              <td class="topics-posts shrink-to-fit">
+                <spring:message code="label.section.header.topics"/>: <span
+                      class='test-topics-count'><c:out
+                      value="${branch.topicCount}"/></span><br/>
+                <spring:message code="label.section.header.messages"/>: <span
+                      class='test-posts-count'><c:out
+                      value="${branch.postCount}"/></span></td>
 
-                            <td class="latest-by shrink-to-fit">
-                                <c:if test="${branch.topicCount>0}">
-                                    <i class="icon-calendar"></i>
-                                    <a class="date"
-                                       href="${pageContext.request.contextPath}/posts/${branch.lastPost.id}">
-                                        <jtalks:format value="${branch.lastPost.creationDate}"/>
-                                    </a>
+              <td class="latest-by shrink-to-fit">
+                <c:if test="${branch.topicCount>0}">
+                  <i class="icon-calendar"></i>
+                  <a class="date"
+                     href="${pageContext.request.contextPath}/posts/${branch.lastPost.id}">
+                    <jtalks:format value="${branch.lastPost.creationDate}"/>
+                  </a>
 
-                                    <p><spring:message code="label.topic.last_post_by"/>
-                                        <a href="${pageContext.request.contextPath}/users/${branch.lastPost.userCreated.id}">
-                                            <c:out value="${branch.lastPost.userCreated.username}"/>
-                                        </a>
-                                    </p>
-                                </c:if>
-                            </td>
-                        </tr>
-                    </jtalks:hasPermission>
-                </c:forEach>
-            </jtalks:isSectionVisible>
+                  <p><spring:message code="label.topic.last_post_by"/>
+                    <a href="${pageContext.request.contextPath}/users/${branch.lastPost.userCreated.id}">
+                      <c:out value="${branch.lastPost.userCreated.username}"/>
+                    </a>
+                  </p>
+                </c:if>
+              </td>
+            </tr>
+          </jtalks:hasPermission>
         </c:forEach>
-        </tbody>
-    </table>
-    <%-- END OF Topics table --%>
+      </jtalks:isSectionVisible>
+    </c:forEach>
+    </tbody>
+  </table>
+  <%-- END OF Topics table --%>
 
-    <div class="well forum-sections-stats-container">
-        <strong>
-            <spring:message code="label.onlineUsersInfo.messagesCount"/>
-        </strong>
+  <div class="well forum-sections-stats-container">
+    <strong>
+      <spring:message code="label.onlineUsersInfo.messagesCount"/>
+    </strong>
         <span class="test-messages">
             <c:out value="${messagesCount}"/>
         </span>
-        <br/>
-        <strong>
-            <spring:message code="label.onlineUsersInfo.registeredUsers.count"/>
-        </strong>
+    <br/>
+    <strong>
+      <spring:message code="label.onlineUsersInfo.registeredUsers.count"/>
+    </strong>
         <span class="test-registered-users">
             <c:out value="${registeredUsersCount}"/>
         </span>
-    </div>
+  </div>
 
-    <%-- Users --%>
-    <div id="users-stats" class="well forum-sections-userstats-container">
-        <strong><spring:message code="label.onlineUsersInfo.visitors"/></strong>
+  <%-- Users --%>
+  <div id="users-stats" class="well forum-sections-userstats-container">
+    <strong><spring:message code="label.onlineUsersInfo.visitors"/></strong>
         <span class='test-visitors-total'>
             <c:out value="${visitors}"/>
         </span>,
-        <spring:message code="label.onlineUsersInfo.visitors.registered"/>
+    <spring:message code="label.onlineUsersInfo.visitors.registered"/>
         <span class='test-visitors-registered'>
             <c:out value="${visitorsRegistered}"/>
         </span>,
-        <spring:message code="label.onlineUsersInfo.visitors.guests"/>
+    <spring:message code="label.onlineUsersInfo.visitors.guests"/>
         <span class='test-visitors-guests'>
             <c:out value="${visitorsGuests}"/>
         </span>
-        <br/>
+    <br/>
 
-        <strong>
-            <spring:message code="label.onlineUsersInfo.registeredUsers"/>
-        </strong>
-        <jtalks:users users="${usersRegistered}"/>
-    </div>
-    <%-- END OF Users --%>
+    <strong>
+      <spring:message code="label.onlineUsersInfo.registeredUsers"/>
+    </strong>
+    <jtalks:users users="${usersRegistered}"/>
+  </div>
+  <%-- END OF Users --%>
 </div>
 </body>

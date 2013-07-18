@@ -24,178 +24,178 @@
        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
        ">
 
-    <context:component-scan base-package="org.jtalks.jcommune.web.controller" use-default-filters="false">
-        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
-    </context:component-scan>
+  <context:component-scan base-package="org.jtalks.jcommune.web.controller" use-default-filters="false">
+    <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+  </context:component-scan>
 
-    <mvc:annotation-driven/>
+  <mvc:annotation-driven/>
 
-    <!-- Beans -->
-    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
-        <property name="prefix" value="/WEB-INF/jsp/"/>
-        <property name="suffix" value=".jsp"/>
+  <!-- Beans -->
+  <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+    <property name="prefix" value="/WEB-INF/jsp/"/>
+    <property name="suffix" value=".jsp"/>
+  </bean>
+
+  <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+
+  <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+    <property name="basenames">
+      <list>
+        <value>classpath:/org/jtalks/jcommune/web/view/messages</value>
+        <value>classpath:/ValidationMessages</value>
+      </list>
+    </property>
+    <property name="defaultEncoding" value="UTF-8"/>
+  </bean>
+
+  <bean class="org.jtalks.jcommune.web.exception.PrettyLogExceptionResolver">
+    <property name="order" value="1"/>
+    <property name="exceptionMappings">
+      <props>
+        <prop key="org.jtalks.jcommune.service.exceptions.NotFoundException">redirect:/errors/404</prop>
+        <prop key="org.springframework.security.access.AccessDeniedException">redirect:/errors/403</prop>
+        <prop key="org.springframework.beans.TypeMismatchException">redirect:/errors/400</prop>
+      </props>
+    </property>
+    <property name="warnLogCategory" value="org.jtalks.jcommune"/>
+    <property name="defaultErrorView" value="redirect:/errors/500"/>
+  </bean>
+  <bean class="org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver">
+    <property name="order" value="2"/>
+  </bean>
+
+  <!--Cookie-based locale resolver, chosen as we can't guarantee sessioin existence for any request-->
+  <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+    <!--Russian locale is set by default if nothing has been chosen by user-->
+    <property name="defaultLocale" value="ru"/>
+  </bean>
+
+  <bean id="handlerMapping"
+        class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>
+
+  <!-- Interceptors -->
+  <mvc:interceptors>
+    <mvc:interceptor>
+      <!-- Do not call interceptors for static resources-->
+      <mvc:mapping path="/resources/**"/>
+      <bean class="org.jtalks.jcommune.web.interceptors.ChainBreakingInterceptor"/>
+    </mvc:interceptor>
+    <!--Figures out locale and language from url parameter-->
+    <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+      <property name="paramName" value="lang"/>
     </bean>
-
-    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
-
-    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-        <property name="basenames">
-            <list>
-                <value>classpath:/org/jtalks/jcommune/web/view/messages</value>
-                <value>classpath:/ValidationMessages</value>
-            </list>
-        </property>
-        <property name="defaultEncoding" value="UTF-8"/>
+    <!--Disables browser caching for all non-static resources-->
+    <bean id="webContentInterceptor"
+          class="org.springframework.web.servlet.mvc.WebContentInterceptor">
+      <property name="cacheSeconds" value="0"/>
+      <property name="useExpiresHeader" value="true"/>
+      <property name="useCacheControlHeader" value="true"/>
+      <property name="useCacheControlNoStore" value="true"/>
     </bean>
-
-    <bean class="org.jtalks.jcommune.web.exception.PrettyLogExceptionResolver">
-        <property name="order" value="1"/>
-        <property name="exceptionMappings">
-            <props>
-                <prop key="org.jtalks.jcommune.service.exceptions.NotFoundException">redirect:/errors/404</prop>
-                <prop key="org.springframework.security.access.AccessDeniedException">redirect:/errors/403</prop>
-                <prop key="org.springframework.beans.TypeMismatchException">redirect:/errors/400</prop>
-            </props>
-        </property>
-        <property name="warnLogCategory" value="org.jtalks.jcommune"/>
-        <property name="defaultErrorView" value="redirect:/errors/500"/>
+    <!--Fills common data, required to render all the pages-->
+    <bean id="userDataInterceptor" class="org.jtalks.jcommune.web.interceptors.UserDataInterceptor"/>
+    <bean id="propertiesInterceptor" class="org.jtalks.jcommune.web.interceptors.PropertiesInterceptor">
+      <constructor-arg ref="componentNameProperty"/>
+      <constructor-arg ref="componentDescriptionProperty"/>
+      <constructor-arg ref="componentSapeShowDummyLinksProperty"/>
+      <constructor-arg ref="componentLogoTooltipProperty"/>
+      <constructor-arg ref="componentInfoChangeDateProperty"/>
     </bean>
-    <bean class="org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver">
-        <property name="order" value="2"/>
-    </bean>  
-
-    <!--Cookie-based locale resolver, chosen as we can't guarantee sessioin existence for any request-->
-    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
-        <!--Russian locale is set by default if nothing has been chosen by user-->
-        <property name="defaultLocale" value="ru"/>
+    <bean id="bannerInterceptor" class="org.jtalks.jcommune.web.interceptors.BannerInterceptor">
+      <constructor-arg ref="bannerService"/>
     </bean>
+    <bean id="componentInterceptor" class="org.jtalks.jcommune.web.interceptors.ComponentInterceptor">
+      <constructor-arg ref="componentService"/>
+    </bean>
+    <bean id="externalLinkInterceptor" class="org.jtalks.jcommune.web.interceptors.ExternalLinkInterceptor">
+      <constructor-arg ref="externalLinkService"/>
+    </bean>
+    <mvc:interceptor>
+      <!--Clear user location when user is about to get a new page-->
+      <mvc:mapping path="/topics/**"/>
+      <mvc:mapping path="/posts/**"/>
+      <mvc:mapping path="/users/**"/>
+      <mvc:mapping path="/branches/**"/>
+      <mvc:mapping path="/sections/**"/>
+      <mvc:mapping path="/pm/**"/>
+      <mvc:mapping path="/"/>
+      <mvc:exclude-mapping path="/users/*/avatar"/>
+      <bean id="clearInterceptor" class="org.jtalks.jcommune.web.interceptors.ClearInterceptor"/>
+    </mvc:interceptor>
+    <mvc:interceptor>
+      <mvc:mapping path="/"/>
+      <mvc:mapping path="/topics/**"/>
+      <mvc:mapping path="/posts/**"/>
+      <mvc:mapping path="/users/**"/>
+      <mvc:mapping path="/branches/**"/>
+      <mvc:mapping path="/sections/**"/>
+      <mvc:mapping path="/pm/**"/>
+      <bean id="javaSapeInterceptor" class="org.jtalks.jcommune.web.interceptors.SapeInterceptor">
+        <property name="componentSapeAccountProperty" ref="componentSapeAccountProperty"/>
+        <property name="componentSapeOnMainPageEnableProperty" ref="componentSapeOnMainPageEnableProperty"/>
+        <property name="componentSapeHostProperty" ref="componentSapeHostProperty"/>
+        <property name="componentSapeLinksCountProperty" ref="componentSapeLinksCountProperty"/>
+        <property name="componentSapeTimeoutProperty" ref="componentSapeTimeoutProperty"/>
+        <property name="componentSapeShowDummyLinksProperty" ref="componentSapeShowDummyLinksProperty"/>
+        <property name="componentSapeEnableServiceProperty" ref="componentSapeEnableServiceProperty"/>
+      </bean>
+    </mvc:interceptor>
+  </mvc:interceptors>
 
-    <bean id="handlerMapping"
-          class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>
+  <!-- simple pages -->
+  <mvc:view-controller path="/errors/400" view-name="/errors/400"/>
+  <mvc:view-controller path="/errors/403" view-name="/errors/accessDenied"/>
+  <mvc:view-controller path="/errors/404" view-name="/errors/404"/>
+  <mvc:view-controller path="/errors/redirect/404" view-name="redirect:/errors/404"/>
+  <mvc:view-controller path="/errors/500" view-name="/errors/500"/>
 
-    <!-- Interceptors -->
-    <mvc:interceptors>
-        <mvc:interceptor>
-            <!-- Do not call interceptors for static resources-->
-            <mvc:mapping path="/resources/**"/>
-            <bean class="org.jtalks.jcommune.web.interceptors.ChainBreakingInterceptor"/>
-        </mvc:interceptor>
-        <!--Figures out locale and language from url parameter-->
-        <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
-            <property name="paramName" value="lang"/>
-        </bean>
-        <!--Disables browser caching for all non-static resources-->
-        <bean id="webContentInterceptor"
-              class="org.springframework.web.servlet.mvc.WebContentInterceptor">
-            <property name="cacheSeconds" value="0"/>
-            <property name="useExpiresHeader" value="true"/>
-            <property name="useCacheControlHeader" value="true"/>
-            <property name="useCacheControlNoStore" value="true"/>
-        </bean>
-        <!--Fills common data, required to render all the pages-->
-        <bean id="userDataInterceptor" class="org.jtalks.jcommune.web.interceptors.UserDataInterceptor"/>
-        <bean id="propertiesInterceptor" class="org.jtalks.jcommune.web.interceptors.PropertiesInterceptor">
-            <constructor-arg ref="componentNameProperty"/>
-            <constructor-arg ref="componentDescriptionProperty"/>
-            <constructor-arg ref="componentSapeShowDummyLinksProperty"/>
-            <constructor-arg ref="componentLogoTooltipProperty"/>
-            <constructor-arg ref="componentInfoChangeDateProperty"/>
-        </bean>
-        <bean id="bannerInterceptor" class="org.jtalks.jcommune.web.interceptors.BannerInterceptor">
-            <constructor-arg ref="bannerService"/>
-        </bean>
-        <bean id="componentInterceptor" class="org.jtalks.jcommune.web.interceptors.ComponentInterceptor">
-            <constructor-arg ref="componentService"/>
-        </bean>
-        <bean id="externalLinkInterceptor" class="org.jtalks.jcommune.web.interceptors.ExternalLinkInterceptor">
-            <constructor-arg ref="externalLinkService"/>
-        </bean>
-        <mvc:interceptor>
-            <!--Clear user location when user is about to get a new page-->
-            <mvc:mapping path="/topics/**"/>
-            <mvc:mapping path="/posts/**"/>
-            <mvc:mapping path="/users/**"/>
-            <mvc:mapping path="/branches/**"/>
-            <mvc:mapping path="/sections/**"/>
-            <mvc:mapping path="/pm/**"/>
-            <mvc:mapping path="/"/>
-            <mvc:exclude-mapping path="/users/*/avatar"/>
-            <bean id="clearInterceptor" class="org.jtalks.jcommune.web.interceptors.ClearInterceptor"/>
-        </mvc:interceptor>
-        <mvc:interceptor>
-            <mvc:mapping path="/"/>
-            <mvc:mapping path="/topics/**"/>
-            <mvc:mapping path="/posts/**"/>
-            <mvc:mapping path="/users/**"/>
-            <mvc:mapping path="/branches/**"/>
-            <mvc:mapping path="/sections/**"/>
-            <mvc:mapping path="/pm/**"/>
-            <bean id="javaSapeInterceptor" class="org.jtalks.jcommune.web.interceptors.SapeInterceptor">
-                <property name="componentSapeAccountProperty" ref="componentSapeAccountProperty"/>
-                <property name="componentSapeOnMainPageEnableProperty" ref="componentSapeOnMainPageEnableProperty"/>
-                <property name="componentSapeHostProperty" ref="componentSapeHostProperty"/>
-                <property name="componentSapeLinksCountProperty" ref="componentSapeLinksCountProperty"/>
-                <property name="componentSapeTimeoutProperty" ref="componentSapeTimeoutProperty"/>
-                <property name="componentSapeShowDummyLinksProperty" ref="componentSapeShowDummyLinksProperty"/>
-                <property name="componentSapeEnableServiceProperty" ref="componentSapeEnableServiceProperty"/>
+  <mvc:view-controller path="/faqEditor" view-name="simplePageEditor"/>
+
+  <!-- static resources -->
+  <mvc:resources mapping="/resources/**" location="/resources/"/>
+
+  <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+    <property name="order" value="1"/>
+    <property name="contentNegotiationManager">
+      <bean class="org.springframework.web.accept.ContentNegotiationManager">
+        <constructor-arg>
+          <list>
+            <bean class="org.springframework.web.accept.PathExtensionContentNegotiationStrategy">
+              <constructor-arg>
+                <map>
+                  <entry key="json" value="application/json"/>
+                  <entry key="xml" value="application/xml"/>
+                  <entry key="rss" value="application/rss+xml"/>
+                </map>
+              </constructor-arg>
             </bean>
-        </mvc:interceptor>
-    </mvc:interceptors>
+            <bean class="org.springframework.web.accept.HeaderContentNegotiationStrategy"/>
+          </list>
+        </constructor-arg>
+      </bean>
+    </property>
 
-    <!-- simple pages -->
-    <mvc:view-controller path="/errors/400" view-name="/errors/400"/>
-    <mvc:view-controller path="/errors/403" view-name="/errors/accessDenied"/>
-    <mvc:view-controller path="/errors/404" view-name="/errors/404"/>
-    <mvc:view-controller path="/errors/redirect/404" view-name="redirect:/errors/404"/>
-    <mvc:view-controller path="/errors/500" view-name="/errors/500"/>
+    <property name="defaultViews">
+      <list>
+        <!-- RSS View -->
+        <bean class="org.jtalks.jcommune.web.view.RssViewer">
+          <property name="contentType" value="application/rss+xml;charset=UTF-8"/>
+        </bean>
+      </list>
+    </property>
+  </bean>
 
-    <mvc:view-controller path="/faqEditor" view-name="simplePageEditor"/>
-
-    <!-- static resources -->
-    <mvc:resources mapping="/resources/**" location="/resources/"/>
-
-    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
-        <property name="order" value="1"/>
-        <property name="contentNegotiationManager">
-            <bean class="org.springframework.web.accept.ContentNegotiationManager">
-                <constructor-arg>
-                    <list>
-                        <bean class="org.springframework.web.accept.PathExtensionContentNegotiationStrategy">
-                            <constructor-arg>
-                                <map>
-                                    <entry key="json" value="application/json"/>
-                                    <entry key="xml" value="application/xml"/>
-                                    <entry key="rss" value="application/rss+xml"/>
-                                </map>
-                            </constructor-arg>
-                        </bean>
-                        <bean class="org.springframework.web.accept.HeaderContentNegotiationStrategy"/>
-                    </list>
-                </constructor-arg>
-            </bean>
-        </property>
-
-        <property name="defaultViews">
-            <list>
-                <!-- RSS View -->
-                <bean class="org.jtalks.jcommune.web.view.RssViewer">
-                    <property name="contentType" value="application/rss+xml;charset=UTF-8"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <bean class="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver">
-        <property name="messageConverters">
-            <list>
-                <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>
-                <bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
-                <bean class="org.springframework.http.converter.xml.SourceHttpMessageConverter"/>
-                <bean class="org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter"/>
-                <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"/>
-            </list>
-        </property>
-    </bean>
+  <bean class="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver">
+    <property name="messageConverters">
+      <list>
+        <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>
+        <bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
+        <bean class="org.springframework.http.converter.xml.SourceHttpMessageConverter"/>
+        <bean class="org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter"/>
+        <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"/>
+      </list>
+    </property>
+  </bean>
 
 </beans>

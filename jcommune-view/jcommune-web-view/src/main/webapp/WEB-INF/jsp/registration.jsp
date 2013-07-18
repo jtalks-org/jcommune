@@ -21,88 +21,75 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <html>
 <head>
-    <title><spring:message code="label.signup"/></title>
-
-    <c:set var="mode" value="${jsp.import.mode}"/>
-    <c:choose>
-        <c:when test="${mode eq 'prod'}">
-            <script type="text/javascript"
-                    src="${pageContext.request.contextPath}/resources/wro/registration.js?${project.version}"></script>
-        </c:when>
-
-        <c:otherwise>
-            <script src="${pageContext.request.contextPath}/resources/javascript/app/registration.js"></script>
-        </c:otherwise>
-    </c:choose>
-
+  <title><spring:message code="label.signup"/></title>
 </head>
 
 <body>
 
 <div class="container form-login-related registration-page">
-    <form:form id="form" name="form" action='${pageContext.request.contextPath}/user/new'
-               modelAttribute="newUser" method="POST" class='form-vertical'>
-        <fieldset>
-            <legend><spring:message code="label.fillmessage"/></legend>
-            <div class="control-group">
-                <span class="reg_info"><spring:message code="label.tip.username"/></span>
+  <form:form id="form" name="form" action='${pageContext.request.contextPath}/user/new'
+             modelAttribute="newUser" method="POST" class='form-vertical'>
+    <fieldset>
+      <legend><spring:message code="label.fillmessage"/></legend>
+      <div class="control-group">
+        <span class="reg_info"><spring:message code="label.tip.username"/></span>
 
-                <div class="controls">
-                    <form:input path="username" class="reg_input" type="text"/>
-                    <br/>
-                    <form:errors path="username" cssClass="help-inline"/>
-                </div>
-            </div>
-            <div class="control-group">
-                <span class="reg_info"><spring:message code="label.tip.email"/></span>
+        <div class="controls">
+          <form:input path="username" class="reg_input" type="text"/>
+          <br/>
+          <form:errors path="username" cssClass="help-inline"/>
+        </div>
+      </div>
+      <div class="control-group">
+        <span class="reg_info"><spring:message code="label.tip.email"/></span>
 
-                <div class="controls">
-                    <form:input path="email" class="reg_input" type="text"/>
-                    <br/>
-                    <form:errors path="email" cssClass="help-inline"/>
-                </div>
-            </div>
-            <div class="control-group">
-                <span class="reg_info"><spring:message code="label.tip.password"/></span>
+        <div class="controls">
+          <form:input path="email" class="reg_input" type="text"/>
+          <br/>
+          <form:errors path="email" cssClass="help-inline"/>
+        </div>
+      </div>
+      <div class="control-group">
+        <span class="reg_info"><spring:message code="label.tip.password"/></span>
 
-                <div class="controls">
-                    <form:input path="password" class="reg_input" type="password"/>
-                    <br/>
-                    <form:errors path="password" cssClass="help-inline"/>
-                </div>
-            </div>
-            <div class="control-group">
-                <span class="reg_info"><spring:message code="label.tip.confirmation"/></span>
+        <div class="controls">
+          <form:input path="password" class="reg_input" type="password"/>
+          <br/>
+          <form:errors path="password" cssClass="help-inline"/>
+        </div>
+      </div>
+      <div class="control-group">
+        <span class="reg_info"><spring:message code="label.tip.confirmation"/></span>
 
-                <div class="controls">
-                    <form:input path="passwordConfirm" class="reg_input" type="password"/>
-                    <br/>
-                    <form:errors path="passwordConfirm" cssClass="help-inline"/>
-                </div>
-            </div>
-            <div class="control-group">
-                <span class="reg_info"><spring:message code="label.tip.captcha"/></span>
+        <div class="controls">
+          <form:input path="passwordConfirm" class="reg_input" type="password"/>
+          <br/>
+          <form:errors path="passwordConfirm" cssClass="help-inline"/>
+        </div>
+      </div>
+      <div class="control-group">
+        <span class="reg_info"><spring:message code="label.tip.captcha"/></span>
 
-                <div class="controls img-container">
-                    <img id="captcha-img" class="capcha-img" src='${pageContext.request.contextPath}/captcha/image'/>
-                    <img id="captcha-refresh" class="capcha-img capcha-reload"
-                         src='${pageContext.request.contextPath}/resources/images/captcha-refresh.png'/>
-                </div>
-            </div>
-            <div class="control-group">
-                <div class="controls">
-                    <form:input path="captcha" class="capcha-field" type="text" id="captcha"/>
-                    <br>
-                    <form:errors path="captcha" cssClass="help-inline"/>
-                </div>
-            </div>
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">
-                    <spring:message code="label.signup"/>
-                </button>
-            </div>
-        </fieldset>
-    </form:form>
+        <div class="controls img-container">
+          <img id="captcha-img" class="capcha-img" src='${pageContext.request.contextPath}/captcha/image'/>
+          <img id="captcha-refresh" class="capcha-img capcha-reload"
+               src='${pageContext.request.contextPath}/resources/images/captcha-refresh.png'/>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="controls">
+          <form:input path="captcha" class="capcha-field" type="text" id="captcha"/>
+          <br>
+          <form:errors path="captcha" cssClass="help-inline"/>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+          <spring:message code="label.signup"/>
+        </button>
+      </div>
+    </fieldset>
+  </form:form>
 </div>
 </body>
 </html>

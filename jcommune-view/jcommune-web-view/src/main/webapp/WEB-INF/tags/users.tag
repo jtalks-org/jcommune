@@ -22,27 +22,27 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <c:choose>
-    <c:when test="${!(empty users)}">
-        <c:forEach var="user" items="${users}" varStatus="i">
-            <c:set var='labelClass' value=''/>
-            <c:if test="${branch != null}">
-                <c:forEach var="group" items="${user.groups}">
-                    <c:if test="${group.id == branch.moderatorsGroup.id}">
-                        <c:set var='labelClass' value='label label-success'/>
-                    </c:if>
-                </c:forEach>
-            </c:if>
-            <c:forEach var="group" items="${user.groups}">
-                <c:if test="${group.name == 'Administrators'}"> <%--This string is default Name of Administrators group. --%>
-                    <c:set var='labelClass' value='label label-important'/>
-                </c:if>
-            </c:forEach>
-            <a href="${pageContext.request.contextPath}/users/${user.id}"
-               class="${labelClass}"
-               title="<spring:message code='label.tips.view_profile'/>"><c:out value="${user.username}"/></a>&thinsp;
+  <c:when test="${!(empty users)}">
+    <c:forEach var="user" items="${users}" varStatus="i">
+      <c:set var='labelClass' value=''/>
+      <c:if test="${branch != null}">
+        <c:forEach var="group" items="${user.groups}">
+          <c:if test="${group.id == branch.moderatorsGroup.id}">
+            <c:set var='labelClass' value='label label-success'/>
+          </c:if>
         </c:forEach>
-    </c:when>
-    <c:otherwise>
-        <spring:message code='label.branch.users.empty'/>
-    </c:otherwise>
+      </c:if>
+      <c:forEach var="group" items="${user.groups}">
+        <c:if test="${group.name == 'Administrators'}"> <%--This string is default Name of Administrators group. --%>
+          <c:set var='labelClass' value='label label-important'/>
+        </c:if>
+      </c:forEach>
+      <a href="${pageContext.request.contextPath}/users/${user.id}"
+         class="${labelClass}"
+         title="<spring:message code='label.tips.view_profile'/>"><c:out value="${user.username}"/></a>&thinsp;
+    </c:forEach>
+  </c:when>
+  <c:otherwise>
+    <spring:message code='label.branch.users.empty'/>
+  </c:otherwise>
 </c:choose>

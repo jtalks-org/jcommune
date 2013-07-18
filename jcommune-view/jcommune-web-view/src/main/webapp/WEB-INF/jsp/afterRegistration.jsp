@@ -17,14 +17,15 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <head>
-    <title><spring:message code="label.registration.success.title"/></title>
+  <title><spring:message code="label.registration.success.title"/></title>
 </head>
 <body>
-    <div class="container">
-        <h1><spring:message code="label.registration.success.title"/></h1>
-        <br/>
-        <div>
-            <spring:message code="label.registration.success"/>
-        </div>
-    </div>
+<div class="container">
+  <h1><spring:message code="label.registration.success.title"/></h1>
+  <br/>
+
+  <div>
+    <spring:message code="label.registration.success"/>
+  </div>
+</div>
 </body>

@@ -20,202 +20,202 @@
         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
         version="2.0">
 
-    <description>General purposes tag library</description>
-    <tlib-version>1.0</tlib-version>
-    <short-name>jtalks</short-name>
-    <uri>http://www.jtalks.org/tags</uri>
+  <description>General purposes tag library</description>
+  <tlib-version>1.0</tlib-version>
+  <short-name>jtalks</short-name>
+  <uri>http://www.jtalks.org/tags</uri>
 
-    <tag>
-        <name>ifContains</name>
-        <tag-class>org.jtalks.jcommune.web.tags.ContainsSupport</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>collection</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.util.Collection</type>
-        </attribute>
-        <attribute>
-            <name>object</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.Object</type>
-        </attribute>
-        <attribute>
-            <name>successMessage</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <name>failMessage</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-    </tag>
+  <tag>
+    <name>ifContains</name>
+    <tag-class>org.jtalks.jcommune.web.tags.ContainsSupport</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+      <name>collection</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.util.Collection</type>
+    </attribute>
+    <attribute>
+      <name>object</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+    </attribute>
+    <attribute>
+      <name>successMessage</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <name>failMessage</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+    </attribute>
+  </tag>
 
-    <tag>
-        <description>
-            Formats a Joda Date with a fixed pattern and assuming timezone offset
-        </description>
-        <name>format</name>
-        <tag-class>org.jtalks.jcommune.web.tags.FormattedDate</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>value</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>style</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>pattern</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>dateTimeZone</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>var</name>
-            <required>false</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>
-                Scope of var.
-            </description>
-            <name>scope</name>
-            <required>false</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>locale</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
+  <tag>
+    <description>
+      Formats a Joda Date with a fixed pattern and assuming timezone offset
+    </description>
+    <name>format</name>
+    <tag-class>org.jtalks.jcommune.web.tags.FormattedDate</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+      <name>value</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>style</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>pattern</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>dateTimeZone</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>var</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+      <description>
+        Scope of var.
+      </description>
+      <name>scope</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>locale</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
 
-    <tag>
-        <name>bb2html</name>
-        <tag-class>org.jtalks.jcommune.web.tags.ConverterBB2HTML</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>bbCode</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
+  <tag>
+    <name>bb2html</name>
+    <tag-class>org.jtalks.jcommune.web.tags.ConverterBB2HTML</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+      <name>bbCode</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
 
-    <tag>
-        <name>prepareLink</name>
-        <tag-class>org.jtalks.jcommune.web.tags.LinksPreparer</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>incomingLink</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-    
-    <tag>
-        <description>
-            Allows inclusion of a tag body if the current Authentication
-            has one of the specified permissions to the presented
-            domain object instance.
-        </description>
-        <name>hasPermission</name>
-        <tag-class>org.jtalks.jcommune.web.tags.HasPermission</tag-class>
-        <body-content>scriptless</body-content>
-        <attribute>
-            <description>
-                Simple name of permission (enum value) 
-            </description>
-            <name>permission</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>
-                Identifier of object to check permission
-            </description>
-            <name>targetId</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>
-                Type of object (e.g. BRANCH)
-            </description>
-            <name>targetType</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
+  <tag>
+    <name>prepareLink</name>
+    <tag-class>org.jtalks.jcommune.web.tags.LinksPreparer</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+      <name>incomingLink</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
 
-    <tag-file>
-        <name>bbeditor</name>
-        <path>/WEB-INF/tags/bbeditor.tag</path>
-    </tag-file>
+  <tag>
+    <description>
+      Allows inclusion of a tag body if the current Authentication
+      has one of the specified permissions to the presented
+      domain object instance.
+    </description>
+    <name>hasPermission</name>
+    <tag-class>org.jtalks.jcommune.web.tags.HasPermission</tag-class>
+    <body-content>scriptless</body-content>
+    <attribute>
+      <description>
+        Simple name of permission (enum value)
+      </description>
+      <name>permission</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <description>
+        Identifier of object to check permission
+      </description>
+      <name>targetId</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <description>
+        Type of object (e.g. BRANCH)
+      </description>
+      <name>targetType</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
 
-    <tag-file>
-        <name>breadcrumb</name>
-        <path>/WEB-INF/tags/breadcrumb.tag</path>
-    </tag-file>
+  <tag-file>
+    <name>bbeditor</name>
+    <path>/WEB-INF/tags/bbeditor.tag</path>
+  </tag-file>
 
-    <tag-file>
-        <name>poll</name>
-        <path>/WEB-INF/tags/poll.tag</path>
-    </tag-file>
-    
-    <tag-file>
-        <name>banner</name>
-        <path>/WEB-INF/tags/banner.tag</path>
-    </tag-file>
-    
-    <tag-file>
-        <name>pagination</name>
-        <path>/WEB-INF/tags/pagination.tag</path>
-    </tag-file>
-    
-    <tag-file>
-        <name>moderators</name>
-        <path>/WEB-INF/tags/moderators.tag</path>
-    </tag-file>
+  <tag-file>
+    <name>breadcrumb</name>
+    <path>/WEB-INF/tags/breadcrumb.tag</path>
+  </tag-file>
 
-    <tag-file>
-        <name>users</name>
-        <path>/WEB-INF/tags/users.tag</path>
-    </tag-file>
+  <tag-file>
+    <name>poll</name>
+    <path>/WEB-INF/tags/poll.tag</path>
+  </tag-file>
 
-    <tag-file>
-        <name>postContent</name>
-        <path>/WEB-INF/tags/postContent.tag</path>
-    </tag-file>
+  <tag-file>
+    <name>banner</name>
+    <path>/WEB-INF/tags/banner.tag</path>
+  </tag-file>
 
-    <tag-file>
-        <name>isSectionVisible</name>
-        <path>/WEB-INF/tags/isSectionVisible.tag</path>
-    </tag-file>
+  <tag-file>
+    <name>pagination</name>
+    <path>/WEB-INF/tags/pagination.tag</path>
+  </tag-file>
 
-    <tag-file>
-        <name>topicIcon</name>
-        <path>/WEB-INF/tags/topicIcon.tag</path>
-    </tag-file>
+  <tag-file>
+    <name>moderators</name>
+    <path>/WEB-INF/tags/moderators.tag</path>
+  </tag-file>
 
-    <tag-file>
-        <name>topicIconSmall</name>
-        <path>/WEB-INF/tags/topicIconSmall.tag</path>
-    </tag-file>
+  <tag-file>
+    <name>users</name>
+    <path>/WEB-INF/tags/users.tag</path>
+  </tag-file>
 
-    <tag-file>
-        <name>topicControls</name>
-        <path>/WEB-INF/tags/topicControls.tag</path>
-    </tag-file>
+  <tag-file>
+    <name>postContent</name>
+    <path>/WEB-INF/tags/postContent.tag</path>
+  </tag-file>
+
+  <tag-file>
+    <name>isSectionVisible</name>
+    <path>/WEB-INF/tags/isSectionVisible.tag</path>
+  </tag-file>
+
+  <tag-file>
+    <name>topicIcon</name>
+    <path>/WEB-INF/tags/topicIcon.tag</path>
+  </tag-file>
+
+  <tag-file>
+    <name>topicIconSmall</name>
+    <path>/WEB-INF/tags/topicIconSmall.tag</path>
+  </tag-file>
+
+  <tag-file>
+    <name>topicControls</name>
+    <path>/WEB-INF/tags/topicControls.tag</path>
+  </tag-file>
 </taglib>

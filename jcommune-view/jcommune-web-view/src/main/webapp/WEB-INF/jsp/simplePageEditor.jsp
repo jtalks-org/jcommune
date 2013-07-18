@@ -22,39 +22,39 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <html>
 <head>
-    <title><spring:message code="label.edit"/></title>
+  <title><spring:message code="label.edit"/></title>
 </head>
 <body>
 <div class="container">
 
-    <div id="answer">
-        <form:form action="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}/edit"
-                   method="POST" modelAttribute="simplePageDto" class='well anti-multipost'>
+  <div id="answer">
+    <form:form action="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}/edit"
+               method="POST" modelAttribute="simplePageDto" class='well anti-multipost'>
 
-            <h2>
-                <spring:message code="label.edit"/>
-            </h2>
-            <form:hidden path="id"/>
+      <h2>
+        <spring:message code="label.edit"/>
+      </h2>
+      <form:hidden path="id"/>
 
 
-            <div>
-                    <form:input path="nameText" class="reg_input" type="text"/></br>
-                <form:errors path="nameText" cssClass="error"/>
-            </div>
+      <div>
+          <form:input path="nameText" class="reg_input" type="text"/></br>
+        <form:errors path="nameText" cssClass="error"/>
+      </div>
 
-            <form:hidden path="pathName"/>
-            <jtalks:bbeditor labelForAction="label.save"
-                             postText="${simplePageDto.contentText}"
-                             bodyParameterName="contentText"
-                             back="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}"/>
-        </form:form>
-        <a href="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}" class="back-btn">
-            <i class="icon-arrow-left"></i>
-            <spring:message code="label.back"/>
-        </a>
-    </div>
+      <form:hidden path="pathName"/>
+      <jtalks:bbeditor labelForAction="label.save"
+                       postText="${simplePageDto.contentText}"
+                       bodyParameterName="contentText"
+                       back="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}"/>
+    </form:form>
+    <a href="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}" class="back-btn">
+      <i class="icon-arrow-left"></i>
+      <spring:message code="label.back"/>
+    </a>
+  </div>
 
-    <div class="footer_buffer"></div>
+  <div class="footer_buffer"></div>
 </div>
 </div>
 </body>
