@@ -125,7 +125,7 @@
           </execution>
         </executions>
         <configuration>
-          <targetGroups>main,pm,answer,cr,post,profile,plugin,registration,topic</targetGroups>
+          <targetGroups>main,pm,cr,post,user,plugin,topic</targetGroups>
           <minimize>true</minimize>
           <destinationFolder>${basedir}/src/main/webapp/resources/wro</destinationFolder>
           <cssDestinationFolder>${basedir}/src/main/webapp/resources/wro</cssDestinationFolder>
