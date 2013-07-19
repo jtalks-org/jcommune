@@ -12,29 +12,28 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.plugins;
+package org.jtalks.jcommune.web.dto;
 
-import org.jtalks.jcommune.model.entity.PluginConfiguration;
-import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
-
-import java.util.List;
+import java.util.Map;
 
 /**
- *
+ * @author Anuar_Nurmakanov
  */
-public interface Plugin {
+public class PluginsEnablingDto {
+    private Map<String, Boolean> nameToEnablingValue;
 
-    enum State {LOADED, CONFIGURED, ENABLED, IN_ERROR}
+    public PluginsEnablingDto() {
+    }
 
-    boolean supportsJCommuneVersion(String version);
+    public PluginsEnablingDto(Map<String, Boolean> nameToEnablingValue) {
+        this.nameToEnablingValue = nameToEnablingValue;
+    }
 
-    String getName();
+    public Map<String, Boolean> getNameToEnablingValue() {
+        return nameToEnablingValue;
+    }
 
-    State getState();
-
-    List<PluginConfigurationProperty> getConfiguration();
-
-    List<PluginConfigurationProperty> getDefaultConfiguration();
-
-    void configure(PluginConfiguration configuration);
+    public void setNameToEnablingValue(Map<String, Boolean> nameToEnablingValue) {
+        this.nameToEnablingValue = nameToEnablingValue;
+    }
 }

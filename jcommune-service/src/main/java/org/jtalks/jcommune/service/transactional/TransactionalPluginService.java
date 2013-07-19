@@ -33,6 +33,7 @@ import java.net.URLClassLoader;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ServiceLoader;
 
 import static java.nio.file.StandardWatchEventKinds.*;
@@ -137,7 +138,7 @@ public class TransactionalPluginService
         Plugin result;
         List<Plugin> plugins1 = this.getPlugins(componentId, new NameFilter(name));
         if (plugins1.isEmpty()) {
-            throw new NotFoundException("Plugin " + name + "is not loaded");
+            throw new NotFoundException("Plugin " + name + " is not loaded");
         } else {
             result = plugins1.get(0);
         }
@@ -153,6 +154,21 @@ public class TransactionalPluginService
     @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
     public PluginConfiguration getPluginConfiguration(String pluginName, long componentId) throws NotFoundException {
         return getDao().get(pluginName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
+    public void updatePluginsEnabling(Map<String, Boolean> pluginNameToEnablingValue, long componentId) throws NotFoundException {
+        for (String pluginName: pluginNameToEnablingValue.keySet()) {
+            PluginDao pluginDao = getDao();
+            PluginConfiguration configuration = pluginDao.get(pluginName);
+            boolean isEnabled = pluginNameToEnablingValue.get(pluginName);
+            configuration.setActive(isEnabled);
+            pluginDao.saveOrUpdate(configuration);
+        }
     }
 
     /**

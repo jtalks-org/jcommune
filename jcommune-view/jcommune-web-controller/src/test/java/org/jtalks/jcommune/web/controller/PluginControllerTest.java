@@ -21,13 +21,16 @@ import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.PluginService;
+import org.jtalks.jcommune.web.dto.PluginsEnablingDto;
 import org.mockito.Mock;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -117,6 +120,21 @@ public class PluginControllerTest {
         assertViewName(resultModelAndView, "/plugins/configure/" + pluginName);
         assertModelAttributeAvailable(resultModelAndView, "pluginConfiguration");
         verify(pluginService).updateConfiguration(newConfiguration, componentId);
+    }
+
+    @Test
+    public void updateEnablingShouldUpdateAllPassedPlugins() throws NotFoundException {
+        long componentId = 25L;
+        Component component = new Component();
+        component.setId(componentId);
+        when(componentService.getComponentOfForum()).thenReturn(component);
+        Map<String, Boolean> nameToEnablingValue = new HashMap<>();
+        PluginsEnablingDto pluginsEnablingDto = new PluginsEnablingDto(nameToEnablingValue);
+
+        String destinationUrl = pluginController.updateEnabling(pluginsEnablingDto);
+
+        assertEquals(destinationUrl, "/plugins/list", "After correct update of plugins enabling, user should see updated plugins");
+        verify(pluginService).updatePluginsEnabling(nameToEnablingValue, componentId);
     }
 
     /**

@@ -26,206 +26,202 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<meta charset="UTF-8">
+  <meta charset="UTF-8">
 
-<script>
-  <%--Defines URL mapping root to be used in JS--%>
-  $root = "${pageContext.request.contextPath}";
-  <%--Include i18n resources for JS scripts--%>
-  <jsp:include page="jsMessages.jsp"/>
-</script>
+  <script>
+    <%--Defines URL mapping root to be used in JS--%>
+    $root = "${pageContext.request.contextPath}";
+    <%--Include i18n resources for JS scripts--%>
+    <jsp:include page="jsMessages.jsp"/>
+  </script>
 
 
-<link rel="shortcut icon" type="image/x-icon"
-      href="${pageContext.request.contextPath}/admin/icon/ico?v=${infoChangeDate}"/>
-<link rel="icon" type="image/png" href="${pageContext.request.contextPath}/admin/icon/png?v=${infoChangeDate}"/>
-<spring:message code="label.forum.title" var="forumTitle"/>
-<spring:message code="label.rssFeed" var="rssTitle" arguments="${forumTitle}"/>
-<link rel="alternate" type="application/rss+xml" title="${rssTitle}"
-      href="${pageContext.request.contextPath}/topics/recent.rss"/>
+  <link rel="shortcut icon" type="image/x-icon"
+        href="${pageContext.request.contextPath}/admin/icon/ico?v=${infoChangeDate}"/>
+  <link rel="icon" type="image/png" href="${pageContext.request.contextPath}/admin/icon/png?v=${infoChangeDate}"/>
+  <spring:message code="label.forum.title" var="forumTitle"/>
+  <spring:message code="label.rssFeed" var="rssTitle" arguments="${forumTitle}"/>
+  <link rel="alternate" type="application/rss+xml" title="${rssTitle}"
+        href="${pageContext.request.contextPath}/topics/recent.rss"/>
 
-<link rel="stylesheet" type="text/css" media="screen, projection"
-      href="${pageContext.request.contextPath}/resources/css/manual/i18n/<spring:message code="locale.code"/>.css"/>
-<c:set var="mode" value="${isJsCompressed}"/>
-<c:set var="uriString" value="${pageContext.request.requestURI}"/>
+  <link rel="stylesheet" type="text/css" media="screen, projection"
+        href="${pageContext.request.contextPath}/resources/css/manual/i18n/<spring:message code="locale.code"/>.css"/>
+  <c:set var="mode" value="${isJsCompressed}"/>
+  <c:set var="uriString" value="${pageContext.request.requestURI}"/>
 
-<c:choose>
-  <c:when test="${mode eq 'true'}">
-    <link rel="stylesheet" type="text/css" media="screen, projection"
-          href="${pageContext.request.contextPath}/resources/wro/main.css?${project.version}"/>
-
-    <script src="${pageContext.request.contextPath}/resources/wro/main.js?${project.version}"></script>
-
-    <c:if test="${fn:contains(uriString, 'inbox') or fn:contains(uriString, 'outbox')
-      or fn:contains(uriString, 'drafts') or fn:contains(uriString, 'pm')}">
-      <script language="javascript"
-              src="${pageContext.request.contextPath}/resources/wro/pm.js?${project.version}"></script>
-    </c:if>
-
-    <c:if test="${fn:contains(uriString, 'posts')}">
-      <script type="text/javascript"
-              src="${pageContext.request.contextPath}/resources/wro/answer.js?${project.version}"></script>
-      <script type="text/javascript"
-              src="${pageContext.request.contextPath}/resources/wro/post.js?${project.version}"></script>
-    </c:if>
-
-    <c:if test="${fn:contains(uriString, 'reviews')}">
-      <script type="text/javascript"
-              src="${pageContext.request.contextPath}/resources/wro/cr.js?${project.version}"></script>
-    </c:if>
-
-    <c:if test="${fn:contains(uriString, 'user')}">
+  <c:choose>
+    <c:when test="${mode eq 'true'}">
       <link rel="stylesheet" type="text/css" media="screen, projection"
-            href="${pageContext.request.contextPath}/resources/wro/profile.css?${project.version}"/>
+            href="${pageContext.request.contextPath}/resources/wro/main.css?${project.version}"/>
 
-      <script type="text/javascript"
-              src="${pageContext.request.contextPath}/resources/wro/profile.js?${project.version}"></script>
-      <script type="text/javascript"
-              src="${pageContext.request.contextPath}/resources/wro/registration.js?${project.version}"></script>
-    </c:if>
+      <script src="${pageContext.request.contextPath}/resources/wro/main.js?${project.version}"></script>
 
-    <c:if test="${fn:contains(uriString, 'plugins')}">
-      <script type="text/javascript"
-              src="${pageContext.request.contextPath}/resources/wro/plugin.js?${project.version}"></script>
-    </c:if>
-
-    <c:if test="${fn:contains(uriString, 'topics')}">
-      <script type="text/javascript"
-              src="${pageContext.request.contextPath}/resources/wro/topic.js?${project.version}"></script>
-
-      <link rel="stylesheet" type="text/css" media="all"
-            href="${pageContext.request.contextPath}/resources/wro/topic.css?${project.version}"/>
-    </c:if>
-  </c:when>
-
-  <c:otherwise>
-    <link rel="stylesheet" type="text/css" media="screen, projection"
-          href="${pageContext.request.contextPath}/resources/css/app/editor.css"/>
-    <link rel="stylesheet" type="text/css" media="screen, projection"
-          href="${pageContext.request.contextPath}/resources/css/lib/fonts-googleapis-com.css"/>
-    <link rel="stylesheet" type="text/css" media="screen, projection"
-          href="${pageContext.request.contextPath}/resources/css/lib/bootstrap.css"/>
-    <link rel="stylesheet" type="text/css" media="screen, projection"
-          href="${pageContext.request.contextPath}/resources/css/lib/bootstrap-responsive.css"/>
-    <link rel="stylesheet" type="text/css" media="screen, projection"
-          href="${pageContext.request.contextPath}/resources/css/lib/prettify.css"/>
-    <link rel="stylesheet" type="text/css" media="screen, projection"
-          href="${pageContext.request.contextPath}/resources/css/lib/prettyPhoto.css"/>
-    <link rel="stylesheet" type="text/css" media="screen, projection"
-          href="${pageContext.request.contextPath}/resources/css/lib/inline.css"/>
-    <link rel="stylesheet" type="text/css" media="screen, projection"
-          href="${pageContext.request.contextPath}/resources/css/app/application.css"/>
-
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery-1.7.min.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery.truncate.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery-ui.min.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery-ui-i18n.min.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery.prettyPhoto.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/jquery.contextMenu.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/jquery-fieldselection.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/textarea-helper.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/textarea-helper.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/prettify.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-apollo.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-clj.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-css.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-go.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-hs.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-lisp.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-lua.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-ml.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-n.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-proto.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-scala.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-sql.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-tex.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-vb.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-vhdl.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-wiki.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-xq.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-yaml.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/wysiwyg-bbcode/editor.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/bootstrap.min.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/fileuploader.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/html5.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/html5placeholder.jquery.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/json2.js"></script>
-
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/keymaps.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/dialog.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/mainLinksEditor.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/URLBuilder.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/URLBuilder.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/registration.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/signin.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/global.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/antimultipost.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/errorUtils.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/utils.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/dropdown.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/forumEffects.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/topline.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/search.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/events.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/banner.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/forumAdministration.js"></script>
-
-    <c:if test="${fn:contains(uriString, 'inbox') or fn:contains(uriString, 'outbox')
+      <c:if test="${fn:contains(uriString, 'inbox') or fn:contains(uriString, 'outbox')
       or fn:contains(uriString, 'drafts') or fn:contains(uriString, 'pm')}">
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/privateMessages.js"></script>
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/updateSaveButtonStateOnPmForm.js">
-      </script>
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"></script>
-    </c:if>
+        <script language="javascript"
+                src="${pageContext.request.contextPath}/resources/wro/pm.js?${project.version}"></script>
+      </c:if>
 
-    <c:if test="${fn:contains(uriString, 'posts')}">
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/bbeditorEffects.js"></script>
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"></script>
-    </c:if>
+      <c:if test="${fn:contains(uriString, 'posts')}">
+        <script type="text/javascript"
+                src="${pageContext.request.contextPath}/resources/wro/post.js?${project.version}"></script>
+      </c:if>
 
-    <c:if test="${fn:contains(uriString, 'reviews')}">
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
-    </c:if>
+      <c:if test="${fn:contains(uriString, 'reviews')}">
+        <script type="text/javascript"
+                src="${pageContext.request.contextPath}/resources/wro/cr.js?${project.version}"></script>
+      </c:if>
 
-    <c:if test="${fn:contains(uriString, 'user')}">
+      <c:if test="${fn:contains(uriString, 'user')}">
+        <link rel="stylesheet" type="text/css" media="screen, projection"
+              href="${pageContext.request.contextPath}/resources/wro/user.css?${project.version}"/>
+
+        <script type="text/javascript"
+                src="${pageContext.request.contextPath}/resources/wro/user.js?${project.version}"></script>
+      </c:if>
+
+      <c:if test="${fn:contains(uriString, 'plugins')}">
+        <script type="text/javascript"
+                src="${pageContext.request.contextPath}/resources/wro/plugin.js?${project.version}"></script>
+      </c:if>
+
+      <c:if test="${fn:contains(uriString, 'topics')}">
+        <script type="text/javascript"
+                src="${pageContext.request.contextPath}/resources/wro/topic.js?${project.version}"></script>
+
+        <link rel="stylesheet" type="text/css" media="all"
+              href="${pageContext.request.contextPath}/resources/wro/topic.css?${project.version}"/>
+      </c:if>
+    </c:when>
+
+    <c:otherwise>
       <link rel="stylesheet" type="text/css" media="screen, projection"
-            href="${pageContext.request.contextPath}/resources/css/app/profile.css"/>
+            href="${pageContext.request.contextPath}/resources/css/app/editor.css"/>
+      <link rel="stylesheet" type="text/css" media="screen, projection"
+            href="${pageContext.request.contextPath}/resources/css/lib/fonts-googleapis-com.css"/>
+      <link rel="stylesheet" type="text/css" media="screen, projection"
+            href="${pageContext.request.contextPath}/resources/css/lib/bootstrap.css"/>
+      <link rel="stylesheet" type="text/css" media="screen, projection"
+            href="${pageContext.request.contextPath}/resources/css/lib/bootstrap-responsive.css"/>
+      <link rel="stylesheet" type="text/css" media="screen, projection"
+            href="${pageContext.request.contextPath}/resources/css/lib/prettify.css"/>
+      <link rel="stylesheet" type="text/css" media="screen, projection"
+            href="${pageContext.request.contextPath}/resources/css/lib/prettyPhoto.css"/>
+      <link rel="stylesheet" type="text/css" media="screen, projection"
+            href="${pageContext.request.contextPath}/resources/css/lib/inline.css"/>
+      <link rel="stylesheet" type="text/css" media="screen, projection"
+            href="${pageContext.request.contextPath}/resources/css/app/application.css"/>
 
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/avatarUpload.js"></script>
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/contacts.js"></script>
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/userProfileEffects.js"></script>
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"></script>
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/codeHighlighting.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery-1.7.min.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery.truncate.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery-ui.min.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery-ui-i18n.min.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery.prettyPhoto.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/jquery.contextMenu.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/jquery-fieldselection.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/textarea-helper.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/textarea-helper.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/prettify.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-apollo.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-clj.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-css.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-go.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-hs.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-lisp.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-lua.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-ml.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-n.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-proto.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-scala.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-sql.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-tex.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-vb.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-vhdl.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-wiki.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-xq.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-yaml.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/wysiwyg-bbcode/editor.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/bootstrap.min.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/fileuploader.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/html5.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/html5placeholder.jquery.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/json2.js"></script>
+
+      <script src="${pageContext.request.contextPath}/resources/javascript/app/keymaps.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/app/dialog.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/app/mainLinksEditor.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/app/URLBuilder.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/app/URLBuilder.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/app/registration.js"></script>
-    </c:if>
-
-    <c:if test="${fn:contains(uriString, 'plugins')}">
+      <script src="${pageContext.request.contextPath}/resources/javascript/app/signin.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/app/global.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/app/antimultipost.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/app/errorUtils.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/app/utils.js"></script>
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/permissionService.js"></script>
-    </c:if>
+      <script src="${pageContext.request.contextPath}/resources/javascript/app/dropdown.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/app/forumEffects.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/app/topline.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/app/search.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/app/events.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/app/banner.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/app/forumAdministration.js"></script>
 
-    <c:if test="${fn:contains(uriString, 'topics')}">
-      <link rel="stylesheet" type="text/css" media="all"
-            href="${pageContext.request.contextPath}/resources/css/lib/jquery-ui.css"/>
+      <c:if test="${fn:contains(uriString, 'inbox') or fn:contains(uriString, 'outbox')
+      or fn:contains(uriString, 'drafts') or fn:contains(uriString, 'pm')}">
+        <script src="${pageContext.request.contextPath}/resources/javascript/app/privateMessages.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/javascript/app/updateSaveButtonStateOnPmForm.js">
+        </script>
+        <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"></script>
+      </c:if>
 
-      <link rel="stylesheet" type="text/css" media="all"
-            href="${pageContext.request.contextPath}/resources/css/lib/jquery.contextMenu.css"/>
+      <c:if test="${fn:contains(uriString, 'posts')}">
+        <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/javascript/app/bbeditorEffects.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"></script>
+      </c:if>
 
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/datepicker.js"></script>
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/pollPreview.js"></script>
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"></script>
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/bbeditorEffects.js"></script>
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/subscription.js"></script>
-    </c:if>
-  </c:otherwise>
-</c:choose>
+      <c:if test="${fn:contains(uriString, 'reviews')}">
+        <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
+      </c:if>
+
+      <c:if test="${fn:contains(uriString, 'user')}">
+        <link rel="stylesheet" type="text/css" media="screen, projection"
+              href="${pageContext.request.contextPath}/resources/css/app/profile.css"/>
+
+        <script src="${pageContext.request.contextPath}/resources/javascript/app/avatarUpload.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/javascript/app/contacts.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/javascript/app/userProfileEffects.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/javascript/app/codeHighlighting.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/javascript/app/registration.js"></script>
+      </c:if>
+
+      <c:if test="${fn:contains(uriString, 'plugins')}">
+        <script src="${pageContext.request.contextPath}/resources/javascript/app/utils.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/javascript/app/permissionService.js"></script>
+      </c:if>
+
+      <c:if test="${fn:contains(uriString, 'topics')}">
+        <link rel="stylesheet" type="text/css" media="all"
+              href="${pageContext.request.contextPath}/resources/css/lib/jquery-ui.css"/>
+
+        <link rel="stylesheet" type="text/css" media="all"
+              href="${pageContext.request.contextPath}/resources/css/lib/jquery.contextMenu.css"/>
+
+        <script src="${pageContext.request.contextPath}/resources/javascript/app/datepicker.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/javascript/app/pollPreview.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/javascript/app/bbeditorEffects.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/javascript/app/subscription.js"></script>
+      </c:if>
+    </c:otherwise>
+  </c:choose>
 
 
-<decorator:head/>
-<title><decorator:title/></title>
+  <decorator:head/>
+  <title><decorator:title/></title>
 </head>
 <body>
 <jsp:include page="../template/topLine.jsp"/>

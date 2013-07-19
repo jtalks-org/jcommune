@@ -19,6 +19,7 @@ import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.PluginService;
+import org.jtalks.jcommune.web.dto.PluginsEnablingDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -65,6 +66,13 @@ public class PluginController {
         pluginService.updateConfiguration(newConfiguration, componentId);
         return new ModelAndView("/plugins/configure/" + newConfiguration.getName())
                 .addObject("pluginConfiguration", newConfiguration);
+    }
+
+    @RequestMapping(value = "/update/enable", method = RequestMethod.POST)
+    public String updateEnabling(@ModelAttribute PluginsEnablingDto pluginsEnablingDto) throws NotFoundException {
+        long componentId = getForumComponentId();
+        pluginService.updatePluginsEnabling(pluginsEnablingDto.getNameToEnablingValue(), componentId);
+        return "/plugins/list";
     }
 
     private long getForumComponentId() {

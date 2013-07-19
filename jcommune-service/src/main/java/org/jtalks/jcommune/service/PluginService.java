@@ -20,6 +20,7 @@ import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.service.plugins.PluginFilter;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -32,4 +33,6 @@ public interface PluginService extends EntityService<PluginConfiguration> {
     void updateConfiguration(PluginConfiguration pluginConfiguration, long componentId) throws NotFoundException;
 
     PluginConfiguration getPluginConfiguration(String pluginName, long componentId) throws NotFoundException;
+
+    void updatePluginsEnabling(Map<String, Boolean> pluginNameToEnablingValue, long componentId) throws NotFoundException;
 }

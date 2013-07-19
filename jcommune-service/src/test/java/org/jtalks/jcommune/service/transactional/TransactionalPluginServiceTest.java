@@ -23,10 +23,15 @@ import org.testng.annotations.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Anuar_Nurmakanov
@@ -62,5 +67,36 @@ public class TransactionalPluginServiceTest {
         when(pluginDao.get(pluginName)).thenThrow(new NotFoundException());
 
         pluginService.getPluginConfiguration(pluginName, FAKE_COMPONENT_ID);
+    }
+
+    @Test
+    public void updatePluginsEnablingShouldUpdatePluginsEnabling() throws NotFoundException {
+        String pluginName = "plugin";
+        PluginConfiguration pluginConfiguration = new PluginConfiguration();
+        pluginConfiguration.setActive(false);
+        when(pluginDao.get(pluginName)).thenReturn(pluginConfiguration);
+        Map<String, Boolean> pluginsEnabling = new HashMap<>();
+        pluginsEnabling.put(pluginName, Boolean.TRUE);
+
+        pluginService.updatePluginsEnabling(pluginsEnabling, FAKE_COMPONENT_ID);
+
+        verify(pluginDao).saveOrUpdate(pluginConfiguration);
+        assertTrue(pluginConfiguration.isActive(), "Plugin must be activated.");
+    }
+
+    @Test
+    public void updatePluginsEnablingShouldUpdateAllPassedPlugins() throws NotFoundException {
+        int pluginsCount = 10;
+        String pluginName = "plugin";
+        PluginConfiguration pluginConfiguration = new PluginConfiguration();
+        when(pluginDao.get(pluginName)).thenReturn(pluginConfiguration);
+        Map<String, Boolean> pluginsEnabling = new HashMap<>();
+        for (int i=0; i< pluginsCount; i++) {
+            pluginsEnabling.put(pluginName + i, Boolean.TRUE);
+        }
+
+        pluginService.updatePluginsEnabling(pluginsEnabling, FAKE_COMPONENT_ID);
+
+        verify(pluginDao, times(pluginsCount)).saveOrUpdate(pluginConfiguration);
     }
 }

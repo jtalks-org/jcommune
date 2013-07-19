@@ -37,9 +37,12 @@
     </c:choose>
 </head>
 <body>
-
-<jtalks:hasPermission targetId='${forumComponent.id}' targetType='COMPONENT' permission='GeneralPermission.ADMIN'>
     <div class="container">
+        <%-- List of plugins. --%>
+        <div id="plugins-list-header">
+            <h2><spring:message code="label.plugins.installed"/></h2>
+        </div>
+        <span class="inline-block"></span>
         <%-- List of plugins. --%>
         <table id="plugins-table" class="table table-row table-bordered">
             <c:choose>
@@ -50,7 +53,7 @@
                             <spring:message code="label.plugins.plugin.name"/>
                         </th>
                         <th id="plugin-actions">
-                            <spring:message code="label.plugins.plugin.configure"/>
+                            <spring:message code="label.plugins.plugin.actions"/>
                         </th>
                         <th id="plugin-is-enabled">
                             <spring:message code="label.plugins.plugin.is_enabled"/>
@@ -65,13 +68,13 @@
                                 <c:out value="${plugin.name}"/>
                             </td>
                             <td>
-                                <a href="${pageContext.request.contextPath}/plugins/${plugin.name}"
-                                   title="<spring:message code='label.tips.view_profile'/>">
+                                <a href="${pageContext.request.contextPath}/plugins/configure/${plugin.name}"
+                                   title="<spring:message code='label.plugins.plugin.configure.hint'/>">
+                                   <spring:message code="label.plugins.plugin.configure"/>
                                 </a>
                             </td>
                             <td>
-                                <form:checkbox path="" value="${plugin.state == 'ENABLED'}"
-                                               class="form-check-radio-box script-has-tooltip"/>
+                                <input type="checkbox" checked="${plugin.state == 'ENABLED'}" disabled="true" />
                             </td>
                         </tr>
                     </c:forEach>
@@ -80,5 +83,4 @@
             </c:choose>
         </table>
     </div>
-</jtalks:hasPermission>
 </body>

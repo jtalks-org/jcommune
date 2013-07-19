@@ -21,7 +21,7 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 
 <head>
-    <meta name="description" content="<c:out value="${topic.title}"/>">
+    <meta name="description" content="<c:out value="${pluginConfiguration.name}"/>">
     <%-- Add JS plugins --%>
     <c:set var="mode" value="${jsp.import.mode}"/>
     <c:choose>
@@ -38,51 +38,60 @@
 
 </head>
 <body>
-    <jtalks:hasPermission targetId='${forumComponent.id}' targetType='COMPONENT' permission='GeneralPermission.ADMIN'>
-        <div class="container">
-            <%-- Plugin configuration properties. --%>
-            <form:form action="${pageContext.request.contextPath}${submitUrl}" method="POST" modelAttribute="${pluginConfiguration}">
-                <table id="plugins-table" class="table table-row table-bordered">
-                    <c:choose>
-                        <c:when test="${!(empty pluginConfiguration.properties)}">
-                            <%-- Header --%>
-                            <thead>
-                                <tr>
-                                    <th id="property-name">
-                                        <spring:message code="label.plugins.plugin.property.name"/>
-                                    </th>
-                                    <th id="property-type">
-                                        <spring:message code="label.plugins.plugin.property.type"/>
-                                    </th>
-                                    <th id="property-value">
-                                        <spring:message code="label.plugins.plugin.property.value"/>
-                                    </th>
-                                </tr>
-                            </thead>
-
-                            <%-- Content --%>
-                            <tbody>
-                                <form:hidden path="id" />
-                                <c:forEach var="property" items="${pluginConfiguration.properties}" varStatus="index">
-                                        <%-- Property --%>
-                                        <tr>
-                                            <td>
-                                                <c:out value="${property.name}"/>
-                                            </td>
-                                            <td>
-                                                <c:out value="${property.type}"/>
-                                            </td>
-                                            <td>
-                                                <form:input path="properties[${index}].value" />
-                                            </td>
-                                        </tr>
-                                </c:forEach>
-                            </tbody>
-                        </c:when>
-                    </c:choose>
-                </table>
-                <input type="submit" value="OK" />
-            </form:form>
+    <div class="container">
+        <div id="plugins-properties-list-header">
+            <h2><c:out value="${pluginConfiguration.name}"/></h2>
         </div>
-    </jtalks:hasPermission>
+        <span class="inline-block"></span>
+
+        <form:form action="${pageContext.request.contextPath}/plugins/update" method="POST" modelAttribute="pluginConfiguration">
+            <%-- Plugin configuration values --%>
+            <form:hidden path="id" value="${pluginConfiguration.id}"/>
+            <form:hidden path="name" value="${pluginConfiguration.name}"/>
+            <form:hidden path="active" value="${pluginConfiguration.active}"/>
+            <%-- Plugin configuration properties. --%>
+            <table id="plugins-table" class="table table-row table-bordered">
+                <c:choose>
+                    <c:when test="${!(empty pluginConfiguration.properties)}">
+                        <%-- Header --%>
+                        <thead>
+                            <tr>
+                                <th id="property-name">
+                                    <spring:message code="label.plugins.plugin.property.name"/>
+                                </th>
+                                <th id="property-type">
+                                    <spring:message code="label.plugins.plugin.property.type"/>
+                                </th>
+                                <th id="property-value">
+                                    <spring:message code="label.plugins.plugin.property.value"/>
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <%-- Content --%>
+                        <tbody>
+                            <c:forEach var="property" items="${pluginConfiguration.properties}" varStatus="status">
+                                    <%-- Property --%>
+                                    <form:hidden path="properties[${status.index}].id" value="${property.id}"/>
+                                    <tr>
+                                        <td>
+                                            <form:hidden path="properties[${status.index}].name" value="${property.name}"/>
+                                            <c:out value="${property.name}"/>
+                                        </td>
+                                        <td>
+                                            <form:hidden path="properties[${status.index}].type" value="${property.type}"/>
+                                            <c:out value="${property.type}"/>
+                                        </td>
+                                        <td>
+                                            <form:input path="properties[${status.index}].value" value="${property.value}" />
+                                        </td>
+                                    </tr>
+                            </c:forEach>
+                        </tbody>
+                    </c:when>
+                </c:choose>
+            </table>
+            <input type="submit" value="<spring:message code="label.plugins.properties.save"/>" />
+        </form:form>
+    </div>
 </body>
