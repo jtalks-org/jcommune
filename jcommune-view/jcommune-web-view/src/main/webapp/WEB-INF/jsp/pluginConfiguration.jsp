@@ -91,7 +91,7 @@
                     </c:when>
                 </c:choose>
             </table>
-            <input type="submit" value="<spring:message code="label.plugins.properties.save"/>" />
+            <input type="submit" value="<spring:message code="label.plugins.save"/>" />
         </form:form>
     </div>
 </body>

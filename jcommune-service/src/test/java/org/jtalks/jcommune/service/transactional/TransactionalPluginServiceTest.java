@@ -17,15 +17,19 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.dao.PluginDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
+import org.jtalks.jcommune.service.dto.PluginActivatingDto;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -75,10 +79,10 @@ public class TransactionalPluginServiceTest {
         PluginConfiguration pluginConfiguration = new PluginConfiguration();
         pluginConfiguration.setActive(false);
         when(pluginDao.get(pluginName)).thenReturn(pluginConfiguration);
-        Map<String, Boolean> pluginsEnabling = new HashMap<>();
-        pluginsEnabling.put(pluginName, Boolean.TRUE);
+        List<PluginActivatingDto> pluginsActivatingDtoList = new ArrayList<>();
+        pluginsActivatingDtoList.add(new PluginActivatingDto(pluginName, true));
 
-        pluginService.updatePluginsEnabling(pluginsEnabling, FAKE_COMPONENT_ID);
+        pluginService.updatePluginsActivating(pluginsActivatingDtoList, FAKE_COMPONENT_ID);
 
         verify(pluginDao).saveOrUpdate(pluginConfiguration);
         assertTrue(pluginConfiguration.isActive(), "Plugin must be activated.");
@@ -89,13 +93,13 @@ public class TransactionalPluginServiceTest {
         int pluginsCount = 10;
         String pluginName = "plugin";
         PluginConfiguration pluginConfiguration = new PluginConfiguration();
-        when(pluginDao.get(pluginName)).thenReturn(pluginConfiguration);
-        Map<String, Boolean> pluginsEnabling = new HashMap<>();
+        when(pluginDao.get(anyString())).thenReturn(pluginConfiguration);
+        List<PluginActivatingDto> pluginsActivatingDtoList = new ArrayList<>();
         for (int i=0; i< pluginsCount; i++) {
-            pluginsEnabling.put(pluginName + i, Boolean.TRUE);
+            pluginsActivatingDtoList.add(new PluginActivatingDto(pluginName + i, true));
         }
 
-        pluginService.updatePluginsEnabling(pluginsEnabling, FAKE_COMPONENT_ID);
+        pluginService.updatePluginsActivating(pluginsActivatingDtoList, FAKE_COMPONENT_ID);
 
         verify(pluginDao, times(pluginsCount)).saveOrUpdate(pluginConfiguration);
     }

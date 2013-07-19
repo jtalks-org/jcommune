@@ -44,43 +44,47 @@
         </div>
         <span class="inline-block"></span>
         <%-- List of plugins. --%>
-        <table id="plugins-table" class="table table-row table-bordered">
-            <c:choose>
-                <c:when test="${!(empty plugins)}">
-                    <thead>
-                    <tr>
-                        <th id="plugin-name">
-                            <spring:message code="label.plugins.plugin.name"/>
-                        </th>
-                        <th id="plugin-actions">
-                            <spring:message code="label.plugins.plugin.actions"/>
-                        </th>
-                        <th id="plugin-is-enabled">
-                            <spring:message code="label.plugins.plugin.is_enabled"/>
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <c:forEach var="plugin" items="${plugins}" varStatus="i">
-                        <%-- Plugin --%>
+        <form:form action="${pageContext.request.contextPath}/plugins/update/activating" method="POST" modelAttribute="pluginsActivatingListDto">
+            <table id="plugins-table" class="table table-row table-bordered">
+                <c:choose>
+                    <c:when test="${!(empty plugins)}">
+                        <thead>
                         <tr>
-                            <td>
-                                <c:out value="${plugin.name}"/>
-                            </td>
-                            <td>
-                                <a href="${pageContext.request.contextPath}/plugins/configure/${plugin.name}"
-                                   title="<spring:message code='label.plugins.plugin.configure.hint'/>">
-                                   <spring:message code="label.plugins.plugin.configure"/>
-                                </a>
-                            </td>
-                            <td>
-                                <input type="checkbox" checked="${plugin.state == 'ENABLED'}" disabled="true" />
-                            </td>
+                            <th id="plugin-name">
+                                <spring:message code="label.plugins.plugin.name"/>
+                            </th>
+                            <th id="plugin-actions">
+                                <spring:message code="label.plugins.plugin.actions"/>
+                            </th>
+                            <th id="plugin-is-enabled">
+                                <spring:message code="label.plugins.plugin.is_enabled"/>
+                            </th>
                         </tr>
-                    </c:forEach>
-                    </tbody>
-                </c:when>
-            </c:choose>
-        </table>
+                        </thead>
+                        <tbody>
+                            <c:forEach var="plugin" items="${plugins}" varStatus="status">
+                                <%-- Plugin --%>
+                                <tr>
+                                    <td>
+                                        <form:hidden path="activatingPlugins[${status.index}].pluginName" />
+                                        <c:out value="${plugin.name}"/>
+                                    </td>
+                                    <td>
+                                        <a href="${pageContext.request.contextPath}/plugins/configure/${plugin.name}"
+                                           title="<spring:message code='label.plugins.plugin.configure.hint'/>">
+                                           <spring:message code="label.plugins.plugin.configure"/>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <form:checkbox path="activatingPlugins[${status.index}].activated" checked="${plugin.state == 'ENABLED'}" />
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </c:when>
+                </c:choose>
+            </table>
+            <input type="submit" value="<spring:message code="label.plugins.save"/>" />
+        </form:form>
     </div>
 </body>

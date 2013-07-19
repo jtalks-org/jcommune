@@ -16,15 +16,18 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
+import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.PluginService;
-import org.jtalks.jcommune.web.dto.PluginsEnablingDto;
+import org.jtalks.jcommune.service.dto.PluginActivatingListDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -49,7 +52,8 @@ public class PluginController {
         long componentId = getForumComponentId();
         List<Plugin> plugins = pluginService.getPlugins(componentId);
         return new ModelAndView("pluginList")
-                .addObject("plugins", plugins);
+                .addObject("plugins", plugins)
+                .addObject("pluginsActivatingListDto", new PluginActivatingListDto());
     }
 
     @RequestMapping(value = "/configure/{name}", method = RequestMethod.GET)
@@ -68,10 +72,10 @@ public class PluginController {
                 .addObject("pluginConfiguration", newConfiguration);
     }
 
-    @RequestMapping(value = "/update/enable", method = RequestMethod.POST)
-    public String updateEnabling(@ModelAttribute PluginsEnablingDto pluginsEnablingDto) throws NotFoundException {
+    @RequestMapping(value = "/update/activating", method = RequestMethod.POST)
+    public String updateActivating(@ModelAttribute PluginActivatingListDto pluginsActivatingListDto) throws NotFoundException {
         long componentId = getForumComponentId();
-        pluginService.updatePluginsEnabling(pluginsEnablingDto.getNameToEnablingValue(), componentId);
+        pluginService.updatePluginsActivating(pluginsActivatingListDto.getActivatingPlugins(), componentId);
         return "/plugins/list";
     }
 

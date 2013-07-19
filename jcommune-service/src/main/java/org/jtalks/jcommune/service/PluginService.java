@@ -17,10 +17,10 @@ package org.jtalks.jcommune.service;
 import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.plugins.Plugin;
+import org.jtalks.jcommune.service.dto.PluginActivatingDto;
 import org.jtalks.jcommune.service.plugins.PluginFilter;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -34,5 +34,5 @@ public interface PluginService extends EntityService<PluginConfiguration> {
 
     PluginConfiguration getPluginConfiguration(String pluginName, long componentId) throws NotFoundException;
 
-    void updatePluginsEnabling(Map<String, Boolean> pluginNameToEnablingValue, long componentId) throws NotFoundException;
+    void updatePluginsActivating(List<PluginActivatingDto> pluginActivatingDtoList, long componentId) throws NotFoundException;
 }
