@@ -12,17 +12,28 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao;
+package org.jtalks.jcommune.web.dto;
 
-import org.jtalks.common.model.dao.Crud;
-import org.jtalks.common.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.model.entity.PluginConfiguration;
+import java.util.Map;
 
 /**
- *
- * @author Anuar Nurmakanov
+ * @author Anuar_Nurmakanov
  */
-public interface PluginDao extends Crud<PluginConfiguration> {
+public class PluginsEnablingDto {
+    private Map<String, Boolean> nameToEnablingValue;
 
-    PluginConfiguration get(String name) throws NotFoundException;
+    public PluginsEnablingDto() {
+    }
+
+    public PluginsEnablingDto(Map<String, Boolean> nameToEnablingValue) {
+        this.nameToEnablingValue = nameToEnablingValue;
+    }
+
+    public Map<String, Boolean> getNameToEnablingValue() {
+        return nameToEnablingValue;
+    }
+
+    public void setNameToEnablingValue(Map<String, Boolean> nameToEnablingValue) {
+        this.nameToEnablingValue = nameToEnablingValue;
+    }
 }
