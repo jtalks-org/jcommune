@@ -12,7 +12,7 @@
     <modules>
         <module>jcommune-auth-poulpe</module>
         <module>jcommune-dummy-plugin</module>
-        <module>jcommune-registration-poulpe</module>
+        <module>poulpe-auth-plugin</module>
     </modules>
 
     <build>
