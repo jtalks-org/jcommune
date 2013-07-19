@@ -37,12 +37,10 @@
     </c:choose>
 </head>
 <body>
-
-<jtalks:hasPermission targetId='${forumComponent.id}' targetType='COMPONENT' permission='GeneralPermission.ADMIN'>
     <div class="container">
         <%-- List of plugins. --%>
         <div id="plugins-list-header">
-            <h2><spring:message code="label.plugins.istalled"/></h2>
+            <h2><spring:message code="label.plugins.installed"/></h2>
         </div>
         <span class="inline-block"></span>
         <%-- List of plugins. --%>
@@ -85,5 +83,4 @@
             </c:choose>
         </table>
     </div>
-</jtalks:hasPermission>
 </body>

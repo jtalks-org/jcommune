@@ -137,7 +137,7 @@ public class TransactionalPluginService
         Plugin result;
         List<Plugin> plugins1 = this.getPlugins(componentId, new NameFilter(name));
         if (plugins1.isEmpty()) {
-            throw new NotFoundException("Plugin " + name + "is not loaded");
+            throw new NotFoundException("Plugin " + name + " is not loaded");
         } else {
             result = plugins1.get(0);
         }
