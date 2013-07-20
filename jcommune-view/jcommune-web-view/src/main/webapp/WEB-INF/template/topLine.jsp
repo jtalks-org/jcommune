@@ -130,21 +130,37 @@
     <sec:authorize access="isAuthenticated()">
       <c:if test="${not empty forumComponent}">
         <jtalks:hasPermission permission="GeneralPermission.ADMIN"
-                              targetId="${forumComponent.id}" targetType="COMPONENT">
-          <li>
-            <c:choose>
-              <c:when test="${sessionScope.adminMode == true}">
-                <a id="Administration" href="${pageContext.request.contextPath}/admin/exit">
-                  <fmt:message key="label.administration.exit"/>
-                </a>
-              </c:when>
+                            targetId="${forumComponent.id}" targetType="COMPONENT">
+          <%-- Administration functions chooser --%>
+          <li class="dropdown">
+            <div class="dropdown-toggle topline-dropdown-menu" data-toggle="dropdown">
+              <a id="user-dropdown-administration-link" href="#">
+                <fmt:message key="label.administration"/>
+              </a>
+              <b class="caret"></b>
+            </div>
+            <ul class="dropdown-menu">
+              <li>
+                <c:choose>
+                  <c:when test="${sessionScope.adminMode == true}">
+                    <a id="Administration" href="${pageContext.request.contextPath}/admin/exit">
+                      <fmt:message key="label.administration.exit"/>
+                    </a>
+                  </c:when>
 
-              <c:otherwise>
-                <a id="Administration" href="${pageContext.request.contextPath}/admin/enter">
-                  <fmt:message key="label.administration"/>
+                  <c:otherwise>
+                    <a id="Administration" href="${pageContext.request.contextPath}/admin/enter">
+                      <fmt:message key="label.administration.enter"/>
+                    </a>
+                  </c:otherwise>
+                </c:choose>
+              </li>
+              <li>
+                <a id="PluginPage" href="${pageContext.request.contextPath}/plugins/list">
+                  <fmt:message key="label.plugins"/>
                 </a>
-              </c:otherwise>
-            </c:choose>
+              </li>
+            </ul>
           </li>
         </jtalks:hasPermission>
       </c:if>
