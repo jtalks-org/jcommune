@@ -27,7 +27,7 @@ $(function () {
         ' + Utils.createFormElement($labelUsername, 'j_username', 'text', 'first')
          + Utils.createFormElement($labelPassword, 'j_password', 'password') + ' \
             <div id="rememberme-area" class="control-group"> \
-                <input name="_spring_security_remember_me" class="form-check-radio-box" type="checkbox"> \
+                <input name="_spring_security_remember_me" class="form-check-radio-box" type="checkbox" checked="true"> \
                 <label class="string optional">' + $labelRememberMe + '</label> \
             </div> \
             <div class="clearfix" /> \
