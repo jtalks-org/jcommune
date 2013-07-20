@@ -21,12 +21,9 @@ import org.jtalks.jcommune.model.plugins.SimpleRegistrationPlugin;
 import org.jtalks.jcommune.model.plugins.StatefullPlugin;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
-import org.jtalks.jcommune.plugin.auth.poulpe.controller.PoulpeRegistrationController;
 import org.jtalks.jcommune.plugin.auth.poulpe.service.PoulpeRegistrationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
