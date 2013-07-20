@@ -19,7 +19,6 @@ import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.plugin.auth.poulpe.dto.Error;
 import org.jtalks.jcommune.plugin.auth.poulpe.dto.Errors;
 import org.jtalks.jcommune.plugin.auth.poulpe.dto.User;
-import org.jtalks.jcommune.plugin.auth.poulpe.service.PoulpeRegistrationService;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.data.Method;
