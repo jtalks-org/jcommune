@@ -23,9 +23,9 @@
 <head>
     <meta name="description" content="<c:out value="${pluginConfiguration.name}"/>">
     <%-- Add JS plugins --%>
-    <c:set var="mode" value="${jsp.import.mode}"/>
+    <%--@elvariable id="isJsCompressed" type="java.lang.boolean"--%>
     <c:choose>
-        <c:when test="${mode eq 'prod'}">
+        <c:when test="${isJsCompressed}">
             <script type="text/javascript"
                     src="${pageContext.request.contextPath}/resources/wro/plugin.js?${project.version}"></script>
         </c:when>
@@ -91,7 +91,7 @@
                     </c:when>
                 </c:choose>
             </table>
-            <input type="submit" value="<spring:message code="label.plugins.properties.save"/>" />
+            <input type="submit" value="<spring:message code="label.plugins.save"/>" />
         </form:form>
     </div>
 </body>

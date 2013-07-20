@@ -20,6 +20,7 @@ import org.jtalks.jcommune.model.dao.PluginDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.service.PluginService;
+import org.jtalks.jcommune.service.dto.PluginActivatingDto;
 import org.jtalks.jcommune.service.plugins.NameFilter;
 import org.jtalks.jcommune.service.plugins.PluginClassLoader;
 import org.jtalks.jcommune.service.plugins.PluginFilter;
@@ -33,7 +34,6 @@ import java.net.URLClassLoader;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.ServiceLoader;
 
 import static java.nio.file.StandardWatchEventKinds.*;
@@ -161,12 +161,13 @@ public class TransactionalPluginService
      */
     @Override
     @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
-    public void updatePluginsEnabling(Map<String, Boolean> pluginNameToEnablingValue, long componentId) throws NotFoundException {
-        for (String pluginName: pluginNameToEnablingValue.keySet()) {
+    public void updatePluginsActivating(List<PluginActivatingDto> updatedPlugins, long componentId) throws NotFoundException {
+        for (PluginActivatingDto updatedPlugin : updatedPlugins) {
             PluginDao pluginDao = getDao();
+            String pluginName = updatedPlugin.getPluginName();
             PluginConfiguration configuration = pluginDao.get(pluginName);
-            boolean isEnabled = pluginNameToEnablingValue.get(pluginName);
-            configuration.setActive(isEnabled);
+            boolean isActivated = updatedPlugin.isActivated();
+            configuration.setActive(isActivated);
             pluginDao.saveOrUpdate(configuration);
         }
     }

@@ -12,28 +12,28 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.dto;
+package org.jtalks.jcommune.service.dto;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * @author Anuar_Nurmakanov
  */
-public class PluginsEnablingDto {
-    private Map<String, Boolean> nameToEnablingValue;
+public class PluginActivatingListDto {
+    private List<PluginActivatingDto> activatingPlugins;
 
-    public PluginsEnablingDto() {
+    public PluginActivatingListDto() {
     }
 
-    public PluginsEnablingDto(Map<String, Boolean> nameToEnablingValue) {
-        this.nameToEnablingValue = nameToEnablingValue;
+    public PluginActivatingListDto(List<PluginActivatingDto> activatingPlugins) {
+        this.activatingPlugins = activatingPlugins;
     }
 
-    public Map<String, Boolean> getNameToEnablingValue() {
-        return nameToEnablingValue;
+    public List<PluginActivatingDto> getActivatingPlugins() {
+        return activatingPlugins;
     }
 
-    public void setNameToEnablingValue(Map<String, Boolean> nameToEnablingValue) {
-        this.nameToEnablingValue = nameToEnablingValue;
+    public void setActivatingPlugins(List<PluginActivatingDto> activatingPlugins) {
+        this.activatingPlugins = activatingPlugins;
     }
 }

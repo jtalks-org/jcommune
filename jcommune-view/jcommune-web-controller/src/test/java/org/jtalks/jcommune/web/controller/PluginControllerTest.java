@@ -21,16 +21,14 @@ import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.PluginService;
-import org.jtalks.jcommune.web.dto.PluginsEnablingDto;
+import org.jtalks.jcommune.service.dto.PluginActivatingListDto;
+import org.jtalks.jcommune.service.dto.PluginActivatingDto;
 import org.mockito.Mock;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -71,6 +69,7 @@ public class PluginControllerTest {
 
         assertViewName(pluginsModelAndView, "pluginList");
         assertModelAttributeAvailable(pluginsModelAndView, "plugins");
+        assertModelAttributeAvailable(pluginsModelAndView, "pluginsActivatingListDto");
         List<Plugin> actualPlugins = (List<Plugin>) pluginsModelAndView.getModel().get("plugins");
         assertEquals(actualPlugins, expectedPlugins, "Plugins should be returned from services.");
     }
@@ -128,13 +127,13 @@ public class PluginControllerTest {
         Component component = new Component();
         component.setId(componentId);
         when(componentService.getComponentOfForum()).thenReturn(component);
-        Map<String, Boolean> nameToEnablingValue = new HashMap<>();
-        PluginsEnablingDto pluginsEnablingDto = new PluginsEnablingDto(nameToEnablingValue);
+        List<PluginActivatingDto> pluginActivatingDtoList = new ArrayList<>();
+        PluginActivatingListDto pluginsEnablingDto = new PluginActivatingListDto(pluginActivatingDtoList);
 
-        String destinationUrl = pluginController.updateEnabling(pluginsEnablingDto);
+        String destinationUrl = pluginController.updateActivating(pluginsEnablingDto);
 
         assertEquals(destinationUrl, "/plugins/list", "After correct update of plugins enabling, user should see updated plugins");
-        verify(pluginService).updatePluginsEnabling(nameToEnablingValue, componentId);
+        verify(pluginService).updatePluginsActivating(pluginActivatingDtoList, componentId);
     }
 
     /**
