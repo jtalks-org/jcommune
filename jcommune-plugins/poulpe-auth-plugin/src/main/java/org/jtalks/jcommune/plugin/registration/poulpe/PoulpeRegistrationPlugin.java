@@ -22,9 +22,11 @@ import org.jtalks.jcommune.model.plugins.SimpleRegistrationPlugin;
 import org.jtalks.jcommune.model.plugins.StatefullPlugin;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
+import org.jtalks.jcommune.plugin.registration.poulpe.controller.PoulpeRegistrationController;
 import org.jtalks.jcommune.plugin.registration.poulpe.service.PoulpeRegistrationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.config.AopNamespaceHandler;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -44,8 +46,16 @@ public class PoulpeRegistrationPlugin extends StatefullPlugin implements SimpleR
     private PluginConfiguration pluginConfiguration;
     private State state;
 
+    static {
+        LOGGER.warn("PoulpeRegistrationPlugin Class initialized");
+    }
+
     public PoulpeRegistrationPlugin() {
-        LOGGER.info("PoulpeRegistrationPlugin initialized");
+        LOGGER.warn("PoulpeRegistrationPlugin initialized");
+        loadContext();
+        PluginConfiguration conf = new PluginConfiguration();
+        conf.setProperties(getDefaultConfiguration());
+        configure(conf);
     }
 
     @Override
@@ -94,6 +104,7 @@ public class PoulpeRegistrationPlugin extends StatefullPlugin implements SimpleR
 
     @Override
     public void configure(PluginConfiguration configuration) {
+        LOGGER.debug("Plugin {} start configuring", this.getName());
         try {
             loadConfiguration(configuration.getProperties());
             this.pluginConfiguration = configuration;
@@ -108,6 +119,18 @@ public class PoulpeRegistrationPlugin extends StatefullPlugin implements SimpleR
             state = State.IN_ERROR;
             LOGGER.warn("Plugin {} configuration failed", this.getName(), e);
         }
+
+    }
+
+
+    private void loadContext() {
+        LOGGER.warn("Plugin {} start load context", this.getName());
+        ApplicationContext appContext = new ClassPathXmlApplicationContext("/applicationContext.xml");
+        PoulpeRegistrationController controller =
+                (PoulpeRegistrationController) appContext.getBean("registrationPluginController");
+        controller.testAop2();
+        LOGGER.warn("Plugin {} end load context", this.getName());
+
     }
 
     @Override
