@@ -15,7 +15,7 @@
 
 
 function updateSaveButtonState() {
-    isContainSomething = ($("#recipient")[0].value != "") || ($("#title")[0].value != "") || ($("#tbMsg")[0].value != "");
+    isContainSomething = ($("#recipient")[0].value != "") || ($("#title")[0].value != "") || ($("#postBody")[0].value != "");
     toggleSaveButtonEnabled(isContainSomething);
 }
 

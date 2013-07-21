@@ -16,6 +16,9 @@
   </group>
 
   <group name="libs">
+    <css>/resources/css/lib/jquery.contextMenu.css</css>
+    <css>/resources/css/lib/jquery-ui.css</css>
+
     <js>/resources/javascript/lib/jquery/jquery-1.7.min.js</js>
     <js>/resources/javascript/lib/jquery/jquery.truncate.js</js>
     <js>/resources/javascript/lib/jquery/jquery-ui.min.js</js>
@@ -68,12 +71,6 @@
     <js>/resources/javascript/app/leaveConfirm.js</js>
     <js>/resources/javascript/app/bbeditorEffects.js</js>
     <js>/resources/javascript/app/contextMenu.js</js>
-    <js>/resources/javascript/app/utils.js</js>
-    <js>/resources/javascript/app/subscription.js</js>
-    <js>/resources/javascript/app/moveTopic.js</js>
-    <js>/resources/javascript/app/poll.js</js>
-    <js>/resources/javascript/app/codeHighlighting.js</js>
-    <js>/resources/javascript/app/permissionService.js</js>
   </group>
 
   <group name="user">
@@ -93,14 +90,16 @@
   </group>
 
   <group name="topic">
-    <css>/resources/css/lib/jquery-ui.css</css>
-    <css>/resources/css/lib/jquery.contextMenu.css</css>
-
     <js>/resources/javascript/app/datepicker.js</js>
     <js>/resources/javascript/app/pollPreview.js</js>
     <js>/resources/javascript/app/leaveConfirm.js</js>
     <js>/resources/javascript/app/contextMenu.js</js>
     <js>/resources/javascript/app/bbeditorEffects.js</js>
+    <js>/resources/javascript/app/utils.js</js>
     <js>/resources/javascript/app/subscription.js</js>
+    <js>/resources/javascript/app/moveTopic.js</js>
+    <js>/resources/javascript/app/poll.js</js>
+    <js>/resources/javascript/app/codeHighlighting.js</js>
+    <js>/resources/javascript/app/permissionService.js</js>
   </group>
 </groups>

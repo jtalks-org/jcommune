@@ -330,17 +330,24 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
-    public void testActivateAccountTest() throws NotFoundException {
+    public void activateAccountShouldEnableUser() throws Exception {
         JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);
         when(userDao.getByUuid(user.getUuid())).thenReturn(user);
-        Group group = new Group();
-        when(groupDao.getGroupByName(AdministrationGroup.USER.getName())).thenReturn(group);
+        when(groupDao.getGroupByName(AdministrationGroup.USER.getName())).thenReturn(new Group());
 
         userService.activateAccount(user.getUuid());
-
         assertTrue(user.isEnabled());
-        verify(groupDao).saveOrUpdate(group);
-        assertTrue(group.getUsers().contains(user));
+    }
+
+    @Test
+    public void activateAccountShouldAddUserToRegisteredUsersGroup() throws Exception {
+        JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);
+        when(userDao.getByUuid(user.getUuid())).thenReturn(user);
+        Group registeredUsersGroup = new Group();
+        when(groupDao.getGroupByName(AdministrationGroup.USER.getName())).thenReturn(registeredUsersGroup);
+
+        userService.activateAccount(user.getUuid());
+        assertTrue(user.getGroups().contains(registeredUsersGroup));
     }
 
     @Test(expectedExceptions = NotFoundException.class)
@@ -373,10 +380,7 @@ public class TransactionalUserServiceTest {
         user2.setRegistrationDate(new DateTime().minusHours(25));
         JCUser user3 = new JCUser(USERNAME, EMAIL, PASSWORD);
         user3.setRegistrationDate(new DateTime().minusHours(50));
-
-        List<JCUser> users = new ArrayList<JCUser>();
-        Collections.addAll(users, user1, user2, user3);
-
+        List<JCUser> users = asList(user1, user2, user3);
         when(userDao.getNonActivatedUsers()).thenReturn(users);
 
         userService.deleteUnactivatedAccountsByTimer();

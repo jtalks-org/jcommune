@@ -46,6 +46,6 @@
   </a>
 </div>
 <script>
-  Utils.focusFirstEl('#tbMsg');
+  Utils.focusFirstEl('#postBody');
 </script>
 </body>
