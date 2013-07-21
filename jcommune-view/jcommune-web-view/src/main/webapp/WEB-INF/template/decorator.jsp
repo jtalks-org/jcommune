@@ -111,6 +111,11 @@
             href="${pageContext.request.contextPath}/resources/css/lib/inline.css"/>
       <link rel="stylesheet" type="text/css" media="screen, projection"
             href="${pageContext.request.contextPath}/resources/css/app/application.css"/>
+      <link rel="stylesheet"
+            href="${pageContext.request.contextPath}/resources/css/lib/jquery.contextMenu.css"
+            type="text/css" media="all"/>
+      <link rel="stylesheet" type="text/css" media="all"
+            href="${pageContext.request.contextPath}/resources/css/lib/jquery-ui.css"/>
 
       <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery-1.7.min.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery.truncate.js"></script>
@@ -203,11 +208,6 @@
       </c:if>
 
       <c:if test="${fn:contains(uriString, 'topics')}">
-        <link rel="stylesheet" type="text/css" media="all"
-              href="${pageContext.request.contextPath}/resources/css/lib/jquery-ui.css"/>
-
-        <link rel="stylesheet" type="text/css" media="all"
-              href="${pageContext.request.contextPath}/resources/css/lib/jquery.contextMenu.css"/>
 
         <script src="${pageContext.request.contextPath}/resources/javascript/app/datepicker.js"></script>
         <script src="${pageContext.request.contextPath}/resources/javascript/app/pollPreview.js"></script>

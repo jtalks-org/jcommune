@@ -16,6 +16,9 @@
   </group>
 
   <group name="libs">
+    <css>/resources/css/lib/jquery.contextMenu.css</css>
+    <css>/resources/css/lib/jquery-ui.css</css>
+
     <js>/resources/javascript/lib/jquery/jquery-1.7.min.js</js>
     <js>/resources/javascript/lib/jquery/jquery.truncate.js</js>
     <js>/resources/javascript/lib/jquery/jquery-ui.min.js</js>
@@ -93,9 +96,6 @@
   </group>
 
   <group name="topic">
-    <css>/resources/css/lib/jquery-ui.css</css>
-    <css>/resources/css/lib/jquery.contextMenu.css</css>
-
     <js>/resources/javascript/app/datepicker.js</js>
     <js>/resources/javascript/app/pollPreview.js</js>
     <js>/resources/javascript/app/leaveConfirm.js</js>
