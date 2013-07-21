@@ -222,7 +222,24 @@ public final class PersistedObjectsFactory {
         persist(user);
         return user;
     }
-    
+
+    public static Group group(String name) {
+        Group group = new Group(name, "default-group-description");
+        session.save(group);
+        session.flush();
+        session.evict(group);
+        return group;
+    }
+
+    public static Group groupWithUsers(String name) {
+        Group group = new Group(name, "default-group-description");
+        group.getUsers().add(getDefaultUser());
+        session.save(group);
+        session.flush();
+        session.evict(group);
+        return group;
+    }
+
     public static JCUser getDefaultUserWithGroups() {
         List<Group> groups = ObjectsFactory.getDefaultGroupList();
         for (Group group : groups) {
