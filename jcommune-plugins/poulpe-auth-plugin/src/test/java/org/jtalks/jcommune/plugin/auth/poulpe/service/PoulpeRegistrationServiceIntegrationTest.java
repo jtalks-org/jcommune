@@ -13,11 +13,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.jtalks.jcommune.plugin.registration.poulpe.service;
+package org.jtalks.jcommune.plugin.auth.poulpe.service;
 
 import com.xebialabs.restito.server.StubServer;
 import org.glassfish.grizzly.http.util.HttpStatus;
-import org.jtalks.jcommune.plugin.registration.poulpe.dto.User;
+import org.jtalks.jcommune.plugin.auth.poulpe.dto.User;
 import org.restlet.resource.ClientResource;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;

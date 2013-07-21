@@ -13,7 +13,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.jtalks.jcommune.plugin.registration.poulpe.dto;
+package org.jtalks.jcommune.plugin.auth.poulpe.dto;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -21,17 +21,17 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * <p>Java class for profile complex type.
+ * <p>Java class for credentials complex type.
  * <p/>
  * <p>The following schema fragment specifies the expected content contained within this class.
  * <p/>
  * <pre>
- * &lt;complexType name="profile">
+ * &lt;complexType name="credentials">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="firstName" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="lastName" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="username" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="passwordHash" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -41,72 +41,70 @@ import javax.xml.bind.annotation.XmlType;
  * @author Guram Savinov
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "profile", namespace = "http://www.jtalks.org/namespaces/1.0", propOrder = {
-        "firstName",
-        "lastName"
+@XmlType(name = "credentials", namespace = "http://www.jtalks.org/namespaces/1.0", propOrder = {
+        "username",
+        "passwordHash"
 })
-public class Profile {
+public class Credentials {
 
     @XmlElement(namespace = "http://www.jtalks.org/namespaces/1.0", required = true)
-    protected String firstName;
-    @XmlElement(namespace = "http://www.jtalks.org/namespaces/1.0", required = true)
-    protected String lastName;
+    protected String username;
+    @XmlElement(namespace = "http://www.jtalks.org/namespaces/1.0")
+    protected String passwordHash;
 
     /**
-     * Creates an {@code Profile} instance.
+     * Creates an {@code Credentials} instance.
      */
-    public Profile() {
+    public Credentials() {
     }
 
     /**
-     * Creates an {@code Profile} instance with specified firstname and lastname.
+     * Creates an {@code Credentials} instance with specified username.
      *
-     * @param firstName the firstname
-     * @param lastName  the lastname
+     * @param username the username
      */
-    public Profile(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public Credentials(String username) {
+        this.username = username;
     }
 
     /**
-     * Gets the value of the firstName property.
+     * Gets the value of the username property.
      *
      * @return possible object is
      *         {@link String }
      */
-    public String getFirstName() {
-        return firstName;
+    public String getUsername() {
+        return username;
     }
 
     /**
-     * Sets the value of the firstName property.
+     * Sets the value of the username property.
      *
      * @param value allowed object is
      *              {@link String }
      */
-    public void setFirstName(String value) {
-        this.firstName = value;
+    public void setUsername(String value) {
+        this.username = value;
     }
 
     /**
-     * Gets the value of the lastName property.
+     * Gets the value of the passwordHash property.
      *
      * @return possible object is
      *         {@link String }
      */
-    public String getLastName() {
-        return lastName;
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
     /**
-     * Sets the value of the lastName property.
+     * Sets the value of the passwordHash property.
      *
      * @param value allowed object is
      *              {@link String }
      */
-    public void setLastName(String value) {
-        this.lastName = value;
+    public void setPasswordHash(String value) {
+        this.passwordHash = value;
     }
 
 }

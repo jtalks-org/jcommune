@@ -13,12 +13,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.jtalks.jcommune.plugin.registration.poulpe.service;
+package org.jtalks.jcommune.plugin.auth.poulpe.service;
 
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
-import org.jtalks.jcommune.plugin.registration.poulpe.dto.Errors;
-import org.jtalks.jcommune.plugin.registration.poulpe.dto.Error;
-import org.jtalks.jcommune.plugin.registration.poulpe.dto.User;
+import org.jtalks.jcommune.plugin.auth.poulpe.dto.Error;
+import org.jtalks.jcommune.plugin.auth.poulpe.dto.Errors;
+import org.jtalks.jcommune.plugin.auth.poulpe.dto.User;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.data.Method;

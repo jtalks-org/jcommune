@@ -18,4 +18,4 @@
  * This package contains objects of representation for RESTful service.
  *
  */
-package org.jtalks.jcommune.plugin.registration.poulpe.dto;
+package org.jtalks.jcommune.plugin.auth.poulpe.dto;

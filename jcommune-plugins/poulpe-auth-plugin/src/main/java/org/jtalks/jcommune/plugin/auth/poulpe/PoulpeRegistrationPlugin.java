@@ -13,24 +13,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.jtalks.jcommune.plugin.registration.poulpe;
+package org.jtalks.jcommune.plugin.auth.poulpe;
 
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
-
 import org.jtalks.jcommune.model.plugins.SimpleRegistrationPlugin;
 import org.jtalks.jcommune.model.plugins.StatefullPlugin;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
-import org.jtalks.jcommune.plugin.registration.poulpe.service.PoulpeRegistrationService;
+import org.jtalks.jcommune.plugin.auth.poulpe.service.PoulpeRegistrationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Provides user registration service via Poulpe.
@@ -45,7 +45,10 @@ public class PoulpeRegistrationPlugin extends StatefullPlugin implements SimpleR
     private State state;
 
     public PoulpeRegistrationPlugin() {
-        LOGGER.info("PoulpeRegistrationPlugin initialized");
+        LOGGER.debug("PoulpeRegistrationPlugin initialized");
+        PluginConfiguration conf = new PluginConfiguration();
+        conf.setProperties(getDefaultConfiguration());
+        configure(conf);
     }
 
     @Override
@@ -94,6 +97,7 @@ public class PoulpeRegistrationPlugin extends StatefullPlugin implements SimpleR
 
     @Override
     public void configure(PluginConfiguration configuration) {
+        LOGGER.debug("Plugin {} start configuring", this.getName());
         try {
             loadConfiguration(configuration.getProperties());
             this.pluginConfiguration = configuration;
@@ -108,6 +112,7 @@ public class PoulpeRegistrationPlugin extends StatefullPlugin implements SimpleR
             state = State.IN_ERROR;
             LOGGER.warn("Plugin {} configuration failed", this.getName(), e);
         }
+
     }
 
     @Override

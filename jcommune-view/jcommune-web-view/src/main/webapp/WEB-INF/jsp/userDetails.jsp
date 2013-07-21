@@ -24,11 +24,10 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <head>
   <meta name="description" content="<c:out value="${user.username}"/>">
-  <title><spring:message code="label.user"/> - ${user.username}</title>
+  <title><spring:message code="label.user"/> - <c:out value="${user.username}"/></title>
 </head>
 <body>
-<sec:authentication property="principal.username" var="auth"
-                    scope="request"/>
+<sec:authentication property="principal.username" var="auth" scope="request"/>
 <sec:authentication property="principal.id" var="userId"/>
 
 <div class="container">
@@ -36,9 +35,7 @@
 <div class="user-profile-header">
                 <span class="pull-left thumbnail">
                     <span class="wraptocenter">
-                        <img
-                                src="${pageContext.request.contextPath}/users/${user.id}/avatar"
-                                alt=""/>
+                        <img src="${pageContext.request.contextPath}/users/${user.id}/avatar" alt=""/>
                     </span>
                 </span>
 
@@ -50,8 +47,7 @@
 <div class="clearfix"></div>
 <div class="user-profile-top-buttons">
   <c:if test="${user.username != auth}">
-    <jtalks:hasPermission targetId='${userId}' targetType='USER'
-                          permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
+    <jtalks:hasPermission targetId='${userId}' targetType='USER' permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
       <div class="user-profile-buttons-send">
         <a class="btn btn-mini btn-info"
            href="${pageContext.request.contextPath}/pm/new/${user.id}">

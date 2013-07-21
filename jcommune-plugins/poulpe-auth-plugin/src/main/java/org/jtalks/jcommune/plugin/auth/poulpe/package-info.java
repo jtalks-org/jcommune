@@ -18,4 +18,4 @@
  * This package contains objects of representation for plugin.
  *
  */
-package org.jtalks.jcommune.plugin.registration.poulpe;
+package org.jtalks.jcommune.plugin.auth.poulpe;

@@ -13,13 +13,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.jtalks.jcommune.plugin.registration.poulpe.service;
+package org.jtalks.jcommune.plugin.auth.poulpe.service;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
-import org.jtalks.jcommune.plugin.registration.poulpe.dto.Errors;
-import org.jtalks.jcommune.plugin.registration.poulpe.dto.Error;
-import org.jtalks.jcommune.plugin.registration.poulpe.dto.User;
+import org.jtalks.jcommune.plugin.auth.poulpe.dto.Errors;
+import org.jtalks.jcommune.plugin.auth.poulpe.dto.User;
 import org.restlet.Context;
 import org.restlet.data.ChallengeScheme;
 import org.restlet.data.Status;
@@ -33,7 +32,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 /**
  * This class contains method needed for communicate with Poulpe rest service.
@@ -77,8 +79,8 @@ public class PoulpeRegistrationService {
      *
      * @param clientResource response container
      * @return errors
-     * @throws NoConnectionException
-     * @throws IOException
+     * @throws org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException
+     * @throws java.io.IOException
      */
     private Map<String, String> getResult(ClientResource clientResource)
             throws NoConnectionException, IOException, JAXBException {
@@ -97,7 +99,7 @@ public class PoulpeRegistrationService {
      *
      * @param repr response representation
      * @return errors
-     * @throws IOException
+     * @throws java.io.IOException
      */
     private Map<String, String> parseErrors(Representation repr) throws IOException, JAXBException {
         JAXBContext context = JAXBContext.newInstance(Errors.class);
@@ -106,7 +108,7 @@ public class PoulpeRegistrationService {
 
         ResourceBundle resourceBundle = ResourceBundle.getBundle("Validation", new Locale("en"));
         Map<String, String> errors = new HashMap<>();
-        for (Error error : errorsRepr.getErrorList()) {
+        for (org.jtalks.jcommune.plugin.auth.poulpe.dto.Error error : errorsRepr.getErrorList()) {
             if (error.getCode() != null && !error.getCode().isEmpty()) {
                 String errorCode = resourceBundle.getString(error.getCode());
                 if (error.getCode().contains("email")) {
