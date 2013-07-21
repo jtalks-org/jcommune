@@ -314,20 +314,6 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     }
 
     @Test
-    public void addingAnotherGroupToUserShouldLeavePreviousGroups() {
-        JCUser original = PersistedObjectsFactory.getDefaultUserWithGroups();
-        Group group = PersistedObjectsFactory.group("one-more-group-to-be-added");
-        flushAndClearSession(session);
-        original.addGroup(group);
-        dao.saveOrUpdate(original);
-        flushAndClearSession(session);
-
-        JCUser selected = dao.get(original.getId());
-        assertEquals(selected.getGroups().size(), original.getGroups().size());
-        assertTrue(selected.getGroups().contains(group));
-    }
-
-    @Test
     public void getByUsernamesShouldReturnEmptyListWhenFoundUsersDoNotExist() {
         Set<String> existsUsernames = new HashSet<>(asList("Shogun", "jk1", "masyan"));
 
