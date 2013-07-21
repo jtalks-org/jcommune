@@ -39,8 +39,11 @@
   <link rel="shortcut icon" type="image/x-icon"
         href="${pageContext.request.contextPath}/admin/icon/ico?v=${infoChangeDate}"/>
   <link rel="icon" type="image/png" href="${pageContext.request.contextPath}/admin/icon/png?v=${infoChangeDate}"/>
-  <spring:message code="label.forum.title" var="forumTitle"/>
-  <spring:message code="label.rssFeed" var="rssTitle" arguments="${forumTitle}"/>
+  <%--@elvariable id="cmpName" type="java.lang.String"--%>
+  <c:if test="${cmpName == null}">
+    <spring:message code="label.error" var="cmpName"/>
+  </c:if>
+  <spring:message code="label.rssFeed" var="rssTitle" arguments="${cmpName}"/>
   <link rel="alternate" type="application/rss+xml" title="${rssTitle}"
         href="${pageContext.request.contextPath}/topics/recent.rss"/>
 
