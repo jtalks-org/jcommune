@@ -51,7 +51,7 @@
 
     <div class='control-group'>
       <spring:message code="placeholder.codereview.editor.content" var="placeholderEditorContent"/>
-      <form:textarea path="bodyText" id="body" name="body" tabindex="200" style="width:100%;height: 350px"
+      <form:textarea path="bodyText" id="postBody" name="body" tabindex="200" style="width:100%;height: 350px"
                      placeholder="${placeholderEditorContent}" class="script-confirm-unsaved"/>
       <br>
       <form:errors path="bodyText" cssClass="help-inline"/>
