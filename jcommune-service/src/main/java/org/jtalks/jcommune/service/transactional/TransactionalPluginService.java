@@ -84,7 +84,6 @@ public class TransactionalPluginService
      * @return list of plugins available at the moment
      */
     @Override
-    @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
     public synchronized List<Plugin> getPlugins(long componentId, PluginFilter... filters) {
         this.synchronizePluginList();
         List<Plugin> filtered = new ArrayList<>(plugins.size());
