@@ -16,6 +16,7 @@ package org.jtalks.jcommune.model.entity;
 
 import org.apache.commons.collections.set.UnmodifiableSet;
 import org.joda.time.DateTime;
+import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 
 import java.util.HashSet;
@@ -305,5 +306,18 @@ public class JCUser extends User {
      */
     public void setAllForumMarkedAsReadTime(DateTime forumMarkedAsAllReadTime) {
         this.allForumMarkedAsReadTime = forumMarkedAsAllReadTime;
+    }
+
+    /**
+     * Adds a user to the group and adds group to the user. No checks whether there are such records present here,
+     * that's what Hibernate will do for us anyway.
+     *
+     * @param group a new group to be added to the list of groups this user is in
+     * @return this
+     */
+    public JCUser addGroup(Group group) {
+        getGroups().add(group);
+        group.getUsers().add(this);
+        return this;
     }
 }

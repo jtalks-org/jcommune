@@ -16,6 +16,8 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.jtalks.common.model.dao.GroupDao;
+import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.UserDao;
@@ -24,14 +26,16 @@ import org.jtalks.jcommune.model.entity.ObjectsFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng
-        .AbstractTransactionalTestNGSpringContextTests;
+import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static org.testng.Assert.*;
@@ -47,6 +51,8 @@ import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEqua
 public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
     @Autowired
     private UserDao dao;
+    @Autowired
+    private GroupDao groupDao;
     @Autowired
     private SessionFactory sessionFactory;
     private Session session;
@@ -286,26 +292,33 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     public void getByUsernamesShouldReturnExistsInRepoUsers() {
         String firstExistsUsername = "Shogun";
         JCUser firstExistsUser = givenJCUserWithUsernameStoredInDb(firstExistsUsername);
-        String secondExistsUsername = "masyan";
-        JCUser secondExistsUser = givenJCUserWithUsernameStoredInDb(secondExistsUsername);
-        String thirdExistsUsername = "jk1";
-        JCUser thirdExistsUser = givenJCUserWithUsernameStoredInDb(thirdExistsUsername);
-        Set<String> existsUsernames = new HashSet<String>(asList(firstExistsUsername, secondExistsUsername, thirdExistsUsername));
-        
+        Set<String> existsUsernames = new HashSet<>(asList(firstExistsUsername));
+
         List<JCUser> foundByUsernames = dao.getByUsernames(existsUsernames);
         
         assertTrue(foundByUsernames.size() == existsUsernames.size(), "It should return all users by their names.");
         assertTrue(foundByUsernames.contains(firstExistsUser), firstExistsUser.getUsername() + "should be found by his name.");
-        assertTrue(foundByUsernames.contains(secondExistsUser), secondExistsUser.getUsername() + "should be found by his name.");
-        assertTrue(foundByUsernames.contains(thirdExistsUser), thirdExistsUser.getUsername() + "should be found by his name.");
     }
-    
+
+    @Test
+    public void addingValidUserToValidGroupShouldSucceed() {
+        JCUser user = givenJCUserWithUsernameStoredInDb("test-user");
+        Group group = PersistedObjectsFactory.group("test-group");
+        user.addGroup(group);
+        dao.saveOrUpdate(user);
+        flushAndClearSession(session);
+
+        Group selected = groupDao.get(group.getId());
+        assertEquals(selected.getUsers().size(), 1);
+        assertReflectionEquals(selected.getUsers().get(0), user);
+    }
+
     @Test
     public void getByUsernamesShouldReturnEmptyListWhenFoundUsersDoNotExist() {
-        Set<String> existsUsernames = new HashSet<String>(asList("Shogun", "jk1", "masyan"));
-        
+        Set<String> existsUsernames = new HashSet<>(asList("Shogun", "jk1", "masyan"));
+
         List<JCUser> foundByUsernames = dao.getByUsernames(existsUsernames);
-        
+
         assertTrue(foundByUsernames.isEmpty(), "It should return empty list, cause found users not exist.");
     }
 
@@ -350,7 +363,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
         assertEquals(dao.getUsernames(usernamePattern, resultCount).size(), 1);
     }
-    
+
     private JCUser givenJCUserWithUsernameStoredInDb(String username) {
         JCUser expected = new JCUser(username, username + "@mail.com", username + "pass");
         session.save(expected);
@@ -367,5 +380,10 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
     private JCUser createUser(String username, boolean enabled){
         return createUserWithMail(username, username + "@mail.com", enabled);
+    }
+
+    private void flushAndClearSession(Session session) {
+        session.flush();
+        session.clear();
     }
 }

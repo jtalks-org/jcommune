@@ -16,26 +16,34 @@
 
 -->
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="org.jtalks.common.model.entity.Group" table="GROUPS" abstract="true">
-        <cache usage="nonstrict-read-write" region="org.jtalks.EHCOMMON"/>
+  <class name="org.jtalks.common.model.entity.Group" table="GROUPS" abstract="true">
+    <cache usage="nonstrict-read-write" region="org.jtalks.EHCOMMON"/>
 
-        <id column="GROUP_ID" name="id" unsaved-value="0">
-            <generator class="native" />
-        </id>
+    <id column="GROUP_ID" name="id" unsaved-value="0">
+      <generator class="native"/>
+    </id>
 
-        <property column="UUID" name="uuid" not-null="true" unique="true" />
-        <property column="NAME" name="name" not-null="true" />
-        <property column="DESCRIPTION" name="description" />
+    <property column="UUID" name="uuid" not-null="true" unique="true"/>
+    <property column="NAME" name="name" not-null="true"/>
+    <property column="DESCRIPTION" name="description"/>
 
-        <!-- "Extra-lazy" is used due to probable large amount of users in a group -->
-        <bag name="users" table="GROUP_USER_REF" lazy="extra" fetch="select">
-            <cache usage="nonstrict-read-write" region="org.jtalks.common.model.entity.Group.users"/>
-            <key column="GROUP_ID" not-null="true" />
-            <many-to-many class="org.jtalks.jcommune.model.entity.JCUser">
-                <column name="USER_ID" not-null="true" />
-            </many-to-many>
-        </bag>
-    </class>
+    <!-- "Extra-lazy" is used due to probable large amount of users in a group -->
+    <!-- The relationship is saved by user side (inverse=true). Why particularly user side stores this info? Let's
+      imagine that group saves the connection, this would mean that a) Hibernate removes all the records from
+      GROUP_USER_REF that relate to this group and then re-inserts them back (that's how Bag works in MTM relationship),
+      this is not cool because popular groups like Registered Users contain thousands of users which would make this
+      operation slow. That was causing a bug http://jira.jtalks.org/browse/JC-1521. In the meanwhile a User is usually a
+      member of pretty limited amount of groups which won't cause performance degradation if we remove all its groups
+      and re-insert them back.
+    -->
+    <bag name="users" table="GROUP_USER_REF" lazy="extra" fetch="select" inverse="true">
+      <cache usage="nonstrict-read-write" region="org.jtalks.common.model.entity.Group.users"/>
+      <key column="GROUP_ID" not-null="true"/>
+      <many-to-many class="org.jtalks.jcommune.model.entity.JCUser">
+        <column name="USER_ID" not-null="true"/>
+      </many-to-many>
+    </bag>
+  </class>
 </hibernate-mapping>

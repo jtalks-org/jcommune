@@ -25,7 +25,7 @@ jQuery(document).ready(function () {
     //saved position of '@' character, -1 mean not exist
     var atPosition = -1;
 
-    $('#tbMsg').keyup(autocompleteOnChange);
+    $('#postBody').keyup(autocompleteOnChange);
 
     function autocompleteOnChange(e) {
         var selStart = $(e.target).getSelection().start;

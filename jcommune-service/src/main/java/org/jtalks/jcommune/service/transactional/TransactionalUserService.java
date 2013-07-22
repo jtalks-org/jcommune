@@ -46,7 +46,8 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * User service class. This class contains method needed to manipulate with User persistent entity.
@@ -261,9 +262,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
             throw new NotFoundException();
         } else if (!user.isEnabled()) {
             Group group = groupDao.getGroupByName(AdministrationGroup.USER.getName());
-            group.getUsers().add(user);
-            groupDao.saveOrUpdate(group);
-            
+            user.addGroup(group);
             user.setEnabled(true);
             this.getDao().saveOrUpdate(user);
         }
