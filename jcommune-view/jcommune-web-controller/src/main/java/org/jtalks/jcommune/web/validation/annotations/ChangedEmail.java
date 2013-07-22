@@ -43,7 +43,7 @@ public @interface ChangedEmail {
     /**
      * Resource bundle code for error message
      */
-    String message() default "{validation.duplicateemail}";
+    String message() default "{user.email.already_exists}";
 
     /**
      * Groups settings for this validation constraint

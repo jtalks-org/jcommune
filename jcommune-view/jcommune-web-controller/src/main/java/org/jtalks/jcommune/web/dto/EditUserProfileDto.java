@@ -41,13 +41,13 @@ public class EditUserProfileDto {
 
     @NotBlank(message = "{validation.not_null}")
     @Size(max = User.EMAIL_MAX_LENGTH, message = "{validation.email.length}")
-    @Email(message = "{validation.email.wrong.format}")
+    @Email(message = "{validation.invalid_email_format}")
     private String email;
 
-    @Size(max = User.USERNAME_FIRSTNAME_MAX_LENGTH, message = "{user.first_and_last_name.illegal_length}")
+    @Size(max = User.USERNAME_FIRSTNAME_MAX_LENGTH, message = "{user.last_name.illegal_length}")
     private String firstName;
 
-    @Size(max = User.USERNAME_LASTNAME_MAX_LENGTH, message = "{user.first_and_last_name.illegal_length}")
+    @Size(max = User.USERNAME_LASTNAME_MAX_LENGTH, message = "{user.first_name.illegal_length}")
     private String lastName;
     @Size(max = JCUser.MAX_SIGNATURE_SIZE, message = "{validation.signature.length}")
     @BbCodeNesting
