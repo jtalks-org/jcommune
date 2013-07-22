@@ -25,6 +25,7 @@ import org.testng.annotations.Test;
 
 import static com.xebialabs.restito.builder.stub.StubHttp.whenHttp;
 import static com.xebialabs.restito.semantics.Action.status;
+import static com.xebialabs.restito.semantics.Condition.get;
 import static com.xebialabs.restito.semantics.Condition.post;
 import static org.testng.Assert.assertEquals;
 
@@ -37,7 +38,8 @@ public class PoulpeRegistrationServiceIntegrationTest {
 
     private PoulpeRegistrationService service;
     private final String POULPE_URL = "http://localhost";
-    private String url = "/rest/private/user";
+    private String regUrl = "/rest/private/user";
+    private String authUrl = "/rest/authenticate";
 
     /**
      * Start Poulpe server mock (Restito framework).
@@ -45,7 +47,7 @@ public class PoulpeRegistrationServiceIntegrationTest {
     @BeforeClass
     private void beforeTestCase() {
         server = new StubServer().run();
-        String requestUrl = POULPE_URL + ":" + String.valueOf(server.getPort()) + url;
+        String requestUrl = POULPE_URL + ":" + String.valueOf(server.getPort());
         service = new PoulpeRegistrationService(requestUrl, "user", "1234");
     }
 
@@ -60,7 +62,7 @@ public class PoulpeRegistrationServiceIntegrationTest {
     @Test
     public void testSendRegistrationRequest() throws Exception {
         User user = createUser("username", "passwordHash", "email@email.ru");
-        whenHttp(server).match(post(url)).then(status(HttpStatus.OK_200));
+        whenHttp(server).match(post(regUrl)).then(status(HttpStatus.OK_200));
 
         ClientResource clientResource = service.sendRegistrationRequest(user);
 
@@ -70,7 +72,7 @@ public class PoulpeRegistrationServiceIntegrationTest {
     @Test
     public void testSendRegistrationRequestBadResponse() throws Exception {
         User user = createUser("username", "passwordHash", "email.ru");
-        whenHttp(server).match(post(url)).then(status(HttpStatus.INTERNAL_SERVER_ERROR_500));
+        whenHttp(server).match(post(regUrl)).then(status(HttpStatus.INTERNAL_SERVER_ERROR_500));
 
         ClientResource clientResource = service.sendRegistrationRequest(user);
 
@@ -80,7 +82,7 @@ public class PoulpeRegistrationServiceIntegrationTest {
     @Test
     public void testSendRegistrationRequestValidationError() throws Exception {
         User user = createUser("username", "passwordHash", "email.ru");
-        whenHttp(server).match(post(url)).then(status(HttpStatus.BAD_REQUEST_400));
+        whenHttp(server).match(post(regUrl)).then(status(HttpStatus.BAD_REQUEST_400));
 
         ClientResource clientResource = service.sendRegistrationRequest(user);
 

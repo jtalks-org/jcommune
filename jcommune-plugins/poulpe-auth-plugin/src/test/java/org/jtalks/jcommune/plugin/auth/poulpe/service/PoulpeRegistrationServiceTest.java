@@ -16,6 +16,7 @@
 package org.jtalks.jcommune.plugin.auth.poulpe.service;
 
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
+import org.jtalks.jcommune.plugin.auth.poulpe.dto.Authentication;
 import org.jtalks.jcommune.plugin.auth.poulpe.dto.Error;
 import org.jtalks.jcommune.plugin.auth.poulpe.dto.Errors;
 import org.jtalks.jcommune.plugin.auth.poulpe.dto.User;
@@ -37,8 +38,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
+import static org.testng.Assert.*;
 
 /**
  * @author Andrey Pogorelov
@@ -47,6 +47,7 @@ public class PoulpeRegistrationServiceTest {
 
     private PoulpeRegistrationService service;
     private String url = "http://localhost:8080/rest/private/user";
+    private String authUrl = "http://localhost:8080/rest/authenticate";
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -87,7 +88,35 @@ public class PoulpeRegistrationServiceTest {
 
         Map<String, String> result = service.registerUser("username", "password", "email@email.ru");
 
-        assertNull(result, "User with valid credentials should pass registration.");
+        assertTrue(result.size() == 0, "User with valid credentials should pass registration.");
+    }
+
+    @Test
+    public void testAuthUser() throws Exception {
+        Authentication auth = new Authentication();
+        auth.setStatus("success");
+        JaxbRepresentation<Authentication> authRepr = new JaxbRepresentation<Authentication>(auth);
+        ClientResource clientResource = createClientResource(Status.SUCCESS_OK, authRepr);
+
+        doReturn(clientResource).when(service).sendAuthRequest("username", "password");
+
+        boolean result = service.authenticate("username", "password");
+
+        assertTrue(result, "User with valid credentials should pass authentication.");
+    }
+
+    @Test
+    public void testAuthUserWithInvalidCredentials() throws Exception {
+        Authentication auth = new Authentication();
+        auth.setStatus("fail");
+        JaxbRepresentation<Authentication> authRepr = new JaxbRepresentation<Authentication>(auth);
+        ClientResource clientResource = createClientResource(Status.CLIENT_ERROR_NOT_FOUND, authRepr);
+
+        doReturn(clientResource).when(service).sendAuthRequest("", "password");
+
+        boolean result = service.authenticate("", "password");
+
+        assertFalse(result, "User with invalid credentials shouldn't pass authentication.");
     }
 
     private Error createError(String code, String message) {

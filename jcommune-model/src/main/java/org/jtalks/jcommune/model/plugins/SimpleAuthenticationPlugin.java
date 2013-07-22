@@ -14,6 +14,11 @@
  */
 package org.jtalks.jcommune.model.plugins;
 
+import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
+import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
+
+import java.util.Map;
+
 /**
  * Interface for plugins providing basic authentication capabilities
  * based on the login/password pair.
@@ -24,6 +29,7 @@ package org.jtalks.jcommune.model.plugins;
  * operation outcomes and messages/bundle codes.
  *
  * @author Evgeny Naumenko
+ * @author Andrey Pogorelov
  */
 public interface SimpleAuthenticationPlugin extends Plugin {
 
@@ -34,5 +40,16 @@ public interface SimpleAuthenticationPlugin extends Plugin {
      * @param password user password
      * @return true, if authentication was successful
      */
-    public boolean authenticate(String login, String password);
+    public boolean authenticate(String login, String password) throws UnexpectedErrorException, NoConnectionException;
+
+    /**
+     * Performs registration attempt based on user details
+     *
+     * @param login user login
+     * @param password user password
+     * @param email user email
+     * @return errors
+     */
+    public Map<String, String> registerUser(String login, String password, String email)
+            throws NoConnectionException, UnexpectedErrorException;
 }

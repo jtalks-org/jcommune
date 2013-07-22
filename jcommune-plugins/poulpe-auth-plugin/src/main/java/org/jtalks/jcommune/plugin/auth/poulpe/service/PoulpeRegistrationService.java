@@ -32,10 +32,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * This class contains method needed for communicate with Poulpe rest service.
@@ -47,12 +44,14 @@ public class PoulpeRegistrationService {
     private static final int CONNECTION_TIMEOUT = 5000;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private String url;
+    private String regUrl;
+    private String authUrl;
     private String login;
     private String password;
 
     public PoulpeRegistrationService(String url, String login, String password) {
-        this.url = url;
+        this.regUrl = url + "/rest/private/user";
+        this.authUrl = url + "/rest/authenticate";
         this.login = login;
         this.password = password;
     }
@@ -61,17 +60,48 @@ public class PoulpeRegistrationService {
      * Register user with specified data via Poulpe.
      * Returns errors if request failed, otherwise return null.
      *
-     *
      * @param username username
      * @param password password
-     * @param email email
+     * @param email    email
      * @return errors
      */
     public Map<String, String> registerUser(String username, String password, String email)
             throws IOException, NoConnectionException, JAXBException {
         User user = createUser(username, password, email);
         ClientResource clientResource = sendRegistrationRequest(user);
-        return getResult(clientResource);
+        return getRegistrationResult(clientResource);
+    }
+
+    /**
+     * Authenticate user with specified data via Poulpe.
+     * Returns true if auth success, otherwise return false.
+     *
+     * @param username     username
+     * @param passwordHash password hash
+     * @return success
+     */
+    public boolean authenticate(String username, String passwordHash)
+            throws JAXBException, IOException, NoConnectionException {
+        ClientResource clientResource = sendAuthRequest(username, passwordHash);
+        return getAuthResult(clientResource);
+    }
+
+    /**
+     * Gets authentication result from response entity.
+     *
+     * @param clientResource response container
+     * @return success
+     * @throws org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException
+     */
+    private boolean getAuthResult(ClientResource clientResource)
+            throws NoConnectionException {
+        if (clientResource.getStatus().getCode() == Status.SUCCESS_OK.getCode()) {
+            return true;
+        } else if (clientResource.getStatus().getCode() == Status.CLIENT_ERROR_NOT_FOUND.getCode()) {
+            return false;
+        } else {
+            throw new NoConnectionException();
+        }
     }
 
     /**
@@ -80,12 +110,13 @@ public class PoulpeRegistrationService {
      * @param clientResource response container
      * @return errors
      * @throws org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException
+     *
      * @throws java.io.IOException
      */
-    private Map<String, String> getResult(ClientResource clientResource)
+    private Map<String, String> getRegistrationResult(ClientResource clientResource)
             throws NoConnectionException, IOException, JAXBException {
-        if (clientResource.getStatus() == Status.SUCCESS_OK) {
-            return null;
+        if (clientResource.getStatus().getCode() == Status.SUCCESS_OK.getCode()) {
+            return Collections.emptyMap();
         } else if (clientResource.getStatus().getCode() == Status.CLIENT_ERROR_BAD_REQUEST.getCode()
                 || clientResource.getStatus().getCode() == Status.SERVER_ERROR_INTERNAL.getCode()) {
             return parseErrors(clientResource.getResponseEntity());
@@ -106,10 +137,10 @@ public class PoulpeRegistrationService {
         Unmarshaller unmarshaller = context.createUnmarshaller();
         Errors errorsRepr = (Errors) unmarshaller.unmarshal(repr.getStream());
 
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("Validation", new Locale("en"));
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("ValidationMessages", new Locale("en"));
         Map<String, String> errors = new HashMap<>();
         for (org.jtalks.jcommune.plugin.auth.poulpe.dto.Error error : errorsRepr.getErrorList()) {
-            if (error.getCode() != null && !error.getCode().isEmpty()) {
+            if (error.getCode() != null && !error.getCode().isEmpty() && resourceBundle.containsKey(error.getCode())) {
                 String errorCode = resourceBundle.getString(error.getCode());
                 if (error.getCode().contains("email")) {
                     errors.put("email", errorCode);
@@ -149,7 +180,7 @@ public class PoulpeRegistrationService {
      */
     @VisibleForTesting
     protected ClientResource sendRegistrationRequest(User user) {
-        ClientResource clientResource = createClientResource(url);
+        ClientResource clientResource = createClientResource(regUrl, true);
         clientResource.setChallengeResponse(ChallengeScheme.HTTP_BASIC, login, password);
         try {
             clientResource.post(user);
@@ -159,11 +190,31 @@ public class PoulpeRegistrationService {
         return clientResource;
     }
 
-    private ClientResource createClientResource(String url) {
+    /**
+     * Sends registration post request.
+     *
+     * @param username     user name
+     * @param passwordHash password hash
+     * @return ClientResource result
+     */
+    @VisibleForTesting
+    protected ClientResource sendAuthRequest(String username, String passwordHash) {
+        String url = authUrl + "?username=" + username + "&passwordHash=" + passwordHash;
+        ClientResource clientResource = createClientResource(url, false);
+        clientResource.setChallengeResponse(ChallengeScheme.HTTP_BASIC, login, password);
+        try {
+            clientResource.get();
+        } catch (ResourceException e) {
+            logger.error("Poulpe registration request error: {}", e.getStatus());
+        }
+        return clientResource;
+    }
+
+    private ClientResource createClientResource(String url, boolean buffering) {
         ClientResource clientResource = new ClientResource(new Context(), url);
         clientResource.getContext().getParameters().add("socketConnectTimeoutMs", String.valueOf(CONNECTION_TIMEOUT));
         clientResource.getContext().getParameters().add("maxIoIdleTimeMs", String.valueOf(CONNECTION_TIMEOUT));
-        clientResource.setEntityBuffering(true);
+        clientResource.setEntityBuffering(buffering);
         return clientResource;
     }
 }

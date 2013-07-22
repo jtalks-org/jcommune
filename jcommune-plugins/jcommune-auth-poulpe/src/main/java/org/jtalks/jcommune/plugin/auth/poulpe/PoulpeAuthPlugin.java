@@ -17,6 +17,8 @@ package org.jtalks.jcommune.plugin.auth.poulpe;
 import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
 import org.jtalks.jcommune.model.plugins.SimpleAuthenticationPlugin;
 import org.jtalks.jcommune.model.plugins.StatefullPlugin;
+import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
+import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,6 +40,12 @@ public class PoulpeAuthPlugin extends StatefullPlugin implements SimpleAuthentic
     @Override
     public boolean authenticate(String login, String password) {
         return true;
+    }
+
+    @Override
+    public Map<String, String> registerUser(String login, String password, String email)
+            throws NoConnectionException, UnexpectedErrorException {
+        return Collections.EMPTY_MAP;
     }
 
     @Override

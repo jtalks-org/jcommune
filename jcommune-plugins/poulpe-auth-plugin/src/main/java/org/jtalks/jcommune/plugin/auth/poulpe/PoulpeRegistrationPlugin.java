@@ -17,7 +17,7 @@ package org.jtalks.jcommune.plugin.auth.poulpe;
 
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
-import org.jtalks.jcommune.model.plugins.SimpleRegistrationPlugin;
+import org.jtalks.jcommune.model.plugins.SimpleAuthenticationPlugin;
 import org.jtalks.jcommune.model.plugins.StatefullPlugin;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
@@ -32,12 +32,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static org.jtalks.jcommune.model.entity.PluginConfigurationProperty.Type.STRING;
+
 /**
- * Provides user registration service via Poulpe.
+ * Provides user registration and authentication services via Poulpe.
  *
  * @author Andrey Pogorelov
  */
-public class PoulpeRegistrationPlugin extends StatefullPlugin implements SimpleRegistrationPlugin {
+public class PoulpeRegistrationPlugin extends StatefullPlugin
+        implements SimpleAuthenticationPlugin {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PoulpeRegistrationPlugin.class);
     private PoulpeRegistrationService service;
@@ -45,7 +48,7 @@ public class PoulpeRegistrationPlugin extends StatefullPlugin implements SimpleR
     private State state;
 
     public PoulpeRegistrationPlugin() {
-        LOGGER.debug("PoulpeRegistrationPlugin initialized");
+        LOGGER.info("PoulpeRegistrationPlugin initialized");
         PluginConfiguration conf = new PluginConfiguration();
         conf.setProperties(getDefaultConfiguration());
         configure(conf);
@@ -56,6 +59,19 @@ public class PoulpeRegistrationPlugin extends StatefullPlugin implements SimpleR
             throws NoConnectionException, UnexpectedErrorException {
         try {
             return service.registerUser(username, password, email);
+        } catch (IOException | JAXBException e) {
+            LOGGER.error("Parse response error", e);
+            throw new UnexpectedErrorException(e);
+        } catch (NoConnectionException e) {
+            LOGGER.error("Can't connect to Poulpe", e);
+            throw e;
+        }
+    }
+
+    @Override
+    public boolean authenticate(String login, String password) throws UnexpectedErrorException, NoConnectionException {
+        try {
+            return service.authenticate(login, password);
         } catch (IOException | JAXBException e) {
             LOGGER.error("Parse response error", e);
             throw new UnexpectedErrorException(e);
@@ -83,15 +99,12 @@ public class PoulpeRegistrationPlugin extends StatefullPlugin implements SimpleR
     @Override
     public List<PluginConfigurationProperty> getDefaultConfiguration() {
         PluginConfigurationProperty url =
-                new PluginConfigurationProperty(PluginConfigurationProperty.Type.STRING,
-                        "http://localhost/rest/private/user");
-        url.setName("PoulpeUrl");
-        PluginConfigurationProperty login
-                = new PluginConfigurationProperty(PluginConfigurationProperty.Type.STRING, "user");
+                new PluginConfigurationProperty(STRING, "http://localhost");
+        url.setName("Url");
+        PluginConfigurationProperty login = new PluginConfigurationProperty(STRING, "user");
         login.setName("Login");
-        PluginConfigurationProperty password
-                = new PluginConfigurationProperty(PluginConfigurationProperty.Type.STRING, "1234");
-        login.setName("Password");
+        PluginConfigurationProperty password = new PluginConfigurationProperty(STRING, "1234");
+        password.setName("Password");
         return Arrays.asList(url, login, password);
     }
 
@@ -101,7 +114,7 @@ public class PoulpeRegistrationPlugin extends StatefullPlugin implements SimpleR
         try {
             loadConfiguration(configuration.getProperties());
             this.pluginConfiguration = configuration;
-            if (configuration.isActive()){
+            if (configuration.isActive()) {
                 state = State.ENABLED;
                 LOGGER.debug("Plugin {} is configured and activated", this.getName());
             } else {
@@ -131,15 +144,15 @@ public class PoulpeRegistrationPlugin extends StatefullPlugin implements SimpleR
         String login = null;
         String password = null;
         for (PluginConfigurationProperty property : properties) {
-            if (property.getName().equalsIgnoreCase("PoulpeUrl")) {
+            if ("Url".equalsIgnoreCase(property.getName())) {
                 url = property.getValue();
-            } else if (property.getName().equalsIgnoreCase("Login")) {
+            } else if ("Login".equalsIgnoreCase(property.getName())) {
                 login = property.getValue();
-            } else if (property.getName().equalsIgnoreCase("Password")) {
+            } else if ("Password".equalsIgnoreCase(property.getName())) {
                 password = property.getValue();
             }
         }
-        if(url != null && login != null && password != null) {
+        if (url != null && login != null && password != null) {
             service = new PoulpeRegistrationService(url, login, password);
             pluginConfiguration.setActive(true);
         } else {
