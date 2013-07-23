@@ -36,13 +36,13 @@ public class RegisterUserDto {
 
     @NotBlank(message = "{validation.not_null}")
     @Size(min = User.USERNAME_MIN_LENGTH, max = User.USERNAME_MAX_LENGTH, message = "{validation.username.length}")
-    @Unique(entity = JCUser.class, field = "username", message = "{validation.duplicateuser}", ignoreCase = true)
+    @Unique(entity = JCUser.class, field = "username", message = "{user.username.already_exists}", ignoreCase = true)
     private String username;
 
     @NotBlank(message = "{validation.not_null}")
     @Size(max = User.EMAIL_MAX_LENGTH, message = "{validation.email.length}")
-    @Email(message = "{validation.email.wrong.format}")
-    @Unique(entity = JCUser.class, field = "email", message = "{validation.duplicateemail}", ignoreCase = true)
+    @Email(message = "{validation.invalid_email_format}")
+    @Unique(entity = JCUser.class, field = "email", message = "{user.email.already_exists}", ignoreCase = true)
     private String email;
 
     @NotBlank(message = "{validation.not_null}")

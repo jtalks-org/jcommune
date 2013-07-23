@@ -13,15 +13,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.jtalks.jcommune.model.plugins;
-
-import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
-import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
-
-import java.util.Map;
-
-public interface SimpleRegistrationPlugin extends Plugin {
-
-    public Map<String, String> registerUser(String login, String password, String email)
-            throws NoConnectionException, UnexpectedErrorException;
-}
+/**
+ *
+ * This package contains objects of representation for Plugin controllers.
+ *
+ */
+package org.jtalks.jcommune.web.controller.plugins;

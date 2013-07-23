@@ -19,6 +19,7 @@ import com.sun.syndication.feed.rss.Channel;
 import com.sun.syndication.feed.rss.Content;
 import com.sun.syndication.feed.rss.Description;
 import com.sun.syndication.feed.rss.Item;
+import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.web.servlet.view.feed.AbstractRssFeedView;
 
@@ -35,7 +36,10 @@ import java.util.Map;
  * @author Andrey Kluev
  */
 public class RssViewer extends AbstractRssFeedView {
-    
+
+    private final static String DEFAULT_FEED_TITLE = "";
+    private final static String DEFAULT_FEED_DESCRIPTION = "";
+
     /**
      * Set meta data for all RSS feed
      *
@@ -46,8 +50,17 @@ public class RssViewer extends AbstractRssFeedView {
     @Override
     protected void buildFeedMetadata(Map<String, Object> model, Channel feed,
                                      HttpServletRequest request) {
-        feed.setTitle("Java forum JTalks ");
-        feed.setDescription("Programmers forum");
+        Component component = (Component)model.get("forumComponent");
+        String feedTitle = DEFAULT_FEED_TITLE;
+        String feedDescription = DEFAULT_FEED_DESCRIPTION;
+
+        if (component != null) {
+            feedTitle = component.getName();
+            feedDescription = component.getDescription();
+        }
+
+        feed.setTitle(feedTitle);
+        feed.setDescription(feedDescription);
         feed.setLink(buildURL(request));
 
         super.buildFeedMetadata(model, feed, request);
