@@ -38,8 +38,8 @@ public class PoulpeAuthPlugin extends StatefullPlugin implements SimpleAuthentic
     }
 
     @Override
-    public boolean authenticate(String login, String password) {
-        return true;
+    public Map<String, String> authenticate(String login, String password) {
+        return Collections.EMPTY_MAP;
     }
 
     @Override
