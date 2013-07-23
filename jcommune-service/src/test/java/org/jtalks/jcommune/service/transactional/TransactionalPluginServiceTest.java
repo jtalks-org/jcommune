@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.model.dao.PluginDao;
+import org.jtalks.jcommune.model.dao.PluginConfigurationDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.service.dto.PluginActivatingDto;
@@ -24,8 +24,6 @@ import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 
 import static org.mockito.Matchers.anyString;
@@ -43,7 +41,7 @@ public class TransactionalPluginServiceTest {
     private static final long FAKE_COMPONENT_ID = 25L;
 
     @Mock
-    private PluginDao pluginDao;
+    private PluginConfigurationDao pluginConfigurationDao;
     @Mock
     private PluginLoader pluginLoader;
 
@@ -52,7 +50,7 @@ public class TransactionalPluginServiceTest {
     @BeforeMethod
     public void init() throws Exception {
         initMocks(this);
-        pluginService = new TransactionalPluginService(pluginDao, pluginLoader);
+        pluginService = new TransactionalPluginService(pluginConfigurationDao, pluginLoader);
     }
 
     @Test
@@ -71,7 +69,7 @@ public class TransactionalPluginServiceTest {
         //GIVEN
         PluginConfiguration expectedConfiguration = new PluginConfiguration();
         String pluginName = "plugin";
-        when(pluginDao.get(pluginName)).thenReturn(expectedConfiguration);
+        when(pluginConfigurationDao.get(pluginName)).thenReturn(expectedConfiguration);
         //WHEN
         PluginConfiguration actualConfiguration = pluginService.getPluginConfiguration(pluginName, FAKE_COMPONENT_ID);
         //THEN
@@ -82,7 +80,7 @@ public class TransactionalPluginServiceTest {
     public void getPluginConfigurationShouldShowErrorWhenPluginDoesNotExist() throws NotFoundException {
         //GIVEN
         String pluginName = "plugin";
-        when(pluginDao.get(pluginName)).thenThrow(new NotFoundException());
+        when(pluginConfigurationDao.get(pluginName)).thenThrow(new NotFoundException());
         //WHEN
         pluginService.getPluginConfiguration(pluginName, FAKE_COMPONENT_ID);
     }
@@ -93,7 +91,7 @@ public class TransactionalPluginServiceTest {
         String pluginName = "plugin";
         PluginConfiguration pluginConfiguration = new PluginConfiguration();
         pluginConfiguration.setActive(false);
-        when(pluginDao.get(pluginName)).thenReturn(pluginConfiguration);
+        when(pluginConfigurationDao.get(pluginName)).thenReturn(pluginConfiguration);
         List<PluginActivatingDto> pluginsActivatingDtoList = new ArrayList<>();
         pluginsActivatingDtoList.add(new PluginActivatingDto(pluginName, true));
         //
@@ -101,7 +99,7 @@ public class TransactionalPluginServiceTest {
         //WHEN
         pluginService.updatePluginsActivating(pluginsActivatingDtoList, FAKE_COMPONENT_ID);
         //THEN
-        verify(pluginDao).saveOrUpdate(pluginConfiguration);
+        verify(pluginConfigurationDao).saveOrUpdate(pluginConfiguration);
         assertTrue(pluginConfiguration.isActive(), "Plugin must be activated.");
     }
 
@@ -111,7 +109,7 @@ public class TransactionalPluginServiceTest {
         int pluginsCount = 10;
         String pluginName = "plugin";
         PluginConfiguration pluginConfiguration = new PluginConfiguration();
-        when(pluginDao.get(anyString())).thenReturn(pluginConfiguration);
+        when(pluginConfigurationDao.get(anyString())).thenReturn(pluginConfiguration);
         List<PluginActivatingDto> pluginsActivatingDtoList = new ArrayList<>();
         for (int i=0; i< pluginsCount; i++) {
             pluginsActivatingDtoList.add(new PluginActivatingDto(pluginName + i, true));
@@ -121,6 +119,6 @@ public class TransactionalPluginServiceTest {
         //WHEN
         pluginService.updatePluginsActivating(pluginsActivatingDtoList, FAKE_COMPONENT_ID);
         //THEN
-        verify(pluginDao, times(pluginsCount)).saveOrUpdate(pluginConfiguration);
+        verify(pluginConfigurationDao, times(pluginsCount)).saveOrUpdate(pluginConfiguration);
     }
 }

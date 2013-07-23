@@ -14,118 +14,44 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.apache.commons.lang.Validate;
 import org.jtalks.common.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.model.dao.PluginDao;
+import org.jtalks.jcommune.model.dao.PluginConfigurationDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.dto.PluginActivatingDto;
-import org.jtalks.jcommune.service.plugins.NameFilter;
-import org.jtalks.jcommune.service.plugins.PluginClassLoader;
-import org.jtalks.jcommune.service.plugins.PluginFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.DisposableBean;
+import org.jtalks.jcommune.service.plugins.PluginLoader;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import java.io.IOException;
-import java.net.URLClassLoader;
-import java.nio.file.*;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.ServiceLoader;
 
-import static java.nio.file.StandardWatchEventKinds.*;
 
 /**
  * @author Anuar_Nurmakanov
  * @author Evgeny Naumenko
  */
-public class TransactionalPluginService
-        extends AbstractTransactionalEntityService<PluginConfiguration, PluginDao>
-        implements DisposableBean, PluginService {
+public class TransactionalPluginService extends AbstractTransactionalEntityService<PluginConfiguration, PluginConfigurationDao>
+        implements PluginService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalPluginService.class);
-    private URLClassLoader classLoader;
-    private WatchKey watchKey;
-    private String folder;
-    private List<Plugin> plugins;
+    private PluginLoader pLuginLoader;
 
     /**
-     * @param folderPath
+     * @param pluginLoader
      * @param dao
-     * @throws IOException
      */
-    public TransactionalPluginService(String folderPath, PluginDao dao) throws IOException {
+    public TransactionalPluginService(PluginConfigurationDao dao, PluginLoader pluginLoader) {
         super(dao);
-        Validate.notEmpty(folderPath);
-        this.folder = this.resolveUserHome(folderPath);
-        Path path = Paths.get(folder);
-        WatchService watcher = FileSystems.getDefault().newWatchService();
-        watchKey = path.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
-        this.initPluginList();
-    }
+        this.pLuginLoader = pluginLoader;
 
-    private String resolveUserHome(String path) {
-        if (path.contains("~")) {
-            String home = System.getProperty("user.home");
-            return path.replace("~", home);
-        } else {
-            return path;
-        }
     }
 
     /**
-     * Returns actual list of plugins available. Client code should not cache the plugin
-     * references and always use this method to obtain a plugin reference as needed.
-     * Violation of this simple rule may cause memory leaks.
-     *
-     * @return list of plugins available at the moment
+     * {@inheritDoc}
      */
     @Override
     @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
-    public synchronized List<Plugin> getPlugins(long componentId, PluginFilter... filters) {
-        this.synchronizePluginList();
-        List<Plugin> filtered = new ArrayList<>(plugins.size());
-        plugins:
-        for (Plugin plugin : plugins) {
-            for (PluginFilter filter : filters) {
-                if (!filter.accept(plugin)) {
-                    continue plugins;
-                }
-            }
-            filtered.add(plugin);
-        }
-        LOGGER.debug("JCommune forum has {0} plugins now.", filtered.size());
-        return filtered;
-    }
-
-    private void synchronizePluginList() {
-        List events = watchKey.pollEvents();
-        if (!events.isEmpty()) {
-            watchKey.reset();
-            this.closeClassLoader();
-            this.initPluginList();
-        }
-    }
-
-    private synchronized void initPluginList() {
-        classLoader = new PluginClassLoader(folder);
-        ServiceLoader<Plugin> pluginLoader = ServiceLoader.load(Plugin.class, classLoader);
-        List<Plugin> plugins = new ArrayList<>();
-        for (Plugin plugin : pluginLoader) {
-            String name = plugin.getName();
-            PluginConfiguration configuration;
-            try {
-                configuration = this.getDao().get(name);
-            } catch (NotFoundException e) {
-                configuration = new PluginConfiguration(name, false, plugin.getDefaultConfiguration());
-            }
-            plugin.configure(configuration);
-            plugins.add(plugin);
-        }
-        this.plugins = plugins;
+    public List<Plugin> getPlugins(long componentId) {
+        return pLuginLoader.getPlugins();
     }
 
     /**
@@ -136,11 +62,11 @@ public class TransactionalPluginService
     public void updateConfiguration(PluginConfiguration pluginConfiguration, long componentId) throws NotFoundException {
         String name = pluginConfiguration.getName();
         Plugin result;
-        List<Plugin> plugins1 = this.getPlugins(componentId, new NameFilter(name));
-        if (plugins1.isEmpty()) {
+        List<Plugin> pluginsList = pLuginLoader.getPlugins();
+        if (pluginsList.isEmpty()) {
             throw new NotFoundException("Plugin " + name + " is not loaded");
         } else {
-            result = plugins1.get(0);
+            result = pluginsList.get(0);
         }
         Plugin plugin = result;
         plugin.configure(pluginConfiguration);
@@ -163,28 +89,12 @@ public class TransactionalPluginService
     @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
     public void updatePluginsActivating(List<PluginActivatingDto> updatedPlugins, long componentId) throws NotFoundException {
         for (PluginActivatingDto updatedPlugin : updatedPlugins) {
-            PluginDao pluginDao = getDao();
+            PluginConfigurationDao pluginConfigurationDao = getDao();
             String pluginName = updatedPlugin.getPluginName();
-            PluginConfiguration configuration = pluginDao.get(pluginName);
+            PluginConfiguration configuration = pluginConfigurationDao.get(pluginName);
             boolean isActivated = updatedPlugin.isActivated();
             configuration.setActive(isActivated);
-            pluginDao.saveOrUpdate(configuration);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void destroy() throws Exception {
-        this.closeClassLoader();
-    }
-
-    private void closeClassLoader() {
-        try {
-            classLoader.close();
-        } catch (IOException e) {
-            LOGGER.error("Failed to close plugin class loader", e);
+            pluginConfigurationDao.saveOrUpdate(configuration);
         }
     }
 }

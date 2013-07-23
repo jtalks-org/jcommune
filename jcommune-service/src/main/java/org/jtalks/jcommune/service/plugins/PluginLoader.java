@@ -16,7 +16,7 @@ package org.jtalks.jcommune.service.plugins;
 
 import org.apache.commons.lang.Validate;
 import org.jtalks.common.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.model.dao.PluginDao;
+import org.jtalks.jcommune.model.dao.PluginConfigurationDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.slf4j.Logger;
@@ -45,15 +45,15 @@ public class PluginLoader implements DisposableBean {
     private WatchKey watchKey;
     private String folder;
     private List<Plugin> plugins;
-    private PluginDao pluginDao;
+    private PluginConfigurationDao pluginConfigurationDao;
 
     /**
      * @param folderPath
      * @param dao
      * @throws java.io.IOException
      */
-    public PluginLoader(String folderPath, PluginDao dao) throws IOException {
-        this.pluginDao = dao;
+    public PluginLoader(String folderPath, PluginConfigurationDao dao) throws IOException {
+        this.pluginConfigurationDao = dao;
         Validate.notEmpty(folderPath);
         this.folder = this.resolveUserHome(folderPath);
         Path path = Paths.get(folder);
@@ -111,7 +111,7 @@ public class PluginLoader implements DisposableBean {
             String name = plugin.getName();
             PluginConfiguration configuration;
             try {
-                configuration = pluginDao.get(name);
+                configuration = pluginConfigurationDao.get(name);
             } catch (NotFoundException e) {
                 configuration = new PluginConfiguration(name, false, plugin.getDefaultConfiguration());
             }

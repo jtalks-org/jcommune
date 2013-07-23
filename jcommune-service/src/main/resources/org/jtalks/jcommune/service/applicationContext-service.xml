@@ -331,11 +331,11 @@
 
     <bean id="pluginLoader" class="org.jtalks.jcommune.service.plugins.PluginLoader">
         <constructor-arg name="folderPath" value="${PLUGIN_FOLDER:~}"/>
-        <constructor-arg name="dao" ref="pluginDao"/>
+        <constructor-arg name="dao" ref="pluginConfigurationDao"/>
     </bean>
 
     <bean id="pluginService" class="org.jtalks.jcommune.service.transactional.TransactionalPluginService">
-        <constructor-arg name="dao" ref="pluginDao"/>
+        <constructor-arg name="dao" ref="pluginConfigurationDao"/>
         <constructor-arg name="pluginLoader" ref="pluginLoader"/>
     </bean>
 
