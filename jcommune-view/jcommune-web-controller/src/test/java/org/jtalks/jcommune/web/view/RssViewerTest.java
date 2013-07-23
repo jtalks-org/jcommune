@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.view;
 
 import com.sun.syndication.feed.rss.Channel;
 import com.sun.syndication.feed.rss.Item;
+import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -35,6 +36,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Andrey Kluev
@@ -47,6 +49,9 @@ public class RssViewerTest {
     private MockHttpServletResponse response;
     private Map<String, Object> model;
     private Topic topic;
+
+    private static final String COMPONENT_NAME = "my component";
+    private static final String COMPONENT_DESCRIPTION = "my description";
 
     @BeforeMethod
     protected void setUp() {
@@ -87,11 +92,23 @@ public class RssViewerTest {
     }
 
     @Test
-    public void testBuildFeedMetadata() throws Exception {
+    public void rssShouldBeGeneratedWithMetaDataFromComponent() throws Exception {
+        Component component = new Component();
+        component.setName(COMPONENT_NAME);
+        component.setDescription(COMPONENT_DESCRIPTION);
+        model.put("forumComponent", component);
 
         rssViewer.buildFeedMetadata(model, channel, request);
         assertFalse(channel.equals(new Channel()));
-        assertEquals(channel.getDescription(), "Programmers forum");
+        assertEquals(channel.getTitle(), COMPONENT_NAME);
+        assertEquals(channel.getDescription(), COMPONENT_DESCRIPTION);
+    }
+
+    @Test
+    public void rssShouldBeGeneratedWithEmptyFeedMetaDataWhenThereIsNoComponent() {
+        rssViewer.buildFeedMetadata(model, channel, request);
+        assertTrue(channel.getTitle().isEmpty());
+        assertTrue(channel.getDescription().isEmpty());
     }
 
     @Test
