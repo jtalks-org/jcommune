@@ -40,7 +40,7 @@ public class EditUserProfileDto {
     private String username;
 
     @NotBlank(message = "{validation.not_null}")
-    @Size(max = User.EMAIL_MAX_LENGTH, message = "{validation.email.length}")
+    @Size(max = User.EMAIL_MAX_LENGTH, message = "{user.email.length_constraint_violation}")
     @Email(message = "{validation.invalid_email_format}")
     private String email;
 
