@@ -14,9 +14,11 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import net.sf.image4j.codec.ico.ICODecoder;
 import net.sf.image4j.codec.ico.ICOEncoder;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.Validate;
+import org.apache.tika.Tika;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 
 import javax.imageio.ImageIO;
@@ -142,9 +144,15 @@ public class ImageConverter {
     public BufferedImage convertByteArrayToImage(byte[] bytes) throws ImageProcessException {
         BufferedImage result;
         BufferedInputStream bis = new BufferedInputStream(new ByteArrayInputStream(bytes));
+        Tika tika = new Tika();
         try {
-            result = ImageIO.read(bis);
-        } catch (IOException e) {
+            String type = tika.detect(bis);
+            if (type.contains(ImageService.ICO_TYPE)) {
+                result = ICODecoder.read(bis).get(0);
+            } else {
+                result = ImageIO.read(bis);
+            }
+        } catch (IOException | IndexOutOfBoundsException e) {
             throw new ImageProcessException(e);
         } finally {
             IOUtils.closeQuietly(bis);

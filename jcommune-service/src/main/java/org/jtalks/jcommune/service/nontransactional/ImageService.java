@@ -42,9 +42,10 @@ import java.util.List;
  *
  */
 public class ImageService {
-    private static final List<String> VALID_IMAGE_TYPES = Arrays.asList("image/jpeg", "image/png", "image/gif");
+    public static final String ICO_TYPE = "image/x-icon";
+    private static final List<String> VALID_IMAGE_TYPES = Arrays.asList("image/jpeg", "image/png", "image/gif", ICO_TYPE);
     /** user-friendly string with all valid image types */
-    private static final String VALID_IMAGE_EXTENSIONS = "*.jpeg, *.jpg, *.gif, *.png";
+    private static final String VALID_IMAGE_EXTENSIONS = "*.jpeg, *.jpg, *.gif, *.png, *.ico";
 
     private ImageConverter imageConverter;
     private Base64Wrapper base64Wrapper;
