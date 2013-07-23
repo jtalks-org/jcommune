@@ -18,7 +18,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
-import org.jtalks.jcommune.model.dao.PluginDao;
+import org.jtalks.jcommune.model.dao.PluginConfigurationDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class PluginHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
-    private PluginDao pluginDao;
+    private PluginConfigurationDao pluginConfigurationDao;
     private Session session;
 
     @BeforeMethod
@@ -58,7 +58,7 @@ public class PluginHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     public void getShouldReturnPluginById() {
         PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPlugin();
 
-        PluginConfiguration foundPluginConfiguration = pluginDao.get(pluginConfiguration.getId());
+        PluginConfiguration foundPluginConfiguration = pluginConfigurationDao.get(pluginConfiguration.getId());
 
         assertNotNull(foundPluginConfiguration);
         assertEquals(foundPluginConfiguration.getId(), pluginConfiguration.getId(),
@@ -67,7 +67,7 @@ public class PluginHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
 
     @Test
     public void getWithPassedIdOfNonExistPluginShouldReturnNull() {
-        PluginConfiguration nonExistPluginConfiguration = pluginDao.get(-788888L);
+        PluginConfiguration nonExistPluginConfiguration = pluginConfigurationDao.get(-788888L);
 
         assertNull(nonExistPluginConfiguration, "PluginConfiguration doesn't exist, so get must return null");
     }
@@ -78,7 +78,7 @@ public class PluginHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPlugin();
         pluginConfiguration.setName(newPluginName);
 
-        pluginDao.saveOrUpdate(pluginConfiguration);
+        pluginConfigurationDao.saveOrUpdate(pluginConfiguration);
         session.evict(pluginConfiguration);
         PluginConfiguration updatedPluginConfiguration = (PluginConfiguration) session.get(PluginConfiguration.class, pluginConfiguration.getId());
 
@@ -89,7 +89,7 @@ public class PluginHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     public void saveOrUpdateShouldSaveNewPlugin() {
         PluginConfiguration newPluginConfiguration = new PluginConfiguration("New PluginConfiguration", true, Collections.<PluginConfigurationProperty> emptyList());
 
-        pluginDao.saveOrUpdate(newPluginConfiguration);
+        pluginConfigurationDao.saveOrUpdate(newPluginConfiguration);
         session.evict(newPluginConfiguration);
         PluginConfiguration savedPluginConfiguration = (PluginConfiguration) session.get(PluginConfiguration.class, newPluginConfiguration.getId());
 
@@ -102,7 +102,7 @@ public class PluginHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         session.save(pluginConfiguration);
 
         pluginConfiguration.setName(null);
-        pluginDao.saveOrUpdate(pluginConfiguration);
+        pluginConfigurationDao.saveOrUpdate(pluginConfiguration);
     }
 
     @Test
@@ -110,13 +110,13 @@ public class PluginHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPlugin();
         session.save(pluginConfiguration);
 
-        PluginConfiguration actual = pluginDao.get(pluginConfiguration.getName());
+        PluginConfiguration actual = pluginConfigurationDao.get(pluginConfiguration.getName());
 
         assertEquals(actual, pluginConfiguration);
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testGetByNonExistingName() throws NotFoundException {
-        pluginDao.get("Some fake name");
+        pluginConfigurationDao.get("Some fake name");
     }
 }

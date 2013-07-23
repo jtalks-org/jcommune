@@ -15,19 +15,16 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.model.dao.PluginDao;
+import org.jtalks.jcommune.model.dao.PluginConfigurationDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
+import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.service.dto.PluginActivatingDto;
+import org.jtalks.jcommune.service.plugins.PluginLoader;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
@@ -44,63 +41,84 @@ public class TransactionalPluginServiceTest {
     private static final long FAKE_COMPONENT_ID = 25L;
 
     @Mock
-    private PluginDao pluginDao;
+    private PluginConfigurationDao pluginConfigurationDao;
+    @Mock
+    private PluginLoader pluginLoader;
+
     private TransactionalPluginService pluginService;
 
     @BeforeMethod
     public void init() throws Exception {
         initMocks(this);
-        Path tempDirectory = Files.createTempDirectory("test-jtalks-plugins");
-        pluginService = new TransactionalPluginService(tempDirectory.toString(), pluginDao);
+        pluginService = new TransactionalPluginService(pluginConfigurationDao, pluginLoader);
+    }
+
+    @Test
+    public void getPluginsShouldReturnRunningInForumPlugins() {
+        //GIVEN
+        List<Plugin> runningInForumPlugins = Collections.emptyList();
+        when(pluginLoader.getPlugins()).thenReturn(runningInForumPlugins);
+        //WHEN
+        List<Plugin> plugins = pluginService.getPlugins(FAKE_COMPONENT_ID);
+        //THEN
+        assertEquals(plugins, runningInForumPlugins, "Plugins should be returned by calling plugins loader");
     }
 
     @Test
     public void getPluginConfigurationShouldFindItInDatabase() throws NotFoundException {
+        //GIVEN
         PluginConfiguration expectedConfiguration = new PluginConfiguration();
         String pluginName = "plugin";
-        when(pluginDao.get(pluginName)).thenReturn(expectedConfiguration);
-
+        when(pluginConfigurationDao.get(pluginName)).thenReturn(expectedConfiguration);
+        //WHEN
         PluginConfiguration actualConfiguration = pluginService.getPluginConfiguration(pluginName, FAKE_COMPONENT_ID);
-
+        //THEN
         assertEquals(actualConfiguration, expectedConfiguration, "Plugin configuration should be retrieved from database.");
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     public void getPluginConfigurationShouldShowErrorWhenPluginDoesNotExist() throws NotFoundException {
+        //GIVEN
         String pluginName = "plugin";
-        when(pluginDao.get(pluginName)).thenThrow(new NotFoundException());
-
+        when(pluginConfigurationDao.get(pluginName)).thenThrow(new NotFoundException());
+        //WHEN
         pluginService.getPluginConfiguration(pluginName, FAKE_COMPONENT_ID);
     }
 
     @Test
     public void updatePluginsEnablingShouldUpdatePluginsEnabling() throws NotFoundException {
+        //GIVEN
         String pluginName = "plugin";
         PluginConfiguration pluginConfiguration = new PluginConfiguration();
         pluginConfiguration.setActive(false);
-        when(pluginDao.get(pluginName)).thenReturn(pluginConfiguration);
+        when(pluginConfigurationDao.get(pluginName)).thenReturn(pluginConfiguration);
         List<PluginActivatingDto> pluginsActivatingDtoList = new ArrayList<>();
         pluginsActivatingDtoList.add(new PluginActivatingDto(pluginName, true));
-
+        //
+        when(pluginLoader.getPlugins()).thenReturn(Collections.<Plugin> emptyList());
+        //WHEN
         pluginService.updatePluginsActivating(pluginsActivatingDtoList, FAKE_COMPONENT_ID);
-
-        verify(pluginDao).saveOrUpdate(pluginConfiguration);
+        //THEN
+        verify(pluginConfigurationDao).saveOrUpdate(pluginConfiguration);
         assertTrue(pluginConfiguration.isActive(), "Plugin must be activated.");
     }
 
     @Test
     public void updatePluginsEnablingShouldUpdateAllPassedPlugins() throws NotFoundException {
+        //GIVEN
         int pluginsCount = 10;
         String pluginName = "plugin";
         PluginConfiguration pluginConfiguration = new PluginConfiguration();
-        when(pluginDao.get(anyString())).thenReturn(pluginConfiguration);
+        when(pluginConfigurationDao.get(anyString())).thenReturn(pluginConfiguration);
         List<PluginActivatingDto> pluginsActivatingDtoList = new ArrayList<>();
         for (int i=0; i< pluginsCount; i++) {
             pluginsActivatingDtoList.add(new PluginActivatingDto(pluginName + i, true));
         }
-
+        //
+        when(pluginLoader.getPlugins()).thenReturn(Collections.<Plugin> emptyList());
+        //WHEN
         pluginService.updatePluginsActivating(pluginsActivatingDtoList, FAKE_COMPONENT_ID);
-
-        verify(pluginDao, times(pluginsCount)).saveOrUpdate(pluginConfiguration);
+        //THEN
+        verify(pluginConfigurationDao, times(pluginsCount)).saveOrUpdate(pluginConfiguration);
     }
 }

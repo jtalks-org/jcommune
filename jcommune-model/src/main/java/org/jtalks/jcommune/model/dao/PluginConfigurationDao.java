@@ -22,7 +22,7 @@ import org.jtalks.jcommune.model.entity.PluginConfiguration;
  *
  * @author Anuar Nurmakanov
  */
-public interface PluginDao extends Crud<PluginConfiguration> {
+public interface PluginConfigurationDao extends Crud<PluginConfiguration> {
 
     PluginConfiguration get(String name) throws NotFoundException;
 }
