@@ -337,9 +337,19 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         } catch (NotFoundException e) {
             LOGGER.warn("User was not found during login process, username = " + username);
         } catch (AuthenticationException e) {
-            LOGGER.warn(e.getMessage());
+            String ipAddress = getClientIpAddress(request);
+            LOGGER.info("AuthenticationException: username = {}, IP={}, message={}",
+                    new Object[] {username, ipAddress, e.getMessage()});
         }
         return result;
+    }
+
+    private String getClientIpAddress(HttpServletRequest request) {
+        String ipAddress  = request.getHeader("X-FORWARDED-FOR");
+        if(ipAddress == null) {
+            ipAddress = request.getRemoteAddr();
+        }
+        return  ipAddress;
     }
 
     /**

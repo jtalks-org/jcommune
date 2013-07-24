@@ -50,9 +50,18 @@
 
 <link rel="stylesheet" type="text/css" media="screen, projection"
       href="${pageContext.request.contextPath}/resources/css/manual/i18n/<spring:message code="locale.code"/>.css"/>
+
+<%--
+    Adding new scripts (js) or files with styles (css).
+      1 - Add to wro.xml to group
+        a - if group exists, then add
+        b - if group not exists, then add new group. Add file to this group. Add this group to pom.xml (plugin).
+            Add this group to block (<c:when  ...  <c:when>) which is located below the text.
+            Add import files which contains in group to block (<c:otherwise> ... <c:otherwise>)
+      2 - Add new imports of file to block (<c:otherwise> ... <c:otherwise>)
+--%>
 <c:set var="mode" value="${isJsCompressed}"/>
 <c:set var="uriString" value="${pageContext.request.requestURI}"/>
-
 <c:choose>
   <c:when test="${mode eq 'true'}">
     <link rel="stylesheet" type="text/css" media="screen, projection"

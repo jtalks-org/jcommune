@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -136,11 +137,25 @@ public class TransactionalPostServiceTest {
 
         assertEquals(post.getPostContent(), newBody);
 
-        verify(notificationService).subscribedEntityChanged(topic);
-
         verify(postDao).saveOrUpdate(post);
 
         verify(userService).notifyAndMarkNewlyMentionedUsers(post);
+    }
+
+    @Test
+    public void testUpdatePost_shouldNotSendNotifications() throws NotFoundException {
+        String newBody = "new body";
+        Topic topic = new Topic(user, "title");
+        Post post = new Post(user, "");
+        topic.addPost(post);
+        post.setId(POST_ID);
+        topic.addPost(post);
+        when(postDao.isExist(POST_ID)).thenReturn(true);
+        when(postService.get(POST_ID)).thenReturn(post);
+
+        postService.updatePost(post, newBody);
+
+        verify(notificationService, times(0)).subscribedEntityChanged(topic);
     }
 
     @Test(expectedExceptions = AccessDeniedException.class)
