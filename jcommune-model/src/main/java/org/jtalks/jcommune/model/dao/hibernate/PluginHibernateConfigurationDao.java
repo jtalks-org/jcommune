@@ -18,18 +18,18 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.common.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.model.dao.PluginDao;
+import org.jtalks.jcommune.model.dao.PluginConfigurationDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 
 /**
  *
  * @author Anuar_Nurmakanov
  */
-public class PluginHibernateDao extends GenericDao<PluginConfiguration> implements PluginDao {
+public class PluginHibernateConfigurationDao extends GenericDao<PluginConfiguration> implements PluginConfigurationDao {
     /**
      * @param sessionFactory The SessionFactory.
      */
-    public PluginHibernateDao(SessionFactory sessionFactory) {
+    public PluginHibernateConfigurationDao(SessionFactory sessionFactory) {
         super(sessionFactory, PluginConfiguration.class);
     }
 

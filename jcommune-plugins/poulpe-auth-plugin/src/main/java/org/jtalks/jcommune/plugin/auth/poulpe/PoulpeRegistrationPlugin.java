@@ -15,6 +15,7 @@
 
 package org.jtalks.jcommune.plugin.auth.poulpe;
 
+import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
 import org.jtalks.jcommune.model.plugins.SimpleAuthenticationPlugin;
@@ -69,7 +70,8 @@ public class PoulpeRegistrationPlugin extends StatefullPlugin
     }
 
     @Override
-    public boolean authenticate(String login, String password) throws UnexpectedErrorException, NoConnectionException {
+    public Map<String, String> authenticate(String login, String password)
+            throws UnexpectedErrorException, NoConnectionException {
         try {
             return service.authenticate(login, password);
         } catch (IOException | JAXBException e) {
@@ -114,6 +116,7 @@ public class PoulpeRegistrationPlugin extends StatefullPlugin
         try {
             loadConfiguration(configuration.getProperties());
             this.pluginConfiguration = configuration;
+            this.pluginConfiguration.setActive(true);
             if (configuration.isActive()) {
                 state = State.ENABLED;
                 LOGGER.debug("Plugin {} is configured and activated", this.getName());
@@ -154,7 +157,6 @@ public class PoulpeRegistrationPlugin extends StatefullPlugin
         }
         if (url != null && login != null && password != null) {
             service = new PoulpeRegistrationService(url, login, password);
-            pluginConfiguration.setActive(true);
         } else {
             throw new RuntimeException();
         }

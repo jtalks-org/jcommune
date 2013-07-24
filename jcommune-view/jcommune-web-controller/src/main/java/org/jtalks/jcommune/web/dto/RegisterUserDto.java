@@ -35,12 +35,12 @@ import javax.validation.constraints.Size;
 public class RegisterUserDto {
 
     @NotBlank(message = "{validation.not_null}")
-    @Size(min = User.USERNAME_MIN_LENGTH, max = User.USERNAME_MAX_LENGTH, message = "{validation.username.length}")
+    @Size(min = User.USERNAME_MIN_LENGTH, max = User.USERNAME_MAX_LENGTH, message = "{user.username.length_constraint_violation}")
     @Unique(entity = JCUser.class, field = "username", message = "{user.username.already_exists}", ignoreCase = true)
     private String username;
 
     @NotBlank(message = "{validation.not_null}")
-    @Size(max = User.EMAIL_MAX_LENGTH, message = "{validation.email.length}")
+    @Size(max = User.EMAIL_MAX_LENGTH, message = "{user.email.length_constraint_violation}")
     @Email(message = "{validation.invalid_email_format}")
     @Unique(entity = JCUser.class, field = "email", message = "{user.email.already_exists}", ignoreCase = true)
     private String email;

@@ -36,11 +36,13 @@ public interface SimpleAuthenticationPlugin extends Plugin {
     /**
      * Performs authentication attempt based on login/password pair
      *
+     *
      * @param login user login
      * @param password user password
-     * @return true, if authentication was successful
+     * @return map of user details
      */
-    public boolean authenticate(String login, String password) throws UnexpectedErrorException, NoConnectionException;
+    public Map<String, String> authenticate(String login, String password)
+            throws UnexpectedErrorException, NoConnectionException;
 
     /**
      * Performs registration attempt based on user details

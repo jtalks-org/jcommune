@@ -16,7 +16,9 @@
 package org.jtalks.jcommune.plugin.auth.poulpe.service;
 
 import com.google.common.annotations.VisibleForTesting;
+import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
+import org.jtalks.jcommune.plugin.auth.poulpe.dto.Authentication;
 import org.jtalks.jcommune.plugin.auth.poulpe.dto.Errors;
 import org.jtalks.jcommune.plugin.auth.poulpe.dto.User;
 import org.restlet.Context;
@@ -78,9 +80,9 @@ public class PoulpeRegistrationService {
      *
      * @param username     username
      * @param passwordHash password hash
-     * @return success
+     * @return map with user details
      */
-    public boolean authenticate(String username, String passwordHash)
+    public Map<String, String> authenticate(String username, String passwordHash)
             throws JAXBException, IOException, NoConnectionException {
         ClientResource clientResource = sendAuthRequest(username, passwordHash);
         return getAuthResult(clientResource);
@@ -90,18 +92,30 @@ public class PoulpeRegistrationService {
      * Gets authentication result from response entity.
      *
      * @param clientResource response container
-     * @return success
+     * @return map with user details
      * @throws org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException
      */
-    private boolean getAuthResult(ClientResource clientResource)
-            throws NoConnectionException {
+    private Map<String, String> getAuthResult(ClientResource clientResource)
+            throws NoConnectionException, JAXBException, IOException {
         if (clientResource.getStatus().getCode() == Status.SUCCESS_OK.getCode()) {
-            return true;
+            return parseUserDetails(clientResource.getResponseEntity());
         } else if (clientResource.getStatus().getCode() == Status.CLIENT_ERROR_NOT_FOUND.getCode()) {
-            return false;
+            return Collections.emptyMap();
         } else {
             throw new NoConnectionException();
         }
+    }
+
+    private Map<String, String> parseUserDetails(Representation repr) throws JAXBException, IOException {
+        JAXBContext context = JAXBContext.newInstance(Authentication.class);
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+        Authentication auth = (Authentication) unmarshaller.unmarshal(repr.getStream());
+
+        Map<String, String> authInfo = new HashMap<>();
+        authInfo.put("username", auth.getCredintals().getUsername());
+        authInfo.put("passwordHash", auth.getCredintals().getPasswordHash());
+        authInfo.put("email", auth.getProfile().getEmail());
+        return authInfo;
     }
 
     /**
