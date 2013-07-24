@@ -124,7 +124,7 @@ public class PoulpeAuthController {
             } catch (NoConnectionException e) {
                 errors.put("captcha", "Registration service not available.");
             } catch (UnexpectedErrorException e) {
-                errors.put("captcha", "Unexpected error was happend");
+                errors.put("captcha", "Unexpected error was happened");
             }
             result = parseValidationErrors(errors, result);
             if (result.hasErrors()) {
