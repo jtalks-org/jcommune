@@ -59,7 +59,6 @@ public class PluginLoader implements DisposableBean {
         Path path = Paths.get(folder);
         WatchService watcher = FileSystems.getDefault().newWatchService();
         watchKey = path.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
-        this.initPluginList();
     }
 
     private String resolveUserHome(String path) {
@@ -79,6 +78,7 @@ public class PluginLoader implements DisposableBean {
      * @return list of plugins available at the moment
      */
     public synchronized List<Plugin> getPlugins(PluginFilter... filters) {
+        this.initPluginList();
         this.synchronizePluginList();
         List<Plugin> filtered = new ArrayList<>(plugins.size());
         plugins:
