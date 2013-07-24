@@ -15,7 +15,6 @@
 
 package org.jtalks.jcommune.plugin.auth.poulpe;
 
-import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
 import org.jtalks.jcommune.model.plugins.SimpleAuthenticationPlugin;
@@ -160,5 +159,9 @@ public class PoulpeRegistrationPlugin extends StatefullPlugin
         } else {
             throw new RuntimeException();
         }
+    }
+
+    public void setPluginService(PoulpeRegistrationService service) {
+        this.service = service;
     }
 }
