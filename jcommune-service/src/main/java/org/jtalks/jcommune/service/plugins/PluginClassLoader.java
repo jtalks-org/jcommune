@@ -16,6 +16,8 @@ package org.jtalks.jcommune.service.plugins;
 
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
+import org.jtalks.jcommune.model.plugins.Plugin;
+import org.jtalks.jcommune.model.plugins.StatefullPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +46,7 @@ public class PluginClassLoader  extends URLClassLoader {
      * @param folder lookup folder. It's non-recursive, so subfolders and it's content will be ignored
      */
     public PluginClassLoader (String folder) {
-        super(resolvePluginLocations(folder));
+        super(resolvePluginLocations(folder), StatefullPlugin.class.getClassLoader());
         LOGGER.debug("Plugin class loader created for folder {}");
     }
 
@@ -69,4 +71,6 @@ public class PluginClassLoader  extends URLClassLoader {
         }
         return urls.toArray(new URL[urls.size()]);
     }
+
+
 }

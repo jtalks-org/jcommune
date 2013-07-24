@@ -18,9 +18,9 @@ import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.dao.PluginConfigurationDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.plugins.Plugin;
+import org.jtalks.jcommune.service.plugins.PluginLoader;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.dto.PluginActivatingDto;
-import org.jtalks.jcommune.service.plugins.PluginLoader;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
