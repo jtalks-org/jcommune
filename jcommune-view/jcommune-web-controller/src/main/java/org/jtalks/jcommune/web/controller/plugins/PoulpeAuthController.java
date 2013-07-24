@@ -19,9 +19,10 @@ import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.model.plugins.SimpleAuthenticationPlugin;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
-import org.jtalks.jcommune.service.ComponentService;
-import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
+import org.jtalks.jcommune.service.plugins.PluginFilter;
+import org.jtalks.jcommune.service.plugins.PluginLoader;
+import org.jtalks.jcommune.service.plugins.TypeFilter;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
@@ -47,15 +48,12 @@ public class PoulpeAuthController {
 
     private EncryptionService encryptionService;
 
-    private PluginService pluginService;
-    private ComponentService componentService;
+    private PluginLoader pluginLoader;
 
     @Autowired
-    public PoulpeAuthController(PluginService pluginService,
-                                ComponentService componentService,
+    public PoulpeAuthController(PluginLoader pluginLoader,
                                 EncryptionService encryptionService) {
-        this.pluginService = pluginService;
-        this.componentService = componentService;
+        this.pluginLoader = pluginLoader;
         this.encryptionService = encryptionService;
     }
 
@@ -91,14 +89,10 @@ public class PoulpeAuthController {
     }
 
     private SimpleAuthenticationPlugin getAuthPlugin() {
-        long componentId = componentService.getComponentOfForum().getId();
-        List<Plugin> plugins = pluginService.getPlugins(componentId);
-        for(Plugin plugin : plugins) {
-            if(plugin instanceof SimpleAuthenticationPlugin) {
-                return (SimpleAuthenticationPlugin) plugin;
-            }
-        }
-        return null;
+        Class cl = SimpleAuthenticationPlugin.class;
+        PluginFilter pluginFilter = new TypeFilter(cl);
+        List<Plugin> plugins = pluginLoader.getPlugins(pluginFilter);
+        return !plugins.isEmpty() ? (SimpleAuthenticationPlugin) plugins.get(0) : null;
     }
 
     private BindingResult parseValidationErrors(Map<String, String> errors, BindingResult result) {

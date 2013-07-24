@@ -17,8 +17,9 @@ package org.jtalks.jcommune.web.interceptors;
 
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.model.plugins.SimpleAuthenticationPlugin;
-import org.jtalks.jcommune.service.ComponentService;
-import org.jtalks.jcommune.service.PluginService;
+import org.jtalks.jcommune.service.plugins.PluginFilter;
+import org.jtalks.jcommune.service.plugins.PluginLoader;
+import org.jtalks.jcommune.service.plugins.TypeFilter;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.ServletException;
@@ -38,12 +39,10 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     private static final String JC_NEW_USER_URL = "/user/new";
     private static final String JC_NEW_USER_AJAX_URL = "/user/new_ajax";
 
-    private PluginService pluginService;
-    private ComponentService componentService;
+    private PluginLoader pluginLoader;
 
-    public AuthInterceptor(PluginService pluginService, ComponentService componentService) {
-        this.pluginService = pluginService;
-        this.componentService = componentService;
+    public AuthInterceptor(PluginLoader pluginLoader) {
+        this.pluginLoader = pluginLoader;
     }
 
     @Override
@@ -64,13 +63,9 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     }
 
     private SimpleAuthenticationPlugin getAuthPlugin() {
-        long componentId = componentService.getComponentOfForum().getId();
-        List<Plugin> plugins = pluginService.getPlugins(componentId);
-        for (Plugin plugin : plugins) {
-            if (plugin instanceof SimpleAuthenticationPlugin) {
-                return (SimpleAuthenticationPlugin) plugin;
-            }
-        }
-        return null;
+        Class cl = SimpleAuthenticationPlugin.class;
+        PluginFilter pluginFilter = new TypeFilter(cl);
+        List<Plugin> plugins = pluginLoader.getPlugins(pluginFilter);
+        return !plugins.isEmpty() ? (SimpleAuthenticationPlugin) plugins.get(0) : null;
     }
 }
