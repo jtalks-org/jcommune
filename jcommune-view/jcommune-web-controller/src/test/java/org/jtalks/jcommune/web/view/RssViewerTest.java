@@ -50,9 +50,6 @@ public class RssViewerTest {
     private Map<String, Object> model;
     private Topic topic;
 
-    private static final String COMPONENT_NAME = "my component";
-    private static final String COMPONENT_DESCRIPTION = "my description";
-
     @BeforeMethod
     protected void setUp() {
         request = new MockHttpServletRequest();
@@ -94,14 +91,16 @@ public class RssViewerTest {
     @Test
     public void rssShouldBeGeneratedWithMetaDataFromComponent() throws Exception {
         Component component = new Component();
-        component.setName(COMPONENT_NAME);
-        component.setDescription(COMPONENT_DESCRIPTION);
+        String name = "my component";
+        String description = "my description";
+        component.setName(name);
+        component.setDescription(description);
         model.put("forumComponent", component);
 
         rssViewer.buildFeedMetadata(model, channel, request);
         assertFalse(channel.equals(new Channel()));
-        assertEquals(channel.getTitle(), COMPONENT_NAME);
-        assertEquals(channel.getDescription(), COMPONENT_DESCRIPTION);
+        assertEquals(channel.getTitle(), name);
+        assertEquals(channel.getDescription(), description);
     }
 
     @Test
