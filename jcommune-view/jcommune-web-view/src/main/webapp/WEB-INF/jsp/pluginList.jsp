@@ -22,19 +22,6 @@
 
 <head>
     <meta name="description" content="<c:out value="11"/>">
-    <%-- Add JS plugins --%>
-    <%--@elvariable id="isJsCompressed" type="java.lang.boolean"--%>
-    <c:choose>
-        <c:when test="${isJsCompressed}">
-            <script type="text/javascript"
-                    src="${pageContext.request.contextPath}/resources/wro/plugin.js?${project.version}"></script>
-        </c:when>
-
-        <c:otherwise>
-            <script src="${pageContext.request.contextPath}/resources/javascript/app/utils.js"></script>
-            <script src="${pageContext.request.contextPath}/resources/javascript/app/permissionService.js"></script>
-        </c:otherwise>
-    </c:choose>
 </head>
 <body>
     <div class="container">
