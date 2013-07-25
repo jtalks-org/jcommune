@@ -37,4 +37,6 @@ public interface Plugin {
     List<PluginConfigurationProperty> getDefaultConfiguration();
 
     void configure(PluginConfiguration configuration);
+
+    boolean isEnabled();
 }

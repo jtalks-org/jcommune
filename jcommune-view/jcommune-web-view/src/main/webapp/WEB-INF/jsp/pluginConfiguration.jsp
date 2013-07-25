@@ -77,7 +77,9 @@
                     </c:when>
                 </c:choose>
             </table>
-            <input type="submit" value="<spring:message code="label.plugins.save"/>" />
+            <c:if test="${!(empty pluginConfiguration.properties)}">
+                <input type="submit" value="<spring:message code="label.plugins.save"/>" />
+            </c:if>
         </form:form>
     </div>
 </body>

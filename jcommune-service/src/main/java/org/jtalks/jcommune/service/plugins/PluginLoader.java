@@ -90,7 +90,7 @@ public class PluginLoader implements DisposableBean {
             }
             filtered.add(plugin);
         }
-        LOGGER.debug("JCommune forum has {0} plugins now.", filtered.size());
+        LOGGER.debug("JCommune forum has {} plugins now.", filtered.size());
         return filtered;
     }
 

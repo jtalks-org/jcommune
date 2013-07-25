@@ -78,4 +78,12 @@ public abstract class StatefullPlugin implements Plugin {
     public State getState() {
         return state;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isEnabled() {
+        return state == State.ENABLED;
+    }
 }

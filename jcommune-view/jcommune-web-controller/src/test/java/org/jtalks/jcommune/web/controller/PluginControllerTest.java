@@ -170,5 +170,10 @@ public class PluginControllerTest {
         public State getState() {
             return null;
         }
+
+        @Override
+        public boolean isEnabled() {
+            return false;
+        }
     }
 }

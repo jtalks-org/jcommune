@@ -63,7 +63,7 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <form:checkbox path="activatingPlugins[${status.index}].activated" checked="${plugin.state == 'ENABLED'}" />
+                                        <form:checkbox path="activatingPlugins[${status.index}].activated" checked="${plugin.enabled}" />
                                     </td>
                                 </tr>
                             </c:forEach>
@@ -71,7 +71,9 @@
                     </c:when>
                 </c:choose>
             </table>
-            <input type="submit" value="<spring:message code="label.plugins.save"/>" />
+            <c:if test="${!(empty plugins)}">
+                <input type="submit" value="<spring:message code="label.plugins.save"/>" />
+            </c:if>
         </form:form>
     </div>
 </body>
