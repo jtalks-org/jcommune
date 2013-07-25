@@ -16,7 +16,6 @@
 package org.jtalks.jcommune.plugin.auth.poulpe.service;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.plugin.auth.poulpe.dto.Authentication;
 import org.jtalks.jcommune.plugin.auth.poulpe.dto.Errors;
@@ -113,8 +112,9 @@ public class PoulpeRegistrationService {
 
         Map<String, String> authInfo = new HashMap<>();
         authInfo.put("username", auth.getCredintals().getUsername());
-        authInfo.put("passwordHash", auth.getCredintals().getPasswordHash());
         authInfo.put("email", auth.getProfile().getEmail());
+        authInfo.put("firstName", auth.getProfile().getFirstName());
+        authInfo.put("lastName", auth.getProfile().getLastName());
         return authInfo;
     }
 

@@ -116,7 +116,7 @@ public class PoulpeAuthController {
     public JsonResponse registerUserAjax(@ModelAttribute("newUser") RegisterUserDto userDto,
                                          BindingResult result, Locale locale) {
         SimpleAuthenticationPlugin authPlugin = getAuthPlugin();
-        if (authPlugin != null) {
+        if (authPlugin != null && authPlugin.getState() == Plugin.State.ENABLED) {
             String passwordHash = encryptionService.encryptPassword(userDto.getPassword());
             Map<String, String> errors = new HashMap<>();
             try {

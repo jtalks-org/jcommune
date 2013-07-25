@@ -17,11 +17,6 @@
             <artifactId>jcommune-model</artifactId>
             <version>1.9-SNAPSHOT</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.jtalks.jcommune</groupId>-->
-            <!--<artifactId>jcommune-service</artifactId>-->
-            <!--<version>1.9-SNAPSHOT</version>-->
-        <!--</dependency>-->
 
         <!-- TestNG & Mockito -->
         <dependency>
@@ -56,20 +51,7 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>**/*.xml</include>
-                    <include>**/*.properties</include>
-                    <include>**/jaxb.index</include>
-                </includes>
-            </resource>
-        </resources>
-    </build>
-
-    <repositories>
+     <repositories>
         <repository>
             <id>jtalks-nexus</id>
             <name>jtalks nexus</name>

@@ -50,7 +50,8 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
                              HttpServletResponse response,
                              Object handler) throws IOException, ServletException {
         SimpleAuthenticationPlugin authPlugin = getAuthPlugin();
-        if (request.getMethod().equalsIgnoreCase("POST") && authPlugin != null) {
+        if (request.getMethod().equalsIgnoreCase("POST") && authPlugin != null
+                && authPlugin.getState() == Plugin.State.ENABLED) {
             if (request.getRequestURI().equals(JC_NEW_USER_URL)) {
                 request.getRequestDispatcher(POULPE_NEW_USER_URL).forward(request, response);
             } else {
