@@ -76,7 +76,7 @@ public class PluginController {
     public String updateActivating(@ModelAttribute PluginActivatingListDto pluginsActivatingListDto) throws NotFoundException {
         long componentId = getForumComponentId();
         pluginService.updatePluginsActivating(pluginsActivatingListDto.getActivatingPlugins(), componentId);
-        return "/plugins/list";
+        return "redirect:/plugins/list";
     }
 
     private long getForumComponentId() {

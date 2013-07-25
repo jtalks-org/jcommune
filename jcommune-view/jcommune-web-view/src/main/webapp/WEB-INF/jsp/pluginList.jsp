@@ -53,7 +53,7 @@
                                 <%-- Plugin --%>
                                 <tr>
                                     <td>
-                                        <form:hidden path="activatingPlugins[${status.index}].pluginName" />
+                                        <form:hidden path="activatingPlugins[${status.index}].pluginName" value="${plugin.name}" />
                                         <c:out value="${plugin.name}"/>
                                     </td>
                                     <td>

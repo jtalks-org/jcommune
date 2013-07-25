@@ -114,6 +114,7 @@ public class PluginLoader implements DisposableBean {
                 configuration = pluginConfigurationDao.get(name);
             } catch (NotFoundException e) {
                 configuration = new PluginConfiguration(name, false, plugin.getDefaultConfiguration());
+                pluginConfigurationDao.saveOrUpdate(configuration);
             }
             plugin.configure(configuration);
             plugins.add(plugin);
