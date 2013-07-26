@@ -132,7 +132,7 @@ public class PluginControllerTest {
 
         String destinationUrl = pluginController.updateActivating(pluginsEnablingDto);
 
-        assertEquals(destinationUrl, "/plugins/list", "After correct update of plugins enabling, user should see updated plugins");
+        assertEquals(destinationUrl, "redirect:/plugins/list", "After correct update of plugins enabling, user should see updated plugins");
         verify(pluginService).updatePluginsActivating(pluginActivatingDtoList, componentId);
     }
 
@@ -169,6 +169,11 @@ public class PluginControllerTest {
         @Override
         public State getState() {
             return null;
+        }
+
+        @Override
+        public boolean isEnabled() {
+            return false;
         }
     }
 }

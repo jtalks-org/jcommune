@@ -21,6 +21,8 @@ import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.service.plugins.PluginLoader;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.dto.PluginActivatingDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
@@ -32,7 +34,7 @@ import java.util.List;
  */
 public class TransactionalPluginService extends AbstractTransactionalEntityService<PluginConfiguration, PluginConfigurationDao>
         implements PluginService {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalPluginService.class);
     private PluginLoader pLuginLoader;
 
     /**
@@ -93,6 +95,7 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
             String pluginName = updatedPlugin.getPluginName();
             PluginConfiguration configuration = pluginConfigurationDao.get(pluginName);
             boolean isActivated = updatedPlugin.isActivated();
+            LOGGER.debug("Plugin activation for {} will be changed to {}.", pluginName, isActivated);
             configuration.setActive(isActivated);
             pluginConfigurationDao.saveOrUpdate(configuration);
         }

@@ -80,7 +80,7 @@
                           permission='BranchPermission.CREATE_POSTS'>
       <a id='new-topic-btn' class="btn btn-primary"
          href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"
-         title="<spring:message code='label.addtopic.tip'/>">
+         title="<spring:message code='label.addtopic.tip'/>" data-placement="right">
         <spring:message code="label.addtopic"/>
       </a>
     </jtalks:hasPermission>
@@ -88,7 +88,7 @@
                           permission='BranchPermission.CREATE_CODE_REVIEW'>
       <a id='new-code-review-btn' class="btn btn-primary"
          href="${pageContext.request.contextPath}/reviews/new?branchId=${branch.id}"
-         title="<spring:message code='label.addCodeReview.tip'/>">
+         title="<spring:message code='label.addCodeReview.tip'/>" data-placement="right">
         <spring:message code="label.addCodeReview"/>
       </a>
     </jtalks:hasPermission>
@@ -202,7 +202,7 @@
                           permission='BranchPermission.CREATE_POSTS'>
       <a id='new-topic-btn' class="btn btn-primary"
          href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"
-         title="<spring:message code='label.addtopic.tip'/>">
+         title="<spring:message code='label.addtopic.tip'/>" data-placement="right">
         <spring:message code="label.addtopic"/>
       </a>
     </jtalks:hasPermission>
@@ -210,7 +210,7 @@
                           permission='BranchPermission.CREATE_CODE_REVIEW'>
       <a id='new-code-review-btn' class="btn btn-primary"
          href="${pageContext.request.contextPath}/reviews/new?branchId=${branch.id}"
-         title="<spring:message code="label.addCodeReview.tip"/>">
+         title="<spring:message code="label.addCodeReview.tip"/>" data-placement="right">
         <spring:message code="label.addCodeReview"/>
       </a>
     </jtalks:hasPermission>
