@@ -41,15 +41,15 @@ import static org.testng.Assert.*;
 /**
  * @author Andrey Pogorelov
  */
-public class PoulpeRegistrationServiceTest {
+public class PoulpeAuthServiceTest {
 
-    private PoulpeRegistrationService service;
+    private PoulpeAuthService service;
     private String url = "http://localhost:8080";
 
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
-        service = spy(new PoulpeRegistrationService(url, "user", "1234"));
+        service = spy(new PoulpeAuthService(url, "user", "1234"));
     }
 
     @Test

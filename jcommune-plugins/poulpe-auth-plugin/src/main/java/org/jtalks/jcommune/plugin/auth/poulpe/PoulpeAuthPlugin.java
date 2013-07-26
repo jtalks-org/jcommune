@@ -21,7 +21,7 @@ import org.jtalks.jcommune.model.plugins.SimpleAuthenticationPlugin;
 import org.jtalks.jcommune.model.plugins.StatefullPlugin;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
-import org.jtalks.jcommune.plugin.auth.poulpe.service.PoulpeRegistrationService;
+import org.jtalks.jcommune.plugin.auth.poulpe.service.PoulpeAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,15 +39,15 @@ import static org.jtalks.jcommune.model.entity.PluginConfigurationProperty.Type.
  *
  * @author Andrey Pogorelov
  */
-public class PoulpeRegistrationPlugin extends StatefullPlugin
+public class PoulpeAuthPlugin extends StatefullPlugin
         implements SimpleAuthenticationPlugin {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PoulpeRegistrationPlugin.class);
-    private PoulpeRegistrationService service;
+    private static final Logger LOGGER = LoggerFactory.getLogger(PoulpeAuthPlugin.class);
+    private PoulpeAuthService service;
     private PluginConfiguration pluginConfiguration;
     private State state;
 
-    public PoulpeRegistrationPlugin() {
+    public PoulpeAuthPlugin() {
         LOGGER.info("PoulpeAuthPlugin initialized");
     }
 
@@ -150,13 +150,13 @@ public class PoulpeRegistrationPlugin extends StatefullPlugin
             }
         }
         if (url != null && login != null && password != null) {
-            service = new PoulpeRegistrationService(url, login, password);
+            service = new PoulpeAuthService(url, login, password);
         } else {
             throw new RuntimeException();
         }
     }
 
-    public void setPluginService(PoulpeRegistrationService service) {
+    public void setPluginService(PoulpeAuthService service) {
         this.service = service;
     }
 }

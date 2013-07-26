@@ -40,7 +40,7 @@ import java.util.*;
  *
  * @author Andrey Pogorelov
  */
-public class PoulpeRegistrationService {
+public class PoulpeAuthService {
 
     private static final int CONNECTION_TIMEOUT = 5000;
 
@@ -50,7 +50,7 @@ public class PoulpeRegistrationService {
     private String login;
     private String password;
 
-    public PoulpeRegistrationService(String url, String login, String password) {
+    public PoulpeAuthService(String url, String login, String password) {
         this.regUrl = url + "/rest/private/user";
         this.authUrl = url + "/rest/authenticate";
         this.login = login;

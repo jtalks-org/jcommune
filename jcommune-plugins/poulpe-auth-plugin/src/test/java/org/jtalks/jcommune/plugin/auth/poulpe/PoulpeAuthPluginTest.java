@@ -20,7 +20,7 @@ import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
-import org.jtalks.jcommune.plugin.auth.poulpe.service.PoulpeRegistrationService;
+import org.jtalks.jcommune.plugin.auth.poulpe.service.PoulpeAuthService;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -38,17 +38,17 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-public class PoulpeRegistrationPluginTest {
+public class PoulpeAuthPluginTest {
 
     @Mock
-    PoulpeRegistrationService service;
+    PoulpeAuthService service;
 
-    PoulpeRegistrationPlugin plugin;
+    PoulpeAuthPlugin plugin;
 
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
-        plugin = new PoulpeRegistrationPlugin();
+        plugin = new PoulpeAuthPlugin();
         plugin.setPluginService(service);
     }
 

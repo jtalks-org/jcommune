@@ -10,7 +10,6 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>jcommune-auth-poulpe</module>
         <module>jcommune-dummy-plugin</module>
         <module>poulpe-auth-plugin</module>
     </modules>
