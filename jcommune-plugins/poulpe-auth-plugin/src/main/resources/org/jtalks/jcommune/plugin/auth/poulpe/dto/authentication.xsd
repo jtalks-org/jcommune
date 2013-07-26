@@ -32,6 +32,7 @@
     <sequence>
       <element name="firstName" type="string" minOccurs="1" maxOccurs="1" />
       <element name="lastName" type="string" minOccurs="1" maxOccurs="1" />
+      <element name="email" type="string" minOccurs="1" maxOccurs="1" />
     </sequence>
   </complexType>
 

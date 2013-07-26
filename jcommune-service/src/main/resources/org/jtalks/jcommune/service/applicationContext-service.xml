@@ -150,6 +150,13 @@
         <constructor-arg ref="rememberMeServices"/>
         <constructor-arg ref="concurrentSessionControlStrategy"/>
         <constructor-arg ref="postDao"/>
+        <constructor-arg ref="authService"/>
+    </bean>
+
+    <bean id="authService"
+          class="org.jtalks.jcommune.service.transactional.TransactionalAuthService">
+        <constructor-arg ref="userDao"/>
+        <constructor-arg ref="pluginLoader"/>
     </bean>
 
     <bean id="userContactsService"

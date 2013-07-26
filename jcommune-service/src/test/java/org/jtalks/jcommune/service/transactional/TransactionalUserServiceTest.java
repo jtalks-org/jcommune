@@ -27,6 +27,7 @@ import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.service.AuthService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
@@ -125,6 +126,9 @@ public class TransactionalUserServiceTest {
     private SessionAuthenticationStrategy sessionStrategy;
     @Mock
     private PostDao postDao;
+    @Mock
+    private AuthService authService;
+
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -146,7 +150,8 @@ public class TransactionalUserServiceTest {
                 securityFacade,
                 rememberMeServices,
                 sessionStrategy,
-                postDao);
+                postDao,
+                authService);
 
     }
 
@@ -471,6 +476,69 @@ public class TransactionalUserServiceTest {
 
         HttpServletRequest httpRequest = new MockHttpServletRequest();
         HttpServletResponse httpResponse = new MockHttpServletResponse();
+
+        boolean isAuthenticated = userService.loginUser(username,
+                PASSWORD, true, httpRequest, httpResponse);
+
+        assertFalse(isAuthenticated);
+    }
+
+    @Test
+    public void testLoginFailUserNotAuthenticated() throws Exception {
+        String username = "username";
+        when(userDao.getByUsername(username)).thenReturn(new JCUser(username, null, null));
+
+        HttpServletRequest httpRequest = new MockHttpServletRequest();
+        HttpServletResponse httpResponse = new MockHttpServletResponse();
+        UsernamePasswordAuthenticationToken expectedToken = mock(UsernamePasswordAuthenticationToken.class);
+        when(expectedToken.isAuthenticated()).thenReturn(false);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenReturn(expectedToken);
+
+        boolean isAuthenticated = userService.loginUser(username,
+                PASSWORD, true, httpRequest, httpResponse);
+
+        assertFalse(isAuthenticated);
+        verify(userDao).getByUsername(username);
+        verify(rememberMeServices, never()).loginSuccess(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Authentication.class));
+    }
+
+    @Test
+    public void testLoginUserNotFoundPluginAuthSucceeded() {
+        String username = "username";
+
+        HttpServletRequest httpRequest = new MockHttpServletRequest();
+        HttpServletResponse httpResponse = new MockHttpServletResponse();
+        JCUser user = user(username);
+
+        UsernamePasswordAuthenticationToken expectedToken = mock(UsernamePasswordAuthenticationToken.class);
+        when(expectedToken.isAuthenticated()).thenReturn(true);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenReturn(expectedToken);
+
+        when(authService.pluginAuthenticate(username, PASSWORD_MD5_HASH, true)).thenReturn(user);
+
+        boolean isAuthenticated = userService.loginUser(username,
+                PASSWORD, true, httpRequest, httpResponse);
+
+        assertTrue(isAuthenticated);
+    }
+
+    @Test
+    public void testLoginUserNotFoundPluginAuthFail() {
+        String username = "username";
+
+        HttpServletRequest httpRequest = new MockHttpServletRequest();
+        HttpServletResponse httpResponse = new MockHttpServletResponse();
+        JCUser user = user(username);
+
+        when(userDao.getByUsername(username)).thenReturn(user);
+        UsernamePasswordAuthenticationToken expectedToken = mock(UsernamePasswordAuthenticationToken.class);
+        when(expectedToken.isAuthenticated()).thenReturn(false);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenThrow(new BadCredentialsException(null));
+
+        when(authService.pluginAuthenticate(username, PASSWORD_MD5_HASH, true)).thenReturn(user);
 
         boolean isAuthenticated = userService.loginUser(username,
                 PASSWORD, true, httpRequest, httpResponse);

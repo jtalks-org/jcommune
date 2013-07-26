@@ -27,6 +27,7 @@ import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.service.AuthService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
@@ -76,28 +77,29 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     private RememberMeServices rememberMeServices;
     private SessionAuthenticationStrategy sessionStrategy;
     private final PostDao postDao;
+    private AuthService authService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalUserService.class);
 
     /**
      * Create an instance of User entity based service
      *
-     * @param dao               for operations with data storage
-     * @param groupDao          for user group operations with data storage
-     * @param securityService   for security
-     * @param mailService       to send e-mails
-     * @param base64Wrapper     for avatar image-related operations
-     * @param avatarService     some more avatar operations)
-     * @param encryptionService encodes user password before store
+     * @param dao                   for operations with data storage
+     * @param groupDao              for user group operations with data storage
+     * @param securityService       for security
+     * @param mailService           to send e-mails
+     * @param base64Wrapper         for avatar image-related operations
+     * @param avatarService         some more avatar operations)
+     * @param encryptionService     encodes user password before store
      * @param authenticationManager used in login logic
-     * @param securityFacade    used in login logic
-     * @param rememberMeServices used in login logic to specify remember user or
-     *                          not
-     * @param sessionStrategy   used in login logic to call onAuthentication hook
-     *                          which stored this user to online uses list.
-     * @param postDao           for operations with posts
+     * @param securityFacade        used in login logic
+     * @param rememberMeServices    used in login logic to specify remember user or
+     *                              not
+     * @param sessionStrategy       used in login logic to call onAuthentication hook
+     *                              which stored this user to online uses list.
+     * @param postDao               for operations with posts
      */
-    public TransactionalUserService(UserDao dao, 
+    public TransactionalUserService(UserDao dao,
                                     GroupDao groupDao,
                                     SecurityService securityService,
                                     MailService mailService,
@@ -108,7 +110,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
                                     SecurityContextHolderFacade securityFacade,
                                     RememberMeServices rememberMeServices,
                                     SessionAuthenticationStrategy sessionStrategy,
-                                    PostDao postDao) {
+                                    PostDao postDao,
+                                    AuthService authService) {
         super(dao);
         this.groupDao = groupDao;
         this.securityService = securityService;
@@ -121,6 +124,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         this.rememberMeServices = rememberMeServices;
         this.sessionStrategy = sessionStrategy;
         this.postDao = postDao;
+        this.authService = authService;
     }
 
     /**
@@ -282,7 +286,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -291,8 +295,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     public void checkPermissionToEditOtherProfiles(Long userId) {
         LOGGER.debug("Check permission to edit other profiles for user - " + userId);
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -310,46 +314,73 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     public void checkPermissionToCreateAndEditSimplePage(Long userId) {
         LOGGER.debug("Check permission to create or edit simple(static) pages - " + userId);
     }
-    
-    
+
+    private boolean authenticate(JCUser user, String password, boolean rememberMe,
+                                 HttpServletRequest request, HttpServletResponse response)
+            throws AuthenticationException {
+        UsernamePasswordAuthenticationToken token =
+                new UsernamePasswordAuthenticationToken(user.getUsername(), password);
+        token.setDetails(user);
+        Authentication auth = authenticationManager.authenticate(token);
+        securityFacade.getContext().setAuthentication(auth);
+        if (auth.isAuthenticated()) {
+            sessionStrategy.onAuthentication(auth, request, response);
+            if (rememberMe) {
+                rememberMeServices.loginSuccess(request, response, auth);
+            }
+            user.updateLastLoginTime();
+            return true;
+        }
+        return false;
+    }
+
+    private boolean pluginAuthenticate(String username, String password, boolean rememberMe,
+                                       HttpServletRequest request, HttpServletResponse response,
+                                       boolean createUser) {
+        boolean result = false;
+        String passwordHash = encryptionService.encryptPassword(password);
+        JCUser user = authService.pluginAuthenticate(username, passwordHash, createUser);
+        if (user != null) {
+            try {
+                result = authenticate(user, password, rememberMe, request, response);
+            } catch (AuthenticationException e) {
+                String ipAddress = getClientIpAddress(request);
+                LOGGER.info("AuthenticationException after success plugin auth: username = {}, IP={}, message={}",
+                        new Object[]{username, ipAddress, e.getMessage()});
+            }
+        }
+        return result;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean loginUser(String username, String password, boolean rememberMe, 
-            HttpServletRequest request, HttpServletResponse response) {
-        boolean result = false;
+    public boolean loginUser(String username, String password, boolean rememberMe,
+                             HttpServletRequest request, HttpServletResponse response) {
+        boolean result;
+        JCUser user;
         try {
-            JCUser user = getByUsername(username);
-            UsernamePasswordAuthenticationToken token = 
-                new UsernamePasswordAuthenticationToken(username, password);
-            token.setDetails(user);
-            Authentication auth = authenticationManager.authenticate(token);
-            securityFacade.getContext().setAuthentication(auth);
-            if (auth.isAuthenticated()) {
-                sessionStrategy.onAuthentication(auth, request, response);
-                if (rememberMe) {
-                    rememberMeServices.loginSuccess(request, response, auth);
-                }
-                user.updateLastLoginTime();
-                result = true;
-            }
+            user = getByUsername(username);
+            result = authenticate(user, password, rememberMe, request, response);
         } catch (NotFoundException e) {
             LOGGER.warn("User was not found during login process, username = " + username);
+            result = pluginAuthenticate(username, password, rememberMe, request, response, true);
         } catch (AuthenticationException e) {
             String ipAddress = getClientIpAddress(request);
             LOGGER.info("AuthenticationException: username = {}, IP={}, message={}",
-                    new Object[] {username, ipAddress, e.getMessage()});
+                    new Object[]{username, ipAddress, e.getMessage()});
+            result = pluginAuthenticate(username, password, rememberMe, request, response, false);
         }
         return result;
     }
 
     private String getClientIpAddress(HttpServletRequest request) {
-        String ipAddress  = request.getHeader("X-FORWARDED-FOR");
-        if(ipAddress == null) {
+        String ipAddress = request.getHeader("X-FORWARDED-FOR");
+        if (ipAddress == null) {
             ipAddress = request.getRemoteAddr();
         }
-        return  ipAddress;
+        return ipAddress;
     }
 
     /**

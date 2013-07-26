@@ -48,10 +48,7 @@ public class PoulpeRegistrationPlugin extends StatefullPlugin
     private State state;
 
     public PoulpeRegistrationPlugin() {
-        LOGGER.info("PoulpeRegistrationPlugin initialized");
-        PluginConfiguration conf = new PluginConfiguration();
-        conf.setProperties(getDefaultConfiguration());
-        configure(conf);
+        LOGGER.info("PoulpeAuthPlugin initialized");
     }
 
     @Override
@@ -99,7 +96,7 @@ public class PoulpeRegistrationPlugin extends StatefullPlugin
 
     @Override
     public List<PluginConfigurationProperty> getDefaultConfiguration() {
-        PluginConfigurationProperty url = new PluginConfigurationProperty(STRING, "http://localhost");
+        PluginConfigurationProperty url = new PluginConfigurationProperty(STRING, "http://localhost:8080");
         url.setName("Url");
         PluginConfigurationProperty login = new PluginConfigurationProperty(STRING, "user");
         login.setName("Login");

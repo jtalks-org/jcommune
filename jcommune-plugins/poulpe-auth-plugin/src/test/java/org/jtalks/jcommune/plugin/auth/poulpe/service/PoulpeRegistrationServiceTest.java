@@ -57,7 +57,7 @@ public class PoulpeRegistrationServiceTest {
         Errors errors = new Errors();
         List<Error> errorList = new ArrayList<Error>();
         errorList.add(createError("user.username.length_constraint_violation", null));
-        errorList.add(createError("user.email.length_constraint_violation", null));
+        errorList.add(createError("user.email.illegal_length", null));
         errorList.add(createError("user.password.length_constraint_violation", null));
         errorList.add(createError(null, "Service unavailable"));
 
