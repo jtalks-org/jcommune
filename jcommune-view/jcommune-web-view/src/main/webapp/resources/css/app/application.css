@@ -1,5 +1,14 @@
+/*
+  this attributes when window in normal mode. 980 it's magic number. minimaze mode before 979 pixels
+*/
+@media (min-width: 980px) {
+    body {
+        padding-top: 50px; /*60px to make the container go all the way to the bottom of the topbar */
+    }
+}
+
+/*common body (application.css, bootstrap-responsive.css)*/
 body {
-    padding-top: 50px; /* 60px to make the container go all the way to the bottom of the topbar */
     background-color: rgb(247, 247, 247);
     background-image: url("../../images/fabric-plaid.png");
 }
@@ -334,7 +343,7 @@ ul.lang-menu li img {
     margin: 0px;
 }
 
-.post, .pm-text-box, #topicDto, #postDto, #privateMessageDto{
+.post, .pm-text-box, #topicDto, #postDto, #privateMessageDto {
     -webkit-tab-size: 4 !important;
     -moz-tab-size: 4 !important;
     -o-tab-size: 4 !important;
