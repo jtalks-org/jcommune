@@ -40,7 +40,7 @@ public class RegisterUserDto {
     private String username;
 
     @NotBlank(message = "{validation.not_null}")
-    @Size(max = User.EMAIL_MAX_LENGTH, message = "{user.email.length_constraint_violation}")
+    @Size(max = User.EMAIL_MAX_LENGTH, message = "{user.email.illegal_length}")
     @Email(message = "{validation.invalid_email_format}")
     @Unique(entity = JCUser.class, field = "email", message = "{user.email.already_exists}", ignoreCase = true)
     private String email;
