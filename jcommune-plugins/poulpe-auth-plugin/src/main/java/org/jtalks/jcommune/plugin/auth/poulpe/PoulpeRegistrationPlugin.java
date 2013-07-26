@@ -96,11 +96,11 @@ public class PoulpeRegistrationPlugin extends StatefullPlugin
 
     @Override
     public List<PluginConfigurationProperty> getDefaultConfiguration() {
-        PluginConfigurationProperty url = new PluginConfigurationProperty(STRING, "http://localhost:8080");
+        PluginConfigurationProperty url = new PluginConfigurationProperty("URL", STRING, "http://localhost:8080");
         url.setName("Url");
-        PluginConfigurationProperty login = new PluginConfigurationProperty(STRING, "user");
+        PluginConfigurationProperty login = new PluginConfigurationProperty("LOGIN", STRING, "user");
         login.setName("Login");
-        PluginConfigurationProperty password = new PluginConfigurationProperty(STRING, "1234");
+        PluginConfigurationProperty password = new PluginConfigurationProperty("PASSWORD", STRING, "1234");
         password.setName("Password");
         return Arrays.asList(url, login, password);
     }

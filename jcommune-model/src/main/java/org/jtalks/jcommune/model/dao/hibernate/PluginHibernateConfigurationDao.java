@@ -20,6 +20,7 @@ import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.dao.PluginConfigurationDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
+import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
 
 /**
  *
@@ -47,5 +48,13 @@ public class PluginHibernateConfigurationDao extends GenericDao<PluginConfigurat
         } else {
             return configuration;
         }
+    }
+
+    @Override
+    public void saveOrUpdate(PluginConfiguration entity) {
+        for (PluginConfigurationProperty property: entity.getProperties()) {
+            property.setPluginConfiguration(entity);
+        }
+        super.saveOrUpdate(entity);
     }
 }

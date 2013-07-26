@@ -17,9 +17,12 @@ package org.jtalks.jcommune.plugin.dummy;
 import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
 import org.jtalks.jcommune.model.plugins.StatefullPlugin;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import static org.jtalks.jcommune.model.entity.PluginConfigurationProperty.Type.STRING;
 
 /**
  *
@@ -48,6 +51,7 @@ public class DummyPlugin extends StatefullPlugin {
 
     @Override
     public List<PluginConfigurationProperty> getDefaultConfiguration() {
-        return Collections.emptyList();
+        PluginConfigurationProperty url = new PluginConfigurationProperty("URL", STRING, "http://localhost:1234");
+        return Arrays.asList(url);
     }
 }
