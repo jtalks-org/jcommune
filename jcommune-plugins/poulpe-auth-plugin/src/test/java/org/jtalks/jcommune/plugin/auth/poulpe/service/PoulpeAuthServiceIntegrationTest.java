@@ -25,18 +25,17 @@ import org.testng.annotations.Test;
 
 import static com.xebialabs.restito.builder.stub.StubHttp.whenHttp;
 import static com.xebialabs.restito.semantics.Action.status;
-import static com.xebialabs.restito.semantics.Condition.get;
 import static com.xebialabs.restito.semantics.Condition.post;
 import static org.testng.Assert.assertEquals;
 
 /**
  * @author Andrey Pogorelov
  */
-public class PoulpeRegistrationServiceIntegrationTest {
+public class PoulpeAuthServiceIntegrationTest {
 
     private StubServer server;
 
-    private PoulpeRegistrationService service;
+    private PoulpeAuthService service;
     private final String POULPE_URL = "http://localhost";
     private String regUrl = "/rest/private/user";
     private String authUrl = "/rest/authenticate";
@@ -48,7 +47,7 @@ public class PoulpeRegistrationServiceIntegrationTest {
     private void beforeTestCase() {
         server = new StubServer().run();
         String requestUrl = POULPE_URL + ":" + String.valueOf(server.getPort());
-        service = new PoulpeRegistrationService(requestUrl, "user", "1234");
+        service = new PoulpeAuthService(requestUrl, "user", "1234");
     }
 
     /**
