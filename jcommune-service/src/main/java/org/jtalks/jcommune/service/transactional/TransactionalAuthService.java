@@ -75,7 +75,6 @@ public class TransactionalAuthService extends AbstractTransactionalEntityService
             user.setLastName(authInfo.get("lastName"));
         }
         user.setRegistrationDate(new DateTime());
-        user.setEnabled(true);
         getDao().saveOrUpdate(user);
         return user;
     }
