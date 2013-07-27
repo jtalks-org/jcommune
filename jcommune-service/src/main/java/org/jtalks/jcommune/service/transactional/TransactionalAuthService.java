@@ -15,6 +15,7 @@
 
 package org.jtalks.jcommune.service.transactional;
 
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.plugins.Plugin;
@@ -73,6 +74,8 @@ public class TransactionalAuthService extends AbstractTransactionalEntityService
         if (authInfo.containsKey("lastName")) {
             user.setLastName(authInfo.get("lastName"));
         }
+        user.setRegistrationDate(new DateTime());
+        user.setEnabled(true);
         getDao().saveOrUpdate(user);
         return user;
     }
@@ -91,7 +94,6 @@ public class TransactionalAuthService extends AbstractTransactionalEntityService
         }
         return authInfo;
     }
-
 
     private SimpleAuthenticationPlugin getAuthPlugin() {
         Class cl = SimpleAuthenticationPlugin.class;
