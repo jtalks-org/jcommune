@@ -14,6 +14,10 @@
  */
 package org.jtalks.jcommune.service.dto;
 
+import org.jtalks.jcommune.model.entity.PluginConfiguration;
+import org.jtalks.jcommune.model.plugins.Plugin;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,6 +27,19 @@ public class PluginActivatingListDto {
     private List<PluginActivatingDto> activatingPlugins;
 
     public PluginActivatingListDto() {
+    }
+
+    public static PluginActivatingListDto valueOf(List<Plugin> source) {
+        PluginActivatingListDto activatingListDto = new PluginActivatingListDto();
+        List<PluginActivatingDto> activatingPlugins = new ArrayList<>();
+        for (Plugin plugin: source) {
+            PluginActivatingDto activatingDto = new PluginActivatingDto();
+            activatingDto.setActivated(plugin.isEnabled());
+            activatingDto.setPluginName(plugin.getName());
+            activatingPlugins.add(activatingDto);
+        }
+        activatingListDto.setActivatingPlugins(activatingPlugins);
+        return  activatingListDto;
     }
 
     public PluginActivatingListDto(List<PluginActivatingDto> activatingPlugins) {

@@ -53,7 +53,7 @@ public class PluginController {
         List<Plugin> plugins = pluginService.getPlugins(componentId);
         return new ModelAndView("pluginList")
                 .addObject("plugins", plugins)
-                .addObject("pluginsActivatingListDto", new PluginActivatingListDto());
+                .addObject("pluginsActivatingListDto", PluginActivatingListDto.valueOf(plugins));
     }
 
     @RequestMapping(value = "/configure/{name}", method = RequestMethod.GET)
