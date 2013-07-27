@@ -43,9 +43,9 @@ public class PoulpeAuthPlugin extends StatefullPlugin implements SimpleAuthentic
     }
 
     @Override
-    public Map<String, String> registerUser(String login, String password, String email)
+    public List<Map<String, String>> registerUser(String username, String password, String email)
             throws NoConnectionException, UnexpectedErrorException {
-        return Collections.EMPTY_MAP;
+        return Collections.EMPTY_LIST;
     }
 
     @Override

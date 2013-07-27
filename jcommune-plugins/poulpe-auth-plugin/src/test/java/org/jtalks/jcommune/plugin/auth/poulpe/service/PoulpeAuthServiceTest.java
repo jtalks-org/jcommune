@@ -59,7 +59,7 @@ public class PoulpeAuthServiceTest {
         errorList.add(createError("user.username.length_constraint_violation", null));
         errorList.add(createError("user.email.illegal_length", null));
         errorList.add(createError("user.password.length_constraint_violation", null));
-        errorList.add(createError(null, "Service unavailable"));
+        errorList.add(createError("", "Service unavailable"));
 
         errors.setErrorList(errorList);
         JaxbRepresentation<Errors> errorsRepr = new JaxbRepresentation<Errors>(errors);
@@ -67,7 +67,7 @@ public class PoulpeAuthServiceTest {
 
         doReturn(clientResource).when(service).sendRegistrationRequest(any(User.class));
 
-        Map<String, String> result = service.registerUser("", "password", "email@email.ou");
+        List<Map<String, String>> result = service.registerUser("", "password", "email@email.ou");
 
         assertEquals(result.size(), 4, "User with invalid credentials shouldn't pass registration.");
     }
@@ -87,7 +87,7 @@ public class PoulpeAuthServiceTest {
 
         doReturn(clientResource).when(service).sendRegistrationRequest(any(User.class));
 
-        Map<String, String> result = service.registerUser("username", "password", "email@email.ru");
+        List<Map<String, String>> result = service.registerUser("username", "password", "email@email.ru");
 
         assertTrue(result.size() == 0, "User with valid credentials should pass registration.");
     }

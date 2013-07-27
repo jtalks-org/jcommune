@@ -15,6 +15,8 @@
 
 package org.jtalks.jcommune.web.controller.plugins;
 
+import com.google.common.collect.ImmutableMap;
+import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.model.plugins.SimpleAuthenticationPlugin;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
@@ -35,10 +37,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class PoulpeAuthController {
@@ -67,39 +66,14 @@ public class PoulpeAuthController {
      * @return redirect to / if registration successful or back to "/registration" if failed
      */
     @RequestMapping(value = "/user/new/poulpe", method = RequestMethod.POST)
-    public ModelAndView registerUserPlugin(@ModelAttribute("newUser") RegisterUserDto userDto,
-                                           BindingResult result, Locale locale) {
-        SimpleAuthenticationPlugin authPlugin = getAuthPlugin();
-        if (authPlugin != null && authPlugin.getState() == Plugin.State.ENABLED) {
-            String passwordHash = encryptionService.encryptPassword(userDto.getPassword());
-            Map<String, String> errors = new HashMap<>();
-            try {
-                errors.putAll(authPlugin.registerUser(userDto.getUsername(), passwordHash, userDto.getEmail()));
-            } catch (NoConnectionException e) {
-                errors.put("captcha", "Registration service not available");
-            } catch (UnexpectedErrorException e) {
-                errors.put("captcha", "Unexpected error was happened");
-            }
-            result = parseValidationErrors(errors, result);
-            if (result.hasErrors()) {
-                return new ModelAndView(REGISTRATION);
-            }
+    public ModelAndView registerUser(@ModelAttribute("newUser") RegisterUserDto userDto,
+                                     BindingResult result, Locale locale) {
+
+        register(userDto, result, locale);
+        if (result.hasErrors()) {
+            return new ModelAndView(REGISTRATION);
         }
         return new ModelAndView(AFTER_REGISTRATION);
-    }
-
-    private SimpleAuthenticationPlugin getAuthPlugin() {
-        Class cl = SimpleAuthenticationPlugin.class;
-        PluginFilter pluginFilter = new TypeFilter(cl);
-        List<Plugin> plugins = pluginLoader.getPlugins(pluginFilter);
-        return !plugins.isEmpty() ? (SimpleAuthenticationPlugin) plugins.get(0) : null;
-    }
-
-    private BindingResult parseValidationErrors(Map<String, String> errors, BindingResult result) {
-        for (Map.Entry error : errors.entrySet()) {
-            result.rejectValue(error.getKey().toString(), null, error.getValue().toString());
-        }
-        return result;
     }
 
     /**
@@ -115,22 +89,71 @@ public class PoulpeAuthController {
     @ResponseBody
     public JsonResponse registerUserAjax(@ModelAttribute("newUser") RegisterUserDto userDto,
                                          BindingResult result, Locale locale) {
-        SimpleAuthenticationPlugin authPlugin = getAuthPlugin();
-        if (authPlugin != null && authPlugin.getState() == Plugin.State.ENABLED) {
-            String passwordHash = encryptionService.encryptPassword(userDto.getPassword());
-            Map<String, String> errors = new HashMap<>();
-            try {
-                errors.putAll(authPlugin.registerUser(userDto.getUsername(), passwordHash, userDto.getEmail()));
-            } catch (NoConnectionException e) {
-                errors.put("captcha", "Registration service not available.");
-            } catch (UnexpectedErrorException e) {
-                errors.put("captcha", "Unexpected error was happened");
-            }
-            result = parseValidationErrors(errors, result);
-            if (result.hasErrors()) {
-                return new JsonResponse(JsonResponseStatus.FAIL, result.getAllErrors());
-            }
+        register(userDto, result, locale);
+        if (result.hasErrors()) {
+            return new JsonResponse(JsonResponseStatus.FAIL, result.getAllErrors());
         }
         return new JsonResponse(JsonResponseStatus.SUCCESS);
+    }
+
+    private void register(RegisterUserDto userDto, BindingResult result, Locale locale) {
+        SimpleAuthenticationPlugin authPlugin = getAuthPlugin();
+        if (authPlugin != null && authPlugin.getState() == Plugin.State.ENABLED) {
+            String passwordHash = userDto.getPassword().isEmpty() ? ""
+                    : encryptionService.encryptPassword(userDto.getPassword());
+            List<Map<String, String>> errors = new ArrayList<>();
+            try {
+                errors.addAll(authPlugin.registerUser(userDto.getUsername(), passwordHash, userDto.getEmail()));
+            } catch (NoConnectionException e) {
+                errors.add(new ImmutableMap.Builder<String, String>()
+                        .put("", "Registration service is not available").build());
+            } catch (UnexpectedErrorException e) {
+                errors.add(new ImmutableMap.Builder<String, String>()
+                        .put("", "Unexpected error was happened").build());
+            }
+            parseValidationErrors(errors, result, locale);
+        }
+    }
+
+    private SimpleAuthenticationPlugin getAuthPlugin() {
+        Class cl = SimpleAuthenticationPlugin.class;
+        PluginFilter pluginFilter = new TypeFilter(cl);
+        List<Plugin> plugins = pluginLoader.getPlugins(pluginFilter);
+        return !plugins.isEmpty() ? (SimpleAuthenticationPlugin) plugins.get(0) : null;
+    }
+
+    private void parseValidationErrors(List<Map<String, String>> errors, BindingResult result, Locale locale) {
+        for (Map<String, String> errorEntries : errors) {
+            Map.Entry errorEntry = errorEntries.entrySet().iterator().next();
+            ResourceBundle resourceBundle = ResourceBundle.getBundle("ValidationMessages", locale);
+            if (!errorEntry.getKey().toString().isEmpty()) {
+                Map.Entry<String, String> error = parseErrorCode(errorEntry.getKey().toString(), resourceBundle);
+                if (error != null) {
+                    result.rejectValue(error.getKey(), null, error.getValue());
+                }
+            } else {
+                result.rejectValue("captcha", null, errorEntry.getValue().toString());
+            }
+        }
+    }
+
+    private Map.Entry<String, String> parseErrorCode(String errorCode, ResourceBundle resourceBundle) {
+        Map.Entry<String, String> error = null;
+        if (resourceBundle.containsKey(errorCode)) {
+            String errorMessage = resourceBundle.getString(errorCode);
+            if (errorCode.contains("email")) {
+                errorMessage = errorMessage.replace("{max}", String.valueOf(User.EMAIL_MAX_LENGTH));
+                error = new HashMap.SimpleEntry<>("email", errorMessage);
+            } else if (errorCode.contains("username")) {
+                errorMessage = errorMessage.replace("{min}", String.valueOf(User.USERNAME_MIN_LENGTH))
+                        .replace("{max}", String.valueOf(User.USERNAME_MAX_LENGTH));
+                error = new HashMap.SimpleEntry<>("username", errorMessage);
+            } else if (errorCode.contains("password")) {
+                errorMessage = errorMessage.replace("{min}", String.valueOf(User.PASSWORD_MIN_LENGTH))
+                        .replace("{max}", String.valueOf(User.PASSWORD_MAX_LENGTH));
+                error = new HashMap.SimpleEntry<>("password", errorMessage);
+            }
+        }
+        return error;
     }
 }

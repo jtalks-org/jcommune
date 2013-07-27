@@ -15,6 +15,7 @@
 
 package org.jtalks.jcommune.plugin.auth.poulpe;
 
+import com.google.common.collect.ImmutableMap;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
 import org.jtalks.jcommune.model.plugins.Plugin;
@@ -27,10 +28,7 @@ import org.testng.annotations.Test;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.jtalks.jcommune.model.entity.PluginConfigurationProperty.Type.STRING;
 import static org.mockito.Mockito.when;
@@ -76,13 +74,13 @@ public class PoulpeAuthPluginTest {
         String username = "user";
         String password = "";
         String email = "";
-        Map<String, String> errors = new HashMap<>();
-        errors.put("email", "Invalid email");
-        errors.put("password", "Invalid password");
+        List<Map<String, String>> errors = new ArrayList<>();
+        errors.add(new ImmutableMap.Builder<String, String>().put("test.user.email.invalid", "").build());
+        errors.add(new ImmutableMap.Builder<String, String>().put("", "Invalid password").build());
 
         when(service.registerUser(username, password, email)).thenReturn(errors);
 
-        Map<String, String> result = plugin.registerUser(username, password, email);
+        List<Map<String, String>> result = plugin.registerUser(username, password, email);
 
         assertEquals(result.size(), 2, "User with incorrect parameters shouldn't be registered.");
     }
@@ -94,9 +92,9 @@ public class PoulpeAuthPluginTest {
         String password = "1234";
         String email = "email@email.em";
 
-        when(service.registerUser(username, password, email)).thenReturn(Collections.<String, String>emptyMap());
+        when(service.registerUser(username, password, email)).thenReturn(Collections.EMPTY_LIST);
 
-        Map<String, String> result = plugin.registerUser(username, password, email);
+        List<Map<String, String>> result = plugin.registerUser(username, password, email);
 
         assertEquals(result.size(), 0, "User with correct parameters should be registered.");
     }

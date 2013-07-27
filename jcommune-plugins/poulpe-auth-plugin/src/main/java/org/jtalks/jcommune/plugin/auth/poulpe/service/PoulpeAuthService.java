@@ -16,6 +16,7 @@
 package org.jtalks.jcommune.plugin.auth.poulpe.service;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableMap;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.plugin.auth.poulpe.dto.Authentication;
 import org.jtalks.jcommune.plugin.auth.poulpe.dto.Errors;
@@ -66,7 +67,7 @@ public class PoulpeAuthService {
      * @param email    email
      * @return errors
      */
-    public Map<String, String> registerUser(String username, String password, String email)
+    public List<Map<String, String>> registerUser(String username, String password, String email)
             throws IOException, NoConnectionException, JAXBException {
         User user = createUser(username, password, email);
         ClientResource clientResource = sendRegistrationRequest(user);
@@ -127,10 +128,10 @@ public class PoulpeAuthService {
      *
      * @throws java.io.IOException
      */
-    private Map<String, String> getRegistrationResult(ClientResource clientResource)
+    private List<Map<String, String>> getRegistrationResult(ClientResource clientResource)
             throws NoConnectionException, IOException, JAXBException {
         if (clientResource.getStatus().getCode() == Status.SUCCESS_OK.getCode()) {
-            return Collections.emptyMap();
+            return Collections.emptyList();
         } else if (clientResource.getStatus().getCode() == Status.CLIENT_ERROR_BAD_REQUEST.getCode()
                 || clientResource.getStatus().getCode() == Status.SERVER_ERROR_INTERNAL.getCode()) {
             return parseErrors(clientResource.getResponseEntity());
@@ -146,25 +147,17 @@ public class PoulpeAuthService {
      * @return errors
      * @throws java.io.IOException
      */
-    private Map<String, String> parseErrors(Representation repr) throws IOException, JAXBException {
+    private List<Map<String, String>> parseErrors(Representation repr) throws IOException, JAXBException {
         JAXBContext context = JAXBContext.newInstance(Errors.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
         Errors errorsRepr = (Errors) unmarshaller.unmarshal(repr.getStream());
 
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("ValidationMessages", new Locale("en"));
-        Map<String, String> errors = new HashMap<>();
+        List<Map<String, String>> errors = new ArrayList<>();
         for (org.jtalks.jcommune.plugin.auth.poulpe.dto.Error error : errorsRepr.getErrorList()) {
-            if (error.getCode() != null && !error.getCode().isEmpty() && resourceBundle.containsKey(error.getCode())) {
-                String errorCode = resourceBundle.getString(error.getCode());
-                if (error.getCode().contains("email")) {
-                    errors.put("email", errorCode);
-                } else if (error.getCode().contains("username")) {
-                    errors.put("username", errorCode);
-                } else if (error.getCode().contains("password")) {
-                    errors.put("password", errorCode);
-                }
+            if (error.getCode() != null && !error.getCode().isEmpty()) {
+                errors.add(new ImmutableMap.Builder<String, String>().put(error.getCode(), "").build());
             } else {
-                errors.put("common", error.getMessage());
+                errors.add(new ImmutableMap.Builder<String, String>().put("", error.getMessage()).build());
             }
         }
         return errors;

@@ -52,7 +52,7 @@ public class PoulpeAuthPlugin extends StatefullPlugin
     }
 
     @Override
-    public Map<String, String> registerUser(String username, String password, String email)
+    public List<Map<String, String>> registerUser(String username, String password, String email)
             throws NoConnectionException, UnexpectedErrorException {
         try {
             return service.registerUser(username, password, email);

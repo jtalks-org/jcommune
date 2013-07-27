@@ -17,6 +17,7 @@ package org.jtalks.jcommune.model.plugins;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,11 +48,12 @@ public interface SimpleAuthenticationPlugin extends Plugin {
     /**
      * Performs registration attempt based on user details
      *
-     * @param login user login
+     *
+     * @param username user login
      * @param password user password
      * @param email user email
      * @return errors
      */
-    public Map<String, String> registerUser(String login, String password, String email)
+    public List<Map<String, String>> registerUser(String username, String password, String email)
             throws NoConnectionException, UnexpectedErrorException;
 }
