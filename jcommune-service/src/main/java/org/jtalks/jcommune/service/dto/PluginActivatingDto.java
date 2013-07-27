@@ -19,7 +19,7 @@ package org.jtalks.jcommune.service.dto;
  */
 public class PluginActivatingDto {
     private String pluginName;
-    private boolean activated;
+    private boolean activated = true;
 
     public PluginActivatingDto() {
     }

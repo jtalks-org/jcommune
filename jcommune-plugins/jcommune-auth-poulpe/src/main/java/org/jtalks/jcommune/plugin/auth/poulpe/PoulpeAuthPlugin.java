@@ -60,9 +60,9 @@ public class PoulpeAuthPlugin extends StatefullPlugin implements SimpleAuthentic
 
     @Override
     public List<PluginConfigurationProperty> getDefaultConfiguration() {
-        PluginConfigurationProperty url = new PluginConfigurationProperty(STRING, "http://localhost:1234");
-        PluginConfigurationProperty login = new PluginConfigurationProperty(STRING, "login");
-        PluginConfigurationProperty password = new PluginConfigurationProperty(STRING, "password");
+        PluginConfigurationProperty url = new PluginConfigurationProperty("URL", STRING, "http://localhost:1234");
+        PluginConfigurationProperty login = new PluginConfigurationProperty("LOGIN", STRING, "login");
+        PluginConfigurationProperty password = new PluginConfigurationProperty("PASSWORD", STRING, "password");
         return Arrays.asList(url, login, password);
     }
 

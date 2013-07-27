@@ -116,7 +116,7 @@ public class PluginControllerTest {
 
         ModelAndView resultModelAndView = pluginController.updateConfiguration(newConfiguration);
 
-        assertViewName(resultModelAndView, "/plugins/configure/" + pluginName);
+        assertViewName(resultModelAndView, "redirect:/plugins/configure/" + pluginName);
         assertModelAttributeAvailable(resultModelAndView, "pluginConfiguration");
         verify(pluginService).updateConfiguration(newConfiguration, componentId);
     }

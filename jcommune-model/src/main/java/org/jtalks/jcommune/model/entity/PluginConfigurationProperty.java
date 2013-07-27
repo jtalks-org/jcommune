@@ -28,7 +28,8 @@ public class PluginConfigurationProperty extends Entity {
 
     public static enum Type {INT, BOOLEAN, STRING}
 
-    public PluginConfigurationProperty(Type type, String value) {
+    public PluginConfigurationProperty(String name, Type type, String value) {
+        this.name = name;
         this.type = type;
         this.value = value;
     }

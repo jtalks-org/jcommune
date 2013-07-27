@@ -178,11 +178,11 @@ public class PoulpeAuthPluginTest {
     private PluginConfiguration createConfiguration(String url, String login, String password) {
 
         PluginConfigurationProperty urlProperty =
-                new PluginConfigurationProperty(STRING, url);
+                new PluginConfigurationProperty("URL", STRING, url);
         urlProperty.setName("Url");
-        PluginConfigurationProperty loginProperty = new PluginConfigurationProperty(STRING, login);
+        PluginConfigurationProperty loginProperty = new PluginConfigurationProperty("LOGIN",STRING, login);
         loginProperty.setName("Login");
-        PluginConfigurationProperty passwordProperty = new PluginConfigurationProperty(STRING, password);
+        PluginConfigurationProperty passwordProperty = new PluginConfigurationProperty("PASSWORD", STRING, password);
         passwordProperty.setName("Password");
         return new PluginConfiguration("Poulpe Auth Plugin", true,
                 Arrays.asList(urlProperty, loginProperty, passwordProperty));

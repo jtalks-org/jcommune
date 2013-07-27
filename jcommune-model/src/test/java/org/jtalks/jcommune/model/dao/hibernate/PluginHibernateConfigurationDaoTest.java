@@ -29,7 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.testng.Assert.*;
 
@@ -39,7 +41,7 @@ import static org.testng.Assert.*;
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
-public class PluginHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
+public class PluginHibernateConfigurationDaoTest extends AbstractTransactionalTestNGSpringContextTests {
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
@@ -56,7 +58,7 @@ public class PluginHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
 
     @Test
     public void getShouldReturnPluginById() {
-        PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPlugin();
+        PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPluginConfiguration();
 
         PluginConfiguration foundPluginConfiguration = pluginConfigurationDao.get(pluginConfiguration.getId());
 
@@ -73,9 +75,9 @@ public class PluginHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     }
 
     @Test
-    public void saveOrUpdateShouldUpdatePluginProperties() {
+    public void saveOrUpdateShouldUpdatePluginConfiguration() {
         String newPluginName = "Poulpe pluginConfiguration";
-        PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPlugin();
+        PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPluginConfiguration();
         pluginConfiguration.setName(newPluginName);
 
         pluginConfigurationDao.saveOrUpdate(pluginConfiguration);
@@ -86,7 +88,7 @@ public class PluginHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     }
 
     @Test
-    public void saveOrUpdateShouldSaveNewPlugin() {
+    public void saveOrUpdateShouldSaveNewPluginConfiguration() {
         PluginConfiguration newPluginConfiguration = new PluginConfiguration("New PluginConfiguration", true, Collections.<PluginConfigurationProperty> emptyList());
 
         pluginConfigurationDao.saveOrUpdate(newPluginConfiguration);
@@ -96,19 +98,31 @@ public class PluginHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         assertNotNull(savedPluginConfiguration, "PluginConfiguration should be found after persisting to database.");
     }
 
+    @Test
+    public void saveOrUpdateShouldSavePluginConfigurationProperties() {
+        PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPluginConfiguration();
+        PluginConfigurationProperty property = new PluginConfigurationProperty("Property", PluginConfigurationProperty.Type.BOOLEAN, "true");
+        List<PluginConfigurationProperty> properties = Arrays.asList(property);
+        pluginConfiguration.setProperties(properties);
+
+        pluginConfigurationDao.saveOrUpdate(pluginConfiguration);
+        session.evict(pluginConfiguration);
+        PluginConfiguration updatedPluginConfiguration = (PluginConfiguration) session.get(PluginConfiguration.class, pluginConfiguration.getId());
+
+        assertEquals(updatedPluginConfiguration.getProperties(), properties, "Plugin configuration properties should be saved.");
+    }
+
     @Test(expectedExceptions = org.springframework.dao.DataIntegrityViolationException.class)
     public void saveOrUpdateWithNullValuesShouldNotSavePlugin() {
-        PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPlugin();
-        session.save(pluginConfiguration);
+        PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPluginConfiguration();
 
         pluginConfiguration.setName(null);
         pluginConfigurationDao.saveOrUpdate(pluginConfiguration);
     }
 
     @Test
-    public void testGetByName() throws NotFoundException {
-        PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPlugin();
-        session.save(pluginConfiguration);
+    public void getByNameShouldReturnOnePluginConfiguration() throws NotFoundException {
+        PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPluginConfiguration();
 
         PluginConfiguration actual = pluginConfigurationDao.get(pluginConfiguration.getName());
 
@@ -116,7 +130,21 @@ public class PluginHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     }
 
     @Test(expectedExceptions = NotFoundException.class)
-    public void testGetByNonExistingName() throws NotFoundException {
+    public void getWhenPassedNonExistingNameShouldShowErrorAboutNotFoundConfiguration() throws NotFoundException {
         pluginConfigurationDao.get("Some fake name");
+    }
+
+    @Test
+    public void updatePropertiesShouldUpdatePassedProperties() {
+        //GIVEN
+        PluginConfigurationProperty property = PersistedObjectsFactory.getDefaultPluginConfigurationProperty();
+        String newPropertyName = "New property name";
+        property.setName(newPropertyName);
+        //WHEN
+        pluginConfigurationDao.updateProperties(Arrays.asList(property));
+        //THEN
+        session.evict(property);
+        PluginConfigurationProperty updatedProperty = (PluginConfigurationProperty) session.get(PluginConfigurationProperty.class, property.getId());
+        assertEquals(updatedProperty.getName(), newPropertyName, "Property should be updated");
     }
 }

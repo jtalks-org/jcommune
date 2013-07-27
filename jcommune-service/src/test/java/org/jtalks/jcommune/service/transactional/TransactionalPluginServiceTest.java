@@ -17,6 +17,7 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.dao.PluginConfigurationDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
+import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.service.plugins.PluginLoader;
 import org.jtalks.jcommune.service.dto.PluginActivatingDto;
@@ -31,8 +32,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 /**
  * @author Anuar_Nurmakanov
@@ -86,6 +86,42 @@ public class TransactionalPluginServiceTest {
     }
 
     @Test
+    public void updateConfigurationShouldSaveConfigurationProperties() throws NotFoundException {
+        //GIVEN
+        List<PluginConfigurationProperty> properties = Arrays.asList(new PluginConfigurationProperty());
+        PluginConfiguration configuration = new PluginConfiguration("Dummy", false, properties);
+        when(pluginLoader.getPlugins()).thenReturn(Arrays.asList((Plugin) new DummyPlugin("Dummy")));
+        //WHEN
+        pluginService.updateConfiguration(configuration, FAKE_COMPONENT_ID);
+        //THEN
+        verify(pluginConfigurationDao).updateProperties(properties);
+    }
+
+    @Test
+    public void updateConfigurationShouldApplyConfigurationForPlugin() throws NotFoundException {
+        //GIVEN
+        String pluginName = "Should be configured";
+        PluginConfiguration configuration = new PluginConfiguration(pluginName, true, Collections.EMPTY_LIST);
+        DummyPlugin shouldBeConfiguredPlugin = new DummyPlugin(pluginName);
+        DummyPlugin shouldNotBeConfiguredPlugin = new DummyPlugin("Should not be configured");
+        when(pluginLoader.getPlugins()).thenReturn(Arrays.asList((Plugin) shouldBeConfiguredPlugin, shouldNotBeConfiguredPlugin));
+        //WHEN
+        pluginService.updateConfiguration(configuration, FAKE_COMPONENT_ID);
+        //THEN
+        assertNotNull(shouldBeConfiguredPlugin.configuration, "Plugin should be found by name and reconfigured.");
+        assertNull(shouldNotBeConfiguredPlugin.configuration, "All others plugins shouldn't be reconfigured.");
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void updateConfigurationWhenPluginsNotLoadedShouldShowNotFoundError() throws NotFoundException {
+        //GIVEN
+        PluginConfiguration configuration = new PluginConfiguration();
+        when(pluginLoader.getPlugins()).thenReturn(Collections.<Plugin> emptyList());
+        //WHEN
+        pluginService.updateConfiguration(configuration, FAKE_COMPONENT_ID);
+    }
+
+    @Test
     public void updatePluginsEnablingShouldUpdatePluginsEnabling() throws NotFoundException {
         //GIVEN
         String pluginName = "plugin";
@@ -120,5 +156,54 @@ public class TransactionalPluginServiceTest {
         pluginService.updatePluginsActivating(pluginsActivatingDtoList, FAKE_COMPONENT_ID);
         //THEN
         verify(pluginConfigurationDao, times(pluginsCount)).saveOrUpdate(pluginConfiguration);
+    }
+
+    /**
+     * Created for tests plugin.
+     */
+    private static final class DummyPlugin implements Plugin {
+        PluginConfiguration configuration;
+        String name;
+
+        DummyPlugin(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public boolean supportsJCommuneVersion(String version) {
+            return false;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public List getConfiguration() {
+            return null;
+        }
+
+        @Override
+        public List<PluginConfigurationProperty> getDefaultConfiguration() {
+            return null;
+        }
+
+        @Override
+        public void configure(PluginConfiguration configuration) {
+            this.configuration = configuration;
+        }
+
+        @Override
+        public State getState() {
+            return null;
+        }
+
+        @Override
+        public boolean isEnabled() {
+            return false;
+        }
+
+
     }
 }

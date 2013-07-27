@@ -53,7 +53,7 @@ public class PluginController {
         List<Plugin> plugins = pluginService.getPlugins(componentId);
         return new ModelAndView("pluginList")
                 .addObject("plugins", plugins)
-                .addObject("pluginsActivatingListDto", new PluginActivatingListDto());
+                .addObject("pluginsActivatingListDto", PluginActivatingListDto.valueOf(plugins));
     }
 
     @RequestMapping(value = "/configure/{name}", method = RequestMethod.GET)
@@ -68,7 +68,7 @@ public class PluginController {
     public ModelAndView updateConfiguration(@ModelAttribute PluginConfiguration newConfiguration) throws NotFoundException {
         long componentId = getForumComponentId();
         pluginService.updateConfiguration(newConfiguration, componentId);
-        return new ModelAndView("/plugins/configure/" + newConfiguration.getName())
+        return new ModelAndView("redirect:/plugins/configure/" + newConfiguration.getName())
                 .addObject("pluginConfiguration", newConfiguration);
     }
 

@@ -63,7 +63,7 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <form:checkbox path="activatingPlugins[${status.index}].activated" checked="${plugin.enabled}" />
+                                        <form:checkbox path="activatingPlugins[${status.index}].activated" value="${plugin.enabled}" />
                                     </td>
                                 </tr>
                             </c:forEach>
