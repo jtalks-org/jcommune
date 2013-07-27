@@ -68,7 +68,7 @@ public class PluginController {
     public ModelAndView updateConfiguration(@ModelAttribute PluginConfiguration newConfiguration) throws NotFoundException {
         long componentId = getForumComponentId();
         pluginService.updateConfiguration(newConfiguration, componentId);
-        return new ModelAndView("/plugins/configure/" + newConfiguration.getName())
+        return new ModelAndView("redirect:/plugins/configure/" + newConfiguration.getName())
                 .addObject("pluginConfiguration", newConfiguration);
     }
 

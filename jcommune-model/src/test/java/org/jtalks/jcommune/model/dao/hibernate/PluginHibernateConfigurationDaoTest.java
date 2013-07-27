@@ -41,7 +41,7 @@ import static org.testng.Assert.*;
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
-public class PluginConfigurationHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
+public class PluginHibernateConfigurationDaoTest extends AbstractTransactionalTestNGSpringContextTests {
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
@@ -58,7 +58,7 @@ public class PluginConfigurationHibernateDaoTest extends AbstractTransactionalTe
 
     @Test
     public void getShouldReturnPluginById() {
-        PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPlugin();
+        PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPluginConfiguration();
 
         PluginConfiguration foundPluginConfiguration = pluginConfigurationDao.get(pluginConfiguration.getId());
 
@@ -77,9 +77,8 @@ public class PluginConfigurationHibernateDaoTest extends AbstractTransactionalTe
     @Test
     public void saveOrUpdateShouldUpdatePluginConfiguration() {
         String newPluginName = "Poulpe pluginConfiguration";
-        PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPlugin();
+        PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPluginConfiguration();
         pluginConfiguration.setName(newPluginName);
-
 
         pluginConfigurationDao.saveOrUpdate(pluginConfiguration);
         session.evict(pluginConfiguration);
@@ -101,7 +100,7 @@ public class PluginConfigurationHibernateDaoTest extends AbstractTransactionalTe
 
     @Test
     public void saveOrUpdateShouldSavePluginConfigurationProperties() {
-        PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPlugin();
+        PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPluginConfiguration();
         PluginConfigurationProperty property = new PluginConfigurationProperty("Property", PluginConfigurationProperty.Type.BOOLEAN, "true");
         List<PluginConfigurationProperty> properties = Arrays.asList(property);
         pluginConfiguration.setProperties(properties);
@@ -115,17 +114,15 @@ public class PluginConfigurationHibernateDaoTest extends AbstractTransactionalTe
 
     @Test(expectedExceptions = org.springframework.dao.DataIntegrityViolationException.class)
     public void saveOrUpdateWithNullValuesShouldNotSavePlugin() {
-        PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPlugin();
-        session.save(pluginConfiguration);
+        PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPluginConfiguration();
 
         pluginConfiguration.setName(null);
         pluginConfigurationDao.saveOrUpdate(pluginConfiguration);
     }
 
     @Test
-    public void testGetByName() throws NotFoundException {
-        PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPlugin();
-        session.save(pluginConfiguration);
+    public void getByNameShouldReturnOnePluginConfiguration() throws NotFoundException {
+        PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPluginConfiguration();
 
         PluginConfiguration actual = pluginConfigurationDao.get(pluginConfiguration.getName());
 
@@ -133,7 +130,21 @@ public class PluginConfigurationHibernateDaoTest extends AbstractTransactionalTe
     }
 
     @Test(expectedExceptions = NotFoundException.class)
-    public void testGetByNonExistingName() throws NotFoundException {
+    public void getWhenPassedNonExistingNameShouldShowErrorAboutNotFoundConfiguration() throws NotFoundException {
         pluginConfigurationDao.get("Some fake name");
+    }
+
+    @Test
+    public void updatePropertiesShouldUpdatePassedProperties() {
+        //GIVEN
+        PluginConfigurationProperty property = PersistedObjectsFactory.getDefaultPluginConfigurationProperty();
+        String newPropertyName = "New property name";
+        property.setName(newPropertyName);
+        //WHEN
+        pluginConfigurationDao.updateProperties(Arrays.asList(property));
+        //THEN
+        session.evict(property);
+        PluginConfigurationProperty updatedProperty = (PluginConfigurationProperty) session.get(PluginConfigurationProperty.class, property.getId());
+        assertEquals(updatedProperty.getName(), newPropertyName, "Property should be updated");
     }
 }

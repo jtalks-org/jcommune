@@ -23,6 +23,7 @@ import org.jtalks.common.model.entity.Property;
 import org.jtalks.jcommune.model.entity.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -320,10 +321,18 @@ public final class PersistedObjectsFactory {
         return component;
     }
 
-    public static PluginConfiguration getDefaultPlugin() {
-        PluginConfiguration pluginConfiguration = new PluginConfiguration("Default name", true, Collections.<PluginConfigurationProperty> emptyList());
-        persist(pluginConfiguration);
-        return pluginConfiguration;
+    public static PluginConfiguration getDefaultPluginConfiguration() {
+        PluginConfiguration configuration = new PluginConfiguration("Default name", true, Collections.<PluginConfigurationProperty> emptyList());
+        persist(configuration);
+        return configuration;
+    }
+
+    public static PluginConfigurationProperty getDefaultPluginConfigurationProperty() {
+        PluginConfigurationProperty property = new PluginConfigurationProperty("Property", PluginConfigurationProperty.Type.BOOLEAN, "true");
+        PluginConfiguration configuration = new PluginConfiguration("Default name", true, Arrays.asList(property));
+        property.setPluginConfiguration(configuration);
+        persist(configuration);
+        return property;
     }
 
     public static void createViewUnreadPostsInBranch() {

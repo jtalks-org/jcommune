@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.apache.commons.lang.StringUtils;
 import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.dao.PluginConfigurationDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
@@ -63,16 +64,23 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
     @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
     public void updateConfiguration(PluginConfiguration pluginConfiguration, long componentId) throws NotFoundException {
         String name = pluginConfiguration.getName();
-        Plugin result;
         List<Plugin> pluginsList = pLuginLoader.getPlugins();
-        if (pluginsList.isEmpty()) {
+        Plugin willBeConfigured = findPluginByName(pluginsList, name);
+        if (willBeConfigured == null) {
             throw new NotFoundException("Plugin " + name + " is not loaded");
-        } else {
-            result = pluginsList.get(0);
         }
-        Plugin plugin = result;
-        plugin.configure(pluginConfiguration);
-        this.getDao().saveOrUpdate(pluginConfiguration);
+        willBeConfigured.configure(pluginConfiguration);
+        this.getDao().updateProperties(pluginConfiguration.getProperties());
+    }
+
+    private Plugin findPluginByName(List<Plugin> searchSource, String pluginName) {
+        Plugin foundPlugin = null;
+        for (Plugin plugin: searchSource) {
+            if (StringUtils.equals(pluginName, plugin.getName())) {
+                foundPlugin = plugin;
+            }
+        }
+        return foundPlugin;
     }
 
     /**
