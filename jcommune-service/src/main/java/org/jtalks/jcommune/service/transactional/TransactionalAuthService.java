@@ -15,7 +15,6 @@
 
 package org.jtalks.jcommune.service.transactional;
 
-import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.plugins.Plugin;
@@ -33,6 +32,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Andrey Pogorelov
+ */
 public class TransactionalAuthService extends AbstractTransactionalEntityService<JCUser, UserDao>
         implements AuthService {
 
@@ -51,9 +53,11 @@ public class TransactionalAuthService extends AbstractTransactionalEntityService
     }
 
     @Override
-    public JCUser pluginAuthenticate(String username, String passwordHash, boolean newUser) {
+    public JCUser pluginAuthenticate(String username, String passwordHash, boolean newUser)
+            throws UnexpectedErrorException, NoConnectionException {
         Map<String, String> authInfo = authenticateWithPlugin(username, passwordHash);
         if (authInfo.isEmpty() || !authInfo.containsKey("email") || !authInfo.containsKey("username")) {
+            LOGGER.info("Could not authenticate user {}", username);
             return null;
         }
         return saveUser(authInfo, passwordHash, newUser);
@@ -62,7 +66,15 @@ public class TransactionalAuthService extends AbstractTransactionalEntityService
     private JCUser saveUser(Map<String, String> authInfo, String passwordHash, boolean newUser) {
         JCUser user;
         if (newUser) {
-            user = new JCUser(authInfo.get("username"), authInfo.get("email"), passwordHash);
+            user = getDao().getByUsername(authInfo.get("username"));
+            if (user != null) {
+                // user already exist in database (poulpe uses the same database),
+                // no need to create or update update him
+                return user;
+            } else {
+                // user not exist in database (poulpe uses own database)
+                user = new JCUser(authInfo.get("username"), authInfo.get("email"), passwordHash);
+            }
         } else {
             user = getDao().getByUsername(authInfo.get("username"));
             user.setPassword(passwordHash);
@@ -74,22 +86,16 @@ public class TransactionalAuthService extends AbstractTransactionalEntityService
         if (authInfo.containsKey("lastName")) {
             user.setLastName(authInfo.get("lastName"));
         }
-        user.setRegistrationDate(new DateTime());
         getDao().saveOrUpdate(user);
         return user;
     }
 
-    private Map<String, String> authenticateWithPlugin(String username, String passwordHash) {
+    private Map<String, String> authenticateWithPlugin(String username, String passwordHash)
+            throws UnexpectedErrorException, NoConnectionException {
         SimpleAuthenticationPlugin authPlugin = getAuthPlugin();
         Map<String, String> authInfo = new HashMap<>();
         if (authPlugin != null && authPlugin.getState() == Plugin.State.ENABLED) {
-            try {
-                authInfo.putAll(authPlugin.authenticate(username, passwordHash));
-            } catch (UnexpectedErrorException e) {
-                LOGGER.warn("Unexpected error was happened during the authentication through plugin.");
-            } catch (NoConnectionException e) {
-                LOGGER.warn("Can't connect to rest service.");
-            }
+            authInfo.putAll(authPlugin.authenticate(username, passwordHash));
         }
         return authInfo;
     }

@@ -18,6 +18,8 @@ import com.google.common.collect.Lists;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
+import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -237,6 +239,30 @@ public class UserControllerTest {
         when(userService.loginUser(anyString(), anyString(), anyBoolean(),
                 any(HttpServletRequest.class), any(HttpServletResponse.class)))
                 .thenReturn(false);
+
+        JsonResponse response = userController.loginAjax(null, null, "off", null, null);
+        assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
+        verify(userService).loginUser(anyString(), anyString(), eq(false),
+                any(HttpServletRequest.class), any(HttpServletResponse.class));
+    }
+
+    @Test
+    public void testAjaxLoginThrowsConnectionError() throws Exception {
+        when(userService.loginUser(anyString(), anyString(), anyBoolean(),
+                any(HttpServletRequest.class), any(HttpServletResponse.class)))
+                .thenThrow(new NoConnectionException());
+
+        JsonResponse response = userController.loginAjax(null, null, "off", null, null);
+        assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
+        verify(userService).loginUser(anyString(), anyString(), eq(false),
+                any(HttpServletRequest.class), any(HttpServletResponse.class));
+    }
+
+    @Test
+    public void testAjaxLoginThrowsUnexpectedError() throws Exception {
+        when(userService.loginUser(anyString(), anyString(), anyBoolean(),
+                any(HttpServletRequest.class), any(HttpServletResponse.class)))
+                .thenThrow(new UnexpectedErrorException());
 
         JsonResponse response = userController.loginAjax(null, null, "off", null, null);
         assertEquals(response.getStatus(), JsonResponseStatus.FAIL);

@@ -27,6 +27,8 @@ import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
+import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.AuthService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
@@ -504,7 +506,7 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
-    public void testLoginUserNotFoundPluginAuthSucceeded() {
+    public void testLoginUserNotFoundPluginAuthSucceeded() throws UnexpectedErrorException, NoConnectionException {
         String username = "username";
 
         HttpServletRequest httpRequest = new MockHttpServletRequest();
@@ -525,7 +527,7 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
-    public void testLoginUserNotFoundPluginAuthFail() {
+    public void testLoginUserNotFoundPluginAuthFail() throws UnexpectedErrorException, NoConnectionException {
         String username = "username";
 
         HttpServletRequest httpRequest = new MockHttpServletRequest();

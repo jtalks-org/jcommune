@@ -54,10 +54,24 @@ $(function () {
                         });
                     }
                     else {
-                        // remove previous errors and show new errors
-                        jDialog.prepareDialog(jDialog.dialog);
-                        refreshCaptcha(jDialog.dialog);
-                        jDialog.showErrors(jDialog.dialog, resp.result, '', '');
+                        if (resp.result.customError) {
+                            if (resp.result.customError == 'connectionError') {
+                                jDialog.createDialog({
+                                    type: jDialog.alertType,
+                                    bodyMessage: $labelRegistrationConnectionError
+                                });
+                            } else {
+                                jDialog.createDialog({
+                                    type: jDialog.alertType,
+                                    bodyMessage: $labelRegistrationFailture
+                                });
+                            }
+                        } else {
+                            // remove previous errors and show new errors
+                            jDialog.prepareDialog(jDialog.dialog);
+                            refreshCaptcha(jDialog.dialog);
+                            jDialog.showErrors(jDialog.dialog, resp.result, '', '');
+                        }
                     }
                 },
                 error: function (resp) {

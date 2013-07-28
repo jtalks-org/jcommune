@@ -1,7 +1,3 @@
-package org.jtalks.jcommune.service;
-
-import org.jtalks.jcommune.model.entity.JCUser;
-
 /**
  * Copyright (C) 2011  JTalks.org Team
  * This library is free software; you can redistribute it and/or
@@ -16,8 +12,18 @@ import org.jtalks.jcommune.model.entity.JCUser;
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+package org.jtalks.jcommune.service;
+
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
+import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
+
+/**
+ * @author Andrey Pogorelov
+ */
 public interface AuthService  extends EntityService<JCUser> {
 
 
-    JCUser pluginAuthenticate(String username, String passwordHash, boolean newUser);
+    JCUser pluginAuthenticate(String username, String passwordHash, boolean newUser)
+            throws UnexpectedErrorException, NoConnectionException;
 }

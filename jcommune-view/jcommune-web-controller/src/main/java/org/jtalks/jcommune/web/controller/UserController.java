@@ -14,8 +14,11 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import com.google.common.collect.ImmutableMap;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
+import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
+import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -241,7 +244,16 @@ public class UserController {
                                   @RequestParam(value = "_spring_security_remember_me", defaultValue = "off") String rememberMe,
                                   HttpServletRequest request, HttpServletResponse response) {
         boolean rememberMeBoolean = rememberMe.equals(REMEMBER_ME_ON);
-        boolean isAuthenticated = userService.loginUser(username, password, rememberMeBoolean, request, response);
+        boolean isAuthenticated;
+        try {
+            isAuthenticated = userService.loginUser(username, password, rememberMeBoolean, request, response);
+        } catch (NoConnectionException e) {
+            return new JsonResponse(JsonResponseStatus.FAIL,
+                    new ImmutableMap.Builder<String, String>().put("customError", "connectionError").build());
+        } catch (UnexpectedErrorException e) {
+            return new JsonResponse(JsonResponseStatus.FAIL,
+                    new ImmutableMap.Builder<String, String>().put("customError", "unexpectedError").build());
+        }
         if (isAuthenticated) {
             return new JsonResponse(JsonResponseStatus.SUCCESS);
         } else {

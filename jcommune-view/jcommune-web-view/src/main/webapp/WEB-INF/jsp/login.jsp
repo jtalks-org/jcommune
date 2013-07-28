@@ -53,8 +53,10 @@
                               <c:when test="${param.login_error == 2}">
                                 <spring:message code="label.login_cookies_were_theft"/>
                               </c:when>
+                              <c:when test="${param.login_error == 3}">
+                                <spring:message code="label.authentication.connection.error"/>
+                              </c:when>
                             </c:choose>
-                            
                         </span>
           </c:if>
         </div>

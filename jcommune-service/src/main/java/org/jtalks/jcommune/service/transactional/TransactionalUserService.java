@@ -27,6 +27,8 @@ import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
+import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.AuthService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
@@ -336,7 +338,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
 
     private boolean pluginAuthenticate(String username, String password, boolean rememberMe,
                                        HttpServletRequest request, HttpServletResponse response,
-                                       boolean createUser) {
+                                       boolean createUser) throws UnexpectedErrorException, NoConnectionException {
         boolean result = false;
         String passwordHash = encryptionService.encryptPassword(password);
         JCUser user = authService.pluginAuthenticate(username, passwordHash, createUser);
@@ -357,7 +359,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      */
     @Override
     public boolean loginUser(String username, String password, boolean rememberMe,
-                             HttpServletRequest request, HttpServletResponse response) {
+                             HttpServletRequest request, HttpServletResponse response)
+            throws UnexpectedErrorException, NoConnectionException {
         boolean result;
         JCUser user;
         try {

@@ -81,6 +81,18 @@
           <form:input path="captcha" class="capcha-field" type="text" id="captcha"/>
           <br>
           <form:errors path="captcha" cssClass="help-inline"/>
+            <c:if test="${not empty param.reg_error}">
+              <span class="help-inline">
+                  <c:choose>
+                      <c:when test="${param.reg_error == 1}">
+                          <spring:message code="label.registration.connection.error"/>
+                      </c:when>
+                      <c:when test="${param.reg_error == 2}">
+                          <spring:message code="label.registration.failture"/>
+                      </c:when>
+                  </c:choose>
+              </span>
+            </c:if>
         </div>
       </div>
       <div class="form-actions">

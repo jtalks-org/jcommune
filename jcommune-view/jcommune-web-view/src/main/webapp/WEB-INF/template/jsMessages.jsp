@@ -34,6 +34,8 @@ $labelContactsAddDialog = '<spring:message code="label.contacts.addDialog" htmlE
 
 $labelRegistrationSuccess = '<spring:message code="label.registration.success" htmlEscape="true"/>';
 $labelRegistrationFailture = '<spring:message code="label.registration.failture" htmlEscape="true"/>';
+$labelRegistrationConnectionError = '<spring:message code="label.registration.connection.error" htmlEscape="true"/>';
+$labelAuthenticationConnectionError = '<spring:message code="label.authentication.connection.error" htmlEscape="true"/>';
 $labelUrlHeader = '<spring:message code="label.url.header" htmlEscape="true"/>';
 $labelUrlText = '<spring:message code="label.url.text" htmlEscape="true"/>';
 $labelUrl = '<spring:message code="label.url" htmlEscape="true"/>';

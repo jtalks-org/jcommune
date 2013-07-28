@@ -42,12 +42,17 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.*;
 
+/**
+ * @author Andrey Pogorelov
+ */
 @Controller
 public class PoulpeAuthController {
 
     public static final String REGISTRATION = "registration";
     public static final String AFTER_REGISTRATION = "afterRegistration";
     public static final boolean DEFAULT_AUTOSUBSCRIBE = true;
+    public static final String CONNECTION_ERROR_URL = "redirect:/user/new?reg_error=1";
+    public static final String UNEXPECTED_ERROR_URL = "redirect:/user/new?reg_error=2";
 
     private EncryptionService encryptionService;
     private UserService userService;
@@ -76,7 +81,13 @@ public class PoulpeAuthController {
     public ModelAndView registerUser(@ModelAttribute("newUser") RegisterUserDto userDto,
                                      BindingResult result, Locale locale) {
 
-        register(userDto, result, locale);
+        try {
+            register(userDto, result, locale);
+        } catch (NoConnectionException e) {
+            return new ModelAndView(CONNECTION_ERROR_URL);
+        } catch (UnexpectedErrorException e) {
+            return new ModelAndView(UNEXPECTED_ERROR_URL);
+        }
         if (result.hasErrors()) {
             return new ModelAndView(REGISTRATION);
         }
@@ -97,7 +108,15 @@ public class PoulpeAuthController {
     @ResponseBody
     public JsonResponse registerUserAjax(@ModelAttribute("newUser") RegisterUserDto userDto,
                                          BindingResult result, Locale locale) {
-        register(userDto, result, locale);
+        try {
+            register(userDto, result, locale);
+        } catch (NoConnectionException e) {
+            return new JsonResponse(JsonResponseStatus.FAIL,
+                    new ImmutableMap.Builder<String, String>().put("customError", "connectionError").build());
+        } catch (UnexpectedErrorException e) {
+            return new JsonResponse(JsonResponseStatus.FAIL,
+                    new ImmutableMap.Builder<String, String>().put("customError", "unexpectedError").build());
+        }
         if (result.hasErrors()) {
             return new JsonResponse(JsonResponseStatus.FAIL, result.getAllErrors());
         }
@@ -105,21 +124,14 @@ public class PoulpeAuthController {
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 
-    private void register(RegisterUserDto userDto, BindingResult result, Locale locale) {
+    private void register(RegisterUserDto userDto, BindingResult result, Locale locale)
+            throws UnexpectedErrorException, NoConnectionException {
         SimpleAuthenticationPlugin authPlugin = getAuthPlugin();
         if (authPlugin != null && authPlugin.getState() == Plugin.State.ENABLED) {
             String passwordHash = userDto.getPassword().isEmpty() ? ""
                     : encryptionService.encryptPassword(userDto.getPassword());
             List<Map<String, String>> errors = new ArrayList<>();
-            try {
-                errors.addAll(authPlugin.registerUser(userDto.getUsername(), passwordHash, userDto.getEmail()));
-            } catch (NoConnectionException e) {
-                errors.add(new ImmutableMap.Builder<String, String>()
-                        .put("", "Registration service is not available").build());
-            } catch (UnexpectedErrorException e) {
-                errors.add(new ImmutableMap.Builder<String, String>()
-                        .put("", "Unexpected error was happened").build());
-            }
+            errors.addAll(authPlugin.registerUser(userDto.getUsername(), passwordHash, userDto.getEmail()));
             parseValidationErrors(errors, result, locale);
         }
     }
@@ -140,8 +152,6 @@ public class PoulpeAuthController {
                 if (error != null) {
                     result.rejectValue(error.getKey(), null, error.getValue());
                 }
-            } else {
-                result.rejectValue("captcha", null, errorEntry.getValue().toString());
             }
         }
     }

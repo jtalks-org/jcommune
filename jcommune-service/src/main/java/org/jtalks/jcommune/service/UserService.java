@@ -20,6 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
+import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -153,7 +155,8 @@ public interface UserService extends EntityService<JCUser> {
      *      logging in.
      */
     boolean loginUser(String username, String password,  boolean rememberMe, 
-            HttpServletRequest request, HttpServletResponse response);
+            HttpServletRequest request, HttpServletResponse response)
+            throws UnexpectedErrorException, NoConnectionException;
 
     /**
      * Parses the input of some post which contains [user] bb code,

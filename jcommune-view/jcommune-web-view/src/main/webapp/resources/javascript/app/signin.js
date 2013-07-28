@@ -112,13 +112,20 @@ function sendLoginPost(e) {
                 location.reload();
             }
             else {
-                jDialog.prepareDialog(jDialog.dialog);
+                if (resp.result && resp.result.customError) {
+                    jDialog.createDialog({
+                        type: jDialog.alertType,
+                        bodyMessage: $labelAuthenticationConnectionError
+                    });
+                } else {
+                    jDialog.prepareDialog(jDialog.dialog);
 
-                ErrorUtils.addErrorStyles('#j_username');
-                ErrorUtils.addErrorStyles('#j_password');
+                    ErrorUtils.addErrorStyles('#j_username');
+                    ErrorUtils.addErrorStyles('#j_password');
 
-                passwordElement.parent().append('<span class="help-inline _error">' + $labelLoginError + '</span>');
-                jDialog.resizeDialog(jDialog.dialog);
+                    passwordElement.parent().append('<span class="help-inline _error">' + $labelLoginError + '</span>');
+                    jDialog.resizeDialog(jDialog.dialog);
+                }
             }
         },
         error: function (data) {

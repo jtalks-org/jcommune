@@ -36,6 +36,9 @@ import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.*;
 
+/**
+ * @author Andrey Pogorelov
+ */
 public class TransactionalAuthServiceTest {
 
     private TransactionalAuthService authService;
@@ -44,6 +47,8 @@ public class TransactionalAuthServiceTest {
     private UserDao userDao;
     @Mock
     private PluginLoader pluginLoader;
+    @Mock
+    SimpleAuthenticationPlugin plugin;
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -62,7 +67,6 @@ public class TransactionalAuthServiceTest {
 
     private void preparePlugin(String username, String passwordHash, Map<String, String> authInfo)
             throws UnexpectedErrorException, NoConnectionException {
-        SimpleAuthenticationPlugin plugin = mock(SimpleAuthenticationPlugin.class);
         when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Arrays.<Plugin>asList(plugin));
         when(plugin.authenticate(username, passwordHash)).thenReturn(authInfo);
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
