@@ -15,7 +15,6 @@
 
 package org.jtalks.jcommune.plugin.auth.poulpe;
 
-import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
 import org.jtalks.jcommune.model.plugins.SimpleAuthenticationPlugin;
 import org.jtalks.jcommune.model.plugins.StatefullPlugin;
@@ -44,12 +43,7 @@ public class PoulpeAuthPlugin extends StatefullPlugin
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PoulpeAuthPlugin.class);
     private PoulpeAuthService service;
-    private PluginConfiguration pluginConfiguration;
-    private State state;
-
-    public PoulpeAuthPlugin() {
-        LOGGER.info("PoulpeAuthPlugin initialized");
-    }
+    List<PluginConfigurationProperty> pluginProperties;
 
     @Override
     public List<Map<String, String>> registerUser(String username, String password, String email)
@@ -91,7 +85,7 @@ public class PoulpeAuthPlugin extends StatefullPlugin
 
     @Override
     public List<PluginConfigurationProperty> getConfiguration() {
-        return pluginConfiguration.getProperties();
+        return pluginProperties;
     }
 
     @Override
@@ -106,37 +100,8 @@ public class PoulpeAuthPlugin extends StatefullPlugin
     }
 
     @Override
-    public void configure(PluginConfiguration configuration) {
-        LOGGER.debug("Plugin {} start configuring", this.getName());
-        try {
-            loadConfiguration(configuration.getProperties());
-            this.pluginConfiguration = configuration;
-            if (configuration.isActive()) {
-                state = State.ENABLED;
-                LOGGER.debug("Plugin {} is configured and activated", this.getName());
-            } else {
-                state = State.CONFIGURED;
-                LOGGER.debug("Plugin {} is configured", this.getName());
-            }
-        } catch (RuntimeException e) {
-            state = State.IN_ERROR;
-            LOGGER.warn("Plugin {} configuration failed", this.getName(), e);
-        }
-
-    }
-
-    @Override
     protected Map<PluginConfigurationProperty, String> applyConfiguration(List<PluginConfigurationProperty> properties) {
-        this.pluginConfiguration.setProperties(properties);
-        return Collections.emptyMap();
-    }
 
-    @Override
-    public State getState() {
-        return state;
-    }
-
-    private void loadConfiguration(List<PluginConfigurationProperty> properties) throws RuntimeException {
         String url = null;
         String login = null;
         String password = null;
@@ -151,9 +116,11 @@ public class PoulpeAuthPlugin extends StatefullPlugin
         }
         if (url != null && login != null && password != null) {
             service = new PoulpeAuthService(url, login, password);
+            pluginProperties = properties;
         } else {
             throw new RuntimeException();
         }
+        return Collections.EMPTY_MAP;
     }
 
     public void setPluginService(PoulpeAuthService service) {

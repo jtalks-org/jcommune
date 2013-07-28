@@ -17,10 +17,13 @@ package org.jtalks.jcommune.web.controller.plugins;
 
 import com.google.common.collect.ImmutableMap;
 import org.jtalks.common.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.model.plugins.SimpleAuthenticationPlugin;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.plugins.PluginFilter;
 import org.jtalks.jcommune.service.plugins.PluginLoader;
@@ -44,16 +47,20 @@ public class PoulpeAuthController {
 
     public static final String REGISTRATION = "registration";
     public static final String AFTER_REGISTRATION = "afterRegistration";
+    public static final boolean DEFAULT_AUTOSUBSCRIBE = true;
 
     private EncryptionService encryptionService;
+    private UserService userService;
 
     private PluginLoader pluginLoader;
 
     @Autowired
     public PoulpeAuthController(PluginLoader pluginLoader,
-                                EncryptionService encryptionService) {
+                                EncryptionService encryptionService,
+                                UserService userService) {
         this.pluginLoader = pluginLoader;
         this.encryptionService = encryptionService;
+        this.userService = userService;
     }
 
     /**
@@ -73,6 +80,7 @@ public class PoulpeAuthController {
         if (result.hasErrors()) {
             return new ModelAndView(REGISTRATION);
         }
+        storeUser(userDto, locale);
         return new ModelAndView(AFTER_REGISTRATION);
     }
 
@@ -93,6 +101,7 @@ public class PoulpeAuthController {
         if (result.hasErrors()) {
             return new JsonResponse(JsonResponseStatus.FAIL, result.getAllErrors());
         }
+        storeUser(userDto, locale);
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 
@@ -155,5 +164,19 @@ public class PoulpeAuthController {
             }
         }
         return error;
+    }
+
+    /**
+     * Just registers a new user without any additional checks, it gets rid of duplication in enclosing
+     * {@code registerUser()} methods.
+     *
+     * @param userDto coming from enclosing methods, this object is built by Spring MVC
+     * @param locale  the locale of user she can pass in GET requests
+     */
+    private void storeUser(RegisterUserDto userDto, Locale locale) {
+        JCUser user = userDto.createUser();
+        user.setLanguage(Language.byLocale(locale));
+        user.setAutosubscribe(DEFAULT_AUTOSUBSCRIBE);
+        userService.registerUser(user);
     }
 }
