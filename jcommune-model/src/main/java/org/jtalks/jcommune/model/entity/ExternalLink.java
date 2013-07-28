@@ -34,6 +34,7 @@ public class ExternalLink extends Entity {
     public static final int URL_MAX_SIZE = 512;
     public static final int URL_MIN_SIZE = 10;
     public static final int HINT_MAX_SIZE = 128;
+    public static final int HINT_MIN_SIZE = 1;
     public static final String HTTP_PROTOCOL_PREFIX = "http://";
     public static final String PROTOCOL_SEPARATOR = "://";
 
@@ -42,8 +43,7 @@ public class ExternalLink extends Entity {
     @Size(max = TITLE_MAX_SIZE, message = "{validation.links.title.length}")
     @NotBlank(message = "{validation.links.title.not_blank}")
     private String title;
-    @NotNull(message = "{validation.not_null}")
-    @Size(max = HINT_MAX_SIZE, message = "{validation.links.hint.length}")
+
     private String hint;
 
     /**
@@ -77,9 +77,13 @@ public class ExternalLink extends Entity {
      * @param url target URL, e.g., jtalks.org the link will lead to
      */
     public void setUrl(String url) {
-        if (url != null && !url.isEmpty() && !url.contains(PROTOCOL_SEPARATOR)) {
-            url = HTTP_PROTOCOL_PREFIX + url;
+        if (url != null) {
+            url = url.trim();
+            if (!url.isEmpty() && !url.contains(PROTOCOL_SEPARATOR)) {
+                url = HTTP_PROTOCOL_PREFIX + url;
+            }
         }
+
         this.url = url;
     }
 
@@ -100,6 +104,8 @@ public class ExternalLink extends Entity {
     /**
      * @return URL hint or description, e.g. 'The most powerful forum engine', this hint is shown
      */
+    @NotNull(message = "{validation.not_null}")
+    @Size(max = HINT_MAX_SIZE, message = "{validation.links.hint.length}")
     public String getHint() {
         return hint;
     }
@@ -108,7 +114,11 @@ public class ExternalLink extends Entity {
      * @param hint hint or description, e.g. 'The most powerful forum engine', this hint is shown
      */
     public void setHint(String hint) {
-        this.hint = hint;
+        if (hint != null) {
+            this.hint = hint.trim();
+        } else {
+            this.hint = null;
+        }
     }
 
 
