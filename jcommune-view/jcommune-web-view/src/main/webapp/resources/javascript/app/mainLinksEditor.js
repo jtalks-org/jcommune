@@ -36,33 +36,13 @@ function getLinkById(id) {
 
 $(function () {
 
-    var elements = [];
-    $(externalLinksGroupId).find('a').each(function (i, elem) {
-        var fullId = $(elem).attr('id');
-        var id = extractExternalLinkIdFrom(fullId);
-        var externalLink = {};
-        externalLink.id = id;
-        externalLink.url = $(elem).attr('href');
-        externalLink.title = $(elem).text();
-        externalLink.hint = $(elem).attr('data-original-title');
-        idToExternalLinkMap[id] = externalLink;
-        elements[i] = externalLink;
-    });
-
     var footerContent = '' +
         '<button id="add-main-link" class="btn btn-block list-of-links hide-element">' + $labelAdd + '</button> \
         <button id="cancel-link" class="btn  edit-links remove-links hide-element">' + $labelCancel + '</button> \
         <button id="save-link" class="btn btn-primary  edit-links hide-element">' + $labelSave + '</button> \
         <button id="remove-link" class="btn btn-primary  remove-links hide-element">' + $labelDelete + '</button>';
 
-    var bodyContent =
-        '<table cellpadding="0" cellspacing="0" class="list-of-links"> <tbody>' +
-            createLinksTableRows(elements) + ' \
-         </tbody></table>' +
-            Utils.createFormElement($labelTitle, 'link-title', 'text', 'hide-element edit-links dialog-input') +
-            Utils.createFormElement($labelUrl, 'link-url', 'text', 'hide-element edit-links dialog-input') +
-            Utils.createFormElement($labelHint, 'link-hint', 'text', 'hide-element edit-links dialog-input') + ' \
-         <span class="confirm-delete-text remove-links"></span> ';
+
 
     //add links when click to button navbar (fix show elements when refresh page)
     $('.btn-navbar').on('click', function () {
@@ -103,6 +83,29 @@ $(function () {
 
     $('.links_editor').on('click', function (e) {
         e.preventDefault();
+
+        var elements = [];
+
+        $(externalLinksGroupId).find('a').each(function (i, elem) {
+            var fullId = $(elem).attr('id');
+            var id = extractExternalLinkIdFrom(fullId);
+            var externalLink = {};
+            externalLink.id = id;
+            externalLink.url = $(elem).attr('href');
+            externalLink.title = $(elem).text();
+            externalLink.hint = $(elem).attr('data-original-title');
+            idToExternalLinkMap[id] = externalLink;
+            elements[i] = externalLink;
+        });
+
+        var bodyContent =
+            '<table cellpadding="0" cellspacing="0" class="list-of-links"> <tbody>' +
+                createLinksTableRows(elements) + ' \
+         </tbody></table>' +
+                Utils.createFormElement($labelTitle, 'link-title', 'text', 'hide-element edit-links dialog-input') +
+                Utils.createFormElement($labelUrl, 'link-url', 'text', 'hide-element edit-links dialog-input') +
+                Utils.createFormElement($labelHint, 'link-hint', 'text', 'hide-element edit-links dialog-input') + ' \
+         <span class="confirm-delete-text remove-links"></span> ';
 
         jDialog.createDialog({
             dialogId: 'main-links-editor',
