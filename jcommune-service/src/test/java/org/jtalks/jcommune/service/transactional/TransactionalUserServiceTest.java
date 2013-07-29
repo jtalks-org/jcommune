@@ -486,7 +486,7 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
-    public void testLoginFailUserNotAuthenticated() throws Exception {
+    public void loginUserShouldFailIfUserCouldNotAuthenticate() throws Exception {
         String username = "username";
         when(userDao.getByUsername(username)).thenReturn(new JCUser(username, null, null));
 
@@ -506,7 +506,7 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
-    public void testLoginUserNotFoundPluginAuthSucceeded() throws UnexpectedErrorException, NoConnectionException {
+    public void loginUserShouldBeSuccessfulIfPluginAuthReturnSuccess() throws UnexpectedErrorException, NoConnectionException {
         String username = "username";
 
         HttpServletRequest httpRequest = new MockHttpServletRequest();
@@ -527,7 +527,8 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
-    public void testLoginUserNotFoundPluginAuthFail() throws UnexpectedErrorException, NoConnectionException {
+    public void loginUserShouldFailIfDefaultAuthAndPluginAuthCouldNotAuthenticate()
+            throws UnexpectedErrorException, NoConnectionException {
         String username = "username";
 
         HttpServletRequest httpRequest = new MockHttpServletRequest();

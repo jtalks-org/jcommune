@@ -86,7 +86,7 @@ public class PoulpeAuthControllerTest {
     }
 
     @Test
-    public void registerUserFail() throws UnexpectedErrorException, NoConnectionException {
+    public void registerUserWithIncorrectDetailsShouldFail() throws UnexpectedErrorException, NoConnectionException {
         List<Map<String, String>> errors = new ArrayList<>();
         errors.add(new ImmutableMap.Builder<String, String>().put("user.email.illegal_length", "").build());
         errors.add(new ImmutableMap.Builder<String, String>().put("user.username.already_exists", "").build());
@@ -104,7 +104,8 @@ public class PoulpeAuthControllerTest {
     }
 
     @Test
-    public void registerUserSuccess() throws UnexpectedErrorException, NoConnectionException {
+    public void registerUserWithCorrectDetailsShouldBeSuccessful()
+            throws UnexpectedErrorException, NoConnectionException {
         List<Map<String, String>> errors = new ArrayList<>();
         prepareMocks();
         when(plugin.registerUser(USERNAME, PASSWORD, EMAIL)).thenReturn(errors);
@@ -118,7 +119,8 @@ public class PoulpeAuthControllerTest {
     }
 
     @Test
-    public void registerUserThrowsUnexpectedError() throws UnexpectedErrorException, NoConnectionException {
+    public void registerUserShouldFailIfSomeUnexpectedErrorOccurred()
+            throws UnexpectedErrorException, NoConnectionException {
         prepareMocks();
         when(plugin.registerUser(USERNAME, PASSWORD_MD5_HASH, EMAIL)).thenThrow(new UnexpectedErrorException());
         RegisterUserDto userDto = createUserDto(USERNAME, PASSWORD, EMAIL);
@@ -130,7 +132,8 @@ public class PoulpeAuthControllerTest {
     }
 
     @Test
-    public void registerUserThrowsConnectionError() throws UnexpectedErrorException, NoConnectionException {
+    public void registerUserShouldFailIfSomeConnectionErrorOccurred()
+            throws UnexpectedErrorException, NoConnectionException {
         prepareMocks();
         when(plugin.registerUser(USERNAME, PASSWORD_MD5_HASH, EMAIL)).thenThrow(new NoConnectionException());
         RegisterUserDto userDto = createUserDto(USERNAME, PASSWORD, EMAIL);
@@ -142,7 +145,8 @@ public class PoulpeAuthControllerTest {
     }
 
     @Test
-    public void registerUserAjaxFail() throws UnexpectedErrorException, NoConnectionException {
+    public void registerAjaxUserWithIncorrectDetailsShouldFail()
+            throws UnexpectedErrorException, NoConnectionException {
         List<Map<String, String>> errors = new ArrayList<>();
         errors.add(new ImmutableMap.Builder<String, String>().put("user.email.illegal_length", "").build());
         errors.add(new ImmutableMap.Builder<String, String>().put("user.username.already_exists", "").build());
@@ -160,7 +164,8 @@ public class PoulpeAuthControllerTest {
     }
 
     @Test
-    public void registerUserAjaxSuccess() throws UnexpectedErrorException, NoConnectionException {
+    public void registerAjaxUserWithCorrectDetailsShouldBeSuccessful()
+            throws UnexpectedErrorException, NoConnectionException {
         List<Map<String, String>> errors = new ArrayList<>();
         prepareMocks();
         when(plugin.registerUser(USERNAME, PASSWORD, EMAIL)).thenReturn(errors);
@@ -174,7 +179,8 @@ public class PoulpeAuthControllerTest {
     }
 
     @Test
-    public void registerUserAjaxThrowsUnexpectedError() throws UnexpectedErrorException, NoConnectionException {
+    public void registerAjaxUserShouldFailIfSomeUnexpectedErrorOccurred()
+            throws UnexpectedErrorException, NoConnectionException {
         prepareMocks();
         when(plugin.registerUser(USERNAME, PASSWORD_MD5_HASH, EMAIL)).thenThrow(new UnexpectedErrorException());
         RegisterUserDto userDto = createUserDto(USERNAME, PASSWORD, EMAIL);
@@ -185,7 +191,8 @@ public class PoulpeAuthControllerTest {
     }
 
     @Test
-    public void registerUserAjaxThrowsConnectionError() throws UnexpectedErrorException, NoConnectionException {
+    public void registerUserAjaxShouldFailIfSomeConnectionErrorOccurred()
+            throws UnexpectedErrorException, NoConnectionException {
         prepareMocks();
         when(plugin.registerUser(USERNAME, PASSWORD_MD5_HASH, EMAIL)).thenThrow(new NoConnectionException());
         RegisterUserDto userDto = createUserDto(USERNAME, PASSWORD, EMAIL);

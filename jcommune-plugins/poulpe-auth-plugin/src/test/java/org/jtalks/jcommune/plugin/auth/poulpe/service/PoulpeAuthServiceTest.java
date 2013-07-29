@@ -53,7 +53,7 @@ public class PoulpeAuthServiceTest {
     }
 
     @Test
-    public void testRegisterUserWithInvalidCredentials() throws Exception {
+    public void testRegisterUserWithInvalidCredentialsShouldFail() throws Exception {
         Errors errors = new Errors();
         List<Error> errorList = new ArrayList<Error>();
         errorList.add(createError("user.username.length_constraint_violation", null));
@@ -73,7 +73,7 @@ public class PoulpeAuthServiceTest {
     }
 
     @Test(expectedExceptions = NoConnectionException.class)
-    public void testRegisterUserFailedWithUnexpectedError() throws Exception {
+    public void testRegisterUserShouldFailIfConnectionErrorOccurred() throws Exception {
         ClientResource clientResource = createClientResource(Status.CLIENT_ERROR_NOT_FOUND, null);
 
         doReturn(clientResource).when(service).sendRegistrationRequest(any(User.class));
@@ -82,7 +82,7 @@ public class PoulpeAuthServiceTest {
     }
 
     @Test
-    public void testRegisterUser() throws Exception {
+    public void testRegisterUserWithCorrectParametersShouldBeSuccessful() throws Exception {
         ClientResource clientResource = createClientResource(Status.SUCCESS_OK, null);
 
         doReturn(clientResource).when(service).sendRegistrationRequest(any(User.class));
@@ -100,7 +100,7 @@ public class PoulpeAuthServiceTest {
     }
 
     @Test
-    public void testAuthUser() throws Exception {
+    public void testAuthUserWithCorrectCredentialsShouldBeSuccessful() throws Exception {
         Authentication auth = createAuth("username", "password", "email");
         auth.setStatus("success");
         JaxbRepresentation<Authentication> authRepr = new JaxbRepresentation<Authentication>(auth);
@@ -115,7 +115,7 @@ public class PoulpeAuthServiceTest {
     }
 
     @Test
-    public void testAuthUserWithInvalidCredentials() throws Exception {
+    public void testAuthUserWithInvalidCredentialsShouldFail() throws Exception {
         Authentication auth = createAuth("", "password", "email");
         auth.setStatus("fail");
         JaxbRepresentation<Authentication> authRepr = new JaxbRepresentation<Authentication>(auth);

@@ -43,6 +43,10 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.*;
 
 /**
+ * Serves to register users with some available authentication plugin.
+ *
+ * todo It is temporary solution. We need some uniform solution for registration and authentication.
+ *
  * @author Andrey Pogorelov
  */
 @Controller
@@ -124,6 +128,14 @@ public class PoulpeAuthController {
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 
+    /**
+     * Register user by plugin if some authentication plugin available.
+     * @param userDto entity with user details
+     * @param result container for validation errors if some errors occurred while registering user
+     * @param locale locale
+     * @throws UnexpectedErrorException if some unexpected error occurred
+     * @throws NoConnectionException if some connection error occurred
+     */
     private void register(RegisterUserDto userDto, BindingResult result, Locale locale)
             throws UnexpectedErrorException, NoConnectionException {
         SimpleAuthenticationPlugin authPlugin = getAuthPlugin();
@@ -136,6 +148,11 @@ public class PoulpeAuthController {
         }
     }
 
+    /**
+     * Get available authentication plugin from plugin loader.
+     *
+     * @return authentication plugin
+     */
     private SimpleAuthenticationPlugin getAuthPlugin() {
         Class cl = SimpleAuthenticationPlugin.class;
         PluginFilter pluginFilter = new TypeFilter(cl);
@@ -143,6 +160,13 @@ public class PoulpeAuthController {
         return !plugins.isEmpty() ? (SimpleAuthenticationPlugin) plugins.get(0) : null;
     }
 
+    /**
+     * Parse validation error coded with available {@link ResourceBundle} to {@link BindingResult}.
+     *
+     * @param errors errors occurred while registering user
+     * @param result result with parsed validation errors
+     * @param locale locale
+     */
     private void parseValidationErrors(List<Map<String, String>> errors, BindingResult result, Locale locale) {
         for (Map<String, String> errorEntries : errors) {
             Map.Entry errorEntry = errorEntries.entrySet().iterator().next();
@@ -156,6 +180,13 @@ public class PoulpeAuthController {
         }
     }
 
+    /**
+     * Parse error code with specific {@link ResourceBundle}.
+     *
+     * @param errorCode error code
+     * @param resourceBundle used {@link ResourceBundle}
+     * @return parsed error as pair field-error message
+     */
     private Map.Entry<String, String> parseErrorCode(String errorCode, ResourceBundle resourceBundle) {
         Map.Entry<String, String> error = null;
         if (resourceBundle.containsKey(errorCode)) {

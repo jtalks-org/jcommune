@@ -29,7 +29,9 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Class serves to intercepting authentication and registration requests and forwarding them to Poulpe auth plugin.
+ * Class serves to intercepting registration requests and forwarding them to Poulpe auth plugin.
+ *
+ * todo It is temporary solution. We need some uniform solution for registration and authentication.
  *
  * @author Andrey Pogorelov
  */
@@ -63,6 +65,11 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         }
     }
 
+    /**
+     * Get available authentication plugin from plugin loader.
+     *
+     * @return authentication plugin
+     */
     private SimpleAuthenticationPlugin getAuthPlugin() {
         Class cl = SimpleAuthenticationPlugin.class;
         PluginFilter pluginFilter = new TypeFilter(cl);

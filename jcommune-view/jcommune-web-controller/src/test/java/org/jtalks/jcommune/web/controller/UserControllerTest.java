@@ -235,7 +235,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testAjaxLoginFailture() throws Exception {
+    public void testAjaxLoginFailure() throws Exception {
         when(userService.loginUser(anyString(), anyString(), anyBoolean(),
                 any(HttpServletRequest.class), any(HttpServletResponse.class)))
                 .thenReturn(false);
@@ -247,7 +247,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testAjaxLoginThrowsConnectionError() throws Exception {
+    public void testLoginAjaxUserShouldFailIfSomeConnectionErrorOccurred() throws Exception {
         when(userService.loginUser(anyString(), anyString(), anyBoolean(),
                 any(HttpServletRequest.class), any(HttpServletResponse.class)))
                 .thenThrow(new NoConnectionException());
@@ -259,7 +259,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testAjaxLoginThrowsUnexpectedError() throws Exception {
+    public void testLoginAjaxUserShouldFailIfSomeUnexpectedErrorOccurred() throws Exception {
         when(userService.loginUser(anyString(), anyString(), anyBoolean(),
                 any(HttpServletRequest.class), any(HttpServletResponse.class)))
                 .thenThrow(new UnexpectedErrorException());
