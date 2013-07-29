@@ -186,9 +186,23 @@ public class ExternalLinkHibernateDaoTest extends AbstractTransactionalTestNGSpr
     }
 
     @Test(expectedExceptions = ConstraintViolationException.class)
-    public void shouldNotSuccessWithEmptyHint() {
+    public void emptyHintForExternalLinkShouldRaiseConstraintException() {
         ExternalLink link = ObjectsFactory.getDefaultExternalLink();
         link.setHint("");
+        dao.saveOrUpdate(link);
+    }
+
+    @Test(expectedExceptions = ConstraintViolationException.class)
+    public void nullHintForExternalLinkShouldRaiseConstraintException() {
+        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
+        link.setHint(null);
+        dao.saveOrUpdate(link);
+    }
+
+    @Test(expectedExceptions = ConstraintViolationException.class)
+    public void hintForExternalLinkContainingOnlySpacesShouldRaiseConstraintException() {
+        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
+        link.setHint(" ");
         dao.saveOrUpdate(link);
     }
 
