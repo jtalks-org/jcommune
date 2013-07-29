@@ -207,7 +207,7 @@
           <button id="saveChanges" class="btn btn-primary" type="submit">
             <spring:message code="label.save_changes"/>
           </button>
-          <a href="${pageContext.request.contextPath}/user" class="btn">
+          <a href="${pageContext.request.contextPath}/users/${editedUser.userId}" class="btn">
             <spring:message code="label.cancel"/>
           </a>
         </div>

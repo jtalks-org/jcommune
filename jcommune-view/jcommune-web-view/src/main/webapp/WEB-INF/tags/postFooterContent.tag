@@ -16,19 +16,13 @@
 --%>
 <%@ tag language="java" pageEncoding="UTF-8" %>
 <%@ tag body-content="empty" %>
-<%@ attribute name="text" required="true" type="java.lang.String" %>
-<%@ attribute name="signature" required="false" type="java.lang.String" %>
+<%@ attribute name="modificationDate" required="false" type="org.joda.time.DateTime" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt_rt" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<div class="word-wrap"><jtalks:bb2html bbCode="${text}"/></div>
-<c:if test="${!empty signature}">
-  <div class="signature-conatiner">
-    <hr/>
-        <span class='signature'>
-            <jtalks:bb2html bbCode="${signature}"/>
-        </span>
-  </div>
+
+<c:if test="${!empty modificationDate}">
+    <span class="post-update-mark">
+         <spring:message code="label.modify"/><jtalks:format value="${modificationDate}"/>
+    </span>
 </c:if>

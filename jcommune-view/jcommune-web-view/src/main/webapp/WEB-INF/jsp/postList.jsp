@@ -317,14 +317,14 @@
       </td>
       <td class='post-content-td'>
         <jtalks:postContent text="${post.postContent}"
-                            signature="${post.userCreated.signature}"
-                            modificationDate="${post.modificationDate}"/>
+                            signature="${post.userCreated.signature}"/>
       </td>
     </tr>
     <tr class="post-header">
       <td>
       </td>
       <td class="left-border">
+          <jtalks:postFooterContent modificationDate="${post.modificationDate}"/>
       </td>
     </tr>
   </table>
