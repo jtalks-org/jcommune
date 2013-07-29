@@ -346,6 +346,9 @@ function addLinkVisible(visible) {
                 + '</a></span>';
         }
 
+        $('#' + bigScreenExternalLinkIdPrefix + externalLink.id).tooltip();
+        $('#' + smallScreenExternalLinkIdPrefix + externalLink.id).tooltip();
+
         jDialog.closeDialog();
         showExternalLinksDialog();
     }
