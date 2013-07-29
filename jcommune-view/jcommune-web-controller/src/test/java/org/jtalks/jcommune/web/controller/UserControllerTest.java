@@ -272,11 +272,11 @@ public class UserControllerTest {
 
     @Test
     public void testLoginWithCorrectParametersShouldBeSuccessful() throws Exception {
-        when(userService.loginUser("user", "password", anyBoolean(),
+        when(userService.loginUser(anyString(), anyString(), anyBoolean(),
                 any(HttpServletRequest.class), any(HttpServletResponse.class)))
                 .thenReturn(true);
 
-        ModelAndView view = userController.login("user", "password", "off", null, null);
+        ModelAndView view = userController.login(null, null, "off", null, null);
 
         assertEquals(view.getViewName(), "redirect:/");
         verify(userService).loginUser(anyString(), anyString(), eq(false),
