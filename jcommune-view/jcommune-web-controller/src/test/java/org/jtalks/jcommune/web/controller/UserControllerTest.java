@@ -271,6 +271,58 @@ public class UserControllerTest {
     }
 
     @Test
+    public void testLoginWithCorrectParametersShouldBeSuccessful() throws Exception {
+        when(userService.loginUser("user", "password", anyBoolean(),
+                any(HttpServletRequest.class), any(HttpServletResponse.class)))
+                .thenReturn(true);
+
+        ModelAndView view = userController.login("user", "password", "off", null, null);
+
+        assertEquals(view.getViewName(), "redirect:/");
+        verify(userService).loginUser(anyString(), anyString(), eq(false),
+                any(HttpServletRequest.class), any(HttpServletResponse.class));
+    }
+
+    @Test
+    public void testLoginWithIncorrectParametersShouldFail() throws Exception {
+        when(userService.loginUser(anyString(), anyString(), anyBoolean(),
+                any(HttpServletRequest.class), any(HttpServletResponse.class)))
+                .thenReturn(false);
+
+        ModelAndView view = userController.login(null, null, "off", null, null);
+
+        assertEquals(view.getViewName(), UserController.AUTH_FAIL_URL);
+        verify(userService).loginUser(anyString(), anyString(), eq(false),
+                any(HttpServletRequest.class), any(HttpServletResponse.class));
+    }
+
+    @Test
+    public void testLoginUserShouldFailIfSomeConnectionErrorOccurred() throws Exception {
+        when(userService.loginUser(anyString(), anyString(), anyBoolean(),
+                any(HttpServletRequest.class), any(HttpServletResponse.class)))
+                .thenThrow(new NoConnectionException());
+
+        ModelAndView view = userController.login(null, null, "off", null, null);
+
+        assertEquals(view.getViewName(), UserController.SERVICE_AUTH_FAIL_URL);
+        verify(userService).loginUser(anyString(), anyString(), eq(false),
+                any(HttpServletRequest.class), any(HttpServletResponse.class));
+    }
+
+    @Test
+    public void testLoginUserShouldFailIfSomeUnexpectedErrorOccurred() throws Exception {
+        when(userService.loginUser(anyString(), anyString(), anyBoolean(),
+                any(HttpServletRequest.class), any(HttpServletResponse.class)))
+                .thenThrow(new UnexpectedErrorException());
+
+        ModelAndView view = userController.login(null, null, "off", null, null);
+
+        assertEquals(view.getViewName(), UserController.SERVICE_AUTH_FAIL_URL);
+        verify(userService).loginUser(anyString(), anyString(), eq(false),
+                any(HttpServletRequest.class), any(HttpServletResponse.class));
+    }
+
+    @Test
     public void testGetUsernameListSuccess(){
         String pattern = "us";
         List<String> usernames = Lists.newArrayList("User1", "User2", "User3");
