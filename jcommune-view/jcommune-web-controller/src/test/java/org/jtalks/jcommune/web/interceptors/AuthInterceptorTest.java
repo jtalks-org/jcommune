@@ -69,7 +69,7 @@ public class AuthInterceptorTest {
     }
 
     @Test
-    public void testPreHandlePluginUnavailable() throws Exception {
+    public void preHandleLoginWithPluginUnavailableShouldNotForwardRequestToPlugin() throws Exception {
         request = new MockHttpServletRequest("POST", JC_NEW_USER_URL);
         when(pluginLoader.getPlugins(createFilter())).thenReturn(Collections.EMPTY_LIST);
         boolean result = interceptor.preHandle(request, response, handler);
@@ -78,7 +78,7 @@ public class AuthInterceptorTest {
     }
 
     @Test
-    public void testPreHandlePluginAvailable() throws Exception {
+    public void preHandleLoginWithPluginAvailableShouldForwardRequestToPlugin() throws Exception {
         request = new MockHttpServletRequest("POST", JC_NEW_USER_URL);
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
         when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Arrays.<Plugin>asList(plugin));
@@ -89,7 +89,7 @@ public class AuthInterceptorTest {
     }
 
     @Test
-    public void testPreHandlePluginAvailableLoginAjax() throws Exception {
+    public void preHandleLoginAjaxWithPluginAvailableShouldForwardRequestToPlugin() throws Exception {
         request = new MockHttpServletRequest("POST", JC_NEW_USER_AJAX_URL);
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
         when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Arrays.<Plugin>asList(plugin));

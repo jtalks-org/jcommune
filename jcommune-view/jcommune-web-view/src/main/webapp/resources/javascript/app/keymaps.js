@@ -99,11 +99,7 @@ Keymaps.linksEditorRemoveButton = function (e) {
 Keymaps.linksEditorCancelButton = function (e) {
     if ((e.keyCode || e.charCode) == tabCode) {
         e.preventDefault();
-        if ($('#main-links-editor #remove-link:visible')[0]) {
-            $('#main-links-editor #remove-link').focus();
-        } else {
-            $('#main-links-editor #link-title').focus();
-        }
+        $('#main-links-editor button.close').focus();
     }
 }
 

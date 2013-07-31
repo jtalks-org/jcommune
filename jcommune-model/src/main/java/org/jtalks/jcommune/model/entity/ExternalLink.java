@@ -105,7 +105,7 @@ public class ExternalLink extends Entity {
      * @return URL hint or description, e.g. 'The most powerful forum engine', this hint is shown
      */
     @NotNull(message = "{validation.not_null}")
-    @Size(max = HINT_MAX_SIZE, message = "{validation.links.hint.length}")
+    @Size(min = HINT_MIN_SIZE, max = HINT_MAX_SIZE, message = "{validation.links.hint.length}")
     public String getHint() {
         return hint;
     }
