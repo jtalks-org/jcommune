@@ -111,6 +111,22 @@
         </div>
 
         <div class="control-group">
+          <label class="control-label"><spring:message code="label.language"/></label>
+
+          <div class="controls">
+            <form:select path="language" class="input-medium">
+              <c:forEach items="${editedUser.languagesAvailable}" var="language">
+                <form:option value="${language}">
+                  <spring:message code="${language.languageNameLabel}"/>
+                </form:option>
+              </c:forEach>
+            </form:select>
+            <br/>
+            <form:errors path="language" cssClass="help-inline"/>
+          </div>
+        </div>
+
+        <div class="control-group">
           <label class="control-label"><spring:message code="label.pageSize"/></label>
 
           <div class="controls">
