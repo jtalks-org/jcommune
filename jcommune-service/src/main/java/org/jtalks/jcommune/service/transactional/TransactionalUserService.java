@@ -367,7 +367,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
             user = getByUsername(username);
             result = authenticate(user, password, rememberMe, request, response);
         } catch (NotFoundException e) {
-            LOGGER.warn("User was not found during login process, username = " + username);
+            String ipAddress = getClientIpAddress(request);
+            LOGGER.warn("User was not found during login process, username = {}, IP={}", username, ipAddress);
             result = pluginAuthenticate(username, password, rememberMe, request, response, true);
         } catch (AuthenticationException e) {
             String ipAddress = getClientIpAddress(request);
