@@ -56,6 +56,9 @@ public class UserController {
     public static final String REGISTRATION = "registration";
     public static final String LOGIN = "login";
     public static final String AFTER_REGISTRATION = "afterRegistration";
+    public static final String AUTH_FAIL_URL = "redirect:/login?login_error=1";
+    public static final String SERVICE_AUTH_FAIL_URL = "redirect:/login?login_error=3";
+
     /**
      * While registering a new user, she gets {@link JCUser#setAutosubscribe(boolean)} set to {@code true} by default.
      * Afterwards user can edit her profile and change this setting.
@@ -258,6 +261,37 @@ public class UserController {
             return new JsonResponse(JsonResponseStatus.SUCCESS);
         } else {
             return new JsonResponse(JsonResponseStatus.FAIL);
+        }
+    }
+
+    /**
+     * Handles login action.
+     *
+     * @param username   username
+     * @param password   password
+     * @param rememberMe set remember me token if equal to "on"
+     * @param request    servlet request
+     * @param response   servlet response
+     * @return "success" or "fail" response status
+     */
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public ModelAndView login(@RequestParam("j_username") String username,
+                              @RequestParam("j_password") String password,
+                              @RequestParam(value = "_spring_security_remember_me", defaultValue = "off") String rememberMe,
+                              HttpServletRequest request, HttpServletResponse response) {
+        boolean rememberMeBoolean = rememberMe.equals(REMEMBER_ME_ON);
+        boolean isAuthenticated;
+        try {
+            isAuthenticated = userService.loginUser(username, password, rememberMeBoolean, request, response);
+        } catch (NoConnectionException e) {
+            return new ModelAndView(SERVICE_AUTH_FAIL_URL);
+        } catch (UnexpectedErrorException e) {
+            return new ModelAndView(SERVICE_AUTH_FAIL_URL);
+        }
+        if (isAuthenticated) {
+            return new ModelAndView("redirect:/");
+        } else {
+            return new ModelAndView(AUTH_FAIL_URL);
         }
     }
 

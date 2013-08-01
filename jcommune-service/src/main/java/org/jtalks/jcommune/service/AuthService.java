@@ -19,11 +19,24 @@ import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 
 /**
+ * Serves to authenticate users with some available authentication plugin.
+ * todo It is temporary solution. We need some uniform solution for registration and authentication.
+ *
  * @author Andrey Pogorelov
  */
 public interface AuthService  extends EntityService<JCUser> {
 
-
+    /**
+     * Authenticate user with specified parameters by some available plugin.
+     *
+     * @param username username
+     * @param passwordHash user password hash
+     * @param newUser if user is new for JCommune (not exist in internal database)
+     * @return authenticated user
+     *
+     * @throws UnexpectedErrorException if some unexpected error occurred
+     * @throws NoConnectionException if some connection error occurred
+     */
     JCUser pluginAuthenticate(String username, String passwordHash, boolean newUser)
             throws UnexpectedErrorException, NoConnectionException;
 }

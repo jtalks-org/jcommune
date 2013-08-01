@@ -123,6 +123,7 @@ function sendLoginPost(e) {
                     ErrorUtils.addErrorStyles('#j_username');
                     ErrorUtils.addErrorStyles('#j_password');
 
+                    passwordElement.val("");
                     passwordElement.parent().append('<span class="help-inline _error">' + $labelLoginError + '</span>');
                     jDialog.resizeDialog(jDialog.dialog);
                 }

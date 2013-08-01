@@ -69,7 +69,7 @@ public class PoulpeAuthPluginTest {
     }
 
     @Test
-    public void userShouldntBeRegisteredIfSomeErrorHappened()
+    public void userShouldNotBeRegisteredIfSomeErrorOccurred()
             throws JAXBException, IOException, NoConnectionException, UnexpectedErrorException {
         String username = "user";
         String password = "";
@@ -100,7 +100,7 @@ public class PoulpeAuthPluginTest {
     }
 
     @Test(expectedExceptions = NoConnectionException.class)
-    public void registerUserShouldThrowNoConnectionIfPoulpeUnavailable()
+    public void registerUserShouldThrowNoConnectionExceptionIfPoulpeUnavailable()
             throws UnexpectedErrorException, NoConnectionException, IOException, JAXBException {
         String username = "user";
         String password = "1234";
@@ -112,7 +112,7 @@ public class PoulpeAuthPluginTest {
     }
 
     @Test(expectedExceptions = UnexpectedErrorException.class)
-    public void registerUserShouldThrowUnexpectedErrorExceptionIfSomeErrorHappened()
+    public void registerUserShouldThrowUnexpectedErrorExceptionIfSomeErrorOccurred()
             throws UnexpectedErrorException, NoConnectionException, IOException, JAXBException {
         String username = "user";
         String password = "1234";
@@ -124,7 +124,7 @@ public class PoulpeAuthPluginTest {
     }
 
     @Test
-    public void userShouldNotBeAuthenticatedIfSomeErrorHappened()
+    public void userShouldNotBeAuthenticatedIfSomeErrorOccurred()
             throws JAXBException, IOException, NoConnectionException, UnexpectedErrorException {
         String username = "user";
         String password = "";
@@ -154,7 +154,7 @@ public class PoulpeAuthPluginTest {
     }
 
     @Test(expectedExceptions = NoConnectionException.class)
-    public void authenticateShouldThrowNoConnectionIfPoulpeUnavailable()
+    public void authenticateShouldThrowNoConnectionExceptionIfPoulpeUnavailable()
             throws UnexpectedErrorException, NoConnectionException, IOException, JAXBException {
         String username = "user";
         String password = "1234";
@@ -165,7 +165,7 @@ public class PoulpeAuthPluginTest {
     }
 
     @Test(expectedExceptions = UnexpectedErrorException.class)
-    public void authenticateShouldThrowUnexpectedErrorExceptionIfSomeErrorHappened()
+    public void authenticateShouldThrowUnexpectedErrorExceptionIfSomeErrorOccurred()
             throws UnexpectedErrorException, NoConnectionException, IOException, JAXBException {
         String username = "user";
         String password = "1234";

@@ -59,7 +59,7 @@ public class PoulpeAuthServiceIntegrationTest {
     }
 
     @Test
-    public void testSendRegistrationRequest() throws Exception {
+    public void testSendRegistrationRequestShouldBeSuccessful() throws Exception {
         User user = createUser("username", "passwordHash", "email@email.ru");
         whenHttp(server).match(post(regUrl)).then(status(HttpStatus.OK_200));
 
@@ -69,7 +69,7 @@ public class PoulpeAuthServiceIntegrationTest {
     }
 
     @Test
-    public void testSendRegistrationRequestBadResponse() throws Exception {
+    public void testSendRegistrationRequestWithBadResponseShouldFail() throws Exception {
         User user = createUser("username", "passwordHash", "email.ru");
         whenHttp(server).match(post(regUrl)).then(status(HttpStatus.INTERNAL_SERVER_ERROR_500));
 
@@ -79,7 +79,7 @@ public class PoulpeAuthServiceIntegrationTest {
     }
 
     @Test
-    public void testSendRegistrationRequestValidationError() throws Exception {
+    public void testSendRegistrationRequestWithValidationErrorResponseShouldFail() throws Exception {
         User user = createUser("username", "passwordHash", "email.ru");
         whenHttp(server).match(post(regUrl)).then(status(HttpStatus.BAD_REQUEST_400));
 

@@ -235,7 +235,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testAjaxLoginFailture() throws Exception {
+    public void testAjaxLoginFailure() throws Exception {
         when(userService.loginUser(anyString(), anyString(), anyBoolean(),
                 any(HttpServletRequest.class), any(HttpServletResponse.class)))
                 .thenReturn(false);
@@ -247,7 +247,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testAjaxLoginThrowsConnectionError() throws Exception {
+    public void testLoginAjaxUserShouldFailIfSomeConnectionErrorOccurred() throws Exception {
         when(userService.loginUser(anyString(), anyString(), anyBoolean(),
                 any(HttpServletRequest.class), any(HttpServletResponse.class)))
                 .thenThrow(new NoConnectionException());
@@ -259,13 +259,65 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testAjaxLoginThrowsUnexpectedError() throws Exception {
+    public void testLoginAjaxUserShouldFailIfSomeUnexpectedErrorOccurred() throws Exception {
         when(userService.loginUser(anyString(), anyString(), anyBoolean(),
                 any(HttpServletRequest.class), any(HttpServletResponse.class)))
                 .thenThrow(new UnexpectedErrorException());
 
         JsonResponse response = userController.loginAjax(null, null, "off", null, null);
         assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
+        verify(userService).loginUser(anyString(), anyString(), eq(false),
+                any(HttpServletRequest.class), any(HttpServletResponse.class));
+    }
+
+    @Test
+    public void testLoginWithCorrectParametersShouldBeSuccessful() throws Exception {
+        when(userService.loginUser(anyString(), anyString(), anyBoolean(),
+                any(HttpServletRequest.class), any(HttpServletResponse.class)))
+                .thenReturn(true);
+
+        ModelAndView view = userController.login(null, null, "off", null, null);
+
+        assertEquals(view.getViewName(), "redirect:/");
+        verify(userService).loginUser(anyString(), anyString(), eq(false),
+                any(HttpServletRequest.class), any(HttpServletResponse.class));
+    }
+
+    @Test
+    public void testLoginWithIncorrectParametersShouldFail() throws Exception {
+        when(userService.loginUser(anyString(), anyString(), anyBoolean(),
+                any(HttpServletRequest.class), any(HttpServletResponse.class)))
+                .thenReturn(false);
+
+        ModelAndView view = userController.login(null, null, "off", null, null);
+
+        assertEquals(view.getViewName(), UserController.AUTH_FAIL_URL);
+        verify(userService).loginUser(anyString(), anyString(), eq(false),
+                any(HttpServletRequest.class), any(HttpServletResponse.class));
+    }
+
+    @Test
+    public void testLoginUserShouldFailIfSomeConnectionErrorOccurred() throws Exception {
+        when(userService.loginUser(anyString(), anyString(), anyBoolean(),
+                any(HttpServletRequest.class), any(HttpServletResponse.class)))
+                .thenThrow(new NoConnectionException());
+
+        ModelAndView view = userController.login(null, null, "off", null, null);
+
+        assertEquals(view.getViewName(), UserController.SERVICE_AUTH_FAIL_URL);
+        verify(userService).loginUser(anyString(), anyString(), eq(false),
+                any(HttpServletRequest.class), any(HttpServletResponse.class));
+    }
+
+    @Test
+    public void testLoginUserShouldFailIfSomeUnexpectedErrorOccurred() throws Exception {
+        when(userService.loginUser(anyString(), anyString(), anyBoolean(),
+                any(HttpServletRequest.class), any(HttpServletResponse.class)))
+                .thenThrow(new UnexpectedErrorException());
+
+        ModelAndView view = userController.login(null, null, "off", null, null);
+
+        assertEquals(view.getViewName(), UserController.SERVICE_AUTH_FAIL_URL);
         verify(userService).loginUser(anyString(), anyString(), eq(false),
                 any(HttpServletRequest.class), any(HttpServletResponse.class));
     }

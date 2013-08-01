@@ -33,6 +33,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Serves to authenticate users with some available authentication plugin.
+ * todo It is temporary solution. We need some uniform solution for registration and authentication.
+ *
  * @author Andrey Pogorelov
  */
 public class TransactionalAuthService extends AbstractTransactionalEntityService<JCUser, UserDao>
@@ -42,12 +45,10 @@ public class TransactionalAuthService extends AbstractTransactionalEntityService
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalUserService.class);
 
     /**
-     * Subclass may use this constructor to store entity DAO or parent
-     * entity DAO if necessary
-     *
      * @param dao for operations with user data storage
+     * @param pluginLoader for communication with plugin storage
      */
-    TransactionalAuthService(UserDao dao, PluginLoader pluginLoader) {
+    public TransactionalAuthService(UserDao dao, PluginLoader pluginLoader) {
         super(dao);
         this.pluginLoader = pluginLoader;
     }
@@ -63,6 +64,14 @@ public class TransactionalAuthService extends AbstractTransactionalEntityService
         return saveUser(authInfo, passwordHash, newUser);
     }
 
+    /**
+     * Save user with identified details in internal database.
+     *
+     * @param authInfo user details
+     * @param passwordHash user password hash
+     * @param newUser user is new for JCommune
+     * @return
+     */
     private JCUser saveUser(Map<String, String> authInfo, String passwordHash, boolean newUser) {
         JCUser user;
         if (newUser) {
@@ -90,6 +99,15 @@ public class TransactionalAuthService extends AbstractTransactionalEntityService
         return user;
     }
 
+    /**
+     *
+     * @param username username
+     * @param passwordHash user password hash
+     * @return user auth details returned by authentication plugin
+     *
+     * @throws UnexpectedErrorException if some unexpected error occurred
+     * @throws NoConnectionException if some connection error occurred
+     */
     private Map<String, String> authenticateWithPlugin(String username, String passwordHash)
             throws UnexpectedErrorException, NoConnectionException {
         SimpleAuthenticationPlugin authPlugin = getAuthPlugin();
@@ -100,6 +118,11 @@ public class TransactionalAuthService extends AbstractTransactionalEntityService
         return authInfo;
     }
 
+    /**
+     * Get available authentication plugin from plugin loader.
+     *
+     * @return authentication plugin
+     */
     private SimpleAuthenticationPlugin getAuthPlugin() {
         Class cl = SimpleAuthenticationPlugin.class;
         PluginFilter pluginFilter = new TypeFilter(cl);
