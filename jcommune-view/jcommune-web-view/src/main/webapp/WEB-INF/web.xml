@@ -98,6 +98,16 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
+ <!--Process head request -->
+  <filter>
+    <filter-name>headRequest</filter-name>
+    <filter-class>org.jtalks.jcommune.web.filters.HeadRequestTypeFilter</filter-class>
+  </filter>
+  <filter-mapping>
+      <filter-name>headRequest</filter-name>
+      <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
   <!--We need this filter as we use HTTP DELETE to delete posts & topics-->
   <filter>
     <filter-name>httpMethodFilter</filter-name>
