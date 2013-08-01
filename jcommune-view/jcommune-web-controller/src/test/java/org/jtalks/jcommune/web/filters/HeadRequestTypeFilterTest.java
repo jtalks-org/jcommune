@@ -62,6 +62,7 @@ public class HeadRequestTypeFilterTest {
 
         Mockito.verify(noBodyResponseWrapper, times(1)).setContentLength();
         assertEquals(0, this.response.getContentLength());
+        assertEquals(200, this.response.getStatus());
     }
 
     @Test(dataProvider = "requestType")

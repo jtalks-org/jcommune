@@ -42,7 +42,6 @@ public class NoBodyResponseWrapper extends HttpServletResponseWrapper {
             return contentLength;
         }
 
-        @Override
         public void write(int b) throws IOException {
             contentLength++;
         }

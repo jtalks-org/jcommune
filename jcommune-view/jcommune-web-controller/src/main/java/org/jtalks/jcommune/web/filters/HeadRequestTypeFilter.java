@@ -25,10 +25,10 @@ public class HeadRequestTypeFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        httpServletRequest = (HttpServletRequest) request;
-        httpServletResponse = (HttpServletResponse) response;
+        this.httpServletRequest = (HttpServletRequest) request;
+        this.httpServletResponse = (HttpServletResponse) response;
 
-        if (isHeadTypeRequest(httpServletRequest)) {
+        if (isHeadTypeRequest(this.httpServletRequest)) {
 
             NoBodyResponseWrapper noBodyResponseWrapper = getNoBodyResponseWrapper();
 
