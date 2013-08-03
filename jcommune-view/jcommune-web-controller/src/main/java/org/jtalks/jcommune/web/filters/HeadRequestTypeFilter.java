@@ -46,9 +46,10 @@ public class HeadRequestTypeFilter implements Filter {
 
     public HttpServletRequestWrapper getForceRequestWrapper() {
 
-        if (this.forceRequestWrapper == null) {
-            this.forceRequestWrapper = new ForceGetRequestWrapper(this.httpServletRequest);
-        }
+        //@todo When uncomment out this condition application throw exception. Please somebody fix this.
+        //if (this.forceRequestWrapper == null) {
+           this.setForceRequestWrapper(new ForceGetRequestWrapper(this.httpServletRequest));
+        //}
 
         return this.forceRequestWrapper;
     }
@@ -59,9 +60,10 @@ public class HeadRequestTypeFilter implements Filter {
 
     public NoBodyResponseWrapper getNoBodyResponseWrapper() {
 
-        if (this.noBodyResponseWrapper == null) {
-            this.noBodyResponseWrapper = new NoBodyResponseWrapper(this.httpServletResponse);
-        }
+        //@todo When uncomment out this condition application throw exception. Please somebody fix this.
+        //if (this.noBodyResponseWrapper == null) {
+            this.setNoBodyResponseWrapper(new NoBodyResponseWrapper(this.httpServletResponse));
+       // }
 
         return this.noBodyResponseWrapper;
     }
