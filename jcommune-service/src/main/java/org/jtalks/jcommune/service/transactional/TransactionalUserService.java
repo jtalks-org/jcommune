@@ -148,12 +148,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      */
     @Override
     public JCUser registerUser(JCUser user) {
-
-        User commonUser = getDao().getCommonUserByUsername(user.getUsername());
-//        user = new JCUser(commonUser.getUsername(), commonUser.getEmail(), commonUser.getPassword());
-        if (commonUser != null) {
-            user.setId(commonUser.getId());
-        }
         //encrypt password
         String encodedPassword = encryptionService.encryptPassword(user.getPassword());
         user.setPassword(encodedPassword);
