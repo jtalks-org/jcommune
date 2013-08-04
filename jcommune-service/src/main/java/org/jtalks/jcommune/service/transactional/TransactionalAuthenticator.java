@@ -48,7 +48,7 @@ import java.util.Map;
  * Authentication:
  * Firstly tries to authenticate by default behavior (with JCommune authentication).
  * If default authentication was failed tries to authenticate by any available plugin.
- *
+ * <p/>
  * Registration:
  * Register user by any available plugin.
  *
@@ -100,18 +100,19 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
     public boolean authenticate(String username, String password, boolean rememberMe,
                                 HttpServletRequest request, HttpServletResponse response)
             throws UnexpectedErrorException, NoConnectionException {
-        boolean result = false;
+        boolean result;
         JCUser user;
         try {
             user = getByUsername(username);
-            result = authenticateDefault(user, password, rememberMe, request, response, false);
+            result = authenticateDefault(user, password, rememberMe, request, response);
         } catch (NotFoundException | AuthenticationException e) {
-            boolean newUser = e instanceof NotFoundException;
-            user = authenticateByPluginAndUpdateUserInfo(username, password, newUser);
-            if (user != null) {
-                //try authentication again with updated user details
-                result = authenticateDefault(user, password, rememberMe, request, response, true);
+            boolean newUser = false;
+            if (e instanceof NotFoundException) {
+                String ipAddress = getClientIpAddress(request);
+                LOGGER.warn("User was not found during login process, username = {}, IP={}", username, ipAddress);
+                newUser = true;
             }
+            result = authenticateByPluginAndUpdateUserInfo(username, password, newUser, rememberMe, request, response);
         }
         return result;
     }
@@ -119,38 +120,46 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
     /**
      * Authenticate user by auth plugin and save updated user details to inner database.
      *
+     *
      * @param username username
      * @param password user password
      * @param newUser  is new user or not
-     * @return updated (or created) user
+     * @return true if authentication was successful, otherwise false
      * @throws UnexpectedErrorException if some unexpected error occurred
      * @throws NoConnectionException    if some connection error occurred
      */
-    private JCUser authenticateByPluginAndUpdateUserInfo(String username, String password, boolean newUser)
+    private boolean authenticateByPluginAndUpdateUserInfo(String username, String password, boolean newUser,
+                                                          boolean rememberMe, HttpServletRequest request,
+                                                          HttpServletResponse response)
             throws UnexpectedErrorException, NoConnectionException {
         String passwordHash = encryptionService.encryptPassword(password);
         Map<String, String> authInfo = authenticateByAvailablePlugin(username, passwordHash);
         if (authInfo.isEmpty() || !authInfo.containsKey("email") || !authInfo.containsKey("username")) {
             LOGGER.info("Could not authenticate by plugin user {}.", username);
-            return null;
+            return false;
         }
-        return saveUser(authInfo, passwordHash, newUser);
+        JCUser user = saveUser(authInfo, passwordHash, newUser);
+        try {
+            return authenticateDefault(user, password, rememberMe, request, response);
+        } catch (AuthenticationException e) {
+            return false;
+        }
     }
 
     /**
      * Authenticate user by JCommune.
      *
-     * @param user user entity
-     * @param password user password
+     *
+     * @param user       user entity
+     * @param password   user password
      * @param rememberMe remember this user or not
-     * @param request HTTP request
-     * @param response HTTP response
-     * @param force throw any exceptions or not
-     * @return true if authentication was successful, otherwise false.
+     * @param request    HTTP request
+     * @param response   HTTP response
+     * @return true if authentication was successful, otherwise false
      * @throws AuthenticationException
      */
     private boolean authenticateDefault(JCUser user, String password, boolean rememberMe,
-                                        HttpServletRequest request, HttpServletResponse response, boolean force)
+                                        HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
         try {
             UsernamePasswordAuthenticationToken token =
@@ -170,9 +179,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
             String ipAddress = getClientIpAddress(request);
             LOGGER.info("AuthenticationException: username = {}, IP={}, message={}",
                     new Object[]{user.getUsername(), ipAddress, e.getMessage()});
-            if (!force) {
-                throw e;
-            }
+            throw e;
         }
         return false;
     }
