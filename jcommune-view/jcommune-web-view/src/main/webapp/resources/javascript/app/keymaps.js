@@ -71,20 +71,20 @@ Keymaps.signinSubmit = function (e) {
 
 Keymaps.linksEditor = function (e) {
     if ((e.keyCode || e.charCode) == enterCode) {
-        var but = $('#main-links-editor  #save-link:visible')[0]
-        if (but && $(e.target).attr('id') != 'cancel-link') {
+        var but = $('#mainLinksEditor  #saveLink:visible')[0]
+        if (but && $(e.target).attr('id') != 'cancelLink') {
             e.preventDefault();
             but.click();
         }
     }
 
     if ((e.keyCode || e.charCode) == escCode) {
-        var but = $('#main-links-editor #cancel-link:visible')[0]
+        var but = $('#mainLinksEditor #cancelLink:visible')[0]
         if (but) {
             e.preventDefault();
             but.click();
         } else {
-            $('#main-links-editor .close').click();
+            $('#mainLinksEditor .close').click();
         }
     }
 }
@@ -92,28 +92,28 @@ Keymaps.linksEditor = function (e) {
 Keymaps.linksEditorRemoveButton = function (e) {
     if ((e.keyCode || e.charCode) == tabCode) {
         e.preventDefault();
-        $('#main-links-editor #cancel-link').focus();
+        $('#mainLinksEditor #cancelLink').focus();
     }
 }
 
 Keymaps.linksEditorCancelButton = function (e) {
     if ((e.keyCode || e.charCode) == tabCode) {
         e.preventDefault();
-        $('#main-links-editor button.close').focus();
+        $('#mainLinksEditor button.close').focus();
     }
 }
 
 Keymaps.linksEditorHintInput = function (e) {
     if ((e.keyCode || e.charCode) == tabCode) {
         e.preventDefault();
-        $('#main-links-editor #save-link').focus();
+        $('#mainLinksEditor #saveLink').focus();
     }
 }
 
 Keymaps.linksEditorSaveButton = function (e) {
     if ((e.keyCode || e.charCode) == tabCode) {
         e.preventDefault();
-        $('#main-links-editor #cancel-link').focus();
+        $('#mainLinksEditor #cancelLink').focus();
     }
 }
 

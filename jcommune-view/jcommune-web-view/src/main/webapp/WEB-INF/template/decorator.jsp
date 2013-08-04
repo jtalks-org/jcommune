@@ -98,7 +98,7 @@
               src="${pageContext.request.contextPath}/resources/wro/plugin.js?${project.version}"></script>
     </c:if>
 
-    <c:if test="${fn:contains(uriString, 'topics')}">
+    <c:if test="${fn:contains(uriString, 'topics') or fn:contains(uriString, 'branches')}">
       <script type="text/javascript"
               src="${pageContext.request.contextPath}/resources/wro/topic.js?${project.version}"></script>
 
@@ -220,7 +220,7 @@
       <script src="${pageContext.request.contextPath}/resources/javascript/app/permissionService.js"></script>
     </c:if>
 
-    <c:if test="${fn:contains(uriString, 'topics')}">
+    <c:if test="${fn:contains(uriString, 'topics') or fn:contains(uriString, 'branches')}">
       <script src="${pageContext.request.contextPath}/resources/javascript/app/datepicker.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/app/pollPreview.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>

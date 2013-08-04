@@ -56,28 +56,28 @@ function showExternalLinksDialog() {
 
     var footerContent = '' +
         '<button id="addMainLink" class="btn btn-block list-of-links hide-element">' + $labelAdd + '</button> \
-        <button id="cancel-link" class="btn  edit-links remove-links hide-element">' + $labelCancel + '</button> \
-        <button id="save-link" class="btn btn-primary  edit-links hide-element">' + $labelSave + '</button> \
-        <button id="remove-link" class="btn btn-primary  remove-links hide-element">' + $labelDelete + '</button>';
+        <button id="cancelLink" class="btn  edit-links remove-links hide-element">' + $labelCancel + '</button> \
+        <button id="saveLink" class="btn btn-primary  edit-links hide-element">' + $labelSave + '</button> \
+        <button id="removeLink" class="btn btn-primary  remove-links hide-element">' + $labelDelete + '</button>';
 
     var bodyContent =
         '<table cellpadding="0" cellspacing="0" class="list-of-links"> <tbody>' +
             createLinksTableRows(elements) + ' \
          </tbody></table>' +
-            Utils.createFormElement($labelTitle, 'link-title', 'text', 'hide-element edit-links dialog-input') +
-            Utils.createFormElement($labelUrl, 'link-url', 'text', 'hide-element edit-links dialog-input') +
-            Utils.createFormElement($labelHint, 'link-hint', 'text', 'hide-element edit-links dialog-input') + ' \
+            Utils.createFormElement($labelTitle, 'linkTitle', 'text', 'hide-element edit-links dialog-input') +
+            Utils.createFormElement($labelUrl, 'linkUrl', 'text', 'hide-element edit-links dialog-input') +
+            Utils.createFormElement($labelHint, 'linkHint', 'text', 'hide-element edit-links dialog-input') + ' \
          <span class="confirm-delete-text remove-links"></span> ';
 
     var editButtonClick = function (e) {
         e.preventDefault();
-        actionId = $(e.target).parent('td').parent('tr').attr('id');
+        actionId = $(e.target).parents('tr').attr('id');
         toAction('edit');
     };
 
     var trashButtonClick = function (e) {
         e.preventDefault();
-        actionId = $(e.target).parent('td').parent('tr').attr('id');
+        actionId = $(e.target).parents('tr').attr('id');
         toAction('confirmRemove');
 
     };
@@ -90,10 +90,10 @@ function showExternalLinksDialog() {
     var linksEditorCloseButtonInput = function (e) {
         if ((e.keyCode || e.charCode) == tabCode) {
             e.preventDefault();
-            if ($('#main-links-editor #link-title:visible')[0]) {
-                $('#main-links-editor #link-title').focus();
-            } else if ($('#main-links-editor #remove-link:visible')[0]) {
-                $('#main-links-editor #remove-link').focus();
+            if ($('#mainLinksEditor #linkTitle:visible')[0]) {
+                $('#mainLinksEditor #linkTitle').focus();
+            } else if ($('#mainLinksEditor #removeLink:visible')[0]) {
+                $('#mainLinksEditor #removeLink').focus();
             }
             else {
                 $(tabNavigationOrder[0]).focus();
@@ -102,7 +102,7 @@ function showExternalLinksDialog() {
     }
 
     jDialog.createDialog({
-        dialogId: 'main-links-editor',
+        dialogId: 'mainLinksEditor',
         title: $labelLinksEditor,
         bodyContent: bodyContent,
         footerContent: footerContent,
@@ -113,10 +113,10 @@ function showExternalLinksDialog() {
         handlers: {
             '#addMainLink': {'click': addButtonClick},
             'button.close': {'keydown': linksEditorCloseButtonInput},
-            '#main-links-editor #link-hint': {'keydown': Keymaps.linksEditorHintInput},
-            '#main-links-editor #save-link': {'keydown': Keymaps.linksEditorSaveButton},
-            '#main-links-editor #cancel-link': {'keydown': Keymaps.linksEditorCancelButton},
-            '#main-links-editor #remove-link': {'keydown': Keymaps.linksEditorRemoveButton}
+            '#mainLinksEditor #linkHint': {'keydown': Keymaps.linksEditorHintInput},
+            '#mainLinksEditor #saveLink': {'keydown': Keymaps.linksEditorSaveButton},
+            '#mainLinksEditor #cancelLink': {'keydown': Keymaps.linksEditorCancelButton},
+            '#mainLinksEditor #removeLink': {'keydown': Keymaps.linksEditorRemoveButton}
         },
         handlersDelegate: {
             '.icon-pencil': {'click': editButtonClick},
@@ -201,17 +201,17 @@ function editLinksVisible(visible) {
         if ($('.edit-links')) {
             if (visible) {
                 var link = getLinkById(actionId);
-                $('#link-title').val(link.title);
-                $('#link-url').val(link.url);
-                $('#link-hint').val(link.hint);
+                $('#linkTitle').val(link.title);
+                $('#linkUrl').val(link.url);
+                $('#linkHint').val(link.hint);
                 $('.edit-links').removeClass("hide-element");
-                $('#link-title').focus();
+                $('#linkTitle').focus();
                 //save edited link
-                $('#save-link').unbind('click').bind('click', function (e) {
+                $('#saveLink').unbind('click').bind('click', function (e) {
                     e.preventDefault();
-                    link.title = $('#link-title').val();
-                    link.url = $('#link-url').val();
-                    link.hint = $('#link-hint').val();
+                    link.title = $('#linkTitle').val();
+                    link.url = $('#linkUrl').val();
+                    link.hint = $('#linkHint').val();
                     $.ajax({
                         url: baseUrl + "/links/save",
                         type: "POST",
@@ -227,7 +227,7 @@ function editLinksVisible(visible) {
                             } else {
                                 // remove previous errors and show new errors
                                 jDialog.prepareDialog(jDialog.dialog);
-                                jDialog.showErrors(jDialog.dialog, resp.result, "link-", "");
+                                jDialog.showErrors(jDialog.dialog, resp.result, "link", "");
                             }
                         },
                         error: function (resp) {
@@ -239,7 +239,7 @@ function editLinksVisible(visible) {
                     });
 
                 });
-                $('#cancel-link').unbind('click').bind('click', function (e) {
+                $('#cancelLink').unbind('click').bind('click', function (e) {
                     e.preventDefault();
                     toAction('list');
                 });
@@ -278,17 +278,17 @@ function addLinkVisible(visible) {
     var intervalID = setInterval(function () {
         if ($('.edit-links')) {
             if (visible) {
-                $('#link-title').val("");
-                $('#link-url').val("");
-                $('#link-hint').val("");
+                $('#linkTitle').val("");
+                $('#linkUrl').val("");
+                $('#linkHint').val("");
                 $('.edit-links').removeClass("hide-element");
-                $('#link-title').focus();
-                $('#save-link').unbind('click').bind('click', function (e) {
+                $('#linkTitle').focus();
+                $('#saveLink').unbind('click').bind('click', function (e) {
                     e.preventDefault();
                     var link = {};
-                    link.title = $('#link-title').val();
-                    link.url = $('#link-url').val();
-                    link.hint = $('#link-hint').val();
+                    link.title = $('#linkTitle').val();
+                    link.url = $('#linkUrl').val();
+                    link.hint = $('#linkHint').val();
                     $.ajax({
                         url: baseUrl + "/links/save",
                         type: "POST",
@@ -303,7 +303,7 @@ function addLinkVisible(visible) {
                             } else {
                                 // remove previous errors and show new errors
                                 jDialog.prepareDialog(jDialog.dialog);
-                                jDialog.showErrors(linksEditor, resp.result, "link-", "");
+                                jDialog.showErrors(linksEditor, resp.result, "link", "");
                             }
                         },
                         error: function (resp) {
@@ -315,7 +315,7 @@ function addLinkVisible(visible) {
                     });
 
                 });
-                $('#cancel-link').unbind('click').bind('click', function (e) {
+                $('#cancelLink').unbind('click').bind('click', function (e) {
                     e.preventDefault();
                     toAction('list');
                 });
@@ -346,6 +346,9 @@ function addLinkVisible(visible) {
                 + '</a></span>';
         }
 
+        $('#' + bigScreenExternalLinkIdPrefix + externalLink.id).tooltip();
+        $('#' + smallScreenExternalLinkIdPrefix + externalLink.id).tooltip();
+
         jDialog.closeDialog();
         showExternalLinksDialog();
     }
@@ -353,11 +356,11 @@ function addLinkVisible(visible) {
 
 function confirmRemoveVisible(visible) {
     var intervalID = setInterval(function () {
-        if ($('.remove-links')) {
+        if ($('.removeLinks')) {
             if (visible) {
                 var link = getLinkById(actionId);
                 var deleteConfirmationMessage = $labelDeleteMainLink.replace('{0}', link.title);
-                var removeLinkBut = $('#remove-link');
+                var removeLinkBut = $('#removeLink');
                 $('.confirm-delete-text').text(deleteConfirmationMessage);
                 $('.remove-links').removeClass("hide-element");
                 removeLinkBut.focus();
@@ -397,7 +400,7 @@ function confirmRemoveVisible(visible) {
                         }
                     });
                 });
-                $('#cancel-link').unbind('click').bind('click', function (e) {
+                $('#cancelLink').unbind('click').bind('click', function (e) {
                     e.preventDefault();
                     toAction('list');
                 });
