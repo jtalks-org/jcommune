@@ -21,7 +21,6 @@ import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.security.SecurityService;
-import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
@@ -29,7 +28,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
-import org.jtalks.jcommune.service.AuthService;
+import org.jtalks.jcommune.service.Authenticator;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
@@ -40,12 +39,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.RememberMeServices;
-import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -63,6 +56,7 @@ import java.util.List;
  * @author Evgeniy Naumenko
  * @author Mikhail Zaitsev
  * @author Andrei Alikov
+ * @author Andrey Pogorelov
  */
 public class TransactionalUserService extends AbstractTransactionalEntityService<JCUser, UserDao>
         implements UserService {
@@ -74,12 +68,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     private ImageService avatarService;
     //Important, use for every password creation.
     private EncryptionService encryptionService;
-    private AuthenticationManager authenticationManager;
-    private SecurityContextHolderFacade securityFacade;
-    private RememberMeServices rememberMeServices;
-    private SessionAuthenticationStrategy sessionStrategy;
     private final PostDao postDao;
-    private AuthService authService;
+    private Authenticator authenticator;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalUserService.class);
 
@@ -93,13 +83,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * @param base64Wrapper         for avatar image-related operations
      * @param avatarService         some more avatar operations)
      * @param encryptionService     encodes user password before store
-     * @param authenticationManager used in login logic
-     * @param securityFacade        used in login logic
-     * @param rememberMeServices    used in login logic to specify remember user or
-     *                              not
-     * @param sessionStrategy       used in login logic to call onAuthentication hook
-     *                              which stored this user to online uses list.
      * @param postDao               for operations with posts
+     * @param authenticator      for authentication and registration
      */
     public TransactionalUserService(UserDao dao,
                                     GroupDao groupDao,
@@ -108,12 +93,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
                                     Base64Wrapper base64Wrapper,
                                     ImageService avatarService,
                                     EncryptionService encryptionService,
-                                    AuthenticationManager authenticationManager,
-                                    SecurityContextHolderFacade securityFacade,
-                                    RememberMeServices rememberMeServices,
-                                    SessionAuthenticationStrategy sessionStrategy,
                                     PostDao postDao,
-                                    AuthService authService) {
+                                    Authenticator authenticator) {
         super(dao);
         this.groupDao = groupDao;
         this.securityService = securityService;
@@ -121,12 +102,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         this.base64Wrapper = base64Wrapper;
         this.avatarService = avatarService;
         this.encryptionService = encryptionService;
-        this.authenticationManager = authenticationManager;
-        this.securityFacade = securityFacade;
-        this.rememberMeServices = rememberMeServices;
-        this.sessionStrategy = sessionStrategy;
         this.postDao = postDao;
-        this.authService = authService;
+        this.authenticator = authenticator;
     }
 
     /**
@@ -171,6 +148,12 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      */
     @Override
     public JCUser registerUser(JCUser user) {
+
+        User commonUser = getDao().getCommonUserByUsername(user.getUsername());
+//        user = new JCUser(commonUser.getUsername(), commonUser.getEmail(), commonUser.getPassword());
+        if (commonUser != null) {
+            user.setId(commonUser.getId());
+        }
         //encrypt password
         String encodedPassword = encryptionService.encryptPassword(user.getPassword());
         user.setPassword(encodedPassword);
@@ -317,43 +300,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         LOGGER.debug("Check permission to create or edit simple(static) pages - " + userId);
     }
 
-    private boolean authenticate(JCUser user, String password, boolean rememberMe,
-                                 HttpServletRequest request, HttpServletResponse response)
-            throws AuthenticationException {
-        UsernamePasswordAuthenticationToken token =
-                new UsernamePasswordAuthenticationToken(user.getUsername(), password);
-        token.setDetails(user);
-        Authentication auth = authenticationManager.authenticate(token);
-        securityFacade.getContext().setAuthentication(auth);
-        if (auth.isAuthenticated()) {
-            sessionStrategy.onAuthentication(auth, request, response);
-            if (rememberMe) {
-                rememberMeServices.loginSuccess(request, response, auth);
-            }
-            user.updateLastLoginTime();
-            return true;
-        }
-        return false;
-    }
-
-    private boolean pluginAuthenticate(String username, String password, boolean rememberMe,
-                                       HttpServletRequest request, HttpServletResponse response,
-                                       boolean createUser) throws UnexpectedErrorException, NoConnectionException {
-        boolean result = false;
-        String passwordHash = encryptionService.encryptPassword(password);
-        JCUser user = authService.pluginAuthenticate(username, passwordHash, createUser);
-        if (user != null) {
-            try {
-                result = authenticate(user, password, rememberMe, request, response);
-            } catch (AuthenticationException e) {
-                String ipAddress = getClientIpAddress(request);
-                LOGGER.info("AuthenticationException after success plugin auth: username = {}, IP={}, message={}",
-                        new Object[]{username, ipAddress, e.getMessage()});
-            }
-        }
-        return result;
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -361,29 +307,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     public boolean loginUser(String username, String password, boolean rememberMe,
                              HttpServletRequest request, HttpServletResponse response)
             throws UnexpectedErrorException, NoConnectionException {
-        boolean result;
-        JCUser user;
-        try {
-            user = getByUsername(username);
-            result = authenticate(user, password, rememberMe, request, response);
-        } catch (NotFoundException e) {
-            LOGGER.warn("User was not found during login process, username = " + username);
-            result = pluginAuthenticate(username, password, rememberMe, request, response, true);
-        } catch (AuthenticationException e) {
-            String ipAddress = getClientIpAddress(request);
-            LOGGER.info("AuthenticationException: username = {}, IP={}, message={}",
-                    new Object[]{username, ipAddress, e.getMessage()});
-            result = pluginAuthenticate(username, password, rememberMe, request, response, false);
-        }
-        return result;
-    }
-
-    private String getClientIpAddress(HttpServletRequest request) {
-        String ipAddress = request.getHeader("X-FORWARDED-FOR");
-        if (ipAddress == null) {
-            ipAddress = request.getRemoteAddr();
-        }
-        return ipAddress;
+        return authenticator.authenticate(username, password, rememberMe, request, response);
     }
 
     /**

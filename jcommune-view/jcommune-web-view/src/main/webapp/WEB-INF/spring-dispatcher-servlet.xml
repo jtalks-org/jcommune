@@ -81,13 +81,6 @@
       <mvc:mapping path="/resources/**"/>
       <bean class="org.jtalks.jcommune.web.interceptors.ChainBreakingInterceptor"/>
     </mvc:interceptor>
-    <mvc:interceptor>
-      <mvc:mapping path="/user/new"/>
-      <mvc:mapping path="/user/new_ajax"/>
-      <bean class="org.jtalks.jcommune.web.interceptors.AuthInterceptor">
-        <constructor-arg ref="pluginLoader"/>
-      </bean>
-    </mvc:interceptor>
     <!--Figures out locale and language from url parameter-->
     <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
       <property name="paramName" value="lang"/>
