@@ -36,6 +36,9 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
+/**
+ * @author Andrey Pogorelov
+ */
 public class PoulpeAuthPluginTest {
 
     @Mock
