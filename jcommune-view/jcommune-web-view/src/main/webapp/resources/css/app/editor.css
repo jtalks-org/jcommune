@@ -20,11 +20,7 @@ div#editorBBCODEdiv {
 
 #htmlContent{
     overflow: auto;
-    height: 100%;
-    padding-left: 5px;
-    padding-right: 5px;
-    font: inherit;
-    font-family: inherit;
+    height: 100%
 }
 
 div#editorBBCODEdiv textarea {
