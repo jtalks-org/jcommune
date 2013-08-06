@@ -18,21 +18,50 @@ import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.service.dto.PluginActivatingDto;
-import org.jtalks.jcommune.service.plugins.PluginFilter;
 
 import java.util.List;
 
 /**
+ * Provides an ability to work with plugins: load plugins, configure plugins,
+ * activate/deactivate plugins.
  *
  * @author Anuar Nurmakanov
  */
 public interface PluginService extends EntityService<PluginConfiguration> {
 
-    List<Plugin> getPlugins(long componentId);
+    /**
+     * Get all plugins which have been added to the forum.
+     *
+     * @param forumComponentId an identifier of forum component id, that is needed to check permissions
+     * @return the list of plugins that have been added to the forum
+     */
+    List<Plugin> getPlugins(long forumComponentId);
 
-    void updateConfiguration(PluginConfiguration pluginConfiguration, long componentId) throws NotFoundException;
+    /**
+     * Update configuration of plugin.
+     *
+     * @param pluginConfiguration contains new configuration of plugin
+     * @param forumComponentId an identifier of forum component id, that is needed to check permissions
+     * @throws NotFoundException when configuration passed for non-exists plugin
+     */
+    void updateConfiguration(PluginConfiguration pluginConfiguration, long forumComponentId) throws NotFoundException;
 
-    PluginConfiguration getPluginConfiguration(String pluginName, long componentId) throws NotFoundException;
+    /**
+     * Get configuration of plugin.
+     *
+     * @param pluginName the plugin for which we need configuration
+     * @param forumComponentId an identifier of forum component id, that is needed to check permissions
+     * @return loaded configuration for passed plugin
+     * @throws NotFoundException when passed plugin doesn't exist
+     */
+    PluginConfiguration getPluginConfiguration(String pluginName, long forumComponentId) throws NotFoundException;
 
-    void updatePluginsActivating(List<PluginActivatingDto> pluginActivatingDtoList, long componentId) throws NotFoundException;
+    /**
+     * Activate/deactivate plugins.
+     *
+     * @param pluginActivatingDtoList contains the list of plugins that should be activated/deactivated
+     * @param forumComponentId an identifier of forum component id, that is needed to check permissions
+     * @throws NotFoundException when one of plugins that should be activated/deactivated doesn't exist
+     */
+    void updatePluginsActivating(List<PluginActivatingDto> pluginActivatingDtoList, long forumComponentId) throws NotFoundException;
 }

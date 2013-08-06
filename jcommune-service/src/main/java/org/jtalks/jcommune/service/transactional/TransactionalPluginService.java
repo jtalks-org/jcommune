@@ -39,8 +39,10 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
     private PluginLoader pLuginLoader;
 
     /**
-     * @param pluginLoader
-     * @param dao
+     * Constructs an instance with required fields.
+     *
+     * @param dao to save/update configurations for plugins
+     * @param pluginLoader to load plugins that have been added to the forum
      */
     public TransactionalPluginService(PluginConfigurationDao dao, PluginLoader pluginLoader) {
         super(dao);
@@ -52,8 +54,8 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
-    public List<Plugin> getPlugins(long componentId) {
+    @PreAuthorize("hasPermission(#forumComponentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
+    public List<Plugin> getPlugins(long forumComponentId) {
         return pLuginLoader.getPlugins();
     }
 
@@ -61,8 +63,8 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
-    public void updateConfiguration(PluginConfiguration pluginConfiguration, long componentId) throws NotFoundException {
+    @PreAuthorize("hasPermission(#forumComponentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
+    public void updateConfiguration(PluginConfiguration pluginConfiguration, long forumComponentId) throws NotFoundException {
         String name = pluginConfiguration.getName();
         List<Plugin> pluginsList = pLuginLoader.getPlugins();
         Plugin willBeConfigured = findPluginByName(pluginsList, name);
@@ -87,8 +89,8 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
-    public PluginConfiguration getPluginConfiguration(String pluginName, long componentId) throws NotFoundException {
+    @PreAuthorize("hasPermission(#forumComponentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
+    public PluginConfiguration getPluginConfiguration(String pluginName, long forumComponentId) throws NotFoundException {
         return getDao().get(pluginName);
     }
 
@@ -96,8 +98,8 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
-    public void updatePluginsActivating(List<PluginActivatingDto> updatedPlugins, long componentId) throws NotFoundException {
+    @PreAuthorize("hasPermission(#forumComponentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
+    public void updatePluginsActivating(List<PluginActivatingDto> updatedPlugins, long forumComponentId) throws NotFoundException {
         for (PluginActivatingDto updatedPlugin : updatedPlugins) {
             PluginConfigurationDao pluginConfigurationDao = getDao();
             String pluginName = updatedPlugin.getPluginName();
