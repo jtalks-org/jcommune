@@ -108,20 +108,4 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
             pluginConfigurationDao.saveOrUpdate(configuration);
         }
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public PluginConfiguration get(String pluginName) throws NotFoundException {
-        return getDao().get(pluginName);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void save(PluginConfiguration configuration) {
-        getDao().saveOrUpdate(configuration);
-    }
 }
