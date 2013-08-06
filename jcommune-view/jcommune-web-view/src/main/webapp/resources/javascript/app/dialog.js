@@ -218,6 +218,12 @@ $(function () {
             dialog.find('.control-group').removeClass('error');
         }
 
+
+        var capitaliseFirstLetter = function (string)
+        {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
         /**
          * Show errors under fields with errors
          * Errors overrides help text (help text will be hidden)
@@ -226,6 +232,9 @@ $(function () {
             ErrorUtils.removeAllErrorMessages();
             for (var i = 0; i < errors.length; i++) {
                 var idField = '#' + idPrefix + errors[i].field + idPostfix;
+                if ($(idField).length == 0) {
+                    idField = '#' + idPrefix + capitaliseFirstLetter(errors[i].field) + idPostfix;
+                }
                 ErrorUtils.addErrorMessage(idField, errors[i].defaultMessage);
             }
             jDialog.resizeDialog(dialog);

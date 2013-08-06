@@ -2197,7 +2197,7 @@ table .span12 {
     transition: background-position 0.1s linear;
 }
 
-.btn:focus {
+.btn:focus, .close:focus {
     outline: thin dotted #333;
     outline: 5px auto -webkit-focus-ring-color;
     outline-offset: -2px;

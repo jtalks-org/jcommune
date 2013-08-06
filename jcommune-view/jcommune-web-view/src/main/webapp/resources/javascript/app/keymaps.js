@@ -74,7 +74,14 @@ Keymaps.linksEditor = function (e) {
         var but = $('#mainLinksEditor  #saveLink:visible')[0]
         if (but && $(e.target).attr('id') != 'cancelLink') {
             e.preventDefault();
-            but.click();
+            if($.browser.mozilla){
+                setTimeout(function(){
+                    but.click();
+                }, 0);
+            }
+            else {
+                but.click();
+            }
         }
     }
 

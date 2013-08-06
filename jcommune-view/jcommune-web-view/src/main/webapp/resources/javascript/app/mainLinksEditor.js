@@ -297,6 +297,7 @@ function addLinkVisible(visible) {
                         data: JSON.stringify(link),
                         success: function (resp) {
                             if (resp.status == "SUCCESS") {
+                                link.url = resp.result.url; //server can correct the url
                                 link.id = resp.result.id;
                                 addNewExternalLink(link);
                                 $('#editLink' + resp.result.id).focus();

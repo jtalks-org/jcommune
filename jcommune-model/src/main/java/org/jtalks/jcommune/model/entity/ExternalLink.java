@@ -31,7 +31,7 @@ import javax.validation.constraints.Size;
 public class ExternalLink extends Entity {
     public static final int TITLE_MAX_SIZE = 30;
     public static final int TITLE_MIN_SIZE = 1;
-    public static final int URL_MAX_SIZE = 512;
+    public static final int URL_MAX_SIZE = 255;
     public static final int URL_MIN_SIZE = 10;
     public static final int HINT_MAX_SIZE = 128;
     public static final int HINT_MIN_SIZE = 1;
