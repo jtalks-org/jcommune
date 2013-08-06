@@ -35,4 +35,8 @@ public interface PluginService extends EntityService<PluginConfiguration> {
     PluginConfiguration getPluginConfiguration(String pluginName, long componentId) throws NotFoundException;
 
     void updatePluginsActivating(List<PluginActivatingDto> pluginActivatingDtoList, long componentId) throws NotFoundException;
+
+    PluginConfiguration get(String pluginName) throws NotFoundException;
+
+    void save(PluginConfiguration configuration);
 }

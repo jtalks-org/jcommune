@@ -336,9 +336,9 @@
         <constructor-arg ref="componentSapeEnableServiceProperty"/>
     </bean>
 
-    <bean id="pluginLoader" class="org.jtalks.jcommune.service.plugins.PluginLoader">
-        <constructor-arg name="folderPath" value="${PLUGIN_FOLDER:~}"/>
-        <constructor-arg name="dao" ref="pluginConfigurationDao"/>
+    <bean id="pluginLoader" class="org.jtalks.jcommune.service.plugins.PluginLoader" init-method="init" destroy-method="destroy">
+        <constructor-arg name="pluginsFolderPath" value="${PLUGIN_FOLDER:~}"/>
+        <constructor-arg name="pluginConfigurationDao" ref="pluginConfigurationDao"/>
     </bean>
 
     <bean id="pluginService" class="org.jtalks.jcommune.service.transactional.TransactionalPluginService">

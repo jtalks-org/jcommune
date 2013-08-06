@@ -21,7 +21,6 @@ import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.DisposableBean;
 
 import java.io.IOException;
 import java.net.URLClassLoader;
@@ -38,7 +37,7 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
  * @author Anuar_Nurmakanov
  * @author Evgeny Naumenko
  */
-public class PluginLoader implements DisposableBean {
+public class PluginLoader {
     private static final Logger LOGGER = LoggerFactory.getLogger(PluginLoader.class);
     //
     private URLClassLoader classLoader;
@@ -48,14 +47,16 @@ public class PluginLoader implements DisposableBean {
     private PluginConfigurationDao pluginConfigurationDao;
 
     /**
-     * @param folderPath
-     * @param dao
-     * @throws java.io.IOException
+     * Constructs an instance for loading plugins from passed path to plugins directory.
+     *
+     * @param pluginsFolderPath a path to a folder that contains plugins
+     * @param pluginConfigurationDao to load and save configuration for loaded plugins
+     * @throws java.io.IOException when it's impossible to start tracking changes in plugins folder
      */
-    public PluginLoader(String folderPath, PluginConfigurationDao dao) throws IOException {
-        this.pluginConfigurationDao = dao;
-        Validate.notEmpty(folderPath);
-        this.folder = this.resolveUserHome(folderPath);
+    public PluginLoader(String pluginsFolderPath, PluginConfigurationDao pluginConfigurationDao) throws IOException {
+        this.pluginConfigurationDao = pluginConfigurationDao;
+        Validate.notEmpty(pluginsFolderPath);
+        this.folder = this.resolveUserHome(pluginsFolderPath);
         Path path = Paths.get(folder);
         WatchService watcher = FileSystems.getDefault().newWatchService();
         watchKey = path.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
@@ -71,6 +72,13 @@ public class PluginLoader implements DisposableBean {
     }
 
     /**
+     * Will be called by container after bean creation.
+     */
+    public void init() {
+        this.initPluginList();
+    }
+
+    /**
      * Returns actual list of plugins available. Client code should not cache the plugin
      * references and always use this method to obtain a plugin reference as needed.
      * Violation of this simple rule may cause memory leaks.
@@ -78,7 +86,6 @@ public class PluginLoader implements DisposableBean {
      * @return list of plugins available at the moment
      */
     public synchronized List<Plugin> getPlugins(PluginFilter... filters) {
-        this.initPluginList();
         this.synchronizePluginList();
         List<Plugin> filtered = new ArrayList<>(plugins.size());
         plugins:
@@ -91,6 +98,7 @@ public class PluginLoader implements DisposableBean {
             filtered.add(plugin);
         }
         LOGGER.debug("JCommune forum has {} plugins now.", filtered.size());
+        loadConfigurationFor(filtered);
         return filtered;
     }
 
@@ -98,7 +106,7 @@ public class PluginLoader implements DisposableBean {
         List events = watchKey.pollEvents();
         if (!events.isEmpty()) {
             watchKey.reset();
-            this.closeClassLoader();
+            this.closePluginClassLoader();
             this.initPluginList();
         }
     }
@@ -108,6 +116,13 @@ public class PluginLoader implements DisposableBean {
         ServiceLoader<Plugin> pluginLoader = ServiceLoader.load(Plugin.class, classLoader);
         List<Plugin> plugins = new ArrayList<>();
         for (Plugin plugin : pluginLoader) {
+            plugins.add(plugin);
+        }
+        this.plugins = plugins;
+    }
+
+    private void loadConfigurationFor(List<Plugin> needConfigurationPlugins) {
+        for (Plugin plugin: needConfigurationPlugins) {
             String name = plugin.getName();
             PluginConfiguration configuration;
             try {
@@ -117,20 +132,18 @@ public class PluginLoader implements DisposableBean {
                 pluginConfigurationDao.saveOrUpdate(configuration);
             }
             plugin.configure(configuration);
-            plugins.add(plugin);
         }
-        this.plugins = plugins;
     }
 
     /**
-     * {@inheritDoc}
+     * Will be called by container to release resource
+     * before bean destroying.
      */
-    @Override
-    public void destroy() throws Exception {
-        this.closeClassLoader();
+    public void destroy() {
+        this.closePluginClassLoader();
     }
 
-    private void closeClassLoader() {
+    private void closePluginClassLoader() {
         try {
             classLoader.close();
         } catch (IOException e) {

@@ -19,9 +19,9 @@ import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.dao.PluginConfigurationDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.plugins.Plugin;
-import org.jtalks.jcommune.service.plugins.PluginLoader;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.dto.PluginActivatingDto;
+import org.jtalks.jcommune.service.plugins.PluginLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -107,5 +107,21 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
             configuration.setActive(isActivated);
             pluginConfigurationDao.saveOrUpdate(configuration);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PluginConfiguration get(String pluginName) throws NotFoundException {
+        return getDao().get(pluginName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void save(PluginConfiguration configuration) {
+        getDao().saveOrUpdate(configuration);
     }
 }
