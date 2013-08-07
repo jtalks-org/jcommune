@@ -140,6 +140,14 @@
       <groupId>com.googlecode.lambdaj</groupId>
       <artifactId>lambdaj</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.google.code</groupId>
+      <artifactId>kaptcha</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+    </dependency>
   </dependencies>
 
   <properties>

@@ -48,15 +48,6 @@ public interface UserService extends EntityService<JCUser> {
     JCUser getByUsername(String username) throws NotFoundException;
 
     /**
-     * Try to register {@link JCUser} with given features.
-     *
-     * @param user user for register
-     * @return registered {@link JCUser}
-     * @see org.jtalks.jcommune.model.entity.JCUser
-     */
-    JCUser registerUser(JCUser user);
-
-    /**
      * Gets user currently logged in.
      *
      * @return logged in user or null, if user hasn't yet log in

@@ -14,9 +14,9 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
+import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
@@ -25,7 +25,6 @@ import org.jtalks.jcommune.service.Authenticator;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
@@ -44,7 +43,8 @@ import org.testng.annotations.Test;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -107,27 +107,11 @@ public class UserControllerTest {
     public void testRegisterUserShouldBeSuccessful() throws Exception {
         RegisterUserDto dto = getRegisterUserDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
-        when(authenticator.register(dto.getUsername(), dto.getPassword(), dto.getEmail()))
-                .thenReturn(Collections.EMPTY_LIST);
-        when(userService.getByUsername(dto.getUsername())).thenReturn(dto.createUser());
 
         ModelAndView mav = userController.registerUser(dto, bindingResult, Locale.ENGLISH);
 
         assertViewName(mav, "afterRegistration");
-        verify(userService).registerUser(any(JCUser.class));
-    }
-
-    @Test
-    public void testRegisterUserShouldUseDefaultRegistrationIfPluginNotFound() throws Exception {
-        RegisterUserDto dto = getRegisterUserDto();
-        BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
-        when(authenticator.register(dto.getUsername(), dto.getPassword(), dto.getEmail()))
-                .thenThrow(new NotFoundException());
-
-        ModelAndView mav = userController.registerUser(dto, bindingResult, Locale.ENGLISH);
-
-        assertViewName(mav, "afterRegistration");
-        verify(userService).registerUser(any(JCUser.class));
+        verify(authenticator).register(dto, Locale.ENGLISH, validator, bindingResult);
     }
 
     @Test
@@ -135,14 +119,6 @@ public class UserControllerTest {
         RegisterUserDto dto = getRegisterUserDto();
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
-
-        List<Map<String, String>> errors = new ArrayList<>();
-        errors.add(new ImmutableMap.Builder<String, String>()
-                .put("user.username.length_constraint_violation", "").build());
-        errors.add(new ImmutableMap.Builder<String, String>()
-                .put("user.password.length_constraint_violation", "").build());
-        errors.add(new ImmutableMap.Builder<String, String>().put("user.email.illegal_length", "").build());
-        when(authenticator.register(dto.getUsername(), dto.getPassword(), dto.getEmail())).thenReturn(errors);
 
         ModelAndView mav = userController.registerUser(dto, bindingResult, Locale.ENGLISH);
 
@@ -154,9 +130,8 @@ public class UserControllerTest {
             throws UnexpectedErrorException, NotFoundException, NoConnectionException {
         RegisterUserDto dto = getRegisterUserDto();
         BindingResult bindingResult = mock(BindingResult.class);
-
-        when(authenticator.register(dto.getUsername(), dto.getPassword(), dto.getEmail()))
-                .thenThrow(new UnexpectedErrorException());
+        doThrow(new UnexpectedErrorException()).when(authenticator)
+                .register(dto, Locale.ENGLISH, validator, bindingResult);
 
         ModelAndView mav = userController.registerUser(dto, bindingResult, Locale.ENGLISH);
 
@@ -168,9 +143,8 @@ public class UserControllerTest {
             throws UnexpectedErrorException, NotFoundException, NoConnectionException {
         RegisterUserDto dto = getRegisterUserDto();
         BindingResult bindingResult = mock(BindingResult.class);
-
-        when(authenticator.register(dto.getUsername(), dto.getPassword(), dto.getEmail()))
-                .thenThrow(new NoConnectionException());
+        doThrow(new NoConnectionException()).when(authenticator)
+                .register(dto, Locale.ENGLISH, validator, bindingResult);
 
         ModelAndView mav = userController.registerUser(dto, bindingResult, Locale.ENGLISH);
 
@@ -181,29 +155,11 @@ public class UserControllerTest {
     public void testRegisterUserAjaxShouldBeSuccessful() throws Exception {
         RegisterUserDto dto = getRegisterUserDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
-        when(authenticator.register(dto.getUsername(), dto.getPassword(), dto.getEmail()))
-                .thenReturn(Collections.EMPTY_LIST);
-        when(userService.getByUsername(dto.getUsername())).thenReturn(dto.createUser());
 
         JsonResponse response = userController.registerUserAjax(dto, bindingResult, Locale.ENGLISH);
 
         assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS,
                 "User without validation errors should pass registration.");
-        verify(userService).registerUser(any(JCUser.class));
-    }
-
-    @Test
-    public void testRegisterUserAjaxShouldUseDefaultRegistrationIfPluginNotFound() throws Exception {
-        RegisterUserDto dto = getRegisterUserDto();
-        BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
-        when(authenticator.register(dto.getUsername(), dto.getPassword(), dto.getEmail()))
-                .thenThrow(new NotFoundException());
-
-        JsonResponse response = userController.registerUserAjax(dto, bindingResult, Locale.ENGLISH);
-
-        assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS,
-                "User without validation errors should pass default registration if plugin not found.");
-        verify(userService).registerUser(any(JCUser.class));
     }
 
     @Test
@@ -211,14 +167,6 @@ public class UserControllerTest {
         RegisterUserDto dto = getRegisterUserDto();
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
-
-        List<Map<String, String>> errors = new ArrayList<>();
-        errors.add(new ImmutableMap.Builder<String, String>()
-                .put("user.username.length_constraint_violation", "").build());
-        errors.add(new ImmutableMap.Builder<String, String>()
-                .put("user.password.length_constraint_violation", "").build());
-        errors.add(new ImmutableMap.Builder<String, String>().put("user.email.illegal_length", "").build());
-        when(authenticator.register(dto.getUsername(), dto.getPassword(), dto.getEmail())).thenReturn(errors);
 
         JsonResponse response = userController.registerUserAjax(dto, bindingResult, Locale.ENGLISH);
 
@@ -232,44 +180,12 @@ public class UserControllerTest {
         RegisterUserDto dto = getRegisterUserDto();
         BindingResult bindingResult = mock(BindingResult.class);
 
-        when(authenticator.register(dto.getUsername(), dto.getPassword(), dto.getEmail()))
-                .thenThrow(new UnexpectedErrorException());
+        doThrow(new UnexpectedErrorException()).when(authenticator)
+                .register(dto, Locale.ENGLISH, validator, bindingResult);
 
         JsonResponse response = userController.registerUserAjax(dto, bindingResult, Locale.ENGLISH);
 
         assertEquals(response.getStatus(), JsonResponseStatus.FAIL, "Unexpected error should fail registration.");
-    }
-
-    @Test
-    public void testRegisterAjaxShouldBeSuccessfulIfPluginRegistrationUsesTheSameDatabase()
-            throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        RegisterUserDto dto = getRegisterUserDto();
-        BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
-        when(authenticator.register(dto.getUsername(), dto.getPassword(), dto.getEmail()))
-                .thenReturn(Collections.EMPTY_LIST);
-        when(userService.getByUsername(dto.getUsername())).thenReturn(dto.createUser());
-
-        JsonResponse response = userController.registerUserAjax(dto, bindingResult, Locale.ENGLISH);
-
-        assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS,
-                "User without validation errors should pass registration.");
-        verify(userService).registerUser(any(JCUser.class));
-    }
-
-    @Test
-    public void testRegisterAjaxShouldBeSuccessfulIfPluginRegistrationUsesOwnDatabase()
-            throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        RegisterUserDto dto = getRegisterUserDto();
-        BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
-        when(authenticator.register(dto.getUsername(), dto.getPassword(), dto.getEmail()))
-                .thenReturn(Collections.EMPTY_LIST);
-        when(userService.getByUsername(dto.getUsername())).thenThrow(new NotFoundException());
-
-        JsonResponse response = userController.registerUserAjax(dto, bindingResult, Locale.ENGLISH);
-
-        assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS,
-                "User without validation errors should pass registration.");
-        verify(userService).registerUser(any(JCUser.class));
     }
 
     @Test
@@ -278,8 +194,8 @@ public class UserControllerTest {
         RegisterUserDto dto = getRegisterUserDto();
         BindingResult bindingResult = mock(BindingResult.class);
 
-        when(authenticator.register(dto.getUsername(), dto.getPassword(), dto.getEmail()))
-                .thenThrow(new NoConnectionException());
+        doThrow(new NoConnectionException()).when(authenticator)
+                .register(dto, Locale.ENGLISH, validator, bindingResult);
 
         JsonResponse response = userController.registerUserAjax(dto, bindingResult, Locale.ENGLISH);
 

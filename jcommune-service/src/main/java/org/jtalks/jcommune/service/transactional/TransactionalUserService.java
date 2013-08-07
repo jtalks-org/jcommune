@@ -65,7 +65,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     private SecurityService securityService;
     private MailService mailService;
     private Base64Wrapper base64Wrapper;
-    private ImageService avatarService;
     //Important, use for every password creation.
     private EncryptionService encryptionService;
     private final PostDao postDao;
@@ -81,7 +80,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * @param securityService       for security
      * @param mailService           to send e-mails
      * @param base64Wrapper         for avatar image-related operations
-     * @param avatarService         some more avatar operations)
      * @param encryptionService     encodes user password before store
      * @param postDao               for operations with posts
      * @param authenticator      for authentication and registration
@@ -91,7 +89,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
                                     SecurityService securityService,
                                     MailService mailService,
                                     Base64Wrapper base64Wrapper,
-                                    ImageService avatarService,
                                     EncryptionService encryptionService,
                                     PostDao postDao,
                                     Authenticator authenticator) {
@@ -100,7 +97,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         this.securityService = securityService;
         this.mailService = mailService;
         this.base64Wrapper = base64Wrapper;
-        this.avatarService = avatarService;
         this.encryptionService = encryptionService;
         this.postDao = postDao;
         this.authenticator = authenticator;
@@ -141,24 +137,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     public List<String> getUsernames(String pattern) {
         int usernameCount = 10;
         return getDao().getUsernames(pattern, usernameCount);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public JCUser registerUser(JCUser user) {
-        //encrypt password
-        String encodedPassword = encryptionService.encryptPassword(user.getPassword());
-        user.setPassword(encodedPassword);
-        //
-        user.setRegistrationDate(new DateTime());
-        user.setAvatar(avatarService.getDefaultImage());
-        this.getDao().saveOrUpdate(user);
-        mailService.sendAccountActivationMail(user);
-        LOGGER.info("JCUser registered: {}", user.getUsername());
-
-        return user;
     }
 
     /**

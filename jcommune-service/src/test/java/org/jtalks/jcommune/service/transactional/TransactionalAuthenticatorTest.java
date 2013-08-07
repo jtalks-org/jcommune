@@ -18,6 +18,7 @@ package org.jtalks.jcommune.service.transactional;
 import com.google.common.collect.ImmutableMap;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.model.plugins.SimpleAuthenticationPlugin;
@@ -26,6 +27,8 @@ import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.Authenticator;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
+import org.jtalks.jcommune.service.nontransactional.ImageService;
+import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.plugins.PluginLoader;
 import org.jtalks.jcommune.service.plugins.TypeFilter;
 import org.mockito.Mock;
@@ -36,6 +39,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -78,6 +82,12 @@ public class TransactionalAuthenticatorTest {
     private HttpServletRequest httpRequest;
     @Mock
     private HttpServletResponse httpResponse;
+    @Mock
+    MailService mailService;
+    @Mock
+    ImageService avatarService;
+    @Mock
+    private Validator validator;
 
     private Authenticator authenticator;
 
@@ -86,7 +96,7 @@ public class TransactionalAuthenticatorTest {
         initMocks(this);
         authenticator = new TransactionalAuthenticator(pluginLoader, userDao,
                 encryptionService, authenticationManager,
-                securityFacade, rememberMeServices, sessionStrategy);
+                securityFacade, rememberMeServices, sessionStrategy, mailService, avatarService);
     }
 
     private JCUser prepareOldUser(String username) {
@@ -276,68 +286,95 @@ public class TransactionalAuthenticatorTest {
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
         when(plugin.registerUser(username, password, email)).thenReturn(Collections.EMPTY_LIST);
         when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Arrays.asList((Plugin) plugin));
+        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
+        when(bindingResult.hasErrors()).thenReturn(false);
 
-        List<Map<String, String>> result = authenticator.register(username, password, email);
+        JCUser registeredUser = authenticator.register(userDto, Locale.ENGLISH, validator, bindingResult);
 
-        assertEquals(result.size(), 0, "Register user with correct details should not return any error.");
+        assertNotNull(registeredUser, "Register user with correct details should return registered user.");
     }
 
     @Test
     public void registerUserWithIncorrectDetailsShouldFail()
             throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        String password = "";
-        String username = "";
-        String email = "email@email.em";
+        RegisterUserDto userDto = createRegisterUserDto("", "", "");
         List<Map<String, String>> errors = new ArrayList<>();
         errors.add(new ImmutableMap.Builder<String, String>()
                 .put("user.username.length_constraint_violation", "").build());
         errors.add(new ImmutableMap.Builder<String, String>()
+                .put("user.password.length_constraint_violation", "").build());
+        errors.add(new ImmutableMap.Builder<String, String>()
                 .put("user.email.illegal_length", "").build());
+
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
-        when(plugin.registerUser(username, password, email)).thenReturn(errors);
+        when(plugin.registerUser(userDto.getUsername(), userDto.getPassword(), userDto.getEmail())).thenReturn(errors);
         when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Arrays.asList((Plugin) plugin));
 
-        List<Map<String, String>> result = authenticator.register(username, password, email);
+        when(bindingResult.hasErrors()).thenReturn(true);
 
-        assertEquals(result.size(), 2, "Register user with incorrect details should return validation errors.");
+        JCUser registeredUser = authenticator.register(userDto, Locale.ENGLISH, validator, bindingResult);
+
+        assertNull(registeredUser, "Register user with incorrect details should not return any user.");
+
+        verify(bindingResult, times(3)).rejectValue(anyString(), anyString(), anyString());
     }
 
     @Test(expectedExceptions = NoConnectionException.class)
     public void registerUserShouldFailIfPluginThrowsNoConnectionException()
             throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        String password = "";
-        String username = "";
-        String email = "email@email.em";
-
+        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
-        when(plugin.registerUser(username, password, email)).thenThrow(new NoConnectionException());
+        when(plugin.registerUser(anyString(), anyString(), anyString()))
+                .thenThrow(new NoConnectionException());
         when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Arrays.asList((Plugin) plugin));
 
-        authenticator.register(username, password, email);
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        authenticator.register(userDto, Locale.ENGLISH, validator, bindingResult);
     }
 
     @Test(expectedExceptions = UnexpectedErrorException.class)
     public void registerUserShouldFailIfPluginThrowsUnexpectedErrorException()
             throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        String password = "";
-        String username = "";
-        String email = "email@email.em";
-
+        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
-        when(plugin.registerUser(username, password, email)).thenThrow(new UnexpectedErrorException());
+        when(plugin.registerUser(anyString(), anyString(), anyString()))
+                .thenThrow(new UnexpectedErrorException());
         when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Arrays.asList((Plugin) plugin));
 
-        authenticator.register(username, password, email);
+        authenticator.register(userDto, Locale.ENGLISH, validator, bindingResult);
     }
 
-    @Test(expectedExceptions = NotFoundException.class)
-    public void registerUserShouldFailIfPluginNotFound()
+    @Test
+    public void defaultRegistrationShouldFailIfValidationErrorsOccurred()
             throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        String password = "";
-        String username = "";
-        String email = "email@email.em";
+        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
         when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Collections.EMPTY_LIST);
+        when(bindingResult.hasErrors()).thenReturn(true);
 
-        authenticator.register(username, password, email);
+        JCUser registeredUser = authenticator.register(userDto, Locale.ENGLISH, validator, bindingResult);
+
+        assertNull(registeredUser, "Register user should fail if validation errors occurred during registration.");
+    }
+
+    @Test
+    public void defaultRegistrationWithCorrectDetailsShouldBeSuccessful()
+            throws UnexpectedErrorException, NotFoundException, NoConnectionException {
+        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
+        when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Collections.EMPTY_LIST);
+        when(bindingResult.hasErrors()).thenReturn(false);
+
+        JCUser registeredUser = authenticator.register(userDto, Locale.ENGLISH, validator, bindingResult);
+
+        assertNotNull(registeredUser, "Register user with correct details should be successful.");
+    }
+
+    private RegisterUserDto createRegisterUserDto(String username, String password, String email) {
+        RegisterUserDto dto = new RegisterUserDto();
+        dto.setUsername(username);
+        dto.setEmail(email);
+        dto.setPassword(password);
+        dto.setPasswordConfirm("password");
+        return dto;
     }
 }

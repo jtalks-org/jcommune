@@ -12,11 +12,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.validation;
+package org.jtalks.jcommune.model.validation;
 
 
 import com.google.code.kaptcha.Constants;
-import org.jtalks.jcommune.web.validation.validators.CaptchaValidator;
+import org.jtalks.jcommune.model.validation.validators.CaptchaValidator;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -24,8 +24,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
