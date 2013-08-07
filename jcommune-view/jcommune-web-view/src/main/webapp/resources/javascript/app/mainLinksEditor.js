@@ -227,6 +227,7 @@ function editLinksVisible(visible) {
                             } else {
                                 // remove previous errors and show new errors
                                 jDialog.prepareDialog(jDialog.dialog);
+                                updateUrlWithRejectedValue(resp.result);
                                 jDialog.showErrors(jDialog.dialog, resp.result, "link", "");
                             }
                         },
@@ -274,6 +275,14 @@ function editLinksVisible(visible) {
     }
 }
 
+function updateUrlWithRejectedValue(result) {
+    for ( i = 0; i < result.length; ++i) {
+        if (result[i].field == "url") {
+            $('#linkUrl').val(result[i].rejectedValue);
+        }
+    }
+}
+
 function addLinkVisible(visible) {
     var intervalID = setInterval(function () {
         if ($('.edit-links')) {
@@ -304,6 +313,7 @@ function addLinkVisible(visible) {
                             } else {
                                 // remove previous errors and show new errors
                                 jDialog.prepareDialog(jDialog.dialog);
+                                updateUrlWithRejectedValue(resp.result);
                                 jDialog.showErrors(linksEditor, resp.result, "link", "");
                             }
                         },
