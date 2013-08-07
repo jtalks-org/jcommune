@@ -109,7 +109,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
             boolean newUser = false;
             if (e instanceof NotFoundException) {
                 String ipAddress = getClientIpAddress(request);
-                LOGGER.warn("User was not found during login process, username = {}, IP={}", username, ipAddress);
+                LOGGER.info("User was not found during login process, username = {}, IP={}", username, ipAddress);
                 newUser = true;
             }
             result = authenticateByPluginAndUpdateUserInfo(username, password, newUser, rememberMe, request, response);
