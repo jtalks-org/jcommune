@@ -44,6 +44,9 @@ import java.util.List;
 public class TransactionalPrivateMessageService
         extends AbstractTransactionalEntityService<PrivateMessage, PrivateMessageDao> implements PrivateMessageService {
 
+
+
+    public static final int DEFAULT_MESSAGE_COUNT = 0;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final SecurityService securityService;
@@ -166,7 +169,7 @@ public class TransactionalPrivateMessageService
     public int currentUserNewPmCount() {
         String username = securityService.getCurrentUserUsername();
         if (username == null) {
-            return 0;
+            return DEFAULT_MESSAGE_COUNT;
         }
 
         Integer count = userDataCache.getNewPmCountFor(username);
@@ -178,6 +181,25 @@ public class TransactionalPrivateMessageService
         return count;
     }
 
+    @Override
+    public int currentUserInboxMessageCount() {
+        int result = DEFAULT_MESSAGE_COUNT;
+        JCUser user = userService.getCurrentUser();
+        if (user != null) {
+            result = getDao().getInboxMessageCountFor(user);
+        }
+        return result;
+    }
+
+    @Override
+    public int currentUserOutboxMessageCount() {
+        int result = DEFAULT_MESSAGE_COUNT;
+        JCUser user = userService.getCurrentUser();
+        if (user != null) {
+            result = getDao().getOutboxMessageCountFor(user);
+        }
+        return result;
+    }
 
     /**
      * {@inheritDoc}

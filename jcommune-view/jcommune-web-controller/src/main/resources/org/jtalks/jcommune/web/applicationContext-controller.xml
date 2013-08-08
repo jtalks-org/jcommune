@@ -98,6 +98,8 @@
             <bean class="org.jtalks.jcommune.web.logging.LoggerMdc"/>
         </constructor-arg>
     </bean>
+
+    <bean id="forumUtils" class="org.jtalks.jcommune.web.util.ForumUtils"/>
     
 </beans>
 

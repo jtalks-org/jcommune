@@ -24,6 +24,7 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
+import org.jtalks.jcommune.web.util.ForumUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
@@ -74,6 +75,7 @@ public class TopicController {
     private BreadcrumbBuilder breadcrumbBuilder;
     private LocationService locationService;
     private SessionRegistry sessionRegistry;
+    private ForumUtils forumUtils;
 
     /**
      * This method turns the trim binder on. Trim binder
@@ -101,6 +103,7 @@ public class TopicController {
      * @param locationService          to track user location on forum (what page he is viewing now)
      * @param sessionRegistry          to obtain list of users currently online
      * @param topicFetchService        to load topics from a database
+     * @param forumUtils               to provide helper methods
      */
     @Autowired
     public TopicController(TopicModificationService topicModificationService,
@@ -111,7 +114,8 @@ public class TopicController {
                            BreadcrumbBuilder breadcrumbBuilder,
                            LocationService locationService,
                            SessionRegistry sessionRegistry,
-                           TopicFetchService topicFetchService) {
+                           TopicFetchService topicFetchService,
+                           ForumUtils forumUtils) {
         this.topicModificationService = topicModificationService;
         this.postService = postService;
         this.branchService = branchService;
@@ -121,6 +125,7 @@ public class TopicController {
         this.locationService = locationService;
         this.sessionRegistry = sessionRegistry;
         this.topicFetchService = topicFetchService;
+        this.forumUtils = forumUtils;
     }
 
     /**
@@ -201,7 +206,7 @@ public class TopicController {
         JCUser currentUser = userService.getCurrentUser();
         Topic topic = topicFetchService.get(topicId);
 
-        int requestedPage = prepareRequestedPage(page, currentUser.getPageSize(), topic.getPostCount());
+        int requestedPage = forumUtils.prepareRequestedPage(page, currentUser.getPageSize(), topic.getPostCount());
 
         topicFetchService.checkViewTopicPermission(topic.getBranch().getId());
         Page<Post> postsPage = postService.getPosts(topic, requestedPage);
@@ -215,34 +220,6 @@ public class TopicController {
                 .addObject("subscribed", topic.getSubscribers().contains(currentUser))
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic))
                 .addObject("lastReadPost", lastReadPostIndex);
-    }
-
-    /**
-     * Validate and return requested topic page.
-     * @param page a requested page as a string provided by user
-     * @param pageSize the user profile page size.
-     * @param postCount the topic post count.
-     * @return <ul>
-     *     <li>requested topic page, if specified page valid;</li>
-     *     <li>max page, if specified page is greater then max page;</li>
-     *     <li>1, if specified page is not a number.</li>
-     * </ul>
-     *
-     */
-    int prepareRequestedPage(String page, int pageSize, int postCount) {
-        int result = 1;
-        int maxPageInTopic = postCount % pageSize == 0 ?
-                postCount / pageSize
-                : (postCount / pageSize) + 1;
-        if (page.matches("\\d+")) {
-            int requestedPage = Integer.valueOf(page);
-            if (requestedPage <= maxPageInTopic) {
-                result = requestedPage;
-            } else {
-                result = maxPageInTopic;
-            }
-        }
-        return  result;
     }
 
     /**

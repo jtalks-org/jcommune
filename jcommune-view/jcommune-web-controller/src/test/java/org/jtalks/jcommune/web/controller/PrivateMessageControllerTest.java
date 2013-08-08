@@ -22,6 +22,7 @@ import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
+import org.jtalks.jcommune.web.util.ForumUtils;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -67,6 +68,8 @@ public class PrivateMessageControllerTest {
     private BBCodeService bbCodeService;
     @Mock
     private UserService userService;
+    @Mock
+    private ForumUtils forumUtils;
 
     private static final String USERNAME = "username";
     private static final JCUser JC_USER = new JCUser(USERNAME, "123@123.ru", "123");
@@ -75,7 +78,7 @@ public class PrivateMessageControllerTest {
     public void init() {
         JC_USER.setId(1);
         MockitoAnnotations.initMocks(this);
-        controller = new PrivateMessageController(pmService, bbCodeService, userService);
+        controller = new PrivateMessageController(pmService, bbCodeService, userService, forumUtils);
     }
 
     @Test
@@ -87,18 +90,22 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void inboxPage() {
-        int page = 1;
+        String page = "1";
+        int requestedPage = 1;
         List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(JC_USER, JC_USER,
                 "Message title", "Private message body"));
         Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
 
-        when(pmService.getInboxForCurrentUser(page)).thenReturn(expectedPage);
+        when(pmService.getInboxForCurrentUser(requestedPage)).thenReturn(expectedPage);
+        when(pmService.currentUserInboxMessageCount()).thenReturn(JCUser.DEFAULT_PAGE_SIZE);
+        when(userService.getCurrentUser()).thenReturn(JC_USER);
+        when(forumUtils.prepareRequestedPage(page, JCUser.DEFAULT_PAGE_SIZE, JCUser.DEFAULT_PAGE_SIZE)).thenReturn(requestedPage);
 
         //invoke the object under test
         ModelAndView mav = controller.inboxPage(page);
 
         //check expectations
-        verify(pmService).getInboxForCurrentUser(page);
+        verify(pmService).getInboxForCurrentUser(requestedPage);
 
         //check result
         assertViewName(mav, "pm/inbox");
@@ -107,18 +114,22 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void outboxPage() {
-        int page = 1;
+        String page = "1";
+        int requestedPage = 1;
         List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(JC_USER, JC_USER,
                 "Message title", "Private message body"));
         Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
 
-        when(pmService.getOutboxForCurrentUser(page)).thenReturn(expectedPage);
+        when(pmService.getOutboxForCurrentUser(requestedPage)).thenReturn(expectedPage);
+        when(pmService.currentUserOutboxMessageCount()).thenReturn(JCUser.DEFAULT_PAGE_SIZE);
+        when(userService.getCurrentUser()).thenReturn(JC_USER);
+        when(forumUtils.prepareRequestedPage(page, JCUser.DEFAULT_PAGE_SIZE, JCUser.DEFAULT_PAGE_SIZE)).thenReturn(requestedPage);
 
         //invoke the object under test
         ModelAndView mav = controller.outboxPage(page);
 
         //check expectations
-        verify(pmService).getOutboxForCurrentUser(page);
+        verify(pmService).getOutboxForCurrentUser(requestedPage);
         //check result
         assertViewName(mav, "pm/outbox");
         assertModelAttributeAvailable(mav, "outboxPage");

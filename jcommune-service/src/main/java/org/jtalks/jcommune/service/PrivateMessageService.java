@@ -89,6 +89,19 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
     int currentUserNewPmCount();
 
     /**
+     * Return current user inbox message count.
+     * @return the current user inbox message count.
+     */
+    int currentUserInboxMessageCount();
+
+
+    /**
+     * Return current user outbox message count.
+     * @return the current user outbox message count.
+     */
+    int currentUserOutboxMessageCount();
+
+    /**
      * Send draft message.
      * After sending message will given "unread" status.
      *
