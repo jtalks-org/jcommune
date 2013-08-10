@@ -17,7 +17,6 @@ package org.jtalks.jcommune.service.transactional;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
-import org.joda.time.Interval;
 import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
@@ -47,7 +46,10 @@ import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
@@ -127,7 +129,6 @@ public class TransactionalUserServiceTest {
                 securityService,
                 mailService,
                 base64Wrapper,
-                avatarService,
                 encryptionService,
                 postDao,
                 authenticator);
@@ -149,22 +150,6 @@ public class TransactionalUserServiceTest {
         when(userDao.getByUsername(USERNAME)).thenReturn(null);
 
         userService.getByUsername(USERNAME);
-    }
-
-    @Test
-    public void registerUserShouldSaveHimInRepository() {
-        JCUser user = user(USERNAME);
-        when(userDao.getByEmail(EMAIL)).thenReturn(null);
-
-        JCUser registeredUser = userService.registerUser(user);
-
-        assertEquals(registeredUser.getUsername(), USERNAME);
-        assertEquals(registeredUser.getEmail(), EMAIL);
-        assertEquals(registeredUser.getPassword(), PASSWORD_MD5_HASH);
-        DateTime now = new DateTime();
-        assertTrue(new Interval(registeredUser.getRegistrationDate(), now)
-                .toDuration().getMillis() <= MAX_REGISTRATION_TIMEOUT);
-        verify(userDao).saveOrUpdate(user);
     }
 
     @Test

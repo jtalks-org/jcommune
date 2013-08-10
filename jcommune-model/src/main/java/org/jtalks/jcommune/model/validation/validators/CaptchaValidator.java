@@ -12,11 +12,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.validation.validators;
+package org.jtalks.jcommune.model.validation.validators;
 
 import com.google.code.kaptcha.Constants;
 import org.apache.commons.lang.StringUtils;
-import org.jtalks.jcommune.web.validation.annotations.Captcha;
+import org.jtalks.jcommune.model.validation.annotations.Captcha;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;

@@ -143,7 +143,6 @@
         <constructor-arg ref="securityService"/>
         <constructor-arg ref="mailService"/>
         <constructor-arg ref="base64Wrapper"/>
-        <constructor-arg ref="avatarService"/>
         <constructor-arg ref="encryptionService"/>
         <constructor-arg ref="postDao"/>
         <constructor-arg ref="authenticator"/>
@@ -157,6 +156,8 @@
         <constructor-arg ref="securityContextFacade"/>
         <constructor-arg ref="rememberMeServices"/>
         <constructor-arg ref="concurrentSessionControlStrategy"/>
+        <constructor-arg ref="mailService"/>
+        <constructor-arg ref="avatarService"/>
     </bean>
 
     <bean id="userContactsService"

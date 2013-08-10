@@ -75,7 +75,7 @@ public class PluginControllerTest {
     }
 
     @Test
-    public void configurePluginShouldMoveToPluginConfigurationPage() throws NotFoundException {
+    public void startConfiguringPluginShouldMoveToPluginConfigurationPage() throws NotFoundException {
         String configuredPluginName = "plugin";
         PluginConfiguration expectedConfiguration = new PluginConfiguration();
         long componentId = 25L;
@@ -84,7 +84,7 @@ public class PluginControllerTest {
         when(componentService.getComponentOfForum()).thenReturn(component);
         when(pluginService.getPluginConfiguration(configuredPluginName, componentId)).thenReturn(expectedConfiguration);
 
-        ModelAndView pluginConfigModelAndView = pluginController.configurePlugin(configuredPluginName);
+        ModelAndView pluginConfigModelAndView = pluginController.startConfiguringPlugin(configuredPluginName);
 
         assertViewName(pluginConfigModelAndView, "pluginConfiguration");
         assertModelAttributeAvailable(pluginConfigModelAndView, "pluginConfiguration");
@@ -93,7 +93,7 @@ public class PluginControllerTest {
     }
 
     @Test(expectedExceptions = NotFoundException.class)
-    public void configurePluginWhenPluginWasNotFoundShouldShowNotFoundError() throws NotFoundException {
+    public void startConfiguringPluginWhenPluginWasNotFoundShouldShowNotFoundError() throws NotFoundException {
         long componentId = 25L;
         Component component = new Component();
         component.setId(componentId);
@@ -101,7 +101,7 @@ public class PluginControllerTest {
         String nonExistPluginName = "non-exist";
         when(pluginService.getPluginConfiguration(nonExistPluginName, componentId)).thenThrow(new NotFoundException());
 
-        pluginController.configurePlugin(nonExistPluginName);
+        pluginController.startConfiguringPlugin(nonExistPluginName);
     }
 
     @Test

@@ -176,9 +176,9 @@ public class PoulpeAuthService {
      */
     private User createUser(String username, String passwordHash, String email) {
         User user = new User();
-        user.setUsername(username);
+        user.setUsername(username == null ? "" : username);
+        user.setEmail(email == null ? "" : email);
         user.setPasswordHash(passwordHash);
-        user.setEmail(email);
         return user;
     }
 
