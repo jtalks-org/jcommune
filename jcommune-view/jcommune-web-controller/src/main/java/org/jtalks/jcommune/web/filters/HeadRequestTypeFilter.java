@@ -34,6 +34,7 @@ public class HeadRequestTypeFilter implements Filter {
 
             chain.doFilter(getForceRequestWrapper(), noBodyResponseWrapper);
             noBodyResponseWrapper.setContentLength();
+            tearDown();
 
         } else {
             chain.doFilter(request, response);
@@ -46,10 +47,9 @@ public class HeadRequestTypeFilter implements Filter {
 
     public HttpServletRequestWrapper getForceRequestWrapper() {
 
-        //@todo When uncomment out this condition application throw exception. Please somebody fix this.
-        //if (this.forceRequestWrapper == null) {
+        if (this.forceRequestWrapper == null) {
            this.setForceRequestWrapper(new ForceGetRequestWrapper(this.httpServletRequest));
-        //}
+        }
 
         return this.forceRequestWrapper;
     }
@@ -60,16 +60,20 @@ public class HeadRequestTypeFilter implements Filter {
 
     public NoBodyResponseWrapper getNoBodyResponseWrapper() {
 
-        //@todo When uncomment out this condition application throw exception. Please somebody fix this.
-        //if (this.noBodyResponseWrapper == null) {
+        if (this.noBodyResponseWrapper == null) {
             this.setNoBodyResponseWrapper(new NoBodyResponseWrapper(this.httpServletResponse));
-       // }
+        }
 
         return this.noBodyResponseWrapper;
     }
 
     public void setNoBodyResponseWrapper(NoBodyResponseWrapper noBodyResponseWrapper) {
         this.noBodyResponseWrapper = noBodyResponseWrapper;
+    }
+
+    private void tearDown() {
+        this.noBodyResponseWrapper = null;
+        this.forceRequestWrapper = null;
     }
 
     @Override
