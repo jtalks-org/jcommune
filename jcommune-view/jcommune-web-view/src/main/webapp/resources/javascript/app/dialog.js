@@ -232,7 +232,7 @@ $(function () {
             ErrorUtils.removeAllErrorMessages();
             for (var i = 0; i < errors.length; i++) {
                 var idField = '#' + idPrefix + errors[i].field + idPostfix;
-                if ($(idField).length == 0) {
+                if (idPrefix.length > 0 && $(idField).length == 0) {
                     idField = '#' + idPrefix + capitaliseFirstLetter(errors[i].field) + idPostfix;
                 }
                 ErrorUtils.addErrorMessage(idField, errors[i].defaultMessage);

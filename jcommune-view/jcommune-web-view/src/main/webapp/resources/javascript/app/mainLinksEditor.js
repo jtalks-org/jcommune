@@ -46,6 +46,7 @@ function showExternalLinksDialog() {
         externalLink.url = $(elem).attr('href');
         externalLink.title = $(elem).text();
         externalLink.hint = $(elem).attr('data-original-title');
+
         idToExternalLinkMap[id] = externalLink;
         elements[i] = externalLink;
         tabNavigationOrder.push("#editLink" + id);
@@ -220,13 +221,15 @@ function editLinksVisible(visible) {
                         data: JSON.stringify(link),
                         success: function (resp) {
                             if (resp.status == "SUCCESS") {
-                                link.url = resp.result.url; //server can correct the url
+                                link.url = resp.result.url; //server can correct the url and hint
+                                link.hint = resp.result.hint;
                                 updateExternalLink(link, bigScreenExternalLinkIdPrefix);
                                 updateExternalLink(link, smallScreenExternalLinkIdPrefix);
                                 toAction('list');
                             } else {
                                 // remove previous errors and show new errors
                                 jDialog.prepareDialog(jDialog.dialog);
+                                updateUrlWithRejectedValue(resp.result);
                                 jDialog.showErrors(jDialog.dialog, resp.result, "link", "");
                             }
                         },
@@ -270,7 +273,14 @@ function editLinksVisible(visible) {
         link.attr('name', externalLink.title);
         link.text(externalLink.title);
         link.attr('data-original-title', externalLink.hint);
+    }
+}
 
+function updateUrlWithRejectedValue(result) {
+    for ( i = 0; i < result.length; ++i) {
+        if (result[i].field == "url") {
+            $('#linkUrl').val(result[i].rejectedValue);
+        }
     }
 }
 
@@ -297,13 +307,15 @@ function addLinkVisible(visible) {
                         data: JSON.stringify(link),
                         success: function (resp) {
                             if (resp.status == "SUCCESS") {
-                                link.url = resp.result.url; //server can correct the url
+                                link.url = resp.result.url; //server can correct the url and hint
+                                link.hint = resp.result.hint;
                                 link.id = resp.result.id;
                                 addNewExternalLink(link);
                                 $('#editLink' + resp.result.id).focus();
                             } else {
                                 // remove previous errors and show new errors
                                 jDialog.prepareDialog(jDialog.dialog);
+                                updateUrlWithRejectedValue(resp.result);
                                 jDialog.showErrors(linksEditor, resp.result, "link", "");
                             }
                         },
