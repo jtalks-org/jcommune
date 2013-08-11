@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.dto;
 
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
@@ -27,7 +28,6 @@ import org.springframework.data.domain.Sort;
 public class JCommunePageRequest implements Pageable {
     private static final long serialVersionUID = -9054794147449741044L;
     public static final int FIRST_PAGE_NUMBER = 1;
-    public static final int DEFAULT_PAGE_SIZE = 1;
 
     private int pageNumber;
     private int pageSize;
@@ -45,7 +45,7 @@ public class JCommunePageRequest implements Pageable {
             this.pageNumber = pageNumber;
         }
         if (pageSize <= 0) {
-            this.pageSize = DEFAULT_PAGE_SIZE;
+            this.pageSize = JCUser.DEFAULT_PAGE_SIZE;
         } else {
             this.pageSize = pageSize;
         }

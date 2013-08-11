@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -127,7 +128,8 @@ public class TopicControllerTest {
         Topic topic = new Topic(null, null);
         topic.addPost(new Post(user, "content"));
         branch.addTopic(topic);
-        Page<Post> postsPage = new PageImpl<Post>(Collections.<Post>emptyList());
+        Page<Post> postsPage = new PageImpl<Post>(Collections.<Post>emptyList(), new JCommunePageRequest("1", 15), 30L);
+
         //
         when(userService.getCurrentUser()).thenReturn(user);
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
