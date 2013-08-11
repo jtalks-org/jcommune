@@ -21,6 +21,7 @@ import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
+import org.jtalks.jcommune.web.util.ForumUtils;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -78,6 +79,8 @@ public class TopicControllerTest {
     private SessionRegistry registry;
     @Mock
     private LastReadPostService lastReadPostService;
+    @Mock
+    private ForumUtils forumUtils;
 
     private TopicController controller;
 
@@ -92,7 +95,7 @@ public class TopicControllerTest {
                 userService,
                 breadcrumbBuilder,
                 locationService,
-                registry, topicFetchService);
+                registry, topicFetchService, forumUtils);
     }
 
     @BeforeMethod
@@ -130,6 +133,7 @@ public class TopicControllerTest {
         Page<Post> postsPage = new PageImpl<Post>(Collections.<Post>emptyList());
         //
         when(userService.getCurrentUser()).thenReturn(user);
+        when(forumUtils.prepareRequestedPage(anyString(), anyInt(), anyInt())).thenReturn(1);
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
         when(postService.getPosts(topic, Integer.valueOf(page))).thenReturn(postsPage);
@@ -162,36 +166,6 @@ public class TopicControllerTest {
         verify(topicModificationService).createTopic(topic, TOPIC_CONTENT);
         //
         assertViewName(mav, "redirect:/topics/1");
-    }
-
-    @Test
-    public void testPrepareRequestedPageValidCase() {
-        String page = "2";
-        int pageSize = 10;
-        int postCount = 19;
-        int expected = 2;
-        int actual = controller.prepareRequestedPage(page, pageSize, postCount);
-        assertEquals(actual, expected);
-    }
-
-    @Test
-    public void testPrepareRequestedNotANumberCase() {
-        String page = "qq";
-        int pageSize = 10;
-        int postCount = 19;
-        int expected = 1;
-        int actual = controller.prepareRequestedPage(page, pageSize, postCount);
-        assertEquals(actual, expected);
-    }
-
-    @Test
-    public void testPrepareRequestedMoreThanMaxPageNumberCase() {
-        String page = "77";
-        int pageSize = 10;
-        int postCount = 19;
-        int expected = 2;
-        int actual = controller.prepareRequestedPage(page, pageSize, postCount);
-        assertEquals(actual, expected);
     }
 
     @Test

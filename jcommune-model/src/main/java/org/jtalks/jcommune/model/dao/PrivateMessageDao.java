@@ -69,4 +69,18 @@ public interface PrivateMessageDao extends Crud<PrivateMessage> {
      * @return count of new messages
      */
     int getNewMessagesCountFor(String username);
+
+    /**
+     * Return inbox message count for specified user.
+     * @param user specified user.
+     * @return the inbox message count for specified user. For non exist user return 0.
+     */
+    int getInboxMessageCountFor(JCUser user);
+
+    /**
+     * Return outbox message count for specified user.
+     * @param user specified user.
+     * @return the outbox message count for specified user. For non exist user return 0.
+     */
+    int getOutboxMessageCountFor(JCUser user);
 }
