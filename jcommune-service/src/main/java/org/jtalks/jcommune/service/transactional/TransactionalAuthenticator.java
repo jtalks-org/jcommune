@@ -153,7 +153,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         String passwordHash = encryptionService.encryptPassword(password);
         Map<String, String> authInfo = authenticateByAvailablePlugin(username, passwordHash);
         if (authInfo.isEmpty() || !authInfo.containsKey("email") || !authInfo.containsKey("username")) {
-            LOGGER.info("Could not authenticate by plugin user {}.", username);
+            LOGGER.info("Could not authenticate user '{}' by plugin.", username);
             return false;
         }
         JCUser user = saveUser(authInfo, passwordHash, newUser);
@@ -225,7 +225,6 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
     private JCUser getByUsername(String username) throws NotFoundException {
         JCUser user = this.getDao().getByUsername(username);
         if (user == null) {
-            LOGGER.info("JCUser [" + username + "] not found.");
             throw new NotFoundException();
         }
         return user;
