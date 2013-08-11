@@ -142,13 +142,6 @@ public class ExternalLinkHibernateDaoTest extends AbstractTransactionalTestNGSpr
     }
 
     @Test(expectedExceptions = ConstraintViolationException.class)
-    public void shouldFailWithEmptyUrl() {
-        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
-        link.setUrl("");
-        dao.saveOrUpdate(link);
-    }
-
-    @Test(expectedExceptions = ConstraintViolationException.class)
     public void shouldFailWithNullUrl() {
         ExternalLink link = ObjectsFactory.getDefaultExternalLink();
         link.setUrl(null);
@@ -179,38 +172,10 @@ public class ExternalLinkHibernateDaoTest extends AbstractTransactionalTestNGSpr
     }
 
     @Test(expectedExceptions = ConstraintViolationException.class)
-    public void shouldFailWithShortUrl() {
-        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
-        link.setUrl("http://az");
-        dao.saveOrUpdate(link);
-    }
-
-    @Test(expectedExceptions = ConstraintViolationException.class)
-    public void emptyHintForExternalLinkShouldRaiseConstraintException() {
-        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
-        link.setHint("");
-        dao.saveOrUpdate(link);
-    }
-
-    @Test(expectedExceptions = ConstraintViolationException.class)
     public void nullHintForExternalLinkShouldRaiseConstraintException() {
         ExternalLink link = ObjectsFactory.getDefaultExternalLink();
         link.setHint(null);
         dao.saveOrUpdate(link);
-    }
-
-    @Test(expectedExceptions = ConstraintViolationException.class)
-    public void hintForExternalLinkContainingOnlySpacesShouldRaiseConstraintException() {
-        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
-        link.setHint(" ");
-        dao.saveOrUpdate(link);
-    }
-
-    @Test(expectedExceptions = ConstraintViolationException.class)
-    public void shouldSuccessWithNullHint() {
-        ExternalLink link = ObjectsFactory.getDefaultExternalLink();
-        link.setHint(null);
-        session.saveOrUpdate(link);
     }
 
     @Test

@@ -32,9 +32,7 @@ public class ExternalLink extends Entity {
     public static final int TITLE_MAX_SIZE = 30;
     public static final int TITLE_MIN_SIZE = 1;
     public static final int URL_MAX_SIZE = 255;
-    public static final int URL_MIN_SIZE = 10;
     public static final int HINT_MAX_SIZE = 128;
-    public static final int HINT_MIN_SIZE = 1;
     public static final String HTTP_PROTOCOL_PREFIX = "http://";
     public static final String PROTOCOL_SEPARATOR = "://";
 
@@ -68,7 +66,7 @@ public class ExternalLink extends Entity {
      */
     @NotNull(message = "{validation.not_null}")
     @URL
-    @Size(max = URL_MAX_SIZE, min = URL_MIN_SIZE, message = "{validation.links.url.length}")
+    @Size(max = URL_MAX_SIZE, message = "{validation.links.url.length}")
     public String getUrl() {
         return url;
     }
@@ -105,7 +103,7 @@ public class ExternalLink extends Entity {
      * @return URL hint or description, e.g. 'The most powerful forum engine', this hint is shown
      */
     @NotNull(message = "{validation.not_null}")
-    @Size(min = HINT_MIN_SIZE, max = HINT_MAX_SIZE, message = "{validation.links.hint.length}")
+    @Size(max = HINT_MAX_SIZE, message = "{validation.links.hint.length}")
     public String getHint() {
         return hint;
     }

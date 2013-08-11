@@ -46,6 +46,7 @@ function showExternalLinksDialog() {
         externalLink.url = $(elem).attr('href');
         externalLink.title = $(elem).text();
         externalLink.hint = $(elem).attr('data-original-title');
+
         idToExternalLinkMap[id] = externalLink;
         elements[i] = externalLink;
         tabNavigationOrder.push("#editLink" + id);
@@ -220,7 +221,8 @@ function editLinksVisible(visible) {
                         data: JSON.stringify(link),
                         success: function (resp) {
                             if (resp.status == "SUCCESS") {
-                                link.url = resp.result.url; //server can correct the url
+                                link.url = resp.result.url; //server can correct the url and hint
+                                link.hint = resp.result.hint;
                                 updateExternalLink(link, bigScreenExternalLinkIdPrefix);
                                 updateExternalLink(link, smallScreenExternalLinkIdPrefix);
                                 toAction('list');
@@ -271,7 +273,6 @@ function editLinksVisible(visible) {
         link.attr('name', externalLink.title);
         link.text(externalLink.title);
         link.attr('data-original-title', externalLink.hint);
-
     }
 }
 
@@ -306,7 +307,8 @@ function addLinkVisible(visible) {
                         data: JSON.stringify(link),
                         success: function (resp) {
                             if (resp.status == "SUCCESS") {
-                                link.url = resp.result.url; //server can correct the url
+                                link.url = resp.result.url; //server can correct the url and hint
+                                link.hint = resp.result.hint;
                                 link.id = resp.result.id;
                                 addNewExternalLink(link);
                                 $('#editLink' + resp.result.id).focus();
