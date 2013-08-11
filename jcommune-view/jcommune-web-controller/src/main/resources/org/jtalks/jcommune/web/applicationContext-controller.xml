@@ -99,7 +99,5 @@
         </constructor-arg>
     </bean>
 
-    <bean id="forumUtils" class="org.jtalks.jcommune.web.util.ForumUtils"/>
-    
 </beans>
 

@@ -46,9 +46,10 @@ public class JCommunePageRequestTest {
         assertEquals(pageRequest.getSort(), null);
     }
     
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test()
     public void testConstructorWrongPageSize() {
         pageRequest = new JCommunePageRequest(PAGE_NUMBER, 0);
+        assertEquals(pageRequest.getPageSize(), JCommunePageRequest.DEFAULT_PAGE_SIZE);
     }
     
     @Test

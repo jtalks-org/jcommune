@@ -87,7 +87,7 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
      * {@inheritDoc}
      */
     @Override
-    public Page<Topic> getTopics(Branch branch, int page) {
+    public Page<Topic> getTopics(Branch branch, String page) {
         int pageSize = userService.getCurrentUser().getPageSize();
         JCommunePageRequest pageRequest = new JCommunePageRequest(page, pageSize);
         return getDao().getTopics(branch, pageRequest);

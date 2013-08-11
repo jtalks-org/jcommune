@@ -126,18 +126,18 @@ public class TransactionalTopicFetchServiceTest {
 
     @Test
     public void testGetTopics() {
-        int pageSize = 50;
+        String pageNumber = "50";
         Branch branch = createBranch();
         Page<Topic> expectedPage = new PageImpl<Topic>(Collections.<Topic>emptyList());
 
         JCUser currentUser = new JCUser("current", null, null);
-        currentUser.setPageSize(pageSize);
+        currentUser.setPageSize(50);
         when(userService.getCurrentUser()).thenReturn(currentUser);
         when(topicDao.getTopics(
                 Matchers.any(Branch.class), Matchers.any(JCommunePageRequest.class)))
                 .thenReturn(expectedPage);
 
-        Page<Topic> actualPage = topicFetchService.getTopics(branch, pageSize);
+        Page<Topic> actualPage = topicFetchService.getTopics(branch, pageNumber);
 
         assertEquals(actualPage, expectedPage, "Service returned incorrect data for one page of topics");
         verify(topicDao).getTopics(

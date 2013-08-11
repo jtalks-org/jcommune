@@ -22,19 +22,13 @@ import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
-import org.jtalks.jcommune.web.util.ForumUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -57,7 +51,6 @@ public class PrivateMessageController {
     private PrivateMessageService pmService;
     private BBCodeService bbCodeService;
     private UserService userService;
-    private ForumUtils forumUtils;
 
     //constants are moved here when occurs 4 or more times, as project PMD rule states
     private static final String PM_FORM = "pm/pmForm";
@@ -84,11 +77,10 @@ public class PrivateMessageController {
      */
     @Autowired
     public PrivateMessageController(PrivateMessageService pmService, BBCodeService bbCodeService,
-                                    UserService userService, ForumUtils forumUtils) {
+                                    UserService userService) {
         this.pmService = pmService;
         this.bbCodeService = bbCodeService;
         this.userService = userService;
-        this.forumUtils = forumUtils;
     }
 
     /**
@@ -100,9 +92,7 @@ public class PrivateMessageController {
     @RequestMapping(value = "/inbox", method = RequestMethod.GET)
     public ModelAndView inboxPage(@RequestParam(value = "page", defaultValue = "1", required = false) String page) {
 
-        int inboxMessageCount = pmService.currentUserInboxMessageCount();
-        int requestedPage = forumUtils.prepareRequestedPage(page, userService.getCurrentUser().getPageSize(), inboxMessageCount);
-        Page<PrivateMessage> inboxPage = pmService.getInboxForCurrentUser(requestedPage);
+        Page<PrivateMessage> inboxPage = pmService.getInboxForCurrentUser(page);
 
         return new ModelAndView("pm/inbox")
                 .addObject("inboxPage", inboxPage);
@@ -116,9 +106,7 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/outbox", method = RequestMethod.GET)
     public ModelAndView outboxPage(@RequestParam(value = "page", defaultValue = "1", required = false) String page) {
-        int outboxMessageCount = pmService.currentUserOutboxMessageCount();
-        int requestedPage = forumUtils.prepareRequestedPage(page, userService.getCurrentUser().getPageSize(), outboxMessageCount);
-        Page<PrivateMessage> outboxPage = pmService.getOutboxForCurrentUser(requestedPage);
+        Page<PrivateMessage> outboxPage = pmService.getOutboxForCurrentUser(page);
 
         return new ModelAndView("pm/outbox")
             .addObject("outboxPage", outboxPage);
@@ -131,7 +119,7 @@ public class PrivateMessageController {
      * @return {@code ModelAndView} with added {@link Page} instance with of private messages.
      */
     @RequestMapping(value = "/drafts", method = RequestMethod.GET)
-    public ModelAndView draftsPage(@RequestParam(value = "page", defaultValue = "1", required = false) int page) {
+    public ModelAndView draftsPage(@RequestParam(value = "page", defaultValue = "1", required = false) String page) {
         Page<PrivateMessage> draftsPage = pmService.getDraftsForCurrentUser(page);
         return new ModelAndView("pm/drafts")
                 .addObject("draftsPage", draftsPage);

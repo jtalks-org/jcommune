@@ -82,7 +82,7 @@ public class TransactionalPrivateMessageService
      * {@inheritDoc}
      */
     @Override
-    public Page<PrivateMessage> getInboxForCurrentUser(int page) {
+    public Page<PrivateMessage> getInboxForCurrentUser(String page) {
         JCUser currentUser = userService.getCurrentUser();
         JCommunePageRequest pageRequest = new JCommunePageRequest(page,
                 currentUser.getPageSize());
@@ -93,7 +93,7 @@ public class TransactionalPrivateMessageService
      * {@inheritDoc}
      */
     @Override
-    public Page<PrivateMessage> getOutboxForCurrentUser(int page) {
+    public Page<PrivateMessage> getOutboxForCurrentUser(String page) {
         JCUser currentUser = userService.getCurrentUser();
         JCommunePageRequest pageRequest = new JCommunePageRequest(page,
                 currentUser.getPageSize());
@@ -132,7 +132,7 @@ public class TransactionalPrivateMessageService
      * {@inheritDoc}
      */
     @Override
-    public Page<PrivateMessage> getDraftsForCurrentUser(int page) {
+    public Page<PrivateMessage> getDraftsForCurrentUser(String page) {
         JCUser currentUser = userService.getCurrentUser();
         JCommunePageRequest pageRequest = new JCommunePageRequest(page,
                 currentUser.getPageSize());
@@ -179,26 +179,6 @@ public class TransactionalPrivateMessageService
         count = this.getDao().getNewMessagesCountFor(username);
         userDataCache.putNewPmCount(username, count);
         return count;
-    }
-
-    @Override
-    public int currentUserInboxMessageCount() {
-        int result = DEFAULT_MESSAGE_COUNT;
-        JCUser user = userService.getCurrentUser();
-        if (user != null) {
-            result = getDao().getInboxMessageCountFor(user);
-        }
-        return result;
-    }
-
-    @Override
-    public int currentUserOutboxMessageCount() {
-        int result = DEFAULT_MESSAGE_COUNT;
-        JCUser user = userService.getCurrentUser();
-        if (user != null) {
-            result = getDao().getOutboxMessageCountFor(user);
-        }
-        return result;
     }
 
     /**

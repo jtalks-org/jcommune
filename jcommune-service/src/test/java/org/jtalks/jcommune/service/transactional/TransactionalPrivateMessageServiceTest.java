@@ -104,7 +104,7 @@ public class TransactionalPrivateMessageServiceTest {
 
     @Test
     public void testGetInboxForCurrentUser() {
-        int pageNumber = 1;
+        String pageNumber = "1";
         List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(user, user,
                 "Message title", "Private message body"));
         Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
@@ -118,7 +118,7 @@ public class TransactionalPrivateMessageServiceTest {
 
     @Test
     public void testGetOutboxForCurrentUser() {
-        int pageNumber = 1;
+        String pageNumber = "1";
         List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(user, user,
                 "Message title", "Private message body"));
         Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
@@ -167,7 +167,7 @@ public class TransactionalPrivateMessageServiceTest {
 
     @Test
     public void testGetDraftsForCurrentUser() {
-        int pageNumber = 1;
+        String pageNumber = "1";
         List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(user, user,
                 "Message title", "Private message body"));
         Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);

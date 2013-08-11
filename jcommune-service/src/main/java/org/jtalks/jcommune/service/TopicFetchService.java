@@ -31,7 +31,7 @@ public interface TopicFetchService extends EntityService<Topic>{
      * @return object that contains topics for one page(note, that one page may contain
      *         all topics) and information for pagination
      */
-    Page<Topic> getTopics(Branch branch, int page);
+    Page<Topic> getTopics(Branch branch, String page);
 
     /**
      * Get topics that have been updated in the last 24 hours.

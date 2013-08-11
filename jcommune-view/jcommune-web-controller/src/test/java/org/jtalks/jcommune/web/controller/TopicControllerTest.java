@@ -21,7 +21,6 @@ import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
-import org.jtalks.jcommune.web.util.ForumUtils;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -79,8 +78,6 @@ public class TopicControllerTest {
     private SessionRegistry registry;
     @Mock
     private LastReadPostService lastReadPostService;
-    @Mock
-    private ForumUtils forumUtils;
 
     private TopicController controller;
 
@@ -95,7 +92,7 @@ public class TopicControllerTest {
                 userService,
                 breadcrumbBuilder,
                 locationService,
-                registry, topicFetchService, forumUtils);
+                registry, topicFetchService);
     }
 
     @BeforeMethod
@@ -133,10 +130,9 @@ public class TopicControllerTest {
         Page<Post> postsPage = new PageImpl<Post>(Collections.<Post>emptyList());
         //
         when(userService.getCurrentUser()).thenReturn(user);
-        when(forumUtils.prepareRequestedPage(anyString(), anyInt(), anyInt())).thenReturn(1);
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
-        when(postService.getPosts(topic, Integer.valueOf(page))).thenReturn(postsPage);
+        when(postService.getPosts(topic, page)).thenReturn(postsPage);
 
         ModelAndView mav = controller.showTopicPage(TOPIC_ID, page);
 

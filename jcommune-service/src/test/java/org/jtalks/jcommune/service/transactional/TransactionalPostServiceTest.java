@@ -282,7 +282,7 @@ public class TransactionalPostServiceTest {
 
     @Test
     public void testPostsOfUser() {
-        int page = 1;
+        String page = "1";
         int pageSize = 50;
         List<Post> posts = Arrays.asList(new Post(user, ""));
         Page<Post> expectedPostsPage = new PageImpl<Post>(posts);
@@ -380,17 +380,17 @@ public class TransactionalPostServiceTest {
 
     @Test
     public void testGetPosts() {
-        int pageSize = 50;
+        String pageNumber = "50";
         Topic topic = new Topic(user, "");
         Page<Post> expectedPage = new PageImpl<Post>(Collections.<Post>emptyList());
 
-        currentUser.setPageSize(pageSize);
+        currentUser.setPageSize(50);
 
         when(postDao.getPosts(
                 Matchers.any(Topic.class), Matchers.any(JCommunePageRequest.class)))
                 .thenReturn(expectedPage);
 
-        Page<Post> actualPage = postService.getPosts(topic, pageSize);
+        Page<Post> actualPage = postService.getPosts(topic, pageNumber);
 
         assertEquals(actualPage, expectedPage, "Service returned incorrect data for one page of posts");
         verify(postDao).getPosts(
