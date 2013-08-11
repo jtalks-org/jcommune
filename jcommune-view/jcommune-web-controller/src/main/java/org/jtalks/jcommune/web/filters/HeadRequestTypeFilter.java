@@ -15,26 +15,19 @@ import java.io.IOException;
  */
 public class HeadRequestTypeFilter implements Filter {
 
-    private HttpServletRequest httpServletRequest;
-    private HttpServletResponse httpServletResponse;
-
-    private NoBodyResponseWrapper noBodyResponseWrapper;
-    private HttpServletRequestWrapper forceRequestWrapper;
-
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        this.httpServletRequest = (HttpServletRequest) request;
-        this.httpServletResponse = (HttpServletResponse) response;
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
-        if (isHeadTypeRequest(this.httpServletRequest)) {
+        if (isHeadTypeRequest(httpServletRequest)) {
 
-            NoBodyResponseWrapper noBodyResponseWrapper = getNoBodyResponseWrapper();
+            NoBodyResponseWrapper noBodyResponseWrapper = new NoBodyResponseWrapper(httpServletResponse);
 
-            chain.doFilter(getForceRequestWrapper(), noBodyResponseWrapper);
+            chain.doFilter(new ForceGetRequestWrapper(httpServletRequest), noBodyResponseWrapper);
             noBodyResponseWrapper.setContentLength();
-            tearDown();
 
         } else {
             chain.doFilter(request, response);
@@ -43,37 +36,6 @@ public class HeadRequestTypeFilter implements Filter {
 
     private boolean isHeadTypeRequest(HttpServletRequest request) {
         return "HEAD".equals(request.getMethod());
-    }
-
-    public HttpServletRequestWrapper getForceRequestWrapper() {
-
-        if (this.forceRequestWrapper == null) {
-           this.setForceRequestWrapper(new ForceGetRequestWrapper(this.httpServletRequest));
-        }
-
-        return this.forceRequestWrapper;
-    }
-
-    public void setForceRequestWrapper(HttpServletRequestWrapper forceRequestWrapper) {
-        this.forceRequestWrapper = forceRequestWrapper;
-    }
-
-    public NoBodyResponseWrapper getNoBodyResponseWrapper() {
-
-        if (this.noBodyResponseWrapper == null) {
-            this.setNoBodyResponseWrapper(new NoBodyResponseWrapper(this.httpServletResponse));
-        }
-
-        return this.noBodyResponseWrapper;
-    }
-
-    public void setNoBodyResponseWrapper(NoBodyResponseWrapper noBodyResponseWrapper) {
-        this.noBodyResponseWrapper = noBodyResponseWrapper;
-    }
-
-    private void tearDown() {
-        this.noBodyResponseWrapper = null;
-        this.forceRequestWrapper = null;
     }
 
     @Override
