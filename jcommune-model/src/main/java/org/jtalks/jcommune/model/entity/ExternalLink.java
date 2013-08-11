@@ -77,7 +77,7 @@ public class ExternalLink extends Entity {
     public void setUrl(String url) {
         if (url != null) {
             url = url.trim();
-            if (!url.isEmpty() && !url.contains(PROTOCOL_SEPARATOR)) {
+            if (!url.contains(PROTOCOL_SEPARATOR)) {
                 url = HTTP_PROTOCOL_PREFIX + url;
             }
         }
