@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.dto;
 
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
@@ -46,9 +47,10 @@ public class JCommunePageRequestTest {
         assertEquals(pageRequest.getSort(), null);
     }
     
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test()
     public void testConstructorWrongPageSize() {
         pageRequest = new JCommunePageRequest(PAGE_NUMBER, 0);
+        assertEquals(pageRequest.getPageSize(), JCUser.DEFAULT_PAGE_SIZE);
     }
     
     @Test

@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.dto.JCommunePageRequest;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -127,12 +128,13 @@ public class TopicControllerTest {
         Topic topic = new Topic(null, null);
         topic.addPost(new Post(user, "content"));
         branch.addTopic(topic);
-        Page<Post> postsPage = new PageImpl<Post>(Collections.<Post>emptyList());
+        Page<Post> postsPage = new PageImpl<Post>(Collections.<Post>emptyList(), new JCommunePageRequest("1", 15), 30L);
+
         //
         when(userService.getCurrentUser()).thenReturn(user);
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
-        when(postService.getPosts(topic, Integer.valueOf(page))).thenReturn(postsPage);
+        when(postService.getPosts(topic, page)).thenReturn(postsPage);
 
         ModelAndView mav = controller.showTopicPage(TOPIC_ID, page);
 
@@ -162,36 +164,6 @@ public class TopicControllerTest {
         verify(topicModificationService).createTopic(topic, TOPIC_CONTENT);
         //
         assertViewName(mav, "redirect:/topics/1");
-    }
-
-    @Test
-    public void testPrepareRequestedPageValidCase() {
-        String page = "2";
-        int pageSize = 10;
-        int postCount = 19;
-        int expected = 2;
-        int actual = controller.prepareRequestedPage(page, pageSize, postCount);
-        assertEquals(actual, expected);
-    }
-
-    @Test
-    public void testPrepareRequestedNotANumberCase() {
-        String page = "qq";
-        int pageSize = 10;
-        int postCount = 19;
-        int expected = 1;
-        int actual = controller.prepareRequestedPage(page, pageSize, postCount);
-        assertEquals(actual, expected);
-    }
-
-    @Test
-    public void testPrepareRequestedMoreThanMaxPageNumberCase() {
-        String page = "77";
-        int pageSize = 10;
-        int postCount = 19;
-        int expected = 2;
-        int actual = controller.prepareRequestedPage(page, pageSize, postCount);
-        assertEquals(actual, expected);
     }
 
     @Test

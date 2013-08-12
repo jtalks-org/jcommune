@@ -67,7 +67,7 @@
              and pm.status in (:statuses)
              and pm.read = :read]]>
     </query>
-    <query name="getCountUserSentPm">
+    <query name="getCountUserOutboxPm">
         <![CDATA[SELECT count(*) FROM PrivateMessage as pm
         WHERE pm.userFrom = :userFrom
         and pm.status in (:statuses)]]>

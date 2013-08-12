@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.dto;
 
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
@@ -26,7 +27,8 @@ import org.springframework.data.domain.Sort;
  */
 public class JCommunePageRequest implements Pageable {
     private static final long serialVersionUID = -9054794147449741044L;
-    
+    public static final int FIRST_PAGE_NUMBER = 1;
+
     private int pageNumber;
     private int pageSize;
 
@@ -36,17 +38,32 @@ public class JCommunePageRequest implements Pageable {
      * @param pageSize size of page
      * @param pageNumber page number
      */
-    public JCommunePageRequest(int pageNumber, int pageSize) {
-        if (pageSize <= 0) {
-            throw new IllegalArgumentException("Page size must not be less than or equal to zero!");
-        }
-        
-        if (pageNumber > 0) {
+    JCommunePageRequest(int pageNumber, int pageSize) {
+        if (pageNumber <= 0) {
+            this.pageNumber = FIRST_PAGE_NUMBER;
+        } else {
             this.pageNumber = pageNumber;
-        } else { 
-            this.pageNumber = 1;
         }
-        this.pageSize = pageSize;
+        if (pageSize <= 0) {
+            this.pageSize = JCUser.DEFAULT_PAGE_SIZE;
+        } else {
+            this.pageSize = pageSize;
+        }
+    }
+
+    /**
+     * Creates a new {@link JCommunePageRequest}.
+     *
+     * @param requestedPageNumber page number as a String. If specified string is not valid integer,
+     *                            page number will be equal 1.
+     * @param pageSize size of page
+     */
+    public JCommunePageRequest(String requestedPageNumber, int pageSize) {
+        if (requestedPageNumber.matches("\\d+")) {
+            new JCommunePageRequest(Integer.valueOf(requestedPageNumber), pageSize);
+        } else {
+            new JCommunePageRequest(FIRST_PAGE_NUMBER, pageSize);
+        }
     }
     
     /**
@@ -139,8 +156,8 @@ public class JCommunePageRequest implements Pageable {
      * @param totalCount total count of items
      */
     public void adjustPageNumber(int totalCount) {
-        if (pageNumber <= 1) {
-            pageNumber = 1;
+        if (pageNumber <= FIRST_PAGE_NUMBER) {
+            pageNumber = FIRST_PAGE_NUMBER;
         } else if (pageNumber > getPageNumber(totalCount - 1)) {
             pageNumber = getPageNumber(totalCount - 1);
         }

@@ -14,10 +14,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.PostService;
@@ -34,14 +30,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 /**
  * Controller for User related actions: registration, user profile operations and so on.
@@ -228,7 +223,7 @@ public class UserProfileController {
     @RequestMapping(value = "/users/{id}/postList", method = RequestMethod.GET)
     public ModelAndView showUserPostList(@PathVariable Long id,
                                          @RequestParam(value = "page", defaultValue = "1",
-                                                 required = false) int page) throws NotFoundException {
+                                                 required = false) String page) throws NotFoundException {
         JCUser user = userService.get(id);
         Page<Post> postsPage = postService.getPostsOfUser(user, page);
         return new ModelAndView("userPostList")
