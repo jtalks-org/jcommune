@@ -91,7 +91,7 @@ public class TransactionalTopicFetchServiceTest {
 
     @Test
     public void testGetAllTopicsPastLastDay() throws NotFoundException {
-        int pageNumber = 1;
+        String pageNumber = "1";
         int pageSize = 20;
         List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
         Page<Topic> expectedPage = new PageImpl<Topic>(expectedList);
@@ -110,7 +110,7 @@ public class TransactionalTopicFetchServiceTest {
 
     @Test
     public void testGetUnansweredTopics() {
-        int pageNumber = 1;
+        String pageNumber = "1";
         int pageSize = 20;
         List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
         Page<Topic> expectedPage = new PageImpl<Topic>(expectedList);
@@ -155,7 +155,7 @@ public class TransactionalTopicFetchServiceTest {
     public void testSearchPosts() {
         String phrase = "phrase";
 
-        topicFetchService.searchByTitleAndContent(phrase, 50);
+        topicFetchService.searchByTitleAndContent(phrase, "50");
 
         Mockito.verify(searchDao).searchByTitleAndContent(
                 Matchers.anyString(), Matchers.<JCommunePageRequest> any());
@@ -163,7 +163,7 @@ public class TransactionalTopicFetchServiceTest {
 
     @Test(dataProvider = "parameterSearchPostsWithEmptySearchPhrase")
     public void testSearchPostsWithEmptySearchPhrase(String phrase) {
-        Page<Topic> searchResultPage = topicFetchService.searchByTitleAndContent(phrase, 50);
+        Page<Topic> searchResultPage = topicFetchService.searchByTitleAndContent(phrase, "50");
 
         Assert.assertTrue(!searchResultPage.hasContent(), "The search result must be empty.");
     }

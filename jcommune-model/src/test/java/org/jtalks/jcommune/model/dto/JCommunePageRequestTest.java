@@ -22,8 +22,9 @@ import static org.testng.Assert.assertEquals;
 public class JCommunePageRequestTest {
     
     private static final int PAGE_SIZE = 10;
-    private static final int PAGE_NUMBER = 5;
-    private static final int INDEX_OF_FIRST_ITEM = (PAGE_NUMBER - 1) * PAGE_SIZE;
+    private static final String PAGE_NUMBER = "5";
+    public static final int PARSED_PAGE_NUMBER = Integer.parseInt(PAGE_NUMBER);
+    private static final int INDEX_OF_FIRST_ITEM = (PARSED_PAGE_NUMBER - 1) * PAGE_SIZE;
 
     private JCommunePageRequest pageRequest;
     
@@ -31,7 +32,7 @@ public class JCommunePageRequestTest {
     public void testConstructor() {
         pageRequest = new JCommunePageRequest(PAGE_NUMBER, PAGE_SIZE);
         
-        assertEquals(pageRequest.getPageNumber(), PAGE_NUMBER);
+        assertEquals(pageRequest.getPageNumber(), PARSED_PAGE_NUMBER);
         assertEquals(pageRequest.getPageSize(), PAGE_SIZE);
         assertEquals(pageRequest.getOffset(), INDEX_OF_FIRST_ITEM);
         assertEquals(pageRequest.getSort(), null);
@@ -39,7 +40,7 @@ public class JCommunePageRequestTest {
     
     @Test
     public void testConstructorPageNumberLessThanOne() {
-        pageRequest = new JCommunePageRequest(0, PAGE_SIZE);
+        pageRequest = new JCommunePageRequest("0", PAGE_SIZE);
         
         assertEquals(pageRequest.getPageNumber(), 1);
         assertEquals(pageRequest.getPageSize(), PAGE_SIZE);
@@ -57,7 +58,7 @@ public class JCommunePageRequestTest {
     public void testCreateWithPagingEnabled() {
         pageRequest = JCommunePageRequest.createPageRequest(PAGE_NUMBER, PAGE_SIZE);
         
-        assertEquals(pageRequest.getPageNumber(), PAGE_NUMBER);
+        assertEquals(pageRequest.getPageNumber(), PARSED_PAGE_NUMBER);
         assertEquals(pageRequest.getPageSize(), PAGE_SIZE);
         assertEquals(pageRequest.getSort(), null);
     }

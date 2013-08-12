@@ -150,7 +150,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         int messageCount = 50;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, pageSize);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1", pageSize);
         PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllFromUser(userFrom, pageRequest);
@@ -169,7 +169,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         int pageSize = totalSize/pageCount;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, pageSize);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1", pageSize);
         PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllFromUser(userFrom, pageRequest);
@@ -185,7 +185,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         int messageCount = 50;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, pageSize);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1", pageSize);
         PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllFromUser(userFrom, pageRequest);
@@ -201,7 +201,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         int messageCount = 50;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, pageSize);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1", pageSize);
         PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllFromUser(userFrom, pageRequest);
@@ -217,7 +217,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         int messageCount = 50;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(0, pageSize);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("0", pageSize);
         PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllFromUser(userFrom, pageRequest);
@@ -233,7 +233,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         int messageCount = 50;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(0, pageSize);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("0", pageSize);
         PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllFromUser(userFrom, pageRequest);
@@ -249,7 +249,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         int messageCount = 50;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1000, pageSize);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1000", pageSize);
         PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllFromUser(userFrom, pageRequest);
@@ -265,7 +265,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         int messageCount = 50;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1000, pageSize);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1000", pageSize);
         PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllFromUser(userFrom, pageRequest);
@@ -281,7 +281,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         int messageCount = 50;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1000, pageSize);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1000", pageSize);
         PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllFromUser(userFrom, pageRequest);
@@ -294,7 +294,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         int pageSize = 25;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, pageSize);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1", pageSize);
         PersistedObjectsFactory.createAndSaveMessage(PrivateMessageStatus.SENT, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllFromUser(userFrom, pageRequest);
@@ -308,7 +308,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         int pageSize = 25;
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, pageSize);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1", pageSize);
         PersistedObjectsFactory.createAndSaveMessage(PrivateMessageStatus.SENT, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllFromUser(userFrom, pageRequest);
@@ -325,7 +325,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, itemsOnPage);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1", itemsOnPage);
         PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllForUser(userTo, pageRequest);
@@ -345,7 +345,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, itemsOnPage);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1", itemsOnPage);
         PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllForUser(userTo, pageRequest);
@@ -362,7 +362,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, itemsOnPage);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1", itemsOnPage);
         PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllForUser(userTo, pageRequest);
@@ -379,7 +379,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, itemsOnPage);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1", itemsOnPage);
         PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllForUser(userTo, pageRequest);
@@ -396,7 +396,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(0, itemsOnPage);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("0", itemsOnPage);
         PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllForUser(userTo, pageRequest);
@@ -413,7 +413,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(0, itemsOnPage);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("0", itemsOnPage);
         PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllForUser(userTo, pageRequest);
@@ -430,7 +430,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1000, itemsOnPage);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1000", itemsOnPage);
         PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllForUser(userTo, pageRequest);
@@ -447,7 +447,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1000, itemsOnPage);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1000", itemsOnPage);
         PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllForUser(userTo, pageRequest);
@@ -464,7 +464,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1000, itemsOnPage);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1000", itemsOnPage);
         PersistedObjectsFactory.preparePrivateMessages(messageCount, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllForUser(userTo, pageRequest);
@@ -479,7 +479,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, itemsOnPage);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1", itemsOnPage);
         PersistedObjectsFactory.createAndSaveMessage(PrivateMessageStatus.SENT, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllForUser(userTo, pageRequest);
@@ -495,7 +495,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, itemsOnPage);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1", itemsOnPage);
         PersistedObjectsFactory.createAndSaveMessage(PrivateMessageStatus.SENT, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getAllForUser(userTo, pageRequest);
@@ -511,7 +511,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, itemsOnPage);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1", itemsOnPage);
         PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getDraftsForUser(userFrom, pageRequest);
@@ -528,7 +528,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, itemsOnPage);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1", itemsOnPage);
         PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getDraftsForUser(userFrom, pageRequest);
@@ -544,7 +544,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, itemsOnPage);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1", itemsOnPage);
         PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getDraftsForUser(userFrom, pageRequest);
@@ -560,7 +560,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, itemsOnPage);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1", itemsOnPage);
         PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getDraftsForUser(userFrom, pageRequest);
@@ -576,7 +576,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(0, itemsOnPage);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("0", itemsOnPage);
         PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getDraftsForUser(userFrom, pageRequest);
@@ -592,7 +592,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(0, itemsOnPage);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("0", itemsOnPage);
         PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getDraftsForUser(userFrom, pageRequest);
@@ -608,7 +608,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1000, itemsOnPage);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1000", itemsOnPage);
         PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getDraftsForUser(userFrom, pageRequest);
@@ -624,7 +624,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1000, itemsOnPage);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1000", itemsOnPage);
         PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getDraftsForUser(userFrom, pageRequest);
@@ -640,7 +640,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1000, itemsOnPage);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1000", itemsOnPage);
         PersistedObjectsFactory.preparePrivateMessages(totalSize, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getDraftsForUser(userFrom, pageRequest);
@@ -657,7 +657,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, itemsOnPage);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1", itemsOnPage);
         PersistedObjectsFactory.preparePrivateMessages(messageNumber, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getDraftsForUser(userFrom, pageRequest);
@@ -674,7 +674,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         JCUser userTo = PersistedObjectsFactory.getUser("UserTo", "mail2@mail.com");
         JCUser userFrom = PersistedObjectsFactory.getUser("UserFrom", "mail1@mail.com");
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, itemsOnPage);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1", itemsOnPage);
         PersistedObjectsFactory.preparePrivateMessages(messageNumber, userTo, userFrom);
 
         Page<PrivateMessage> messagePage = dao.getDraftsForUser(userFrom, pageRequest);

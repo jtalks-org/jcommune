@@ -40,7 +40,7 @@ public interface TopicFetchService extends EntityService<Topic>{
      * @return object that contains topics(that have been updated in the last 24 hours)
      *         for one page and information for pagination
      */
-    Page<Topic> getRecentTopics(int page);
+    Page<Topic> getRecentTopics(String page);
 
     /**
      * Get unanswered topics(topics which has only 1 post added during topic creation).
@@ -49,7 +49,7 @@ public interface TopicFetchService extends EntityService<Topic>{
      * @return object that contains unanswered topics for one page and information for
      *         pagination
      */
-    Page<Topic> getUnansweredTopics(int page);
+    Page<Topic> getUnansweredTopics(String page);
 
     /**
      * Search by topics, title and content of which corresponds to the text of search.
@@ -58,7 +58,7 @@ public interface TopicFetchService extends EntityService<Topic>{
      * @param page requested page number, page size is calculated based on user's preferences
      * @return search results page
      */
-    Page<Topic> searchByTitleAndContent(String phrase, int page);
+    Page<Topic> searchByTitleAndContent(String phrase, String page);
 
     /**
      * Indexing topics from the database.

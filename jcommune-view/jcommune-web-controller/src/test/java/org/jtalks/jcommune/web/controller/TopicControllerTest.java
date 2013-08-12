@@ -128,7 +128,9 @@ public class TopicControllerTest {
         Topic topic = new Topic(null, null);
         topic.addPost(new Post(user, "content"));
         branch.addTopic(topic);
-        Page<Post> postsPage = new PageImpl<Post>(Collections.<Post>emptyList(), new JCommunePageRequest("1", 15), 30L);
+        JCommunePageRequest pageable = new JCommunePageRequest("1", 15);
+        Page<Post> postsPage = new PageImpl<Post>(Collections.<Post>emptyList(),
+                pageable, 30L);
 
         //
         when(userService.getCurrentUser()).thenReturn(user);

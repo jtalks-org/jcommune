@@ -14,9 +14,10 @@
  */
 package org.jtalks.jcommune.model.dto;
 
-import org.jtalks.jcommune.model.entity.JCUser;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+
+import static org.jtalks.jcommune.model.entity.JCUser.DEFAULT_PAGE_SIZE;
 
 /**
  * Data transfer object that needed for pagination in JCommune.
@@ -33,25 +34,6 @@ public class JCommunePageRequest implements Pageable {
     private int pageSize;
 
     /**
-     * Creates a new {@link JCommunePageRequest}. 
-     * 
-     * @param pageSize size of page
-     * @param pageNumber page number
-     */
-    JCommunePageRequest(int pageNumber, int pageSize) {
-        if (pageNumber <= 0) {
-            this.pageNumber = FIRST_PAGE_NUMBER;
-        } else {
-            this.pageNumber = pageNumber;
-        }
-        if (pageSize <= 0) {
-            this.pageSize = JCUser.DEFAULT_PAGE_SIZE;
-        } else {
-            this.pageSize = pageSize;
-        }
-    }
-
-    /**
      * Creates a new {@link JCommunePageRequest}.
      *
      * @param requestedPageNumber page number as a String. If specified string is not valid integer,
@@ -59,13 +41,21 @@ public class JCommunePageRequest implements Pageable {
      * @param pageSize size of page
      */
     public JCommunePageRequest(String requestedPageNumber, int pageSize) {
-        if (requestedPageNumber.matches("\\d+")) {
-            new JCommunePageRequest(Integer.valueOf(requestedPageNumber), pageSize);
-        } else {
-            new JCommunePageRequest(FIRST_PAGE_NUMBER, pageSize);
-        }
+        int parsedPageNumber = requestedPageNumber.matches("\\d+") ?
+                Integer.valueOf(requestedPageNumber)
+                : FIRST_PAGE_NUMBER;
+        this.pageNumber = preparePageNumber(parsedPageNumber);
+        this.pageSize = preparePageSize(pageSize);
     }
-    
+
+    private int preparePageSize(int pageSize) {
+        return (pageSize <= 0) ? DEFAULT_PAGE_SIZE : pageSize;
+    }
+
+    private int preparePageNumber(int pageNumber) {
+        return (pageNumber <= 0) ? FIRST_PAGE_NUMBER : pageNumber;
+    }
+
     /**
      * Create an instance of {@link JCommunePageRequest} with enabled paging.
      *
@@ -73,7 +63,7 @@ public class JCommunePageRequest implements Pageable {
      * @param pageSize size of page
      * @return an instance of {@link JCommunePageRequest} with enabled paging
      */
-    public static JCommunePageRequest createPageRequest(int pageNumber, int pageSize) {
+    public static JCommunePageRequest createPageRequest(String pageNumber, int pageSize) {
         return new JCommunePageRequest(pageNumber, pageSize);
     }
 

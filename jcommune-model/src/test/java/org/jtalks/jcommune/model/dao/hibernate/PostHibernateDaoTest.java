@@ -43,8 +43,8 @@ import static org.testng.Assert.*;
 @Transactional
 public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
 
-    private static final int PAGE_NUMBER_TOO_LOW = 0;
-    private static final int PAGE_NUMBER_TOO_BIG = 1000;
+    private static final String PAGE_NUMBER_TOO_LOW = "0";
+    private static final String PAGE_NUMBER_TOO_BIG = "1000";
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
@@ -107,7 +107,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         int pageCount = 2;
         int pageSize = totalSize / pageCount;
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, pageSize);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1", pageSize);
         List<Post> posts = PersistedObjectsFactory.createAndSavePostList(totalSize);
         JCUser author = posts.get(0).getUserCreated();
 
@@ -124,7 +124,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         int pageCount = 2;
         int pageSize = totalSize / pageCount;
 
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, pageSize);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1", pageSize);
         List<Post> posts = PersistedObjectsFactory.createAndSavePostList(totalSize);
         JCUser author = posts.get(0).getUserCreated();
 
@@ -195,7 +195,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
     @Test
     public void testNullPostOfUser() {
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, 50);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1", 50);
         JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
 
@@ -209,7 +209,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         int totalSize = 50;
         int pageCount = 2;
         int pageSize = totalSize / pageCount;
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, pageSize);
+        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest("1", pageSize);
         List<Post> posts = PersistedObjectsFactory.createAndSavePostList(totalSize);
         Topic topic = posts.get(0).getTopic();
 

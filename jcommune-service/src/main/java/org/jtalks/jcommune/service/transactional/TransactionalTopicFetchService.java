@@ -66,7 +66,7 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
      * {@inheritDoc}
      */
     @Override
-    public Page<Topic> getRecentTopics(int page) {
+    public Page<Topic> getRecentTopics(String page) {
         int pageSize = userService.getCurrentUser().getPageSize();
         JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(page, pageSize);
         DateTime date24HoursAgo = new DateTime().minusDays(1);
@@ -77,7 +77,7 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
      * {@inheritDoc}
      */
     @Override
-    public Page<Topic> getUnansweredTopics(int page) {
+    public Page<Topic> getUnansweredTopics(String page) {
         int pageSize = userService.getCurrentUser().getPageSize();
         JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(page, pageSize);
         return this.getDao().getUnansweredTopics(pageRequest, userService.getCurrentUser());
@@ -97,7 +97,7 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
      * {@inheritDoc}
      */
     @Override
-    public Page<Topic> searchByTitleAndContent(String phrase, int page) {
+    public Page<Topic> searchByTitleAndContent(String phrase, String page) {
         if (!StringUtils.isEmpty(phrase)) {
             int pageSize = userService.getCurrentUser().getPageSize();
             JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(page, pageSize);

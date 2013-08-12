@@ -120,7 +120,7 @@ public class BranchControllerTest {
 
     @Test
     public void recentTopicsPage() throws NotFoundException {
-        int page = 1;
+        String page = "1";
         Page<Topic> topicsPage = new PageImpl<Topic>(new ArrayList<Topic>());
         //set expectations
         when(topicFetchService.getRecentTopics(page)).thenReturn(topicsPage);
@@ -139,7 +139,7 @@ public class BranchControllerTest {
 
     @Test
     public void unansweredTopicsPage() {
-        int page = 1;
+        String page = "1";
         Page<Topic> topicsPage = new PageImpl<Topic>(new ArrayList<Topic>());
         //set expectations
         when(topicFetchService.getUnansweredTopics(page)).thenReturn(topicsPage);

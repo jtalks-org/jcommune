@@ -81,7 +81,7 @@ public class TopicSearchController {
      */
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     public ModelAndView initSearch(@RequestParam String searchText) {
-        int firstPage = 1;
+        String firstPage = "1";
         return search(searchText, firstPage);
     }
 
@@ -94,7 +94,7 @@ public class TopicSearchController {
      */
     @RequestMapping(value = "/search/{searchText}", method = RequestMethod.GET)
     public ModelAndView continueSearch(@PathVariable String searchText,
-            @RequestParam(value = "page", defaultValue = "1", required = true) int page) {
+            @RequestParam(value = "page", defaultValue = "1", required = true) String page) {
         return search(searchText, page);
     }
 
@@ -105,7 +105,7 @@ public class TopicSearchController {
      * @param page       page number
      * @return result of the search
      */
-    private ModelAndView search(String searchText, int page) {
+    private ModelAndView search(String searchText, String page) {
         Page<Topic> searchResultPage = topicSearchService.searchByTitleAndContent(searchText, page);
         lastReadPostService.fillLastReadPostForTopics(searchResultPage.getContent());
         return new ModelAndView(SEARCH_RESULT_VIEW_NAME).

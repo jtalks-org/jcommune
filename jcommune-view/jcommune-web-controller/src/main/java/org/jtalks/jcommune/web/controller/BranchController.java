@@ -119,7 +119,7 @@ public class BranchController {
      */
     @RequestMapping("/topics/recent")
     public ModelAndView recentTopicsPage(
-            @RequestParam(value = PAGE, defaultValue = "1", required = false) int page) {
+            @RequestParam(value = PAGE, defaultValue = "1", required = false) String page) {
         Page<Topic> topicsPage = topicFetchService.getRecentTopics(page);
         lastReadPostService.fillLastReadPostForTopics(topicsPage.getContent());
 
@@ -136,7 +136,7 @@ public class BranchController {
      */
     @RequestMapping("/topics/unanswered")
     public ModelAndView unansweredTopicsPage(@RequestParam(value = PAGE, defaultValue = "1", required = false)
-                                             int page) {
+                                             String page) {
         Page<Topic> topicsPage = topicFetchService.getUnansweredTopics(page);
         lastReadPostService.fillLastReadPostForTopics(topicsPage.getContent());
         return new ModelAndView("unansweredTopics")
