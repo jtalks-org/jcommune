@@ -32,7 +32,7 @@
 </c:if>
 <img class="status-img-small"
      src="${pageContext.request.contextPath}/resources/images/${iconName}"
-     title="<spring:message code="${titleCode}" htmlEscape="true" javaScriptEscape="true"/>"
+     data-original-title="<spring:message code="${titleCode}" htmlEscape="true" javaScriptEscape="true"/>"
      alt="<spring:message code="${altCode}" htmlEscape="true" javaScriptEscape="true"/>"/>
 <c:if test="${topic.hasUpdates}">
     </a>
