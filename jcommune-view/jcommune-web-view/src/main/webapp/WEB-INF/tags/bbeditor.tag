@@ -92,13 +92,13 @@
       <span class="caret"></span>
     </a>
     <ul class="dropdown-menu" id='select_size'>
-      <li><a href="#" value='7'><spring:message code="label.answer.font_size.tiny"/></a></li>
-      <li><a href="#" value='9'><spring:message code="label.answer.font_size.small"/></a></li>
-      <li><a href="#" value='12'><spring:message code="label.answer.font_size.normal"/></a></li>
-      <li><a href="#" value='18'><spring:message code="label.answer.font_size.large"/></a></li>
-      <li><a href="#" value='24'><spring:message code="label.answer.font_size.huge"/></a></li>
+      <li value='7'><a href="#"><spring:message code="label.answer.font_size.tiny"/></a></li>
+      <li value='9'><a href="#"><spring:message code="label.answer.font_size.small"/></a></li>
+      <li value='12'><a href="#"><spring:message code="label.answer.font_size.normal"/></a></li>
+      <li value='18'><a href="#"><spring:message code="label.answer.font_size.large"/></a></li>
+      <li value='24'><a href="#"><spring:message code="label.answer.font_size.huge"/></a></li>
     </ul>
-  </div>
+  </div>                                      c
   <div class='btn-group'>
     <a id="format_img" class="btn" accesskey="p" name="format_img" onclick="doImage();"
        title="<spring:message code='label.answer.insert_picture'/>">

@@ -291,7 +291,7 @@ function doClick(command) {
 
 function doSize(selectedElement) {
     if (!editorVisible) {
-		var size = $(selectedElement).attr('value');
+		var size = $(selectedElement).parent().attr('value');
         AddTag('[size=' + size + ']', '[/size]');
     }
 }
