@@ -86,7 +86,7 @@
     </jtalks:hasPermission>
     <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
                           permission='BranchPermission.CREATE_CODE_REVIEW'>
-      <a id='new-code-review-btn' class="btn btn-primary"
+      <a class="btn btn-primary"
          href="${pageContext.request.contextPath}/reviews/new?branchId=${branch.id}"
          title="<spring:message code='label.addCodeReview.tip'/>" data-placement="right">
         <spring:message code="label.addCodeReview"/>
@@ -208,7 +208,7 @@
     </jtalks:hasPermission>
     <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
                           permission='BranchPermission.CREATE_CODE_REVIEW'>
-      <a id='new-code-review-btn' class="btn btn-primary"
+      <a class="btn btn-primary"
          href="${pageContext.request.contextPath}/reviews/new?branchId=${branch.id}"
          title="<spring:message code="label.addCodeReview.tip"/>" data-placement="right">
         <spring:message code="label.addCodeReview"/>

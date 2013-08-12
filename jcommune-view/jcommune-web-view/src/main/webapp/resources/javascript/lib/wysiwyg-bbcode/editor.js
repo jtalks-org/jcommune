@@ -298,14 +298,14 @@ function doSize(selectedElement) {
 
 function doCode(selectedElement) {
     if (!editorVisible) {
-		var code = $(selectedElement).attr('value');
+		var code = $(selectedElement).parent().attr('value');
         AddTag('[code=' + code + ']', '[/code]');
     }
 }
 
 function doIndent(selectedElement) {
     if (!editorVisible) {
-        var indent = $(selectedElement).attr('value');
+        var indent = $(selectedElement).parent().attr('value');
         AddTag('[indent=' + indent + ']', '[/indent]');
     }
 }
