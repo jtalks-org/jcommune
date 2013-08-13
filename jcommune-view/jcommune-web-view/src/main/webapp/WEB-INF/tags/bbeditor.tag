@@ -52,7 +52,7 @@
     </a>
   </div>
   <div class='btn-group'>
-    <a id="format_left" class="btn" accesskey="left" onclick="doClick('left');"
+    <a id="format_left" class="btn" onclick="doClick('left');"
        title="<spring:message code='label.answer.align_left'/>">
       <i class="icon-align-left"></i>
     </a>
@@ -60,7 +60,7 @@
        title="<spring:message code='label.answer.align_center'/>">
       <i class="icon-align-center"></i>
     </a>
-    <a id="format_right" class="btn" accesskey="right" onclick="doClick('right');"
+    <a id="format_right" class="btn" onclick="doClick('right');"
        title="<spring:message code='label.answer.align_right'/>">
       <i class="icon-align-right"></i>
     </a>
