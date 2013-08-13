@@ -78,7 +78,7 @@
   <div class="span4">
     <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
                           permission='BranchPermission.CREATE_POSTS'>
-      <a id='new-topic-btn' class="btn btn-primary"
+      <a class="new-topic-btn btn btn-primary"
          href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"
          title="<spring:message code='label.addtopic.tip'/>" data-placement="right">
         <spring:message code="label.addtopic"/>
@@ -86,7 +86,7 @@
     </jtalks:hasPermission>
     <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
                           permission='BranchPermission.CREATE_CODE_REVIEW'>
-      <a class="btn btn-primary"
+      <a class="new-code-review-btn btn btn-primary"
          href="${pageContext.request.contextPath}/reviews/new?branchId=${branch.id}"
          title="<spring:message code='label.addCodeReview.tip'/>" data-placement="right">
         <spring:message code="label.addCodeReview"/>
@@ -200,7 +200,7 @@
   <div class="span4">
     <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
                           permission='BranchPermission.CREATE_POSTS'>
-      <a id='new-topic-btn' class="btn btn-primary"
+      <a class="new-topic-btn btn btn-primary"
          href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"
          title="<spring:message code='label.addtopic.tip'/>" data-placement="right">
         <spring:message code="label.addtopic"/>
@@ -208,7 +208,7 @@
     </jtalks:hasPermission>
     <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
                           permission='BranchPermission.CREATE_CODE_REVIEW'>
-      <a class="btn btn-primary"
+      <a class="new-code-review-btn btn btn-primary"
          href="${pageContext.request.contextPath}/reviews/new?branchId=${branch.id}"
          title="<spring:message code="label.addCodeReview.tip"/>" data-placement="right">
         <spring:message code="label.addCodeReview"/>
