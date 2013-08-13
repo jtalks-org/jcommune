@@ -149,13 +149,13 @@
 
 <div class='control-group'>
   <%-- <div id="helpline"><spring:message code="label.answer.tooltip"/></div>--%>
-            <span id="editorBBCODEdiv">
+            <div id="editorBBCODEdiv">
                 <pre id="htmlContent"></pre>
                         <spring:message code="placeholder.editor.content" var="placeholderEditorContent"/>
                 <textarea id="postBody" name="${bodyParameterName}" tabindex="200" style="width:100%;height: 350px"
                           placeholder="${placeholderEditorContent}" class="script-confirm-unsaved"><c:out
                         value="${postText}"/></textarea>
-            </span>
+            </div>
   <br>
   <c:if test="${showSubmitButton}">
     <span class="keymaps-caption"><spring:message code="label.keymaps.post"/></span>
