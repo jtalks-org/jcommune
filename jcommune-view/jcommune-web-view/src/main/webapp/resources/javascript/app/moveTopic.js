@@ -78,7 +78,7 @@ $(function () {
                 }
             });
 
-            var eliminatedBranchId = $("#edit_button").attr("rel");
+            var eliminatedBranchId = $(".edit_button").attr("data-rel");
 
             displayAllBranches(eliminatedBranchId);
 

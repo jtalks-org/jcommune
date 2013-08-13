@@ -187,8 +187,8 @@
                 </jtalks:hasPermission>
               </c:if>
               <c:if test="${isEditButtonAvailable}">
-                <a id="edit_button" href="${edit_url}" rel="${topic.branch.id}"
-                   class="btn btn-mini" title="<spring:message code='label.tips.edit_post'/>">
+                <a href="${edit_url}" data-rel="${topic.branch.id}"
+                   class="edit_button btn btn-mini" title="<spring:message code='label.tips.edit_post'/>">
                   <i class="icon-edit"></i>
                   <spring:message code="label.edit"/>
                 </a>
