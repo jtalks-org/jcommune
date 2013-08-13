@@ -210,11 +210,6 @@
   </tag-file>
 
   <tag-file>
-    <name>topicIcon</name>
-    <path>/WEB-INF/tags/topicIcon.tag</path>
-  </tag-file>
-
-  <tag-file>
     <name>topicIconSmall</name>
     <path>/WEB-INF/tags/topicIconSmall.tag</path>
   </tag-file>

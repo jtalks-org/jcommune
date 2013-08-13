@@ -18,6 +18,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.dao.PluginConfigurationDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
+import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.dto.PluginActivatingDto;
@@ -72,7 +73,7 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
             throw new NotFoundException("Plugin " + name + " is not loaded");
         }
         willBeConfigured.configure(pluginConfiguration);
-        this.getDao().updateProperties(pluginConfiguration.getProperties());
+        saveNewPluginConfiguration(pluginConfiguration);
     }
 
     private Plugin findPluginByName(List<Plugin> searchSource, String pluginName) {
@@ -83,6 +84,14 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
             }
         }
         return foundPlugin;
+    }
+
+    private void saveNewPluginConfiguration(PluginConfiguration newPluginConfiguration) {
+        List<PluginConfigurationProperty> properties = newPluginConfiguration.getProperties();
+        for (PluginConfigurationProperty property: properties) {
+            property.setPluginConfiguration(newPluginConfiguration);
+        }
+        this.getDao().updateProperties(newPluginConfiguration.getProperties());
     }
 
     /**

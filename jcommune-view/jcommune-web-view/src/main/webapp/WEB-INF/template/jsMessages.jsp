@@ -76,6 +76,8 @@ $labelPassword = '<spring:message code="label.password" htmlEscape="true"/>';
 $labelPasswordConfirmation = '<spring:message code="label.confirmation" htmlEscape="true"/>';
 $signupButtonLabel = '<spring:message code="label.signup" htmlEscape="true"/>';
 $labelCaptcha = '<spring:message code="label.tip.captcha" htmlEscape="true"/>';
+$altCaptcha = '<spring:message code="alt.captcha.image" htmlEscape="true" javaScriptEscape="true"/>';
+$altCaptchaRefresh = '<spring:message code="alt.captcha.update" htmlEscape="true" javaScriptEscape="true"/>';
 $labelRememberMe = '<spring:message code="label.auto_logon" htmlEscape="true"/>';
 $labelRestorePassword = '<spring:message code="label.restorePassword.prompt" htmlEscape="true"/>';
 $labelSignin = '<spring:message code="label.signin" htmlEscape="true"/>';

@@ -161,7 +161,7 @@ public class UserController {
      * @return redirect to / if registration successful or back to "/registration" if failed
      */
     @RequestMapping(value = "/user/new", method = RequestMethod.POST)
-    public ModelAndView registerUser(@Valid @ModelAttribute("newUser") RegisterUserDto userDto,
+    public ModelAndView registerUser(@ModelAttribute("newUser") RegisterUserDto userDto,
                                      BindingResult result, Locale locale) {
         try {
             authenticator.register(userDto, locale, validator, result);
