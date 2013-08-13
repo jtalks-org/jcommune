@@ -192,10 +192,12 @@ public class UserProfileController {
         checkPermissionsToEditProfile(editedUserId);
         JCUser user = userService.saveEditedUserProfile(editedUserId, editedProfileDto.getUserInfoContainer());
         // apply language changes immediately
-        String code = editedProfileDto.getLanguage().getLanguageCode();
-        Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, code);
-        cookie.setPath("/");
-        response.addCookie(cookie);
+
+//        String code = editedProfileDto.getLanguage().getLanguageCode();
+//        Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, code);
+//        cookie.setPath("/");
+//        response.addCookie(cookie);
+
         //redirect to the view profile page
         return new ModelAndView("redirect:/users/" + user.getId());
     }
