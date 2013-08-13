@@ -18,7 +18,7 @@
 <c:if test="${(!topic.closed || hasCloseTopicPermission) && topic.codeReview == null}">
   <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
                         permission='BranchPermission.CREATE_POSTS'>
-    <a id="new-topic-btn" class="btn btn-primary"
+    <a class="new-topic-btn btn btn-primary"
        href="${pageContext.request.contextPath}/posts/new?topicId=${topic.id}&branchId=${topic.branch.id}"
        title="<spring:message code='label.tips.create_new_post'/>">
       <spring:message code="label.answer"/>
