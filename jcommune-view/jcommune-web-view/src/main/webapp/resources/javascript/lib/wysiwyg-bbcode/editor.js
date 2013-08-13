@@ -291,21 +291,21 @@ function doClick(command) {
 
 function doSize(selectedElement) {
     if (!editorVisible) {
-		var size = $(selectedElement).parent().attr('value');
+		var size = $(selectedElement).parent().attr('data-value');
         AddTag('[size=' + size + ']', '[/size]');
     }
 }
 
 function doCode(selectedElement) {
     if (!editorVisible) {
-		var code = $(selectedElement).parent().attr('value');
+		var code = $(selectedElement).parent().attr('data-value');
         AddTag('[code=' + code + ']', '[/code]');
     }
 }
 
 function doIndent(selectedElement) {
     if (!editorVisible) {
-        var indent = $(selectedElement).parent().attr('value');
+        var indent = $(selectedElement).parent().attr('data-value');
         AddTag('[indent=' + indent + ']', '[/indent]');
     }
 }

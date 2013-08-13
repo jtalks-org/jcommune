@@ -88,11 +88,11 @@
       <span class="caret"></span>
     </a>
     <ul class="dropdown-menu" id='select_size'>
-      <li value='7'><a href="#"><spring:message code="label.answer.font_size.tiny"/></a></li>
-      <li value='9'><a href="#"><spring:message code="label.answer.font_size.small"/></a></li>
-      <li value='12'><a href="#"><spring:message code="label.answer.font_size.normal"/></a></li>
-      <li value='18'><a href="#"><spring:message code="label.answer.font_size.large"/></a></li>
-      <li value='24'><a href="#"><spring:message code="label.answer.font_size.huge"/></a></li>
+      <li data-value='7'><a href="#"><spring:message code="label.answer.font_size.tiny"/></a></li>
+      <li data-value='9'><a href="#"><spring:message code="label.answer.font_size.small"/></a></li>
+      <li data-value='12'><a href="#"><spring:message code="label.answer.font_size.normal"/></a></li>
+      <li data-value='18'><a href="#"><spring:message code="label.answer.font_size.large"/></a></li>
+      <li data-value='24'><a href="#"><spring:message code="label.answer.font_size.huge"/></a></li>
     </ul>
   </div>
   <div class='btn-group'>
@@ -110,18 +110,18 @@
       <span class="caret"></span>
     </a>
     <ul class="dropdown-menu" id='select_code'>
-      <li value="cpp"><a href="#">C/C++</a></li>
-      <li value="csharp"><a href="#">C#</a></li>
-      <li value="java"><a href="#">Java</a></li>
-      <li value="php"><a href="#">PHP</a></li>
-      <li value="python"><a href="#">Python</a></li>
-      <li value="pascal"><a href="#">Pascal</a></li>
-      <li value="bash"><a href="#">Bash</a></li>
-      <li value="js"><a href="#">JavaScript</a></li>
-      <li value="html"><a href="#">HTML</a></li>
-      <li value="css"><a href="#">CSS</a></li>
-      <li value="sql"><a href="#">SQL</a></li>
-      <li value="xml"><a href="#">XML</a></li>
+      <li data-value="cpp"><a href="#">C/C++</a></li>
+      <li data-value="csharp"><a href="#">C#</a></li>
+      <li data-value="java"><a href="#">Java</a></li>
+      <li data-value="php"><a href="#">PHP</a></li>
+      <li data-value="python"><a href="#">Python</a></li>
+      <li data-value="pascal"><a href="#">Pascal</a></li>
+      <li data-value="bash"><a href="#">Bash</a></li>
+      <li data-value="js"><a href="#">JavaScript</a></li>
+      <li data-value="html"><a href="#">HTML</a></li>
+      <li data-value="css"><a href="#">CSS</a></li>
+      <li data-value="sql"><a href="#">SQL</a></li>
+      <li data-value="xml"><a href="#">XML</a></li>
     </ul>
 
     <a id="format_quote" class="btn" accesskey="q" onclick="doQuote();"
@@ -136,9 +136,9 @@
       <span class="caret"></span>
     </a>
     <ul class="dropdown-menu" id='select_indent'>
-      <li value="15"><a href="#">15</a></li>
-      <li value="20"><a href="#">20</a></li>
-      <li value="25"><a href="#">25</a></li>
+      <li data-value="15"><a href="#">15</a></li>
+      <li data-value="20"><a href="#">20</a></li>
+      <li data-value="25"><a href="#">25</a></li>
     </ul>
   </div>
   <div class='btn-group'>
