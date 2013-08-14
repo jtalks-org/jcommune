@@ -24,6 +24,7 @@ import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
@@ -130,6 +131,7 @@ public class TransactionalUserServiceTest {
                 mailService,
                 base64Wrapper,
                 encryptionService,
+                avatarService,
                 postDao,
                 authenticator);
     }
@@ -171,6 +173,28 @@ public class TransactionalUserServiceTest {
         verify(userDao).saveOrUpdate(user);
         assertUserUpdated(editedUser);
         assertEquals(editedUser.getLanguage(), LANGUAGE, "language was not changed");
+    }
+
+    @Test
+    public void storeRegisteredUserShouldBeSuccessful() {
+        UserDto userDto = createUserDto(USERNAME, EMAIL, PASSWORD);
+        when(encryptionService.encryptPassword(PASSWORD)).thenReturn(PASSWORD_MD5_HASH);
+
+        userService.storeRegisteredUser(userDto);
+
+        verify(userDao).saveOrUpdate(any(JCUser.class));
+    }
+
+    @Test
+    public void upgradeFromCommonUserToJCUserShouldBeSuccessful() {
+        UserDto userDto = createUserDto(USERNAME, EMAIL, PASSWORD);
+        when(encryptionService.encryptPassword(PASSWORD)).thenReturn(PASSWORD_MD5_HASH);
+        User commonUser = new User("username", "email", "password", null);
+        when(userDao.getCommonUserByUsername(USERNAME)).thenReturn(commonUser);
+
+        userService.storeRegisteredUser(userDto);
+
+        verify(userDao).saveOrUpdate(any(JCUser.class));
     }
 
     private void assertUserUpdated(JCUser user) {
@@ -474,5 +498,13 @@ public class TransactionalUserServiceTest {
         post.setId(new Random(10000).nextLong());
         post.setTopic(new Topic());
         return post;
+    }
+
+    private UserDto createUserDto(String username, String password, String email) {
+        UserDto dto = new UserDto();
+        dto.setUsername(username);
+        dto.setEmail(email);
+        dto.setPassword(password);
+        return dto;
     }
 }

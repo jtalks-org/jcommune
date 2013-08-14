@@ -14,10 +14,10 @@
  */
 package org.jtalks.jcommune.model.plugins;
 
+import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,10 +37,9 @@ public interface SimpleAuthenticationPlugin extends Plugin {
     /**
      * Performs authentication attempt based on login/password pair
      *
-     *
      * @param login user login
      * @param password user password
-     * @return map of user details
+     * @return user details
      */
     public Map<String, String> authenticate(String login, String password)
             throws UnexpectedErrorException, NoConnectionException;
@@ -48,12 +47,9 @@ public interface SimpleAuthenticationPlugin extends Plugin {
     /**
      * Performs registration attempt based on user details
      *
-     *
-     * @param username user login
-     * @param password user password
-     * @param email user email
-     * @return errors
+     * @param userDto user
+     * @return validation errors as pairs field - error message
      */
-    public List<Map<String, String>> registerUser(String username, String password, String email)
+    public Map<String, String> registerUser(UserDto userDto)
             throws NoConnectionException, UnexpectedErrorException;
 }

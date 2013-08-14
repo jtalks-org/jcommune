@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.controller;
 import com.google.common.collect.Lists;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dto.RegisterUserDto;
+import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
@@ -111,7 +112,7 @@ public class UserControllerTest {
         ModelAndView mav = userController.registerUser(dto, bindingResult, Locale.ENGLISH);
 
         assertViewName(mav, "afterRegistration");
-        verify(authenticator).register(dto, Locale.ENGLISH, validator, bindingResult);
+        verify(authenticator).register(dto.getUserDto(), bindingResult);
     }
 
     @Test
@@ -131,7 +132,7 @@ public class UserControllerTest {
         RegisterUserDto dto = getRegisterUserDto();
         BindingResult bindingResult = mock(BindingResult.class);
         doThrow(new UnexpectedErrorException()).when(authenticator)
-                .register(dto, Locale.ENGLISH, validator, bindingResult);
+                .register(dto.getUserDto(), bindingResult);
 
         ModelAndView mav = userController.registerUser(dto, bindingResult, Locale.ENGLISH);
 
@@ -144,7 +145,7 @@ public class UserControllerTest {
         RegisterUserDto dto = getRegisterUserDto();
         BindingResult bindingResult = mock(BindingResult.class);
         doThrow(new NoConnectionException()).when(authenticator)
-                .register(dto, Locale.ENGLISH, validator, bindingResult);
+                .register(dto.getUserDto(), bindingResult);
 
         ModelAndView mav = userController.registerUser(dto, bindingResult, Locale.ENGLISH);
 
@@ -181,7 +182,7 @@ public class UserControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
 
         doThrow(new UnexpectedErrorException()).when(authenticator)
-                .register(dto, Locale.ENGLISH, validator, bindingResult);
+                .register(dto.getUserDto(), bindingResult);
 
         JsonResponse response = userController.registerUserAjax(dto, bindingResult, Locale.ENGLISH);
 
@@ -195,11 +196,24 @@ public class UserControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
 
         doThrow(new NoConnectionException()).when(authenticator)
-                .register(dto, Locale.ENGLISH, validator, bindingResult);
+                .register(dto.getUserDto(), bindingResult);
 
         JsonResponse response = userController.registerUserAjax(dto, bindingResult, Locale.ENGLISH);
 
         assertEquals(response.getStatus(), JsonResponseStatus.FAIL, "Connection error should fail registration.");
+    }
+
+    @Test
+    public void mergeValidationErrorsShouldAddErrorsFromSrcToDst() {
+        RegisterUserDto dto = getRegisterUserDto();
+        BindingResult srcErrors = new BeanPropertyBindingResult(dto, "newUser");
+        srcErrors.addError(new FieldError("", "email", "Invalid email"));
+        BindingResult dstErrors = new BeanPropertyBindingResult(dto, "newUser");
+
+        userController.mergeValidationErrors(srcErrors, dstErrors);
+
+        assertEquals(dstErrors.getAllErrors().size(), 1,
+                "Missing validation errors should be added from source to destination.");
     }
     
     @Test
@@ -388,18 +402,18 @@ public class UserControllerTest {
     }
 
     private void assertNullFields(RegisterUserDto dto) {
-        assertNull(dto.getEmail());
-        assertNull(dto.getUsername());
-        assertNull(dto.getPassword());
+        assertNull(dto.getUserDto());
         assertNull(dto.getPasswordConfirm());
     }
 
     private RegisterUserDto getRegisterUserDto() {
+        UserDto userDto = new UserDto();
+        userDto.setUsername(USER_NAME);
+        userDto.setEmail(EMAIL);
+        userDto.setPassword("password");
         RegisterUserDto dto = new RegisterUserDto();
-        dto.setUsername(USER_NAME);
-        dto.setEmail(EMAIL);
-        dto.setPassword("password");
         dto.setPasswordConfirm("password");
+        dto.setUserDto(userDto);
         return dto;
     }
 }

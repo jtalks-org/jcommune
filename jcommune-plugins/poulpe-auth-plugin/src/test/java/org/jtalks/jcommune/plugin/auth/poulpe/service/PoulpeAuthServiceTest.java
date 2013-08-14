@@ -15,7 +15,9 @@
 
 package org.jtalks.jcommune.plugin.auth.poulpe.service;
 
+import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
+import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.plugin.auth.poulpe.dto.*;
 import org.jtalks.jcommune.plugin.auth.poulpe.dto.Error;
 import org.restlet.Request;
@@ -59,7 +61,6 @@ public class PoulpeAuthServiceTest {
         errorList.add(createError("user.username.length_constraint_violation", null));
         errorList.add(createError("user.email.illegal_length", null));
         errorList.add(createError("user.password.length_constraint_violation", null));
-        errorList.add(createError("", "Service unavailable"));
 
         errors.setErrorList(errorList);
         JaxbRepresentation<Errors> errorsRepr = new JaxbRepresentation<Errors>(errors);
@@ -67,18 +68,27 @@ public class PoulpeAuthServiceTest {
 
         doReturn(clientResource).when(service).sendRegistrationRequest(any(User.class));
 
-        List<Map<String, String>> result = service.registerUser("", "password", "email@email.ou");
+        Map<String, String> result = service.registerUser(createUserDto("", "password", "email@email.ou"));
 
-        assertEquals(result.size(), 4, "User with invalid credentials shouldn't pass registration.");
+        assertEquals(result.size(), 3, "User with invalid credentials shouldn't pass registration.");
     }
 
     @Test(expectedExceptions = NoConnectionException.class)
     public void testRegisterUserShouldFailIfConnectionErrorOccurred() throws Exception {
-        ClientResource clientResource = createClientResource(Status.CLIENT_ERROR_NOT_FOUND, null);
+        ClientResource clientResource = createClientResource(Status.CLIENT_ERROR_REQUEST_TIMEOUT, null);
 
         doReturn(clientResource).when(service).sendRegistrationRequest(any(User.class));
 
-        service.registerUser("username", "password", "email@email.ru");
+        service.registerUser(createUserDto("username", "password", "email@email.ru"));
+    }
+
+    @Test(expectedExceptions = UnexpectedErrorException.class)
+    public void testRegisterUserShouldFailIfInternalServerErrorOccurred() throws Exception {
+        ClientResource clientResource = createClientResource(Status.SERVER_ERROR_INTERNAL, null);
+
+        doReturn(clientResource).when(service).sendRegistrationRequest(any(User.class));
+
+        service.registerUser(createUserDto("username", "password", "email@email.ru"));
     }
 
     @Test
@@ -87,16 +97,9 @@ public class PoulpeAuthServiceTest {
 
         doReturn(clientResource).when(service).sendRegistrationRequest(any(User.class));
 
-        List<Map<String, String>> result = service.registerUser("username", "password", "email@email.ru");
+        Map<String, String> result = service.registerUser(createUserDto("username", "password", "email@email.ru"));
 
         assertTrue(result.size() == 0, "User with valid credentials should pass registration.");
-    }
-
-    private Authentication createAuth(String username, String password, String email) {
-        Authentication auth = new Authentication();
-        auth.setProfile(new Profile(new PoulpeUser(username, email, password, null)));
-        auth.setCredintals(new Credentials("username"));
-        return auth;
     }
 
     @Test
@@ -128,6 +131,22 @@ public class PoulpeAuthServiceTest {
         assertEquals(result.size(), 0, "User with invalid credentials shouldn't pass authentication.");
     }
 
+    @Test(expectedExceptions = NoConnectionException.class)
+    public void testAuthUserShouldFailIfConnectionErrorOccurred() throws Exception {
+        ClientResource clientResource = createClientResource(Status.CLIENT_ERROR_REQUEST_TIMEOUT, null);
+
+        doReturn(clientResource).when(service).sendAuthRequest("user", "password");
+
+        service.authenticate("user", "password");
+    }
+
+    private Authentication createAuth(String username, String password, String email) {
+        Authentication auth = new Authentication();
+        auth.setProfile(new Profile(new PoulpeUser(username, email, password, null)));
+        auth.setCredintals(new Credentials("username"));
+        return auth;
+    }
+
     private Error createError(String code, String message) {
         Error error = new Error();
         if(code != null) {
@@ -137,6 +156,14 @@ public class PoulpeAuthServiceTest {
             error.setMessage(message);
         }
         return error;
+    }
+
+    private UserDto createUserDto(String username, String password, String email) {
+        UserDto userDto = new UserDto();
+        userDto.setUsername(username);
+        userDto.setEmail(email);
+        userDto.setPassword(password);
+        return userDto;
     }
 
     private ClientResource createClientResource(Status status, Representation repr) {
