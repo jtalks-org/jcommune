@@ -157,8 +157,8 @@ function createCaptchaElements() {
     return '\
         <div class="control-group"> \
             <div class="controls captcha-images"> \
-                <img id="captcha-img" src="' + captchaUrl() + '" /> \
-                <img id="captcha-refresh" src="' + $root + "/resources/images/captcha-refresh.png" + '" /> \
+                <img id="captcha-img" alt="'+ $altCaptcha + '" src="' + captchaUrl() + '" /> \
+                <img id="captcha-refresh" alt="'+ $altCaptchaRefresh + '"  src="' + $root + "/resources/images/captcha-refresh.png" + '" /> \
             </div> \
             <div class="controls"> \
                 <input type="text" id="captcha" placeholder="' + $labelCaptcha + '" class="input-xlarge" /> \

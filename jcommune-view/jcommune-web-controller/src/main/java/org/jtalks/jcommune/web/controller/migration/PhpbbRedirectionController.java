@@ -94,6 +94,22 @@ public class PhpbbRedirectionController {
     }
 
     /**
+     * Redirects branch URL's, assumes that branch ids haven't been changed during data migration. Redirects always to
+     * the first page of the branch even if page was specified in params.
+     *
+     * @param id branch identifier from url, but also may contain the page number which will be ignored
+     * @param response http response object to set headers on
+     * @param request http request to figure out the context path
+     */
+    @RequestMapping("/viewforum{branchParams}.php")
+    public void showBranchWithViewPrefix(@PathVariable String branchParams, HttpServletResponse response,
+                                         WebRequest request) {
+        String id = StringUtils.substringBefore(branchParams, "-");
+        String redirectUrl = request.getContextPath() +  "/branches/" + id;
+        setHttp301Headers(response, redirectUrl);
+    }
+
+    /**
      * Redirects search URL's to default search page
      *
      * @param response http response object to set headers on

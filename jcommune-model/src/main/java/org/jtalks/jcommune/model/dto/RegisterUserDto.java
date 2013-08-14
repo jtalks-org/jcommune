@@ -12,22 +12,21 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.dto;
+package org.jtalks.jcommune.model.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.validation.annotations.Email;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.web.validation.annotations.Captcha;
-import org.jtalks.jcommune.web.validation.annotations.Matches;
-import org.jtalks.jcommune.web.validation.annotations.Unique;
+import org.jtalks.jcommune.model.validation.annotations.Captcha;
+import org.jtalks.jcommune.model.validation.annotations.Matches;
+import org.jtalks.jcommune.model.validation.annotations.Unique;
 
 import javax.validation.constraints.Size;
 
 /**
  * DTO for {@link org.jtalks.jcommune.model.entity.JCUser} object. Required for validation and binding
  * errors to form. This dto used for register user operation
- * {@link org.jtalks.jcommune.web.controller.UserController#registerUser}.
  *
  * @author Osadchuck Eugeny
  */

@@ -18,6 +18,7 @@ package org.jtalks.jcommune.plugin.auth.poulpe.service;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
+import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.plugin.auth.poulpe.dto.Authentication;
 import org.jtalks.jcommune.plugin.auth.poulpe.dto.Errors;
 import org.jtalks.jcommune.plugin.auth.poulpe.dto.User;
@@ -68,7 +69,7 @@ public class PoulpeAuthService {
      * @return errors
      */
     public List<Map<String, String>> registerUser(String username, String password, String email)
-            throws IOException, NoConnectionException, JAXBException {
+            throws IOException, NoConnectionException, JAXBException, UnexpectedErrorException {
         User user = createUser(username, password, email);
         ClientResource clientResource = sendRegistrationRequest(user);
         return getRegistrationResult(clientResource);
@@ -94,6 +95,7 @@ public class PoulpeAuthService {
      * @param clientResource response container
      * @return map with user details
      * @throws org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException
+     *
      */
     private Map<String, String> getAuthResult(ClientResource clientResource)
             throws NoConnectionException, JAXBException, IOException {
@@ -129,12 +131,13 @@ public class PoulpeAuthService {
      * @throws java.io.IOException
      */
     private List<Map<String, String>> getRegistrationResult(ClientResource clientResource)
-            throws NoConnectionException, IOException, JAXBException {
+            throws NoConnectionException, IOException, JAXBException, UnexpectedErrorException {
         if (clientResource.getStatus().getCode() == Status.SUCCESS_OK.getCode()) {
             return Collections.emptyList();
-        } else if (clientResource.getStatus().getCode() == Status.CLIENT_ERROR_BAD_REQUEST.getCode()
-                || clientResource.getStatus().getCode() == Status.SERVER_ERROR_INTERNAL.getCode()) {
+        } else if (clientResource.getStatus().getCode() == Status.CLIENT_ERROR_BAD_REQUEST.getCode()) {
             return parseErrors(clientResource.getResponseEntity());
+        } else if (clientResource.getStatus().getCode() == Status.SERVER_ERROR_INTERNAL.getCode()) {
+            throw new UnexpectedErrorException();
         } else {
             throw new NoConnectionException();
         }
@@ -173,9 +176,9 @@ public class PoulpeAuthService {
      */
     private User createUser(String username, String passwordHash, String email) {
         User user = new User();
-        user.setUsername(username);
+        user.setUsername(username == null ? "" : username);
+        user.setEmail(email == null ? "" : email);
         user.setPasswordHash(passwordHash);
-        user.setEmail(email);
         return user;
     }
 

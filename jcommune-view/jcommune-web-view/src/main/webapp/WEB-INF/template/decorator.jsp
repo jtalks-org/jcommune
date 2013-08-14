@@ -44,7 +44,7 @@
 <c:if test="${cmpName == null}">
   <spring:message code="label.error" var="cmpName"/>
 </c:if>
-<spring:message code="label.rssFeed" var="rssTitle" arguments="${cmpName}"/>
+<spring:message code="label.rssFeed" var="rssTitle" arguments="${cmpName}" htmlEscape="true" javaScriptEscape="true"/>
 <link rel="alternate" type="application/rss+xml" title="${rssTitle}"
       href="${pageContext.request.contextPath}/topics/recent.rss"/>
 

@@ -14,15 +14,16 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
+import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
+import org.jtalks.jcommune.service.Authenticator;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
@@ -32,6 +33,7 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -49,6 +51,7 @@ import java.util.Locale;
  * to be performed by Spring Security
  *
  * @author Evgeniy Naumenko
+ * @author Andrey Pogorelov
  */
 @Controller
 public class UserController {
@@ -57,24 +60,24 @@ public class UserController {
     public static final String LOGIN = "login";
     public static final String AFTER_REGISTRATION = "afterRegistration";
     public static final String AUTH_FAIL_URL = "redirect:/login?login_error=1";
-    public static final String SERVICE_AUTH_FAIL_URL = "redirect:/login?login_error=3";
-
-    /**
-     * While registering a new user, she gets {@link JCUser#setAutosubscribe(boolean)} set to {@code true} by default.
-     * Afterwards user can edit her profile and change this setting.
-     */
-    public static final boolean DEFAULT_AUTOSUBSCRIBE = true;
+    public static final String AUTH_SERVICE_FAIL_URL = "redirect:/login?login_error=3";
+    public static final String REG_SERVICE_CONNECTION_ERROR_URL = "redirect:/user/new?reg_error=1";
+    public static final String REG_SERVICE_UNEXPECTED_ERROR_URL = "redirect:/user/new?reg_error=2";
 
     private static final String REMEMBER_ME_ON = "on";
 
     private UserService userService;
+    private Authenticator authenticator;
+
+    private Validator validator;
 
     /**
      * @param userService to delegate business logic invocation
      */
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, Authenticator authenticator) {
         this.userService = userService;
+        this.authenticator = authenticator;
     }
 
     /**
@@ -91,6 +94,12 @@ public class UserController {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
         binder.registerCustomEditor(String.class, "password", new DefaultStringEditor(true));
         binder.registerCustomEditor(String.class, "passwordConfirm", new DefaultStringEditor(true));
+        this.validator = binder.getValidator();
+    }
+
+    @VisibleForTesting
+    protected void setValidator(Validator validator) {
+        this.validator = validator;
     }
 
     /**
@@ -133,7 +142,7 @@ public class UserController {
      * Render registration page with bind objects to form.
      *
      * @return {@code ModelAndView} with "registration" view and empty
-     *         {@link org.jtalks.jcommune.web.dto.RegisterUserDto} with name "newUser
+     *         {@link org.jtalks.jcommune.model.dto.RegisterUserDto} with name "newUser
      */
     @RequestMapping(value = "/user/new", method = RequestMethod.GET)
     public ModelAndView registrationPage() {
@@ -152,12 +161,18 @@ public class UserController {
      * @return redirect to / if registration successful or back to "/registration" if failed
      */
     @RequestMapping(value = "/user/new", method = RequestMethod.POST)
-    public ModelAndView registerUser(@Valid @ModelAttribute("newUser") RegisterUserDto userDto,
+    public ModelAndView registerUser(@ModelAttribute("newUser") RegisterUserDto userDto,
                                      BindingResult result, Locale locale) {
+        try {
+            authenticator.register(userDto, locale, validator, result);
+        } catch (NoConnectionException e) {
+            return new ModelAndView(REG_SERVICE_CONNECTION_ERROR_URL);
+        } catch (UnexpectedErrorException e) {
+            return new ModelAndView(REG_SERVICE_UNEXPECTED_ERROR_URL);
+        }
         if (result.hasErrors()) {
             return new ModelAndView(REGISTRATION);
         }
-        storeUser(userDto, locale);
         return new ModelAndView(AFTER_REGISTRATION);
     }
 
@@ -172,29 +187,22 @@ public class UserController {
      */
     @RequestMapping(value = "/user/new_ajax", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResponse registerUserAjax(@Valid @ModelAttribute("newUser") RegisterUserDto userDto,
+    public JsonResponse registerUserAjax(@ModelAttribute("newUser") RegisterUserDto userDto,
                                          BindingResult result, Locale locale) {
+        try {
+            authenticator.register(userDto, locale, validator, result);
+        } catch (NoConnectionException e) {
+            return new JsonResponse(JsonResponseStatus.FAIL,
+                    new ImmutableMap.Builder<String, String>().put("customError", "connectionError").build());
+        } catch (UnexpectedErrorException e) {
+            return new JsonResponse(JsonResponseStatus.FAIL,
+                    new ImmutableMap.Builder<String, String>().put("customError", "unexpectedError").build());
+        }
         if (result.hasErrors()) {
             return new JsonResponse(JsonResponseStatus.FAIL, result.getAllErrors());
         }
-        storeUser(userDto, locale);
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
-
-    /**
-     * Just registers a new user without any additional checks, it gets rid of duplication in enclosing
-     * {@code registerUser()} methods.
-     *
-     * @param userDto coming from enclosing methods, this object is built by Spring MVC
-     * @param locale  the locale of user she can pass in GET requests
-     */
-    private void storeUser(RegisterUserDto userDto, Locale locale) {
-        JCUser user = userDto.createUser();
-        user.setLanguage(Language.byLocale(locale));
-        user.setAutosubscribe(DEFAULT_AUTOSUBSCRIBE);
-        userService.registerUser(user);
-    }
-
 
     /**
      * Activates user account with UUID-based URL
@@ -284,9 +292,9 @@ public class UserController {
         try {
             isAuthenticated = userService.loginUser(username, password, rememberMeBoolean, request, response);
         } catch (NoConnectionException e) {
-            return new ModelAndView(SERVICE_AUTH_FAIL_URL);
+            return new ModelAndView(AUTH_SERVICE_FAIL_URL);
         } catch (UnexpectedErrorException e) {
-            return new ModelAndView(SERVICE_AUTH_FAIL_URL);
+            return new ModelAndView(AUTH_SERVICE_FAIL_URL);
         }
         if (isAuthenticated) {
             return new ModelAndView("redirect:/");

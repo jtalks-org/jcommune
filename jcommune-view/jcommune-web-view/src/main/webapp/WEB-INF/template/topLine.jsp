@@ -48,7 +48,7 @@
 <div class="logo-container">
   <a href="${pageContext.request.contextPath}/" title="${fn:escapeXml(toolTip)}"
      data-toggle="tooltip" data-placement="right">
-    <img id="${sessionScope.adminMode == true ? 'forumLogo' : ''}" class="forum-logo cursor-pointer"
+    <img <c:if test="${sessionScope.adminMode == true}">id='forumLogo'</c:if> class="forum-logo cursor-pointer"
          src='<c:url value="/admin/logo"/>'
          alt="${fn:escapeXml(toolTip)}"/>
   </a>
@@ -95,7 +95,7 @@
       <ul class="dropdown-menu links-menu">
         <c:if test="${not empty externalLinks}">
           <c:forEach var="link" items="${externalLinks}">
-            <li><a id="small-screen-external-link-${link.id}" title="${link.hint}" href="${link.url}">
+            <li><a id="small-screen-external-link-${link.id}" data-original-title="${link.hint}" href="${link.url}">
               <c:out value="${link.title}"/>
             </a></li>
           </c:forEach>

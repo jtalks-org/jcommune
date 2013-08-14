@@ -45,7 +45,7 @@ public class UserAuthenticationFailureHandler extends SimpleUrlAuthenticationFai
                                         AuthenticationException exception) throws IOException, ServletException {
 
         HttpSession session = request.getSession(false);
-        if (session != null || isAllowSessionCreation()) {
+        if ((session != null || isAllowSessionCreation()) && exception.getAuthentication() != null) {
             request.getSession().setAttribute(usernameSessionAttribute, exception.getAuthentication().getName());
         }
 

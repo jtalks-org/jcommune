@@ -17,11 +17,6 @@ body {
     vertical-align: middle;
 }
 
-.status-img {
-    height: 32px;
-    width: 32px
-}
-
 .status-img-small {
     height: 24px;
     width: 24px
@@ -604,7 +599,7 @@ div.anchor {
     margin-bottom: 10px;
 }
 
-#main-links-editor .modal-body {
+#mainLinksEditor .modal-body {
     max-height: 200px;
     overflow-y: auto;
     overflow-x: hidden;

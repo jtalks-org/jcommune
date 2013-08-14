@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * Provides an ability to manage plugins of the forum.
  *
  * @author Anuar Nurmakanov
  */
@@ -38,15 +39,26 @@ import java.util.List;
 @RequestMapping("/plugins")
 public class PluginController {
 
-    private PluginService pluginService;
-    private ComponentService componentService;
+    private final PluginService pluginService;
+    private final ComponentService componentService;
 
+    /**
+     * Constructs an instance with required fields.
+     *
+     * @param pluginService to manage plugins
+     * @param componentService to load an identifier of forum component
+     */
     @Autowired
-    public PluginController(PluginService pluginService, ComponentService componentService) {
+    public PluginController(final PluginService pluginService, final ComponentService componentService) {
         this.pluginService = pluginService;
         this.componentService = componentService;
     }
 
+    /**
+     * Get the list of plugins that have been added to forum.
+     *
+     * @return the list of plugins that runs in the forum
+     */
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public ModelAndView getPlugins() {
         long componentId = getForumComponentId();
@@ -56,14 +68,28 @@ public class PluginController {
                 .addObject("pluginsActivatingListDto", PluginActivatingListDto.valueOf(plugins));
     }
 
+    /**
+     * Start configuring a plugin.
+     *
+     * @param name a name of a plugin that should be configured
+     * @return the name of view and all parameters to display plugin that should be configured
+     * @throws NotFoundException if passed plugin wasn't found
+     */
     @RequestMapping(value = "/configure/{name}", method = RequestMethod.GET)
-    public ModelAndView configurePlugin(@PathVariable String name) throws NotFoundException {
+    public ModelAndView startConfiguringPlugin(@PathVariable String name) throws NotFoundException {
         long componentId = getForumComponentId();
         PluginConfiguration pluginConfiguration = pluginService.getPluginConfiguration(name, componentId);
         return new ModelAndView("pluginConfiguration")
                 .addObject("pluginConfiguration", pluginConfiguration);
     }
 
+    /**
+     * Update the configuration of plugin/
+     *
+     * @param newConfiguration new configuration for plugin
+     * @return redirect to the page of plugin configuration
+     * @throws NotFoundException if configured plugin wasn't found
+     */
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public ModelAndView updateConfiguration(@ModelAttribute PluginConfiguration newConfiguration) throws NotFoundException {
         long componentId = getForumComponentId();
@@ -72,6 +98,13 @@ public class PluginController {
                 .addObject("pluginConfiguration", newConfiguration);
     }
 
+    /**
+     * Update activating state of plugins.
+     *
+     * @param pluginsActivatingListDto contains activating state for the list of plugins
+     * @return redirect to the list of plugins
+     * @throws NotFoundException if configured plugin wasn't found
+     */
     @RequestMapping(value = "/update/activating", method = RequestMethod.POST)
     public String updateActivating(@ModelAttribute PluginActivatingListDto pluginsActivatingListDto) throws NotFoundException {
         long componentId = getForumComponentId();
