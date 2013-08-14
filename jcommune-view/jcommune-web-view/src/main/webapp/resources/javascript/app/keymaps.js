@@ -71,7 +71,25 @@ Keymaps.signinSubmit = function (e) {
 
 Keymaps.linksEditor = function (e) {
     if ((e.keyCode || e.charCode) == enterCode) {
-        var but = $('#mainLinksEditor  #saveLink:visible')[0]
+        var but = $('#mainLinksEditor  #saveLink:visible')[0];
+        var targetId = $(e.target).attr('id');
+
+        if ($('#mainLinksEditor #linkTitle:visible')[0]) {
+            if (targetId == 'linkTitle') {
+                e.preventDefault();
+                $('#mainLinksEditor #linkUrl').focus();
+                return;
+            } else if (targetId == 'linkUrl') {
+                e.preventDefault();
+                $('#mainLinksEditor #linkHint').focus();
+                return;
+            } else if (targetId == 'linkHint') {
+                e.preventDefault();
+                but.focus();
+                return;
+            };
+        }
+
         if (but && $(e.target).attr('id') != 'cancelLink') {
             e.preventDefault();
             if($.browser.mozilla){
@@ -90,6 +108,7 @@ Keymaps.linksEditor = function (e) {
         if (but) {
             e.preventDefault();
             but.click();
+            $('#mainLinksEditor').focus();
         } else {
             $('#mainLinksEditor .close').click();
         }
