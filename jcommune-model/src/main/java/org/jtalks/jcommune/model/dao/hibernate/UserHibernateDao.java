@@ -60,13 +60,12 @@ public class UserHibernateDao extends GenericDao<JCUser>
     @SuppressWarnings("unchecked")
     @Override
     public JCUser getByUsername(String username) {
-        List<JCUser> users = session()
-                .createCriteria(JCUser.class)
-                .add(Restrictions.eq("username", username).ignoreCase())
-                .list();
+        List<JCUser> users = session().createCriteria(JCUser.class)
+                .add(Restrictions.eq("username", username).ignoreCase()).list();
         if (users.size() == 1) {
             return users.get(0);
         } else {
+            //see JavaDocs to get understanding on when this situation can happen
             for (JCUser user : users) {
                 if (user.getUsername().equals(username)) {
                     return user;
@@ -81,10 +80,8 @@ public class UserHibernateDao extends GenericDao<JCUser>
      */
     @Override
     public JCUser getByEmail(String email) {
-        return (JCUser) session()
-                .createCriteria(JCUser.class)
+        return (JCUser) session().createCriteria(JCUser.class)
                 .add(Restrictions.eq("email", email))
-                .setCacheable(true)
                 .uniqueResult();
     }
 
@@ -94,10 +91,8 @@ public class UserHibernateDao extends GenericDao<JCUser>
     @SuppressWarnings("unchecked")
     @Override
     public Collection<JCUser> getNonActivatedUsers() {
-        return session()
-                .createCriteria(JCUser.class)
+        return session().createCriteria(JCUser.class)
                 .add(Restrictions.eq("enabled", false))
-                .setCacheable(false)
                 .list();
     }
 
@@ -106,10 +101,8 @@ public class UserHibernateDao extends GenericDao<JCUser>
      */
     @Override
     public JCUser getByUuid(String uuid) {
-        return (JCUser) session()
-                .createCriteria(JCUser.class)
+        return (JCUser) session().createCriteria(JCUser.class)
                 .add(Restrictions.eq("uuid", uuid))
-                .setCacheable(true)
                 .uniqueResult();
     }
 
@@ -118,12 +111,10 @@ public class UserHibernateDao extends GenericDao<JCUser>
      */
     @Override
     public List<JCUser> getByUsernames(Set<String> usernames) {
-        @SuppressWarnings("unchecked")
-        List<JCUser> foundUsers = (List<JCUser>) session()
-                .getNamedQuery("getByUsernames")
+        //noinspection unchecked
+        return (List<JCUser>) session().getNamedQuery("getByUsernames")
                 .setParameterList("usernames", usernames)
                 .list();
-        return foundUsers;
     }
 
     /**
@@ -133,8 +124,7 @@ public class UserHibernateDao extends GenericDao<JCUser>
     @Override
     public List<String> getUsernames(String pattern, int count) {
         pattern = SqlLikeEscaper.escapeControlCharacters(pattern);
-        return session()
-                .getNamedQuery("getEnabledUsersNames")
+        return session().getNamedQuery("getEnabledUsersNames")
                 .setParameter("pattern", "%" + pattern.toLowerCase() + "%")
                 .setMaxResults(count)
                 .list();

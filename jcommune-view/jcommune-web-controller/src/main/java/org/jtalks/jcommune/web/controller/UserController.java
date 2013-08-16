@@ -257,16 +257,6 @@ public class UserController {
         }
     }
 
-    /**
-     * Handles login action for ajax clients.
-     *
-     * @param username   username
-     * @param password   password
-     * @param rememberMe set remember me token if equal to "on"
-     * @param request    servlet request
-     * @param response   servlet response
-     * @return "success" or "fail" response status
-     */
     @RequestMapping(value = "/login_ajax", method = RequestMethod.POST)
     @ResponseBody
     public JsonResponse loginAjax(@RequestParam("j_username") String username,
