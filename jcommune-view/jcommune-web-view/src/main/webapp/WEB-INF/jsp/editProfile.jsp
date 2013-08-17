@@ -142,8 +142,11 @@
           <label class="control-label"><spring:message code="label.autosubscribe"/></label>
 
           <div class="controls padding-top-profile">
+              <spring:message var="autosubscribeTooltip"
+                              code="label.tips.autoSubscribe"/>
             <form:checkbox path="autosubscribe" value="${editedUser.autosubscribe}"
-                           class="form-check-radio-box"/>
+                           class="form-check-radio-box script-has-tooltip"
+                           data-original-title='${autosubscribeTooltip}'/>
           </div>
         </div>
 
