@@ -313,7 +313,11 @@ h3 {
     word-wrap: break-word;
 }
 
-/* ----------------------------------------------- */
+/*H2 that should not impact any style, needed e.g. when we already have style defined, but add H2 tags for SEO.*/
+.h-nostyle {
+    line-height: inherit;
+    font-size: inherit;
+}
 
 /* JC-918. Long author name in sections list */
 .table-with-titles {
