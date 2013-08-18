@@ -70,11 +70,11 @@
     <c:forEach var="section" items="${sectionList}">
       <jtalks:isSectionVisible section="${section}">
         <tr>
-          <th colspan="${colspanOfSectionName}">
+          <td colspan="${colspanOfSectionName}" class="table-title">
             <h2 class="h-nostyle">
               <a href="${pageContext.request.contextPath}/sections/${section.id}"><c:out value="${section.name}"/></a>
             </h2>
-          </th>
+          </td>
         </tr>
         <c:forEach var="branch" items="${section.branches}" varStatus="i">
           <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' permission='BranchPermission.VIEW_TOPICS'>

@@ -60,8 +60,7 @@
 
         <tbody>
         <c:forEach var="branch" items="${section.branches}" varStatus="i">
-          <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
-                                permission='BranchPermission.VIEW_TOPICS'>
+          <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' permission='BranchPermission.VIEW_TOPICS'>
             <tr>
                 <%--TODO: fix in milstone 2--%>
                 <%--<sec:authorize access="isAuthenticated()">--%>
