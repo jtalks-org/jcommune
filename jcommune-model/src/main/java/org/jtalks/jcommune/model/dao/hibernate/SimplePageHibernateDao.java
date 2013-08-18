@@ -31,9 +31,6 @@ import org.springframework.security.acls.model.NotFoundException;
  */
 public class SimplePageHibernateDao extends GenericDao<SimplePage> implements SimplePageDao {
 
-    /**
-     * @param sessionFactory The SessionFactory.
-     */
     public SimplePageHibernateDao(SessionFactory sessionFactory) {
         super(sessionFactory, SimplePage.class);
     }

@@ -14,12 +14,12 @@
  */
 package org.jtalks.jcommune.model.dao;
 
+import org.jtalks.common.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-
-import org.jtalks.common.model.entity.User;
-import org.jtalks.jcommune.model.entity.JCUser;
 
 /**
  * This interface provides persistence operations for {@link org.jtalks.jcommune.model.entity.JCUser} objects.
@@ -32,13 +32,15 @@ import org.jtalks.jcommune.model.entity.JCUser;
 public interface UserDao extends org.jtalks.common.model.dao.UserDao<JCUser> {
 
     /**
-     * Get {@link JCUser} with corresponding username ignoring case. If there are
-     * several 'ignore case' usernames we don't ignore case and check exact match
-     * among them. See http://jira.jtalks.org/browse/JC-1163 for details.
+     * Get {@link JCUser} with corresponding username ignoring case. If there are several identical usernames that
+     * differ only by letter case, we check exact match among them. This is done due to historical reasons - in the
+     * early releases users with the same username were allowed if they had letters in different cases,
+     * but afterwards it was decided that if user `Vasia` is registered, then another new user shouldn't be allowed
+     * to register with `vAsia` username. This decision was made too late and by that time we had such users on the
+     * production already, thus this check for exact match was introduced.
      *
-     * @param username name of requested user
      * @return {@link JCUser} with given username or null if not found
-     * @see JCUser
+     * @see <a href="http://jira.jtalks.org/browse/JC-1163">JC-1163</a>
      */
     JCUser getByUsername(String username);
 

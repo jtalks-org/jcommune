@@ -74,20 +74,24 @@ Keymaps.linksEditor = function (e) {
         var but = $('#mainLinksEditor  #saveLink:visible')[0];
         var targetId = $(e.target).attr('id');
 
+        var enterNavigation = ['linkTitle', 'linkUrl', 'linkHint', 'saveLink'];
+
         if ($('#mainLinksEditor #linkTitle:visible')[0]) {
-            if (targetId == 'linkTitle') {
-                e.preventDefault();
-                $('#mainLinksEditor #linkUrl').focus();
-                return;
-            } else if (targetId == 'linkUrl') {
-                e.preventDefault();
-                $('#mainLinksEditor #linkHint').focus();
-                return;
-            } else if (targetId == 'linkHint') {
-                e.preventDefault();
-                but.focus();
-                return;
-            };
+            for (var i = 0; i < enterNavigation.length - 1; ++i) {
+                if (targetId == enterNavigation[i]) {
+                    var nextElementSelector = '#mainLinksEditor  #' + enterNavigation[i + 1];
+                    e.preventDefault();
+                    if($.browser.mozilla){
+                        setTimeout(function(){
+                            $(nextElementSelector).focus();
+                        }, 0);
+                    }
+                    else {
+                        $(nextElementSelector).focus();
+                    }
+                    return;
+                }
+            }
         }
 
         if (but && $(e.target).attr('id') != 'cancelLink') {

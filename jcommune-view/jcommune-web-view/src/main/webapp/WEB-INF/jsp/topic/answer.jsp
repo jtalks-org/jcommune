@@ -19,28 +19,28 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
-
+<jsp:useBean id="topic" type="org.jtalks.jcommune.model.entity.Topic" scope="request"/>
 <head>
   <meta name="description" content="<c:out value="${topic.title}"/>">
   <title><spring:message code="label.answer_to"/>: <c:out value="${topic.title}"/></title>
 </head>
 <body>
 <div class="container">
-  <h2><a class="heading" href="${pageContext.request.contextPath}/topics/${topic.id}"><c:out
-          value="${topic.title}"/></a></h2>
-
+  <h2>
+    <a class="heading" href="${pageContext.request.contextPath}/topics/${topic.id}"><c:out value="${topic.title}"/></a>
+  </h2>
   <form:form
-          action="${pageContext.request.contextPath}/posts/new?topicId=${topicId}&page=${page}&branchId=${topic.branch.id}"
+          action="${pageContext.request.contextPath}/posts/new?topicId=${topic.id}&page=${page}&branchId=${topic.branch.id}"
           method="POST" modelAttribute="postDto" class='well anti-multipost'>
     <form:hidden path="topicId"/>
 
     <jtalks:bbeditor labelForAction="label.answer"
                      postText="${postDto.bodyText}"
                      bodyParameterName="bodyText"
-                     back="${pageContext.request.contextPath}/topics/${topicId}"/>
+                     back="${pageContext.request.contextPath}/topics/${topic.id}"/>
   </form:form>
 
-  <a href="${pageContext.request.contextPath}/topics/${topicId}" tabindex="500" class="back-btn">
+  <a href="${pageContext.request.contextPath}/topics/${topic.id}" tabindex="500" class="back-btn">
     <i class="icon-arrow-left"></i>
     <spring:message code="label.back"/>
   </a>

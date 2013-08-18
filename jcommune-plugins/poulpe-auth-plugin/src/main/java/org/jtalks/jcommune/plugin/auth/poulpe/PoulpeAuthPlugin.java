@@ -15,6 +15,7 @@
 
 package org.jtalks.jcommune.plugin.auth.poulpe;
 
+import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
 import org.jtalks.jcommune.model.plugins.SimpleAuthenticationPlugin;
 import org.jtalks.jcommune.model.plugins.StatefullPlugin;
@@ -46,10 +47,10 @@ public class PoulpeAuthPlugin extends StatefullPlugin
     List<PluginConfigurationProperty> pluginProperties;
 
     @Override
-    public List<Map<String, String>> registerUser(String username, String password, String email)
+    public Map<String, String> registerUser(UserDto userDto)
             throws NoConnectionException, UnexpectedErrorException {
         try {
-            return service.registerUser(username, password, email);
+            return service.registerUser(userDto);
         } catch (IOException | JAXBException e) {
             LOGGER.error("Parse response error", e);
             throw new UnexpectedErrorException(e);

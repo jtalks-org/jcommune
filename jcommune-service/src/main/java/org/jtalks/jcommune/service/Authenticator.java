@@ -14,16 +14,13 @@
  */
 package org.jtalks.jcommune.service;
 
-import org.jtalks.jcommune.model.dto.RegisterUserDto;
-import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Validator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Locale;
 
 /**
  * Serves for authentication and registration user.
@@ -53,13 +50,10 @@ public interface Authenticator {
      * Register user with given details.
      *
      * @param userDto user
-     * @param locale locale
-     * @param validator for default validation
      * @param bindingResult container for validation errors
-     * @return registered user
      * @throws UnexpectedErrorException
      * @throws NoConnectionException
      */
-    public JCUser register(RegisterUserDto userDto, Locale locale, Validator validator, BindingResult bindingResult)
+    public void register(UserDto userDto, BindingResult bindingResult)
             throws UnexpectedErrorException, NoConnectionException;
 }

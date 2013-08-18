@@ -25,6 +25,8 @@ import org.testng.annotations.Test;
 
 import static com.xebialabs.restito.builder.stub.StubHttp.whenHttp;
 import static com.xebialabs.restito.semantics.Action.status;
+import static com.xebialabs.restito.semantics.Condition.get;
+import static com.xebialabs.restito.semantics.Condition.parameter;
 import static com.xebialabs.restito.semantics.Condition.post;
 import static org.testng.Assert.assertEquals;
 
@@ -88,6 +90,28 @@ public class PoulpeAuthServiceIntegrationTest {
         assertEquals(clientResource.getStatus().getCode(), HttpStatus.BAD_REQUEST_400.getStatusCode());
     }
 
+    @Test
+    public void testSendAuthRequestWithValidCredentialsShouldBeSuccessful() throws Exception {
+        whenHttp(server).match(get(authUrl),
+                parameter("username", "username"),
+                parameter("passwordHash", "passwordHash"))
+                .then(status(HttpStatus.OK_200));
+
+        ClientResource clientResource = service.sendAuthRequest("username", "passwordHash");
+
+        assertEquals(clientResource.getStatus().getCode(), HttpStatus.OK_200.getStatusCode());
+    }
+
+    @Test
+    public void testSendAuthRequestWithInvalidCredentialsShouldFail() throws Exception {
+        whenHttp(server).match(get(authUrl),
+                parameter("username", "username"),
+                parameter("passwordHash", "passwordHash")).then(status(HttpStatus.NOT_FOUND_404));
+
+        ClientResource clientResource = service.sendAuthRequest("username", "12345");
+
+        assertEquals(clientResource.getStatus().getCode(), HttpStatus.NOT_FOUND_404.getStatusCode());
+    }
 
     private User createUser(String username, String password, String email) {
         User user = new User();

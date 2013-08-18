@@ -15,13 +15,10 @@
 
 package org.jtalks.jcommune.service.transactional;
 
-import org.joda.time.DateTime;
-import org.jtalks.common.model.entity.User;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dao.UserDao;
-import org.jtalks.jcommune.model.dto.RegisterUserDto;
+import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.model.plugins.SimpleAuthenticationPlugin;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
@@ -29,8 +26,6 @@ import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.Authenticator;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
-import org.jtalks.jcommune.service.nontransactional.ImageService;
-import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.plugins.PluginFilter;
 import org.jtalks.jcommune.service.plugins.PluginLoader;
 import org.jtalks.jcommune.service.plugins.TypeFilter;
@@ -43,11 +38,12 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Validator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Serves for authentication and registration user.
@@ -63,20 +59,12 @@ import java.util.*;
 public class TransactionalAuthenticator extends AbstractTransactionalEntityService<JCUser, UserDao>
         implements Authenticator {
 
-    /**
-     * While registering a new user, she gets {@link JCUser#setAutosubscribe(boolean)} set to {@code true} by default.
-     * Afterwards user can edit her profile and change this setting.
-     */
-    public static final boolean DEFAULT_AUTOSUBSCRIBE = true;
-
     private PluginLoader pluginLoader;
     private EncryptionService encryptionService;
     private AuthenticationManager authenticationManager;
     private SecurityContextHolderFacade securityFacade;
     private RememberMeServices rememberMeServices;
     private SessionAuthenticationStrategy sessionStrategy;
-    private MailService mailService;
-    private ImageService avatarService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalAuthenticator.class);
 
@@ -97,9 +85,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
                                       AuthenticationManager authenticationManager,
                                       SecurityContextHolderFacade securityFacade,
                                       RememberMeServices rememberMeServices,
-                                      SessionAuthenticationStrategy sessionStrategy,
-                                      MailService mailService,
-                                      ImageService avatarService) {
+                                      SessionAuthenticationStrategy sessionStrategy) {
         super(dao);
         this.pluginLoader = pluginLoader;
         this.encryptionService = encryptionService;
@@ -107,8 +93,6 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         this.securityFacade = securityFacade;
         this.rememberMeServices = rememberMeServices;
         this.sessionStrategy = sessionStrategy;
-        this.mailService = mailService;
-        this.avatarService = avatarService;
     }
 
     /**
@@ -278,22 +262,18 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      * {@inheritDoc}
      */
     @Override
-    public JCUser register(RegisterUserDto userDto, Locale locale, Validator validator, BindingResult bindingResult)
+    public void register(UserDto userDto, BindingResult bindingResult)
             throws UnexpectedErrorException, NoConnectionException {
         SimpleAuthenticationPlugin authPlugin = getPlugin();
         if (authPlugin != null && authPlugin.getState() == Plugin.State.ENABLED) {
             String passwordHash = (userDto.getPassword() == null || userDto.getPassword().isEmpty()) ? ""
                     : encryptionService.encryptPassword(userDto.getPassword());
-            List<Map<String, String>> errors
-                    = authPlugin.registerUser(userDto.getUsername(), passwordHash, userDto.getEmail());
-            parseValidationErrors(errors, bindingResult, locale);
-        } else {
-            validator.validate(userDto, bindingResult);
+            userDto.setPassword(passwordHash);
+            Map<String, String> errors = authPlugin.registerUser(userDto);
+            for(Map.Entry<String, String> error : errors.entrySet()) {
+                bindingResult.rejectValue(error.getKey(), null, error.getValue());
+            }
         }
-        if(!bindingResult.hasErrors()) {
-            return storeUser(userDto, locale);
-        }
-        return null;
     }
 
     /**
@@ -306,80 +286,5 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         PluginFilter pluginFilter = new TypeFilter(cl);
         List<Plugin> plugins = pluginLoader.getPlugins(pluginFilter);
         return !plugins.isEmpty() ? (SimpleAuthenticationPlugin) plugins.get(0) : null;
-    }
-
-    /**
-     * Just registers a new user without any additional checks, it gets rid of duplication in enclosing
-     * {@code registerUser()} methods.
-     *
-     * @param userDto coming from enclosing methods, this object is built by Spring MVC
-     * @param locale  the locale of user she can pass in GET requests
-     */
-    private JCUser storeUser(RegisterUserDto userDto, Locale locale) {
-        JCUser user = userDto.createUser();
-        user.setLanguage(Language.byLocale(locale));
-        user.setAutosubscribe(DEFAULT_AUTOSUBSCRIBE);
-        user.setAvatar(avatarService.getDefaultImage());
-
-        // check if user already saved by plugin as common user
-        User commonUser = this.getDao().getCommonUserByUsername(userDto.getUsername());
-        if(commonUser != null) {
-            // in this case just update him
-            this.getDao().delete(commonUser.getId());
-        }
-        String encodedPassword = encryptionService.encryptPassword(user.getPassword());
-        user.setPassword(encodedPassword);
-        user.setRegistrationDate(new DateTime());
-        this.getDao().saveOrUpdate(user);
-        mailService.sendAccountActivationMail(user);
-        LOGGER.info("JCUser registered: {}", user.getUsername());
-        return user;
-    }
-
-    /**
-     * Parse validation error codes with available {@link java.util.ResourceBundle} to {@link BindingResult}.
-     *
-     * @param errors errors occurred while registering user
-     * @param result result with parsed validation errors
-     * @param locale locale
-     */
-    private void parseValidationErrors(List<Map<String, String>> errors, BindingResult result, Locale locale) {
-        for (Map<String, String> errorEntries : errors) {
-            Map.Entry errorEntry = errorEntries.entrySet().iterator().next();
-            ResourceBundle resourceBundle = ResourceBundle.getBundle("ValidationMessages", locale);
-            if (!errorEntry.getKey().toString().isEmpty()) {
-                Map.Entry<String, String> error = parseErrorCode(errorEntry.getKey().toString(), resourceBundle);
-                if (error != null) {
-                    result.rejectValue(error.getKey(), null, error.getValue());
-                }
-            }
-        }
-    }
-
-    /**
-     * Parse error code with specific {@link ResourceBundle}.
-     *
-     * @param errorCode error code
-     * @param resourceBundle used {@link ResourceBundle}
-     * @return parsed error as pair field - error message
-     */
-    private Map.Entry<String, String> parseErrorCode(String errorCode, ResourceBundle resourceBundle) {
-        Map.Entry<String, String> error = null;
-        if (resourceBundle.containsKey(errorCode)) {
-            String errorMessage = resourceBundle.getString(errorCode);
-            if (errorCode.contains("email")) {
-                errorMessage = errorMessage.replace("{max}", String.valueOf(User.EMAIL_MAX_LENGTH));
-                error = new HashMap.SimpleEntry<>("email", errorMessage);
-            } else if (errorCode.contains("username")) {
-                errorMessage = errorMessage.replace("{min}", String.valueOf(User.USERNAME_MIN_LENGTH))
-                        .replace("{max}", String.valueOf(User.USERNAME_MAX_LENGTH));
-                error = new HashMap.SimpleEntry<>("username", errorMessage);
-            } else if (errorCode.contains("password")) {
-                errorMessage = errorMessage.replace("{min}", String.valueOf(User.PASSWORD_MIN_LENGTH))
-                        .replace("{max}", String.valueOf(User.PASSWORD_MAX_LENGTH));
-                error = new HashMap.SimpleEntry<>("password", errorMessage);
-            }
-        }
-        return error;
     }
 }
