@@ -4,6 +4,7 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ attribute name="topics" required="true" type="java.util.List" %>
 <%@ attribute name="messageToShowIfNoTopics" required="true" type="java.lang.String" rtexprvalue="true" %>
+<%@ attribute name="showBranchColumn" required="false" type="java.lang.Boolean" rtexprvalue="true" %>
 <table id="topics-table" class="table table-row table-bordered">
   <c:choose>
     <c:when test="${!(empty topics)}">
@@ -14,6 +15,9 @@
         </sec:authorize>
         <th><spring:message code="label.branch.header.topics"/></th>
         <th class="author-col shrink-to-fit"><spring:message code="label.branch.header.author"/></th>
+        <c:if test="${showBranchColumn}">
+          <th class="posted-in-col shrink-to-fit"><spring:message code="label.branch.header.branches"/></th>
+        </c:if>
         <th class="posts-views-small forum-posts-view-header shrink-to-fit">
           <spring:message code="label.branch.header.posts"/></th>
         <th class="posts-views-small forum-posts-view-header shrink-to-fit">
@@ -53,6 +57,13 @@
               <c:out value="${topic.topicStarter.username}"/>
             </a>
           </td>
+          <c:if test="${showBranchColumn}">
+            <td class="posted-in-col shrink-to-fit">
+              <a href="${pageContext.request.contextPath}/branches/${topic.branch.id}">
+                <c:out value="${topic.branch.name}"/>
+              </a>
+            </td>
+          </c:if>
           <td class="posts-views-small shrink-to-fit">
             <span class='test-posts-count'><c:out value="${topic.postCount}"/></span>
           </td>

@@ -44,7 +44,8 @@
 
   <%--you cannot use <spring> tag inside of an attribute, thus defining it as a separate var--%>
   <spring:message code="label.messagesWithoutAnswers.empty" var="messageToShowIfNoTopics"/>
-  <jtalks:topicList topics="${topicsPage.content}" messageToShowIfNoTopics='${messageToShowIfNoTopics}'/>
+  <jtalks:topicList topics="${topicsPage.content}" messageToShowIfNoTopics='${messageToShowIfNoTopics}'
+                    showBranchColumn="true"/>
 
   <div class="row-fluid upper-pagination forum-pagination-container">
     <div class="span12">
