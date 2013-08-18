@@ -139,7 +139,7 @@ public class TopicControllerTest {
         verify(topicFetchService).checkViewTopicPermission(branch.getId());
         verify(lastReadPostService).markTopicPageAsRead(topic, Integer.valueOf(page));
         //
-        assertViewName(mav, "postList");
+        assertViewName(mav, "topic/postList");
         assertAndReturnModelAttributeOfType(mav, "postsPage", Page.class);
         //
         Topic actualTopic = assertAndReturnModelAttributeOfType(mav, "topic", Topic.class);
@@ -206,7 +206,7 @@ public class TopicControllerTest {
         verify(branchService).get(BRANCH_ID);
         verify(breadcrumbBuilder).getForumBreadcrumb(branch);
         //
-        assertViewName(mav, "topicForm");
+        assertViewName(mav, "topic/topicForm");
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         assertEquals(branchId, BRANCH_ID);
     }
@@ -221,7 +221,7 @@ public class TopicControllerTest {
         verify(branchService).get(BRANCH_ID);
         verify(breadcrumbBuilder).getNewTopicBreadcrumb(branch);
         //
-        assertViewName(mav, "topicForm");
+        assertViewName(mav, "topic/topicForm");
         //
         TopicDto topicDto = assertAndReturnModelAttributeOfType(mav, "topicDto", TopicDto.class);
         Topic actualTopic = topicDto.getTopic();
@@ -251,7 +251,7 @@ public class TopicControllerTest {
         verify(topicFetchService).get(TOPIC_ID);
         verify(breadcrumbBuilder).getForumBreadcrumb(topic);
         //
-        assertViewName(mav, "topicForm");
+        assertViewName(mav, "topic/topicForm");
         //
         TopicDto dto = assertAndReturnModelAttributeOfType(mav, "topicDto", TopicDto.class);
         assertEquals(dto.getTopic().getId(), TOPIC_ID);
@@ -279,7 +279,7 @@ public class TopicControllerTest {
         verify(topicFetchService).get(TOPIC_ID);
         verify(breadcrumbBuilder).getForumBreadcrumb(topic);
         //
-        assertViewName(mav, "topicForm");
+        assertViewName(mav, "topic/topicForm");
         //
         TopicDto dto = assertAndReturnModelAttributeOfType(mav, "topicDto", TopicDto.class);
         assertEquals(dto.getTopic().getId(), TOPIC_ID);
@@ -325,7 +325,7 @@ public class TopicControllerTest {
 
         ModelAndView mav = controller.editTopic(dto, resultWithErrors, TOPIC_ID);
 
-        assertViewName(mav, "topicForm");
+        assertViewName(mav, "topic/topicForm");
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         assertEquals(branchId, BRANCH_ID);
 

@@ -317,6 +317,7 @@ h3 {
 .h-nostyle {
     line-height: inherit;
     font-size: inherit;
+    font-weight: inherit;
 }
 
 /* JC-918. Long author name in sections list */

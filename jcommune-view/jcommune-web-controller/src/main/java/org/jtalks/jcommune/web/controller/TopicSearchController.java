@@ -45,7 +45,7 @@ public class TopicSearchController {
      */
     public static final String SEARCH_TEXT_ATTRIBUTE_NAME = "searchText";
 
-    private static final String SEARCH_RESULT_VIEW_NAME = "searchResult";
+    private static final String SEARCH_RESULT_VIEW_NAME = "topic/searchResult";
 
     private TopicFetchService topicSearchService;
     

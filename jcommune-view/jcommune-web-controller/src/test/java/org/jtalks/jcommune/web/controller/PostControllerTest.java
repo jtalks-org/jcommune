@@ -262,7 +262,7 @@ public class PostControllerTest {
         verify(topicModificationService, never()).replyToTopic(anyLong(), anyString(), eq(BRANCH_ID));
 
         //check result
-        assertViewName(mav, "answer");
+        assertViewName(mav, "topic/answer");
     }
 
     @Test
@@ -295,7 +295,7 @@ public class PostControllerTest {
     }*/
 
     private void assertAnswerMavIsCorrect(ModelAndView mav) {
-        assertViewName(mav, "answer");
+        assertViewName(mav, "topic/answer");
         assertAndReturnModelAttributeOfType(mav, "topic", Topic.class);
         long topicId = assertAndReturnModelAttributeOfType(mav, "topicId", Long.class);
         assertEquals(topicId, TOPIC_ID);
@@ -305,7 +305,7 @@ public class PostControllerTest {
     }
 
     private void assertEditPostFormMavIsCorrect(ModelAndView mav) {
-        assertViewName(mav, "editPost");
+        assertViewName(mav, "topic/editPost");
         long topicId = assertAndReturnModelAttributeOfType(mav, "topicId", Long.class);
         long postId = assertAndReturnModelAttributeOfType(mav, "postId", Long.class);
         assertEquals(topicId, TOPIC_ID);

@@ -61,7 +61,7 @@ public class TopicController {
     public static final String BRANCH_ID = "branchId";
     public static final String BREADCRUMB_LIST = "breadcrumbList";
     private static final String SUBMIT_URL = "submitUrl";
-    private static final String TOPIC_VIEW = "topicForm";
+    private static final String TOPIC_VIEW = "topic/topicForm";
     private static final String TOPIC_DTO = "topicDto";
     private static final String REDIRECT_URL = "redirect:/topics/";
 
@@ -207,7 +207,7 @@ public class TopicController {
         Page<Post> postsPage = postService.getPosts(topic, requestedPage);
         Integer lastReadPostIndex = lastReadPostService.getLastReadPostForTopic(topic);
         lastReadPostService.markTopicPageAsRead(topic, requestedPage);
-        return new ModelAndView("postList")
+        return new ModelAndView("topic/postList")
                 .addObject("viewList", locationService.getUsersViewing(topic))
                 .addObject("usersOnline", sessionRegistry.getAllPrincipals())
                 .addObject("postsPage", postsPage)
