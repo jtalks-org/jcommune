@@ -54,7 +54,7 @@ public class ExternalLinkTest {
         String title = "title";
         String hint = "hint";
         ExternalLink externalLink = new ExternalLink(url, title, hint);
-        assertEquals("http://", externalLink.getUrl());
+        assertEquals("", externalLink.getUrl());
         assertEquals(title, externalLink.getTitle());
         assertEquals(hint, externalLink.getHint());
     }

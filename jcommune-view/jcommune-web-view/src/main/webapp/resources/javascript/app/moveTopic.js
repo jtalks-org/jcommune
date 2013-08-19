@@ -27,7 +27,7 @@ $(function () {
     /**
      * "Move topic" button handler.
      */
-    $("[name=move_topic]").on('click', function () {
+    $(".move_topic").on('click', function () {
 
         topicId = $(this).attr('data-topicId');
 
@@ -78,7 +78,7 @@ $(function () {
                 }
             });
 
-            var eliminatedBranchId = $("#edit_button").attr("rel");
+            var eliminatedBranchId = $(".edit_button").attr("data-rel");
 
             displayAllBranches(eliminatedBranchId);
 

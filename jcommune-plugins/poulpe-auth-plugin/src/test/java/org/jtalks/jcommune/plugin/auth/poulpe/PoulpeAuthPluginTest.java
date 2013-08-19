@@ -15,7 +15,7 @@
 
 package org.jtalks.jcommune.plugin.auth.poulpe;
 
-import com.google.common.collect.ImmutableMap;
+import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
 import org.jtalks.jcommune.model.plugins.Plugin;
@@ -28,7 +28,10 @@ import org.testng.annotations.Test;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.jtalks.jcommune.model.entity.PluginConfigurationProperty.Type.STRING;
 import static org.mockito.Mockito.when;
@@ -74,16 +77,14 @@ public class PoulpeAuthPluginTest {
     @Test
     public void userShouldNotBeRegisteredIfSomeErrorOccurred()
             throws JAXBException, IOException, NoConnectionException, UnexpectedErrorException {
-        String username = "user";
-        String password = "";
-        String email = "";
-        List<Map<String, String>> errors = new ArrayList<>();
-        errors.add(new ImmutableMap.Builder<String, String>().put("test.user.email.invalid", "").build());
-        errors.add(new ImmutableMap.Builder<String, String>().put("", "Invalid password").build());
+        UserDto userDto = createUserDto("user", "", "");
+        Map<String, String> errors = new HashMap<>();
+        errors.put("email", "Invalid email");
+        errors.put("password", "Invalid password");
 
-        when(service.registerUser(username, password, email)).thenReturn(errors);
+        when(service.registerUser(userDto)).thenReturn(errors);
 
-        List<Map<String, String>> result = plugin.registerUser(username, password, email);
+        Map<String, String> result = plugin.registerUser(userDto);
 
         assertEquals(result.size(), 2, "User with incorrect parameters shouldn't be registered.");
     }
@@ -91,13 +92,11 @@ public class PoulpeAuthPluginTest {
     @Test
     public void userWithCorrectParametersShouldBeRegistered()
             throws UnexpectedErrorException, NoConnectionException, IOException, JAXBException {
-        String username = "user";
-        String password = "1234";
-        String email = "email@email.em";
+        UserDto userDto = createUserDto("user", "1234", "email@email.em");
 
-        when(service.registerUser(username, password, email)).thenReturn(Collections.EMPTY_LIST);
+        when(service.registerUser(userDto)).thenReturn(Collections.EMPTY_MAP);
 
-        List<Map<String, String>> result = plugin.registerUser(username, password, email);
+        Map<String, String> result = plugin.registerUser(userDto);
 
         assertEquals(result.size(), 0, "User with correct parameters should be registered.");
     }
@@ -105,25 +104,21 @@ public class PoulpeAuthPluginTest {
     @Test(expectedExceptions = NoConnectionException.class)
     public void registerUserShouldThrowNoConnectionExceptionIfPoulpeUnavailable()
             throws UnexpectedErrorException, NoConnectionException, IOException, JAXBException {
-        String username = "user";
-        String password = "1234";
-        String email = "email@email.em";
+        UserDto userDto = createUserDto("user", "1234", "email@email.em");
 
-        when(service.registerUser(username, password, email)).thenThrow(new NoConnectionException());
+        when(service.registerUser(userDto)).thenThrow(new NoConnectionException());
 
-        plugin.registerUser(username, password, email);
+        plugin.registerUser(userDto);
     }
 
     @Test(expectedExceptions = UnexpectedErrorException.class)
     public void registerUserShouldThrowUnexpectedErrorExceptionIfSomeErrorOccurred()
             throws UnexpectedErrorException, NoConnectionException, IOException, JAXBException {
-        String username = "user";
-        String password = "1234";
-        String email = "email@email.em";
+        UserDto userDto = createUserDto("user", "1234", "email@email.em");
 
-        when(service.registerUser(username, password, email)).thenThrow(new JAXBException(""));
+        when(service.registerUser(userDto)).thenThrow(new JAXBException(""));
 
-        plugin.registerUser(username, password, email);
+        plugin.registerUser(userDto);
     }
 
     @Test
@@ -178,12 +173,20 @@ public class PoulpeAuthPluginTest {
         plugin.authenticate(username, password);
     }
 
+    private UserDto createUserDto(String username, String password, String email) {
+        UserDto userDto = new UserDto();
+        userDto.setUsername(username);
+        userDto.setEmail(email);
+        userDto.setPassword(password);
+        return userDto;
+    }
+
     private PluginConfiguration createConfiguration(String url, String login, String password) {
 
         PluginConfigurationProperty urlProperty =
                 new PluginConfigurationProperty("URL", STRING, url);
         urlProperty.setName("Url");
-        PluginConfigurationProperty loginProperty = new PluginConfigurationProperty("LOGIN",STRING, login);
+        PluginConfigurationProperty loginProperty = new PluginConfigurationProperty("LOGIN", STRING, login);
         loginProperty.setName("Login");
         PluginConfigurationProperty passwordProperty = new PluginConfigurationProperty("PASSWORD", STRING, password);
         passwordProperty.setName("Password");

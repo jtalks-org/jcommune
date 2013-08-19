@@ -60,8 +60,7 @@
 
         <tbody>
         <c:forEach var="branch" items="${section.branches}" varStatus="i">
-          <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
-                                permission='BranchPermission.VIEW_TOPICS'>
+          <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' permission='BranchPermission.VIEW_TOPICS'>
             <tr>
                 <%--TODO: fix in milstone 2--%>
                 <%--<sec:authorize access="isAuthenticated()">--%>
@@ -80,32 +79,34 @@
                 <%--</c:choose>--%>
                 <%--</td>--%>
                 <%--</sec:authorize>--%>
-              <td>
-                <a href="${pageContext.request.contextPath}/branches/${branch.id}">
-                  <c:out value="${branch.name}"/>
-                </a>
-                <br/>
-
-                <c:out value="${branch.description}"/>
-                <br/>
-                <jtalks:moderators moderators="${branch.moderatorsGroup.users}"/>
+              <td class="title-col">
+                <h3 class="h-nostyle">
+                  <a class="branch-title" href="${pageContext.request.contextPath}/branches/${branch.id}">
+                    <c:out value="${branch.name}"/>
+                  </a>
+                </h3>
+                <span class="forum-sections-branch-description-container">
+                  <c:out value="${branch.description}"/>
+                </span>
+                <div class="forum-sections-moderators-container">
+                  <jtalks:moderators moderators="${branch.moderatorsGroup.users}" visibleIfEmpty="false"/>
+                </div>
               </td>
               <td class="topics-posts">
                 <spring:message code="label.section.header.topics"/>:
-                                <span class='test-topics-count'>
-                                    <c:out value="${branch.topicCount}"/>
-                                </span>
+                  <span class='test-topics-count'>
+                    <c:out value="${branch.topicCount}"/>
+                  </span>
                 <br/>
                 <spring:message code="label.section.header.messages"/>:
-                                <span class='test-posts-count'>
-                                    <c:out value="${branch.postCount}"/>
-                                </span>
+                  <span class='test-posts-count'>
+                    <c:out value="${branch.postCount}"/>
+                  </span>
               </td>
               <td class="latest-by">
                 <c:if test="${branch.topicCount>0}">
                   <i class="icon-calendar"></i>
-                  <a class="date"
-                     href="${pageContext.request.contextPath}/posts/${branch.lastPost.id}">
+                  <a class="date" href="${pageContext.request.contextPath}/posts/${branch.lastPost.id}">
                     <jtalks:format value="${branch.lastPost.creationDate}"/>
                   </a>
 

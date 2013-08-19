@@ -14,7 +14,11 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Poll;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
@@ -28,7 +32,13 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -51,7 +61,7 @@ public class TopicController {
     public static final String BRANCH_ID = "branchId";
     public static final String BREADCRUMB_LIST = "breadcrumbList";
     private static final String SUBMIT_URL = "submitUrl";
-    private static final String TOPIC_VIEW = "topicForm";
+    private static final String TOPIC_VIEW = "topic/topicForm";
     private static final String TOPIC_DTO = "topicDto";
     private static final String REDIRECT_URL = "redirect:/topics/";
 
@@ -187,15 +197,16 @@ public class TopicController {
      */
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.GET)
     public ModelAndView showTopicPage(@PathVariable(TOPIC_ID) Long topicId,
-                                      @RequestParam(value = "page", defaultValue = "1", required = false) String page) throws NotFoundException {
+            @RequestParam(value = "page", defaultValue = "1", required = false) String page) throws NotFoundException {
         JCUser currentUser = userService.getCurrentUser();
         Topic topic = topicFetchService.get(topicId);
+
 
         topicFetchService.checkViewTopicPermission(topic.getBranch().getId());
         Page<Post> postsPage = postService.getPosts(topic, page);
         Integer lastReadPostIndex = lastReadPostService.getLastReadPostForTopic(topic);
         lastReadPostService.markTopicPageAsRead(topic, postsPage.getNumber());
-        return new ModelAndView("postList")
+        return new ModelAndView("topic/postList")
                 .addObject("viewList", locationService.getUsersViewing(topic))
                 .addObject("usersOnline", sessionRegistry.getAllPrincipals())
                 .addObject("postsPage", postsPage)

@@ -105,7 +105,7 @@ public class BranchControllerTest {
         verify(breadcrumbBuilder).getForumBreadcrumb(branchService.get(branchId));
 
         //check result
-        assertViewName(mav, "topicList");
+        assertViewName(mav, "topic/topicList");
 
         Branch actualBranch = assertAndReturnModelAttributeOfType(mav, "branch", Branch.class);
         assertEquals(actualBranch.getId(), branchId);
@@ -132,7 +132,7 @@ public class BranchControllerTest {
         verify(topicFetchService).getRecentTopics(page);
 
         //check result
-        assertViewName(mav, "recent");
+        assertViewName(mav, "topic/recent");
         assertAndReturnModelAttributeOfType(mav, "topicsPage", Page.class);
         assertAndReturnModelAttributeOfType(mav, "topics", List.class);
     }
@@ -151,7 +151,7 @@ public class BranchControllerTest {
         verify(topicFetchService).getUnansweredTopics(page);
 
         //check result
-        assertViewName(mav, "unansweredTopics");
+        assertViewName(mav, "topic/unansweredTopics");
         assertAndReturnModelAttributeOfType(mav, "topicsPage", Page.class);
     }
 

@@ -103,7 +103,7 @@ public class BranchController {
         JCUser currentUser = userService.getCurrentUser();
         List<Breadcrumb> breadcrumbs = breadcrumbBuilder.getForumBreadcrumb(branch);
 
-        return new ModelAndView("topicList")
+        return new ModelAndView("topic/topicList")
                 .addObject("viewList", locationService.getUsersViewing(branch))
                 .addObject("branch", branch)
                 .addObject("topicsPage", topicsPage)
@@ -123,7 +123,7 @@ public class BranchController {
         Page<Topic> topicsPage = topicFetchService.getRecentTopics(page);
         lastReadPostService.fillLastReadPostForTopics(topicsPage.getContent());
 
-        return new ModelAndView("recent")
+        return new ModelAndView("topic/recent")
                 .addObject("topicsPage", topicsPage)
                 .addObject("topics", topicsPage.getContent());  // for rssViewer
     }
@@ -139,7 +139,7 @@ public class BranchController {
                                              String page) {
         Page<Topic> topicsPage = topicFetchService.getUnansweredTopics(page);
         lastReadPostService.fillLastReadPostForTopics(topicsPage.getContent());
-        return new ModelAndView("unansweredTopics")
+        return new ModelAndView("topic/unansweredTopics")
                 .addObject("topicsPage", topicsPage);
     }
 

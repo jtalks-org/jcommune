@@ -313,7 +313,12 @@ h3 {
     word-wrap: break-word;
 }
 
-/* ----------------------------------------------- */
+/*H2 that should not impact any style, needed e.g. when we already have style defined, but add H2 tags for SEO.*/
+.h-nostyle {
+    line-height: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+}
 
 /* JC-918. Long author name in sections list */
 .table-with-titles {
@@ -324,7 +329,7 @@ h3 {
     border: 1px solid #DDDDDD;
 }
 
-.table-with-titles th {
+.table-with-titles th, .table-title {
     border: 0px;
     border-radius: 4px;
     -webkit-border-radius: 4px;
@@ -339,6 +344,28 @@ h3 {
     text-rendering: optimizelegibility;
     line-height: 27px;
     font-size: 18px;
+}
+
+.table-title {
+    border: 0px !important;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -o-border-radius: 4px;
+    padding-top: 10px !important;
+
+    /* Use this styles instead of <h3> tag inside <th>. To fit HTML5 standard*/
+    margin: 0;
+    font-weight: bold;
+    background-color: #444 !important;
+    color: #444;
+    text-rendering: optimizelegibility;
+    line-height: 27px;
+    font-size: 18px;
+}
+
+.table-title h2 a {
+    color: #ffffff !important;
 }
 
 .table-with-titles th a {

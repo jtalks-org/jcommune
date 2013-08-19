@@ -45,6 +45,10 @@ $(function () {
                 data: query,
                 dataType: 'html',
                 success: function (resp) {
+                    // we need to remove complex part (userDto.) of complex field, such as userDto.email
+                    // because these fields are used as elements ids, and jquery selector doesn't work with
+                    // id containing dot.
+                    resp = resp.replace(/userDto./g,'');
                     resp = eval('(' + resp + ')'); // warning: not safe
                     if (resp.status == 'SUCCESS') {
                         // hide dialog and show success message
@@ -143,10 +147,10 @@ function captchaUrl() {
  * POST request query
  */
 function composeQuery(signupDialog) {
-    return 'username=' + encodeURIComponent(signupDialog.find('#username').val()) +
-        '&password=' + encodeURIComponent(signupDialog.find('#password').val()) +
+    return 'userDto.username=' + encodeURIComponent(signupDialog.find('#username').val()) +
+        '&userDto.password=' + encodeURIComponent(signupDialog.find('#password').val()) +
         '&passwordConfirm=' + encodeURIComponent(signupDialog.find('#passwordConfirm').val()) +
-        '&email=' + encodeURIComponent(signupDialog.find('#email').val()) +
+        '&userDto.email=' + encodeURIComponent(signupDialog.find('#email').val()) +
         '&captcha=' + encodeURIComponent(signupDialog.find('#captcha').val());
 }
 

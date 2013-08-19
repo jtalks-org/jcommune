@@ -120,7 +120,7 @@ public class PostController {
     @RequestMapping(value = "/posts/{postId}/edit", method = RequestMethod.GET)
     public ModelAndView editPage(@PathVariable(POST_ID) Long postId) throws NotFoundException {
         Post post = postService.get(postId);
-        return new ModelAndView("editPost")
+        return new ModelAndView("topic/editPost")
                 .addObject(POST_DTO, PostDto.getDtoFor(post))
                 .addObject(TOPIC_ID, post.getTopic().getId())
                 .addObject(POST_ID, postId)
@@ -143,7 +143,7 @@ public class PostController {
                                @PathVariable(POST_ID) Long postId) throws NotFoundException {
         Post post = postService.get(postId);
         if (result.hasErrors()) {
-            return new ModelAndView("editPost")
+            return new ModelAndView("topic/editPost")
                     .addObject(TOPIC_ID,post.getTopic().getId())
                     .addObject(POST_ID, postId);
         }
@@ -167,7 +167,7 @@ public class PostController {
         if (answeringTopic.getCodeReview() != null) {
             throw new AccessDeniedException("It is not possible to add posts to code review except the initial one!");
         }
-        return new ModelAndView("answer")
+        return new ModelAndView("topic/answer")
                 .addObject("topic", answeringTopic)
                 .addObject(TOPIC_ID, topicId)
                 .addObject(POST_DTO, new PostDto())

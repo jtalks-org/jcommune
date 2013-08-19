@@ -14,15 +14,11 @@
  */
 package org.jtalks.jcommune.model.dto;
 
-import org.hibernate.validator.constraints.NotBlank;
-import org.jtalks.common.model.entity.User;
-import org.jtalks.common.validation.annotations.Email;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.validation.annotations.Captcha;
 import org.jtalks.jcommune.model.validation.annotations.Matches;
-import org.jtalks.jcommune.model.validation.annotations.Unique;
 
-import javax.validation.constraints.Size;
+import javax.validation.Valid;
 
 /**
  * DTO for {@link org.jtalks.jcommune.model.entity.JCUser} object. Required for validation and binding
@@ -30,62 +26,16 @@ import javax.validation.constraints.Size;
  *
  * @author Osadchuck Eugeny
  */
-@Matches(field = "password", verifyField = "passwordConfirm", message = "{password_not_matches}")
+@Matches(field = "userDto.password", verifyField = "passwordConfirm", message = "{password_not_matches}")
 public class RegisterUserDto {
 
-    @NotBlank(message = "{validation.not_null}")
-    @Size(min = User.USERNAME_MIN_LENGTH, max = User.USERNAME_MAX_LENGTH, message = "{user.username.length_constraint_violation}")
-    @Unique(entity = JCUser.class, field = "username", message = "{user.username.already_exists}", ignoreCase = true)
-    private String username;
-
-    @NotBlank(message = "{validation.not_null}")
-    @Size(max = User.EMAIL_MAX_LENGTH, message = "{user.email.illegal_length}")
-    @Email(message = "{validation.invalid_email_format}")
-    @Unique(entity = JCUser.class, field = "email", message = "{user.email.already_exists}", ignoreCase = true)
-    private String email;
-
-    @NotBlank(message = "{validation.not_null}")
-    @Size(min = User.PASSWORD_MIN_LENGTH, max = User.PASSWORD_MAX_LENGTH)
-    private String password;
+    @Valid
+    private UserDto userDto;
 
     private String passwordConfirm;
 
     @Captcha(message = "{validation.captcha.wrong}")
     private String captcha;
-
-    /**
-     * @return username
-     */
-    public String getUsername() {
-        return username;
-    }
-
-    /**
-     * Set username.
-     *
-     * @param username username
-     */
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    /**
-     * Get password.
-     *
-     * @return password
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
-     * Set password.
-     *
-     * @param password password
-     */
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     /**
      * Get password confirmation.
@@ -94,24 +44,6 @@ public class RegisterUserDto {
      */
     public String getPasswordConfirm() {
         return passwordConfirm;
-    }
-
-    /**
-     * Get email.
-     *
-     * @return email
-     */
-    public String getEmail() {
-        return email;
-    }
-
-    /**
-     * Set email.
-     *
-     * @param email email
-     */
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     /**
@@ -143,6 +75,24 @@ public class RegisterUserDto {
      * @return populated {@link JCUser} object
      */
     public JCUser createUser() {
-        return new JCUser(username, email, password);
+        return new JCUser(userDto.getUsername(), userDto.getEmail(), userDto.getPassword());
+    }
+
+    /**
+     * Get UserDto.
+     *
+     * @return userDto
+     */
+    public UserDto getUserDto() {
+        return userDto;
+    }
+
+    /**
+     * Set UserDto.
+     *
+     * @param userDto userDto
+     */
+    public void setUserDto(UserDto userDto) {
+        this.userDto = userDto;
     }
 }

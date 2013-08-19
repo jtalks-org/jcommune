@@ -23,17 +23,10 @@ import org.jtalks.jcommune.model.entity.BannerPosition;
 import java.util.Collection;
 
 /**
- * An implementation of {@link BannerDao} that is based on Hibernate and working
- * with database.
- *
  * @author Anuar_Nurmakanov
  */
-public class BannerHibernateDao extends GenericDao<Banner>
-        implements BannerDao {
+public class BannerHibernateDao extends GenericDao<Banner> implements BannerDao {
 
-    /**
-     * @param sessionFactory The SessionFactory.
-     */
     public BannerHibernateDao(SessionFactory sessionFactory) {
         super(sessionFactory, Banner.class);
     }
@@ -43,8 +36,7 @@ public class BannerHibernateDao extends GenericDao<Banner>
      */
     @Override
     public Banner getByPosition(BannerPosition positionOnPage) {
-        return (Banner) session()
-                .getNamedQuery("getByPosition")
+        return (Banner) session().getNamedQuery("getByPosition")
                 .setParameter("position", positionOnPage)
                 .uniqueResult();
     }
@@ -55,8 +47,6 @@ public class BannerHibernateDao extends GenericDao<Banner>
     @Override
     @SuppressWarnings("unchecked")
     public Collection<Banner> getAll() {
-        return session()
-                .getNamedQuery("getAll")
-                .list();
+        return session().getNamedQuery("getAll").list();
     }
 }
