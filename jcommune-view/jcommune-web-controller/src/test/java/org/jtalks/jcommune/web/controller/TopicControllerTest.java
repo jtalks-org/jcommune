@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.dto.JCommunePageRequest;
+import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -128,7 +128,7 @@ public class TopicControllerTest {
         Topic topic = new Topic(null, null);
         topic.addPost(new Post(user, "content"));
         branch.addTopic(topic);
-        JCommunePageRequest pageable = new JCommunePageRequest("1", 15);
+        PageRequest pageable = new PageRequest("1", 15);
         Page<Post> postsPage = new PageImpl<Post>(Collections.<Post>emptyList(),
                 pageable, 30L);
 

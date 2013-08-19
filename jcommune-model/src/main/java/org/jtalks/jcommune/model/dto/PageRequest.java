@@ -26,21 +26,20 @@ import static org.jtalks.jcommune.model.entity.JCUser.DEFAULT_PAGE_SIZE;
  * 
  * @author Anuar Nurmakanov
  */
-public class JCommunePageRequest implements Pageable {
-    private static final long serialVersionUID = -9054794147449741044L;
+public class PageRequest implements Pageable {
     public static final int FIRST_PAGE_NUMBER = 1;
 
     private int pageNumber;
-    private int pageSize;
+    private final int pageSize;
 
     /**
-     * Creates a new {@link JCommunePageRequest}.
+     * Creates a new {@link PageRequest}.
      *
      * @param requestedPageNumber page number as a String. If specified string is not valid integer,
      *                            page number will be equal 1.
      * @param pageSize size of page
      */
-    public JCommunePageRequest(String requestedPageNumber, int pageSize) {
+    public PageRequest(String requestedPageNumber, int pageSize) {
         int parsedPageNumber = requestedPageNumber.matches("\\d+") ?
                 Integer.valueOf(requestedPageNumber)
                 : FIRST_PAGE_NUMBER;
@@ -56,31 +55,13 @@ public class JCommunePageRequest implements Pageable {
         return (pageNumber <= 0) ? FIRST_PAGE_NUMBER : pageNumber;
     }
 
-    /**
-     * Create an instance of {@link JCommunePageRequest} with enabled paging.
-     *
-     * @param pageNumber page number
-     * @param pageSize size of page
-     * @return an instance of {@link JCommunePageRequest} with enabled paging
-     */
-    public static JCommunePageRequest createPageRequest(String pageNumber, int pageSize) {
-        return new JCommunePageRequest(pageNumber, pageSize);
-    }
 
-    
     /**
      * {@inheritDoc}
      */
     @Override
     public int getPageNumber() {
         return pageNumber;
-    }
-    
-    /**
-     * @param pageNumber the pageNumber to set
-     */
-    public void setPageNumber(int pageNumber) {
-        this.pageNumber = pageNumber;
     }
 
     /**
@@ -91,13 +72,6 @@ public class JCommunePageRequest implements Pageable {
         return pageSize;
     }
     
-    /**
-     * @param pageSize the pageSize to set
-     */
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
-
     /**
      * {@inheritDoc}
      */

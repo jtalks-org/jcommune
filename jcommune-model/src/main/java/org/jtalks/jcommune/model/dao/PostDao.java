@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.common.model.dao.Crud;
-import org.jtalks.jcommune.model.dto.JCommunePageRequest;
+import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
@@ -44,7 +44,7 @@ public interface PostDao extends Crud<Post> {
      * @return object that contains posts for one page(note, that one page may contain
      *         all posts, that were created by user) and information for pagination
      */
-    Page<Post> getUserPosts(JCUser author, JCommunePageRequest pageRequest);
+    Page<Post> getUserPosts(JCUser author, PageRequest pageRequest);
 
     /**
      * Get all posts in the topic of forum.
@@ -54,7 +54,7 @@ public interface PostDao extends Crud<Post> {
      * @return object that contains posts for one page(note, that one page may contain
      *         all posts) and information for pagination
      */
-    Page<Post> getPosts(Topic topic, JCommunePageRequest pageRequest);
+    Page<Post> getPosts(Topic topic, PageRequest pageRequest);
     
     /**
      * Get last post that was posted in a topic of branch.

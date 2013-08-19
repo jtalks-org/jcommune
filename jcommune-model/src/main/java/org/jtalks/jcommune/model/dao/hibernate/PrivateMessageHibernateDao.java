@@ -18,7 +18,7 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
-import org.jtalks.jcommune.model.dto.JCommunePageRequest;
+import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
@@ -54,7 +54,7 @@ public class PrivateMessageHibernateDao extends GenericDao<PrivateMessage> imple
      */
     @SuppressWarnings("unchecked")
     @Override
-    public Page<PrivateMessage> getAllFromUser(JCUser userFrom, JCommunePageRequest pageRequest) {
+    public Page<PrivateMessage> getAllFromUser(JCUser userFrom, PageRequest pageRequest) {
         PrivateMessageStatus[] statuses = PrivateMessageStatus.getOutboxStatus();
         int totalCount = getOutboxMessageCount(userFrom, statuses);
         pageRequest.adjustPageNumber(totalCount);
@@ -89,7 +89,7 @@ public class PrivateMessageHibernateDao extends GenericDao<PrivateMessage> imple
      */
     @SuppressWarnings("unchecked")
     @Override
-    public Page<PrivateMessage> getAllForUser(JCUser userTo, JCommunePageRequest pageRequest) {
+    public Page<PrivateMessage> getAllForUser(JCUser userTo, PageRequest pageRequest) {
         PrivateMessageStatus[] statuses = PrivateMessageStatus.getInboxStatus();
         int totalCount = getInboxMessageCount(userTo, statuses);
         pageRequest.adjustPageNumber(totalCount);
@@ -126,7 +126,7 @@ public class PrivateMessageHibernateDao extends GenericDao<PrivateMessage> imple
      */
     @SuppressWarnings("unchecked")
     @Override
-    public Page<PrivateMessage> getDraftsForUser(JCUser user, JCommunePageRequest pageRequest) {
+    public Page<PrivateMessage> getDraftsForUser(JCUser user, PageRequest pageRequest) {
         Number totalCount = (Number) session()
                 .getNamedQuery("getCountUserDraftPm")
                 .setParameter("userFrom", user)

@@ -18,7 +18,7 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dao.search.TopicSearchDao;
-import org.jtalks.jcommune.model.dto.JCommunePageRequest;
+import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -95,7 +95,7 @@ public class TransactionalTopicFetchServiceTest {
         int pageSize = 20;
         List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
         Page<Topic> expectedPage = new PageImpl<Topic>(expectedList);
-        when(topicDao.getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JCommunePageRequest>any(),eq(user)))
+        when(topicDao.getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<PageRequest>any(),eq(user)))
                 .thenReturn(expectedPage);
         user.setPageSize(pageSize);
         when(userService.getCurrentUser()).thenReturn(user);
@@ -104,7 +104,7 @@ public class TransactionalTopicFetchServiceTest {
 
         assertNotNull(actualPage);
         assertEquals(expectedPage, actualPage);
-        verify(topicDao).getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JCommunePageRequest>any(),
+        verify(topicDao).getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<PageRequest>any(),
                 eq(user));
     }
 
@@ -114,7 +114,7 @@ public class TransactionalTopicFetchServiceTest {
         int pageSize = 20;
         List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
         Page<Topic> expectedPage = new PageImpl<Topic>(expectedList);
-        when(topicDao.getUnansweredTopics(Matchers.<JCommunePageRequest>any(),eq(user)))
+        when(topicDao.getUnansweredTopics(Matchers.<PageRequest>any(),eq(user)))
                 .thenReturn(expectedPage);
         user.setPageSize(pageSize);
         when(userService.getCurrentUser()).thenReturn(user);
@@ -134,14 +134,14 @@ public class TransactionalTopicFetchServiceTest {
         currentUser.setPageSize(50);
         when(userService.getCurrentUser()).thenReturn(currentUser);
         when(topicDao.getTopics(
-                Matchers.any(Branch.class), Matchers.any(JCommunePageRequest.class)))
+                Matchers.any(Branch.class), Matchers.any(PageRequest.class)))
                 .thenReturn(expectedPage);
 
         Page<Topic> actualPage = topicFetchService.getTopics(branch, pageNumber);
 
         assertEquals(actualPage, expectedPage, "Service returned incorrect data for one page of topics");
         verify(topicDao).getTopics(
-                Matchers.any(Branch.class), Matchers.any(JCommunePageRequest.class));
+                Matchers.any(Branch.class), Matchers.any(PageRequest.class));
     }
 
     private Branch createBranch() {
@@ -158,7 +158,7 @@ public class TransactionalTopicFetchServiceTest {
         topicFetchService.searchByTitleAndContent(phrase, "50");
 
         Mockito.verify(searchDao).searchByTitleAndContent(
-                Matchers.anyString(), Matchers.<JCommunePageRequest> any());
+                Matchers.anyString(), Matchers.<PageRequest> any());
     }
 
     @Test(dataProvider = "parameterSearchPostsWithEmptySearchPhrase")
