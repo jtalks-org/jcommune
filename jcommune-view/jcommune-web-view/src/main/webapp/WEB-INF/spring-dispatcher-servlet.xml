@@ -84,6 +84,7 @@
     <!--Figures out locale and language from url parameter-->
     <bean id="localeChangeInterceptor" class="org.jtalks.jcommune.web.interceptors.LocaleInterceptor">
         <constructor-arg ref="userService"/>
+        <constructor-arg ref="localeResolver"/>
         <property name="paramName" value="lang"/>
     </bean>
     <!--Disables browser caching for all non-static resources-->
