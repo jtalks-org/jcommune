@@ -18,12 +18,13 @@ public class LocaleInterceptor extends LocaleChangeInterceptor {
     UserService userService;
 
     public LocaleInterceptor(UserService userService) {
-        this.userService=userService;
+        this.userService= userService;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws ServletException {
         super.preHandle(request, response, handler);
+
         JCUser jcuser=null;
         try{
             jcuser = userService.getCurrentUser();
