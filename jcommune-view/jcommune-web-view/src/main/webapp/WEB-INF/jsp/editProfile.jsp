@@ -25,7 +25,7 @@
 <sec:authentication property="principal.id" var="userId" scope="request"/>
 <head>
   <meta name="description" content="<c:out value="${label.user}"/>">
-  <title><spring:message code="label.user"/> - "${auth}"</title>
+  <title><spring:message code="label.user"/> - "${editedUser.username}"</title>
 </head>
 <body>
 
