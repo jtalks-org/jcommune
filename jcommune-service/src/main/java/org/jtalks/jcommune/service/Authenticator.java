@@ -14,14 +14,13 @@
  */
 package org.jtalks.jcommune.service;
 
+import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.springframework.validation.BindingResult;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Serves for authentication and registration user.
@@ -48,16 +47,13 @@ public interface Authenticator {
             throws UnexpectedErrorException, NoConnectionException;
 
     /**
-     * Authenticate user with specified credentials.
+     * Register user with given details.
      *
-     * @param username username
-     * @param password user password
-     * @param email user email
-     * @return errors occurred during registration
-     *
-     * @throws UnexpectedErrorException if some unexpected error occurred
-     * @throws NoConnectionException    if some connection error occurred
+     * @param userDto user
+     * @param bindingResult container for validation errors
+     * @throws UnexpectedErrorException
+     * @throws NoConnectionException
      */
-    public List<Map<String, String>> register(String username, String password, String email)
-            throws UnexpectedErrorException, NoConnectionException, NotFoundException;
+    public void register(UserDto userDto, BindingResult bindingResult)
+            throws UnexpectedErrorException, NoConnectionException;
 }

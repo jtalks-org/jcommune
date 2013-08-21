@@ -80,6 +80,11 @@
 
     <security:intercept-url pattern="*" access="permitAll()"/>
 
+    <security:form-login login-page="/login" login-processing-url="/j_spring_security_check"
+                           default-target-url="/"
+                           authentication-success-handler-ref="successAuthHandler"
+                           authentication-failure-handler-ref="failureAuthHandler"/>
+
     <security:logout logout-url="/logout" logout-success-url="/" invalidate-session="true"/>
     <security:remember-me data-source-ref="dataSource" key="JTalks" services-alias="rememberMeServices"/>
 

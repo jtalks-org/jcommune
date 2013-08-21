@@ -17,6 +17,7 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.model.plugins.SimpleAuthenticationPlugin;
@@ -36,6 +37,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.validation.BindingResult;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -109,7 +111,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
             boolean newUser = false;
             if (e instanceof NotFoundException) {
                 String ipAddress = getClientIpAddress(request);
-                LOGGER.warn("User was not found during login process, username = {}, IP={}", username, ipAddress);
+                LOGGER.info("User was not found during login process, username = {}, IP={}", username, ipAddress);
                 newUser = true;
             }
             result = authenticateByPluginAndUpdateUserInfo(username, password, newUser, rememberMe, request, response);
@@ -135,7 +137,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         String passwordHash = encryptionService.encryptPassword(password);
         Map<String, String> authInfo = authenticateByAvailablePlugin(username, passwordHash);
         if (authInfo.isEmpty() || !authInfo.containsKey("email") || !authInfo.containsKey("username")) {
-            LOGGER.info("Could not authenticate by plugin user {}.", username);
+            LOGGER.info("Could not authenticate user '{}' by plugin.", username);
             return false;
         }
         JCUser user = saveUser(authInfo, passwordHash, newUser);
@@ -207,7 +209,6 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
     private JCUser getByUsername(String username) throws NotFoundException {
         JCUser user = this.getDao().getByUsername(username);
         if (user == null) {
-            LOGGER.info("JCUser [" + username + "] not found.");
             throw new NotFoundException();
         }
         return user;
@@ -257,22 +258,21 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         return user;
     }
 
-
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<Map<String, String>> register(String username, String password, String email)
-            throws UnexpectedErrorException, NoConnectionException, NotFoundException {
+    public void register(UserDto userDto, BindingResult bindingResult)
+            throws UnexpectedErrorException, NoConnectionException {
         SimpleAuthenticationPlugin authPlugin = getPlugin();
         if (authPlugin != null && authPlugin.getState() == Plugin.State.ENABLED) {
-            username = username == null ? "" : username;
-            email = email == null ? "" : email;
-            String passwordHash = (password == null || password.isEmpty()) ? ""
-                    : encryptionService.encryptPassword(password);
-            return authPlugin.registerUser(username, passwordHash, email);
-        } else {
-            throw new NotFoundException();
+            String passwordHash = (userDto.getPassword() == null || userDto.getPassword().isEmpty()) ? ""
+                    : encryptionService.encryptPassword(userDto.getPassword());
+            userDto.setPassword(passwordHash);
+            Map<String, String> errors = authPlugin.registerUser(userDto);
+            for(Map.Entry<String, String> error : errors.entrySet()) {
+                bindingResult.rejectValue(error.getKey(), null, error.getValue());
+            }
         }
     }
 
@@ -287,5 +287,4 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         List<Plugin> plugins = pluginLoader.getPlugins(pluginFilter);
         return !plugins.isEmpty() ? (SimpleAuthenticationPlugin) plugins.get(0) : null;
     }
-
 }

@@ -12,12 +12,12 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.validation.validators;
+package org.jtalks.jcommune.model.validation.validators;
 
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jtalks.jcommune.web.validation.annotations.Matches;
+import org.jtalks.jcommune.model.validation.annotations.Matches;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

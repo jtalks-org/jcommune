@@ -210,11 +210,6 @@
   </tag-file>
 
   <tag-file>
-    <name>topicIcon</name>
-    <path>/WEB-INF/tags/topicIcon.tag</path>
-  </tag-file>
-
-  <tag-file>
     <name>topicIconSmall</name>
     <path>/WEB-INF/tags/topicIconSmall.tag</path>
   </tag-file>
@@ -222,5 +217,9 @@
   <tag-file>
     <name>topicControls</name>
     <path>/WEB-INF/tags/topicControls.tag</path>
+  </tag-file>
+  <tag-file>
+    <name>topicList</name>
+    <path>/WEB-INF/tags/topicList.tag</path>
   </tag-file>
 </taglib>

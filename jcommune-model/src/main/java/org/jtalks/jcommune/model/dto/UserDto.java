@@ -12,27 +12,22 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.dto;
+
+package org.jtalks.jcommune.model.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.validation.annotations.Email;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.web.validation.annotations.Captcha;
-import org.jtalks.jcommune.web.validation.annotations.Matches;
-import org.jtalks.jcommune.web.validation.annotations.Unique;
+import org.jtalks.jcommune.model.entity.Language;
+import org.jtalks.jcommune.model.validation.annotations.Unique;
 
 import javax.validation.constraints.Size;
 
 /**
- * DTO for {@link org.jtalks.jcommune.model.entity.JCUser} object. Required for validation and binding
- * errors to form. This dto used for register user operation
- * {@link org.jtalks.jcommune.web.controller.UserController#registerUser}.
- *
- * @author Osadchuck Eugeny
+ * @author Andrey Pogorelov
  */
-@Matches(field = "password", verifyField = "passwordConfirm", message = "{password_not_matches}")
-public class RegisterUserDto {
+public class UserDto {
 
     @NotBlank(message = "{validation.not_null}")
     @Size(min = User.USERNAME_MIN_LENGTH, max = User.USERNAME_MAX_LENGTH, message = "{user.username.length_constraint_violation}")
@@ -49,10 +44,7 @@ public class RegisterUserDto {
     @Size(min = User.PASSWORD_MIN_LENGTH, max = User.PASSWORD_MAX_LENGTH)
     private String password;
 
-    private String passwordConfirm;
-
-    @Captcha(message = "{validation.captcha.wrong}")
-    private String captcha;
+    private Language language = Language.ENGLISH;
 
     /**
      * @return username
@@ -89,15 +81,6 @@ public class RegisterUserDto {
     }
 
     /**
-     * Get password confirmation.
-     *
-     * @return password confirmation
-     */
-    public String getPasswordConfirm() {
-        return passwordConfirm;
-    }
-
-    /**
      * Get email.
      *
      * @return email
@@ -116,34 +99,16 @@ public class RegisterUserDto {
     }
 
     /**
-     * Set password confirmation.
-     *
-     * @param passwordConfirm password confirmation
+     * @return user language
      */
-    public void setPasswordConfirm(String passwordConfirm) {
-        this.passwordConfirm = passwordConfirm;
+    public Language getLanguage() {
+        return language;
     }
 
     /**
-     * @return Captcha value entered by user on a registration form
+     * @param language of user
      */
-    public String getCaptcha() {
-        return captcha;
-    }
-
-    /**
-     * @param captcha captcha string from user input during registration
-     */
-    public void setCaptcha(String captcha) {
-        this.captcha = captcha;
-    }
-
-    /**
-     * Populate {@link JCUser} from fields.
-     *
-     * @return populated {@link JCUser} object
-     */
-    public JCUser createUser() {
-        return new JCUser(username, email, password);
+    public void setLanguage(Language language) {
+        this.language = language;
     }
 }

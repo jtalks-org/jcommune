@@ -12,11 +12,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.validation.validators;
+package org.jtalks.jcommune.model.validation.validators;
 
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.dao.ValidatorDao;
-import org.jtalks.jcommune.web.validation.annotations.Unique;
+import org.jtalks.jcommune.model.validation.annotations.Unique;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintValidator;

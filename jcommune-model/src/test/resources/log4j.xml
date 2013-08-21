@@ -31,15 +31,15 @@
   </logger>
   <!--see http://articles.javatalks.ru/articles/5 for details on Hibernate logging configuration-->
   <logger name="org.hibernate.type.EnumType" additivity="false">
-    <level value="TRACE"/>
+    <level value="INFO"/>
     <appender-ref ref="console"/>
   </logger>
   <logger name="org.hibernate.type.descriptor.sql.BasicBinder" additivity="false">
-    <level value="TRACE"/>
+    <level value="INFO"/>
     <appender-ref ref="console"/>
   </logger>
   <logger name="org.hibernate.SQL" additivity="false">
-    <level value="TRACE"/>
+    <level value="INFO"/>
     <appender-ref ref="console"/>
   </logger>
 

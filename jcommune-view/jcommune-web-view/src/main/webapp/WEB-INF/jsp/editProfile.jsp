@@ -58,7 +58,7 @@
           <spring:message code="label.avatar.load"/>
         </a>
         <a id="removeAvatar" href="#" class="btn btn-mini btn-danger"
-           title="<spring:message code="label.avatar.remove"/>">
+           title="<spring:message code="label.avatar.remove" />">
           <i class="icon-remove icon-white"></i>
         </a>
       </div>
@@ -73,7 +73,7 @@
           <label class="control-label"><spring:message code="label.firstname"/></label>
 
           <div class="controls">
-            <form:input class="input-xlarge" path="firstName" value="${editedUser.firstName}"/>
+            <form:input class="input-xlarge" path="firstName" value="${editedUser.firstName}" tabindex="1"/>
             <br/>
             <form:errors path="firstName" cssClass="help-inline"/>
           </div>
@@ -83,7 +83,7 @@
           <label class="control-label"><spring:message code="label.lastname"/></label>
 
           <div class="controls">
-            <form:input class="input-xlarge" path="lastName" value="${editedUser.lastName}"/>
+            <form:input class="input-xlarge" path="lastName" value="${editedUser.lastName}" tabindex="5"/>
             <br/>
             <form:errors path="lastName" cssClass="help-inline"/>
           </div>
@@ -94,7 +94,7 @@
 
           <div class="controls">
             <form:textarea class="input-xlarge" path="signature"
-                           value="${editedUser.signature}"/>
+                           value="${editedUser.signature}" tabindex="10"/>
             <br/>
             <form:errors path="signature" cssClass="help-inline"/>
           </div>
@@ -104,25 +104,9 @@
           <label class="control-label"><spring:message code="label.email"/></label>
 
           <div class="controls">
-            <form:input class="input-xlarge" path="email"/>
+            <form:input class="input-xlarge" path="email" tabindex="15"/>
             <br/>
             <form:errors path="email" cssClass="help-inline"/>
-          </div>
-        </div>
-
-        <div class="control-group">
-          <label class="control-label"><spring:message code="label.language"/></label>
-
-          <div class="controls">
-            <form:select path="language" class="input-medium">
-              <c:forEach items="${editedUser.languagesAvailable}" var="language">
-                <form:option value="${language}">
-                  <spring:message code="${language.languageNameLabel}"/>
-                </form:option>
-              </c:forEach>
-            </form:select>
-            <br/>
-            <form:errors path="language" cssClass="help-inline"/>
           </div>
         </div>
 
@@ -132,7 +116,7 @@
           <div class="controls">
             <form:select path="pageSize"
                          items="${editedUser.pageSizesAvailable}"
-                         class="input-mini"/>
+                         class="input-mini" tabindex="25"/>
             <br/>
             <form:errors path="pageSize" cssClass="help-inline"/>
           </div>
@@ -142,8 +126,11 @@
           <label class="control-label"><spring:message code="label.autosubscribe"/></label>
 
           <div class="controls padding-top-profile">
+              <spring:message var="autosubscribeTooltip"
+                              code="label.tips.autoSubscribe"/>
             <form:checkbox path="autosubscribe" value="${editedUser.autosubscribe}"
-                           class="form-check-radio-box"/>
+                           class="form-check-radio-box script-has-tooltip"
+                           data-original-title='${autosubscribeTooltip}' tabindex="30"/>
           </div>
         </div>
 
@@ -156,7 +143,7 @@
             <form:checkbox path="mentioningNotificationsEnabled"
                            value="${editedUser.mentioningNotificationsEnabled}"
                            class="form-check-radio-box script-has-tooltip"
-                           data-original-title='${mentioningNotificationsTooltip}'/>
+                           data-original-title='${mentioningNotificationsTooltip}' tabindex="35"/>
           </div>
         </div>
 
@@ -164,7 +151,7 @@
           <label class="control-label"><spring:message code="label.location"/></label>
 
           <div class="controls">
-            <form:input path="location" class="input-xlarge" value="${editedUser.location}"/>
+            <form:input path="location" class="input-xlarge" value="${editedUser.location}" tabindex="40"/>
             <br/>
             <form:errors path="location" cssClass="help-inline"/>
           </div>
@@ -175,7 +162,7 @@
             <label class="control-label"><spring:message code="label.currentPassword"/></label>
 
             <div class="controls">
-              <form:input class="input-xlarge" type="password" path="currentUserPassword"/>
+              <form:input class="input-xlarge" type="password" path="currentUserPassword" tabindex="45"/>
               <br/>
               <form:errors path="currentUserPassword" cssClass="help-inline"/>
             </div>
@@ -186,7 +173,7 @@
           <label class="control-label"><spring:message code="label.newPassword"/></label>
 
           <div class="controls">
-            <form:input class="input-xlarge" type="password" path="newUserPassword"/>
+            <form:input class="input-xlarge" type="password" path="newUserPassword" tabindex="50"/>
             <br/>
             <form:errors path="newUserPassword" cssClass="help-inline"/>
           </div>
@@ -196,7 +183,7 @@
           <label class="control-label"><spring:message code="label.newPasswordConfirmation"/></label>
 
           <div class="controls">
-            <form:input class="input-xlarge" type="password" path="newUserPasswordConfirm"/>
+            <form:input class="input-xlarge" type="password" path="newUserPasswordConfirm" tabindex="55"/>
             <br/>
             <form:errors path="newUserPasswordConfirm" cssClass="help-inline"/>
           </div>
@@ -204,10 +191,10 @@
 
         <hr class='user-profile-hr'/>
         <div class='user-profile-buttons-form-actions'>
-          <button id="saveChanges" class="btn btn-primary" type="submit">
+          <button id="saveChanges" class="btn btn-primary" type="submit" tabindex="60">
             <spring:message code="label.save_changes"/>
           </button>
-          <a href="${pageContext.request.contextPath}/users/${editedUser.userId}" class="btn">
+          <a href="${pageContext.request.contextPath}/users/${editedUser.userId}" class="btn" tabindex="60">
             <spring:message code="label.cancel"/>
           </a>
         </div>
@@ -232,7 +219,8 @@
         </a>
                         
                         <span class="contact" title="<c:out value='${contact.type.typeName}'/>">
-                            <img src="${pageContext.request.contextPath}${contact.type.icon}">
+                            <img src="${pageContext.request.contextPath}${contact.type.icon}"
+                                 alt="<spring:message code='alt.contacts.contactType'/>">
                             <jtalks:prepareLink incomingLink='${contact.displayValue}'/>
                         </span>
       </li>

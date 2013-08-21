@@ -35,7 +35,7 @@ public class PhpbbRedirectionControllerTest {
     private PhpbbRedirectionController controller;
 
     private static final String CONTEXT = "/context";
-    
+
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
@@ -51,18 +51,18 @@ public class PhpbbRedirectionControllerTest {
 
     @Test
     public void testShowTopic() {
-       controller.showTopicWithAdditionalParams("1", response, request);
-       this.assertHeadersSet(CONTEXT + "/topics/1");
-    }
-    
-    @Test
-    public void testShowTopicWithAdditionalParams() {
-       controller.showTopicWithAdditionalParams("14912-0", response, request);
-       this.assertHeadersSet(CONTEXT + "/topics/14912");
+        controller.showTopicWithAdditionalParams("1", response, request);
+        this.assertHeadersSet(CONTEXT + "/topics/1");
     }
 
     @Test
-    public void testShowTopicWithSid(){
+    public void testShowTopicWithAdditionalParams() {
+        controller.showTopicWithAdditionalParams("14912-0", response, request);
+        this.assertHeadersSet(CONTEXT + "/topics/14912");
+    }
+
+    @Test
+    public void testShowTopicWithSid() {
         String additionalParams = "32044-0-0-asc-.php&sid=632e7bd4377d9d784b9fa67700f2";
         controller.showTopicWithAdditionalParams(additionalParams, response, request);
         this.assertHeadersSet(CONTEXT + "/topics/32044");
@@ -84,6 +84,18 @@ public class PhpbbRedirectionControllerTest {
     public void testShowBranch() {
         controller.showBranch("1", response, request);
         this.assertHeadersSet(CONTEXT + "/branches/1");
+    }
+
+    @Test
+    public void showBranchWithViewPrefixShouldParseOnlyFirstPart() {
+        controller.showBranchWithViewPrefix("19-0-50", response, request);
+        this.assertHeadersSet(CONTEXT + "/branches/19");
+    }
+
+    @Test
+    public void showBranchWithViewPrefixShouldSucceedIfOnlyBranchIdWasSpecified() {
+        controller.showBranchWithViewPrefix("19", response, request);
+        this.assertHeadersSet(CONTEXT + "/branches/19");
     }
 
     private void assertHeadersSet(String redirectUrl) {

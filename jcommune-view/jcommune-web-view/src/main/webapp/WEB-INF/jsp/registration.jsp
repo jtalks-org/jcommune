@@ -35,27 +35,27 @@
         <span class="reg_info"><spring:message code="label.tip.username"/></span>
 
         <div class="controls">
-          <form:input path="username" class="reg_input" type="text"/>
+          <form:input path="userDto.username" class="reg_input" type="text"/>
           <br/>
-          <form:errors path="username" cssClass="help-inline"/>
+          <form:errors path="userDto.username" cssClass="help-inline"/>
         </div>
       </div>
       <div class="control-group">
         <span class="reg_info"><spring:message code="label.tip.email"/></span>
 
         <div class="controls">
-          <form:input path="email" class="reg_input" type="text"/>
+          <form:input path="userDto.email" class="reg_input" type="text"/>
           <br/>
-          <form:errors path="email" cssClass="help-inline"/>
+          <form:errors path="userDto.email" cssClass="help-inline"/>
         </div>
       </div>
       <div class="control-group">
         <span class="reg_info"><spring:message code="label.tip.password"/></span>
 
         <div class="controls">
-          <form:input path="password" class="reg_input" type="password"/>
+          <form:input path="userDto.password" class="reg_input" type="password"/>
           <br/>
-          <form:errors path="password" cssClass="help-inline"/>
+          <form:errors path="userDto.password" cssClass="help-inline"/>
         </div>
       </div>
       <div class="control-group">

@@ -15,14 +15,17 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.hibernate.Session;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.jtalks.common.model.dao.GroupDao;
+import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
@@ -37,6 +40,7 @@ import org.jtalks.jcommune.service.nontransactional.*;
 import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.framework.Advised;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -61,15 +65,21 @@ import java.util.List;
 public class TransactionalUserService extends AbstractTransactionalEntityService<JCUser, UserDao>
         implements UserService {
 
+    /**
+     * While registering a new user, she gets {@link JCUser#setAutosubscribe(boolean)} set to {@code true} by default.
+     * Afterwards user can edit her profile and change this setting.
+     */
+    public static final boolean DEFAULT_AUTOSUBSCRIBE = true;
+
     private GroupDao groupDao;
     private SecurityService securityService;
     private MailService mailService;
     private Base64Wrapper base64Wrapper;
-    private ImageService avatarService;
     //Important, use for every password creation.
     private EncryptionService encryptionService;
     private final PostDao postDao;
     private Authenticator authenticator;
+    private ImageService avatarService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalUserService.class);
 
@@ -81,7 +91,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * @param securityService       for security
      * @param mailService           to send e-mails
      * @param base64Wrapper         for avatar image-related operations
-     * @param avatarService         some more avatar operations)
      * @param encryptionService     encodes user password before store
      * @param postDao               for operations with posts
      * @param authenticator      for authentication and registration
@@ -91,8 +100,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
                                     SecurityService securityService,
                                     MailService mailService,
                                     Base64Wrapper base64Wrapper,
-                                    ImageService avatarService,
                                     EncryptionService encryptionService,
+                                    ImageService avatarService,
                                     PostDao postDao,
                                     Authenticator authenticator) {
         super(dao);
@@ -100,8 +109,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         this.securityService = securityService;
         this.mailService = mailService;
         this.base64Wrapper = base64Wrapper;
-        this.avatarService = avatarService;
         this.encryptionService = encryptionService;
+        this.avatarService = avatarService;
         this.postDao = postDao;
         this.authenticator = authenticator;
     }
@@ -141,24 +150,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     public List<String> getUsernames(String pattern) {
         int usernameCount = 10;
         return getDao().getUsernames(pattern, usernameCount);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public JCUser registerUser(JCUser user) {
-        //encrypt password
-        String encodedPassword = encryptionService.encryptPassword(user.getPassword());
-        user.setPassword(encodedPassword);
-        //
-        user.setRegistrationDate(new DateTime());
-        user.setAvatar(avatarService.getDefaultImage());
-        this.getDao().saveOrUpdate(user);
-        mailService.sendAccountActivationMail(user);
-        LOGGER.info("JCUser registered: {}", user.getUsername());
-
-        return user;
     }
 
     /**
@@ -217,6 +208,40 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         this.getDao().saveOrUpdate(editedUser);
         LOGGER.info("Updated user profile. Username: {}", editedUser.getUsername());
         return editedUser;
+    }
+
+    /**
+     * Just saves a new {@link JCUser} or upgrade {@link User} to {@link JCUser} without any additional checks
+     *
+     * @param userDto coming from enclosing methods, this object is built by Spring MVC
+     *
+     */
+    @Override
+    public JCUser storeRegisteredUser(UserDto userDto) {
+        // check if user already saved by plugin as common user
+        User commonUser = this.getDao().getCommonUserByUsername(userDto.getUsername());
+        if(commonUser != null) {
+            // in this case we must delete old common user and save user as JCUser,
+            // because hibernate doesn't allow upgrade common User to JCUser
+            try {
+                Session session = ((GenericDao)((Advised)this.getDao()).getTargetSource().getTarget()).session();
+                session.delete(commonUser);
+                this.getDao().flush();
+            } catch (Exception e) {
+                LOGGER.warn("Could not delete common user.");
+            }
+        }
+        JCUser user = new JCUser(userDto.getUsername(), userDto.getEmail(), userDto.getPassword());
+        user.setLanguage(userDto.getLanguage());
+        user.setAutosubscribe(DEFAULT_AUTOSUBSCRIBE);
+        user.setAvatar(avatarService.getDefaultImage());
+        String encodedPassword = encryptionService.encryptPassword(user.getPassword());
+        user.setPassword(encodedPassword);
+        user.setRegistrationDate(new DateTime());
+        this.getDao().saveOrUpdate(user);
+        mailService.sendAccountActivationMail(user);
+        LOGGER.info("JCUser registered: {}", user.getUsername());
+        return user;
     }
 
     /**

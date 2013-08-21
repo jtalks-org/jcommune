@@ -48,7 +48,7 @@
 <div class="logo-container">
   <a href="${pageContext.request.contextPath}/" title="${fn:escapeXml(toolTip)}"
      data-toggle="tooltip" data-placement="right">
-    <img id="${sessionScope.adminMode == true ? 'forumLogo' : ''}" class="forum-logo cursor-pointer"
+    <img <c:if test="${sessionScope.adminMode == true}">id='forumLogo'</c:if> class="forum-logo cursor-pointer"
          src='<c:url value="/admin/logo"/>'
          alt="${fn:escapeXml(toolTip)}"/>
   </a>

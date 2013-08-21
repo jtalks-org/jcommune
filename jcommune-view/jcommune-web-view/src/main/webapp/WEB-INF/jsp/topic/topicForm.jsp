@@ -45,7 +45,7 @@
     <jtalks:hasPermission targetId='${branchId}' targetType='BRANCH'
                           permission='BranchPermission.CREATE_STICKED_TOPICS'>
       <div class='control-group hide-on-preview'>
-        <form:checkbox path="topic.sticked" value="true" tabindex="101"
+        <form:checkbox id="sticked" path="topic.sticked" value="true" tabindex="101"
                        class="confirm-unsaved form-check-radio-box"/>
         <label for='sticked' class='string optional'>
           <spring:message code="label.sticked"/>
@@ -58,7 +58,7 @@
     <jtalks:hasPermission targetId='${branchId}' targetType='BRANCH'
                           permission='BranchPermission.CREATE_ANNOUNCEMENTS'>
       <div class='control-group hide-on-preview'>
-        <form:checkbox path="topic.announcement" value="true" tabindex="102"
+        <form:checkbox id="announcement" path="topic.announcement" value="true" tabindex="102"
                        class="script-confirm-unsaved form-check-radio-box"/>
         <label for='announcement' class='string optional'>
           <spring:message code="label.announcement"/>
@@ -75,7 +75,7 @@
     <br/>
 
     <div class='well hide-on-preview'>
-      <div id="editPoll">
+      <fieldset id="editPoll">
         <legend><spring:message code="label.poll.header"/></legend>
 
         <div class='control-group'>
@@ -116,7 +116,7 @@
         </div>
           <%--Make parent div include floated divs explicitly, or they'll be shown out of parent container--%>
         <div class="cleared"></div>
-      </div>
+      </fieldset>
     </div>
   </form:form>
 

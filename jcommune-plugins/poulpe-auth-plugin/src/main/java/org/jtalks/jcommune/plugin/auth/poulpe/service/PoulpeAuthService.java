@@ -15,8 +15,7 @@
 
 package org.jtalks.jcommune.plugin.auth.poulpe.service;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableMap;
+import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.plugin.auth.poulpe.dto.Authentication;
@@ -63,16 +62,14 @@ public class PoulpeAuthService {
      * Register user with specified data via Poulpe.
      * Returns errors if request failed, otherwise return null.
      *
-     * @param username username
-     * @param password password
-     * @param email    email
+     * @param userDto user
      * @return errors
      */
-    public List<Map<String, String>> registerUser(String username, String password, String email)
+    public Map<String, String> registerUser(UserDto userDto)
             throws IOException, NoConnectionException, JAXBException, UnexpectedErrorException {
-        User user = createUser(username, password, email);
+        User user = createUser(userDto.getUsername(), userDto.getPassword(), userDto.getEmail());
         ClientResource clientResource = sendRegistrationRequest(user);
-        return getRegistrationResult(clientResource);
+        return getRegistrationResult(clientResource, userDto.getLanguage().getLocale());
     }
 
     /**
@@ -124,18 +121,20 @@ public class PoulpeAuthService {
     /**
      * Gets errors from response if request wasn't successful, otherwise return null.
      *
+     *
      * @param clientResource response container
+     * @param locale locale
      * @return errors
      * @throws org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException
      *
      * @throws java.io.IOException
      */
-    private List<Map<String, String>> getRegistrationResult(ClientResource clientResource)
+    private Map<String, String> getRegistrationResult(ClientResource clientResource, Locale locale)
             throws NoConnectionException, IOException, JAXBException, UnexpectedErrorException {
         if (clientResource.getStatus().getCode() == Status.SUCCESS_OK.getCode()) {
-            return Collections.emptyList();
+            return Collections.emptyMap();
         } else if (clientResource.getStatus().getCode() == Status.CLIENT_ERROR_BAD_REQUEST.getCode()) {
-            return parseErrors(clientResource.getResponseEntity());
+            return parseErrors(clientResource.getResponseEntity(), locale);
         } else if (clientResource.getStatus().getCode() == Status.SERVER_ERROR_INTERNAL.getCode()) {
             throw new UnexpectedErrorException();
         } else {
@@ -147,23 +146,56 @@ public class PoulpeAuthService {
      * Parse bad response representation for errors.
      *
      * @param repr response representation
+     * @param locale locale
      * @return errors
      * @throws java.io.IOException
      */
-    private List<Map<String, String>> parseErrors(Representation repr) throws IOException, JAXBException {
+    private Map<String, String> parseErrors(Representation repr, Locale locale) throws IOException, JAXBException {
         JAXBContext context = JAXBContext.newInstance(Errors.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
         Errors errorsRepr = (Errors) unmarshaller.unmarshal(repr.getStream());
 
-        List<Map<String, String>> errors = new ArrayList<>();
+        Map<String, String> errors = new HashMap<>();
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("ValidationMessages", locale);
         for (org.jtalks.jcommune.plugin.auth.poulpe.dto.Error error : errorsRepr.getErrorList()) {
             if (error.getCode() != null && !error.getCode().isEmpty()) {
-                errors.add(new ImmutableMap.Builder<String, String>().put(error.getCode(), "").build());
-            } else {
-                errors.add(new ImmutableMap.Builder<String, String>().put("", error.getMessage()).build());
+                Map.Entry<String, String> errorEntry = parseErrorCode(error.getCode(), resourceBundle);
+                if (errorEntry != null) {
+                    errors.put(errorEntry.getKey(), errorEntry.getValue());
+                }
             }
         }
         return errors;
+    }
+
+    /**
+     * Parse error code with specified {@link ResourceBundle}.
+     *
+     * @param errorCode error code
+     * @param resourceBundle used {@link ResourceBundle}
+     * @return parsed error as pair field - error message
+     */
+    private Map.Entry<String, String> parseErrorCode(String errorCode, ResourceBundle resourceBundle) {
+        Map.Entry<String, String> error = null;
+        if (resourceBundle.containsKey(errorCode)) {
+            String errorMessage = resourceBundle.getString(errorCode);
+            if (errorCode.contains("email")) {
+                errorMessage = errorMessage
+                        .replace("{max}", String.valueOf(org.jtalks.common.model.entity.User.EMAIL_MAX_LENGTH));
+                error = new HashMap.SimpleEntry<>("userDto.email", errorMessage);
+            } else if (errorCode.contains("username")) {
+                errorMessage = errorMessage
+                        .replace("{min}", String.valueOf(org.jtalks.common.model.entity.User.USERNAME_MIN_LENGTH))
+                        .replace("{max}", String.valueOf(org.jtalks.common.model.entity.User.USERNAME_MAX_LENGTH));
+                error = new HashMap.SimpleEntry<>("userDto.username", errorMessage);
+            } else if (errorCode.contains("password")) {
+                errorMessage = errorMessage
+                        .replace("{min}", String.valueOf(org.jtalks.common.model.entity.User.PASSWORD_MIN_LENGTH))
+                        .replace("{max}", String.valueOf(org.jtalks.common.model.entity.User.PASSWORD_MAX_LENGTH));
+                error = new HashMap.SimpleEntry<>("userDto.password", errorMessage);
+            }
+        }
+        return error;
     }
 
     /**
@@ -176,9 +208,9 @@ public class PoulpeAuthService {
      */
     private User createUser(String username, String passwordHash, String email) {
         User user = new User();
-        user.setUsername(username);
+        user.setUsername(username == null ? "" : username);
+        user.setEmail(email == null ? "" : email);
         user.setPasswordHash(passwordHash);
-        user.setEmail(email);
         return user;
     }
 
@@ -188,7 +220,6 @@ public class PoulpeAuthService {
      * @param user user entity for registration
      * @return ClientResource result
      */
-    @VisibleForTesting
     protected ClientResource sendRegistrationRequest(User user) {
         ClientResource clientResource = createClientResource(regUrl, true);
         clientResource.setChallengeResponse(ChallengeScheme.HTTP_BASIC, login, password);
@@ -207,7 +238,6 @@ public class PoulpeAuthService {
      * @param passwordHash password hash
      * @return ClientResource result
      */
-    @VisibleForTesting
     protected ClientResource sendAuthRequest(String username, String passwordHash) {
         String url = authUrl + "?username=" + username + "&passwordHash=" + passwordHash;
         ClientResource clientResource = createClientResource(url, false);

@@ -1,4 +1,4 @@
-﻿﻿.editorWYSIWYG {
+﻿﻿﻿.editorWYSIWYG {
     /* font: 10pt Tahoma;
  border-bottom: 1px solid #b2b2b2;*/
 }
@@ -7,31 +7,9 @@
     /*font: 9pt "Courier New";*/
 }
 
-div#editorBBCODEdiv {
-    width: 96%;
-    height: 400px;
-    text-align: left;
-    border:1px solid silver;
-    background: #efefef;
-    margin-left: 1%;
-    margin-right: 1%;
-    padding: 10px;
-}
-
 #htmlContent{
     overflow: auto;
     height: 100%
-}
-
-div#editorBBCODEdiv textarea {
-    width: 99.9%;
-    height: 99%;
-    border:none;
-    white-space: pre-wrap;       /* css-3 */
-    white-space: -moz-pre-wrap;  /* Mozilla */
-    white-space: -pre-wrap;      /* Opera 4-6 */
-    white-space: -o-pre-wrap;    /* Opera 7 */
-    word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 
 div.richeditor div.editbar {

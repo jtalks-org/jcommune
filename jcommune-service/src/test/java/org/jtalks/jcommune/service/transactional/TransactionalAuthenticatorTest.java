@@ -15,9 +15,9 @@
 
 package org.jtalks.jcommune.service.transactional;
 
-import com.google.common.collect.ImmutableMap;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.model.plugins.SimpleAuthenticationPlugin;
@@ -26,6 +26,8 @@ import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.Authenticator;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
+import org.jtalks.jcommune.service.nontransactional.ImageService;
+import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.plugins.PluginLoader;
 import org.jtalks.jcommune.service.plugins.TypeFilter;
 import org.mockito.Mock;
@@ -36,18 +38,22 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Andrey Pogorelov
@@ -78,6 +84,12 @@ public class TransactionalAuthenticatorTest {
     private HttpServletRequest httpRequest;
     @Mock
     private HttpServletResponse httpResponse;
+    @Mock
+    MailService mailService;
+    @Mock
+    ImageService avatarService;
+    @Mock
+    private Validator validator;
 
     private Authenticator authenticator;
 
@@ -270,74 +282,92 @@ public class TransactionalAuthenticatorTest {
     @Test
     public void registerUserWithCorrectDetailsShouldBeSuccessful()
             throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        String username = "username";
-        String password = "password";
-        String email = "email@email.em";
+        UserDto userDto = createUserDto("username", "password", "email@email.em");
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
-        when(plugin.registerUser(username, password, email)).thenReturn(Collections.EMPTY_LIST);
+        when(plugin.registerUser(userDto)).thenReturn(Collections.EMPTY_MAP);
         when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Arrays.asList((Plugin) plugin));
+        when(bindingResult.hasErrors()).thenReturn(false);
 
-        List<Map<String, String>> result = authenticator.register(username, password, email);
+        authenticator.register(userDto, bindingResult);
 
-        assertEquals(result.size(), 0, "Register user with correct details should not return any error.");
+        verify(bindingResult, never()).rejectValue(anyString(), anyString(), anyString());
     }
 
     @Test
     public void registerUserWithIncorrectDetailsShouldFail()
             throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        String password = "";
-        String username = "";
-        String email = "email@email.em";
-        List<Map<String, String>> errors = new ArrayList<>();
-        errors.add(new ImmutableMap.Builder<String, String>()
-                .put("user.username.length_constraint_violation", "").build());
-        errors.add(new ImmutableMap.Builder<String, String>()
-                .put("user.email.illegal_length", "").build());
+        UserDto userDto = createUserDto("", "", "");
+        Map<String, String> errors = new HashMap<>();
+        errors.put("email", "Invalid email length");
+        errors.put("user", "Invalid username length");
+        errors.put("password", "Invalid password length");
+
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
-        when(plugin.registerUser(username, password, email)).thenReturn(errors);
+        when(plugin.registerUser(userDto)).thenReturn(errors);
         when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Arrays.asList((Plugin) plugin));
 
-        List<Map<String, String>> result = authenticator.register(username, password, email);
+        when(bindingResult.hasErrors()).thenReturn(true);
 
-        assertEquals(result.size(), 2, "Register user with incorrect details should return validation errors.");
+        authenticator.register(userDto, bindingResult);
+
+        verify(bindingResult, times(3)).rejectValue(anyString(), anyString(), anyString());
     }
 
     @Test(expectedExceptions = NoConnectionException.class)
     public void registerUserShouldFailIfPluginThrowsNoConnectionException()
             throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        String password = "";
-        String username = "";
-        String email = "email@email.em";
-
+        UserDto userDto = createUserDto("username", "password", "email@email.em");
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
-        when(plugin.registerUser(username, password, email)).thenThrow(new NoConnectionException());
+        when(plugin.registerUser(userDto))
+                .thenThrow(new NoConnectionException());
         when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Arrays.asList((Plugin) plugin));
 
-        authenticator.register(username, password, email);
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        authenticator.register(userDto, bindingResult);
     }
 
     @Test(expectedExceptions = UnexpectedErrorException.class)
     public void registerUserShouldFailIfPluginThrowsUnexpectedErrorException()
             throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        String password = "";
-        String username = "";
-        String email = "email@email.em";
-
+        UserDto userDto = createUserDto("username", "password", "email@email.em");
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
-        when(plugin.registerUser(username, password, email)).thenThrow(new UnexpectedErrorException());
+        when(plugin.registerUser(userDto))
+                .thenThrow(new UnexpectedErrorException());
         when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Arrays.asList((Plugin) plugin));
 
-        authenticator.register(username, password, email);
+        authenticator.register(userDto, bindingResult);
     }
 
-    @Test(expectedExceptions = NotFoundException.class)
-    public void registerUserShouldFailIfPluginNotFound()
+    @Test
+    public void defaultRegistrationShouldFailIfValidationErrorsOccurred()
             throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        String password = "";
-        String username = "";
-        String email = "email@email.em";
+        UserDto userDto = createUserDto("username", "password", "email@email.em");
         when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Collections.EMPTY_LIST);
+        when(bindingResult.hasErrors()).thenReturn(true);
 
-        authenticator.register(username, password, email);
+        authenticator.register(userDto, bindingResult);
+
+        verify(bindingResult, never()).rejectValue(anyString(), anyString(), anyString());
+    }
+
+    @Test
+    public void defaultRegistrationWithCorrectDetailsShouldBeSuccessful()
+            throws UnexpectedErrorException, NotFoundException, NoConnectionException {
+        UserDto userDto = createUserDto("username", "password", "email@email.em");
+        when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Collections.EMPTY_LIST);
+        when(bindingResult.hasErrors()).thenReturn(false);
+
+        authenticator.register(userDto, bindingResult);
+
+        verify(bindingResult, never()).rejectValue(anyString(), anyString(), anyString());
+    }
+
+    private UserDto createUserDto(String username, String password, String email) {
+        UserDto userDto = new UserDto();
+        userDto.setUsername(username);
+        userDto.setEmail(email);
+        userDto.setPassword(password);
+        return userDto;
     }
 }

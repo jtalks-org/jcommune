@@ -20,7 +20,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
-
+<jsp:useBean id="topic" type="org.jtalks.jcommune.model.entity.Topic" scope="request"/>
 <head>
   <meta name="description" content="<c:out value="${topic.title}"/>">
   <title><c:out value="${topic.title}"/></title>
@@ -187,8 +187,8 @@
                 </jtalks:hasPermission>
               </c:if>
               <c:if test="${isEditButtonAvailable}">
-                <a id="edit_button" href="${edit_url}" rel="${topic.branch.id}"
-                   class="btn btn-mini" title="<spring:message code='label.tips.edit_post'/>">
+                <a href="${edit_url}" data-rel="${topic.branch.id}"
+                   class="edit_button btn btn-mini" title="<spring:message code='label.tips.edit_post'/>">
                   <i class="icon-edit"></i>
                   <spring:message code="label.edit"/>
                 </a>

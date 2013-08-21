@@ -196,6 +196,7 @@ public class UserProfileController {
         Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, code);
         cookie.setPath("/");
         response.addCookie(cookie);
+
         //redirect to the view profile page
         return new ModelAndView("redirect:/users/" + user.getId());
     }
