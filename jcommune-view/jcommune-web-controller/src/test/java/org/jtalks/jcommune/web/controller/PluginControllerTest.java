@@ -67,7 +67,7 @@ public class PluginControllerTest {
 
         ModelAndView pluginsModelAndView = pluginController.getPlugins();
 
-        assertViewName(pluginsModelAndView, "pluginList");
+        assertViewName(pluginsModelAndView, "plugin/pluginList");
         assertModelAttributeAvailable(pluginsModelAndView, "plugins");
         assertModelAttributeAvailable(pluginsModelAndView, "pluginsActivatingListDto");
         List<Plugin> actualPlugins = (List<Plugin>) pluginsModelAndView.getModel().get("plugins");
@@ -86,7 +86,7 @@ public class PluginControllerTest {
 
         ModelAndView pluginConfigModelAndView = pluginController.startConfiguringPlugin(configuredPluginName);
 
-        assertViewName(pluginConfigModelAndView, "pluginConfiguration");
+        assertViewName(pluginConfigModelAndView, "plugin/pluginConfiguration");
         assertModelAttributeAvailable(pluginConfigModelAndView, "pluginConfiguration");
         PluginConfiguration actualPluginConfiguration = (PluginConfiguration) pluginConfigModelAndView.getModel().get("pluginConfiguration");
         assertEquals(actualPluginConfiguration, expectedConfiguration, "Plugin should be returned from services.");
