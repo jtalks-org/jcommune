@@ -26,7 +26,7 @@ import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.common.model.entity.Branch;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.dto.JCommunePageRequest;
+import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.SubscriptionAwareEntity;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -61,7 +61,7 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
      * {@inheritDoc}
      */
     @Override
-    public Page<Topic> getTopicsUpdatedSince(DateTime timeStamp, JCommunePageRequest pageRequest, JCUser user) {
+    public Page<Topic> getTopicsUpdatedSince(DateTime timeStamp, PageRequest pageRequest, JCUser user) {
         if (!user.isAnonymous()) {
             return getRecentTopicsByGroupIds(getGroupIds(user), timeStamp, pageRequest);
         }
@@ -73,7 +73,7 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
      * {@inheritDoc}
      */
     @Override
-    public Page<Topic> getUnansweredTopics(JCommunePageRequest pageRequest, JCUser user) {
+    public Page<Topic> getUnansweredTopics(PageRequest pageRequest, JCUser user) {
         if (!user.isAnonymous()) {
             return getUnansweredTopicsByGroupIds(getGroupIds(user), pageRequest);
         }
@@ -102,7 +102,7 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
      * @param pageRequest ontains information for pagination: page number, page size
      * @return unanswered topics
      */
-    private PageImpl<Topic> getUnansweredTopicsByGroupIds(List<String> groupIds, JCommunePageRequest pageRequest) {
+    private PageImpl<Topic> getUnansweredTopicsByGroupIds(List<String> groupIds, PageRequest pageRequest) {
         if (!groupIds.isEmpty()) {
             Query query = session().getNamedQuery("getCountUnansweredTopicsByGroups");
             query.setParameterList(GROUP_IDS, groupIds);
@@ -125,7 +125,7 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
      * @param pageRequest ontains information for pagination: page number, page size
      * @return unanswered topics
      */
-    private PageImpl<Topic> getUnansweredTopicsForAnonymousUser(JCommunePageRequest pageRequest) {
+    private PageImpl<Topic> getUnansweredTopicsForAnonymousUser(PageRequest pageRequest) {
         Query query = session().getNamedQuery("getCountUnansweredTopicsForAnonymousUser");
         Number totalCount = (Number) query.uniqueResult();
         pageRequest.adjustPageNumber(totalCount.intValue());
@@ -146,7 +146,7 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
      * @return recent topics
      */
     private PageImpl<Topic> getRecentTopicsByGroupIds(List<String> groupIds, DateTime timeStamp,
-                                                      JCommunePageRequest pageRequest) {
+                                                      PageRequest pageRequest) {
         if (!groupIds.isEmpty()) {
             Query query = session().getNamedQuery("getCountRecentTopicsByGroups");
             query.setParameter(MAX_MOD_DATE, timeStamp);
@@ -172,7 +172,7 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
      * @param pageRequest ontains information for pagination: page number, page size
      * @return recent topics
      */
-    private PageImpl<Topic> getRecentTopicsForAnonymousUser(DateTime timeStamp, JCommunePageRequest pageRequest) {
+    private PageImpl<Topic> getRecentTopicsForAnonymousUser(DateTime timeStamp, PageRequest pageRequest) {
         Query query = session().getNamedQuery("getCountRecentTopicsForAnonymousUser");
         query.setParameter(MAX_MOD_DATE, timeStamp);
         Number totalCount = (Number) query.uniqueResult();
@@ -212,7 +212,7 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
      * {@inheritDoc}
      */
     @Override
-    public Page<Topic> getTopics(Branch branch, JCommunePageRequest pageRequest) {
+    public Page<Topic> getTopics(Branch branch, PageRequest pageRequest) {
         int totalCount = countTopics(branch);
         Query query = session().getNamedQuery("getTopicsInBranch")
                 .setParameter(BRANCH, branch);

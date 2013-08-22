@@ -56,7 +56,7 @@ public interface PostService extends EntityService<Post> {
      * @return object that contains posts for one page(note, that one page may contain
      *         all posts, that were created by user) and information for pagination
      */
-    Page<Post> getPostsOfUser(JCUser userCreated, int page);
+    Page<Post> getPostsOfUser(JCUser userCreated, String page);
 
     /**
      * Calculates page number for post based on the current user
@@ -75,7 +75,7 @@ public interface PostService extends EntityService<Post> {
      * @return object that contains posts for one page(note, that one page may contain
      *         all posts) and information for pagination
      */
-    Page<Post> getPosts(Topic topic, int page);
+    Page<Post> getPosts(Topic topic, String page);
 
     /**
      * Get the last post, that was posted in a topic of branch.

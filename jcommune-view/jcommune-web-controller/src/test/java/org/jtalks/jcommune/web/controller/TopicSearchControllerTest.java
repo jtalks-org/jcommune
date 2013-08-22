@@ -14,15 +14,10 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import java.util.Collections;
-import java.util.Map;
-
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.TopicFetchService;
 import org.mockito.Mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -30,6 +25,12 @@ import org.springframework.web.servlet.ModelAndView;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.Collections;
+import java.util.Map;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 /**
  * 
  * @author Anuar Nurmakanov
@@ -37,7 +38,7 @@ import org.testng.annotations.Test;
  */
 public class TopicSearchControllerTest {
 	private static final String DEFAULT_SEARCH_TEXT = "topic content";
-	private static final int START_PAGE = 1;
+	private static final String START_PAGE = "1";
 	@Mock
 	private TopicFetchService topicFetchService;
 	@Mock
@@ -79,7 +80,7 @@ public class TopicSearchControllerTest {
     @Test
 	public void testContinueSearch() {
         Page<Topic> searchResultPage = new PageImpl<Topic>(Collections.<Topic> emptyList());
-		int page = 2;
+		String page = "2";
 
         when(topicFetchService.searchByTitleAndContent(DEFAULT_SEARCH_TEXT, page))
 				.thenReturn(searchResultPage);

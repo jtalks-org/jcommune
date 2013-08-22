@@ -14,23 +14,25 @@
  */
 package org.jtalks.jcommune.model.dto;
 
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
 
-public class JCommunePageRequestTest {
+public class PageRequestTest {
     
     private static final int PAGE_SIZE = 10;
-    private static final int PAGE_NUMBER = 5;
-    private static final int INDEX_OF_FIRST_ITEM = (PAGE_NUMBER - 1) * PAGE_SIZE;
+    private static final String PAGE_NUMBER = "5";
+    public static final int PARSED_PAGE_NUMBER = Integer.parseInt(PAGE_NUMBER);
+    private static final int INDEX_OF_FIRST_ITEM = (PARSED_PAGE_NUMBER - 1) * PAGE_SIZE;
 
-    private JCommunePageRequest pageRequest;
+    private PageRequest pageRequest;
     
     @Test
     public void testConstructor() {
-        pageRequest = new JCommunePageRequest(PAGE_NUMBER, PAGE_SIZE);
+        pageRequest = new PageRequest(PAGE_NUMBER, PAGE_SIZE);
         
-        assertEquals(pageRequest.getPageNumber(), PAGE_NUMBER);
+        assertEquals(pageRequest.getPageNumber(), PARSED_PAGE_NUMBER);
         assertEquals(pageRequest.getPageSize(), PAGE_SIZE);
         assertEquals(pageRequest.getOffset(), INDEX_OF_FIRST_ITEM);
         assertEquals(pageRequest.getSort(), null);
@@ -38,7 +40,7 @@ public class JCommunePageRequestTest {
     
     @Test
     public void testConstructorPageNumberLessThanOne() {
-        pageRequest = new JCommunePageRequest(0, PAGE_SIZE);
+        pageRequest = new PageRequest("0", PAGE_SIZE);
         
         assertEquals(pageRequest.getPageNumber(), 1);
         assertEquals(pageRequest.getPageSize(), PAGE_SIZE);
@@ -46,33 +48,31 @@ public class JCommunePageRequestTest {
         assertEquals(pageRequest.getSort(), null);
     }
     
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test()
     public void testConstructorWrongPageSize() {
-        pageRequest = new JCommunePageRequest(PAGE_NUMBER, 0);
+        pageRequest = new PageRequest(PAGE_NUMBER, 0);
+        assertEquals(pageRequest.getPageSize(), JCUser.DEFAULT_PAGE_SIZE);
     }
     
     @Test
     public void testCreateWithPagingEnabled() {
-        pageRequest = JCommunePageRequest.createPageRequest(PAGE_NUMBER, PAGE_SIZE);
+        pageRequest = new PageRequest(PAGE_NUMBER, PAGE_SIZE);
         
-        assertEquals(pageRequest.getPageNumber(), PAGE_NUMBER);
+        assertEquals(pageRequest.getPageNumber(), PARSED_PAGE_NUMBER);
         assertEquals(pageRequest.getPageSize(), PAGE_SIZE);
         assertEquals(pageRequest.getSort(), null);
     }
 
     @Test
     public void testGetOffsetPageNumberLessThanOne() {
-        pageRequest = new JCommunePageRequest(PAGE_NUMBER, PAGE_SIZE);
-        pageRequest.setPageNumber(-1);
-        
+        pageRequest = new PageRequest("-1", PAGE_SIZE);
         assertEquals(pageRequest.getOffset(), 0);
     }
     
     @Test(dataProvider="pageNumbersToAdjust")
     public void testAdjustPageNumber(int pageNumber, int totalItems, int adjustedPageNumber) {
-        pageRequest = new JCommunePageRequest(PAGE_NUMBER, PAGE_SIZE);
-        pageRequest.setPageNumber(pageNumber);
-        
+        pageRequest = new PageRequest(String.valueOf(pageNumber), PAGE_SIZE);
+
         pageRequest.adjustPageNumber(totalItems);
         assertEquals(pageRequest.getPageNumber(), adjustedPageNumber);
     }

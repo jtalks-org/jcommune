@@ -18,7 +18,7 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.jcommune.model.dao.PostDao;
-import org.jtalks.jcommune.model.dto.JCommunePageRequest;
+import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
@@ -50,7 +50,7 @@ public class PostHibernateDao extends GenericDao<Post> implements PostDao {
     /**
      * {@inheritDoc}
      */
-    public Page<Post> getUserPosts(JCUser author, JCommunePageRequest pageRequest) {
+    public Page<Post> getUserPosts(JCUser author, PageRequest pageRequest) {
         Number totalCount = (Number) session()
                 .getNamedQuery("getCountPostsOfUser")
                 .setParameter("userCreated", author)
@@ -70,7 +70,7 @@ public class PostHibernateDao extends GenericDao<Post> implements PostDao {
      * {@inheritDoc}
      */
     @Override
-    public Page<Post> getPosts(Topic topic, JCommunePageRequest pageRequest) {
+    public Page<Post> getPosts(Topic topic, PageRequest pageRequest) {
         Number totalCount = (Number) session()
                 .getNamedQuery("getCountPostsInTopic")
                 .setParameter(TOPIC_PARAMETER_NAME, topic)

@@ -15,11 +15,6 @@
 
 package org.jtalks.jcommune.web.controller;
 
-import static ch.lambdaj.Lambda.on;
-import static ch.lambdaj.Lambda.project;
-
-import java.util.List;
-
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -35,12 +30,13 @@ import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
+
+import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.project;
 
 /**
  * @author Vitaliy kravchenko
@@ -98,7 +94,7 @@ public class BranchController {
      */
     @RequestMapping(value = "/branches/{branchId}", method = RequestMethod.GET)
     public ModelAndView showPage(@PathVariable("branchId") long branchId,
-                                 @RequestParam(value = PAGE, defaultValue = "1", required = false) int page) throws NotFoundException {
+                                 @RequestParam(value = PAGE, defaultValue = "1", required = false) String page) throws NotFoundException {
 
         Branch branch = branchService.get(branchId);
         Page<Topic> topicsPage = topicFetchService.getTopics(branch, page);
@@ -123,7 +119,7 @@ public class BranchController {
      */
     @RequestMapping("/topics/recent")
     public ModelAndView recentTopicsPage(
-            @RequestParam(value = PAGE, defaultValue = "1", required = false) int page) {
+            @RequestParam(value = PAGE, defaultValue = "1", required = false) String page) {
         Page<Topic> topicsPage = topicFetchService.getRecentTopics(page);
         lastReadPostService.fillLastReadPostForTopics(topicsPage.getContent());
 
@@ -140,7 +136,7 @@ public class BranchController {
      */
     @RequestMapping("/topics/unanswered")
     public ModelAndView unansweredTopicsPage(@RequestParam(value = PAGE, defaultValue = "1", required = false)
-                                             int page) {
+                                             String page) {
         Page<Topic> topicsPage = topicFetchService.getUnansweredTopics(page);
         lastReadPostService.fillLastReadPostForTopics(topicsPage.getContent());
         return new ModelAndView("topic/unansweredTopics")

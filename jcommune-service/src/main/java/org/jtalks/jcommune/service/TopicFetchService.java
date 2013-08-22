@@ -27,38 +27,54 @@ public interface TopicFetchService extends EntityService<Topic>{
      * Get topics in the branch.
      *
      * @param branch        for this branch we will find topics
-     * @param page          page number, for which we will find topics
+     * @param page          page number, for which we will find topics.
+     *                      Page number provided as user input string.
+     *                      The final validation of provided input will be at DAO level.
+     *                      That allow as to exclude additional DAO call,
+     *                      as for input validation we need the total count of page elements.
      * @return object that contains topics for one page(note, that one page may contain
      *         all topics) and information for pagination
      */
-    Page<Topic> getTopics(Branch branch, int page);
+    Page<Topic> getTopics(Branch branch, String page);
 
     /**
      * Get topics that have been updated in the last 24 hours.
      *
      * @param page page page number, for which we will find topics
+     *                      Page number provided as user input string.
+     *                      The final validation of provided input will be at DAO level.
+     *                      That allow as to exclude additional DAO call,
+     *                      as for input validation we need the total count of page elements.
      * @return object that contains topics(that have been updated in the last 24 hours)
      *         for one page and information for pagination
      */
-    Page<Topic> getRecentTopics(int page);
+    Page<Topic> getRecentTopics(String page);
 
     /**
      * Get unanswered topics(topics which has only 1 post added during topic creation).
      *
      * @param page page number, for which we will find topics
+     *                      Page number provided as user input string.
+     *                      The final validation of provided input will be at DAO level.
+     *                      That allow as to exclude additional DAO call,
+     *                      as for input validation we need the total count of page elements.
      * @return object that contains unanswered topics for one page and information for
      *         pagination
      */
-    Page<Topic> getUnansweredTopics(int page);
+    Page<Topic> getUnansweredTopics(String page);
 
     /**
      * Search by topics, title and content of which corresponds to the text of search.
      *
      * @param phrase search request from the user
      * @param page requested page number, page size is calculated based on user's preferences
+     *                      Page number provided as user input string.
+     *                      The final validation of provided input will be at DAO level.
+     *                      That allow as to exclude additional DAO call,
+     *                      as for input validation we need the total count of page elements.
      * @return search results page
      */
-    Page<Topic> searchByTitleAndContent(String phrase, int page);
+    Page<Topic> searchByTitleAndContent(String phrase, String page);
 
     /**
      * Indexing topics from the database.

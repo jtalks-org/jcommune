@@ -41,13 +41,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -87,12 +82,13 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void inboxPage() {
-        int page = 1;
+        String page = "1";
         List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(JC_USER, JC_USER,
                 "Message title", "Private message body"));
         Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
 
         when(pmService.getInboxForCurrentUser(page)).thenReturn(expectedPage);
+        when(userService.getCurrentUser()).thenReturn(JC_USER);
 
         //invoke the object under test
         ModelAndView mav = controller.inboxPage(page);
@@ -107,12 +103,13 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void outboxPage() {
-        int page = 1;
+        String page = "1";
         List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(JC_USER, JC_USER,
                 "Message title", "Private message body"));
         Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
 
         when(pmService.getOutboxForCurrentUser(page)).thenReturn(expectedPage);
+        when(userService.getCurrentUser()).thenReturn(JC_USER);
 
         //invoke the object under test
         ModelAndView mav = controller.outboxPage(page);
@@ -126,7 +123,7 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void draftsPage() {
-        int page = 1;
+        String page = "1";
         List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(JC_USER, JC_USER,
                 "Message title", "Private message body"));
         Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);

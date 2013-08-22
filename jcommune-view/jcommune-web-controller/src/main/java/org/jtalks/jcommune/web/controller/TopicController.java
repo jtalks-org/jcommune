@@ -197,16 +197,15 @@ public class TopicController {
      */
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.GET)
     public ModelAndView showTopicPage(@PathVariable(TOPIC_ID) Long topicId,
-                                      @RequestParam(value = "page", defaultValue = "1", required = false) String page) throws NotFoundException {
+            @RequestParam(value = "page", defaultValue = "1", required = false) String page) throws NotFoundException {
         JCUser currentUser = userService.getCurrentUser();
         Topic topic = topicFetchService.get(topicId);
 
-        int requestedPage = prepareRequestedPage(page, currentUser.getPageSize(), topic.getPostCount());
 
         topicFetchService.checkViewTopicPermission(topic.getBranch().getId());
-        Page<Post> postsPage = postService.getPosts(topic, requestedPage);
+        Page<Post> postsPage = postService.getPosts(topic, page);
         Integer lastReadPostIndex = lastReadPostService.getLastReadPostForTopic(topic);
-        lastReadPostService.markTopicPageAsRead(topic, requestedPage);
+        lastReadPostService.markTopicPageAsRead(topic, postsPage.getNumber());
         return new ModelAndView("topic/postList")
                 .addObject("viewList", locationService.getUsersViewing(topic))
                 .addObject("usersOnline", sessionRegistry.getAllPrincipals())
@@ -215,34 +214,6 @@ public class TopicController {
                 .addObject("subscribed", topic.getSubscribers().contains(currentUser))
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic))
                 .addObject("lastReadPost", lastReadPostIndex);
-    }
-
-    /**
-     * Validate and return requested topic page.
-     * @param page a requested page as a string provided by user
-     * @param pageSize the user profile page size.
-     * @param postCount the topic post count.
-     * @return <ul>
-     *     <li>requested topic page, if specified page valid;</li>
-     *     <li>max page, if specified page is greater then max page;</li>
-     *     <li>1, if specified page is not a number.</li>
-     * </ul>
-     *
-     */
-    int prepareRequestedPage(String page, int pageSize, int postCount) {
-        int result = 1;
-        int maxPageInTopic = postCount % pageSize == 0 ?
-                postCount / pageSize
-                : (postCount / pageSize) + 1;
-        if (page.matches("\\d+")) {
-            int requestedPage = Integer.valueOf(page);
-            if (requestedPage <= maxPageInTopic) {
-                result = requestedPage;
-            } else {
-                result = maxPageInTopic;
-            }
-        }
-        return  result;
     }
 
     /**
