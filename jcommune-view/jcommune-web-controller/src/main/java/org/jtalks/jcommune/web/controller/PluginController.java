@@ -63,7 +63,7 @@ public class PluginController {
     public ModelAndView getPlugins() {
         long componentId = getForumComponentId();
         List<Plugin> plugins = pluginService.getPlugins(componentId);
-        return new ModelAndView("pluginList")
+        return new ModelAndView("plugin/pluginList")
                 .addObject("plugins", plugins)
                 .addObject("pluginsActivatingListDto", PluginActivatingListDto.valueOf(plugins));
     }
@@ -79,7 +79,7 @@ public class PluginController {
     public ModelAndView startConfiguringPlugin(@PathVariable String name) throws NotFoundException {
         long componentId = getForumComponentId();
         PluginConfiguration pluginConfiguration = pluginService.getPluginConfiguration(name, componentId);
-        return new ModelAndView("pluginConfiguration")
+        return new ModelAndView("plugin/pluginConfiguration")
                 .addObject("pluginConfiguration", pluginConfiguration);
     }
 
