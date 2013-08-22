@@ -20,60 +20,59 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 
-<head>
-    <meta name="description" content="<c:out value="11"/>">
-</head>
+<jsp:useBean id="plugins" type="java.util.List" scope="request"/>
 <body>
-    <div class="container">
-        <%-- List of plugins. --%>
-        <div id="plugins-list-header">
-            <h2><spring:message code="label.plugins.installed"/></h2>
-        </div>
-        <span class="inline-block"></span>
-        <%-- List of plugins. --%>
-        <form:form action="${pageContext.request.contextPath}/plugins/update/activating" method="POST" modelAttribute="pluginsActivatingListDto">
-            <table id="plugins-table" class="table table-row table-bordered">
-                <c:choose>
-                    <c:when test="${!(empty plugins)}">
-                        <thead>
-                        <tr>
-                            <th id="plugin-name">
-                                <spring:message code="label.plugins.plugin.name"/>
-                            </th>
-                            <th id="plugin-actions">
-                                <spring:message code="label.plugins.plugin.actions"/>
-                            </th>
-                            <th id="plugin-is-enabled">
-                                <spring:message code="label.plugins.plugin.is_enabled"/>
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            <c:forEach var="plugin" items="${plugins}" varStatus="status">
-                                <%-- Plugin --%>
-                                <tr>
-                                    <td>
-                                        <form:hidden path="activatingPlugins[${status.index}].pluginName" value="${plugin.name}" />
-                                        <c:out value="${plugin.name}"/>
-                                    </td>
-                                    <td>
-                                        <a href="${pageContext.request.contextPath}/plugins/configure/${plugin.name}"
-                                           title="<spring:message code='label.plugins.plugin.configure.hint'/>">
-                                           <spring:message code="label.plugins.plugin.configure"/>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <form:checkbox path="activatingPlugins[${status.index}].activated" value="${plugin.enabled}" />
-                                    </td>
-                                </tr>
-                            </c:forEach>
-                        </tbody>
-                    </c:when>
-                </c:choose>
-            </table>
-            <c:if test="${!(empty plugins)}">
-                <input type="submit" value="<spring:message code="label.plugins.save"/>" />
-            </c:if>
-        </form:form>
-    </div>
+<div class="container">
+  <%-- List of plugins. --%>
+  <div id="plugins-list-header">
+    <h2><spring:message code="label.plugins.installed"/></h2>
+  </div>
+  <span class="inline-block"></span>
+  <%-- List of plugins. --%>
+  <form:form action="${pageContext.request.contextPath}/plugins/update/activating" method="POST"
+             modelAttribute="pluginsActivatingListDto">
+    <table id="plugins-table" class="table table-row table-bordered">
+      <c:choose>
+        <c:when test="${!(empty plugins)}">
+          <thead>
+          <tr>
+            <th id="plugin-name">
+              <spring:message code="label.plugins.plugin.name"/>
+            </th>
+            <th id="plugin-actions">
+              <spring:message code="label.plugins.plugin.actions"/>
+            </th>
+            <th id="plugin-is-enabled">
+              <spring:message code="label.plugins.plugin.is_enabled"/>
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <c:forEach var="plugin" items="${plugins}" varStatus="status">
+            <%-- Plugin --%>
+            <tr>
+              <td>
+                <form:hidden path="activatingPlugins[${status.index}].pluginName" value="${plugin.name}"/>
+                <c:out value="${plugin.name}"/>
+              </td>
+              <td>
+                <a href="${pageContext.request.contextPath}/plugins/configure/${plugin.name}"
+                   title="<spring:message code='label.plugins.plugin.configure.hint'/>">
+                  <spring:message code="label.plugins.plugin.configure"/>
+                </a>
+              </td>
+              <td>
+                <form:checkbox path="activatingPlugins[${status.index}].activated" value="${plugin.enabled}"/>
+              </td>
+            </tr>
+          </c:forEach>
+          </tbody>
+        </c:when>
+      </c:choose>
+    </table>
+    <c:if test="${!(empty plugins)}">
+      <input type="submit" value="<spring:message code="label.plugins.save"/>"/>
+    </c:if>
+  </form:form>
+</div>
 </body>
