@@ -96,8 +96,11 @@ public class PageRequest implements Pageable {
      * @return number of page for element
      */
     private int getPageNumber(int index) {
-        checkArgument(index > 0, "Was less than one");
-        return index / pageSize + 1;
+        if (index > 0) {
+            return index / pageSize + 1;
+        } else {
+            return 1;
+        }
     }
     
     /**
