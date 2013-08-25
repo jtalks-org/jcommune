@@ -14,9 +14,11 @@
  */
 package org.jtalks.jcommune.model.dto;
 
+import com.google.common.base.Preconditions;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static org.jtalks.jcommune.model.entity.JCUser.DEFAULT_PAGE_SIZE;
 
 /**
@@ -94,11 +96,8 @@ public class PageRequest implements Pageable {
      * @return number of page for element
      */
     private int getPageNumber(int index) {
-        if (index > 0) {
-            return index / pageSize + 1;
-        } else {
-            return 1;
-        }
+        checkArgument(index > 0, "Was less than one");
+        return index / pageSize + 1;
     }
     
     /**
@@ -107,11 +106,8 @@ public class PageRequest implements Pageable {
      * @return index of first item
      */
     private int getOffset(int pageNumber) {
-        if (pageNumber > 0) {
-            return (pageNumber - 1) * pageSize;
-        } else {
-            return 0;
-        }
+        checkArgument(pageNumber > 0, "Was less than one");
+        return (pageNumber - 1) * pageSize;
     }
 
     /**
@@ -120,10 +116,9 @@ public class PageRequest implements Pageable {
      * @param totalCount total count of items
      */
     public void adjustPageNumber(int totalCount) {
-        if (pageNumber <= FIRST_PAGE_NUMBER) {
-            pageNumber = FIRST_PAGE_NUMBER;
-        } else if (pageNumber > getPageNumber(totalCount - 1)) {
-            pageNumber = getPageNumber(totalCount - 1);
+        int maxPageNumber = getPageNumber(totalCount - 1);
+        if (pageNumber > maxPageNumber) {
+            pageNumber = maxPageNumber;
         }
     }
 

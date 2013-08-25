@@ -20,72 +20,76 @@ import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
 
 public class PageRequestTest {
-    
-    private static final int PAGE_SIZE = 10;
+
+    private static final int PAGE_SIZE_10 = 10;
     private static final String PAGE_NUMBER = "5";
     public static final int PARSED_PAGE_NUMBER = Integer.parseInt(PAGE_NUMBER);
-    private static final int INDEX_OF_FIRST_ITEM = (PARSED_PAGE_NUMBER - 1) * PAGE_SIZE;
+    private static final int INDEX_OF_FIRST_ITEM = (PARSED_PAGE_NUMBER - 1) * PAGE_SIZE_10;
+    public static final int ZERO = 0;
+    public static final String REQUESTED_ZERO_PAGE_NUMBER = "0";
+    public static final String REQUESTED_NEGATIVE_PAGE_NUMBER = "-1";
+    public static final int TOTAL_COUNT_10 = 10;
+    public static final int TOTAL_COUNT_20 = 20;
+    public static final String REQUESTED_PAGE_NUMBER_1000 = "1000";
+    public static final int RETURNED_PAGE_2 = 2;
+    public static final String GARBAGE = "garbage";
+    public static final int TOTAL_COUNT_50 = 50;
 
     private PageRequest pageRequest;
     
     @Test
-    public void testConstructor() {
-        pageRequest = new PageRequest(PAGE_NUMBER, PAGE_SIZE);
-        
+    public void testConstructorForValidArguments() {
+        pageRequest = new PageRequest(PAGE_NUMBER, PAGE_SIZE_10);
         assertEquals(pageRequest.getPageNumber(), PARSED_PAGE_NUMBER);
-        assertEquals(pageRequest.getPageSize(), PAGE_SIZE);
+        assertEquals(pageRequest.getPageSize(), PAGE_SIZE_10);
         assertEquals(pageRequest.getOffset(), INDEX_OF_FIRST_ITEM);
         assertEquals(pageRequest.getSort(), null);
     }
     
     @Test
-    public void testConstructorPageNumberLessThanOne() {
-        pageRequest = new PageRequest("0", PAGE_SIZE);
-        
-        assertEquals(pageRequest.getPageNumber(), 1);
-        assertEquals(pageRequest.getPageSize(), PAGE_SIZE);
-        assertEquals(pageRequest.getOffset(), 0);
-        assertEquals(pageRequest.getSort(), null);
+    public void testConstructorLessThanOnePageNumberConvertedToFirstPageNumber() {
+        pageRequest = new PageRequest(REQUESTED_ZERO_PAGE_NUMBER, PAGE_SIZE_10);
+        assertEquals(pageRequest.getPageNumber(), PageRequest.FIRST_PAGE_NUMBER);
     }
-    
+
     @Test()
-    public void testConstructorWrongPageSize() {
-        pageRequest = new PageRequest(PAGE_NUMBER, 0);
+    public void testConstructorLessThanOnePageSizeConvertedToDefaultPageSize() {
+        pageRequest = new PageRequest(PAGE_NUMBER, ZERO);
         assertEquals(pageRequest.getPageSize(), JCUser.DEFAULT_PAGE_SIZE);
     }
-    
-    @Test
-    public void testCreateWithPagingEnabled() {
-        pageRequest = new PageRequest(PAGE_NUMBER, PAGE_SIZE);
-        
-        assertEquals(pageRequest.getPageNumber(), PARSED_PAGE_NUMBER);
-        assertEquals(pageRequest.getPageSize(), PAGE_SIZE);
-        assertEquals(pageRequest.getSort(), null);
+
+    @Test()
+    public void testConstructorNonNumericPageSizeConvertedToDefaultPageSize() {
+        pageRequest = new PageRequest(GARBAGE, ZERO);
+        assertEquals(pageRequest.getPageSize(), JCUser.DEFAULT_PAGE_SIZE);
     }
 
     @Test
-    public void testGetOffsetPageNumberLessThanOne() {
-        pageRequest = new PageRequest("-1", PAGE_SIZE);
-        assertEquals(pageRequest.getOffset(), 0);
+    public void testGetOffsetLessThanOnePageNumber() {
+        pageRequest = new PageRequest(REQUESTED_NEGATIVE_PAGE_NUMBER, PAGE_SIZE_10);
+        assertEquals(pageRequest.getOffset(), ZERO);
     }
-    
-    @Test(dataProvider="pageNumbersToAdjust")
-    public void testAdjustPageNumber(int pageNumber, int totalItems, int adjustedPageNumber) {
-        pageRequest = new PageRequest(String.valueOf(pageNumber), PAGE_SIZE);
 
-        pageRequest.adjustPageNumber(totalItems);
-        assertEquals(pageRequest.getPageNumber(), adjustedPageNumber);
+    @Test
+    public void testAdjustPageNumber() {
+        pageRequest = new PageRequest(PAGE_NUMBER, PAGE_SIZE_10);
+        pageRequest.adjustPageNumber(TOTAL_COUNT_50);
+        int actualPageNumber = pageRequest.getPageNumber();
+        int expectedPageNumber = Integer.parseInt(PAGE_NUMBER);
+        assertEquals(actualPageNumber, expectedPageNumber);
     }
-    
-    @DataProvider(name="pageNumbersToAdjust")
-    public Integer[][] getPageNumbersToAdjust() {
-        return new Integer[][] {
-                // page number, total items, expected result
-                {-1, 10, 1},
-                {1000, PAGE_SIZE * 2, 2},
-                {PAGE_SIZE * 2 + 1, PAGE_SIZE * 2, 2},
-                {2000000000, PAGE_SIZE * 2, 2} 
-        };
+    @Test
+    public void testAdjustPageNumberForLessThanOnePageNumberReturnedFirstPage() {
+        pageRequest = new PageRequest(REQUESTED_ZERO_PAGE_NUMBER, PAGE_SIZE_10);
+        pageRequest.adjustPageNumber(TOTAL_COUNT_10);
+        assertEquals(pageRequest.getPageNumber(), PageRequest.FIRST_PAGE_NUMBER);
+    }
+
+    @Test
+    public void testAdjustPageNumberForTooBigPageNumberReturnedLastPage() {
+        pageRequest = new PageRequest(REQUESTED_PAGE_NUMBER_1000, PAGE_SIZE_10);
+        pageRequest.adjustPageNumber(TOTAL_COUNT_20);
+        assertEquals(pageRequest.getPageNumber(), RETURNED_PAGE_2);
     }
     
     
