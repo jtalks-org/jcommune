@@ -17,6 +17,8 @@ package org.jtalks.jcommune.model.dto;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import static org.jtalks.jcommune.model.dto.PageRequest.FIRST_PAGE_NUMBER;
 import static org.testng.Assert.assertEquals;
 
 public class PageRequestTest {
@@ -34,6 +36,7 @@ public class PageRequestTest {
     public static final int RETURNED_PAGE_2 = 2;
     public static final String GARBAGE = "garbage";
     public static final int TOTAL_COUNT_50 = 50;
+    public static final String REQUESTED_PAGE_NUMBER_1 = "1";
 
     private PageRequest pageRequest;
     
@@ -49,7 +52,7 @@ public class PageRequestTest {
     @Test
     public void testConstructorLessThanOnePageNumberConvertedToFirstPageNumber() {
         pageRequest = new PageRequest(REQUESTED_ZERO_PAGE_NUMBER, PAGE_SIZE_10);
-        assertEquals(pageRequest.getPageNumber(), PageRequest.FIRST_PAGE_NUMBER);
+        assertEquals(pageRequest.getPageNumber(), FIRST_PAGE_NUMBER);
     }
 
     @Test()
@@ -78,11 +81,21 @@ public class PageRequestTest {
         int expectedPageNumber = Integer.parseInt(PAGE_NUMBER);
         assertEquals(actualPageNumber, expectedPageNumber);
     }
+
+    @Test
+    public void testAdjustPageNumberZeroTotalCount() {
+        pageRequest = new PageRequest(REQUESTED_PAGE_NUMBER_1, PAGE_SIZE_10);
+        pageRequest.adjustPageNumber(ZERO);
+        int actualPageNumber = pageRequest.getPageNumber();
+        int expectedPageNumber = Integer.parseInt(REQUESTED_PAGE_NUMBER_1);
+        assertEquals(actualPageNumber, expectedPageNumber);
+    }
+
     @Test
     public void testAdjustPageNumberForLessThanOnePageNumberReturnedFirstPage() {
         pageRequest = new PageRequest(REQUESTED_ZERO_PAGE_NUMBER, PAGE_SIZE_10);
         pageRequest.adjustPageNumber(TOTAL_COUNT_10);
-        assertEquals(pageRequest.getPageNumber(), PageRequest.FIRST_PAGE_NUMBER);
+        assertEquals(pageRequest.getPageNumber(), FIRST_PAGE_NUMBER);
     }
 
     @Test
