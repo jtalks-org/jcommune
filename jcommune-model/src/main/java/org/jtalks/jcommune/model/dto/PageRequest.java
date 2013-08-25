@@ -37,8 +37,9 @@ public class PageRequest implements Pageable {
     /**
      * Creates a new {@link PageRequest}.
      *
-     * @param requestedPageNumber page number as a String. If specified string is not valid integer,
-     *                            page number will be equal 1.
+     * @param requestedPageNumber positive page number as a string.
+     *                            If specified string is not valid integer,
+     *                            page number will be equal {@link PageRequest#FIRST_PAGE_NUMBER}.
      * @param pageSize size of page
      */
     public PageRequest(String requestedPageNumber, int pageSize) {
