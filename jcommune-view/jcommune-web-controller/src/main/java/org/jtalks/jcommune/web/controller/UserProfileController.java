@@ -15,12 +15,15 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.ImageConverter;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
+import org.jtalks.jcommune.web.dto.json.JsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.validation.editors.DefaultStringEditor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +34,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.Locale;
 
 /**
  * Controller for User related actions: registration, user profile operations and so on.
@@ -231,4 +239,24 @@ public class UserProfileController {
                 .addObject("postsPage", postsPage)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
     }
+
+    @RequestMapping(value = "?lang={langId}", method = RequestMethod.POST)
+    public JsonResponse saveUserLanguage(@PathVariable String langId, HttpServletResponse response, HttpServletRequest request) throws ServletException {
+        JCUser jcuser = userService.getCurrentUser();
+        if(!jcuser.isAnonymous()){
+            Language languageFromRequest = Language.byLocale(new Locale(langId));
+            try{
+                jcuser.setLanguage(languageFromRequest);
+                userService.saveEditedUserProfile(jcuser.getId(), new EditUserProfileDto(jcuser).getUserInfoContainer());
+            }catch (Exception e){
+                throw new ServletException("Language save failed.");
+            }
+        }
+        LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
+        localeResolver.setLocale(request, response, jcuser.getLanguage().getLocale());
+
+//        return "redirect:" + request.getHeader("Referer");
+        return new JsonResponse(JsonResponseStatus.SUCCESS, null);
+    }
+
 }
