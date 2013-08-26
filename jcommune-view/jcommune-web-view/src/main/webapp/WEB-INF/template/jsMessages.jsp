@@ -124,3 +124,4 @@ $labelRemoveLogo = '<spring:message code="label.deleteLogo" htmlEscape="true"/>'
 $labelUploadFavIcon = '<spring:message code="label.uploadFavIcon" htmlEscape="true"/>';
 $labelRemoveFavIcon = '<spring:message code="label.deleteFavIcon" htmlEscape="true"/>';
 $labelDeleteIconConfirmation = '<spring:message code="label.deleteIconConfirmation" htmlEscape="true"/>';
+$labelDummyTextBBCode = '<spring:message code="label.dummyTextBBCode" htmlEscape="true"/>';

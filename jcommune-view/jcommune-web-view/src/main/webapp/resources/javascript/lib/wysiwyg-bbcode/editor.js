@@ -417,11 +417,13 @@ function MozillaInsertText(element, text, pos) {
 }
 
 function AddTag(t1, t2) {
+
     var element = textboxelement;
+    var dummyText = $labelDummyTextBBCode;
+
     if (isIE) {
         if (document.selection) {
             element.focus();
-
             var txt = element.value;
             var str = document.selection.createRange();
 
@@ -433,7 +435,7 @@ function AddTag(t1, t2) {
                         str.text = t1 + mylink + t2;
                     }
                 } else {
-                    str.text = t1 + t2;
+                    str.text = t1 + dummyText + t2;
                 }
             }
             else if (txt.indexOf(str.text) >= 0) {
@@ -443,7 +445,7 @@ function AddTag(t1, t2) {
                 if (t2 == "[/url]") {
                     element.value = txt + t1 + mylink + t2;
                 } else {
-                    element.value = txt + t1 + t2;
+                    element.value = txt + t1 + dummyText + t2;
                 }
 
             }
@@ -451,19 +453,27 @@ function AddTag(t1, t2) {
         }
     }
     else if (typeof(element.selectionStart) != 'undefined') {
+
         var sel_start = element.selectionStart;
         var sel_end = element.selectionEnd;
+
         if (element.value.substring(sel_start, sel_end) != mylink && t2 == "[/url]") {
             sel_start = sel_end;
         }
+
         MozillaInsertText(element, t1, sel_start);
         if (sel_start == sel_end && t2 == "[/url]") {
             MozillaInsertText(element, mylink + t2, sel_end + t1.length);
             element.selectionEnd = sel_end + t1.length + t2.length + mylink.length;
+        } else if (element.value.substring(sel_start, sel_end).length == 0) {
+            MozillaInsertText(element, dummyText + t2, element.selectionStart);
+            sel_start = element.value.lastIndexOf(t1)+t1.length;
+            element.selectionEnd = sel_start + dummyText.length;
         } else {
             MozillaInsertText(element, t2, sel_end + t1.length);
             element.selectionEnd = sel_end + t1.length + t2.length;
         }
+
         element.selectionStart = sel_start;
 
         element.focus();
