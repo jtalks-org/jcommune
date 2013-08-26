@@ -37,8 +37,8 @@ public class UserInfoContainer {
     private int pageSize;
     private boolean autosubscribe;
     private boolean mentioningNotificationsEnabled;
+    private boolean sendPmNotification;
     private String location;
-
 
     /**
      * Create instance with required fields.
@@ -55,11 +55,12 @@ public class UserInfoContainer {
      * @param autosubscribe   autosubscribe to topic/post flag
      * @param mentioningNotificationsEnabled whether email notifications are send when user was mentioned in forum
      * @param location        geographic user location
+     * @param sendPmNotification send notification when get PM
      */
     public UserInfoContainer(String firstName, String lastName, String email, String currentPassword,
                              String newPassword, String signature, String avatar, Language language,
                              int pageSize, boolean autosubscribe, boolean mentioningNotificationsEnabled, 
-                             String location) {
+                             String location, boolean sendPmNotification) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -72,6 +73,7 @@ public class UserInfoContainer {
         this.autosubscribe = autosubscribe;
         this.mentioningNotificationsEnabled = mentioningNotificationsEnabled;
         this.location = location;
+        this.sendPmNotification = sendPmNotification;
     }
 
     /**
@@ -175,5 +177,13 @@ public class UserInfoContainer {
      */
     public String getLocation() {
         return location;
+    }
+
+    public boolean isSendPmNotification() {
+        return sendPmNotification;
+    }
+
+    public void setSendPmNotification(boolean sendPmNotification) {
+        this.sendPmNotification = sendPmNotification;
     }
 }
