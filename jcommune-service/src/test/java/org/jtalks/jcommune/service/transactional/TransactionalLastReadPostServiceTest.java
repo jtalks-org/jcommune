@@ -174,7 +174,7 @@ public class TransactionalLastReadPostServiceTest {
     }
 
     @Test
-    public void testMarkTopicPageAsReadPagingEnabled() {
+    public void testMarkTopicPageAsRead() {
         Topic topic = this.createTestTopic();
         user.setPageSize(3);
         when(userService.getCurrentUser()).thenReturn(user);
