@@ -17,7 +17,7 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
-import org.jtalks.jcommune.model.dto.JCommunePageRequest;
+import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
@@ -44,6 +44,9 @@ import java.util.List;
 public class TransactionalPrivateMessageService
         extends AbstractTransactionalEntityService<PrivateMessage, PrivateMessageDao> implements PrivateMessageService {
 
+
+
+    public static final int DEFAULT_MESSAGE_COUNT = 0;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final SecurityService securityService;
@@ -79,9 +82,9 @@ public class TransactionalPrivateMessageService
      * {@inheritDoc}
      */
     @Override
-    public Page<PrivateMessage> getInboxForCurrentUser(int page) {
+    public Page<PrivateMessage> getInboxForCurrentUser(String page) {
         JCUser currentUser = userService.getCurrentUser();
-        JCommunePageRequest pageRequest = new JCommunePageRequest(page,
+        PageRequest pageRequest = new PageRequest(page,
                 currentUser.getPageSize());
         return this.getDao().getAllForUser(currentUser, pageRequest);
     }
@@ -90,9 +93,9 @@ public class TransactionalPrivateMessageService
      * {@inheritDoc}
      */
     @Override
-    public Page<PrivateMessage> getOutboxForCurrentUser(int page) {
+    public Page<PrivateMessage> getOutboxForCurrentUser(String page) {
         JCUser currentUser = userService.getCurrentUser();
-        JCommunePageRequest pageRequest = new JCommunePageRequest(page,
+        PageRequest pageRequest = new PageRequest(page,
                 currentUser.getPageSize());
         return this.getDao().getAllFromUser(currentUser, pageRequest);
     }
@@ -129,9 +132,9 @@ public class TransactionalPrivateMessageService
      * {@inheritDoc}
      */
     @Override
-    public Page<PrivateMessage> getDraftsForCurrentUser(int page) {
+    public Page<PrivateMessage> getDraftsForCurrentUser(String page) {
         JCUser currentUser = userService.getCurrentUser();
-        JCommunePageRequest pageRequest = new JCommunePageRequest(page,
+        PageRequest pageRequest = new PageRequest(page,
                 currentUser.getPageSize());
         return this.getDao().getDraftsForUser(currentUser, pageRequest);
     }
@@ -166,7 +169,7 @@ public class TransactionalPrivateMessageService
     public int currentUserNewPmCount() {
         String username = securityService.getCurrentUserUsername();
         if (username == null) {
-            return 0;
+            return DEFAULT_MESSAGE_COUNT;
         }
 
         Integer count = userDataCache.getNewPmCountFor(username);
@@ -177,7 +180,6 @@ public class TransactionalPrivateMessageService
         userDataCache.putNewPmCount(username, count);
         return count;
     }
-
 
     /**
      * {@inheritDoc}

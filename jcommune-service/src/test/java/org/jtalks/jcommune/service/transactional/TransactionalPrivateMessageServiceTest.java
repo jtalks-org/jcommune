@@ -21,7 +21,7 @@ import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.jtalks.jcommune.model.dao.PropertyDao;
-import org.jtalks.jcommune.model.dto.JCommunePageRequest;
+import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
@@ -104,29 +104,29 @@ public class TransactionalPrivateMessageServiceTest {
 
     @Test
     public void testGetInboxForCurrentUser() {
-        int pageNumber = 1;
+        String pageNumber = "1";
         List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(user, user,
                 "Message title", "Private message body"));
         Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
-        when(pmDao.getAllForUser(eq(user), Matchers.<JCommunePageRequest>any())).thenReturn(expectedPage);
+        when(pmDao.getAllForUser(eq(user), Matchers.<PageRequest>any())).thenReturn(expectedPage);
 
         Page<PrivateMessage> actual = pmService.getInboxForCurrentUser(pageNumber);
 
-        verify(pmDao).getAllForUser(eq(user), Matchers.<JCommunePageRequest>any());
+        verify(pmDao).getAllForUser(eq(user), Matchers.<PageRequest>any());
         assertEquals(expectedPage, actual);
     }
 
     @Test
     public void testGetOutboxForCurrentUser() {
-        int pageNumber = 1;
+        String pageNumber = "1";
         List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(user, user,
                 "Message title", "Private message body"));
         Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
-        when(pmDao.getAllFromUser(eq(user), Matchers.<JCommunePageRequest>any())).thenReturn(expectedPage);
+        when(pmDao.getAllFromUser(eq(user), Matchers.<PageRequest>any())).thenReturn(expectedPage);
 
         Page<PrivateMessage> actual = pmService.getOutboxForCurrentUser(pageNumber);
 
-        verify(pmDao).getAllFromUser(eq(user), Matchers.<JCommunePageRequest>any());
+        verify(pmDao).getAllFromUser(eq(user), Matchers.<PageRequest>any());
         assertEquals(expectedPage, actual);
     }
 
@@ -167,15 +167,15 @@ public class TransactionalPrivateMessageServiceTest {
 
     @Test
     public void testGetDraftsForCurrentUser() {
-        int pageNumber = 1;
+        String pageNumber = "1";
         List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(user, user,
                 "Message title", "Private message body"));
         Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
-        when(pmDao.getDraftsForUser(eq(user), Matchers.<JCommunePageRequest>any())).thenReturn(expectedPage);
+        when(pmDao.getDraftsForUser(eq(user), Matchers.<PageRequest>any())).thenReturn(expectedPage);
 
         Page<PrivateMessage> actual = pmService.getDraftsForCurrentUser(pageNumber);
 
-        verify(pmDao).getDraftsForUser(eq(user), Matchers.<JCommunePageRequest>any());
+        verify(pmDao).getDraftsForUser(eq(user), Matchers.<PageRequest>any());
         assertEquals(expectedPage, actual);
     }
 

@@ -18,7 +18,7 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dao.search.TopicSearchDao;
-import org.jtalks.jcommune.model.dto.JCommunePageRequest;
+import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicFetchService;
@@ -66,9 +66,9 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
      * {@inheritDoc}
      */
     @Override
-    public Page<Topic> getRecentTopics(int page) {
+    public Page<Topic> getRecentTopics(String page) {
         int pageSize = userService.getCurrentUser().getPageSize();
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(page, pageSize);
+        PageRequest pageRequest = new PageRequest(page, pageSize);
         DateTime date24HoursAgo = new DateTime().minusDays(1);
         return this.getDao().getTopicsUpdatedSince(date24HoursAgo, pageRequest, userService.getCurrentUser());
     }
@@ -77,9 +77,9 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
      * {@inheritDoc}
      */
     @Override
-    public Page<Topic> getUnansweredTopics(int page) {
+    public Page<Topic> getUnansweredTopics(String page) {
         int pageSize = userService.getCurrentUser().getPageSize();
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(page, pageSize);
+        PageRequest pageRequest = new PageRequest(page, pageSize);
         return this.getDao().getUnansweredTopics(pageRequest, userService.getCurrentUser());
     }
 
@@ -87,9 +87,9 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
      * {@inheritDoc}
      */
     @Override
-    public Page<Topic> getTopics(Branch branch, int page) {
+    public Page<Topic> getTopics(Branch branch, String page) {
         int pageSize = userService.getCurrentUser().getPageSize();
-        JCommunePageRequest pageRequest = new JCommunePageRequest(page, pageSize);
+        PageRequest pageRequest = new PageRequest(page, pageSize);
         return getDao().getTopics(branch, pageRequest);
     }
 
@@ -97,10 +97,10 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
      * {@inheritDoc}
      */
     @Override
-    public Page<Topic> searchByTitleAndContent(String phrase, int page) {
+    public Page<Topic> searchByTitleAndContent(String phrase, String page) {
         if (!StringUtils.isEmpty(phrase)) {
             int pageSize = userService.getCurrentUser().getPageSize();
-            JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(page, pageSize);
+            PageRequest pageRequest = new PageRequest(page, pageSize);
             // hibernate search refuses to process long string throwing error
             String normalizedPhrase = StringUtils.left(phrase, 50);
             return searchDao.searchByTitleAndContent(normalizedPhrase, pageRequest);

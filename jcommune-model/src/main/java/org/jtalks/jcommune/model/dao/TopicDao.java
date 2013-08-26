@@ -17,7 +17,7 @@ package org.jtalks.jcommune.model.dao;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.entity.Branch;
-import org.jtalks.jcommune.model.dto.JCommunePageRequest;
+import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.SubscriptionAwareEntity;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -47,7 +47,7 @@ public interface TopicDao extends Crud<Topic> {
      * @param user        current user
      * @return object that contains topics for one page and information for pagination
      */
-    Page<Topic> getTopicsUpdatedSince(DateTime lastLogin, JCommunePageRequest pageRequest, JCUser user);
+    Page<Topic> getTopicsUpdatedSince(DateTime lastLogin, PageRequest pageRequest, JCUser user);
 
 
     /**
@@ -58,7 +58,7 @@ public interface TopicDao extends Crud<Topic> {
      * @return object that contains unanswered topics for one page and information
      *         for pagination
      */
-    Page<Topic> getUnansweredTopics(JCommunePageRequest pageRequest, JCUser user);
+    Page<Topic> getUnansweredTopics(PageRequest pageRequest, JCUser user);
 
     /**
      * Find the last updated topic in the branch.
@@ -76,7 +76,7 @@ public interface TopicDao extends Crud<Topic> {
      * @return object that contains topics for one page(note, that one page may contain
      *         all topics) and information for pagination
      */
-    Page<Topic> getTopics(Branch branch, JCommunePageRequest pageRequest);
+    Page<Topic> getTopics(Branch branch, PageRequest pageRequest);
 
     /**
      * Get count of topics in the branch.

@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.common.model.dao.Crud;
-import org.jtalks.jcommune.model.dto.JCommunePageRequest;
+import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.springframework.data.domain.Page;
@@ -39,7 +39,7 @@ public interface PrivateMessageDao extends Crud<PrivateMessage> {
      * @param pageRequest pagination information.
      * @return {@link Page} with messages.
      */
-    Page<PrivateMessage> getAllFromUser(JCUser userFrom, JCommunePageRequest pageRequest);
+    Page<PrivateMessage> getAllFromUser(JCUser userFrom, PageRequest pageRequest);
 
     /**
      * Get all private messages to the specified user (either
@@ -50,7 +50,7 @@ public interface PrivateMessageDao extends Crud<PrivateMessage> {
      * @param pageRequest pagination information.
      * @return {@link Page} with messages.
      */
-    Page<PrivateMessage> getAllForUser(JCUser userTo, JCommunePageRequest pageRequest);
+    Page<PrivateMessage> getAllForUser(JCUser userTo, PageRequest pageRequest);
 
     /**
      * Get draft messages for user,(
@@ -60,7 +60,7 @@ public interface PrivateMessageDao extends Crud<PrivateMessage> {
      * @param pageRequest pagination information.
      * @return {@link Page} with messages.
      */
-    Page<PrivateMessage> getDraftsForUser(JCUser user, JCommunePageRequest pageRequest);
+    Page<PrivateMessage> getDraftsForUser(JCUser user, PageRequest pageRequest);
 
     /**
      * Get count of new (unread) messages for user.

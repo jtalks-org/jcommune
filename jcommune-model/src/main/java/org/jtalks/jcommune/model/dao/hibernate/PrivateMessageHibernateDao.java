@@ -18,7 +18,7 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
-import org.jtalks.jcommune.model.dto.JCommunePageRequest;
+import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
@@ -36,8 +36,11 @@ import java.util.List;
  */
 public class PrivateMessageHibernateDao extends GenericDao<PrivateMessage> implements PrivateMessageDao {
 
+
+
     private static final String STATUS = "status";
     private static final String STATUSES = "statuses";
+    public static final int DEFAULT_MESSAGE_COUNT = 0;
 
     /**
      * @param sessionFactory The SessionFactory.
@@ -51,14 +54,10 @@ public class PrivateMessageHibernateDao extends GenericDao<PrivateMessage> imple
      */
     @SuppressWarnings("unchecked")
     @Override
-    public Page<PrivateMessage> getAllFromUser(JCUser userFrom, JCommunePageRequest pageRequest) {
+    public Page<PrivateMessage> getAllFromUser(JCUser userFrom, PageRequest pageRequest) {
         PrivateMessageStatus[] statuses = PrivateMessageStatus.getOutboxStatus();
-        Number totalCount = (Number) session()
-                .getNamedQuery("getCountUserSentPm")
-                .setParameter("userFrom", userFrom)
-                .setParameterList(STATUSES, statuses)
-                .uniqueResult();
-        pageRequest.adjustPageNumber(totalCount.intValue());
+        int totalCount = getOutboxMessageCount(userFrom, statuses);
+        pageRequest.adjustPageNumber(totalCount);
 
         Query query = session().getNamedQuery("getAllFromUser")
                 .setParameterList(STATUSES, statuses)
@@ -69,7 +68,20 @@ public class PrivateMessageHibernateDao extends GenericDao<PrivateMessage> imple
 
         List<PrivateMessage> messages = (List<PrivateMessage>) query.list();
 
-        return new PageImpl<PrivateMessage>(messages, pageRequest, totalCount.intValue());
+        return new PageImpl<PrivateMessage>(messages, pageRequest, totalCount);
+    }
+
+   private int getOutboxMessageCount(JCUser userFrom, PrivateMessageStatus[] statuses) {
+        int result = DEFAULT_MESSAGE_COUNT;
+        Number messageCount = (Number) session()
+                .getNamedQuery("getCountUserOutboxPm")
+                .setParameter("userFrom", userFrom)
+                .setParameterList(STATUSES, statuses)
+                .uniqueResult();
+        if (messageCount != null) {
+            result = messageCount.intValue();
+        }
+        return result;
     }
 
     /**
@@ -77,29 +89,44 @@ public class PrivateMessageHibernateDao extends GenericDao<PrivateMessage> imple
      */
     @SuppressWarnings("unchecked")
     @Override
-    public Page<PrivateMessage> getAllForUser(JCUser userTo, JCommunePageRequest pageRequest) {
+    public Page<PrivateMessage> getAllForUser(JCUser userTo, PageRequest pageRequest) {
         PrivateMessageStatus[] statuses = PrivateMessageStatus.getInboxStatus();
-        Number totalCount = (Number) session()
-                .getNamedQuery("getCountUserInboxPm")
-                .setParameter("userTo", userTo)
-                .setParameterList(STATUSES, statuses)
-                .uniqueResult();
-        pageRequest.adjustPageNumber(totalCount.intValue());
+        int totalCount = getInboxMessageCount(userTo, statuses);
+        pageRequest.adjustPageNumber(totalCount);
         Query query = session().getNamedQuery("getAllToUser")
                 .setParameterList(STATUSES, statuses)
                 .setEntity("user", userTo);
         query.setFirstResult(pageRequest.getOffset());
         query.setMaxResults(pageRequest.getPageSize());
         List<PrivateMessage> messages = (List<PrivateMessage>) query.list();
-        return new PageImpl<PrivateMessage>(messages, pageRequest, totalCount.intValue());
+        return new PageImpl<PrivateMessage>(messages, pageRequest, totalCount);
     }
+
+    private int getInboxMessageCount(JCUser user, PrivateMessageStatus[] statuses) {
+        int result = DEFAULT_MESSAGE_COUNT;
+        Number messageCount = (Number) session()
+                .getNamedQuery("getCountUserInboxPm")
+                .setParameter("userTo", user)
+                .setParameterList(STATUSES, statuses)
+                .uniqueResult();
+        if (messageCount != null) {
+            result = messageCount.intValue();
+        }
+        return result;
+    }
+
+
+
+
+
+
 
     /**
      * {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
     @Override
-    public Page<PrivateMessage> getDraftsForUser(JCUser user, JCommunePageRequest pageRequest) {
+    public Page<PrivateMessage> getDraftsForUser(JCUser user, PageRequest pageRequest) {
         Number totalCount = (Number) session()
                 .getNamedQuery("getCountUserDraftPm")
                 .setParameter("userFrom", user)

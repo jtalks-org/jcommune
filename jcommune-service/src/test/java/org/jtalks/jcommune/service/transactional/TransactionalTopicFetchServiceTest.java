@@ -18,7 +18,7 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dao.search.TopicSearchDao;
-import org.jtalks.jcommune.model.dto.JCommunePageRequest;
+import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -91,11 +91,11 @@ public class TransactionalTopicFetchServiceTest {
 
     @Test
     public void testGetAllTopicsPastLastDay() throws NotFoundException {
-        int pageNumber = 1;
+        String pageNumber = "1";
         int pageSize = 20;
         List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
         Page<Topic> expectedPage = new PageImpl<Topic>(expectedList);
-        when(topicDao.getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JCommunePageRequest>any(),eq(user)))
+        when(topicDao.getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<PageRequest>any(),eq(user)))
                 .thenReturn(expectedPage);
         user.setPageSize(pageSize);
         when(userService.getCurrentUser()).thenReturn(user);
@@ -104,17 +104,17 @@ public class TransactionalTopicFetchServiceTest {
 
         assertNotNull(actualPage);
         assertEquals(expectedPage, actualPage);
-        verify(topicDao).getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<JCommunePageRequest>any(),
+        verify(topicDao).getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<PageRequest>any(),
                 eq(user));
     }
 
     @Test
     public void testGetUnansweredTopics() {
-        int pageNumber = 1;
+        String pageNumber = "1";
         int pageSize = 20;
         List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
         Page<Topic> expectedPage = new PageImpl<Topic>(expectedList);
-        when(topicDao.getUnansweredTopics(Matchers.<JCommunePageRequest>any(),eq(user)))
+        when(topicDao.getUnansweredTopics(Matchers.<PageRequest>any(),eq(user)))
                 .thenReturn(expectedPage);
         user.setPageSize(pageSize);
         when(userService.getCurrentUser()).thenReturn(user);
@@ -126,22 +126,22 @@ public class TransactionalTopicFetchServiceTest {
 
     @Test
     public void testGetTopics() {
-        int pageSize = 50;
+        String pageNumber = "50";
         Branch branch = createBranch();
         Page<Topic> expectedPage = new PageImpl<Topic>(Collections.<Topic>emptyList());
 
         JCUser currentUser = new JCUser("current", null, null);
-        currentUser.setPageSize(pageSize);
+        currentUser.setPageSize(50);
         when(userService.getCurrentUser()).thenReturn(currentUser);
         when(topicDao.getTopics(
-                Matchers.any(Branch.class), Matchers.any(JCommunePageRequest.class)))
+                Matchers.any(Branch.class), Matchers.any(PageRequest.class)))
                 .thenReturn(expectedPage);
 
-        Page<Topic> actualPage = topicFetchService.getTopics(branch, pageSize);
+        Page<Topic> actualPage = topicFetchService.getTopics(branch, pageNumber);
 
         assertEquals(actualPage, expectedPage, "Service returned incorrect data for one page of topics");
         verify(topicDao).getTopics(
-                Matchers.any(Branch.class), Matchers.any(JCommunePageRequest.class));
+                Matchers.any(Branch.class), Matchers.any(PageRequest.class));
     }
 
     private Branch createBranch() {
@@ -155,15 +155,15 @@ public class TransactionalTopicFetchServiceTest {
     public void testSearchPosts() {
         String phrase = "phrase";
 
-        topicFetchService.searchByTitleAndContent(phrase, 50);
+        topicFetchService.searchByTitleAndContent(phrase, "50");
 
         Mockito.verify(searchDao).searchByTitleAndContent(
-                Matchers.anyString(), Matchers.<JCommunePageRequest> any());
+                Matchers.anyString(), Matchers.<PageRequest> any());
     }
 
     @Test(dataProvider = "parameterSearchPostsWithEmptySearchPhrase")
     public void testSearchPostsWithEmptySearchPhrase(String phrase) {
-        Page<Topic> searchResultPage = topicFetchService.searchByTitleAndContent(phrase, 50);
+        Page<Topic> searchResultPage = topicFetchService.searchByTitleAndContent(phrase, "50");
 
         Assert.assertTrue(!searchResultPage.hasContent(), "The search result must be empty.");
     }

@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.model.dao.search;
 
-import org.jtalks.jcommune.model.dto.JCommunePageRequest;
+import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.data.domain.Page;
 
@@ -36,7 +36,7 @@ public interface TopicSearchDao {
      * @return object that contains search results for one page(note, that one page
      *         may contain all search results) and information for pagination
      */
-    Page<Topic> searchByTitleAndContent(String searchText, JCommunePageRequest pageRequest);
+    Page<Topic> searchByTitleAndContent(String searchText, PageRequest pageRequest);
 
     /**
      * Indexes the data from the database.

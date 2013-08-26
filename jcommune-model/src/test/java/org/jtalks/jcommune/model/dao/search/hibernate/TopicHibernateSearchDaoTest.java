@@ -14,20 +14,13 @@
  */
 package org.jtalks.jcommune.model.dao.search.hibernate;
 
-import static org.testng.Assert.assertEquals;
-
-import java.util.Arrays;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
-
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
-import org.jtalks.jcommune.model.dto.JCommunePageRequest;
-
+import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.search.SearchRequestFilter;
 import org.mockito.Mock;
@@ -45,6 +38,11 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static org.testng.Assert.assertEquals;
+
 /**
  * 
  * @author Anuar Nurmakanov
@@ -56,7 +54,8 @@ import org.testng.annotations.Test;
 public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpringContextTests {
 	private static final int PAGE_SIZE = 50;
     private static final String TOPIC_CONTENT = "topicContent";
-    private static final JCommunePageRequest DEFAULT_PAGE_REQUEST = JCommunePageRequest.createPageRequest(1, 50);
+    private static final PageRequest
+            DEFAULT_PAGE_REQUEST = new PageRequest("1", 50);
     @Autowired
 	private SessionFactory sessionFactory;
 	@Autowired
@@ -104,7 +103,7 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
         int pageCount = 2;
         int pageSize = totalSize/pageCount;
         String searchText = "JCommune";
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, pageSize);
+        PageRequest pageRequest = new PageRequest("1", pageSize);
         List<Topic> topicList = PersistedObjectsFactory.createAndSaveTopicList(totalSize);
         for(Topic topic: topicList) {
             topic.setTitle(searchText);
@@ -160,7 +159,7 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
         saveAndFlushIndexes(Arrays.asList(expectedTopic));
         configureMocks(TOPIC_CONTENT, TOPIC_CONTENT);
         
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(-1, PAGE_SIZE);
+        PageRequest pageRequest = new PageRequest("-1", PAGE_SIZE);
         Page<Topic> searchResultPage = topicSearchDao.searchByTitleAndContent(
                 TOPIC_CONTENT, pageRequest);
         
@@ -180,7 +179,7 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
         saveAndFlushIndexes(Arrays.asList(expectedTopic));
         configureMocks(TOPIC_CONTENT, TOPIC_CONTENT);
         
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1000, 50);
+        PageRequest pageRequest = new PageRequest("1000", 50);
         Page<Topic> searchResultPage = topicSearchDao.searchByTitleAndContent(
                 TOPIC_CONTENT, pageRequest);
         

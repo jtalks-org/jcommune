@@ -14,25 +14,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
-import static org.testng.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.PostService;
@@ -58,6 +39,18 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.springframework.test.web.ModelAndViewAssert.*;
+import static org.testng.Assert.assertEquals;
 
 /**
  * @author Kirill Afonin
@@ -294,12 +287,12 @@ public class UserProfileControllerTest {
         //
         when(userService.getByUsername("username")).thenReturn(user);
         when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
-        when(postService.getPostsOfUser(any(JCUser.class), anyInt()))
+        when(postService.getPostsOfUser(any(JCUser.class), anyString()))
             .thenReturn(postsPage);
         when(userService.getCurrentUser()).thenReturn(user);
         when(post.getTopic()).thenReturn(topic);
 
-        ModelAndView mav = profileController.showUserPostList(user.getId(), 1);
+        ModelAndView mav = profileController.showUserPostList(user.getId(), "1");
 
         verify(userService).get(user.getId());
         assertViewName(mav, "userPostList");

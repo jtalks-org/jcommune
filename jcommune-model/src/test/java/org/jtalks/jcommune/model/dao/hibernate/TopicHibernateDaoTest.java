@@ -19,7 +19,7 @@ import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.dto.JCommunePageRequest;
+import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -125,7 +125,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     public void testGetTopicsUpdatedSince() {
         int size = 5;
         createAndSaveTopicList(size);
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, size);
+        PageRequest pageRequest = new PageRequest("1", size);
         DateTime lastLogin = new DateTime().minusDays(1);
 
         Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest, ObjectsFactory.getDefaultUser());
@@ -139,7 +139,8 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         int pageSize = 2;
         int lastPage = listSize / pageSize;
         List<Topic> createdTopicList = createAndSaveTopicList(listSize);
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(lastPage, pageSize);
+        PageRequest pageRequest = new PageRequest(
+                String.valueOf(lastPage), pageSize);
         DateTime lastLogin = new DateTime().minusDays(1);
 
         JCUser user = new JCUser("Current", null, null);
@@ -156,7 +157,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         int listSize = 5;
         int pageSize = 2;
         List<Topic> createdTopicList = createAndSaveTopicList(listSize);
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(0, pageSize);
+        PageRequest pageRequest = new PageRequest("0", pageSize);
         DateTime lastLogin = new DateTime().minusDays(1);
 
         JCUser user = new JCUser("Current", null, null);
@@ -175,7 +176,8 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         int pageSize = 2;
         int lastPage = 3;
         List<Topic> createdTopicList = createAndSaveTopicList(listSize);
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1000, pageSize);
+        PageRequest pageRequest = new PageRequest("1000",
+                pageSize);
         DateTime lastLogin = new DateTime().minusDays(1);
 
         JCUser user = new JCUser("Current", null, null);
@@ -194,7 +196,8 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         int pageSize = 2;
         int lastPage = listSize / pageSize;
         List<Topic> createdTopicList = createAndSaveTopicList(listSize);
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(lastPage, pageSize);
+        PageRequest pageRequest = new PageRequest(
+                String.valueOf(lastPage), pageSize);
         DateTime lastLogin = new DateTime().minusDays(1);
 
         PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
@@ -209,7 +212,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         int listSize = 5;
         int pageSize = 2;
         List<Topic> createdTopicList = createAndSaveTopicList(listSize);
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(0, pageSize);
+        PageRequest pageRequest = new PageRequest("0", pageSize);
         DateTime lastLogin = new DateTime().minusDays(1);
 
         PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
@@ -226,7 +229,8 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         int pageSize = 2;
         int lastPage = 3;
         List<Topic> createdTopicList = createAndSaveTopicList(listSize);
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1000, pageSize);
+        PageRequest pageRequest = new PageRequest("1000",
+                pageSize);
         DateTime lastLogin = new DateTime().minusDays(1);
 
         PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
@@ -243,7 +247,8 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         int pageSize = 2;
         int lastPage = listSize / pageSize;
         createAndSaveTopicList(listSize);
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(lastPage, pageSize);
+        PageRequest pageRequest = new PageRequest(
+                String.valueOf(lastPage), pageSize);
         DateTime lastLogin = new DateTime().minusDays(1);
 
         PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(22l, "noneExistingGroup", true);
@@ -255,7 +260,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     @Test
     public void testGetUnansweredTopicsForRegisteredUsers() {
         JCUser user = createAndSaveTopicsWithUnansweredTopics();
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, 2);
+        PageRequest pageRequest = new PageRequest("1", 2);
 
         Page<Topic> result = dao.getUnansweredTopics(pageRequest, user);
         assertEquals(result.getContent().size(), 2);
@@ -265,7 +270,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     @Test
     public void testGetUnansweredTopicsForAnonymousUsers() {
         createAndSaveTopicsWithUnansweredTopics();
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, 2);
+        PageRequest pageRequest = new PageRequest("1", 2);
 
         Page<Topic> result = dao.getUnansweredTopics(pageRequest, new AnonymousUser());
         assertEquals(result.getContent().size(), 2);
@@ -275,7 +280,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     @Test
     public void testGetUnansweredTopicsWithPaging() {
         JCUser user = createAndSaveTopicsWithUnansweredTopics();
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(2, 1);
+        PageRequest pageRequest = new PageRequest("2", 1);
         Page<Topic> result = dao.getUnansweredTopics(pageRequest, user);
         assertEquals(result.getContent().size(), 1);
         assertEquals(result.getTotalElements(), 2);
@@ -284,7 +289,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     @Test
     public void testGetUnansweredTopicsWithPagingPageTooLow() {
         JCUser user = createAndSaveTopicsWithUnansweredTopics();
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(0, 1);
+        PageRequest pageRequest = new PageRequest("0", 1);
         Page<Topic> result = dao.getUnansweredTopics(pageRequest, user);
         assertEquals(result.getContent().size(), 1);
         assertEquals(result.getTotalElements(), 2);
@@ -294,7 +299,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     @Test
     public void testGetUnansweredTopicsWithPagingPageTooBig() {
         JCUser user = createAndSaveTopicsWithUnansweredTopics();
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1000, 1);
+        PageRequest pageRequest = new PageRequest("1000", 1);
         Page<Topic> result = dao.getUnansweredTopics(pageRequest, user);
         assertEquals(result.getContent().size(), 1);
         assertEquals(result.getTotalElements(), 2);
@@ -379,7 +384,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         int totalSize = 50;
         int pageCount = 2;
         int pageSize = totalSize / pageCount;
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1, pageSize);
+        PageRequest pageRequest = new PageRequest("1", pageSize);
         List<Topic> topicList = PersistedObjectsFactory.createAndSaveTopicList(totalSize);
         Branch branch = topicList.get(0).getBranch();
 
@@ -393,7 +398,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         int totalSize = 50;
         int pageCount = 2;
         int pageSize = totalSize / pageCount;
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(0, pageSize);
+        PageRequest pageRequest = new PageRequest("0", pageSize);
         List<Topic> topicList = PersistedObjectsFactory.createAndSaveTopicList(totalSize);
         Branch branch = topicList.get(0).getBranch();
 
@@ -408,7 +413,8 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         int totalSize = 50;
         int pageCount = 2;
         int pageSize = totalSize / pageCount;
-        JCommunePageRequest pageRequest = JCommunePageRequest.createPageRequest(1000, pageSize);
+        PageRequest pageRequest = new PageRequest("1000",
+                pageSize);
         List<Topic> topicList = PersistedObjectsFactory.createAndSaveTopicList(totalSize);
         Branch branch = topicList.get(0).getBranch();
 
