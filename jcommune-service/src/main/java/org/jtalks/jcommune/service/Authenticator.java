@@ -54,6 +54,8 @@ public interface Authenticator {
      * @throws UnexpectedErrorException
      * @throws NoConnectionException
      */
-    public void register(UserDto userDto, BindingResult bindingResult)
+    public void register(UserDto userDto, Boolean dryRun, BindingResult bindingResult)
             throws UnexpectedErrorException, NoConnectionException;
+
+
 }

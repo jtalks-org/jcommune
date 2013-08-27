@@ -48,8 +48,9 @@ public interface SimpleAuthenticationPlugin extends Plugin {
      * Performs registration attempt based on user details
      *
      * @param userDto user
+     * @param dryRun do not register user, just check if it is possible
      * @return validation errors as pairs field - error message
      */
-    public Map<String, String> registerUser(UserDto userDto)
+    public Map<String, String> registerUser(UserDto userDto, Boolean dryRun)
             throws NoConnectionException, UnexpectedErrorException;
 }

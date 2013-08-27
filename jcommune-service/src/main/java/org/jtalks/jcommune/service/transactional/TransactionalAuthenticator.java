@@ -262,14 +262,14 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      * {@inheritDoc}
      */
     @Override
-    public void register(UserDto userDto, BindingResult bindingResult)
+    public void register(UserDto userDto, Boolean dryRun, BindingResult bindingResult)
             throws UnexpectedErrorException, NoConnectionException {
         SimpleAuthenticationPlugin authPlugin = getPlugin();
         if (authPlugin != null && authPlugin.getState() == Plugin.State.ENABLED) {
             String passwordHash = (userDto.getPassword() == null || userDto.getPassword().isEmpty()) ? ""
                     : encryptionService.encryptPassword(userDto.getPassword());
             userDto.setPassword(passwordHash);
-            Map<String, String> errors = authPlugin.registerUser(userDto);
+            Map<String, String> errors = authPlugin.registerUser(userDto, dryRun);
             for(Map.Entry<String, String> error : errors.entrySet()) {
                 bindingResult.rejectValue(error.getKey(), null, error.getValue());
             }

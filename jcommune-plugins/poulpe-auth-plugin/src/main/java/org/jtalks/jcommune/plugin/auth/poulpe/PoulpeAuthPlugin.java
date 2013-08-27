@@ -47,10 +47,10 @@ public class PoulpeAuthPlugin extends StatefullPlugin
     List<PluginConfigurationProperty> pluginProperties;
 
     @Override
-    public Map<String, String> registerUser(UserDto userDto)
+    public Map<String, String> registerUser(UserDto userDto, Boolean dryRun)
             throws NoConnectionException, UnexpectedErrorException {
         try {
-            return service.registerUser(userDto);
+            return service.registerUser(userDto, dryRun);
         } catch (IOException | JAXBException e) {
             LOGGER.error("Parse response error", e);
             throw new UnexpectedErrorException(e);

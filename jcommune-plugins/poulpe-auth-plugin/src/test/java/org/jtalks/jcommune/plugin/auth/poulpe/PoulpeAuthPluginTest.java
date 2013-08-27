@@ -82,9 +82,9 @@ public class PoulpeAuthPluginTest {
         errors.put("email", "Invalid email");
         errors.put("password", "Invalid password");
 
-        when(service.registerUser(userDto)).thenReturn(errors);
+        when(service.registerUser(userDto, true)).thenReturn(errors);
 
-        Map<String, String> result = plugin.registerUser(userDto);
+        Map<String, String> result = plugin.registerUser(userDto, true);
 
         assertEquals(result.size(), 2, "User with incorrect parameters shouldn't be registered.");
     }
@@ -94,9 +94,9 @@ public class PoulpeAuthPluginTest {
             throws UnexpectedErrorException, NoConnectionException, IOException, JAXBException {
         UserDto userDto = createUserDto("user", "1234", "email@email.em");
 
-        when(service.registerUser(userDto)).thenReturn(Collections.EMPTY_MAP);
+        when(service.registerUser(userDto, true)).thenReturn(Collections.EMPTY_MAP);
 
-        Map<String, String> result = plugin.registerUser(userDto);
+        Map<String, String> result = plugin.registerUser(userDto, true);
 
         assertEquals(result.size(), 0, "User with correct parameters should be registered.");
     }
@@ -106,9 +106,9 @@ public class PoulpeAuthPluginTest {
             throws UnexpectedErrorException, NoConnectionException, IOException, JAXBException {
         UserDto userDto = createUserDto("user", "1234", "email@email.em");
 
-        when(service.registerUser(userDto)).thenThrow(new NoConnectionException());
+        when(service.registerUser(userDto, true)).thenThrow(new NoConnectionException());
 
-        plugin.registerUser(userDto);
+        plugin.registerUser(userDto, true);
     }
 
     @Test(expectedExceptions = UnexpectedErrorException.class)
@@ -116,9 +116,9 @@ public class PoulpeAuthPluginTest {
             throws UnexpectedErrorException, NoConnectionException, IOException, JAXBException {
         UserDto userDto = createUserDto("user", "1234", "email@email.em");
 
-        when(service.registerUser(userDto)).thenThrow(new JAXBException(""));
+        when(service.registerUser(userDto, true)).thenThrow(new JAXBException(""));
 
-        plugin.registerUser(userDto);
+        plugin.registerUser(userDto, true);
     }
 
     @Test

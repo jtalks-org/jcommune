@@ -112,7 +112,7 @@ public class UserControllerTest {
         ModelAndView mav = userController.registerUser(dto, bindingResult, Locale.ENGLISH);
 
         assertViewName(mav, "afterRegistration");
-        verify(authenticator).register(dto.getUserDto(), bindingResult);
+        verify(authenticator).register(dto.getUserDto(), true, bindingResult);
     }
 
     @Test
@@ -132,7 +132,7 @@ public class UserControllerTest {
         RegisterUserDto dto = getRegisterUserDto();
         BindingResult bindingResult = mock(BindingResult.class);
         doThrow(new UnexpectedErrorException()).when(authenticator)
-                .register(dto.getUserDto(), bindingResult);
+                .register(dto.getUserDto(), true, bindingResult);
 
         ModelAndView mav = userController.registerUser(dto, bindingResult, Locale.ENGLISH);
 
@@ -145,7 +145,7 @@ public class UserControllerTest {
         RegisterUserDto dto = getRegisterUserDto();
         BindingResult bindingResult = mock(BindingResult.class);
         doThrow(new NoConnectionException()).when(authenticator)
-                .register(dto.getUserDto(), bindingResult);
+                .register(dto.getUserDto(), true, bindingResult);
 
         ModelAndView mav = userController.registerUser(dto, bindingResult, Locale.ENGLISH);
 
@@ -182,7 +182,7 @@ public class UserControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
 
         doThrow(new UnexpectedErrorException()).when(authenticator)
-                .register(dto.getUserDto(), bindingResult);
+                .register(dto.getUserDto(), true, bindingResult);
 
         JsonResponse response = userController.registerUserAjax(dto, bindingResult, Locale.ENGLISH);
 
@@ -196,7 +196,7 @@ public class UserControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
 
         doThrow(new NoConnectionException()).when(authenticator)
-                .register(dto.getUserDto(), bindingResult);
+                .register(dto.getUserDto(), true, bindingResult);
 
         JsonResponse response = userController.registerUserAjax(dto, bindingResult, Locale.ENGLISH);
 

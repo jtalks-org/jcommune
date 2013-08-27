@@ -164,7 +164,7 @@ public class UserController {
     public ModelAndView registerUser(@ModelAttribute("newUser") RegisterUserDto registerUserDto,
                                      BindingResult result, Locale locale) {
         try {
-            register(registerUserDto, result, locale);
+            register(registerUserDto, true, result, locale);
         } catch (NoConnectionException e) {
             return new ModelAndView(REG_SERVICE_CONNECTION_ERROR_URL);
         } catch (UnexpectedErrorException e) {
@@ -173,16 +173,24 @@ public class UserController {
         if (result.hasErrors()) {
             return new ModelAndView(REGISTRATION);
         }
+
         userService.storeRegisteredUser(registerUserDto.getUserDto());
+        try {
+            register(registerUserDto, false, result, locale);
+        } catch (NoConnectionException e) {
+            return new ModelAndView(REG_SERVICE_CONNECTION_ERROR_URL);
+        } catch (UnexpectedErrorException e) {
+            return new ModelAndView(REG_SERVICE_UNEXPECTED_ERROR_URL);
+        }
         return new ModelAndView(AFTER_REGISTRATION);
     }
 
-    private void register(RegisterUserDto registerUserDto, BindingResult result, Locale locale)
+    private void register(RegisterUserDto registerUserDto, Boolean dryRun, BindingResult result, Locale locale)
             throws UnexpectedErrorException, NoConnectionException {
         registerUserDto.getUserDto().setLanguage(Language.byLocale(locale));
         BindingResult jcErrors = new BeanPropertyBindingResult(registerUserDto, "newUser");
         validator.validate(registerUserDto, jcErrors);
-        authenticator.register(registerUserDto.getUserDto(), result);
+        authenticator.register(registerUserDto.getUserDto(), dryRun, result);
         mergeValidationErrors(jcErrors, result);
     }
 
@@ -208,7 +216,7 @@ public class UserController {
     public JsonResponse registerUserAjax(@ModelAttribute("newUser") RegisterUserDto registerUserDto,
                                          BindingResult result, Locale locale) {
         try {
-            register(registerUserDto, result, locale);
+            register(registerUserDto, true, result, locale);
         } catch (NoConnectionException e) {
             return new JsonResponse(JsonResponseStatus.FAIL,
                     new ImmutableMap.Builder<String, String>().put("customError", "connectionError").build());
@@ -219,7 +227,17 @@ public class UserController {
         if (result.hasErrors()) {
             return new JsonResponse(JsonResponseStatus.FAIL, result.getAllErrors());
         }
+
         userService.storeRegisteredUser(registerUserDto.getUserDto());
+        try {
+            register(registerUserDto, false, result, locale);
+        } catch (NoConnectionException e) {
+            return new JsonResponse(JsonResponseStatus.FAIL,
+                    new ImmutableMap.Builder<String, String>().put("customError", "connectionError").build());
+        } catch (UnexpectedErrorException e) {
+            return new JsonResponse(JsonResponseStatus.FAIL,
+                    new ImmutableMap.Builder<String, String>().put("customError", "unexpectedError").build());
+        }
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 
