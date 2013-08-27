@@ -466,7 +466,7 @@ function AddTag(t1, t2) {
             MozillaInsertText(element, mylink + t2, sel_end + t1.length);
             element.selectionEnd = sel_end + t1.length + t2.length + mylink.length;
         } else if (element.value.substring(sel_start, sel_end).length == 0) {
-            MozillaInsertText(element, dummyText + t2, element.selectionStart);
+            MozillaInsertText(element, dummyText + t2, sel_end + t1.length);
             sel_start = element.value.lastIndexOf(t1)+t1.length;
             element.selectionEnd = sel_start + dummyText.length;
         } else {
