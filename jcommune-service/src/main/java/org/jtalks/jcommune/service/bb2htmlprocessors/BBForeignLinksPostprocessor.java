@@ -51,6 +51,7 @@ public class BBForeignLinksPostprocessor implements TextPostProcessor {
         return addPrefixToForeignLinks(bbDecodedText);
     }
 
+
     private String addPrefixToForeignLinks(String decodedText){
         Pattern linkPattern = Pattern.compile(URL_PATTERN, Pattern.DOTALL);
         Matcher linkMatcher = linkPattern.matcher(decodedText);
@@ -76,6 +77,11 @@ public class BBForeignLinksPostprocessor implements TextPostProcessor {
         return ((ServletRequestAttributes) attributes).getRequest();
     }
 
+    /**
+     * Gets prefix to add href
+     *
+     * @return prefix
+     */
     @VisibleForTesting
     protected String getHrefPrefix(){
         return "/out?=";
