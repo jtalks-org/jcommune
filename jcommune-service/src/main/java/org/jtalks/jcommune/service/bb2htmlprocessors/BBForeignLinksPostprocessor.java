@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 /**
  * PostProcessor for bb2html which adds attribute rel="nofollow" to foreign links. It's done in order to keep our Google
  * Rating higher.
- * <p>
+ * <p/>
  * Note: Nofollow is an attribute that can be added to links to discourage Comment Spam. It is used with the rel=" "
  * attribute in a link. By default, posting links generates no positive benefit for the poster in terms of PageRank
  * (or other search engine value) the spammers will be dissuaded from wasting their time.
@@ -40,7 +40,7 @@ public class BBForeignLinksPostprocessor implements TextPostProcessor {
     private static final String URL_PATTERN = "<a .*?href=(\"|')(((http|ftp|https)://)?" +
             "([\\w\\-_]+(\\.[\\w\\-_]+)+)+([\\w\\-\\.,@?^=%&amp;:/~\\+#]*[\\w\\-\\@?^=%&amp;/~\\+#])?)(\"|')";
 
-     /**
+    /**
      * Process incoming text with adding prefix "/out" to foreign links. This prefix
      * will be excluded from indexing by search engines (robots.txt)
      *
@@ -48,19 +48,21 @@ public class BBForeignLinksPostprocessor implements TextPostProcessor {
      */
     @Override
     public String postProcess(String bbDecodedText) {
-        return addPrefixToForeignLinks(bbDecodedText);
+        HttpServletRequest httpServletRequest = getServletRequest();
+        return addPrefixToForeignLinks(bbDecodedText, httpServletRequest.getServerName());
     }
 
 
-    private String addPrefixToForeignLinks(String decodedText){
+    private String addPrefixToForeignLinks(String decodedText, String serverName) {
         Pattern linkPattern = Pattern.compile(URL_PATTERN, Pattern.DOTALL);
         Matcher linkMatcher = linkPattern.matcher(decodedText);
         String href;
 
-        while (linkMatcher.find())
-        {
+        while (linkMatcher.find()) {
             href = linkMatcher.group();
-            decodedText = decodedText.replace(href, href.replace("href=\"", "href=\"" + getHrefPrefix()));
+            if (!href.contains(serverName)) {
+                decodedText = decodedText.replace(href, href.replace("href=\"", "href=\"" + getHrefPrefix()));
+            }
         }
 
         return decodedText;
@@ -83,7 +85,7 @@ public class BBForeignLinksPostprocessor implements TextPostProcessor {
      * @return prefix
      */
     @VisibleForTesting
-    protected String getHrefPrefix(){
+    protected String getHrefPrefix() {
         return "/out?=";
     }
 

@@ -31,13 +31,15 @@ public class BBForeignLinksPostprocessorTest {
     @Mock
     private HttpServletRequest request;
     private String prefix = "/out?=";
-    
+    private String serverName = "server_name";
+
     @BeforeMethod
     public void setUp() {
         service = spy(new BBForeignLinksPostprocessor());
         when(service.getHrefPrefix()).thenReturn(prefix);
         MockitoAnnotations.initMocks(this);
         doReturn(request).when(service).getServletRequest();
+        when(request.getServerName()).thenReturn(serverName);
     }
     
     @Test(dataProvider = "preProcessingCommonLinks")
@@ -47,6 +49,11 @@ public class BBForeignLinksPostprocessorTest {
 
     @Test(dataProvider = "preProcessingSubDomainLinks")
     public void postprocessorShouldCorrectlyRecognizeSubDomains(String incomingText, String outcomingText) {
+        assertEquals(service.postProcess(incomingText), outcomingText);
+    }
+
+    @Test(dataProvider = "preProcessingLocalLinks")
+    public void postprocessorShouldCorrectlyRecognizeLocalLinks(String incomingText, String outcomingText) {
         assertEquals(service.postProcess(incomingText), outcomingText);
     }
 
@@ -69,8 +76,19 @@ public class BBForeignLinksPostprocessorTest {
                 {"<a href=\"blog.javatalks.ru\"></a>", "<a href=\""+ prefix +"blog.javatalks.ru\"></a>"},
                 {"<a href=\"http://blog.javatalks.ru\"></a>", "<a href=\""+ prefix +"http://blog.javatalks.ru\"></a>"},
                 {"<a href=\"www.blog.javatalks.ru\"></a>", "<a href=\""+ prefix +"www.blog.javatalks.ru\"></a>"},
-                {"<a href=\"http://www.blog.javatalks.ru\"></a>", "<a href=\""+ prefix +"http://www.blog.javatalks.ru\"></a>"},
-                {"<a href=\"http://com.blog.javatalks.ru\"></a>", "<a href=\""+ prefix +"http://com.blog.javatalks.ru\"></a>"},
+                {"<a href=\"http://www.blog.javatalks.ru\"></a>",
+                        "<a href=\""+ prefix +"http://www.blog.javatalks.ru\"></a>"},
+                {"<a href=\"http://com.blog.javatalks.ru\"></a>",
+                        "<a href=\""+ prefix +"http://com.blog.javatalks.ru\"></a>"},
+        };
+    }
+
+    @DataProvider
+    public Object[][] preProcessingLocalLinks() {
+        return new Object[][]{  // {"incoming link (before)", "outcoming link (after)"}
+                {"<a href=\"" + serverName + ".ru\"></a>", "<a href=\""+serverName+".ru\"></a>"},
+                {"<a href=\"http://blog." + serverName + ".ru\"></a>",
+                        "<a href=\"http://blog." + serverName + ".ru\"></a>"}
         };
     }
 }
