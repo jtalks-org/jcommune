@@ -41,14 +41,14 @@
     <form:hidden id="editedUsername" path="username" value="${editedUser.username}"/>
 
     <div class='user-profile-header'>
-    <span class="pull-left thumbnail">
-      <span id="avatarPreviewContainer" class="wraptocenter">
-        <%--String prefix "data:image/jpeg;base64," needed for correct image rendering--%>
-        <img id="avatarPreview" src="data:image/jpeg;base64,${editedUser.avatar}" alt=""/>
-      </span>
-    </span>
+                    <span class="pull-left thumbnail">
+                        <span id="avatarPreviewContainer" class="wraptocenter">
+                            <%--String prefix "data:image/jpeg;base64," needed for correct image rendering--%>
+                            <img id="avatarPreview" src="data:image/jpeg;base64,${editedUser.avatar}" alt=""/>
+                        </span>
+                    </span>
 
-      <h2 class="pull-right user-profile-username"><c:out value="${editedUser.username}"/></h2>
+        <h2 class="pull-right user-profile-username"><c:out value="${editedUser.username}"/></h2>
     </div>
     <div class="clearfix"></div>
     <div class="user-profile-top-buttons">
@@ -177,6 +177,19 @@
             </div>
 
             <div class="control-group">
+                <label class="control-label"><spring:message code="label.send.pm.notification.enabled"/></label>
+
+                <div class="controls padding-top-profile">
+                    <spring:message var="sendPmNotificationTooltip"
+                                    code="label.tips.sendPmNotification"/>
+                    <form:checkbox path="sendPmNotification"
+                                   value="${editedUser.sendPmNotification}"
+                                   class="form-check-radio-box script-has-tooltip"
+                                   data-original-title='${sendPmNotificationTooltip}' tabindex="36"/>
+                </div>
+            </div>
+
+            <div class="control-group">
                 <label class="control-label"><spring:message code="label.location"/></label>
 
                 <div class="controls">
@@ -246,7 +259,7 @@
                    title="<spring:message code='label.contacts.tips.delete'/>">
                     <i class="icon-remove icon-white"></i>
                 </a>
-
+                        
                         <span class="contact" title="<c:out value='${contact.type.typeName}'/>">
                             <img src="${pageContext.request.contextPath}${contact.type.icon}"
                                  alt="<spring:message code='alt.contacts.contactType'/>">
