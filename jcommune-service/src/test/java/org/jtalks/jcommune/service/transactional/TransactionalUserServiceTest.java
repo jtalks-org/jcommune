@@ -70,6 +70,7 @@ import static org.testng.Assert.*;
  * @author Anuar Nurmakanov
  */
 public class TransactionalUserServiceTest {
+
     private static final String USERNAME = "username";
     private static final String FIRST_NAME = "first name";
     private static final String LAST_NAME = "last name";
@@ -81,15 +82,7 @@ public class TransactionalUserServiceTest {
     private static final String NEW_PASSWORD = "newPassword";
     //if you change the NEW_PASSWORD, regenerate md5 hash
     private static final String NEW_PASSWORD_MD5_HASH = "14a88b9d2f52c55b5fbcf9c5d9c11875";
-    private static final Language LANGUAGE = Language.ENGLISH;
-    private static final int PAGE_SIZE = 50;
-    private static final boolean AUTOSUBSCRIBE = true;
-    private static final boolean MENTIONING_NOTIFICATIONS_ENABLED = true;
-    private static final String LOCATION = "location";
-    private static final boolean SEND_PM_NOTIFICATION = true;
-    private static final byte[] AVATAR = new byte[10];
     private static final long USER_ID = 999L;
-    private static final long MAX_REGISTRATION_TIMEOUT = 1000L;
 
     private static final String MENTIONING_TEMPLATE = "This post contains not notified [user]%s[/user] mentioning " +
             "and notified [user notified=true]%s[/user] mentioning";
@@ -168,12 +161,12 @@ public class TransactionalUserServiceTest {
         String newAvatar = new String(new byte[12]);
 
         JCUser editedUser = userService.saveEditedUserProfile(USER_ID, new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE, MENTIONING_NOTIFICATIONS_ENABLED,
-                LOCATION, SEND_PM_NOTIFICATION));
+                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, Language.ENGLISH, 50, true, true,
+                "location", true));
 
         verify(userDao).saveOrUpdate(user);
         assertUserUpdated(editedUser);
-        assertEquals(editedUser.getLanguage(), LANGUAGE, "language was not changed");
+        assertEquals(editedUser.getLanguage(), Language.ENGLISH, "language was not changed");
     }
 
     @Test
@@ -212,8 +205,8 @@ public class TransactionalUserServiceTest {
         when(userDao.isExist(USER_ID)).thenReturn(Boolean.FALSE);
 
         userService.saveEditedUserProfile(USER_ID, new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE, MENTIONING_NOTIFICATIONS_ENABLED,
-                LOCATION, SEND_PM_NOTIFICATION));
+                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, Language.ENGLISH, 50, true, true,
+                "location", true));
     }
 
     @Test
@@ -227,8 +220,8 @@ public class TransactionalUserServiceTest {
         String newAvatar = new String(new byte[12]);
         String newPassword = null;
         UserInfoContainer userInfo = new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, newPassword, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE, MENTIONING_NOTIFICATIONS_ENABLED,
-                LOCATION, SEND_PM_NOTIFICATION);
+                PASSWORD, newPassword, SIGNATURE, newAvatar, Language.ENGLISH, 50, true, true,
+                "location", true);
 
         JCUser editedUser = userService.saveEditedUserProfile(USER_ID, userInfo);
 
@@ -246,8 +239,8 @@ public class TransactionalUserServiceTest {
         String newAvatar = new String(new byte[0]);
 
         JCUser editedUser = userService.saveEditedUserProfile(USER_ID, new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE, MENTIONING_NOTIFICATIONS_ENABLED,
-                LOCATION, SEND_PM_NOTIFICATION));
+                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, Language.ENGLISH, 50, true, true,
+                "location", true));
 
         verify(userDao).saveOrUpdate(user);
         assertEquals(editedUser.getEmail(), EMAIL, "Email was changed");
@@ -489,7 +482,7 @@ public class TransactionalUserServiceTest {
         JCUser user = new JCUser(username, EMAIL, PASSWORD);
         user.setFirstName(FIRST_NAME);
         user.setLastName(LAST_NAME);
-        user.setAvatar(AVATAR);
+        user.setAvatar(new byte[10]);
         user.setMentioningNotificationsEnabled(true);
         return user;
     }

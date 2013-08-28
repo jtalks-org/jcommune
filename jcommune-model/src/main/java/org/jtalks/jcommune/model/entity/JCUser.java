@@ -277,13 +277,19 @@ public class JCUser extends User {
     }
 
     /**
-     * Check for pm's obtaining notification
-     * @return
+     * Determines whether email notifications are send to user when he has new private message.
+     *
+     * @return true user receives email notifications, otherwise false
      */
     public boolean isSendPmNotification() {
         return sendPmNotification;
     }
 
+    /**
+     * Set whether email notifications are send to user when he has new private message.
+     *
+     * @param sendPmNotification
+     */
     public void setSendPmNotification(boolean sendPmNotification) {
         this.sendPmNotification = sendPmNotification;
     }
