@@ -101,5 +101,19 @@ public class NotificationService {
             }
         }
     }
+
+    /**
+     * Send notification to subscribers about removing topic
+     *
+     * @param topic
+     */
+    public void sendNotificationAboutRemovingTopic(Topic topic) {
+        if (notificationsEnabledProperty.booleanValue()) {
+            Collection<JCUser> subscribers = subscriptionService.getAllowedSubscribers(topic);
+            for (JCUser user : subscribers) {
+                    mailService.sendRemovingTopicMail(user, topic);
+            }
+        }
+    }
 }
 

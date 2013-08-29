@@ -361,4 +361,9 @@ public class MailService {
             return "";
         }
     }
+
+    public void sendRemovingTopicMail(JCUser recipient, Topic topic)
+    {
+
+    }
 }

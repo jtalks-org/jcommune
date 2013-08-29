@@ -309,6 +309,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
     public void deleteTopic(Topic topic) throws NotFoundException {
         Branch branch = deleteTopicSilent(topic);
         notificationService.subscribedEntityChanged(branch);
+        notificationService.sendNotificationAboutRemovingTopic(topic);
 
         logger.info("Deleted topic \"{}\". Topic id: {}", topic.getTitle(), topic.getId());
     }
