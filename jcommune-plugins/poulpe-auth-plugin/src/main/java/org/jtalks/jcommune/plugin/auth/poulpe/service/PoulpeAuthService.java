@@ -122,6 +122,7 @@ public class PoulpeAuthService {
         authInfo.put("email", auth.getProfile().getEmail());
         authInfo.put("firstName", auth.getProfile().getFirstName());
         authInfo.put("lastName", auth.getProfile().getLastName());
+        authInfo.put("enabled", String.valueOf(auth.getProfile().isEnabled()));
         return authInfo;
     }
 

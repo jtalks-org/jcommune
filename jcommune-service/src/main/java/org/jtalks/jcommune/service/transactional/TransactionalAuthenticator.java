@@ -15,6 +15,7 @@
 
 package org.jtalks.jcommune.service.transactional;
 
+import org.joda.time.DateTime;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.dto.UserDto;
@@ -41,6 +42,7 @@ import org.springframework.validation.BindingResult;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -242,6 +244,8 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
             } else {
                 // user not exist in database (poulpe uses own database)
                 user = new JCUser(authInfo.get("username"), authInfo.get("email"), passwordHash);
+                user.setRegistrationDate(new DateTime());
+                user.setEnabled(Boolean.parseBoolean(authInfo.get("enabled")));
             }
         } else {
             user = getDao().getByUsername(authInfo.get("username"));
