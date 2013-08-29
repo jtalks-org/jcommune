@@ -138,6 +138,13 @@ $(document).ready(function () {
 
     });
 
+    //redirect to external links in the body of posts (and signatures)
+    $(document).delegate('.post-content-td a', 'click', function(e){
+        e.preventDefault();
+        var originalHref = $(e.target).attr('href').replace('/out?=','');
+        window.location = originalHref;
+    });
+
     $(window).resize();
 
     // html5 placeholder emulation for old IE
