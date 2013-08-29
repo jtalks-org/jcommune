@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jtalks.common.model.entity.Section;
+import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
@@ -29,6 +30,7 @@ import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicModificationService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.security.PermissionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,6 +52,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
     private TopicDao topicDao;
     private TopicModificationService topicService;
     private UserService userService;
+    private PermissionService permissionService;
 
     /**
      * Create an instance of entity based service
@@ -59,18 +62,21 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
      * @param topicDao     data access object for operations with topics
      * @param topicService service to perform complex operations with topics
      * @param userService  service to perform complex operations with users
+     * @param permissionService service to perform permissions operations
      */
     public TransactionalBranchService(
             BranchDao branchDao,
             SectionDao sectionDao,
             TopicDao topicDao,
             TopicModificationService topicService,
-            UserService userService) {
+            UserService userService,
+            PermissionService permissionService) {
         super(branchDao);
         this.sectionDao = sectionDao;
         this.topicDao = topicDao;
         this.topicService = topicService;
         this.userService = userService;
+        this.permissionService = permissionService;
     }
 
     /**
@@ -97,15 +103,17 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
             throw new NotFoundException("Section with id: " + sectionId + " not found");
         }
 
-        JCUser user = userService.getCurrentUser();
-        if (user.getGroups().isEmpty()) {
-            return Collections.EMPTY_LIST;
-        }
         Section section = sectionDao.get(sectionId);
-        List<Branch> branches = new ArrayList<Branch>(this.getDao().getAllAvailableBranchesInSection(user, section));
         Topic topic = topicDao.get(currentTopicId);
+        List<Branch> branches = (List) section.getBranches();
         branches.remove(topic.getBranch());
-        return branches;
+        List<Branch> result = new ArrayList<>();
+        for (Branch branch : branches) {
+            if (permissionService.hasBranchPermission(branch.getId(), BranchPermission.VIEW_TOPICS)) {
+                result.add(branch);
+            }
+        }
+        return result;
     }
 
     /**

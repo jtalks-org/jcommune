@@ -24,6 +24,7 @@ import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicModificationService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.security.PermissionService;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
@@ -65,6 +66,8 @@ public class TransactionalBranchServiceTest {
     private TopicModificationService topicService;
     @Mock
     private UserService userService;
+    @Mock
+    private PermissionService permissionService;
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -74,7 +77,8 @@ public class TransactionalBranchServiceTest {
                 sectionDao,
                 topicDao,
                 topicService,
-                userService);
+                userService,
+                permissionService);
     }
 
     @Test
