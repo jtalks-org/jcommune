@@ -20,7 +20,7 @@ jQuery(document).ready(function(){
         // Tooltips on status images
         jQuery('img.status-img-small').tooltip();
         jQuery("#links_editor").tooltip();
-        jQuery("span").tooltip();
+        jQuery("a").tooltip();
         jQuery('.btn').tooltip({placement: 'bottom'});
-		jQuery('.script-has-tooltip').tooltip();
+   		jQuery('.script-has-tooltip').tooltip();
 });
