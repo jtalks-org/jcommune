@@ -22,5 +22,5 @@ jQuery(document).ready(function(){
         jQuery("#links_editor").tooltip();
         jQuery("span").tooltip();
         jQuery('.btn').tooltip({placement: 'bottom'});
-		jQuery('.script-has-tooltip').tooltip();
+   		jQuery('.script-has-tooltip').tooltip();
 });
