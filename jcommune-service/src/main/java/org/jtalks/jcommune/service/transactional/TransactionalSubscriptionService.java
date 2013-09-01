@@ -22,6 +22,7 @@ import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
