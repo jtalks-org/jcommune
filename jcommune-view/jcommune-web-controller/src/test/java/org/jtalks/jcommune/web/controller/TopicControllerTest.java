@@ -32,6 +32,7 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -79,6 +80,8 @@ public class TopicControllerTest {
     private SessionRegistry registry;
     @Mock
     private LastReadPostService lastReadPostService;
+    @Mock
+    private WebRequest request;
 
     private TopicController controller;
 
@@ -138,7 +141,8 @@ public class TopicControllerTest {
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
         when(postService.getPosts(topic, page)).thenReturn(postsPage);
 
-        ModelAndView mav = controller.showTopicPage(TOPIC_ID, page);
+
+        ModelAndView mav = controller.showTopicPage(request, TOPIC_ID, page);
 
         verify(topicFetchService).checkViewTopicPermission(branch.getId());
         verify(lastReadPostService).markTopicPageAsRead(topic, Integer.valueOf(page));
