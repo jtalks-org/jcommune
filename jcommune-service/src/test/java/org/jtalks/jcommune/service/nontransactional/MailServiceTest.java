@@ -23,6 +23,8 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.context.MessageSource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
@@ -64,6 +66,7 @@ public class MailServiceTest {
     private JavaMailSender sender;
     @Mock
     private PropertyDao propertyDao;
+
     private JCommuneProperty notificationsEnabledProperty = SENDING_NOTIFICATIONS_ENABLED;
     //
     private MailService service;
@@ -318,5 +321,26 @@ public class MailServiceTest {
     private void enableEmailNotifications() {
         Property enabledProperty = new Property(PROPERTY_NAME, TRUE_STRING);
         when(propertyDao.getByName(PROPERTY_NAME)).thenReturn(enabledProperty);
+    }
+
+    @Test
+    public void testSendRemovingTopicMailWhenTopicAsTopic() throws IOException, MessagingException {
+        Topic topic = new Topic();
+        service.sendRemovingTopicMail(user, topic);
+
+        this.checkMailCredentials();
+        assertTrue(this.getMimeMailSubject().contains("Topic"));
+        assertTrue(this.getMimeMailBody().contains("removed"));
+    }
+
+    @Test
+    public void testSendRemovingTopicMailWhenTopicAsCodeReview() throws IOException, MessagingException {
+        Topic topic = new Topic();
+        topic.setCodeReview(new CodeReview());
+        service.sendRemovingTopicMail(user, topic);
+
+        this.checkMailCredentials();
+        assertTrue(this.getMimeMailSubject().contains("Code Review"));
+        assertTrue(this.getMimeMailBody().contains("removed"));
     }
 }
