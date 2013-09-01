@@ -35,6 +35,18 @@
                  pointcut="execution(* org.jtalks.jcommune.model.dao.ValidatorDao.* (*))"/>
   </aop:config>
 
+  <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
+  <bean class="org.springframework.validation.beanvalidation.MethodValidationPostProcessor">
+    <property name="validator" ref="validator"/>
+  </bean>
+  <bean class="org.springframework.validation.beanvalidation.BeanValidationPostProcessor">
+    <property name="validator" ref="validator"/>
+  </bean>
+
+  <bean id="uniqueValidator" class="org.jtalks.jcommune.model.validation.validators.UniqueValidator">
+    <constructor-arg index="0" ref="validatorDAO"/>
+  </bean>
+
   <!--Declaration of DAO beans -->
   <bean id="userDao" parent="genericDao"
         class="org.jtalks.jcommune.model.dao.hibernate.UserHibernateDao"/>

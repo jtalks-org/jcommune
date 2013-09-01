@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.service;
 
-import org.jtalks.jcommune.model.dto.UserDto;
+import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.springframework.validation.BindingResult;
@@ -49,12 +49,10 @@ public interface Authenticator {
     /**
      * Register user with given details.
      *
-     * @param userDto user
-     * @param bindingResult container for validation errors
-     * @throws UnexpectedErrorException
+     * @param registerUserDto @throws UnexpectedErrorException
      * @throws NoConnectionException
      */
-    public void register(UserDto userDto, Boolean dryRun, BindingResult bindingResult)
+    public BindingResult register(RegisterUserDto registerUserDto)
             throws UnexpectedErrorException, NoConnectionException;
 
 

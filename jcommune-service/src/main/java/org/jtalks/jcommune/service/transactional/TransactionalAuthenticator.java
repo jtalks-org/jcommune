@@ -18,8 +18,10 @@ package org.jtalks.jcommune.service.transactional;
 import org.joda.time.DateTime;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.model.plugins.SimpleAuthenticationPlugin;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
@@ -38,14 +40,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.Validator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Serves for authentication and registration user.
@@ -67,6 +69,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
     private SecurityContextHolderFacade securityFacade;
     private RememberMeServices rememberMeServices;
     private SessionAuthenticationStrategy sessionStrategy;
+    private Validator validator;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalAuthenticator.class);
 
@@ -87,7 +90,8 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
                                       AuthenticationManager authenticationManager,
                                       SecurityContextHolderFacade securityFacade,
                                       RememberMeServices rememberMeServices,
-                                      SessionAuthenticationStrategy sessionStrategy) {
+                                      SessionAuthenticationStrategy sessionStrategy,
+                                      Validator validator) {
         super(dao);
         this.pluginLoader = pluginLoader;
         this.encryptionService = encryptionService;
@@ -95,6 +99,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         this.securityFacade = securityFacade;
         this.rememberMeServices = rememberMeServices;
         this.sessionStrategy = sessionStrategy;
+        this.validator = validator;
     }
 
     /**
@@ -266,7 +271,20 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      * {@inheritDoc}
      */
     @Override
-    public void register(UserDto userDto, Boolean dryRun, BindingResult bindingResult)
+    public BindingResult register(RegisterUserDto registerUserDto)
+            throws UnexpectedErrorException, NoConnectionException {
+        BindingResult result = new BeanPropertyBindingResult(registerUserDto, "newUser");
+        BindingResult jcErrors = new BeanPropertyBindingResult(registerUserDto, "newUser");
+        validator.validate(registerUserDto, jcErrors);
+        registerByPlugin(registerUserDto.getUserDto(), true, result);
+        mergeValidationErrors(jcErrors, result);
+        if(!result.hasErrors()) {
+            registerByPlugin(registerUserDto.getUserDto(), false, result);
+        }
+        return result;
+    }
+
+    public void registerByPlugin(UserDto userDto, Boolean dryRun, BindingResult bindingResult)
             throws UnexpectedErrorException, NoConnectionException {
         SimpleAuthenticationPlugin authPlugin = getPlugin();
         if (authPlugin != null && authPlugin.getState() == Plugin.State.ENABLED) {
@@ -276,6 +294,14 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
             Map<String, String> errors = authPlugin.registerUser(userDto, dryRun);
             for(Map.Entry<String, String> error : errors.entrySet()) {
                 bindingResult.rejectValue(error.getKey(), null, error.getValue());
+            }
+        }
+    }
+
+    protected void mergeValidationErrors(BindingResult srcErrors, BindingResult dstErrors) {
+        for (FieldError error : srcErrors.getFieldErrors()) {
+            if (!dstErrors.hasFieldErrors(error.getField())) {
+                dstErrors.addError(error);
             }
         }
     }

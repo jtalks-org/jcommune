@@ -157,6 +157,7 @@
         <constructor-arg ref="securityContextFacade"/>
         <constructor-arg ref="rememberMeServices"/>
         <constructor-arg ref="concurrentSessionControlStrategy"/>
+        <constructor-arg ref="validator"/>
     </bean>
 
     <bean id="userContactsService"
