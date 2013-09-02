@@ -37,8 +37,7 @@ import java.util.regex.Pattern;
  */
 public class BBForeignLinksPostprocessor implements TextPostProcessor {
 
-    private static final String URL_PATTERN = "<a .*?href=(\"|')(((http|ftp|https)://)?" +
-            "([\\w\\-_]+(\\.[\\w\\-_]+)+)+([\\w\\-\\.,@?^=%&amp;:/~\\+#]*[\\w\\-\\@?^=%&amp;/~\\+#])?)(\"|')";
+    private static final String URL_PATTERN = "<a .*?href=(\"|').*?(\"|')";
 
     /**
      * Process incoming text with adding prefix "/out" to foreign links. This prefix

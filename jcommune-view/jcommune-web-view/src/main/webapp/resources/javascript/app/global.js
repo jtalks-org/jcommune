@@ -138,11 +138,13 @@ $(document).ready(function () {
 
     });
 
-    //redirect to external links in the body of posts (and signatures)
-    $(document).delegate('.post-content-td a', 'click', function(e){
+    //redirect to external links in the body of posts (and signature, profile contacts)
+    $(document).delegate('.post-content-td a, #contacts a, .test-signature a', 'mousedown', function (e) {
         e.preventDefault();
-        var originalHref = $(e.target).attr('href').replace('/out?=','');
-        window.location = originalHref;
+        if (e.which == 1 || e.which == 2) {
+            var originalHref = $(e.target).attr('href').replace('/out?=', '');
+            window.open(originalHref);
+        }
     });
 
     $(window).resize();
