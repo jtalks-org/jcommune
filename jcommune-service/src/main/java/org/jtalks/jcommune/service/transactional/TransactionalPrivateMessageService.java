@@ -118,7 +118,7 @@ public class TransactionalPrivateMessageService
         securityService.createAclBuilder().grant(GeneralPermission.READ).to(recipient).on(pm).flush();
         securityService.createAclBuilder().grant(GeneralPermission.READ).to(userFrom).on(pm).flush();
 
-        if (isSendNotificationMessage(userFrom)) {
+        if (isSendNotificationMessage(recipient)) {
             mailService.sendReceivedPrivateMessageNotification(recipient, pm);
         }
 
@@ -127,6 +127,11 @@ public class TransactionalPrivateMessageService
         return pm;
     }
 
+    /**
+     * Check - sending notification is allow
+     * @param user
+     * @return
+     */
     private boolean isSendNotificationMessage(JCUser user) {
          return (sendingNotificationsEnabledProperty.booleanValue() && user.isSendPmNotification());
     }
