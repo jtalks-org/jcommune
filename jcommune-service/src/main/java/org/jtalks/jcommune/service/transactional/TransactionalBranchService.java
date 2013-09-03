@@ -155,4 +155,16 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
                 "Branch id: {}", branch.getName(), branch.getId());
         return branch;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.VIEW_TOPICS')")
+    public void changeBranchInfo(long branchId, String title, String description) throws NotFoundException {
+        Branch branch = get(branchId);
+        branch.setName(title);
+        branch.setDescription(description);
+        getDao().saveOrUpdate(branch);
+    }
 }

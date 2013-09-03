@@ -24,6 +24,14 @@ public class BranchDto {
 
     private long id;
     private String name;
+    private String description;
+
+    /**
+     * Default constructor. All properties get default values
+     */
+    public BranchDto() {
+
+    }
 
     /**
      * @param id   unique branch identifier
@@ -64,6 +72,22 @@ public class BranchDto {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Gets the branch description
+     * @return description of the branch
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Sets the branch description
+     * @param description new description of the branch
+     */
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }

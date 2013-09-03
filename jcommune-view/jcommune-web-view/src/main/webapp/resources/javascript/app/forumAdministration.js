@@ -25,7 +25,90 @@ $(function () {
     $("#cmpName").on('click', showForumConfigurationDialog);
     $("#cmpDescription").on('click', showForumConfigurationDialog);
     $("#forumLogo").on('click', showForumConfigurationDialog);
+
+    $("[id^=branchLabel]").on('click', showBranchEditDialog);
 });
+
+
+function showBranchEditDialog(e) {
+    e.preventDefault();
+
+    var branchId = this.id.substring("branchLabel".length);
+    var descriptonLabel = $("#branchDescriptionLabel" + branchId);
+
+    var bodyContent = Utils.createFormElement("branchName", 'branchName', 'text', 'first dialog-input')
+        + Utils.createFormElement("branchDescription", 'branchDescription', 'text', 'dialog-input') +
+            '<div class="clearfix"';
+
+    var footerContent = ' \
+            <button id="administrationCancelButton" class="btn">' + $labelCancel + '</button> \
+            <button id="administrationSubmitButton" class="btn btn-primary">' + $labelSaveChanges + '</button>';
+
+    jDialog.createDialog({
+        dialogId: 'administration-modal-dialog',
+        title: $labelAdministration,
+        bodyContent: bodyContent,
+        footerContent: footerContent,
+        maxWidth: 350,
+        maxHeight: 500,
+        firstFocus: true,
+        tabNavigation: ['#branchName', '#branchDescription',
+            '#administrationSubmitButton', '#administrationCancelButton'],
+        handlers: {
+            '#administrationSubmitButton': {'click': sendBranchConfiguration},
+            '#administrationCancelButton': {'static':'close'}
+        }
+    });
+
+    $('#branchName').val(this.text);
+    $('#branchDescription').val(descriptonLabel.text());
+
+    /**
+     * Handles submit request from BranchEdit form by sending POST request, with params
+     * containing Branch ID, Name & Description
+     */
+    function sendBranchConfiguration(e) {
+        e.preventDefault();
+
+        var branchInformation = {};
+        branchInformation.id = parseInt(branchId);
+        branchInformation.name = jDialog.dialog.find('#branchName').val();
+        branchInformation.description = jDialog.dialog.find('#branchDescription').val();
+
+        jDialog.dialog.find('*').attr('disabled', true);
+
+        $.ajax({
+            url: $root + '/branch/edit',
+            type: "POST",
+            contentType: "application/json",
+            async: false,
+            data: JSON.stringify(branchInformation),
+            success: function (resp) {
+                if (resp.status == 'SUCCESS') {
+                    location.reload();
+                }
+                else {
+                    if (resp.result instanceof Array) {
+                        jDialog.prepareDialog(jDialog.dialog);
+                        jDialog.showErrors(jDialog.dialog, resp.result, "branch", "");
+                    } else {
+                        jDialog.createDialog({
+                            type: jDialog.alertType,
+                            bodyMessage: resp.result
+                        });
+                    }
+                }
+            },
+            error: function (data) {
+                jDialog.createDialog({
+                    type: jDialog.alertType,
+                    bodyMessage: $labelError500Detail
+                });
+            }
+        });
+    };
+}
+
 
 function getCurrentAdminValues() {
     return {

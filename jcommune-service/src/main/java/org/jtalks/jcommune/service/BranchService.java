@@ -66,4 +66,12 @@ public interface BranchService extends EntityService<Branch> {
      * @return branch for the id given
      */
     Branch deleteAllTopics(long branchId) throws NotFoundException;
+
+    /**
+     * Sets new title and description for the branch with specified ID
+     * @param branchId ID of the branch to change the information
+     * @param title new branch title
+     * @param description new branch description
+     */
+    void changeBranchInfo(long branchId, String title, String description) throws NotFoundException;
 }

@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.common.model.entity.ComponentType;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
+import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
@@ -63,6 +64,9 @@ public class AdministrationControllerTest {
     @Mock
     ImageService iconImageService;
 
+    @Mock
+    BranchService branchService;
+
     //
     private AdministrationController administrationController;
 
@@ -73,7 +77,7 @@ public class AdministrationControllerTest {
         Component component = new Component("Forum", "Cool Forum", ComponentType.FORUM);
         component.setId(42);
 
-        administrationController = new AdministrationController(componentService, messageSource);
+        administrationController = new AdministrationController(componentService, messageSource, branchService);
     }
 
     @Test
