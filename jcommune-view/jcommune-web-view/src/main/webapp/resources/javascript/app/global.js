@@ -139,12 +139,8 @@ $(document).ready(function () {
     });
 
     //redirect to external links in the body of posts (and signature, profile contacts)
-    $(document).delegate('.post-content-td a, #contacts a, .test-signature a', 'mousedown', function (e) {
-        e.preventDefault();
-        if (e.which == 1 || e.which == 2) {
-            var originalHref = $(e.target).attr('href').replace('/out?=', '');
-            window.open(originalHref);
-        }
+    $(document).delegate('.post-content-td a, #contacts a, .test-signature a', 'mousedown', function(e){
+        $(e.target).attr('href', $(e.target).attr('href').replace('/out?=', ''));
     });
 
     $(window).resize();
