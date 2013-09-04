@@ -69,9 +69,10 @@ public interface BranchService extends EntityService<Branch> {
 
     /**
      * Sets new title and description for the branch with specified ID
+     * @param componentId ID of the component of the branch
      * @param branchId ID of the branch to change the information
      * @param title new branch title
      * @param description new branch description
      */
-    void changeBranchInfo(long branchId, String title, String description) throws NotFoundException;
+    void changeBranchInfo(long componentId, long branchId, String title, String description) throws NotFoundException;
 }

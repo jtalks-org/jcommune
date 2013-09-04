@@ -14,6 +14,9 @@
  */
 package org.jtalks.jcommune.web.dto;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 /**
  * Dto for transferring branches to client side.
  * Dto does not contains topics in branch, just id and name.
@@ -21,6 +24,13 @@ package org.jtalks.jcommune.web.dto;
  * @author Eugeny Batov
  */
 public class BranchDto {
+
+    private static final String BRANCH_DESCRIPTION_ILLEGAL_LENGTH = "{branch.description.length_constraint_violation}";
+    private static final String BRANCH_CANT_BE_VOID = "{branch.name.emptiness_constraint_violation}";
+    private static final String BRANCH_NAME_ILLEGAL_LENGTH = "{branch.name.length_constraint_violation}";
+
+    public static final int BRANCH_NAME_MAX_LENGTH = 80;
+    public static final int BRANCH_DESCRIPTION_MAX_LENGTH = 255;
 
     private long id;
     private String name;
@@ -61,6 +71,8 @@ public class BranchDto {
     /**
      * @return branch name
      */
+    @NotNull(message = BRANCH_CANT_BE_VOID)
+    @Size(max = BRANCH_NAME_MAX_LENGTH, message = BRANCH_NAME_ILLEGAL_LENGTH)
     public String getName() {
         return name;
     }
@@ -71,13 +83,14 @@ public class BranchDto {
      * @param name name of branch
      */
     public void setName(String name) {
-        this.name = name;
+        this.name = name.trim();
     }
 
     /**
      * Gets the branch description
      * @return description of the branch
      */
+    @Size(max = BRANCH_DESCRIPTION_MAX_LENGTH, message = BRANCH_DESCRIPTION_ILLEGAL_LENGTH)
     public String getDescription() {
         return description;
     }
@@ -87,7 +100,7 @@ public class BranchDto {
      * @param description new description of the branch
      */
     public void setDescription(String description) {
-        this.description = description;
+        this.description = description.trim();
     }
 
 }

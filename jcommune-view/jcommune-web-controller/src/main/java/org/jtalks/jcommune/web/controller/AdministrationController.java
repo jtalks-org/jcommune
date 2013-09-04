@@ -138,8 +138,10 @@ public class AdministrationController {
             return new JsonResponse(JsonResponseStatus.FAIL, result.getAllErrors());
         }
 
+        long forumId = componentService.getComponentOfForum().getId();
+
         try {
-            branchService.changeBranchInfo(branchDto.getId(), branchDto.getName(), branchDto.getDescription());
+            branchService.changeBranchInfo(forumId, branchDto.getId(), branchDto.getName(), branchDto.getDescription());
         } catch (AccessDeniedException e) {
             String errorMessage = messageSource.getMessage(ACCESS_DENIED_MESSAGE, null, locale);
             return new JsonResponse(JsonResponseStatus.FAIL, errorMessage);

@@ -160,8 +160,8 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.VIEW_TOPICS')")
-    public void changeBranchInfo(long branchId, String title, String description) throws NotFoundException {
+    @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
+    public void changeBranchInfo(long componentId, long branchId, String title, String description) throws NotFoundException {
         Branch branch = get(branchId);
         branch.setName(title);
         branch.setDescription(description);
