@@ -175,7 +175,7 @@ $(document).ready(function () {
     });
 
     //"Add contact" button handler
-    $("#add_contact").click(function () {
+    $("#add_contact").on("click", function () {
 
         AddContact.resetVariables();
 
