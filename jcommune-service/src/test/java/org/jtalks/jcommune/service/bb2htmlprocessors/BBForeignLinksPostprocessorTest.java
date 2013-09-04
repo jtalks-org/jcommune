@@ -61,10 +61,7 @@ public class BBForeignLinksPostprocessorTest {
     public Object[][] preProcessingCommonLinks() {
         return new Object[][]{  // {"incoming link (before)", "outcoming link (after)"}
             {"<a href=\"http://javatalks.ru/common\"></a>", "<a href=\""+ prefix +"http://javatalks.ru/common\"></a>"},
-            {"<a href=\"javatalks.ru\"></a>", "<a href=\""+ prefix +"javatalks.ru\"></a>"},
-            {"<a href=\"www.javatalks.ru\"></a>", "<a href=\""+ prefix +"www.javatalks.ru\"></a>"},
-            {"<a href=\"blog.javatalks.ru\"></a>", "<a href=\""+ prefix +"blog.javatalks.ru\"></a>"},
-            {"<a href=\"forum.javatalks.ru\"></a>", "<a href=\""+ prefix +"forum.javatalks.ru\"></a>"},
+            {"<a href=\"https://forum.javatalks.ru\"></a>", "<a href=\""+ prefix +"https://forum.javatalks.ru\"></a>"},
             {"<a href=\"http://javatalks.ru/common\"></a>", "<a href=\""+ prefix +"http://javatalks.ru/common\"></a>"}
 
         };
@@ -73,9 +70,7 @@ public class BBForeignLinksPostprocessorTest {
     @DataProvider
     public Object[][] preProcessingSubDomainLinks() {
         return new Object[][]{  // {"incoming link (before)", "outcoming link (after)"}
-                {"<a href=\"blog.javatalks.ru\"></a>", "<a href=\""+ prefix +"blog.javatalks.ru\"></a>"},
                 {"<a href=\"http://blog.javatalks.ru\"></a>", "<a href=\""+ prefix +"http://blog.javatalks.ru\"></a>"},
-                {"<a href=\"www.blog.javatalks.ru\"></a>", "<a href=\""+ prefix +"www.blog.javatalks.ru\"></a>"},
                 {"<a href=\"http://www.blog.javatalks.ru\"></a>",
                         "<a href=\""+ prefix +"http://www.blog.javatalks.ru\"></a>"},
                 {"<a href=\"http://com.blog.javatalks.ru\"></a>",
