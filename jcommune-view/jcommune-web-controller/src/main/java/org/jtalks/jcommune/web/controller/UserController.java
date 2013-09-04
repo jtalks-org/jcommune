@@ -31,7 +31,6 @@ import org.jtalks.jcommune.web.validation.editors.DefaultStringEditor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
@@ -70,8 +69,6 @@ public class UserController {
     private UserService userService;
     private Authenticator authenticator;
 
-    private Validator validator;
-
     /**
      * @param userService to delegate business logic invocation
      */
@@ -95,11 +92,6 @@ public class UserController {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
         binder.registerCustomEditor(String.class, "password", new DefaultStringEditor(true));
         binder.registerCustomEditor(String.class, "passwordConfirm", new DefaultStringEditor(true));
-        this.validator = binder.getValidator();
-    }
-
-    protected void setValidator(Validator validator) {
-        this.validator = validator;
     }
 
     /**
@@ -176,7 +168,7 @@ public class UserController {
             mav.addAllObjects(errors.getModel());
             return mav;
         }
-        userService.storeRegisteredUser(registerUserDto.getUserDto());
+
         return new ModelAndView(AFTER_REGISTRATION);
     }
 
@@ -208,7 +200,6 @@ public class UserController {
             return new JsonResponse(JsonResponseStatus.FAIL, errors.getAllErrors());
         }
 
-        userService.storeRegisteredUser(registerUserDto.getUserDto());
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 
