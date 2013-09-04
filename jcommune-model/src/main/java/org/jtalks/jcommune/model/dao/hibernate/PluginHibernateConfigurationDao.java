@@ -69,7 +69,7 @@ public class PluginHibernateConfigurationDao extends GenericDao<PluginConfigurat
     @Override
     public void updateProperties(List<PluginConfigurationProperty> properties) {
         for (PluginConfigurationProperty property: properties) {
-            session().saveOrUpdate(property);
+            session().merge(property);
         }
         session().flush();
     }
