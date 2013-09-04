@@ -59,7 +59,7 @@ public class BBForeignLinksPostprocessor implements TextPostProcessor {
 
         while (linkMatcher.find()) {
             href = linkMatcher.group();
-            if (!href.contains(serverName)) {
+            if (!href.contains(serverName) && href.split("(http|ftp|https)://", 2).length == 2) {
                 decodedText = decodedText.replace(href, href.replace("href=\"", "href=\"" + getHrefPrefix()));
             }
         }
