@@ -36,6 +36,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.Locale;
 
 /**
  * Serves topic management web requests
@@ -58,7 +59,7 @@ public class TopicController {
     private static final String TOPIC_VIEW = "topic/topicForm";
     private static final String TOPIC_DTO = "topicDto";
     private static final String REDIRECT_URL = "redirect:/topics/";
-    private static final DateTimeFormatter RFC_1123_FORMATTER = DateTimeFormat.forPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'");
+    private static final DateTimeFormatter RFC_1123_FORMATTER = DateTimeFormat.forPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'").withLocale(Locale.US);
 
     private TopicModificationService topicModificationService;
     private TopicFetchService topicFetchService;
