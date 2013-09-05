@@ -18,6 +18,7 @@ import org.jtalks.common.model.entity.Branch;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.dao.SectionDao;
+import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SectionService;
@@ -54,13 +55,15 @@ public class TransactionalSectionServiceTest {
     private BranchService branchService;
     private UserService userService;
     private SectionService sectionService;
+    private TopicDao topicDao;
 
     @BeforeMethod
     public void setUp() throws Exception {
         sectionDao = mock(SectionDao.class);
         branchService = mock(BranchService.class);
         userService = mock(UserService.class);
-        sectionService = new TransactionalSectionService(sectionDao, branchService, userService);
+        topicDao = mock(TopicDao.class);
+        sectionService = new TransactionalSectionService(sectionDao, branchService, userService, topicDao);
     }
 
     @Test

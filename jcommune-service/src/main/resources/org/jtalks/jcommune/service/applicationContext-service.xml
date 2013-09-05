@@ -220,6 +220,7 @@
         <constructor-arg ref="branchSectionDao"/>
         <constructor-arg ref="topicBranchService"/>
         <constructor-arg ref="userService"/>
+        <constructor-arg ref="topicDao"/>
     </bean>
 
     <bean id="pmService"

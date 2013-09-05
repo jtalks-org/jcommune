@@ -17,7 +17,9 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.common.model.entity.Branch;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.dao.SectionDao;
+import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.UserService;
@@ -27,7 +29,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -44,17 +45,22 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
 
     private UserService userService;
 
+    private TopicDao topicDao;
+    
     /**
      * Create an instance of entity based service
      *
      * @param dao           data access object, which should be able do all CRUD operations.
      * @param branchService autowired object, that represents service for the working with branches
-     * @param userService   autowired object, that represents service for the working with users
+     * @param userService autowired object, that represents service for the working with users
+     * @param topicDao autowired object, that represents service for the working with topics
      */
-    public TransactionalSectionService(SectionDao dao, BranchService branchService, UserService userService) {
+    public TransactionalSectionService(SectionDao dao, BranchService branchService, UserService userService,
+                                       TopicDao topicDao) {
         super(dao);
         this.branchService = branchService;
         this.userService = userService;
+        this.topicDao = topicDao;
     }
 
     /**
@@ -70,13 +76,23 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
      */
     @Override
     public List<Section> getAllAvailableSections(long currentTopicId) {
+        List<Section> sections = this.getDao().getAll();
+        List<Section> result = new ArrayList<>();
+        Topic topic = topicDao.get(currentTopicId);
         JCUser user = userService.getCurrentUser();
-        if (user.getGroups().isEmpty()) {
-            return Collections.EMPTY_LIST;
+        for (Section section : sections) {
+            List<Branch> branches = new ArrayList<>(section.getBranches());
+            for (Branch branch : branches) {
+                if (branch.equals(topic.getBranch())) {
+                    branches.remove(branch);
+                    break;
+                }
+            }
+            if (getDao().getCountAvailableBranches(user, branches) > 0) {
+                result.add(section);
+            }
         }
-        List<Section> sections = new ArrayList<Section>(this.getDao()
-                .getAllAvailableForMoveTopicSections(user, currentTopicId));
-        return sections;
+        return result;
     }
 
     /**
