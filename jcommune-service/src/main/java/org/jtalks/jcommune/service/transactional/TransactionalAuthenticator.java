@@ -63,7 +63,7 @@ import java.util.Map;
  * If default authentication was failed tries to authenticate by any available plugin.
  * <p/>
  * Registration:
- * Register user by any available plugin.
+ * Register user by any available plugin and save in JCommune internal database.
  *
  * @author Andrey Pogorelov
  */

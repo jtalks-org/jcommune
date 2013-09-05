@@ -19,6 +19,9 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
+    <!-- This is a temporary solution for getting ValidatorDao in UniqueValidator,
+          because for some reasons spring can't resolve ValidatorDao bean
+          from xml config while processing validation -->
     <bean id="applicationContextDaoFactory" class="org.springframework.context.support.ClassPathXmlApplicationContext">
         <constructor-arg>
             <list>

@@ -45,6 +45,9 @@ public class UniqueValidator implements ConstraintValidator<Unique, String> {
     }
 
     public UniqueValidator() {
+        // This is a temporary solution for getting ValidatorDao,
+        // because for some reasons spring can't resolve ValidatorDao bean
+        // from xml config while processing validation
         BeanFactoryReference bfr = ContextSingletonBeanFactoryLocator
                 .getInstance("/org/jtalks/jcommune/model/entity/beanRefContext.xml")
                 .useBeanFactory("applicationContextDaoFactory");

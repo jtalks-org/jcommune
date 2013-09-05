@@ -35,7 +35,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
@@ -62,19 +61,16 @@ public class UserControllerTest {
     private UserController userController;
     private UserService userService;
     private Authenticator authenticator;
-    private Validator validator;
 
     @BeforeMethod
     public void setUp() throws IOException {
         userService = mock(UserService.class);
         authenticator = mock(Authenticator.class);
-        validator = mock(Validator.class);
         SecurityContextHolderFacade securityFacade = mock(SecurityContextHolderFacade.class);
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityFacade.getContext()).thenReturn(securityContext);
 
         userController = new UserController(userService, authenticator);
-        userController.setValidator(validator);
     }
 
     @Test
