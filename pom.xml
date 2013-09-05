@@ -584,7 +584,7 @@
     <headerBaseDir>${basedir}</headerBaseDir>
     <pathtoHeader>${headerBaseDir}/header.txt</pathtoHeader>
     <commonVersion>0.53</commonVersion>
-    <isJsCompressed>true</isJsCompressed>
+    <isJsCompressed>false</isJsCompressed>
   </properties>
 
 </project>

@@ -140,7 +140,14 @@ $(document).ready(function () {
 
     //redirect to external links in the body of posts (and signature, profile contacts)
     $(document).delegate('.post-content-td a, #contacts a, .test-signature a', 'mousedown', function(e){
-        $(e.target).attr('href', $(e.target).attr('href').replace('/out?=', ''));
+        var tagName = $(e.target).prop("tagName").toLowerCase();
+        var link = $(e.target);
+        //prettyPhoto img link
+        if(tagName == 'img'){
+           link = link.parent('a');
+        }
+
+        link.attr('href', link.attr('href').replace('/out?=', ''));
     });
 
     $(window).resize();
