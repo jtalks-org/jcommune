@@ -33,11 +33,12 @@ $(function () {
 function showBranchEditDialog(e) {
     e.preventDefault();
 
-    var branchId = this.id.substring("branchLabel".length);
+    var brancLabelPrefix = "branchLabel";
+    var branchId = this.id.substring(brancLabelPrefix.length);
     var descriptonLabel = $("#branchDescriptionLabel" + branchId);
 
-    var bodyContent = Utils.createFormElement("branchName", 'branchName', 'text', 'first dialog-input')
-        + Utils.createFormElement("branchDescription", 'branchDescription', 'text', 'dialog-input') +
+    var bodyContent = Utils.createFormElement($labelBranchName, 'branchName', 'text', 'first dialog-input')
+        + Utils.createFormElement($labelBranchDescription, 'branchDescription', 'text', 'dialog-input') +
             '<div class="clearfix"';
 
     var footerContent = ' \
@@ -45,7 +46,7 @@ function showBranchEditDialog(e) {
             <button id="administrationSubmitButton" class="btn btn-primary">' + $labelSaveChanges + '</button>';
 
     jDialog.createDialog({
-        dialogId: 'administration-modal-dialog',
+        dialogId: 'administrationModalDialog',
         title: $labelAdministration,
         bodyContent: bodyContent,
         footerContent: footerContent,
@@ -62,6 +63,7 @@ function showBranchEditDialog(e) {
 
     $('#branchName').val(this.text);
     $('#branchDescription').val(descriptonLabel.text());
+    $('#branchName').focus();
 
     /**
      * Handles submit request from BranchEdit form by sending POST request, with params

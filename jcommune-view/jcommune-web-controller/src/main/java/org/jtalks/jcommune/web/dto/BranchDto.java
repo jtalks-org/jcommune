@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.web.dto;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -72,6 +74,7 @@ public class BranchDto {
      * @return branch name
      */
     @NotNull(message = BRANCH_CANT_BE_VOID)
+    @NotEmpty(message = BRANCH_CANT_BE_VOID)
     @Size(max = BRANCH_NAME_MAX_LENGTH, message = BRANCH_NAME_ILLEGAL_LENGTH)
     public String getName() {
         return name;
