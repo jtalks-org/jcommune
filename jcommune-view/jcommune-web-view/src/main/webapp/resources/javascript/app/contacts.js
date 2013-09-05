@@ -246,6 +246,7 @@ $(document).ready(function () {
                    ErrorUtils.addErrorMessage('#contact', $labelValidationUsercontactNotMatch);
                    AddContact.isValueValid = false;
                }
+                jQuery('.contact').tooltip({placement: 'right'});
             }
 
             jDialog.createDialog({
