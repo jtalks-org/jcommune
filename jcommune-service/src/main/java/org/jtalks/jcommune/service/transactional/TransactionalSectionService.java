@@ -76,9 +76,9 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
      */
     @Override
     public List<Section> getAllAvailableSections(long currentTopicId) {
-        List<Section> sections = this.getDao().getAll();
         List<Section> result = new ArrayList<>();
         Topic topic = topicDao.get(currentTopicId);
+        List<Section> sections = this.getDao().getAll();
         JCUser user = userService.getCurrentUser();
         for (Section section : sections) {
             List<Branch> branches = new ArrayList<>(section.getBranches());

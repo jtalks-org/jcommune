@@ -15,11 +15,12 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.model.entity.Branch;
-import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.ObjectsFactory;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.UserService;
@@ -99,28 +100,28 @@ public class TransactionalSectionServiceTest {
     }
 
     @Test
-    public void getAllAvailableSectionsForUserNotComprisedInAnyGroup(){
-        JCUser user = new JCUser(USER_NAME, EMAIL, USER_PASSWORD);
+    public void getAllAvailableSections() {
+        JCUser user = ObjectsFactory.getDefaultUser();
+        Topic topic = ObjectsFactory.getTopic(user, 1);
+        org.jtalks.jcommune.model.entity.Branch topicBranch = ObjectsFactory.getDefaultBranchWithTopic(100L, topic);
+        Section sectionWithAvaliableBranches = ObjectsFactory.getDefaultSectionWithBranches();
 
+        List<Section> allSections = new ArrayList<>();
+        allSections.add(ObjectsFactory.getDefaultSection());
+        allSections.add(ObjectsFactory.getDefaultSectionWithBranch(topicBranch));
+        allSections.add(sectionWithAvaliableBranches);
+
+        List<Section> expectedSections = new ArrayList<>();
+        expectedSections.add(sectionWithAvaliableBranches);
+
+        when(sectionDao.getAll()).thenReturn(allSections);
+        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
         when(userService.getCurrentUser()).thenReturn(user);
+        when(sectionDao.getCountAvailableBranches(user, new ArrayList<Branch>())).thenReturn(0L);
+        when(sectionDao.getCountAvailableBranches(user, sectionWithAvaliableBranches.getBranches())).thenReturn(3L);
 
         List<Section> actualSectionList = sectionService.getAllAvailableSections(TOPIC_ID);
-        assertEquals(actualSectionList, Collections.EMPTY_LIST,
-                "Should return empty sections list if user hasn't any permissions.");
-    }
-
-    @Test
-    public void getAllAvailableSections(){
-        List<Section> expectedSectionList = new ArrayList<Section>();
-        expectedSectionList.add(new Section(SECTION_NAME));
-        JCUser user = new JCUser(USER_NAME, EMAIL, USER_PASSWORD);
-        user.getGroups().add(new Group("Registered Users"));
-
-        when(userService.getCurrentUser()).thenReturn(user);
-        when(sectionDao.getAllAvailableForMoveTopicSections(user, TOPIC_ID)).thenReturn(expectedSectionList);
-
-        List<Section> actualSectionList = sectionService.getAllAvailableSections(TOPIC_ID);
-        assertEquals(actualSectionList, expectedSectionList, "Should return all available sections.");
+        assertEquals(actualSectionList, expectedSections, "Should return all available sections.");
     }
     
     @Test

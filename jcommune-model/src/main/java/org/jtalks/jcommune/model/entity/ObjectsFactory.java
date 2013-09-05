@@ -62,6 +62,13 @@ public final class ObjectsFactory {
         return newBranch;
     }
 
+    public static Branch getDefaultBranchWithTopic(Long id, Topic topic) {
+        Branch branch = getDefaultBranch(id);
+        branch.addTopic(topic);
+        topic.setBranch(branch);
+        return branch;
+    }
+
     public static List<Branch> getDefaultBranchList() {
         List<Branch> branches = new ArrayList<Branch>();
         for (Long i = 1L; i <= 3; i++) {
@@ -72,9 +79,22 @@ public final class ObjectsFactory {
 
     public static Section getDefaultSection() {
         Section newSection = new Section("section name");
-        newSection.setDescription("branch description");
+        newSection.setDescription("section description");
         newSection.setPosition(1);
         return newSection;
+    }
+
+    public static Section getDefaultSectionWithBranch(Branch branch) {
+        Section section = getDefaultSection();
+        branch.setSection(section);
+        section.addOrUpdateBranch(branch);
+        return section;
+    }
+
+    public static Section getDefaultSectionWithBranches() {
+        Section section = getDefaultSection();
+        section.getBranches().addAll(getDefaultBranchList());
+        return section;
     }
 
     public static List<Topic> topics(JCUser author, int topicCount) {
