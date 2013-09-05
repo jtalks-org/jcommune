@@ -143,7 +143,6 @@
         <constructor-arg ref="mailService"/>
         <constructor-arg ref="base64Wrapper"/>
         <constructor-arg ref="encryptionService"/>
-        <constructor-arg ref="avatarService"/>
         <constructor-arg ref="postDao"/>
         <constructor-arg ref="authenticator"/>
     </bean>
@@ -152,10 +151,13 @@
         <constructor-arg ref="pluginLoader"/>
         <constructor-arg ref="userDao"/>
         <constructor-arg ref="encryptionService"/>
+        <constructor-arg ref="mailService"/>
+        <constructor-arg ref="avatarService"/>
         <constructor-arg ref="authenticationManager"/>
         <constructor-arg ref="securityContextFacade"/>
         <constructor-arg ref="rememberMeServices"/>
         <constructor-arg ref="concurrentSessionControlStrategy"/>
+        <constructor-arg ref="validator"/>
     </bean>
 
     <bean id="userContactsService"

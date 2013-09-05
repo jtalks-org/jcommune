@@ -106,22 +106,24 @@ public class UserControllerTest {
 
     @Test
     public void testRegisterUserShouldBeSuccessful() throws Exception {
-        RegisterUserDto dto = getRegisterUserDto();
+        RegisterUserDto dto = createRegisterUserDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
+        when(authenticator.register(dto)).thenReturn(bindingResult);
 
-        ModelAndView mav = userController.registerUser(dto, bindingResult, Locale.ENGLISH);
+        ModelAndView mav = userController.registerUser(dto, Locale.ENGLISH);
 
         assertViewName(mav, "afterRegistration");
-        verify(authenticator).register(dto.getUserDto(), true, bindingResult);
+        verify(authenticator).register(dto);
     }
 
     @Test
     public void testRegisterValidationFail() throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        RegisterUserDto dto = getRegisterUserDto();
+        RegisterUserDto dto = createRegisterUserDto();
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
+        when(authenticator.register(dto)).thenReturn(bindingResult);
 
-        ModelAndView mav = userController.registerUser(dto, bindingResult, Locale.ENGLISH);
+        ModelAndView mav = userController.registerUser(dto, Locale.ENGLISH);
 
         assertViewName(mav, "registration");
     }
@@ -129,12 +131,11 @@ public class UserControllerTest {
     @Test
     public void testRegisterFailIfUnexpectedErrorOccurred()
             throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        RegisterUserDto dto = getRegisterUserDto();
-        BindingResult bindingResult = mock(BindingResult.class);
+        RegisterUserDto dto = createRegisterUserDto();
         doThrow(new UnexpectedErrorException()).when(authenticator)
-                .register(dto.getUserDto(), true, bindingResult);
+                .register(dto);
 
-        ModelAndView mav = userController.registerUser(dto, bindingResult, Locale.ENGLISH);
+        ModelAndView mav = userController.registerUser(dto, Locale.ENGLISH);
 
         assertViewName(mav, UserController.REG_SERVICE_UNEXPECTED_ERROR_URL);
     }
@@ -142,22 +143,22 @@ public class UserControllerTest {
     @Test
     public void testRegisterFailIfConnectionErrorOccurred()
             throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        RegisterUserDto dto = getRegisterUserDto();
-        BindingResult bindingResult = mock(BindingResult.class);
+        RegisterUserDto dto = createRegisterUserDto();
         doThrow(new NoConnectionException()).when(authenticator)
-                .register(dto.getUserDto(), true, bindingResult);
+                .register(dto);
 
-        ModelAndView mav = userController.registerUser(dto, bindingResult, Locale.ENGLISH);
+        ModelAndView mav = userController.registerUser(dto, Locale.ENGLISH);
 
         assertViewName(mav, UserController.REG_SERVICE_CONNECTION_ERROR_URL);
     }
 
     @Test
     public void testRegisterUserAjaxShouldBeSuccessful() throws Exception {
-        RegisterUserDto dto = getRegisterUserDto();
+        RegisterUserDto dto = createRegisterUserDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
+        when(authenticator.register(dto)).thenReturn(bindingResult);
 
-        JsonResponse response = userController.registerUserAjax(dto, bindingResult, Locale.ENGLISH);
+        JsonResponse response = userController.registerUserAjax(dto, Locale.ENGLISH);
 
         assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS,
                 "User without validation errors should pass registration.");
@@ -165,11 +166,12 @@ public class UserControllerTest {
 
     @Test
     public void testRegisterAjaxValidationFail() throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        RegisterUserDto dto = getRegisterUserDto();
+        RegisterUserDto dto = createRegisterUserDto();
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
+        when(authenticator.register(dto)).thenReturn(bindingResult);
 
-        JsonResponse response = userController.registerUserAjax(dto, bindingResult, Locale.ENGLISH);
+        JsonResponse response = userController.registerUserAjax(dto, Locale.ENGLISH);
 
         assertEquals(response.getStatus(), JsonResponseStatus.FAIL,
                 "User with validation errors should fail registration.");
@@ -178,13 +180,10 @@ public class UserControllerTest {
     @Test
     public void testRegisterAjaxFailIfUnexpectedErrorOccurred()
             throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        RegisterUserDto dto = getRegisterUserDto();
-        BindingResult bindingResult = mock(BindingResult.class);
+        RegisterUserDto dto = createRegisterUserDto();
+        doThrow(new UnexpectedErrorException()).when(authenticator).register(dto);
 
-        doThrow(new UnexpectedErrorException()).when(authenticator)
-                .register(dto.getUserDto(), true, bindingResult);
-
-        JsonResponse response = userController.registerUserAjax(dto, bindingResult, Locale.ENGLISH);
+        JsonResponse response = userController.registerUserAjax(dto, Locale.ENGLISH);
 
         assertEquals(response.getStatus(), JsonResponseStatus.FAIL, "Unexpected error should fail registration.");
     }
@@ -192,30 +191,14 @@ public class UserControllerTest {
     @Test
     public void testRegisterAjaxFailIfConnectionErrorOccurred()
             throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        RegisterUserDto dto = getRegisterUserDto();
-        BindingResult bindingResult = mock(BindingResult.class);
+        RegisterUserDto dto = createRegisterUserDto();
+        doThrow(new NoConnectionException()).when(authenticator).register(dto);
 
-        doThrow(new NoConnectionException()).when(authenticator)
-                .register(dto.getUserDto(), true, bindingResult);
-
-        JsonResponse response = userController.registerUserAjax(dto, bindingResult, Locale.ENGLISH);
+        JsonResponse response = userController.registerUserAjax(dto, Locale.ENGLISH);
 
         assertEquals(response.getStatus(), JsonResponseStatus.FAIL, "Connection error should fail registration.");
     }
 
-    @Test
-    public void mergeValidationErrorsShouldAddErrorsFromSrcToDst() {
-        RegisterUserDto dto = getRegisterUserDto();
-        BindingResult srcErrors = new BeanPropertyBindingResult(dto, "newUser");
-        srcErrors.addError(new FieldError("", "email", "Invalid email"));
-        BindingResult dstErrors = new BeanPropertyBindingResult(dto, "newUser");
-
-        userController.mergeValidationErrors(srcErrors, dstErrors);
-
-        assertEquals(dstErrors.getAllErrors().size(), 1,
-                "Missing validation errors should be added from source to destination.");
-    }
-    
     @Test
     public void testRestorePasswordPage() {
         assertViewName(userController.showRestorePasswordPage(), "restorePassword");
@@ -406,7 +389,7 @@ public class UserControllerTest {
         assertNull(dto.getPasswordConfirm());
     }
 
-    private RegisterUserDto getRegisterUserDto() {
+    private RegisterUserDto createRegisterUserDto() {
         UserDto userDto = new UserDto();
         userDto.setUsername(USER_NAME);
         userDto.setEmail(EMAIL);

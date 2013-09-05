@@ -15,9 +15,13 @@
 
 package org.jtalks.jcommune.service.transactional;
 
+import org.hibernate.Session;
 import org.joda.time.DateTime;
+import org.jtalks.common.model.dao.hibernate.GenericDao;
+import org.jtalks.common.model.entity.User;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.plugins.Plugin;
@@ -27,22 +31,27 @@ import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.Authenticator;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
+import org.jtalks.jcommune.service.nontransactional.ImageService;
+import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.plugins.PluginFilter;
 import org.jtalks.jcommune.service.plugins.PluginLoader;
 import org.jtalks.jcommune.service.plugins.TypeFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.framework.Advised;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.Validator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,12 +70,21 @@ import java.util.Map;
 public class TransactionalAuthenticator extends AbstractTransactionalEntityService<JCUser, UserDao>
         implements Authenticator {
 
+    /**
+     * While registering a new user, she gets {@link JCUser#setAutosubscribe(boolean)} set to {@code true} by default.
+     * Afterwards user can edit her profile and change this setting.
+     */
+    public static final boolean DEFAULT_AUTOSUBSCRIBE = true;
+
     private PluginLoader pluginLoader;
     private EncryptionService encryptionService;
     private AuthenticationManager authenticationManager;
     private SecurityContextHolderFacade securityFacade;
     private RememberMeServices rememberMeServices;
     private SessionAuthenticationStrategy sessionStrategy;
+    private Validator validator;
+    private MailService mailService;
+    private ImageService avatarService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalAuthenticator.class);
 
@@ -84,17 +102,23 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      */
     public TransactionalAuthenticator(PluginLoader pluginLoader, UserDao dao,
                                       EncryptionService encryptionService,
+                                      MailService mailService,
+                                      ImageService avatarService,
                                       AuthenticationManager authenticationManager,
                                       SecurityContextHolderFacade securityFacade,
                                       RememberMeServices rememberMeServices,
-                                      SessionAuthenticationStrategy sessionStrategy) {
+                                      SessionAuthenticationStrategy sessionStrategy,
+                                      Validator validator) {
         super(dao);
         this.pluginLoader = pluginLoader;
         this.encryptionService = encryptionService;
+        this.mailService = mailService;
+        this.avatarService = avatarService;
         this.authenticationManager = authenticationManager;
         this.securityFacade = securityFacade;
         this.rememberMeServices = rememberMeServices;
         this.sessionStrategy = sessionStrategy;
+        this.validator = validator;
     }
 
     /**
@@ -266,7 +290,21 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      * {@inheritDoc}
      */
     @Override
-    public void register(UserDto userDto, Boolean dryRun, BindingResult bindingResult)
+    public BindingResult register(RegisterUserDto registerUserDto)
+            throws UnexpectedErrorException, NoConnectionException {
+        BindingResult result = new BeanPropertyBindingResult(registerUserDto, "newUser");
+        BindingResult jcErrors = new BeanPropertyBindingResult(registerUserDto, "newUser");
+        validator.validate(registerUserDto, jcErrors);
+        registerByPlugin(registerUserDto.getUserDto(), true, result);
+        mergeValidationErrors(jcErrors, result);
+        if(!result.hasErrors()) {
+            registerByPlugin(registerUserDto.getUserDto(), false, result);
+            storeRegisteredUser(registerUserDto.getUserDto());
+        }
+        return result;
+    }
+
+    public void registerByPlugin(UserDto userDto, Boolean dryRun, BindingResult bindingResult)
             throws UnexpectedErrorException, NoConnectionException {
         SimpleAuthenticationPlugin authPlugin = getPlugin();
         if (authPlugin != null && authPlugin.getState() == Plugin.State.ENABLED) {
@@ -278,6 +316,47 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
                 bindingResult.rejectValue(error.getKey(), null, error.getValue());
             }
         }
+    }
+
+    protected void mergeValidationErrors(BindingResult srcErrors, BindingResult dstErrors) {
+        for (FieldError error : srcErrors.getFieldErrors()) {
+            if (!dstErrors.hasFieldErrors(error.getField())) {
+                dstErrors.addError(error);
+            }
+        }
+    }
+
+    /**
+     * Just saves a new {@link JCUser} or upgrade {@link org.jtalks.common.model.entity.User} to {@link JCUser} without any additional checks
+     *
+     * @param userDto coming from enclosing methods, this object is built by Spring MVC
+     *
+     */
+    public JCUser storeRegisteredUser(UserDto userDto) {
+        // check if user already saved by plugin as common user
+        User commonUser = this.getDao().getCommonUserByUsername(userDto.getUsername());
+        if(commonUser != null) {
+            // in this case we must delete old common user and save user as JCUser,
+            // because hibernate doesn't allow upgrade common User to JCUser
+            try {
+                Session session = ((GenericDao)((Advised)this.getDao()).getTargetSource().getTarget()).session();
+                session.delete(commonUser);
+                this.getDao().flush();
+            } catch (Exception e) {
+                LOGGER.warn("Could not delete common user.");
+            }
+        }
+        JCUser user = new JCUser(userDto.getUsername(), userDto.getEmail(), userDto.getPassword());
+        user.setLanguage(userDto.getLanguage());
+        user.setAutosubscribe(DEFAULT_AUTOSUBSCRIBE);
+        user.setAvatar(avatarService.getDefaultImage());
+        String encodedPassword = encryptionService.encryptPassword(user.getPassword());
+        user.setPassword(encodedPassword);
+        user.setRegistrationDate(new DateTime());
+        this.getDao().saveOrUpdate(user);
+        mailService.sendAccountActivationMail(user);
+        LOGGER.info("JCUser registered: {}", user.getUsername());
+        return user;
     }
 
     /**

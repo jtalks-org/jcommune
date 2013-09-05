@@ -17,7 +17,8 @@ package org.jtalks.jcommune.model.validation.validators;
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.dao.ValidatorDao;
 import org.jtalks.jcommune.model.validation.annotations.Unique;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.access.BeanFactoryReference;
+import org.springframework.context.access.ContextSingletonBeanFactoryLocator;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -39,9 +40,15 @@ public class UniqueValidator implements ConstraintValidator<Unique, String> {
     /**
      * @param dao to perform database-based validations
      */
-    @Autowired
     public UniqueValidator(ValidatorDao<String> dao) {
         this.dao = dao;
+    }
+
+    public UniqueValidator() {
+        BeanFactoryReference bfr = ContextSingletonBeanFactoryLocator
+                .getInstance("/org/jtalks/jcommune/model/entity/beanRefContext.xml")
+                .useBeanFactory("applicationContextDaoFactory");
+        dao = (ValidatorDao<String>) bfr.getFactory().getBean("validatorDao");
     }
 
     /**
