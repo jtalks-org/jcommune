@@ -53,7 +53,7 @@
     <div class="clearfix"></div>
     <div class="user-profile-top-buttons">
       <div class="user-profile-buttons-avatar">
-        <a id="upload" href="#" class="btn btn-mini">
+        <a id="upload" data-original-title="' + $labelUploadTitle + '" href="#" class="btn btn-mini">
           <i class="icon-picture"></i>
           <spring:message code="label.avatar.load"/>
         </a>

@@ -147,12 +147,12 @@ function createAdministrationDialog() {
             \
             <div class="logo-manage-buttons-container"> \
                 <div class="logo-manage-buttons"> \
-                    <a id="uploadLogo" href="#" class="btn btn-mini"> \
+                    <a id="uploadLogo" href="#" data-original-title="' + $labelUploadTitle + '" class="btn btn-mini"> \
                         <i class="icon-picture"></i>  \
                         '+ $labelUploadLogo + ' \
                     </a>  \
                     <a id="removeLogo" href="#" class="btn btn-mini btn-danger" \
-                        title='+ $labelRemoveLogo + '> \
+                        data-original-title='+ $labelRemoveLogo + '> \
                         <i class="icon-remove icon-white"></i> \
                     </a> \
                 </div> \
@@ -168,12 +168,12 @@ function createAdministrationDialog() {
             \
             <div class="logo-manage-buttons-container"> \
                 <div class="logo-manage-buttons"> \
-                    <a id="uploadIcon" href="#" class="btn btn-mini"> \
+                    <a id="uploadIcon" href="#" data-original-title="' + $labelUploadTitle + '" class="btn btn-mini"> \
                         <i class="icon-picture"></i>  \
                         '+ $labelUploadFavIcon + ' \
                     </a>  \
                     <a id="removeIcon" href="#" class="btn btn-mini btn-danger" \
-                        title='+ $labelRemoveFavIcon + '> \
+                        data-original-title='+ $labelRemoveFavIcon + '> \
                         <i class="icon-remove icon-white"></i> \
                     </a> \
                 </div> \
@@ -198,7 +198,7 @@ function createAdministrationDialog() {
         bodyContent: bodyContent,
         footerContent: footerContent,
         maxWidth: 350,
-        maxHeight: 500,
+        maxHeight: 700,
         firstFocus: true,
         tabNavigation: ['#forumName', '#forumDescription','#forumLogoTooltip',
                         '#administrationSubmitButton', '#administrationCancelButton'],
@@ -207,6 +207,11 @@ function createAdministrationDialog() {
             '#administrationCancelButton': {'static':'close'}
         }
     });
+
+    $('#uploadIcon').tooltip();
+    $('#uploadLogo').tooltip();
+    $('#removeIcon').tooltip();
+    $('#removeLogo').tooltip();
 
     var tabFunc = function (e) {
         if (document.activeElement.id == jDialog.options.dialogId && (e.keyCode || e.charCode) == tabCode) {
@@ -298,6 +303,7 @@ function createUploader(IFrameActionUrl, XhrActionUrl, uploadButtonId, onSuccess
                     bodyMessage: responseJSON.result
                 });
                 $('#' + jDialog.options.alertDefaultBut).on('click', createAdministrationDialog);
+                jDialog.dialog.find('.close').bind('click', createAdministrationDialog);
             }
 
         },
@@ -309,6 +315,7 @@ function createUploader(IFrameActionUrl, XhrActionUrl, uploadButtonId, onSuccess
                     bodyMessage: $labelImageWrongSizeJs
                 });
                 $('#' + jDialog.options.alertDefaultBut).on('click', createAdministrationDialog);
+                jDialog.dialog.find('.close').bind('click', createAdministrationDialog);
                 return false;
             }
         },
