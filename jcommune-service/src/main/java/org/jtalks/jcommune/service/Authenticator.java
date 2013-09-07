@@ -49,7 +49,9 @@ public interface Authenticator {
     /**
      * Register user with given details.
      *
-     * @param registerUserDto @throws UnexpectedErrorException
+     * @param registerUserDto user details
+     * @return errors occurred during registration
+     * @throws UnexpectedErrorException
      * @throws NoConnectionException
      */
     public BindingResult register(RegisterUserDto registerUserDto)
