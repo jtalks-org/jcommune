@@ -34,6 +34,9 @@ import java.util.Set;
 public class Branch extends org.jtalks.common.model.entity.Branch
         implements SubscriptionAwareEntity {
 
+    public static final int BRANCH_NAME_MAX_LENGTH = 80;
+    public static final int BRANCH_DESCRIPTION_MAX_LENGTH = 255;
+
     public static final String URL_SUFFIX = "/branches/";
     private List<Topic> topics = new ArrayList<Topic>();
     private Set<JCUser> subscribers = new HashSet<JCUser>();

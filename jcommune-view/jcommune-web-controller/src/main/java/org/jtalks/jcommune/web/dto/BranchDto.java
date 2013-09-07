@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.jtalks.jcommune.model.entity.Branch;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -30,9 +31,6 @@ public class BranchDto {
     private static final String BRANCH_DESCRIPTION_ILLEGAL_LENGTH = "{branch.description.length_constraint_violation}";
     private static final String BRANCH_CANT_BE_VOID = "{branch.name.emptiness_constraint_violation}";
     private static final String BRANCH_NAME_ILLEGAL_LENGTH = "{branch.name.length_constraint_violation}";
-
-    public static final int BRANCH_NAME_MAX_LENGTH = 80;
-    public static final int BRANCH_DESCRIPTION_MAX_LENGTH = 255;
 
     private long id;
     private String name;
@@ -75,7 +73,7 @@ public class BranchDto {
      */
     @NotNull(message = BRANCH_CANT_BE_VOID)
     @NotEmpty(message = BRANCH_CANT_BE_VOID)
-    @Size(max = BRANCH_NAME_MAX_LENGTH, message = BRANCH_NAME_ILLEGAL_LENGTH)
+    @Size(max = Branch.BRANCH_NAME_MAX_LENGTH, message = BRANCH_NAME_ILLEGAL_LENGTH)
     public String getName() {
         return name;
     }
@@ -93,7 +91,7 @@ public class BranchDto {
      * Gets the branch description
      * @return description of the branch
      */
-    @Size(max = BRANCH_DESCRIPTION_MAX_LENGTH, message = BRANCH_DESCRIPTION_ILLEGAL_LENGTH)
+    @Size(max = Branch.BRANCH_DESCRIPTION_MAX_LENGTH, message = BRANCH_DESCRIPTION_ILLEGAL_LENGTH)
     public String getDescription() {
         return description;
     }
