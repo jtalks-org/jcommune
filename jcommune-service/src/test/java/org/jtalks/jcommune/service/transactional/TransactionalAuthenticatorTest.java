@@ -119,7 +119,8 @@ public class TransactionalAuthenticatorTest {
 
     private void preparePlugin(String username, String passwordHash, Map<String, String> authInfo)
             throws UnexpectedErrorException, NoConnectionException {
-        when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Arrays.<Plugin>asList(plugin));
+        Class cl = SimpleAuthenticationPlugin.class;
+        when(pluginLoader.getPluginByClassName(cl)).thenReturn(plugin);
         when(plugin.authenticate(username, passwordHash)).thenReturn(authInfo);
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
     }
@@ -260,7 +261,8 @@ public class TransactionalAuthenticatorTest {
         when(encryptionService.encryptPassword(password)).thenReturn(passwordHash);
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
         when(userDao.getByUsername(username)).thenReturn(null);
-        when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Arrays.<Plugin>asList(plugin));
+        Class cl = SimpleAuthenticationPlugin.class;
+        when(pluginLoader.getPluginByClassName(cl)).thenReturn(plugin);
         when(plugin.authenticate(username, passwordHash)).thenThrow(new NoConnectionException());
 
         authenticator.authenticate(username, password, true, httpRequest, httpResponse);
@@ -274,7 +276,8 @@ public class TransactionalAuthenticatorTest {
 
         when(encryptionService.encryptPassword(password)).thenReturn(passwordHash);
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
-        when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Arrays.<Plugin>asList(plugin));
+        Class cl = SimpleAuthenticationPlugin.class;
+        when(pluginLoader.getPluginByClassName(cl)).thenReturn(plugin);
         when(plugin.authenticate(username, passwordHash)).thenThrow(new UnexpectedErrorException());
 
         authenticator.authenticate(username, password, true, httpRequest, httpResponse);
@@ -310,7 +313,8 @@ public class TransactionalAuthenticatorTest {
 
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
         when(plugin.registerUser(userDto.getUserDto(), true)).thenReturn(errors);
-        when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Arrays.asList((Plugin) plugin));
+        Class cl = SimpleAuthenticationPlugin.class;
+        when(pluginLoader.getPluginByClassName(cl)).thenReturn(plugin);
 
         when(bindingResult.hasErrors()).thenReturn(true);
 
@@ -326,7 +330,8 @@ public class TransactionalAuthenticatorTest {
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
         when(plugin.registerUser(userDto.getUserDto(), true))
                 .thenThrow(new NoConnectionException());
-        when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Arrays.asList((Plugin) plugin));
+        Class cl = SimpleAuthenticationPlugin.class;
+        when(pluginLoader.getPluginByClassName(cl)).thenReturn(plugin);
 
         when(bindingResult.hasErrors()).thenReturn(true);
 
@@ -340,7 +345,8 @@ public class TransactionalAuthenticatorTest {
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
         when(plugin.registerUser(userDto.getUserDto(), true))
                 .thenThrow(new UnexpectedErrorException());
-        when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Arrays.asList((Plugin) plugin));
+        Class cl = SimpleAuthenticationPlugin.class;
+        when(pluginLoader.getPluginByClassName(cl)).thenReturn(plugin);
 
         authenticator.register(userDto);
     }

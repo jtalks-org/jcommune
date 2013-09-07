@@ -121,6 +121,18 @@ public class PluginLoader {
         this.plugins = plugins;
     }
 
+    /**
+     * Get plugin by class name.
+     *
+     * @param cl class name
+     * @return plugin
+     */
+    public Plugin getPluginByClassName(Class cl) {
+        PluginFilter pluginFilter = new TypeFilter(cl);
+        List<Plugin> plugins = getPlugins(pluginFilter);
+        return !plugins.isEmpty() ? plugins.get(0) : null;
+    }
+
     private void loadConfigurationFor(List<Plugin> needConfigurationPlugins) {
         for (Plugin plugin: needConfigurationPlugins) {
             String name = plugin.getName();

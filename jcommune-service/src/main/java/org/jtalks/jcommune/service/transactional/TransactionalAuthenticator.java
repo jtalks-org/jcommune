@@ -223,8 +223,8 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      */
     private Map<String, String> authenticateByAvailablePlugin(String username, String passwordHash)
             throws UnexpectedErrorException, NoConnectionException {
-
-        SimpleAuthenticationPlugin authPlugin = getPlugin();
+        SimpleAuthenticationPlugin authPlugin
+                = (SimpleAuthenticationPlugin) pluginLoader.getPluginByClassName(SimpleAuthenticationPlugin.class);
         Map<String, String> authInfo = new HashMap<>();
         if (authPlugin != null && authPlugin.getState() == Plugin.State.ENABLED) {
             authInfo.putAll(authPlugin.authenticate(username, passwordHash));
@@ -295,6 +295,10 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         BindingResult result = new BeanPropertyBindingResult(registerUserDto, "newUser");
         BindingResult jcErrors = new BeanPropertyBindingResult(registerUserDto, "newUser");
         validator.validate(registerUserDto, jcErrors);
+        UserDto userDto = registerUserDto.getUserDto();
+        String encodedPassword = (userDto.getPassword() == null || userDto.getPassword().isEmpty()) ? ""
+                : encryptionService.encryptPassword(userDto.getPassword());
+        userDto.setPassword(encodedPassword);
         registerByPlugin(registerUserDto.getUserDto(), true, result);
         mergeValidationErrors(jcErrors, result);
         if(!result.hasErrors()) {
@@ -306,11 +310,9 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
 
     public void registerByPlugin(UserDto userDto, Boolean dryRun, BindingResult bindingResult)
             throws UnexpectedErrorException, NoConnectionException {
-        SimpleAuthenticationPlugin authPlugin = getPlugin();
+        SimpleAuthenticationPlugin authPlugin
+                = (SimpleAuthenticationPlugin) pluginLoader.getPluginByClassName(SimpleAuthenticationPlugin.class);
         if (authPlugin != null && authPlugin.getState() == Plugin.State.ENABLED) {
-            String passwordHash = (userDto.getPassword() == null || userDto.getPassword().isEmpty()) ? ""
-                    : encryptionService.encryptPassword(userDto.getPassword());
-            userDto.setPassword(passwordHash);
             Map<String, String> errors = authPlugin.registerUser(userDto, dryRun);
             for(Map.Entry<String, String> error : errors.entrySet()) {
                 bindingResult.rejectValue(error.getKey(), null, error.getValue());
@@ -351,24 +353,10 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         user.setLanguage(userDto.getLanguage());
         user.setAutosubscribe(DEFAULT_AUTOSUBSCRIBE);
         user.setAvatar(avatarService.getDefaultImage());
-        String encodedPassword = encryptionService.encryptPassword(user.getPassword());
-        user.setPassword(encodedPassword);
         user.setRegistrationDate(new DateTime());
         this.getDao().saveOrUpdate(user);
         mailService.sendAccountActivationMail(user);
         LOGGER.info("JCUser registered: {}", user.getUsername());
         return user;
-    }
-
-    /**
-     * Get available plugin by plugin loader.
-     *
-     * @return authentication plugin
-     */
-    protected SimpleAuthenticationPlugin getPlugin() {
-        Class cl = SimpleAuthenticationPlugin.class;
-        PluginFilter pluginFilter = new TypeFilter(cl);
-        List<Plugin> plugins = pluginLoader.getPlugins(pluginFilter);
-        return !plugins.isEmpty() ? (SimpleAuthenticationPlugin) plugins.get(0) : null;
     }
 }
