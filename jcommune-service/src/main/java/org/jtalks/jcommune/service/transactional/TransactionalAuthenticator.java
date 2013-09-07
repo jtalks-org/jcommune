@@ -327,10 +327,11 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
     }
 
     /**
-     * Just saves a new {@link JCUser} or upgrade {@link org.jtalks.common.model.entity.User} to {@link JCUser} without any additional checks
+     * Just saves a new {@link JCUser} or upgrade {@link org.jtalks.common.model.entity.User}
+     * to {@link JCUser} without any additional checks
      *
      * @param userDto coming from enclosing methods, this object is built by Spring MVC
-     *
+     * @return stored user
      */
     public JCUser storeRegisteredUser(UserDto userDto) {
         // check if user already saved by plugin as common user

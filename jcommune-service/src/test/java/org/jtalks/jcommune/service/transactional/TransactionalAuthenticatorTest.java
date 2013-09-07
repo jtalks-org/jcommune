@@ -15,6 +15,7 @@
 
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.common.model.entity.User;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.dto.RegisterUserDto;
@@ -279,27 +280,16 @@ public class TransactionalAuthenticatorTest {
         authenticator.authenticate(username, password, true, httpRequest, httpResponse);
     }
 
-//    @Test
-//    public void mergeValidationErrorsShouldAddErrorsFromSrcToDst() {
-//        RegisterUserDto dto = getRegisterUserDto();
-//        BindingResult srcErrors = new BeanPropertyBindingResult(dto, "newUser");
-//        srcErrors.addError(new FieldError("", "email", "Invalid email"));
-//        BindingResult dstErrors = new BeanPropertyBindingResult(dto, "newUser");
-//
-//        authenticator.mergeValidationErrors(srcErrors, dstErrors);
-//
-//        assertEquals(dstErrors.getAllErrors().size(), 1,
-//                "Missing validation errors should be added from source to destination.");
-//    }
-
     @Test
     public void registerUserWithCorrectDetailsShouldBeSuccessful()
             throws UnexpectedErrorException, NotFoundException, NoConnectionException {
         RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
+        User commonUser = new User("username", "email@email.em", "password", null);
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
         when(plugin.registerUser(userDto.getUserDto(), true)).thenReturn(Collections.EMPTY_MAP);
         when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Arrays.asList((Plugin) plugin));
         when(bindingResult.hasErrors()).thenReturn(false);
+        when(userDao.getCommonUserByUsername("username")).thenReturn(commonUser);
 
         authenticator.register(userDto);
 
@@ -378,29 +368,6 @@ public class TransactionalAuthenticatorTest {
 
         verify(bindingResult, never()).rejectValue(anyString(), anyString(), anyString());
     }
-
-
-//    @Test
-//    public void storeRegisteredUserShouldBeSuccessful() {
-//        UserDto userDto = createUserDto(USERNAME, EMAIL, PASSWORD);
-//        when(encryptionService.encryptPassword(PASSWORD)).thenReturn(PASSWORD_MD5_HASH);
-//
-//        userService.storeRegisteredUser(userDto);
-//
-//        verify(userDao).saveOrUpdate(any(JCUser.class));
-//    }
-//
-//    @Test
-//    public void upgradeFromCommonUserToJCUserShouldBeSuccessful() {
-//        UserDto userDto = createUserDto(USERNAME, EMAIL, PASSWORD);
-//        when(encryptionService.encryptPassword(PASSWORD)).thenReturn(PASSWORD_MD5_HASH);
-//        User commonUser = new User("username", "email", "password", null);
-//        when(userDao.getCommonUserByUsername(USERNAME)).thenReturn(commonUser);
-//
-//        userService.storeRegisteredUser(userDto);
-//
-//        verify(userDao).saveOrUpdate(any(JCUser.class));
-//    }
 
     private RegisterUserDto createRegisterUserDto(String username, String password, String email) {
         RegisterUserDto registerUserDto = new RegisterUserDto();
