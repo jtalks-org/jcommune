@@ -247,6 +247,9 @@ $(document).ready(function () {
                    AddContact.isValueValid = false;
                }
                 jQuery('.contact').tooltip({placement: 'right'});
+                jQuery("a").tooltip();
+                jQuery('.btn').tooltip({placement: 'bottom'});
+                jQuery('.script-has-tooltip').tooltip();
             }
 
             jDialog.createDialog({
