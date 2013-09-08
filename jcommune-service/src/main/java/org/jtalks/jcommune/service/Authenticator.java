@@ -39,8 +39,8 @@ public interface Authenticator {
      * @param response HTTP response
      * @return true if user was logged in. false if there were any errors during
      *      logging in.
-     * @throws UnexpectedErrorException if some unexpected error occurred
-     * @throws NoConnectionException    if some connection error occurred
+     * @throws UnexpectedErrorException if external service returns unexpected result
+     * @throws NoConnectionException    if we can't connect for any reason to external authentication service
      */
     public boolean authenticate(String username, String password, boolean rememberMe,
                                HttpServletRequest request, HttpServletResponse response)

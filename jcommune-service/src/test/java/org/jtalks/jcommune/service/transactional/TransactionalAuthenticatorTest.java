@@ -289,7 +289,7 @@ public class TransactionalAuthenticatorTest {
         RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
         User commonUser = new User("username", "email@email.em", "password", null);
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
-        when(plugin.registerUser(userDto.getUserDto(), true)).thenReturn(Collections.EMPTY_MAP);
+        when(plugin.registerUser(userDto.getUserDto())).thenReturn(Collections.EMPTY_MAP);
         when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Arrays.asList((Plugin) plugin));
         when(bindingResult.hasErrors()).thenReturn(false);
         when(userDao.getCommonUserByUsername("username")).thenReturn(commonUser);
@@ -312,7 +312,7 @@ public class TransactionalAuthenticatorTest {
         errors.put("userDto.password", "Invalid password length");
 
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
-        when(plugin.registerUser(userDto.getUserDto(), true)).thenReturn(errors);
+        when(plugin.registerUser(userDto.getUserDto())).thenReturn(errors);
         Class cl = SimpleAuthenticationPlugin.class;
         when(pluginLoader.getPluginByClassName(cl)).thenReturn(plugin);
 
@@ -328,7 +328,7 @@ public class TransactionalAuthenticatorTest {
             throws UnexpectedErrorException, NotFoundException, NoConnectionException {
         RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
-        when(plugin.registerUser(userDto.getUserDto(), true))
+        when(plugin.registerUser(userDto.getUserDto()))
                 .thenThrow(new NoConnectionException());
         Class cl = SimpleAuthenticationPlugin.class;
         when(pluginLoader.getPluginByClassName(cl)).thenReturn(plugin);
@@ -343,7 +343,7 @@ public class TransactionalAuthenticatorTest {
             throws UnexpectedErrorException, NotFoundException, NoConnectionException {
         RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
-        when(plugin.registerUser(userDto.getUserDto(), true))
+        when(plugin.registerUser(userDto.getUserDto()))
                 .thenThrow(new UnexpectedErrorException());
         Class cl = SimpleAuthenticationPlugin.class;
         when(pluginLoader.getPluginByClassName(cl)).thenReturn(plugin);
