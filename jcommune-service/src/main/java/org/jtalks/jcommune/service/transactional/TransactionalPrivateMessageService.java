@@ -127,7 +127,7 @@ public class TransactionalPrivateMessageService
 
     /**
      * Check - sending notification is allow
-     * @param user
+     * @param user User for which we check allow sending pm notification
      * @return
      */
     private boolean isSendNotificationMessage(JCUser user) {

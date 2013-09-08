@@ -179,11 +179,10 @@ public class UserInfoContainer {
         return location;
     }
 
+    /**
+     * @return send pm notification or not
+     */
     public boolean isSendPmNotification() {
         return sendPmNotification;
-    }
-
-    public void setSendPmNotification(boolean sendPmNotification) {
-        this.sendPmNotification = sendPmNotification;
     }
 }

@@ -119,7 +119,7 @@
     <constructor-arg name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
-  <bean id="pluginConfigurationDao" class="org.jtalks.jcommune.model.dao.hibernate.PluginHibernateConfigurationDao">
+  <bean id="pluginConfigurationDao" class="org.jtalks.jcommune.model.dao.hibernate.PluginConfigurationHibernateDao">
     <constructor-arg name="sessionFactory" ref="sessionFactory"/>
   </bean>
 

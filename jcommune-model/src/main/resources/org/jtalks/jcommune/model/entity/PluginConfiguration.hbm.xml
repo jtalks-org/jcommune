@@ -32,7 +32,13 @@
             <cache usage="nonstrict-read-write"/>
             <key column="PLUGIN_ID" foreign-key="FK_PLUGIN"/>
             <index column="LIST_INDEX"/>
-            <one-to-many class="PluginConfigurationProperty"/>
+            <one-to-many class="org.jtalks.jcommune.model.entity.PluginProperty"/>
         </list>
+
     </class>
+
+    <query name="getPluginConfiguration">
+        <![CDATA[SELECT pc FROM PluginConfiguration pc WHERE pc.name = :name]]>
+    </query>
+
 </hibernate-mapping>
