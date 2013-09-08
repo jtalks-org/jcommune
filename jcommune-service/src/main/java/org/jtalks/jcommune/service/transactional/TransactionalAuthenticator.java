@@ -75,6 +75,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      * Afterwards user can edit her profile and change this setting.
      */
     public static final boolean DEFAULT_AUTOSUBSCRIBE = true;
+    public static final boolean DEFAULT_SEND_PM_NOTIFICATION = true;
 
     private PluginLoader pluginLoader;
     private EncryptionService encryptionService;
@@ -352,6 +353,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         JCUser user = new JCUser(userDto.getUsername(), userDto.getEmail(), userDto.getPassword());
         user.setLanguage(userDto.getLanguage());
         user.setAutosubscribe(DEFAULT_AUTOSUBSCRIBE);
+        user.setSendPmNotification(DEFAULT_SEND_PM_NOTIFICATION);
         user.setAvatar(avatarService.getDefaultImage());
         user.setRegistrationDate(new DateTime());
         this.getDao().saveOrUpdate(user);

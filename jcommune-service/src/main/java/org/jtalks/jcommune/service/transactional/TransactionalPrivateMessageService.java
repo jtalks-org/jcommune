@@ -205,13 +205,12 @@ public class TransactionalPrivateMessageService
         securityService.createAclBuilder().grant(GeneralPermission.READ).to(recipient).on(pm).flush();
         securityService.createAclBuilder().grant(GeneralPermission.READ).to(userFrom).on(pm).flush();
 
-        long pmId = pm.getId();
-        if (sendingNotificationsEnabledProperty.booleanValue()) {
+        if (isSendNotificationMessage(recipient)) {
             mailService.sendReceivedPrivateMessageNotification(recipient, pm);
         }
 
         logger.debug("Private message(was draft) to user {} was sent. Message id={}",
-                recipient.getUsername(), pmId);
+                recipient.getUsername(), pm.getId());
 
         return pm;
     }

@@ -42,7 +42,7 @@ public class JCUser extends User {
     private boolean enabled;
     private boolean autosubscribe;
     private boolean mentioningNotificationsEnabled;
-    private boolean sendPmNotification = true;
+    private boolean sendPmNotification;
 
     public static final int MAX_SIGNATURE_SIZE = 255;
     public static final int MAX_LOCATION_SIZE = 30;
