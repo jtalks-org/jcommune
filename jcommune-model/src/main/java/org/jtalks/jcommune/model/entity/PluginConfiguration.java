@@ -26,12 +26,12 @@ import java.util.List;
 public class PluginConfiguration extends Entity {
     private String name;
     private boolean active;
-    private List<PluginConfigurationProperty> properties;
+    private List<PluginProperty> properties;
 
     public PluginConfiguration() {
     }
 
-    public PluginConfiguration(String name, boolean active, List<PluginConfigurationProperty> properties) {
+    public PluginConfiguration(String name, boolean active, List<PluginProperty> properties) {
         this.name = name;
         this.active = active;
         this.properties = properties;
@@ -53,11 +53,11 @@ public class PluginConfiguration extends Entity {
         this.active = active;
     }
 
-    public List<PluginConfigurationProperty> getProperties() {
+    public List<PluginProperty> getProperties() {
         return properties;
     }
 
-    public void setProperties(List<PluginConfigurationProperty> properties) {
+    public void setProperties(List<PluginProperty> properties) {
         this.properties = properties;
     }
 }

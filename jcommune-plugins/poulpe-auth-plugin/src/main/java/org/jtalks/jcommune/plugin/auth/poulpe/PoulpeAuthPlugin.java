@@ -16,7 +16,7 @@
 package org.jtalks.jcommune.plugin.auth.poulpe;
 
 import org.jtalks.jcommune.model.dto.UserDto;
-import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
+import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.model.plugins.SimpleAuthenticationPlugin;
 import org.jtalks.jcommune.model.plugins.StatefullPlugin;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
@@ -32,7 +32,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static org.jtalks.jcommune.model.entity.PluginConfigurationProperty.Type.STRING;
+import static org.jtalks.jcommune.model.entity.PluginProperty.Type.STRING;
 
 /**
  * Provides user registration and authentication services via Poulpe.
@@ -44,7 +44,7 @@ public class PoulpeAuthPlugin extends StatefullPlugin
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PoulpeAuthPlugin.class);
     private PoulpeAuthService service;
-    List<PluginConfigurationProperty> pluginProperties;
+    List<PluginProperty> pluginProperties;
 
     @Override
     public Map<String, String> registerUser(UserDto userDto, Boolean dryRun)
@@ -85,28 +85,28 @@ public class PoulpeAuthPlugin extends StatefullPlugin
     }
 
     @Override
-    public List<PluginConfigurationProperty> getConfiguration() {
+    public List<PluginProperty> getConfiguration() {
         return pluginProperties;
     }
 
     @Override
-    public List<PluginConfigurationProperty> getDefaultConfiguration() {
-        PluginConfigurationProperty url = new PluginConfigurationProperty("URL", STRING, "http://localhost:8080");
+    public List<PluginProperty> getDefaultConfiguration() {
+        PluginProperty url = new PluginProperty("URL", STRING, "http://localhost:8080");
         url.setName("Url");
-        PluginConfigurationProperty login = new PluginConfigurationProperty("LOGIN", STRING, "user");
+        PluginProperty login = new PluginProperty("LOGIN", STRING, "user");
         login.setName("Login");
-        PluginConfigurationProperty password = new PluginConfigurationProperty("PASSWORD", STRING, "1234");
+        PluginProperty password = new PluginProperty("PASSWORD", STRING, "1234");
         password.setName("Password");
         return Arrays.asList(url, login, password);
     }
 
     @Override
-    protected Map<PluginConfigurationProperty, String> applyConfiguration(List<PluginConfigurationProperty> properties) {
+    protected Map<PluginProperty, String> applyConfiguration(List<PluginProperty> properties) {
 
         String url = null;
         String login = null;
         String password = null;
-        for (PluginConfigurationProperty property : properties) {
+        for (PluginProperty property : properties) {
             if ("Url".equalsIgnoreCase(property.getName())) {
                 url = property.getValue();
             } else if ("Login".equalsIgnoreCase(property.getName())) {

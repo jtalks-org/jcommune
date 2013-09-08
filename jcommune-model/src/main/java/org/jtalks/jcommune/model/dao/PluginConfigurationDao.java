@@ -17,7 +17,7 @@ package org.jtalks.jcommune.model.dao;
 import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
-import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
+import org.jtalks.jcommune.model.entity.PluginProperty;
 
 import java.util.List;
 
@@ -29,5 +29,5 @@ public interface PluginConfigurationDao extends Crud<PluginConfiguration> {
 
     PluginConfiguration get(String name) throws NotFoundException;
 
-    void updateProperties(List<PluginConfigurationProperty> properties);
+    void updateProperties(List<PluginProperty> properties);
 }

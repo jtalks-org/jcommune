@@ -18,7 +18,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.dao.PluginConfigurationDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
-import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
+import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.dto.PluginActivatingDto;
@@ -87,8 +87,8 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
     }
 
     private void saveNewPluginConfiguration(PluginConfiguration newPluginConfiguration) {
-        List<PluginConfigurationProperty> properties = newPluginConfiguration.getProperties();
-        for (PluginConfigurationProperty property: properties) {
+        List<PluginProperty> properties = newPluginConfiguration.getProperties();
+        for (PluginProperty property: properties) {
             property.setPluginConfiguration(newPluginConfiguration);
         }
         this.getDao().updateProperties(newPluginConfiguration.getProperties());
