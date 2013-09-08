@@ -40,17 +40,31 @@ public interface SimpleAuthenticationPlugin extends Plugin {
      * @param login user login
      * @param password user password
      * @return user details
+     * @throws UnexpectedErrorException if external service returns unexpected result
+     * @throws NoConnectionException    if we can't connect for any reason to external authentication service
      */
-    public Map<String, String> authenticate(String login, String password)
+    Map<String, String> authenticate(String login, String password)
             throws UnexpectedErrorException, NoConnectionException;
 
     /**
      * Performs registration attempt based on user details
      *
+     *
      * @param userDto user
-     * @param dryRun do not register user, just check if it is possible
      * @return validation errors as pairs field - error message
+     * @throws UnexpectedErrorException if external service returns unexpected result
+     * @throws NoConnectionException    if we can't connect for any reason to external authentication service
      */
-    public Map<String, String> registerUser(UserDto userDto, Boolean dryRun)
+    Map<String, String> registerUser(UserDto userDto)
+            throws NoConnectionException, UnexpectedErrorException;
+
+    /**
+     * Performs validation based on user details
+     * @param userDto user information
+     * @return validation errors as pairs field - error message
+     * @throws UnexpectedErrorException if external service returns unexpected result
+     * @throws NoConnectionException    if we can't connect for any reason to external authentication service
+     */
+    Map<String, String> validateUser(UserDto userDto)
             throws NoConnectionException, UnexpectedErrorException;
 }

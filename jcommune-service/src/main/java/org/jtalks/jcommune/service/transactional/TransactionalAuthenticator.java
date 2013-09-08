@@ -304,17 +304,21 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         mergeValidationErrors(jcErrors, result);
         if(!result.hasErrors()) {
             registerByPlugin(registerUserDto.getUserDto(), false, result);
-            storeRegisteredUser(registerUserDto.getUserDto());
+            // because next http call can fail (in the interim another user was registered)
+            // we need to double check it
+            if (!result.hasErrors()) {
+                storeRegisteredUser(registerUserDto.getUserDto());
+            }
         }
         return result;
     }
 
-    public void registerByPlugin(UserDto userDto, Boolean dryRun, BindingResult bindingResult)
+    public void registerByPlugin(UserDto userDto, boolean dryRun, BindingResult bindingResult)
             throws UnexpectedErrorException, NoConnectionException {
         SimpleAuthenticationPlugin authPlugin
                 = (SimpleAuthenticationPlugin) pluginLoader.getPluginByClassName(SimpleAuthenticationPlugin.class);
         if (authPlugin != null && authPlugin.getState() == Plugin.State.ENABLED) {
-            Map<String, String> errors = authPlugin.registerUser(userDto, dryRun);
+            Map<String, String> errors = dryRun? authPlugin.validateUser(userDto) : authPlugin.registerUser(userDto);
             for(Map.Entry<String, String> error : errors.entrySet()) {
                 bindingResult.rejectValue(error.getKey(), null, error.getValue());
             }
