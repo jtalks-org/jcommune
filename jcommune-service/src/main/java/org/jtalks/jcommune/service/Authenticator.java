@@ -32,18 +32,18 @@ public interface Authenticator {
     /**
      * Authenticate user with specified credentials.
      *
-     * @param username username
-     * @param password user password
+     * @param username   username
+     * @param password   user password
      * @param rememberMe remember this user or not
-     * @param request HTTP request
-     * @param response HTTP response
+     * @param request    HTTP request
+     * @param response   HTTP response
      * @return true if user was logged in. false if there were any errors during
-     *      logging in.
+     *         logging in.
      * @throws UnexpectedErrorException if external service returns unexpected result
      * @throws NoConnectionException    if we can't connect for any reason to external authentication service
      */
     public boolean authenticate(String username, String password, boolean rememberMe,
-                               HttpServletRequest request, HttpServletResponse response)
+                                HttpServletRequest request, HttpServletResponse response)
             throws UnexpectedErrorException, NoConnectionException;
 
     /**
@@ -51,8 +51,8 @@ public interface Authenticator {
      *
      * @param registerUserDto user details
      * @return errors occurred during registration
-     * @throws UnexpectedErrorException
-     * @throws NoConnectionException
+     * @throws UnexpectedErrorException if external service returns unexpected result
+     * @throws NoConnectionException    if we can't connect for any reason to external authentication service
      */
     public BindingResult register(RegisterUserDto registerUserDto)
             throws UnexpectedErrorException, NoConnectionException;

@@ -209,7 +209,7 @@ public class TransactionalAuthenticatorTest {
         boolean result = authenticator.authenticate(username, password, true, httpRequest, httpResponse);
 
         assertTrue(result, "Authentication not existing user with correct credentials should be successful " +
-                        "if case Plugin and JCommune use the same database.");
+                "if case Plugin and JCommune use the same database.");
     }
 
     @Test
