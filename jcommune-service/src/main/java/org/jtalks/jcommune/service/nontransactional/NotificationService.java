@@ -113,10 +113,10 @@ public class NotificationService {
     }
 
     /**
-     * Send notification to subscribers about removing topic or code review
+     * Send notification to subscribers about removing topic or code review.
      *
-     * @param entity
-     * @param subscribers
+     * @param entity Current topic
+     * @param subscribers Collection of subscribers
      */
     public void sendNotificationAboutRemovingTopic(Topic entity, Collection<JCUser> subscribers) {
         if (notificationsEnabledProperty.booleanValue()) {

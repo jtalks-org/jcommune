@@ -33,9 +33,7 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
-import org.jtalks.jcommune.service.plugins.PluginFilter;
 import org.jtalks.jcommune.service.plugins.PluginLoader;
-import org.jtalks.jcommune.service.plugins.TypeFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.Advised;
@@ -53,7 +51,6 @@ import org.springframework.validation.Validator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -149,7 +146,6 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
     /**
      * Authenticate user by auth plugin and save updated user details to inner database.
      *
-     *
      * @param username username
      * @param password user password
      * @param newUser  is new user or not
@@ -177,7 +173,6 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
 
     /**
      * Authenticate user by JCommune.
-     *
      *
      * @param user       user entity
      * @param password   user password
@@ -302,7 +297,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         userDto.setPassword(encodedPassword);
         registerByPlugin(registerUserDto.getUserDto(), true, result);
         mergeValidationErrors(jcErrors, result);
-        if(!result.hasErrors()) {
+        if (!result.hasErrors()) {
             registerByPlugin(registerUserDto.getUserDto(), false, result);
             // because next http call can fail (in the interim another user was registered)
             // we need to double check it
@@ -318,8 +313,8 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         SimpleAuthenticationPlugin authPlugin
                 = (SimpleAuthenticationPlugin) pluginLoader.getPluginByClassName(SimpleAuthenticationPlugin.class);
         if (authPlugin != null && authPlugin.getState() == Plugin.State.ENABLED) {
-            Map<String, String> errors = dryRun? authPlugin.validateUser(userDto) : authPlugin.registerUser(userDto);
-            for(Map.Entry<String, String> error : errors.entrySet()) {
+            Map<String, String> errors = dryRun ? authPlugin.validateUser(userDto) : authPlugin.registerUser(userDto);
+            for (Map.Entry<String, String> error : errors.entrySet()) {
                 bindingResult.rejectValue(error.getKey(), null, error.getValue());
             }
         }
@@ -343,11 +338,11 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
     public JCUser storeRegisteredUser(UserDto userDto) {
         // check if user already saved by plugin as common user
         User commonUser = this.getDao().getCommonUserByUsername(userDto.getUsername());
-        if(commonUser != null) {
+        if (commonUser != null) {
             // in this case we must delete old common user and save user as JCUser,
             // because hibernate doesn't allow upgrade common User to JCUser
             try {
-                Session session = ((GenericDao)((Advised)this.getDao()).getTargetSource().getTarget()).session();
+                Session session = ((GenericDao) ((Advised) this.getDao()).getTargetSource().getTarget()).session();
                 session.delete(commonUser);
                 this.getDao().flush();
             } catch (Exception e) {
