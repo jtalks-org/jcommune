@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
@@ -32,6 +33,7 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -46,6 +48,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 
 /**
  * @author Teterin Alexandre
@@ -79,6 +82,14 @@ public class TopicControllerTest {
     private SessionRegistry registry;
     @Mock
     private LastReadPostService lastReadPostService;
+    @Mock
+    private WebRequest request;
+    @Mock
+    private Topic topic;
+    @Mock
+    private Post post1;
+    @Mock
+    private Post post2;
 
     private TopicController controller;
 
@@ -138,7 +149,8 @@ public class TopicControllerTest {
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
         when(postService.getPosts(topic, page)).thenReturn(postsPage);
 
-        ModelAndView mav = controller.showTopicPage(TOPIC_ID, page);
+
+        ModelAndView mav = controller.showTopicPage(request, TOPIC_ID, page);
 
         verify(topicFetchService).checkViewTopicPermission(branch.getId());
         verify(lastReadPostService).markTopicPageAsRead(topic, Integer.valueOf(page));
@@ -149,6 +161,88 @@ public class TopicControllerTest {
         Topic actualTopic = assertAndReturnModelAttributeOfType(mav, "topic", Topic.class);
         assertEquals(actualTopic, topic);
         assertModelAttributeAvailable(mav, "breadcrumbList");
+    }
+
+    @Test
+    public void showTopicPageShouldReturnLastUpdateParameter() throws NotFoundException {
+        String page = "1";
+        PageRequest pageable = new PageRequest("1", 15);
+        List<Post> posts = new LinkedList<>();
+        posts.add(post1);
+        posts.add(post2);
+
+        Page<Post> postsPage = new PageImpl<Post>(posts, pageable, 30L);
+
+        //
+        when(topic.getCreationDate()).thenReturn(new DateTime(2012, 01, 02, 03, 04, 05, 06));
+        when(topic.getBranch()).thenReturn(new Branch("name", "description"));
+        when(post1.getLastTouchedDate()).thenReturn(new DateTime(2013, 01, 02, 03, 04, 05, 06));
+        when(post2.getLastTouchedDate()).thenReturn(new DateTime(2013, 02, 03, 04, 05, 06, 07));
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
+        when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
+        when(postService.getPosts(topic, page)).thenReturn(postsPage);
+
+        ModelAndView mav = controller.showTopicPage(request, TOPIC_ID, page);
+
+        //
+        assertModelAttributeValue(mav, "lastModified", "Sun, 03 Feb 2013 04:05:06 GMT");
+    }
+
+    @Test
+    public void showTopicPageShouldReturnNullIfIfModifiedSinceOlderThenLastUpdate() throws NotFoundException {
+        String page = "1";
+        PageRequest pageable = new PageRequest("1", 15);
+        List<Post> posts = new LinkedList<>();
+        posts.add(post1);
+        posts.add(post2);
+
+        Page<Post> postsPage = new PageImpl<Post>(posts, pageable, 30L);
+
+        DateTime lastPostTouchedTime = new DateTime(2013, 02, 03, 04, 05, 06, 07);
+        //
+        when(topic.getCreationDate()).thenReturn(new DateTime(2012, 01, 02, 03, 04, 05, 06));
+        when(topic.getBranch()).thenReturn(new Branch("name", "description"));
+        when(post1.getLastTouchedDate()).thenReturn(new DateTime(2013, 01, 02, 03, 04, 05, 06));
+        when(post2.getLastTouchedDate()).thenReturn(lastPostTouchedTime);
+        when(request.checkNotModified(lastPostTouchedTime.getMillis())).thenReturn(true);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
+        when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
+        when(postService.getPosts(topic, page)).thenReturn(postsPage);
+
+        ModelAndView mav = controller.showTopicPage(request, TOPIC_ID, page);
+
+        //
+        assertNull(mav);
+    }
+
+    @Test
+    public void showTopicPageShouldReturnNotNullDataIfIfModifiedSinceOlderThenLastUpdate() throws NotFoundException {
+        String page = "1";
+        PageRequest pageable = new PageRequest("1", 15);
+        List<Post> posts = new LinkedList<>();
+        posts.add(post1);
+        posts.add(post2);
+
+        Page<Post> postsPage = new PageImpl<Post>(posts, pageable, 30L);
+
+        DateTime lastPostTouchedTime = new DateTime(2013, 02, 03, 04, 05, 06, 07);
+        //
+        when(topic.getCreationDate()).thenReturn(new DateTime(2012, 01, 02, 03, 04, 05, 06));
+        when(topic.getBranch()).thenReturn(new Branch("name", "description"));
+        when(post1.getLastTouchedDate()).thenReturn(new DateTime(2013, 01, 02, 03, 04, 05, 06));
+        when(post2.getLastTouchedDate()).thenReturn(lastPostTouchedTime);
+        when(request.checkNotModified(lastPostTouchedTime.getMillis())).thenReturn(false);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
+        when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
+        when(postService.getPosts(topic, page)).thenReturn(postsPage);
+
+        ModelAndView mav = controller.showTopicPage(request, TOPIC_ID, page);
+
+        //
+        assertNotNull(mav);
     }
 
     @Test
