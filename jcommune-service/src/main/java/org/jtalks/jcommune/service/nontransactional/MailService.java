@@ -363,10 +363,10 @@ public class MailService {
     }
 
     /**
-     * Set mail about removing topic
+     * Set mail about removing topic.
      *
-     * @param recipient
-     * @param topic
+     * @param recipient Recipient for which send notification
+     * @param topic Current topic
      */
     public void sendRemovingTopicMail(JCUser recipient, Topic topic)
     {

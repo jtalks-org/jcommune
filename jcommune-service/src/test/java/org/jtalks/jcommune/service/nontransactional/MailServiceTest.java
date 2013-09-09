@@ -76,6 +76,7 @@ public class MailServiceTest {
     private CodeReview codeReview = new CodeReview();
     private Branch branch = new Branch("title Branch", "description");
     private ArgumentCaptor<MimeMessage> captor;
+    private ReloadableResourceBundleMessageSource messageSource;
 
     @BeforeMethod
     public void setUp() {
@@ -90,7 +91,7 @@ public class MailServiceTest {
         velocityEngine.setProperty("class.resource.loader.class",
                 "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
         velocityEngine.setProperty("runtime.log.logsystem.class", "org.apache.velocity.runtime.log.NullLogSystem");
-        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:/org/jtalks/jcommune/service/bundle/TemplatesMessages");
         service = new MailService(sender, FROM, velocityEngine, messageSource, notificationsEnabledProperty);
         MimeMessage message = new MimeMessage((Session) null);
@@ -329,8 +330,15 @@ public class MailServiceTest {
         service.sendRemovingTopicMail(user, topic);
 
         this.checkMailCredentials();
-        assertTrue(this.getMimeMailSubject().contains("Topic"));
-        assertTrue(this.getMimeMailBody().contains("removed"));
+
+        String subjectTemplate =
+                messageSource.getMessage("removeTopic.subject",  new Object[]{}, user.getLanguage().getLocale());
+
+        String bodyTemplate =
+                messageSource.getMessage("removeTopic.content",  new Object[]{}, user.getLanguage().getLocale());
+
+        assertEquals(this.getMimeMailSubject(), subjectTemplate);
+        assertTrue(this.getMimeMailBody().contains(bodyTemplate));
     }
 
     @Test
@@ -340,7 +348,14 @@ public class MailServiceTest {
         service.sendRemovingTopicMail(user, topic);
 
         this.checkMailCredentials();
-        assertTrue(this.getMimeMailSubject().contains("Code Review"));
-        assertTrue(this.getMimeMailBody().contains("removed"));
+
+        String subjectTemplate =
+                messageSource.getMessage("removeCodeReview.subject",  new Object[]{}, user.getLanguage().getLocale());
+
+        String bodyTemplate =
+                messageSource.getMessage("removeCodeReview.content",  new Object[]{}, user.getLanguage().getLocale());
+
+        assertEquals(this.getMimeMailSubject(), subjectTemplate);
+        assertTrue(this.getMimeMailBody().contains(bodyTemplate));
     }
 }
