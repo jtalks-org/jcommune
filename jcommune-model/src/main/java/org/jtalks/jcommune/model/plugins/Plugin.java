@@ -25,7 +25,10 @@ import java.util.List;
 public interface Plugin {
 
     /**
-     * @TODO we should ask author about states
+     * LOADED - JCommune loads the plugin
+     * CONFIGURED - once configured from a database or from defaults plugin becomes
+     * ENABLED - plugin is disabled
+     * IN_ERROR - plugin has any problem on previous stages
      */
     enum State {LOADED, CONFIGURED, ENABLED, IN_ERROR}
 

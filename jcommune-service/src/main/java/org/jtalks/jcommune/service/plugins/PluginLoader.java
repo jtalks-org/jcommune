@@ -34,12 +34,15 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 
 /**
+ * Load plugins from path and save configuration for them.
+ * Also load plugin for class name.
+ *
  * @author Anuar_Nurmakanov
  * @author Evgeny Naumenko
  */
 public class PluginLoader {
     private static final Logger LOGGER = LoggerFactory.getLogger(PluginLoader.class);
-    //
+
     private URLClassLoader classLoader;
     private WatchKey watchKey;
     private String folder;
@@ -133,8 +136,8 @@ public class PluginLoader {
         return !plugins.isEmpty() ? plugins.get(0) : null;
     }
 
-    private void loadConfigurationFor(List<Plugin> needConfigurationPlugins) {
-        for (Plugin plugin: needConfigurationPlugins) {
+    private void loadConfigurationFor(List<Plugin> plugins) {
+        for (Plugin plugin: plugins) {
             String name = plugin.getName();
             PluginConfiguration configuration;
             try {
