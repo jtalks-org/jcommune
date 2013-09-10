@@ -15,6 +15,8 @@
 package org.jtalks.jcommune.service.dto;
 
 /**
+ * Class using in PluginActivatingListDto
+ *
  * @author Anuar_Nurmakanov
  */
 public class PluginActivatingDto {

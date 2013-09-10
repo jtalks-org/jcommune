@@ -24,6 +24,9 @@ import java.util.List;
  */
 public interface Plugin {
 
+    /**
+     * @TODO we should ask author about states
+     */
     enum State {LOADED, CONFIGURED, ENABLED, IN_ERROR}
 
     boolean supportsJCommuneVersion(String version);
