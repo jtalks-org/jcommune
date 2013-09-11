@@ -18,3 +18,4 @@ First the project was connected to Poulpe a lot - everything was administrated v
 We usually follow 2 directions when we plan next features:
  - Finishing not-that-finished functionality, like administrating, banners, etc. which should be present in any forum
  - And developing of new features (like Code Review).
+ 

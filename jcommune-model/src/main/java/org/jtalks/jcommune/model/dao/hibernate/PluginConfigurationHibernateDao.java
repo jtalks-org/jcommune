@@ -14,13 +14,13 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.dao.PluginConfigurationDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
-import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
+import org.jtalks.jcommune.model.entity.PluginProperty;
 
 import java.util.List;
 
@@ -28,11 +28,11 @@ import java.util.List;
  *
  * @author Anuar_Nurmakanov
  */
-public class PluginHibernateConfigurationDao extends GenericDao<PluginConfiguration> implements PluginConfigurationDao {
+public class PluginConfigurationHibernateDao extends GenericDao<PluginConfiguration> implements PluginConfigurationDao {
     /**
-     * @param sessionFactory The SessionFactory.
+     * {@inheritDoc}
      */
-    public PluginHibernateConfigurationDao(SessionFactory sessionFactory) {
+    public PluginConfigurationHibernateDao(SessionFactory sessionFactory) {
         super(sessionFactory, PluginConfiguration.class);
     }
 
@@ -41,12 +41,13 @@ public class PluginHibernateConfigurationDao extends GenericDao<PluginConfigurat
      */
     @Override
     public PluginConfiguration get(String name) throws NotFoundException {
-        PluginConfiguration configuration =
-                (PluginConfiguration) session().createCriteria(PluginConfiguration.class)
-                .add(Restrictions.eq("name", name) )
-                .uniqueResult();
+
+        Query query = session().getNamedQuery("getPluginConfiguration");
+
+        PluginConfiguration configuration = (PluginConfiguration) query.setParameter("name", name).uniqueResult();
+
         if (configuration == null){
-            throw new NotFoundException(name + " plugin not found in a database");
+            throw new NotFoundException(name + " plugin not found in the database");
         } else {
             return configuration;
         }
@@ -57,7 +58,7 @@ public class PluginHibernateConfigurationDao extends GenericDao<PluginConfigurat
      */
     @Override
     public void saveOrUpdate(PluginConfiguration entity) {
-        for (PluginConfigurationProperty property: entity.getProperties()) {
+        for (PluginProperty property: entity.getProperties()) {
             property.setPluginConfiguration(entity);
         }
         super.saveOrUpdate(entity);
@@ -67,10 +68,14 @@ public class PluginHibernateConfigurationDao extends GenericDao<PluginConfigurat
      * {@inheritDoc}
      */
     @Override
-    public void updateProperties(List<PluginConfigurationProperty> properties) {
-        for (PluginConfigurationProperty property: properties) {
-            session().saveOrUpdate(property);
+    public void updateProperties(List<PluginProperty> properties) {
+
+        for (PluginProperty property: properties) {
+            PluginProperty persistedProperty = (PluginProperty) session().load(property.getClass(), property.getId());
+            persistedProperty.setValue(property.getValue());
+            session().saveOrUpdate(persistedProperty);
         }
+
         session().flush();
     }
 }

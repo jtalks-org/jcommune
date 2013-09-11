@@ -31,7 +31,6 @@ import org.jtalks.jcommune.web.validation.editors.DefaultStringEditor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
@@ -70,8 +69,6 @@ public class UserController {
     private UserService userService;
     private Authenticator authenticator;
 
-    private Validator validator;
-
     /**
      * @param userService to delegate business logic invocation
      */
@@ -95,11 +92,6 @@ public class UserController {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
         binder.registerCustomEditor(String.class, "password", new DefaultStringEditor(true));
         binder.registerCustomEditor(String.class, "passwordConfirm", new DefaultStringEditor(true));
-        this.validator = binder.getValidator();
-    }
-
-    protected void setValidator(Validator validator) {
-        this.validator = validator;
     }
 
     /**
@@ -156,59 +148,47 @@ public class UserController {
      * todo: redirect to the latest url we came from instead of root
      *
      * @param registerUserDto {@link RegisterUserDto} populated in form
-     * @param result  result of {@link RegisterUserDto} validation
      * @param locale  to set currently selected language as user's default
      * @return redirect to / if registration successful or back to "/registration" if failed
      */
     @RequestMapping(value = "/user/new", method = RequestMethod.POST)
     public ModelAndView registerUser(@ModelAttribute("newUser") RegisterUserDto registerUserDto,
-                                     BindingResult result, Locale locale) {
+                                     Locale locale) {
+        BindingResult errors;
         try {
-            register(registerUserDto, result, locale);
+            registerUserDto.getUserDto().setLanguage(Language.byLocale(locale));
+            errors = authenticator.register(registerUserDto);
         } catch (NoConnectionException e) {
             return new ModelAndView(REG_SERVICE_CONNECTION_ERROR_URL);
         } catch (UnexpectedErrorException e) {
             return new ModelAndView(REG_SERVICE_UNEXPECTED_ERROR_URL);
         }
-        if (result.hasErrors()) {
-            return new ModelAndView(REGISTRATION);
+        if (errors.hasErrors()) {
+            ModelAndView mav = new ModelAndView(REGISTRATION);
+            mav.addAllObjects(errors.getModel());
+            return mav;
         }
-        userService.storeRegisteredUser(registerUserDto.getUserDto());
+
         return new ModelAndView(AFTER_REGISTRATION);
     }
 
-    private void register(RegisterUserDto registerUserDto, BindingResult result, Locale locale)
-            throws UnexpectedErrorException, NoConnectionException {
-        registerUserDto.getUserDto().setLanguage(Language.byLocale(locale));
-        BindingResult jcErrors = new BeanPropertyBindingResult(registerUserDto, "newUser");
-        validator.validate(registerUserDto, jcErrors);
-        authenticator.register(registerUserDto.getUserDto(), result);
-        mergeValidationErrors(jcErrors, result);
-    }
-
-    protected void mergeValidationErrors(BindingResult srcErrors, BindingResult dstErrors) {
-        for (FieldError error : srcErrors.getFieldErrors()) {
-            if (!dstErrors.hasFieldErrors(error.getField())) {
-                dstErrors.addError(error);
-            }
-        }
-    }
 
     /**
      * Register {@link org.jtalks.jcommune.model.entity.JCUser} from populated {@link RegisterUserDto}.
      * <p/>
      *
      * @param registerUserDto {@link RegisterUserDto} populated in form
-     * @param result  result of {@link RegisterUserDto} validation
      * @param locale  to set currently selected language as user's default
      * @return redirect validation result in JSON format
      */
     @RequestMapping(value = "/user/new_ajax", method = RequestMethod.POST)
     @ResponseBody
     public JsonResponse registerUserAjax(@ModelAttribute("newUser") RegisterUserDto registerUserDto,
-                                         BindingResult result, Locale locale) {
+                                         Locale locale) {
+        BindingResult errors;
         try {
-            register(registerUserDto, result, locale);
+            registerUserDto.getUserDto().setLanguage(Language.byLocale(locale));
+            errors = authenticator.register(registerUserDto);
         } catch (NoConnectionException e) {
             return new JsonResponse(JsonResponseStatus.FAIL,
                     new ImmutableMap.Builder<String, String>().put("customError", "connectionError").build());
@@ -216,10 +196,10 @@ public class UserController {
             return new JsonResponse(JsonResponseStatus.FAIL,
                     new ImmutableMap.Builder<String, String>().put("customError", "unexpectedError").build());
         }
-        if (result.hasErrors()) {
-            return new JsonResponse(JsonResponseStatus.FAIL, result.getAllErrors());
+        if (errors.hasErrors()) {
+            return new JsonResponse(JsonResponseStatus.FAIL, errors.getAllErrors());
         }
-        userService.storeRegisteredUser(registerUserDto.getUserDto());
+
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 

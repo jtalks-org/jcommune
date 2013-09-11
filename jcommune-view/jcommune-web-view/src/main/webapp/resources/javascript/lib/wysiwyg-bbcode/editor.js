@@ -388,7 +388,7 @@ function doImage() {
             e.preventDefault();
             myimg = $('#imgId').val();
             if ((myimg != null) && (myimg != '')) {
-                AddTag('[img]' + myimg + '[/img]', '');
+                AddTag('[img]' + myimg, '[/img]');
                 jDialog.closeDialog();
             }else {
                 ErrorUtils.removeErrorMessage('#imgId', $labelErrorsNotEmpty);
@@ -466,9 +466,18 @@ function AddTag(t1, t2) {
             MozillaInsertText(element, mylink + t2, sel_end + t1.length);
             element.selectionEnd = sel_end + t1.length + t2.length + mylink.length;
         } else if (element.value.substring(sel_start, sel_end).length == 0) {
-            MozillaInsertText(element, dummyText + t2, element.selectionStart);
-            sel_start = element.value.lastIndexOf(t1)+t1.length;
-            element.selectionEnd = sel_start + dummyText.length;
+            string = (t2 == "[/img]") ? t2 : dummyText + t2;
+            MozillaInsertText(element, string, sel_end + t1.length);
+
+            window.setTimeout(function(){
+                sel_start = (sel_start > 0) ? element.value.lastIndexOf(t1)+t1.length : t1.length;
+                element.selectionStart = sel_start;
+            }, 1);
+
+            window.setTimeout(function(){
+                element.selectionEnd = sel_start + dummyText.length;
+            }, 1);
+
         } else {
             MozillaInsertText(element, t2, sel_end + t1.length);
             element.selectionEnd = sel_end + t1.length + t2.length;
@@ -668,6 +677,7 @@ function showColorGrid2(Sam, textBoxId) {
             var hex_color = getHexRGBColor(rgb_color);
             AddTag('[color=' + hex_color + ']', '[/color]');
             jDialog.closeDialog();
+            textboxelement.focus();
         }
 
         jDialog.createDialog({

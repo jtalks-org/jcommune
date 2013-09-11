@@ -15,8 +15,13 @@
 
 package org.jtalks.jcommune.service.transactional;
 
+import org.hibernate.Session;
+import org.joda.time.DateTime;
+import org.jtalks.common.model.dao.hibernate.GenericDao;
+import org.jtalks.common.model.entity.User;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.plugins.Plugin;
@@ -26,23 +31,26 @@ import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.Authenticator;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
-import org.jtalks.jcommune.service.plugins.PluginFilter;
+import org.jtalks.jcommune.service.nontransactional.ImageService;
+import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.plugins.PluginLoader;
-import org.jtalks.jcommune.service.plugins.TypeFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.framework.Advised;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.Validator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -52,12 +60,19 @@ import java.util.Map;
  * If default authentication was failed tries to authenticate by any available plugin.
  * <p/>
  * Registration:
- * Register user by any available plugin.
+ * Register user by any available plugin and save in JCommune internal database.
  *
  * @author Andrey Pogorelov
  */
 public class TransactionalAuthenticator extends AbstractTransactionalEntityService<JCUser, UserDao>
         implements Authenticator {
+
+    /**
+     * While registering a new user, she gets {@link JCUser#setAutosubscribe(boolean)} set to {@code true} by default.
+     * Afterwards user can edit her profile and change this setting.
+     */
+    public static final boolean DEFAULT_AUTOSUBSCRIBE = true;
+    public static final boolean DEFAULT_SEND_PM_NOTIFICATION = true;
 
     private PluginLoader pluginLoader;
     private EncryptionService encryptionService;
@@ -65,6 +80,9 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
     private SecurityContextHolderFacade securityFacade;
     private RememberMeServices rememberMeServices;
     private SessionAuthenticationStrategy sessionStrategy;
+    private Validator validator;
+    private MailService mailService;
+    private ImageService avatarService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalAuthenticator.class);
 
@@ -82,17 +100,23 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      */
     public TransactionalAuthenticator(PluginLoader pluginLoader, UserDao dao,
                                       EncryptionService encryptionService,
+                                      MailService mailService,
+                                      ImageService avatarService,
                                       AuthenticationManager authenticationManager,
                                       SecurityContextHolderFacade securityFacade,
                                       RememberMeServices rememberMeServices,
-                                      SessionAuthenticationStrategy sessionStrategy) {
+                                      SessionAuthenticationStrategy sessionStrategy,
+                                      Validator validator) {
         super(dao);
         this.pluginLoader = pluginLoader;
         this.encryptionService = encryptionService;
+        this.mailService = mailService;
+        this.avatarService = avatarService;
         this.authenticationManager = authenticationManager;
         this.securityFacade = securityFacade;
         this.rememberMeServices = rememberMeServices;
         this.sessionStrategy = sessionStrategy;
+        this.validator = validator;
     }
 
     /**
@@ -122,7 +146,6 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
     /**
      * Authenticate user by auth plugin and save updated user details to inner database.
      *
-     *
      * @param username username
      * @param password user password
      * @param newUser  is new user or not
@@ -150,7 +173,6 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
 
     /**
      * Authenticate user by JCommune.
-     *
      *
      * @param user       user entity
      * @param password   user password
@@ -197,8 +219,8 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      */
     private Map<String, String> authenticateByAvailablePlugin(String username, String passwordHash)
             throws UnexpectedErrorException, NoConnectionException {
-
-        SimpleAuthenticationPlugin authPlugin = getPlugin();
+        SimpleAuthenticationPlugin authPlugin
+                = (SimpleAuthenticationPlugin) pluginLoader.getPluginByClassName(SimpleAuthenticationPlugin.class);
         Map<String, String> authInfo = new HashMap<>();
         if (authPlugin != null && authPlugin.getState() == Plugin.State.ENABLED) {
             authInfo.putAll(authPlugin.authenticate(username, passwordHash));
@@ -242,6 +264,8 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
             } else {
                 // user not exist in database (poulpe uses own database)
                 user = new JCUser(authInfo.get("username"), authInfo.get("email"), passwordHash);
+                user.setRegistrationDate(new DateTime());
+                user.setEnabled(Boolean.parseBoolean(authInfo.get("enabled")));
             }
         } else {
             user = getDao().getByUsername(authInfo.get("username"));
@@ -262,29 +286,78 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      * {@inheritDoc}
      */
     @Override
-    public void register(UserDto userDto, BindingResult bindingResult)
+    public BindingResult register(RegisterUserDto registerUserDto)
             throws UnexpectedErrorException, NoConnectionException {
-        SimpleAuthenticationPlugin authPlugin = getPlugin();
+        BindingResult result = new BeanPropertyBindingResult(registerUserDto, "newUser");
+        BindingResult jcErrors = new BeanPropertyBindingResult(registerUserDto, "newUser");
+        validator.validate(registerUserDto, jcErrors);
+        UserDto userDto = registerUserDto.getUserDto();
+        String encodedPassword = (userDto.getPassword() == null || userDto.getPassword().isEmpty()) ? ""
+                : encryptionService.encryptPassword(userDto.getPassword());
+        userDto.setPassword(encodedPassword);
+        registerByPlugin(registerUserDto.getUserDto(), true, result);
+        mergeValidationErrors(jcErrors, result);
+        if (!result.hasErrors()) {
+            registerByPlugin(registerUserDto.getUserDto(), false, result);
+            // because next http call can fail (in the interim another user was registered)
+            // we need to double check it
+            if (!result.hasErrors()) {
+                storeRegisteredUser(registerUserDto.getUserDto());
+            }
+        }
+        return result;
+    }
+
+    public void registerByPlugin(UserDto userDto, boolean dryRun, BindingResult bindingResult)
+            throws UnexpectedErrorException, NoConnectionException {
+        SimpleAuthenticationPlugin authPlugin
+                = (SimpleAuthenticationPlugin) pluginLoader.getPluginByClassName(SimpleAuthenticationPlugin.class);
         if (authPlugin != null && authPlugin.getState() == Plugin.State.ENABLED) {
-            String passwordHash = (userDto.getPassword() == null || userDto.getPassword().isEmpty()) ? ""
-                    : encryptionService.encryptPassword(userDto.getPassword());
-            userDto.setPassword(passwordHash);
-            Map<String, String> errors = authPlugin.registerUser(userDto);
-            for(Map.Entry<String, String> error : errors.entrySet()) {
+            Map<String, String> errors = dryRun ? authPlugin.validateUser(userDto) : authPlugin.registerUser(userDto);
+            for (Map.Entry<String, String> error : errors.entrySet()) {
                 bindingResult.rejectValue(error.getKey(), null, error.getValue());
             }
         }
     }
 
+    protected void mergeValidationErrors(BindingResult srcErrors, BindingResult dstErrors) {
+        for (FieldError error : srcErrors.getFieldErrors()) {
+            if (!dstErrors.hasFieldErrors(error.getField())) {
+                dstErrors.addError(error);
+            }
+        }
+    }
+
     /**
-     * Get available plugin by plugin loader.
+     * Just saves a new {@link JCUser} or upgrade {@link org.jtalks.common.model.entity.User}
+     * to {@link JCUser} without any additional checks
      *
-     * @return authentication plugin
+     * @param userDto coming from enclosing methods, this object is built by Spring MVC
+     * @return stored user
      */
-    protected SimpleAuthenticationPlugin getPlugin() {
-        Class cl = SimpleAuthenticationPlugin.class;
-        PluginFilter pluginFilter = new TypeFilter(cl);
-        List<Plugin> plugins = pluginLoader.getPlugins(pluginFilter);
-        return !plugins.isEmpty() ? (SimpleAuthenticationPlugin) plugins.get(0) : null;
+    public JCUser storeRegisteredUser(UserDto userDto) {
+        // check if user already saved by plugin as common user
+        User commonUser = this.getDao().getCommonUserByUsername(userDto.getUsername());
+        if (commonUser != null) {
+            // in this case we must delete old common user and save user as JCUser,
+            // because hibernate doesn't allow upgrade common User to JCUser
+            try {
+                Session session = ((GenericDao) ((Advised) this.getDao()).getTargetSource().getTarget()).session();
+                session.delete(commonUser);
+                this.getDao().flush();
+            } catch (Exception e) {
+                LOGGER.warn("Could not delete common user.");
+            }
+        }
+        JCUser user = new JCUser(userDto.getUsername(), userDto.getEmail(), userDto.getPassword());
+        user.setLanguage(userDto.getLanguage());
+        user.setAutosubscribe(DEFAULT_AUTOSUBSCRIBE);
+        user.setSendPmNotification(DEFAULT_SEND_PM_NOTIFICATION);
+        user.setAvatar(avatarService.getDefaultImage());
+        user.setRegistrationDate(new DateTime());
+        this.getDao().saveOrUpdate(user);
+        mailService.sendAccountActivationMail(user);
+        LOGGER.info("JCUser registered: {}", user.getUsername());
+        return user;
     }
 }

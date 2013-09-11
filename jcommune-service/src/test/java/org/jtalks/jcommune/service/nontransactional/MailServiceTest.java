@@ -23,6 +23,8 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.context.MessageSource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
@@ -64,6 +66,7 @@ public class MailServiceTest {
     private JavaMailSender sender;
     @Mock
     private PropertyDao propertyDao;
+
     private JCommuneProperty notificationsEnabledProperty = SENDING_NOTIFICATIONS_ENABLED;
     //
     private MailService service;
@@ -73,6 +76,7 @@ public class MailServiceTest {
     private CodeReview codeReview = new CodeReview();
     private Branch branch = new Branch("title Branch", "description");
     private ArgumentCaptor<MimeMessage> captor;
+    private ReloadableResourceBundleMessageSource messageSource;
 
     @BeforeMethod
     public void setUp() {
@@ -87,7 +91,7 @@ public class MailServiceTest {
         velocityEngine.setProperty("class.resource.loader.class",
                 "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
         velocityEngine.setProperty("runtime.log.logsystem.class", "org.apache.velocity.runtime.log.NullLogSystem");
-        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:/org/jtalks/jcommune/service/bundle/TemplatesMessages");
         service = new MailService(sender, FROM, velocityEngine, messageSource, notificationsEnabledProperty);
         MimeMessage message = new MimeMessage((Session) null);
@@ -318,5 +322,40 @@ public class MailServiceTest {
     private void enableEmailNotifications() {
         Property enabledProperty = new Property(PROPERTY_NAME, TRUE_STRING);
         when(propertyDao.getByName(PROPERTY_NAME)).thenReturn(enabledProperty);
+    }
+
+    @Test
+    public void testSendRemovingTopicMailWhenTopicAsTopic() throws IOException, MessagingException {
+        Topic topic = new Topic();
+        service.sendRemovingTopicMail(user, topic);
+
+        this.checkMailCredentials();
+
+        String subjectTemplate =
+                messageSource.getMessage("removeTopic.subject",  new Object[]{}, user.getLanguage().getLocale());
+
+        String bodyTemplate =
+                messageSource.getMessage("removeTopic.content",  new Object[]{}, user.getLanguage().getLocale());
+
+        assertEquals(this.getMimeMailSubject(), subjectTemplate);
+        assertTrue(this.getMimeMailBody().contains(bodyTemplate));
+    }
+
+    @Test
+    public void testSendRemovingTopicMailWhenTopicAsCodeReview() throws IOException, MessagingException {
+        Topic topic = new Topic();
+        topic.setCodeReview(new CodeReview());
+        service.sendRemovingTopicMail(user, topic);
+
+        this.checkMailCredentials();
+
+        String subjectTemplate =
+                messageSource.getMessage("removeCodeReview.subject",  new Object[]{}, user.getLanguage().getLocale());
+
+        String bodyTemplate =
+                messageSource.getMessage("removeCodeReview.content",  new Object[]{}, user.getLanguage().getLocale());
+
+        assertEquals(this.getMimeMailSubject(), subjectTemplate);
+        assertTrue(this.getMimeMailBody().contains(bodyTemplate));
     }
 }

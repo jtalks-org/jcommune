@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -66,9 +67,9 @@ public class PoulpeAuthServiceTest {
         JaxbRepresentation<Errors> errorsRepr = new JaxbRepresentation<Errors>(errors);
         ClientResource clientResource = createClientResource(Status.CLIENT_ERROR_BAD_REQUEST, errorsRepr);
 
-        doReturn(clientResource).when(service).sendRegistrationRequest(any(User.class));
+        doReturn(clientResource).when(service).sendRegistrationRequest(any(User.class), eq(true));
 
-        Map<String, String> result = service.registerUser(createUserDto("", "password", "email@email.ou"));
+        Map<String, String> result = service.registerUser(createUserDto("", "password", "email@email.ou"), true);
 
         assertEquals(result.size(), 3, "User with invalid credentials shouldn't pass registration.");
     }
@@ -77,27 +78,27 @@ public class PoulpeAuthServiceTest {
     public void testRegisterUserShouldFailIfConnectionErrorOccurred() throws Exception {
         ClientResource clientResource = createClientResource(Status.CLIENT_ERROR_REQUEST_TIMEOUT, null);
 
-        doReturn(clientResource).when(service).sendRegistrationRequest(any(User.class));
+        doReturn(clientResource).when(service).sendRegistrationRequest(any(User.class), eq(true));
 
-        service.registerUser(createUserDto("username", "password", "email@email.ru"));
+        service.registerUser(createUserDto("username", "password", "email@email.ru"), true);
     }
 
     @Test(expectedExceptions = UnexpectedErrorException.class)
     public void testRegisterUserShouldFailIfInternalServerErrorOccurred() throws Exception {
         ClientResource clientResource = createClientResource(Status.SERVER_ERROR_INTERNAL, null);
 
-        doReturn(clientResource).when(service).sendRegistrationRequest(any(User.class));
+        doReturn(clientResource).when(service).sendRegistrationRequest(any(User.class), eq(true));
 
-        service.registerUser(createUserDto("username", "password", "email@email.ru"));
+        service.registerUser(createUserDto("username", "password", "email@email.ru"), true);
     }
 
     @Test
     public void testRegisterUserWithCorrectParametersShouldBeSuccessful() throws Exception {
         ClientResource clientResource = createClientResource(Status.SUCCESS_OK, null);
 
-        doReturn(clientResource).when(service).sendRegistrationRequest(any(User.class));
+        doReturn(clientResource).when(service).sendRegistrationRequest(any(User.class), eq(true));
 
-        Map<String, String> result = service.registerUser(createUserDto("username", "password", "email@email.ru"));
+        Map<String, String> result = service.registerUser(createUserDto("username", "password", "email@email.ru"), true);
 
         assertTrue(result.size() == 0, "User with valid credentials should pass registration.");
     }

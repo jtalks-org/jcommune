@@ -56,7 +56,7 @@ $(document).ready(function () {
     //defined the URL for appropriate avatar processing depending on client browser:
     // Opera, IE - multipart file using iFrame
     // Chrome, Opera - byte [] using XHR
-    var action;
+    var     action;
     //this parameter tells to valums file uploader the appropriate content type
     //if encoding != multipart, it will use "application/octet-stream" content type
     //otherwise it will use "multipart/form-data"

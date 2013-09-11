@@ -65,7 +65,7 @@ public class PoulpeAuthServiceIntegrationTest {
         User user = createUser("username", "passwordHash", "email@email.ru");
         whenHttp(server).match(post(regUrl)).then(status(HttpStatus.OK_200));
 
-        ClientResource clientResource = service.sendRegistrationRequest(user);
+        ClientResource clientResource = service.sendRegistrationRequest(user, true);
 
         assertEquals(clientResource.getStatus().getCode(), HttpStatus.OK_200.getStatusCode());
     }
@@ -75,7 +75,7 @@ public class PoulpeAuthServiceIntegrationTest {
         User user = createUser("username", "passwordHash", "email.ru");
         whenHttp(server).match(post(regUrl)).then(status(HttpStatus.INTERNAL_SERVER_ERROR_500));
 
-        ClientResource clientResource = service.sendRegistrationRequest(user);
+        ClientResource clientResource = service.sendRegistrationRequest(user, true);
 
         assertEquals(clientResource.getStatus().getCode(), HttpStatus.INTERNAL_SERVER_ERROR_500.getStatusCode());
     }
@@ -85,7 +85,7 @@ public class PoulpeAuthServiceIntegrationTest {
         User user = createUser("username", "passwordHash", "email.ru");
         whenHttp(server).match(post(regUrl)).then(status(HttpStatus.BAD_REQUEST_400));
 
-        ClientResource clientResource = service.sendRegistrationRequest(user);
+        ClientResource clientResource = service.sendRegistrationRequest(user, true);
 
         assertEquals(clientResource.getStatus().getCode(), HttpStatus.BAD_REQUEST_400.getStatusCode());
     }

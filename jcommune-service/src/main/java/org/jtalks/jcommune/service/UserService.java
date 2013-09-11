@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.common.model.entity.User;
-import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
@@ -168,12 +167,4 @@ public interface UserService extends EntityService<JCUser> {
      * @param pattern part of username
      */
     List<String> getUsernames(String pattern);
-
-    /**
-     * Saves a new {@link JCUser} or upgrade {@link User} to {@link JCUser} without any additional checks
-     *
-     * @param userDto dto with user details
-     * @return registered user
-     */
-    JCUser storeRegisteredUser(UserDto userDto);
 }

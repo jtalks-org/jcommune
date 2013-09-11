@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.service;
 
-import org.jtalks.jcommune.model.dto.UserDto;
+import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.springframework.validation.BindingResult;
@@ -32,28 +32,30 @@ public interface Authenticator {
     /**
      * Authenticate user with specified credentials.
      *
-     * @param username username
-     * @param password user password
+     * @param username   username
+     * @param password   user password
      * @param rememberMe remember this user or not
-     * @param request HTTP request
-     * @param response HTTP response
+     * @param request    HTTP request
+     * @param response   HTTP response
      * @return true if user was logged in. false if there were any errors during
-     *      logging in.
-     * @throws UnexpectedErrorException if some unexpected error occurred
-     * @throws NoConnectionException    if some connection error occurred
+     *         logging in.
+     * @throws UnexpectedErrorException if external service returns unexpected result
+     * @throws NoConnectionException    if we can't connect for any reason to external authentication service
      */
     public boolean authenticate(String username, String password, boolean rememberMe,
-                               HttpServletRequest request, HttpServletResponse response)
+                                HttpServletRequest request, HttpServletResponse response)
             throws UnexpectedErrorException, NoConnectionException;
 
     /**
      * Register user with given details.
      *
-     * @param userDto user
-     * @param bindingResult container for validation errors
-     * @throws UnexpectedErrorException
-     * @throws NoConnectionException
+     * @param registerUserDto user details
+     * @return errors occurred during registration
+     * @throws UnexpectedErrorException if external service returns unexpected result
+     * @throws NoConnectionException    if we can't connect for any reason to external authentication service
      */
-    public void register(UserDto userDto, BindingResult bindingResult)
+    public BindingResult register(RegisterUserDto registerUserDto)
             throws UnexpectedErrorException, NoConnectionException;
+
+
 }

@@ -366,12 +366,17 @@ public class EditUserProfileDto {
         this.location = location;
     }
 
+    /**
+     * Check - sending notification is allow
+     * @return if allow return true else false
+     */
     public boolean isSendPmNotification() {
         return sendPmNotification;
     }
 
     /**
-     * @param sendPmNotification
+     * Set send notification or not
+     * @param sendPmNotification Send notification or not
      */
     public void setSendPmNotification(boolean sendPmNotification) {
         this.sendPmNotification = sendPmNotification;

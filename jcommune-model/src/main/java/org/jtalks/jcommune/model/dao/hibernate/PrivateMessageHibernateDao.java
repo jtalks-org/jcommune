@@ -71,7 +71,13 @@ public class PrivateMessageHibernateDao extends GenericDao<PrivateMessage> imple
         return new PageImpl<PrivateMessage>(messages, pageRequest, totalCount);
     }
 
-   private int getOutboxMessageCount(JCUser userFrom, PrivateMessageStatus[] statuses) {
+    /**
+     * Return outbox message count for specified user (sender) and message statuses.
+     * @param userFrom Specified user (sender) for witch will be returned outbox message count.
+     * @param statuses The private message statuses for inbox page.
+     * @return The inbox message count.
+     */
+    private int getOutboxMessageCount(JCUser userFrom, PrivateMessageStatus[] statuses) {
         int result = DEFAULT_MESSAGE_COUNT;
         Number messageCount = (Number) session()
                 .getNamedQuery("getCountUserOutboxPm")
@@ -102,6 +108,12 @@ public class PrivateMessageHibernateDao extends GenericDao<PrivateMessage> imple
         return new PageImpl<PrivateMessage>(messages, pageRequest, totalCount);
     }
 
+    /**
+     * Return inbox message count for specified user and message statuses.
+     * @param user Specified user for witch will be returned inbox message count.
+     * @param statuses The private message statuses for inbox page.
+     * @return The inbox message count.
+     */
     private int getInboxMessageCount(JCUser user, PrivateMessageStatus[] statuses) {
         int result = DEFAULT_MESSAGE_COUNT;
         Number messageCount = (Number) session()
@@ -114,12 +126,6 @@ public class PrivateMessageHibernateDao extends GenericDao<PrivateMessage> imple
         }
         return result;
     }
-
-
-
-
-
-
 
     /**
      * {@inheritDoc}

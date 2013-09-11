@@ -54,8 +54,7 @@ import static org.testng.Assert.assertEquals;
 public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpringContextTests {
 	private static final int PAGE_SIZE = 50;
     private static final String TOPIC_CONTENT = "topicContent";
-    private static final PageRequest
-            DEFAULT_PAGE_REQUEST = new PageRequest("1", 50);
+    private static final PageRequest DEFAULT_PAGE_REQUEST = new PageRequest("1", 50);
     @Autowired
 	private SessionFactory sessionFactory;
 	@Autowired
@@ -180,8 +179,7 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
         configureMocks(TOPIC_CONTENT, TOPIC_CONTENT);
         
         PageRequest pageRequest = new PageRequest("1000", 50);
-        Page<Topic> searchResultPage = topicSearchDao.searchByTitleAndContent(
-                TOPIC_CONTENT, pageRequest);
+        Page<Topic> searchResultPage = topicSearchDao.searchByTitleAndContent(TOPIC_CONTENT, pageRequest);
         
         Assert.assertEquals(searchResultPage.getNumber(), 1);
         Assert.assertTrue(searchResultPage.hasContent(), "Search result must not be empty.");

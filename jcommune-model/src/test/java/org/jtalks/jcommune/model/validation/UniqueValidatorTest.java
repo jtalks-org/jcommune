@@ -19,11 +19,13 @@ import org.jtalks.jcommune.model.dao.ValidatorDao;
 import org.jtalks.jcommune.model.validation.validators.UniqueValidator;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.springframework.context.ApplicationContext;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertFalse;
@@ -41,7 +43,10 @@ public class UniqueValidatorTest {
     @BeforeMethod
     public void init() {
         initMocks(this);
-        validator = new UniqueValidator(dao);
+        validator = new UniqueValidator();
+        ApplicationContext context = mock(ApplicationContext.class);
+        when(context.getBean(ValidatorDao.class)).thenReturn(dao);
+        validator.setApplicationContext(context);
     }
 
     @Test

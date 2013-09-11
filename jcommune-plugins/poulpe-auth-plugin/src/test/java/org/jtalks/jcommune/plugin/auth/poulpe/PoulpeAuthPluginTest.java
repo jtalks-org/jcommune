@@ -17,7 +17,7 @@ package org.jtalks.jcommune.plugin.auth.poulpe;
 
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
-import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
+import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
@@ -33,7 +33,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.jtalks.jcommune.model.entity.PluginConfigurationProperty.Type.STRING;
+import static org.jtalks.jcommune.model.entity.PluginProperty.Type.STRING;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
@@ -82,7 +82,7 @@ public class PoulpeAuthPluginTest {
         errors.put("email", "Invalid email");
         errors.put("password", "Invalid password");
 
-        when(service.registerUser(userDto)).thenReturn(errors);
+        when(service.registerUser(userDto, false)).thenReturn(errors);
 
         Map<String, String> result = plugin.registerUser(userDto);
 
@@ -94,7 +94,7 @@ public class PoulpeAuthPluginTest {
             throws UnexpectedErrorException, NoConnectionException, IOException, JAXBException {
         UserDto userDto = createUserDto("user", "1234", "email@email.em");
 
-        when(service.registerUser(userDto)).thenReturn(Collections.EMPTY_MAP);
+        when(service.registerUser(userDto, true)).thenReturn(Collections.EMPTY_MAP);
 
         Map<String, String> result = plugin.registerUser(userDto);
 
@@ -106,7 +106,7 @@ public class PoulpeAuthPluginTest {
             throws UnexpectedErrorException, NoConnectionException, IOException, JAXBException {
         UserDto userDto = createUserDto("user", "1234", "email@email.em");
 
-        when(service.registerUser(userDto)).thenThrow(new NoConnectionException());
+        when(service.registerUser(userDto, false)).thenThrow(new NoConnectionException());
 
         plugin.registerUser(userDto);
     }
@@ -116,7 +116,7 @@ public class PoulpeAuthPluginTest {
             throws UnexpectedErrorException, NoConnectionException, IOException, JAXBException {
         UserDto userDto = createUserDto("user", "1234", "email@email.em");
 
-        when(service.registerUser(userDto)).thenThrow(new JAXBException(""));
+        when(service.registerUser(userDto, false)).thenThrow(new JAXBException(""));
 
         plugin.registerUser(userDto);
     }
@@ -183,12 +183,12 @@ public class PoulpeAuthPluginTest {
 
     private PluginConfiguration createConfiguration(String url, String login, String password) {
 
-        PluginConfigurationProperty urlProperty =
-                new PluginConfigurationProperty("URL", STRING, url);
+        PluginProperty urlProperty =
+                new PluginProperty("URL", STRING, url);
         urlProperty.setName("Url");
-        PluginConfigurationProperty loginProperty = new PluginConfigurationProperty("LOGIN", STRING, login);
+        PluginProperty loginProperty = new PluginProperty("LOGIN", STRING, login);
         loginProperty.setName("Login");
-        PluginConfigurationProperty passwordProperty = new PluginConfigurationProperty("PASSWORD", STRING, password);
+        PluginProperty passwordProperty = new PluginProperty("PASSWORD", STRING, password);
         passwordProperty.setName("Password");
         return new PluginConfiguration("Poulpe Auth Plugin", true,
                 Arrays.asList(urlProperty, loginProperty, passwordProperty));

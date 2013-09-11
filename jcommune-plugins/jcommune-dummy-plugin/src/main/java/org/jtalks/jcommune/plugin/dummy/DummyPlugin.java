@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.plugin.dummy;
 
-import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
+import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.model.plugins.StatefullPlugin;
 
 import java.util.Arrays;
@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static org.jtalks.jcommune.model.entity.PluginConfigurationProperty.Type.STRING;
+import static org.jtalks.jcommune.model.entity.PluginProperty.Type.STRING;
 
 /**
  *
@@ -35,7 +35,7 @@ public class DummyPlugin extends StatefullPlugin {
     }
 
     @Override
-    public List<PluginConfigurationProperty> getConfiguration() {
+    public List<PluginProperty> getConfiguration() {
         return Collections.emptyList();
     }
 
@@ -44,14 +44,14 @@ public class DummyPlugin extends StatefullPlugin {
     }
 
     @Override
-    protected Map<PluginConfigurationProperty, String> applyConfiguration(List<PluginConfigurationProperty> properties) {
+    protected Map<PluginProperty, String> applyConfiguration(List<PluginProperty> properties) {
         System.out.println("Configuring!");
         return Collections.emptyMap();
     }
 
     @Override
-    public List<PluginConfigurationProperty> getDefaultConfiguration() {
-        PluginConfigurationProperty url = new PluginConfigurationProperty("URL", STRING, "http://localhost:1234");
+    public List<PluginProperty> getDefaultConfiguration() {
+        PluginProperty url = new PluginProperty("URL", STRING, "http://localhost:1234");
         return Arrays.asList(url);
     }
 }

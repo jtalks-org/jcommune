@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.model.plugins;
 
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
-import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
+import org.jtalks.jcommune.model.entity.PluginProperty;
 
 import java.util.List;
 
@@ -24,6 +24,12 @@ import java.util.List;
  */
 public interface Plugin {
 
+    /**
+     * LOADED - JCommune loads the plugin
+     * CONFIGURED - once configured from a database or from defaults plugin becomes
+     * ENABLED - plugin is disabled
+     * IN_ERROR - plugin has any problem on previous stages
+     */
     enum State {LOADED, CONFIGURED, ENABLED, IN_ERROR}
 
     boolean supportsJCommuneVersion(String version);
@@ -32,9 +38,9 @@ public interface Plugin {
 
     State getState();
 
-    List<PluginConfigurationProperty> getConfiguration();
+    List<PluginProperty> getConfiguration();
 
-    List<PluginConfigurationProperty> getDefaultConfiguration();
+    List<PluginProperty> getDefaultConfiguration();
 
     void configure(PluginConfiguration configuration);
 
