@@ -466,9 +466,11 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     @Test
     public void testGetSubscribersWithAllowedPermission(){
         Topic topic = createAndSaveTopicWithSubscribers();
-
+        JCUser subscriber = topic.getTopicStarter();
+        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
+                topic.getBranch().getId(), String.valueOf(subscriber.getGroups().get(0).getId()), true);
         assertEquals(dao.getAllowedSubscribers(topic).size(), 1,
-            "Should return subscribers which are contained in any group with VIEW_TOPIC permission.");
+            "Should return subscribers which are contained in some group with VIEW_TOPIC permission and not contained in any group with disallowed VIEW_TOPIC permission.");
     }
 
     @Test
@@ -480,6 +482,27 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
         assertEquals(dao.getAllowedSubscribers(topic).size(), 0,
             "Should not return subscribers which are contained in any group with disallowed VIEW_TOPIC permission.");
+    }
+
+    @Test
+    public void testGetSubscribersWithAllowedAndDisallowedPermission(){
+        Topic topic = createAndSaveTopicWithSubscribers();
+        JCUser subscriber = topic.getTopicStarter();
+        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
+                topic.getBranch().getId(), String.valueOf(subscriber.getGroups().get(0).getId()), false);
+        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
+                topic.getBranch().getId(), String.valueOf(subscriber.getGroups().get(1).getId()), true);
+
+        assertEquals(dao.getAllowedSubscribers(topic).size(), 0,
+                "Should not return subscribers which are contained in any group with disallowed VIEW_TOPIC permission.");
+    }
+
+    @Test
+    public void testGetSubscribersWithoutAllowedAndDisallowedPermission(){
+        Topic topic = createAndSaveTopicWithSubscribers();
+
+        assertEquals(dao.getAllowedSubscribers(topic).size(), 0,
+                "Should not return subscribers which are not contained in any group with VIEW_TOPIC permission.");
     }
 
     private Topic createAndSaveTopicWithSubscribers(){
