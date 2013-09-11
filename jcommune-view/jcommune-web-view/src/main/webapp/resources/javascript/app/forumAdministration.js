@@ -305,7 +305,7 @@ function createUploader(IFrameActionUrl, XhrActionUrl, uploadButtonId, onSuccess
                 $('#' + jDialog.options.alertDefaultBut).on('click', createAdministrationDialog);
                 jDialog.dialog.find('.close').bind('click', createAdministrationDialog);
             }
-
+            $("#" + uploadButtonId).tooltip('hide');
         },
         onError: function(id, filename, xhr) {
             if (xhr.status == REQUEST_ENTITY_TOO_LARGE) {
