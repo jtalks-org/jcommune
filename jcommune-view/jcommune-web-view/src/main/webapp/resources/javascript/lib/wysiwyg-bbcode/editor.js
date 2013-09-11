@@ -468,8 +468,16 @@ function AddTag(t1, t2) {
         } else if (element.value.substring(sel_start, sel_end).length == 0) {
             string = (t2 == "[/img]") ? t2 : dummyText + t2;
             MozillaInsertText(element, string, sel_end + t1.length);
-            sel_start = (sel_start > 0) ? element.value.lastIndexOf(t1)+t1.length : t1.length;
-            element.selectionEnd = sel_start + dummyText.length;
+
+            window.setTimeout(function(){
+                sel_start = (sel_start > 0) ? element.value.lastIndexOf(t1)+t1.length : t1.length;
+                element.selectionStart = sel_start;
+            }, 1);
+
+            window.setTimeout(function(){
+                element.selectionEnd = sel_start + dummyText.length;
+            }, 1);
+
         } else {
             MozillaInsertText(element, t2, sel_end + t1.length);
             element.selectionEnd = sel_end + t1.length + t2.length;
