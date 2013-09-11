@@ -33,7 +33,7 @@
             <td class="status-col-small"><jtalks:topicIconSmall topic="${topic}"/></td>
           </sec:authorize>
           <td class="posts-td-small">
-            <h4 class="h-nostyle">
+            <h2 class="h-nostyle">
                     <%--Some topic types should have a special prefix when displayed--%>
               <c:if test="${topic.announcement=='true'}">
                 <span class="sticky"><spring:message code="label.marked_as_announcement"/> </span>
@@ -45,7 +45,7 @@
                 <span class="sticky"><spring:message code="label.marked_as_poll"/></span>
               </c:if>
               <a href="${pageContext.request.contextPath}/topics/${topic.id}"><c:out value="${topic.title}"/></a>
-            </h4>
+            </h2>
             <sub class="created-by">by
               <a href='${pageContext.request.contextPath}/users/${topic.topicStarter.id}"'>
                 <c:out value="${topic.topicStarter.username}"/>
