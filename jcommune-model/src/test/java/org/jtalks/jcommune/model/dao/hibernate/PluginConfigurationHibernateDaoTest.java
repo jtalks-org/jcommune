@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.testng.Assert.*;
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
  * @author Anuar Nurmakanov
@@ -58,17 +59,19 @@ public class PluginConfigurationHibernateDaoTest extends AbstractTransactionalTe
 
     @Test
     public void getShouldReturnPluginById() {
+
+        session.clear();
+
         PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPluginConfiguration();
 
         PluginConfiguration foundPluginConfiguration = pluginConfigurationDao.get(pluginConfiguration.getId());
 
         assertNotNull(foundPluginConfiguration);
-        assertEquals(foundPluginConfiguration.getId(), pluginConfiguration.getId(),
-                "Get should return pluginConfiguration by it ID, so found pluginConfiguration must have the same ID as passed to get.");
+        assertReflectionEquals(foundPluginConfiguration, pluginConfiguration);
     }
 
     @Test
-    public void getWithPassedIdOfNonExistPluginShouldReturnNull() {
+    public void getWithPassedIdOfNonExistingPluginShouldReturnNull() {
         PluginConfiguration nonExistPluginConfiguration = pluginConfigurationDao.get(-788888L);
 
         assertNull(nonExistPluginConfiguration, "PluginConfiguration doesn't exist, so get must return null");
@@ -81,7 +84,7 @@ public class PluginConfigurationHibernateDaoTest extends AbstractTransactionalTe
         pluginConfiguration.setName(newPluginName);
 
         pluginConfigurationDao.saveOrUpdate(pluginConfiguration);
-        session.evict(pluginConfiguration);
+        session.clear();
         PluginConfiguration updatedPluginConfiguration = (PluginConfiguration) session.get(PluginConfiguration.class, pluginConfiguration.getId());
 
         assertEquals(updatedPluginConfiguration.getName(), newPluginName, "After update pluginConfiguration properties must be updated.");
@@ -95,7 +98,7 @@ public class PluginConfigurationHibernateDaoTest extends AbstractTransactionalTe
         session.evict(newPluginConfiguration);
         PluginConfiguration savedPluginConfiguration = (PluginConfiguration) session.get(PluginConfiguration.class, newPluginConfiguration.getId());
 
-        assertNotNull(savedPluginConfiguration, "PluginConfiguration should be found after persisting to database.");
+        assertReflectionEquals(newPluginConfiguration, savedPluginConfiguration);
     }
 
     @Test
@@ -130,7 +133,7 @@ public class PluginConfigurationHibernateDaoTest extends AbstractTransactionalTe
     }
 
     @Test(expectedExceptions = NotFoundException.class)
-    public void getWhenPassedNonExistingNameShouldShowErrorAboutNotFoundConfiguration() throws NotFoundException {
+    public void getShouldThrowIfDidNotFindPlugin() throws NotFoundException {
         pluginConfigurationDao.get("Some fake name");
     }
 

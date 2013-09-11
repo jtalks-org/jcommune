@@ -339,7 +339,7 @@
     </bean>
 
     <bean id="pluginLoader" class="org.jtalks.jcommune.service.plugins.PluginLoader" init-method="init" destroy-method="destroy">
-        <constructor-arg name="pluginsFolderPath" value="${PLUGIN_FOLDER:~}"/>
+        <constructor-arg name="pluginsFolderPath" value="${JCOMMUNE_PLUGIN_FOLDER:~}"/>
         <constructor-arg name="pluginConfigurationDao" ref="pluginConfigurationDao"/>
     </bean>
 

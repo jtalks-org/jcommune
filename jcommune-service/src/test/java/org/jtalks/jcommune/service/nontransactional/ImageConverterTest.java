@@ -224,4 +224,25 @@ public class ImageConverterTest {
                 {"jpeg", "data:image/jpeg;base64,"}, {"png", "data:image/png;base64,"}, {"ico", "data:image/ico;base64,"}
         };
     }
+
+    @Test
+    public void resizeIconWithWidthLessThenMinimumShouldCreateIconWidthMinimumWidth() {
+        ImageConverter converter = ImageConverter.createConverter("ico", DEFAULT_MAX_WIDTH, DEFAULT_MAX_HEIGHT);
+        BufferedImage image = new BufferedImage(ImageConverter.MINIMUM_ICO_WIDTH / 4, 5, BufferedImage.TYPE_INT_ARGB);
+        image = converter.resizeImage(image, BufferedImage.TYPE_INT_ARGB);
+
+        assertEquals(image.getHeight(), 5 * 4);
+        assertEquals(image.getWidth(), ImageConverter.MINIMUM_ICO_WIDTH);
+    }
+
+    @Test
+    public void resizeIconWithWidthLessThenMinimumShouldCreateIconWidthMinimumWidthAndNotGreateThenMinimumHeight() {
+        int maxSize = 16;
+        ImageConverter converter = ImageConverter.createConverter("ico", maxSize, maxSize);
+        BufferedImage image = new BufferedImage(ImageConverter.MINIMUM_ICO_WIDTH / 4, 5, BufferedImage.TYPE_INT_ARGB);
+        image = converter.resizeImage(image, BufferedImage.TYPE_INT_ARGB);
+
+        assertEquals(image.getHeight(), maxSize);
+        assertEquals(image.getWidth(), ImageConverter.MINIMUM_ICO_WIDTH);
+    }
 }

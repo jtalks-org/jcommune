@@ -24,6 +24,12 @@ import java.util.List;
  */
 public interface Plugin {
 
+    /**
+     * LOADED - JCommune loads the plugin
+     * CONFIGURED - once configured from a database or from defaults plugin becomes
+     * ENABLED - plugin is disabled
+     * IN_ERROR - plugin has any problem on previous stages
+     */
     enum State {LOADED, CONFIGURED, ENABLED, IN_ERROR}
 
     boolean supportsJCommuneVersion(String version);

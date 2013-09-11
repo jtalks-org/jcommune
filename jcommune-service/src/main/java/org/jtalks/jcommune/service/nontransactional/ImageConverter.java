@@ -51,6 +51,11 @@ public class ImageConverter {
     private static final int THREE_BITS = BIT * 3;
     private static final int ARGB_BITS_COUNT = BIT * 4;
 
+    /** In some cases (e.g. {@link ICOEncoder write() method}) we can't work with images
+     * having width < 8, default accessing kept for testing
+    */
+    static final int MINIMUM_ICO_WIDTH = 8;
+
     private final Base64Wrapper base64Wrapper = new Base64Wrapper();
 
     private final int maxImageWidth;
@@ -118,6 +123,7 @@ public class ImageConverter {
 
         try {
             if (format.equals("ico")) {
+
                 ICOEncoder.write(image, ARGB_BITS_COUNT, baos);
             } else {
                 ImageIO.write(image, format, baos);
@@ -161,7 +167,8 @@ public class ImageConverter {
     }
 
     /**
-     * Resizes an image if its width or height is bigger than maximum value specified in the constructor.
+     * Resizes an image if its width or height is bigger than maximum value specified in the constructor or
+     * smaller then minimum width value.
      *
      * @param image The image to resize
      * @param type  int code jpeg, png or gif
@@ -187,6 +194,18 @@ public class ImageConverter {
             imageWidth = largestDimension.width;
             imageHeight = largestDimension.height;
         }
+
+        if (imageWidth < MINIMUM_ICO_WIDTH && format.equals("ico")) {
+            aspectRatio = (float) MINIMUM_ICO_WIDTH / (float)imageWidth;
+            imageWidth = MINIMUM_ICO_WIDTH;
+            imageHeight *= aspectRatio;
+            // if we can't resize image properly (with same aspect ratio, but having width >= minimum width) - just
+            // decrease image height
+            if (imageHeight > maxImageHeight) {
+                imageHeight = maxImageHeight;
+            }
+        }
+
         return createBufferedImage(image, type, imageWidth, imageHeight);
     }
 
