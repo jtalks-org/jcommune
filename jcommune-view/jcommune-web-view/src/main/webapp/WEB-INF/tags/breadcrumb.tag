@@ -22,10 +22,10 @@
 <ul class="breadcrumb">
   <c:forEach var="breadcrumb" items="${breadcrumbList}" varStatus="loop">
     <li>
-      <c:if test="${breadcrumb.breadcrumbLocation.name == 'sections'}">
+      <c:if test="${loop.index == 1}">
         <h3 class="h-nostyle">
       </c:if>
-      <c:if test="${breadcrumb.breadcrumbLocation.name == 'branches'}">
+      <c:if test="${loop.index == 2}">
         <h2 class="h-nostyle">
       </c:if>
       <c:choose>
@@ -45,10 +45,10 @@
       <c:if test='${!loop.last}'>
         <span class="divider">/</span>
       </c:if>
-      <c:if test="${breadcrumb.breadcrumbLocation.name == 'sections'}">
+      <c:if test="${loop.index == 1}">
         </h3>
       </c:if>
-      <c:if test="${breadcrumb.breadcrumbLocation.name == 'branches'}">
+      <c:if test="${loop.index == 2}">
         </h2>
       </c:if>
     </li>
