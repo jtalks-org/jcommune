@@ -39,7 +39,7 @@ function showBranchEditDialog(e) {
 
     var bodyContent = Utils.createFormElement($labelBranchName, 'branchName', 'text', 'first dialog-input')
         + Utils.createFormElement($labelBranchDescription, 'branchDescription', 'text', 'dialog-input') +
-            '<div class="clearfix"';
+            '<div class="clearfix"/>';
 
     var footerContent = ' \
             <button id="administrationCancelButton" class="btn">' + $labelCancel + '</button> \
@@ -61,8 +61,8 @@ function showBranchEditDialog(e) {
         }
     });
 
-    $('#branchName').val(this.text);
-    $('#branchDescription').val(descriptonLabel.text());
+    $('#branchName').val(this.text.trim());
+    $('#branchDescription').val(descriptonLabel.text().trim());
     $('#branchName').focus();
 
     /**
