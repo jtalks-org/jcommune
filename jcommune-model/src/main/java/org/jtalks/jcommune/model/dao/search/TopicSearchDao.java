@@ -18,6 +18,8 @@ import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 /**
  * This interface describes the contract of the DAO for full-text search of topics.
  * 
@@ -36,7 +38,7 @@ public interface TopicSearchDao {
      * @return object that contains search results for one page(note, that one page
      *         may contain all search results) and information for pagination
      */
-    Page<Topic> searchByTitleAndContent(String searchText, PageRequest pageRequest);
+    Page<Topic> searchByTitleAndContent(String searchText, PageRequest pageRequest, List userGroups);
 
     /**
      * Indexes the data from the database.

@@ -249,4 +249,11 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
                 .list());
         return foundUsers;
     }
+
+    @Override
+    public List getAllowedBranches(List<Group> groups) {
+        return session()
+                .createQuery("select v.branchId from ViewTopicsBranches v where v.granting=1 and v.sid in (:sid)")
+                .setParameterList("sid", groups).list();
+    }
 }

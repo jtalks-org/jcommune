@@ -14,11 +14,15 @@
  */
 package org.jtalks.jcommune.model.dao.search.hibernate;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.impl.CriteriaImpl;
 import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.query.dsl.QueryBuilder;
@@ -64,11 +68,11 @@ public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
      * {@inheritDoc}
      */
     @Override
-    public Page<Topic> searchByTitleAndContent(String searchText, PageRequest pageRequest) {
-       Page<Topic> searchResults = doSearch(searchText, pageRequest);
+    public Page<Topic> searchByTitleAndContent(String searchText, PageRequest pageRequest, List userGroups) {
+       Page<Topic> searchResults = doSearch(searchText, pageRequest, userGroups);
        if (isSearchedAboveLastPage(searchResults)) {
            pageRequest.adjustPageNumber(Long.valueOf(searchResults.getTotalElements()).intValue());
-           searchResults = doSearch(searchText, pageRequest);
+           searchResults = doSearch(searchText, pageRequest, userGroups);
        }
        return searchResults;
     }
@@ -91,13 +95,19 @@ public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
      *         page may contain all search results) and information for pagination
      */
     @SuppressWarnings("unchecked")
-    private Page<Topic> doSearch(String searchText, PageRequest pageRequest) {
+    private Page<Topic> doSearch(String searchText, PageRequest pageRequest, List userGroups) {
         List<Topic> topics = Collections.emptyList();
         int resultSize = 0;
         //TODO The latest versions of the library filtering is not needed.
         String filteredSearchText = applyFilters(searchText, filters).trim();
         if (!StringUtils.isEmpty(filteredSearchText)) {
+
             FullTextQuery query = createSearchQuery(getFullTextSession(), filteredSearchText, pageRequest);
+
+            Criteria criteria = getFullTextSession().createCriteria(Topic.class).add(Restrictions.in("branch_id", userGroups));
+
+            query.setCriteriaQuery(criteria);
+
             topics = query.list();
             resultSize = query.getResultSize();
         } 
@@ -129,12 +139,15 @@ public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
                 andField(Topic.TOPIC_POSTS_PREFIX + Post.POST_CONTENT_FIELD_RU).
                 matching(searchText).
                 createQuery();
+
         FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery);
+
         query.setFirstResult(pageRequest.getOffset());
         query.setMaxResults(pageRequest.getPageSize());
+
         return query;
     }
-    
+
     /**
      * This method filters the text.
      * 

@@ -29,6 +29,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Performs load operations on topic based on various
@@ -103,7 +104,8 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
             PageRequest pageRequest = new PageRequest(page, pageSize);
             // hibernate search refuses to process long string throwing error
             String normalizedPhrase = StringUtils.left(phrase, 50);
-            return searchDao.searchByTitleAndContent(normalizedPhrase, pageRequest);
+            List allowedBranches = this.getDao().getAllowedBranches(userService.getCurrentUser().getGroups());
+            return searchDao.searchByTitleAndContent(normalizedPhrase, pageRequest, allowedBranches);
         }
         return new PageImpl<Topic>(Collections.<Topic>emptyList());
     }
