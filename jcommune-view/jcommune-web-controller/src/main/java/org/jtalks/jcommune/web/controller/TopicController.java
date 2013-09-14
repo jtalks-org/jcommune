@@ -15,8 +15,6 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -36,7 +34,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.util.Locale;
 
 /**
  * Serves topic management web requests
@@ -59,7 +56,6 @@ public class TopicController {
     private static final String TOPIC_VIEW = "topic/topicForm";
     private static final String TOPIC_DTO = "topicDto";
     private static final String REDIRECT_URL = "redirect:/topics/";
-    private static final DateTimeFormatter RFC_1123_FORMATTER = DateTimeFormat.forPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'").withLocale(Locale.US);
 
     private TopicModificationService topicModificationService;
     private TopicFetchService topicFetchService;
@@ -192,17 +188,17 @@ public class TopicController {
      * @throws NotFoundException when topic or branch not found
      */
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.GET)
-    public ModelAndView showTopicPage(WebRequest request,
-                                      @PathVariable(TOPIC_ID) Long topicId,
-                                      @RequestParam(value = "page", defaultValue = "1", required = false) String page) throws NotFoundException {
+    public ModelAndView showTopicPage(WebRequest request, @PathVariable(TOPIC_ID) Long topicId,
+                                      @RequestParam(value = "page", defaultValue = "1", required = false) String page)
+            throws NotFoundException {
         JCUser currentUser = userService.getCurrentUser();
         Topic topic = topicFetchService.get(topicId);
-
 
         topicFetchService.checkViewTopicPermission(topic.getBranch().getId());
         Page<Post> postsPage = postService.getPosts(topic, page);
 
-        DateTime lastModified = getLastModified(topic, postsPage);
+        topic.recalculateModificationDate();
+        DateTime lastModified = topic.getModificationDate();
 
         if (request.checkNotModified(lastModified.getMillis())) {
             return null;
@@ -217,19 +213,7 @@ public class TopicController {
                 .addObject("topic", topic)
                 .addObject("subscribed", topic.getSubscribers().contains(currentUser))
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic))
-                .addObject("lastReadPost", lastReadPostIndex)
-                .addObject("lastModified", RFC_1123_FORMATTER.print(lastModified));
-    }
-
-    private DateTime getLastModified(Topic topic, Page<Post> postsPage) {
-        DateTime lastModified = topic.getModificationDate() == null ? topic.getCreationDate() : topic.getModificationDate();
-        for (Post post : postsPage) {
-            if (lastModified.isBefore(post.getLastTouchedDate())) {
-                lastModified = post.getLastTouchedDate();
-            }
-        }
-
-        return lastModified;
+                .addObject("lastReadPost", lastReadPostIndex);
     }
 
     /**
