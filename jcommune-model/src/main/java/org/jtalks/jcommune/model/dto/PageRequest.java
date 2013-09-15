@@ -38,9 +38,7 @@ public class PageRequest implements Pageable {
     /**
      * Creates a new {@link PageRequest}.
      *
-     * @param requestedPageNumber positive page number (max value is 999999999) as a string.
-     *                            If specified string is not valid,
-     *                            page number will be equal {@link PageRequest#FIRST_PAGE_NUMBER}.
+     * @param requestedPageNumber positive page number (max value is {@link PageRequest#MAX_PAGE}) as a string.
      * @param pageSize size of page
      */
     public PageRequest(String requestedPageNumber, int pageSize) {
@@ -52,6 +50,15 @@ public class PageRequest implements Pageable {
         return (pageSize <= 0) ? DEFAULT_PAGE_SIZE : pageSize;
     }
 
+    /**
+     * Convert specified string to valid page number.
+     * @param pageNumber specified string.
+     * @return {@link PageRequest#MAX_PAGE} if specified string contains non numeric symbol.<br/>
+     *         int number representing specified string if it value is <br/>
+     *         0 < specified string <= {@link PageRequest#MAX_PAGE}(leading zeroes is omitted)<br/>
+     *         {@link Integer#MAX_VALUE} if specified string is greater than {@link PageRequest#MAX_PAGE}<br/>
+     *         {@link PageRequest#FIRST_PAGE_NUMBER} if specified string is not a number
+     */
     private int preparePageNumber(String pageNumber) {
         int result;
         pageNumber = pageNumber.replaceFirst("^0+(?!$)", "");//removing trailing zeroes
