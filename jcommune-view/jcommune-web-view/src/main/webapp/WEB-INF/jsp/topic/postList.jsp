@@ -23,7 +23,6 @@
 <jsp:useBean id="topic" type="org.jtalks.jcommune.model.entity.Topic" scope="request"/>
 <head>
   <meta name="description" content="<c:out value="${topic.title}"/>">
-  <meta name="Last-Modified" content="<c:out value="${lastModified}"/>">
   <title><c:out value="${topic.title}"/></title>
 </head>
 <body>

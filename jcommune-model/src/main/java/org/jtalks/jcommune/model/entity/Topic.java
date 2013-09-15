@@ -333,6 +333,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
 
     /**
      * Set modification date to now.
+     * Used after addition of the post. It is necessary to save the sort order of topics in the future.
      *
      * @return new modification date
      */
@@ -344,15 +345,29 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     /**
      * Calculates modification date of topic taking it as last modification
      * date among its posts.
+     * Used after deletion of the post. It is necessary to save the sort order of topics in the future.
      */
     public void recalculateModificationDate() {
+        DateTime newTopicModificationDate = getFirstPost().getCreationDate();
+        for (Post post : posts) {
+            if (post.getCreationDate().isAfter(newTopicModificationDate.toInstant())) {
+                newTopicModificationDate = post.getCreationDate();
+            }
+        }
+        modificationDate = newTopicModificationDate;
+    }
+
+    /**
+     * Get the date of the last modification of posts in the current topic.
+     */
+    public DateTime getLastModificationPostDate() {
         DateTime newTopicModificationDate = getFirstPost().getLastTouchedDate();
         for (Post post : posts) {
             if (post.getLastTouchedDate().isAfter(newTopicModificationDate.toInstant())) {
                 newTopicModificationDate = post.getLastTouchedDate();
             }
         }
-        modificationDate = newTopicModificationDate;
+        return newTopicModificationDate;
     }
 
     /**
