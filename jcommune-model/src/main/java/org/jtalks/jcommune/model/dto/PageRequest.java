@@ -37,15 +37,22 @@ public class PageRequest implements Pageable {
     /**
      * Creates a new {@link PageRequest}.
      *
-     * @param requestedPageNumber positive page number as a string.
-     *                            If specified string is not valid integer,
+     * @param requestedPageNumber positive page number (max value is 999999999) as a string.
+     *                            If specified string is not valid,
      *                            page number will be equal {@link PageRequest#FIRST_PAGE_NUMBER}.
      * @param pageSize size of page
      */
     public PageRequest(String requestedPageNumber, int pageSize) {
-        int parsedPageNumber = requestedPageNumber.matches("\\d+") ?
-                Integer.valueOf(requestedPageNumber)
-                : FIRST_PAGE_NUMBER;
+        int parsedPageNumber;
+        requestedPageNumber = requestedPageNumber.replaceFirst("^0+(?!$)", "");//removing trailing zeroes
+        if (requestedPageNumber.matches("\\d{1,9}")) {
+            parsedPageNumber = Integer.valueOf(requestedPageNumber);
+        } else if (requestedPageNumber.matches("\\d+")) {
+            parsedPageNumber = Integer.MAX_VALUE;
+        } else {
+            parsedPageNumber = FIRST_PAGE_NUMBER;
+        }
+
         this.pageNumber = preparePageNumber(parsedPageNumber);
         this.pageSize = preparePageSize(pageSize);
     }
