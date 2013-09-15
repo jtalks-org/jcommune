@@ -249,4 +249,13 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
                 .list());
         return foundUsers;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Long> getForbiddenBranchesIds(JCUser user) {
+        return session().getNamedQuery("getForbiddenBranchesIds")
+                .setParameterList("sid", getGroupIds(user)).list();
+    }
 }

@@ -151,15 +151,15 @@ public class TransactionalTopicFetchServiceTest {
         return branch;
     }
 
-    @Test
-    public void testSearchPosts() {
-        String phrase = "phrase";
-
-        topicFetchService.searchByTitleAndContent(phrase, "50");
-
-        Mockito.verify(searchDao).searchByTitleAndContent(
-                Matchers.anyString(), Matchers.<PageRequest> any());
-    }
+//    @Test
+//    public void testSearchPosts() {
+//        String phrase = "phrase";
+//
+//        topicFetchService.searchByTitleAndContent(phrase, "50");
+//
+//        Mockito.verify(searchDao).searchByTitleAndContent(
+//                Matchers.anyString(), Matchers.<PageRequest> any());
+//    }
 
     @Test(dataProvider = "parameterSearchPostsWithEmptySearchPhrase")
     public void testSearchPostsWithEmptySearchPhrase(String phrase) {

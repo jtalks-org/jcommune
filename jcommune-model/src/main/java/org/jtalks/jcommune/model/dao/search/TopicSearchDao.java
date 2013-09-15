@@ -15,8 +15,11 @@
 package org.jtalks.jcommune.model.dao.search;
 
 import org.jtalks.jcommune.model.dto.PageRequest;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 /**
  * This interface describes the contract of the DAO for full-text search of topics.
@@ -33,10 +36,11 @@ public interface TopicSearchDao {
      * 
      * @param searchText the search text
      * @param pageRequest contains information for pagination: page number, page size
+     * @param forbiddenBranchesId list of forbidden branches id
      * @return object that contains search results for one page(note, that one page
      *         may contain all search results) and information for pagination
      */
-    Page<Topic> searchByTitleAndContent(String searchText, PageRequest pageRequest);
+    Page<Topic> searchByTitleAndContent(String searchText, PageRequest pageRequest, List<Long> forbiddenBranchesId);
 
     /**
      * Indexes the data from the database.
