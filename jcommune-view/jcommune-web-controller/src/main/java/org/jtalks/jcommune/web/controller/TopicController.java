@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -197,10 +196,7 @@ public class TopicController {
         topicFetchService.checkViewTopicPermission(topic.getBranch().getId());
         Page<Post> postsPage = postService.getPosts(topic, page);
 
-        topic.recalculateModificationDate();
-        DateTime lastModified = topic.getModificationDate();
-
-        if (request.checkNotModified(lastModified.getMillis())) {
+        if (request.checkNotModified(topic.getLastModificationPostDate().getMillis())) {
             return null;
         }
 
