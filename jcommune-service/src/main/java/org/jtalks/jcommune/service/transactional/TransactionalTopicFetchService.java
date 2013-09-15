@@ -20,6 +20,7 @@ import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dao.search.TopicSearchDao;
 import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicFetchService;
 import org.jtalks.jcommune.service.UserService;
@@ -99,13 +100,16 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
      */
     @Override
     public Page<Topic> searchByTitleAndContent(String phrase, String page) {
+
         if (!StringUtils.isEmpty(phrase)) {
-            int pageSize = userService.getCurrentUser().getPageSize();
+            JCUser currentUser = userService.getCurrentUser();
+            int pageSize = currentUser.getPageSize();
             PageRequest pageRequest = new PageRequest(page, pageSize);
             // hibernate search refuses to process long string throwing error
             String normalizedPhrase = StringUtils.left(phrase, 50);
-            List allowedBranches = this.getDao().getAllowedBranches(userService.getCurrentUser().getGroups());
-            return searchDao.searchByTitleAndContent(normalizedPhrase, pageRequest, allowedBranches);
+            List<Long> forbiddenBranchesIds
+                    = this.getDao().getForbiddenBranchesIds(currentUser);
+            return searchDao.searchByTitleAndContent(normalizedPhrase, pageRequest, forbiddenBranchesIds);
         }
         return new PageImpl<Topic>(Collections.<Topic>emptyList());
     }

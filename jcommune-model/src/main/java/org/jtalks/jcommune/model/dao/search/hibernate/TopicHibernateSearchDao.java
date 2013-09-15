@@ -21,6 +21,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.impl.CriteriaImpl;
 import org.hibernate.search.FullTextQuery;
@@ -28,6 +29,7 @@ import org.hibernate.search.FullTextSession;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.jtalks.jcommune.model.dao.search.TopicSearchDao;
 import org.jtalks.jcommune.model.dto.PageRequest;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.search.SearchRequestFilter;
@@ -68,34 +70,33 @@ public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
      * {@inheritDoc}
      */
     @Override
-    public Page<Topic> searchByTitleAndContent(String searchText, PageRequest pageRequest, List userGroups) {
-       Page<Topic> searchResults = doSearch(searchText, pageRequest, userGroups);
+    public Page<Topic> searchByTitleAndContent(String searchText,
+                                               PageRequest pageRequest,
+                                               List<Long> forbiddenBranchesId) {
+
+       Page<Topic> searchResults = doSearch(searchText, pageRequest, forbiddenBranchesId);
+
        if (isSearchedAboveLastPage(searchResults)) {
            pageRequest.adjustPageNumber(Long.valueOf(searchResults.getTotalElements()).intValue());
-           searchResults = doSearch(searchText, pageRequest, userGroups);
+           searchResults = doSearch(searchText, pageRequest, forbiddenBranchesId);
        }
+
        return searchResults;
     }
-    
-    /**
-     * Checks if this search was by made with too big page number specified
-     * @param searchResults search results
-     * @return true if page number is too big
-     */
-    private boolean isSearchedAboveLastPage(Page<Topic> searchResults) {
-        return !searchResults.hasContent() && searchResults.getNumber() > searchResults.getTotalPages();
-    }
-    
+
     /**
      * Perform actual search
+     *
      * @param searchText the search text
-     * @param pageRequest contains information for pagination: page number, page 
+     * @param pageRequest contains information for pagination: page number, page
      *                    size
-     * @return object that contains search results for one page(note, that one 
+     * @param forbiddenBranchesId list of forbidden branches
+     *
+     * @return object that contains search results for one page(note, that one
      *         page may contain all search results) and information for pagination
      */
     @SuppressWarnings("unchecked")
-    private Page<Topic> doSearch(String searchText, PageRequest pageRequest, List userGroups) {
+    private Page<Topic> doSearch(String searchText, PageRequest pageRequest, List<Long> forbiddenBranchesId) {
         List<Topic> topics = Collections.emptyList();
         int resultSize = 0;
         //TODO The latest versions of the library filtering is not needed.
@@ -104,16 +105,29 @@ public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
 
             FullTextQuery query = createSearchQuery(getFullTextSession(), filteredSearchText, pageRequest);
 
-            Criteria criteria = getFullTextSession().createCriteria(Topic.class).add(Restrictions.in("branch_id", userGroups));
-
-            query.setCriteriaQuery(criteria);
+            if(!forbiddenBranchesId.isEmpty()) {
+                Criteria criteria = getFullTextSession().createCriteria(Topic.class).add(
+                        Restrictions.not(Restrictions.in("branch.id", forbiddenBranchesId))
+                );
+                query.setCriteriaQuery(criteria);
+            }
 
             topics = query.list();
             resultSize = query.getResultSize();
-        } 
+        }
+
         return new PageImpl<Topic>(topics, pageRequest, resultSize);
     }
-    
+
+    /**
+     * Checks if this search was by made with too big page number specified
+     * @param searchResults search results
+     * @return true if page number is too big
+     */
+    private boolean isSearchedAboveLastPage(Page<Topic> searchResults) {
+        return !searchResults.hasContent() && searchResults.getNumber() > searchResults.getTotalPages();
+    }
+
     /**
      * Builds a search query.
      * 

@@ -250,10 +250,12 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
         return foundUsers;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List getAllowedBranches(List<Group> groups) {
-        return session()
-                .createQuery("select v.branchId from ViewTopicsBranches v where v.granting=1 and v.sid in (:sid)")
-                .setParameterList("sid", groups).list();
+    public List<Long> getForbiddenBranchesIds(JCUser user) {
+        return session().getNamedQuery("getForbiddenBranchesIds")
+                .setParameterList("sid", getGroupIds(user)).list();
     }
 }

@@ -96,5 +96,11 @@ public interface TopicDao extends Crud<Topic> {
      */
     Collection<JCUser> getAllowedSubscribers(SubscriptionAwareEntity entity);
 
-    List getAllowedBranches(List<Group> groups);
+    /**
+     * Get forbidden branches id for permission VIEW_TOPICS only
+     *
+     * @param user Current user
+     * @return
+     */
+    List<Long> getForbiddenBranchesIds(JCUser user);
 }
