@@ -30,6 +30,7 @@ import static org.jtalks.jcommune.model.entity.JCUser.DEFAULT_PAGE_SIZE;
  */
 public class PageRequest implements Pageable {
     public static final int FIRST_PAGE_NUMBER = 1;
+    public static final int MAX_PAGE = 999999999;
 
     private int pageNumber;
     private final int pageSize;
@@ -43,17 +44,7 @@ public class PageRequest implements Pageable {
      * @param pageSize size of page
      */
     public PageRequest(String requestedPageNumber, int pageSize) {
-        int parsedPageNumber;
-        requestedPageNumber = requestedPageNumber.replaceFirst("^0+(?!$)", "");//removing trailing zeroes
-        if (requestedPageNumber.matches("\\d{1,9}")) {
-            parsedPageNumber = Integer.valueOf(requestedPageNumber);
-        } else if (requestedPageNumber.matches("\\d+")) {
-            parsedPageNumber = Integer.MAX_VALUE;
-        } else {
-            parsedPageNumber = FIRST_PAGE_NUMBER;
-        }
-
-        this.pageNumber = preparePageNumber(parsedPageNumber);
+        this.pageNumber = preparePageNumber(requestedPageNumber);
         this.pageSize = preparePageSize(pageSize);
     }
 
@@ -61,8 +52,17 @@ public class PageRequest implements Pageable {
         return (pageSize <= 0) ? DEFAULT_PAGE_SIZE : pageSize;
     }
 
-    private int preparePageNumber(int pageNumber) {
-        return (pageNumber <= 0) ? FIRST_PAGE_NUMBER : pageNumber;
+    private int preparePageNumber(String pageNumber) {
+        int result;
+        pageNumber = pageNumber.replaceFirst("^0+(?!$)", "");//removing trailing zeroes
+        if (pageNumber.matches("\\d{1,9}")) {
+            result = Integer.valueOf(pageNumber);
+        } else if (pageNumber.matches("\\d+")) {
+            result = Integer.MAX_VALUE;
+        } else {
+            result = FIRST_PAGE_NUMBER;
+        }
+        return (result <= 0) ? FIRST_PAGE_NUMBER : result;
     }
 
 
