@@ -514,4 +514,31 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         session.save(branch);
         return topic;
     }
+
+    @Test
+    public void testGetForbiddenBranchesIdsWithAnonymousUser(){
+
+        AnonymousUser user = new AnonymousUser();
+
+        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
+                ObjectsFactory.getDefaultBranch().getId(), user.getClass().getSimpleName(), false
+        );
+
+        List<Long> collection = this.dao.getForbiddenBranchesIds(user);
+        assertFalse(collection.isEmpty());
+    }
+
+    @Test
+    public void testGetForbiddenBranchesIdsWithRealUser(){
+
+        JCUser user = new JCUser("username",null, null);
+        user.setGroups(ObjectsFactory.getDefaultGroupList());
+
+        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
+                ObjectsFactory.getDefaultBranch().getId(), String.valueOf(user.getGroups().get(0).getId()), false
+        );
+
+       List<Long> collection = this.dao.getForbiddenBranchesIds(user);
+       assertFalse(collection.isEmpty());
+    }
 }

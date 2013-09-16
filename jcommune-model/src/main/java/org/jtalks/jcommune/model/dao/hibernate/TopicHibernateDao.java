@@ -255,7 +255,15 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
      */
     @Override
     public List<Long> getForbiddenBranchesIds(JCUser user) {
-        return session().getNamedQuery("getForbiddenBranchesIds")
-                .setParameterList("sid", getGroupIds(user)).list();
+
+        Query query = session().getNamedQuery("getForbiddenBranchesIds");
+
+        if(user.isAnonymous()) {
+            query.setString("sid", user.getClass().getSimpleName());
+        } else {
+            query.setParameterList("sid", getGroupIds(user));
+        }
+
+        return query.list();
     }
 }
