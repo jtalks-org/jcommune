@@ -272,8 +272,9 @@ public class NotificationServiceTest {
         prepareEnabledProperty();
         Collection<JCUser> subscribers = new ArrayList();
         subscribers.add(user1);
+        subscribers.add(user2);
         service.sendNotificationAboutRemovingTopic(topic, subscribers);
-        verify(mailService).sendRemovingTopicMail(user1, topic);
+        verify(mailService).sendRemovingTopicMail(user2, topic);
     }
 
     @Test

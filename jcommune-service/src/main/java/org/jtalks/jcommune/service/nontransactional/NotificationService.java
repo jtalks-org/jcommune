@@ -106,6 +106,7 @@ public class NotificationService {
 
             //send notification to topic's subscribers
             Collection<JCUser> topicSubscribers = subscriptionService.getAllowedSubscribers(topic);
+            topicSubscribers.remove(topicStarter);
             for (JCUser subscriber : topicSubscribers) {
                 mailService.sendTopicMovedMail(subscriber, topicId);
             }
@@ -120,6 +121,7 @@ public class NotificationService {
      */
     public void sendNotificationAboutRemovingTopic(Topic entity, Collection<JCUser> subscribers) {
         if (notificationsEnabledProperty.booleanValue()) {
+            subscribers.remove(entity.getTopicStarter());
             for (JCUser subscriber : subscribers) {
                 mailService.sendRemovingTopicMail(subscriber, entity);
             }
