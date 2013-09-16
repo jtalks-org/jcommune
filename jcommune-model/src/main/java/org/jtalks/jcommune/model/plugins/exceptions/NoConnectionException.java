@@ -28,6 +28,13 @@ public class NoConnectionException extends Exception {
     }
 
     /**
+     * Constructs a new exception similar to the {@link Exception#Exception(String)} constructor.
+     */
+    public NoConnectionException(String message) {
+        super(message);
+    }
+
+    /**
      * Constructs a new exception similar to the {@link Exception#Exception(Throwable)} constructor.
      *
      * @param ex parent exception

@@ -26,6 +26,7 @@ import org.restlet.data.Method;
 import org.restlet.data.Status;
 import org.restlet.ext.jaxb.JaxbRepresentation;
 import org.restlet.representation.Representation;
+import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.ClientResource;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -58,13 +59,13 @@ public class PoulpeAuthServiceTest {
     @Test
     public void testRegisterUserWithInvalidCredentialsShouldFail() throws Exception {
         Errors errors = new Errors();
-        List<Error> errorList = new ArrayList<Error>();
+        List<Error> errorList = new ArrayList<>();
         errorList.add(createError("user.username.length_constraint_violation", null));
         errorList.add(createError("user.email.illegal_length", null));
         errorList.add(createError("user.password.length_constraint_violation", null));
 
         errors.setErrorList(errorList);
-        JaxbRepresentation<Errors> errorsRepr = new JaxbRepresentation<Errors>(errors);
+        JaxbRepresentation<Errors> errorsRepr = new JaxbRepresentation<>(errors);
         ClientResource clientResource = createClientResource(Status.CLIENT_ERROR_BAD_REQUEST, errorsRepr);
 
         doReturn(clientResource).when(service).sendRegistrationRequest(any(User.class), eq(true));
@@ -94,7 +95,7 @@ public class PoulpeAuthServiceTest {
 
     @Test
     public void testRegisterUserWithCorrectParametersShouldBeSuccessful() throws Exception {
-        ClientResource clientResource = createClientResource(Status.SUCCESS_OK, null);
+        ClientResource clientResource = createClientResource(Status.SUCCESS_OK, new StringRepresentation(""));
 
         doReturn(clientResource).when(service).sendRegistrationRequest(any(User.class), eq(true));
 
@@ -107,7 +108,7 @@ public class PoulpeAuthServiceTest {
     public void testAuthUserWithCorrectCredentialsShouldBeSuccessful() throws Exception {
         Authentication auth = createAuth("username", "password", "email");
         auth.setStatus("success");
-        JaxbRepresentation<Authentication> authRepr = new JaxbRepresentation<Authentication>(auth);
+        JaxbRepresentation<Authentication> authRepr = new JaxbRepresentation<>(auth);
         ClientResource clientResource = createClientResource(Status.SUCCESS_OK, authRepr);
 
         doReturn(clientResource).when(service).sendAuthRequest("username", "password");
@@ -122,7 +123,7 @@ public class PoulpeAuthServiceTest {
     public void testAuthUserWithInvalidCredentialsShouldFail() throws Exception {
         Authentication auth = createAuth("", "password", "email");
         auth.setStatus("fail");
-        JaxbRepresentation<Authentication> authRepr = new JaxbRepresentation<Authentication>(auth);
+        JaxbRepresentation<Authentication> authRepr = new JaxbRepresentation<>(auth);
         ClientResource clientResource = createClientResource(Status.CLIENT_ERROR_NOT_FOUND, authRepr);
 
         doReturn(clientResource).when(service).sendAuthRequest("", "password");

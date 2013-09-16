@@ -69,7 +69,7 @@ public class PoulpeAuthPlugin extends StatefullPlugin
             LOGGER.error("Parse response error", e);
             throw new UnexpectedErrorException(e);
         } catch (NoConnectionException e) {
-            LOGGER.error("Can't connect to Poulpe", e);
+            LOGGER.error("Can't connect to Poulpe: {}", e.getMessage());
             throw e;
         }
     }
@@ -90,7 +90,7 @@ public class PoulpeAuthPlugin extends StatefullPlugin
             LOGGER.error("Parse response error", e);
             throw new UnexpectedErrorException(e);
         } catch (NoConnectionException e) {
-            LOGGER.error("Can't connect to Poulpe", e);
+            LOGGER.error("Can't connect to Poulpe: {}", e.getMessage());
             throw e;
         }
     }
@@ -133,7 +133,8 @@ public class PoulpeAuthPlugin extends StatefullPlugin
                 password = property.getValue();
             }
         }
-        if (url != null && login != null && password != null) {
+        if (url != null && login != null && password != null
+                && !url.isEmpty() && !login.isEmpty() && !password.isEmpty()) {
             service = new PoulpeAuthService(url, login, password);
             pluginProperties = properties;
         } else {

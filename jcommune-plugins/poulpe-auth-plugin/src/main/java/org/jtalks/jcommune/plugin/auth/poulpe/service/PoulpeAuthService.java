@@ -103,12 +103,13 @@ public class PoulpeAuthService {
      */
     private Map<String, String> getAuthResult(ClientResource clientResource)
             throws NoConnectionException, JAXBException, IOException {
-        if (clientResource.getStatus().getCode() == Status.SUCCESS_OK.getCode()) {
+        if (clientResource.getStatus().getCode() == Status.SUCCESS_OK.getCode()
+                && clientResource.getResponseEntity() != null) {
             return parseUserDetails(clientResource.getResponseEntity());
         } else if (clientResource.getStatus().getCode() == Status.CLIENT_ERROR_NOT_FOUND.getCode()) {
             return Collections.emptyMap();
         } else {
-            throw new NoConnectionException();
+            throw new NoConnectionException(clientResource.getStatus().toString());
         }
     }
 
@@ -139,14 +140,15 @@ public class PoulpeAuthService {
      */
     private Map<String, String> getRegistrationResult(ClientResource clientResource, Locale locale)
             throws NoConnectionException, IOException, JAXBException, UnexpectedErrorException {
-        if (clientResource.getStatus().getCode() == Status.SUCCESS_OK.getCode()) {
+        if (clientResource.getStatus().getCode() == Status.SUCCESS_OK.getCode()
+                && clientResource.getResponseEntity() != null) {
             return Collections.emptyMap();
         } else if (clientResource.getStatus().getCode() == Status.CLIENT_ERROR_BAD_REQUEST.getCode()) {
             return parseErrors(clientResource.getResponseEntity(), locale);
         } else if (clientResource.getStatus().getCode() == Status.SERVER_ERROR_INTERNAL.getCode()) {
             throw new UnexpectedErrorException();
         } else {
-            throw new NoConnectionException();
+            throw new NoConnectionException(clientResource.getStatus().toString());
         }
     }
 
@@ -226,7 +228,7 @@ public class PoulpeAuthService {
         ConcurrentMap<String, Object> attrs = clientResource.getRequest().getAttributes();
         Series<Header> headers = (Series<Header>) attrs.get(HeaderConstants.ATTRIBUTE_HEADERS);
         if (headers == null) {
-            headers = new Series<Header>(Header.class);
+            headers = new Series<>(Header.class);
             Series<Header> prev = (Series<Header>)
                     attrs.putIfAbsent(HeaderConstants.ATTRIBUTE_HEADERS, headers);
             if (prev != null) { headers = prev; }
@@ -252,7 +254,7 @@ public class PoulpeAuthService {
         try {
             clientResource.post(user);
         } catch (ResourceException e) {
-            logger.error("Poulpe registration request error: {}", e.getStatus());
+            logger.debug("Poulpe registration request error: {}", e.getStatus());
         }
         return clientResource;
     }
@@ -271,7 +273,7 @@ public class PoulpeAuthService {
         try {
             clientResource.get();
         } catch (ResourceException e) {
-            logger.error("Poulpe registration request error: {}", e.getStatus());
+            logger.debug("Poulpe authentication request error: {}", e.getStatus());
         }
         return clientResource;
     }

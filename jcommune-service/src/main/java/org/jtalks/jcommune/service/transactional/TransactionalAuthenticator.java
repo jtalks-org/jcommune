@@ -265,12 +265,14 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
                 // user not exist in database (poulpe uses own database)
                 user = new JCUser(authInfo.get("username"), authInfo.get("email"), passwordHash);
                 user.setRegistrationDate(new DateTime());
-                user.setEnabled(Boolean.parseBoolean(authInfo.get("enabled")));
             }
         } else {
             user = getDao().getByUsername(authInfo.get("username"));
             user.setPassword(passwordHash);
             user.setEmail(authInfo.get("email"));
+        }
+        if (authInfo.containsKey("enabled")) {
+            user.setEnabled(Boolean.parseBoolean(authInfo.get("enabled")));
         }
         if (authInfo.containsKey("firstName")) {
             user.setFirstName(authInfo.get("firstName"));
