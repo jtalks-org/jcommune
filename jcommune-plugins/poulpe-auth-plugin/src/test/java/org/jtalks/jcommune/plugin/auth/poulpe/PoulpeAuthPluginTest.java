@@ -75,6 +75,15 @@ public class PoulpeAuthPluginTest {
     }
 
     @Test
+    public void pluginWithIncorrectUrlShouldNotBeConfigured() throws Exception {
+        PluginConfiguration configuration = createConfiguration("http:/jtalks.org", "user", "1234");
+        plugin.configure(configuration);
+
+        assertTrue(plugin.getState() == Plugin.State.IN_ERROR,
+                "Plugin with incorrect Url shouldn't be configured.");
+    }
+
+    @Test
     public void userShouldNotBeRegisteredIfSomeErrorOccurred()
             throws JAXBException, IOException, NoConnectionException, UnexpectedErrorException {
         UserDto userDto = createUserDto("user", "", "");

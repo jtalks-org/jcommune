@@ -28,7 +28,11 @@ import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 import static org.jtalks.jcommune.model.entity.PluginProperty.Type.STRING;
 
@@ -44,6 +48,8 @@ public class PoulpeAuthPlugin extends StatefullPlugin
     private static final String URL_PROPERTY = "Url";
     private static final String LOGIN_PROPERTY = "Login";
     private static final String PASSWORD_PROPERTY = "Password";
+    private static final String URL_PATTERN = "(((http|https)://)?" +
+            "([\\w\\-_]+(\\.[\\w\\-_]+)+|localhost)+([\\w\\-\\.,@?^=%&amp;:/~\\+#]*[\\w\\-\\@?^=%&amp;/~\\+#])?)";
     private PoulpeAuthService service;
     private List<PluginProperty> pluginProperties;
 
@@ -126,22 +132,28 @@ public class PoulpeAuthPlugin extends StatefullPlugin
         String password = null;
         for (PluginProperty property : properties) {
             if (URL_PROPERTY.equalsIgnoreCase(property.getName())) {
-                url = property.getValue();
+                url = property.getValue() == null ? null : property.getValue().trim();
             } else if (LOGIN_PROPERTY.equalsIgnoreCase(property.getName())) {
-                login = property.getValue();
+                login = property.getValue() == null ? null : property.getValue().trim();
             } else if (PASSWORD_PROPERTY.equalsIgnoreCase(property.getName())) {
                 password = property.getValue();
             }
         }
-        if (url != null && login != null && password != null
-                && !url.isEmpty() && !login.isEmpty() && !password.isEmpty()) {
-            service = new PoulpeAuthService(url, login, password);
-            pluginProperties = properties;
-        } else {
+        if (url == null || login == null || password == null
+                || url.isEmpty() || login.isEmpty() || password.isEmpty()) {
             // this should be returned as a map, but this mechanism should be implemented in the plugin API first
             throw new RuntimeException("Can't apply configuration: Url, login and password should not be null.");
+        } else if(!validateUrl(url)) {
+            throw new RuntimeException("Can't apply configuration: Incorrect format for Url value.");
         }
+        service = new PoulpeAuthService(url, login, password);
+        pluginProperties = properties;
         return new HashMap<>();
+    }
+
+    private boolean validateUrl(String url) {
+        Pattern pattern = Pattern.compile(URL_PATTERN, Pattern.DOTALL);
+        return pattern.matcher(url).matches();
     }
 
     @VisibleForTesting
