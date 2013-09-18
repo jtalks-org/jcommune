@@ -334,9 +334,6 @@ function doLink() {
             e.preventDefault();
             if ($('#urlAltId')) {
                 mylink = $('#urlAltId').val();
-                mylink = mylink.replace(/\[\w\]/i, "");
-                mylink = mylink.replace(/\[\/\w\]/i, "");
-
                 var link = $.trim($('#urlId').val());
                 if ((link != null) && (link != '')) {
                     if (mylink == null || mylink == '') {

@@ -144,7 +144,7 @@ $(document).ready(function () {
             var tagName = $(e.target).prop("tagName").toLowerCase();
             var link = $(e.target);
             //prettyPhoto img link
-            if (tagName == 'img') {
+            if (tagName == 'img' || tagName != 'link') {
                 link = link.parent('a');
             }
 
