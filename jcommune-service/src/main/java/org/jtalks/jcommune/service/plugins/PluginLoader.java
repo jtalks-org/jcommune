@@ -100,7 +100,7 @@ public class PluginLoader {
             }
             filtered.add(plugin);
         }
-        LOGGER.debug("JCommune forum has {} plugins now.", filtered.size());
+        LOGGER.trace("JCommune forum has {} plugins now.", filtered.size());
         loadConfigurationFor(filtered);
         return filtered;
     }
