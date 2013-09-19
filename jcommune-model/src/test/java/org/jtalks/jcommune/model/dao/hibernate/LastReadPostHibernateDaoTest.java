@@ -17,6 +17,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.LastReadPostDao;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -83,6 +84,21 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
     }
 
     @Test
+    public void dateOfTheLastReadPostShouldBeUpdated() {
+        LastReadPost post = PersistedObjectsFactory.getDefaultLastReadPost();
+        post.setPostDate(new DateTime());
+        session.save(post);
+        DateTime newPostDate = post.getPostDate().plusMinutes(34);
+        post.setPostDate(newPostDate);
+
+        lastReadPostDao.saveOrUpdate(post);
+        LastReadPost updatedPost = (LastReadPost) session.get(LastReadPost.class, post.getId());
+
+        assertEquals(updatedPost.getPostDate(), newPostDate,
+                "Update doesn't work, because field value didn't change.");
+    }
+
+    @Test
     public void testMarkAsReadTopicsToUser() {
         List<Topic> topics = PersistedObjectsFactory.createAndSaveTopicListWithPosts(10);
         JCUser user = PersistedObjectsFactory.getDefaultUser();
@@ -116,19 +132,19 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
     }
 
     @Test
-    public void testGetTopicAndCountOfPostsInBranch() {
+    public void testGetTopicAndLatestPostDateInBranch() {
         List<Topic> topics = PersistedObjectsFactory.createAndSaveTopicListWithPosts(10);
         //records of posts in topics
-        Map<Long, Integer> actualCountOfPosts = getTopicAndCountOfPostsInBranch(topics);
-        Map<Long, Integer> resultOfGetTopics = new HashMap<Long, Integer>();
+        Map<Long, DateTime> actualCountOfPosts = getTopicAndLatestPostDateInBranch(topics);
+        Map<Long, DateTime> resultOfGetTopics = new HashMap<Long, DateTime>();
         @SuppressWarnings("unchecked")
-        List<Object[]> resultCheckGetTopics = session.getNamedQuery("getTopicAndCountOfPostsInBranch")
+        List<Object[]> resultCheckGetTopics = session.getNamedQuery("getTopicAndLatestPostDateInBranch")
                 .setParameter("branch", topics.get(0).getBranch().getId())
                 .setCacheable(false)
                 .list();
 
         for (Object[] record : resultCheckGetTopics) {
-            resultOfGetTopics.put(new Long(record[0].toString()), new Integer(record[1].toString()));
+            resultOfGetTopics.put(new Long(record[0].toString()), (DateTime)record[1]);
         }
 
         assertEquals(resultOfGetTopics, actualCountOfPosts);
@@ -239,6 +255,7 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
             insertQuery.setParameter("uuid", UUID.randomUUID().toString())
                     .setParameter("user", user.getId())
                     .setParameter("lastPostIndex", indexReadPosts)
+                    .setParameter("lastPostDate", ((DateTime)tp.getLastPost().getCreationDate()).toDate())
                     .setParameter("topic", tp.getId())
                     .executeUpdate();
             listCountPostsToTopics.put(tp.getId(), indexReadPosts);
@@ -276,11 +293,11 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
      * @param topics List of topics in branch
      * @return List of count posts for each topic
      */
-    private Map<Long, Integer> getTopicAndCountOfPostsInBranch(List<Topic> topics) {
-        Map<Long, Integer> result = new HashMap<Long, Integer>();
+    private Map<Long, DateTime> getTopicAndLatestPostDateInBranch(List<Topic> topics) {
+        Map<Long, DateTime> result = new HashMap<Long, DateTime>();
         for (Topic topic : topics) {
             //second parameter it's index of last post
-            result.put(topic.getId(), topic.getPostCount() - 1);
+            result.put(topic.getId(), topic.getLastPost().getCreationDate());
         }
         return result;
     }

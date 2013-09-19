@@ -41,6 +41,7 @@ public class LastReadPost extends Entity {
      * For hibernate use only
      */
     protected LastReadPost() {
+        this.postDate = new DateTime();
     }
 
     /**
@@ -51,6 +52,18 @@ public class LastReadPost extends Entity {
     public LastReadPost(JCUser user, Topic topic, int postIndex) {
         this.topic = topic;
         this.postIndex = checkPostIndex(postIndex);
+        this.user = user;
+        this.postDate = new DateTime();
+    }
+
+    /**
+     * @param user user to track last read post for
+     * @param topic topic we're marking last read post in
+     * @param postDate post date
+     */
+    public LastReadPost(JCUser user, Topic topic, DateTime postDate) {
+        this.topic = topic;
+        this.postDate = postDate;
         this.user = user;
     }
     

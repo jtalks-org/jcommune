@@ -118,17 +118,18 @@ This might be tuned further in the future if the page size itself changes.-->
     </query>
 
     <!--Get all the topics ID and the number of posts (to them) from the branch-->
-    <sql-query name="getTopicAndCountOfPostsInBranch">
+    <sql-query name="getTopicAndLatestPostDateInBranch">
         <return-scalar column="topic" type="string"/>
-        <return-scalar column="cposts" type="integer"/>
-        SELECT tp.TOPIC_ID as topic, COUNT(*)-1 as cposts FROM TOPIC tp left join POST p ON
+        <return-scalar column="last_date" type="org.joda.time.contrib.hibernate.PersistentDateTime"/>
+        <return-scalar column="pcount" type="integer"/>
+        SELECT tp.TOPIC_ID as topic, MAX(p.POST_DATE) as last_date, COUNT(*) as pcount FROM TOPIC tp left join POST p ON
         tp.TOPIC_ID=p.TOPIC_ID where BRANCH_ID=:branch group by tp.TOPIC_ID
     </sql-query>
 
     <!--Mark topic as read for user-->
     <sql-query name="markAllTopicsRead">
-        INSERT INTO LAST_READ_POSTS(UUID,USER_ID,LAST_READ_POST_INDEX,TOPIC_ID)
-        VALUES(:uuid,:user,:lastPostIndex,:topic)
+        INSERT INTO LAST_READ_POSTS(UUID,USER_ID,LAST_READ_POST_DATE,TOPIC_ID,LAST_READ_POST_INDEX)
+        VALUES(:uuid,:user,:lastPostDate,:topic,:lastPostIndex)
     </sql-query>
 
     <!--Mark all topics unread for user-->
