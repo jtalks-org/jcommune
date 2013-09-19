@@ -145,7 +145,7 @@ $(document).ready(function () {
             var link = $(e.target);
             //prettyPhoto img link
             if (tagName == 'img' || tagName != 'link') {
-                link = link.parent('a');
+                link = $(link).closest("a");
             }
 
             link.attr('href', link.attr('href').replace('/out?=', ''));
