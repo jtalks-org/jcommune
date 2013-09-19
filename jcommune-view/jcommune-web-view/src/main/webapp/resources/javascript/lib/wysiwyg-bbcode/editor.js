@@ -339,6 +339,7 @@ function doLink() {
                     if (mylink == null || mylink == '') {
                         mylink = link;
                     }
+
                     AddTag('[url=' + link + ']', '[/url]');
                     jDialog.closeDialog();
                 } else {
