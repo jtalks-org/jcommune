@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.model.entity;
 
 
+import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,7 @@ public class LastReadPost extends Entity {
     private Topic topic;
     private JCUser user;
     private int postIndex;
+    private DateTime postDate;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LastReadPost.class);
 
@@ -78,6 +80,22 @@ public class LastReadPost extends Entity {
      */
     public void setPostIndex(int postIndex) {
         this.postIndex = checkPostIndex(postIndex);
+    }
+
+    /**
+     *
+     * @return last read post date
+     */
+    public DateTime getPostDate() {
+        return postDate;
+    }
+
+    /**
+     *
+     * @param postDate new value for the last read post date
+     */
+    public void setPostDate(DateTime postDate) {
+        this.postDate = postDate;
     }
 
     /**
