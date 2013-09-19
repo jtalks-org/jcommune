@@ -17,7 +17,9 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.hibernate.Session;
 import org.joda.time.DateTime;
+import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.dao.hibernate.GenericDao;
+import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dao.UserDao;
@@ -34,6 +36,7 @@ import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.plugins.PluginLoader;
+import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.Advised;
@@ -83,6 +86,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
     private Validator validator;
     private MailService mailService;
     private ImageService avatarService;
+    private GroupDao groupDao;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalAuthenticator.class);
 
@@ -98,7 +102,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      * @param sessionStrategy       used in login logic to call onAuthentication hook
      *                              which stored this user to online uses list.
      */
-    public TransactionalAuthenticator(PluginLoader pluginLoader, UserDao dao,
+    public TransactionalAuthenticator(PluginLoader pluginLoader, UserDao dao, GroupDao groupDao,
                                       EncryptionService encryptionService,
                                       MailService mailService,
                                       ImageService avatarService,
@@ -108,6 +112,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
                                       SessionAuthenticationStrategy sessionStrategy,
                                       Validator validator) {
         super(dao);
+        this.groupDao = groupDao;
         this.pluginLoader = pluginLoader;
         this.encryptionService = encryptionService;
         this.mailService = mailService;
@@ -271,14 +276,18 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
             user.setPassword(passwordHash);
             user.setEmail(authInfo.get("email"));
         }
-        if (authInfo.containsKey("enabled")) {
-            user.setEnabled(Boolean.parseBoolean(authInfo.get("enabled")));
-        }
         if (authInfo.containsKey("firstName")) {
             user.setFirstName(authInfo.get("firstName"));
         }
         if (authInfo.containsKey("lastName")) {
             user.setLastName(authInfo.get("lastName"));
+        }
+        if (authInfo.containsKey("enabled")) {
+            user.setEnabled(Boolean.parseBoolean(authInfo.get("enabled")));
+        }
+        if (user.isEnabled() && user.getGroups().isEmpty()) {
+            Group group = groupDao.getGroupByName(AdministrationGroup.USER.getName());
+            user.addGroup(group);
         }
         getDao().saveOrUpdate(user);
         return user;

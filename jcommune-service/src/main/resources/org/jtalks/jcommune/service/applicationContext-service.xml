@@ -150,6 +150,7 @@
     <bean id="authenticator" class="org.jtalks.jcommune.service.transactional.TransactionalAuthenticator">
         <constructor-arg ref="pluginLoader"/>
         <constructor-arg ref="userDao"/>
+        <constructor-arg ref="groupDao"/>
         <constructor-arg ref="encryptionService"/>
         <constructor-arg ref="mailService"/>
         <constructor-arg ref="avatarService"/>

@@ -15,6 +15,7 @@
 
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dao.UserDao;
@@ -70,6 +71,8 @@ public class TransactionalAuthenticatorTest {
     @Mock
     private UserDao userDao;
     @Mock
+    private GroupDao groupDao;
+    @Mock
     private AuthenticationManager authenticationManager;
     @Mock
     private SecurityContextHolderFacade securityFacade;
@@ -97,7 +100,7 @@ public class TransactionalAuthenticatorTest {
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
-        authenticator = new TransactionalAuthenticator(pluginLoader, userDao,
+        authenticator = new TransactionalAuthenticator(pluginLoader, userDao, groupDao,
                 encryptionService, mailService, avatarService, authenticationManager,
                 securityFacade, rememberMeServices, sessionStrategy, validator);
     }
