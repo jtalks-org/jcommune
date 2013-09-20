@@ -39,19 +39,25 @@
       <div class="pm_buttons">
         <jtalks:hasPermission targetId='${user.id}' targetType='USER'
                               permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
-          <c:if test="${(pm.userTo eq user)}">
-            <a class="btn btn-primary"
-               href="${pageContext.request.contextPath}/reply/${pm.id}?userId=${user.id}">
-              <i class="icon-share-alt icon-white"></i>
-              <spring:message code="label.reply"/>
-            </a>
 
-            <a class="btn"
-               href="${pageContext.request.contextPath}/quote/${pm.id}?userId=${user.id}">
-              <i class="icon-quote"></i>
-              <spring:message code="label.quote"/>
-            </a>
-          </c:if>
+            <c:catch var ="exception">
+               <c:set var="isUserExist" value="${pm.userTo.username != null}" scope="page" /> <%--the user can be deleted--%>
+            </c:catch>
+            <c:if test="${exception == null}" >
+              <c:if test="${(pm.userTo eq user)}">
+                <a class="btn btn-primary"
+                   href="${pageContext.request.contextPath}/reply/${pm.id}?userId=${user.id}">
+                  <i class="icon-share-alt icon-white"></i>
+                  <spring:message code="label.reply"/>
+                </a>
+
+                <a class="btn"
+                   href="${pageContext.request.contextPath}/quote/${pm.id}?userId=${user.id}">
+                  <i class="icon-quote"></i>
+                  <spring:message code="label.quote"/>
+                </a>
+              </c:if>
+            </c:if>
         </jtalks:hasPermission>
 
                 <span class="del">
