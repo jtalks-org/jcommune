@@ -311,35 +311,6 @@ public class TransactionalLastReadPostServiceTest {
     }
 
     @Test
-    public void updateAfterPostDeletingShouldUpdateLastReadPostWhenIndexChanged() {
-        Topic topic = createTestTopic();
-        int postIndex = 1;
-        LastReadPost lastReadPost = new LastReadPost(user, topic, postIndex);
-        List<LastReadPost> lastReadPosts = Arrays.asList(lastReadPost);
-
-        when(lastReadPostDao.getLastReadPostsInTopic(topic)).thenReturn(lastReadPosts);
-
-        lastReadPostService.updateLastReadPostsWhenPostDeleted(topic.getFirstPost());
-
-        verify(lastReadPostDao).saveOrUpdate(lastReadPost);
-        assertEquals(lastReadPost.getPostIndex(), postIndex - 1, "The index should be reduced.");
-    }
-
-    @Test
-    public void updateAfterPostDeletingShouldNotUpdateLastReadPostWhenIndexNotChanged() {
-        Topic topic = createTestTopic();
-        int postIndex = 0;
-        LastReadPost lastReadPost = new LastReadPost(user, topic, postIndex);
-        List<LastReadPost> lastReadPosts = Arrays.asList(lastReadPost);
-        when(lastReadPostDao.getLastReadPostsInTopic(topic)).thenReturn(lastReadPosts);
-
-        lastReadPostService.updateLastReadPostsWhenPostDeleted(topic.getLastPost());
-
-        verify(lastReadPostDao, never()).saveOrUpdate(lastReadPost);
-        assertEquals(lastReadPost.getPostIndex(), postIndex, "The index shouldn't be reduced.");
-    }
-
-    @Test
     public void markAllForumAsReadShouldRememberMarkDateAndClearLastReadPostsForUser() {
         JCUser user = new JCUser("user", "use@gmail.com", "gangam-style-password");
         when(userService.getCurrentUser()).thenReturn(user);

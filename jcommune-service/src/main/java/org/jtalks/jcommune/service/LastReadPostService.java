@@ -84,12 +84,4 @@ public interface LastReadPostService {
      */
     List<Topic> fillLastReadPostForTopics(List<Topic> topics);
 
-    /**
-     * Updates last read post number to be correct when post is deleted.
-     * Basically this is for last read posts located after the post we're trying to delete.
-     * Without it last read post index may exceed total post count in the topic.
-     *
-     * @param post post we're trying to delete
-     */
-    void updateLastReadPostsWhenPostDeleted(Post post);
 }
