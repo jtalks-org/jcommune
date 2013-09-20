@@ -134,7 +134,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     private Set<JCUser> subscribers = new HashSet<JCUser>();
 
     // transient, makes sense for current user only if set explicitly
-    private transient Integer lastReadPostIndex;
+    private transient DateTime lastReadPostDate;
 
     public static final int MIN_NAME_SIZE = 1;
     public static final int MAX_NAME_SIZE = 120;
@@ -459,21 +459,17 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     }
 
     /**
-     * @param index last read post index in this topic for current user
-     *              (0 means first post is the last read one)
+     * @param lastReadPostDate last read post date
      */
-    public void setLastReadPostIndex(int index) {
-        if (index < posts.size()) {
-            lastReadPostIndex = index;
-        } else {
-            LOGGER.warn("Last read post index ({}) is bigger than last post index ({}) in the topic (TOPID ID: {})",
-                new Object[] {index, posts.size() - 1, getId()});
-            lastReadPostIndex = posts.size() - 1;
-        }
+    public void setLastReadPostDate(DateTime lastReadPostDate) {
+        this.lastReadPostDate = lastReadPostDate;
     }
-    
-    public Integer getLastReadPostIndex() {
-        return lastReadPostIndex;
+
+    /**
+     * @return last read post date
+     */
+    public DateTime getLastReadPostDate() {
+        return lastReadPostDate;
     }
 
     /**
@@ -484,8 +480,26 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      * @return returns first unread post id for the current user
      */
     public Long getFirstUnreadPostId() {
-        int index = (lastReadPostIndex == null) ? 0 : lastReadPostIndex + 1;
-        return posts.get(index).getId();
+        if (isHasUpdates()) {
+            return getFirstNewerPost(lastReadPostDate).getId();
+        }
+
+        return getFirstPost().getId();
+    }
+
+    /**
+     * Returns first post that is newer then give time
+     * @param time time to looking for newer post
+     * @return first post that is newer then give time or first post if there is no post that is newer
+     */
+    private Post getFirstNewerPost(DateTime time) {
+        for (Post post : getPosts()) {
+            if (post.getCreationDate().isAfter(time)) {
+                return post;
+            }
+        }
+
+        return getFirstPost();
     }
 
     /**
@@ -498,7 +512,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      * @return if current topic has posts still unread by the current user
      */
     public boolean isHasUpdates() {
-        return (lastReadPostIndex == null) || (lastReadPostIndex + 1 < posts.size());
+        return (lastReadPostDate == null) || (lastReadPostDate.isBefore(getLastPost().getCreationDate()));
     }
 
     /**

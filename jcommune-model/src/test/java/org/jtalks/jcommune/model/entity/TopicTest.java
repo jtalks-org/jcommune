@@ -95,19 +95,29 @@ public class TopicTest {
 
     @Test
     public void testHasUpdatesWithUpdates() {
-        topic.setLastReadPostIndex(0);
+        topic.setLastReadPostDate(topic.getFirstPost().getCreationDate());
         assertTrue(topic.isHasUpdates());
     }
 
     @Test
     public void testHasUpdatesWithoutUpdates() {
-        topic.setLastReadPostIndex(1);
+        DateTime lastModificationDate = new DateTime();
+
+        topic.getFirstPost().setCreationDate(lastModificationDate.minusDays(1));
+        topic.getPosts().get(1).setCreationDate(lastModificationDate);
+
+        topic.setLastReadPostDate(topic.getLastPost().getCreationDate());
         assertFalse(topic.isHasUpdates());
     }
 
     @Test
     public void testGetFirstUnreadPostId() {
-        topic.setLastReadPostIndex(0);
+        DateTime lastModificationDate = new DateTime();
+
+        topic.getFirstPost().setCreationDate(lastModificationDate.minusDays(1));
+        topic.getPosts().get(1).setCreationDate(lastModificationDate);
+
+        topic.setLastReadPostDate(topic.getFirstPost().getCreationDate());
 
         long id = topic.getFirstUnreadPostId();
 
@@ -116,22 +126,21 @@ public class TopicTest {
 
     @Test
     public void testGetFirstUnreadPostIdWithNoInfoSet() {
+        DateTime lastModificationDate = new DateTime();
+
+        topic.getFirstPost().setCreationDate(lastModificationDate.minusDays(1));
+        topic.getPosts().get(1).setCreationDate(lastModificationDate);
+
         long id = topic.getFirstUnreadPostId();
 
         assertEquals(post1.getId(), id);
     }
 
     @Test
-    public void testSetLastReadPostIndexCorrectValue() {
-        topic.setLastReadPostIndex(1);
-        assertEquals(topic.getLastReadPostIndex().intValue(), 1);
-        assertFalse(topic.isHasUpdates());
-    }
-    
-    @Test
-    public void testSetLastReadPostIndexTooBigValue() {
-        topic.setLastReadPostIndex(10);
-        assertEquals(topic.getLastReadPostIndex().intValue(), topic.getPostCount() - 1);
+    public void testSetLastReadPostDateCorrectValue() {
+        DateTime lastPostCreationDate = topic.getLastPost().getCreationDate();
+        topic.setLastReadPostDate(lastPostCreationDate);
+        assertEquals(topic.getLastReadPostDate(), lastPostCreationDate);
         assertFalse(topic.isHasUpdates());
     }
 

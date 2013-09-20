@@ -60,15 +60,6 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      * {@inheritDoc}
      */
     @Override
-    public Integer getLastReadPostForTopic(Topic topic) {
-        Topic withFilledIndex = fillLastReadPostForTopics(Arrays.asList(topic)).get(0);
-        return withFilledIndex.getLastReadPostIndex();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public List<Topic> fillLastReadPostForTopics(List<Topic> topics) {
         JCUser currentUser = userService.getCurrentUser();
         if (!currentUser.isAnonymous()) {
@@ -76,8 +67,8 @@ public class TransactionalLastReadPostService implements LastReadPostService {
             List<Topic> notModifiedTopics = extractNotModifiedTopicsSinceForumMarkedAsRead(
                     forumMarkedAsReadDate, topics);
             for (Topic notModifiedTopic : notModifiedTopics) {
-                int lastPostIndex = notModifiedTopic.getPostCount() - 1;
-                notModifiedTopic.setLastReadPostIndex(lastPostIndex);
+                Post lastPost = notModifiedTopic.getLastPost();
+                notModifiedTopic.setLastReadPostDate(lastPost.getCreationDate());
             }
             //
             @SuppressWarnings("unchecked")
@@ -120,7 +111,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
         for (Topic topic : modifiedTopics) {
             LastReadPost lastReadPost = findLastReadPost(lastReadPosts, topic.getId());
             if (lastReadPost != null) {
-                topic.setLastReadPostIndex(lastReadPost.getPostIndex());
+                topic.setLastReadPostDate(lastReadPost.getPostDate());
             }
         }
     }

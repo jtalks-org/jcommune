@@ -182,7 +182,7 @@ public class TransactionalLastReadPostServiceTest {
         lastReadPostService.markTopicPageAsRead(topic, 2);
 
         verify(lastReadPostDao).saveOrUpdate(argThat(
-                new LastReadPostMatcher(topic, 5)));
+                new LastReadPostMatcher(topic, topic.getPosts().get(5).getCreationDate())));
     }
 
     @Test
@@ -195,7 +195,7 @@ public class TransactionalLastReadPostServiceTest {
         lastReadPostService.markTopicPageAsRead(topic, 1);
 
         verify(lastReadPostDao).saveOrUpdate(argThat(
-                new LastReadPostMatcher(topic, topic.getPostCount() - 1)));
+                new LastReadPostMatcher(topic, topic.getLastPost().getCreationDate())));
     }
 
     @Test
@@ -208,7 +208,7 @@ public class TransactionalLastReadPostServiceTest {
         lastReadPostService.markTopicPageAsRead(topic, 1);
 
         verify(lastReadPostDao).saveOrUpdate(argThat(
-                new LastReadPostMatcher(topic, topic.getPostCount() - 1)));
+                new LastReadPostMatcher(topic, topic.getLastPost().getCreationDate())));
     }
 
     @Test
@@ -237,7 +237,7 @@ public class TransactionalLastReadPostServiceTest {
         when(userService.getCurrentUser()).thenReturn(user);
 
         lastReadPostService.markTopicAsRead(topic);
-        verify(lastReadPostDao).saveOrUpdate(argThat(new LastReadPostMatcher(topic, topic.getPostCount() - 1)));
+        verify(lastReadPostDao).saveOrUpdate(argThat(new LastReadPostMatcher(topic, topic.getLastPost().getCreationDate())));
     }
 
     @Test
@@ -260,7 +260,7 @@ public class TransactionalLastReadPostServiceTest {
         lastReadPostService.markTopicAsRead(topic);
 
         verify(lastReadPostDao).saveOrUpdate(argThat(
-                new LastReadPostMatcher(topic, topic.getPostCount() - 1)));
+                new LastReadPostMatcher(topic, topic.getLastPost().getCreationDate())));
     }
 
     @Test
@@ -273,41 +273,7 @@ public class TransactionalLastReadPostServiceTest {
         lastReadPostService.markTopicAsRead(topic);
 
         verify(lastReadPostDao).saveOrUpdate(argThat(
-                new LastReadPostMatcher(topic, topic.getPostCount() - 1)));
-    }
-
-    @Test
-    public void getLastReadPostInTopicShouldReturnLastReadByUser() {
-        Topic topic = this.createTestTopic();
-        LastReadPost post = new LastReadPost(user, topic, 1);
-        when(userService.getCurrentUser()).thenReturn(user);
-        when(lastReadPostDao.getLastReadPosts(user, Arrays.asList(topic)))
-                .thenReturn(Collections.singletonList(post));
-
-        int actual = lastReadPostService.getLastReadPostForTopic(topic);
-
-        assertEquals(actual, post.getPostIndex());
-    }
-
-    @Test
-    public void getLastReadPostInTopicShouldReturnNullWhenUserDidNotReadTopic() {
-        Topic topic = createTestTopic();
-        when(userService.getCurrentUser()).thenReturn(user);
-        when(lastReadPostDao.getLastReadPosts(user, Arrays.asList(topic)))
-                .thenReturn(Collections.<LastReadPost>emptyList());
-
-        assertNull(lastReadPostService.getLastReadPostForTopic(topic));
-    }
-
-    @Test
-    public void getLastReadPostInTopicShouldReturnNullForAnonymousUser() {
-        Topic topic = this.createTestTopic();
-        JCUser anonymous = new AnonymousUser();
-        when(userService.getCurrentUser()).thenReturn(anonymous);
-        when(lastReadPostDao.getLastReadPost(anonymous, topic))
-                .thenThrow(new TransientObjectException("Object reference to unsaved object"));
-
-        assertNull(lastReadPostService.getLastReadPostForTopic(topic));
+                new LastReadPostMatcher(topic, topic.getLastPost().getCreationDate())));
     }
 
     @Test
@@ -334,11 +300,11 @@ public class TransactionalLastReadPostServiceTest {
     private class LastReadPostMatcher extends ArgumentMatcher<LastReadPost> {
 
         private Topic topic;
-        private int index;
+        private DateTime dateTime;
 
-        private LastReadPostMatcher(Topic topic, int index) {
+        private LastReadPostMatcher(Topic topic, DateTime dateTime) {
             this.topic = topic;
-            this.index = index;
+            this.dateTime = dateTime;
         }
 
         @Override
@@ -346,7 +312,7 @@ public class TransactionalLastReadPostServiceTest {
             LastReadPost post = (LastReadPost) argument;
             boolean result = post.getTopic().equals(topic);
             result &= post.getUser().equals(user);
-            result &= (post.getPostIndex() == index);
+            result &= (post.getPostDate() == dateTime);
             return result;
         }
     }
