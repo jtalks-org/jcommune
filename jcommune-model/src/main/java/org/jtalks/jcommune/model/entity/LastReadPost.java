@@ -32,27 +32,12 @@ import java.io.StringWriter;
 public class LastReadPost extends Entity {
     private Topic topic;
     private JCUser user;
-    private int postIndex;
     private DateTime postDate;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(LastReadPost.class);
 
     /**
      * For hibernate use only
      */
     protected LastReadPost() {
-        this.postDate = new DateTime();
-    }
-
-    /**
-     * @param user user to track last read post for
-     * @param topic topic we're marking last read post in
-     * @param postIndex post index, starting from 0
-     */
-    public LastReadPost(JCUser user, Topic topic, int postIndex) {
-        this.topic = topic;
-        this.postIndex = checkPostIndex(postIndex);
-        this.user = user;
         this.postDate = new DateTime();
     }
 
@@ -79,20 +64,6 @@ public class LastReadPost extends Entity {
      */
     protected void setTopic(Topic topic) {
         this.topic = topic;
-    }
-
-    /**
-     * @return last read post index in topic's collection, starting from 0
-     */
-    public int getPostIndex() {
-        return postIndex;
-    }
-
-    /**
-     * @param postIndex last read post index in topic's collection, starting from 0
-     */
-    public void setPostIndex(int postIndex) {
-        this.postIndex = checkPostIndex(postIndex);
     }
 
     /**
@@ -123,21 +94,6 @@ public class LastReadPost extends Entity {
      */
     protected void setUser(JCUser user) {
         this.user = user;
-    }
-
-    /**
-     * To check post index value (postIndex >= -1). If postIndex value fails validation, the state is logged.
-     * It is used to identify the source of the error (see http://jira.jtalks.org/browse/JC-1177)
-     * @param postIndex post index value
-     * @return checked post index
-     */
-    private int checkPostIndex(int postIndex){
-        final int minValue = -1;
-        if(postIndex<minValue){
-            LOGGER.warn(getStackTrace("Post index value "+postIndex+" is too low."));
-            return minValue;
-        }
-        return postIndex;
     }
 
     /**

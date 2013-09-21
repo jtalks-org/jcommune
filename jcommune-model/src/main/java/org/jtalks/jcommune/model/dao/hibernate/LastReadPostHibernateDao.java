@@ -113,7 +113,6 @@ public class LastReadPostHibernateDao extends GenericDao<LastReadPost>
             insertQuery.setParameter("uuid", UUID.randomUUID().toString())
                     .setParameter("user", forWho.getId())
                     .setParameter("lastPostDate", ((DateTime) o[1]).toDate())
-                    .setParameter("lastPostIndex", o[2])
                     .setParameter("topic", o[0])
                     .executeUpdate();
         }
