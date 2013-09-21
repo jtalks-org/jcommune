@@ -53,6 +53,8 @@ import org.springframework.validation.Validator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -163,7 +165,14 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
                                                           HttpServletResponse response)
             throws UnexpectedErrorException, NoConnectionException {
         String passwordHash = encryptionService.encryptPassword(password);
-        Map<String, String> authInfo = authenticateByAvailablePlugin(username, passwordHash);
+        String encodedUsername;
+        try {
+            encodedUsername  = username == null ? null : URLEncoder.encode(username, "UTF-8").replace("+", "%20");
+        } catch (UnsupportedEncodingException e) {
+            LOGGER.error("Could not encode username '{}'", username);
+            throw new UnexpectedErrorException(e);
+        }
+        Map<String, String> authInfo = authenticateByAvailablePlugin(encodedUsername, passwordHash);
         if (authInfo.isEmpty() || !authInfo.containsKey("email") || !authInfo.containsKey("username")) {
             LOGGER.info("Could not authenticate user '{}' by plugin.", username);
             return false;

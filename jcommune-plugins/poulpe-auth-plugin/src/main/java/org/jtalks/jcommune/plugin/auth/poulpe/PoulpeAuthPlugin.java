@@ -139,10 +139,9 @@ public class PoulpeAuthPlugin extends StatefullPlugin
                 password = property.getValue();
             }
         }
-        if (url == null || login == null || password == null
-                || url.isEmpty() || login.isEmpty() || password.isEmpty()) {
+        if (url == null || url.isEmpty()) {
             // this should be returned as a map, but this mechanism should be implemented in the plugin API first
-            throw new RuntimeException("Can't apply configuration: Url, login and password should not be null.");
+            throw new RuntimeException("Can't apply configuration: Url should not be null.");
         } else if(!validateUrl(url)) {
             throw new RuntimeException("Can't apply configuration: Incorrect format for Url value.");
         }
