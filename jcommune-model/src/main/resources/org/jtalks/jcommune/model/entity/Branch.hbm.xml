@@ -85,7 +85,7 @@
         <return-scalar column="cposts" type="integer"/>
         select COUNT(*) as cposts from COUNT_POSTS_TOPICS_VIEW c left join LAST_READ_POSTS lrp ON
         c.TOPIC_ID=lrp.TOPIC_ID and lrp.USER_ID=:user
-        where c.BRANCH_ID=:branch and (lrp.ID is NULL or lrp.LAST_READ_POST_INDEX &lt; c.POSTS_COUNT)
+        where c.BRANCH_ID=:branch and (lrp.ID is NULL or lrp.LAST_READ_POST_DATE &lt; c.LAST_POST_DATE)
     </sql-query>
 
     <query name="getAllBranches">
