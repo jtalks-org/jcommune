@@ -70,20 +70,6 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
     }
 
     @Test
-    public void testUpdate() {
-        LastReadPost post = PersistedObjectsFactory.getDefaultLastReadPost();
-        session.save(post);
-        int newPostIndex = post.getPostIndex() + 1;
-        post.setPostIndex(newPostIndex);
-
-        lastReadPostDao.saveOrUpdate(post);
-        LastReadPost updatedPost = (LastReadPost) session.get(LastReadPost.class, post.getId());
-
-        assertEquals(updatedPost.getPostIndex(), newPostIndex,
-                "Update doesn't work, because field value didn't change.");
-    }
-
-    @Test
     public void dateOfTheLastReadPostShouldBeUpdated() {
         LastReadPost post = PersistedObjectsFactory.getDefaultLastReadPost();
         post.setPostDate(new DateTime());

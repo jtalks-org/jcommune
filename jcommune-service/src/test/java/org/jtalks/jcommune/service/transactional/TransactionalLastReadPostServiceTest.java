@@ -96,7 +96,7 @@ public class TransactionalLastReadPostServiceTest {
     @Test
     public void authenticatedUserShouldSeeReadTopicAsTopicWithoutUpdates() {
         List<Topic> topicList = ObjectsFactory.topics(user, 1);
-        LastReadPost post = new LastReadPost(user, topicList.get(0), 0);
+        LastReadPost post = new LastReadPost(user, topicList.get(0), topicList.get(0).getFirstPost().getCreationDate());
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPosts(user, topicList)).thenReturn(Collections.singletonList(post));
 
@@ -138,7 +138,7 @@ public class TransactionalLastReadPostServiceTest {
     public void updateLastReadPostToAuthUserWhenAllForumMarkedBefore() {
         Topic topic = this.createTestTopic();
         user.setAllForumMarkedAsReadTime(topic.getModificationDate().minusSeconds(1));
-        LastReadPost post = new LastReadPost(user, topic, 0);
+        LastReadPost post = new LastReadPost(user, topic, new DateTime());
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
 
@@ -151,7 +151,7 @@ public class TransactionalLastReadPostServiceTest {
     public void updateLastReadPostToAuthUserWhenAllForumMarkedNull() {
         Topic topic = this.createTestTopic();
         user.setAllForumMarkedAsReadTime(null);
-        LastReadPost post = new LastReadPost(user, topic, 0);
+        LastReadPost post = new LastReadPost(user, topic, new DateTime());
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
 
@@ -164,7 +164,7 @@ public class TransactionalLastReadPostServiceTest {
     public void notUpdateLastReadPostToAuthUserWhenAllForumAfter() {
         Topic topic = this.createTestTopic();
         user.setAllForumMarkedAsReadTime(topic.getModificationDate().plusSeconds(1));
-        LastReadPost post = new LastReadPost(user, topic, 0);
+        LastReadPost post = new LastReadPost(user, topic, new DateTime());
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
 
@@ -188,20 +188,7 @@ public class TransactionalLastReadPostServiceTest {
     @Test
     public void markTopicPageAsReadShouldReupdateLastReadPostInRepository() {
         Topic topic = this.createTestTopic();
-        LastReadPost post = new LastReadPost(user, topic, 0);
-        when(userService.getCurrentUser()).thenReturn(user);
-        when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
-
-        lastReadPostService.markTopicPageAsRead(topic, 1);
-
-        verify(lastReadPostDao).saveOrUpdate(argThat(
-                new LastReadPostMatcher(topic, topic.getLastPost().getCreationDate())));
-    }
-
-    @Test
-    public void testMarkTopicPageAsReadUpdateExistingDbRecordWithWrongPostIndex() {
-        Topic topic = this.createTestTopic();
-        LastReadPost post = new LastReadPost(user, topic, 1000);
+        LastReadPost post = new LastReadPost(user, topic, new DateTime());
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
 
@@ -253,20 +240,7 @@ public class TransactionalLastReadPostServiceTest {
     @Test
     public void markTopicAsReadShouldReupdateLastReadPostInRepository() {
         Topic topic = this.createTestTopic();
-        LastReadPost post = new LastReadPost(user, topic, 0);
-        when(userService.getCurrentUser()).thenReturn(user);
-        when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
-
-        lastReadPostService.markTopicAsRead(topic);
-
-        verify(lastReadPostDao).saveOrUpdate(argThat(
-                new LastReadPostMatcher(topic, topic.getLastPost().getCreationDate())));
-    }
-
-    @Test
-    public void testMarkTopicReadUpdateExistingDbRecordWithWrongPostIndex() {
-        Topic topic = this.createTestTopic();
-        LastReadPost post = new LastReadPost(user, topic, 1000);
+        LastReadPost post = new LastReadPost(user, topic, new DateTime());
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
 

@@ -189,7 +189,7 @@ public final class PersistedObjectsFactory {
     public static LastReadPost getDefaultLastReadPost() {
         Topic topic = getDefaultTopic();
         JCUser user = topic.getTopicStarter();
-        return new LastReadPost(user, topic, 0);
+        return new LastReadPost(user, topic, new DateTime());
     }
 
     public static Poll createDefaultVoting() {

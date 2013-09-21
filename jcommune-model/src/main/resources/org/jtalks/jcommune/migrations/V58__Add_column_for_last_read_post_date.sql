@@ -14,3 +14,6 @@ SET LAST_READ_POST_DATE =
                                  WHERE P2.TOPIC_ID = P1.TOPIC_ID and P2.POST_DATE < P1.POST_DATE
                                 )
 );
+
+-- temporary set "not null" for LAST_READ_POST_INDEX (it should be deleted later)
+ALTER TABLE LAST_READ_POSTS CHANGE COLUMN `LAST_READ_POST_INDEX` `LAST_READ_POST_INDEX` INT(11) NULL  ;
