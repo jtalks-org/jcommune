@@ -258,6 +258,14 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         return ipAddress;
     }
 
+    private void copyFieldsFromUserToJCUser(User commonUser, JCUser user) {
+        user.setRole(commonUser.getRole());
+        user.setAvatar(commonUser.getAvatar());
+        user.setBanReason(commonUser.getBanReason());
+        for (Group group : commonUser.getGroups()) {
+            user.addGroup(group);
+        }
+    }
 
     /**
      * Save (or update) user with specified details in internal database.
@@ -270,15 +278,24 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
     private JCUser saveUser(Map<String, String> authInfo, String passwordHash, boolean newUser) {
         JCUser user;
         if (newUser) {
-            user = getDao().getByUsername(authInfo.get("username"));
-            if (user != null) {
+            user = new JCUser(authInfo.get("username"), authInfo.get("email"), passwordHash);
+            user.setRegistrationDate(new DateTime());
+            user.setAutosubscribe(DEFAULT_AUTOSUBSCRIBE);
+            user.setSendPmNotification(DEFAULT_SEND_PM_NOTIFICATION);
+            User commonUser = this.getDao().getCommonUserByUsername(authInfo.get("username"));
+            if (commonUser != null) {
+                copyFieldsFromUserToJCUser(commonUser, user);
                 // user already exist in database (poulpe uses the same database),
-                // no need to create or update update him
-                return user;
+                // we need to delete common User and create JCUser
+                try {
+                    Session session = ((GenericDao) ((Advised) this.getDao()).getTargetSource().getTarget()).session();
+                    session.delete(commonUser);
+                    this.getDao().flush();
+                } catch (Exception e) {
+                    LOGGER.warn("Could not delete common user.");
+                }
             } else {
-                // user not exist in database (poulpe uses own database)
-                user = new JCUser(authInfo.get("username"), authInfo.get("email"), passwordHash);
-                user.setRegistrationDate(new DateTime());
+                user.setAvatar(avatarService.getDefaultImage());
             }
         } else {
             user = getDao().getByUsername(authInfo.get("username"));
