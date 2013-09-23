@@ -24,17 +24,17 @@
 <sec:authentication property="principal.username" var="auth" scope="request"/>
 <sec:authentication property="principal.id" var="userId" scope="request"/>
 <head>
-  <meta name="description" content="<c:out value="${label.user}"/>">
-  <title><spring:message code="label.user"/> - "${editedUser.username}"</title>
+    <meta name="description" content="<c:out value="${label.user}"/>">
+    <title><spring:message code="label.user"/> - "${editedUser.username}"</title>
 </head>
 <body>
 
 <div class="container">
 <div id="editUserDetails" class="userprofile user-profile-container">
-  <form:form id="editProfileForm" name="editProfileForm"
-             action="${pageContext.request.contextPath}/users/edit/${editedUser.userId}"
-             modelAttribute="editedUser" method="POST"
-             class="form-horizontal">
+<form:form id="editProfileForm" name="editProfileForm"
+           action="${pageContext.request.contextPath}/users/edit/${editedUser.userId}"
+           modelAttribute="editedUser" method="POST"
+           class="form-horizontal">
 
     <form:hidden id="avatar" path="avatar"/>
     <form:hidden id="editedUserId" path="userId" value="${editedUser.userId}"/>
@@ -48,190 +48,224 @@
                         </span>
                     </span>
 
-      <h2 class="pull-right user-profile-username"><c:out value="${editedUser.username}"/></h2>
+        <h2 class="pull-right user-profile-username"><c:out value="${editedUser.username}"/></h2>
     </div>
     <div class="clearfix"></div>
     <div class="user-profile-top-buttons">
-      <div class="user-profile-buttons-avatar">
-        <a id="upload" href="#" class="btn btn-mini">
-          <i class="icon-picture"></i>
-          <spring:message code="label.avatar.load"/>
-        </a>
-        <a id="removeAvatar" href="#" class="btn btn-mini btn-danger"
-           title="<spring:message code="label.avatar.remove" />">
-          <i class="icon-remove icon-white"></i>
-        </a>
-      </div>
+        <div class="user-profile-buttons-avatar">
+            <a id="upload" href="#" class="btn btn-mini">
+                <i class="icon-picture"></i>
+                <spring:message code="label.avatar.load"/>
+            </a>
+            <a id="removeAvatar" href="#" class="btn btn-mini btn-danger"
+               title="<spring:message code="label.avatar.remove" />">
+                <i class="icon-remove icon-white"></i>
+            </a>
+        </div>
     </div>
 
     <div class="clearfix"></div>
     <hr class='user-profile-hr'/>
 
     <div>
-      <fieldset>
-        <div class="control-group">
-          <label class="control-label"><spring:message code="label.firstname"/></label>
+        <fieldset>
+            <div class="control-group">
+                <label class="control-label"><spring:message code="label.firstname"/></label>
 
-          <div class="controls">
-            <form:input class="input-xlarge" path="firstName" value="${editedUser.firstName}" tabindex="1"/>
-            <br/>
-            <form:errors path="firstName" cssClass="help-inline"/>
-          </div>
-        </div>
+                <div class="controls">
+                    <form:input class="input-xlarge" path="firstName" value="${editedUser.firstName}" tabindex="1"/>
+                    <br/>
+                    <form:errors path="firstName" cssClass="help-inline"/>
+                </div>
+            </div>
 
-        <div class="control-group">
-          <label class="control-label"><spring:message code="label.lastname"/></label>
+            <div class="control-group">
+                <label class="control-label"><spring:message code="label.lastname"/></label>
 
-          <div class="controls">
-            <form:input class="input-xlarge" path="lastName" value="${editedUser.lastName}" tabindex="5"/>
-            <br/>
-            <form:errors path="lastName" cssClass="help-inline"/>
-          </div>
-        </div>
+                <div class="controls">
+                    <form:input class="input-xlarge" path="lastName" value="${editedUser.lastName}" tabindex="5"/>
+                    <br/>
+                    <form:errors path="lastName" cssClass="help-inline"/>
+                </div>
+            </div>
 
-        <div class="control-group">
-          <label class="control-label"><spring:message code="label.signature"/></label>
+            <div class="control-group">
+                <label class="control-label"><spring:message code="label.signature"/></label>
 
-          <div class="controls">
-            <form:textarea class="input-xlarge" path="signature"
-                           value="${editedUser.signature}" tabindex="10"/>
-            <br/>
-            <form:errors path="signature" cssClass="help-inline"/>
-          </div>
-        </div>
+                <div class="controls">
+                    <form:textarea class="input-xlarge" path="signature"
+                                   value="${editedUser.signature}" tabindex="10"/>
+                    <br/>
+                    <form:errors path="signature" cssClass="help-inline"/>
+                </div>
+            </div>
 
-        <div class="control-group">
-          <label class="control-label"><spring:message code="label.email"/></label>
+            <div class="control-group">
+                <label class="control-label"><spring:message code="label.email"/></label>
 
-          <div class="controls">
-            <form:input class="input-xlarge" path="email" tabindex="15"/>
-            <br/>
-            <form:errors path="email" cssClass="help-inline"/>
-          </div>
-        </div>
-
+<<<<<<< HEAD
         <div class="control-group">
           <label class="control-label"><spring:message code="label.pageSize"/></label>
-
-          <div class="controls">
-            <form:select path="pageSize"
-                         items="${editedUser.pageSizesAvailable}"
-                         class="input-mini" tabindex="25"/>
-            <br/>
-            <form:errors path="pageSize" cssClass="help-inline"/>
-          </div>
-        </div>
-
-        <div class="control-group">
-          <label class="control-label"><spring:message code="label.autosubscribe"/></label>
-
-          <div class="controls padding-top-profile">
-              <spring:message var="autosubscribeTooltip"
-                              code="label.tips.autoSubscribe"/>
-            <form:checkbox path="autosubscribe" value="${editedUser.autosubscribe}"
-                           class="form-check-radio-box script-has-tooltip"
-                           data-original-title='${autosubscribeTooltip}' tabindex="30"/>
-          </div>
-        </div>
-
-        <div class="control-group">
-          <label class="control-label"><spring:message code="label.mentioning.notifications.enabled"/></label>
-
-          <div class="controls padding-top-profile">
-            <spring:message var="mentioningNotificationsTooltip"
-                            code="label.tips.userMentioningNotification"/>
-            <form:checkbox path="mentioningNotificationsEnabled"
-                           value="${editedUser.mentioningNotificationsEnabled}"
-                           class="form-check-radio-box script-has-tooltip"
-                           data-original-title='${mentioningNotificationsTooltip}' tabindex="35"/>
-          </div>
-        </div>
-
-        <div class="control-group">
-          <label class="control-label"><spring:message code="label.location"/></label>
-
-          <div class="controls">
-            <form:input path="location" class="input-xlarge" value="${editedUser.location}" tabindex="40"/>
-            <br/>
-            <form:errors path="location" cssClass="help-inline"/>
-          </div>
-        </div>
-
-        <c:if test="${userId == editedUser.userId}">
-          <div class="control-group">
-            <label class="control-label"><spring:message code="label.currentPassword"/></label>
-
-            <div class="controls">
-              <form:input class="input-xlarge" type="password" path="currentUserPassword" tabindex="45"/>
-              <br/>
-              <form:errors path="currentUserPassword" cssClass="help-inline"/>
+=======
+                <div class="controls">
+                    <form:input class="input-xlarge" path="email" tabindex="15"/>
+                    <br/>
+                    <form:errors path="email" cssClass="help-inline"/>
+                </div>
             </div>
-          </div>
-        </c:if>
 
-        <div class="control-group">
-          <label class="control-label"><spring:message code="label.newPassword"/></label>
+            <div class="control-group">
+                <label class="control-label"><spring:message code="label.language"/></label>
 
-          <div class="controls">
-            <form:input class="input-xlarge" type="password" path="newUserPassword" tabindex="50"/>
-            <br/>
-            <form:errors path="newUserPassword" cssClass="help-inline"/>
-          </div>
-        </div>
+                <div class="controls">
+                    <form:select path="language" class="input-medium" tabindex="20">
+                        <c:forEach items="${editedUser.languagesAvailable}" var="language">
+                            <form:option value="${language}">
+                                <spring:message code="${language.languageNameLabel}"/>
+                            </form:option>
+                        </c:forEach>
+                    </form:select>
+                    <br/>
+                    <form:errors path="language" cssClass="help-inline"/>
+                </div>
+            </div>
+>>>>>>> origin/master
 
-        <div class="control-group">
-          <label class="control-label"><spring:message code="label.newPasswordConfirmation"/></label>
+            <div class="control-group">
+                <label class="control-label"><spring:message code="label.pageSize"/></label>
 
-          <div class="controls">
-            <form:input class="input-xlarge" type="password" path="newUserPasswordConfirm" tabindex="55"/>
-            <br/>
-            <form:errors path="newUserPasswordConfirm" cssClass="help-inline"/>
-          </div>
-        </div>
+                <div class="controls">
+                    <form:select path="pageSize"
+                                 items="${editedUser.pageSizesAvailable}"
+                                 class="input-mini" tabindex="25"/>
+                    <br/>
+                    <form:errors path="pageSize" cssClass="help-inline"/>
+                </div>
+            </div>
 
-        <hr class='user-profile-hr'/>
-        <div class='user-profile-buttons-form-actions'>
-          <button id="saveChanges" class="btn btn-primary" type="submit" tabindex="60">
-            <spring:message code="label.save_changes"/>
-          </button>
-          <a href="${pageContext.request.contextPath}/users/${editedUser.userId}" class="btn" tabindex="60">
-            <spring:message code="label.cancel"/>
-          </a>
-        </div>
-      </fieldset>
+            <div class="control-group">
+                <label class="control-label"><spring:message code="label.autosubscribe"/></label>
+
+                <div class="controls padding-top-profile">
+                    <spring:message var="autosubscribeTooltip"
+                                    code="label.tips.autoSubscribe"/>
+                    <form:checkbox path="autosubscribe" value="${editedUser.autosubscribe}"
+                                   class="form-check-radio-box script-has-tooltip"
+                                   data-original-title='${autosubscribeTooltip}' tabindex="30"/>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label"><spring:message code="label.mentioning.notifications.enabled"/></label>
+
+                <div class="controls padding-top-profile">
+                    <spring:message var="mentioningNotificationsTooltip"
+                                    code="label.tips.userMentioningNotification"/>
+                    <form:checkbox path="mentioningNotificationsEnabled"
+                                   value="${editedUser.mentioningNotificationsEnabled}"
+                                   class="form-check-radio-box script-has-tooltip"
+                                   data-original-title='${mentioningNotificationsTooltip}' tabindex="35"/>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label"><spring:message code="label.send.pm.notification.enabled"/></label>
+
+                <div class="controls padding-top-profile">
+                    <spring:message var="sendPmNotificationTooltip"
+                                    code="label.tips.sendPmNotification"/>
+                    <form:checkbox path="sendPmNotification"
+                                   value="${editedUser.sendPmNotification}"
+                                   class="form-check-radio-box script-has-tooltip"
+                                   data-original-title='${sendPmNotificationTooltip}' tabindex="36"/>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label"><spring:message code="label.location"/></label>
+
+                <div class="controls">
+                    <form:input path="location" class="input-xlarge" value="${editedUser.location}" tabindex="40"/>
+                    <br/>
+                    <form:errors path="location" cssClass="help-inline"/>
+                </div>
+            </div>
+
+            <c:if test="${userId == editedUser.userId}">
+                <div class="control-group">
+                    <label class="control-label"><spring:message code="label.currentPassword"/></label>
+
+                    <div class="controls">
+                        <form:input class="input-xlarge" type="password" path="currentUserPassword" tabindex="45"/>
+                        <br/>
+                        <form:errors path="currentUserPassword" cssClass="help-inline"/>
+                    </div>
+                </div>
+            </c:if>
+
+            <div class="control-group">
+                <label class="control-label"><spring:message code="label.newPassword"/></label>
+
+                <div class="controls">
+                    <form:input class="input-xlarge" type="password" path="newUserPassword" tabindex="50"/>
+                    <br/>
+                    <form:errors path="newUserPassword" cssClass="help-inline"/>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label"><spring:message code="label.newPasswordConfirmation"/></label>
+
+                <div class="controls">
+                    <form:input class="input-xlarge" type="password" path="newUserPasswordConfirm" tabindex="55"/>
+                    <br/>
+                    <form:errors path="newUserPasswordConfirm" cssClass="help-inline"/>
+                </div>
+            </div>
+
+            <hr class='user-profile-hr'/>
+            <div class='user-profile-buttons-form-actions'>
+                <button id="saveChanges" class="btn btn-primary" type="submit" tabindex="60">
+                    <spring:message code="label.save_changes"/>
+                </button>
+                <a href="${pageContext.request.contextPath}/users/${editedUser.userId}" class="btn" tabindex="60">
+                    <spring:message code="label.cancel"/>
+                </a>
+            </div>
+        </fieldset>
     </div>
-  </form:form>
-  <div class="clearfix"></div>
+</form:form>
+<div class="clearfix"></div>
 </div>
 
 <div class="userprofile user-profile-contacts-container">
-  <h4><spring:message code="label.contacts"/></h4>
-  <ul id='contacts' class="contacts">
-    <c:forEach var="contact" items="${contacts}">
-      <%-- Class 'contact' used in js for binding --%>
-      <li class="contact">
-        <input id="contactId" type="hidden" value="${contact.id}"/>
-        <input id="contactOwnerId" type="hidden" value="${editedUser.userId}"/>
-          <%-- Class 'button' used in js for binding --%>
-        <a href="#" id="${contact.id}" class="btn btn-mini btn-danger button"
-           title="<spring:message code='label.contacts.tips.delete'/>">
-          <i class="icon-remove icon-white"></i>
-        </a>
+    <h4><spring:message code="label.contacts"/></h4>
+    <ul id='contacts' class="contacts">
+        <c:forEach var="contact" items="${contacts}">
+            <%-- Class 'contact' used in js for binding --%>
+            <li class="contact">
+                <input id="contactId" type="hidden" value="${contact.id}"/>
+                <input id="contactOwnerId" type="hidden" value="${editedUser.userId}"/>
+                    <%-- Class 'button' used in js for binding --%>
+                <a href="#" id="${contact.id}" class="btn btn-mini btn-danger button"
+                   title="<spring:message code='label.contacts.tips.delete'/>">
+                    <i class="icon-remove icon-white"></i>
+                </a>
                         
                         <span class="contact" title="<c:out value='${contact.type.typeName}'/>">
                             <img src="${pageContext.request.contextPath}${contact.type.icon}"
                                  alt="<spring:message code='alt.contacts.contactType'/>">
                             <jtalks:prepareLink incomingLink='${contact.displayValue}'/>
                         </span>
-      </li>
-    </c:forEach>
-  </ul>
+            </li>
+        </c:forEach>
+    </ul>
 
-  <a id="add_contact" href="#" class="btn btn-mini btn-primary user-profile-buttons-addcontact">
-    <spring:message code="label.contacts.addMore"/>
-  </a>
+    <a id="add_contact" href="#" class="btn btn-mini btn-primary user-profile-buttons-addcontact">
+        <spring:message code="label.contacts.addMore"/>
+    </a>
 
-  <div class="clearfix"></div>
+    <div class="clearfix"></div>
 </div>
 </div>
 </body>

@@ -118,14 +118,17 @@ public class TransactionalPrivateMessageService
         securityService.createAclBuilder().grant(GeneralPermission.READ).to(recipient).on(pm).flush();
         securityService.createAclBuilder().grant(GeneralPermission.READ).to(userFrom).on(pm).flush();
 
-        long pmId = pm.getId();
-        if (sendingNotificationsEnabledProperty.booleanValue()) {
+        if (isSendNotificationMessage(userFrom)) {
             mailService.sendReceivedPrivateMessageNotification(recipient, pm);
         }
 
-        logger.debug("Private message to user {} was sent. Message id={}", recipient.getUsername(), pmId);
+        logger.debug("Private message to user {} was sent. Message id={}", recipient.getUsername(), pm.getId());
 
         return pm;
+    }
+
+    private boolean isSendNotificationMessage(JCUser user) {
+         return (sendingNotificationsEnabledProperty.booleanValue() && user.isSendPmNotification());
     }
 
     /**

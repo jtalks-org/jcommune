@@ -59,6 +59,7 @@
       </property>
       <property column="PAGE_SIZE" name="pageSize"/>
       <property column="LOCATION" name="location"/>
+      <property column="SEND_PM_NOTIFICATION" name="sendPmNotification" />
       <property column="REGISTRATION_DATE" name="registrationDate"
                 type="org.joda.time.contrib.hibernate.PersistentDateTime" not-null="false"/>
       <property column="POST_COUNT" name="postCount"/>

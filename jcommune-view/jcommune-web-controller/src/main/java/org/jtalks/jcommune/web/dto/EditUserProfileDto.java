@@ -63,6 +63,7 @@ public class EditUserProfileDto {
     private int pageSize;
     private boolean autosubscribe;
     private boolean mentioningNotificationsEnabled;
+    private boolean sendPmNotification;
     private String avatar;
     @Length(max = JCUser.MAX_LOCATION_SIZE)
     private String location;
@@ -100,6 +101,7 @@ public class EditUserProfileDto {
         this.autosubscribe = user.isAutosubscribe();
         this.mentioningNotificationsEnabled = user.isMentioningNotificationsEnabled();
         this.location = user.getLocation();
+        this.sendPmNotification = user.isSendPmNotification();
     }
 
     /**
@@ -112,7 +114,7 @@ public class EditUserProfileDto {
         return new UserInfoContainer(this.getFirstName(), this.getLastName(), this.getEmail(),
                 this.getCurrentUserPassword(), this.getNewUserPassword(), this.getSignature(),
                 this.getAvatar(), this.getLanguage(), this.getPageSize(), this.isAutosubscribe(),
-                this.isMentioningNotificationsEnabled(), this.getLocation());
+                this.isMentioningNotificationsEnabled(), this.getLocation(), this.isSendPmNotification());
     }
 
     /**
@@ -362,5 +364,16 @@ public class EditUserProfileDto {
      */
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public boolean isSendPmNotification() {
+        return sendPmNotification;
+    }
+
+    /**
+     * @param sendPmNotification
+     */
+    public void setSendPmNotification(boolean sendPmNotification) {
+        this.sendPmNotification = sendPmNotification;
     }
 }

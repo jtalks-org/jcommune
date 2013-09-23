@@ -131,12 +131,13 @@ public class TransactionalPrivateMessageServiceTest {
     }
 
     @Test
-    public void testSendMessage() throws NotFoundException {
+    public void testSendMessageNotificationEnabled() throws NotFoundException {
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
         when(propertyDao.getByName(PROPERTY_NAME)).
                 thenReturn(new Property(PROPERTY_NAME, String.valueOf(SENDING_NOTIFICATIONS_ENABLED)));
 
+        user.setSendPmNotification(true);
         PrivateMessage pm = pmService.sendMessage("body", "title", JC_USER, user);
 
         assertFalse(pm.isRead());
@@ -146,6 +147,7 @@ public class TransactionalPrivateMessageServiceTest {
         verify(pmDao).saveOrUpdate(pm);
         verify(aclBuilder, times(2)).grant(GeneralPermission.READ);
         verify(propertyDao).getByName(PROPERTY_NAME);
+        verify(mailService, times(1)).sendReceivedPrivateMessageNotification(JC_USER, pm);
     }
 
     @Test
@@ -155,6 +157,7 @@ public class TransactionalPrivateMessageServiceTest {
         when(propertyDao.getByName(PROPERTY_NAME)).
                 thenReturn(new Property(PROPERTY_NAME, String.valueOf(SENDING_NOTIFICATIONS_DISABLED)));
 
+        user.setSendPmNotification(false);
         PrivateMessage pm = pmService.sendMessage("body", "title", JC_USER, user);
 
         assertFalse(pm.isRead());
@@ -163,6 +166,7 @@ public class TransactionalPrivateMessageServiceTest {
         verify(pmDao).saveOrUpdate(pm);
         verify(aclBuilder, times(2)).grant(GeneralPermission.READ);
         verify(propertyDao).getByName(PROPERTY_NAME);
+        verify(mailService, times(0)).sendReceivedPrivateMessageNotification(JC_USER,pm);
     }
 
     @Test

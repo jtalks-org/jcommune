@@ -42,6 +42,7 @@ public class JCUser extends User {
     private boolean enabled;
     private boolean autosubscribe;
     private boolean mentioningNotificationsEnabled;
+    private boolean sendPmNotification = true;
 
     public static final int MAX_SIGNATURE_SIZE = 255;
     public static final int MAX_LOCATION_SIZE = 30;
@@ -273,6 +274,18 @@ public class JCUser extends User {
      */
     public boolean isAnonymous() {
         return false;
+    }
+
+    /**
+     * Check for pm's obtaining notification
+     * @return
+     */
+    public boolean isSendPmNotification() {
+        return sendPmNotification;
+    }
+
+    public void setSendPmNotification(boolean sendPmNotification) {
+        this.sendPmNotification = sendPmNotification;
     }
 
     /**

@@ -18,6 +18,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
 import javax.servlet.ServletException;
@@ -59,6 +60,8 @@ public class SuccessfulAuthenticationHandler extends SavedRequestAwareAuthentica
         logger.info("JCUser logged in: " + user.getUsername());
         //apply language settings assuming CookieLocaleResolver usage
         String languageCode = user.getLanguage().getLanguageCode();
+        LocaleResolver localeResolver = new CookieLocaleResolver();
+        localeResolver.setLocale(request, response, user.getLanguage().getLocale());
         Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, languageCode);
         cookie.setPath("/");
         response.addCookie(cookie);

@@ -86,6 +86,7 @@ public class TransactionalUserServiceTest {
     private static final boolean AUTOSUBSCRIBE = true;
     private static final boolean MENTIONING_NOTIFICATIONS_ENABLED = true;
     private static final String LOCATION = "location";
+    private static final boolean SEND_PM_NOTIFICATION = true;
     private static final byte[] AVATAR = new byte[10];
     private static final long USER_ID = 999L;
     private static final long MAX_REGISTRATION_TIMEOUT = 1000L;
@@ -168,7 +169,7 @@ public class TransactionalUserServiceTest {
 
         JCUser editedUser = userService.saveEditedUserProfile(USER_ID, new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
                 PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE, MENTIONING_NOTIFICATIONS_ENABLED,
-                LOCATION));
+                LOCATION, SEND_PM_NOTIFICATION));
 
         verify(userDao).saveOrUpdate(user);
         assertUserUpdated(editedUser);
@@ -212,7 +213,7 @@ public class TransactionalUserServiceTest {
 
         userService.saveEditedUserProfile(USER_ID, new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
                 PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE, MENTIONING_NOTIFICATIONS_ENABLED,
-                LOCATION));
+                LOCATION, SEND_PM_NOTIFICATION));
     }
 
     @Test
@@ -227,7 +228,7 @@ public class TransactionalUserServiceTest {
         String newPassword = null;
         UserInfoContainer userInfo = new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
                 PASSWORD, newPassword, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE, MENTIONING_NOTIFICATIONS_ENABLED,
-                LOCATION);
+                LOCATION, SEND_PM_NOTIFICATION);
 
         JCUser editedUser = userService.saveEditedUserProfile(USER_ID, userInfo);
 
@@ -246,7 +247,7 @@ public class TransactionalUserServiceTest {
 
         JCUser editedUser = userService.saveEditedUserProfile(USER_ID, new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
                 PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, AUTOSUBSCRIBE, MENTIONING_NOTIFICATIONS_ENABLED,
-                LOCATION));
+                LOCATION, SEND_PM_NOTIFICATION));
 
         verify(userDao).saveOrUpdate(user);
         assertEquals(editedUser.getEmail(), EMAIL, "Email was changed");
