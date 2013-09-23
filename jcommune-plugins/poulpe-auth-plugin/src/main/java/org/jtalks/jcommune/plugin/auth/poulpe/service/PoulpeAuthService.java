@@ -245,8 +245,9 @@ public class PoulpeAuthService {
      */
     protected ClientResource sendRegistrationRequest(User user, Boolean dryRun) {
         ClientResource clientResource = createClientResource(regUrl, true);
-        clientResource.setChallengeResponse(ChallengeScheme.HTTP_BASIC, login, password);
-
+        if (login != null && !login.isEmpty() && password != null && !password.isEmpty()) {
+            clientResource.setChallengeResponse(ChallengeScheme.HTTP_BASIC, login, password);
+        }
         if (dryRun) {
             addHeaderAttribute(clientResource, DRY_RUN_PARAM, TRUE);
         }
@@ -269,7 +270,9 @@ public class PoulpeAuthService {
     protected ClientResource sendAuthRequest(String username, String passwordHash) {
         String url = authUrl + "?username=" + username + "&passwordHash=" + passwordHash;
         ClientResource clientResource = createClientResource(url, false);
-        clientResource.setChallengeResponse(ChallengeScheme.HTTP_BASIC, login, password);
+        if (login != null && !login.isEmpty() && password != null && !password.isEmpty()) {
+            clientResource.setChallengeResponse(ChallengeScheme.HTTP_BASIC, login, password);
+        }
         try {
             clientResource.get();
         } catch (ResourceException e) {

@@ -17,7 +17,9 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.hibernate.Session;
 import org.joda.time.DateTime;
+import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.dao.hibernate.GenericDao;
+import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dao.UserDao;
@@ -34,6 +36,7 @@ import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.plugins.PluginLoader;
+import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.Advised;
@@ -50,6 +53,8 @@ import org.springframework.validation.Validator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -83,6 +88,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
     private Validator validator;
     private MailService mailService;
     private ImageService avatarService;
+    private GroupDao groupDao;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalAuthenticator.class);
 
@@ -98,7 +104,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      * @param sessionStrategy       used in login logic to call onAuthentication hook
      *                              which stored this user to online uses list.
      */
-    public TransactionalAuthenticator(PluginLoader pluginLoader, UserDao dao,
+    public TransactionalAuthenticator(PluginLoader pluginLoader, UserDao dao, GroupDao groupDao,
                                       EncryptionService encryptionService,
                                       MailService mailService,
                                       ImageService avatarService,
@@ -108,6 +114,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
                                       SessionAuthenticationStrategy sessionStrategy,
                                       Validator validator) {
         super(dao);
+        this.groupDao = groupDao;
         this.pluginLoader = pluginLoader;
         this.encryptionService = encryptionService;
         this.mailService = mailService;
@@ -158,7 +165,14 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
                                                           HttpServletResponse response)
             throws UnexpectedErrorException, NoConnectionException {
         String passwordHash = encryptionService.encryptPassword(password);
-        Map<String, String> authInfo = authenticateByAvailablePlugin(username, passwordHash);
+        String encodedUsername;
+        try {
+            encodedUsername  = username == null ? null : URLEncoder.encode(username, "UTF-8").replace("+", "%20");
+        } catch (UnsupportedEncodingException e) {
+            LOGGER.error("Could not encode username '{}'", username);
+            throw new UnexpectedErrorException(e);
+        }
+        Map<String, String> authInfo = authenticateByAvailablePlugin(encodedUsername, passwordHash);
         if (authInfo.isEmpty() || !authInfo.containsKey("email") || !authInfo.containsKey("username")) {
             LOGGER.info("Could not authenticate user '{}' by plugin.", username);
             return false;
@@ -244,6 +258,14 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         return ipAddress;
     }
 
+    private void copyFieldsFromUserToJCUser(User commonUser, JCUser user) {
+        user.setRole(commonUser.getRole());
+        user.setAvatar(commonUser.getAvatar());
+        user.setBanReason(commonUser.getBanReason());
+        for (Group group : commonUser.getGroups()) {
+            user.addGroup(group);
+        }
+    }
 
     /**
      * Save (or update) user with specified details in internal database.
@@ -256,29 +278,42 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
     private JCUser saveUser(Map<String, String> authInfo, String passwordHash, boolean newUser) {
         JCUser user;
         if (newUser) {
-            user = getDao().getByUsername(authInfo.get("username"));
-            if (user != null) {
+            user = new JCUser(authInfo.get("username"), authInfo.get("email"), passwordHash);
+            user.setRegistrationDate(new DateTime());
+            user.setAutosubscribe(DEFAULT_AUTOSUBSCRIBE);
+            user.setSendPmNotification(DEFAULT_SEND_PM_NOTIFICATION);
+            User commonUser = this.getDao().getCommonUserByUsername(authInfo.get("username"));
+            if (commonUser != null) {
+                copyFieldsFromUserToJCUser(commonUser, user);
                 // user already exist in database (poulpe uses the same database),
-                // no need to create or update update him
-                return user;
+                // we need to delete common User and create JCUser
+                try {
+                    Session session = ((GenericDao) ((Advised) this.getDao()).getTargetSource().getTarget()).session();
+                    session.delete(commonUser);
+                    this.getDao().flush();
+                } catch (Exception e) {
+                    LOGGER.warn("Could not delete common user.");
+                }
             } else {
-                // user not exist in database (poulpe uses own database)
-                user = new JCUser(authInfo.get("username"), authInfo.get("email"), passwordHash);
-                user.setRegistrationDate(new DateTime());
+                user.setAvatar(avatarService.getDefaultImage());
             }
         } else {
             user = getDao().getByUsername(authInfo.get("username"));
             user.setPassword(passwordHash);
             user.setEmail(authInfo.get("email"));
         }
-        if (authInfo.containsKey("enabled")) {
-            user.setEnabled(Boolean.parseBoolean(authInfo.get("enabled")));
-        }
         if (authInfo.containsKey("firstName")) {
             user.setFirstName(authInfo.get("firstName"));
         }
         if (authInfo.containsKey("lastName")) {
             user.setLastName(authInfo.get("lastName"));
+        }
+        if (authInfo.containsKey("enabled")) {
+            user.setEnabled(Boolean.parseBoolean(authInfo.get("enabled")));
+        }
+        if (user.isEnabled() && user.getGroups().isEmpty()) {
+            Group group = groupDao.getGroupByName(AdministrationGroup.USER.getName());
+            user.addGroup(group);
         }
         getDao().saveOrUpdate(user);
         return user;

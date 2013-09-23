@@ -146,6 +146,9 @@
     <listener>
         <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
     </listener>
+    <listener>
+        <listener-class>org.jtalks.jcommune.web.listeners.AppPropertySetupListener</listener-class>
+    </listener>
 
     <error-page>
         <error-code>404</error-code>

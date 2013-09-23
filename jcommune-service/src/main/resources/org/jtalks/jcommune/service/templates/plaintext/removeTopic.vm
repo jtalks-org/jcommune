@@ -16,7 +16,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 *#
 ${messageSource.getMessage("greeting", $noArgs, $locale)} ${user.username}!
 
-"${topic.title}" ${messageSource.getMessage("removeTopic.content", $noArgs, $locale)}
+${messageSource.getMessage("removeTopic.topicHeader", $noArgs, $locale)} "${topic.title}" ${messageSource.getMessage("removeTopic.content", $noArgs, $locale)}
 
 ${messageSource.getMessage("wish", $noArgs, $locale)}
 
