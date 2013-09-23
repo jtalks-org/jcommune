@@ -106,7 +106,7 @@ public class NotificationService {
 
             //send notification to topic's subscribers
             Collection<JCUser> topicSubscribers = subscriptionService.getAllowedSubscribers(topic);
-            this.filterSubscribersByTopicStarter(topicSubscribers, topicStarter);
+            this.filterSubscribersByTopicStarter(topicSubscribers);
 
             for (JCUser subscriber : topicSubscribers) {
                 mailService.sendTopicMovedMail(subscriber, topicId);
@@ -115,16 +115,12 @@ public class NotificationService {
     }
 
     /**
-     * Filter collection - if topic starter is current user remove it from subscribers collection
+     * Filter collection - remove current user from subscribers
      * @param subscribers collection of subscribers
-     * @param topicStarter topic starter
      */
-    private void filterSubscribersByTopicStarter(Collection<JCUser> subscribers, JCUser topicStarter)
+    private void filterSubscribersByTopicStarter(Collection<JCUser> subscribers)
     {
-        JCUser currentUser = userService.getCurrentUser();
-        if(currentUser.getId() == topicStarter.getId()) {
-            subscribers.remove(topicStarter);
-        }
+        subscribers.remove(userService.getCurrentUser());
     }
 
     /**
@@ -135,7 +131,7 @@ public class NotificationService {
      */
     public void sendNotificationAboutRemovingTopic(Topic topic, Collection<JCUser> subscribers) {
         if (notificationsEnabledProperty.booleanValue()) {
-            this.filterSubscribersByTopicStarter(subscribers, topic.getTopicStarter());
+            this.filterSubscribersByTopicStarter(subscribers);
             for (JCUser subscriber : subscribers) {
                 mailService.sendRemovingTopicMail(subscriber, topic);
             }
