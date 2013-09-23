@@ -31,11 +31,11 @@
 <div class="container">
 <%-- Topic header --%>
 <div id="branch-header">
-  <h2>
+  <h1>
     <a class="invisible-link" href="${pageContext.request.contextPath}/topics/${topic.id}">
       <c:out value="${topic.title}"/>
     </a>
-  </h2>
+  </h1>
 
   <div id="right-block">
     <sec:authorize access="isAuthenticated()">

@@ -21,6 +21,7 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.UserService;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -89,15 +90,40 @@ public class NotificationService {
      */
     public void topicMoved(Topic topic, long topicId) {
         if (notificationsEnabledProperty.booleanValue()) {
+
             JCUser currentUser = userService.getCurrentUser();
             JCUser topicStarter = topic.getTopicStarter();
-            Set<JCUser> subscribers = new HashSet<JCUser>(topic.getBranch()
-                    .getSubscribers());
+
+            //send notification to branch subscribers
+            Set<JCUser> branchSubscribers = new HashSet<JCUser>(topic.getBranch().getSubscribers());
+
             // temp transient collection modification to ease the iteration
-            subscribers.add(topicStarter);
-            subscribers.remove(currentUser);
-            for (JCUser subscriber : subscribers) {
+            branchSubscribers.add(topicStarter);
+            branchSubscribers.remove(currentUser);
+            for (JCUser subscriber : branchSubscribers) {
                 mailService.sendTopicMovedMail(subscriber, topicId);
+            }
+
+            //send notification to topic's subscribers
+            Collection<JCUser> topicSubscribers = subscriptionService.getAllowedSubscribers(topic);
+            topicSubscribers.remove(topicStarter);
+            for (JCUser subscriber : topicSubscribers) {
+                mailService.sendTopicMovedMail(subscriber, topicId);
+            }
+        }
+    }
+
+    /**
+     * Send notification to subscribers about removing topic or code review.
+     *
+     * @param entity Current topic
+     * @param subscribers Collection of subscribers
+     */
+    public void sendNotificationAboutRemovingTopic(Topic entity, Collection<JCUser> subscribers) {
+        if (notificationsEnabledProperty.booleanValue()) {
+            subscribers.remove(entity.getTopicStarter());
+            for (JCUser subscriber : subscribers) {
+                mailService.sendRemovingTopicMail(subscriber, entity);
             }
         }
     }

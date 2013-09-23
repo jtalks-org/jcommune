@@ -32,6 +32,7 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -44,8 +45,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.ModelAndViewAssert.*;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.*;
 
 /**
  * @author Teterin Alexandre
@@ -125,22 +125,14 @@ public class TopicControllerTest {
     @Test
     public void showTopicPageShouldShowListOfPostsWithUpdatedInfoAboutLastReadPosts() throws NotFoundException {
         String page = "1";
-        Topic topic = new Topic(null, null);
-        topic.addPost(new Post(user, "content"));
-        branch.addTopic(topic);
-        PageRequest pageable = new PageRequest("1", 15);
-        Page<Post> postsPage = new PageImpl<Post>(Collections.<Post>emptyList(),
-                pageable, 30L);
+        Topic topic = createTopic();
+        prepareViewTopicMocks(topic, page);
 
-        //
-        when(userService.getCurrentUser()).thenReturn(user);
-        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
-        when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
-        when(postService.getPosts(topic, page)).thenReturn(postsPage);
+        WebRequest request = mock(WebRequest.class);
 
-        ModelAndView mav = controller.showTopicPage(TOPIC_ID, page);
+        ModelAndView mav = controller.showTopicPage(request, TOPIC_ID, page);
 
-        verify(topicFetchService).checkViewTopicPermission(branch.getId());
+        verify(topicFetchService).checkViewTopicPermission(topic.getBranch().getId());
         verify(lastReadPostService).markTopicPageAsRead(topic, Integer.valueOf(page));
         //
         assertViewName(mav, "topic/postList");
@@ -149,6 +141,34 @@ public class TopicControllerTest {
         Topic actualTopic = assertAndReturnModelAttributeOfType(mav, "topic", Topic.class);
         assertEquals(actualTopic, topic);
         assertModelAttributeAvailable(mav, "breadcrumbList");
+    }
+
+    @Test
+    public void showTopicPageShouldReturnNullIfIfModifiedSinceOlderThenLastUpdate() throws NotFoundException {
+        String page = "1";
+        Topic topic = createTopic();
+        prepareViewTopicMocks(topic, page);
+
+        WebRequest request = mock(WebRequest.class);
+        when(request.checkNotModified(topic.getModificationDate().getMillis())).thenReturn(true);
+
+        ModelAndView mav = controller.showTopicPage(request, TOPIC_ID, page);
+
+        assertNull(mav);
+    }
+
+    @Test
+    public void showTopicPageShouldReturnNotNullDataIfIfModifiedSinceOlderThenLastUpdate() throws NotFoundException {
+        String page = "1";
+        Topic topic = createTopic();
+        prepareViewTopicMocks(topic, page);
+
+        WebRequest request = mock(WebRequest.class);
+        when(request.checkNotModified(topic.getModificationDate().getMillis())).thenReturn(false);
+
+        ModelAndView mav = controller.showTopicPage(request, TOPIC_ID, page);
+
+        assertNotNull(mav);
     }
 
     @Test
@@ -362,5 +382,15 @@ public class TopicControllerTest {
         topic.setPoll(poll);
         dto.setTopic(topic);
         return dto;
+    }
+
+
+    private void prepareViewTopicMocks(Topic topic, String page) throws NotFoundException {
+        PageRequest pageable = new PageRequest(page, 15);
+        Page<Post> postsPage = new PageImpl<>(topic.getPosts(), pageable, 30L);
+        when(userService.getCurrentUser()).thenReturn(topic.getTopicStarter());
+        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
+        when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
+        when(postService.getPosts(topic, page)).thenReturn(postsPage);
     }
 }

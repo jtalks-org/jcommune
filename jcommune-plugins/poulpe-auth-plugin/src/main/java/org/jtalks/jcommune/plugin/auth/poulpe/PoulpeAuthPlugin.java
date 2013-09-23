@@ -15,8 +15,9 @@
 
 package org.jtalks.jcommune.plugin.auth.poulpe;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.jtalks.jcommune.model.dto.UserDto;
-import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
+import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.model.plugins.SimpleAuthenticationPlugin;
 import org.jtalks.jcommune.model.plugins.StatefullPlugin;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
@@ -28,11 +29,12 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
-import static org.jtalks.jcommune.model.entity.PluginConfigurationProperty.Type.STRING;
+import static org.jtalks.jcommune.model.entity.PluginProperty.Type.STRING;
 
 /**
  * Provides user registration and authentication services via Poulpe.
@@ -43,23 +45,48 @@ public class PoulpeAuthPlugin extends StatefullPlugin
         implements SimpleAuthenticationPlugin {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PoulpeAuthPlugin.class);
+    private static final String URL_PROPERTY = "Url";
+    private static final String LOGIN_PROPERTY = "Login";
+    private static final String PASSWORD_PROPERTY = "Password";
+    private static final String URL_PATTERN = "(((http|https)://)?" +
+            "([\\w\\-_]+(\\.[\\w\\-_]+)+|localhost)+([\\w\\-\\.,@?^=%&amp;:/~\\+#]*[\\w\\-\\@?^=%&amp;/~\\+#])?)";
     private PoulpeAuthService service;
-    List<PluginConfigurationProperty> pluginProperties;
+    private List<PluginProperty> pluginProperties;
 
+    /** {@inheritDoc} */
     @Override
-    public Map<String, String> registerUser(UserDto userDto)
-            throws NoConnectionException, UnexpectedErrorException {
+    public Map<String, String> registerUser(UserDto userDto) throws NoConnectionException, UnexpectedErrorException {
+        return registerOrValidate(userDto, false);
+    }
+
+    /**
+     * Registration or validation do not differ, whether we validate or register depends on parameter.
+     * @param userDto information about the user
+     * @param validateOnly 'true' if user information should be only validate and 'false' otherwise
+     * @return validation errors as pairs field - error message
+     * @throws UnexpectedErrorException if external service returns unexpected result
+     * @throws NoConnectionException    if we can't connect for any reason to external authentication service
+     */
+    private Map<String, String> registerOrValidate(UserDto userDto, boolean validateOnly)
+            throws UnexpectedErrorException, NoConnectionException {
         try {
-            return service.registerUser(userDto);
+            return service.registerUser(userDto, validateOnly);
         } catch (IOException | JAXBException e) {
             LOGGER.error("Parse response error", e);
             throw new UnexpectedErrorException(e);
         } catch (NoConnectionException e) {
-            LOGGER.error("Can't connect to Poulpe", e);
+            LOGGER.error("Can't connect to Poulpe: {}", e.getMessage());
             throw e;
         }
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, String> validateUser(UserDto userDto) throws NoConnectionException, UnexpectedErrorException {
+        return registerOrValidate(userDto, true);
+    }
+
+    /** {@inheritDoc} */
     @Override
     public Map<String, String> authenticate(String login, String password)
             throws UnexpectedErrorException, NoConnectionException {
@@ -69,7 +96,7 @@ public class PoulpeAuthPlugin extends StatefullPlugin
             LOGGER.error("Parse response error", e);
             throw new UnexpectedErrorException(e);
         } catch (NoConnectionException e) {
-            LOGGER.error("Can't connect to Poulpe", e);
+            LOGGER.error("Can't connect to Poulpe: {}", e.getMessage());
             throw e;
         }
     }
@@ -85,46 +112,51 @@ public class PoulpeAuthPlugin extends StatefullPlugin
     }
 
     @Override
-    public List<PluginConfigurationProperty> getConfiguration() {
+    public List<PluginProperty> getConfiguration() {
         return pluginProperties;
     }
 
     @Override
-    public List<PluginConfigurationProperty> getDefaultConfiguration() {
-        PluginConfigurationProperty url = new PluginConfigurationProperty("URL", STRING, "http://localhost:8080");
-        url.setName("Url");
-        PluginConfigurationProperty login = new PluginConfigurationProperty("LOGIN", STRING, "user");
-        login.setName("Login");
-        PluginConfigurationProperty password = new PluginConfigurationProperty("PASSWORD", STRING, "1234");
-        password.setName("Password");
+    public List<PluginProperty> getDefaultConfiguration() {
+        PluginProperty url = new PluginProperty(URL_PROPERTY, STRING, "http://localhost:8080");
+        PluginProperty login = new PluginProperty(LOGIN_PROPERTY, STRING, "user");
+        PluginProperty password = new PluginProperty(PASSWORD_PROPERTY, STRING, "1234");
         return Arrays.asList(url, login, password);
     }
 
     @Override
-    protected Map<PluginConfigurationProperty, String> applyConfiguration(List<PluginConfigurationProperty> properties) {
+    protected Map<PluginProperty, String> applyConfiguration(List<PluginProperty> properties) {
 
         String url = null;
         String login = null;
         String password = null;
-        for (PluginConfigurationProperty property : properties) {
-            if ("Url".equalsIgnoreCase(property.getName())) {
-                url = property.getValue();
-            } else if ("Login".equalsIgnoreCase(property.getName())) {
-                login = property.getValue();
-            } else if ("Password".equalsIgnoreCase(property.getName())) {
+        for (PluginProperty property : properties) {
+            if (URL_PROPERTY.equalsIgnoreCase(property.getName())) {
+                url = property.getValue() == null ? null : property.getValue().trim();
+            } else if (LOGIN_PROPERTY.equalsIgnoreCase(property.getName())) {
+                login = property.getValue() == null ? null : property.getValue().trim();
+            } else if (PASSWORD_PROPERTY.equalsIgnoreCase(property.getName())) {
                 password = property.getValue();
             }
         }
-        if (url != null && login != null && password != null) {
-            service = new PoulpeAuthService(url, login, password);
-            pluginProperties = properties;
-        } else {
-            throw new RuntimeException();
+        if (url == null || url.isEmpty()) {
+            // this should be returned as a map, but this mechanism should be implemented in the plugin API first
+            throw new RuntimeException("Can't apply configuration: Url should not be null.");
+        } else if(!validateUrl(url)) {
+            throw new RuntimeException("Can't apply configuration: Incorrect format for Url value.");
         }
-        return Collections.EMPTY_MAP;
+        service = new PoulpeAuthService(url, login, password);
+        pluginProperties = properties;
+        return new HashMap<>();
     }
 
-    public void setPluginService(PoulpeAuthService service) {
+    private boolean validateUrl(String url) {
+        Pattern pattern = Pattern.compile(URL_PATTERN, Pattern.DOTALL);
+        return pattern.matcher(url).matches();
+    }
+
+    @VisibleForTesting
+    void setPluginService(PoulpeAuthService service) {
         this.service = service;
     }
 }

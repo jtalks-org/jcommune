@@ -17,8 +17,11 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.common.model.entity.ComponentType;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
+import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.ComponentService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.ImageService;
+import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.util.ImageControllerUtils;
@@ -63,6 +66,9 @@ public class AdministrationControllerTest {
     @Mock
     ImageService iconImageService;
 
+    @Mock
+    BranchService branchService;
+
     //
     private AdministrationController administrationController;
 
@@ -73,7 +79,7 @@ public class AdministrationControllerTest {
         Component component = new Component("Forum", "Cool Forum", ComponentType.FORUM);
         component.setId(42);
 
-        administrationController = new AdministrationController(componentService, messageSource);
+        administrationController = new AdministrationController(componentService, messageSource, branchService);
     }
 
     @Test
@@ -132,5 +138,26 @@ public class AdministrationControllerTest {
         assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
     }
 
+    @Test
+    public void validBranchInformationShouldProduceSuccessResponse() throws NotFoundException {
+        Component component = new Component();
+        component.setId(1L);
+        when(componentService.getComponentOfForum()).thenReturn(component);
 
+        BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(new Object(), "");
+        BranchDto branchDto = new BranchDto();
+        JsonResponse response = administrationController.setBranchInformation(branchDto, bindingResult, Locale.UK);
+
+        assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
+    }
+
+    @Test
+    public void invalidBranchInformationShouldProduceFailResponse() throws NotFoundException {
+        BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(new Object(), "");
+        bindingResult.addError(new ObjectError("name", "message"));
+        BranchDto branchDto = new BranchDto();
+        JsonResponse response = administrationController.setBranchInformation(branchDto, bindingResult, Locale.UK);
+
+        assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
+    }
 }

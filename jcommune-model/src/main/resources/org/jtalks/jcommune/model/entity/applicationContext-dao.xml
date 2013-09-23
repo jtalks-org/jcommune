@@ -35,6 +35,8 @@
                  pointcut="execution(* org.jtalks.jcommune.model.dao.ValidatorDao.* (*))"/>
   </aop:config>
 
+  <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
+
   <!--Declaration of DAO beans -->
   <bean id="userDao" parent="genericDao"
         class="org.jtalks.jcommune.model.dao.hibernate.UserHibernateDao"/>
@@ -65,8 +67,7 @@
     <constructor-arg index="0" ref="sessionFactory"/>
   </bean>
 
-  <bean id="validatorDAO"
-        class="org.jtalks.jcommune.model.dao.hibernate.ValidatorHibernateDao">
+  <bean id="validatorDao" class="org.jtalks.jcommune.model.dao.hibernate.ValidatorHibernateDao">
     <constructor-arg ref="sessionFactory"/>
   </bean>
 
@@ -118,7 +119,7 @@
     <constructor-arg name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
-  <bean id="pluginConfigurationDao" class="org.jtalks.jcommune.model.dao.hibernate.PluginHibernateConfigurationDao">
+  <bean id="pluginConfigurationDao" class="org.jtalks.jcommune.model.dao.hibernate.PluginConfigurationHibernateDao">
     <constructor-arg name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
@@ -204,7 +205,7 @@
         <value>/org/jtalks/jcommune/model/entity/Banner.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/ExternalLink.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/PluginConfiguration.hbm.xml</value>
-        <value>/org/jtalks/jcommune/model/entity/PluginConfigurationProperty.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/PluginProperty.hbm.xml</value>
       </list>
     </property>
     <property name="hibernateProperties">

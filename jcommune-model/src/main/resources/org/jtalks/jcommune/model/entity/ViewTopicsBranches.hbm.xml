@@ -28,4 +28,8 @@
         <property name="granting" type="boolean" column="GRANTING"/>
     </class>
 
+    <query name="getForbiddenBranchesIds">
+        <![CDATA[SELECT v.branchId FROM ViewTopicsBranches v WHERE v.granting=0 AND v.sid IN(:sid)]]>
+    </query>
+
 </hibernate-mapping>

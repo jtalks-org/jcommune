@@ -39,9 +39,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import static org.mockito.Matchers.anyLong;
@@ -348,6 +346,7 @@ public class TransactionalTopicModificationServiceTest {
 
     @Test
     public void testDeleteTopic() throws NotFoundException {
+        Collection<JCUser> subscribers = new ArrayList<JCUser>();
         Topic topic = new Topic(user, "title");
         topic.setId(TOPIC_ID);
         Post firstPost = new Post(user, ANSWER_BODY);
@@ -365,6 +364,8 @@ public class TransactionalTopicModificationServiceTest {
         verify(branchDao).saveOrUpdate(branch);
         verify(securityService).deleteFromAcl(Topic.class, TOPIC_ID);
         verify(notificationService).subscribedEntityChanged(branch);
+        verify(notificationService).sendNotificationAboutRemovingTopic(topic, subscribers);
+        verify(subscriptionService).getAllowedSubscribers(topic);
     }
 
 

@@ -133,6 +133,8 @@ insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audi
   select BRANCH_ID, 18, @banned_group_sid_id, @LEAVE_COMMENTS_IN_CODE_REVIEW_MASK, 0, 0, 0 from BRANCHES;
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
   select BRANCH_ID, 19, @banned_group_sid_id, @CREATE_CODE_REVIEW_MASK, 0, 0, 0 from BRANCHES;
+insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+  select BRANCH_ID, 20, @banned_group_sid_id, @VIEW_TOPICS_MASK, 0, 0, 0 from BRANCHES;
 
 -- personal permissions
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)

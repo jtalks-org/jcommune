@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.model.plugins;
 
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
-import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
+import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,8 +68,8 @@ public abstract class StatefullPlugin implements Plugin {
      * @param properties configuration for plugin to apply
      * @return configuration errors mapped for PCP given, empty map means OK
      */
-    protected abstract Map<PluginConfigurationProperty, String> applyConfiguration(
-            List<PluginConfigurationProperty> properties);
+    protected abstract Map<PluginProperty, String> applyConfiguration(
+            List<PluginProperty> properties);
 
     /**
      * {@inheritDoc}

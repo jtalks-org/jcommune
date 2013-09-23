@@ -15,8 +15,11 @@
 
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.common.model.dao.GroupDao;
+import org.jtalks.common.model.entity.User;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.plugins.Plugin;
@@ -52,8 +55,7 @@ import java.util.Map;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 /**
  * @author Andrey Pogorelov
@@ -68,6 +70,8 @@ public class TransactionalAuthenticatorTest {
     private EncryptionService encryptionService;
     @Mock
     private UserDao userDao;
+    @Mock
+    private GroupDao groupDao;
     @Mock
     private AuthenticationManager authenticationManager;
     @Mock
@@ -96,9 +100,9 @@ public class TransactionalAuthenticatorTest {
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
-        authenticator = new TransactionalAuthenticator(pluginLoader, userDao,
-                encryptionService, authenticationManager,
-                securityFacade, rememberMeServices, sessionStrategy);
+        authenticator = new TransactionalAuthenticator(pluginLoader, userDao, groupDao,
+                encryptionService, mailService, avatarService, authenticationManager,
+                securityFacade, rememberMeServices, sessionStrategy, validator);
     }
 
     private JCUser prepareOldUser(String username) {
@@ -118,7 +122,8 @@ public class TransactionalAuthenticatorTest {
 
     private void preparePlugin(String username, String passwordHash, Map<String, String> authInfo)
             throws UnexpectedErrorException, NoConnectionException {
-        when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Arrays.<Plugin>asList(plugin));
+        Class cl = SimpleAuthenticationPlugin.class;
+        when(pluginLoader.getPluginByClassName(cl)).thenReturn(plugin);
         when(plugin.authenticate(username, passwordHash)).thenReturn(authInfo);
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
     }
@@ -207,7 +212,7 @@ public class TransactionalAuthenticatorTest {
         boolean result = authenticator.authenticate(username, password, true, httpRequest, httpResponse);
 
         assertTrue(result, "Authentication not existing user with correct credentials should be successful " +
-                        "if case Plugin and JCommune use the same database.");
+                "if case Plugin and JCommune use the same database.");
     }
 
     @Test
@@ -259,7 +264,8 @@ public class TransactionalAuthenticatorTest {
         when(encryptionService.encryptPassword(password)).thenReturn(passwordHash);
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
         when(userDao.getByUsername(username)).thenReturn(null);
-        when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Arrays.<Plugin>asList(plugin));
+        Class cl = SimpleAuthenticationPlugin.class;
+        when(pluginLoader.getPluginByClassName(cl)).thenReturn(plugin);
         when(plugin.authenticate(username, passwordHash)).thenThrow(new NoConnectionException());
 
         authenticator.authenticate(username, password, true, httpRequest, httpResponse);
@@ -273,7 +279,8 @@ public class TransactionalAuthenticatorTest {
 
         when(encryptionService.encryptPassword(password)).thenReturn(passwordHash);
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
-        when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Arrays.<Plugin>asList(plugin));
+        Class cl = SimpleAuthenticationPlugin.class;
+        when(pluginLoader.getPluginByClassName(cl)).thenReturn(plugin);
         when(plugin.authenticate(username, passwordHash)).thenThrow(new UnexpectedErrorException());
 
         authenticator.authenticate(username, password, true, httpRequest, httpResponse);
@@ -282,13 +289,15 @@ public class TransactionalAuthenticatorTest {
     @Test
     public void registerUserWithCorrectDetailsShouldBeSuccessful()
             throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        UserDto userDto = createUserDto("username", "password", "email@email.em");
+        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
+        User commonUser = new User("username", "email@email.em", "password", null);
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
-        when(plugin.registerUser(userDto)).thenReturn(Collections.EMPTY_MAP);
+        when(plugin.registerUser(userDto.getUserDto())).thenReturn(Collections.EMPTY_MAP);
         when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Arrays.asList((Plugin) plugin));
         when(bindingResult.hasErrors()).thenReturn(false);
+        when(userDao.getCommonUserByUsername("username")).thenReturn(commonUser);
 
-        authenticator.register(userDto, bindingResult);
+        authenticator.register(userDto);
 
         verify(bindingResult, never()).rejectValue(anyString(), anyString(), anyString());
     }
@@ -296,57 +305,63 @@ public class TransactionalAuthenticatorTest {
     @Test
     public void registerUserWithIncorrectDetailsShouldFail()
             throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        UserDto userDto = createUserDto("", "", "");
+        RegisterUserDto userDto = createRegisterUserDto("", "", "");
+        Map<String, String> jcErrors = new HashMap<>();
+        jcErrors.put("captcha", "Invalid captcha");
+
         Map<String, String> errors = new HashMap<>();
-        errors.put("email", "Invalid email length");
-        errors.put("user", "Invalid username length");
-        errors.put("password", "Invalid password length");
+        errors.put("userDto.email", "Invalid email length");
+        errors.put("userDto.username", "Invalid username length");
+        errors.put("userDto.password", "Invalid password length");
 
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
-        when(plugin.registerUser(userDto)).thenReturn(errors);
-        when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Arrays.asList((Plugin) plugin));
+        when(plugin.registerUser(userDto.getUserDto())).thenReturn(errors);
+        Class cl = SimpleAuthenticationPlugin.class;
+        when(pluginLoader.getPluginByClassName(cl)).thenReturn(plugin);
 
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        authenticator.register(userDto, bindingResult);
+        BindingResult result = authenticator.register(userDto);
 
-        verify(bindingResult, times(3)).rejectValue(anyString(), anyString(), anyString());
+        assertEquals(result.getFieldErrors().size(), 3);
     }
 
     @Test(expectedExceptions = NoConnectionException.class)
     public void registerUserShouldFailIfPluginThrowsNoConnectionException()
             throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        UserDto userDto = createUserDto("username", "password", "email@email.em");
+        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
-        when(plugin.registerUser(userDto))
+        when(plugin.registerUser(userDto.getUserDto()))
                 .thenThrow(new NoConnectionException());
-        when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Arrays.asList((Plugin) plugin));
+        Class cl = SimpleAuthenticationPlugin.class;
+        when(pluginLoader.getPluginByClassName(cl)).thenReturn(plugin);
 
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        authenticator.register(userDto, bindingResult);
+        authenticator.register(userDto);
     }
 
     @Test(expectedExceptions = UnexpectedErrorException.class)
     public void registerUserShouldFailIfPluginThrowsUnexpectedErrorException()
             throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        UserDto userDto = createUserDto("username", "password", "email@email.em");
+        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
-        when(plugin.registerUser(userDto))
+        when(plugin.registerUser(userDto.getUserDto()))
                 .thenThrow(new UnexpectedErrorException());
-        when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Arrays.asList((Plugin) plugin));
+        Class cl = SimpleAuthenticationPlugin.class;
+        when(pluginLoader.getPluginByClassName(cl)).thenReturn(plugin);
 
-        authenticator.register(userDto, bindingResult);
+        authenticator.register(userDto);
     }
 
     @Test
     public void defaultRegistrationShouldFailIfValidationErrorsOccurred()
             throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        UserDto userDto = createUserDto("username", "password", "email@email.em");
+        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
         when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Collections.EMPTY_LIST);
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        authenticator.register(userDto, bindingResult);
+        authenticator.register(userDto);
 
         verify(bindingResult, never()).rejectValue(anyString(), anyString(), anyString());
     }
@@ -354,20 +369,22 @@ public class TransactionalAuthenticatorTest {
     @Test
     public void defaultRegistrationWithCorrectDetailsShouldBeSuccessful()
             throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        UserDto userDto = createUserDto("username", "password", "email@email.em");
+        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
         when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Collections.EMPTY_LIST);
         when(bindingResult.hasErrors()).thenReturn(false);
 
-        authenticator.register(userDto, bindingResult);
+        authenticator.register(userDto);
 
         verify(bindingResult, never()).rejectValue(anyString(), anyString(), anyString());
     }
 
-    private UserDto createUserDto(String username, String password, String email) {
+    private RegisterUserDto createRegisterUserDto(String username, String password, String email) {
+        RegisterUserDto registerUserDto = new RegisterUserDto();
         UserDto userDto = new UserDto();
         userDto.setUsername(username);
         userDto.setEmail(email);
         userDto.setPassword(password);
-        return userDto;
+        registerUserDto.setUserDto(userDto);
+        return registerUserDto;
     }
 }

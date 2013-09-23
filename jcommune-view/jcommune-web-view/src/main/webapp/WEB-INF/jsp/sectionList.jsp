@@ -98,11 +98,17 @@
                 <%--</sec:authorize>--%>
               <td class="title-col">
                 <h3 class="h-nostyle">
-                  <a class="branch-title" href="${pageContext.request.contextPath}/branches/${branch.id}">
+                  <a class="branch-title"
+                    <c:if test="${sessionScope.adminMode == true}">
+                      href="#" id='branchLabel${branch.id}'
+                    </c:if>
+                    <c:if test="${sessionScope.adminMode != true}">
+                      href="${pageContext.request.contextPath}/branches/${branch.id}"
+                    </c:if> >
                     <c:out value="${branch.name}"/>
                   </a>
                 </h3>
-                <span class="forum-sections-branch-description-container">
+                <span class="forum-sections-branch-description-container" id='branchDescriptionLabel${branch.id}'>
                   <c:out value="${branch.description}"/>
                 </span>
                 <div class="forum-sections-moderators-container">

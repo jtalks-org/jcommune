@@ -322,13 +322,13 @@ public final class PersistedObjectsFactory {
     }
 
     public static PluginConfiguration getDefaultPluginConfiguration() {
-        PluginConfiguration configuration = new PluginConfiguration("Default name", true, Collections.<PluginConfigurationProperty> emptyList());
+        PluginConfiguration configuration = new PluginConfiguration("Default name", true, Collections.<PluginProperty> emptyList());
         persist(configuration);
         return configuration;
     }
 
-    public static PluginConfigurationProperty getDefaultPluginConfigurationProperty() {
-        PluginConfigurationProperty property = new PluginConfigurationProperty("Property", PluginConfigurationProperty.Type.BOOLEAN, "true");
+    public static PluginProperty getDefaultPluginConfigurationProperty() {
+        PluginProperty property = new PluginProperty("Property", PluginProperty.Type.BOOLEAN, "true");
         PluginConfiguration configuration = new PluginConfiguration("Default name", true, Arrays.asList(property));
         property.setPluginConfiguration(configuration);
         persist(configuration);

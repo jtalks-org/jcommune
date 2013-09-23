@@ -36,11 +36,11 @@
 <div class="container">
 <%-- Branch header --%>
 <div id="branch-header">
-  <h2>
+  <h1>
     <a class="invisible-link" href="${pageContext.request.contextPath}/branches/${branch.id}">
       <c:out value="${branch.name}"/>
     </a>
-  </h2>
+  </h1>
 
   <div id="right-block">
     <sec:authorize access="isAuthenticated()">

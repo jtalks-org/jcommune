@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.bb2htmlprocessors;
 
+import org.junit.BeforeClass;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
@@ -29,104 +30,60 @@ public class BBForeignLinksPostprocessorTest {
     private BBForeignLinksPostprocessor service;
     @Mock
     private HttpServletRequest request;
-    
+    private String prefix = "/out?=";
+    private String serverName = "server_name";
+
     @BeforeMethod
     public void setUp() {
         service = spy(new BBForeignLinksPostprocessor());
+        when(service.getHrefPrefix()).thenReturn(prefix);
         MockitoAnnotations.initMocks(this);
-        doReturn(request).when(service).getServletRequest();  
+        doReturn(request).when(service).getServletRequest();
+        when(request.getServerName()).thenReturn(serverName);
     }
     
     @Test(dataProvider = "preProcessingCommonLinks")
-    public void postprocessorShouldCorrectlyAddNofollowAttribute(String incomingText, String outcomingText) {
-        when(request.getServerName()).thenReturn("javatalks.ru");
+    public void postprocessorShouldCorrectlyAddPrefix(String incomingText, String outcomingText) {
         assertEquals(service.postProcess(incomingText), outcomingText);
     }
 
     @Test(dataProvider = "preProcessingSubDomainLinks")
     public void postprocessorShouldCorrectlyRecognizeSubDomains(String incomingText, String outcomingText) {
-        when(request.getServerName()).thenReturn("blog.javatalks.ru");
         assertEquals(service.postProcess(incomingText), outcomingText);
     }
 
-    @Test(dataProvider = "preProcessingFromLocalhost")
-    public void postprocessorShouldCorrectlyRecognizeLocalhost(String incomingText, String outcomingText) {
-        when(request.getServerName()).thenReturn("localhost");
+    @Test(dataProvider = "preProcessingLocalLinks")
+    public void postprocessorShouldCorrectlyRecognizeLocalLinks(String incomingText, String outcomingText) {
         assertEquals(service.postProcess(incomingText), outcomingText);
     }
 
     @DataProvider
     public Object[][] preProcessingCommonLinks() {
         return new Object[][]{  // {"incoming link (before)", "outcoming link (after)"}
-            {"<a href=\"http://javatalks.ru/common\"></a>", "<a href=\"http://javatalks.ru/common\"></a>"},
-            {"<a href=\"javatalks.ru\"></a>", "<a href=\"javatalks.ru\"></a>"},
-            {"<a href=\"www.javatalks.ru\"></a>", "<a href=\"www.javatalks.ru\"></a>"},
-            {"<a href=\"blog.javatalks.ru\"></a>", "<a href=\"blog.javatalks.ru\"></a>"},
-            {"<a href=\"forum.javatalks.ru\"></a>", "<a href=\"forum.javatalks.ru\"></a>"},
-            {"<a width=\"500\" href=\"http://javatalks.ru\" style=\"color:red;\"></a>",
-                    "<a width=\"500\" href=\"http://javatalks.ru\" style=\"color:red;\"></a>"},
-            {"<a href=\"http://javatalks.ru/common\"></a>", "<a href=\"http://javatalks.ru/common\"></a>"},
+            {"<a href=\"http://javatalks.ru/common\"></a>", "<a href=\""+ prefix +"http://javatalks.ru/common\"></a>"},
+            {"<a href=\"https://forum.javatalks.ru\"></a>", "<a href=\""+ prefix +"https://forum.javatalks.ru\"></a>"},
+            {"<a href=\"http://javatalks.ru/common\"></a>", "<a href=\""+ prefix +"http://javatalks.ru/common\"></a>"}
 
-            {"<a href=\"роспил.рф\"></a>", "<a href=\"роспил.рф\" rel=\"nofollow\"></a>"},
-            {"<a href=\"hello\"></a> <a href=\"hello.ru\"></a>",
-                    "<a href=\"hello\" rel=\"nofollow\"></a> <a href=\"hello.ru\" rel=\"nofollow\"></a>"},
-            {"<a href=\"example.ru\"></a>", "<a href=\"example.ru\" rel=\"nofollow\"></a>"},
-            {"<a width=\"500\" href=\"example1.ru\" style=\"color:red;\"></a>",
-                    "<a width=\"500\" href=\"example1.ru\" rel=\"nofollow\" style=\"color:red;\"></a>"},
-            {"<a href=\"example1.ru:8181\"></a>", "<a href=\"example1.ru:8181\" rel=\"nofollow\"></a>"},
-            {"<a href=\"http://example1.ru\"></a>", "<a href=\"http://example1.ru\" rel=\"nofollow\"></a>"},
-            {"<a href=\"http://example1.ru:80\"></a>", "<a href=\"http://example1.ru:80\" rel=\"nofollow\"></a>"},
-            {"<a href=\"http://example1.ru/com\"></a>", "<a href=\"http://example1.ru/com\" rel=\"nofollow\"></a>"},
-            {"<a href=\"http://example1.ru:80/c\"></a>", "<a href=\"http://example1.ru:80/c\" rel=\"nofollow\"></a>"},
-            {"<a href=\"www.example.ru/com\"></a>", "<a href=\"www.example.ru/com\" rel=\"nofollow\"></a>"},
-            {"<a href=\"http://www.example.ru/c5\"></a>", "<a href=\"http://www.example.ru/c5\" rel=\"nofollow\"></a>"},
-            {"<a href=\"http://www.example.ru/c\"></a>", "<a href=\"http://www.example.ru/c\" rel=\"nofollow\"></a>"},
-            {"<a href=\"http://spk-base.splunk.com/ans/77101/ext-link-val\"></a>",
-                "<a href=\"http://spk-base.splunk.com/ans/77101/ext-link-val\" rel=\"nofollow\"></a>"},
-            {"<a href=\"http://tr.goo.ru/?hl=ru&tab=wT#ru/en/%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%20%D" +
-                "0%B2%D0%BD%D0%B5%D1%88%D0%BD%D0%B5%D0%B9%20%D1%81%D1%81%D1%8B%D0%BB%D0%BA%D0%B8\"></a>",
-                "<a href=\"http://tr.goo.ru/?hl=ru&tab=wT#ru/en/%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%20%D0%B2%D0%BD%D" +
-                        "0%B5%D1%88%D0%BD%D0%B5%D0%B9%20%D1%81%D1%81%D1%8B%D0%BB%D0%BA%D0%B8\" rel=\"nofollow\"></a>"},
-
-            {"<a href=\"http://localhost:8080/topics/1\"></a>",
-                        "<a href=\"http://localhost:8080/topics/1\" rel=\"nofollow\"></a>"},
         };
     }
 
     @DataProvider
     public Object[][] preProcessingSubDomainLinks() {
         return new Object[][]{  // {"incoming link (before)", "outcoming link (after)"}
-                {"<a href=\"blog.javatalks.ru\"></a>", "<a href=\"blog.javatalks.ru\"></a>"},
-                {"<a href=\"http://blog.javatalks.ru\"></a>", "<a href=\"http://blog.javatalks.ru\"></a>"},
-                {"<a href=\"www.blog.javatalks.ru\"></a>", "<a href=\"www.blog.javatalks.ru\"></a>"},
-                {"<a href=\"http://www.blog.javatalks.ru\"></a>", "<a href=\"http://www.blog.javatalks.ru\"></a>"},
-                {"<a href=\"http://com.blog.javatalks.ru\"></a>", "<a href=\"http://com.blog.javatalks.ru\"></a>"},
-
-                {"<a href=\"http://localhost:5000/topics/1\"></a>",
-                        "<a href=\"http://localhost:5000/topics/1\" rel=\"nofollow\"></a>"},
-                {"<a href=\"http://blog.javatalks\"></a>", "<a href=\"http://blog.javatalks\" rel=\"nofollow\"></a>"},
-
-                {"<a href=\"http://javatalks.ru/common\"></a>",
-                        "<a href=\"http://javatalks.ru/common\" rel=\"nofollow\"></a>"},
-                {"<a href=\"javatalks.ru\"></a>", "<a href=\"javatalks.ru\" rel=\"nofollow\"></a>"},
-                {"<a href=\"www.javatalks.ru\"></a>", "<a href=\"www.javatalks.ru\" rel=\"nofollow\"></a>"},
-                {"<a href=\"forum.javatalks.ru\"></a>", "<a href=\"forum.javatalks.ru\" rel=\"nofollow\"></a>"},
-                {"<a href=\"http://javatalks.ru\"></a>", "<a href=\"http://javatalks.ru\" rel=\"nofollow\"></a>"},
-                {"<a href=\"http://javatalks.ru/common\"></a>",
-                        "<a href=\"http://javatalks.ru/common\" rel=\"nofollow\"></a>"}
+                {"<a href=\"http://blog.javatalks.ru\"></a>", "<a href=\""+ prefix +"http://blog.javatalks.ru\"></a>"},
+                {"<a href=\"http://www.blog.javatalks.ru\"></a>",
+                        "<a href=\""+ prefix +"http://www.blog.javatalks.ru\"></a>"},
+                {"<a href=\"http://com.blog.javatalks.ru\"></a>",
+                        "<a href=\""+ prefix +"http://com.blog.javatalks.ru\"></a>"},
         };
     }
 
     @DataProvider
-    public Object[][] preProcessingFromLocalhost() {
+    public Object[][] preProcessingLocalLinks() {
         return new Object[][]{  // {"incoming link (before)", "outcoming link (after)"}
-                {"<a href=\"http://localhost:8080/topics/1\"></a>", "<a href=\"http://localhost:8080/topics/1\"></a>"},
-
-                {"<a href=\"foreign-domain.ru\"></a>", "<a href=\"foreign-domain.ru\" rel=\"nofollow\"></a>"},
-                {"<a href=\"foreign.domain.com\"></a>", "<a href=\"foreign.domain.com\" rel=\"nofollow\"></a>"},
-                {"<a href=\"example1.ru:8181\"></a>", "<a href=\"example1.ru:8181\" rel=\"nofollow\"></a>"},
-                {"<a href=\"http://example1.ru\"></a>", "<a href=\"http://example1.ru\" rel=\"nofollow\"></a>"},
+                {"<a href=\"" + serverName + ".ru\"></a>", "<a href=\""+serverName+".ru\"></a>"},
+                {"<a href=\"http://blog." + serverName + ".ru\"></a>",
+                        "<a href=\"http://blog." + serverName + ".ru\"></a>"}
         };
     }
-
 }

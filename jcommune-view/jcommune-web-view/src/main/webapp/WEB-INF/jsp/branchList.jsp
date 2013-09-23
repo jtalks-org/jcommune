@@ -30,11 +30,11 @@
 <div class="container">
   <%-- Section header --%>
   <div id="branch-header">
-    <h2>
+    <h1>
       <a class="invisible-link" href="${pageContext.request.contextPath}/sections/${section.id}">
         <c:out value="${section.name}"/>
       </a>
-    </h2>
+    </h1>
     <span class="inline-block"></span>
   </div>
   <%-- END OF Branch header --%>
@@ -80,12 +80,18 @@
                 <%--</td>--%>
                 <%--</sec:authorize>--%>
               <td class="title-col">
-                <h3 class="h-nostyle">
-                  <a class="branch-title" href="${pageContext.request.contextPath}/branches/${branch.id}">
+                <h2 class="h-nostyle">
+                  <a class="branch-title"
+                     <c:if test="${sessionScope.adminMode == true}">
+                         href="#" id='branchLabel${branch.id}'
+                     </c:if>
+                     <c:if test="${sessionScope.adminMode != true}">
+                         href="${pageContext.request.contextPath}/branches/${branch.id}"
+                     </c:if> >
                     <c:out value="${branch.name}"/>
                   </a>
-                </h3>
-                <span class="forum-sections-branch-description-container">
+                </h2>
+                <span class="forum-sections-branch-description-container" id='branchDescriptionLabel${branch.id}'>
                   <c:out value="${branch.description}"/>
                 </span>
                 <div class="forum-sections-moderators-container">

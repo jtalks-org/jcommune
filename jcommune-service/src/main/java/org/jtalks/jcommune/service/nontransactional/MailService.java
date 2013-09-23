@@ -361,4 +361,36 @@ public class MailService {
             return "";
         }
     }
+
+    /**
+     * Set mail about removing topic.
+     *
+     * @param recipient Recipient for which send notification
+     * @param topic Current topic
+     */
+    public void sendRemovingTopicMail(JCUser recipient, Topic topic)
+    {
+        Locale locale = recipient.getLanguage().getLocale();
+        Map<String, Object> model = new HashMap<String, Object>();
+        model.put(USER, recipient);
+        model.put(RECIPIENT_LOCALE, locale);
+        model.put("topic", topic);
+
+        try {
+
+            String subjectTemplate = "removeTopic.subject";
+            String messageBodyTemplate = "removeTopic.vm";
+
+            if(topic.getCodeReview() != null) {
+                subjectTemplate = "removeCodeReview.subject";
+                messageBodyTemplate = "removeCodeReview.vm";
+            }
+
+            String subject = messageSource.getMessage(subjectTemplate, new Object[]{}, locale);
+            this.sendEmail(recipient.getEmail(), subject, model, messageBodyTemplate);
+
+        } catch (MailingFailedException e) {
+            LOGGER.error("Failed to sent mail about removing topic or code review for user: " + recipient.getUsername());
+        }
+    }
 }

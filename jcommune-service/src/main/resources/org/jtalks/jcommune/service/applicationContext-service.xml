@@ -24,7 +24,6 @@
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 
-
     <!-- Declaration AOP configs -->
     <aop:config>
         <aop:pointcut id="defaultTxPointcut"
@@ -144,7 +143,6 @@
         <constructor-arg ref="mailService"/>
         <constructor-arg ref="base64Wrapper"/>
         <constructor-arg ref="encryptionService"/>
-        <constructor-arg ref="avatarService"/>
         <constructor-arg ref="postDao"/>
         <constructor-arg ref="authenticator"/>
     </bean>
@@ -152,11 +150,15 @@
     <bean id="authenticator" class="org.jtalks.jcommune.service.transactional.TransactionalAuthenticator">
         <constructor-arg ref="pluginLoader"/>
         <constructor-arg ref="userDao"/>
+        <constructor-arg ref="groupDao"/>
         <constructor-arg ref="encryptionService"/>
+        <constructor-arg ref="mailService"/>
+        <constructor-arg ref="avatarService"/>
         <constructor-arg ref="authenticationManager"/>
         <constructor-arg ref="securityContextFacade"/>
         <constructor-arg ref="rememberMeServices"/>
         <constructor-arg ref="concurrentSessionControlStrategy"/>
+        <constructor-arg ref="validator"/>
     </bean>
 
     <bean id="userContactsService"
@@ -272,8 +274,9 @@
     </bean>
 
     <bean id="bbCodeReviewProcessor" class="org.jtalks.jcommune.service.bb2htmlprocessors.BbCodeReviewProcessor"/>
-    <bean id="bbForeignLinksPostprocessor" class="org.jtalks.jcommune.service.bb2htmlprocessors.BBForeignLinksPostprocessor"/>
-    
+    <bean id="bbForeignLinksPostprocessor"
+          class="org.jtalks.jcommune.service.bb2htmlprocessors.BBForeignLinksPostprocessor"/>
+
     <bean id="bbUserPreprocessor" class="org.jtalks.jcommune.service.bb2htmlprocessors.BbUserPreprocessor">
         <constructor-arg ref="userService"/>
     </bean>
@@ -337,7 +340,7 @@
     </bean>
 
     <bean id="pluginLoader" class="org.jtalks.jcommune.service.plugins.PluginLoader" init-method="init" destroy-method="destroy">
-        <constructor-arg name="pluginsFolderPath" value="${PLUGIN_FOLDER:~}"/>
+        <constructor-arg name="pluginsFolderPath" value="${JCOMMUNE_PLUGIN_FOLDER:~}"/>
         <constructor-arg name="pluginConfigurationDao" ref="pluginConfigurationDao"/>
     </bean>
 
@@ -363,4 +366,5 @@
           class="org.jtalks.jcommune.service.nontransactional.UserDataCacheService">
         <constructor-arg name="userDataCache" ref="userDataCache"/>
     </bean>
+
 </beans>

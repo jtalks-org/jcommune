@@ -17,6 +17,7 @@ package org.jtalks.jcommune.model.dao;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.entity.Branch;
+import org.jtalks.common.model.entity.Group;
 import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.SubscriptionAwareEntity;
@@ -24,6 +25,7 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.data.domain.Page;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * DAO for the {@link Topic} objects.
@@ -93,4 +95,12 @@ public interface TopicDao extends Crud<Topic> {
      * @return subscribers with allowed permission
      */
     Collection<JCUser> getAllowedSubscribers(SubscriptionAwareEntity entity);
+
+    /**
+     * Get forbidden branches id for permission VIEW_TOPICS only
+     *
+     * @param user Current user
+     * @return
+     */
+    List<Long> getForbiddenBranchesIds(JCUser user);
 }

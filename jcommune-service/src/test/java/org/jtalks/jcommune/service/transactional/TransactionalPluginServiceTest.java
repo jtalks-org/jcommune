@@ -17,7 +17,7 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.dao.PluginConfigurationDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
-import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
+import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.service.dto.PluginActivatingDto;
 import org.jtalks.jcommune.service.plugins.PluginLoader;
@@ -88,7 +88,7 @@ public class TransactionalPluginServiceTest {
     @Test
     public void updateConfigurationShouldSaveConfigurationProperties() throws NotFoundException {
         //GIVEN
-        List<PluginConfigurationProperty> properties = Arrays.asList(new PluginConfigurationProperty());
+        List<PluginProperty> properties = Arrays.asList(new PluginProperty());
         PluginConfiguration configuration = new PluginConfiguration("Dummy", false, properties);
         when(pluginLoader.getPlugins()).thenReturn(Arrays.asList((Plugin) new DummyPlugin("Dummy")));
         //WHEN
@@ -185,7 +185,7 @@ public class TransactionalPluginServiceTest {
         }
 
         @Override
-        public List<PluginConfigurationProperty> getDefaultConfiguration() {
+        public List<PluginProperty> getDefaultConfiguration() {
             return null;
         }
 

@@ -12,22 +12,27 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao;
+package org.jtalks.jcommune.web.listeners;
 
-import org.jtalks.common.model.dao.Crud;
-import org.jtalks.common.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.model.entity.PluginConfiguration;
-import org.jtalks.jcommune.model.entity.PluginProperty;
-
-import java.util.List;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 
 /**
+ * Sets up properties at the application startup.
  *
- * @author Anuar Nurmakanov
+ * @author Andrey Pogorelov
  */
-public interface PluginConfigurationDao extends Crud<PluginConfiguration> {
+public class AppPropertySetupListener implements ServletContextListener {
 
-    PluginConfiguration get(String name) throws NotFoundException;
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        // This property needed to prevent error occurred during unmarshalling of response from rest service.
+        // Used in Poulpe Auth Plugin.
+        System.setProperty("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true");
+    }
 
-    void updateProperties(List<PluginProperty> properties);
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        System.getProperties().remove("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize");
+    }
 }

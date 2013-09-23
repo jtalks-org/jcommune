@@ -29,6 +29,7 @@ import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.validation.ValidationException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -279,4 +280,13 @@ public class TransactionalBranchServiceTest {
 
         assertTrue(false);
     }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void changeBranchInfoRequestShouldThrowExceptionWhenBranchDoesNotExist() throws NotFoundException {
+        long branchId = 42;
+        when(branchDao.isExist(branchId)).thenReturn(false);
+
+        branchService.changeBranchInfo(0, branchId, "", "");
+    }
+
 }

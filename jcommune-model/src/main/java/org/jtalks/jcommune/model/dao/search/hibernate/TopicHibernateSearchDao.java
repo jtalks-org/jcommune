@@ -14,16 +14,22 @@
  */
 package org.jtalks.jcommune.model.dao.search.hibernate;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.impl.CriteriaImpl;
 import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.jtalks.jcommune.model.dao.search.TopicSearchDao;
 import org.jtalks.jcommune.model.dto.PageRequest;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.search.SearchRequestFilter;
@@ -64,15 +70,55 @@ public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
      * {@inheritDoc}
      */
     @Override
-    public Page<Topic> searchByTitleAndContent(String searchText, PageRequest pageRequest) {
-       Page<Topic> searchResults = doSearch(searchText, pageRequest);
+    public Page<Topic> searchByTitleAndContent(String searchText,
+                                               PageRequest pageRequest,
+                                               List<Long> forbiddenBranchesId) {
+
+       Page<Topic> searchResults = doSearch(searchText, pageRequest, forbiddenBranchesId);
+
        if (isSearchedAboveLastPage(searchResults)) {
            pageRequest.adjustPageNumber(Long.valueOf(searchResults.getTotalElements()).intValue());
-           searchResults = doSearch(searchText, pageRequest);
+           searchResults = doSearch(searchText, pageRequest, forbiddenBranchesId);
        }
+
        return searchResults;
     }
-    
+
+    /**
+     * Perform actual search
+     *
+     * @param searchText the search text
+     * @param pageRequest contains information for pagination: page number, page
+     *                    size
+     * @param forbiddenBranchesId list of forbidden branches
+     *
+     * @return object that contains search results for one page(note, that one
+     *         page may contain all search results) and information for pagination
+     */
+    @SuppressWarnings("unchecked")
+    private Page<Topic> doSearch(String searchText, PageRequest pageRequest, List<Long> forbiddenBranchesId) {
+        List<Topic> topics = Collections.emptyList();
+        int resultSize = 0;
+        //TODO The latest versions of the library filtering is not needed.
+        String filteredSearchText = applyFilters(searchText, filters).trim();
+        if (!StringUtils.isEmpty(filteredSearchText)) {
+
+            FullTextQuery query = createSearchQuery(getFullTextSession(), filteredSearchText, pageRequest);
+
+            if(!forbiddenBranchesId.isEmpty()) {
+                Criteria criteria = getFullTextSession().createCriteria(Topic.class).add(
+                        Restrictions.not(Restrictions.in("branch.id", forbiddenBranchesId))
+                );
+                query.setCriteriaQuery(criteria);
+            }
+
+            topics = query.list();
+            resultSize = query.getResultSize();
+        }
+
+        return new PageImpl<Topic>(topics, pageRequest, resultSize);
+    }
+
     /**
      * Checks if this search was by made with too big page number specified
      * @param searchResults search results
@@ -81,29 +127,7 @@ public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
     private boolean isSearchedAboveLastPage(Page<Topic> searchResults) {
         return !searchResults.hasContent() && searchResults.getNumber() > searchResults.getTotalPages();
     }
-    
-    /**
-     * Perform actual search
-     * @param searchText the search text
-     * @param pageRequest contains information for pagination: page number, page 
-     *                    size
-     * @return object that contains search results for one page(note, that one 
-     *         page may contain all search results) and information for pagination
-     */
-    @SuppressWarnings("unchecked")
-    private Page<Topic> doSearch(String searchText, PageRequest pageRequest) {
-        List<Topic> topics = Collections.emptyList();
-        int resultSize = 0;
-        //TODO The latest versions of the library filtering is not needed.
-        String filteredSearchText = applyFilters(searchText, filters).trim();
-        if (!StringUtils.isEmpty(filteredSearchText)) {
-            FullTextQuery query = createSearchQuery(getFullTextSession(), filteredSearchText, pageRequest);
-            topics = query.list();
-            resultSize = query.getResultSize();
-        } 
-        return new PageImpl<Topic>(topics, pageRequest, resultSize);
-    }
-    
+
     /**
      * Builds a search query.
      * 
@@ -129,12 +153,15 @@ public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
                 andField(Topic.TOPIC_POSTS_PREFIX + Post.POST_CONTENT_FIELD_RU).
                 matching(searchText).
                 createQuery();
+
         FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery);
+
         query.setFirstResult(pageRequest.getOffset());
         query.setMaxResults(pageRequest.getPageSize());
+
         return query;
     }
-    
+
     /**
      * This method filters the text.
      * 

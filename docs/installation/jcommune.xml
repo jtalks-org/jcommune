@@ -17,7 +17,7 @@
   <Environment name="SMTP_PORT" value="25" type="java.lang.String"/>
   <Environment name="MAIL_USERNAME" value="jtalks@inbox.ru" type="java.lang.String"/>
   <Environment name="MAIL_PASSWORD" value="javatalks" type="java.lang.String"/>
-  <Environment name="PLUGIN_FOLDER" value="~" type="java.lang.String"/>
+  <Environment name="JCOMMUNE_PLUGIN_FOLDER" value="~" type="java.lang.String"/>
 
   <!-- You'll need this configuration to be in $TOMCAT_HOME/conf only if you need to run Poulpe together with JCommune -->
   <!-- Note, that if you really need this, ehcache configuration should have the same port as Poulpe ehcache configuration. -->

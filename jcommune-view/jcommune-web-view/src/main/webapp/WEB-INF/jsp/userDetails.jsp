@@ -169,6 +169,15 @@
                            class="form-check-radio-box" disabled="true"/>
           </div>
         </div>
+        <div class="control-group">
+            <label class="control-label"><spring:message code="label.send.pm.notification.enabled"/></label>
+            <div class="controls">
+                  <label class="test-sendPmNotification"></label>
+                  <form:checkbox path="user.sendPmNotification"
+                                 value="${user.sendPmNotification}"
+                                 class="form-check-radio-box" disabled="true"/>
+            </div>
+        </div>
       </c:if>
       <div class="control-group">
         <label class="control-label"> <spring:message

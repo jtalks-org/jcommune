@@ -20,7 +20,7 @@ import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.PluginConfigurationDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
-import org.jtalks.jcommune.model.entity.PluginConfigurationProperty;
+import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.testng.Assert.*;
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
  * @author Anuar Nurmakanov
@@ -41,7 +42,7 @@ import static org.testng.Assert.*;
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
-public class PluginHibernateConfigurationDaoTest extends AbstractTransactionalTestNGSpringContextTests {
+public class PluginConfigurationHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
@@ -58,17 +59,19 @@ public class PluginHibernateConfigurationDaoTest extends AbstractTransactionalTe
 
     @Test
     public void getShouldReturnPluginById() {
+
+        session.clear();
+
         PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPluginConfiguration();
 
         PluginConfiguration foundPluginConfiguration = pluginConfigurationDao.get(pluginConfiguration.getId());
 
         assertNotNull(foundPluginConfiguration);
-        assertEquals(foundPluginConfiguration.getId(), pluginConfiguration.getId(),
-                "Get should return pluginConfiguration by it ID, so found pluginConfiguration must have the same ID as passed to get.");
+        assertReflectionEquals(foundPluginConfiguration, pluginConfiguration);
     }
 
     @Test
-    public void getWithPassedIdOfNonExistPluginShouldReturnNull() {
+    public void getWithPassedIdOfNonExistingPluginShouldReturnNull() {
         PluginConfiguration nonExistPluginConfiguration = pluginConfigurationDao.get(-788888L);
 
         assertNull(nonExistPluginConfiguration, "PluginConfiguration doesn't exist, so get must return null");
@@ -81,7 +84,7 @@ public class PluginHibernateConfigurationDaoTest extends AbstractTransactionalTe
         pluginConfiguration.setName(newPluginName);
 
         pluginConfigurationDao.saveOrUpdate(pluginConfiguration);
-        session.evict(pluginConfiguration);
+        session.clear();
         PluginConfiguration updatedPluginConfiguration = (PluginConfiguration) session.get(PluginConfiguration.class, pluginConfiguration.getId());
 
         assertEquals(updatedPluginConfiguration.getName(), newPluginName, "After update pluginConfiguration properties must be updated.");
@@ -89,20 +92,20 @@ public class PluginHibernateConfigurationDaoTest extends AbstractTransactionalTe
 
     @Test
     public void saveOrUpdateShouldSaveNewPluginConfiguration() {
-        PluginConfiguration newPluginConfiguration = new PluginConfiguration("New PluginConfiguration", true, Collections.<PluginConfigurationProperty> emptyList());
+        PluginConfiguration newPluginConfiguration = new PluginConfiguration("New PluginConfiguration", true, Collections.<PluginProperty> emptyList());
 
         pluginConfigurationDao.saveOrUpdate(newPluginConfiguration);
         session.evict(newPluginConfiguration);
         PluginConfiguration savedPluginConfiguration = (PluginConfiguration) session.get(PluginConfiguration.class, newPluginConfiguration.getId());
 
-        assertNotNull(savedPluginConfiguration, "PluginConfiguration should be found after persisting to database.");
+        assertReflectionEquals(newPluginConfiguration, savedPluginConfiguration);
     }
 
     @Test
     public void saveOrUpdateShouldSavePluginConfigurationProperties() {
         PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPluginConfiguration();
-        PluginConfigurationProperty property = new PluginConfigurationProperty("Property", PluginConfigurationProperty.Type.BOOLEAN, "true");
-        List<PluginConfigurationProperty> properties = Arrays.asList(property);
+        PluginProperty property = new PluginProperty("Property", PluginProperty.Type.BOOLEAN, "true");
+        List<PluginProperty> properties = Arrays.asList(property);
         pluginConfiguration.setProperties(properties);
 
         pluginConfigurationDao.saveOrUpdate(pluginConfiguration);
@@ -130,21 +133,21 @@ public class PluginHibernateConfigurationDaoTest extends AbstractTransactionalTe
     }
 
     @Test(expectedExceptions = NotFoundException.class)
-    public void getWhenPassedNonExistingNameShouldShowErrorAboutNotFoundConfiguration() throws NotFoundException {
+    public void getShouldThrowIfDidNotFindPlugin() throws NotFoundException {
         pluginConfigurationDao.get("Some fake name");
     }
 
     @Test
     public void updatePropertiesShouldUpdatePassedProperties() {
         //GIVEN
-        PluginConfigurationProperty property = PersistedObjectsFactory.getDefaultPluginConfigurationProperty();
+        PluginProperty property = PersistedObjectsFactory.getDefaultPluginConfigurationProperty();
         String newPropertyName = "New property name";
         property.setName(newPropertyName);
         //WHEN
         pluginConfigurationDao.updateProperties(Arrays.asList(property));
         //THEN
         session.evict(property);
-        PluginConfigurationProperty updatedProperty = (PluginConfigurationProperty) session.get(PluginConfigurationProperty.class, property.getId());
+        PluginProperty updatedProperty = (PluginProperty) session.get(PluginProperty.class, property.getId());
         assertEquals(updatedProperty.getName(), newPropertyName, "Property should be updated");
     }
 }

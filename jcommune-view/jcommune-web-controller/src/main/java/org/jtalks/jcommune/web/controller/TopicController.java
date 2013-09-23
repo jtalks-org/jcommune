@@ -14,11 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Poll;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
@@ -32,13 +28,8 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -190,20 +181,25 @@ public class TopicController {
     /**
      * Displays to user a list of messages from the topic with pagination
      *
-     * @param topicId       the id of selected Topic
-     * @param page          page
+     * @param topicId the id of selected Topic
+     * @param page    page
      * @return {@code ModelAndView}
      * @throws NotFoundException when topic or branch not found
      */
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.GET)
-    public ModelAndView showTopicPage(@PathVariable(TOPIC_ID) Long topicId,
-            @RequestParam(value = "page", defaultValue = "1", required = false) String page) throws NotFoundException {
+    public ModelAndView showTopicPage(WebRequest request, @PathVariable(TOPIC_ID) Long topicId,
+                                      @RequestParam(value = "page", defaultValue = "1", required = false) String page)
+            throws NotFoundException {
         JCUser currentUser = userService.getCurrentUser();
         Topic topic = topicFetchService.get(topicId);
 
-
         topicFetchService.checkViewTopicPermission(topic.getBranch().getId());
         Page<Post> postsPage = postService.getPosts(topic, page);
+
+        if (request.checkNotModified(topic.getLastModificationPostDate().getMillis())) {
+            return null;
+        }
+
         Integer lastReadPostIndex = lastReadPostService.getLastReadPostForTopic(topic);
         lastReadPostService.markTopicPageAsRead(topic, postsPage.getNumber());
         return new ModelAndView("topic/postList")

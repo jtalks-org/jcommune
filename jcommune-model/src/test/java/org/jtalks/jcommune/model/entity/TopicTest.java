@@ -75,10 +75,10 @@ public class TopicTest {
     public void testRecalculateModificationDate() {
         DateTime lastModificationDate = new DateTime();
         
-        topic.getFirstPost().setModificationDate(lastModificationDate.minusDays(1));
-        topic.getPosts().get(1).setModificationDate(lastModificationDate);
+        topic.getFirstPost().setCreationDate(lastModificationDate.minusDays(1));
+        topic.getPosts().get(1).setCreationDate(lastModificationDate);
         Post post3 = new Post();
-        post3.setModificationDate(lastModificationDate.minusDays(2));
+        post3.setCreationDate(lastModificationDate.minusDays(2));
         
         topic.addPost(post3);
         

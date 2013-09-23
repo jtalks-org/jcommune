@@ -30,6 +30,7 @@ import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -307,8 +308,12 @@ public class TransactionalTopicModificationService implements TopicModificationS
             "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OTHERS_POSTS')")
     @Override
     public void deleteTopic(Topic topic) throws NotFoundException {
+
+        Collection<JCUser> subscribers = subscriptionService.getAllowedSubscribers(topic);
+
         Branch branch = deleteTopicSilent(topic);
         notificationService.subscribedEntityChanged(branch);
+        notificationService.sendNotificationAboutRemovingTopic(topic, subscribers);
 
         logger.info("Deleted topic \"{}\". Topic id: {}", topic.getTitle(), topic.getId());
     }

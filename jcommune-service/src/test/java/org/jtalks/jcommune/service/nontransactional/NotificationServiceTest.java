@@ -26,6 +26,9 @@ import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import static org.jtalks.jcommune.model.entity.JCommuneProperty
         .SENDING_NOTIFICATIONS_ENABLED;
 import static org.mockito.Matchers.any;
@@ -262,5 +265,22 @@ public class NotificationServiceTest {
     private void prepareEnabledProperty() {
         Property enabledProperty = new Property(PROPERTY_NAME, TRUE_STRING);
         when(propertyDao.getByName(PROPERTY_NAME)).thenReturn(enabledProperty);
+    }
+
+    @Test
+    public void testSendNotificationAboutRemovingTopicWithEnabledProperty() {
+        prepareEnabledProperty();
+        Collection<JCUser> subscribers = new ArrayList();
+        subscribers.add(user1);
+        subscribers.add(user2);
+        service.sendNotificationAboutRemovingTopic(topic, subscribers);
+        verify(mailService).sendRemovingTopicMail(user2, topic);
+    }
+
+    @Test
+    public void testSendNotificationAboutRemovingTopicWithDisabledProperty() {
+        prepareDisabledProperty();
+        service.sendNotificationAboutRemovingTopic(topic, new ArrayList());
+        verify(mailService, Mockito.never()).sendRemovingTopicMail(user1, topic);
     }
 }

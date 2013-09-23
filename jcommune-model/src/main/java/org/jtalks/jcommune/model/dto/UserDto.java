@@ -25,6 +25,8 @@ import org.jtalks.jcommune.model.validation.annotations.Unique;
 import javax.validation.constraints.Size;
 
 /**
+ * Contains user information. In some cases serves for transmitting to external services.
+ *
  * @author Andrey Pogorelov
  */
 public class UserDto {

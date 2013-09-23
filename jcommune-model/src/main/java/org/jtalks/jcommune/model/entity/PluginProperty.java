@@ -20,7 +20,7 @@ import org.jtalks.common.model.entity.Entity;
  *
  * @author Anuar Nurmakanov
  */
-public class PluginConfigurationProperty extends Entity {
+public class PluginProperty extends Entity {
     private String name;
     private Type type;
     private String value;
@@ -28,13 +28,13 @@ public class PluginConfigurationProperty extends Entity {
 
     public static enum Type {INT, BOOLEAN, STRING}
 
-    public PluginConfigurationProperty(String name, Type type, String value) {
+    public PluginProperty(String name, Type type, String value) {
         this.name = name;
         this.type = type;
         this.value = value;
     }
 
-    public PluginConfigurationProperty() {
+    public PluginProperty() {
     }
 
     public String getName() {

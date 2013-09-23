@@ -175,7 +175,7 @@ $(document).ready(function () {
     });
 
     //"Add contact" button handler
-    $("#add_contact").click(function () {
+    $("#add_contact").on("click", function () {
 
         AddContact.resetVariables();
 
@@ -246,6 +246,10 @@ $(document).ready(function () {
                    ErrorUtils.addErrorMessage('#contact', $labelValidationUsercontactNotMatch);
                    AddContact.isValueValid = false;
                }
+                jQuery('.contact').tooltip({placement: 'right'});
+                jQuery("a").tooltip();
+                jQuery('.btn').tooltip({placement: 'bottom'});
+                jQuery('.script-has-tooltip').tooltip();
             }
 
             jDialog.createDialog({

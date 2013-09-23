@@ -37,6 +37,9 @@ public class PageRequestTest {
     public static final String GARBAGE = "garbage";
     public static final int TOTAL_COUNT_50 = 50;
     public static final String REQUESTED_PAGE_NUMBER_1 = "1";
+    public static final String BIG_NUMBER = "99999999999999999999999999";
+    public static final String LEAD_ZERO_BIG_NUMBER = "0000000000000000099999999999999999999999999";
+    public static final String LEAD_ZERO_MAX_NUMBER = "00000000000000000999999999";
 
     private PageRequest pageRequest;
     
@@ -48,27 +51,45 @@ public class PageRequestTest {
         assertEquals(pageRequest.getOffset(), INDEX_OF_FIRST_ITEM);
         assertEquals(pageRequest.getSort(), null);
     }
-    
+
     @Test
-    public void testConstructorLessThanOnePageNumberConvertedToFirstPageNumber() {
+    public void testConstructor_MaxPageNumberWithLeadingZeroesConvertedToMaxPageNumber() {
+        pageRequest = new PageRequest(LEAD_ZERO_MAX_NUMBER, PAGE_SIZE_10);
+        assertEquals(pageRequest.getPageNumber(), PageRequest.MAX_PAGE);
+    }
+
+    @Test
+    public void testConstructor_TooLongPageNumberWithLeadingZeroesConvertedToMaxIntValue() {
+        pageRequest = new PageRequest(LEAD_ZERO_BIG_NUMBER, PAGE_SIZE_10);
+        assertEquals(pageRequest.getPageNumber(), Integer.MAX_VALUE);
+    }
+
+   @Test
+    public void testConstructor_TooBigPageNumberConvertedToMaxIntValue() {
+        pageRequest = new PageRequest(BIG_NUMBER, PAGE_SIZE_10);
+        assertEquals(pageRequest.getPageNumber(), Integer.MAX_VALUE);
+    }
+
+    @Test
+    public void testConstructor_LessThanOnePageNumberConvertedToFirstPageNumber() {
         pageRequest = new PageRequest(REQUESTED_ZERO_PAGE_NUMBER, PAGE_SIZE_10);
         assertEquals(pageRequest.getPageNumber(), FIRST_PAGE_NUMBER);
     }
 
     @Test()
-    public void testConstructorLessThanOnePageSizeConvertedToDefaultPageSize() {
+    public void testConstructor_LessThanOnePageSizeConvertedToDefaultPageSize() {
         pageRequest = new PageRequest(PAGE_NUMBER, ZERO);
         assertEquals(pageRequest.getPageSize(), JCUser.DEFAULT_PAGE_SIZE);
     }
 
     @Test()
-    public void testConstructorNonNumericPageSizeConvertedToDefaultPageSize() {
+    public void testConstructor_NonNumericPageSizeConvertedToDefaultPageSize() {
         pageRequest = new PageRequest(GARBAGE, ZERO);
         assertEquals(pageRequest.getPageSize(), JCUser.DEFAULT_PAGE_SIZE);
     }
 
     @Test
-    public void testGetOffsetLessThanOnePageNumber() {
+    public void testGetOffset_LessThanOnePageNumber() {
         pageRequest = new PageRequest(REQUESTED_NEGATIVE_PAGE_NUMBER, PAGE_SIZE_10);
         assertEquals(pageRequest.getOffset(), ZERO);
     }

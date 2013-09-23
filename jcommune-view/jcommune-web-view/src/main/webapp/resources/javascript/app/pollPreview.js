@@ -125,7 +125,7 @@ function stringItemsArrayToHtmlItems(items) {
     var checkboxInputBegin = "<input type='checkbox' name='radioGroup' value='";
     var inputEnd = "'/> ";
     var br = "<br>";
-    var isMultiple = multipleButtonElement.checked;
+    var isMultiple = multipleButtonElement.is(':checked');
     if (isMultiple) {
         for (var i = 0; i < items.length; i++) {
             items[i] = checkboxInputBegin + items[i] + inputEnd + items[i] + br;

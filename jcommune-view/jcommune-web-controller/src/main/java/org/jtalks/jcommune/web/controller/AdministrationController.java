@@ -15,7 +15,10 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.ComponentInformation;
+import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.ComponentService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +51,7 @@ public class AdministrationController {
 
     private final ComponentService componentService;
     private final MessageSource messageSource;
+    private final BranchService branchService;
 
     /**
      * Creates instance of the service
@@ -57,9 +61,11 @@ public class AdministrationController {
      */
     @Autowired
     public AdministrationController(ComponentService componentService,
-                                    MessageSource messageSource) {
+                                    MessageSource messageSource,
+                                    BranchService branchService) {
         this.messageSource = messageSource;
         this.componentService = componentService;
+        this.branchService = branchService;
     }
 
     /**
@@ -111,6 +117,31 @@ public class AdministrationController {
 
         try {
             componentService.setComponentInformation(componentInformation);
+        } catch (AccessDeniedException e) {
+            String errorMessage = messageSource.getMessage(ACCESS_DENIED_MESSAGE, null, locale);
+            return new JsonResponse(JsonResponseStatus.FAIL, errorMessage);
+        }
+
+        return new JsonResponse(JsonResponseStatus.SUCCESS, null);
+    }
+
+    /**
+     * Handler for request of updating Administration information
+     *
+     * @param result               form validation result
+     */
+    @RequestMapping(value = "/branch/edit", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResponse setBranchInformation(@Valid @RequestBody BranchDto branchDto,
+                                            BindingResult result, Locale locale) throws NotFoundException {
+        if (result.hasErrors()) {
+            return new JsonResponse(JsonResponseStatus.FAIL, result.getAllErrors());
+        }
+
+        long forumId = componentService.getComponentOfForum().getId();
+
+        try {
+            branchService.changeBranchInfo(forumId, branchDto.getId(), branchDto.getName(), branchDto.getDescription());
         } catch (AccessDeniedException e) {
             String errorMessage = messageSource.getMessage(ACCESS_DENIED_MESSAGE, null, locale);
             return new JsonResponse(JsonResponseStatus.FAIL, errorMessage);

@@ -30,6 +30,7 @@ import static org.jtalks.jcommune.model.entity.JCUser.DEFAULT_PAGE_SIZE;
  */
 public class PageRequest implements Pageable {
     public static final int FIRST_PAGE_NUMBER = 1;
+    public static final int MAX_PAGE = 999999999;
 
     private int pageNumber;
     private final int pageSize;
@@ -37,16 +38,11 @@ public class PageRequest implements Pageable {
     /**
      * Creates a new {@link PageRequest}.
      *
-     * @param requestedPageNumber positive page number as a string.
-     *                            If specified string is not valid integer,
-     *                            page number will be equal {@link PageRequest#FIRST_PAGE_NUMBER}.
+     * @param requestedPageNumber positive page number (max value is {@link PageRequest#MAX_PAGE}) as a string.
      * @param pageSize size of page
      */
     public PageRequest(String requestedPageNumber, int pageSize) {
-        int parsedPageNumber = requestedPageNumber.matches("\\d+") ?
-                Integer.valueOf(requestedPageNumber)
-                : FIRST_PAGE_NUMBER;
-        this.pageNumber = preparePageNumber(parsedPageNumber);
+        this.pageNumber = preparePageNumber(requestedPageNumber);
         this.pageSize = preparePageSize(pageSize);
     }
 
@@ -54,8 +50,26 @@ public class PageRequest implements Pageable {
         return (pageSize <= 0) ? DEFAULT_PAGE_SIZE : pageSize;
     }
 
-    private int preparePageNumber(int pageNumber) {
-        return (pageNumber <= 0) ? FIRST_PAGE_NUMBER : pageNumber;
+    /**
+     * Convert specified string to valid page number.
+     * @param pageNumber specified string.
+     * @return {@link PageRequest#MAX_PAGE} if specified string contains non numeric symbol.<br/>
+     *         int number representing specified string if it value is <br/>
+     *         0 < specified string <= {@link PageRequest#MAX_PAGE}(leading zeroes is omitted)<br/>
+     *         {@link Integer#MAX_VALUE} if specified string is greater than {@link PageRequest#MAX_PAGE}<br/>
+     *         {@link PageRequest#FIRST_PAGE_NUMBER} if specified string is not a number
+     */
+    private int preparePageNumber(String pageNumber) {
+        int result;
+        pageNumber = pageNumber.replaceFirst("^0+(?!$)", "");//removing trailing zeroes
+        if (pageNumber.matches("\\d{1,9}")) {
+            result = Integer.valueOf(pageNumber);
+        } else if (pageNumber.matches("\\d+")) {
+            result = Integer.MAX_VALUE;
+        } else {
+            result = FIRST_PAGE_NUMBER;
+        }
+        return (result <= 0) ? FIRST_PAGE_NUMBER : result;
     }
 
 

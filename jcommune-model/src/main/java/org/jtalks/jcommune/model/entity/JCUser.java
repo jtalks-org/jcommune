@@ -42,7 +42,7 @@ public class JCUser extends User {
     private boolean enabled;
     private boolean autosubscribe;
     private boolean mentioningNotificationsEnabled;
-    private boolean sendPmNotification = true;
+    private boolean sendPmNotification;
 
     public static final int MAX_SIGNATURE_SIZE = 255;
     public static final int MAX_LOCATION_SIZE = 30;
@@ -277,13 +277,19 @@ public class JCUser extends User {
     }
 
     /**
-     * Check for pm's obtaining notification
-     * @return
+     * Determines whether email notifications are send to user when he has new private message.
+     *
+     * @return true user receives email notifications, otherwise false
      */
     public boolean isSendPmNotification() {
         return sendPmNotification;
     }
 
+    /**
+     * Set whether email notifications are send to user when he has new private message.
+     *
+     * @param sendPmNotification
+     */
     public void setSendPmNotification(boolean sendPmNotification) {
         this.sendPmNotification = sendPmNotification;
     }

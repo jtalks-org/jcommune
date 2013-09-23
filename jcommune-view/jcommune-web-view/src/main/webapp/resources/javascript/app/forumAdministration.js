@@ -25,7 +25,92 @@ $(function () {
     $("#cmpName").on('click', showForumConfigurationDialog);
     $("#cmpDescription").on('click', showForumConfigurationDialog);
     $("#forumLogo").on('click', showForumConfigurationDialog);
+
+    $("[id^=branchLabel]").on('click', showBranchEditDialog);
 });
+
+
+function showBranchEditDialog(e) {
+    e.preventDefault();
+
+    var brancLabelPrefix = "branchLabel";
+    var branchId = this.id.substring(brancLabelPrefix.length);
+    var descriptonLabel = $("#branchDescriptionLabel" + branchId);
+
+    var bodyContent = Utils.createFormElement($labelBranchName, 'branchName', 'text', 'first dialog-input')
+        + Utils.createFormElement($labelBranchDescription, 'branchDescription', 'text', 'dialog-input') +
+            '<div class="clearfix"/>';
+
+    var footerContent = ' \
+            <button id="administrationCancelButton" class="btn">' + $labelCancel + '</button> \
+            <button id="administrationSubmitButton" class="btn btn-primary">' + $labelSaveChanges + '</button>';
+
+    jDialog.createDialog({
+        dialogId: 'administrationModalDialog',
+        title: $labelAdministration,
+        bodyContent: bodyContent,
+        footerContent: footerContent,
+        maxWidth: 350,
+        maxHeight: 500,
+        firstFocus: true,
+        tabNavigation: ['#branchName', '#branchDescription',
+            '#administrationSubmitButton', '#administrationCancelButton'],
+        handlers: {
+            '#administrationSubmitButton': {'click': sendBranchConfiguration},
+            '#administrationCancelButton': {'static':'close'}
+        }
+    });
+
+    $('#branchName').val(this.text.trim());
+    $('#branchDescription').val(descriptonLabel.text().trim());
+    $('#branchName').focus();
+
+    /**
+     * Handles submit request from BranchEdit form by sending POST request, with params
+     * containing Branch ID, Name & Description
+     */
+    function sendBranchConfiguration(e) {
+        e.preventDefault();
+
+        var branchInformation = {};
+        branchInformation.id = parseInt(branchId);
+        branchInformation.name = jDialog.dialog.find('#branchName').val();
+        branchInformation.description = jDialog.dialog.find('#branchDescription').val();
+
+        jDialog.dialog.find('*').attr('disabled', true);
+
+        $.ajax({
+            url: $root + '/branch/edit',
+            type: "POST",
+            contentType: "application/json",
+            async: false,
+            data: JSON.stringify(branchInformation),
+            success: function (resp) {
+                if (resp.status == 'SUCCESS') {
+                    location.reload();
+                }
+                else {
+                    if (resp.result instanceof Array) {
+                        jDialog.prepareDialog(jDialog.dialog);
+                        jDialog.showErrors(jDialog.dialog, resp.result, "branch", "");
+                    } else {
+                        jDialog.createDialog({
+                            type: jDialog.alertType,
+                            bodyMessage: resp.result
+                        });
+                    }
+                }
+            },
+            error: function (data) {
+                jDialog.createDialog({
+                    type: jDialog.alertType,
+                    bodyMessage: $labelError500Detail
+                });
+            }
+        });
+    };
+}
+
 
 function getCurrentAdminValues() {
     return {
@@ -62,12 +147,12 @@ function createAdministrationDialog() {
             \
             <div class="logo-manage-buttons-container"> \
                 <div class="logo-manage-buttons"> \
-                    <a id="uploadLogo" href="#" class="btn btn-mini"> \
+                    <a id="uploadLogo" href="#" data-original-title="' + $labelUploadTitle + '" class="btn btn-mini"> \
                         <i class="icon-picture"></i>  \
                         '+ $labelUploadLogo + ' \
                     </a>  \
                     <a id="removeLogo" href="#" class="btn btn-mini btn-danger" \
-                        title='+ $labelRemoveLogo + '> \
+                        data-original-title='+ $labelRemoveLogo + '> \
                         <i class="icon-remove icon-white"></i> \
                     </a> \
                 </div> \
@@ -83,12 +168,12 @@ function createAdministrationDialog() {
             \
             <div class="logo-manage-buttons-container"> \
                 <div class="logo-manage-buttons"> \
-                    <a id="uploadIcon" href="#" class="btn btn-mini"> \
+                    <a id="uploadIcon" href="#" data-original-title="' + $labelUploadTitle + '" class="btn btn-mini"> \
                         <i class="icon-picture"></i>  \
                         '+ $labelUploadFavIcon + ' \
                     </a>  \
                     <a id="removeIcon" href="#" class="btn btn-mini btn-danger" \
-                        title='+ $labelRemoveFavIcon + '> \
+                        data-original-title='+ $labelRemoveFavIcon + '> \
                         <i class="icon-remove icon-white"></i> \
                     </a> \
                 </div> \
@@ -113,7 +198,7 @@ function createAdministrationDialog() {
         bodyContent: bodyContent,
         footerContent: footerContent,
         maxWidth: 350,
-        maxHeight: 500,
+        maxHeight: 700,
         firstFocus: true,
         tabNavigation: ['#forumName', '#forumDescription','#forumLogoTooltip',
                         '#administrationSubmitButton', '#administrationCancelButton'],
@@ -122,6 +207,11 @@ function createAdministrationDialog() {
             '#administrationCancelButton': {'static':'close'}
         }
     });
+
+    $('#uploadIcon').tooltip();
+    $('#uploadLogo').tooltip();
+    $('#removeIcon').tooltip();
+    $('#removeLogo').tooltip();
 
     var tabFunc = function (e) {
         if (document.activeElement.id == jDialog.options.dialogId && (e.keyCode || e.charCode) == tabCode) {
@@ -213,8 +303,9 @@ function createUploader(IFrameActionUrl, XhrActionUrl, uploadButtonId, onSuccess
                     bodyMessage: responseJSON.result
                 });
                 $('#' + jDialog.options.alertDefaultBut).on('click', createAdministrationDialog);
+                jDialog.dialog.find('.close').bind('click', createAdministrationDialog);
             }
-
+            $("#" + uploadButtonId).tooltip('hide');
         },
         onError: function(id, filename, xhr) {
             if (xhr.status == REQUEST_ENTITY_TOO_LARGE) {
@@ -224,6 +315,7 @@ function createUploader(IFrameActionUrl, XhrActionUrl, uploadButtonId, onSuccess
                     bodyMessage: $labelImageWrongSizeJs
                 });
                 $('#' + jDialog.options.alertDefaultBut).on('click', createAdministrationDialog);
+                jDialog.dialog.find('.close').bind('click', createAdministrationDialog);
                 return false;
             }
         },

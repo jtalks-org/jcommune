@@ -19,7 +19,7 @@
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
-    <class name="org.jtalks.jcommune.model.entity.PluginConfigurationProperty" table="PLUGIN_PROPERTY">
+    <class name="PluginProperty" table="PLUGIN_PROPERTY">
         <cache usage="read-write"/>
         <id column="ID" name="id" unsaved-value="0">
             <generator class="native"/>
@@ -28,7 +28,7 @@
         <property column="NAME" name="name" unique="true" not-null="true"/>
         <property column="TYPE" name="type"  not-null="true">
             <type name="org.hibernate.type.EnumType">
-                <param name="enumClass">org.jtalks.jcommune.model.entity.PluginConfigurationProperty$Type</param>
+                <param name="enumClass">org.jtalks.jcommune.model.entity.PluginProperty$Type</param>
                 <!-- varchar -->
                 <param name="type">12</param>
             </type>

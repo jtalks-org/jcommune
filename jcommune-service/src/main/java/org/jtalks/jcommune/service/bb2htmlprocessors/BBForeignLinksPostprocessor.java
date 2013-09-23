@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 /**
  * PostProcessor for bb2html which adds attribute rel="nofollow" to foreign links. It's done in order to keep our Google
  * Rating higher.
- * <p>
+ * <p/>
  * Note: Nofollow is an attribute that can be added to links to discourage Comment Spam. It is used with the rel=" "
  * attribute in a link. By default, posting links generates no positive benefit for the poster in terms of PageRank
  * (or other search engine value) the spammers will be dissuaded from wasting their time.
@@ -37,46 +37,34 @@ import java.util.regex.Pattern;
  */
 public class BBForeignLinksPostprocessor implements TextPostProcessor {
 
-    private static final String LINK_PATTERN = "<a .*?href=(\"|').*?(\"|')";
+    private static final String URL_PATTERN = "<a .*?href=(\"|').*?(\"|')";
 
-    private static final String URL_PATTERN = "<a .*?href=(\"|')(((http|ftp|https)://)?" +
-            "([\\w\\-_]+(\\.[\\w\\-_]+)+|localhost)+([\\w\\-\\.,@?^=%&amp;:/~\\+#]*[\\w\\-\\@?^=%&amp;/~\\+#])?)(\"|')";
-
-     /**
-     * Process incoming text with adding attribute rel="nofollow" to foreign links
+    /**
+     * Process incoming text with adding prefix "/out" to foreign links. This prefix
+     * will be excluded from indexing by search engines (robots.txt)
      *
-     * @param bbDecodedText text returned after to BBCode processor
      * @return resultant text
      */
     @Override
     public String postProcess(String bbDecodedText) {
         HttpServletRequest httpServletRequest = getServletRequest();
-        return addNofollowToForeignLinks(bbDecodedText, httpServletRequest.getServerName());
+        return addPrefixToForeignLinks(bbDecodedText, httpServletRequest.getServerName());
     }
 
-    private String addNofollowToForeignLinks(String decodedText, String serverName){
-        Pattern linkPattern = Pattern.compile(LINK_PATTERN, Pattern.DOTALL);
-        Matcher linkMatcher = linkPattern.matcher(decodedText);
-        Pattern pattern = Pattern.compile(URL_PATTERN, Pattern.DOTALL);
-        Matcher matcher;
-        StringBuilder result = new StringBuilder();
-        int lastEnd = 0;
-        while (linkMatcher.find())
-        {
-            matcher = pattern.matcher(linkMatcher.group());
-            result.append(decodedText.substring(lastEnd, linkMatcher.start()));
-            if(matcher.matches() && matcher.group(5).toLowerCase().endsWith(serverName.toLowerCase())){
-                result.append(linkMatcher.group());
-            } else {
-                String replacement = String.format("%s rel=\"nofollow\"", linkMatcher.group());
-                result.append(replacement);
-            }
 
-            lastEnd = linkMatcher.end();
+    private String addPrefixToForeignLinks(String decodedText, String serverName) {
+        Pattern linkPattern = Pattern.compile(URL_PATTERN, Pattern.DOTALL);
+        Matcher linkMatcher = linkPattern.matcher(decodedText);
+        String href;
+
+        while (linkMatcher.find()) {
+            href = linkMatcher.group();
+            if (!href.contains(serverName) && href.split("(http|ftp|https)://", 2).length == 2) {
+                decodedText = decodedText.replace(href, href.replace("href=\"", "href=\"" + getHrefPrefix()));
+            }
         }
 
-        result.append(decodedText.substring(lastEnd, decodedText.length()));
-        return result.toString();
+        return decodedText;
     }
 
     /**
@@ -88,6 +76,16 @@ public class BBForeignLinksPostprocessor implements TextPostProcessor {
     protected HttpServletRequest getServletRequest() {
         RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
         return ((ServletRequestAttributes) attributes).getRequest();
+    }
+
+    /**
+     * Gets prefix to add href
+     *
+     * @return prefix
+     */
+    @VisibleForTesting
+    protected String getHrefPrefix() {
+        return "/out?=";
     }
 
 }
