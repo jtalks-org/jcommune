@@ -222,4 +222,11 @@
     <name>topicList</name>
     <path>/WEB-INF/tags/topicList.tag</path>
   </tag-file>
+
+  <function>
+      <name>isExist</name>
+      <function-class>org.jtalks.jcommune.web.tags.UsersUtil</function-class>
+      <function-signature>boolean isExist(org.jtalks.jcommune.model.entity.JCUser)</function-signature>
+  </function>
+
 </taglib>

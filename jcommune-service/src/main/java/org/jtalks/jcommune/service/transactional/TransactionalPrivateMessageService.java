@@ -306,7 +306,9 @@ public class TransactionalPrivateMessageService
         boolean isAuthor = false;
         try{ //because a recipient can be deleted.
             isAuthor = currentUser.equals(privateMessage.getUserTo());
-        }catch(org.hibernate.ObjectNotFoundException e){}
+        }catch(org.hibernate.ObjectNotFoundException e){
+            logger.warn("The recipient doesn't exist",e);
+        }
         return isAuthor;
     }
 

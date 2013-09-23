@@ -39,11 +39,7 @@
       <div class="pm_buttons">
         <jtalks:hasPermission targetId='${user.id}' targetType='USER'
                               permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
-
-            <c:catch var ="exception">
-               <c:set var="isUserExist" value="${pm.userTo.username != null}" scope="page" /> <%--the user can be deleted--%>
-            </c:catch>
-            <c:if test="${exception == null}" >
+            <c:if test="${jtalks:isExist(pm.userTo)}" >
               <c:if test="${(pm.userTo eq user)}">
                 <a class="btn btn-primary"
                    href="${pageContext.request.contextPath}/reply/${pm.id}?userId=${user.id}">
