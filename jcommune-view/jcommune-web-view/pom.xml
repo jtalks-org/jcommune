@@ -227,15 +227,25 @@
                     </regexFlags>
                     <unescape>true</unescape>
                     <replacements>
-                        <replacement>
-                            <!--Replace two or more spaces, tabs and line breaks with one space-->
-                            <token>(.)\s{2,}(.)</token>
-                            <value>$1 $2</value>
-                        </replacement>
                         <!--Remove all new line characters(Windows and Unix)-->
                         <replacement>
                             <token>\r\n|\n</token>
                             <value/>
+                        </replacement>
+                        <replacement>
+                            <!--Removes spaces, tabs and line breaks after " or ' -->
+                            <token>("|')(\s{2,})(.)</token>
+                            <value>$1 $3</value>
+                        </replacement>
+                        <replacement>
+                            <!--Removes spaces, tabs and line breaks after '>' -->
+                            <token>(&gt;)(\s+)</token>
+                            <value>&gt;</value>
+                        </replacement>
+                        <replacement>
+                            <!--Removes spaces, tabs and line breaks before '<' -->
+                            <token>(\s+)(&lt;)</token>
+                            <value>&lt;</value>
                         </replacement>
                     </replacements>
                 </configuration>
