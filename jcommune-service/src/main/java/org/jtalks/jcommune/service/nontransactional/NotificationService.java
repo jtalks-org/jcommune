@@ -106,7 +106,8 @@ public class NotificationService {
 
             //send notification to topic's subscribers
             Collection<JCUser> topicSubscribers = subscriptionService.getAllowedSubscribers(topic);
-            topicSubscribers.remove(topicStarter);
+            this.filterSubscribers(topicSubscribers);
+
             for (JCUser subscriber : topicSubscribers) {
                 mailService.sendTopicMovedMail(subscriber, topicId);
             }
@@ -114,16 +115,25 @@ public class NotificationService {
     }
 
     /**
+     * Filter collection - remove current user from subscribers
+     * @param subscribers collection of subscribers
+     */
+    private void filterSubscribers(Collection<JCUser> subscribers)
+    {
+        subscribers.remove(userService.getCurrentUser());
+    }
+
+    /**
      * Send notification to subscribers about removing topic or code review.
      *
-     * @param entity Current topic
+     * @param topic Current topic
      * @param subscribers Collection of subscribers
      */
-    public void sendNotificationAboutRemovingTopic(Topic entity, Collection<JCUser> subscribers) {
+    public void sendNotificationAboutRemovingTopic(Topic topic, Collection<JCUser> subscribers) {
         if (notificationsEnabledProperty.booleanValue()) {
-            subscribers.remove(entity.getTopicStarter());
+            this.filterSubscribers(subscribers);
             for (JCUser subscriber : subscribers) {
-                mailService.sendRemovingTopicMail(subscriber, entity);
+                mailService.sendRemovingTopicMail(subscriber, topic);
             }
         }
     }
