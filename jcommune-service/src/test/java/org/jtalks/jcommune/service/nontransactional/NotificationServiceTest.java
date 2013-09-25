@@ -267,7 +267,7 @@ public class NotificationServiceTest {
 
         service.topicMoved(topic, TOPIC_ID);
 
-        Collection<JCUser> topicSubscribers = new ArrayList<JCUser>();
+        Collection<JCUser> topicSubscribers = new ArrayList();
         topicSubscribers.add(user2);
 
         when(subscriptionService.getAllowedSubscribers(topic)).thenReturn(topicSubscribers);
