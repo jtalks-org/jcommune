@@ -240,7 +240,7 @@ public class NotificationServiceTest {
 
         service.topicMoved(topic, TOPIC_ID);
 
-        verify(mailService, times(3)).sendTopicMovedMail(any(JCUser.class), eq(TOPIC_ID));
+        verify(mailService, times(2)).sendTopicMovedMail(any(JCUser.class), eq(TOPIC_ID));
         verify(mailService).sendTopicMovedMail(user2, TOPIC_ID);
         verify(mailService).sendTopicMovedMail(user3, TOPIC_ID);
         assertEquals(branch.getSubscribers().size(), 3);
@@ -255,6 +255,24 @@ public class NotificationServiceTest {
         service.topicMoved(topic, TOPIC_ID);
 
         verify(mailService, Mockito.never()).sendTopicMovedMail(user2, TOPIC_ID);
+    }
+
+    @Test
+    public void testTopicMovedWhenUserIsSubscribedForBranchAndTopic() {
+
+        prepareEnabledProperty();
+
+        branch.getSubscribers().add(user2);
+        branch.getSubscribers().add(user3);
+
+        service.topicMoved(topic, TOPIC_ID);
+
+        Collection<JCUser> topicSubscribers = new ArrayList<JCUser>();
+        topicSubscribers.add(user2);
+
+        when(subscriptionService.getAllowedSubscribers(topic)).thenReturn(topicSubscribers);
+
+        verify(mailService, times(1)).sendTopicMovedMail(user3, TOPIC_ID);
     }
     
     private void prepareDisabledProperty() {
