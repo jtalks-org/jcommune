@@ -39,7 +39,7 @@
       <div class="pm_buttons">
         <jtalks:hasPermission targetId='${user.id}' targetType='USER'
                               permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
-            <c:if test="${jtalks:isExist(pm.userTo)}" >
+            <c:if test="${jtalks:isExists(pm.userTo)}" >
               <c:if test="${(pm.userTo eq user)}">
                 <a class="btn btn-primary"
                    href="${pageContext.request.contextPath}/reply/${pm.id}?userId=${user.id}">

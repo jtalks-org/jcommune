@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 /**
  * The class contains JSTL functions for the work with users.
  */
-public class UsersUtil{
+public class UsersUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UsersUtil.class);
 
@@ -32,12 +32,12 @@ public class UsersUtil{
      * @param user a user,
      * @return there is a user or not.
      */
-    public static boolean isExist(JCUser user){
-        if(user!=null){
-            try{
+    public static boolean isExists(JCUser user) {
+        if (user != null) {
+            try {
                 return (user.getUsername() != null);
-            }catch (ObjectNotFoundException ex){
-                LOGGER.warn("User does not exist." ,ex);
+            } catch (ObjectNotFoundException ex) {
+                LOGGER.warn("User does not exist.", ex);
                 return false;
             }
         }

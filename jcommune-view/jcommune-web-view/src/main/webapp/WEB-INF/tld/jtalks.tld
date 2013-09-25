@@ -225,9 +225,9 @@
 
   <function>
       <description>The function checks - there is a user or not.</description>
-      <name>isExist</name>
+      <name>isExists</name>
       <function-class>org.jtalks.jcommune.web.tags.UsersUtil</function-class>
-      <function-signature>boolean isExist(org.jtalks.jcommune.model.entity.JCUser)</function-signature>
+      <function-signature>boolean isExists(org.jtalks.jcommune.model.entity.JCUser)</function-signature>
   </function>
 
 </taglib>
