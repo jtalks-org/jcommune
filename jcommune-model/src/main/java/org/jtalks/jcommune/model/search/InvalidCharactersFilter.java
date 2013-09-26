@@ -17,16 +17,17 @@ package org.jtalks.jcommune.model.search;
 /**
  * Deletes all invalid characters in the search text.
  * Valid characters are letters and numbers.
- *
+ * 
  * @author Anuar Nurmakanov
+ *
  */
 public class InvalidCharactersFilter implements SearchRequestFilter {
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
     public String filter(String searchText) {
-        return searchText.replaceAll("[^А-Яа-яёЁA-Za-z0-9ЇїЄєҐґÑñÁáÉéÍíÓóÚúіІ]", " ").trim();
+        return searchText.replaceAll("[^А-Яа-яёЁA-Za-z0-9ЇїЄєҐґÑñÁáÉéÍíÓóÚú]", " ").trim();
     }
 }
