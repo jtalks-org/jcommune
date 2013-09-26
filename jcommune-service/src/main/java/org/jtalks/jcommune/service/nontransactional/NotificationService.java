@@ -89,27 +89,25 @@ public class NotificationService {
      * @param topicId topic id
      */
     public void topicMoved(Topic topic, long topicId) {
+
         if (notificationsEnabledProperty.booleanValue()) {
 
-            JCUser currentUser = userService.getCurrentUser();
-            JCUser topicStarter = topic.getTopicStarter();
-
-            //send notification to branch subscribers
-            Set<JCUser> branchSubscribers = new HashSet<JCUser>(topic.getBranch().getSubscribers());
-
-            // temp transient collection modification to ease the iteration
-            branchSubscribers.add(topicStarter);
-            branchSubscribers.remove(currentUser);
-            for (JCUser subscriber : branchSubscribers) {
-                mailService.sendTopicMovedMail(subscriber, topicId);
-            }
-
-            //send notification to topic's subscribers
+            //send notification to topic subscribers
             Collection<JCUser> topicSubscribers = subscriptionService.getAllowedSubscribers(topic);
             this.filterSubscribers(topicSubscribers);
 
             for (JCUser subscriber : topicSubscribers) {
                 mailService.sendTopicMovedMail(subscriber, topicId);
+            }
+
+            //send notification to branch subscribers
+            Set<JCUser> branchSubscribers = new HashSet<JCUser>(topic.getBranch().getSubscribers());
+
+            this.filterSubscribers(branchSubscribers);
+            for (JCUser subscriber : branchSubscribers) {
+                if(!topicSubscribers.contains(subscriber)) {
+                    mailService.sendTopicMovedMail(subscriber, topicId);
+                }
             }
         }
     }
