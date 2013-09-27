@@ -70,10 +70,30 @@ public class NotificationService {
      */
     public void subscribedEntityChanged(SubscriptionAwareEntity entity) {
         if (notificationsEnabledProperty.booleanValue()) {
-            JCUser current = userService.getCurrentUser();
+
             Collection<JCUser> subscribers = subscriptionService.getAllowedSubscribers(entity);
+            subscribers.remove(userService.getCurrentUser());
+
             for (JCUser user : subscribers) {
-                if (!user.equals(current)) {
+                mailService.sendUpdatesOnSubscription(user, entity);
+            }
+
+        }
+    }
+
+    /**
+     * Overload for skipping topic subscribers
+     * @param entity
+     * @param topicSubscribers
+     */
+    public void subscribedEntityChanged(SubscriptionAwareEntity entity, Collection<JCUser> topicSubscribers) {
+        if (notificationsEnabledProperty.booleanValue()) {
+
+            Collection<JCUser> subscribers = subscriptionService.getAllowedSubscribers(entity);
+            subscribers.remove(userService.getCurrentUser());
+
+            for (JCUser user : subscribers) {
+                if(!topicSubscribers.contains(user)){
                     mailService.sendUpdatesOnSubscription(user, entity);
                 }
             }

@@ -98,7 +98,7 @@ public class NotificationServiceTest {
         verify(mailService, times(2)).sendUpdatesOnSubscription(any(JCUser.class), eq(codeReview));
         verify(mailService).sendUpdatesOnSubscription(user1, codeReview);
         verify(mailService).sendUpdatesOnSubscription(user2, codeReview);
-        assertEquals(topic.getSubscribers().size(), 3);
+        assertEquals(topic.getSubscribers().size(), 2);
     }
 
     @Test
@@ -132,7 +132,7 @@ public class NotificationServiceTest {
         verify(mailService, times(2)).sendUpdatesOnSubscription(any(JCUser.class), eq(topic));
         verify(mailService).sendUpdatesOnSubscription(user1, topic);
         verify(mailService).sendUpdatesOnSubscription(user2, topic);
-        assertEquals(topic.getSubscribers().size(), 3);
+        assertEquals(topic.getSubscribers().size(), 2);
     }
 
     @Test
@@ -160,7 +160,7 @@ public class NotificationServiceTest {
                 any(JCUser.class), eq(branch));
         verify(mailService).sendUpdatesOnSubscription(user1, branch);
         verify(mailService).sendUpdatesOnSubscription(user2, branch);
-        assertEquals(branch.getSubscribers().size(), 3);
+        assertEquals(branch.getSubscribers().size(), 2);
     }
 
     @Test
@@ -300,5 +300,23 @@ public class NotificationServiceTest {
         prepareDisabledProperty();
         service.sendNotificationAboutRemovingTopic(topic, new ArrayList());
         verify(mailService, Mockito.never()).sendRemovingTopicMail(user1, topic);
+    }
+
+    @Test
+    public void testTopicChangedWithFilterByTopicSubscribers() throws MailingFailedException {
+        prepareEnabledProperty();
+        topic.getSubscribers().add(user1);
+        topic.getSubscribers().add(user2);
+        topic.getSubscribers().add(currentUser);
+        when(subscriptionService.getAllowedSubscribers(topic)).thenReturn(topic.getSubscribers());
+
+        Collection<JCUser> topicSubscribers = new ArrayList();
+        topicSubscribers.add(user2);
+
+        service.subscribedEntityChanged(topic, topicSubscribers);
+
+        verify(mailService, times(1)).sendUpdatesOnSubscription(any(JCUser.class), eq(topic));
+        verify(mailService).sendUpdatesOnSubscription(user1, topic);
+        assertEquals(topic.getSubscribers().size(), 2);
     }
 }
