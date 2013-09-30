@@ -70,10 +70,30 @@ public class NotificationService {
      */
     public void subscribedEntityChanged(SubscriptionAwareEntity entity) {
         if (notificationsEnabledProperty.booleanValue()) {
-            JCUser current = userService.getCurrentUser();
+
             Collection<JCUser> subscribers = subscriptionService.getAllowedSubscribers(entity);
+            subscribers.remove(userService.getCurrentUser());
+
             for (JCUser user : subscribers) {
-                if (!user.equals(current)) {
+                mailService.sendUpdatesOnSubscription(user, entity);
+            }
+
+        }
+    }
+
+    /**
+     * Overload for skipping topic subscribers
+     * @param entity
+     * @param topicSubscribers
+     */
+    public void subscribedEntityChanged(SubscriptionAwareEntity entity, Collection<JCUser> topicSubscribers) {
+        if (notificationsEnabledProperty.booleanValue()) {
+
+            Collection<JCUser> subscribers = subscriptionService.getAllowedSubscribers(entity);
+            subscribers.remove(userService.getCurrentUser());
+
+            for (JCUser user : subscribers) {
+                if(!topicSubscribers.contains(user)){
                     mailService.sendUpdatesOnSubscription(user, entity);
                 }
             }
@@ -89,41 +109,49 @@ public class NotificationService {
      * @param topicId topic id
      */
     public void topicMoved(Topic topic, long topicId) {
+
         if (notificationsEnabledProperty.booleanValue()) {
 
-            JCUser currentUser = userService.getCurrentUser();
-            JCUser topicStarter = topic.getTopicStarter();
+            //send notification to topic subscribers
+            Collection<JCUser> topicSubscribers = subscriptionService.getAllowedSubscribers(topic);
+            this.filterSubscribers(topicSubscribers);
+
+            for (JCUser subscriber : topicSubscribers) {
+                mailService.sendTopicMovedMail(subscriber, topicId);
+            }
 
             //send notification to branch subscribers
             Set<JCUser> branchSubscribers = new HashSet<JCUser>(topic.getBranch().getSubscribers());
 
-            // temp transient collection modification to ease the iteration
-            branchSubscribers.add(topicStarter);
-            branchSubscribers.remove(currentUser);
+            this.filterSubscribers(branchSubscribers);
             for (JCUser subscriber : branchSubscribers) {
-                mailService.sendTopicMovedMail(subscriber, topicId);
-            }
-
-            //send notification to topic's subscribers
-            Collection<JCUser> topicSubscribers = subscriptionService.getAllowedSubscribers(topic);
-            topicSubscribers.remove(topicStarter);
-            for (JCUser subscriber : topicSubscribers) {
-                mailService.sendTopicMovedMail(subscriber, topicId);
+                if(!topicSubscribers.contains(subscriber)) {
+                    mailService.sendTopicMovedMail(subscriber, topicId);
+                }
             }
         }
     }
 
     /**
+     * Filter collection - remove current user from subscribers
+     * @param subscribers collection of subscribers
+     */
+    private void filterSubscribers(Collection<JCUser> subscribers)
+    {
+        subscribers.remove(userService.getCurrentUser());
+    }
+
+    /**
      * Send notification to subscribers about removing topic or code review.
      *
-     * @param entity Current topic
+     * @param topic Current topic
      * @param subscribers Collection of subscribers
      */
-    public void sendNotificationAboutRemovingTopic(Topic entity, Collection<JCUser> subscribers) {
+    public void sendNotificationAboutRemovingTopic(Topic topic, Collection<JCUser> subscribers) {
         if (notificationsEnabledProperty.booleanValue()) {
-            subscribers.remove(entity.getTopicStarter());
+            this.filterSubscribers(subscribers);
             for (JCUser subscriber : subscribers) {
-                mailService.sendRemovingTopicMail(subscriber, entity);
+                mailService.sendRemovingTopicMail(subscriber, topic);
             }
         }
     }

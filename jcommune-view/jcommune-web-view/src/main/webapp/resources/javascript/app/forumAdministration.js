@@ -290,6 +290,14 @@ function createUploader(IFrameActionUrl, XhrActionUrl, uploadButtonId, onSuccess
         onComplete: function (id, filename, responseJSON) {
             // response is empty when response status is not 200
             if (jQuery.isEmptyObject(responseJSON)) {
+                saveInputValues();
+                // display "unknown error" message
+                jDialog.createDialog({
+                    type: jDialog.alertType,
+                    bodyMessage: $labelUnexpectedError
+                });
+                $('#' + jDialog.options.alertDefaultBut).on('click', createAdministrationDialog);
+                jDialog.dialog.find('.close').bind('click', createAdministrationDialog);
                 return;
             }
             //
