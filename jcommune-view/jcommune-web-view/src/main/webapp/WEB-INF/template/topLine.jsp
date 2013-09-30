@@ -243,21 +243,21 @@
       </div>
       <ul class="dropdown-menu lang-menu">
         <li id='lang-en'>
-          <a href="href=${pageContext.request.requestURL}lang=en" onclick="window.location = getLanguageLink('en')">
+          <a href="href=${pageContext.request.requestURL}lang=en">
             <img src="${pageContext.request.contextPath}/resources/images/flags/en.png"
                  alt="<fmt:message key='label.english'/>"/>
             <fmt:message key='label.english'/>
           </a>
         </li>
         <li id='lang-ru'>
-          <a href="${pageContext.request.requestURL}lang=ru" <%--onclick="window.location = getLanguageLink('ru')"--%>>
+          <a href="${pageContext.request.requestURL}lang=ru">
             <img src="${pageContext.request.contextPath}/resources/images/flags/ru.png"
                  alt="<fmt:message key='label.russian'/>"/>
             <fmt:message key='label.russian'/>
           </a>
         </li>
         <li id='lang-uk'>
-          <a href="${pageContext.request.requestURL}lang=uk" onclick="window.location = getLanguageLink('uk')">
+          <a href="${pageContext.request.requestURL}lang=uk">
             <img src="${pageContext.request.contextPath}/resources/images/flags/uk.png"
                  alt="<fmt:message key='label.ukrainian'/>"/>
             <fmt:message key='label.ukrainian'/>

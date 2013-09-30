@@ -22,7 +22,7 @@
  * @param lang ISO_639-1 language code
  */
 function getLanguageLink(lang) {
-    var href = window.location.toString().split("language", 1)[0];
+    var href = window.location.toString().split("#", 1)[0];
     if (href.indexOf("?") == -1) {
         href = href + "?lang=";
     } else {

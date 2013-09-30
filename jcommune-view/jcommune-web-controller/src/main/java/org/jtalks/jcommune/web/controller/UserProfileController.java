@@ -241,8 +241,8 @@ public class UserProfileController {
     @RequestMapping(value = "**/lang={id}", method = RequestMethod.GET)
     public String saveUserLanguage(@PathVariable("id") String id, HttpServletResponse response, HttpServletRequest request) throws ServletException {
         JCUser jcuser = userService.getCurrentUser();
+        Language languageFromRequest = Language.byLocale(new Locale(id));
         if(!jcuser.isAnonymous()){
-            Language languageFromRequest = Language.byLocale(new Locale(id));
             try{
                 jcuser.setLanguage(languageFromRequest);
                 userService.saveEditedUserProfile(jcuser.getId(), new EditUserProfileDto(jcuser).getUserInfoContainer());
@@ -251,10 +251,8 @@ public class UserProfileController {
             }
         }
         LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
-        localeResolver.setLocale(request, response, jcuser.getLanguage().getLocale());
-
+        localeResolver.setLocale(request, response, languageFromRequest.getLocale());
         return "redirect:" + request.getHeader("Referer");
-//        return new JsonResponse(JsonResponseStatus.SUCCESS, null);
     }
 
 }
