@@ -18,6 +18,8 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%--@elvariable id="username" type="java.util.List"--%>
+<%--@elvariable id="login_error" type="java.util.List"--%>
 <html>
 <head>
   <title><spring:message code="label.signin"/></title>
@@ -35,7 +37,7 @@
         <label for="j_username" class="control-label"><spring:message code="label.username"/> </label>
 
         <div class="controls">
-          <input class="reg_input" type="text" name="j_username" id="j_username" value="${sessionScope.username}">
+          <input class="reg_input" type="text" name="j_username" id="j_username" value="${username}">
         </div>
       </div>
 
@@ -44,16 +46,16 @@
 
         <div class="controls">
           <input type="password" name="j_password" id="j_password">
-          <c:if test="${not empty param.login_error}">
+          <c:if test="${not empty login_error}">
                         <span class="help-inline">
                         	<c:choose>
-                              <c:when test="${param.login_error == 1}">
+                              <c:when test="${login_error == 1}">
                                 <spring:message code="label.login_error"/>
                               </c:when>
-                              <c:when test="${param.login_error == 2}">
+                              <c:when test="${login_error == 2}">
                                 <spring:message code="label.login_cookies_were_theft"/>
                               </c:when>
-                              <c:when test="${param.login_error == 3}">
+                              <c:when test="${login_error == 3}">
                                 <spring:message code="label.authentication.connection.error"/>
                               </c:when>
                             </c:choose>
