@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.web.controller;
 
 import com.google.common.collect.ImmutableMap;
-import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
@@ -66,7 +65,6 @@ public class UserController {
     public static final String REG_SERVICE_UNEXPECTED_ERROR_URL = "redirect:/user/new?reg_error=2";
 
     private static final String REMEMBER_ME_ON = "on";
-    protected static final String ATTR_USERNAME = "username";
 
     private UserService userService;
     private Authenticator authenticator;
@@ -230,12 +228,9 @@ public class UserController {
      * @return login view name or redirect to main page
      */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String loginPage(@RequestParam(defaultValue = StringUtils.EMPTY) String login_error, HttpServletRequest request) {
+    public String loginPage() {
         JCUser currentUser = userService.getCurrentUser();
         if (currentUser.isAnonymous()) {
-            if(StringUtils.isBlank(login_error)){
-                request.getSession().removeAttribute(ATTR_USERNAME);
-            }
             return LOGIN;
         } else {
             return "redirect:/";
@@ -293,7 +288,6 @@ public class UserController {
         if (isAuthenticated) {
             return new ModelAndView("redirect:/");
         } else {
-            request.getSession().setAttribute(ATTR_USERNAME, username);
             return new ModelAndView(AUTH_FAIL_URL);
         }
     }
