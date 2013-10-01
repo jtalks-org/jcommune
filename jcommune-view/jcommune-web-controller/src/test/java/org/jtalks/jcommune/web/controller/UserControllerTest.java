@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.controller;
 
 import com.google.common.collect.Lists;
+import org.apache.commons.lang.StringUtils;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.dto.UserDto;
@@ -42,6 +43,7 @@ import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
@@ -253,20 +255,44 @@ public class UserControllerTest {
     @Test
     public void testLoginUserLogged() {
         when(userService.getCurrentUser()).thenReturn(new JCUser("username", null, null));
-
-        String result = userController.loginPage();
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        String result = userController.loginPage(StringUtils.EMPTY, request);
 
         assertEquals(result, "redirect:/");
         verify(userService).getCurrentUser();
     }
 
+    /**
+     * Attribute 'username' should be removed from session is this case.
+     */
     @Test
-    public void testLoginUserNotLogged() {
+    public void testLoginUserNotLoggedWithEmptyError() {
         when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpSession session = mock(HttpSession.class);
+        when(request.getSession()).thenReturn(session);
 
-        String result = userController.loginPage();
+        String result = userController.loginPage(StringUtils.EMPTY, request);
 
         assertEquals(result, UserController.LOGIN);
+        verify(session).removeAttribute(UserController.ATTR_USERNAME);
+        verify(userService).getCurrentUser();
+    }
+
+    /**
+     * Attribute 'username' should not be removed form session in this case.
+     */
+    @Test
+    public void testLoginUserNotLoggedWithNotEmptyError() {
+        when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpSession session = mock(HttpSession.class);
+        when(request.getSession()).thenReturn(session);
+
+        String result = userController.loginPage("1", request);
+
+        assertEquals(result, UserController.LOGIN);
+        verify(session, never()).removeAttribute(UserController.ATTR_USERNAME);
         verify(userService).getCurrentUser();
     }
 
@@ -336,8 +362,8 @@ public class UserControllerTest {
         when(userService.loginUser(anyString(), anyString(), anyBoolean(),
                 any(HttpServletRequest.class), any(HttpServletResponse.class)))
                 .thenReturn(false);
-
-        ModelAndView view = userController.login(null, null, "off", null, null);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        ModelAndView view = userController.login(null, null, "off", request, null);
 
         assertEquals(view.getViewName(), UserController.AUTH_FAIL_URL);
         verify(userService).loginUser(anyString(), anyString(), eq(false),
