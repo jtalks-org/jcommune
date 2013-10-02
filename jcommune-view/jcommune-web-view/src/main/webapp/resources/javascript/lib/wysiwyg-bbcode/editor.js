@@ -182,6 +182,7 @@ function closeTags() {
 
     content = currentContent;
     textboxelement.value = content;
+    textboxelement.focus();
 }
 
 function closeTag2(text) {
@@ -429,20 +430,34 @@ function AddTag(t1, t2) {
             element.focus();
             var txt = element.value;
             var str = document.selection.createRange();
+            var sel_start = element.selectionStart;
+            var sel_end = element.selectionEnd;
 
-            if (str.text == "") {
+            if (t2 == "[/img]") {
+                str.text = str.text + t1 + t2;
+                sel_end = sel_end + t1.length + t2.length;
+                sel_start = sel_end;
+            } else if (str.text == "") {
                 if (t2 == "[/url]") {
                     if (str.text != mylink) {
                         str.text = str.text + t1 + mylink + t2;
+                        sel_start = sel_start + t1.length;
+                        sel_end = sel_end + t1.length + mylink.length;
                     } else {
                         str.text = t1 + mylink + t2;
+                        sel_start = sel_start + t1.length;
+                        sel_end = sel_end + t1.length + mylink.length;
                     }
                 } else {
                     str.text = t1 + dummyText + t2;
+                    sel_start = sel_start + t1.length;
+                    sel_end = sel_start + dummyText.length;
                 }
             }
             else if (txt.indexOf(str.text) >= 0) {
                 str.text = t1 + str.text + t2;
+                sel_start = sel_start + t1.length;
+                sel_end = sel_end + t1.length;
             }
             else {
                 if (t2 == "[/url]") {
@@ -452,7 +467,14 @@ function AddTag(t1, t2) {
                 }
 
             }
-            str.select();
+            window.setTimeout(function(){
+                element.selectionStart = sel_start;
+                element.selectionEnd = sel_end;
+            }, 1);
+            if ($.browser.msie  && parseInt($.browser.version, 10) < 9)  {
+                str.select();
+            }
+            element.focus();
         }
     }
     else if (typeof(element.selectionStart) != 'undefined') {
@@ -462,6 +484,12 @@ function AddTag(t1, t2) {
 
         if ((element.value.substring(sel_start, sel_end) != mylink && t2 == "[/url]") || t2 == "[/img]") {
             sel_start = sel_end;
+        }
+
+        if (element.value == "" && $.browser.opera) {
+            // for Opera browser null value (textarea empty) for selectionStart and selectionEnd is '20'
+            sel_start = sel_start - 20;
+            sel_end = sel_end - 20;
         }
 
         MozillaInsertText(element, t1, sel_start);
@@ -501,18 +529,25 @@ function AddTag(t1, t2) {
 function AddList(t1, t2) {
     var element = textboxelement;
     var dummyText = $labelDummyTextBBCode;
+
     if (isIE) {
         if (document.selection) {
             element.focus();
 
             var txt = element.value;
             var str = document.selection.createRange();
+            var sel_start = element.selectionStart;
+            var sel_end = element.selectionEnd;
 
             if (str.text == "") {
                 str.text = t1 + dummyText+ t2;
+                sel_start = sel_start + t1.length;
+                sel_end = sel_start + dummyText.length;
             }
             else if (txt.indexOf(str.text) >= 0) {
                 str.text = t1 + str.text + t2;
+                sel_start = sel_start + t1.length;
+                sel_end = sel_end + t1.length;
             }
             else {
                 element.value = txt + t1 + t2;
@@ -525,13 +560,22 @@ function AddList(t1, t2) {
             }
             str.text = value1;
 
-
-            str.select();
+            element.selectionStart = sel_start;
+            element.selectionEnd = sel_end;
+            if ($.browser.msie  && parseInt($.browser.version, 10) < 9)  {
+                str.select();
+            }
+            element.focus();
         }
     }
     else if (typeof(element.selectionStart) != 'undefined') {
         var sel_start = element.selectionStart;
         var sel_end = element.selectionEnd;
+        if (element.value == "" && $.browser.opera) {
+            // for Opera browser null value (textarea empty) for selectionStart and selectionEnd is '20'
+            sel_start = sel_start - 20;
+            sel_end = sel_end - 20;
+        }
         var needDummy = (sel_start == sel_end);
         var str1 = needDummy ? dummyText + t2 : t2;
         MozillaInsertText(element, t1, sel_start);
