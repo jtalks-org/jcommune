@@ -342,6 +342,7 @@ function doLink() {
 
                     AddTag('[url=' + link + ']', '[/url]');
                     jDialog.closeDialog();
+                    textboxelement.focus();
                 } else {
                     ErrorUtils.removeErrorMessage('#urlId', $labelErrorsNotEmpty);
                     ErrorUtils.addErrorMessage('#urlId', $labelErrorsNotEmpty);
@@ -459,41 +460,39 @@ function AddTag(t1, t2) {
         var sel_start = element.selectionStart;
         var sel_end = element.selectionEnd;
 
-        if (element.value.substring(sel_start, sel_end) != mylink && t2 == "[/url]") {
+        if ((element.value.substring(sel_start, sel_end) != mylink && t2 == "[/url]") || t2 == "[/img]") {
             sel_start = sel_end;
         }
 
         MozillaInsertText(element, t1, sel_start);
         if (sel_start == sel_end && t2 == "[/url]") {
             MozillaInsertText(element, mylink + t2, sel_end + t1.length);
-            window.setTimeout(function(){
-                element.selectionEnd = sel_end + t1.length + t2.length + mylink.length;
-            }, 1);
+            sel_start = sel_start + t1.length;
+            sel_end = sel_end + t1.length + mylink.length;
         } else if (t2 == "[/img]") {
-            element.selectionStart = sel_end;
             MozillaInsertText(element, t2, sel_end + t1.length);
             sel_end = sel_end + t1.length + t2.length;
-            window.setTimeout(function(){
-                element.selectionStart = sel_end;
-                element.selectionEnd = sel_end;
-            }, 1);
+            sel_start = sel_end;
         } else if (element.value.substring(sel_start, sel_end).length == 0) {
             MozillaInsertText(element, dummyText + t2, sel_end + t1.length);
             sel_start = sel_start + t1.length;
-            element.selectionStart = sel_start;
-            element.selectionEnd = sel_start + dummyText.length;
+            sel_end = sel_start + dummyText.length;
         } else {
             MozillaInsertText(element, t2, sel_end + t1.length);
-            element.selectionStart = sel_start + t1.length;
-            element.selectionEnd = sel_end + t1.length;
+            sel_start = sel_start + t1.length;
+            sel_end = sel_end + t1.length;
         }
-
+        window.setTimeout(function(){
+            element.selectionStart = sel_start;
+            element.selectionEnd = sel_end;
+        }, 1);
         element.focus();
     }
     else {
         if (t2 == "[/url]") {
             element.value = element.value + t1 + mylink + t2;
         } else {
+            console.log("Hello5");
             element.value = element.value + t1 + t2;
         }
     }
