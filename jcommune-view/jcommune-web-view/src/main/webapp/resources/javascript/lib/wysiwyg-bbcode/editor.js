@@ -482,6 +482,7 @@ function AddTag(t1, t2) {
             sel_start = sel_start + t1.length;
             sel_end = sel_end + t1.length;
         }
+        // needed for correct focus after inserting tags (Chrome)
         window.setTimeout(function(){
             element.selectionStart = sel_start;
             element.selectionEnd = sel_end;
@@ -492,7 +493,6 @@ function AddTag(t1, t2) {
         if (t2 == "[/url]") {
             element.value = element.value + t1 + mylink + t2;
         } else {
-            console.log("Hello5");
             element.value = element.value + t1 + t2;
         }
     }
