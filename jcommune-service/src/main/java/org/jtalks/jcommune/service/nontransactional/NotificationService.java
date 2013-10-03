@@ -46,8 +46,8 @@ public class NotificationService {
     private JCommuneProperty notificationsEnabledProperty;
 
     /**
-     * @param userService to determine the update author
-     * @param mailService     to perform actual email notifications
+     * @param userService                  to determine the update author
+     * @param mailService                  to perform actual email notifications
      * @param notificationsEnabledProperty lets us know whether we can send notifications
      */
     public NotificationService(
@@ -83,6 +83,7 @@ public class NotificationService {
 
     /**
      * Overload for skipping topic subscribers
+     *
      * @param entity
      * @param topicSubscribers
      */
@@ -93,7 +94,7 @@ public class NotificationService {
             subscribers.remove(userService.getCurrentUser());
 
             for (JCUser user : subscribers) {
-                if(!topicSubscribers.contains(user)){
+                if (!topicSubscribers.contains(user)) {
                     mailService.sendUpdatesOnSubscription(user, entity);
                 }
             }
@@ -125,26 +126,26 @@ public class NotificationService {
 
             this.filterSubscribers(branchSubscribers);
             for (JCUser subscriber : branchSubscribers) {
-                if(!topicSubscribers.contains(subscriber)) {
+              //  if (!topicSubscribers.contains(subscriber)) {
                     mailService.sendTopicMovedMail(subscriber, topicId);
-                }
+              //  }
             }
         }
     }
 
     /**
      * Filter collection - remove current user from subscribers
+     *
      * @param subscribers collection of subscribers
      */
-    private void filterSubscribers(Collection<JCUser> subscribers)
-    {
+    private void filterSubscribers(Collection<JCUser> subscribers) {
         subscribers.remove(userService.getCurrentUser());
     }
 
     /**
      * Send notification to subscribers about removing topic or code review.
      *
-     * @param topic Current topic
+     * @param topic       Current topic
      * @param subscribers Collection of subscribers
      */
     public void sendNotificationAboutRemovingTopic(Topic topic, Collection<JCUser> subscribers) {
