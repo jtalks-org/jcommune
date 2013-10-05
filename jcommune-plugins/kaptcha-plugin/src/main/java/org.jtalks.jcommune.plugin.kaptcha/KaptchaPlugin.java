@@ -15,6 +15,9 @@
 
 package org.jtalks.jcommune.plugin.kaptcha;
 
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
+import org.apache.velocity.app.VelocityEngine;
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.model.plugins.RegistrationPlugin;
@@ -24,6 +27,7 @@ import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.ui.velocity.VelocityEngineUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -108,15 +112,15 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
     @Override
     public String getHtml(HttpServletRequest request) {
         SecurityContextHolder.getContext();
-//        ResourceBundle resourceBundle  = ResourceBundle.getBundle("org.jtalks.plugins.kaptcha.messages", Locale.ENGLISH);
-        return "<div class='control-group'>" +
-                "            <div class='controls captcha-images'>" +
-                "                <img id='captcha-img' alt='Captcha' src='http://localhost:8080/plugin/{captchaPluginId}/refreshCaptcha' />" +
-                "                <img id='captcha-refresh' alt='Refresh captcha'  src='http://localhost:8080/resources/images/captcha-refresh.png' />" +
-                "            </div>" +
-                "            <div class='controls'>" +
-                "                <input type='text' id='captcha' placeholder='Captcha' class='input-xlarge' />" +
-                "            </div>" +
-                "        </div> ";
+        ResourceBundle resourceBundle  = ResourceBundle.getBundle("org.jtalks.jcommune.plugins.kaptcha.messages", Locale.ENGLISH);
+        Properties properties = new Properties();
+        properties.put("resource.loader", "class");
+        properties.put("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+        VelocityEngine engine = new VelocityEngine(properties);
+        engine.init();
+
+        return VelocityEngineUtils.mergeTemplateIntoString(
+                engine,"org/jtalks/jcommune/plugins/kaptcha/template/captcha.vm",
+                "UTF-8", new HashMap<String, Object>());
     }
 }
