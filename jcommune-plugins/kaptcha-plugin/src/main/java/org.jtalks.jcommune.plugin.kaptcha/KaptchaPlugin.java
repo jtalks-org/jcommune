@@ -23,12 +23,11 @@ import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Pattern;
 
 import static org.jtalks.jcommune.model.entity.PluginProperty.Type.INT;
 import static org.jtalks.jcommune.model.entity.PluginProperty.Type.STRING;
@@ -108,13 +107,15 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
 
     @Override
     public String getHtml(HttpServletRequest request) {
+        SecurityContextHolder.getContext();
+//        ResourceBundle resourceBundle  = ResourceBundle.getBundle("org.jtalks.plugins.kaptcha.messages", Locale.ENGLISH);
         return "<div class='control-group'>" +
                 "            <div class='controls captcha-images'>" +
-                "                <img id='captcha-img' alt='$altCaptcha' src='http://localhost:8080/plugin/{captchaPluginId}/refreshCaptcha' />" +
-                "                <img id='captcha-refresh' alt='$altCaptchaRefresh'  src='http://localhost:8080/resources/images/captcha-refresh.png' />" +
+                "                <img id='captcha-img' alt='Captcha' src='http://localhost:8080/plugin/{captchaPluginId}/refreshCaptcha' />" +
+                "                <img id='captcha-refresh' alt='Refresh captcha'  src='http://localhost:8080/resources/images/captcha-refresh.png' />" +
                 "            </div>" +
                 "            <div class='controls'>" +
-                "                <input type='text' id='captcha' placeholder='$labelCaptcha' class='input-xlarge' />" +
+                "                <input type='text' id='captcha' placeholder='Captcha' class='input-xlarge' />" +
                 "            </div>" +
                 "        </div> ";
     }
