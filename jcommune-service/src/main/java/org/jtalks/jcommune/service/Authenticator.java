@@ -21,6 +21,7 @@ import org.springframework.validation.BindingResult;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 /**
  * Serves for authentication and registration user.
@@ -58,4 +59,5 @@ public interface Authenticator {
             throws UnexpectedErrorException, NoConnectionException;
 
 
+    Map<String, String> getCaptchaProperties();
 }

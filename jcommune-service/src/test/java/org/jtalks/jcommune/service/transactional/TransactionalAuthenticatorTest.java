@@ -28,6 +28,8 @@ import org.jtalks.jcommune.model.plugins.SimpleAuthenticationPlugin;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.Authenticator;
+import org.jtalks.jcommune.service.ComponentService;
+import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.ImageService;
@@ -95,6 +97,8 @@ public class TransactionalAuthenticatorTest {
     @Mock
     ImageService avatarService;
     @Mock
+    PluginService pluginService;
+    @Mock
     private Validator validator;
 
     private Authenticator authenticator;
@@ -103,7 +107,7 @@ public class TransactionalAuthenticatorTest {
     public void setUp() throws Exception {
         initMocks(this);
         authenticator = new TransactionalAuthenticator(pluginLoader, userDao, groupDao,
-                encryptionService, mailService, avatarService, authenticationManager,
+                encryptionService, mailService, avatarService, pluginService, authenticationManager,
                 securityFacade, rememberMeServices, sessionStrategy, validator);
     }
 

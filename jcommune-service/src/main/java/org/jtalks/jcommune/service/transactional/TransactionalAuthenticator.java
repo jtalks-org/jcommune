@@ -28,9 +28,11 @@ import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.model.plugins.SimpleAuthenticationPlugin;
+import org.jtalks.jcommune.model.plugins.SimpleCaptchaPlugin;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.Authenticator;
+import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.ImageService;
@@ -55,6 +57,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -89,6 +92,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
     private MailService mailService;
     private ImageService avatarService;
     private GroupDao groupDao;
+    private PluginService pluginService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalAuthenticator.class);
 
@@ -108,6 +112,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
                                       EncryptionService encryptionService,
                                       MailService mailService,
                                       ImageService avatarService,
+                                      PluginService pluginService,
                                       AuthenticationManager authenticationManager,
                                       SecurityContextHolderFacade securityFacade,
                                       RememberMeServices rememberMeServices,
@@ -119,6 +124,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         this.encryptionService = encryptionService;
         this.mailService = mailService;
         this.avatarService = avatarService;
+        this.pluginService = pluginService;
         this.authenticationManager = authenticationManager;
         this.securityFacade = securityFacade;
         this.rememberMeServices = rememberMeServices;
@@ -320,13 +326,16 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
             throws UnexpectedErrorException, NoConnectionException {
         BindingResult result = new BeanPropertyBindingResult(registerUserDto, "newUser");
         BindingResult jcErrors = new BeanPropertyBindingResult(registerUserDto, "newUser");
+        BindingResult captchaErrors = new BeanPropertyBindingResult(registerUserDto, "newUser");
         validator.validate(registerUserDto, jcErrors);
         UserDto userDto = registerUserDto.getUserDto();
         String encodedPassword = (userDto.getPassword() == null || userDto.getPassword().isEmpty()) ? ""
                 : encryptionService.encryptPassword(userDto.getPassword());
         userDto.setPassword(encodedPassword);
         registerByPlugin(registerUserDto.getUserDto(), true, result);
+        validateCaptcha(registerUserDto, captchaErrors);
         mergeValidationErrors(jcErrors, result);
+        mergeValidationErrors(captchaErrors, result);
         if (!result.hasErrors()) {
             registerByPlugin(registerUserDto.getUserDto(), false, result);
             // because next http call can fail (in the interim another user was registered)
@@ -336,6 +345,46 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
             }
         }
         return result;
+    }
+
+    @Override
+    public Map<String, String> getCaptchaProperties() {
+        SimpleCaptchaPlugin captchaPlugin
+                = (SimpleCaptchaPlugin) pluginLoader.getPluginByClassName(SimpleCaptchaPlugin.class);
+        if (captchaPlugin != null && captchaPlugin.getState() == Plugin.State.ENABLED) {
+            Map<String, String> captchaProperties = captchaPlugin.getCaptcha();
+            Long pluginId = getPluginId(captchaPlugin.getName());
+            if (!captchaProperties.isEmpty() && pluginId != null) {
+                captchaProperties.put("showCaptcha", "true");
+                captchaProperties.put("captchaPluginId", pluginId.toString());
+                String html = captchaProperties.get("html");
+                captchaProperties.put("html", html.replace("{captchaPluginId}", pluginId.toString()));
+                return captchaProperties;
+            }
+        }
+        return Collections.emptyMap();
+    }
+
+    private Long getPluginId(String pluginName) {
+        try {
+            return pluginService.getPluginId(pluginName);
+        } catch (org.jtalks.common.service.exceptions.NotFoundException ex) {
+            LOGGER.error("Plugin Id with name {} not found", pluginName);
+        }
+        return null;
+    }
+
+    private void validateCaptcha(RegisterUserDto registerUserDto, BindingResult bindingResult) {
+        SimpleCaptchaPlugin captchaPlugin
+                = (SimpleCaptchaPlugin) pluginLoader.getPluginByClassName(SimpleCaptchaPlugin.class);
+        if (captchaPlugin != null && captchaPlugin.getState() == Plugin.State.ENABLED) {
+            Map<String, String> captchaProperties = new HashMap<>();
+            captchaProperties.put("captcha", registerUserDto.getCaptcha());
+            Map<String, String> errors = captchaPlugin.validateCaptcha(captchaProperties);
+            for (Map.Entry<String, String> error : errors.entrySet()) {
+                bindingResult.rejectValue(error.getKey(), null, error.getValue());
+            }
+        }
     }
 
     public void registerByPlugin(UserDto userDto, boolean dryRun, BindingResult bindingResult)

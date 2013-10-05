@@ -154,6 +154,7 @@
         <constructor-arg ref="encryptionService"/>
         <constructor-arg ref="mailService"/>
         <constructor-arg ref="avatarService"/>
+        <constructor-arg ref="pluginService"/>
         <constructor-arg ref="authenticationManager"/>
         <constructor-arg ref="securityContextFacade"/>
         <constructor-arg ref="rememberMeServices"/>

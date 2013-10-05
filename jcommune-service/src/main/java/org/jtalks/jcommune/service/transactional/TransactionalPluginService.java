@@ -109,6 +109,14 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
      * {@inheritDoc}
      */
     @Override
+    public long getPluginId(String pluginName) throws NotFoundException {
+        return getDao().get(pluginName).getId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @PreAuthorize("hasPermission(#forumComponentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
     public void updatePluginsActivating(List<PluginActivatingDto> updatedPlugins,
                                         long forumComponentId) throws NotFoundException {

@@ -43,6 +43,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * This controller handles custom authentication actions
@@ -204,6 +205,13 @@ public class UserController {
         }
 
         return new JsonResponse(JsonResponseStatus.SUCCESS);
+    }
+
+    @RequestMapping(value = "/user/new_ajax", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonResponse registrationForm() {
+        Map<String, String> captchaProperties = authenticator.getCaptchaProperties();
+        return new JsonResponse(JsonResponseStatus.SUCCESS, captchaProperties);
     }
 
     /**

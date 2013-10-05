@@ -8,8 +8,9 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>jcommune-dummy-plugin</module>
-        <module>poulpe-auth-plugin</module>
+        <!--<module>jcommune-dummy-plugin</module>-->
+        <!--<module>poulpe-auth-plugin</module>-->
+        <module>kaptcha-plugin</module>
     </modules>
 
     <build>
