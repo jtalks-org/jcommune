@@ -76,7 +76,7 @@ public class UserControllerTest {
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityFacade.getContext()).thenReturn(securityContext);
 
-        userController = new UserController(userService, authenticator);
+        userController = new UserController(userService, authenticator, null);
     }
 
     @Test

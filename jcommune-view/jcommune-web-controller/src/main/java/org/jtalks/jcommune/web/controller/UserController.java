@@ -21,6 +21,7 @@ import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.Authenticator;
+import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -69,17 +70,18 @@ public class UserController {
     private static final String REMEMBER_ME_ON = "on";
     protected static final String ATTR_USERNAME = "username";
     protected static final String ATTR_LOGIN_ERROR = "login_error";
-
-    private UserService userService;
-    private Authenticator authenticator;
+    private final UserService userService;
+    private final Authenticator authenticator;
+    private final PluginService pluginService;
 
     /**
      * @param userService to delegate business logic invocation
      */
     @Autowired
-    public UserController(UserService userService, Authenticator authenticator) {
+    public UserController(UserService userService, Authenticator authenticator, PluginService pluginService) {
         this.userService = userService;
         this.authenticator = authenticator;
+        this.pluginService = pluginService;
     }
 
     /**
@@ -89,6 +91,7 @@ public class UserController {
      * trimmed field values only.
      * <p/> There is no need for trim edit password fields,
      * so they are processed with {@link DefaultStringEditor}
+     *
      * @param binder Binder object to be injected
      */
     @InitBinder({"dto", "newUser"})
@@ -143,7 +146,8 @@ public class UserController {
     @RequestMapping(value = "/user/new", method = RequestMethod.GET)
     public ModelAndView registrationPage() {
         return new ModelAndView(REGISTRATION)
-                .addObject("newUser", new RegisterUserDto());
+                .addObject("newUser", new RegisterUserDto())
+                .addObject("registrationPlugins", pluginService.getRegistrationPlugins());
     }
 
     /**
@@ -152,7 +156,7 @@ public class UserController {
      * todo: redirect to the latest url we came from instead of root
      *
      * @param registerUserDto {@link RegisterUserDto} populated in form
-     * @param locale  to set currently selected language as user's default
+     * @param locale          to set currently selected language as user's default
      * @return redirect to / if registration successful or back to "/registration" if failed
      */
     @RequestMapping(value = "/user/new", method = RequestMethod.POST)
@@ -176,13 +180,12 @@ public class UserController {
         return new ModelAndView(AFTER_REGISTRATION);
     }
 
-
     /**
      * Register {@link org.jtalks.jcommune.model.entity.JCUser} from populated {@link RegisterUserDto}.
      * <p/>
      *
      * @param registerUserDto {@link RegisterUserDto} populated in form
-     * @param locale  to set currently selected language as user's default
+     * @param locale          to set currently selected language as user's default
      * @return redirect validation result in JSON format
      */
     @RequestMapping(value = "/user/new_ajax", method = RequestMethod.POST)
@@ -320,7 +323,7 @@ public class UserController {
      */
     @RequestMapping(value = "/usernames", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResponse usernameList(@RequestParam("pattern") String pattern){
+    public JsonResponse usernameList(@RequestParam("pattern") String pattern) {
         return new JsonResponse(JsonResponseStatus.SUCCESS, userService.getUsernames(pattern));
     }
 

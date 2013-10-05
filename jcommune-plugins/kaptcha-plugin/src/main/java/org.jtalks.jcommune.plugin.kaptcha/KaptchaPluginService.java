@@ -13,7 +13,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.jtalks.jcommune.plugin.captcha.service;
+package org.jtalks.jcommune.plugin.kaptcha;
 
 import org.jtalks.jcommune.model.entity.PluginProperty;
 

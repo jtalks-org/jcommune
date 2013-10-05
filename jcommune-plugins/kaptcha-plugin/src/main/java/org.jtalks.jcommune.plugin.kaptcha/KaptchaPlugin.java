@@ -13,32 +13,34 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.jtalks.jcommune.plugin.captcha;
+package org.jtalks.jcommune.plugin.kaptcha;
 
+import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.PluginProperty;
-import org.jtalks.jcommune.model.plugins.SimpleCaptchaPlugin;
+import org.jtalks.jcommune.model.plugins.RegistrationPlugin;
 import org.jtalks.jcommune.model.plugins.StatefullPlugin;
-import org.jtalks.jcommune.plugin.captcha.service.KaptchaPluginService;
+import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
+import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.jtalks.jcommune.model.entity.PluginProperty.Type.INT;
 import static org.jtalks.jcommune.model.entity.PluginProperty.Type.STRING;
 
 /**
- *
  * @author Andrey Pogorelov
  */
-public class KaptchaPlugin extends StatefullPlugin implements SimpleCaptchaPlugin {
-
+public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin {
     private static final Logger LOGGER = LoggerFactory.getLogger(KaptchaPlugin.class);
     private static final String WIDTH_PROPERTY = "Width";
     private static final String HEIGHT_PROPERTY = "Height";
     private static final String LENGTH_PROPERTY = "Length";
     private static final String POSSIBLE_SYMBOLS_PROPERTY = "Possible Symbols";
-
     private List<PluginProperty> pluginProperties;
     private KaptchaPluginService service;
 
@@ -59,7 +61,7 @@ public class KaptchaPlugin extends StatefullPlugin implements SimpleCaptchaPlugi
                 possibleSymbols = property.getValue();
             }
         }
-        if (width < 1 || height < 1 || length < 1 || possibleSymbols.length() < 1 ) {
+        if (width < 1 || height < 1 || length < 1 || possibleSymbols.length() < 1) {
             // this should be returned as a map, but this mechanism should be implemented in the plugin API first
             throw new RuntimeException(
                     "Can't apply configuration: Width, height, length and possible symbols should not be empty.");
@@ -76,7 +78,7 @@ public class KaptchaPlugin extends StatefullPlugin implements SimpleCaptchaPlugi
 
     @Override
     public String getName() {
-        return "Captcha Plugin";
+        return "Kaptcha";
     }
 
     @Override
@@ -94,8 +96,18 @@ public class KaptchaPlugin extends StatefullPlugin implements SimpleCaptchaPlugi
     }
 
     @Override
-    public Map<String, String> getCaptcha() {
-        String captchaHtml = "<div class='control-group'>" +
+    public Map<String, String> registerUser(UserDto userDto) throws NoConnectionException, UnexpectedErrorException {
+        return new HashMap<>();
+    }
+
+    @Override
+    public Map<String, String> validateUser(UserDto userDto) throws NoConnectionException, UnexpectedErrorException {
+        return new HashMap<>();
+    }
+
+    @Override
+    public String getHtml() {
+        return "<div class='control-group'>" +
                 "            <div class='controls captcha-images'>" +
                 "                <img id='captcha-img' alt='$altCaptcha' src='http://localhost:8080/plugin/{captchaPluginId}/refreshCaptcha' />" +
                 "                <img id='captcha-refresh' alt='$altCaptchaRefresh'  src='http://localhost:8080/resources/images/captcha-refresh.png' />" +
@@ -104,13 +116,5 @@ public class KaptchaPlugin extends StatefullPlugin implements SimpleCaptchaPlugi
                 "                <input type='text' id='captcha' placeholder='$labelCaptcha' class='input-xlarge' />" +
                 "            </div>" +
                 "        </div> ";
-        Map<String, String> params = new HashMap<>();
-        params.put("html", captchaHtml);
-        return params;
-    }
-
-    @Override
-    public Map<String, String> validateCaptcha(Map<String, String> properties) {
-        return Collections.emptyMap();
     }
 }

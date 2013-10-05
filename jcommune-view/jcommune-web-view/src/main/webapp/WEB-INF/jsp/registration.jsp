@@ -19,6 +19,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
+<jsp:useBean id="registrationPlugins" type="java.util.List" scope="request"/>
 <html>
 <head>
   <title><spring:message code="label.signup"/></title>
@@ -67,6 +68,12 @@
           <form:errors path="passwordConfirm" cssClass="help-inline"/>
         </div>
       </div>
+
+      <c:forEach items="${registrationPlugins}" var="plugin">
+        <div id="${plugin.name}">
+          <c:out value="${plugin.html}" escapeXml="false"/>
+        </div>
+      </c:forEach>
       <div class="control-group">
         <span class="reg_info"><spring:message code="label.tip.captcha"/></span>
 
@@ -81,18 +88,18 @@
           <form:input path="captcha" class="capcha-field" type="text" id="captcha"/>
           <br>
           <form:errors path="captcha" cssClass="help-inline"/>
-            <c:if test="${not empty param.reg_error}">
+          <c:if test="${not empty param.reg_error}">
               <span class="help-inline">
                   <c:choose>
-                      <c:when test="${param.reg_error == 1}">
-                          <spring:message code="label.registration.connection.error"/>
-                      </c:when>
-                      <c:when test="${param.reg_error == 2}">
-                          <spring:message code="label.registration.failture"/>
-                      </c:when>
+                    <c:when test="${param.reg_error == 1}">
+                      <spring:message code="label.registration.connection.error"/>
+                    </c:when>
+                    <c:when test="${param.reg_error == 2}">
+                      <spring:message code="label.registration.failture"/>
+                    </c:when>
                   </c:choose>
               </span>
-            </c:if>
+          </c:if>
         </div>
       </div>
       <div class="form-actions">

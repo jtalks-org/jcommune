@@ -22,10 +22,9 @@ import org.jtalks.jcommune.model.plugins.Plugin;
  * @author Evgeny Naumenko
  */
 public class TypeFilter implements PluginFilter {
+    private final Class<? extends Plugin> type;
 
-    private Class<Plugin> type;
-
-    public TypeFilter(Class<Plugin> type) {
+    public TypeFilter(Class<? extends Plugin> type) {
         Validate.notNull(type);
         this.type = type;
     }

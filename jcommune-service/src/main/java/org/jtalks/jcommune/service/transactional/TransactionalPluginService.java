@@ -20,9 +20,12 @@ import org.jtalks.jcommune.model.dao.PluginConfigurationDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.model.plugins.Plugin;
+import org.jtalks.jcommune.model.plugins.RegistrationPlugin;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.dto.PluginActivatingDto;
+import org.jtalks.jcommune.service.plugins.PluginFilter;
 import org.jtalks.jcommune.service.plugins.PluginLoader;
+import org.jtalks.jcommune.service.plugins.TypeFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -75,6 +78,11 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
         }
         willBeConfigured.configure(pluginConfiguration);
         saveNewPluginConfiguration(pluginConfiguration);
+    }
+
+    @Override
+    public List<Plugin> getRegistrationPlugins(){
+        return pLuginLoader.getPlugins(new TypeFilter(RegistrationPlugin.class));
     }
 
     private Plugin findPluginByName(List<Plugin> searchSource, String pluginName) {
