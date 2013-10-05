@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -81,8 +82,13 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
     }
 
     @Override
-    public List<Plugin> getRegistrationPlugins(){
-        return pLuginLoader.getPlugins(new TypeFilter(RegistrationPlugin.class));
+    public List<RegistrationPlugin> getRegistrationPlugins(){
+        List<RegistrationPlugin> registrationPluginList = new ArrayList<>();
+        List<Plugin> plugins =  pLuginLoader.getPlugins(new TypeFilter(RegistrationPlugin.class));
+        for(Plugin registrationPlugin : plugins) {
+            registrationPluginList.add((RegistrationPlugin) registrationPlugin);
+        }
+        return registrationPluginList;
     }
 
     private Plugin findPluginByName(List<Plugin> searchSource, String pluginName) {

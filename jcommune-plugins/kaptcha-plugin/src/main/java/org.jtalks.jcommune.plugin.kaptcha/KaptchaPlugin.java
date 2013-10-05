@@ -24,6 +24,7 @@ import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -106,7 +107,7 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
     }
 
     @Override
-    public String getHtml() {
+    public String getHtml(HttpServletRequest request) {
         return "<div class='control-group'>" +
                 "            <div class='controls captcha-images'>" +
                 "                <img id='captcha-img' alt='$altCaptcha' src='http://localhost:8080/plugin/{captchaPluginId}/refreshCaptcha' />" +

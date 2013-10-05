@@ -17,6 +17,7 @@ package org.jtalks.jcommune.service;
 import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.plugins.Plugin;
+import org.jtalks.jcommune.model.plugins.RegistrationPlugin;
 import org.jtalks.jcommune.service.dto.PluginActivatingDto;
 
 import java.util.List;
@@ -67,5 +68,5 @@ public interface PluginService extends EntityService<PluginConfiguration> {
 
     long getPluginId(String pluginName) throws NotFoundException;
 
-    List<Plugin> getRegistrationPlugins();
+    List<RegistrationPlugin> getRegistrationPlugins();
 }

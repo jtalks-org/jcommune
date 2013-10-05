@@ -18,6 +18,8 @@ import com.google.common.collect.ImmutableMap;
 import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
+import org.jtalks.jcommune.model.plugins.Plugin;
+import org.jtalks.jcommune.model.plugins.RegistrationPlugin;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.Authenticator;
@@ -43,8 +45,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This controller handles custom authentication actions
@@ -144,10 +145,14 @@ public class UserController {
      *         {@link org.jtalks.jcommune.model.dto.RegisterUserDto} with name "newUser
      */
     @RequestMapping(value = "/user/new", method = RequestMethod.GET)
-    public ModelAndView registrationPage() {
+    public ModelAndView registrationPage(HttpServletRequest request) {
+        Map<String, String> registrationPlugins = new HashMap<>();
+        for(RegistrationPlugin plugin : pluginService.getRegistrationPlugins()) {
+            registrationPlugins.put(plugin.getName(), plugin.getHtml(request));
+        }
         return new ModelAndView(REGISTRATION)
                 .addObject("newUser", new RegisterUserDto())
-                .addObject("registrationPlugins", pluginService.getRegistrationPlugins());
+                .addObject("registrationPlugins", registrationPlugins);
     }
 
     /**

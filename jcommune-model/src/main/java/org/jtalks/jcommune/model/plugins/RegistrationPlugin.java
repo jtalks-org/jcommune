@@ -4,6 +4,7 @@ import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 public interface RegistrationPlugin extends Plugin {
@@ -27,5 +28,5 @@ public interface RegistrationPlugin extends Plugin {
      */
     Map<String, String> validateUser(UserDto userDto) throws NoConnectionException, UnexpectedErrorException;
 
-    String getHtml();
+    String getHtml(HttpServletRequest request);
 }

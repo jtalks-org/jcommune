@@ -19,7 +19,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
-<jsp:useBean id="registrationPlugins" type="java.util.List" scope="request"/>
+<jsp:useBean id="registrationPlugins" type="java.util.Map" scope="request"/>
 <html>
 <head>
   <title><spring:message code="label.signup"/></title>
@@ -70,8 +70,8 @@
       </div>
 
       <c:forEach items="${registrationPlugins}" var="plugin">
-        <div id="${plugin.name}">
-          <c:out value="${plugin.html}" escapeXml="false"/>
+        <div id="${plugin.key}">
+          <c:out value="${plugin.value}" escapeXml="false"/>
         </div>
       </c:forEach>
       <div class="control-group">
