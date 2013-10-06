@@ -276,7 +276,8 @@ public class TransactionalPostServiceTest {
 
         postService.deletePost(postForDelete);
 
-        assertEquals(topic.getModificationDate(), topic.getFirstPost().getModificationDate());
+        assertEquals(topic.getModificationDate().withMillisOfSecond(0),
+                topic.getFirstPost().getModificationDate().withMillisOfSecond(0));
         verify(branchLastPostService, Mockito.never()).refreshLastPostInBranch(branch);
     }
 
