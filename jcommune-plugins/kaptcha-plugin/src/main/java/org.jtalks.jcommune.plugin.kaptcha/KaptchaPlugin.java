@@ -15,8 +15,6 @@
 
 package org.jtalks.jcommune.plugin.kaptcha;
 
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.PluginProperty;
@@ -31,7 +29,6 @@ import org.springframework.ui.velocity.VelocityEngineUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-import java.util.regex.Pattern;
 
 import static org.jtalks.jcommune.model.entity.PluginProperty.Type.INT;
 import static org.jtalks.jcommune.model.entity.PluginProperty.Type.STRING;
@@ -45,6 +42,10 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
     private static final String HEIGHT_PROPERTY = "Height";
     private static final String LENGTH_PROPERTY = "Length";
     private static final String POSSIBLE_SYMBOLS_PROPERTY = "Possible Symbols";
+    private static final String CAPTCHA_LABEL = "captchaLabel";
+    private static final String ALT_CAPTCHA = "altCaptcha";
+    private static final String ALT_REFRESH_CAPTCHA = "altRefreshCaptcha";
+    private static final String CAPTCHA_PLUGIN_ID = "captchaPluginId";
     private List<PluginProperty> pluginProperties;
     private KaptchaPluginService service;
 
@@ -118,9 +119,13 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
         properties.put("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
         VelocityEngine engine = new VelocityEngine(properties);
         engine.init();
-
+        Map<String, Object> model = new HashMap<>();
+        model.put(CAPTCHA_LABEL, resourceBundle.getObject("label.tip.captcha"));
+        model.put(ALT_CAPTCHA, resourceBundle.getObject("alt.captcha.image"));
+        model.put(ALT_REFRESH_CAPTCHA, resourceBundle.getObject("alt.captcha.update"));
+        model.put(CAPTCHA_PLUGIN_ID, "1");
         return VelocityEngineUtils.mergeTemplateIntoString(
                 engine,"org/jtalks/jcommune/plugins/kaptcha/template/captcha.vm",
-                "UTF-8", new HashMap<String, Object>());
+                "UTF-8", model);
     }
 }
