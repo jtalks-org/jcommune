@@ -14,15 +14,12 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import java.util.Set;
-
-import org.hibernate.search.annotations.Analyzer;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Fields;
+import org.hibernate.search.annotations.*;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.search.BbCodeFilterBridge;
+
+import java.util.Set;
 
 /**
  * Represents the simple version of post of the forum
@@ -172,6 +169,7 @@ public class Post extends Entity {
     /**
      * @return the topic
      */
+    @ContainedIn
     public Topic getTopic() {
         return topic;
     }
