@@ -67,7 +67,7 @@ public class UserController {
 
     private static final String REMEMBER_ME_ON = "on";
     protected static final String ATTR_USERNAME = "username";
-    protected static final String ATTR_LOGIN_ERROR = "username";
+    protected static final String ATTR_LOGIN_ERROR = "login_error";
 
     private UserService userService;
     private Authenticator authenticator;
