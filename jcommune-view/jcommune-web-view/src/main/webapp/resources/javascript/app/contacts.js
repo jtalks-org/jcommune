@@ -243,6 +243,7 @@ $(document).ready(function () {
                         }
                     });
                 }else{
+                   ErrorUtils.removeErrorMessage('#contact');
                    ErrorUtils.addErrorMessage('#contact', $labelValidationUsercontactNotMatch);
                    AddContact.isValueValid = false;
                }
