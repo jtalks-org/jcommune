@@ -19,7 +19,9 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
-
+<head>
+    <title><c:out value="${pluginConfiguration.name}"/></title>
+<head>
 <body>
 <div class="container">
   <div id="plugins-properties-list-header">

@@ -312,8 +312,8 @@ public class TransactionalTopicModificationService implements TopicModificationS
         Collection<JCUser> subscribers = subscriptionService.getAllowedSubscribers(topic);
 
         Branch branch = deleteTopicSilent(topic);
-        notificationService.subscribedEntityChanged(branch);
         notificationService.sendNotificationAboutRemovingTopic(topic, subscribers);
+        notificationService.subscribedEntityChanged(branch, subscribers);
 
         logger.info("Deleted topic \"{}\". Topic id: {}", topic.getTitle(), topic.getId());
     }

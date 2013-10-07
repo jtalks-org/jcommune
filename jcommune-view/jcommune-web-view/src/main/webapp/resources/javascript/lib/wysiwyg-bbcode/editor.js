@@ -182,6 +182,7 @@ function closeTags() {
 
     content = currentContent;
     textboxelement.value = content;
+    textboxelement.focus();
 }
 
 function closeTag2(text) {
@@ -342,6 +343,7 @@ function doLink() {
 
                     AddTag('[url=' + link + ']', '[/url]');
                     jDialog.closeDialog();
+                    textboxelement.focus();
                 } else {
                     ErrorUtils.removeErrorMessage('#urlId', $labelErrorsNotEmpty);
                     ErrorUtils.addErrorMessage('#urlId', $labelErrorsNotEmpty);
@@ -391,6 +393,7 @@ function doImage() {
             if ((myimg != null) && (myimg != '')) {
                 AddTag('[img]' + myimg, '[/img]');
                 jDialog.closeDialog();
+                textboxelement.focus();
             }else {
                 ErrorUtils.removeErrorMessage('#imgId', $labelErrorsNotEmpty);
                 ErrorUtils.addErrorMessage('#imgId', $labelErrorsNotEmpty);
@@ -427,20 +430,34 @@ function AddTag(t1, t2) {
             element.focus();
             var txt = element.value;
             var str = document.selection.createRange();
+            var sel_start = element.selectionStart;
+            var sel_end = element.selectionEnd;
 
-            if (str.text == "") {
+            if (t2 == "[/img]") {
+                str.text = str.text + t1 + t2;
+                sel_end = sel_end + t1.length + t2.length;
+                sel_start = sel_end;
+            } else if (str.text == "") {
                 if (t2 == "[/url]") {
                     if (str.text != mylink) {
                         str.text = str.text + t1 + mylink + t2;
+                        sel_start = sel_start + t1.length;
+                        sel_end = sel_end + t1.length + mylink.length;
                     } else {
                         str.text = t1 + mylink + t2;
+                        sel_start = sel_start + t1.length;
+                        sel_end = sel_end + t1.length + mylink.length;
                     }
                 } else {
                     str.text = t1 + dummyText + t2;
+                    sel_start = sel_start + t1.length;
+                    sel_end = sel_start + dummyText.length;
                 }
             }
             else if (txt.indexOf(str.text) >= 0) {
                 str.text = t1 + str.text + t2;
+                sel_start = sel_start + t1.length;
+                sel_end = sel_end + t1.length;
             }
             else {
                 if (t2 == "[/url]") {
@@ -450,7 +467,16 @@ function AddTag(t1, t2) {
                 }
 
             }
-            str.select();
+            window.setTimeout(function(){
+                element.selectionStart = sel_start;
+                element.selectionEnd = sel_end;
+            }, 1);
+
+            if ($.browser.msie  && parseInt($.browser.version, 10) < 9)  {
+                str.select();
+            }
+
+            element.focus();
         }
     }
     else if (typeof(element.selectionStart) != 'undefined') {
@@ -458,34 +484,39 @@ function AddTag(t1, t2) {
         var sel_start = element.selectionStart;
         var sel_end = element.selectionEnd;
 
-        if (element.value.substring(sel_start, sel_end) != mylink && t2 == "[/url]") {
+        if ((element.value.substring(sel_start, sel_end) != mylink && t2 == "[/url]")) {
             sel_start = sel_end;
+        }
+
+        if (element.value == "" && $.browser.opera) {
+            // for Opera browser null value (textarea empty) for selectionStart and selectionEnd is '20'
+            sel_start = sel_start - 20;
+            sel_end = sel_end - 20;
         }
 
         MozillaInsertText(element, t1, sel_start);
         if (sel_start == sel_end && t2 == "[/url]") {
             MozillaInsertText(element, mylink + t2, sel_end + t1.length);
-            element.selectionEnd = sel_end + t1.length + t2.length + mylink.length;
+            sel_start = sel_start + t1.length;
+            sel_end = sel_end + t1.length + mylink.length;
+        } else if (t2 == "[/img]") {
+            MozillaInsertText(element, t2, sel_end + t1.length);
+            sel_end = sel_end + t1.length;
+            sel_start = sel_start + t2.length-1;
         } else if (element.value.substring(sel_start, sel_end).length == 0) {
-            string = (t2 == "[/img]") ? t2 : dummyText + t2;
-            MozillaInsertText(element, string, sel_end + t1.length);
-
-            window.setTimeout(function(){
-                sel_start = (sel_start > 0) ? element.value.lastIndexOf(t1)+t1.length : t1.length;
-                element.selectionStart = sel_start;
-            }, 1);
-
-            window.setTimeout(function(){
-                element.selectionEnd = sel_start + dummyText.length;
-            }, 1);
-
+            MozillaInsertText(element, dummyText + t2, sel_end + t1.length);
+            sel_start = sel_start + t1.length;
+            sel_end = sel_start + dummyText.length;
         } else {
             MozillaInsertText(element, t2, sel_end + t1.length);
-            element.selectionEnd = sel_end + t1.length + t2.length;
+            sel_start = sel_start + t1.length;
+            sel_end = sel_end + t1.length;
         }
-
-        element.selectionStart = sel_start;
-
+        // needed for correct focus after inserting tags (Chrome)
+        window.setTimeout(function(){
+            element.selectionStart = sel_start;
+            element.selectionEnd = sel_end;
+        }, 1);
         element.focus();
     }
     else {
@@ -499,18 +530,26 @@ function AddTag(t1, t2) {
 
 function AddList(t1, t2) {
     var element = textboxelement;
+    var dummyText = $labelDummyTextBBCode;
+
     if (isIE) {
         if (document.selection) {
             element.focus();
 
             var txt = element.value;
             var str = document.selection.createRange();
+            var sel_start = element.selectionStart;
+            var sel_end = element.selectionEnd;
 
             if (str.text == "") {
-                str.text = t1 + t2;
+                str.text = t1 + dummyText+ t2;
+                sel_start = sel_start + t1.length;
+                sel_end = sel_start + dummyText.length;
             }
             else if (txt.indexOf(str.text) >= 0) {
                 str.text = t1 + str.text + t2;
+                sel_start = sel_start + t1.length;
+                sel_end = sel_end + t1.length;
             }
             else {
                 element.value = txt + t1 + t2;
@@ -523,21 +562,28 @@ function AddList(t1, t2) {
             }
             str.text = value1;
 
-
-            str.select();
+            element.selectionStart = sel_start;
+            element.selectionEnd = sel_end;
+            if ($.browser.msie  && parseInt($.browser.version, 10) < 9)  {
+                str.select();
+            }
+            element.focus();
         }
     }
     else if (typeof(element.selectionStart) != 'undefined') {
         var sel_start = element.selectionStart;
         var sel_end = element.selectionEnd;
+        if (element.value == "" && $.browser.opera) {
+            // for Opera browser null value (textarea empty) for selectionStart and selectionEnd is '20'
+            sel_start = sel_start - 20;
+            sel_end = sel_end - 20;
+        }
+        var needDummy = (sel_start == sel_end);
+        var str1 = needDummy ? dummyText + t2 : t2;
         MozillaInsertText(element, t1, sel_start);
-        MozillaInsertText(element, t2, sel_end + t1.length);
+        MozillaInsertText(element, str1, sel_end + t1.length);
 
-        element.selectionStart = sel_start;
-        element.selectionEnd = sel_end + t1.length + t2.length;
-
-        sel_start = element.selectionStart;
-        sel_end = element.selectionEnd;
+        sel_end = sel_end + t1.length + t2.length + (needDummy ? dummyText.length : 0);
 
         var value = element.value.substring(sel_start, sel_end);
         var nPos = value.indexOf("\n", '[list]'.length);
@@ -549,6 +595,8 @@ function AddList(t1, t2) {
         value = value.replace(/\[\/list\]/gi, '\n[/list]');
         element.value = elvalue.substring(0, sel_start) + value + elvalue.substring(sel_end, elvalue.length);
 
+        element.selectionStart = sel_start + t1.length + "\n".length;
+        element.selectionEnd = sel_end - t2.length + "\n".length;
 
         element.focus();
     }

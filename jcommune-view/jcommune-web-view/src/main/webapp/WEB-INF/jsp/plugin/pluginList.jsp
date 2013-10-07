@@ -21,6 +21,9 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 
 <jsp:useBean id="plugins" type="java.util.List" scope="request"/>
+<head>
+    <title><spring:message code="label.plugins.list.title"/></title>
+<head>
 <body>
 <div class="container">
   <%-- List of plugins. --%>

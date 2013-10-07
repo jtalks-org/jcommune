@@ -21,7 +21,6 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.UserService;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -40,9 +39,9 @@ import java.util.Set;
  */
 public class NotificationService {
 
+    SubscriptionService subscriptionService;
     private UserService userService;
     private MailService mailService;
-    SubscriptionService subscriptionService;
     private JCommuneProperty notificationsEnabledProperty;
 
     /**
@@ -70,10 +69,33 @@ public class NotificationService {
      */
     public void subscribedEntityChanged(SubscriptionAwareEntity entity) {
         if (notificationsEnabledProperty.booleanValue()) {
-            JCUser current = userService.getCurrentUser();
+
             Collection<JCUser> subscribers = subscriptionService.getAllowedSubscribers(entity);
+            subscribers.remove(userService.getCurrentUser());
+
             for (JCUser user : subscribers) {
-                if (!user.equals(current)) {
+                mailService.sendUpdatesOnSubscription(user, entity);
+            }
+
+        }
+    }
+
+    /**
+     * Overload for skipping topic subscribers
+<<<<<<< HEAD
+=======
+     * @param entity
+     * @param topicSubscribers
+>>>>>>> parent of 08e0bc6... JC-1486
+     */
+    public void subscribedEntityChanged(SubscriptionAwareEntity entity, Collection<JCUser> topicSubscribers) {
+        if (notificationsEnabledProperty.booleanValue()) {
+
+            Collection<JCUser> subscribers = subscriptionService.getAllowedSubscribers(entity);
+            subscribers.remove(userService.getCurrentUser());
+
+            for (JCUser user : subscribers) {
+                if(!topicSubscribers.contains(user)){
                     mailService.sendUpdatesOnSubscription(user, entity);
                 }
             }
@@ -89,27 +111,25 @@ public class NotificationService {
      * @param topicId topic id
      */
     public void topicMoved(Topic topic, long topicId) {
+
         if (notificationsEnabledProperty.booleanValue()) {
 
-            JCUser currentUser = userService.getCurrentUser();
-            JCUser topicStarter = topic.getTopicStarter();
-
-            //send notification to branch subscribers
-            Set<JCUser> branchSubscribers = new HashSet<JCUser>(topic.getBranch().getSubscribers());
-
-            // temp transient collection modification to ease the iteration
-            branchSubscribers.add(topicStarter);
-            branchSubscribers.remove(currentUser);
-            for (JCUser subscriber : branchSubscribers) {
-                mailService.sendTopicMovedMail(subscriber, topicId);
-            }
-
-            //send notification to topic's subscribers
+            //send notification to topic subscribers
             Collection<JCUser> topicSubscribers = subscriptionService.getAllowedSubscribers(topic);
             this.filterSubscribers(topicSubscribers);
 
             for (JCUser subscriber : topicSubscribers) {
                 mailService.sendTopicMovedMail(subscriber, topicId);
+            }
+
+            //send notification to branch subscribers
+            Set<JCUser> branchSubscribers = new HashSet<>(topic.getBranch().getSubscribers());
+
+            this.filterSubscribers(branchSubscribers);
+            for (JCUser subscriber : branchSubscribers) {
+                if(!topicSubscribers.contains(subscriber)) {
+                    mailService.sendTopicMovedMail(subscriber, topicId);
+                }
             }
         }
     }

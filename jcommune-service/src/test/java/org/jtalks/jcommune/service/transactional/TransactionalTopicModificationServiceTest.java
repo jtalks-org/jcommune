@@ -363,7 +363,7 @@ public class TransactionalTopicModificationServiceTest {
         assertEquals(user.getPostCount(), 0);
         verify(branchDao).saveOrUpdate(branch);
         verify(securityService).deleteFromAcl(Topic.class, TOPIC_ID);
-        verify(notificationService).subscribedEntityChanged(branch);
+        verify(notificationService).subscribedEntityChanged(branch, new ArrayList());
         verify(notificationService).sendNotificationAboutRemovingTopic(topic, subscribers);
         verify(subscriptionService).getAllowedSubscribers(topic);
     }
