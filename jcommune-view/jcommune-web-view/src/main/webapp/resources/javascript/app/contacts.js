@@ -157,6 +157,7 @@ $(document).ready(function () {
         var value = $(this).val();
         if (value.length > 0 && !value.match(new RegExp(AddContact.selectedContactType.validationPattern))) {
             if (AddContact.isValueValid) {
+                ErrorUtils.removeErrorMessage('#contact');
                 ErrorUtils.addErrorMessage('#contact', $labelValidationUsercontactNotMatch);
                 AddContact.isValueValid = false;
             }
@@ -233,11 +234,13 @@ $(document).ready(function () {
                                 bindDeleteHandler();
                                 jDialog.closeDialog();
                             }else{
+                                ErrorUtils.removeErrorMessage('#contact');
                                 ErrorUtils.addErrorMessage('#contact', $labelValidationUsercontactNotMatch);
                                 AddContact.isValueValid = false;
                             }
                         },
                         error: function (data) {
+                            ErrorUtils.removeErrorMessage('#contact');
                             ErrorUtils.addErrorMessage('#contact', $labelValidationUsercontactNotMatch);
                             AddContact.isValueValid = false;
                         }
