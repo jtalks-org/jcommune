@@ -131,7 +131,13 @@ public class MailService {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(LINK, url);
             model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
-            sendEmailOnForumUpdates(recipient, model, locale, (Entity) entity);
+            if(entity instanceof Branch){
+                sendEmailOnForumUpdates(recipient, model, locale, (Entity)entity,
+                        "subscriptionNotification.subject","branchSubscriptionNotification.vm");
+            }else{
+                sendEmailOnForumUpdates(recipient, model, locale, (Entity) entity,
+                        "subscriptionNotification.subject","subscriptionNotification.vm");
+            }
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE,
                     entity.getClass().getCanonicalName(),
@@ -148,14 +154,15 @@ public class MailService {
      * @param locale    recipient locale
      * @throws MailingFailedException when mailing failed
      */
-    private void sendEmailOnForumUpdates(JCUser recipient, Map<String, Object> model, Locale locale, Entity entity)
+    private void sendEmailOnForumUpdates(JCUser recipient, Map<String, Object> model, Locale locale, Entity entity, String subject, String nameTemplate)
             throws MailingFailedException {
         model.put(USER, recipient);
         model.put(RECIPIENT_LOCALE, locale);
         String titleEntity = this.getTitleName(entity);
-        this.sendEmail(recipient.getEmail(), messageSource.getMessage("subscriptionNotification.subject",
-                new Object[]{}, locale) + titleEntity, model, "subscriptionNotification.vm");
+        this.sendEmail(recipient.getEmail(), messageSource.getMessage(subject,
+                new Object[]{}, locale) + titleEntity, model, nameTemplate);
     }
+
 
     /**
      * Sends notification to user about received private message.
