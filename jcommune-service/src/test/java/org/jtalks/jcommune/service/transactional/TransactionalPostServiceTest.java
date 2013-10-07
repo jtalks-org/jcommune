@@ -212,6 +212,13 @@ public class TransactionalPostServiceTest {
         Topic topic = new Topic(user, "title");
         Post post = new Post(user, "content");
         post.setId(1L);
+
+        try {
+            Thread.sleep(100);    //delay added to prevent same modification time on fast PC
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         Post postForDelete = new Post(user, "content");
         postForDelete.setId(POST_ID);
 
