@@ -16,6 +16,7 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.model.dao.GroupDao;
+import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dao.UserDao;
@@ -33,6 +34,7 @@ import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.plugins.PluginLoader;
 import org.jtalks.jcommune.service.plugins.TypeFilter;
+import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.mockito.Mock;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -179,6 +181,9 @@ public class TransactionalAuthenticatorTest {
         String email = "email@email.em";
         JCUser oldUser = prepareOldUser(username);
         Map<String, String> authInfo = createAuthInfo(username, email);
+        authInfo.put("enabled", "true");
+        Group group = new Group(AdministrationGroup.USER.getName());
+        when(groupDao.getGroupByName(AdministrationGroup.USER.getName())).thenReturn(group);
         when(userDao.getByUsername(username)).thenReturn(oldUser);
         when(encryptionService.encryptPassword(password)).thenReturn(passwordHash);
         UsernamePasswordAuthenticationToken expectedToken = mock(UsernamePasswordAuthenticationToken.class);
@@ -203,8 +208,12 @@ public class TransactionalAuthenticatorTest {
         String passwordHash = "5f4dcc3b5aa765d61d8327deb882cf99";
         String email = "email@email.em";
         Map<String, String> authInfo = createAuthInfo(username, email);
-        JCUser user = new JCUser(username, email, password);
-        when(userDao.getByUsername(username)).thenReturn(null).thenReturn(user);
+        Group group = new Group(AdministrationGroup.USER.getName());
+        User commonUser = new User(username, email, password, null);
+        commonUser.getGroups().add(group);
+        when(groupDao.getGroupByName(group.getName())).thenReturn(group);
+        when(userDao.getByUsername(username)).thenReturn(null);
+        when(userDao.getCommonUserByUsername(username)).thenReturn(commonUser);
         when(encryptionService.encryptPassword(password)).thenReturn(passwordHash);
         prepareAuth();
         preparePlugin(username, passwordHash, authInfo);

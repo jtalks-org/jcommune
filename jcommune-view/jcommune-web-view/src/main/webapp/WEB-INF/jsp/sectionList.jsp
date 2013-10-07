@@ -117,9 +117,9 @@
               </td>
               <td class="topics-posts shrink-to-fit">
                 <spring:message code="label.section.header.topics"/>:
-                <span class='test-topics-count'> <c:out value="${branch.topicCount}"/></span><br/>
+                <span class='test-topics-count space-left-small'><c:out value="${branch.topicCount}"/></span><br/>
                 <spring:message code="label.section.header.messages"/>:
-                <span class='test-posts-count'><c:out value="${branch.postCount}"/></span>
+                <span class='test-posts-count space-left-small'><c:out value="${branch.postCount}"/></span>
               </td>
               <td class="latest-by shrink-to-fit">
                 <c:if test="${branch.topicCount>0}">
@@ -129,7 +129,8 @@
                   </a>
                   <p>
                     <spring:message code="label.topic.last_post_by"/>
-                    <a href="${pageContext.request.contextPath}/users/${branch.lastPost.userCreated.id}">
+                    <a class="space-left-small"
+                       href="${pageContext.request.contextPath}/users/${branch.lastPost.userCreated.id}">
                       <c:out value="${branch.lastPost.userCreated.username}"/>
                     </a>
                   </p>
@@ -158,17 +159,17 @@
   <%-- Users --%>
   <div id="users-stats" class="well forum-sections-userstats-container">
     <strong><spring:message code="label.onlineUsersInfo.visitors"/></strong>
-        <span class='test-visitors-total'>
-            <c:out value="${visitors}"/>
-        </span>,
-    <spring:message code="label.onlineUsersInfo.visitors.registered"/>
-        <span class='test-visitors-registered'>
-            <c:out value="${visitorsRegistered}"/>
-        </span>,
-    <spring:message code="label.onlineUsersInfo.visitors.guests"/>
-        <span class='test-visitors-guests'>
-            <c:out value="${visitorsGuests}"/>
-        </span>
+      <span class='test-visitors-total'>
+        <c:out value="${visitors}"/>
+      </span>,
+      <span class="space-left-small"><spring:message code="label.onlineUsersInfo.visitors.registered"/></span>
+      <span class='test-visitors-registered'>
+        <c:out value="${visitorsRegistered}"/>
+      </span>,
+      <span class="space-left-small"><spring:message code="label.onlineUsersInfo.visitors.guests"/></span>
+      <span class='test-visitors-guests'>
+        <c:out value="${visitorsGuests}"/>
+      </span>
     <br/>
 
     <strong>
