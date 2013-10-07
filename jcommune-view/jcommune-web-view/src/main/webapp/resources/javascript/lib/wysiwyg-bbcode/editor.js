@@ -471,9 +471,11 @@ function AddTag(t1, t2) {
                 element.selectionStart = sel_start;
                 element.selectionEnd = sel_end;
             }, 1);
+
             if ($.browser.msie  && parseInt($.browser.version, 10) < 9)  {
                 str.select();
             }
+
             element.focus();
         }
     }
@@ -482,7 +484,7 @@ function AddTag(t1, t2) {
         var sel_start = element.selectionStart;
         var sel_end = element.selectionEnd;
 
-        if ((element.value.substring(sel_start, sel_end) != mylink && t2 == "[/url]") || t2 == "[/img]") {
+        if ((element.value.substring(sel_start, sel_end) != mylink && t2 == "[/url]")) {
             sel_start = sel_end;
         }
 
@@ -499,8 +501,8 @@ function AddTag(t1, t2) {
             sel_end = sel_end + t1.length + mylink.length;
         } else if (t2 == "[/img]") {
             MozillaInsertText(element, t2, sel_end + t1.length);
-            sel_end = sel_end + t1.length + t2.length;
-            sel_start = sel_end;
+            sel_end = sel_end + t1.length;
+            sel_start = sel_start + t2.length-1;
         } else if (element.value.substring(sel_start, sel_end).length == 0) {
             MozillaInsertText(element, dummyText + t2, sel_end + t1.length);
             sel_start = sel_start + t1.length;
