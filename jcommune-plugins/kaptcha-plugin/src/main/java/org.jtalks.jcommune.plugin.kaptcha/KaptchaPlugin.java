@@ -18,6 +18,7 @@ package org.jtalks.jcommune.plugin.kaptcha;
 import org.apache.velocity.app.VelocityEngine;
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.PluginProperty;
+import org.jtalks.jcommune.model.plugins.ExtendedPlugin;
 import org.jtalks.jcommune.model.plugins.RegistrationPlugin;
 import org.jtalks.jcommune.model.plugins.StatefullPlugin;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
@@ -36,7 +37,7 @@ import static org.jtalks.jcommune.model.entity.PluginProperty.Type.STRING;
 /**
  * @author Andrey Pogorelov
  */
-public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin {
+public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin, ExtendedPlugin {
     private static final Logger LOGGER = LoggerFactory.getLogger(KaptchaPlugin.class);
     private static final String WIDTH_PROPERTY = "Width";
     private static final String HEIGHT_PROPERTY = "Height";
@@ -46,6 +47,7 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
     private static final String ALT_CAPTCHA = "altCaptcha";
     private static final String ALT_REFRESH_CAPTCHA = "altRefreshCaptcha";
     private static final String CAPTCHA_PLUGIN_ID = "captchaPluginId";
+    private static final String BASE_URL = "BASE_URL";
     private List<PluginProperty> pluginProperties;
     private KaptchaPluginService service;
 
@@ -113,7 +115,7 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
     @Override
     public String getHtml(HttpServletRequest request) {
         SecurityContextHolder.getContext();
-        ResourceBundle resourceBundle  = ResourceBundle.getBundle("org.jtalks.jcommune.plugins.kaptcha.messages", Locale.ENGLISH);
+        ResourceBundle resourceBundle  = ResourceBundle.getBundle("org.jtalks.jcommune.plugin.kaptcha.messages", Locale.ENGLISH);
         Properties properties = new Properties();
         properties.put("resource.loader", "class");
         properties.put("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
@@ -124,8 +126,25 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
         model.put(ALT_CAPTCHA, resourceBundle.getObject("alt.captcha.image"));
         model.put(ALT_REFRESH_CAPTCHA, resourceBundle.getObject("alt.captcha.update"));
         model.put(CAPTCHA_PLUGIN_ID, "1");
+        model.put(BASE_URL, getDeploymentRootUrlWithoutPort(request));
         return VelocityEngineUtils.mergeTemplateIntoString(
-                engine,"org/jtalks/jcommune/plugins/kaptcha/template/captcha.vm",
+                engine, "org/jtalks/jcommune/plugin/kaptcha/template/captcha.vm",
                 "UTF-8", model);
+    }
+
+    /**
+     * Returns current deployment root without port for using as label link, for example.
+     *
+     * @return current deployment root without port, e.g. "http://myhost.com/myforum"
+     */
+    private String getDeploymentRootUrlWithoutPort(HttpServletRequest request) {
+        return request.getScheme()
+                + "://" + request.getServerName()
+                + request.getContextPath();
+    }
+
+    @Override
+    public Object doAction(String pluginId, String action) {
+        return null;
     }
 }

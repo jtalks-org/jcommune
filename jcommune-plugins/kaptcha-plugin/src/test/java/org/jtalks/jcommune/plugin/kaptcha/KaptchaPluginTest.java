@@ -2,11 +2,11 @@ package org.jtalks.jcommune.plugin.kaptcha;
 
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 public class KaptchaPluginTest {
 
-    @Test
+    @Test(enabled = false)
     public void testGetHtml() throws Exception {
 
         KaptchaPlugin kaptchaPlugin = new KaptchaPlugin();

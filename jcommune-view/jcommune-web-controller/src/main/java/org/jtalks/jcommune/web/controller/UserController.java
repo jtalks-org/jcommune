@@ -18,6 +18,8 @@ import com.google.common.collect.ImmutableMap;
 import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
+import org.jtalks.jcommune.model.entity.PluginConfiguration;
+import org.jtalks.jcommune.model.plugins.ExtendedPlugin;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.model.plugins.RegistrationPlugin;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
@@ -42,10 +44,14 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * This controller handles custom authentication actions
@@ -217,9 +223,33 @@ public class UserController {
 
     @RequestMapping(value = "/user/new_ajax", method = RequestMethod.GET)
     @ResponseBody
-    public JsonResponse registrationForm() {
-        Map<String, String> captchaProperties = authenticator.getCaptchaProperties();
-        return new JsonResponse(JsonResponseStatus.SUCCESS, captchaProperties);
+    public JsonResponse registrationForm(HttpServletRequest request, Locale locale) {
+        Map<String, String> registrationPlugins = new HashMap<>();
+        for(RegistrationPlugin plugin : pluginService.getRegistrationPlugins()) {
+            registrationPlugins.put(plugin.getName(), plugin.getHtml(request));
+        }
+        return new JsonResponse(JsonResponseStatus.SUCCESS, registrationPlugins);
+    }
+
+    @RequestMapping(value = "/plugin/{pluginId}/{action}", method = RequestMethod.POST)
+    public JsonResponse pluginAction(@PathVariable String pluginId,
+                                     @PathVariable String action,
+                                     HttpServletResponse response,
+                                     ServletOutputStream out, HttpSession session) {
+        PluginConfiguration conf;
+        try {
+            conf = pluginService.get(Long.valueOf(pluginId));
+        } catch (NotFoundException e) {
+            return new JsonResponse(JsonResponseStatus.FAIL);
+        }
+        for (Plugin plugin : pluginService.getPlugins(0)) {
+            if (plugin.getName().equalsIgnoreCase(conf.getName())
+                    && plugin instanceof ExtendedPlugin) {
+                Object result = ((ExtendedPlugin)plugin).doAction(pluginId, action);
+                return new JsonResponse(JsonResponseStatus.SUCCESS, result);
+            }
+        }
+        return new JsonResponse(JsonResponseStatus.FAIL);
     }
 
     /**

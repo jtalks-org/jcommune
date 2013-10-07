@@ -23,6 +23,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.Authenticator;
+import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -62,6 +63,7 @@ public class UserControllerTest {
     private final String EMAIL = "mail@mail.com";
     private UserController userController;
     private UserService userService;
+    private PluginService pluginService;
     private Authenticator authenticator;
     private LocaleResolver localeResolver;
     private RequestContextUtils requestContextUtils;
@@ -69,6 +71,7 @@ public class UserControllerTest {
     @BeforeMethod
     public void setUp() throws IOException {
         userService = mock(UserService.class);
+        pluginService = mock(PluginService.class);
         authenticator = mock(Authenticator.class);
         requestContextUtils= mock(RequestContextUtils.class);
         localeResolver = mock(LocaleResolver.class, "en");
@@ -76,7 +79,7 @@ public class UserControllerTest {
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityFacade.getContext()).thenReturn(securityContext);
 
-        userController = new UserController(userService, authenticator, null);
+        userController = new UserController(userService, authenticator, pluginService);
     }
 
     @Test

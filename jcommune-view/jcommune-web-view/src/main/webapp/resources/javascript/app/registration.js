@@ -17,7 +17,6 @@
  * This script handles registration popup
  * todo: split and refine it
  */
-var captchaPluginId;
 //handling click on menu link Sign Up
 $(function () {
 
@@ -45,10 +44,10 @@ $(function () {
                     Utils.createFormElement($labelEmail, 'email', 'text') +
                     Utils.createFormElement($labelPassword, 'password', 'password') +
                     Utils.createFormElement($labelPasswordConfirmation, 'passwordConfirm', 'password');
-            console.log("params.showCaptcha: " + params.showCaptcha);
-            if (params.showCaptcha === "true") {
-                captchaPluginId = params.captchaPluginId;
-                bodyContent += params.html;
+            if (params.length > 0) {
+                for (var pluginName in params) {
+                    bodyContent += params[pluginName];
+                }
             }
 
             var footerContent = '<button id="signup-submit-button" class="btn btn-primary btn-block" name="commit"> \
@@ -162,8 +161,6 @@ function refreshCaptchaJsp() {
 }
 
 function captchaUrl() {
-    // usage: return $root + url
-    // var url = '/plugin/' + captchaPluginId + '/refreshCaptcha';
     return $root + '/captcha/image?param=' + $.now();
 }
 
@@ -177,26 +174,3 @@ function composeQuery(signupDialog, showCaptcha) {
         '&userDto.email=' + encodeURIComponent(signupDialog.find('#email').val()) +
         (showCaptcha ? ('&captcha=' + encodeURIComponent(signupDialog.find('#captcha').val())) : '');
 }
-
-//function insertCaptchaHtml() {
-//    var js = resp.params.js;
-//    var formHtml = resp.params.html;
-//    document.write("<script src='other.js'><\/script>");
-//}
-//
-///**
-// * Create captcha form elements: captcha image, refresh button, input field
-// */
-//function createCaptchaElements() {
-//    return '\
-//        <div class="control-group"> \
-//            <div class="controls captcha-images"> \
-//                <img id="captcha-img" alt="'+ $altCaptcha + '" src="' + captchaUrl() + '" /> \
-//                <img id="captcha-refresh" alt="'+ $altCaptchaRefresh + '"  src="' + $root + "/resources/images/captcha-refresh.png" + '" /> \
-//            </div> \
-//            <div class="controls"> \
-//                <input type="text" id="captcha" placeholder="' + $labelCaptcha + '" class="input-xlarge" /> \
-//            </div> \
-//        </div> \
-//    ';
-//}
