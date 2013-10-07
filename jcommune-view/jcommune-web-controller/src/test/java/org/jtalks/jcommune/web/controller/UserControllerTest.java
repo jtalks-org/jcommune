@@ -339,7 +339,7 @@ public class UserControllerTest {
 
         ModelAndView view = userController.login(null, null, "off", null, null);
 
-        assertEquals(view.getViewName(), UserController.AUTH_FAIL_URL);
+        assertEquals(view.getViewName(), "login");
         verify(userService).loginUser(anyString(), anyString(), eq(false),
                 any(HttpServletRequest.class), any(HttpServletResponse.class));
     }

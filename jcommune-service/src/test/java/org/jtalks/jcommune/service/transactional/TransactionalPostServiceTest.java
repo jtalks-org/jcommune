@@ -219,6 +219,11 @@ public class TransactionalPostServiceTest {
         topic.addPost(postForDelete);
 
         postForDelete.updateModificationDate();
+        try {
+            Thread.sleep(100);    //delay added to prevent same modification time on fast PC
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         post.updateModificationDate();
         topic.recalculateModificationDate();
 
@@ -229,7 +234,7 @@ public class TransactionalPostServiceTest {
         postService.deletePost(postForDelete);
 
         assertEquals(user.getPostCount(), 1);
-        assertEquals(topic.getModificationDate(), topic.getFirstPost().getModificationDate());
+        assertEquals(topic.getModificationDate(), topic.getFirstPost().getCreationDate());
         verify(topicDao).saveOrUpdate(topic);
         verify(securityService).deleteFromAcl(postForDelete);
         verify(notificationService).subscribedEntityChanged(topic);
