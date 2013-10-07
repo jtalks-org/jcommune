@@ -23,6 +23,7 @@ import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.model.plugins.RegistrationPlugin;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.dto.PluginActivatingDto;
+import org.jtalks.jcommune.service.plugins.PluginFilter;
 import org.jtalks.jcommune.service.plugins.PluginLoader;
 import org.jtalks.jcommune.service.plugins.TypeFilter;
 import org.slf4j.Logger;
@@ -88,6 +89,16 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
             registrationPluginList.add((RegistrationPlugin) registrationPlugin);
         }
         return registrationPluginList;
+    }
+
+    @Override
+    public Plugin getPluginByName(String pluginName, PluginFilter... filters) throws NotFoundException {
+        for (Plugin plugin : pLuginLoader.getPlugins(new TypeFilter(Plugin.class))) {
+            if(plugin.getName().equalsIgnoreCase(pluginName)) {
+                return plugin;
+            }
+        }
+        throw new NotFoundException(pluginName + " plugin not found.");
     }
 
     private Plugin findPluginByName(List<Plugin> searchSource, String pluginName) {

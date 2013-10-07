@@ -18,7 +18,6 @@ import com.google.common.collect.ImmutableMap;
 import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
-import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.plugins.ExtendedPlugin;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.model.plugins.RegistrationPlugin;
@@ -29,6 +28,7 @@ import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.plugins.TypeFilter;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
@@ -231,25 +231,16 @@ public class UserController {
         return new JsonResponse(JsonResponseStatus.SUCCESS, registrationPlugins);
     }
 
-    @RequestMapping(value = "/plugin/{pluginId}/{action}", method = RequestMethod.POST)
-    public JsonResponse pluginAction(@PathVariable String pluginId,
-                                     @PathVariable String action,
-                                     HttpServletResponse response,
-                                     ServletOutputStream out, HttpSession session) {
-        PluginConfiguration conf;
+    @RequestMapping(value = "/plugin/{pluginId}/{action}")
+    public void pluginAction(@PathVariable String pluginId, @PathVariable String action,
+                                HttpServletResponse response, ServletOutputStream out, HttpSession session) {
+        // At this moment, as temporary solution, we use plugin name instead of pluginId
         try {
-            conf = pluginService.get(Long.valueOf(pluginId));
-        } catch (NotFoundException e) {
-            return new JsonResponse(JsonResponseStatus.FAIL);
+            Plugin plugin = pluginService.getPluginByName(pluginId, new TypeFilter(ExtendedPlugin.class));
+            Object result = ((ExtendedPlugin)plugin).doAction(pluginId, action, response, out, session);
+        } catch (org.jtalks.common.service.exceptions.NotFoundException e) {
+
         }
-        for (Plugin plugin : pluginService.getPlugins(0)) {
-            if (plugin.getName().equalsIgnoreCase(conf.getName())
-                    && plugin instanceof ExtendedPlugin) {
-                Object result = ((ExtendedPlugin)plugin).doAction(pluginId, action);
-                return new JsonResponse(JsonResponseStatus.SUCCESS, result);
-            }
-        }
-        return new JsonResponse(JsonResponseStatus.FAIL);
     }
 
     /**

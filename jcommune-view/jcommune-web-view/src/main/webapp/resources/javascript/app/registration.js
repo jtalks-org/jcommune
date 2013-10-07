@@ -44,10 +44,8 @@ $(function () {
                     Utils.createFormElement($labelEmail, 'email', 'text') +
                     Utils.createFormElement($labelPassword, 'password', 'password') +
                     Utils.createFormElement($labelPasswordConfirmation, 'passwordConfirm', 'password');
-            if (params.length > 0) {
-                for (var pluginName in params) {
-                    bodyContent += params[pluginName];
-                }
+            for (var pluginName in params) {
+                bodyContent += params[pluginName];
             }
 
             var footerContent = '<button id="signup-submit-button" class="btn btn-primary btn-block" name="commit"> \
@@ -151,12 +149,16 @@ $(function () {
  * Get new captcha image
  */
 function refreshCaptcha() {
-    jDialog.dialog.find('#captcha-img').removeAttr('src').attr('src', captchaUrl());
+    var attrSrc = jDialog.dialog.find('#captcha-img').attr("src").split("?")[0] + "?param=" + $.now();
+    jDialog.dialog.find('#captcha-img').removeAttr('src');
+    jDialog.dialog.find('#captcha-img').attr('src', attrSrc);
     jDialog.dialog.find('#captcha').val('');
 }
 
 function refreshCaptchaJsp() {
-    $('#form').find('#captcha-img').removeAttr('src').attr('src', captchaUrl());
+    var attrSrc = $('#form').find('#captcha-img').attr("src").split("?")[0] + "?param=" + $.now();
+    $('#form').find('#captcha-img').removeAttr('src');
+    $('#form').find('#captcha-img').attr('src', attrSrc);
     $('#form').find('#captcha').val('');
 }
 

@@ -15,6 +15,10 @@
 
 package org.jtalks.jcommune.plugin.kaptcha;
 
+import com.google.code.kaptcha.Constants;
+import com.google.code.kaptcha.Producer;
+import com.google.code.kaptcha.impl.DefaultKaptcha;
+import com.google.code.kaptcha.util.Config;
 import org.apache.velocity.app.VelocityEngine;
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.PluginProperty;
@@ -26,9 +30,14 @@ import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.ui.velocity.VelocityEngineUtils;
 
+import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.*;
 
 import static org.jtalks.jcommune.model.entity.PluginProperty.Type.INT;
@@ -50,6 +59,7 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
     private static final String BASE_URL = "BASE_URL";
     private List<PluginProperty> pluginProperties;
     private KaptchaPluginService service;
+    private Producer captchaProducer;
 
     @Override
     protected Map<PluginProperty, String> applyConfiguration(List<PluginProperty> properties) {
@@ -73,9 +83,22 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
             throw new RuntimeException(
                     "Can't apply configuration: Width, height, length and possible symbols should not be empty.");
         }
+        captchaProducer = createCaptchaProducer(width, height, length, possibleSymbols);
         service = new KaptchaPluginService(properties);
         pluginProperties = properties;
         return new HashMap<>();
+    }
+
+    private Producer createCaptchaProducer(int width, int height, int length, String possibleSymbols) {
+        Properties props = new Properties();
+        props.setProperty("kaptcha.textproducer.char.string", possibleSymbols);
+        props.setProperty("kaptcha.textproducer.char.length", String.valueOf(length));
+        props.setProperty("kaptcha.image.width", String.valueOf(width));
+        props.setProperty("kaptcha.image.height", String.valueOf(height));
+        Config conf = new Config(props);
+        DefaultKaptcha captcha = new DefaultKaptcha();
+        captcha.setConfig(conf);
+        return captcha;
     }
 
     @Override
@@ -97,7 +120,7 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
     public List<PluginProperty> getDefaultConfiguration() {
         PluginProperty width = new PluginProperty(WIDTH_PROPERTY, INT, "100");
         PluginProperty height = new PluginProperty(HEIGHT_PROPERTY, INT, "50");
-        PluginProperty length = new PluginProperty(LENGTH_PROPERTY, INT, "50");
+        PluginProperty length = new PluginProperty(LENGTH_PROPERTY, INT, "4");
         PluginProperty possibleSymbols = new PluginProperty(POSSIBLE_SYMBOLS_PROPERTY, STRING, "0123456789");
         return Arrays.asList(width, height, length, possibleSymbols);
     }
@@ -127,9 +150,17 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
         model.put(ALT_REFRESH_CAPTCHA, resourceBundle.getObject("alt.captcha.update"));
         model.put(CAPTCHA_PLUGIN_ID, "1");
         model.put(BASE_URL, getDeploymentRootUrlWithoutPort(request));
-        return VelocityEngineUtils.mergeTemplateIntoString(
-                engine, "org/jtalks/jcommune/plugin/kaptcha/template/captcha.vm",
-                "UTF-8", model);
+        return  "<div class='control-group'>\n" +
+                "  <div class='controls captcha-images'>\n" +
+                "    <img id='captcha-img' alt='Captcha' src='http://localhost:8080/plugin/Kaptcha/refreshCaptcha'/>\n" +
+                "    <img id='captcha-refresh' alt='Refresh captcha' src='http://localhost:8080/resources/images/captcha-refresh.png'/>\n" +
+                "  </div>\n" +
+                "  <div class='controls'><input type='text' id='captcha' placeholder='Captcha text' class='input-xlarge'/></div>\n" +
+                "</div>";
+        // doesn't work in web application (unable to find captcha.vm)
+//        return VelocityEngineUtils.mergeTemplateIntoString(
+//                engine, "org/jtalks/jcommune/plugin/kaptcha/template/captcha.vm",
+//                "UTF-8", model);
     }
 
     /**
@@ -144,7 +175,18 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
     }
 
     @Override
-    public Object doAction(String pluginId, String action) {
+    public Object doAction(String pluginId, String action, HttpServletResponse response,
+                           ServletOutputStream out, HttpSession session) {
+        response.setContentType("image/jpeg");
+        String capText = captchaProducer.createText();
+        session.setAttribute(Constants.KAPTCHA_SESSION_KEY, capText);
+        BufferedImage bi = captchaProducer.createImage(capText);
+        try {
+            ImageIO.write(bi, "jpg", out);
+            out.flush();
+        } catch (IOException ex) {
+            LOGGER.error("Exception at writing captcha image {}", ex);
+        }
         return null;
     }
 }
