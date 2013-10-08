@@ -83,10 +83,7 @@
     </mvc:interceptor>
     <!--Figures out locale and language from url parameter-->
     <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
-    <!--<bean id="localeChangeInterceptor" class="org.jtalks.jcommune.web.interceptors.LocaleInterceptor">-->
-        <!--<constructor-arg ref="userService"/>-->
-        <!--<constructor-arg ref="localeResolver"/>-->
-        <property name="paramName" value="lang"/>
+      <property name="paramName" value="lang"/>
     </bean>
     <!--Disables browser caching for all non-static resources-->
     <bean id="webContentInterceptor"
