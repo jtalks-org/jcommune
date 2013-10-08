@@ -137,17 +137,6 @@
         </div>
         <div class="control-group">
           <label class="control-label"> <spring:message
-                  code="label.language"/>
-          </label>
-
-          <div class="controls">
-            <label class="input-xlarge box-label test-language"> <spring:message
-                    code='${language.languageNameLabel}'/>
-            </label>
-          </div>
-        </div>
-        <div class="control-group">
-          <label class="control-label"> <spring:message
                   code="label.pageSize"/>
           </label>
 
