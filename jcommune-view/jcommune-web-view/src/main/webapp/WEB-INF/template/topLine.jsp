@@ -171,10 +171,10 @@
           <a id="user-dropdown-menu-link" href="#">
             <c:out value="${username}"/>
             <c:if test="${newPmCount != null}">
-              (
-              <i class="icon-envelope icon-white" style="vertical-align:middle;"></i>
-              <span class='test-pm-count'>${newPmCount}</span>
-              )
+              <span class="space-left-small">(</span>
+              <i class="space-left-small icon-envelope icon-white" style="vertical-align:middle;"></i>
+              <span class='space-left-small test-pm-count'>${newPmCount}</span>
+              <span class="space-left-small">)</span>
             </c:if>
           </a>
           <b class="caret"></b>
@@ -200,14 +200,13 @@
             <a href="${pageContext.request.contextPath}/inbox">
               <fmt:message key="label.pm"/>
               <c:if test="${newPmCount != null}">
-                                    <span id="new-pm-count" title="
-                                        <fmt:message key='label.tips.pm_count'>
-                                            <fmt:param>${newPmCount}</fmt:param>
-                                        </fmt:message>
-                                        ">
-                                        (                                       
-                                        <span class='test-pm-count'>${newPmCount}</span>
-                                        )
+                <span id="new-pm-count" title="<fmt:message key='label.tips.pm_count'>
+                                                <fmt:param>${newPmCount}</fmt:param>
+                                              </fmt:message>
+                                            ">
+                                        <span class="space-left-small">(</span>
+                                        <span class='test-pm-count space-left-small'>${newPmCount}</span>
+                                        <span class="space-left-small">)</span>
                                     </span>
               </c:if>
             </a>
