@@ -38,12 +38,14 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
     public void initialize(Captcha constraintAnnotation) {
     }
 
-
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
+        if (StringUtils.isEmpty(value)) {
+            return false;
+        }
         RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
         HttpServletRequest httpServletRequest = ((ServletRequestAttributes) attributes).getRequest();
         String sessionCaptchaId = (String) httpServletRequest.getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY);

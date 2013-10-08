@@ -245,7 +245,7 @@ public class TransactionalPrivateMessageService
      * @return if message should be marked as read
      */
     private boolean ifMessageShouldBeMarkedAsRead(PrivateMessage pm) {
-        return userService.getCurrentUser().equals(pm.getUserTo())
+        return currentUserIsAuthor(userService.getCurrentUser(),pm)
                 && !pm.isRead()
                 && !pm.getStatus().equals(PrivateMessageStatus.DRAFT);
     }
@@ -297,12 +297,21 @@ public class TransactionalPrivateMessageService
                 (messageStatus.equals(PrivateMessageStatus.DELETED_FROM_OUTBOX))) {
             return false;
         }
-
-        return !(currentUser.equals(privateMessage.getUserTo()) &&
+        return !(currentUserIsAuthor(currentUser,privateMessage) &&
                 (messageStatus.equals(PrivateMessageStatus.DELETED_FROM_INBOX)));
 
     }
-    
+
+    private boolean currentUserIsAuthor(JCUser currentUser,PrivateMessage privateMessage ){
+        boolean isAuthor = false;
+        try{ //because a recipient can be deleted.
+            isAuthor = currentUser.equals(privateMessage.getUserTo());
+        }catch(org.hibernate.ObjectNotFoundException e){
+            logger.warn("The recipient doesn't exist",e);
+        }
+        return isAuthor;
+    }
+
     /**
      * {@inheritDoc}
      */

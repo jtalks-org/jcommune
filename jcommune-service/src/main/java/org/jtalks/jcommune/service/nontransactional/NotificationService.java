@@ -21,7 +21,6 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.UserService;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -40,9 +39,9 @@ import java.util.Set;
  */
 public class NotificationService {
 
+    SubscriptionService subscriptionService;
     private UserService userService;
     private MailService mailService;
-    SubscriptionService subscriptionService;
     private JCommuneProperty notificationsEnabledProperty;
 
     /**
@@ -83,8 +82,11 @@ public class NotificationService {
 
     /**
      * Overload for skipping topic subscribers
+<<<<<<< HEAD
+=======
      * @param entity
      * @param topicSubscribers
+>>>>>>> parent of 08e0bc6... JC-1486
      */
     public void subscribedEntityChanged(SubscriptionAwareEntity entity, Collection<JCUser> topicSubscribers) {
         if (notificationsEnabledProperty.booleanValue()) {
@@ -121,7 +123,7 @@ public class NotificationService {
             }
 
             //send notification to branch subscribers
-            Set<JCUser> branchSubscribers = new HashSet<JCUser>(topic.getBranch().getSubscribers());
+            Set<JCUser> branchSubscribers = new HashSet<>(topic.getBranch().getSubscribers());
 
             this.filterSubscribers(branchSubscribers);
             for (JCUser subscriber : branchSubscribers) {

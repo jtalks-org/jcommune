@@ -82,14 +82,14 @@
 <div class="row-fluid upper-pagination forum-pagination-container">
   <div class="span4">
     <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' permission='BranchPermission.CREATE_POSTS'>
-    <a class="new-topic-btn btn btn-primary"
+    <a class="new-topic-btn btn btn-primary space-left-medium-nf"
          href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"
          title="<spring:message code='label.addtopic.tip'/>" data-placement="right">
         <spring:message code="label.addtopic"/>
       </a>
     </jtalks:hasPermission>
     <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' permission='BranchPermission.CREATE_CODE_REVIEW'>
-    <a class="new-code-review-btn btn btn-primary"
+    <a class="new-code-review-btn btn btn-primary space-left-medium-nf"
          href="${pageContext.request.contextPath}/reviews/new?branchId=${branch.id}"
          title="<spring:message code='label.addCodeReview.tip'/>" data-placement="right">
         <spring:message code="label.addCodeReview"/>
@@ -116,14 +116,14 @@
 <div class="row-fluid upper-pagination forum-pagination-container">
   <div class="span4">
     <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' permission='BranchPermission.CREATE_POSTS'>
-      <a class="new-topic-btn btn btn-primary"
+      <a class="new-topic-btn btn btn-primary space-left-medium-nf"
          href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"
          title="<spring:message code='label.addtopic.tip'/>" data-placement="right">
         <spring:message code="label.addtopic"/>
       </a>
     </jtalks:hasPermission>
     <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' permission='BranchPermission.CREATE_CODE_REVIEW'>
-      <a class="new-code-review-btn btn btn-primary"
+      <a class="new-code-review-btn btn btn-primary space-left-medium-nf"
          href="${pageContext.request.contextPath}/reviews/new?branchId=${branch.id}"
          title="<spring:message code="label.addCodeReview.tip"/>" data-placement="right">
         <spring:message code="label.addCodeReview"/>

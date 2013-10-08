@@ -1,11 +1,10 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>jcommune-view</artifactId>
         <groupId>org.jtalks.jcommune</groupId>
-        <version>2.0-SNAPSHOT</version>
+        <version>2.1-SNAPSHOT</version>
     </parent>
     <artifactId>jcommune-web-view</artifactId>
     <packaging>war</packaging>
@@ -227,15 +226,25 @@
                     </regexFlags>
                     <unescape>true</unescape>
                     <replacements>
-                        <replacement>
-                            <!--Replace two or more spaces, tabs and line breaks with one space-->
-                            <token>(.)\s{2,}(.)</token>
-                            <value>$1 $2</value>
-                        </replacement>
                         <!--Remove all new line characters(Windows and Unix)-->
                         <replacement>
                             <token>\r\n|\n</token>
-                            <value/>
+                            <value />
+                        </replacement>
+                        <replacement>
+                            <!--Removes spaces, tabs and line breaks after " or ' -->
+                            <token>("|')(\s{2,})(.)</token>
+                            <value>$1 $3</value>
+                        </replacement>
+                        <replacement>
+                            <!--Removes spaces, tabs and line breaks after '>' -->
+                            <token>(&gt;)(\s+)</token>
+                            <value>&gt;</value>
+                        </replacement>
+                        <replacement>
+                            <!--Removes spaces, tabs and line breaks before '<' -->
+                            <token>(\s+)(&lt;)</token>
+                            <value>&lt;</value>
                         </replacement>
                     </replacements>
                 </configuration>

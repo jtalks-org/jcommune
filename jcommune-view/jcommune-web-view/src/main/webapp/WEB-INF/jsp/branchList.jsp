@@ -100,12 +100,12 @@
               </td>
               <td class="topics-posts">
                 <spring:message code="label.section.header.topics"/>:
-                  <span class='test-topics-count'>
+                  <span class='test-topics-count space-left-small'>
                     <c:out value="${branch.topicCount}"/>
                   </span>
                 <br/>
                 <spring:message code="label.section.header.messages"/>:
-                  <span class='test-posts-count'>
+                  <span class='test-posts-count space-left-small'>
                     <c:out value="${branch.postCount}"/>
                   </span>
               </td>
@@ -117,7 +117,8 @@
                   </a>
 
                   <p><spring:message code="label.topic.last_post_by"/>
-                    <a href="${pageContext.request.contextPath}/users/${branch.lastPost.userCreated.id}">
+                    <a class="space-left-small"
+                       href="${pageContext.request.contextPath}/users/${branch.lastPost.userCreated.id}">
                       <c:out value="${branch.lastPost.userCreated.username}"/>
                     </a>
                   </p>

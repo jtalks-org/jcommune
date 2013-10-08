@@ -109,7 +109,7 @@
           <spring:message code='label.poll.date.set' var='datePlaceholder'/>
           <form:input path="topic.poll.endingDateValue" tabindex="900" id="datepicker" type="text"
                       readonly="true" placeholder="${datePlaceholder}"
-                      class="cursor-pointer script-confirm-unsaved"/>
+                      class="cursor-pointer script-confirm-unsaved space-left-small"/>
           &nbsp;<i class="icon-trash cursor-pointer" id="deleteEndingDate"></i>
           <br>
           <form:errors path="topic.poll.endingDate" cssClass="help-inline"/>

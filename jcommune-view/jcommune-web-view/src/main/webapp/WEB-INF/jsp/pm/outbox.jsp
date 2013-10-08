@@ -87,9 +87,15 @@
               </c:choose>
               <td><input type="checkbox" id="${pm.id}" class="checker"/></td>
               <td class="pm_user_to_from">
-                <a href="${pageContext.request.contextPath}/users/${pm.userTo.id}">
-                  <c:out value="${pm.userTo.username}"/>
-                </a>
+              <c:choose>
+                  <c:when test="${!jtalks:isExists(pm.userTo)}">
+                      <b><spring:message code="label.outbox.deleted_user"/></b>
+                  </c:when>
+                  <c:otherwise>
+                    <a href="${pageContext.request.contextPath}/users/${pm.userTo.id}">
+                    <c:out value="${pm.userTo.username}"/></a>
+                  </c:otherwise>
+              </c:choose>
               </td>
               <td>
                 <a href="${pageContext.request.contextPath}/pm/outbox/${pm.id}">
