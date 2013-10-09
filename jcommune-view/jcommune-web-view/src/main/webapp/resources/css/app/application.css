@@ -616,7 +616,7 @@ div.anchor {
 }
 
 #externalLinks span:not(:last-child):after {
-    content: "|";
+    content: " | ";
 }
 
 .remove-links {
