@@ -733,12 +733,16 @@ div.anchor {
     line-height: 1;
 }
 
-.space-left-small {
+.space-left-small-m {
     margin-left: 3px;
 }
 
-.space-left-small-nf:not(:first-child) {
-    margin-left: 3px;
+.space-left-small:before {
+    content: " ";
+}
+
+.space-left-small-nf:not(:first-child):before {
+    content: " ";
 }
 
 .space-left-medium-nf:not(:first-of-type)  {
