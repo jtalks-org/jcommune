@@ -22,8 +22,6 @@ import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.ImageConverter;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
-import org.jtalks.jcommune.web.dto.json.JsonResponse;
-import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.validation.editors.DefaultStringEditor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -240,22 +238,11 @@ public class UserProfileController {
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
     }
 
-    @RequestMapping(value = "**/language", method = RequestMethod.GET)
-    public JsonResponse saveUserLanguage(/*@PathVariable("lang") String lang,*/ @RequestParam(value = "lang") String lang, HttpServletResponse response, HttpServletRequest request) throws ServletException {
+    @RequestMapping(value = "**/lang={id}", method = RequestMethod.GET)
+    public String saveUserLanguage(@PathVariable("id") String id, HttpServletResponse response, HttpServletRequest request) throws ServletException {
         JCUser jcuser = userService.getCurrentUser();
+        Language languageFromRequest = Language.byLocale(new Locale(id));
         if(!jcuser.isAnonymous()){
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-            Language languageFromRequest = Language.byLocale(new Locale(lang));
->>>>>>> parent of e464366... https://github.com/jtalks-org/jcommune into JC1263
-=======
-            Language languageFromRequest = Language.byLocale(new Locale(id));
->>>>>>> parent of 9a3d558... #JC1263 - Remove languages from user's profile
-=======
-            Language languageFromRequest = Language.byLocale(new Locale(id));
->>>>>>> parent of 9a3d558... #JC1263 - Remove languages from user's profile
             try{
                 jcuser.setLanguage(languageFromRequest);
                 userService.saveEditedUserProfile(jcuser.getId(), new EditUserProfileDto(jcuser).getUserInfoContainer());
@@ -264,29 +251,8 @@ public class UserProfileController {
             }
         }
         LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
         localeResolver.setLocale(request, response, languageFromRequest.getLocale());
         return "redirect:" + request.getHeader("Referer");
-=======
-        localeResolver.setLocale(request, response, jcuser.getLanguage().getLocale());
-
-//        return "redirect:" + request.getHeader("Referer");
-        return new JsonResponse(JsonResponseStatus.SUCCESS, null);
->>>>>>> parent of e464366... https://github.com/jtalks-org/jcommune into JC1263
-=======
-        localeResolver.setLocale(request, response, jcuser.getLanguage().getLocale());
-
-        return "redirect:" + request.getHeader("Referer");
-//        return new JsonResponse(JsonResponseStatus.SUCCESS, null);
->>>>>>> parent of 9a3d558... #JC1263 - Remove languages from user's profile
-=======
-        localeResolver.setLocale(request, response, jcuser.getLanguage().getLocale());
-
-        return "redirect:" + request.getHeader("Referer");
-//        return new JsonResponse(JsonResponseStatus.SUCCESS, null);
->>>>>>> parent of 9a3d558... #JC1263 - Remove languages from user's profile
     }
 
 }
