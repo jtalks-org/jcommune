@@ -35,7 +35,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -256,6 +258,8 @@ public class UserController {
                     new ImmutableMap.Builder<String, String>().put("customError", "unexpectedError").build());
         }
         if (isAuthenticated) {
+            LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
+            localeResolver.setLocale(request, response, userService.getCurrentUser().getLanguage().getLocale());
             return new JsonResponse(JsonResponseStatus.SUCCESS);
         } else {
             return new JsonResponse(JsonResponseStatus.FAIL);
@@ -287,6 +291,8 @@ public class UserController {
             return new ModelAndView(AUTH_SERVICE_FAIL_URL);
         }
         if (isAuthenticated) {
+            LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
+            localeResolver.setLocale(request, response, userService.getCurrentUser().getLanguage().getLocale());
             return new ModelAndView("redirect:/");
         } else {
             ModelAndView modelAndView = new ModelAndView(LOGIN);
