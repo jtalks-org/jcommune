@@ -243,12 +243,15 @@ public class UserProfileController {
     @RequestMapping(value = "**/language", method = RequestMethod.GET)
     public JsonResponse saveUserLanguage(/*@PathVariable("lang") String lang,*/ @RequestParam(value = "lang") String lang, HttpServletResponse response, HttpServletRequest request) throws ServletException {
         JCUser jcuser = userService.getCurrentUser();
-        Language languageFromRequest = Language.byLocale(new Locale(id));
         if(!jcuser.isAnonymous()){
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
             Language languageFromRequest = Language.byLocale(new Locale(lang));
 >>>>>>> parent of e464366... https://github.com/jtalks-org/jcommune into JC1263
+=======
+            Language languageFromRequest = Language.byLocale(new Locale(id));
+>>>>>>> parent of 9a3d558... #JC1263 - Remove languages from user's profile
             try{
                 jcuser.setLanguage(languageFromRequest);
                 userService.saveEditedUserProfile(jcuser.getId(), new EditUserProfileDto(jcuser).getUserInfoContainer());
@@ -258,6 +261,7 @@ public class UserProfileController {
         }
         LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
 <<<<<<< HEAD
+<<<<<<< HEAD
         localeResolver.setLocale(request, response, languageFromRequest.getLocale());
         return "redirect:" + request.getHeader("Referer");
 =======
@@ -266,6 +270,12 @@ public class UserProfileController {
 //        return "redirect:" + request.getHeader("Referer");
         return new JsonResponse(JsonResponseStatus.SUCCESS, null);
 >>>>>>> parent of e464366... https://github.com/jtalks-org/jcommune into JC1263
+=======
+        localeResolver.setLocale(request, response, jcuser.getLanguage().getLocale());
+
+        return "redirect:" + request.getHeader("Referer");
+//        return new JsonResponse(JsonResponseStatus.SUCCESS, null);
+>>>>>>> parent of 9a3d558... #JC1263 - Remove languages from user's profile
     }
 
 }
