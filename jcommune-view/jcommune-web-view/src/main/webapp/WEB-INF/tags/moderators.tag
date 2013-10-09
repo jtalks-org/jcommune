@@ -29,7 +29,7 @@
   <c:when test="${!(empty moderators)}">
     <strong><spring:message code="label.moderators"/></strong>
     <c:forEach var="moderator" items="${moderators}" varStatus="i">
-      <a href="${pageContext.request.contextPath}/users/${moderator.id}"
+      <a class="space-left-small" href="${pageContext.request.contextPath}/users/${moderator.id}"
          title="<spring:message code='label.tips.view_profile'/>">
         <c:out value="${moderator.username}"/>
       </a>

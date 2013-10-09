@@ -1,4 +1,4 @@
-﻿<%--
+﻿﻿<%--
 
     Copyright (C) 2011  JTalks.org Team
     This library is free software; you can redistribute it and/or
@@ -246,11 +246,13 @@
           <i class="icon-remove icon-white"></i>
         </a>
 
-                        <span class="contact" title="<c:out value='${contact.type.typeName}'/>">
-                            <img src="${pageContext.request.contextPath}${contact.type.icon}"
-                                 alt="<spring:message code='alt.contacts.contactType'/>">
-                            <jtalks:prepareLink incomingLink='${contact.displayValue}'/>
-                        </span>
+        <span class="contact" title="<c:out value='${contact.type.typeName}'/>">
+            <img src="${pageContext.request.contextPath}${contact.type.icon}"
+                 alt="<spring:message code='alt.contacts.contactType'/>">
+            <span class="space-left-small">
+                <jtalks:prepareLink incomingLink='${contact.displayValue}'/>
+            </span>
+        </span>
       </li>
     </c:forEach>
   </ul>

@@ -343,8 +343,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     }
     
     /**
-     * Calculates modification date of topic taking it as last modification
-     * date among its posts.
+     * Calculates modification date of topic taking it as last post in topic creation date.
      * Used after deletion of the post. It is necessary to save the sort order of topics in the future.
      */
     public void recalculateModificationDate() {

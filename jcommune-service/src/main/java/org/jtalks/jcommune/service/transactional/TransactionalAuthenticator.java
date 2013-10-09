@@ -196,7 +196,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      * @return true if authentication was successful, otherwise false
      * @throws AuthenticationException
      */
-    private boolean authenticateDefault(JCUser user, String password, boolean rememberMe,
+        private boolean authenticateDefault(JCUser user, String password, boolean rememberMe,
                                         HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
         try {

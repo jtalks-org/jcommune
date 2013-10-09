@@ -137,17 +137,6 @@
         </div>
         <div class="control-group">
           <label class="control-label"> <spring:message
-                  code="label.language"/>
-          </label>
-
-          <div class="controls">
-            <label class="input-xlarge box-label test-language"> <spring:message
-                    code='${language.languageNameLabel}'/>
-            </label>
-          </div>
-        </div>
-        <div class="control-group">
-          <label class="control-label"> <spring:message
                   code="label.pageSize"/>
           </label>
 
@@ -245,11 +234,14 @@
         <ul id="contacts" class="contacts">
           <c:forEach var="contact" items="${user.userContacts}">
             <li><span class="contact"
-                      title="<c:out value='${contact.type.typeName}'/>"> <img
-                    src="${pageContext.request.contextPath}${contact.type.icon}"
-                    title="<c:out value="${contact.type.typeName}"/>">
-                                            <jtalks:prepareLink incomingLink='${contact.displayValue}'/>
-                                    </span></li>
+                    title="<c:out value='${contact.type.typeName}'/>">
+                  <img src="${pageContext.request.contextPath}${contact.type.icon}"
+                       title="<c:out value="${contact.type.typeName}"/>">
+                  <span class="space-left-small">
+                    <jtalks:prepareLink incomingLink='${contact.displayValue}'/>
+                  </span>
+                </span>
+            </li>
           </c:forEach>
         </ul>
       </c:if>

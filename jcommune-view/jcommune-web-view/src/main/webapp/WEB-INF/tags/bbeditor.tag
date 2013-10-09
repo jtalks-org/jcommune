@@ -169,7 +169,7 @@
          value="<spring:message code="${labelForAction}"/>"/>
 </c:if>
 
-<input id="preview" type="button" class="btn btn-success" name="preview" tabindex="400"
+<input id="preview" type="button" class="btn btn-success space-left-medium-nf" name="preview" tabindex="400"
        value="<spring:message code="label.answer.preview"/>" onclick="SwitchEditor();return null;"/>
 <script type="text/javascript">
   initEditor("postBody", "editorBBCODEdiv", "htmlContent");

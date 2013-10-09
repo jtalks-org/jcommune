@@ -48,9 +48,15 @@
 <div class="logo-container">
   <a href="${pageContext.request.contextPath}/" title="${fn:escapeXml(toolTip)}"
      data-toggle="tooltip" data-placement="right">
-    <img <c:if test="${sessionScope.adminMode == true}">id='forumLogo'</c:if> class="forum-logo cursor-pointer"
-         src='<c:url value="/admin/logo"/>'
-         alt="${fn:escapeXml(toolTip)}"/>
+    <c:choose>
+      <c:when test="${sessionScope.adminMode == true}">
+        <img id="forumLogo" class="forum-logo cursor-pointer" src='<c:url value="/admin/logo"/>'
+             alt="${fn:escapeXml(toolTip)}"/>
+      </c:when>
+      <c:otherwise>
+        <img class="forum-logo cursor-pointer" src='<c:url value="/admin/logo"/>' alt="${fn:escapeXml(toolTip)}"/>
+      </c:otherwise>
+    </c:choose>
   </a>
 </div>
 
@@ -171,10 +177,10 @@
           <a id="user-dropdown-menu-link" href="#">
             <c:out value="${username}"/>
             <c:if test="${newPmCount != null}">
-              (
-              <i class="icon-envelope icon-white" style="vertical-align:middle;"></i>
-              <span class='test-pm-count'>${newPmCount}</span>
-              )
+              <span class="space-left-small">(</span>
+              <i class="space-left-small icon-envelope icon-white" style="vertical-align:middle;"></i>
+              <span class='space-left-small test-pm-count'>${newPmCount}</span>
+              <span class="space-left-small">)</span>
             </c:if>
           </a>
           <b class="caret"></b>
@@ -200,14 +206,13 @@
             <a href="${pageContext.request.contextPath}/inbox">
               <fmt:message key="label.pm"/>
               <c:if test="${newPmCount != null}">
-                                    <span id="new-pm-count" title="
-                                        <fmt:message key='label.tips.pm_count'>
-                                            <fmt:param>${newPmCount}</fmt:param>
-                                        </fmt:message>
-                                        ">
-                                        (                                       
-                                        <span class='test-pm-count'>${newPmCount}</span>
-                                        )
+                <span id="new-pm-count" title="<fmt:message key='label.tips.pm_count'>
+                                                <fmt:param>${newPmCount}</fmt:param>
+                                              </fmt:message>
+                                            ">
+                                        <span class="space-left-small">(</span>
+                                        <span class='test-pm-count space-left-small'>${newPmCount}</span>
+                                        <span class="space-left-small">)</span>
                                     </span>
               </c:if>
             </a>
@@ -230,49 +235,49 @@
     <%-- END OF Logged in block --%>
 
     <%-- Language chooser --%>
-    <li class="dropdown">
-      <div id="lang-selector-toggle" class="dropdown-toggle topline-dropdown-menu"
-           data-toggle="dropdown"
-           title="<fmt:message key='label.click_language'/>">
-        <a href="#">
-          <img
-                  src="${pageContext.request.contextPath}/resources/images/flags/<fmt:message key='locale.code'/>.png"
-                  alt="<fmt:message key='locale.name'/>"/>
-        </a>
-        <b class="caret"></b>
-      </div>
-      <ul class="dropdown-menu lang-menu">
-        <li id='lang-en'>
-          <a href="#" onclick="window.location = getLanguageLink('en')">
-            <img src="${pageContext.request.contextPath}/resources/images/flags/en.png"
-                 alt="<fmt:message key='label.english'/>"/>
-            <fmt:message key='label.english'/>
-          </a>
+        <%-- Language chooser --%>
+        <li class="dropdown">
+            <div id="lang-selector-toggle" class="dropdown-toggle topline-dropdown-menu"
+                 data-toggle="dropdown"
+                 title="<fmt:message key='label.click_language'/>">
+                <a href="#">
+                    <img src="${pageContext.request.contextPath}/resources/images/flags/<fmt:message key='locale.code'/>.png"
+                         alt="<fmt:message key='locale.name'/>"/>
+                </a>
+                <b class="caret"></b>
+            </div>
+            <ul class="dropdown-menu lang-menu">
+                <li id='lang-en'>
+                    <a href="href=${pageContext.request.requestURL}lang=en" onclick="window.location = getLanguageLink('en')">
+                        <img src="${pageContext.request.contextPath}/resources/images/flags/en.png"
+                             alt="<fmt:message key='label.english'/>"/>
+                        <fmt:message key='label.english'/>
+                    </a>
+                </li>
+                <li id='lang-ru'>
+                    <a href="${pageContext.request.requestURL}lang=ru" <%--onclick="window.location = getLanguageLink('ru')"--%>>
+                        <img src="${pageContext.request.contextPath}/resources/images/flags/ru.png"
+                             alt="<fmt:message key='label.russian'/>"/>
+                        <fmt:message key='label.russian'/>
+                    </a>
+                </li>
+                <li id='lang-uk'>
+                    <a href="${pageContext.request.requestURL}lang=uk" onclick="window.location = getLanguageLink('uk')">
+                        <img src="${pageContext.request.contextPath}/resources/images/flags/uk.png"
+                             alt="<fmt:message key='label.ukrainian'/>"/>
+                        <fmt:message key='label.ukrainian'/>
+                    </a>
+                </li>
+                <%-- Spanish is disabled since we are not able make full translation --%>
+                <!--                             <li id='lang-es'> -->
+                <!--                                 <a href="#"  onclick="window.location = getLanguageLink('es')"> -->
+                <%--                                     <img src="${pageContext.request.contextPath}/resources/images/flags/es.png" />  --%>
+                <%--                                     <fmt:message key='label.spanish'/> --%>
+                <!--                                 </a> -->
+                <!--                             </li> -->
+            </ul>
         </li>
-        <li id='lang-ru'>
-          <a href="#" onclick="window.location = getLanguageLink('ru')">
-            <img src="${pageContext.request.contextPath}/resources/images/flags/ru.png"
-                 alt="<fmt:message key='label.russian'/>"/>
-            <fmt:message key='label.russian'/>
-          </a>
-        </li>
-        <li id='lang-uk'>
-          <a href="#" onclick="window.location = getLanguageLink('uk')">
-            <img src="${pageContext.request.contextPath}/resources/images/flags/uk.png"
-                 alt="<fmt:message key='label.ukrainian'/>"/>
-            <fmt:message key='label.ukrainian'/>
-          </a>
-        </li>
-        <%-- Spanish is disabled since we are not able make full translation --%>
-        <!--                             <li id='lang-es'> -->
-        <!--                                 <a href="#"  onclick="window.location = getLanguageLink('es')"> -->
-        <%--                                     <img src="${pageContext.request.contextPath}/resources/images/flags/es.png" />  --%>
-        <%--                                     <fmt:message key='label.spanish'/> --%>
-        <!--                                 </a> -->
-        <!--                             </li> -->
-      </ul>
-    </li>
-    <%-- END OF Language chooser --%>
+        <%-- END OF Language chooser --%>
   </ul>
 </div>
 </div>

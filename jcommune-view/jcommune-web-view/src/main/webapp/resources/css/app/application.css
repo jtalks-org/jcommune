@@ -616,7 +616,7 @@ div.anchor {
 }
 
 #externalLinks span:not(:last-child):after {
-    content: "|";
+    content: " | ";
 }
 
 .remove-links {
@@ -731,4 +731,16 @@ div.anchor {
     display: block;
     padding: 5px 12px 0px 0px;
     line-height: 1;
+}
+
+.space-left-small {
+    margin-left: 3px;
+}
+
+.space-left-small-nf:not(:first-child) {
+    margin-left: 3px;
+}
+
+.space-left-medium-nf:not(:first-of-type)  {
+    margin-left: 4px;
 }
