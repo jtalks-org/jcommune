@@ -211,8 +211,6 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
                     rememberMeServices.loginSuccess(request, response, auth);
                 }
                 user.updateLastLoginTime();
-//                LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
-//                localeResolver.setLocale(request, response, user.getLanguage().getLocale());
                 return true;
             }
         } catch (AuthenticationException e) {
