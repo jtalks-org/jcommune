@@ -21,7 +21,6 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <div class="navbar navbar-fixed-top">
 <div class="navbar-inner">
@@ -234,29 +233,42 @@
       <div id="lang-selector-toggle" class="dropdown-toggle topline-dropdown-menu"
            data-toggle="dropdown"
            title="<fmt:message key='label.click_language'/>">
-        <a href="#">
-          <img src="${pageContext.request.contextPath}/resources/images/flags/<fmt:message key='locale.code'/>.png"
+        <a href="/language">
+          <img
+                  src="${pageContext.request.contextPath}/resources/images/flags/<fmt:message key='locale.code'/>.png"
                   alt="<fmt:message key='locale.name'/>"/>
         </a>
         <b class="caret"></b>
       </div>
       <ul class="dropdown-menu lang-menu">
         <li id='lang-en'>
+<<<<<<< HEAD
           <a href="href=${pageContext.request.requestURL}lang=en">
+=======
+          <a href="/language" onclick="window.location = getLanguageLink('en')">
+>>>>>>> parent of e464366... https://github.com/jtalks-org/jcommune into JC1263
             <img src="${pageContext.request.contextPath}/resources/images/flags/en.png"
                  alt="<fmt:message key='label.english'/>"/>
             <fmt:message key='label.english'/>
           </a>
         </li>
         <li id='lang-ru'>
+<<<<<<< HEAD
           <a href="${pageContext.request.requestURL}lang=ru">
+=======
+          <a href="/language" onclick="window.location = getLanguageLink('ru')">
+>>>>>>> parent of e464366... https://github.com/jtalks-org/jcommune into JC1263
             <img src="${pageContext.request.contextPath}/resources/images/flags/ru.png"
                  alt="<fmt:message key='label.russian'/>"/>
             <fmt:message key='label.russian'/>
           </a>
         </li>
         <li id='lang-uk'>
+<<<<<<< HEAD
           <a href="${pageContext.request.requestURL}lang=uk">
+=======
+          <a href="/language" onclick="window.location = getLanguageLink('uk')">
+>>>>>>> parent of e464366... https://github.com/jtalks-org/jcommune into JC1263
             <img src="${pageContext.request.contextPath}/resources/images/flags/uk.png"
                  alt="<fmt:message key='label.ukrainian'/>"/>
             <fmt:message key='label.ukrainian'/>
