@@ -57,7 +57,7 @@
           <i class="icon-picture"></i>
           <spring:message code="label.avatar.load"/>
         </a>
-        <a id="removeAvatar" href="#" class="btn btn-mini btn-danger"
+        <a id="removeAvatar" href="#" class="btn btn-mini btn-danger space-left-big-nf"
            title="<spring:message code="label.avatar.remove" />">
           <i class="icon-remove icon-white"></i>
         </a>
@@ -222,8 +222,8 @@
           <button id="saveChanges" class="btn btn-primary" type="submit" tabindex="60">
             <spring:message code="label.save_changes"/>
           </button>
-          <a href="${pageContext.request.contextPath}/users/${editedUser.userId}" class="btn" tabindex="60">
-            <spring:message code="label.cancel"/>
+          <a href="${pageContext.request.contextPath}/users/${editedUser.userId}" class="btn space-left-medium"
+             tabindex="60"><spring:message code="label.cancel"/>
           </a>
         </div>
       </fieldset>
