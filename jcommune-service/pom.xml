@@ -16,6 +16,16 @@
 
   <dependencies>
     <dependency>
+      <groupId>fm.void.jetm</groupId>
+      <artifactId>jetm</artifactId>
+      <version>1.2.3</version>
+    </dependency>
+    <dependency>
+      <groupId>fm.void.jetm</groupId>
+      <artifactId>jetm-optional</artifactId>
+      <version>1.2.3</version>
+    </dependency>
+    <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jcommune-model</artifactId>
     </dependency>

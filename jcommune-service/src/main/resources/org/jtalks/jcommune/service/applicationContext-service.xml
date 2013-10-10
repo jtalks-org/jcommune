@@ -24,6 +24,30 @@
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 
+    <!-- JETM implementation using bean -->
+    <bean id="etmMonitor" class="etm.core.monitor.NestedMonitor" init-method="start" destroy-method="stop"/>
+
+    <!-- JETM console -->
+    <bean id="etmHttpConsole" class="etm.contrib.console.HttpConsoleServer" init-method="start" destroy-method="stop">
+        <constructor-arg ref="etmMonitor"/>
+    </bean>
+
+    <!-- Wrapper for JETM interceptor -->
+    <bean id="etmMethodCallInterceptor" class="org.jtalks.jcommune.service.jetm.EtmMethodCallInterceptorWrapper">
+        <constructor-arg ref="etmMonitor"/>
+    </bean>
+
+    <!-- Declaration AOP for JETM -->
+    <aop:config>
+        <aop:pointcut id="JETMPointCutService" expression="within(org.jtalks.jcommune.service.transactional..*)" />
+        <aop:advisor advice-ref="etmMethodCallInterceptor" pointcut-ref="JETMPointCutService" />
+    </aop:config>
+
+    <aop:config>
+        <aop:pointcut id="JETMPointCutDao" expression="within(org.jtalks.jcommune.model.dao..*)" />
+        <aop:advisor advice-ref="etmMethodCallInterceptor" pointcut-ref="JETMPointCutDao" />
+    </aop:config>
+
     <!-- Declaration AOP configs -->
     <aop:config>
         <aop:pointcut id="defaultTxPointcut"
