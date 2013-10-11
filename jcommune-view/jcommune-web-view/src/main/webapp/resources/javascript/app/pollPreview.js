@@ -45,7 +45,7 @@ function SwitchPoll() {
     pollEditFormVisible = !pollEditFormVisible;
     if (!pollEditFormVisible) {  // enter preview
         oldTopicTile = $("#topicTitle").val();
-        $("#topicTitle").html($("#subject").val());
+        $("#topicTitle").html($("#subjectText").val());
         if (isPollSet()) {
             previewFormElement.html(prepareTitle() + prepareItems());
             previewFormElement.show();
