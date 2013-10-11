@@ -30,6 +30,7 @@ import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.ui.velocity.VelocityEngineUtils;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
@@ -140,8 +141,12 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
         SecurityContextHolder.getContext();
         ResourceBundle resourceBundle  = ResourceBundle.getBundle("org.jtalks.jcommune.plugin.kaptcha.messages", Locale.ENGLISH);
         Properties properties = new Properties();
-        properties.put("resource.loader", "class");
-        properties.put("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+
+        properties.put("resource.loader", "jar");
+        properties.put("jar.resource.loader.class", "org.apache.velocity.runtime.resource.loader.JarResourceLoader");
+        String jarPath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+        properties.put("jar.resource.loader.path", "jar:file:" + jarPath);
+
         VelocityEngine engine = new VelocityEngine(properties);
         engine.init();
         Map<String, Object> model = new HashMap<>();
@@ -150,17 +155,8 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
         model.put(ALT_REFRESH_CAPTCHA, resourceBundle.getObject("alt.captcha.update"));
         model.put(CAPTCHA_PLUGIN_ID, "1");
         model.put(BASE_URL, getDeploymentRootUrlWithoutPort(request));
-        return  "<div class='control-group'>\n" +
-                "  <div class='controls captcha-images'>\n" +
-                "    <img id='captcha-img' alt='Captcha' src='http://localhost:8080/plugin/Kaptcha/refreshCaptcha'/>\n" +
-                "    <img id='captcha-refresh' alt='Refresh captcha' src='http://localhost:8080/resources/images/captcha-refresh.png'/>\n" +
-                "  </div>\n" +
-                "  <div class='controls'><input type='text' id='captcha' placeholder='Captcha text' class='input-xlarge'/></div>\n" +
-                "</div>";
-        // doesn't work in web application (unable to find captcha.vm)
-//        return VelocityEngineUtils.mergeTemplateIntoString(
-//                engine, "org/jtalks/jcommune/plugin/kaptcha/template/captcha.vm",
-//                "UTF-8", model);
+        return VelocityEngineUtils.mergeTemplateIntoString(
+                engine, "org/jtalks/jcommune/plugin/kaptcha/template/captcha.vm", "UTF-8", model);
     }
 
     /**
