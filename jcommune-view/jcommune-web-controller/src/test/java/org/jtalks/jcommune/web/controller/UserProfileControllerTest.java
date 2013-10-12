@@ -268,6 +268,7 @@ public class UserProfileControllerTest {
 
     @Test
     public void testInitBinder() {
+        when(userService.getCurrentUser()).thenReturn(getUser());
         WebDataBinder binder = mock(WebDataBinder.class);
         
         profileController.initBinder(binder);
