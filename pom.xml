@@ -585,24 +585,7 @@
     <headerBaseDir>${basedir}</headerBaseDir>
     <pathtoHeader>${headerBaseDir}/header.txt</pathtoHeader>
     <commonVersion>0.53</commonVersion>
+    <isJsCompressed>true</isJsCompressed>
   </properties>
-
-  <profiles>
-    <profile>
-      <id>prod</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <properties>
-        <isJsCompressed>true</isJsCompressed>
-      </properties>
-    </profile>
-    <profile>
-      <id>dev</id>
-      <properties>
-        <isJsCompressed>false</isJsCompressed>
-      </properties>
-    </profile>
-  </profiles>
 
 </project>
