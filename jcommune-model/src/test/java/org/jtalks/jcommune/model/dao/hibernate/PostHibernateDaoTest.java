@@ -31,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.testng.Assert.*;
@@ -110,12 +111,33 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         PageRequest pageRequest = new PageRequest("1", pageSize);
         List<Post> posts = PersistedObjectsFactory.createAndSavePostList(totalSize);
         JCUser author = posts.get(0).getUserCreated();
+        List<Long> forbiddenBranchesIds = new ArrayList<>();
+        forbiddenBranchesIds.add(-1L);
 
-        Page<Post> postsPage = dao.getUserPosts(author, pageRequest);
+        Page<Post> postsPage = dao.getUserPosts(author, pageRequest, forbiddenBranchesIds);
 
         assertEquals(postsPage.getContent().size(), pageSize, "Incorrect count of posts in one page.");
         assertEquals(postsPage.getTotalElements(), totalSize, "Incorrect total count.");
         assertEquals(postsPage.getTotalPages(), pageCount, "Incorrect count of pages.");
+    }
+
+    @Test
+    public void testPostOfUserWithForbiddenBranchesIds() {
+        int totalSize = 50;
+        int pageCount = 2;
+        int pageSize = totalSize / pageCount;
+
+        PageRequest pageRequest = new PageRequest("1", pageSize);
+        List<Post> posts = PersistedObjectsFactory.createAndSavePostList(totalSize);
+        JCUser author = posts.get(0).getUserCreated();
+        List<Long> forbiddenBranchesIds = new ArrayList<>();
+        forbiddenBranchesIds.add(posts.get(0).getTopic().getBranch().getId());
+
+        Page<Post> postsPage = dao.getUserPosts(author, pageRequest, forbiddenBranchesIds);
+
+        assertEquals(postsPage.getContent().size(), 0, "Incorrect count of posts in one page.");
+        assertEquals(postsPage.getTotalElements(), 0, "Incorrect total count.");
+        assertEquals(postsPage.getTotalPages(), 0, "Incorrect count of pages.");
     }
 
     @Test
@@ -127,8 +149,10 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         PageRequest pageRequest = new PageRequest("1", pageSize);
         List<Post> posts = PersistedObjectsFactory.createAndSavePostList(totalSize);
         JCUser author = posts.get(0).getUserCreated();
+        List<Long> forbiddenBranchesIds = new ArrayList<>();
+        forbiddenBranchesIds.add(-1L);
 
-        Page<Post> postsPage = dao.getUserPosts(author, pageRequest);
+        Page<Post> postsPage = dao.getUserPosts(author, pageRequest, forbiddenBranchesIds);
 
         boolean asc = false;
         assertTrue(isPostListSortedByDate(postsPage.getContent(), asc));
@@ -161,8 +185,10 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
                 PAGE_NUMBER_TOO_LOW, pageSize);
         List<Post> posts = PersistedObjectsFactory.createAndSavePostList(totalSize);
         JCUser author = posts.get(0).getUserCreated();
+        List<Long> forbiddenBranchesIds = new ArrayList<>();
+        forbiddenBranchesIds.add(-1L);
 
-        Page<Post> postsPage = dao.getUserPosts(author, pageRequest);
+        Page<Post> postsPage = dao.getUserPosts(author, pageRequest, forbiddenBranchesIds);
         List<Post> postList = postsPage.getContent();
         for (int i = 1; i < postList.size(); i++) {
             DateTime creationDatePrevious = postList.get(i - 1).getCreationDate();
@@ -186,8 +212,10 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
                 PAGE_NUMBER_TOO_BIG, pageSize);
         List<Post> posts = PersistedObjectsFactory.createAndSavePostList(totalSize);
         JCUser author = posts.get(0).getUserCreated();
+        List<Long> forbiddenBranchesIds = new ArrayList<>();
+        forbiddenBranchesIds.add(-1L);
 
-        Page<Post> postsPage = dao.getUserPosts(author, pageRequest);
+        Page<Post> postsPage = dao.getUserPosts(author, pageRequest, forbiddenBranchesIds);
 
         assertEquals(postsPage.getContent().size(), pageSize, "Incorrect count of posts in one page.");
         assertEquals(postsPage.getTotalElements(), totalSize, "Incorrect total count.");
@@ -200,8 +228,10 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         PageRequest pageRequest = new PageRequest("1", 50);
         JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
+        List<Long> forbiddenBranchesIds = new ArrayList<>();
+        forbiddenBranchesIds.add(-1L);
 
-        Page<Post> postsPage = dao.getUserPosts(user, pageRequest);
+        Page<Post> postsPage = dao.getUserPosts(user, pageRequest, forbiddenBranchesIds);
 
         assertFalse(postsPage.hasContent());
     }

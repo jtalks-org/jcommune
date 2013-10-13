@@ -43,11 +43,11 @@
     </query>
 
     <query name="getCountPostsOfUser">
-        <![CDATA[SELECT count(*) FROM Post WHERE userCreated = :userCreated]]>
+        <![CDATA[SELECT count(*) FROM Post p WHERE userCreated = :userCreated AND p.topic.branch.id not in (:forbiddenBranchesIds)]]>
     </query>
     
     <query name="getPostsOfUser">
-        <![CDATA[FROM Post p WHERE p.userCreated = :userCreated ORDER BY creationDate DESC]]>
+        <![CDATA[FROM Post p WHERE p.userCreated = :userCreated AND p.topic.branch.id not in (:forbiddenBranchesIds) ORDER BY creationDate DESC]]>
     </query>
     
     <query name="getCountPostsInTopic">
