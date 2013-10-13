@@ -5,20 +5,17 @@ import org.testng.annotations.Test;
 
 import static org.testng.AssertJUnit.assertEquals;
 
-public class LanguageEditorTest
-{
+public class LanguageEditorTest {
     @Test
-    public void testLanguageShouldNotBeCorrect()
-    {
-        String defaultLanguage = Language.ENGLISH.toString();
-        LanguageEditor languageEditor = new LanguageEditor(defaultLanguage);
+    public void testWhenUserSetIncorrectLanguage() {
+        Language defaultLanguage = Language.ENGLISH;
+        LanguageEditor languageEditor = new LanguageEditor(Language.ENGLISH);
         languageEditor.setAsText("Incorrect language");
         assertEquals(defaultLanguage, languageEditor.getValue());
     }
 
     @Test
-    public void testLanguageShouldBeCorrect()
-    {
+    public void testWhenUserSetCorrectLanguage() {
         String language = Language.RUSSIAN.toString();
         LanguageEditor languageEditor = new LanguageEditor(null);
         languageEditor.setAsText(language);

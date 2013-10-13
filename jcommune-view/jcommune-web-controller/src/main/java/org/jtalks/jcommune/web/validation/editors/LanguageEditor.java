@@ -15,30 +15,32 @@
 package org.jtalks.jcommune.web.validation.editors;
 
 import org.jtalks.jcommune.model.entity.Language;
+
 import java.beans.PropertyEditorSupport;
 
 /**
  * Default property editor for Language.
  * <p/>
+ *
  * @author Andrey Ivanov
  */
-public class LanguageEditor extends PropertyEditorSupport
-{
-    String defaultLanguage;
+public class LanguageEditor extends PropertyEditorSupport {
 
     /**
-     * Default language
+     * Default language which we should use when user sets incorrect language.
+     *
      * @param defaultLanguage
      */
-    public LanguageEditor(String defaultLanguage)
-    {
+    Language defaultLanguage;
+
+    public LanguageEditor(Language defaultLanguage) {
         this.defaultLanguage = defaultLanguage;
     }
 
     @Override
-    public void setAsText(String text) throws java.lang.IllegalArgumentException {
-        for (Language lang : Language.values()){
-            if(text.equals(lang.toString())) {
+    public void setAsText(String text) {
+        for (Language lang : Language.values()) {
+            if (text.equals(lang.toString())) {
                 setValue(text);
                 return;
             }

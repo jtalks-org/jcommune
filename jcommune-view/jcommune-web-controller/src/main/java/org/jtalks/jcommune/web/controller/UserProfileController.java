@@ -81,7 +81,7 @@ public class UserProfileController {
         binder.registerCustomEditor(String.class, "newUserPassword", new DefaultStringEditor(true));
         binder.registerCustomEditor(String.class, "newUserPasswordConfirm", new DefaultStringEditor(true));
         binder.registerCustomEditor(Language.class, "language",
-                new LanguageEditor(userService.getCurrentUser().getLanguage().toString()));
+                new LanguageEditor(userService.getCurrentUser().getLanguage()));
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
