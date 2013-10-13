@@ -104,7 +104,7 @@ public class UserControllerTest {
 
     @Test
     public void testRegistrationPage() throws Exception {
-        ModelAndView mav = userController.registrationPage(null);
+        ModelAndView mav = userController.registrationPage(null, null);
 
         assertViewName(mav, "registration");
         RegisterUserDto dto = assertAndReturnModelAttributeOfType(mav, "newUser", RegisterUserDto.class);

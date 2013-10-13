@@ -5,6 +5,7 @@ import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Locale;
 import java.util.Map;
 
 public interface RegistrationPlugin extends Plugin {
@@ -31,5 +32,5 @@ public interface RegistrationPlugin extends Plugin {
     Map<String, String> validateUser(UserDto userDto, Long pluginId) throws NoConnectionException, UnexpectedErrorException;
 
 
-    String getHtml(HttpServletRequest request, String pluginId);
+    String getHtml(HttpServletRequest request, String pluginId, Locale locale);
 }

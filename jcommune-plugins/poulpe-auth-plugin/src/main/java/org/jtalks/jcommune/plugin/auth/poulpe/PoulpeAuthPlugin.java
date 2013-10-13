@@ -30,10 +30,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import static org.jtalks.jcommune.model.entity.PluginProperty.Type.STRING;
@@ -96,7 +93,7 @@ public class PoulpeAuthPlugin extends StatefullPlugin
     }
 
     @Override
-    public String getHtml(HttpServletRequest request, String pluginId) {
+    public String getHtml(HttpServletRequest request, String pluginId, Locale locale) {
         return null;
     }
 

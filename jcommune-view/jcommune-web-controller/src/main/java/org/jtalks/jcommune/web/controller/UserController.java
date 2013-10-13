@@ -151,12 +151,8 @@ public class UserController {
      *         {@link org.jtalks.jcommune.model.dto.RegisterUserDto} with name "newUser
      */
     @RequestMapping(value = "/user/new", method = RequestMethod.GET)
-    public ModelAndView registrationPage(HttpServletRequest request) {
-        Map<String, String> registrationPlugins = new HashMap<>();
-        for(Map.Entry<Long, RegistrationPlugin> entry : pluginService.getRegistrationPlugins().entrySet()) {
-            String pluginId = String.valueOf(entry.getKey());
-            registrationPlugins.put(pluginId, entry.getValue().getHtml(request, pluginId));
-        }
+    public ModelAndView registrationPage(HttpServletRequest request, Locale locale) {
+        Map<String, String> registrationPlugins = getRegistrationPluginsHtml(request, locale);
         return new ModelAndView(REGISTRATION)
                 .addObject("newUser", new RegisterUserDto())
                 .addObject("registrationPlugins", registrationPlugins);
@@ -175,11 +171,7 @@ public class UserController {
     public ModelAndView registerUser(@ModelAttribute("newUser") RegisterUserDto registerUserDto,
                                      HttpServletRequest request,
                                      Locale locale) {
-        Map<String, String> registrationPlugins = new HashMap<>();
-        for(Map.Entry<Long, RegistrationPlugin> entry : pluginService.getRegistrationPlugins().entrySet()) {
-            String pluginId = String.valueOf(entry.getKey());
-            registrationPlugins.put(pluginId, entry.getValue().getHtml(request, pluginId));
-        }
+        Map<String, String> registrationPlugins = getRegistrationPluginsHtml(request, locale);
         BindingResult errors;
         try {
             registerUserDto.getUserDto().setLanguage(Language.byLocale(locale));
@@ -229,14 +221,19 @@ public class UserController {
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 
-    @RequestMapping(value = "/user/new_ajax", method = RequestMethod.GET)
-    @ResponseBody
-    public JsonResponse registrationForm(HttpServletRequest request, Locale locale) {
+    private Map<String, String> getRegistrationPluginsHtml(HttpServletRequest request, Locale locale) {
         Map<String, String> registrationPlugins = new HashMap<>();
         for (Map.Entry<Long, RegistrationPlugin> entry : pluginService.getRegistrationPlugins().entrySet()) {
             String pluginId = String.valueOf(entry.getKey());
-            registrationPlugins.put(pluginId, entry.getValue().getHtml(request, pluginId));
+            registrationPlugins.put(pluginId, entry.getValue().getHtml(request, pluginId, locale));
         }
+        return registrationPlugins;
+    }
+
+    @RequestMapping(value = "/user/new_ajax", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonResponse registrationForm(HttpServletRequest request, Locale locale) {
+        Map<String, String> registrationPlugins = getRegistrationPluginsHtml(request, locale);
         return new JsonResponse(JsonResponseStatus.SUCCESS, registrationPlugins);
     }
 

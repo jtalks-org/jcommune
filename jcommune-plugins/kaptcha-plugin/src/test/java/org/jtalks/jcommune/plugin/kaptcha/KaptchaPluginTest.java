@@ -2,6 +2,8 @@ package org.jtalks.jcommune.plugin.kaptcha;
 
 import org.testng.annotations.Test;
 
+import java.util.Locale;
+
 import static org.testng.Assert.assertEquals;
 
 public class KaptchaPluginTest {
@@ -11,7 +13,7 @@ public class KaptchaPluginTest {
 
         KaptchaPlugin kaptchaPlugin = new KaptchaPlugin();
         String pluginId = "1";
-        String actual = kaptchaPlugin.getHtml(null, pluginId);
+        String actual = kaptchaPlugin.getHtml(null, pluginId, Locale.ENGLISH);
         String expected = "<div class='control-group'>\n" +
                 "  <div class='controls captcha-images'>\n" +
                 "    <img id='captcha-img' alt='Captcha' src='http://localhost:8080/plugin/1/refreshCaptcha'/>\n" +

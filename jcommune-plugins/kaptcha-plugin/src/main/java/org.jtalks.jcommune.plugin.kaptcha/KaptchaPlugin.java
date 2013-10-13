@@ -148,8 +148,8 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
     private Map<String, String> validate(UserDto userDto, Long pluginId) {
         String captcha = userDto.getCaptchas().get(PLUGIN_PREFIX + String.valueOf(pluginId));
         if (!isValid(captcha)) {
-            ResourceBundle resourceBundle =
-                    ResourceBundle.getBundle("org.jtalks.jcommune.plugin.kaptcha.messages", Locale.ENGLISH);
+            ResourceBundle resourceBundle = ResourceBundle.getBundle("org.jtalks.jcommune.plugin.kaptcha.messages",
+                            userDto.getLanguage().getLocale());
             String fieldName = "userDto.captchas['" + (PLUGIN_PREFIX + pluginId) + "']";
             return new ImmutableMap.Builder<String, String>().put(fieldName,
                     resourceBundle.getString("validation.captcha.wrong")).build();
@@ -158,9 +158,9 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
     }
 
     @Override
-    public String getHtml(HttpServletRequest request, String pluginId) {
+    public String getHtml(HttpServletRequest request, String pluginId, Locale locale) {
         SecurityContextHolder.getContext();
-        ResourceBundle resourceBundle  = ResourceBundle.getBundle("org.jtalks.jcommune.plugin.kaptcha.messages", Locale.ENGLISH);
+        ResourceBundle resourceBundle  = ResourceBundle.getBundle("org.jtalks.jcommune.plugin.kaptcha.messages", locale);
         Properties properties = new Properties();
 
         properties.put("resource.loader", "jar");
