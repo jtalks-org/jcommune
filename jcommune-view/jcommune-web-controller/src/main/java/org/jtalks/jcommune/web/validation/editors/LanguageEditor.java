@@ -19,20 +19,19 @@ import org.jtalks.jcommune.model.entity.Language;
 import java.beans.PropertyEditorSupport;
 
 /**
- * Default property editor for Language.
- * <p/>
+ * Default property editor for Language. Spring MVC uses it to convert the language from and to string.
  *
  * @author Andrey Ivanov
  */
 public class LanguageEditor extends PropertyEditorSupport {
+    /**
+     * Default language which we should use when user passes incorrect language.
+     */
+    private final Language defaultLanguage;
 
     /**
-     * Default language which we should use when user sets incorrect language.
-     *
-     * @param defaultLanguage
+     * @param defaultLanguage default language which we should use when user passes incorrect language
      */
-    Language defaultLanguage;
-
     public LanguageEditor(Language defaultLanguage) {
         this.defaultLanguage = defaultLanguage;
     }

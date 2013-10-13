@@ -21,15 +21,15 @@ import static org.testng.AssertJUnit.assertEquals;
 
 public class LanguageEditorTest {
     @Test
-    public void testWhenUserSetIncorrectLanguage() {
+    public void incorrectLocaleIsSet_defaultLocaleShouldBeReturned() {
         Language defaultLanguage = Language.ENGLISH;
-        LanguageEditor languageEditor = new LanguageEditor(Language.ENGLISH);
+        LanguageEditor languageEditor = new LanguageEditor(defaultLanguage);
         languageEditor.setAsText("Incorrect language");
         assertEquals(defaultLanguage, languageEditor.getValue());
     }
 
     @Test
-    public void testWhenUserSetCorrectLanguage() {
+    public void correctLocaleIsSet_shouldActuallyBeSet() {
         String language = Language.RUSSIAN.toString();
         LanguageEditor languageEditor = new LanguageEditor(null);
         languageEditor.setAsText(language);
