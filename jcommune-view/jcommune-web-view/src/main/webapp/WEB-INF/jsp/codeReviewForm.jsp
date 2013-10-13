@@ -25,14 +25,7 @@
 </head>
 <body>
 <div class="container">
-  <div id="branch-header">
-    <h3>
-            <span id="topicTitle">
-                <c:out value="${topicDto.topic.title}"/>
-            </span>
-    </h3>
-  </div>
-  <br>
+
   <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
   <form:form action="${pageContext.request.contextPath}${submitUrl}"

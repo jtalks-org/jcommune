@@ -14,7 +14,6 @@
  */
 var pollEditFormVisible = true;
 var previewFormElement, multipleButtonElement;
-var oldTopicTile = "";
 
 $(document).ready(function () {
     previewFormElement = $("#previewPoll");
@@ -44,14 +43,11 @@ $(document).ready(function () {
 function SwitchPoll() {
     pollEditFormVisible = !pollEditFormVisible;
     if (!pollEditFormVisible) {  // enter preview
-        oldTopicTile = $("#topicTitle").val();
-        $("#topicTitle").html($("#subject").val());
         if (isPollSet()) {
             previewFormElement.html(prepareTitle() + prepareItems());
             previewFormElement.show();
         }
     } else {
-        $("#topicTitle").html(oldTopicTile);
         previewFormElement.hide();
     }
 }
