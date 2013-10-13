@@ -255,14 +255,14 @@
                     </a>
                 </li>
                 <li id='lang-ru'>
-                    <a href="${pageContext.request.requestURL}/?lang=ru">
+                    <a href="${pageContext.request.requestURL}language/?lang=ru">
                         <img src="${pageContext.request.contextPath}/resources/images/flags/ru.png"
                              alt="<fmt:message key='label.russian'/>"/>
                         <fmt:message key='label.russian'/>
                     </a>
                 </li>
                 <li id='lang-uk'>
-                    <a href="${pageContext.request.requestURL}/?lang=uk">
+                    <a href="${pageContext.request.requestURL}language/?lang=uk">
                         <img src="${pageContext.request.contextPath}/resources/images/flags/uk.png"
                              alt="<fmt:message key='label.ukrainian'/>"/>
                         <fmt:message key='label.ukrainian'/>
