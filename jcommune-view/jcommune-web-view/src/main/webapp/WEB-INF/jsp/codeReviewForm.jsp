@@ -43,7 +43,7 @@
         <form:input path="topic.title" id="subject" type="text" name="subject" size="45"
                     maxlength="255" tabindex="100"
                     class="span11 script-confirm-unsaved" placeholder="${topicTitlePlaceholder}"/>
-        <form:errors path="topic.title" id="subject" type="text" name="subject" size="45"
+        <form:errors path="topic.title" id="subjectError" type="text" name="subjectError" size="45"
                      maxlength="255"
                      class="post" cssClass="help-inline"/>
       </div>

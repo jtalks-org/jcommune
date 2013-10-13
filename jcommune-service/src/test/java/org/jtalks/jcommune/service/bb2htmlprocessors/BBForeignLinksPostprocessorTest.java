@@ -31,6 +31,7 @@ public class BBForeignLinksPostprocessorTest {
     @Mock
     private HttpServletRequest request;
     private String prefix = "/out?=";
+    private String relAttr = "rel=\"nofollow\"";
     private String serverName = "server_name";
 
     @BeforeMethod
@@ -60,9 +61,12 @@ public class BBForeignLinksPostprocessorTest {
     @DataProvider
     public Object[][] preProcessingCommonLinks() {
         return new Object[][]{  // {"incoming link (before)", "outcoming link (after)"}
-            {"<a href=\"http://javatalks.ru/common\"></a>", "<a href=\""+ prefix +"http://javatalks.ru/common\"></a>"},
-            {"<a href=\"https://forum.javatalks.ru\"></a>", "<a href=\""+ prefix +"https://forum.javatalks.ru\"></a>"},
-            {"<a href=\"http://javatalks.ru/common\"></a>", "<a href=\""+ prefix +"http://javatalks.ru/common\"></a>"}
+            {"<a href=\"http://javatalks.ru/common\"></a>",
+                    "<a " + relAttr + " href=\""+ prefix +"http://javatalks.ru/common\"></a>"},
+            {"<a href=\"https://forum.javatalks.ru\"></a>",
+                    "<a " + relAttr + " href=\""+ prefix +"https://forum.javatalks.ru\"></a>"},
+            {"<a href=\"http://javatalks.ru/common\"></a>",
+                    "<a " + relAttr + " href=\""+ prefix +"http://javatalks.ru/common\"></a>"}
 
         };
     }
@@ -70,11 +74,12 @@ public class BBForeignLinksPostprocessorTest {
     @DataProvider
     public Object[][] preProcessingSubDomainLinks() {
         return new Object[][]{  // {"incoming link (before)", "outcoming link (after)"}
-                {"<a href=\"http://blog.javatalks.ru\"></a>", "<a href=\""+ prefix +"http://blog.javatalks.ru\"></a>"},
+                {"<a href=\"http://blog.javatalks.ru\"></a>",
+                        "<a " + relAttr + " href=\""+ prefix +"http://blog.javatalks.ru\"></a>"},
                 {"<a href=\"http://www.blog.javatalks.ru\"></a>",
-                        "<a href=\""+ prefix +"http://www.blog.javatalks.ru\"></a>"},
+                        "<a " + relAttr + " href=\""+ prefix +"http://www.blog.javatalks.ru\"></a>"},
                 {"<a href=\"http://com.blog.javatalks.ru\"></a>",
-                        "<a href=\""+ prefix +"http://com.blog.javatalks.ru\"></a>"},
+                        "<a " + relAttr + " href=\""+ prefix +"http://com.blog.javatalks.ru\"></a>"},
         };
     }
 
