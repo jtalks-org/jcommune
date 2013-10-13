@@ -299,7 +299,7 @@ public class TransactionalPostServiceTest {
         int pageSize = 50;
         List<Post> posts = Arrays.asList(new Post(user, ""));
         Page<Post> expectedPostsPage = new PageImpl<Post>(posts);
-        when(postDao.getUserPosts(Matchers.<JCUser>any(), Matchers.<PageRequest>any()))
+        when(postDao.getUserPosts(Matchers.<JCUser>any(), Matchers.<PageRequest>any(), Matchers.anyList()))
                 .thenReturn(expectedPostsPage);
 
         currentUser.setPageSize(pageSize);
@@ -309,7 +309,8 @@ public class TransactionalPostServiceTest {
         assertEquals(actualPostsPage, expectedPostsPage);
         verify(postDao).getUserPosts(
                 Matchers.<JCUser>any(),
-                Matchers.<PageRequest>any()
+                Matchers.<PageRequest>any(),
+                Matchers.anyList()
         );
     }
 

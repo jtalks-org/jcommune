@@ -33,6 +33,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.List;
+
 
 /**
  * Post service class. This class contains method needed to manipulate with Post persistent entity.
@@ -149,9 +151,14 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      */
     @Override
     public Page<Post> getPostsOfUser(JCUser userCreated, String page) {
-        PageRequest pageRequest = new PageRequest(
-                page, userService.getCurrentUser().getPageSize());
-        return this.getDao().getUserPosts(userCreated, pageRequest);
+        JCUser currentUser = userService.getCurrentUser();
+        List<Long> forbiddenBranchesIds = topicDao.getForbiddenBranchesIds(currentUser);
+        if(forbiddenBranchesIds.isEmpty()){
+            //if forbidded branches not exist? then add not exist id to work query
+            forbiddenBranchesIds.add(-1L);
+        }
+        PageRequest pageRequest = new PageRequest(page, currentUser.getPageSize());
+        return this.getDao().getUserPosts(userCreated, pageRequest, forbiddenBranchesIds);
     }
 
     /**

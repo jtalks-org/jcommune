@@ -53,8 +53,6 @@
           </thead>
           <tbody>
           <c:forEach var="post" items="${postsPage.content}" varStatus="i">
-            <jtalks:hasPermission targetId='${post.topic.branch.id}' targetType='BRANCH'
-                                  permission='BranchPermission.VIEW_TOPICS'>
               <tr class='post-content-tr'>
                 <td class='userinfo'>
                   <spring:message code='label.branch.header.branches'/>:
@@ -90,7 +88,6 @@
                   <br/>
                 </td>
               </tr>
-            </jtalks:hasPermission>
           </c:forEach>
           </tbody>
         </c:when>
