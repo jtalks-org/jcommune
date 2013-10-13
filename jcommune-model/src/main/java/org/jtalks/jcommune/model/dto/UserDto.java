@@ -23,6 +23,8 @@ import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.validation.annotations.Unique;
 
 import javax.validation.constraints.Size;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Contains user information. In some cases serves for transmitting to external services.
@@ -48,6 +50,8 @@ public class UserDto {
     private String password;
 
     private Language language = Language.ENGLISH;
+
+    private Map<String, String> captchas = new HashMap<>();
 
     /**
      * @return username
@@ -113,5 +117,19 @@ public class UserDto {
      */
     public void setLanguage(Language language) {
         this.language = language;
+    }
+
+    /**
+     * @return Captcha elements values entered by user on a registration form
+     */
+    public Map<String, String> getCaptchas() {
+        return captchas;
+    }
+
+    /**
+     * @param captchas captcha elements (as pairs name - value) from user input during registration
+     */
+    public void setCaptchas(Map<String, String> captchas) {
+        this.captchas = captchas;
     }
 }

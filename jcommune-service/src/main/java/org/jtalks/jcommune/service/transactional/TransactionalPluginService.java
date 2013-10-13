@@ -30,8 +30,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -82,13 +83,17 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
     }
 
     @Override
-    public List<RegistrationPlugin> getRegistrationPlugins(){
-        List<RegistrationPlugin> registrationPluginList = new ArrayList<>();
+    public Map<Long, RegistrationPlugin> getRegistrationPlugins(){
+        Map<Long, RegistrationPlugin> registrationPluginMap = new HashMap<>();
         List<Plugin> plugins =  pLuginLoader.getPlugins(new TypeFilter(RegistrationPlugin.class));
-        for(Plugin registrationPlugin : plugins) {
-            registrationPluginList.add((RegistrationPlugin) registrationPlugin);
+        for(Plugin plugin : plugins) {
+            try {
+                registrationPluginMap.put(getPluginId(plugin.getName()), (RegistrationPlugin) plugin);
+            } catch (NotFoundException e) {
+                LOGGER.debug("Plugin with name {} not found.", plugin.getName());
+            }
         }
-        return registrationPluginList;
+        return registrationPluginMap;
     }
 
     @Override
@@ -99,6 +104,16 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
             }
         }
         throw new NotFoundException(pluginName + " plugin not found.");
+    }
+
+    @Override
+    public Plugin getPluginById(String pluginId, PluginFilter... filters) throws NotFoundException {
+        try {
+            PluginConfiguration conf = getDao().get(Long.valueOf(pluginId));
+            return getPluginByName(conf.getName(), filters);
+        } catch (NotFoundException e) {
+            throw new NotFoundException("Plugin with Id '" + pluginId + "' not found.");
+        }
     }
 
     private Plugin findPluginByName(List<Plugin> searchSource, String pluginName) {

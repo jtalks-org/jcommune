@@ -153,8 +153,9 @@ public class UserController {
     @RequestMapping(value = "/user/new", method = RequestMethod.GET)
     public ModelAndView registrationPage(HttpServletRequest request) {
         Map<String, String> registrationPlugins = new HashMap<>();
-        for(RegistrationPlugin plugin : pluginService.getRegistrationPlugins()) {
-            registrationPlugins.put(plugin.getName(), plugin.getHtml(request));
+        for(Map.Entry<Long, RegistrationPlugin> entry : pluginService.getRegistrationPlugins().entrySet()) {
+            String pluginId = String.valueOf(entry.getKey());
+            registrationPlugins.put(pluginId, entry.getValue().getHtml(request, pluginId));
         }
         return new ModelAndView(REGISTRATION)
                 .addObject("newUser", new RegisterUserDto())
@@ -172,7 +173,13 @@ public class UserController {
      */
     @RequestMapping(value = "/user/new", method = RequestMethod.POST)
     public ModelAndView registerUser(@ModelAttribute("newUser") RegisterUserDto registerUserDto,
+                                     HttpServletRequest request,
                                      Locale locale) {
+        Map<String, String> registrationPlugins = new HashMap<>();
+        for(Map.Entry<Long, RegistrationPlugin> entry : pluginService.getRegistrationPlugins().entrySet()) {
+            String pluginId = String.valueOf(entry.getKey());
+            registrationPlugins.put(pluginId, entry.getValue().getHtml(request, pluginId));
+        }
         BindingResult errors;
         try {
             registerUserDto.getUserDto().setLanguage(Language.byLocale(locale));
@@ -184,6 +191,7 @@ public class UserController {
         }
         if (errors.hasErrors()) {
             ModelAndView mav = new ModelAndView(REGISTRATION);
+            mav.addObject("registrationPlugins", registrationPlugins);
             mav.addAllObjects(errors.getModel());
             return mav;
         }
@@ -225,8 +233,9 @@ public class UserController {
     @ResponseBody
     public JsonResponse registrationForm(HttpServletRequest request, Locale locale) {
         Map<String, String> registrationPlugins = new HashMap<>();
-        for(RegistrationPlugin plugin : pluginService.getRegistrationPlugins()) {
-            registrationPlugins.put(plugin.getName(), plugin.getHtml(request));
+        for (Map.Entry<Long, RegistrationPlugin> entry : pluginService.getRegistrationPlugins().entrySet()) {
+            String pluginId = String.valueOf(entry.getKey());
+            registrationPlugins.put(pluginId, entry.getValue().getHtml(request, pluginId));
         }
         return new JsonResponse(JsonResponseStatus.SUCCESS, registrationPlugins);
     }
@@ -234,9 +243,8 @@ public class UserController {
     @RequestMapping(value = "/plugin/{pluginId}/{action}")
     public void pluginAction(@PathVariable String pluginId, @PathVariable String action,
                                 HttpServletResponse response, ServletOutputStream out, HttpSession session) {
-        // At this moment, as temporary solution, we use plugin name instead of pluginId
         try {
-            Plugin plugin = pluginService.getPluginByName(pluginId, new TypeFilter(ExtendedPlugin.class));
+            Plugin plugin = pluginService.getPluginById(pluginId, new TypeFilter(ExtendedPlugin.class));
             Object result = ((ExtendedPlugin)plugin).doAction(pluginId, action, response, out, session);
         } catch (org.jtalks.common.service.exceptions.NotFoundException e) {
 

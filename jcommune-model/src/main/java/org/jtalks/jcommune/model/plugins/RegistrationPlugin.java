@@ -11,22 +11,25 @@ public interface RegistrationPlugin extends Plugin {
     /**
      * Performs registration attempt based on user details
      *
-     *
      * @param userDto user
-     * @return validation errors as pairs field - error message
-     * @throws org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException if external service returns unexpected result
-     * @throws org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException    if we can't connect for any reason to external authentication service
-     */
-    Map<String, String> registerUser(UserDto userDto) throws NoConnectionException, UnexpectedErrorException;
-
-    /**
-     * Performs validation based on user details
-     * @param userDto user information
+     * @param pluginId plugin id
      * @return validation errors as pairs field - error message
      * @throws UnexpectedErrorException if external service returns unexpected result
      * @throws NoConnectionException    if we can't connect for any reason to external authentication service
      */
-    Map<String, String> validateUser(UserDto userDto) throws NoConnectionException, UnexpectedErrorException;
+    Map<String, String> registerUser(UserDto userDto, Long pluginId) throws NoConnectionException, UnexpectedErrorException;
 
-    String getHtml(HttpServletRequest request);
+    /**
+     * Performs validation based on user details
+     *
+     * @param userDto user information
+     * @param pluginId plugin id
+     * @return validation errors as pairs field - error message
+     * @throws UnexpectedErrorException if external service returns unexpected result
+     * @throws NoConnectionException    if we can't connect for any reason to external authentication service
+     */
+    Map<String, String> validateUser(UserDto userDto, Long pluginId) throws NoConnectionException, UnexpectedErrorException;
+
+
+    String getHtml(HttpServletRequest request, String pluginId);
 }

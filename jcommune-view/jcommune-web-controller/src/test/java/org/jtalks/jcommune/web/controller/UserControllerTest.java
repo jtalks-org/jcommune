@@ -67,6 +67,7 @@ public class UserControllerTest {
     private Authenticator authenticator;
     private LocaleResolver localeResolver;
     private RequestContextUtils requestContextUtils;
+    private HttpServletRequest request;
 
     @BeforeMethod
     public void setUp() throws IOException {
@@ -75,6 +76,7 @@ public class UserControllerTest {
         authenticator = mock(Authenticator.class);
         requestContextUtils= mock(RequestContextUtils.class);
         localeResolver = mock(LocaleResolver.class, "en");
+        request = mock(HttpServletRequest.class);
         SecurityContextHolderFacade securityFacade = mock(SecurityContextHolderFacade.class);
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityFacade.getContext()).thenReturn(securityContext);
@@ -115,7 +117,7 @@ public class UserControllerTest {
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
         when(authenticator.register(dto)).thenReturn(bindingResult);
 
-        ModelAndView mav = userController.registerUser(dto, Locale.ENGLISH);
+        ModelAndView mav = userController.registerUser(dto, request, Locale.ENGLISH);
 
         assertViewName(mav, "afterRegistration");
         verify(authenticator).register(dto);
@@ -128,7 +130,7 @@ public class UserControllerTest {
         when(bindingResult.hasErrors()).thenReturn(true);
         when(authenticator.register(dto)).thenReturn(bindingResult);
 
-        ModelAndView mav = userController.registerUser(dto, Locale.ENGLISH);
+        ModelAndView mav = userController.registerUser(dto, request, Locale.ENGLISH);
 
         assertViewName(mav, "registration");
     }
@@ -140,7 +142,7 @@ public class UserControllerTest {
         doThrow(new UnexpectedErrorException()).when(authenticator)
                 .register(dto);
 
-        ModelAndView mav = userController.registerUser(dto, Locale.ENGLISH);
+        ModelAndView mav = userController.registerUser(dto, request, Locale.ENGLISH);
 
         assertViewName(mav, UserController.REG_SERVICE_UNEXPECTED_ERROR_URL);
     }
@@ -152,7 +154,7 @@ public class UserControllerTest {
         doThrow(new NoConnectionException()).when(authenticator)
                 .register(dto);
 
-        ModelAndView mav = userController.registerUser(dto, Locale.ENGLISH);
+        ModelAndView mav = userController.registerUser(dto, request, Locale.ENGLISH);
 
         assertViewName(mav, UserController.REG_SERVICE_CONNECTION_ERROR_URL);
     }
@@ -279,7 +281,7 @@ public class UserControllerTest {
         verify(userService).getCurrentUser();
     }
 
-    @Test(enabled = false)
+    @Test
     public void testAjaxLoginSuccess() throws Exception {
         when(userService.loginUser(anyString(), anyString(), anyBoolean(),
                 any(HttpServletRequest.class), any(HttpServletResponse.class)))
@@ -327,7 +329,7 @@ public class UserControllerTest {
                 any(HttpServletRequest.class), any(HttpServletResponse.class));
     }
 
-    @Test(enabled = false)
+    @Test
     public void testLoginWithCorrectParametersShouldBeSuccessful() throws Exception {
         when(userService.loginUser(eq("user1"), eq("password"), anyBoolean(),
                 any(HttpServletRequest.class), any(HttpServletResponse.class)))

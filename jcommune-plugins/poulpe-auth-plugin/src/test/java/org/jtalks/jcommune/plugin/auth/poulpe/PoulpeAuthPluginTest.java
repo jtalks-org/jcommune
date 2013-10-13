@@ -93,7 +93,7 @@ public class PoulpeAuthPluginTest {
 
         when(service.registerUser(userDto, false)).thenReturn(errors);
 
-        Map<String, String> result = plugin.registerUser(userDto);
+        Map<String, String> result = plugin.registerUser(userDto, null);
 
         assertEquals(result.size(), 2, "User with incorrect parameters shouldn't be registered.");
     }
@@ -105,7 +105,7 @@ public class PoulpeAuthPluginTest {
 
         when(service.registerUser(userDto, true)).thenReturn(Collections.EMPTY_MAP);
 
-        Map<String, String> result = plugin.registerUser(userDto);
+        Map<String, String> result = plugin.registerUser(userDto, null);
 
         assertEquals(result.size(), 0, "User with correct parameters should be registered.");
     }
@@ -117,7 +117,7 @@ public class PoulpeAuthPluginTest {
 
         when(service.registerUser(userDto, false)).thenThrow(new NoConnectionException());
 
-        plugin.registerUser(userDto);
+        plugin.registerUser(userDto, null);
     }
 
     @Test(expectedExceptions = UnexpectedErrorException.class)
@@ -127,7 +127,7 @@ public class PoulpeAuthPluginTest {
 
         when(service.registerUser(userDto, false)).thenThrow(new JAXBException(""));
 
-        plugin.registerUser(userDto);
+        plugin.registerUser(userDto, null);
     }
 
     @Test

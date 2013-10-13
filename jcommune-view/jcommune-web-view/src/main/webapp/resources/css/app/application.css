@@ -483,8 +483,8 @@ div.anchor {
     -moz-box-sizing: border-box;
 }
 
-#captcha-img:hover,
-#captcha-refresh:hover {
+.captcha-img:hover,
+.captcha-refresh:hover {
     cursor: hand;
     cursor: pointer;
 }

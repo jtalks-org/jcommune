@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.model.dto;
 
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.validation.annotations.Captcha;
 import org.jtalks.jcommune.model.validation.annotations.Matches;
 
 import javax.validation.Valid;
@@ -34,9 +33,6 @@ public class RegisterUserDto {
 
     private String passwordConfirm;
 
-    @Captcha(message = "{validation.captcha.wrong}")
-    private String captcha;
-
     /**
      * Get password confirmation.
      *
@@ -53,20 +49,6 @@ public class RegisterUserDto {
      */
     public void setPasswordConfirm(String passwordConfirm) {
         this.passwordConfirm = passwordConfirm;
-    }
-
-    /**
-     * @return Captcha value entered by user on a registration form
-     */
-    public String getCaptcha() {
-        return captcha;
-    }
-
-    /**
-     * @param captcha captcha string from user input during registration
-     */
-    public void setCaptcha(String captcha) {
-        this.captcha = captcha;
     }
 
     /**

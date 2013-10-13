@@ -29,7 +29,7 @@ $(function () {
             dataType: 'json',
             success: function (resp) {
                 if (resp.status == 'SUCCESS') {
-                    createRegistrationForm(e, resp.result);
+                    createRegistrationForm(resp.result);
                 }
             },
             error: function (resp) {
@@ -38,14 +38,14 @@ $(function () {
             }
         });
 
-        function createRegistrationForm(e, params) {
+        function createRegistrationForm(params) {
             var bodyContent =
                 Utils.createFormElement($labelUsername, 'username', 'text', 'first') +
                     Utils.createFormElement($labelEmail, 'email', 'text') +
                     Utils.createFormElement($labelPassword, 'password', 'password') +
                     Utils.createFormElement($labelPasswordConfirmation, 'passwordConfirm', 'password');
-            for (var pluginName in params) {
-                bodyContent += params[pluginName];
+            for (var pluginId in params) {
+                bodyContent += params[pluginId];
             }
 
             var footerContent = '<button id="signup-submit-button" class="btn btn-primary btn-block" name="commit"> \
@@ -56,17 +56,13 @@ $(function () {
                 e.preventDefault();
                 // disable all elements before and during submission
                 jDialog.dialog.find('*').attr('disabled', true);
-                var query = composeQuery(jDialog.dialog, params.showCaptcha);
+                var query = composeQuery(jDialog.dialog);
                 $.ajax({
                     type: 'POST',
                     url: $root + '/user/new_ajax',
                     data: query,
                     dataType: 'html',
                     success: function (resp) {
-                        // we need to remove complex part (userDto.) of complex field, such as userDto.email
-                        // because these fields are used as elements ids, and jquery selector doesn't work with
-                        // id containing dot.
-                        resp = resp.replace(/userDto./g,'');
                         resp = eval('(' + resp + ')'); // warning: not safe
                         if (resp.status == 'SUCCESS') {
                             // hide dialog and show success message
@@ -89,6 +85,13 @@ $(function () {
                                     });
                                 }
                             } else {
+                                // we need to remove complex part (userDto. and userDto.captchas[..]) of complex fields,
+                                // such as userDto.email, because these fields are used as elements ids,
+                                // and jquery selector doesn't work with id containing dot.
+                                for (var i = 0; i < resp.result.length; i++) {
+                                    resp.result[i].field = resp.result[i].field.replace(/userDto.captchas\[/g, '')
+                                        .replace(/]/g, '').replace(/userDto./g,'');
+                                }
                                 // remove previous errors and show new errors
                                 jDialog.prepareDialog(jDialog.dialog);
                                 refreshCaptcha(jDialog.dialog);
@@ -103,7 +106,7 @@ $(function () {
                         });
                     }
                 });
-            }
+            };
 
             //check to fix double windows when click registration on jsp registration page
             if($('#signup-modal-dialog').length == 0){
@@ -114,10 +117,10 @@ $(function () {
                     footerContent: footerContent,
                     maxWidth: 400,
                     maxHeight: 600,
-                    tabNavigation: ['#username', '#email', '#password', '#passwordConfirm', '#captcha', '#signup-submit-button'],
+                    tabNavigation: ['#username', '#email', '#password', '#passwordConfirm', '.captcha', '#signup-submit-button'],
                     handlers: {
                         '#signup-submit-button': {'click': submitFunc},
-                        '#captcha-refresh, #captcha-img': {'click' : refreshCaptcha}
+                        '.captcha-refresh, .captcha-img': {'click' : refreshCaptcha}
                     }
                 });
             }
@@ -130,7 +133,7 @@ $(function () {
     var captchaContainer = $('.registration-page');
     if (captchaContainer) {
 
-        captchaContainer.find('#captcha-refresh, #captcha-img').click(function (e) {
+        captchaContainer.find('.captcha-refresh, .captcha-img').click(function (e) {
             e.preventDefault();
             refreshCaptchaJsp();
         });
@@ -138,41 +141,44 @@ $(function () {
 
     //to registration jsp
     function clearPageForm() {
-        if ($('.capcha-field')) {
-            $('.capcha-field').val('');
+        if ($('.capcha')) {
+            $('.capcha').val('');
         }
     }
 });
 
 
 /**
- * Get new captcha image
+ * Get new captcha images
  */
 function refreshCaptcha() {
-    var attrSrc = jDialog.dialog.find('#captcha-img').attr("src").split("?")[0] + "?param=" + $.now();
-    jDialog.dialog.find('#captcha-img').removeAttr('src');
-    jDialog.dialog.find('#captcha-img').attr('src', attrSrc);
-    jDialog.dialog.find('#captcha').val('');
+    jDialog.dialog.find('.captcha-img').each(function(){
+        var attrSrc = $(this).attr("src").split("?")[0] + "?param=" + $.now();
+        $(this).removeAttr('src');
+        $(this).attr('src', attrSrc);
+    });
+    jDialog.dialog.find('.captcha').val('');
 }
 
 function refreshCaptchaJsp() {
-    var attrSrc = $('#form').find('#captcha-img').attr("src").split("?")[0] + "?param=" + $.now();
-    $('#form').find('#captcha-img').removeAttr('src');
-    $('#form').find('#captcha-img').attr('src', attrSrc);
-    $('#form').find('#captcha').val('');
-}
-
-function captchaUrl() {
-    return $root + '/captcha/image?param=' + $.now();
+    $('#form').find('.captcha-img').each(function(){
+        var attrSrc = $(this).attr("src").split("?")[0] + "?param=" + $.now();
+        $(this).removeAttr('src');
+        $(this).attr('src', attrSrc);
+    });
+    $('#form').find('.captcha').val('');
 }
 
 /**
  * POST request query
  */
-function composeQuery(signupDialog, showCaptcha) {
-    return 'userDto.username=' + encodeURIComponent(signupDialog.find('#username').val()) +
+function composeQuery(signupDialog) {
+    var query = 'userDto.username=' + encodeURIComponent(signupDialog.find('#username').val()) +
         '&userDto.password=' + encodeURIComponent(signupDialog.find('#password').val()) +
         '&passwordConfirm=' + encodeURIComponent(signupDialog.find('#passwordConfirm').val()) +
-        '&userDto.email=' + encodeURIComponent(signupDialog.find('#email').val()) +
-        (showCaptcha ? ('&captcha=' + encodeURIComponent(signupDialog.find('#captcha').val())) : '');
+        '&userDto.email=' + encodeURIComponent(signupDialog.find('#email').val());
+    signupDialog.find('.captcha').each(function() {
+        query += '&userDto.captchas[' + $(this).attr('id') + ']=' + encodeURIComponent($(this).val());
+    });
+    return query;
 }

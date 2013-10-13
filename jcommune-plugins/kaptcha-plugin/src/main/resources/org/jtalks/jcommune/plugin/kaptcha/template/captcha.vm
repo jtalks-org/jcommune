@@ -1,7 +1,10 @@
 <div class='control-group'>
   <div class='controls captcha-images'>
-    <img id='captcha-img' alt='${altCaptcha}' src='http://localhost:8080/plugin/${captchaPluginId}/refreshCaptcha'/>
-    <img id='captcha-refresh' alt='${altRefreshCaptcha}' src='http://localhost:8080/resources/images/captcha-refresh.png'/>
+    <img class='captcha-img' alt='${altCaptcha}' src='http://localhost:8080/plugin/${captchaPluginId}/refreshCaptcha'/>
+    <img class='captcha-refresh' alt='${altRefreshCaptcha}' src='http://localhost:8080/resources/images/captcha-refresh.png'/>
   </div>
-  <div class='controls'><input type='text' id='captcha' placeholder='${captchaLabel}' class='input-xlarge'/></div>
+  <div class='controls'>
+      <input type='text' id='${formElementId}' name='userDto.captchas[${formElementId}]'
+        placeholder='${captchaLabel}' class='input-xlarge captcha'/>
+  </div>
 </div>

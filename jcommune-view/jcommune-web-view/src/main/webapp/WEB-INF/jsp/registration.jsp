@@ -70,24 +70,14 @@
       </div>
 
       <c:forEach items="${registrationPlugins}" var="plugin">
-        <div id="${plugin.key}">
+        <div id="plugin-${plugin.key}-body" class="control-group">
           <c:out value="${plugin.value}" escapeXml="false"/>
+          <form:errors path="userDto.captchas[plugin-${plugin.key}]" cssClass="help-inline"/>
         </div>
       </c:forEach>
-      <div class="control-group">
-        <span class="reg_info"><spring:message code="label.tip.captcha"/></span>
 
-        <div class="controls img-container">
-          <img id="captcha-img" class="capcha-img" src='${pageContext.request.contextPath}/captcha/image'/>
-          <img id="captcha-refresh" class="capcha-img capcha-reload"
-               src='${pageContext.request.contextPath}/resources/images/captcha-refresh.png'/>
-        </div>
-      </div>
       <div class="control-group">
         <div class="controls">
-          <form:input path="captcha" class="capcha-field" type="text" id="captcha"/>
-          <br>
-          <form:errors path="captcha" cssClass="help-inline"/>
           <c:if test="${not empty param.reg_error}">
               <span class="help-inline">
                   <c:choose>

@@ -22,6 +22,7 @@ import org.jtalks.jcommune.service.dto.PluginActivatingDto;
 import org.jtalks.jcommune.service.plugins.PluginFilter;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Provides an ability to work with plugins: load plugins, configure plugins,
@@ -69,7 +70,9 @@ public interface PluginService extends EntityService<PluginConfiguration> {
 
     long getPluginId(String pluginName) throws NotFoundException;
 
-    List<RegistrationPlugin> getRegistrationPlugins();
+    Map<Long, RegistrationPlugin> getRegistrationPlugins();
 
     Plugin getPluginByName(String pluginName, PluginFilter... filters) throws NotFoundException;
+
+    Plugin getPluginById(String pluginId, PluginFilter... filters) throws NotFoundException;
 }

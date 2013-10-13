@@ -58,7 +58,7 @@ Keymaps.registrationSubmit = function (e) {
 Keymaps.registrationPassConfirm = function (e) {
     if ((e.keyCode || e.charCode) == tabCode) {
         e.preventDefault();
-        $('#signup-modal-dialog').find("#captcha").focus();
+        $('#signup-modal-dialog').find(".captcha").focus();
     }
 }
 

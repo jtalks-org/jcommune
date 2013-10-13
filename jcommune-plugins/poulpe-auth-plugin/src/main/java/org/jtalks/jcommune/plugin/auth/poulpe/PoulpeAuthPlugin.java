@@ -18,7 +18,8 @@ package org.jtalks.jcommune.plugin.auth.poulpe;
 import com.google.common.annotations.VisibleForTesting;
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.PluginProperty;
-import org.jtalks.jcommune.model.plugins.SimpleAuthenticationPlugin;
+import org.jtalks.jcommune.model.plugins.AuthenticationPlugin;
+import org.jtalks.jcommune.model.plugins.RegistrationPlugin;
 import org.jtalks.jcommune.model.plugins.StatefullPlugin;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
@@ -26,6 +27,7 @@ import org.jtalks.jcommune.plugin.auth.poulpe.service.PoulpeAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.util.Arrays;
@@ -42,7 +44,7 @@ import static org.jtalks.jcommune.model.entity.PluginProperty.Type.STRING;
  * @author Andrey Pogorelov
  */
 public class PoulpeAuthPlugin extends StatefullPlugin
-        implements SimpleAuthenticationPlugin {
+        implements AuthenticationPlugin, RegistrationPlugin {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PoulpeAuthPlugin.class);
     private static final String URL_PROPERTY = "Url";
@@ -57,7 +59,8 @@ public class PoulpeAuthPlugin extends StatefullPlugin
      * {@inheritDoc}
      */
     @Override
-    public Map<String, String> registerUser(UserDto userDto) throws NoConnectionException, UnexpectedErrorException {
+    public Map<String, String> registerUser(UserDto userDto, Long pluginId)
+            throws NoConnectionException, UnexpectedErrorException {
         return registerOrValidate(userDto, false);
     }
 
@@ -87,8 +90,14 @@ public class PoulpeAuthPlugin extends StatefullPlugin
      * {@inheritDoc}
      */
     @Override
-    public Map<String, String> validateUser(UserDto userDto) throws NoConnectionException, UnexpectedErrorException {
+    public Map<String, String> validateUser(UserDto userDto, Long pluginId)
+            throws NoConnectionException, UnexpectedErrorException {
         return registerOrValidate(userDto, true);
+    }
+
+    @Override
+    public String getHtml(HttpServletRequest request, String pluginId) {
+        return null;
     }
 
     /**
