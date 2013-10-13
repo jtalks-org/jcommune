@@ -238,10 +238,10 @@ public class UserProfileController {
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
     }
 
-    @RequestMapping(value = "**/lang={id}", method = RequestMethod.GET)
-    public String saveUserLanguage(@PathVariable("id") String id, HttpServletResponse response, HttpServletRequest request) throws ServletException {
+    @RequestMapping(value = "**/language", method = RequestMethod.GET)
+    public String saveUserLanguage(@RequestParam(value = "lang", defaultValue = "en") String lang, HttpServletResponse response, HttpServletRequest request) throws ServletException {
         JCUser jcuser = userService.getCurrentUser();
-        Language languageFromRequest = Language.byLocale(new Locale(id));
+        Language languageFromRequest = Language.byLocale(new Locale(lang));
         if(!jcuser.isAnonymous()){
             try{
                 jcuser.setLanguage(languageFromRequest);
