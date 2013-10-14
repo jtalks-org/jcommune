@@ -484,7 +484,7 @@ function AddTag(t1, t2) {
         var sel_start = element.selectionStart;
         var sel_end = element.selectionEnd;
 
-        if ((element.value.substring(sel_start, sel_end) != mylink && t2 == "[/url]")) {
+        if (isSelectionEqualsToLinkText(element) && t2 == "[/url]") {
             sel_start = sel_end;
         }
 
@@ -526,6 +526,15 @@ function AddTag(t1, t2) {
             element.value = element.value + t1 + t2;
         }
     }
+}
+
+/**
+ * @param {type} element
+ * @returns {Boolean} true if selected text is the same as link text
+ */
+function isSelectionEqualsToLinkText(element) {
+   // Need to ignore '\n' symbols because they are removed from 'myLink' var
+   return element.value.substring(element.selectionStart, element.selectionEnd).replace(/\n/gi, '') === mylink;
 }
 
 function AddList(t1, t2) {
