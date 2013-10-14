@@ -131,6 +131,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         List<Post> posts = PersistedObjectsFactory.createAndSavePostList(totalSize);
         JCUser author = posts.get(0).getUserCreated();
         List<Long> allowedBranchesIds = new ArrayList<>();
+        allowedBranchesIds.add(-1L);
 
         Page<Post> postsPage = dao.getUserPosts(author, pageRequest, allowedBranchesIds);
 
@@ -228,6 +229,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
         List<Long> allowedBranchesIds = new ArrayList<>();
+        allowedBranchesIds.add(1L);
 
         Page<Post> postsPage = dao.getUserPosts(user, pageRequest, allowedBranchesIds);
 
