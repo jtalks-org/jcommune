@@ -36,6 +36,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -296,22 +297,25 @@ public class TransactionalPostServiceTest {
     @Test
     public void testPostsOfUser() {
         String page = "1";
+        long branchId = 1L;
         int pageSize = 50;
-        List<Post> posts = Arrays.asList(new Post(user, ""));
+        Branch branch = new Branch("branch","");
+        branch.setId(branchId);
+        Topic topic = new Topic();
+        topic.setBranch(branch);
+        Post post = new Post(user, "");
+        post.setTopic(topic);
+        List<Post> posts = Arrays.asList(post);
         Page<Post> expectedPostsPage = new PageImpl<Post>(posts);
         when(postDao.getUserPosts(Matchers.<JCUser>any(), Matchers.<PageRequest>any(), Matchers.anyList()))
                 .thenReturn(expectedPostsPage);
+        when(topicDao.getAllowedBranchesIds(Matchers.<JCUser>any())).thenReturn(Arrays.asList(branchId));
 
         currentUser.setPageSize(pageSize);
 
         Page<Post> actualPostsPage = postService.getPostsOfUser(user, page);
 
         assertEquals(actualPostsPage, expectedPostsPage);
-        verify(postDao).getUserPosts(
-                Matchers.<JCUser>any(),
-                Matchers.<PageRequest>any(),
-                Matchers.anyList()
-        );
     }
 
     @Test
