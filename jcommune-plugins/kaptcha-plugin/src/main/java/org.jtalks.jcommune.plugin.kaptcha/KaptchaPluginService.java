@@ -15,9 +15,30 @@
 
 package org.jtalks.jcommune.plugin.kaptcha;
 
-import org.jtalks.jcommune.model.entity.PluginProperty;
+import com.google.code.kaptcha.Constants;
+import com.google.code.kaptcha.Producer;
+import com.google.code.kaptcha.impl.DefaultKaptcha;
+import com.google.code.kaptcha.util.Config;
+import com.google.common.collect.ImmutableMap;
+import org.apache.commons.lang.StringUtils;
+import org.apache.velocity.app.VelocityEngine;
+import org.jtalks.jcommune.model.dto.UserDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.ui.velocity.VelocityEngineUtils;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.List;
+import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.*;
 
 /**
  *
@@ -25,7 +46,95 @@ import java.util.List;
  */
 public class KaptchaPluginService {
 
-    public KaptchaPluginService(List<PluginProperty> pluginProperties) {
+    private static final Logger LOGGER = LoggerFactory.getLogger(KaptchaPluginService.class);
+    private static final String CAPTCHA_LABEL = "captchaLabel";
+    private static final String ALT_CAPTCHA = "altCaptcha";
+    private static final String ALT_REFRESH_CAPTCHA = "altRefreshCaptcha";
+    private static final String CAPTCHA_PLUGIN_ID = "captchaPluginId";
+    private static final String BASE_URL = "BASE_URL";
+    private static final String FORM_ELEMENT_ID = "formElementId";
+    private static final String PLUGIN_PREFIX = "plugin-";
+    private Producer captchaProducer;
 
+    public KaptchaPluginService(int width, int height, int length, String possibleSymbols) {
+        captchaProducer = createCaptchaProducer(width, height, length, possibleSymbols);
+    }
+
+    public Map<String, String> validateCaptcha(UserDto userDto, Long pluginId) {
+        String captcha = userDto.getCaptchas().get(PLUGIN_PREFIX + String.valueOf(pluginId));
+        if (!isValid(captcha)) {
+            ResourceBundle resourceBundle = ResourceBundle.getBundle("org.jtalks.jcommune.plugin.kaptcha.messages",
+                    userDto.getLanguage().getLocale());
+            String fieldName = "userDto.captchas['" + (PLUGIN_PREFIX + pluginId) + "']";
+            return new ImmutableMap.Builder<String, String>().put(fieldName,
+                    resourceBundle.getString("validation.captcha.wrong")).build();
+        }
+        return new HashMap<>();
+    }
+
+    private boolean isValid(String value) {
+        RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
+        HttpServletRequest httpServletRequest = ((ServletRequestAttributes) attributes).getRequest();
+        String sessionCaptchaId = (String) httpServletRequest.getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY);
+        return StringUtils.equals(sessionCaptchaId, value);
+    }
+
+    protected Properties getProperties() {
+        Properties properties = new Properties();
+        properties.put("resource.loader", "jar");
+        properties.put("jar.resource.loader.class", "org.apache.velocity.runtime.resource.loader.JarResourceLoader");
+        String jarPath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+        properties.put("jar.resource.loader.path", "jar:file:" + jarPath);
+        return properties;
+    }
+
+    public String getHtml(HttpServletRequest request, String pluginId, Locale locale) {
+        SecurityContextHolder.getContext();
+        ResourceBundle resourceBundle  = ResourceBundle.getBundle("org.jtalks.jcommune.plugin.kaptcha.messages", locale);
+
+        VelocityEngine engine = new VelocityEngine(getProperties());
+        engine.init();
+        Map<String, Object> model = new HashMap<>();
+        model.put(CAPTCHA_LABEL, resourceBundle.getObject("label.tip.captcha"));
+        model.put(ALT_CAPTCHA, resourceBundle.getObject("alt.captcha.image"));
+        model.put(ALT_REFRESH_CAPTCHA, resourceBundle.getObject("alt.captcha.update"));
+        model.put(CAPTCHA_PLUGIN_ID, pluginId);
+        model.put(FORM_ELEMENT_ID, PLUGIN_PREFIX + pluginId);
+        model.put(BASE_URL, getDeploymentRootUrlWithoutPort(request));
+        return VelocityEngineUtils.mergeTemplateIntoString(
+                engine, "org/jtalks/jcommune/plugin/kaptcha/template/captcha.vm", "UTF-8", model);
+    }
+
+    private Producer createCaptchaProducer(int width, int height, int length, String possibleSymbols) {
+        Properties props = new Properties();
+        props.setProperty("kaptcha.textproducer.char.string", possibleSymbols);
+        props.setProperty("kaptcha.textproducer.char.length", String.valueOf(length));
+        props.setProperty("kaptcha.image.width", String.valueOf(width));
+        props.setProperty("kaptcha.image.height", String.valueOf(height));
+        Config conf = new Config(props);
+        DefaultKaptcha captcha = new DefaultKaptcha();
+        captcha.setConfig(conf);
+        return captcha;
+    }
+
+    public void handleRequestToCaptchaImage(HttpServletResponse response,
+                                              ServletOutputStream out, HttpSession session) throws IOException {
+        response.setContentType("image/jpeg");
+        String capText = captchaProducer.createText();
+        session.setAttribute(Constants.KAPTCHA_SESSION_KEY, capText);
+        BufferedImage bi = captchaProducer.createImage(capText);
+        ImageIO.write(bi, "jpg", out);
+        out.flush();
+    }
+
+    /**
+     * Returns current deployment root without port for using as label link, for example.
+     *
+     * @return current deployment root without port, e.g. "http://myhost.com/myforum"
+     */
+    private String getDeploymentRootUrlWithoutPort(HttpServletRequest request) {
+        return request.getScheme()
+                + "://" + request.getServerName()
+                + request.getContextPath();
     }
 }

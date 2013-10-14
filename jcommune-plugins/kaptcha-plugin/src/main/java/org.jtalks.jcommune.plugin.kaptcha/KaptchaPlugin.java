@@ -15,13 +15,6 @@
 
 package org.jtalks.jcommune.plugin.kaptcha;
 
-import com.google.code.kaptcha.Constants;
-import com.google.code.kaptcha.Producer;
-import com.google.code.kaptcha.impl.DefaultKaptcha;
-import com.google.code.kaptcha.util.Config;
-import com.google.common.collect.ImmutableMap;
-import org.apache.commons.lang.StringUtils;
-import org.apache.velocity.app.VelocityEngine;
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.model.plugins.ExtendedPlugin;
@@ -31,18 +24,11 @@ import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.ui.velocity.VelocityEngineUtils;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.*;
 
@@ -58,16 +44,10 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
     private static final String HEIGHT_PROPERTY = "Height";
     private static final String LENGTH_PROPERTY = "Length";
     private static final String POSSIBLE_SYMBOLS_PROPERTY = "Possible Symbols";
-    private static final String CAPTCHA_LABEL = "captchaLabel";
-    private static final String ALT_CAPTCHA = "altCaptcha";
-    private static final String ALT_REFRESH_CAPTCHA = "altRefreshCaptcha";
-    private static final String CAPTCHA_PLUGIN_ID = "captchaPluginId";
-    private static final String BASE_URL = "BASE_URL";
-    private static final String FORM_ELEMENT_ID = "formElementId";
-    private static final String PLUGIN_PREFIX = "plugin-";
+
     private List<PluginProperty> pluginProperties;
     private KaptchaPluginService service;
-    private Producer captchaProducer;
+
 
     @Override
     protected Map<PluginProperty, String> applyConfiguration(List<PluginProperty> properties) {
@@ -91,23 +71,11 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
             throw new RuntimeException(
                     "Can't apply configuration: Width, height, length and possible symbols should not be empty.");
         }
-        captchaProducer = createCaptchaProducer(width, height, length, possibleSymbols);
-        service = new KaptchaPluginService(properties);
+        service = new KaptchaPluginService(width, height, length, possibleSymbols);
         pluginProperties = properties;
         return new HashMap<>();
     }
 
-    private Producer createCaptchaProducer(int width, int height, int length, String possibleSymbols) {
-        Properties props = new Properties();
-        props.setProperty("kaptcha.textproducer.char.string", possibleSymbols);
-        props.setProperty("kaptcha.textproducer.char.length", String.valueOf(length));
-        props.setProperty("kaptcha.image.width", String.valueOf(width));
-        props.setProperty("kaptcha.image.height", String.valueOf(height));
-        Config conf = new Config(props);
-        DefaultKaptcha captcha = new DefaultKaptcha();
-        captcha.setConfig(conf);
-        return captcha;
-    }
 
     @Override
     public boolean supportsJCommuneVersion(String version) {
@@ -136,82 +104,28 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
     @Override
     public Map<String, String> registerUser(UserDto userDto, Long pluginId)
             throws NoConnectionException, UnexpectedErrorException {
-        return validate(userDto, pluginId);
+        return service.validateCaptcha(userDto, pluginId);
     }
 
     @Override
     public Map<String, String> validateUser(UserDto userDto, Long pluginId)
             throws NoConnectionException, UnexpectedErrorException {
-        return validate(userDto, pluginId);
-    }
-
-    private Map<String, String> validate(UserDto userDto, Long pluginId) {
-        String captcha = userDto.getCaptchas().get(PLUGIN_PREFIX + String.valueOf(pluginId));
-        if (!isValid(captcha)) {
-            ResourceBundle resourceBundle = ResourceBundle.getBundle("org.jtalks.jcommune.plugin.kaptcha.messages",
-                            userDto.getLanguage().getLocale());
-            String fieldName = "userDto.captchas['" + (PLUGIN_PREFIX + pluginId) + "']";
-            return new ImmutableMap.Builder<String, String>().put(fieldName,
-                    resourceBundle.getString("validation.captcha.wrong")).build();
-        }
-        return new HashMap<>();
+        return service.validateCaptcha(userDto, pluginId);
     }
 
     @Override
     public String getHtml(HttpServletRequest request, String pluginId, Locale locale) {
-        SecurityContextHolder.getContext();
-        ResourceBundle resourceBundle  = ResourceBundle.getBundle("org.jtalks.jcommune.plugin.kaptcha.messages", locale);
-        Properties properties = new Properties();
-
-        properties.put("resource.loader", "jar");
-        properties.put("jar.resource.loader.class", "org.apache.velocity.runtime.resource.loader.JarResourceLoader");
-        String jarPath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
-        properties.put("jar.resource.loader.path", "jar:file:" + jarPath);
-
-        VelocityEngine engine = new VelocityEngine(properties);
-        engine.init();
-        Map<String, Object> model = new HashMap<>();
-        model.put(CAPTCHA_LABEL, resourceBundle.getObject("label.tip.captcha"));
-        model.put(ALT_CAPTCHA, resourceBundle.getObject("alt.captcha.image"));
-        model.put(ALT_REFRESH_CAPTCHA, resourceBundle.getObject("alt.captcha.update"));
-        model.put(CAPTCHA_PLUGIN_ID, pluginId);
-        model.put(FORM_ELEMENT_ID, PLUGIN_PREFIX + pluginId);
-        model.put(BASE_URL, getDeploymentRootUrlWithoutPort(request));
-        return VelocityEngineUtils.mergeTemplateIntoString(
-                engine, "org/jtalks/jcommune/plugin/kaptcha/template/captcha.vm", "UTF-8", model);
-    }
-
-    /**
-     * Returns current deployment root without port for using as label link, for example.
-     *
-     * @return current deployment root without port, e.g. "http://myhost.com/myforum"
-     */
-    private String getDeploymentRootUrlWithoutPort(HttpServletRequest request) {
-        return request.getScheme()
-                + "://" + request.getServerName()
-                + request.getContextPath();
+        return service.getHtml(request, pluginId, locale);
     }
 
     @Override
     public Object doAction(String pluginId, String action, HttpServletResponse response,
                            ServletOutputStream out, HttpSession session) {
-        response.setContentType("image/jpeg");
-        String capText = captchaProducer.createText();
-        session.setAttribute(Constants.KAPTCHA_SESSION_KEY, capText);
-        BufferedImage bi = captchaProducer.createImage(capText);
         try {
-            ImageIO.write(bi, "jpg", out);
-            out.flush();
+            service.handleRequestToCaptchaImage(response, out, session);
         } catch (IOException ex) {
             LOGGER.error("Exception at writing captcha image {}", ex);
         }
         return null;
-    }
-
-    public boolean isValid(String value) {
-        RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
-        HttpServletRequest httpServletRequest = ((ServletRequestAttributes) attributes).getRequest();
-        String sessionCaptchaId = (String) httpServletRequest.getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY);
-        return StringUtils.equals(sessionCaptchaId, value);
     }
 }

@@ -242,7 +242,7 @@ public class UserController {
                                 HttpServletResponse response, ServletOutputStream out, HttpSession session) {
         try {
             Plugin plugin = pluginService.getPluginById(pluginId, new TypeFilter(ExtendedPlugin.class));
-            Object result = ((ExtendedPlugin)plugin).doAction(pluginId, action, response, out, session);
+            ((ExtendedPlugin)plugin).doAction(pluginId, action, response, out, session);
         } catch (org.jtalks.common.service.exceptions.NotFoundException e) {
 
         }
