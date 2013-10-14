@@ -582,7 +582,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
                 ObjectsFactory.getDefaultBranch().getId(), String.valueOf(user.getGroups().get(0).getId()), true
         );
 
-        List<Long> collection = this.dao.getForbiddenBranchesIds(user);
+        List<Long> collection = this.dao.getAllowedBranchesIds(user);
         assertTrue(collection.size() > 0);
     }
 
