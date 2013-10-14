@@ -14,7 +14,6 @@
  */
 var pollEditFormVisible = true;
 var previewFormElement, multipleButtonElement;
-var oldTopicTile = "";
 
 $(document).ready(function () {
     previewFormElement = $("#previewPoll");
@@ -44,14 +43,11 @@ $(document).ready(function () {
 function SwitchPoll() {
     pollEditFormVisible = !pollEditFormVisible;
     if (!pollEditFormVisible) {  // enter preview
-        oldTopicTile = $("#topicTitle").val();
-        $("#topicTitle").html($("#subject").val());
         if (isPollSet()) {
             previewFormElement.html(prepareTitle() + prepareItems());
             previewFormElement.show();
         }
     } else {
-        $("#topicTitle").html(oldTopicTile);
         previewFormElement.hide();
     }
 }
@@ -67,7 +63,7 @@ function isPollSet() {
 function prepareTitle() {
     title = $("#pollTitle")[0].value;
     date = $("#datepicker")[0].value;
-    var result = "<h3>" + title + " ";
+    var result = "<h3>" + previewFormElement.text(title).html() + " ";
     if (date != "") {
         result += $labelPollTitleWithEnding.replace("{0}", date);
     }
@@ -128,12 +124,12 @@ function stringItemsArrayToHtmlItems(items) {
     var isMultiple = multipleButtonElement.is(':checked');
     if (isMultiple) {
         for (var i = 0; i < items.length; i++) {
-            items[i] = checkboxInputBegin + items[i] + inputEnd + items[i] + br;
+            items[i] = checkboxInputBegin + xssProtection(items[i]) + inputEnd + xssProtection(items[i]) + br;
             result += controlWrapperLeading + items[i] + controlWrapperTrailing;
         }
     } else {
         for (var i = 0; i < items.length; i++) {
-            items[i] = radioInputBegin + items[i] + inputEnd + items[i] + br;
+            items[i] = radioInputBegin + xssProtection(items[i]) + inputEnd + xssProtection(items[i]) + br;
             result += controlWrapperLeading + items[i] + controlWrapperTrailing;
         }
     }
@@ -141,4 +137,8 @@ function stringItemsArrayToHtmlItems(items) {
     result += "<input type='button' class='btn btn-primary' value='" + $labelPollVote + "'/>";
 
     return result;
+}
+
+function xssProtection(value) {
+    return previewFormElement.text(value).html();
 }

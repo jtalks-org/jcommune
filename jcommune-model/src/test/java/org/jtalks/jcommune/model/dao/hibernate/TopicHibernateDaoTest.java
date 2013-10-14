@@ -541,4 +541,66 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
        List<Long> collection = this.dao.getForbiddenBranchesIds(user);
        assertFalse(collection.isEmpty());
     }
+
+    @Test
+    public void testGetAllowedBranchesIdsWithAnonymousUser(){
+
+        AnonymousUser user = new AnonymousUser();
+
+        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
+                ObjectsFactory.getDefaultBranch().getId(), user.getClass().getSimpleName(), true
+        );
+
+        List<Long> collection = this.dao.getAllowedBranchesIds(user);
+        assertTrue(collection.size() > 0);
+    }
+
+    @Test
+    public void testGetAllowedBranchesIdsWithAnonymousUserAllowedAndRestricted(){
+
+        AnonymousUser user = new AnonymousUser();
+
+        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
+                ObjectsFactory.getDefaultBranch().getId(), user.getClass().getSimpleName(), true
+        );
+
+        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
+                ObjectsFactory.getDefaultBranch().getId(), user.getClass().getSimpleName(), false
+        );
+
+        List<Long> collection = this.dao.getAllowedBranchesIds(user);
+        assertTrue(collection.isEmpty());
+    }
+
+    @Test
+    public void testGetAllowedBranchesIdsWithRealUser(){
+
+        JCUser user = new JCUser("username",null, null);
+        user.setGroups(ObjectsFactory.getDefaultGroupList());
+
+        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
+                ObjectsFactory.getDefaultBranch().getId(), String.valueOf(user.getGroups().get(0).getId()), true
+        );
+
+        List<Long> collection = this.dao.getAllowedBranchesIds(user);
+        assertTrue(collection.size() > 0);
+    }
+
+    @Test
+    public void testGetAllowedBranchesIdsWithRealUserAllowedAndRestricted(){
+
+        JCUser user = new JCUser("username",null, null);
+        user.setGroups(ObjectsFactory.getDefaultGroupList());
+
+        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
+                ObjectsFactory.getDefaultBranch().getId(), user.getClass().getSimpleName(), true
+        );
+
+        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
+                ObjectsFactory.getDefaultBranch().getId(), user.getClass().getSimpleName(), false
+        );
+
+        List<Long> collection = this.dao.getAllowedBranchesIds(user);
+        assertTrue(collection.isEmpty());
+    }
 }

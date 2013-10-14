@@ -30,8 +30,13 @@ import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -149,9 +154,16 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      */
     @Override
     public Page<Post> getPostsOfUser(JCUser userCreated, String page) {
-        PageRequest pageRequest = new PageRequest(
-                page, userService.getCurrentUser().getPageSize());
-        return this.getDao().getUserPosts(userCreated, pageRequest);
+        JCUser currentUser = userService.getCurrentUser();
+        List<Long> allowedBranchesIds = topicDao.getAllowedBranchesIds(currentUser);
+
+        PageRequest pageRequest = new PageRequest(page, currentUser.getPageSize());
+
+        if(allowedBranchesIds.isEmpty()){
+          return new PageImpl<Post>(Collections.<Post>emptyList());
+        }else{
+          return this.getDao().getUserPosts(userCreated, pageRequest, allowedBranchesIds);
+        }
     }
 
     /**
@@ -175,8 +187,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      */
     @Override
     public Page<Post> getPosts(Topic topic, String page) {
-        PageRequest pageRequest = new PageRequest(
-                page, userService.getCurrentUser().getPageSize());
+        PageRequest pageRequest = new PageRequest(page, userService.getCurrentUser().getPageSize());
         return getDao().getPosts(topic, pageRequest);
     }
 

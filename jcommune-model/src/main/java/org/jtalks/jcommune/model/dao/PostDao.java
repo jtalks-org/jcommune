@@ -22,6 +22,8 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 
 /**
  * Interface allows to make basic CRUD operations with the
@@ -41,10 +43,11 @@ public interface PostDao extends Crud<Post> {
      * 
      * @param author user to select posts for
      * @param pageRequest contains information for pagination: page number, page size
+     * @param allowedBranchesIds list of allowed branches id
      * @return object that contains posts for one page(note, that one page may contain
      *         all posts, that were created by user) and information for pagination
      */
-    Page<Post> getUserPosts(JCUser author, PageRequest pageRequest);
+    Page<Post> getUserPosts(JCUser author, PageRequest pageRequest, List<Long> allowedBranchesIds);
 
     /**
      * Get all posts in the topic of forum.

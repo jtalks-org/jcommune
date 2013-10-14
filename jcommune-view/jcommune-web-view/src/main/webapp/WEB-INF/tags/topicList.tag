@@ -48,8 +48,8 @@
                 <c:out value="${topic.title}"/>
               </a>
             </h2>
-            <sub class="created-by">by
-              <a href='${pageContext.request.contextPath}/users/${topic.topicStarter.id}"'>
+            <sub class="created-by"><spring:message code="label.topic.created_by"/>
+              <a class="space-left-small" href='${pageContext.request.contextPath}/users/${topic.topicStarter.id}"'>
                 <c:out value="${topic.topicStarter.username}"/>
               </a>
             </sub>

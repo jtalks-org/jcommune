@@ -48,9 +48,15 @@
 <div class="logo-container">
   <a href="${pageContext.request.contextPath}/" title="${fn:escapeXml(toolTip)}"
      data-toggle="tooltip" data-placement="right">
-    <img <c:if test="${sessionScope.adminMode == true}">id='forumLogo'</c:if> class="forum-logo cursor-pointer"
-         src='<c:url value="/admin/logo"/>'
-         alt="${fn:escapeXml(toolTip)}"/>
+    <c:choose>
+      <c:when test="${sessionScope.adminMode == true}">
+        <img id="forumLogo" class="forum-logo cursor-pointer" src='<c:url value="/admin/logo"/>'
+             alt="${fn:escapeXml(toolTip)}"/>
+      </c:when>
+      <c:otherwise>
+        <img class="forum-logo cursor-pointer" src='<c:url value="/admin/logo"/>' alt="${fn:escapeXml(toolTip)}"/>
+      </c:otherwise>
+    </c:choose>
   </a>
 </div>
 
@@ -242,21 +248,21 @@
             </div>
             <ul class="dropdown-menu lang-menu">
                 <li id='lang-en'>
-                    <a href="href=${pageContext.request.requestURL}lang=en" onclick="window.location = getLanguageLink('en')">
+                    <a href="${pageContext.request.requestURL}/language/?lang=en">
                         <img src="${pageContext.request.contextPath}/resources/images/flags/en.png"
                              alt="<fmt:message key='label.english'/>"/>
                         <fmt:message key='label.english'/>
                     </a>
                 </li>
                 <li id='lang-ru'>
-                    <a href="${pageContext.request.requestURL}lang=ru" <%--onclick="window.location = getLanguageLink('ru')"--%>>
+                    <a href="${pageContext.request.requestURL}/language/?lang=ru">
                         <img src="${pageContext.request.contextPath}/resources/images/flags/ru.png"
                              alt="<fmt:message key='label.russian'/>"/>
                         <fmt:message key='label.russian'/>
                     </a>
                 </li>
                 <li id='lang-uk'>
-                    <a href="${pageContext.request.requestURL}lang=uk" onclick="window.location = getLanguageLink('uk')">
+                    <a href="${pageContext.request.requestURL}/language/?lang=uk">
                         <img src="${pageContext.request.contextPath}/resources/images/flags/uk.png"
                              alt="<fmt:message key='label.ukrainian'/>"/>
                         <fmt:message key='label.ukrainian'/>

@@ -50,14 +50,16 @@ public class PostHibernateDao extends GenericDao<Post> implements PostDao {
     /**
      * {@inheritDoc}
      */
-    public Page<Post> getUserPosts(JCUser author, PageRequest pageRequest) {
+    public Page<Post> getUserPosts(JCUser author, PageRequest pageRequest, List<Long> allowedBranchesIds) {
         Number totalCount = (Number) session()
                 .getNamedQuery("getCountPostsOfUser")
                 .setParameter("userCreated", author)
+                .setParameterList("allowedBranchesIds", allowedBranchesIds)
                 .uniqueResult();
         Query query = session()
                 .getNamedQuery("getPostsOfUser")
-                .setParameter("userCreated", author);
+                .setParameter("userCreated", author)
+                .setParameterList("allowedBranchesIds", allowedBranchesIds);
         pageRequest.adjustPageNumber(totalCount.intValue());
         query.setFirstResult(pageRequest.getOffset());
         query.setMaxResults(pageRequest.getPageSize());
