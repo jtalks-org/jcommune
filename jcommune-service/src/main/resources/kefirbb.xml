@@ -256,7 +256,12 @@ get XSS attacks.</p>-->
         <coderef name="color_name"/>
         <coderef name="color_code"/>
         <coderef name="size"/>
-
+        <coderef name="highlight"/>
+        <coderef name="left"/>
+        <coderef name="right"/>
+        <coderef name="center"/>
+        <coderef name="indent"/>
+        <coderef name="list"/>
         <coderef name="img1"/>
     </scope>
 
