@@ -172,7 +172,7 @@ public class UserProfileControllerTest {
         profileController.startEditUserProfile(editedUserId);
     }
 
-    @Test(enabled = false)
+    @Test()
     public void saveEditedProfileWithCorrectEnteredDataShouldMoveUserInUpdatedProfile() throws NotFoundException {
         JCUser user = getUser();
         EditUserProfileDto userDto = getEditUserProfileDto();
@@ -187,10 +187,10 @@ public class UserProfileControllerTest {
 
         String expectedUrl = "redirect:/users/" + user.getId();
         assertViewName(mav, expectedUrl);
-        assertEquals(response.getLocale(), user.getLanguage().getLocale());
+        assertEquals(response.getLocale().getLanguage(), user.getLanguage().getLocale().getLanguage());
         verify(userService).saveEditedUserProfile(anyLong(), any(UserInfoContainer.class));
     }
-    
+
     @Test(expectedExceptions = {NotFoundException.class})
     public void saveEditedProfileShouldShowErrorWhenUserWasNotFound() throws NotFoundException {
         EditUserProfileDto userDto = getEditUserProfileDto();
