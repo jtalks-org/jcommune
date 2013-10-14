@@ -35,6 +35,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -159,7 +160,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         PageRequest pageRequest = new PageRequest(page, currentUser.getPageSize());
 
         if(allowedBranchesIds.isEmpty()){
-          return new PageImpl<Post>(new ArrayList<Post>(){}, pageRequest, 0);
+          return new PageImpl<Post>(Collections.<Post>emptyList());
         }else{
           return this.getDao().getUserPosts(userCreated, pageRequest, allowedBranchesIds);
         }
@@ -186,8 +187,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      */
     @Override
     public Page<Post> getPosts(Topic topic, String page) {
-        PageRequest pageRequest = new PageRequest(
-                page, userService.getCurrentUser().getPageSize());
+        PageRequest pageRequest = new PageRequest(page, userService.getCurrentUser().getPageSize());
         return getDao().getPosts(topic, pageRequest);
     }
 
