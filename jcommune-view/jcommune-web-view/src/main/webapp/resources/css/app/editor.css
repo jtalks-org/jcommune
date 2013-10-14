@@ -148,6 +148,7 @@ blockquote:after {
 
 .list li {
     padding: 3px 0;
+    list-style-position:inside;
 }
 
 .unordered-list {
