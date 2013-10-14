@@ -30,9 +30,11 @@ import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -152,13 +154,15 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     @Override
     public Page<Post> getPostsOfUser(JCUser userCreated, String page) {
         JCUser currentUser = userService.getCurrentUser();
-        List<Long> forbiddenBranchesIds = topicDao.getForbiddenBranchesIds(currentUser);
-        if(forbiddenBranchesIds.isEmpty()){
-            //if forbidded branches not exist? then add not exist id to work query
-            forbiddenBranchesIds.add(-1L);
-        }
+        List<Long> allowedBranchesIds = topicDao.getAllowedBranchesIds(currentUser);
+
         PageRequest pageRequest = new PageRequest(page, currentUser.getPageSize());
-        return this.getDao().getUserPosts(userCreated, pageRequest, forbiddenBranchesIds);
+
+        if(allowedBranchesIds.isEmpty()){
+          return new PageImpl<Post>(new ArrayList<Post>(){}, pageRequest, 0);
+        }else{
+          return this.getDao().getUserPosts(userCreated, pageRequest, allowedBranchesIds);
+        }
     }
 
     /**

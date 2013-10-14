@@ -43,11 +43,11 @@ public interface PostDao extends Crud<Post> {
      * 
      * @param author user to select posts for
      * @param pageRequest contains information for pagination: page number, page size
-     * @param forbiddenBranchesIds list of forbidden branches id
+     * @param allowedBranchesIds list of allowed branches id
      * @return object that contains posts for one page(note, that one page may contain
      *         all posts, that were created by user) and information for pagination
      */
-    Page<Post> getUserPosts(JCUser author, PageRequest pageRequest, List<Long> forbiddenBranchesIds);
+    Page<Post> getUserPosts(JCUser author, PageRequest pageRequest, List<Long> allowedBranchesIds);
 
     /**
      * Get all posts in the topic of forum.

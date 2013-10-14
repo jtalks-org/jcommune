@@ -407,8 +407,7 @@ public class TransactionalPostServiceTest {
         Page<Post> actualPage = postService.getPosts(topic, pageNumber);
 
         assertEquals(actualPage, expectedPage, "Service returned incorrect data for one page of posts");
-        verify(postDao).getPosts(
-                Matchers.any(Topic.class), Matchers.any(PageRequest.class));
+        verify(postDao).getPosts(Matchers.any(Topic.class), Matchers.any(PageRequest.class));
     }
 
     @Test

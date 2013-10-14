@@ -32,4 +32,8 @@
         <![CDATA[SELECT v.branchId FROM ViewTopicsBranches v WHERE v.granting=0 AND v.sid IN(:sid)]]>
     </query>
 
+    <query name="getAllowedBranchesIds">
+        <![CDATA[SELECT v.branchId FROM ViewTopicsBranches v WHERE v.granting=1 AND v.sid IN(:sid)]]>
+    </query>
+
 </hibernate-mapping>
