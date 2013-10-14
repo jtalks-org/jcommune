@@ -34,11 +34,9 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -192,11 +190,6 @@ public class UserProfileController {
         long editedUserId = editedProfileDto.getUserId();
         checkPermissionsToEditProfile(editedUserId);
         JCUser user = userService.saveEditedUserProfile(editedUserId, editedProfileDto.getUserInfoContainer());
-        // apply language changes immediately
-        String code = editedProfileDto.getLanguage().getLanguageCode();
-        Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, code);
-        cookie.setPath("/");
-        response.addCookie(cookie);
         //redirect to the view profile page
         return new ModelAndView("redirect:/users/" + user.getId());
     }
