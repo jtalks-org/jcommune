@@ -36,11 +36,11 @@ public interface TopicSearchDao {
      * 
      * @param searchText the search text
      * @param pageRequest contains information for pagination: page number, page size
-     * @param forbiddenBranchesId list of forbidden branches id
+     * @param allowedBranchesIds list of allowed branches id
      * @return object that contains search results for one page(note, that one page
      *         may contain all search results) and information for pagination
      */
-    Page<Topic> searchByTitleAndContent(String searchText, PageRequest pageRequest, List<Long> forbiddenBranchesId);
+    Page<Topic> searchByTitleAndContent(String searchText, PageRequest pageRequest, List<Long> allowedBranchesIds);
 
     /**
      * Indexes the data from the database.

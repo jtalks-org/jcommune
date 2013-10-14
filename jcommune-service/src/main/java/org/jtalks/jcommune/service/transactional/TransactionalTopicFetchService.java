@@ -100,16 +100,17 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
      */
     @Override
     public Page<Topic> searchByTitleAndContent(String phrase, String page) {
+        JCUser currentUser = userService.getCurrentUser();
 
-        if (!StringUtils.isEmpty(phrase)) {
-            JCUser currentUser = userService.getCurrentUser();
+        List<Long> allowedBranchesIds = this.getDao().getAllowedBranchesIds(currentUser);
+
+        if (!StringUtils.isEmpty(phrase) && !allowedBranchesIds.isEmpty()) {
             int pageSize = currentUser.getPageSize();
             PageRequest pageRequest = new PageRequest(page, pageSize);
             // hibernate search refuses to process long string throwing error
             String normalizedPhrase = StringUtils.left(phrase, 50);
-            List<Long> forbiddenBranchesIds = this.getDao().getForbiddenBranchesIds(currentUser);
 
-            return searchDao.searchByTitleAndContent(normalizedPhrase, pageRequest, forbiddenBranchesIds);
+            return searchDao.searchByTitleAndContent(normalizedPhrase, pageRequest, allowedBranchesIds);
         }
         return new PageImpl<Topic>(Collections.<Topic>emptyList());
     }

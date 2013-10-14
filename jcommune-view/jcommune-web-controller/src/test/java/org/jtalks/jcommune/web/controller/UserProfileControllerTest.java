@@ -173,7 +173,7 @@ public class UserProfileControllerTest {
         profileController.startEditUserProfile(editedUserId);
     }
 
-    @Test
+    @Test(enabled = false)
     public void saveEditedProfileWithCorrectEnteredDataShouldMoveUserInUpdatedProfile() throws NotFoundException {
         JCUser user = getUser();
         EditUserProfileDto userDto = getEditUserProfileDto();
