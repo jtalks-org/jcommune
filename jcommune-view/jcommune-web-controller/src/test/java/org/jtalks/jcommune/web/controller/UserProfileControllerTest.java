@@ -35,7 +35,6 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -188,8 +187,9 @@ public class UserProfileControllerTest {
 
         String expectedUrl = "redirect:/users/" + user.getId();
         assertViewName(mav, expectedUrl);
-        assertEquals(response.getCookies()[0].getValue(), Language.ENGLISH.getLanguageCode());
-        assertEquals(response.getCookies()[0].getName(), CookieLocaleResolver.DEFAULT_COOKIE_NAME);
+        assertEquals(response.getLocale(), user.getLanguage().getLocale());
+//        assertEquals(response.getCookies()[0].getValue(), Language.ENGLISH.getLanguageCode());
+//        assertEquals(response.getCookies()[0].getName(), CookieLocaleResolver.DEFAULT_COOKIE_NAME);
         verify(userService).saveEditedUserProfile(anyLong(), any(UserInfoContainer.class));
     }
     
