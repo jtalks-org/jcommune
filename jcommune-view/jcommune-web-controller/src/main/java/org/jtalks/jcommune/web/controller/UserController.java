@@ -33,6 +33,8 @@ import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.validation.editors.DefaultStringEditor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
@@ -66,6 +68,9 @@ import java.util.Map;
 @Controller
 public class UserController {
 
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+
     public static final String REGISTRATION = "registration";
     public static final String LOGIN = "login";
     public static final String AFTER_REGISTRATION = "afterRegistration";
@@ -82,7 +87,8 @@ public class UserController {
     private final PluginService pluginService;
 
     /**
-     * @param userService to delegate business logic invocation
+     * @param userService   to delegate business logic invocation
+     * @param pluginService
      */
     @Autowired
     public UserController(UserService userService, Authenticator authenticator, PluginService pluginService) {
@@ -243,8 +249,8 @@ public class UserController {
         try {
             Plugin plugin = pluginService.getPluginById(pluginId, new TypeFilter(ExtendedPlugin.class));
             ((ExtendedPlugin)plugin).doAction(pluginId, action, response, out, session);
-        } catch (org.jtalks.common.service.exceptions.NotFoundException e) {
-
+        } catch (org.jtalks.common.service.exceptions.NotFoundException ex) {
+            LOGGER.error("Can't find plugin with id {}", pluginId);
         }
     }
 

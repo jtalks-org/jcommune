@@ -50,28 +50,6 @@ public class CaptchaValidatorTest {
     }
 
     @Test
-    public void emptyValueIsAlwaysInvalidEvenIfExpectedIsEmpty(){
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute(Constants.KAPTCHA_SESSION_KEY, "");
-        request.setSession(session);
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
-
-        assertFalse(captchaValidator.isValid("", null));
-    }
-
-    @Test
-    public void nullValueIsAlwaysInvalidEvenIfExpectedIsEmpty(){
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute(Constants.KAPTCHA_SESSION_KEY, "");
-        request.setSession(session);
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
-
-        assertFalse(captchaValidator.isValid(null, null));
-    }
-
-    @Test
     public void testNoCoincidenceCaptchaWithInputValue(){
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpSession session = new MockHttpSession();
