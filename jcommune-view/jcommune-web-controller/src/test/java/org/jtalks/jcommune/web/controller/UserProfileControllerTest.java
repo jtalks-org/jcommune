@@ -188,8 +188,6 @@ public class UserProfileControllerTest {
         String expectedUrl = "redirect:/users/" + user.getId();
         assertViewName(mav, expectedUrl);
         assertEquals(response.getLocale(), user.getLanguage().getLocale());
-//        assertEquals(response.getCookies()[0].getValue(), Language.ENGLISH.getLanguageCode());
-//        assertEquals(response.getCookies()[0].getName(), CookieLocaleResolver.DEFAULT_COOKIE_NAME);
         verify(userService).saveEditedUserProfile(anyLong(), any(UserInfoContainer.class));
     }
     
