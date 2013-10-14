@@ -484,7 +484,7 @@ function AddTag(t1, t2) {
         var sel_start = element.selectionStart;
         var sel_end = element.selectionEnd;
 
-        if (isSelectionEqualsToLinkText(element) && t2 == "[/url]") {
+        if (!isSelectionEqualsToLinkText(element) && t2 == "[/url]") {
             sel_start = sel_end;
         }
 
