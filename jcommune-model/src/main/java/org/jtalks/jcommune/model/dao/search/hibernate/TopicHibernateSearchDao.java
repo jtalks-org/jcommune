@@ -72,13 +72,13 @@ public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
     @Override
     public Page<Topic> searchByTitleAndContent(String searchText,
                                                PageRequest pageRequest,
-                                               List<Long> forbiddenBranchesId) {
+                                               List<Long> allowedBranchesIds) {
 
-       Page<Topic> searchResults = doSearch(searchText, pageRequest, forbiddenBranchesId);
+       Page<Topic> searchResults = doSearch(searchText, pageRequest, allowedBranchesIds);
 
        if (isSearchedAboveLastPage(searchResults)) {
            pageRequest.adjustPageNumber(Long.valueOf(searchResults.getTotalElements()).intValue());
-           searchResults = doSearch(searchText, pageRequest, forbiddenBranchesId);
+           searchResults = doSearch(searchText, pageRequest, allowedBranchesIds);
        }
 
        return searchResults;
@@ -90,13 +90,13 @@ public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
      * @param searchText the search text
      * @param pageRequest contains information for pagination: page number, page
      *                    size
-     * @param forbiddenBranchesId list of forbidden branches
+     * @param allowedBranchesIds list of allowed branches
      *
      * @return object that contains search results for one page(note, that one
      *         page may contain all search results) and information for pagination
      */
     @SuppressWarnings("unchecked")
-    private Page<Topic> doSearch(String searchText, PageRequest pageRequest, List<Long> forbiddenBranchesId) {
+    private Page<Topic> doSearch(String searchText, PageRequest pageRequest, List<Long> allowedBranchesIds) {
         List<Topic> topics = Collections.emptyList();
         int resultSize = 0;
         //TODO The latest versions of the library filtering is not needed.
@@ -105,12 +105,10 @@ public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
 
             FullTextQuery query = createSearchQuery(getFullTextSession(), filteredSearchText, pageRequest);
 
-            if(!forbiddenBranchesId.isEmpty()) {
-                Criteria criteria = getFullTextSession().createCriteria(Topic.class).add(
-                        Restrictions.not(Restrictions.in("branch.id", forbiddenBranchesId))
-                );
-                query.setCriteriaQuery(criteria);
-            }
+            Criteria criteria = getFullTextSession().createCriteria(Topic.class).add(
+                    Restrictions.in("branch.id", allowedBranchesIds)
+            );
+            query.setCriteriaQuery(criteria);
 
             topics = query.list();
             resultSize = query.getResultSize();
