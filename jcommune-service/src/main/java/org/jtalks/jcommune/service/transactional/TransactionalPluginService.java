@@ -147,10 +147,13 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
     }
 
     /**
-     * {@inheritDoc}
+     * Get plugin id by plugin name
+     *
+     * @param pluginName plugin name
+     * @return plugin id
+     * @throws NotFoundException if plugin with specified name not found
      */
-    @Override
-    public long getPluginId(String pluginName) throws NotFoundException {
+    private long getPluginId(String pluginName) throws NotFoundException {
         return getDao().get(pluginName).getId();
     }
 

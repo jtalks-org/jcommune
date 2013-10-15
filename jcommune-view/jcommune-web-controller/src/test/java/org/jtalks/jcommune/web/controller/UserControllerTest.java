@@ -14,12 +14,15 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.plugins.ExtendedPlugin;
+import org.jtalks.jcommune.model.plugins.RegistrationPlugin;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.Authenticator;
@@ -27,6 +30,7 @@ import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.plugins.TypeFilter;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
@@ -43,13 +47,16 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.*;
@@ -109,6 +116,49 @@ public class UserControllerTest {
         assertViewName(mav, "registration");
         RegisterUserDto dto = assertAndReturnModelAttributeOfType(mav, "newUser", RegisterUserDto.class);
         assertNullFields(dto);
+    }
+
+    @Test
+    public void testRegistrationFormWithoutAnyPluginShouldBeSuccessful() {
+        JsonResponse response = userController.registrationForm(request, Locale.ENGLISH);
+
+        assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
+    }
+
+    @Test
+    public void testRegistrationFormWithAvailablePluginShouldBeSuccessful() {
+        RegistrationPlugin plugin = mock(RegistrationPlugin.class);
+        when(pluginService.getRegistrationPlugins()).thenReturn(
+                new ImmutableMap.Builder<Long, RegistrationPlugin>().put(1L, plugin).build());
+
+        JsonResponse response = userController.registrationForm(request, Locale.ENGLISH);
+
+        assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
+    }
+
+    @Test
+    public void testPluginActionForAvailablePluginShouldBeSuccessful()
+            throws org.jtalks.common.service.exceptions.NotFoundException {
+        ExtendedPlugin plugin = mock(ExtendedPlugin.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        ServletOutputStream servletOutputStream = mock(ServletOutputStream.class);
+        HttpSession session = mock(HttpSession.class);
+        String pluginId = "1";
+        when(pluginService.getPluginById(eq(pluginId), any(TypeFilter.class))).thenReturn(plugin);
+
+        userController.pluginAction(pluginId, "someAction", response, servletOutputStream, session);
+    }
+
+    @Test
+    public void testPluginActionIfPluginNotFound() throws org.jtalks.common.service.exceptions.NotFoundException {
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        ServletOutputStream servletOutputStream = mock(ServletOutputStream.class);
+        HttpSession session = mock(HttpSession.class);
+        String pluginId = "1";
+        when(pluginService.getPluginById(eq(pluginId), any(TypeFilter.class)))
+                .thenThrow(new org.jtalks.common.service.exceptions.NotFoundException());
+
+        userController.pluginAction(pluginId, "someAction", response, servletOutputStream, session);
     }
 
     @Test

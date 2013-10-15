@@ -68,8 +68,6 @@ public interface PluginService extends EntityService<PluginConfiguration> {
      */
     void updatePluginsActivating(List<PluginActivatingDto> pluginActivatingDtoList, long forumComponentId) throws NotFoundException;
 
-    long getPluginId(String pluginName) throws NotFoundException;
-
     Map<Long, RegistrationPlugin> getRegistrationPlugins();
 
     Plugin getPluginByName(String pluginName, PluginFilter... filters) throws NotFoundException;

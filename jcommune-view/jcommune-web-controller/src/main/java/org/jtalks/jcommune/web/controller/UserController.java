@@ -88,7 +88,7 @@ public class UserController {
 
     /**
      * @param userService   to delegate business logic invocation
-     * @param pluginService
+     * @param pluginService for communication with available registration or authentication plugins
      */
     @Autowired
     public UserController(UserService userService, Authenticator authenticator, PluginService pluginService) {
@@ -153,7 +153,7 @@ public class UserController {
     /**
      * Render registration page with bind objects to form.
      *
-     * @return {@code ModelAndView} with "registration" view and empty
+     * @return {@code ModelAndView} with "registration" view, any additional html from registration plugins and
      *         {@link org.jtalks.jcommune.model.dto.RegisterUserDto} with name "newUser
      */
     @RequestMapping(value = "/user/new", method = RequestMethod.GET)
@@ -227,6 +227,13 @@ public class UserController {
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 
+    /**
+     * Get html from available registration plugins.
+     *
+     * @param request request
+     * @param locale user locale
+     * @return map as pairs pluginId - html
+     */
     private Map<String, String> getRegistrationPluginsHtml(HttpServletRequest request, Locale locale) {
         Map<String, String> registrationPlugins = new HashMap<>();
         for (Map.Entry<Long, RegistrationPlugin> entry : pluginService.getRegistrationPlugins().entrySet()) {

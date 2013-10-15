@@ -15,6 +15,7 @@
 
 package org.jtalks.jcommune.service.transactional;
 
+import com.google.common.collect.ImmutableMap;
 import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
@@ -320,57 +321,58 @@ public class TransactionalAuthenticatorTest {
         verify(bindingResult, never()).rejectValue(anyString(), anyString(), anyString());
     }
 
-//    @Test
-//    public void registerUserWithIncorrectDetailsShouldFail()
-//            throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-//        RegisterUserDto userDto = createRegisterUserDto("", "", "");
-//        Map<String, String> jcErrors = new HashMap<>();
-//        jcErrors.put("captcha", "Invalid captcha");
-//
-//        Map<String, String> errors = new HashMap<>();
-//        errors.put("userDto.email", "Invalid email length");
-//        errors.put("userDto.username", "Invalid username length");
-//        errors.put("userDto.password", "Invalid password length");
-//
-//        when(registrationPlugin.getState()).thenReturn(Plugin.State.ENABLED);
-//        when(registrationPlugin.registerUser(userDto.getUserDto())).thenReturn(errors);
-//        Class cl = AuthenticationPlugin.class;
-//        when(pluginLoader.getPluginByClassName(cl)).thenReturn(registrationPlugin);
-//
-//        when(bindingResult.hasErrors()).thenReturn(true);
-//
-//        BindingResult result = authenticator.register(userDto);
-//
-//        assertEquals(result.getFieldErrors().size(), 3);
-//    }
+    @Test
+    public void registerUserWithIncorrectDetailsShouldFail()
+            throws UnexpectedErrorException, NotFoundException, NoConnectionException {
+        RegisterUserDto userDto = createRegisterUserDto("", "", "");
+        Map<String, String> errors = new HashMap<>();
+        errors.put("userDto.email", "Invalid email length");
+        errors.put("userDto.username", "Invalid username length");
+        errors.put("userDto.password", "Invalid password length");
 
-//    @Test(expectedExceptions = NoConnectionException.class)
-//    public void registerUserShouldFailIfPluginThrowsNoConnectionException()
-//            throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-//        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
-//        when(registrationPlugin.getState()).thenReturn(Plugin.State.ENABLED);
-//        when(registrationPlugin.registerUser(userDto.getUserDto()))
-//                .thenThrow(new NoConnectionException());
-//        Class cl = AuthenticationPlugin.class;
-//        when(pluginLoader.getPluginByClassName(cl)).thenReturn(registrationPlugin);
-//
-//        when(bindingResult.hasErrors()).thenReturn(true);
-//
-//        authenticator.register(userDto);
-//    }
-//
-//    @Test(expectedExceptions = UnexpectedErrorException.class)
-//    public void registerUserShouldFailIfPluginThrowsUnexpectedErrorException()
-//            throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-//        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
-//        when(registrationPlugin.getState()).thenReturn(Plugin.State.ENABLED);
-//        when(registrationPlugin.registerUser(userDto.getUserDto()))
-//                .thenThrow(new UnexpectedErrorException());
-//        Class cl = AuthenticationPlugin.class;
-//        when(pluginLoader.getPluginByClassName(cl)).thenReturn(registrationPlugin);
-//
-//        authenticator.register(userDto);
-//    }
+        RegistrationPlugin plugin = mock(RegistrationPlugin.class);
+        when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
+        when(plugin.registerUser(userDto.getUserDto(), 1L)).thenReturn(errors);
+
+        when(pluginService.getRegistrationPlugins()).thenReturn(
+                new ImmutableMap.Builder<Long, RegistrationPlugin>().put(1L, plugin).build());
+
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        BindingResult result = authenticator.register(userDto);
+
+        assertEquals(result.getFieldErrors().size(), 3);
+    }
+
+    @Test(expectedExceptions = NoConnectionException.class)
+    public void registerUserShouldFailIfPluginThrowsNoConnectionException()
+            throws UnexpectedErrorException, NotFoundException, NoConnectionException {
+        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
+        RegistrationPlugin plugin = mock(RegistrationPlugin.class);
+        when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
+        when(plugin.registerUser(userDto.getUserDto(), 1L))
+                .thenThrow(new NoConnectionException());
+        when(pluginService.getRegistrationPlugins()).thenReturn(
+                new ImmutableMap.Builder<Long, RegistrationPlugin>().put(1L, plugin).build());
+
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        authenticator.register(userDto);
+    }
+
+    @Test(expectedExceptions = UnexpectedErrorException.class)
+    public void registerUserShouldFailIfPluginThrowsUnexpectedErrorException()
+            throws UnexpectedErrorException, NotFoundException, NoConnectionException {
+        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
+        RegistrationPlugin plugin = mock(RegistrationPlugin.class);
+        when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
+        when(plugin.registerUser(userDto.getUserDto(), 1L))
+                .thenThrow(new UnexpectedErrorException());
+        when(pluginService.getRegistrationPlugins()).thenReturn(
+                new ImmutableMap.Builder<Long, RegistrationPlugin>().put(1L, plugin).build());
+
+        authenticator.register(userDto);
+    }
 
     @Test
     public void defaultRegistrationShouldFailIfValidationErrorsOccurred()
