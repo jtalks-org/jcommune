@@ -88,7 +88,9 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
         List<Plugin> plugins =  pLuginLoader.getPlugins(new TypeFilter(RegistrationPlugin.class));
         for(Plugin plugin : plugins) {
             try {
-                registrationPluginMap.put(getPluginId(plugin.getName()), (RegistrationPlugin) plugin);
+                if (plugin.getState() == Plugin.State.ENABLED) {
+                    registrationPluginMap.put(getPluginId(plugin.getName()), (RegistrationPlugin) plugin);
+                }
             } catch (NotFoundException e) {
                 LOGGER.debug("Plugin with name {} not found.", plugin.getName());
             }
