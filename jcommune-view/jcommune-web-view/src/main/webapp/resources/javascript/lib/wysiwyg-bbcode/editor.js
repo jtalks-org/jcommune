@@ -317,6 +317,7 @@ function doLink() {
     mylink = '';
     var str;
     var element = textboxelement;
+    var selection = getInputSelection(textboxelement);
     if (isIE) {
         str = document.selection.createRange().text;
     } else if (typeof(element.selectionStart) != 'undefined') {
@@ -340,9 +341,8 @@ function doLink() {
                     if (mylink == null || mylink == '') {
                         mylink = link;
                     }
-
-                    AddTag('[url=' + link + ']', '[/url]');
                     jDialog.closeDialog();
+                    AddTag('[url=' + link + ']', '[/url]', selection);
                     textboxelement.focus();
                 } else {
                     ErrorUtils.removeErrorMessage('#urlId', $labelErrorsNotEmpty);
@@ -382,6 +382,7 @@ function createFormRow(text, value, idForElement, info, cls) {
 
 function doImage() {
     if (!editorVisible) {
+        var selection = getInputSelection(textboxelement);
         var bodyContent = createFormRow($labelUrl, '', 'imgId', $labelUrlRequired, '');
         var footerContent = '' +
             '<button id="bb-img-cancel" class="btn">' + $labelCancel + '</button> \
@@ -391,8 +392,8 @@ function doImage() {
             e.preventDefault();
             myimg = $('#imgId').val();
             if ((myimg != null) && (myimg != '')) {
-                AddTag('[img]' + myimg, '[/img]');
                 jDialog.closeDialog();
+                AddTag('[img]' + myimg, '[/img]', selection);
                 textboxelement.focus();
             }else {
                 ErrorUtils.removeErrorMessage('#imgId', $labelErrorsNotEmpty);
@@ -420,7 +421,7 @@ function MozillaInsertText(element, text, pos) {
     element.value = element.value.slice(0, pos) + text + element.value.slice(pos);
 }
 
-function AddTag(t1, t2) {
+function AddTag(t1, t2, selection) {
 
     var element = textboxelement;
     var dummyText = $labelDummyTextBBCode;
@@ -428,6 +429,9 @@ function AddTag(t1, t2) {
     if (isIE) {
         if (document.selection) {
             element.focus();
+            if (selection) {
+                setInputSelection(element, selection.start, selection.end)
+            }
             var txt = element.value;
             var str = document.selection.createRange();
             var sel_start = element.selectionStart;
@@ -697,6 +701,7 @@ function putOBJxColor2(Samp, pigMent, textBoxId) {
 
 function showColorGrid2(Sam, textBoxId) {
     if (!editorVisible) {
+        var selection = getInputSelection(textboxelement);
         var objX = new Array('00', '33', '66', '99', 'CC', 'FF');
         var c = 0;
         var xl = '"' + Sam + '","x", "' + textBoxId + '"';
@@ -733,8 +738,8 @@ function showColorGrid2(Sam, textBoxId) {
             e.preventDefault();
             var rgb_color = $('#o5582n66a').css('backgroundColor');
             var hex_color = getHexRGBColor(rgb_color);
-            AddTag('[color=' + hex_color + ']', '[/color]');
             jDialog.closeDialog();
+            AddTag('[color=' + hex_color + ']', '[/color]', selection);
             textboxelement.focus();
         }
 
@@ -767,15 +772,119 @@ function showColorGrid2(Sam, textBoxId) {
 }
 
 $(document).ready(function() {
-	$('#select_size a').click(function() {
-		doSize(this);
-	});
-	
-	$('#select_code a').click(function() {
-		doCode(this);
-	});
-	
-	$('#select_indent a').click(function() {
-		doIndent(this);
-	});
+    // id: action
+    var actionsMap = {
+        format_u: function() {doClick('underline');},
+        format_i: function() {doClick('italic');},
+        format_b: function() {doClick('bold');},
+        format_s: function() {doClick('line-through');},
+        format_img: function() {doImage();},
+        format_url: function() {doLink();},
+        select_color: function() {showColorGrid2('none');},
+        format_highlight: function() {doClick('highlight');},
+        format_left: function(){doClick('left');},
+        format_center: function(){doClick('center');},
+        format_right: function(){doClick('right');},
+        format_list: function(){doClick('InsertUnorderedList');},
+        format_listeq: function(){doClick('listElement');},
+        format_quote: function(){doQuote();}
+    }
+    
+    // assign onclick action to each button
+    for (var k in actionsMap) {
+        if (actionsMap.hasOwnProperty(k)) {
+           $('#' + k).click(actionsMap[k]);  
+        }
+    }
+
+    $('#select_size a').click(function() {
+            doSize(this);
+    });
+
+    $('#select_code a').click(function() {
+            doCode(this);
+    });
+
+    $('#select_indent a').click(function() {
+            doIndent(this);
+    });
 });
+
+/**
+ * Returns textarea selection.
+ * @param {Object} textarea
+ * @returns {&#123;start, end&#125;}
+ */
+function getInputSelection(el) {
+    var start = 0, end = 0, normalizedValue, range,
+        textInputRange, len, endRange;
+
+    if (typeof el.selectionStart == "number" && typeof el.selectionEnd == "number") {
+        start = el.selectionStart;
+        end = el.selectionEnd;
+    } else {
+        range = document.selection.createRange();
+
+        if (range && range.parentElement() == el) {
+            len = el.value.length;
+            normalizedValue = el.value.replace(/\r\n/g, "\n");
+
+            // Create a working TextRange that lives only in the input
+            textInputRange = el.createTextRange();
+            textInputRange.moveToBookmark(range.getBookmark());
+
+            // Check if the start and end of the selection are at the very end
+            // of the input, since moveStart/moveEnd doesn't return what we want
+            // in those cases
+            endRange = el.createTextRange();
+            endRange.collapse(false);
+
+            if (textInputRange.compareEndPoints("StartToEnd", endRange) > -1) {
+                start = end = len;
+            } else {
+                start = -textInputRange.moveStart("character", -len);
+                start += normalizedValue.slice(0, start).split("\n").length - 1;
+
+                if (textInputRange.compareEndPoints("EndToEnd", endRange) > -1) {
+                    end = len;
+                } else {
+                    end = -textInputRange.moveEnd("character", -len);
+                    end += normalizedValue.slice(0, end).split("\n").length - 1;
+                }
+            }
+        }
+    }
+
+    return {
+        start: start,
+        end: end
+    };
+}
+
+/**
+ * Apply selection to the text element.
+ * @param {Object} textarea
+ * @param {int} startOffset
+ * @param {int} endOffset
+ */
+function setInputSelection(el, startOffset, endOffset) {
+    if (typeof el.selectionStart == "number" && typeof el.selectionEnd == "number") {
+        el.selectionStart = startOffset;
+        el.selectionEnd = endOffset;
+    } else {
+        var range = el.createTextRange();
+        var startCharMove = offsetToRangeCharacterMove(el, startOffset);
+        range.collapse(true);
+        if (startOffset == endOffset) {
+            range.move("character", startCharMove);
+        } else {
+            range.moveEnd("character", offsetToRangeCharacterMove(el, endOffset));
+            range.moveStart("character", startCharMove);
+        }
+        range.select();
+    }
+}
+
+function offsetToRangeCharacterMove(el, offset) {
+    return offset - (el.value.slice(0, offset).split("\r\n").length - 1);
+}

@@ -30,53 +30,53 @@
 
 <div class="btn-toolbar hide-on-preview">
   <div class="btn-group">
-    <a id="format_b" class="btn" accesskey="b" onclick="doClick('bold');"
+    <a id="format_b" class="btn" accesskey="b" href="#"
        title="<spring:message code='label.answer.bold'/>">
       <i class="icon-bold"></i>
     </a>
-    <a id="format_i" class="btn" accesskey="i" onclick="doClick('italic');"
+    <a id="format_i" class="btn" accesskey="i" href="#"
        title="<spring:message code='label.answer.italic'/>">
       <i class="icon-italic"></i>
     </a>
-    <a id="format_u" class="btn" accesskey="u" onclick="doClick('underline');"
+    <a id="format_u" class="btn" accesskey="u" href="#"
        title="<spring:message code='label.answer.underline'/>">
       <i class="icon-underline"></i>
     </a>
-    <a id="format_s" class="btn" accesskey="s" onclick="doClick('line-through');"
+    <a id="format_s" class="btn" accesskey="s" href="#"
        title="<spring:message code='label.answer.striked'/>">
       <i class="icon-strike"></i>
     </a>
-    <a id="format_highlight" class="btn" accesskey="h" onclick="doClick('highlight');"
+    <a id="format_highlight" class="btn" accesskey="h" href="#"
        title='<spring:message code='label.answer.highlight'/>'>
       &nbsp;Highlight&nbsp;
     </a>
   </div>
   <div class='btn-group'>
-    <a id="format_left" class="btn" onclick="doClick('left');"
+    <a id="format_left" class="btn" href="#"
        title="<spring:message code='label.answer.align_left'/>">
       <i class="icon-align-left"></i>
     </a>
-    <a id="format_center" class="btn" accesskey="c" onclick="doClick('center');"
+    <a id="format_center" class="btn" accesskey="c" href="#"
        title="<spring:message code='label.answer.align_center'/>">
       <i class="icon-align-center"></i>
     </a>
-    <a id="format_right" class="btn" onclick="doClick('right');"
+    <a id="format_right" class="btn" href="#"
        title="<spring:message code='label.answer.align_right'/>">
       <i class="icon-align-right"></i>
     </a>
   </div>
   <div class='btn-group'>
-    <a id="format_list" class="btn" accesskey="l" onclick="doClick('InsertUnorderedList');"
+    <a id="format_list" class="btn" accesskey="l" href="#"
        title="<spring:message code='label.answer.list'/>">
       <i class="icon-list"></i>
     </a>
-    <a id="format_listeq" class="btn" accesskey="o" onclick="doClick('listElement');"
+    <a id="format_listeq" class="btn" accesskey="o" href="#"
        title="<spring:message code='label.answer.list_item'/>">
       <i class="icon-add-row"></i>
     </a>
   </div>
   <div class='btn-group'>
-    <a id="select_color" class="btn" onclick="showColorGrid2('none')"
+    <a id="select_color" class="btn" href="#"
        title="<spring:message code='label.answer.font_color'/>">
       <i class="icon-palette"></i>
     </a>
@@ -96,11 +96,11 @@
     </ul>
   </div>
   <div class='btn-group'>
-    <a id="format_img" class="btn" accesskey="p" onclick="doImage();"
+      <a id="format_img" class="btn" accesskey="p" href="#"
        title="<spring:message code='label.answer.insert_picture'/>">
       <i class="icon-picture"></i>
     </a>
-    <a id="format_url" class="btn" accesskey="w" onclick="doLink();"
+    <a id="format_url" class="btn" accesskey="w" href="#"
        title="<spring:message code='label.answer.insert_link'/>">
       <i class="icon-link"></i>
     </a>
@@ -124,7 +124,7 @@
       <li data-value="xml"><a href="#">XML</a></li>
     </ul>
 
-    <a id="format_quote" class="btn" accesskey="q" onclick="doQuote();"
+    <a id="format_quote" class="btn" accesskey="q" href="#"
        title="<spring:message code='label.answer.quote'/>">
       <i class="icon-quote"></i>
     </a>
