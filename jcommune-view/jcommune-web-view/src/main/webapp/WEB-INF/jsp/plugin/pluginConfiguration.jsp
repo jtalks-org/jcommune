@@ -21,7 +21,7 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <head>
     <title><c:out value="${pluginConfiguration.name}"/></title>
-<head>
+</head>
 <body>
 <div class="container">
   <div id="plugins-properties-list-header">

@@ -23,7 +23,7 @@
 <jsp:useBean id="plugins" type="java.util.List" scope="request"/>
 <head>
     <title><spring:message code="label.plugins.list.title"/></title>
-<head>
+</head>
 <body>
 <div class="container">
   <%-- List of plugins. --%>
@@ -55,7 +55,7 @@
             <%-- Plugin --%>
             <tr>
               <td>
-                <form:hidden path="activatingPlugins[${status.index}].pluginName" value="${plugin.name}"/>
+                <form:hidden path="activatingPlugins[${status.index}].pluginName"/>
                 <c:out value="${plugin.name}"/>
               </td>
               <td>
