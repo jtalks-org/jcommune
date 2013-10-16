@@ -36,18 +36,19 @@ import static org.jtalks.jcommune.model.entity.PluginProperty.Type.INT;
 import static org.jtalks.jcommune.model.entity.PluginProperty.Type.STRING;
 
 /**
+ * Provides refresh, validating kaptcha, and obtaining kaptcha as html for registration form.
+ *
  * @author Andrey Pogorelov
  */
 public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin, ExtendedPlugin {
-    private static final Logger LOGGER = LoggerFactory.getLogger(KaptchaPlugin.class);
-    private static final String WIDTH_PROPERTY = "Width";
-    private static final String HEIGHT_PROPERTY = "Height";
-    private static final String LENGTH_PROPERTY = "Length";
-    private static final String POSSIBLE_SYMBOLS_PROPERTY = "Possible Symbols";
+    protected static final Logger LOGGER = LoggerFactory.getLogger(KaptchaPlugin.class);
+    protected static final String WIDTH_PROPERTY = "Width";
+    protected static final String HEIGHT_PROPERTY = "Height";
+    protected static final String LENGTH_PROPERTY = "Length";
+    protected static final String POSSIBLE_SYMBOLS_PROPERTY = "Possible Symbols";
 
     private List<PluginProperty> pluginProperties;
     private KaptchaPluginService service;
-
 
     @Override
     protected Map<PluginProperty, String> applyConfiguration(List<PluginProperty> properties) {
@@ -56,31 +57,34 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
         int length = 0;
         String possibleSymbols = "";
         for (PluginProperty property : properties) {
-            switch(property.getName()) {
-                case WIDTH_PROPERTY:
-                    width = Integer.valueOf(property.getValue());
-                    break;
-                case HEIGHT_PROPERTY:
-                    height = Integer.valueOf(property.getValue());
-                    break;
-                case LENGTH_PROPERTY:
-                    length = Integer.valueOf(property.getValue());
-                    break;
-                case POSSIBLE_SYMBOLS_PROPERTY:
-                    possibleSymbols = property.getValue();
-                    break;
+            try {
+                switch (property.getName()) {
+                    case WIDTH_PROPERTY:
+                        width = Integer.valueOf(property.getValue());
+                        break;
+                    case HEIGHT_PROPERTY:
+                        height = Integer.valueOf(property.getValue());
+                        break;
+                    case LENGTH_PROPERTY:
+                        length = Integer.valueOf(property.getValue());
+                        break;
+                    case POSSIBLE_SYMBOLS_PROPERTY:
+                        possibleSymbols = property.getValue();
+                        break;
+                }
+            } catch (NumberFormatException ex) {
+                LOGGER.error("{} is not valid value for property {}", property.getValue(), property.getName());
             }
         }
         if (width < 1 || height < 1 || length < 1 || possibleSymbols.length() < 1) {
             // this should be returned as a map, but this mechanism should be implemented in the plugin API first
             throw new RuntimeException(
-                    "Can't apply configuration: Width, height, length and possible symbols should not be empty.");
+                    "Can't apply configuration: Width, height, length and possible symbols properties should not be empty.");
         }
         service = new KaptchaPluginService(width, height, length, possibleSymbols);
         pluginProperties = properties;
         return new HashMap<>();
     }
-
 
     @Override
     public boolean supportsJCommuneVersion(String version) {
@@ -109,28 +113,35 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
     @Override
     public Map<String, String> registerUser(UserDto userDto, Long pluginId)
             throws NoConnectionException, UnexpectedErrorException {
-        return service.validateCaptcha(userDto, pluginId);
+        return getService().validateCaptcha(userDto, pluginId);
     }
 
     @Override
     public Map<String, String> validateUser(UserDto userDto, Long pluginId)
             throws NoConnectionException, UnexpectedErrorException {
-        return service.validateCaptcha(userDto, pluginId);
+        return getService().validateCaptcha(userDto, pluginId);
     }
 
     @Override
     public String getHtml(HttpServletRequest request, String pluginId, Locale locale) {
-        return service.getHtml(request, pluginId, locale);
+        return getService().getHtml(request, pluginId, locale);
     }
 
     @Override
     public Object doAction(String pluginId, String action, HttpServletResponse response,
                            ServletOutputStream out, HttpSession session) {
         try {
-            service.handleRequestToCaptchaImage(response, out, session);
+            if ("refreshCaptcha".equalsIgnoreCase(action)) {
+                getService().handleRequestToCaptchaImage(response, out, session);
+                return Boolean.TRUE;
+            }
         } catch (IOException ex) {
             LOGGER.error("Exception at writing captcha image {}", ex);
         }
-        return null;
+        return Boolean.FALSE;
+    }
+
+    protected KaptchaPluginService getService() {
+        return this.service;
     }
 }

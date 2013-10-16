@@ -38,12 +38,15 @@ import java.util.Properties;
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
 
+/**
+ * @author Andrey Pogorelov
+ */
 public class KaptchaPluginServiceTest {
 
     private final String GENERATED_CAPTCHA_TEXT = "2356";
     private final int IMAGE_WIDTH = 100;
-    private final int IMAGE_HEIGHT= 50;
-    private final int IMAGE_LENGTH= 50;
+    private final int IMAGE_HEIGHT = 50;
+    private final int IMAGE_LENGTH = 50;
     private final String POSSIBLE_SYMBOLS = "1234567890";
 
     private KaptchaPluginService service;
@@ -99,26 +102,29 @@ public class KaptchaPluginServiceTest {
         return properties;
     }
 
-    @Test(enabled = false)
+    @Test
     public void testGetHtml() throws Exception {
+        String newLine = System.getProperty("line.separator");
         Properties properties = createProperties();
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(service.getProperties()).thenReturn(properties);
-        String expected = "<div class='control-group'>\n" +
-                "  <div class='controls captcha-images'>\n" +
-                "    <img class='captcha-img' alt='Captcha' src='http://localhost:8080/plugin/1/refreshCaptcha'/>\n" +
-                "    <img class='captcha-refresh' alt='Refresh captcha' src='http://localhost:8080/resources/images/captcha-refresh.png'/>\n" +
-                "  </div>\n" +
-                "  <div class='controls'>\n" +
-                "    <input type='text' id='plugin-1' name='userDto.captchas[plugin-1]' placeholder='Captcha text' class='input-xlarge captcha'/>\n" +
-                "  </div>\n" +
+        String expected = "<div class='control-group'>" + newLine +
+                "  <div class='controls captcha-images'>" + newLine +
+                "    <img class='captcha-img' alt='Captcha' src='http://localhost:8080/plugin/1/refreshCaptcha'/>" + newLine +
+                "    <img class='captcha-refresh' alt='Refresh captcha'" +
+                " src='http://localhost:8080/resources/images/captcha-refresh.png'/>" + newLine +
+                "  </div>" + newLine +
+                "  <div class='controls'>" + newLine +
+                "    <input type='text' id='plugin-1' name='userDto.captchas[plugin-1]'" + newLine +
+                "      placeholder='Captcha text' class='input-xlarge captcha'/>" + newLine +
+                "  </div>" + newLine +
                 "</div>";
 
         String actual = service.getHtml(request, "1", Locale.ENGLISH);
-        assertSame(actual, expected);
+        assertEquals(actual, expected);
     }
 
-    @Test(enabled = false)
+    @Test
     public void testHandleRequestToCaptchaImage() throws Exception {
         HttpServletResponse response = mock(HttpServletResponse.class);
         ServletOutputStream out = mock(ServletOutputStream.class);
@@ -126,6 +132,7 @@ public class KaptchaPluginServiceTest {
         Producer captchaProducer = mock(Producer.class);
 
         int imageType = 1;
+        when(service.getCaptchaProducer()).thenReturn(captchaProducer);
         when(captchaProducer.createText()).thenReturn(GENERATED_CAPTCHA_TEXT);
         when(captchaProducer.createImage(GENERATED_CAPTCHA_TEXT)).
                 thenReturn(new BufferedImage(IMAGE_WIDTH, IMAGE_HEIGHT, imageType));

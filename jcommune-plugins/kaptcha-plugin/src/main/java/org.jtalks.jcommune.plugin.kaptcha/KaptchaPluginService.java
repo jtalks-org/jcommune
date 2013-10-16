@@ -23,8 +23,6 @@ import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.velocity.app.VelocityEngine;
 import org.jtalks.jcommune.model.dto.UserDto;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.web.context.request.RequestAttributes;
@@ -41,12 +39,12 @@ import java.io.IOException;
 import java.util.*;
 
 /**
+ * Serves for processing basic captcha functionality, such as refresh captcha, validate captcha and get captcha as html.
  *
  * @author Andrey Pogorelov
  */
 public class KaptchaPluginService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(KaptchaPluginService.class);
     private static final String CAPTCHA_LABEL = "captchaLabel";
     private static final String ALT_CAPTCHA = "altCaptcha";
     private static final String ALT_REFRESH_CAPTCHA = "altRefreshCaptcha";
@@ -90,7 +88,7 @@ public class KaptchaPluginService {
 
     public String getHtml(HttpServletRequest request, String pluginId, Locale locale) {
         SecurityContextHolder.getContext();
-        ResourceBundle resourceBundle  = ResourceBundle.getBundle("org.jtalks.jcommune.plugin.kaptcha.messages", locale);
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("org.jtalks.jcommune.plugin.kaptcha.messages", locale);
 
         VelocityEngine engine = new VelocityEngine(getProperties());
         engine.init();
@@ -117,12 +115,16 @@ public class KaptchaPluginService {
         return captcha;
     }
 
+    protected Producer getCaptchaProducer() {
+        return this.captchaProducer;
+    }
+
     public void handleRequestToCaptchaImage(HttpServletResponse response,
-                                              ServletOutputStream out, HttpSession session) throws IOException {
+                                            ServletOutputStream out, HttpSession session) throws IOException {
         response.setContentType("image/jpeg");
-        String capText = captchaProducer.createText();
+        String capText = getCaptchaProducer().createText();
         session.setAttribute(Constants.KAPTCHA_SESSION_KEY, capText);
-        BufferedImage bi = captchaProducer.createImage(capText);
+        BufferedImage bi = getCaptchaProducer().createImage(capText);
         ImageIO.write(bi, "jpg", out);
         out.flush();
     }
