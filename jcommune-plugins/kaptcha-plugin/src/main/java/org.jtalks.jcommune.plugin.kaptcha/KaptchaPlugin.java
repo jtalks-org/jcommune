@@ -36,7 +36,8 @@ import static org.jtalks.jcommune.model.entity.PluginProperty.Type.INT;
 import static org.jtalks.jcommune.model.entity.PluginProperty.Type.STRING;
 
 /**
- * Provides refresh, validating kaptcha, and obtaining kaptcha as html for registration form.
+ * Provides refresh, validating captcha, and obtaining captcha as html for registration form.
+ * Uses {@link com.google.code.kaptcha} for captcha functionality.
  *
  * @author Andrey Pogorelov
  */

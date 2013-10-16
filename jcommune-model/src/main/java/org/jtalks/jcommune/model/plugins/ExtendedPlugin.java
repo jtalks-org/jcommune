@@ -1,9 +1,3 @@
-package org.jtalks.jcommune.model.plugins;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 /**
  * Copyright (C) 2011  JTalks.org Team
  * This library is free software; you can redistribute it and/or
@@ -18,7 +12,29 @@ import javax.servlet.http.HttpSession;
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+package org.jtalks.jcommune.model.plugins;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+/**
+ * Provides processing any available actions supported by plugin.
+ *
+ * @author Andrey Pogorelov
+ */
 public interface ExtendedPlugin extends Plugin {
 
+    /**
+     * Performs supported by plugin specified action.
+     *
+     * @param pluginId plugin id
+     * @param action action name
+     * @param response http response
+     * @param out servlet output stream
+     * @param session http session
+     * @return any result provided by plugin
+     */
     Object doAction(String pluginId, String action, HttpServletResponse response, ServletOutputStream out, HttpSession session);
 }
