@@ -99,23 +99,13 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
     }
 
     @Override
-    public Plugin getPluginByName(String pluginName, PluginFilter... filters) throws NotFoundException {
-        for (Plugin plugin : pLuginLoader.getPlugins(new TypeFilter(Plugin.class))) {
-            if(plugin.getName().equalsIgnoreCase(pluginName)) {
-                return plugin;
-            }
-        }
-        throw new NotFoundException(pluginName + " plugin not found.");
-    }
-
-    @Override
     public Plugin getPluginById(String pluginId, PluginFilter... filters) throws NotFoundException {
-        try {
-            PluginConfiguration conf = getDao().get(Long.valueOf(pluginId));
-            return getPluginByName(conf.getName(), filters);
-        } catch (NotFoundException e) {
+        PluginConfiguration conf = getDao().get(Long.valueOf(pluginId));
+        Plugin plugin = findPluginByName(pLuginLoader.getPlugins(filters), conf.getName());
+        if (plugin == null) {
             throw new NotFoundException("Plugin with Id '" + pluginId + "' not found.");
         }
+        return plugin;
     }
 
     private Plugin findPluginByName(List<Plugin> searchSource, String pluginName) {

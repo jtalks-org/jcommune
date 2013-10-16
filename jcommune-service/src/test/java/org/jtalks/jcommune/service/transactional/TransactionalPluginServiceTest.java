@@ -19,18 +19,19 @@ import org.jtalks.jcommune.model.dao.PluginConfigurationDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.model.plugins.Plugin;
+import org.jtalks.jcommune.model.plugins.RegistrationPlugin;
 import org.jtalks.jcommune.service.dto.PluginActivatingDto;
 import org.jtalks.jcommune.service.plugins.PluginLoader;
+import org.jtalks.jcommune.service.plugins.TypeFilter;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.*;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.*;
 
@@ -156,6 +157,85 @@ public class TransactionalPluginServiceTest {
         pluginService.updatePluginsActivating(pluginsActivatingDtoList, FAKE_COMPONENT_ID);
         //THEN
         verify(pluginConfigurationDao, times(pluginsCount)).saveOrUpdate(pluginConfiguration);
+    }
+
+    @Test
+    public void getPluginByIdIfPluginExistsAndEnabledShouldBeSuccessful() throws NotFoundException {
+        String pluginId = "1";
+        String pluginName = "plugin";
+        PluginConfiguration pluginConfiguration =
+                new PluginConfiguration("plugin", true, new ArrayList<PluginProperty>());
+        DummyPlugin plugin = new DummyPlugin(pluginName);
+        when(pluginConfigurationDao.get(Long.valueOf(pluginId))).thenReturn(pluginConfiguration);
+        List<Plugin> pluginList = new ArrayList<>();
+        pluginList.add(plugin);
+        when(pluginLoader.getPlugins()).thenReturn(pluginList);
+
+        Plugin result = pluginService.getPluginById(pluginId);
+        assertEquals(result, plugin);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void getPluginByIdIfPluginNotFoundShouldBeFailed() throws NotFoundException {
+        String pluginId = "1";
+        PluginConfiguration pluginConfiguration = new PluginConfiguration();
+        when(pluginConfigurationDao.get(Long.valueOf(pluginId))).thenReturn(pluginConfiguration);
+        List<Plugin> pluginList = new ArrayList<>();
+        when(pluginLoader.getPlugins()).thenReturn(pluginList);
+
+        pluginService.getPluginById(pluginId);
+    }
+
+    @Test
+    public void getRegistrationPluginsShouldReturnEnabledRegistrationPlugins() throws NotFoundException {
+        RegistrationPlugin plugin = mock(RegistrationPlugin.class);
+        Long pluginId = 1L;
+        PluginConfiguration pluginConfiguration =
+                new PluginConfiguration("plugin", true, new ArrayList<PluginProperty>());
+        pluginConfiguration.setId(pluginId);
+        List<Plugin> pluginList = new ArrayList<>();
+        pluginList.add(plugin);
+        when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
+        when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(pluginList);
+        when(pluginConfigurationDao.get(plugin.getName())).thenReturn(pluginConfiguration);
+
+        Map<Long, RegistrationPlugin> result = pluginService.getRegistrationPlugins();
+
+        assertEquals(result.get(pluginId), plugin);
+    }
+
+    @Test
+    public void getRegistrationPluginsShouldNotReturnInappropriatePlugins() throws NotFoundException {
+        RegistrationPlugin plugin = mock(RegistrationPlugin.class);
+        Long pluginId = 1L;
+        PluginConfiguration pluginConfiguration =
+                new PluginConfiguration("plugin", true, new ArrayList<PluginProperty>());
+        pluginConfiguration.setId(pluginId);
+        List<Plugin> pluginList = new ArrayList<>();
+        pluginList.add(plugin);
+        when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(pluginList);
+        when(pluginConfigurationDao.get(plugin.getName())).thenReturn(pluginConfiguration);
+
+        Map<Long, RegistrationPlugin> result = pluginService.getRegistrationPlugins();
+
+        assertEquals(result.size(), 0);
+    }
+
+    @Test
+    public void getRegistrationPluginsIfAnyPluginConfigurationNotFoundShouldNotBeFailed() throws NotFoundException {
+        RegistrationPlugin plugin = mock(RegistrationPlugin.class);
+        Long pluginId = 1L;
+        PluginConfiguration pluginConfiguration = new PluginConfiguration();
+        pluginConfiguration.setId(pluginId);
+        List<Plugin> pluginList = new ArrayList<>();
+        pluginList.add(plugin);
+        when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
+        when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(pluginList);
+        when(pluginConfigurationDao.get(plugin.getName())).thenThrow(new NotFoundException());
+
+        Map<Long, RegistrationPlugin> result = pluginService.getRegistrationPlugins();
+
+        assertEquals(result.size(), 0);
     }
 
     /**

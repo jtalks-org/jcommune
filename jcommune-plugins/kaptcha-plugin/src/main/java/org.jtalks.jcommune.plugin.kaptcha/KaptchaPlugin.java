@@ -56,14 +56,19 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
         int length = 0;
         String possibleSymbols = "";
         for (PluginProperty property : properties) {
-            if (WIDTH_PROPERTY.equalsIgnoreCase(property.getName())) {
-                width = Integer.valueOf(property.getValue());
-            } else if (HEIGHT_PROPERTY.equalsIgnoreCase(property.getName())) {
-                height = Integer.valueOf(property.getValue());
-            } else if (LENGTH_PROPERTY.equalsIgnoreCase(property.getName())) {
-                length = Integer.valueOf(property.getValue());
-            } else if (POSSIBLE_SYMBOLS_PROPERTY.equalsIgnoreCase(property.getName())) {
-                possibleSymbols = property.getValue();
+            switch(property.getName()) {
+                case WIDTH_PROPERTY:
+                    width = Integer.valueOf(property.getValue());
+                    break;
+                case HEIGHT_PROPERTY:
+                    height = Integer.valueOf(property.getValue());
+                    break;
+                case LENGTH_PROPERTY:
+                    length = Integer.valueOf(property.getValue());
+                    break;
+                case POSSIBLE_SYMBOLS_PROPERTY:
+                    possibleSymbols = property.getValue();
+                    break;
             }
         }
         if (width < 1 || height < 1 || length < 1 || possibleSymbols.length() < 1) {
