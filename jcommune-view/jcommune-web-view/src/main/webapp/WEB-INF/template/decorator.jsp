@@ -252,7 +252,7 @@
       <div class="pull-left">
         Powered by JCommune ${project.version}<br/>
         &copy; 2013 <a class="space-left-small" href="http://jtalks.org">jtalks.org</a><br/>
-        Design with <a class="space-left-small" href="http://twitter.github.com/bootstrap">Twitter Bootstrap</a>
+        Design with <a class="space-left-small" href="http://getbootstrap.com">Twitter Bootstrap</a>
       </div>
       <div>
         <jtalks:banner banner="${banners['BOTTOM_FOOTER']}" position="${'BOTTOM_FOOTER'}"/>
