@@ -77,7 +77,6 @@ public class TransactionalBranchServiceTest {
                 sectionDao,
                 topicDao,
                 topicService,
-                userService,
                 permissionService);
     }
 
@@ -145,7 +144,7 @@ public class TransactionalBranchServiceTest {
     }
 
     @Test(expectedExceptions = {NotFoundException.class})
-    public void getBranchesInSectionWithWrongSectionId() throws NotFoundException {
+    public void getBranchesInSectionWithIncorrectSectionId() throws NotFoundException {
         when(sectionDao.isExist(SECTION_ID)).thenReturn(false);
         branchService.getAvailableBranchesInSection(SECTION_ID, TOPIC_ID);
     }

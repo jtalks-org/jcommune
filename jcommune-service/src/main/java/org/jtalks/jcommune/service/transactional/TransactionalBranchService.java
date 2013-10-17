@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.service.transactional;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.jtalks.common.model.entity.Section;
@@ -24,11 +23,9 @@ import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicModificationService;
-import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.security.PermissionService;
 import org.slf4j.Logger;
@@ -51,7 +48,6 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
     private SectionDao sectionDao;
     private TopicDao topicDao;
     private TopicModificationService topicService;
-    private UserService userService;
     private PermissionService permissionService;
 
     /**
@@ -61,7 +57,6 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
      * @param sectionDao   used for checking branch existence.
      * @param topicDao     data access object for operations with topics
      * @param topicService service to perform complex operations with topics
-     * @param userService  service to perform complex operations with users
      * @param permissionService service to perform permissions operations
      */
     public TransactionalBranchService(
@@ -69,13 +64,11 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
             SectionDao sectionDao,
             TopicDao topicDao,
             TopicModificationService topicService,
-            UserService userService,
             PermissionService permissionService) {
         super(branchDao);
         this.sectionDao = sectionDao;
         this.topicDao = topicDao;
         this.topicService = topicService;
-        this.userService = userService;
         this.permissionService = permissionService;
     }
 
@@ -84,14 +77,12 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
      */
     @Override
     public List<Branch> getAllAvailableBranches(long currentTopicId) {
-        JCUser user = userService.getCurrentUser();
-        if (user.getGroups().isEmpty()) {
-            return Collections.EMPTY_LIST;
+        List<Section> allSections = sectionDao.getAll();
+        List<Branch> allBranches = new ArrayList<>();
+        for (Section section : allSections) {
+            allBranches.addAll((List) section.getBranches());
         }
-        List<Branch> branches = new ArrayList<Branch>(this.getDao().getAllAvailableBranches(user));
-        Topic topic = topicDao.get(currentTopicId);
-        branches.remove(topic.getBranch());
-        return branches;
+        return getBranchesWithViewPermission(currentTopicId, allBranches);
     }
 
     /**
@@ -104,8 +95,12 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
         }
 
         Section section = sectionDao.get(sectionId);
-        Topic topic = topicDao.get(currentTopicId);
         List<Branch> branches = (List) section.getBranches();
+        return getBranchesWithViewPermission(currentTopicId, branches);
+    }
+
+    private List<Branch> getBranchesWithViewPermission(Long topicId, List<Branch> branches) {
+        Topic topic = topicDao.get(topicId);
         branches.remove(topic.getBranch());
         List<Branch> result = new ArrayList<>();
         for (Branch branch : branches) {

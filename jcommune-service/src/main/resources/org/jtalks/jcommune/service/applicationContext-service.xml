@@ -206,7 +206,6 @@
         <constructor-arg ref="branchSectionDao"/>
         <constructor-arg ref="topicDao"/>
         <constructor-arg ref="topicModificationService"/>
-        <constructor-arg ref="userService"/>
         <constructor-arg ref="permissionService"/>
     </bean>
 
