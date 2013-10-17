@@ -169,7 +169,7 @@ public class ImageService {
      * @throws IOException
      */
     private byte[] getFileBytes(String classPath) throws IOException {
-        byte[] result = new byte[0];
+        byte[] result;
         ClassPathResource fileClassPathSource = new ClassPathResource(classPath);
         InputStream stream = null;
         try {
