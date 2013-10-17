@@ -36,10 +36,10 @@ public class NullableNotBlankValidator implements ConstraintValidator<NullableNo
     /**
      * Checks that the trimmed string is not empty.
      *
-     * @param s The string to validate.
+     * @param s                          The string to validate.
      * @param constraintValidatorContext context in which the constraint is evaluated.
-     *
-     * @return Returns <code>true</code> if the string is <code>null</code> or the length of <code>s</code> between the specified
+     * @return Returns <code>true</code> if the string is <code>null</code> or the length of <code>s</code> between
+     *         the specified
      *         <code>min</code> and <code>max</code> values (inclusive), <code>false</code> otherwise.
      */
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {

@@ -44,8 +44,7 @@ import javax.xml.bind.annotation.*;
         "credentials",
         "status",
         "statusInfo",
-        "profile"
-})
+        "profile"})
 @XmlRootElement(name = "authentication", namespace = "http://www.jtalks.org/namespaces/1.0")
 public class Authentication {
 

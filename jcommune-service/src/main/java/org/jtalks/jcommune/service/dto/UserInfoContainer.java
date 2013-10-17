@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.service.dto;
 
-import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 
 /**
@@ -151,14 +150,14 @@ public class UserInfoContainer {
     }
     
     /**
-     * @see JCUser#isMentioningNotificationsEnabled()
+     * @see org.jtalks.jcommune.model.entity.JCUser#isMentioningNotificationsEnabled()
      */
     public boolean isMentioningNotificationsEnabled() {
         return mentioningNotificationsEnabled;
     }
     
     /**
-     * @see JCUser#setMentioningNotificationsEnabled(boolean)
+     * @see org.jtalks.jcommune.model.entity.JCUser#setMentioningNotificationsEnabled(boolean)
      */
     public void setMentioningNotificationsEnabled(
             boolean mentioningNotificationsEnabled) {

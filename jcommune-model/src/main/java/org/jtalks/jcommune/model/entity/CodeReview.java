@@ -49,8 +49,8 @@ public class CodeReview extends Entity implements SubscriptionAwareEntity {
 
     /**
      * {@inheritDoc}
-     *
-     * <p>
+     * <p/>
+     * <p/>
      * The target URL has the next format http://{forum root}/topics/{id}
      */
     @Override
@@ -92,27 +92,29 @@ public class CodeReview extends Entity implements SubscriptionAwareEntity {
     /**
      * For Hibernate use only. For adding comment to code review use
      * the {@link CodeReview#addComment(CodeReviewComment)}
+     *
      * @param comments the comments to set
      */
     void setComments(List<CodeReviewComment> comments) {
         this.comments = comments;
     }
-    
+
     /**
      * Add comment to this review
+     *
      * @param comment comment to add
      */
     public void addComment(CodeReviewComment comment) {
         comment.setCodeReview(this);
         comments.add(comment);
     }
-    
+
     /**
      * Get post where code review is placed.
-     * 
+     *
      * @return post where code review is placed
      */
     public Post getOwnerPost() {
-       return getTopic().getFirstPost();
+        return getTopic().getFirstPost();
     }
 }

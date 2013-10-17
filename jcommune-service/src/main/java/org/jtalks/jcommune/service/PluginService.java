@@ -41,7 +41,7 @@ public interface PluginService extends EntityService<PluginConfiguration> {
      * Update configuration of plugin.
      *
      * @param pluginConfiguration contains new configuration of plugin
-     * @param forumComponentId an identifier of forum component id, that is needed to check permissions
+     * @param forumComponentId    an identifier of forum component id, that is needed to check permissions
      * @throws NotFoundException when configuration passed for non-exists plugin
      */
     void updateConfiguration(PluginConfiguration pluginConfiguration, long forumComponentId) throws NotFoundException;
@@ -49,7 +49,7 @@ public interface PluginService extends EntityService<PluginConfiguration> {
     /**
      * Get configuration of plugin.
      *
-     * @param pluginName the plugin for which we need configuration
+     * @param pluginName       the plugin for which we need configuration
      * @param forumComponentId an identifier of forum component id, that is needed to check permissions
      * @return loaded configuration for passed plugin
      * @throws NotFoundException when passed plugin doesn't exist
@@ -60,8 +60,9 @@ public interface PluginService extends EntityService<PluginConfiguration> {
      * Activate/deactivate plugins.
      *
      * @param pluginActivatingDtoList contains the list of plugins that should be activated/deactivated
-     * @param forumComponentId an identifier of forum component id, that is needed to check permissions
+     * @param forumComponentId        an identifier of forum component id, that is needed to check permissions
      * @throws NotFoundException when one of plugins that should be activated/deactivated doesn't exist
      */
-    void updatePluginsActivating(List<PluginActivatingDto> pluginActivatingDtoList, long forumComponentId) throws NotFoundException;
+    void updatePluginsActivating(List<PluginActivatingDto> pluginActivatingDtoList,
+                                 long forumComponentId) throws NotFoundException;
 }

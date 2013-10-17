@@ -33,8 +33,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
-
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -87,10 +85,11 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     /**
      * Performs update with security checking.
      *
-     * @param post an instance of post, that will be updated
+     * @param post        an instance of post, that will be updated
      * @param postContent new content of the post
      * @throws AccessDeniedException if user tries to update the first post of code review which should be impossible,
-     *         see <a href="http://jtalks.org/display/jcommune/1.1+Larks">Requirements</a> for details
+     *                               see <a href="http://jtalks.org/display/jcommune/1.1+Larks">Requirements</a>
+     *                               for details
      */
     @PreAuthorize("(hasPermission(#post.id, 'POST', 'GeneralPermission.WRITE') and " +
             "hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OWN_POSTS')) or " +
@@ -99,8 +98,8 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     @Override
     public void updatePost(Post post, String postContent) {
         Topic postTopic = post.getTopic();
-        if (postTopic.getCodeReview() != null 
-            && postTopic.getPosts().get(0).getId() == post.getId()) {
+        if (postTopic.getCodeReview() != null
+                && postTopic.getPosts().get(0).getId() == post.getId()) {
             throw new AccessDeniedException("It is impossible to edit code review!");
         }
         post.setPostContent(postContent);
@@ -117,13 +116,12 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      */
     @Override
     @PreAuthorize("(hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OWN_POSTS') and " +
-                  "#post.userCreated.username == principal.username) or " +
-
-                  "(hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OTHERS_POSTS') and " +
-                  "#post.userCreated.username != principal.username)")
+            "#post.userCreated.username == principal.username) or " +
+            "(hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OTHERS_POSTS') and " +
+            "#post.userCreated.username != principal.username)")
     public void deletePost(Post post) {
         lastReadPostService.updateLastReadPostsWhenPostDeleted(post);
-        
+
         JCUser user = post.getUserCreated();
         user.setPostCount(user.getPostCount() - 1);
         Topic topic = post.getTopic();
@@ -133,11 +131,11 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         if (deletedPostIsLastPostInBranch) {
             branch.clearLastPost();
         }
-        
+
         if (post.getLastTouchedDate().equals(topic.getModificationDate())) {
             topic.recalculateModificationDate();
         }
-        
+
         // todo: event API?
         topicDao.saveOrUpdate(topic);
         securityService.deleteFromAcl(post);
@@ -159,10 +157,10 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
 
         PageRequest pageRequest = new PageRequest(page, currentUser.getPageSize());
 
-        if(allowedBranchesIds.isEmpty()){
-          return new PageImpl<Post>(Collections.<Post>emptyList());
-        }else{
-          return this.getDao().getUserPosts(userCreated, pageRequest, allowedBranchesIds);
+        if (allowedBranchesIds.isEmpty()) {
+            return new PageImpl<Post>(Collections.<Post>emptyList());
+        } else {
+            return this.getDao().getUserPosts(userCreated, pageRequest, allowedBranchesIds);
         }
     }
 

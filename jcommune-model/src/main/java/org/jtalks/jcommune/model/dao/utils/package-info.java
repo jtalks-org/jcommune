@@ -14,8 +14,7 @@
  */
 /**
  * 
- * Package for classes that mess with Lucene indexes and database.
- * Contains specific DAO classes that represent functions of full-text search.
+ * Package contains utils classes to layer dao.
  * 
  */
-package org.jtalks.jcommune.model.dao.search;
+package org.jtalks.jcommune.model.dao.utils;

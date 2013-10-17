@@ -69,7 +69,7 @@ public class PoulpeAuthService {
      * Returns errors if request failed, otherwise return null.
      *
      * @param userDto user
-     * @param dryRun do not register the user, just check if it is possible
+     * @param dryRun  do not register the user, just check if it is possible
      * @return errors
      */
     public Map<String, String> registerUser(UserDto userDto, Boolean dryRun)
@@ -130,9 +130,8 @@ public class PoulpeAuthService {
     /**
      * Gets errors from response if request wasn't successful, otherwise return null.
      *
-     *
      * @param clientResource response container
-     * @param locale locale
+     * @param locale         locale
      * @return errors
      * @throws org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException
      *
@@ -155,7 +154,7 @@ public class PoulpeAuthService {
     /**
      * Parse bad response representation for errors.
      *
-     * @param repr response representation
+     * @param repr   response representation
      * @param locale locale
      * @return errors
      * @throws java.io.IOException
@@ -181,7 +180,7 @@ public class PoulpeAuthService {
     /**
      * Parse error code with specified {@link ResourceBundle}.
      *
-     * @param errorCode error code
+     * @param errorCode      error code
      * @param resourceBundle used {@link ResourceBundle}
      * @return parsed error as pair field - error message
      */
@@ -229,9 +228,10 @@ public class PoulpeAuthService {
         Series<Header> headers = (Series<Header>) attrs.get(HeaderConstants.ATTRIBUTE_HEADERS);
         if (headers == null) {
             headers = new Series<>(Header.class);
-            Series<Header> prev = (Series<Header>)
-                    attrs.putIfAbsent(HeaderConstants.ATTRIBUTE_HEADERS, headers);
-            if (prev != null) { headers = prev; }
+            Series<Header> prev = (Series<Header>) attrs.putIfAbsent(HeaderConstants.ATTRIBUTE_HEADERS, headers);
+            if (prev != null) {
+                headers = prev;
+            }
         }
         headers.add(attrName, attrValue);
     }
@@ -239,7 +239,7 @@ public class PoulpeAuthService {
     /**
      * Sends registration post request.
      *
-     * @param user user entity for registration
+     * @param user   user entity for registration
      * @param dryRun do not register the user, just check if it is possible
      * @return ClientResource result
      */

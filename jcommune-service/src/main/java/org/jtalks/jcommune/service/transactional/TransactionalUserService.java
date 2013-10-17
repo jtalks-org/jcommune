@@ -78,14 +78,14 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     /**
      * Create an instance of User entity based service
      *
-     * @param dao                   for operations with data storage
-     * @param groupDao              for user group operations with data storage
-     * @param securityService       for security
-     * @param mailService           to send e-mails
-     * @param base64Wrapper         for avatar image-related operations
-     * @param encryptionService     encodes user password before store
-     * @param postDao               for operations with posts
-     * @param authenticator      for authentication and registration
+     * @param dao               for operations with data storage
+     * @param groupDao          for user group operations with data storage
+     * @param securityService   for security
+     * @param mailService       to send e-mails
+     * @param base64Wrapper     for avatar image-related operations
+     * @param encryptionService encodes user password before store
+     * @param postDao           for operations with posts
+     * @param authenticator     for authentication and registration
      */
     public TransactionalUserService(UserDao dao,
                                     GroupDao groupDao,

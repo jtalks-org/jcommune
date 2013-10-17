@@ -66,12 +66,12 @@ public class SapeInterceptor extends HandlerInterceptorAdapter {
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response,
                            Object handler, ModelAndView modelAndView) throws Exception {
-        if (!componentSapeEnableServiceProperty.booleanValue() || modelAndView == null || modelAndView.getViewName()
-                == null ||
+        if (!componentSapeEnableServiceProperty.booleanValue() || modelAndView == null ||
+                modelAndView.getViewName() == null ||
                 //do not apply to the redirected requests: it's unnecessary and may cause error pages to work
                 // incorrectly
-                (!componentSapeOnMainPageEnableProperty.booleanValue() && modelAndView.getViewName().equals
-                        ("sectionList")) ||
+                (!componentSapeOnMainPageEnableProperty.booleanValue() &&
+                        modelAndView.getViewName().equals("sectionList")) ||
                 modelAndView.getViewName().contains("redirect:")) {
             return;
         }
@@ -86,7 +86,9 @@ public class SapeInterceptor extends HandlerInterceptorAdapter {
         modelAndView.addObject("sapeLinks", sapeLinksAsString);
     }
 
-    /** Initializes {@link javasape.Sape} object. */
+    /**
+     * Initializes {@link javasape.Sape} object.
+     */
     private boolean initSape() {
         if (sape != null) {
             return true;

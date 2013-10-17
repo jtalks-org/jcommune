@@ -14,7 +14,7 @@
  */
 /**
  *
- * Package for jsr-303 validation constraints and implementations.
+ * Package for view layer DTOs (which use JSON).
  *
  */
-package org.jtalks.jcommune.web.validation;
+package org.jtalks.jcommune.web.dto.json;

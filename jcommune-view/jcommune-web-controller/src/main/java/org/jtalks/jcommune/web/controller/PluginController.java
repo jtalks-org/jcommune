@@ -42,7 +42,7 @@ public class PluginController {
     /**
      * Constructs an instance with required fields.
      *
-     * @param pluginService to manage plugins
+     * @param pluginService    to manage plugins
      * @param componentService to load an identifier of forum component
      */
     @Autowired
@@ -88,7 +88,8 @@ public class PluginController {
      * @throws NotFoundException if configured plugin wasn't found
      */
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public ModelAndView updateConfiguration(@ModelAttribute PluginConfiguration newConfiguration) throws NotFoundException {
+    public ModelAndView updateConfiguration(
+            @ModelAttribute PluginConfiguration newConfiguration) throws NotFoundException {
         long componentId = getForumComponentId();
         pluginService.updateConfiguration(newConfiguration, componentId);
         return new ModelAndView("redirect:/plugins/configure/" + newConfiguration.getName())
@@ -103,7 +104,8 @@ public class PluginController {
      * @throws NotFoundException if configured plugin wasn't found
      */
     @RequestMapping(value = "/update/activating", method = RequestMethod.POST)
-    public String updateActivating(@ModelAttribute PluginActivatingListDto pluginsActivatingListDto) throws NotFoundException {
+    public String updateActivating(
+            @ModelAttribute PluginActivatingListDto pluginsActivatingListDto) throws NotFoundException {
         long componentId = getForumComponentId();
         pluginService.updatePluginsActivating(pluginsActivatingListDto.getActivatingPlugins(), componentId);
         return "redirect:/plugins/list";

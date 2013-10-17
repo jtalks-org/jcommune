@@ -39,12 +39,14 @@ import java.util.List;
  *
  * @author Alexandre Teterin
  * @author Andrei Alikov
- *
  */
 public class ImageService {
     public static final String ICO_TYPE = "image/x-icon";
-    private static final List<String> VALID_IMAGE_TYPES = Arrays.asList("image/jpeg", "image/png", "image/gif", ICO_TYPE);
-    /** user-friendly string with all valid image types */
+    private static final List<String> VALID_IMAGE_TYPES =
+            Arrays.asList("image/jpeg", "image/png", "image/gif", ICO_TYPE);
+    /**
+     * user-friendly string with all valid image types
+     */
     private static final String VALID_IMAGE_EXTENSIONS = "*.jpeg, *.jpg, *.gif, *.png, *.ico";
 
     private ImageConverter imageConverter;
@@ -56,9 +58,9 @@ public class ImageService {
     /**
      * Create ImageService instance
      *
-     * @param imageConverter        object for image pre processing
+     * @param imageConverter    object for image pre processing
      * @param base64Wrapper     to encode/decode image passed from the client side
-     * @param defaultImagePath class path to load default image
+     * @param defaultImagePath  class path to load default image
      * @param imageSizeProperty let us know the limitation of image max size
      */
     public ImageService(
@@ -91,9 +93,11 @@ public class ImageService {
     /**
      * Pre process image to fit maximum size and be in the target format and
      * convert the contents of the result image into String64 format
+     *
      * @param bytes image for conversion
      * @return result string64 format
-     * @throws org.jtalks.jcommune.service.exceptions.ImageProcessException common image processing error
+     * @throws org.jtalks.jcommune.service.exceptions.ImageProcessException
+     *          common image processing error
      */
     public String preProcessAndEncodeInString64(byte[] bytes) throws ImageProcessException {
         Validate.notNull(bytes, "Incoming byte array cannot be null");
@@ -109,7 +113,8 @@ public class ImageService {
      * Validate file format
      *
      * @param file for validation, cannot be null
-     * @throws org.jtalks.jcommune.service.exceptions.ImageFormatException invalid format image processing error
+     * @throws org.jtalks.jcommune.service.exceptions.ImageFormatException
+     *          invalid format image processing error
      */
     public void validateImageFormat(MultipartFile file) throws ImageFormatException {
         Validate.notNull(file, "file argument array cannot be null");
@@ -144,7 +149,8 @@ public class ImageService {
      * Validate image size
      *
      * @param bytes array for validation
-     * @throws org.jtalks.jcommune.service.exceptions.ImageSizeException invalid size image processing error
+     * @throws org.jtalks.jcommune.service.exceptions.ImageSizeException
+     *          invalid size image processing error
      */
     public void validateImageSize(byte[] bytes) throws ImageSizeException {
         Validate.notNull(bytes, "Incoming byte array cannot be null");
@@ -157,6 +163,7 @@ public class ImageService {
 
     /**
      * Gets content of the file by its classpath
+     *
      * @param classPath classpath of the file to be loaded
      * @return content of the loaded file
      * @throws IOException
@@ -169,8 +176,7 @@ public class ImageService {
             stream = fileClassPathSource.getInputStream();
             result = new byte[stream.available()];
             Validate.isTrue(stream.read(result) > 0);
-        }
-        finally {
+        } finally {
             IOUtils.closeQuietly(stream);
         }
         return result;
@@ -178,6 +184,7 @@ public class ImageService {
 
     /**
      * Gets prefix for "src" attribute of the "img" tag representing the image format
+     *
      * @return prefix for "src" attribute of the "img" tag representing the image format
      */
     public String getHtmlSrcImagePrefix() {

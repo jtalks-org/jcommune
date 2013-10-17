@@ -16,7 +16,6 @@ package org.jtalks.jcommune.service.plugins;
 
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
-import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.model.plugins.StatefullPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

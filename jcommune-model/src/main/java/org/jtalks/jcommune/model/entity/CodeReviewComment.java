@@ -20,23 +20,29 @@ import org.springframework.util.ObjectUtils;
 
 /**
  * Represents one comment to one line in code review.
- * 
+ *
  * @author Vyacheslav Mishcheryakov
  */
 public class CodeReviewComment extends Entity {
 
-    /** Minimal allowed length of comment message */
+    /**
+     * Minimal allowed length of comment message
+     */
     public static final int BODY_MIN_LENGTH = 1;
-    /** Maximum allowed length of comment message */
+    /**
+     * Maximum allowed length of comment message
+     */
     public static final int BODY_MAX_LENGTH = 5000;
-    
-    /** Number of commented line of code */
+
+    /**
+     * Number of commented line of code
+     */
     private int lineNumber;
-    
+
     private JCUser author;
-    
+
     private DateTime creationDate;
-    
+
     private String body;
 
     private CodeReview codeReview;
@@ -51,6 +57,7 @@ public class CodeReviewComment extends Entity {
     /**
      * For Hibernate use only. For adding comment to code review use
      * the {@link CodeReview#addComment(CodeReviewComment)}
+     *
      * @param codeReview the code review.
      */
     void setCodeReview(CodeReview codeReview) {
@@ -101,6 +108,7 @@ public class CodeReviewComment extends Entity {
 
     /**
      * The time when comment was added
+     *
      * @return the creationDate
      */
     public DateTime getCreationDate() {
@@ -127,13 +135,13 @@ public class CodeReviewComment extends Entity {
     public void setBody(String body) {
         this.body = body;
     }
-    
+
     /**
      * Get post where code review is placed.
-     * 
+     *
      * @return post where code review is placed
      */
     public Post getOwnerPost() {
-       return getCodeReview().getOwnerPost();
+        return getCodeReview().getOwnerPost();
     }
 }

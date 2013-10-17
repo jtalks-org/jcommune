@@ -53,7 +53,9 @@ public class PoulpeAuthPlugin extends StatefullPlugin
     private PoulpeAuthService service;
     private List<PluginProperty> pluginProperties;
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Map<String, String> registerUser(UserDto userDto) throws NoConnectionException, UnexpectedErrorException {
         return registerOrValidate(userDto, false);
@@ -61,7 +63,8 @@ public class PoulpeAuthPlugin extends StatefullPlugin
 
     /**
      * Registration or validation do not differ, whether we validate or register depends on parameter.
-     * @param userDto information about the user
+     *
+     * @param userDto      information about the user
      * @param validateOnly 'true' if user information should be only validate and 'false' otherwise
      * @return validation errors as pairs field - error message
      * @throws UnexpectedErrorException if external service returns unexpected result
@@ -80,13 +83,17 @@ public class PoulpeAuthPlugin extends StatefullPlugin
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Map<String, String> validateUser(UserDto userDto) throws NoConnectionException, UnexpectedErrorException {
         return registerOrValidate(userDto, true);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Map<String, String> authenticate(String login, String password)
             throws UnexpectedErrorException, NoConnectionException {
@@ -142,7 +149,7 @@ public class PoulpeAuthPlugin extends StatefullPlugin
         if (url == null || url.isEmpty()) {
             // this should be returned as a map, but this mechanism should be implemented in the plugin API first
             throw new RuntimeException("Can't apply configuration: Url should not be null.");
-        } else if(!validateUrl(url)) {
+        } else if (!validateUrl(url)) {
             throw new RuntimeException("Can't apply configuration: Incorrect format for Url value.");
         }
         service = new PoulpeAuthService(url, login, password);

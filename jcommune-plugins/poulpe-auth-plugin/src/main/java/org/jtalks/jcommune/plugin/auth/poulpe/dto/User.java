@@ -48,8 +48,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
         "passwordHash",
         "email",
         "firstName",
-        "lastName"
-})
+        "lastName"})
 @XmlRootElement(name = "user", namespace = "http://www.jtalks.org/namespaces/1.0")
 public class User {
 

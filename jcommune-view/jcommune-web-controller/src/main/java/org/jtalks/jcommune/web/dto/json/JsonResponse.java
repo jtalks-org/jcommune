@@ -18,57 +18,59 @@ package org.jtalks.jcommune.web.dto.json;
  * This is a generic AJAX response class to send JSON response from server to the client. This class can be used for
  * any generic AJAX interaction between server and client. See subclasses to understand what other responses are
  * possible.
- * 
+ *
  * @author wedens
  */
 public class JsonResponse {
-    
-	private JsonResponseStatus status;
-	private Object result;
 
-	/**
-	 * Creates new instance
-	 * @param status response status
-	 * @param result data
-	 */
-	public JsonResponse(JsonResponseStatus status, Object result) {
-		this.status = status;
-		this.result = result;
-	}
-	
-	/**
-	 * Creates new instance
-	 * @param status response status 
-	 */
-	public JsonResponse(JsonResponseStatus status) {
-		this(status, null);
-	}
+    private JsonResponseStatus status;
+    private Object result;
 
-	/**
-	 * @return response status
-	 */
-	public JsonResponseStatus getStatus() {
-		return status;
-	}
+    /**
+     * Creates new instance
+     *
+     * @param status response status
+     * @param result data
+     */
+    public JsonResponse(JsonResponseStatus status, Object result) {
+        this.status = status;
+        this.result = result;
+    }
 
-	/**
-	 * @param status response status
-	 */
-	public void setStatus(JsonResponseStatus status) {
-		this.status = status;
-	}
+    /**
+     * Creates new instance
+     *
+     * @param status response status
+     */
+    public JsonResponse(JsonResponseStatus status) {
+        this(status, null);
+    }
 
-	/**
-	 * @return response data
-	 */
-	public Object getResult() {
-		return result;
-	}
+    /**
+     * @return response status
+     */
+    public JsonResponseStatus getStatus() {
+        return status;
+    }
 
-	/**
-	 * @param result response data
-	 */
-	public void setResult(Object result) {
-		this.result = result;
-	}
+    /**
+     * @param status response status
+     */
+    public void setStatus(JsonResponseStatus status) {
+        this.status = status;
+    }
+
+    /**
+     * @return response data
+     */
+    public Object getResult() {
+        return result;
+    }
+
+    /**
+     * @param result response data
+     */
+    public void setResult(Object result) {
+        this.result = result;
+    }
 }

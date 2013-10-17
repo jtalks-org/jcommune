@@ -43,8 +43,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "credentials", namespace = "http://www.jtalks.org/namespaces/1.0", propOrder = {
         "username",
-        "passwordHash"
-})
+        "passwordHash"})
 public class Credentials {
 
     @XmlElement(namespace = "http://www.jtalks.org/namespaces/1.0", required = true)

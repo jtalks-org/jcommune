@@ -240,7 +240,7 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
      * {@inheritDoc}
      */
     @Override
-    public Collection<JCUser> getAllowedSubscribers(SubscriptionAwareEntity entity){
+    public Collection<JCUser> getAllowedSubscribers(SubscriptionAwareEntity entity) {
         // use set for remove duplicates
         @SuppressWarnings("unchecked")
         Set<JCUser> foundUsers = new HashSet<JCUser>(session()
@@ -258,7 +258,7 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
 
         Query query = session().getNamedQuery("getForbiddenBranchesIds");
 
-        if(user.isAnonymous()) {
+        if (user.isAnonymous()) {
             query.setString("sid", user.getClass().getSimpleName());
         } else {
             query.setParameterList("sid", getGroupIds(user));
@@ -278,7 +278,7 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
 
         Query queryAllowed = session().getNamedQuery("getAllowedBranchesIds");
 
-        if(user.isAnonymous()) {
+        if (user.isAnonymous()) {
             queryForbidden.setString("sid", user.getClass().getSimpleName());
             queryAllowed.setString("sid", user.getClass().getSimpleName());
         } else {
@@ -291,9 +291,9 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
         List<Long> allowed = queryAllowed.list();
 
         for (Long aLong : allowed) {
-           if(!forbidden.contains(aLong)){
-               result.add(aLong);
-           }
+            if (!forbidden.contains(aLong)) {
+                result.add(aLong);
+            }
         }
         return result;
     }

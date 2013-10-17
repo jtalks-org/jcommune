@@ -149,7 +149,7 @@ public class BbCodeReviewProcessor extends TextProcessorAdapter implements TextP
     private boolean isValidCodeReviewBbCodeString(String bbEncodedText) {
         // We use Pattern.DOTALL flag for extend ".*" pattern behavior to line terminators too 
         Pattern pattern = Pattern.compile(TopicModificationService.CODE_JAVA_BBCODE_START_PATTERN + ".*"
-                + TopicModificationService.CODE_JAVA_BBCODE_END_PATTERN, Pattern.DOTALL); 
+                + TopicModificationService.CODE_JAVA_BBCODE_END_PATTERN, Pattern.DOTALL);
         Matcher matcher = pattern.matcher(bbEncodedText);
         if (!matcher.matches()) {
             logger.warn("BbCodeReviewProcessor called, but target encoded text \"" + bbEncodedText

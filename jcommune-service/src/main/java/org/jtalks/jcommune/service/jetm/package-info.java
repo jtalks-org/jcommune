@@ -13,6 +13,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 /**
- * Contains classes for authentication and authorization that coupled to Spring Security.
+ * Contains classes to JETM.
  */
-package org.jtalks.jcommune.service.security;
+package org.jtalks.jcommune.service.jetm;

@@ -36,22 +36,22 @@ import java.io.IOException;
 public class ChainBreakingInterceptor extends HandlerInterceptorAdapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ChainBreakingInterceptor.class);
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) throws IOException, ServletException {
-        
+
         if (handler instanceof HttpRequestHandler) {
             HttpRequestHandler resourcehandler = ((HttpRequestHandler) handler);
             resourcehandler.handleRequest(request, response);
             //break interceptor chain
             return false;
         } else {
-            LOGGER.warn("handler can not be cast to HttpRequestHandler. " +
-            		"It is of class " + handler.getClass().getCanonicalName());
+            LOGGER.warn("handler can not be cast to HttpRequestHandler. It is of class " +
+                    handler.getClass().getCanonicalName());
             return true;
         }
     }

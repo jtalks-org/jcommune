@@ -37,19 +37,19 @@ import java.util.List;
  */
 public class TransactionalSectionService extends AbstractTransactionalEntityService<Section, SectionDao>
         implements SectionService {
-    
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    
+
     private BranchService branchService;
 
     private UserService userService;
-    
+
     /**
      * Create an instance of entity based service
      *
-     * @param dao data access object, which should be able do all CRUD operations.
+     * @param dao           data access object, which should be able do all CRUD operations.
      * @param branchService autowired object, that represents service for the working with branches
-     * @param userService autowired object, that represents service for the working with users
+     * @param userService   autowired object, that represents service for the working with users
      */
     public TransactionalSectionService(SectionDao dao, BranchService branchService, UserService userService) {
         super(dao);
@@ -71,7 +71,7 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
     @Override
     public List<Section> getAllAvailableSections(long currentTopicId) {
         JCUser user = userService.getCurrentUser();
-        if(user.getGroups().isEmpty()){
+        if (user.getGroups().isEmpty()) {
             return Collections.EMPTY_LIST;
         }
         List<Section> sections = new ArrayList<Section>(this.getDao()
@@ -83,7 +83,7 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
      * {@inheritDoc}
      */
     public void prepareSectionsForView(List<Section> sections) {
-        for(Section section: sections) {
+        for (Section section : sections) {
             List<Branch> branches = section.getBranches();
             branchService.fillStatisticInfo(branches);
         }
@@ -95,13 +95,13 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
     @Override
     public Section deleteAllTopicsInSection(long sectionId) throws NotFoundException {
         Section section = get(sectionId);
-        
+
         //Create tmp list to avoid ConcurrentModificationException
-        List<Branch> loopList = new ArrayList<Branch>(section.getBranches());        
+        List<Branch> loopList = new ArrayList<Branch>(section.getBranches());
         for (Branch branch : loopList) {
             branchService.deleteAllTopics(branch.getId());
         }
-        
+
         logger.info("All branches for sections \"{}\" were deleted. " +
                 "Section id: {}", section.getName(), section.getId());
         return section;
@@ -112,8 +112,8 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
      */
     @Override
     public void deleteAllTopicsInForum() throws NotFoundException {
-        for (Section section : this.getAll()){
-             this.deleteAllTopicsInSection(section.getId());
+        for (Section section : this.getAll()) {
+            this.deleteAllTopicsInSection(section.getId());
         }
     }
 
@@ -121,10 +121,10 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
      * {@inheritDoc}
      */
     @Override
-    public void ifSectionIsVisible(Section section) throws AccessDeniedException{
+    public void ifSectionIsVisible(Section section) throws AccessDeniedException {
         List<Branch> branches = section.getBranches();
-        if(getDao().getCountAvailableBranches(userService.getCurrentUser(),branches)==0){
-            throw new AccessDeniedException("Access denied to view for section "+ section.getId());
+        if (getDao().getCountAvailableBranches(userService.getCurrentUser(), branches) == 0) {
+            throw new AccessDeniedException("Access denied to view for section " + section.getId());
         }
     }
 }

@@ -52,7 +52,7 @@ public class PluginLoader {
     /**
      * Constructs an instance for loading plugins from passed path to plugins directory.
      *
-     * @param pluginsFolderPath a path to a folder that contains plugins
+     * @param pluginsFolderPath      a path to a folder that contains plugins
      * @param pluginConfigurationDao to load and save configuration for loaded plugins
      * @throws java.io.IOException when it's impossible to start tracking changes in plugins folder
      */
@@ -137,7 +137,7 @@ public class PluginLoader {
     }
 
     private void loadConfigurationFor(List<Plugin> plugins) {
-        for (Plugin plugin: plugins) {
+        for (Plugin plugin : plugins) {
             String name = plugin.getName();
             PluginConfiguration configuration;
             try {

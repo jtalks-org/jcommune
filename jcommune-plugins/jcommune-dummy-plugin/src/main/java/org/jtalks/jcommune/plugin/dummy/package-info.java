@@ -14,7 +14,7 @@
  */
 /**
  *
- * Package for view layer DTOs.
+ * Package to dummy plugin.
  *
  */
-package org.jtalks.jcommune.web.dto;
+package org.jtalks.jcommune.plugin.dummy;

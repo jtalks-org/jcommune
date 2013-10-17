@@ -86,15 +86,16 @@ public class BranchController {
     /**
      * Displays to user a list of topic from the chosen branch with pagination.
      *
-     * @param branchId      branch for display
-     * @param page          page
+     * @param branchId branch for display
+     * @param page     page
      * @return {@code ModelAndView} with topics list and vars for pagination
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
      */
     @RequestMapping(value = "/branches/{branchId}", method = RequestMethod.GET)
     public ModelAndView showPage(@PathVariable("branchId") long branchId,
-                                 @RequestParam(value = PAGE, defaultValue = "1", required = false) String page) throws NotFoundException {
+                                 @RequestParam(value = PAGE, defaultValue = "1", required = false) String page
+    ) throws NotFoundException {
 
         Branch branch = branchService.get(branchId);
         Page<Topic> topicsPage = topicFetchService.getTopics(branch, page);
@@ -147,7 +148,7 @@ public class BranchController {
      * Provides all available for move topic branches from section with given sectionId as JSON array.
      *
      * @param currentTopicId id of topic that we want to move
-     * @param sectionId id of section
+     * @param sectionId      id of section
      * @return branches dto array
      * @throws NotFoundException when section with given id not found
      */

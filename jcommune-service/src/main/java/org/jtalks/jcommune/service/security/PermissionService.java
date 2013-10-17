@@ -16,7 +16,6 @@ package org.jtalks.jcommune.service.security;
 
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.JtalksPermission;
-import org.springframework.security.access.AccessDeniedException;
 
 /**
  * Service for checking permission like @PreAuthorize('hasPermission(...)') annotation does. Intended to be used when
@@ -54,7 +53,7 @@ public interface PermissionService {
      * @param targetClass target's ACL class (e.g. 'BRANCH' or 'USER'). Not null.
      * @param permission permission to check. Not null.
      * 
-     * @throws AccessDeniedException if current user is not granted with permission
+     * @throws org.springframework.security.access.AccessDeniedException if current user is not granted with permission
      */
     void checkPermission(long targetId, AclClassName targetClass, JtalksPermission permission);
 

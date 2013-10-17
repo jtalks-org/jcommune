@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.service.dto;
 
-import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.plugins.Plugin;
 
 import java.util.ArrayList;

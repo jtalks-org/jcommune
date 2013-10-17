@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * Interface for plugins providing basic authentication capabilities
  * based on the login/password pair.
- *
+ * <p/>
  * todo: create more general interface for full featured authentication:
  * kerberos, x.509, OTP, etc. Spring Security API may serve as an example. Robust
  * authentication interface should also provide some means to return different
@@ -37,7 +37,7 @@ public interface SimpleAuthenticationPlugin extends Plugin {
     /**
      * Performs authentication attempt based on login/password pair
      *
-     * @param login user login
+     * @param login    user login
      * @param password user password
      * @return user details
      * @throws UnexpectedErrorException if external service returns unexpected result
@@ -49,7 +49,6 @@ public interface SimpleAuthenticationPlugin extends Plugin {
     /**
      * Performs registration attempt based on user details
      *
-     *
      * @param userDto user
      * @return validation errors as pairs field - error message
      * @throws UnexpectedErrorException if external service returns unexpected result
@@ -60,6 +59,7 @@ public interface SimpleAuthenticationPlugin extends Plugin {
 
     /**
      * Performs validation based on user details
+     *
      * @param userDto user information
      * @return validation errors as pairs field - error message
      * @throws UnexpectedErrorException if external service returns unexpected result

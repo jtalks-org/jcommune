@@ -15,17 +15,16 @@
 package org.jtalks.jcommune.model.search;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.bridge.StringBridge;
 
 /**
  * Eliminates all the bbcodes before indexing the data.
  * To enable the filter you need to declare the bridge annotation
- * {@link FieldBridge} above property/field.
+ * {@link org.hibernate.search.annotations.FieldBridge} above property/field.
  * 
  * @author Anuar Nurmakanov
  * @see StringBridge
- * @see FieldBridge
+ * @see org.hibernate.search.annotations.FieldBridge
  */
 public class BbCodeFilterBridge implements StringBridge {
     private static final String BB_CODE_REGEXP_TEMPLATE = "\\[.*?\\]";

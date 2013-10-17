@@ -52,9 +52,9 @@ public class AvatarController extends ImageUploadController {
     /**
      * Constructor for controller instantiating, dependencies injected via autowiring.
      *
-     * @param userService   to manipulate user-related data
+     * @param userService           to manipulate user-related data
      * @param avatarControllerUtils utility object for image-related functions
-     * @param messageSource to resolve locale-dependent messages
+     * @param messageSource         to resolve locale-dependent messages
      */
     @Autowired
     public AvatarController(
@@ -104,7 +104,7 @@ public class AvatarController extends ImageUploadController {
     /**
      * Write user avatar in response for rendering it on html pages.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @param id       user database identifier
      * @throws NotFoundException if user with given encodedUsername not found
@@ -112,12 +112,12 @@ public class AvatarController extends ImageUploadController {
      */
     @RequestMapping(value = "/users/{id}/avatar", method = RequestMethod.GET)
     public void renderAvatar(
-            HttpServletRequest request, 
-            HttpServletResponse response, 
+            HttpServletRequest request,
+            HttpServletResponse response,
             @PathVariable Long id)
             throws NotFoundException, IOException {
         JCUser user = userService.get(id);
-        
+
         Date ifModifiedDate = getIfModifiedSineDate(request.getHeader(IF_MODIFIED_SINCE_HEADER));
         if (!user.getAvatarLastModificationTime().isAfter(ifModifiedDate.getTime())) {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
@@ -127,7 +127,7 @@ public class AvatarController extends ImageUploadController {
             response.setContentLength(avatar.length);
             response.getOutputStream().write(avatar);
         }
-        
+
         Date avatarLastModificationDate = new Date(
                 user.getAvatarLastModificationTime().getMillis());
         setupAvatarHeaders(response, avatarLastModificationDate);
@@ -138,7 +138,8 @@ public class AvatarController extends ImageUploadController {
      *
      * @return JSON string with default user avatar
      * @throws ImageProcessException due to common avatar processing error
-     * @throws IOException           defined in the JsonFactory implementation, caller must implement exception processing
+     * @throws IOException           defined in the JsonFactory implementation, caller must implement exception
+     *                               processing
      */
     @RequestMapping(value = "/defaultAvatar", method = RequestMethod.GET)
     @ResponseBody

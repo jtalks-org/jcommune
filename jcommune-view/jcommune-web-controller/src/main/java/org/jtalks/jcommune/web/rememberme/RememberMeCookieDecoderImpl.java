@@ -29,13 +29,12 @@ import org.springframework.security.web.authentication.rememberme.RememberMeAuth
  * decode cookie value. We use this trick to avoid copy-paste from Spring
  * implementation of decode method. But this class is clear violation of
  * Liskov substitution principle.
- * 
+ *
  * @author Anuar_Nurmakanov
- * 
  */
 public class RememberMeCookieDecoderImpl extends AbstractRememberMeServices implements RememberMeCookieDecoder {
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -49,12 +48,11 @@ public class RememberMeCookieDecoderImpl extends AbstractRememberMeServices impl
      */
     @Override
     protected void onLoginSuccess(HttpServletRequest request,
-            HttpServletResponse response,
-            Authentication successfulAuthentication) {
+                                  HttpServletResponse response,
+                                  Authentication successfulAuthentication) {
         throw new UnsupportedOperationException(
                 "We extends from AbstractRememberMeService to take an ability call it help methods," +
-        		"so we don't use this implementation as implementation of AbstractRememberMeServices");
-
+                        "so we don't use this implementation as implementation of AbstractRememberMeServices");
     }
 
     /**
@@ -62,12 +60,12 @@ public class RememberMeCookieDecoderImpl extends AbstractRememberMeServices impl
      */
     @Override
     protected UserDetails processAutoLoginCookie(String[] cookieTokens,
-            HttpServletRequest request, HttpServletResponse response)
+                                                 HttpServletRequest request, HttpServletResponse response)
             throws RememberMeAuthenticationException,
             UsernameNotFoundException {
         throw new UnsupportedOperationException(
                 "We extends from AbstractRememberMeService to take an ability call it help methods," +
-                "so we don't use this implementation as implementation of AbstractRememberMeServices");
+                        "so we don't use this implementation as implementation of AbstractRememberMeServices");
     }
 
     /**
@@ -80,10 +78,10 @@ public class RememberMeCookieDecoderImpl extends AbstractRememberMeServices impl
     public String exctractRememberMeCookieValue(HttpServletRequest request) {
         return extractRememberMeCookie(request);
     }
-    
+
     /**
      * Extracts remember me data from cookie value.
-     * 
+     *
      * @param cookieValue contains remember me data as series and token
      * @return extracted series and token
      */

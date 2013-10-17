@@ -62,8 +62,7 @@ public class TransactionalCodeReviewService extends AbstractTransactionalEntityS
     }
 
     @Override
-    public CodeReviewComment addComment(Long reviewId, int lineNumber, String body)
-            throws NotFoundException {
+    public CodeReviewComment addComment(Long reviewId, int lineNumber, String body) throws NotFoundException {
         CodeReview review = get(reviewId);
         JCUser currentUser = userService.getCurrentUser();
 
@@ -84,7 +83,7 @@ public class TransactionalCodeReviewService extends AbstractTransactionalEntityS
         review.addComment(comment);
         getDao().saveOrUpdate(review);
         notificationService.subscribedEntityChanged(review);
-        
+
         return comment;
     }
 
@@ -96,7 +95,6 @@ public class TransactionalCodeReviewService extends AbstractTransactionalEntityS
      */
     @PreAuthorize("(hasPermission(#codeReview.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OWN_POSTS') and " +
             "#reviewComment.author.username == principal.username) or " +
-
             "(hasPermission(#codeReview.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OTHERS_POSTS') and " +
             "#reviewComment.author.username != principal.username)")
     public void deleteComment(CodeReviewComment reviewComment, CodeReview codeReview) {

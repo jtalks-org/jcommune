@@ -71,17 +71,17 @@ public class MailService {
      * as most e-mail servers will reject e-mail if sender is not really correlated with
      * the letter's "from" value.
      *
-     * @param sender spring mailing tool
-     * @param from   blank message with "from" filed preset
-     * @param engine engine for templating email notifications
-     * @param source for resolving internationalization messages
+     * @param sender                       spring mailing tool
+     * @param from                         blank message with "from" filed preset
+     * @param engine                       engine for templating email notifications
+     * @param source                       for resolving internationalization messages
      * @param notificationsEnabledProperty to check whether email notifications are enabled
      */
     public MailService(JavaMailSender sender,
-            String from,
-            VelocityEngine engine,
-            MessageSource source,
-            JCommuneProperty notificationsEnabledProperty) {
+                       String from,
+                       VelocityEngine engine,
+                       MessageSource source,
+                       JCommuneProperty notificationsEnabledProperty) {
         this.mailSender = sender;
         this.from = from;
         this.velocityEngine = engine;
@@ -225,14 +225,14 @@ public class MailService {
             LOGGER.error("Failed to sent activation mail for user: " + recipient.getUsername());
         }
     }
-    
+
     /**
      * Send email notification to user when he was mentioned in forum.
-     * Email notification will be sent only when notifications are enabled 
+     * Email notification will be sent only when notifications are enabled
      * in forum, otherwise nothing will happen.
-     * 
+     *
      * @param recipient mentioned user who will receive notification
-     * @param postId id of post where user was mentioned
+     * @param postId    id of post where user was mentioned
      */
     public void sendUserMentionedNotification(JCUser recipient, long postId) {
         if (notificationsEnabledProperty.booleanValue()) {
@@ -263,8 +263,8 @@ public class MailService {
      * @param templateName template file name, like "template.vm"
      * @throws MailingFailedException exception with error message specified ic case of some error
      */
-    private void sendEmail(String to, String subject, Map<String, Object> model, String templateName) throws
-            MailingFailedException {
+    private void sendEmail(String to, String subject, Map<String, Object> model,
+                           String templateName) throws MailingFailedException {
         try {
             model.put(MESSAGE_SOURCE, messageSource);
             model.put(NO_ARGS, new Object[]{});
@@ -366,10 +366,9 @@ public class MailService {
      * Set mail about removing topic.
      *
      * @param recipient Recipient for which send notification
-     * @param topic Current topic
+     * @param topic     Current topic
      */
-    public void sendRemovingTopicMail(JCUser recipient, Topic topic)
-    {
+    public void sendRemovingTopicMail(JCUser recipient, Topic topic) {
         Locale locale = recipient.getLanguage().getLocale();
         Map<String, Object> model = new HashMap<String, Object>();
         model.put(USER, recipient);
@@ -381,7 +380,7 @@ public class MailService {
             String subjectTemplate = "removeTopic.subject";
             String messageBodyTemplate = "removeTopic.vm";
 
-            if(topic.getCodeReview() != null) {
+            if (topic.getCodeReview() != null) {
                 subjectTemplate = "removeCodeReview.subject";
                 messageBodyTemplate = "removeCodeReview.vm";
             }
@@ -390,7 +389,8 @@ public class MailService {
             this.sendEmail(recipient.getEmail(), subject, model, messageBodyTemplate);
 
         } catch (MailingFailedException e) {
-            LOGGER.error("Failed to sent mail about removing topic or code review for user: " + recipient.getUsername());
+            LOGGER.error("Failed to sent mail about removing topic or code review for user: "
+                    + recipient.getUsername());
         }
     }
 }

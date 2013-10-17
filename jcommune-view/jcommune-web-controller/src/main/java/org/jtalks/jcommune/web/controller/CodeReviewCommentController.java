@@ -14,9 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
-import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.CodeReviewCommentService;
 import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -46,7 +44,7 @@ import javax.validation.Valid;
  * Serves code review comment management web requests
  *
  * @author Vyachesla Mishcheryakov
- * @see Topic
+ * @see org.jtalks.jcommune.model.entity.Topic
  */
 @Controller
 public class CodeReviewCommentController {
@@ -60,7 +58,7 @@ public class CodeReviewCommentController {
     private CodeReviewCommentService codeReviewCommentService;
     
     /**
-     * @param codeReviewService        to operate with {@link CodeReview} entities
+     * @param codeReviewService        to operate with {@link org.jtalks.jcommune.model.entity.CodeReview} entities
      * @param codeReviewCommentService to operate with (@link {@link CodeReviewComment} entities
      */
     @Autowired

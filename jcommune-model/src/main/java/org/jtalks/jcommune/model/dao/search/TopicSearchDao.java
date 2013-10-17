@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.model.dao.search;
 
 import org.jtalks.jcommune.model.dto.PageRequest;
-import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.data.domain.Page;
 

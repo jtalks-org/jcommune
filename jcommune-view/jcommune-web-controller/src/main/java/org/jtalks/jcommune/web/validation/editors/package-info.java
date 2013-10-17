@@ -14,7 +14,7 @@
  */
 /**
  *
- * Contains dto classes
+ *  Contains editors for Language. Spring MVC uses it to convert the language from and to string.
  *
  */
-package org.jtalks.jcommune.service.dto;
+package org.jtalks.jcommune.web.validation.editors;

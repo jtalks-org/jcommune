@@ -29,10 +29,8 @@ import java.util.List;
  * incorrect length of the name.
  *
  * @author Anuar_Nurmakanov
- *
  */
-public class PollItemsNamesLengthValidator
-implements ConstraintValidator<PollItemsNamesLength, List<PollItem>> {
+public class PollItemsNamesLengthValidator implements ConstraintValidator<PollItemsNamesLength, List<PollItem>> {
 
     private int minLength;
     private int maxLenght;
@@ -52,7 +50,7 @@ implements ConstraintValidator<PollItemsNamesLength, List<PollItem>> {
     @Override
     public boolean isValid(List<PollItem> pollItems, ConstraintValidatorContext context) {
         if (pollItems != null) {
-            for (PollItem pollItem: pollItems) {
+            for (PollItem pollItem : pollItems) {
                 if (!isPollItemValid(pollItem)) {
                     return false;
                 }

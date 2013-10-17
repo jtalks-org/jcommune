@@ -45,7 +45,6 @@ public class TransactionalPrivateMessageService
         extends AbstractTransactionalEntityService<PrivateMessage, PrivateMessageDao> implements PrivateMessageService {
 
 
-
     public static final int DEFAULT_MESSAGE_COUNT = 0;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -105,7 +104,6 @@ public class TransactionalPrivateMessageService
     @Override
     @PreAuthorize("hasPermission(#userFrom.id, 'USER', 'ProfilePermission.SEND_PRIVATE_MESSAGES')")
     public PrivateMessage sendMessage(String title, String body, JCUser recipient, JCUser userFrom) {
-
         PrivateMessage pm = new PrivateMessage(recipient, userFrom, title, body);
         pm.setRead(false);
         pm.setStatus(PrivateMessageStatus.SENT);
@@ -127,11 +125,12 @@ public class TransactionalPrivateMessageService
 
     /**
      * Check - sending notification is allow
+     *
      * @param user User for which we check allow sending pm notification
-     * @return
+     * @return flag with value (send or not)
      */
     private boolean isSendNotificationMessage(JCUser user) {
-         return (sendingNotificationsEnabledProperty.booleanValue() && user.isSendPmNotification());
+        return (sendingNotificationsEnabledProperty.booleanValue() && user.isSendPmNotification());
     }
 
     /**
@@ -149,8 +148,8 @@ public class TransactionalPrivateMessageService
      */
     @Override
     @PreAuthorize("hasPermission(#userFrom.id, 'USER', 'ProfilePermission.SEND_PRIVATE_MESSAGES')")
-    public void saveDraft(long id, String recipient, String title, String body, JCUser userFrom) 
-        throws NotFoundException {
+    public void saveDraft(long id, String recipient, String title, String body, JCUser userFrom)
+            throws NotFoundException {
 
         JCUser userTo = recipient != null ? userService.getByUsername(recipient) : null;
 
@@ -245,7 +244,7 @@ public class TransactionalPrivateMessageService
      * @return if message should be marked as read
      */
     private boolean ifMessageShouldBeMarkedAsRead(PrivateMessage pm) {
-        return currentUserIsAuthor(userService.getCurrentUser(),pm)
+        return currentUserIsAuthor(userService.getCurrentUser(), pm)
                 && !pm.isRead()
                 && !pm.getStatus().equals(PrivateMessageStatus.DRAFT);
     }
@@ -284,6 +283,8 @@ public class TransactionalPrivateMessageService
                         result = "inbox";
                     }
                     break;
+                default:
+                    break;
             }
         }
         return result;
@@ -297,17 +298,17 @@ public class TransactionalPrivateMessageService
                 (messageStatus.equals(PrivateMessageStatus.DELETED_FROM_OUTBOX))) {
             return false;
         }
-        return !(currentUserIsAuthor(currentUser,privateMessage) &&
+        return !(currentUserIsAuthor(currentUser, privateMessage) &&
                 (messageStatus.equals(PrivateMessageStatus.DELETED_FROM_INBOX)));
 
     }
 
-    private boolean currentUserIsAuthor(JCUser currentUser,PrivateMessage privateMessage ){
+    private boolean currentUserIsAuthor(JCUser currentUser, PrivateMessage privateMessage) {
         boolean isAuthor = false;
-        try{ //because a recipient can be deleted.
+        try { //because a recipient can be deleted.
             isAuthor = currentUser.equals(privateMessage.getUserTo());
-        }catch(org.hibernate.ObjectNotFoundException e){
-            logger.warn("The recipient doesn't exist",e);
+        } catch (org.hibernate.ObjectNotFoundException e) {
+            logger.warn("The recipient doesn't exist", e);
         }
         return isAuthor;
     }

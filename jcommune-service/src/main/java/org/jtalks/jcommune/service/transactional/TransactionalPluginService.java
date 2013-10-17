@@ -34,15 +34,15 @@ import java.util.List;
  * @author Anuar_Nurmakanov
  * @author Evgeny Naumenko
  */
-public class TransactionalPluginService extends AbstractTransactionalEntityService<PluginConfiguration, PluginConfigurationDao>
-        implements PluginService {
+public class TransactionalPluginService extends AbstractTransactionalEntityService<PluginConfiguration,
+        PluginConfigurationDao> implements PluginService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalPluginService.class);
     private PluginLoader pLuginLoader;
 
     /**
      * Constructs an instance with required fields.
      *
-     * @param dao to save/update configurations for plugins
+     * @param dao          to save/update configurations for plugins
      * @param pluginLoader to load plugins that have been added to the forum
      */
     public TransactionalPluginService(PluginConfigurationDao dao, PluginLoader pluginLoader) {
@@ -65,7 +65,8 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
      */
     @Override
     @PreAuthorize("hasPermission(#forumComponentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
-    public void updateConfiguration(PluginConfiguration pluginConfiguration, long forumComponentId) throws NotFoundException {
+    public void updateConfiguration(PluginConfiguration pluginConfiguration,
+                                    long forumComponentId) throws NotFoundException {
         String name = pluginConfiguration.getName();
         List<Plugin> pluginsList = pLuginLoader.getPlugins();
         Plugin willBeConfigured = findPluginByName(pluginsList, name);
@@ -78,7 +79,7 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
 
     private Plugin findPluginByName(List<Plugin> searchSource, String pluginName) {
         Plugin foundPlugin = null;
-        for (Plugin plugin: searchSource) {
+        for (Plugin plugin : searchSource) {
             if (StringUtils.equals(pluginName, plugin.getName())) {
                 foundPlugin = plugin;
             }
@@ -88,7 +89,7 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
 
     private void saveNewPluginConfiguration(PluginConfiguration newPluginConfiguration) {
         List<PluginProperty> properties = newPluginConfiguration.getProperties();
-        for (PluginProperty property: properties) {
+        for (PluginProperty property : properties) {
             property.setPluginConfiguration(newPluginConfiguration);
         }
         this.getDao().updateProperties(newPluginConfiguration.getProperties());
@@ -99,7 +100,8 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
      */
     @Override
     @PreAuthorize("hasPermission(#forumComponentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
-    public PluginConfiguration getPluginConfiguration(String pluginName, long forumComponentId) throws NotFoundException {
+    public PluginConfiguration getPluginConfiguration(String pluginName,
+                                                      long forumComponentId) throws NotFoundException {
         return getDao().get(pluginName);
     }
 
@@ -108,7 +110,8 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
      */
     @Override
     @PreAuthorize("hasPermission(#forumComponentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
-    public void updatePluginsActivating(List<PluginActivatingDto> updatedPlugins, long forumComponentId) throws NotFoundException {
+    public void updatePluginsActivating(List<PluginActivatingDto> updatedPlugins,
+                                        long forumComponentId) throws NotFoundException {
         for (PluginActivatingDto updatedPlugin : updatedPlugins) {
             PluginConfigurationDao pluginConfigurationDao = getDao();
             String pluginName = updatedPlugin.getPluginName();

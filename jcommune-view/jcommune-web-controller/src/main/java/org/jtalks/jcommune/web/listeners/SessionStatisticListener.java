@@ -24,7 +24,10 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author Elena Lepaeva
  */
 public class SessionStatisticListener implements HttpSessionListener {
-    //It's static because 2 listeners are created - one by web server, one by Spring. We'll need to get rid of this hack.
+    /**
+     * It's static because 2 listeners are created - one by web server, one by Spring. We'll need to get rid
+     * of this hack.
+     */
     private static volatile AtomicLong totalActiveSessions = new AtomicLong(0);
 
     /**
@@ -47,12 +50,12 @@ public class SessionStatisticListener implements HttpSessionListener {
      */
     @Override
     public synchronized void sessionDestroyed(HttpSessionEvent se) {
-        /*
-        Tomcat may not invalidate HTTP session on server restart while counter variable
-        will be set to 0 on class reload. So we can quickly get our session count negative when
-        persisted sessions will expire. This check provides us with a self-correcting facility
-        to overcome this problem
-         */
+        /**
+         * Tomcat may not invalidate HTTP session on server restart while counter variable
+         * will be set to 0 on class reload. So we can quickly get our session count negative when
+         * persisted sessions will expire. This check provides us with a self-correcting facility
+         * to overcome this problem
+         **/
         if (totalActiveSessions.get() > 0) {
             totalActiveSessions.decrementAndGet();
         }

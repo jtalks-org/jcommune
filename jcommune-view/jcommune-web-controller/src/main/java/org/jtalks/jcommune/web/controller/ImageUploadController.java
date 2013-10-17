@@ -109,6 +109,7 @@ public class ImageUploadController {
 
     /**
      * Gets service for resolving messages
+     *
      * @return service for resolving messages
      */
     public MessageSource getMessageSource() {
@@ -117,15 +118,16 @@ public class ImageUploadController {
 
     /**
      * Sets up avatar cache related headers.
-     * @param response - HTTP response object where set headers
+     *
+     * @param response                   - HTTP response object where set headers
      * @param avatarLastModificationTime - last modification time of avatar
      */
     protected void setupAvatarHeaders(HttpServletResponse response,
-                                    Date avatarLastModificationTime) {
+                                      Date avatarLastModificationTime) {
         response.setHeader("Pragma", "public");
         response.setHeader("Cache-Control", "public");
         response.addHeader("Cache-Control", "must-revalidate");
-        response.addHeader("Cache-Control","max-age=0");
+        response.addHeader("Cache-Control", "max-age=0");
         String formattedDateExpires = DateFormatUtils.format(
                 new Date(System.currentTimeMillis()),
                 HTTP_HEADER_DATETIME_PATTERN, Locale.US);
@@ -140,10 +142,11 @@ public class ImageUploadController {
     /**
      * Check 'If-Modified-Since' header in the request and converts it to
      * {@link java.util.Date} representation
+     *
      * @param ifModifiedSinceHeader - value of 'If-Modified-Since' header in
-     *      string form
+     *                              string form
      * @return If-Modified-Since header or Jan 1, 1970 if it is not set or
-     *      can't be parsed
+     *         can't be parsed
      */
     public Date getIfModifiedSineDate(String ifModifiedSinceHeader) {
         Date ifModifiedSinceDate = new Date(0);
@@ -163,7 +166,8 @@ public class ImageUploadController {
 
     /**
      * Gets uploaded image and generates preview to send back to the client
-     * @param file file, that contains uploaded image
+     *
+     * @param file                 file, that contains uploaded image
      * @param imageControllerUtils object for processing the image
      * @return generated preview of the uploaded image
      * @throws IOException
@@ -179,14 +183,15 @@ public class ImageUploadController {
 
     /**
      * Gets uploaded image and generates preview to send back to the client
-     * @param imageBytes content of the uploaded image
-     * @param response HTTP response
+     *
+     * @param imageBytes           content of the uploaded image
+     * @param response             HTTP response
      * @param imageControllerUtils object for processing the image
      * @return generated preview of the uploaded image
      * @throws ImageProcessException
      */
     protected Map<String, String> createPreviewOfImage(byte[] imageBytes, HttpServletResponse response,
-                                ImageControllerUtils imageControllerUtils) throws ImageProcessException {
+                                                       ImageControllerUtils imageControllerUtils) throws ImageProcessException {
         Map<String, String> responseContent = new HashMap<String, String>();
         imageControllerUtils.prepareResponse(imageBytes, response, responseContent);
         return responseContent;

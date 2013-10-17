@@ -113,7 +113,7 @@ import java.util.Set;
 @Indexed
 public class Topic extends Entity implements SubscriptionAwareEntity {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(Topic.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Topic.class);
     public static final String URL_SUFFIX = "/posts/";
 
     private DateTime creationDate;

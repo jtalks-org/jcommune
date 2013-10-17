@@ -38,7 +38,8 @@ public class PoulpeUser extends org.jtalks.common.model.entity.User {
      * @param email    email
      * @param password password
      * @param salt     a security salt that is used for encrypting the passwords to be less vulnerable for decryption of
-     *                 password from its hash, more info can be found <a href="http://en.wikipedia.org/wiki/Salt_(cryptography)">here</a>.
+     *                 password from its hash, more info can be found
+     *                 <a href="http://en.wikipedia.org/wiki/Salt_(cryptography)">here</a>.
      */
     public PoulpeUser(String username, String email, String password, String salt) {
         super(username, email, password, salt);

@@ -30,22 +30,21 @@ import java.io.IOException;
  * with token in database. We log a detailed message about what were the persistent tokens if they don't match with
  * the ones from user's cookies so that we can investigate this problem in details (that means that cookies were
  * stolen).
- * 
- * @author Anuar_Nurmakanov
  *
+ * @author Anuar_Nurmakanov
  */
-public class UsernamePasswordAuthenticationFilter 
-    extends org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter {
+public class UsernamePasswordAuthenticationFilter
+        extends org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter {
 
     private final RememberMeCookieDecoder rememberMeCookieDecoder;
     private final RememberMeCheckService rememberMeCheckService;
 
     /**
      * Constructs an instance with required fields.
-     * 
+     *
      * @param rememberMeCookieDecoder decoder of remember me data from cookie
-     * @param rememberMeCheckService remember me check service
-     */ 
+     * @param rememberMeCheckService  remember me check service
+     */
     public UsernamePasswordAuthenticationFilter(
             RememberMeCookieDecoder rememberMeCookieDecoder,
             RememberMeCheckService rememberMeCheckService) {
@@ -57,17 +56,17 @@ public class UsernamePasswordAuthenticationFilter
      * {@inheritDoc}
      */
     @Override
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) 
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
         extractAndCheckRememberMeToken(request);
         super.doFilter(req, res, chain);
     }
-    
+
     /**
      * Extract "remember me" token from request and if it exists check it with
      * token from database.
-     * 
+     *
      * @param request incoming http request
      */
     private void extractAndCheckRememberMeToken(HttpServletRequest request) {

@@ -335,7 +335,8 @@ public class MentionedUsers {
     /**
      * Add links to users' profiles for mentioned users.
      *
-     * @param source                   will be changed and all mentioned users in it will contain links to their profiles
+     * @param source                   will be changed and all mentioned users in it will contain links to their
+     *                                 profiles
      * @param userToUserProfileLinkMap user to it links of profile map
      * @return source with users with attached links to profiles
      */

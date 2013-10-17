@@ -22,27 +22,29 @@ import ru.perm.kefir.bbcode.TextProcessor;
 
 /**
  * Preprocessor for bb2html encoding which replaces all list items like [*]
- * with [*]...[/*] tags. This allows create formatted text in list items. 
- * @author Vyacheslav Mishcheryakov
+ * with [*]...[/*] tags. This allows create formatted text in list items.
  *
+ * @author Vyacheslav Mishcheryakov
  */
 public class BBCodeListPreprocessor implements TextProcessor {
 
     private static final String BBLIST_PATTERN = "(\\[list[\\]|=?\\]])(.*?)(\\[/list\\])";
     private static final String LIST_ITEM_OPEN_TAG = "[*]";
     private static final String LIST_ITEM_CLOSE_TAG = "[/*]";
-    
+
     /**
      * Process incoming text with replacing [*] tags by [*]...[/*]
+     *
      * @param bbEncodedText BB encoded text to process
-     * @return processed text 
+     * @return processed text
      */
     public String process(String bbEncodedText) {
         return process(new StringBuilder(bbEncodedText)).toString();
     }
-    
+
     /**
      * Process incoming text with replacing [*] tags by [*]...[/*]
+     *
      * @param bbEncodedText bb encoded text to process
      * @return processed text
      */
@@ -52,8 +54,7 @@ public class BBCodeListPreprocessor implements TextProcessor {
 
         StringBuilder result = new StringBuilder();
         int lastEnd = 0;
-        while (matcher.find())
-        {
+        while (matcher.find()) {
             result.append(bbEncodedText.substring(lastEnd, matcher.start()));
             result.append(matcher.group(1));
             String listItems = matcher.group(2);
@@ -61,55 +62,58 @@ public class BBCodeListPreprocessor implements TextProcessor {
             result.append(matcher.group(3));
             lastEnd = matcher.end();
         }
-        
+
         result.append(bbEncodedText.substring(lastEnd, bbEncodedText.length()));
-        
+
         return result;
-     }
+    }
 
     /**
-     * Process actual list items with replacing [*] by [*]...[/*] 
+     * Process actual list items with replacing [*] by [*]...[/*]
+     *
      * @param bbEncodedList text inside [list]...[/list] tags
      * @return processed text
      */
-     private StringBuilder preprocessListItems(String bbEncodedList) {
-          StringBuilder result = new StringBuilder();
-          int itemStart = bbEncodedList.indexOf(LIST_ITEM_OPEN_TAG);
-          if (itemStart == -1) {
-              // if no list items retun original text
-              result.append(bbEncodedList);
-          } else {
-              // append text before first item
-              result.append(bbEncodedList.substring(0, itemStart));
-          
-              int itemEnd = 0;
-              int cutItemEnd = 0;
-              while (itemStart != -1) {
-                 itemEnd = bbEncodedList.indexOf(LIST_ITEM_OPEN_TAG, itemStart + 1);
-                 cutItemEnd = itemEnd != -1 ? itemEnd : bbEncodedList.length();
-                 
-                 result.append(bbEncodedList.substring(itemStart, cutItemEnd));
-                 result.append(LIST_ITEM_CLOSE_TAG);
-                 
-                 itemStart = itemEnd;
-              }
-          }
-        return result;
-     }
+    private StringBuilder preprocessListItems(String bbEncodedList) {
+        StringBuilder result = new StringBuilder();
+        int itemStart = bbEncodedList.indexOf(LIST_ITEM_OPEN_TAG);
+        if (itemStart == -1) {
+            // if no list items retun original text
+            result.append(bbEncodedList);
+        } else {
+            // append text before first item
+            result.append(bbEncodedList.substring(0, itemStart));
 
-     /**
-      * Process incoming text with replacing [*] tags by [*]...[/*]
-      * @param bbEncodedText bb encoded text to process
-      * @return processed text
-      */
+            int itemEnd = 0;
+            int cutItemEnd = 0;
+            while (itemStart != -1) {
+                itemEnd = bbEncodedList.indexOf(LIST_ITEM_OPEN_TAG, itemStart + 1);
+                cutItemEnd = itemEnd != -1 ? itemEnd : bbEncodedList.length();
+
+                result.append(bbEncodedList.substring(itemStart, cutItemEnd));
+                result.append(LIST_ITEM_CLOSE_TAG);
+
+                itemStart = itemEnd;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Process incoming text with replacing [*] tags by [*]...[/*]
+     *
+     * @param bbEncodedText bb encoded text to process
+     * @return processed text
+     */
     @Override
     public CharSequence process(CharSequence bbEncodedText) {
-        StringBuilder result = process(new StringBuilder(bbEncodedText)); 
+        StringBuilder result = process(new StringBuilder(bbEncodedText));
         return result.subSequence(0, result.length());
     }
 
     /**
      * Process incoming text with replacing [*] tags by [*]...[/*]
+     *
      * @param bbEncodedText bb encoded text to process
      * @return processed text
      */
@@ -120,6 +124,7 @@ public class BBCodeListPreprocessor implements TextProcessor {
 
     /**
      * Process incoming text with replacing [*] tags by [*]...[/*]
+     *
      * @param bbEncodedText bb encoded text to process
      * @return processed text
      */

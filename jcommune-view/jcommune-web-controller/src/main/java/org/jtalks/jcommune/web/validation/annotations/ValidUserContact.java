@@ -85,7 +85,8 @@ public @interface ValidUserContact {
     String field();
 
     /**
-     * Path to property containing id of {@link org.jtalks.jcommune.model.entity.UserContactType} to get pattern from it.
+     * Path to property containing id of {@link org.jtalks.jcommune.model.entity.UserContactType} to get pattern
+     * from it.
      */
     String storedTypeId();
 }

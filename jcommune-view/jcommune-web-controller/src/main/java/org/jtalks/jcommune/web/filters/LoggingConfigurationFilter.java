@@ -31,12 +31,13 @@ import java.io.IOException;
  * configuration to see where the username is going to appear, for instance in log4j it may look like {@code
  * %X{userName}}.
  *
- *
  * @author Anuar_Nurmakanov
  * @see LoggerMdc
  */
 public class LoggingConfigurationFilter implements Filter {
-    /** A prefix to be used an anonymous user 'username'. */
+    /**
+     * A prefix to be used an anonymous user 'username'.
+     */
     private static final String ANONYMOUS_PREFIX = "anonymous-";
     /**
      * How much of session id we need to cut to construct a 'username' for anonymous user. We don't want this number to
@@ -55,7 +56,9 @@ public class LoggingConfigurationFilter implements Filter {
         this.loggerMdc = loggerMdc;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
@@ -100,13 +103,17 @@ public class LoggingConfigurationFilter implements Filter {
         return !StringUtils.isEmpty(sessionId);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void destroy() {
         //empty
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         //empty

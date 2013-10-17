@@ -79,7 +79,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
     @Override
     public List<Branch> getAllAvailableBranches(long currentTopicId) {
         JCUser user = userService.getCurrentUser();
-        if(user.getGroups().isEmpty()){
+        if (user.getGroups().isEmpty()) {
             return Collections.EMPTY_LIST;
         }
         List<Branch> branches = new ArrayList<Branch>(this.getDao().getAllAvailableBranches(user));
@@ -98,7 +98,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
         }
 
         JCUser user = userService.getCurrentUser();
-        if(user.getGroups().isEmpty()){
+        if (user.getGroups().isEmpty()) {
             return Collections.EMPTY_LIST;
         }
         Section section = sectionDao.get(sectionId);
@@ -161,7 +161,8 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
      */
     @Override
     @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
-    public void changeBranchInfo(long componentId, long branchId, String title, String description) throws NotFoundException {
+    public void changeBranchInfo(long componentId, long branchId, String title, String description)
+            throws NotFoundException {
         Branch branch = get(branchId);
         branch.setName(title);
         branch.setDescription(description);

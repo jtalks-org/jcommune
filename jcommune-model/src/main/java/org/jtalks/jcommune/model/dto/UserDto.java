@@ -32,7 +32,8 @@ import javax.validation.constraints.Size;
 public class UserDto {
 
     @NotBlank(message = "{validation.not_null}")
-    @Size(min = User.USERNAME_MIN_LENGTH, max = User.USERNAME_MAX_LENGTH, message = "{user.username.length_constraint_violation}")
+    @Size(min = User.USERNAME_MIN_LENGTH, max = User.USERNAME_MAX_LENGTH,
+            message = "{user.username.length_constraint_violation}")
     @Unique(entity = JCUser.class, field = "username", message = "{user.username.already_exists}", ignoreCase = true)
     private String username;
 

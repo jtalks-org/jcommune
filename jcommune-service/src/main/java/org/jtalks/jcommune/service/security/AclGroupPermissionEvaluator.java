@@ -57,7 +57,7 @@ import org.springframework.security.core.Authentication;
  */
 public class AclGroupPermissionEvaluator implements PermissionEvaluator {
     private static final Logger LOGGER = LoggerFactory.getLogger(AclGroupPermissionEvaluator.class);
-    
+
     private final AclManager aclManager;
     private final AclUtil aclUtil;
     private final GroupDao groupDao;
@@ -256,8 +256,8 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
             // retriev user with replicated groups from EhCache
             JCUser actualUser = userDao.get(storedUser.getId());
             if (actualUser == null) {
-                LOGGER.warn("{} : User #{} not found", 
-                        this.getClass().getCanonicalName(), 
+                LOGGER.warn("{} : User #{} not found",
+                        this.getClass().getCanonicalName(),
                         storedUser.getId());
                 return !isCheckAllowedGrant;
             }
@@ -267,7 +267,8 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
                 Sid groupSid = sidFactory.create(group);
                 List<AccessControlEntry> groupAces;
                 try {
-                    groupAces = ExtendedMutableAcl.castAndCreate(mutableAclService.readAclById(groupIdentity)).getEntries();
+                    groupAces = ExtendedMutableAcl.castAndCreate(
+                            mutableAclService.readAclById(groupIdentity)).getEntries();
                 } catch (NotFoundException nfe) {
                     groupAces = new ArrayList<AccessControlEntry>();
                 }

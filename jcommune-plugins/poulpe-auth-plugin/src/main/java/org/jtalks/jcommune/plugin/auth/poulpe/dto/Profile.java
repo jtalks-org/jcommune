@@ -46,8 +46,7 @@ import javax.xml.bind.annotation.XmlType;
         "email",
         "firstName",
         "lastName",
-        "enabled"
-})
+        "enabled"})
 public class Profile {
 
     @XmlElement(namespace = "http://www.jtalks.org/namespaces/1.0", required = true)

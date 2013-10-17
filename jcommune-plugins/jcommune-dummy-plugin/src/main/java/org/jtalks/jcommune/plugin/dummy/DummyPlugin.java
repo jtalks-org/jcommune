@@ -45,7 +45,6 @@ public class DummyPlugin extends StatefullPlugin {
 
     @Override
     protected Map<PluginProperty, String> applyConfiguration(List<PluginProperty> properties) {
-        System.out.println("Configuring!");
         return Collections.emptyMap();
     }
 

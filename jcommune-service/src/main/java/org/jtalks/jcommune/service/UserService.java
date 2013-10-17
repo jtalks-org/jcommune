@@ -65,7 +65,7 @@ public interface UserService extends EntityService<JCUser> {
     /**
      * Update user entity.
      *
-     * @param editedUserId an identifier of edited user
+     * @param editedUserId          an identifier of edited user
      * @param editedUserProfileInfo modified profile info holder
      * @return edited user
      * @throws NotFoundException if edited user doesn't exists in system
@@ -106,18 +106,18 @@ public interface UserService extends EntityService<JCUser> {
      * @param userId an identifier of user, for which we check permission
      */
     void checkPermissionToEditOtherProfiles(Long userId);
-    
+
     /**
      * This methods checks a permissions of user to edit own profiles.
-     * 
+     *
      * @param userId an identifier of user, for which we check permission
      */
     void checkPermissionToEditOwnProfile(Long userId);
-    
+
     /**
      * This method checks a permissions of user to create or edit simple(static)
      * pages.
-     * 
+     *
      * @param userId an identifier of user, for which we check permission
      */
     void checkPermissionToCreateAndEditSimplePage(Long userId);
@@ -136,21 +136,22 @@ public interface UserService extends EntityService<JCUser> {
     /**
      * Perform login logic for provided user. After calling this the method
      * this user will be logged in
-     * @param username user name of user to login
-     * @param password password to login
+     *
+     * @param username   user name of user to login
+     * @param password   password to login
      * @param rememberMe remember this user or not
-     * @param request HTTP request
-     * @param response HTTP response
+     * @param request    HTTP request
+     * @param response   HTTP response
      * @return true if user was logged in. false if there were any errors during
-     *      logging in.
+     *         logging in.
      */
-    boolean loginUser(String username, String password,  boolean rememberMe, 
-            HttpServletRequest request, HttpServletResponse response)
-            throws UnexpectedErrorException, NoConnectionException;
+    boolean loginUser(String username, String password, boolean rememberMe, HttpServletRequest request,
+                      HttpServletResponse response) throws UnexpectedErrorException, NoConnectionException;
 
     /**
      * Parses the input of some post which contains [user] bb code,
      * and replace this bb codes with user profile links
+     *
      * @return string with BB codes replaced by user profile links
      */
     String processUserBbCodesInPost(String postContent);
@@ -158,12 +159,14 @@ public interface UserService extends EntityService<JCUser> {
     /**
      * Sends email to user that was mentioned in the post
      * and mark BB code as already notified users
+     *
      * @param post post in which user was mentioned
      */
     void notifyAndMarkNewlyMentionedUsers(Post post);
 
     /**
      * Get usernames by pattern
+     *
      * @param pattern part of username
      */
     List<String> getUsernames(String pattern);

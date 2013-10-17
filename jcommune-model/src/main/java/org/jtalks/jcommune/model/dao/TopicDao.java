@@ -17,7 +17,6 @@ package org.jtalks.jcommune.model.dao;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.entity.Branch;
-import org.jtalks.common.model.entity.Group;
 import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.SubscriptionAwareEntity;

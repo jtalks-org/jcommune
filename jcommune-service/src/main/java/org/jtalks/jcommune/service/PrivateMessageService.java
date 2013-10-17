@@ -33,7 +33,7 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
     /**
      * Get all inbox messages for the current user.
      *
-     * @param page          page number for needed messages.
+     * @param page page number for needed messages.
      * @return object with messages for one page and pagination information.
      */
     Page<PrivateMessage> getInboxForCurrentUser(String page);
@@ -41,7 +41,7 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
     /**
      * Get all outgoing messages from the current user.
      *
-     * @param page          page number for needed messages.
+     * @param page page number for needed messages.
      * @return object with messages for one page and pagination information.
      *         Note that may be all messages for current user.
      */
@@ -62,7 +62,7 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
     /**
      * Get current user's drafts
      *
-     * @param page          page number for needed messages.
+     * @param page page number for needed messages.
      * @return object with messages for one page and pagination information.
      *         Note that may be all messages for current user.
      */
@@ -75,7 +75,7 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
      * @param recipient addressee.
      * @param title     the title of the message.
      * @param body      the body of the message.
-     * @param userFrom sender.
+     * @param userFrom  sender.
      * @throws NotFoundException if the receiver does not exist.
      */
     void saveDraft(long id, String recipient, String title, String body, JCUser userFrom)
@@ -115,11 +115,11 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
      * @throws NotFoundException if one or more messages specified are missing
      */
     String delete(List<Long> ids) throws NotFoundException;
-    
+
     /**
      * This methods checks a permissions of user to send
      * private message.
-     * 
+     *
      * @param senderId an identifier of sender of private message
      */
     void checkPermissionsToSend(Long senderId);

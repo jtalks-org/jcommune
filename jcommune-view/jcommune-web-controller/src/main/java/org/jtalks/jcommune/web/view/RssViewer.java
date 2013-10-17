@@ -37,8 +37,8 @@ import java.util.Map;
  */
 public class RssViewer extends AbstractRssFeedView {
 
-    private final static String DEFAULT_FEED_TITLE = "";
-    private final static String DEFAULT_FEED_DESCRIPTION = "";
+    private static final String DEFAULT_FEED_TITLE = "";
+    private static final String DEFAULT_FEED_DESCRIPTION = "";
 
     /**
      * Set meta data for all RSS feed

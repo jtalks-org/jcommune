@@ -244,7 +244,8 @@ public class UserController {
     @ResponseBody
     public JsonResponse loginAjax(@RequestParam("j_username") String username,
                                   @RequestParam("j_password") String password,
-                                  @RequestParam(value = "_spring_security_remember_me", defaultValue = "off") String rememberMe,
+                                  @RequestParam(value = "_spring_security_remember_me", defaultValue = "off")
+                                  String rememberMe,
                                   HttpServletRequest request, HttpServletResponse response) {
         boolean rememberMeBoolean = rememberMe.equals(REMEMBER_ME_ON);
         boolean isAuthenticated;
@@ -279,7 +280,8 @@ public class UserController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ModelAndView login(@RequestParam("j_username") String username,
                               @RequestParam("j_password") String password,
-                              @RequestParam(value = "_spring_security_remember_me", defaultValue = "off") String rememberMe,
+                              @RequestParam(value = "_spring_security_remember_me", defaultValue = "off")
+                              String rememberMe,
                               HttpServletRequest request, HttpServletResponse response) {
         boolean rememberMeBoolean = rememberMe.equals(REMEMBER_ME_ON);
         boolean isAuthenticated;

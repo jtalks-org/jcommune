@@ -14,8 +14,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import javax.validation.Valid;
-
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.entity.SapeConfiguration;
 import org.jtalks.jcommune.service.ComponentService;

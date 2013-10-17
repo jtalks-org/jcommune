@@ -29,7 +29,9 @@ import javax.validation.constraints.Size;
 
 /**
  * This dto used for transferring data in edit {@link org.jtalks.jcommune.model.entity.JCUser} profile operation.
- * To get more info see {@link org.jtalks.jcommune.web.controller.UserProfileController#saveEditedProfile(EditUserProfileDto, org.springframework.validation.BindingResult, javax.servlet.http.HttpServletResponse)}.
+ * To get more info see
+ * {@link org.jtalks.jcommune.web.controller.UserProfileController#saveEditedProfile(EditUserProfileDto,
+ * org.springframework.validation.BindingResult, javax.servlet.http.HttpServletResponse)}.
  *
  * @author Osadchuck Eugeny
  */
@@ -196,14 +198,14 @@ public class EditUserProfileDto {
     public void setAutosubscribe(boolean autosubscribe) {
         this.autosubscribe = autosubscribe;
     }
-    
+
     /**
      * @see JCUser#isMentioningNotificationsEnabled()
      */
     public boolean isMentioningNotificationsEnabled() {
         return mentioningNotificationsEnabled;
     }
-    
+
     /**
      * @see JCUser#setMentioningNotificationsEnabled(boolean)
      */
@@ -368,6 +370,7 @@ public class EditUserProfileDto {
 
     /**
      * Check - sending notification is allow
+     *
      * @return if allow return true else false
      */
     public boolean isSendPmNotification() {
@@ -376,6 +379,7 @@ public class EditUserProfileDto {
 
     /**
      * Set send notification or not
+     *
      * @param sendPmNotification Send notification or not
      */
     public void setSendPmNotification(boolean sendPmNotification) {

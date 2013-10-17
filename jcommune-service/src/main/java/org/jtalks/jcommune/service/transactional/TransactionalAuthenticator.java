@@ -130,9 +130,8 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      * {@inheritDoc}
      */
     @Override
-    public boolean authenticate(String username, String password, boolean rememberMe,
-                                HttpServletRequest request, HttpServletResponse response)
-            throws UnexpectedErrorException, NoConnectionException {
+    public boolean authenticate(String username, String password, boolean rememberMe, HttpServletRequest request,
+                                HttpServletResponse response) throws UnexpectedErrorException, NoConnectionException {
         boolean result;
         JCUser user;
         try {
@@ -167,7 +166,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         String passwordHash = encryptionService.encryptPassword(password);
         String encodedUsername;
         try {
-            encodedUsername  = username == null ? null : URLEncoder.encode(username, "UTF-8").replace("+", "%20");
+            encodedUsername = username == null ? null : URLEncoder.encode(username, "UTF-8").replace("+", "%20");
         } catch (UnsupportedEncodingException e) {
             LOGGER.error("Could not encode username '{}'", username);
             throw new UnexpectedErrorException(e);
@@ -196,7 +195,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      * @return true if authentication was successful, otherwise false
      * @throws AuthenticationException
      */
-        private boolean authenticateDefault(JCUser user, String password, boolean rememberMe,
+    private boolean authenticateDefault(JCUser user, String password, boolean rememberMe,
                                         HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
         try {

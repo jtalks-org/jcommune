@@ -72,6 +72,7 @@ public class UserProfileController {
      * trimmed field values only.
      * <p/> There is no need for trim edit password fields,
      * so they are processed with {@link DefaultStringEditor}
+     *
      * @param binder Binder object to be injected
      */
     @InitBinder
@@ -86,7 +87,7 @@ public class UserProfileController {
     /**
      * @param userService       to get current user and user by id
      * @param breadcrumbBuilder the object which provides actions on {@link BreadcrumbBuilder} entity
-     * @param imageConverter        to prepare user avatar for view
+     * @param imageConverter    to prepare user avatar for view
      * @param postService       to get all user's posts
      */
     @Autowired
@@ -127,17 +128,17 @@ public class UserProfileController {
         JCUser user = userService.getCurrentUser();
         return getUserProfileModelAndView(user);
     }
-    
+
     /**
      * Formats model and view for representing user's details
      *
-     * @param user  user
+     * @param user user
      * @return user's details
      */
-    private ModelAndView getUserProfileModelAndView(JCUser user){
+    private ModelAndView getUserProfileModelAndView(JCUser user) {
         return new ModelAndView("userDetails")
                 .addObject("user", user)
-                // bind separately to get localized value
+                        // bind separately to get localized value
                 .addObject("language", user.getLanguage());
     }
 
@@ -156,10 +157,10 @@ public class UserProfileController {
         mav.addObject("contacts", editedUser.getUserContacts());
         return mav;
     }
-    
+
     /**
-     * Converts passed user to data transfer object for view. 
-     * 
+     * Converts passed user to data transfer object for view.
+     *
      * @param user passed user
      * @return data transfer object for view
      */
@@ -175,15 +176,15 @@ public class UserProfileController {
      * In error case return into the edit profile page and draw the error.
      * <p/>
      *
-     * @param editedProfileDto  dto populated by user
-     * @param result   binding result which contains the validation result
-     * @param response http servlet response
+     * @param editedProfileDto dto populated by user
+     * @param result           binding result which contains the validation result
+     * @param response         http servlet response
      * @return in case of errors return back to edit profile page, in another case return to user details page
      * @throws NotFoundException if edited user doesn't exist in system
      */
     @RequestMapping(value = "/users/edit/**", method = RequestMethod.POST)
     public ModelAndView saveEditedProfile(@Valid @ModelAttribute(EDITED_USER) EditUserProfileDto editedProfileDto,
-                                    BindingResult result, HttpServletResponse response) throws NotFoundException {
+                                          BindingResult result, HttpServletResponse response) throws NotFoundException {
         if (result.hasErrors()) {
             JCUser editedUser = userService.get(editedProfileDto.getUserId());
             ModelAndView mav = new ModelAndView(EDIT_PROFILE, EDITED_USER, editedProfileDto);
@@ -196,11 +197,11 @@ public class UserProfileController {
         //redirect to the view profile page
         return new ModelAndView("redirect:/users/" + user.getId());
     }
-    
+
     /**
      * User must have permissions to edit own or other profiles.
      * So we must check them for users, who try to edit profiles.
-     * 
+     *
      * @param editedUserId an identifier of edited user
      */
     private void checkPermissionsToEditProfile(long editedUserId) {
@@ -217,8 +218,8 @@ public class UserProfileController {
      * SpEL pattern in a var name indicates we want to consume all the symbols in a var,
      * even dots, which Spring MVC uses as file extension delimiters by default.
      *
-     * @param page            number current page
-     * @param id database user identifier
+     * @param page number current page
+     * @param id   database user identifier
      * @return post list of user
      * @throws NotFoundException if user with given id not found.
      */
@@ -235,15 +236,17 @@ public class UserProfileController {
     }
 
     @RequestMapping(value = "**/language", method = RequestMethod.GET)
-    public String saveUserLanguage(@RequestParam(value = "lang", defaultValue = "en") String lang, HttpServletResponse response, HttpServletRequest request) throws ServletException {
+    public String saveUserLanguage(@RequestParam(value = "lang", defaultValue = "en") String lang,
+                                   HttpServletResponse response, HttpServletRequest request) throws ServletException {
         JCUser jcuser = userService.getCurrentUser();
         Language languageFromRequest = Language.byLocale(new Locale(lang));
-        if(!jcuser.isAnonymous()){
-            try{
+        if (!jcuser.isAnonymous()) {
+            try {
                 jcuser.setLanguage(languageFromRequest);
-                userService.saveEditedUserProfile(jcuser.getId(), new EditUserProfileDto(jcuser).getUserInfoContainer());
-            }catch (Exception e){
-                throw new ServletException("Language save failed.");
+                userService.saveEditedUserProfile(jcuser.getId(),
+                        new EditUserProfileDto(jcuser).getUserInfoContainer());
+            } catch (NotFoundException e) {
+                throw new ServletException("Language save failed.", e);
             }
         }
         LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);

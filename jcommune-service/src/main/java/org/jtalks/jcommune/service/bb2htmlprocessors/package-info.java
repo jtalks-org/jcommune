@@ -14,7 +14,7 @@
  */
 /**
  *
- * Contains dto classes
+ * Contains processors to bb codes
  *
  */
-package org.jtalks.jcommune.service.dto;
+package org.jtalks.jcommune.service.bb2htmlprocessors;
