@@ -141,6 +141,11 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
             String ipAddress = getClientIpAddress(request);
             LOGGER.info("User was not found during login process, username = {}, IP={}", username, ipAddress);
             result = authenticateByPluginAndUpdateUserInfo(username, password, true, rememberMe, request, response);
+        } catch (AuthenticationException e) {
+            String ipAddress = getClientIpAddress(request);
+            LOGGER.info("AuthenticationException: username = {}, IP={}, message={}",
+                    new Object[]{username, ipAddress, e.getMessage()});
+            result = authenticateByPluginAndUpdateUserInfo(username, password, false, rememberMe, request, response);
         }
         return result;
     }
@@ -189,28 +194,23 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      * @param request    HTTP request
      * @param response   HTTP response
      * @return true if authentication was successful, otherwise false
+     * @throws AuthenticationException
      */
     private boolean authenticateDefault(JCUser user, String password, boolean rememberMe,
-                                        HttpServletRequest request, HttpServletResponse response) {
-        try {
-            UsernamePasswordAuthenticationToken token =
-                    new UsernamePasswordAuthenticationToken(user.getUsername(), password);
-            token.setDetails(user);
-            Authentication auth = authenticationManager.authenticate(token);
-            securityFacade.getContext().setAuthentication(auth);
-            if (auth.isAuthenticated()) {
-                sessionStrategy.onAuthentication(auth, request, response);
-                if (rememberMe) {
-                    rememberMeServices.loginSuccess(request, response, auth);
-                }
-                user.updateLastLoginTime();
-                return true;
+                                        HttpServletRequest request,
+                                        HttpServletResponse response) throws AuthenticationException {
+        UsernamePasswordAuthenticationToken token =
+                new UsernamePasswordAuthenticationToken(user.getUsername(), password);
+        token.setDetails(user);
+        Authentication auth = authenticationManager.authenticate(token);
+        securityFacade.getContext().setAuthentication(auth);
+        if (auth.isAuthenticated()) {
+            sessionStrategy.onAuthentication(auth, request, response);
+            if (rememberMe) {
+                rememberMeServices.loginSuccess(request, response, auth);
             }
-        } catch (AuthenticationException e) {
-            String ipAddress = getClientIpAddress(request);
-            LOGGER.info("AuthenticationException: username = {}, IP={}, message={}",
-                    new Object[]{user.getUsername(), ipAddress, e.getMessage()});
-            throw e;
+            user.updateLastLoginTime();
+            return true;
         }
         return false;
     }
