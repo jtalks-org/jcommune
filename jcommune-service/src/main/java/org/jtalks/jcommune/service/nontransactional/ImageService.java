@@ -80,13 +80,13 @@ public class ImageService {
      * @return byte array-stored image
      */
     public byte[] getDefaultImage() {
-        byte[] result = new byte[0];
+        byte[] result;
         try {
             result = getFileBytes(defaultImagePath);
         } catch (IOException e) {
+            result = new byte[0];
             LOGGER.error("Failed to load default image", e);
         }
-
         return result;
     }
 

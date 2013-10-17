@@ -191,7 +191,8 @@ public class ImageUploadController {
      * @throws ImageProcessException
      */
     protected Map<String, String> createPreviewOfImage(byte[] imageBytes, HttpServletResponse response,
-                                                       ImageControllerUtils imageControllerUtils) throws ImageProcessException {
+                                                       ImageControllerUtils imageControllerUtils)
+            throws ImageProcessException {
         Map<String, String> responseContent = new HashMap<String, String>();
         imageControllerUtils.prepareResponse(imageBytes, response, responseContent);
         return responseContent;

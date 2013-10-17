@@ -137,14 +137,10 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         try {
             user = getByUsername(username);
             result = authenticateDefault(user, password, rememberMe, request, response);
-        } catch (NotFoundException | AuthenticationException e) {
-            boolean newUser = false;
-            if (e instanceof NotFoundException) {
-                String ipAddress = getClientIpAddress(request);
-                LOGGER.info("User was not found during login process, username = {}, IP={}", username, ipAddress);
-                newUser = true;
-            }
-            result = authenticateByPluginAndUpdateUserInfo(username, password, newUser, rememberMe, request, response);
+        } catch (NotFoundException e) {
+            String ipAddress = getClientIpAddress(request);
+            LOGGER.info("User was not found during login process, username = {}, IP={}", username, ipAddress);
+            result = authenticateByPluginAndUpdateUserInfo(username, password, true, rememberMe, request, response);
         }
         return result;
     }
@@ -193,11 +189,9 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      * @param request    HTTP request
      * @param response   HTTP response
      * @return true if authentication was successful, otherwise false
-     * @throws AuthenticationException
      */
     private boolean authenticateDefault(JCUser user, String password, boolean rememberMe,
-                                        HttpServletRequest request, HttpServletResponse response)
-            throws AuthenticationException {
+                                        HttpServletRequest request, HttpServletResponse response) {
         try {
             UsernamePasswordAuthenticationToken token =
                     new UsernamePasswordAuthenticationToken(user.getUsername(), password);
