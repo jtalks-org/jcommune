@@ -144,7 +144,7 @@ public class KaptchaPluginServiceTest {
         when(captchaProducer.createImage(GENERATED_CAPTCHA_TEXT)).
                 thenReturn(new BufferedImage(IMAGE_WIDTH, IMAGE_HEIGHT, imageType));
 
-        service.handleRequestToCaptchaImage(request, response);
+        service.refreshCaptchaImage(request, response);
 
         verify(response).setContentType("image/jpeg");
         verify(session).setAttribute(Constants.KAPTCHA_SESSION_KEY, GENERATED_CAPTCHA_TEXT);

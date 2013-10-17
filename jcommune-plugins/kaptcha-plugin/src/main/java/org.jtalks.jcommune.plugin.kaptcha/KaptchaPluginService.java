@@ -57,18 +57,51 @@ public class KaptchaPluginService {
         captchaProducer = createCaptchaProducer(width, height, length, possibleSymbols);
     }
 
+    /**
+     * Get plugin input element id for registration form.
+     *
+     * @param pluginId plugin id
+     * @return form element id
+     */
+    private String getFormElementId(String pluginId) {
+        return PLUGIN_PREFIX + pluginId;
+    }
+
+    /**
+     * Get plugin field name for registration form.
+     *
+     * @param pluginId plugin id
+     * @return field name
+     */
+    private String getFormFieldName(String pluginId) {
+        return "userDto.captchas['" + (PLUGIN_PREFIX + pluginId) + "']";
+    }
+
+    /**
+     * Validates captcha value.
+     *
+     * @param userDto user container with captcha
+     * @param pluginId plugin id
+     * @return validation errors
+     */
     public Map<String, String> validateCaptcha(UserDto userDto, Long pluginId) {
-        String captcha = userDto.getCaptchas().get(PLUGIN_PREFIX + String.valueOf(pluginId));
+        String captcha = userDto.getCaptchas().get(getFormElementId(String.valueOf(pluginId)));
         if (!isValid(captcha)) {
             ResourceBundle resourceBundle = ResourceBundle.getBundle("org.jtalks.jcommune.plugin.kaptcha.messages",
                     userDto.getLanguage().getLocale());
-            String fieldName = "userDto.captchas['" + (PLUGIN_PREFIX + pluginId) + "']";
+            String fieldName = getFormFieldName(String.valueOf(pluginId));
             return new ImmutableMap.Builder<String, String>().put(fieldName,
                     resourceBundle.getString("validation.captcha.wrong")).build();
         }
         return new HashMap<>();
     }
 
+    /**
+     * Checks if specified captcha value is the same as a captcha showed to user.
+     *
+     * @param value submitted captcha value
+     * @return success
+     */
     private boolean isValid(String value) {
         RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
         HttpServletRequest httpServletRequest = ((ServletRequestAttributes) attributes).getRequest();
@@ -96,8 +129,8 @@ public class KaptchaPluginService {
         model.put(ALT_CAPTCHA, resourceBundle.getObject("alt.captcha.image"));
         model.put(ALT_REFRESH_CAPTCHA, resourceBundle.getObject("alt.captcha.update"));
         model.put(CAPTCHA_PLUGIN_ID, pluginId);
-        model.put(FORM_ELEMENT_ID, PLUGIN_PREFIX + pluginId);
-        model.put(BASE_URL, getDeploymentRootUrlWithoutPort(request));
+        model.put(FORM_ELEMENT_ID, getFormElementId(pluginId));
+        model.put(BASE_URL, getDeploymentRootUrl(request));
         return VelocityEngineUtils.mergeTemplateIntoString(
                 engine, "org/jtalks/jcommune/plugin/kaptcha/template/captcha.vm", "UTF-8", model);
     }
@@ -118,7 +151,14 @@ public class KaptchaPluginService {
         return this.captchaProducer;
     }
 
-    public void handleRequestToCaptchaImage(HttpServletRequest request, HttpServletResponse response)
+    /**
+     * Refresh captcha image on registration form.
+     *
+     * @param request http request
+     * @param response http response
+     * @throws IOException
+     */
+    public void refreshCaptchaImage(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         ServletOutputStream out = response.getOutputStream();
         response.setContentType("image/jpeg");
@@ -132,9 +172,9 @@ public class KaptchaPluginService {
     /**
      * Returns current deployment root with port (if required) for using as label link, for example.
      *
-     * @return current deployment root with port, e.g. "http://myhost.com:8080/myforum"
+     * @return current deployment root with port, e.g. "http://myhost.com:8080/myforum" or "http://myhost.com/myforum"
      */
-    protected String getDeploymentRootUrlWithoutPort(HttpServletRequest request) {
+    protected String getDeploymentRootUrl(HttpServletRequest request) {
         StringBuilder urlBuilder = new StringBuilder().append(request.getScheme())
                 .append("://").append(request.getServerName());
         if (request.getServerPort() != 80) {

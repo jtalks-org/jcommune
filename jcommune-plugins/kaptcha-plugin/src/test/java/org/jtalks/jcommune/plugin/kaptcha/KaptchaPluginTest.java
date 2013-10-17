@@ -86,7 +86,7 @@ public class KaptchaPluginTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         KaptchaPluginService service = mock(KaptchaPluginService.class);
         when(kaptchaPlugin.getService()).thenReturn(service);
-        doThrow(new IOException()).when(service).handleRequestToCaptchaImage(request, response);
+        doThrow(new IOException()).when(service).refreshCaptchaImage(request, response);
 
         Boolean result = (Boolean) kaptchaPlugin.doAction("1", "refreshCaptcha", request, response);
 

@@ -255,7 +255,7 @@ public class UserController {
             Plugin plugin = pluginService.getPluginById(pluginId, new TypeFilter(ExtendedPlugin.class));
             ((ExtendedPlugin)plugin).doAction(pluginId, action, request, response);
         } catch (org.jtalks.common.service.exceptions.NotFoundException ex) {
-            LOGGER.error("Can't find plugin with id {}", pluginId);
+            LOGGER.error("Can't perform action {}: plugin with id {} not found", action, pluginId);
         }
     }
 

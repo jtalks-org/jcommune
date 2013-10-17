@@ -72,7 +72,7 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
                         break;
                 }
             } catch (NumberFormatException ex) {
-                LOGGER.error("{} is not valid value for property {}", property.getValue(), property.getName());
+                LOGGER.error(property.getValue() + " is not valid value for property " + property.getName(), ex);
             }
         }
         if (width < 1 || height < 1 || length < 1 || possibleSymbols.length() < 1) {
@@ -130,7 +130,7 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
     public Object doAction(String pluginId, String action, HttpServletRequest request, HttpServletResponse response) {
         try {
             if ("refreshCaptcha".equalsIgnoreCase(action)) {
-                getService().handleRequestToCaptchaImage(request, response);
+                getService().refreshCaptchaImage(request, response);
                 return Boolean.TRUE;
             }
         } catch (IOException ex) {
