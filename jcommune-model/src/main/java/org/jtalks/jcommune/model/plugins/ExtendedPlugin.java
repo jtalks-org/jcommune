@@ -15,9 +15,8 @@
 
 package org.jtalks.jcommune.model.plugins;
 
-import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  * Provides processing any available actions supported by plugin.
@@ -31,10 +30,9 @@ public interface ExtendedPlugin extends Plugin {
      *
      * @param pluginId plugin id
      * @param action action name
+     * @param request http request
      * @param response http response
-     * @param out servlet output stream
-     * @param session http session
      * @return any result provided by plugin
      */
-    Object doAction(String pluginId, String action, HttpServletResponse response, ServletOutputStream out, HttpSession session);
+    Object doAction(String pluginId, String action, HttpServletRequest request, HttpServletResponse response);
 }

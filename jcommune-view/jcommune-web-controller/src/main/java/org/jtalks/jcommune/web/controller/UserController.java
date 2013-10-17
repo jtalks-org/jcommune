@@ -46,10 +46,8 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Locale;
@@ -252,10 +250,10 @@ public class UserController {
 
     @RequestMapping(value = "/plugin/{pluginId}/{action}")
     public void pluginAction(@PathVariable String pluginId, @PathVariable String action,
-                                HttpServletResponse response, ServletOutputStream out, HttpSession session) {
+                             HttpServletRequest request, HttpServletResponse response) {
         try {
             Plugin plugin = pluginService.getPluginById(pluginId, new TypeFilter(ExtendedPlugin.class));
-            ((ExtendedPlugin)plugin).doAction(pluginId, action, response, out, session);
+            ((ExtendedPlugin)plugin).doAction(pluginId, action, request, response);
         } catch (org.jtalks.common.service.exceptions.NotFoundException ex) {
             LOGGER.error("Can't find plugin with id {}", pluginId);
         }

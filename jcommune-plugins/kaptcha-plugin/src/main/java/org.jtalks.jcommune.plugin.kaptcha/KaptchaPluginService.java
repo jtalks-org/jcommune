@@ -33,7 +33,6 @@ import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.*;
@@ -49,7 +48,7 @@ public class KaptchaPluginService {
     private static final String ALT_CAPTCHA = "altCaptcha";
     private static final String ALT_REFRESH_CAPTCHA = "altRefreshCaptcha";
     private static final String CAPTCHA_PLUGIN_ID = "captchaPluginId";
-    private static final String BASE_URL = "BASE_URL";
+    private static final String BASE_URL = "baseUrl";
     private static final String FORM_ELEMENT_ID = "formElementId";
     private static final String PLUGIN_PREFIX = "plugin-";
     private Producer captchaProducer;
@@ -119,24 +118,29 @@ public class KaptchaPluginService {
         return this.captchaProducer;
     }
 
-    public void handleRequestToCaptchaImage(HttpServletResponse response,
-                                            ServletOutputStream out, HttpSession session) throws IOException {
+    public void handleRequestToCaptchaImage(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        ServletOutputStream out = response.getOutputStream();
         response.setContentType("image/jpeg");
         String capText = getCaptchaProducer().createText();
-        session.setAttribute(Constants.KAPTCHA_SESSION_KEY, capText);
+        request.getSession().setAttribute(Constants.KAPTCHA_SESSION_KEY, capText);
         BufferedImage bi = getCaptchaProducer().createImage(capText);
         ImageIO.write(bi, "jpg", out);
         out.flush();
     }
 
     /**
-     * Returns current deployment root without port for using as label link, for example.
+     * Returns current deployment root with port (if required) for using as label link, for example.
      *
-     * @return current deployment root without port, e.g. "http://myhost.com/myforum"
+     * @return current deployment root with port, e.g. "http://myhost.com:8080/myforum"
      */
-    private String getDeploymentRootUrlWithoutPort(HttpServletRequest request) {
-        return request.getScheme()
-                + "://" + request.getServerName()
-                + request.getContextPath();
+    protected String getDeploymentRootUrlWithoutPort(HttpServletRequest request) {
+        StringBuilder urlBuilder = new StringBuilder().append(request.getScheme())
+                .append("://").append(request.getServerName());
+        if (request.getServerPort() != 80) {
+            urlBuilder.append(":").append(request.getServerPort());
+        }
+        urlBuilder.append(request.getContextPath());
+        return urlBuilder.toString();
     }
 }

@@ -47,10 +47,8 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
@@ -141,24 +139,22 @@ public class UserControllerTest {
             throws org.jtalks.common.service.exceptions.NotFoundException {
         ExtendedPlugin plugin = mock(ExtendedPlugin.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
-        ServletOutputStream servletOutputStream = mock(ServletOutputStream.class);
-        HttpSession session = mock(HttpSession.class);
+        HttpServletRequest request = mock(HttpServletRequest.class);
         String pluginId = "1";
         when(pluginService.getPluginById(eq(pluginId), any(TypeFilter.class))).thenReturn(plugin);
 
-        userController.pluginAction(pluginId, "someAction", response, servletOutputStream, session);
+        userController.pluginAction(pluginId, "someAction", request, response);
     }
 
     @Test
     public void testPluginActionIfPluginNotFound() throws org.jtalks.common.service.exceptions.NotFoundException {
         HttpServletResponse response = mock(HttpServletResponse.class);
-        ServletOutputStream servletOutputStream = mock(ServletOutputStream.class);
-        HttpSession session = mock(HttpSession.class);
+        HttpServletRequest request = mock(HttpServletRequest.class);
         String pluginId = "1";
         when(pluginService.getPluginById(eq(pluginId), any(TypeFilter.class)))
                 .thenThrow(new org.jtalks.common.service.exceptions.NotFoundException());
 
-        userController.pluginAction(pluginId, "someAction", response, servletOutputStream, session);
+        userController.pluginAction(pluginId, "someAction", request, response);
     }
 
     @Test

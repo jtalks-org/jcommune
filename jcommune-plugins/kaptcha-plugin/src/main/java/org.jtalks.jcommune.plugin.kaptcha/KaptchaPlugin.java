@@ -25,10 +25,8 @@ import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.*;
 
@@ -129,11 +127,10 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
     }
 
     @Override
-    public Object doAction(String pluginId, String action, HttpServletResponse response,
-                           ServletOutputStream out, HttpSession session) {
+    public Object doAction(String pluginId, String action, HttpServletRequest request, HttpServletResponse response) {
         try {
             if ("refreshCaptcha".equalsIgnoreCase(action)) {
-                getService().handleRequestToCaptchaImage(response, out, session);
+                getService().handleRequestToCaptchaImage(request, response);
                 return Boolean.TRUE;
             }
         } catch (IOException ex) {

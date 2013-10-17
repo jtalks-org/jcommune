@@ -23,9 +23,8 @@ import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.*;
 
@@ -72,12 +71,11 @@ public class KaptchaPluginTest {
     @Test
     public void doActionShouldBeSuccessfulIfCaptchaRefreshed() throws IOException {
         HttpServletResponse response = mock(HttpServletResponse.class);
-        ServletOutputStream out = mock(ServletOutputStream.class);
-        HttpSession session = mock(HttpSession.class);
+        HttpServletRequest request = mock(HttpServletRequest.class);
         KaptchaPluginService service = mock(KaptchaPluginService.class);
         when(kaptchaPlugin.getService()).thenReturn(service);
 
-        Boolean result = (Boolean) kaptchaPlugin.doAction("1", "refreshCaptcha", response, out, session);
+        Boolean result = (Boolean) kaptchaPlugin.doAction("1", "refreshCaptcha", request, response);
 
         assertEquals(result, Boolean.TRUE);
     }
@@ -85,13 +83,12 @@ public class KaptchaPluginTest {
     @Test
     public void doActionShouldBeSuccessfulIfCaptchaNotRefreshed() throws IOException {
         HttpServletResponse response = mock(HttpServletResponse.class);
-        ServletOutputStream out = mock(ServletOutputStream.class);
-        HttpSession session = mock(HttpSession.class);
+        HttpServletRequest request = mock(HttpServletRequest.class);
         KaptchaPluginService service = mock(KaptchaPluginService.class);
         when(kaptchaPlugin.getService()).thenReturn(service);
-        doThrow(new IOException()).when(service).handleRequestToCaptchaImage(response, out, session);
+        doThrow(new IOException()).when(service).handleRequestToCaptchaImage(request, response);
 
-        Boolean result = (Boolean) kaptchaPlugin.doAction("1", "refreshCaptcha", response, out, session);
+        Boolean result = (Boolean) kaptchaPlugin.doAction("1", "refreshCaptcha", request, response);
 
         assertEquals(result, Boolean.FALSE);
     }

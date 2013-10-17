@@ -107,12 +107,16 @@ public class KaptchaPluginServiceTest {
         String newLine = System.getProperty("line.separator");
         Properties properties = createProperties();
         HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getScheme()).thenReturn("http");
+        when(request.getContextPath()).thenReturn("");
+        when(request.getServerName()).thenReturn("localhost");
+        when(request.getServerPort()).thenReturn(80);
         when(service.getProperties()).thenReturn(properties);
-        String expected = "<div class='control-group'>" + newLine +
+        String expected = newLine + "<div class='control-group'>" + newLine +
                 "  <div class='controls captcha-images'>" + newLine +
-                "    <img class='captcha-img' alt='Captcha' src='http://localhost:8080/plugin/1/refreshCaptcha'/>" + newLine +
+                "    <img class='captcha-img' alt='Captcha' src='http://localhost/plugin/1/refreshCaptcha'/>" + newLine +
                 "    <img class='captcha-refresh' alt='Refresh captcha'" +
-                " src='http://localhost:8080/resources/images/captcha-refresh.png'/>" + newLine +
+                " src='http://localhost/resources/images/captcha-refresh.png'/>" + newLine +
                 "  </div>" + newLine +
                 "  <div class='controls'>" + newLine +
                 "    <input type='text' id='plugin-1' name='userDto.captchas[plugin-1]'" + newLine +
@@ -127,17 +131,20 @@ public class KaptchaPluginServiceTest {
     @Test
     public void testHandleRequestToCaptchaImage() throws Exception {
         HttpServletResponse response = mock(HttpServletResponse.class);
+        HttpServletRequest request = mock(HttpServletRequest.class);
         ServletOutputStream out = mock(ServletOutputStream.class);
         HttpSession session = mock(HttpSession.class);
         Producer captchaProducer = mock(Producer.class);
 
         int imageType = 1;
+        when(request.getSession()).thenReturn(session);
+        when(response.getOutputStream()).thenReturn(out);
         when(service.getCaptchaProducer()).thenReturn(captchaProducer);
         when(captchaProducer.createText()).thenReturn(GENERATED_CAPTCHA_TEXT);
         when(captchaProducer.createImage(GENERATED_CAPTCHA_TEXT)).
                 thenReturn(new BufferedImage(IMAGE_WIDTH, IMAGE_HEIGHT, imageType));
 
-        service.handleRequestToCaptchaImage(response, out, session);
+        service.handleRequestToCaptchaImage(request, response);
 
         verify(response).setContentType("image/jpeg");
         verify(session).setAttribute(Constants.KAPTCHA_SESSION_KEY, GENERATED_CAPTCHA_TEXT);
