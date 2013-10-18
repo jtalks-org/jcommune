@@ -733,15 +733,15 @@ div.anchor {
     line-height: 1;
 }
 
+.space-left-small:before {
+    content: " ";
+}
+
+.space-left-small-nf:not(:first-child):before {
+    content: " ";
+}
+
 .space-left-small-m {
-    margin-left: 3px;
-}
-
-.space-left-small {
-    margin-left: 3px;
-}
-
-.space-left-small-nf:not(:first-child) {
     margin-left: 3px;
 }
 
@@ -749,11 +749,19 @@ div.anchor {
     margin-left: 4px;
 }
 
-.space-left-big  {
+.margin-left-small {
+    margin-left: 3px;
+}
+
+.margin-left-small-nf:not(:first-child) {
+    margin-left: 3px;
+}
+
+.margin-left-big  {
     margin-left: 5px;
 }
 
-.space-right-big  {
+.margin-right-big  {
     margin-right: 5px;
 }
 

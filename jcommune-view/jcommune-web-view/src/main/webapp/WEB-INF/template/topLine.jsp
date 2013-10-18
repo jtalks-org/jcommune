@@ -177,10 +177,10 @@
           <a id="user-dropdown-menu-link" href="#">
             <c:out value="${username}"/>
             <c:if test="${newPmCount != null}">
-              <span class="space-left-small">(</span>
-              <i class="space-left-small icon-envelope icon-white" style="vertical-align:middle;"></i>
-              <span class='space-left-small test-pm-count'>${newPmCount}</span>
-              <span class="space-left-small">)</span>
+              <span class="margin-left-small">(</span>
+              <i class="margin-left-small icon-envelope icon-white" style="vertical-align:middle;"></i>
+              <span class='margin-left-small test-pm-count'>${newPmCount}</span>
+              <span class="margin-left-small">)</span>
             </c:if>
           </a>
           <b class="caret"></b>
