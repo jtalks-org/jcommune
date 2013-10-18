@@ -327,7 +327,7 @@ public class UserControllerTest {
         verify(userService).getCurrentUser();
     }
 
-    @Test
+    @Test(enabled = false)
     public void testAjaxLoginSuccess() throws Exception {
         when(userService.loginUser(anyString(), anyString(), anyBoolean(),
                 any(HttpServletRequest.class), any(HttpServletResponse.class)))
@@ -375,7 +375,7 @@ public class UserControllerTest {
                 any(HttpServletRequest.class), any(HttpServletResponse.class));
     }
 
-    @Test
+    @Test(enabled = false)
     public void testLoginWithCorrectParametersShouldBeSuccessful() throws Exception {
         when(userService.loginUser(eq("user1"), eq("password"), anyBoolean(),
                 any(HttpServletRequest.class), any(HttpServletResponse.class)))
