@@ -16,7 +16,6 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.BranchDao;
@@ -184,81 +183,23 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     public void shouldReturnNoBranchesWhenDbIsEmpty() {
         Section emptySection = ObjectsFactory.getDefaultSection();
         session.save(emptySection);
-        JCUser user = PersistedObjectsFactory.getDefaultUserWithGroups();
-
-        List<Branch> selectedBranches = dao.getAllAvailableBranches(user);
-
+        List<Branch> selectedBranches = dao.getAllBranches();
         assertTrue(selectedBranches.isEmpty());
     }
 
     @Test
-    public void testGetAllAvailableBranchesCheckOrdering() {
+    public void testGetAllBranches() {
         int sectionSize = 5;
-        JCUser user = PersistedObjectsFactory.getDefaultUserWithGroups();
         List<Branch> branchesOfFirstSection = createAndSaveBranchList(sectionSize, 1);
         List<Branch> branchesOfSecondSection = createAndSaveBranchList(sectionSize, 0);
+
         // build desired order
         List<Branch> createdBranches = new ArrayList<Branch>(branchesOfSecondSection);
         createdBranches.addAll(branchesOfFirstSection);
-        PersistedObjectsFactory.givePermissionOnBranches(user.getGroups().get(0), createdBranches, true);
 
-        List<Branch> selectedBranches = dao.getAllAvailableBranches(user);
+        List<Branch> selectedBranches = dao.getAllBranches();
 
-        assertEquals(selectedBranches, createdBranches);//checking the order
-    }
-
-    @Test
-    public void shouldNotReturnAnyBranchesIfUserHasNotAnyPermission() {
-        JCUser user = PersistedObjectsFactory.getDefaultUserWithGroups();
-        createAndSaveBranchList(5, 0);
-
-        assertEquals(dao.getAllAvailableBranches(user).size(), 0);
-    }
-
-    @Test
-    public void getAllAvailableBranchesShouldReturnOnlyAvailableBranches() {
-        JCUser user = PersistedObjectsFactory.getDefaultUserWithGroups();
-        List<Branch> createdBranches = createAndSaveBranchList(5, 0);
-        PersistedObjectsFactory.givePermissionOnBranches(user.getGroups().get(0), createdBranches.subList(0, 3), true);
-        PersistedObjectsFactory.givePermissionOnBranches(user.getGroups().get(0), createdBranches.subList(3, 4), false);
-
-        assertEquals(dao.getAllAvailableBranches(user).size(), 3);
-    }
-
-    @Test
-    public void getAllAvailableBranchesRestrictedPermissionShouldBeMoreSignificant() {
-        JCUser user = PersistedObjectsFactory.getDefaultUserWithGroups();
-        List<Branch> createdBranches = createAndSaveBranchList(5, 0);
-        PersistedObjectsFactory.givePermissionOnBranches(user.getGroups().get(0), createdBranches.subList(0, 3), true);
-        PersistedObjectsFactory.givePermissionOnBranches(user.getGroups().get(1), createdBranches.subList(1, 4), false);
-
-        assertEquals(dao.getAllAvailableBranches(user).size(), 1,
-                "Restricted VIEW_TOPIC permission should be more significant than allowed permission.");
-    }
-
-    @Test
-    public void getAllAvailableBranchesInSectionShouldReturnOnlyAvailableBranches() {
-        JCUser user = PersistedObjectsFactory.getDefaultUserWithGroups();
-        List<Branch> createdBranches = createAndSaveBranchList(5, 0);
-        PersistedObjectsFactory.givePermissionOnBranches(user.getGroups().get(0), createdBranches.subList(0, 3), true);
-        PersistedObjectsFactory.givePermissionOnBranches(user.getGroups().get(0), createdBranches.subList(3, 4), false);
-
-        Section section = createdBranches.get(0).getSection();
-
-        assertEquals(dao.getAllAvailableBranchesInSection(user, section).size(), 3);
-    }
-
-    @Test
-    public void getAllAvailableBranchesInSectionRestrictedPermissionShouldBeMoreSignificant() {
-        JCUser user = PersistedObjectsFactory.getDefaultUserWithGroups();
-        List<Branch> createdBranches = createAndSaveBranchList(5, 0);
-        PersistedObjectsFactory.givePermissionOnBranches(user.getGroups().get(0), createdBranches.subList(0, 3), true);
-        PersistedObjectsFactory.givePermissionOnBranches(user.getGroups().get(1), createdBranches.subList(1, 4), false);
-
-        Section section = createdBranches.get(0).getSection();
-
-        assertEquals(dao.getAllAvailableBranchesInSection(user, section).size(), 1,
-                "Restricted VIEW_TOPIC permission should be more significant than allowed permission.");
+        assertEquals(createdBranches, selectedBranches);//checking the order
     }
 
     @Test

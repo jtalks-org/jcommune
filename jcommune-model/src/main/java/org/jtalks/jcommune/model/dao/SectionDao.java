@@ -43,13 +43,4 @@ public interface SectionDao extends Crud<Section> {
      * @return count branches
      */
     Long getCountAvailableBranches(JCUser user, List<Branch> branches);
-
-    /**
-     * Get all available for user sections sorted by section position.
-     *
-     * @param user the user
-     * @param topicId id of topic that we want to move
-     * @return list of {@code Branch} objects
-     */
-    List<Section> getAllAvailableForMoveTopicSections(JCUser user, long topicId);
 }

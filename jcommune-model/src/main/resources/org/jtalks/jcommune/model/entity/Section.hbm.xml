@@ -48,12 +48,5 @@
         <![CDATA[SELECT COUNT(distinct view.branchId) FROM org.jtalks.jcommune.model.entity.ViewTopicsBranches view WHERE view.branchId IN (:branchIds) AND view.sid LIKE 'anonymousUser' AND view.granting=1]]>
     </query>
 
-    <query name="getAllAvailableForMoveTopicSections">
-        <![CDATA[SELECT distinct section FROM org.jtalks.common.model.entity.Section section JOIN section.branches sb LEFT OUTER JOIN sb.topics sbt
-            WHERE (sbt.id <> (:topicId) OR sbt is null) AND sb.id in (select distinct view.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches view
-            where view.sid in (:groupIds) and view.branchId not in (select v.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches v
-            where v.granting=0 and v.sid in (:groupIds))) ORDER BY section.position ASC]]>
-    </query>
-
 
 </hibernate-mapping>

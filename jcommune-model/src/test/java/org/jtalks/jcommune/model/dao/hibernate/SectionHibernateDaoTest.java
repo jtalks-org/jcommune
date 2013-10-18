@@ -209,6 +209,7 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
     public void testTopicInBranch() {
         Section section = ObjectsFactory.getDefaultSection();
         Branch branch = ObjectsFactory.getDefaultBranch();
+        Topic topic = ObjectsFactory.getDefaultTopic();
         section.addOrUpdateBranch(branch);
         session.save(section);
 
@@ -236,79 +237,6 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
                 new ArrayList<org.jtalks.common.model.entity.Branch>(branches)) == 0);
         assertTrue(dao.getCountAvailableBranches(new AnonymousUser(),
                 new ArrayList<org.jtalks.common.model.entity.Branch>(branches)) == 0);
-    }
-
-    @Test
-    public void testGetAllAvailableSectionsWithoutAnyPermission(){
-        JCUser user = PersistedObjectsFactory.getDefaultUserWithGroups();
-        List<Section> sections = createAndSaveSectionList(user, 5);
-        Topic topic = ((Branch)sections.get(0).getBranches().get(0)).getTopics().get(0);
-
-        assertEquals(dao.getAllAvailableForMoveTopicSections(user, topic.getId()).size(), 0,
-                "User without explicit VIEW_TOPIC permission shouldn't see any section.");
-    }
-
-    @Test
-    public void testGetAllAvailableSectionsShouldReturnOnlyAvailableSections(){
-        JCUser user = PersistedObjectsFactory.getDefaultUserWithGroups();
-        List<Section> sections = createAndSaveSectionList(user, 5);
-        Branch branchOneInSectionOne = (Branch) sections.get(0).getBranches().get(0);
-        Branch branchOneInSectionTwo = (Branch)sections.get(1).getBranches().get(0);
-        Branch branchOneInSectionThree = (Branch)sections.get(2).getBranches().get(0);
-        Topic topic = ((Branch)sections.get(3).getBranches().get(0)).getTopics().get(0);
-        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
-                branchOneInSectionOne.getId(), String.valueOf(user.getGroups().get(0).getId()), true);
-        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
-                branchOneInSectionTwo.getId(), String.valueOf(user.getGroups().get(0).getId()), true);
-        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
-                branchOneInSectionThree.getId(), String.valueOf(user.getGroups().get(1).getId()), false);
-
-        assertEquals(dao.getAllAvailableForMoveTopicSections(user, topic.getId()).size(), 2,
-                "User should see only sections with branches allowed to him by VIEW_TOPIC permission.");
-    }
-
-    @Test
-    public void testGetAllAvailableSections(){
-        JCUser user = PersistedObjectsFactory.getDefaultUserWithGroups();
-        List<Section> sections = createAndSaveSectionList(user, 5);
-        Branch branchOneInSectionOne = (Branch) sections.get(0).getBranches().get(0);
-        Branch branchOneInSectionTwo = (Branch)sections.get(1).getBranches().get(0);
-        Topic topic = ((Branch)sections.get(0).getBranches().get(0)).getTopics().get(0);
-        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
-                branchOneInSectionOne.getId(), String.valueOf(user.getGroups().get(0).getId()), true);
-        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
-                branchOneInSectionTwo.getId(), String.valueOf(user.getGroups().get(0).getId()), true);
-
-        assertEquals(dao.getAllAvailableForMoveTopicSections(user, topic.getId()).size(), 1,
-                "Topic shouldn't be accessible for move to the same branch.");
-    }
-
-    @Test
-    public void testGetAllAvailableSectionsRestrictedPermissionShouldBeMoreSignificant(){
-        JCUser user = PersistedObjectsFactory.getDefaultUserWithGroups();
-        List<Section> sections = createAndSaveSectionList(user, 5);
-        Branch branchOneInSectionOne = (Branch) sections.get(0).getBranches().get(0);
-        Topic topic = branchOneInSectionOne.getTopics().get(0);
-        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
-                branchOneInSectionOne.getId(), String.valueOf(user.getGroups().get(0).getId()), true);
-        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
-                branchOneInSectionOne.getId(), String.valueOf(user.getGroups().get(1).getId()), false);
-
-        assertEquals(dao.getAllAvailableForMoveTopicSections(user, topic.getId()).size(), 0,
-                "Restricted VIEW_TOPIC permission should be more significant than allowed permission.");
-    }
-
-    private List<Section> createAndSaveSectionList(JCUser user, int size){
-        List<Section> sections = new ArrayList<Section>();
-        for (int i = 0; i < size; i++) {
-            Section section = new Section("Section" + i);
-            Branch branch = new Branch("Branch" + i, "description");
-            branch.addTopic(new Topic(user, "title" + i));
-            section.getBranches().add(branch);
-            sections.add(section);
-            session.save(section);
-        }
-        return sections;
     }
 
     private int getSectionCount() {

@@ -16,14 +16,15 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.SessionFactory;
 import org.jtalks.common.model.dao.hibernate.GenericDao;
-import org.jtalks.common.model.entity.Entity;
-import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.SubscriptionAwareEntity;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Hibernate DAO implementation for operations with a {@link Branch}.
@@ -49,40 +50,11 @@ public class BranchHibernateDao extends GenericDao<Branch>
      */
     @SuppressWarnings("unchecked")
     @Override
-    public List<Branch> getAllAvailableBranches(JCUser user) {
+    public List<Branch> getAllBranches() {
         List<Branch> branches = session()
-                .getNamedQuery("getAllAvailableBranches")
-                .setParameterList("groupIds", getEntityIdsStrings(new ArrayList<Entity>(user.getGroups())))
+                .getNamedQuery("getAllBranches")
                 .list();
         return branches;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<Branch> getAllAvailableBranchesInSection(JCUser user, Section section) {
-        List<Branch> branches = session()
-                .getNamedQuery("getAllAvailableBranchesInSection")
-                .setParameterList("groupIds", getEntityIdsStrings(new ArrayList<Entity>(user.getGroups())))
-                .setParameter("section", section)
-                .list();
-        return branches;
-    }
-
-    /**
-     * Return entity ids from list entities as strings
-     *
-     * @param entities entities
-     * @return id's entities
-     */
-    private List<String> getEntityIdsStrings(List<Entity> entities) {
-        List<String> ids = new ArrayList<String>();
-        for (Entity e : entities) {
-            ids.add(e.getId() + "");
-        }
-        return ids;
     }
 
     /**

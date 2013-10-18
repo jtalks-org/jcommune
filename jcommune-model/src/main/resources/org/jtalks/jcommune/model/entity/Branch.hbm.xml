@@ -91,18 +91,4 @@
     <query name="getAllBranches">
         <![CDATA[FROM org.jtalks.jcommune.model.entity.Branch b ORDER BY b.section.position ASC, b.position ASC]]>
     </query>
-
-    <query name="getAllAvailableBranches">
-        <![CDATA[FROM org.jtalks.jcommune.model.entity.Branch branch WHERE branch.id
-            in (select distinct view.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches view where view.sid in (:groupIds)
-            and view.branchId not in (select v.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches v where v.granting=0 and v.sid in (:groupIds)))
-            ORDER BY branch.section.position ASC, branch.position ASC]]>
-    </query>
-
-    <query name="getAllAvailableBranchesInSection">
-        <![CDATA[FROM org.jtalks.jcommune.model.entity.Branch branch WHERE branch.section = (:section) AND branch.id
-            in (select distinct view.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches view where view.sid in (:groupIds)
-            and view.branchId not in (select v.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches v where v.granting=0 and v.sid in (:groupIds)))
-            ORDER BY branch.section.position ASC, branch.position ASC]]>
-    </query>
 </hibernate-mapping>

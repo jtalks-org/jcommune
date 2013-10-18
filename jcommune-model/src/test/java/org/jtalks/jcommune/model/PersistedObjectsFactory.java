@@ -70,13 +70,6 @@ public final class PersistedObjectsFactory {
         session.save(viewTopicsBranches);
     }
 
-
-    public static void givePermissionOnBranches(Group group, List<Branch> branches, boolean allowed){
-        for (Branch branch : branches) {
-            createAndSaveViewTopicsBranchesEntity(branch.getId(), String.valueOf(group.getId()), allowed);
-        }
-    }
-
     /**
      * Create the PrivateMessage with filled required fields.
      *

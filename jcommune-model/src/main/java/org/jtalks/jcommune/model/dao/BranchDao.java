@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.common.model.dao.Crud;
-import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.SubscriptionAwareEntity;
@@ -37,23 +36,12 @@ import java.util.List;
 public interface BranchDao extends Crud<Branch> {
 
     /**
-     * Get all available for user branches sorted by section position as primary order and
+     * Get all existing branches sorted by section position as primary order and
      * branch position and secondary order
      *
-     * @param user the user
      * @return list of {@code Branch} objects
      */
-    List<Branch> getAllAvailableBranches(JCUser user);
-
-    /**
-     * Get all available for user branches in specified section
-     * sorted by section position as primary order and branch position and secondary order
-     *
-     * @param user the user
-     * @param section the section
-     * @return list of {@code Branch} objects
-     */
-    List<Branch> getAllAvailableBranchesInSection(JCUser user, Section section);
+    List<Branch> getAllBranches();
 
     /**
      * Get count of posts in the branch.
