@@ -73,7 +73,7 @@
                          showSubmitButton="${hasPermissionToSend}"
                          back="${pageContext.request.contextPath}/inbox"/>
 
-        <input id="savePM" type="submit" class="btn space-left-big" tabindex="500" name="save_pm"
+        <input id="savePM" type="submit" class="btn margin-left-big" tabindex="500" name="save_pm"
                value="<spring:message code="label.save"/>"
                onclick="document.editForm.action='${pageContext.request.contextPath}/pm/save';return true;"/>
 
