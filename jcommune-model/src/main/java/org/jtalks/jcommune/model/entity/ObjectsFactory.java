@@ -97,6 +97,18 @@ public final class ObjectsFactory {
         return section;
     }
 
+    public static List<Section> getDefaultSectionListWithBranches() {
+        List<Section> sections = new ArrayList<>();
+        long branchId = 1;
+        for (int i = 0; i < 3; i++) {
+            sections.add(getDefaultSectionWithBranches());
+            for (org.jtalks.common.model.entity.Branch branch : sections.get(i).getBranches()) {
+                branch.setId(branchId++);
+            }
+        }
+        return sections;
+    }
+
     public static List<Topic> topics(JCUser author, int topicCount) {
         List<Topic> topics = new ArrayList<Topic>();
         for (int i = 0; i < topicCount; i++) {

@@ -30,7 +30,6 @@ import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -70,7 +69,7 @@ public class TransactionalBranchServiceTest {
     private PermissionService permissionService;
 
     private Topic topic;
-    private List<Section> sections;
+    private Section section;
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -82,7 +81,7 @@ public class TransactionalBranchServiceTest {
                 topicService,
                 permissionService);
         topic = null;
-        sections = new ArrayList<>();
+        section = null;
     }
 
     @Test
@@ -107,7 +106,7 @@ public class TransactionalBranchServiceTest {
     @Test
     public void getAvailableBranchesInSectionCheckPermission() throws NotFoundException {
         setUpGetAvailableBranchesInSection();
-        when(permissionService.hasBranchPermission(sections.get(0).getBranches().get(1).getId(),
+        when(permissionService.hasBranchPermission(section.getBranches().get(1).getId(),
                 BranchPermission.VIEW_TOPICS)).thenReturn(true);
 
         List<Branch> result = branchService.getAvailableBranchesInSection(SECTION_ID, TOPIC_ID);
@@ -117,7 +116,7 @@ public class TransactionalBranchServiceTest {
     @Test
     public void getAvailableBranchesInSectionShouldRemoveTopicBranch() throws NotFoundException {
         setUpGetAvailableBranchesInSection();
-        for (org.jtalks.common.model.entity.Branch branch : sections.get(0).getBranches()) {
+        for (org.jtalks.common.model.entity.Branch branch : section.getBranches()) {
             when(permissionService.hasBranchPermission(branch.getId(), BranchPermission.VIEW_TOPICS)).thenReturn(true);
         }
 
@@ -127,8 +126,7 @@ public class TransactionalBranchServiceTest {
 
     private void setUpGetAvailableBranchesInSection() {
         topic = ObjectsFactory.getDefaultTopic();
-        Section section = ObjectsFactory.getDefaultSectionWithBranches();
-        sections.add(section);
+        section = ObjectsFactory.getDefaultSectionWithBranches();
         Branch topicBranch = (Branch) section.getBranches().get(0);
         topicBranch.addTopic(topic);
 
@@ -143,32 +141,22 @@ public class TransactionalBranchServiceTest {
         branchService.getAvailableBranchesInSection(SECTION_ID, TOPIC_ID);
     }
 
-//    @Test
-//    public void getAllAvailableBranchesShouldRemoveTopicBranch() {
-//        setUpGetAvailableBranchesInSection();
-//
-//        List<Branch> result = branchService.getAllAvailableBranches(TOPIC_ID);
-//        assertEquals(result.size(), branches.size() - 1, "Topic shouldn't be accessible for move to the same branch.");
-//    }
-//
-//    @Test
-//    public void testGetAllAvailableBranchesUserHasNotAnyPermissions() {
-//        JCUser user = new JCUser("username", "email", "password");
-//        when(userService.getCurrentUser()).thenReturn(user);
-//
-//        List<Branch> result = branchService.getAllAvailableBranches(TOPIC_ID);
-//        assertEquals(result.size(), 0, "User shouldn't see any branch without permissions.");
-//    }
-
-    private void setUpGetAllAvailableBranches() {
-        sections.add(ObjectsFactory.getDefaultSectionWithBranches());
-        sections.add(ObjectsFactory.getDefaultSectionWithBranches());
+    @Test
+    public void getAllAvailableBranchesCheckPermission() {
+        List<Section> sections = ObjectsFactory.getDefaultSectionListWithBranches();
         topic = ObjectsFactory.getDefaultTopic();
         Branch topicBranch = (Branch) sections.get(0).getBranches().get(0);
         topicBranch.addTopic(topic);
 
         when(sectionDao.getAll()).thenReturn(sections);
         when(topicDao.get(TOPIC_ID)).thenReturn(topic);
+        when(permissionService.hasBranchPermission(sections.get(0).getBranches().get(1).getId(),
+                BranchPermission.VIEW_TOPICS)).thenReturn(true);
+        when(permissionService.hasBranchPermission(sections.get(1).getBranches().get(2).getId(),
+                BranchPermission.VIEW_TOPICS)).thenReturn(true);
+
+        List<Branch> result = branchService.getAllAvailableBranches(TOPIC_ID);
+        assertEquals(result.size(), 2, "User shouldn't see branches without view permission.");
     }
 
     @Test
