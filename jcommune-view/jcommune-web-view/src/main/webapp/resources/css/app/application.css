@@ -753,6 +753,10 @@ div.anchor {
     margin-left: 5px;
 }
 
+.space-right-big  {
+    margin-left: 5px;
+}
+
 .space-left-medium-nf:not(:first-of-type)  {
     margin-left: 4px;
 }

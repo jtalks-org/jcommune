@@ -66,7 +66,7 @@
           <th class="pm_header_info"><i class="icon-white-user"></i>
             <spring:message code="label.pm.recipient"/></th>
 
-          <th class="space-left-small"><i class="icon-white-font"></i> <spring:message code="label.pm.title"/></th>
+          <th><i class="icon-white-font space-right-big"></i> <spring:message code="label.pm.title"/></th>
 
           <th class="pm_sending_date"><i class="icon-white-calendar"></i>
             <spring:message code="label.sending_date"/></th>
