@@ -737,12 +737,12 @@ div.anchor {
     margin-left: 3px;
 }
 
-.space-left-small:before {
-    content: " ";
+.space-left-small {
+    margin-left: 3px;
 }
 
-.space-left-small-nf:not(:first-child):before {
-    content: " ";
+.space-left-small-nf:not(:first-child) {
+    margin-left: 3px;
 }
 
 .space-left-medium  {
@@ -755,8 +755,4 @@ div.anchor {
 
 .space-left-big-nf:not(:first-of-type)  {
     margin-left: 7px;
-}
-
-.pm_icon_header th i {
-    margin-right: 5px;
 }

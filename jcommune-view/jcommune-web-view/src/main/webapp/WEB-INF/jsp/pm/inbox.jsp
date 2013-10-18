@@ -55,14 +55,14 @@
 
       <table class="table table-bordered table-condensed">
         <thead>
-        <tr class="pm_icon_header">
+        <tr>
           <th class="pm_header_check">
             <input type="checkbox" class="check_all"/></th>
 
           <th class="pm_header_info"><i class="icon-white-user"></i>
             <spring:message code="label.sender"/></th>
 
-          <th><i class="icon-white-font"></i> <spring:message code="label.pm.title"/></th>
+          <th class="space-left-small"><i class="icon-white-font"></i> <spring:message code="label.pm.title"/></th>
 
           <th class="pm_sending_date"><i class="icon-white-calendar"></i>
             <spring:message code="label.sending_date"/></th>
