@@ -101,13 +101,13 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
 
     private List<Branch> getBranchesWithViewPermission(Long topicId, List<Branch> branches) {
         Topic topic = topicDao.get(topicId);
-        branches.remove(topic.getBranch());
         List<Branch> result = new ArrayList<>();
         for (Branch branch : branches) {
             if (permissionService.hasBranchPermission(branch.getId(), BranchPermission.VIEW_TOPICS)) {
                 result.add(branch);
             }
         }
+        result.remove(topic.getBranch());
         return result;
     }
 
