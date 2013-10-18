@@ -756,3 +756,7 @@ div.anchor {
 .space-left-big-nf:not(:first-of-type)  {
     margin-left: 7px;
 }
+
+.pm_icon_header th i {
+    margin-right: 5px;
+}

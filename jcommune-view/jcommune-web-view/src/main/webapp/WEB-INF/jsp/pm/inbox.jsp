@@ -55,7 +55,7 @@
 
       <table class="table table-bordered table-condensed">
         <thead>
-        <tr>
+        <tr class="pm_icon_header">
           <th class="pm_header_check">
             <input type="checkbox" class="check_all"/></th>
 
