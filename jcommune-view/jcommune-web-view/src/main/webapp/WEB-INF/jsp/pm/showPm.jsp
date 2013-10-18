@@ -47,7 +47,7 @@
                   <spring:message code="label.reply"/>
                 </a>
 
-                <a class="btn"
+                <a class="btn space-left-big"
                    href="${pageContext.request.contextPath}/quote/${pm.id}?userId=${user.id}">
                   <i class="icon-quote"></i>
                   <spring:message code="label.quote"/>
@@ -58,7 +58,7 @@
 
                 <span class="del">
                     <a id="deleteOnePM"
-                       class="btn btn-danger delete"
+                       class="btn btn-danger delete space-left-big"
                        href="${pageContext.request.contextPath}/pm"
                        data-confirmationMessage="<spring:message code="label.deletePMConfirmation"/>">
 
