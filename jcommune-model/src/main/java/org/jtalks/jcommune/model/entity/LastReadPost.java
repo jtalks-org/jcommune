@@ -17,8 +17,6 @@ package org.jtalks.jcommune.model.entity;
 
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -32,23 +30,23 @@ import java.io.StringWriter;
 public class LastReadPost extends Entity {
     private Topic topic;
     private JCUser user;
-    private DateTime postDate;
+    private DateTime postCreationDate;
 
     /**
      * For hibernate use only
      */
     protected LastReadPost() {
-        this.postDate = new DateTime();
+        this.postCreationDate = new DateTime();
     }
 
     /**
      * @param user user to track last read post for
      * @param topic topic we're marking last read post in
-     * @param postDate post date
+     * @param postCreationDate post creation date
      */
-    public LastReadPost(JCUser user, Topic topic, DateTime postDate) {
+    public LastReadPost(JCUser user, Topic topic, DateTime postCreationDate) {
         this.topic = topic;
-        this.postDate = postDate;
+        this.postCreationDate = postCreationDate;
         this.user = user;
     }
     
@@ -68,18 +66,18 @@ public class LastReadPost extends Entity {
 
     /**
      *
-     * @return last read post date
+     * @return last read post's creation date
      */
-    public DateTime getPostDate() {
-        return postDate;
+    public DateTime getPostCreationDate() {
+        return postCreationDate;
     }
 
     /**
      *
-     * @param postDate new value for the last read post date
+     * @param postCreationDate new value for the last read post's creation date
      */
-    public void setPostDate(DateTime postDate) {
-        this.postDate = postDate;
+    public void setPostCreationDate(DateTime postCreationDate) {
+        this.postCreationDate = postCreationDate;
     }
 
     /**
@@ -94,16 +92,5 @@ public class LastReadPost extends Entity {
      */
     protected void setUser(JCUser user) {
         this.user = user;
-    }
-
-    /**
-     * Return stack trace with message,To format stack trace for logging, For easy viewing of text log
-     * @param message stack trace's message
-     * @return stack trace with message
-     */
-    private String getStackTrace(String message){
-        StringWriter sw = new StringWriter();
-        new Throwable(message).printStackTrace(new PrintWriter(sw));
-        return sw.toString();
     }
 }

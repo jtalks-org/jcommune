@@ -72,15 +72,15 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
     @Test
     public void dateOfTheLastReadPostShouldBeUpdated() {
         LastReadPost post = PersistedObjectsFactory.getDefaultLastReadPost();
-        post.setPostDate(new DateTime());
+        post.setPostCreationDate(new DateTime());
         session.save(post);
-        DateTime newPostDate = post.getPostDate().plusMinutes(34);
-        post.setPostDate(newPostDate);
+        DateTime newPostDate = post.getPostCreationDate().plusMinutes(34);
+        post.setPostCreationDate(newPostDate);
 
         lastReadPostDao.saveOrUpdate(post);
         LastReadPost updatedPost = (LastReadPost) session.get(LastReadPost.class, post.getId());
 
-        assertEquals(updatedPost.getPostDate(), newPostDate,
+        assertEquals(updatedPost.getPostCreationDate(), newPostDate,
                 "Update doesn't work, because field value didn't change.");
     }
 
@@ -108,13 +108,11 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
                 .setParameter("branch", topics.get(0).getBranch().getId())
                 .setCacheable(false)
                 .executeUpdate();
-        SQLQuery checkDelete = (SQLQuery) session.createSQLQuery("select TOPIC_ID, " +
-                "LAST_READ_POST_DATE FROM LAST_READ_POSTS where TOPIC_ID IN (select TOPIC_ID from TOPIC where " +
-                "BRANCH_ID=:branch) and USER_ID = :user");
-        checkDelete.setParameter("user", user.getId());
-        checkDelete.setParameter("branch", topics.get(0).getBranch().getId());
+
+        List<LastReadPost> lastReadPostList = lastReadPostDao.getLastReadPosts(user, topics);
+
         //check delete record about read posts for user
-        assertTrue(checkDelete.list().isEmpty());
+        assertTrue(lastReadPostList.isEmpty());
     }
 
     @Test

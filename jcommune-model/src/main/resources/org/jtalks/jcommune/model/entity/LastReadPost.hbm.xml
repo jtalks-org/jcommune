@@ -27,7 +27,7 @@
         <property name="uuid" column="UUID" unique="true" not-null="true"/>
         <many-to-one name="user" column="USER_ID" class="org.jtalks.jcommune.model.entity.JCUser"/>
         <many-to-one name="topic" column="TOPIC_ID" class="Topic"/>
-        <property name="postDate" column="LAST_READ_POST_DATE"
+        <property name="postCreationDate" column="LAST_READ_POST_DATE"
                   type="org.joda.time.contrib.hibernate.PersistentDateTime" not-null="true"/>
     </class>
     

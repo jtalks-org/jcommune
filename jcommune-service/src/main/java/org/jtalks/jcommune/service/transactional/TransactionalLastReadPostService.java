@@ -24,7 +24,6 @@ import org.jtalks.jcommune.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -111,7 +110,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
         for (Topic topic : modifiedTopics) {
             LastReadPost lastReadPost = findLastReadPost(lastReadPosts, topic.getId());
             if (lastReadPost != null) {
-                topic.setLastReadPostDate(lastReadPost.getPostDate());
+                topic.setLastReadPostDate(lastReadPost.getPostCreationDate());
             }
         }
     }
@@ -178,19 +177,19 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      *
      * @param user      user to save last read post data for
      * @param topic     topic to store info for
-     * @param lastReadPost last read post in the topic
+     * @param lastPost  last post in the topic (or in the last read page of the topic)
      */
-    private void saveLastReadPost(JCUser user, Topic topic, Post lastReadPost) {
+    private void saveLastReadPost(JCUser user, Topic topic, Post lastPost) {
         DateTime lastTimeForumWasMarkedRead = user.getAllForumMarkedAsReadTime();
         DateTime topicModifiedDate = topic.getModificationDate();
         if (lastTimeForumWasMarkedRead == null || topicModifiedDate.isAfter(lastTimeForumWasMarkedRead)) {
-            LastReadPost lastRead = lastReadPostDao.getLastReadPost(user, topic);
-            if (lastRead == null) {
-                lastRead = new LastReadPost(user, topic, lastReadPost.getCreationDate());
+            LastReadPost lastReadPost = lastReadPostDao.getLastReadPost(user, topic);
+            if (lastReadPost == null) {
+                lastReadPost = new LastReadPost(user, topic, lastPost.getCreationDate());
             } else {
-                lastRead.setPostDate(lastReadPost.getCreationDate());
+                lastReadPost.setPostCreationDate(lastPost.getCreationDate());
             }
-            lastReadPostDao.saveOrUpdate(lastRead);
+            lastReadPostDao.saveOrUpdate(lastReadPost);
         }
     }
 

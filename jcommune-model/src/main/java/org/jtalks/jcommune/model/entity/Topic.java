@@ -459,14 +459,14 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     }
 
     /**
-     * @param lastReadPostDate last read post date
+     * @param lastReadPostDate last read post creation date
      */
     public void setLastReadPostDate(DateTime lastReadPostDate) {
         this.lastReadPostDate = lastReadPostDate;
     }
 
     /**
-     * @return last read post date
+     * @return last read post creation date
      */
     public DateTime getLastReadPostDate() {
         return lastReadPostDate;

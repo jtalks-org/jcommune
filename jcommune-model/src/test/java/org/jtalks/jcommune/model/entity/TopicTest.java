@@ -39,14 +39,14 @@ public class TopicTest {
     }
 
     @Test
-    public void getFirstPost() {
+    public void firstPostShouldReturnFirstPostOfTheTopic() {
         Post firstPost = topic.getFirstPost();
 
         assertEquals(firstPost, post1);
     }
 
     @Test
-    public void addPost() throws InterruptedException {
+    public void addPostShouldUpdateModificationDate() throws InterruptedException {
         DateTime prevDate = topic.getModificationDate();
         Thread.sleep(25); // millisecond precise is a kind of fiction
         topic.addPost(new Post());
@@ -54,7 +54,8 @@ public class TopicTest {
         assertTrue(topic.getModificationDate().isAfter(prevDate));
     }
 
-    public void updatePost() throws InterruptedException {
+
+    public void updatePostShouldUpdateModificationDate() throws InterruptedException {
         DateTime prevDate = topic.getModificationDate();
         Thread.sleep(25); // millisecond precise is a kind of fiction
         post1.updateModificationDate();
@@ -63,7 +64,7 @@ public class TopicTest {
     }
 
     @Test
-    public void updateModificationDate() {
+    public void updateModificationDateShouldChangeTheModificationDate() {
         DateTime prevDate = topic.getModificationDate();
 
         DateTime modDate = topic.updateModificationDate();
@@ -72,7 +73,7 @@ public class TopicTest {
     }
     
     @Test
-    public void testRecalculateModificationDate() {
+    public void recalculateModificationDateShouldSetModificationDateAsTheLatestDateAmongAllPosts() {
         DateTime lastModificationDate = new DateTime();
         
         topic.getFirstPost().setCreationDate(lastModificationDate.minusDays(1));
@@ -89,18 +90,18 @@ public class TopicTest {
     }
 
     @Test
-    public void testHasUpdatesDefault() {
+    public void hasUpdatesShouldReturnTrueByDefault() {
         assertTrue(topic.isHasUpdates());
     }
 
     @Test
-    public void testHasUpdatesWithUpdates() {
+    public void hasUpdatesShouldReturnTrueInCaseOfUpdatesExist() {
         topic.setLastReadPostDate(topic.getFirstPost().getCreationDate());
         assertTrue(topic.isHasUpdates());
     }
 
     @Test
-    public void testHasUpdatesWithoutUpdates() {
+    public void hasUpdatesShouldReturnFalseInCaseOfNoUpdatesExist() {
         DateTime lastModificationDate = new DateTime();
 
         topic.getFirstPost().setCreationDate(lastModificationDate.minusDays(1));
@@ -111,7 +112,7 @@ public class TopicTest {
     }
 
     @Test
-    public void testGetFirstUnreadPostId() {
+    public void getFirstUnreadPostIdShouldReturnTheNextPostAfterLastRead() {
         DateTime lastModificationDate = new DateTime();
 
         topic.getFirstPost().setCreationDate(lastModificationDate.minusDays(1));
@@ -125,7 +126,7 @@ public class TopicTest {
     }
 
     @Test
-    public void testGetFirstUnreadPostIdWithNoInfoSet() {
+    public void getFirstUnreadPostIdShouldReturnFirstPostIdIfAllPostAreRead() {
         DateTime lastModificationDate = new DateTime();
 
         topic.getFirstPost().setCreationDate(lastModificationDate.minusDays(1));
@@ -137,7 +138,7 @@ public class TopicTest {
     }
 
     @Test
-    public void testSetLastReadPostDateCorrectValue() {
+    public void topicShouldHasNoUpdatesIfLastReadPostIsTheLatestPost() {
         DateTime lastPostCreationDate = topic.getLastPost().getCreationDate();
         topic.setLastReadPostDate(lastPostCreationDate);
         assertEquals(topic.getLastReadPostDate(), lastPostCreationDate);
@@ -145,7 +146,7 @@ public class TopicTest {
     }
 
     @Test
-    public void testRemovePost() {
+    public void removePostShouldRemovePostFromTheTopic() {
         DateTime lastModification = new DateTime(1900, 11, 11, 11, 11, 11, 11);
         topic.setModificationDate(lastModification);
 
@@ -155,7 +156,7 @@ public class TopicTest {
     }
 
     @Test
-    public void testUserSubscribed() {
+    public void setSubscribersShouldSubscribeUserToTheTopic() {
         JCUser subscribedUser = new JCUser();
         JCUser notSubscribedUser = new JCUser();
         Set<JCUser> subscribers = new HashSet<JCUser>();

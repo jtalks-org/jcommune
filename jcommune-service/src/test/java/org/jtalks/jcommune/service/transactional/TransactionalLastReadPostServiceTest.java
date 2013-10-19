@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.hibernate.TransientObjectException;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.LastReadPostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
@@ -27,7 +26,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -286,7 +284,7 @@ public class TransactionalLastReadPostServiceTest {
             LastReadPost post = (LastReadPost) argument;
             boolean result = post.getTopic().equals(topic);
             result &= post.getUser().equals(user);
-            result &= (post.getPostDate() == dateTime);
+            result &= (post.getPostCreationDate() == dateTime);
             return result;
         }
     }
