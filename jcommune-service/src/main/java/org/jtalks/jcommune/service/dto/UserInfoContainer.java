@@ -32,7 +32,6 @@ public class UserInfoContainer {
     private String newPassword;
     private String signature;
     private String b64EncodedAvatar;
-    private Language language;
     private int pageSize;
     private boolean autosubscribe;
     private boolean mentioningNotificationsEnabled;
@@ -49,7 +48,6 @@ public class UserInfoContainer {
      * @param newPassword     new password to be set, may be null is we're not changing password
      * @param signature       user's signature
      * @param avatar          B64 encoded avatar
-     * @param language        preferred language
      * @param pageSize        page size chosen
      * @param autosubscribe   autosubscribe to topic/post flag
      * @param mentioningNotificationsEnabled whether email notifications are send when user was mentioned in forum
@@ -57,8 +55,8 @@ public class UserInfoContainer {
      * @param sendPmNotification send notification when get PM
      */
     public UserInfoContainer(String firstName, String lastName, String email, String currentPassword,
-                             String newPassword, String signature, String avatar, Language language,
-                             int pageSize, boolean autosubscribe, boolean mentioningNotificationsEnabled, 
+                             String newPassword, String signature, String avatar, int pageSize,
+                             boolean autosubscribe, boolean mentioningNotificationsEnabled,
                              String location, boolean sendPmNotification) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -67,7 +65,6 @@ public class UserInfoContainer {
         this.newPassword = newPassword;
         this.signature = signature;
         this.b64EncodedAvatar = avatar;
-        this.language = language;
         this.pageSize = pageSize;
         this.autosubscribe = autosubscribe;
         this.mentioningNotificationsEnabled = mentioningNotificationsEnabled;
@@ -119,14 +116,6 @@ public class UserInfoContainer {
     public String getSignature() {
         return signature;
     }
-
-    /**
-     * @return user language
-     */
-    public Language getLanguage() {
-        return language;
-    }
-
 
     /**
      * @return user page size

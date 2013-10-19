@@ -160,7 +160,7 @@ public class TransactionalUserServiceTest {
         String newAvatar = new String(new byte[12]);
 
         JCUser editedUser = userService.saveEditedUserProfile(USER_ID, new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, Language.ENGLISH, 50, true, true,
+                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, 50, true, true,
                 "location", true));
 
         verify(userDao).saveOrUpdate(user);
@@ -182,7 +182,7 @@ public class TransactionalUserServiceTest {
         when(userDao.isExist(USER_ID)).thenReturn(Boolean.FALSE);
 
         userService.saveEditedUserProfile(USER_ID, new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, Language.ENGLISH, 50, true, true,
+                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, 50, true, true,
                 "location", true));
     }
 
@@ -197,7 +197,7 @@ public class TransactionalUserServiceTest {
         String newAvatar = new String(new byte[12]);
         String newPassword = null;
         UserInfoContainer userInfo = new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, newPassword, SIGNATURE, newAvatar, Language.ENGLISH, 50, true, true,
+                PASSWORD, newPassword, SIGNATURE, newAvatar, 50, true, true,
                 "location", true);
 
         JCUser editedUser = userService.saveEditedUserProfile(USER_ID, userInfo);
@@ -216,7 +216,7 @@ public class TransactionalUserServiceTest {
         String newAvatar = new String(new byte[0]);
 
         JCUser editedUser = userService.saveEditedUserProfile(USER_ID, new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, Language.ENGLISH, 50, true, true,
+                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, 50, true, true,
                 "location", true));
 
         verify(userDao).saveOrUpdate(user);

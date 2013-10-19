@@ -191,7 +191,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         editedUser.setSignature(editedUserProfileInfo.getSignature());
         editedUser.setFirstName(editedUserProfileInfo.getFirstName());
         editedUser.setLastName(editedUserProfileInfo.getLastName());
-        editedUser.setLanguage(editedUserProfileInfo.getLanguage());
         editedUser.setPageSize(editedUserProfileInfo.getPageSize());
         editedUser.setLocation(editedUserProfileInfo.getLocation());
         editedUser.setAutosubscribe(editedUserProfileInfo.isAutosubscribe());

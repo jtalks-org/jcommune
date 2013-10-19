@@ -98,7 +98,6 @@ public class EditUserProfileDto {
         this.lastName = user.getLastName();
         this.email = user.getEmail();
         this.signature = user.getSignature();
-        this.language = user.getLanguage();
         this.pageSize = user.getPageSize();
         this.autosubscribe = user.isAutosubscribe();
         this.mentioningNotificationsEnabled = user.isMentioningNotificationsEnabled();
@@ -115,7 +114,7 @@ public class EditUserProfileDto {
     public UserInfoContainer getUserInfoContainer() {
         return new UserInfoContainer(this.getFirstName(), this.getLastName(), this.getEmail(),
                 this.getCurrentUserPassword(), this.getNewUserPassword(), this.getSignature(),
-                this.getAvatar(), this.getLanguage(), this.getPageSize(), this.isAutosubscribe(),
+                this.getAvatar(), this.getPageSize(), this.isAutosubscribe(),
                 this.isMentioningNotificationsEnabled(), this.getLocation(), this.isSendPmNotification());
     }
 
@@ -228,20 +227,6 @@ public class EditUserProfileDto {
      */
     public void setAvatar(String avatar) {
         this.avatar = avatar;
-    }
-
-    /**
-     * @return user language
-     */
-    public Language getLanguage() {
-        return language;
-    }
-
-    /**
-     * @param language of user
-     */
-    public void setLanguage(Language language) {
-        this.language = language;
     }
 
     /**
