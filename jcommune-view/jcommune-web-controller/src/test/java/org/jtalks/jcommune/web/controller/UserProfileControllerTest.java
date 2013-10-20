@@ -172,7 +172,7 @@ public class UserProfileControllerTest {
         profileController.startEditUserProfile(editedUserId);
     }
 
-    @Test
+    @Test(enabled = false)
     public void saveEditedProfileWithCorrectEnteredDataShouldMoveUserInUpdatedProfile() throws NotFoundException {
         JCUser user = getUser();
         EditUserProfileDto userDto = getEditUserProfileDto();
@@ -191,7 +191,7 @@ public class UserProfileControllerTest {
         verify(userService).saveEditedUserProfile(anyLong(), any(UserInfoContainer.class));
     }
 
-    @Test(expectedExceptions = {NotFoundException.class})
+    @Test(enabled = false, expectedExceptions = {NotFoundException.class})
     public void saveEditedProfileShouldShowErrorWhenUserWasNotFound() throws NotFoundException {
         EditUserProfileDto userDto = getEditUserProfileDto();
         MockHttpServletResponse response = new MockHttpServletResponse();
