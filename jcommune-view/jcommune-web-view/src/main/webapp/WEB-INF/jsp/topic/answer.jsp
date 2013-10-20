@@ -22,7 +22,10 @@
 <jsp:useBean id="topic" type="org.jtalks.jcommune.model.entity.Topic" scope="request"/>
 <head>
   <meta name="description" content="<c:out value="${topic.title}"/>">
-  <title><spring:message code="label.answer_to"/>: <c:out value="${topic.title}"/></title>
+  <title>
+      <c:if test="${not empty cmpTitlePrefix}"><c:out value="${cmpTitlePrefix}"/> - </c:if>
+      <spring:message code="label.answer_to"/>: <c:out value="${topic.title}"/>
+  </title>
 </head>
 <body>
 <div class="container">

@@ -99,7 +99,9 @@ public enum JCommuneProperty {
      * Keeps the date of the last modification of the forum admin information
      * such as logo or favorite icon
      */
-    ADMIN_INFO_LAST_UPDATE_TIME
+    ADMIN_INFO_LAST_UPDATE_TIME,
+    /** title prefix - should be displayed at the beginning of the every page */
+    TITLE_PREFIX
     ;
 
 

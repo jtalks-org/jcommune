@@ -42,6 +42,10 @@ public class ComponentInformation {
     @Size(min = 0, max = Component.COMPONENT_DESCRIPTION_MAX_LENGTH, message = "{validation.param.length}")
     private String logoTooltip;
 
+    @NotNull(message = "{validation.not_null}")
+    @Size(min = 0, max = Component.COMPONENT_DESCRIPTION_MAX_LENGTH, message = "{validation.param.length}")
+    private String titlePrefix;
+
     private String logo;
 
     private String icon;
@@ -153,5 +157,20 @@ public class ComponentInformation {
      */
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    /**
+     * @return title prefix for the forum (it should be displayed in the beginning of the title of every page)
+     */
+    public String getTitlePrefix() {
+        return titlePrefix;
+    }
+
+    /**
+     * Set the new title prefix for the forum (it should be displayed in the beginning of the title of every page)
+     * @param titlePrefix new value for the title prefix
+     */
+    public void setTitlePrefix(String titlePrefix) {
+        this.titlePrefix = titlePrefix;
     }
 }

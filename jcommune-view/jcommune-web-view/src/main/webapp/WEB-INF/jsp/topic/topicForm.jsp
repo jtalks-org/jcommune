@@ -21,7 +21,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <head>
   <meta name="description" content="<c:out value="${topicDto.topic.branch.name}"/>">
-  <title><c:out value="${topicDto.topic.branch.name}"/> - <spring:message code="h.new_topic"/></title>
+  <title>
+      <c:if test="${not empty cmpTitlePrefix}"><c:out value="${cmpTitlePrefix}"/> - </c:if>
+      <c:out value="${topicDto.topic.branch.name}"/> - <spring:message code="h.new_topic"/>
+  </title>
 </head>
 <body>
 <div class="container">

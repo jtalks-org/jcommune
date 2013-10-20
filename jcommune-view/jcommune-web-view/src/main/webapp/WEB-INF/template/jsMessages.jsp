@@ -128,3 +128,4 @@ $labelDummyTextBBCode = '<spring:message code="label.dummyTextBBCode" htmlEscape
 
 $labelBranchName = '<spring:message code="label.branchName" htmlEscape="true"/>';
 $labelBranchDescription = '<spring:message code="label.branchDescription" htmlEscape="true"/>';
+$labelTitlePrefix = '<spring:message code="label.titlePrefix" htmlEscape="true"/>';
