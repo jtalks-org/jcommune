@@ -131,13 +131,8 @@ public class MailService {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(LINK, url);
             model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
-            if(entity instanceof Branch){
-                sendEmailOnForumUpdates(recipient, model, locale, (Entity)entity,
-                        "subscriptionNotification.subject","branchSubscriptionNotification.vm");
-            }else{
-                sendEmailOnForumUpdates(recipient, model, locale, (Entity) entity,
-                        "subscriptionNotification.subject","subscriptionNotification.vm");
-            }
+            sendEmailOnForumUpdates(recipient, model, locale, (Entity) entity,
+                    "subscriptionNotification.subject","subscriptionNotification.vm");
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE,
                     entity.getClass().getCanonicalName(),
@@ -398,6 +393,26 @@ public class MailService {
 
         } catch (MailingFailedException e) {
             LOGGER.error("Failed to sent mail about removing topic or code review for user: " + recipient.getUsername());
+        }
+    }
+
+    /**
+     * Send email about new topic in the subscribed branch.
+     * @param subscriber recipient
+     * @param topic newly created topic
+     */
+    void sendTopicCreationMail(JCUser subscriber, Topic topic) {
+        try {
+            String urlSuffix = "/topics/" + topic.getId();
+            String url = this.getDeploymentRootUrl() + urlSuffix;
+            Locale locale = subscriber.getLanguage().getLocale();
+            Map<String, Object> model = new HashMap<String, Object>();
+            model.put(LINK, url);
+            model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
+            sendEmailOnForumUpdates(subscriber, model, locale, topic.getBranch(),
+                    "subscriptionNotification.subject", "branchSubscriptionNotification.vm");
+        } catch (MailingFailedException e) {
+            LOGGER.error("Failed to sent mail about creation topic for user: " + subscriber.getUsername());
         }
     }
 }

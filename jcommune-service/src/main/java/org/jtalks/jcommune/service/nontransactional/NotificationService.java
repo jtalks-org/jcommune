@@ -157,5 +157,17 @@ public class NotificationService {
             }
         }
     }
+
+    /**
+     * Notify about new topic creation in the subscribed branch.
+     * @param topic newly created topic
+     */
+    public void topicCreated(Topic topic) {
+        Collection<JCUser> branchSubscribers = subscriptionService.getAllowedSubscribers(topic.getBranch());
+        this.filterSubscribers(branchSubscribers);
+        for (JCUser subscriber : branchSubscribers) {
+            mailService.sendTopicCreationMail(subscriber, topic);
+        }        
+    }
 }
 

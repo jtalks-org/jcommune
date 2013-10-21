@@ -319,4 +319,17 @@ public class NotificationServiceTest {
         verify(mailService).sendUpdatesOnSubscription(user1, topic);
         assertEquals(topic.getSubscribers().size(), 2);
     }
+    
+    @Test
+    public void testTopicCreated() {
+        prepareEnabledProperty();
+        branch.getSubscribers().add(user1);
+        branch.getSubscribers().add(currentUser);
+        when(subscriptionService.getAllowedSubscribers(branch)).thenReturn(branch.getSubscribers());
+        
+        service.topicCreated(topic);
+        
+        verify(mailService, times(1)).sendTopicCreationMail(user1, topic);
+        verifyNoMoreInteractions(mailService);
+    }
 }
