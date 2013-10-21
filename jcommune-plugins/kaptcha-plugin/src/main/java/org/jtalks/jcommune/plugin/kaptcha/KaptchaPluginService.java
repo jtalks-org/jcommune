@@ -115,6 +115,7 @@ public class KaptchaPluginService {
         properties.put("jar.resource.loader.class", "org.apache.velocity.runtime.resource.loader.JarResourceLoader");
         String jarPath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
         properties.put("jar.resource.loader.path", "jar:file:" + jarPath);
+        properties.put("runtime.log.logsystem.class", "org.apache.velocity.runtime.log.NullLogSystem");
         return properties;
     }
 

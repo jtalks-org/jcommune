@@ -99,6 +99,7 @@ public class KaptchaPluginServiceTest {
         Properties properties = new Properties();
         properties.put("resource.loader", "class");
         properties.put("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+        properties.put("runtime.log.logsystem.class", "org.apache.velocity.runtime.log.NullLogSystem");
         return properties;
     }
 
