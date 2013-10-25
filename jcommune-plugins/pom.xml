@@ -56,15 +56,15 @@
 
   <distributionManagement>
     <repository>
-      <id>jtalks-nexus-plugins</id>
-      <name>jtalks nexus plugins</name>
+      <id>jtalks-nexus</id>
+      <name>jtalks nexus</name>
       <url>
         http://repo.jtalks.org/content/repositories/releases
       </url>
     </repository>
     <snapshotRepository>
-      <id>jtalks-nexus-plugins</id>
-      <name>jtalks nexus plugins</name>
+      <id>jtalks-nexus</id>
+      <name>jtalks nexus</name>
       <url>
         http://repo.jtalks.org/content/repositories/snapshots
       </url>
