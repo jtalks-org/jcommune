@@ -24,7 +24,10 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <head>
   <meta name="description" content="<c:out value="${user.username}"/>">
-  <title><spring:message code="label.user"/> - <c:out value="${user.username}"/></title>
+  <title>
+      <c:if test="${not empty cmpTitlePrefix}"><c:out value="${cmpTitlePrefix}"/> - </c:if>
+      <spring:message code="label.user"/> - <c:out value="${user.username}"/>
+  </title>
 </head>
 <body>
 <sec:authentication property="principal.username" var="auth" scope="request"/>

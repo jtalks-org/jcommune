@@ -23,7 +23,10 @@
 <jsp:useBean id="topic" type="org.jtalks.jcommune.model.entity.Topic" scope="request"/>
 <head>
   <meta name="description" content="<c:out value="${topic.title}"/>">
-  <title><c:out value="${topic.title}"/></title>
+  <title>
+      <c:if test="${not empty cmpTitlePrefix}"><c:out value="${cmpTitlePrefix}"/> - </c:if>
+      <c:out value="${topic.title}"/>
+  </title>
 </head>
 <body>
 

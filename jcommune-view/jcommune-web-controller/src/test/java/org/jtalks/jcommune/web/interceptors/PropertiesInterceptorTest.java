@@ -49,6 +49,7 @@ public class PropertiesInterceptorTest {
     private JCommuneProperty sapeShowDummyLinks = JCommuneProperty.CMP_SAPE_SHOW_DUMMY_LINKS;
     private JCommuneProperty logoToolTip = JCommuneProperty.LOGO_TOOLTIP;
     private JCommuneProperty lastChangeDate = JCommuneProperty.ADMIN_INFO_LAST_UPDATE_TIME;
+    private JCommuneProperty titlePrefix = JCommuneProperty.TITLE_PREFIX;
 
     @Mock
     private ComponentDao componentDao;
@@ -60,25 +61,28 @@ public class PropertiesInterceptorTest {
         initMocks(this);
         
         propertiesInterceptor = new PropertiesInterceptor(cmpName, 
-                cmpDescription, sapeShowDummyLinks, logoToolTip, lastChangeDate);
+                cmpDescription, sapeShowDummyLinks, logoToolTip, lastChangeDate, titlePrefix);
         
         cmpName.setName("cmp.name");
         cmpDescription.setName("cmp.description");
         sapeShowDummyLinks.setName("sape.show.dummy.links");
         logoToolTip.setName("sape.show.dummy.links");
         lastChangeDate.setName("last.change.date");
+        titlePrefix.setName("prefix_title");
         
         cmpName.setDefaultValue(CMP_NAME);
         cmpDescription.setDefaultValue(CMP_DESCRIPTION);
         sapeShowDummyLinks.setDefaultValue(String.valueOf(SAPE_SHOW_DUMMY_LINKS));
         logoToolTip.setDefaultValue(LOGO_TOOLTIP);
         lastChangeDate.setDefaultValue(LAST_CHANGE_DATE);
+        titlePrefix.setDefaultValue("prefix of the title");
         
         cmpName.setComponentDao(componentDao);
         cmpDescription.setComponentDao(componentDao);
         sapeShowDummyLinks.setComponentDao(componentDao);
         logoToolTip.setComponentDao(componentDao);
         lastChangeDate.setComponentDao(componentDao);
+        titlePrefix.setComponentDao(componentDao);
     }
     
     
@@ -92,12 +96,14 @@ public class PropertiesInterceptorTest {
         boolean showDummyLinks = assertAndReturnModelAttributeOfType(mav, PARAM_SAPE_SHOW_DUMMY_LINKS, Boolean.class);
         String logoTooltip = assertAndReturnModelAttributeOfType(mav, PARAM_LOGO_TOOLTIP, String.class);
         String lastChangeDate = assertAndReturnModelAttributeOfType(mav, PARAM_LAST_INFO_CHAGE, String.class);
+        String titlePrefixProperty = assertAndReturnModelAttributeOfType(mav, "cmpTitlePrefix", String.class);
         
         assertEquals(cmpName, CMP_NAME);
         assertEquals(cmpDescription, CMP_DESCRIPTION);
         assertEquals(showDummyLinks, SAPE_SHOW_DUMMY_LINKS);
         assertEquals(logoTooltip, LOGO_TOOLTIP);
         assertEquals(lastChangeDate, LAST_CHANGE_DATE);
+        assertEquals(titlePrefixProperty, "prefix of the title");
     }
     
     @Test
@@ -115,6 +121,7 @@ public class PropertiesInterceptorTest {
         assertNull(mav.getModel().get(PARAM_SAPE_SHOW_DUMMY_LINKS));
         assertNull(mav.getModel().get(PARAM_LOGO_TOOLTIP));
         assertNull(mav.getModel().get(PARAM_LAST_INFO_CHAGE));
+        assertNull(mav.getModel().get("cmpTitlePrefix"));
     }
     
     

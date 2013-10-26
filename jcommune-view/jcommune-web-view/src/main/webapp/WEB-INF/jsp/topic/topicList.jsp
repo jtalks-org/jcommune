@@ -30,7 +30,10 @@
 <jsp:useBean id="topicsPage" type="org.springframework.data.domain.Page" scope="request"/>
 <head>
   <meta name="description" content="<c:out value="${branch.name}"/>">
-  <title><c:out value="${branch.name}"/> - <c:out value="${cmpDescription}"/></title>
+  <title>
+      <c:if test="${not empty cmpTitlePrefix}"><c:out value="${cmpTitlePrefix}"/> - </c:if>
+      <c:out value="${branch.name}"/> - <c:out value="${cmpDescription}"/>
+  </title>
 </head>
 <body>
 <div class="container">

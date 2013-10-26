@@ -23,6 +23,7 @@
 <head>
   <meta name="description" content="<c:out value="${simplePageDto.nameText}"/>">
   <title>
+    <c:if test="${not empty cmpTitlePrefix}"><c:out value="${cmpTitlePrefix}"/> - </c:if>
     <c:out value="${simplePageDto.nameText}"/>
   </title>
 
