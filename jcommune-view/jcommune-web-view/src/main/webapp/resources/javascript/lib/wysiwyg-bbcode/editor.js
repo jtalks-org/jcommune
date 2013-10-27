@@ -150,7 +150,7 @@ function bbcode2html() {
 			//enable code highlight
 			prettyPrint();
             //enable image preview
-            $("a[rel^='prettyPhoto']").prettyPhoto({social_tools:false});
+            $('a.prettyPhoto').prettyPhoto({social_tools:false});
         }
     });
 }
