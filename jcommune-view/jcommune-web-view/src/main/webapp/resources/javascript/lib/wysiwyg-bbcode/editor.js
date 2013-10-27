@@ -150,7 +150,7 @@ function bbcode2html() {
 			//enable code highlight
 			prettyPrint();
             //enable image preview
-            $("a[rel^='prettyPhoto']").prettyPhoto({social_tools:false});
+            $('a.prettyPhoto').prettyPhoto({social_tools:false});
         }
     });
 }
@@ -174,6 +174,27 @@ function closeTags() {
     var currentContent = textboxelement.value;
 
     currentContent = closeTag2(currentContent);
+
+    if(currentContent) {
+        /* start removing duplication close tags */
+        var openTags = currentContent.match(new RegExp("([\\[]{1}[\\s\\d\\w]{0,}(=(.*?))*[\\]]{1})", "ig"));
+        var closeTags = currentContent.match(new RegExp("([\\[]{1})([\\/]{1})(.*?)([\\]]{1})", "ig"));
+        var start = 0;
+        var newContent = "";
+        if((openTags && closeTags) && (openTags.length != closeTags.length)) {
+            for(a=0; a<closeTags.length; a++) {
+                var endStr = "";
+                if(openTags[a] != undefined) {
+                    start = currentContent.indexOf(closeTags[a], start)+closeTags[a].length;
+                    newContent = currentContent.slice(0, start);
+                } else {
+                    start = currentContent.indexOf(closeTags[a], start)+closeTags[a].length;
+                    endStr = currentContent.slice(start);
+                }
+            }
+            currentContent = newContent + endStr;
+        }
+    }
 
     currentContent = currentContent.replace(/\[size\]/gi, '[size=10]');
     currentContent = currentContent.replace(/\[color\]/gi, '[color=000000]');

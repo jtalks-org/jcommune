@@ -17,6 +17,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.LastReadPostDao;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -69,16 +70,17 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
     }
 
     @Test
-    public void testUpdate() {
+    public void dateOfTheLastReadPostShouldBeUpdated() {
         LastReadPost post = PersistedObjectsFactory.getDefaultLastReadPost();
+        post.setPostCreationDate(new DateTime());
         session.save(post);
-        int newPostIndex = post.getPostIndex() + 1;
-        post.setPostIndex(newPostIndex);
+        DateTime newPostDate = post.getPostCreationDate().plusMinutes(34);
+        post.setPostCreationDate(newPostDate);
 
         lastReadPostDao.saveOrUpdate(post);
         LastReadPost updatedPost = (LastReadPost) session.get(LastReadPost.class, post.getId());
 
-        assertEquals(updatedPost.getPostIndex(), newPostIndex,
+        assertEquals(updatedPost.getPostCreationDate(), newPostDate,
                 "Update doesn't work, because field value didn't change.");
     }
 
@@ -88,9 +90,9 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
         JCUser user = PersistedObjectsFactory.getDefaultUser();
 
         //records of posts in topics
-        Map<Long, Integer> listCountPostsToTopics = markAllTopicsASRead(topics, user);
+        Map<Long, DateTime> listCountPostsToTopics = markAllTopicsASRead(topics, user);
         //records in database about read topic
-        Map<Long, Integer> actualCountPostsToTopics = getActualListCountPostsToTopics(topics, user);
+        Map<Long, DateTime> actualCountPostsToTopics = getActualListCountPostsToTopics(topics, user);
 
         assertEquals(actualCountPostsToTopics, listCountPostsToTopics);
     }
@@ -106,29 +108,27 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
                 .setParameter("branch", topics.get(0).getBranch().getId())
                 .setCacheable(false)
                 .executeUpdate();
-        SQLQuery checkDelete = (SQLQuery) session.createSQLQuery("select TOPIC_ID, " +
-                "LAST_READ_POST_INDEX FROM LAST_READ_POSTS where TOPIC_ID IN (select TOPIC_ID from TOPIC where " +
-                "BRANCH_ID=:branch) and USER_ID = :user");
-        checkDelete.setParameter("user", user.getId());
-        checkDelete.setParameter("branch", topics.get(0).getBranch().getId());
+
+        List<LastReadPost> lastReadPostList = lastReadPostDao.getLastReadPosts(user, topics);
+
         //check delete record about read posts for user
-        assertTrue(checkDelete.list().isEmpty());
+        assertTrue(lastReadPostList.isEmpty());
     }
 
     @Test
-    public void testGetTopicAndCountOfPostsInBranch() {
+    public void testGetTopicAndLatestPostDateInBranch() {
         List<Topic> topics = PersistedObjectsFactory.createAndSaveTopicListWithPosts(10);
         //records of posts in topics
-        Map<Long, Integer> actualCountOfPosts = getTopicAndCountOfPostsInBranch(topics);
-        Map<Long, Integer> resultOfGetTopics = new HashMap<Long, Integer>();
+        Map<Long, DateTime> actualCountOfPosts = getTopicAndLatestPostDateInBranch(topics);
+        Map<Long, DateTime> resultOfGetTopics = new HashMap<Long, DateTime>();
         @SuppressWarnings("unchecked")
-        List<Object[]> resultCheckGetTopics = session.getNamedQuery("getTopicAndCountOfPostsInBranch")
+        List<Object[]> resultCheckGetTopics = session.getNamedQuery("getTopicAndLatestPostDateInBranch")
                 .setParameter("branch", topics.get(0).getBranch().getId())
                 .setCacheable(false)
                 .list();
 
         for (Object[] record : resultCheckGetTopics) {
-            resultOfGetTopics.put(new Long(record[0].toString()), new Integer(record[1].toString()));
+            resultOfGetTopics.put(new Long(record[0].toString()), (DateTime)record[1]);
         }
 
         assertEquals(resultOfGetTopics, actualCountOfPosts);
@@ -140,11 +140,11 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
         List<Topic> topicsOfFirstBranch = PersistedObjectsFactory.createAndSaveTopicListWithPosts(10);
         List<Topic> topicsOfSecondBranch = PersistedObjectsFactory.createAndSaveTopicListWithPosts(10);
         //records of posts in topics
-        Map<Long, Integer> listCountPostsToTopicsInFBranch = new HashMap<Long, Integer>();
-        Map<Long, Integer> listCountPostsToTopicsInSBranch = new HashMap<Long, Integer>();
+        Map<Long, DateTime> listCountPostsToTopicsInFBranch = new HashMap<Long, DateTime>();
+        Map<Long, DateTime> listCountPostsToTopicsInSBranch = new HashMap<Long, DateTime>();
         //records in database about read topic
-        Map<Long, Integer> actualCountPostsToTopicsInFBranch = new HashMap<Long, Integer>();
-        Map<Long, Integer> actualCountPostsToTopicsInSBranch = new HashMap<Long, Integer>();
+        Map<Long, DateTime> actualCountPostsToTopicsInFBranch = new HashMap<Long, DateTime>();
+        Map<Long, DateTime> actualCountPostsToTopicsInSBranch = new HashMap<Long, DateTime>();
 
         listCountPostsToTopicsInFBranch = markAllTopicsASRead(topicsOfFirstBranch, user);
         listCountPostsToTopicsInSBranch = markAllTopicsASRead(topicsOfSecondBranch, user);
@@ -229,19 +229,18 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
      * @param user   User for which threads are marked as read
      * @return list of count posts for each topic, for verification
      */
-    private Map<Long, Integer> markAllTopicsASRead(List<Topic> topics, JCUser user) {
+    private Map<Long, DateTime> markAllTopicsASRead(List<Topic> topics, JCUser user) {
         SQLQuery insertQuery = (SQLQuery) session.getNamedQuery("markAllTopicsRead");
         insertQuery.setCacheable(false);
-        Map<Long, Integer> listCountPostsToTopics = new HashMap<Long, Integer>();
+        Map<Long, DateTime> listCountPostsToTopics = new HashMap<Long, DateTime>();
 
         for (Topic tp : topics) {
-            Integer indexReadPosts = tp.getPosts().size() - 1;
             insertQuery.setParameter("uuid", UUID.randomUUID().toString())
                     .setParameter("user", user.getId())
-                    .setParameter("lastPostIndex", indexReadPosts)
+                    .setParameter("lastPostDate", ((DateTime)tp.getLastPost().getCreationDate()).toDate())
                     .setParameter("topic", tp.getId())
                     .executeUpdate();
-            listCountPostsToTopics.put(tp.getId(), indexReadPosts);
+            listCountPostsToTopics.put(tp.getId(), tp.getLastPost().getCreationDate());
         }
         return listCountPostsToTopics;
     }
@@ -251,13 +250,13 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
      *
      * @param topics List of topics, which marked as read to user
      * @param user   User for which threads are marked as read
-     * @return List of count posts for each topic, for verification, stored in the database
+     * @return List of last read dates for each topic, for verification, stored in the database
      */
-    private Map<Long, Integer> getActualListCountPostsToTopics(List<Topic> topics, JCUser user) {
-        Map<Long, Integer> listCountPostsToTopics = new HashMap<Long, Integer>();
+    private Map<Long, DateTime> getActualListCountPostsToTopics(List<Topic> topics, JCUser user) {
+        Map<Long, DateTime> listCountPostsToTopics = new HashMap<Long, DateTime>();
 
         SQLQuery checkInsert = (SQLQuery) session.createSQLQuery("select TOPIC_ID, " +
-                "LAST_READ_POST_INDEX FROM LAST_READ_POSTS where TOPIC_ID IN (select TOPIC_ID from TOPIC where " +
+                "LAST_READ_POST_DATE FROM LAST_READ_POSTS where TOPIC_ID IN (select TOPIC_ID from TOPIC where " +
                 "BRANCH_ID=:branch) and USER_ID = :user");
         checkInsert.setParameter("user", user.getId());
         checkInsert.setParameter("branch", topics.get(0).getBranch().getId());
@@ -265,7 +264,7 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
         List<Object[]> resultCheckInsert = checkInsert.list();
 
         for (Object[] record : resultCheckInsert) {
-            listCountPostsToTopics.put(new Long(record[0].toString()), new Integer(record[1].toString()));
+            listCountPostsToTopics.put(new Long(record[0].toString()), new DateTime(record[1]));
         }
         return listCountPostsToTopics;
     }
@@ -276,11 +275,11 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
      * @param topics List of topics in branch
      * @return List of count posts for each topic
      */
-    private Map<Long, Integer> getTopicAndCountOfPostsInBranch(List<Topic> topics) {
-        Map<Long, Integer> result = new HashMap<Long, Integer>();
+    private Map<Long, DateTime> getTopicAndLatestPostDateInBranch(List<Topic> topics) {
+        Map<Long, DateTime> result = new HashMap<Long, DateTime>();
         for (Topic topic : topics) {
             //second parameter it's index of last post
-            result.put(topic.getId(), topic.getPostCount() - 1);
+            result.put(topic.getId(), topic.getLastPost().getCreationDate());
         }
         return result;
     }

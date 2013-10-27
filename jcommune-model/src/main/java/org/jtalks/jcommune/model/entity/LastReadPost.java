@@ -15,9 +15,8 @@
 package org.jtalks.jcommune.model.entity;
 
 
+import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -31,24 +30,23 @@ import java.io.StringWriter;
 public class LastReadPost extends Entity {
     private Topic topic;
     private JCUser user;
-    private int postIndex;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(LastReadPost.class);
+    private DateTime postCreationDate;
 
     /**
      * For hibernate use only
      */
     protected LastReadPost() {
+        this.postCreationDate = new DateTime();
     }
 
     /**
      * @param user user to track last read post for
      * @param topic topic we're marking last read post in
-     * @param postIndex post index, starting from 0
+     * @param postCreationDate post creation date
      */
-    public LastReadPost(JCUser user, Topic topic, int postIndex) {
+    public LastReadPost(JCUser user, Topic topic, DateTime postCreationDate) {
         this.topic = topic;
-        this.postIndex = checkPostIndex(postIndex);
+        this.postCreationDate = postCreationDate;
         this.user = user;
     }
     
@@ -67,17 +65,19 @@ public class LastReadPost extends Entity {
     }
 
     /**
-     * @return last read post index in topic's collection, starting from 0
+     *
+     * @return last read post's creation date
      */
-    public int getPostIndex() {
-        return postIndex;
+    public DateTime getPostCreationDate() {
+        return postCreationDate;
     }
 
     /**
-     * @param postIndex last read post index in topic's collection, starting from 0
+     *
+     * @param postCreationDate new value for the last read post's creation date
      */
-    public void setPostIndex(int postIndex) {
-        this.postIndex = checkPostIndex(postIndex);
+    public void setPostCreationDate(DateTime postCreationDate) {
+        this.postCreationDate = postCreationDate;
     }
 
     /**
@@ -92,31 +92,5 @@ public class LastReadPost extends Entity {
      */
     protected void setUser(JCUser user) {
         this.user = user;
-    }
-
-    /**
-     * To check post index value (postIndex >= -1). If postIndex value fails validation, the state is logged.
-     * It is used to identify the source of the error (see http://jira.jtalks.org/browse/JC-1177)
-     * @param postIndex post index value
-     * @return checked post index
-     */
-    private int checkPostIndex(int postIndex){
-        final int minValue = -1;
-        if(postIndex<minValue){
-            LOGGER.warn(getStackTrace("Post index value "+postIndex+" is too low."));
-            return minValue;
-        }
-        return postIndex;
-    }
-
-    /**
-     * Return stack trace with message,To format stack trace for logging, For easy viewing of text log
-     * @param message stack trace's message
-     * @return stack trace with message
-     */
-    private String getStackTrace(String message){
-        StringWriter sw = new StringWriter();
-        new Throwable(message).printStackTrace(new PrintWriter(sw));
-        return sw.toString();
     }
 }

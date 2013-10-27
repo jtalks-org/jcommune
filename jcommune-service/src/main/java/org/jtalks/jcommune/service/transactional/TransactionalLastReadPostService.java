@@ -24,7 +24,6 @@ import org.jtalks.jcommune.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -60,15 +59,6 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      * {@inheritDoc}
      */
     @Override
-    public Integer getLastReadPostForTopic(Topic topic) {
-        Topic withFilledIndex = fillLastReadPostForTopics(Arrays.asList(topic)).get(0);
-        return withFilledIndex.getLastReadPostIndex();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public List<Topic> fillLastReadPostForTopics(List<Topic> topics) {
         JCUser currentUser = userService.getCurrentUser();
         if (!currentUser.isAnonymous()) {
@@ -76,8 +66,8 @@ public class TransactionalLastReadPostService implements LastReadPostService {
             List<Topic> notModifiedTopics = extractNotModifiedTopicsSinceForumMarkedAsRead(
                     forumMarkedAsReadDate, topics);
             for (Topic notModifiedTopic : notModifiedTopics) {
-                int lastPostIndex = notModifiedTopic.getPostCount() - 1;
-                notModifiedTopic.setLastReadPostIndex(lastPostIndex);
+                Post lastPost = notModifiedTopic.getLastPost();
+                notModifiedTopic.setLastReadPostDate(lastPost.getCreationDate());
             }
             //
             @SuppressWarnings("unchecked")
@@ -120,7 +110,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
         for (Topic topic : modifiedTopics) {
             LastReadPost lastReadPost = findLastReadPost(lastReadPosts, topic.getId());
             if (lastReadPost != null) {
-                topic.setLastReadPostIndex(lastReadPost.getPostIndex());
+                topic.setLastReadPostDate(lastReadPost.getPostCreationDate());
             }
         }
     }
@@ -150,23 +140,24 @@ public class TransactionalLastReadPostService implements LastReadPostService {
         JCUser current = userService.getCurrentUser();
         // topics are always unread for anonymous users
         if (!current.isAnonymous()) {
-            int postIndex = this.calculatePostIndex(current, topic, pageNum);
-            saveLastReadPost(current, topic, postIndex);
+            Post lastPostOnPage = this.calculatePostOnPage(current, topic, pageNum);
+            saveLastReadPost(current, topic, lastPostOnPage);
         }
     }
 
     /**
-     * Computes new last read post index based on the topic size and
+     * Computes new last read post on the page based on the topic size and
      * current pagination settings.
      *
-     * @param user          user to calculate index for
-     * @param topic         topic to calculate index for
+     * @param user          user to calculate post for
+     * @param topic         topic to calculate post for
      * @param pageNum       page number co calculate last post seen by the user
-     * @return new last post index, counting from 0
+     * @return last post on the page
      */
-    private int calculatePostIndex(JCUser user, Topic topic, int pageNum) {
+    private Post calculatePostOnPage(JCUser user, Topic topic, int pageNum) {
         int maxPostIndex = user.getPageSize() * pageNum - 1;
-        return Math.min(topic.getPostCount() - 1, maxPostIndex);
+        maxPostIndex = Math.min(topic.getPostCount() - 1, maxPostIndex);
+        return topic.getPosts().get(maxPostIndex);
     }
 
     /**
@@ -177,7 +168,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
     public void markTopicAsRead(Topic topic) {
         JCUser current = userService.getCurrentUser();
         if (!current.isAnonymous()) { // topics are always unread for anonymous users
-            saveLastReadPost(current, topic, topic.getPostCount() - 1);
+            saveLastReadPost(current, topic, topic.getLastPost());
         }
     }
 
@@ -186,19 +177,19 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      *
      * @param user      user to save last read post data for
      * @param topic     topic to store info for
-     * @param postIndex actual post index user has read last, starting from 0
+     * @param lastPost  last post in the topic (or in the last read page of the topic)
      */
-    private void saveLastReadPost(JCUser user, Topic topic, int postIndex) {
+    private void saveLastReadPost(JCUser user, Topic topic, Post lastPost) {
         DateTime lastTimeForumWasMarkedRead = user.getAllForumMarkedAsReadTime();
         DateTime topicModifiedDate = topic.getModificationDate();
         if (lastTimeForumWasMarkedRead == null || topicModifiedDate.isAfter(lastTimeForumWasMarkedRead)) {
-            LastReadPost lastRead = lastReadPostDao.getLastReadPost(user, topic);
-            if (lastRead == null) {
-                lastRead = new LastReadPost(user, topic, postIndex);
+            LastReadPost lastReadPost = lastReadPostDao.getLastReadPost(user, topic);
+            if (lastReadPost == null) {
+                lastReadPost = new LastReadPost(user, topic, lastPost.getCreationDate());
             } else {
-                lastRead.setPostIndex(Math.max(Math.min(topic.getPostCount() - 1, lastRead.getPostIndex()), postIndex));
+                lastReadPost.setPostCreationDate(lastPost.getCreationDate());
             }
-            lastReadPostDao.saveOrUpdate(lastRead);
+            lastReadPostDao.saveOrUpdate(lastReadPost);
         }
     }
 
@@ -227,19 +218,4 @@ public class TransactionalLastReadPostService implements LastReadPostService {
         lastReadPostDao.deleteLastReadPostsFor(currentUser);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @PreAuthorize("hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.VIEW_TOPICS')")
-    public void updateLastReadPostsWhenPostDeleted(Post post) {
-        List<LastReadPost> lastReadPosts = lastReadPostDao.getLastReadPostsInTopic(post.getTopic());
-        for (LastReadPost lastReadPost : lastReadPosts) {
-            int index = lastReadPost.getPostIndex();
-            if (index >= post.getPostIndexInTopic()) {
-                lastReadPost.setPostIndex(index - 1);
-                lastReadPostDao.saveOrUpdate(lastReadPost);
-            }
-        }
-    }
 }

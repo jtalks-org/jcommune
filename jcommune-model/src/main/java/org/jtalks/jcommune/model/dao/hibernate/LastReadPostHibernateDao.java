@@ -17,6 +17,9 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.type.DateType;
+import org.hibernate.type.TimestampType;
+import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.jcommune.model.dao.LastReadPostDao;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -98,7 +101,7 @@ public class LastReadPostHibernateDao extends GenericDao<LastReadPost>
                 .executeUpdate();
 
         @SuppressWarnings("unchecked")
-        List<Object[]> topicsOfBranch = session.getNamedQuery("getTopicAndCountOfPostsInBranch")
+        List<Object[]> topicsOfBranch = session.getNamedQuery("getTopicAndLatestPostDateInBranch")
                 .setParameter("branch", branch.getId())
                 .list();
 
@@ -109,7 +112,7 @@ public class LastReadPostHibernateDao extends GenericDao<LastReadPost>
         for (Object[] o : topicsOfBranch) {
             insertQuery.setParameter("uuid", UUID.randomUUID().toString())
                     .setParameter("user", forWho.getId())
-                    .setParameter("lastPostIndex", o[1])
+                    .setParameter("lastPostDate", ((DateTime) o[1]).toDate())
                     .setParameter("topic", o[0])
                     .executeUpdate();
         }

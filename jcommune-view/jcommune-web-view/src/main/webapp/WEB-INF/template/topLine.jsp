@@ -34,6 +34,7 @@
 
 <span id="logoTooltipHolder" class="hidden"><c:out value="${logoTooltip}"/></span>
 <span id="descriptionHolder" class="hidden"><c:out value="${cmpDescription}"/></span>
+<span id="titlePrefixHolder" class="hidden"><c:out value="${cmpTitlePrefix}"/></span>
 
 <c:set var="toolTip" value="${logoTooltip}"/>
 <c:if test="${not empty forumComponent}">

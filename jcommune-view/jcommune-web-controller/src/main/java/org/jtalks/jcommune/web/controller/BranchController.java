@@ -97,6 +97,7 @@ public class BranchController {
                                  @RequestParam(value = PAGE, defaultValue = "1", required = false) String page
     ) throws NotFoundException {
 
+        branchService.checkIfBranchExists(branchId);
         Branch branch = branchService.get(branchId);
         Page<Topic> topicsPage = topicFetchService.getTopics(branch, page);
         lastReadPostService.fillLastReadPostForTopics(topicsPage.getContent());

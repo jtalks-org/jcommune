@@ -25,7 +25,10 @@
 <sec:authentication property="principal.id" var="userId" scope="request"/>
 <head>
   <meta name="description" content="<c:out value="${label.user}"/>">
-  <title><spring:message code="label.user"/> - "${editedUser.username}"</title>
+  <title>
+      <c:if test="${not empty cmpTitlePrefix}"><c:out value="${cmpTitlePrefix}"/> - </c:if>
+      <spring:message code="label.user"/> - "${editedUser.username}"
+  </title>
 </head>
 <body>
 

@@ -23,7 +23,10 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <head>
   <meta name="description" content="<c:out value="${cmpDescription}"/>">
-  <title><c:out value="${cmpDescription}"/></title>
+  <title>
+      <c:if test="${not empty cmpTitlePrefix}"><c:out value="${cmpTitlePrefix}"/> - </c:if>
+      <c:out value="${cmpDescription}"/>
+  </title>
 </head>
 <body>
 <div class="container">

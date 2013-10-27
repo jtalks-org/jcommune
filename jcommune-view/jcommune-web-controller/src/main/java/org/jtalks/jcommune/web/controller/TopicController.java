@@ -200,7 +200,6 @@ public class TopicController {
             return null;
         }
 
-        Integer lastReadPostIndex = lastReadPostService.getLastReadPostForTopic(topic);
         lastReadPostService.markTopicPageAsRead(topic, postsPage.getNumber());
         return new ModelAndView("topic/postList")
                 .addObject("viewList", locationService.getUsersViewing(topic))
@@ -208,8 +207,7 @@ public class TopicController {
                 .addObject("postsPage", postsPage)
                 .addObject("topic", topic)
                 .addObject("subscribed", topic.getSubscribers().contains(currentUser))
-                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic))
-                .addObject("lastReadPost", lastReadPostIndex);
+                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
     }
 
     /**

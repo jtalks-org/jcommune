@@ -39,6 +39,7 @@ public class TransactionalComponentService extends AbstractTransactionalEntitySe
         implements ComponentService {
 
     public static final String LOGO_TOOLTIP_PROPERTY = "jcommune.logo_tooltip";
+    public static final String TITLE_PREFIX_PROPERTY = "jcommune.title_prefix";
     public static final String LOGO_PROPERTY = "jcommune.logo";
     public static final String COMPONENT_FAVICON_ICO_PARAM = "jcommune.favicon.ico";
     public static final String COMPONENT_FAVICON_PNG_PARAM = "jcommune.favicon.png";
@@ -82,6 +83,7 @@ public class TransactionalComponentService extends AbstractTransactionalEntitySe
         forumComponent.setName(componentInformation.getName());
         forumComponent.setDescription(componentInformation.getDescription());
         forumComponent.setProperty(LOGO_TOOLTIP_PROPERTY, componentInformation.getLogoTooltip());
+        forumComponent.setProperty(TITLE_PREFIX_PROPERTY, componentInformation.getTitlePrefix());
 
         if (!StringUtils.isEmpty(componentInformation.getLogo())) {
             forumComponent.setProperty(LOGO_PROPERTY, componentInformation.getLogo());

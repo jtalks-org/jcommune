@@ -115,6 +115,7 @@ function showBranchEditDialog(e) {
 function getCurrentAdminValues() {
     return {
         forumName: $('#cmpName').text() || "",
+        titlePrefix: $('#titlePrefixHolder').text() || "",
         forumDescription: $('#descriptionHolder').text() || "",
         logoTooltip: $("#logoTooltipHolder").text() || "",
         logoPreview: $('#forumLogo').attr("src"),
@@ -185,6 +186,7 @@ function createAdministrationDialog() {
         <form:hidden id="icon" path="icon"/> \
         ' + Utils.createFormElement($labelForumTitle, 'forumName', 'text', 'first dialog-input')
         + Utils.createFormElement($labelForumDescription, 'forumDescription', 'text', 'dialog-input')
+        + Utils.createFormElement($labelTitlePrefix, 'titlePrefix', 'text', 'first dialog-input')
         + Utils.createFormElement($labelLogoTooltip, 'forumLogoTooltip', 'text', 'dialog-input') + ' \
             <div class="clearfix"';
 
@@ -248,6 +250,7 @@ function fillAdminDialogInputs() {
     $('#forumName').val(currentAdminValues.forumName);
     $('#forumDescription').val(currentAdminValues.forumDescription);
     $('#forumLogoTooltip').val(currentAdminValues.logoTooltip);
+    $('#titlePrefix').val(currentAdminValues.titlePrefix);
     $('#logoPreview').attr('src', currentAdminValues.logoPreview);
     $('#iconPreview').attr('src', currentAdminValues.iconPreview);
     $('#logo').val(currentAdminValues.logo);
@@ -431,6 +434,7 @@ function saveInputValues() {
     currentAdminValues = {
         forumName: jDialog.dialog.find('#forumName').val(),
         forumDescription: jDialog.dialog.find('#forumDescription').val(),
+        titlePrefix: jDialog.dialog.find('#titlePrefix').val(),
         logoTooltip: jDialog.dialog.find('#forumLogoTooltip').val(),
         logo: jDialog.dialog.find('#logo').val(),
         logoPreview: jDialog.dialog.find('#logoPreview').attr("src"),
@@ -454,6 +458,7 @@ function sendForumConfiguration(e) {
     componentInformation.logoTooltip = currentAdminValues.logoTooltip;
     componentInformation.logo = currentAdminValues.logo;
     componentInformation.icon = currentAdminValues.icon;
+    componentInformation.titlePrefix = currentAdminValues.titlePrefix;
 
     jDialog.dialog.find('*').attr('disabled', true);
 

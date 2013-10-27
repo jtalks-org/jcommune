@@ -39,14 +39,14 @@ public class TopicTest {
     }
 
     @Test
-    public void getFirstPost() {
+    public void firstPostShouldReturnFirstPostOfTheTopic() {
         Post firstPost = topic.getFirstPost();
 
         assertEquals(firstPost, post1);
     }
 
     @Test
-    public void addPost() throws InterruptedException {
+    public void addPostShouldUpdateModificationDate() throws InterruptedException {
         DateTime prevDate = topic.getModificationDate();
         Thread.sleep(25); // millisecond precise is a kind of fiction
         topic.addPost(new Post());
@@ -54,7 +54,8 @@ public class TopicTest {
         assertTrue(topic.getModificationDate().isAfter(prevDate));
     }
 
-    public void updatePost() throws InterruptedException {
+
+    public void updatePostShouldUpdateModificationDate() throws InterruptedException {
         DateTime prevDate = topic.getModificationDate();
         Thread.sleep(25); // millisecond precise is a kind of fiction
         post1.updateModificationDate();
@@ -63,7 +64,7 @@ public class TopicTest {
     }
 
     @Test
-    public void updateModificationDate() {
+    public void updateModificationDateShouldChangeTheModificationDate() {
         DateTime prevDate = topic.getModificationDate();
 
         DateTime modDate = topic.updateModificationDate();
@@ -72,7 +73,7 @@ public class TopicTest {
     }
     
     @Test
-    public void testRecalculateModificationDate() {
+    public void recalculateModificationDateShouldSetModificationDateAsTheLatestDateAmongAllPosts() {
         DateTime lastModificationDate = new DateTime();
         
         topic.getFirstPost().setCreationDate(lastModificationDate.minusDays(1));
@@ -89,25 +90,35 @@ public class TopicTest {
     }
 
     @Test
-    public void testHasUpdatesDefault() {
+    public void hasUpdatesShouldReturnTrueByDefault() {
         assertTrue(topic.isHasUpdates());
     }
 
     @Test
-    public void testHasUpdatesWithUpdates() {
-        topic.setLastReadPostIndex(0);
+    public void hasUpdatesShouldReturnTrueInCaseOfUpdatesExist() {
+        topic.setLastReadPostDate(topic.getFirstPost().getCreationDate());
         assertTrue(topic.isHasUpdates());
     }
 
     @Test
-    public void testHasUpdatesWithoutUpdates() {
-        topic.setLastReadPostIndex(1);
+    public void hasUpdatesShouldReturnFalseInCaseOfNoUpdatesExist() {
+        DateTime lastModificationDate = new DateTime();
+
+        topic.getFirstPost().setCreationDate(lastModificationDate.minusDays(1));
+        topic.getPosts().get(1).setCreationDate(lastModificationDate);
+
+        topic.setLastReadPostDate(topic.getLastPost().getCreationDate());
         assertFalse(topic.isHasUpdates());
     }
 
     @Test
-    public void testGetFirstUnreadPostId() {
-        topic.setLastReadPostIndex(0);
+    public void getFirstUnreadPostIdShouldReturnTheNextPostAfterLastRead() {
+        DateTime lastModificationDate = new DateTime();
+
+        topic.getFirstPost().setCreationDate(lastModificationDate.minusDays(1));
+        topic.getPosts().get(1).setCreationDate(lastModificationDate);
+
+        topic.setLastReadPostDate(topic.getFirstPost().getCreationDate());
 
         long id = topic.getFirstUnreadPostId();
 
@@ -115,28 +126,27 @@ public class TopicTest {
     }
 
     @Test
-    public void testGetFirstUnreadPostIdWithNoInfoSet() {
+    public void getFirstUnreadPostIdShouldReturnFirstPostIdIfAllPostAreRead() {
+        DateTime lastModificationDate = new DateTime();
+
+        topic.getFirstPost().setCreationDate(lastModificationDate.minusDays(1));
+        topic.getPosts().get(1).setCreationDate(lastModificationDate);
+
         long id = topic.getFirstUnreadPostId();
 
         assertEquals(post1.getId(), id);
     }
 
     @Test
-    public void testSetLastReadPostIndexCorrectValue() {
-        topic.setLastReadPostIndex(1);
-        assertEquals(topic.getLastReadPostIndex().intValue(), 1);
-        assertFalse(topic.isHasUpdates());
-    }
-    
-    @Test
-    public void testSetLastReadPostIndexTooBigValue() {
-        topic.setLastReadPostIndex(10);
-        assertEquals(topic.getLastReadPostIndex().intValue(), topic.getPostCount() - 1);
+    public void topicShouldHasNoUpdatesIfLastReadPostIsTheLatestPost() {
+        DateTime lastPostCreationDate = topic.getLastPost().getCreationDate();
+        topic.setLastReadPostDate(lastPostCreationDate);
+        assertEquals(topic.getLastReadPostDate(), lastPostCreationDate);
         assertFalse(topic.isHasUpdates());
     }
 
     @Test
-    public void testRemovePost() {
+    public void removePostShouldRemovePostFromTheTopic() {
         DateTime lastModification = new DateTime(1900, 11, 11, 11, 11, 11, 11);
         topic.setModificationDate(lastModification);
 
@@ -146,7 +156,7 @@ public class TopicTest {
     }
 
     @Test
-    public void testUserSubscribed() {
+    public void setSubscribersShouldSubscribeUserToTheTopic() {
         JCUser subscribedUser = new JCUser();
         JCUser notSubscribedUser = new JCUser();
         Set<JCUser> subscribers = new HashSet<JCUser>();

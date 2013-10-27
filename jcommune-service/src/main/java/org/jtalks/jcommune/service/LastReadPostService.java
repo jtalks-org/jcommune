@@ -64,17 +64,6 @@ public interface LastReadPostService {
     void markAllForumAsReadForCurrentUser();
     
     /**
-     * Returns last read post index for topic or null, if there is no
-     * last read post for the current user and topic given.
-     * <p/>
-     * Will always return null for anonymous users.
-     *
-     * @param topic topics to get last read post for
-     * @return last read post index for these topics and current user
-     */
-    Integer getLastReadPostForTopic(Topic topic);
-    
-    /**
      * Fills topics with last read post information based
      * on the current user set. No data will be set
      * for anonymous users.
@@ -84,12 +73,4 @@ public interface LastReadPostService {
      */
     List<Topic> fillLastReadPostForTopics(List<Topic> topics);
 
-    /**
-     * Updates last read post number to be correct when post is deleted.
-     * Basically this is for last read posts located after the post we're trying to delete.
-     * Without it last read post index may exceed total post count in the topic.
-     *
-     * @param post post we're trying to delete
-     */
-    void updateLastReadPostsWhenPostDeleted(Post post);
 }
