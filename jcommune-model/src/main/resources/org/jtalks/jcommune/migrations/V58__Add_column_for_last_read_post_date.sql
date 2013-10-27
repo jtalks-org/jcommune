@@ -1,6 +1,9 @@
 -- added column for last read post date for the topic (it will be used instead of the last read post index)
 ALTER TABLE LAST_READ_POSTS ADD(LAST_READ_POST_DATE DATETIME not null);
 
+-- delete entries with wrong Post index
+DELETE FROM LAST_READ_POSTS WHERE LAST_READ_POST_INDEX < 0;
+
 -- calculating of the last read post date based on the last read post index
 UPDATE LAST_READ_POSTS
 SET LAST_READ_POST_DATE =
