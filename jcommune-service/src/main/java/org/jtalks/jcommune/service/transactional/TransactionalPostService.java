@@ -130,7 +130,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
             branch.clearLastPost();
         }
 
-        if (post.getLastTouchedDate().equals(topic.getModificationDate())) {
+        if (post.getCreationDate().equals(topic.getModificationDate())) {
             topic.recalculateModificationDate();
         }
 
