@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 public class PropertiesInterceptor extends HandlerInterceptorAdapter {
     private static final String PARAM_CMP_NAME = "cmpName";
     private static final String PARAM_CMP_DESCRIPTION = "cmpDescription";
+    private static final String PARAM_CMP_PREFIX = "cmpTitlePrefix";
     private static final String PARAM_SHOW_DUMMY_LINKS = "sapeShowDummyLinks";
     private static final String PARAM_LOGO_TOOLTIP = "logoTooltip";
     private static final String PARAM_ADMIN_INFO_CHANGE_DATE = "infoChangeDate";
@@ -42,23 +43,27 @@ public class PropertiesInterceptor extends HandlerInterceptorAdapter {
     private JCommuneProperty sapeShowDummyLinksProperty;
     private JCommuneProperty logoTooltipProperty;
     private JCommuneProperty adminInfoChangeDateProperty;
+    private JCommuneProperty titlePrefixProperty;
 
     /**
      * @param componentDescriptionProperty component description property
      * @param componentNameProperty        component name property
      * @param sapeShowDummyLinksProperty   show dummy links for SAPE on not
      * @param logoTooltipProperty          tooltip for forum logo
+     * @param titlePrefixProperty          title prefix property
      */
     public PropertiesInterceptor(JCommuneProperty componentNameProperty,
                                  JCommuneProperty componentDescriptionProperty,
                                  JCommuneProperty sapeShowDummyLinksProperty,
                                  JCommuneProperty logoTooltipProperty,
-                                 JCommuneProperty adminInfoChangeDateProperty) {
+                                 JCommuneProperty adminInfoChangeDateProperty,
+                                 JCommuneProperty titlePrefixProperty) {
         this.componentDescriptionProperty = componentDescriptionProperty;
         this.componentNameProperty = componentNameProperty;
         this.sapeShowDummyLinksProperty = sapeShowDummyLinksProperty;
         this.logoTooltipProperty =  logoTooltipProperty;
         this.adminInfoChangeDateProperty = adminInfoChangeDateProperty;
+        this.titlePrefixProperty = titlePrefixProperty;
     }
 
     /**
@@ -79,6 +84,7 @@ public class PropertiesInterceptor extends HandlerInterceptorAdapter {
             modelAndView.addObject(PARAM_CMP_DESCRIPTION, componentDescriptionProperty.getValueOfComponent());
             modelAndView.addObject(PARAM_SHOW_DUMMY_LINKS, sapeShowDummyLinksProperty.booleanValue());
             modelAndView.addObject(PARAM_LOGO_TOOLTIP, logoTooltipProperty.getValue());
+            modelAndView.addObject(PARAM_CMP_PREFIX, titlePrefixProperty.getValue());
             modelAndView.addObject(PARAM_ADMIN_INFO_CHANGE_DATE, adminInfoChangeDateProperty.getValue());
         }
     }

@@ -22,7 +22,10 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <head>
   <meta name="description" content="<c:out value="${user.username}"/>">
-  <title><spring:message code="label.postListOfUser"/> <c:out value="${user.username}"/></title>
+  <title>
+      <c:if test="${not empty cmpTitlePrefix}"><c:out value="${cmpTitlePrefix}"/> - </c:if>
+      <spring:message code="label.postListOfUser"/> <c:out value="${user.username}"/>
+  </title>
 </head>
 <body>
 <div class="container">
