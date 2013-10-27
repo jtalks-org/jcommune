@@ -131,7 +131,8 @@ public class MailService {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(LINK, url);
             model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
-            sendEmailOnForumUpdates(recipient, model, locale, (Entity) entity);
+            sendEmailOnForumUpdates(recipient, model, locale, (Entity) entity,
+                    "subscriptionNotification.subject","subscriptionNotification.vm");
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE,
                     entity.getClass().getCanonicalName(),
@@ -148,14 +149,15 @@ public class MailService {
      * @param locale    recipient locale
      * @throws MailingFailedException when mailing failed
      */
-    private void sendEmailOnForumUpdates(JCUser recipient, Map<String, Object> model, Locale locale, Entity entity)
+    private void sendEmailOnForumUpdates(JCUser recipient, Map<String, Object> model, Locale locale, Entity entity, String subject, String nameTemplate)
             throws MailingFailedException {
         model.put(USER, recipient);
         model.put(RECIPIENT_LOCALE, locale);
         String titleEntity = this.getTitleName(entity);
-        this.sendEmail(recipient.getEmail(), messageSource.getMessage("subscriptionNotification.subject",
-                new Object[]{}, locale) + titleEntity, model, "subscriptionNotification.vm");
+        this.sendEmail(recipient.getEmail(), messageSource.getMessage(subject,
+                new Object[]{}, locale) + titleEntity, model, nameTemplate);
     }
+
 
     /**
      * Sends notification to user about received private message.
@@ -391,6 +393,26 @@ public class MailService {
         } catch (MailingFailedException e) {
             LOGGER.error("Failed to sent mail about removing topic or code review for user: "
                     + recipient.getUsername());
+        }
+    }
+
+    /**
+     * Send email about new topic in the subscribed branch.
+     * @param subscriber recipient
+     * @param topic newly created topic
+     */
+    void sendTopicCreationMail(JCUser subscriber, Topic topic) {
+        try {
+            String urlSuffix = "/topics/" + topic.getId();
+            String url = this.getDeploymentRootUrl() + urlSuffix;
+            Locale locale = subscriber.getLanguage().getLocale();
+            Map<String, Object> model = new HashMap<String, Object>();
+            model.put(LINK, url);
+            model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
+            sendEmailOnForumUpdates(subscriber, model, locale, topic.getBranch(),
+                    "subscriptionNotification.subject", "branchSubscriptionNotification.vm");
+        } catch (MailingFailedException e) {
+            LOGGER.error("Failed to sent mail about creation topic for user: " + subscriber.getUsername());
         }
     }
 }

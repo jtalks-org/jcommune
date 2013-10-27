@@ -224,7 +224,7 @@ public class TransactionalTopicModificationServiceTest {
         Post createdPost = createdTopic.getFirstPost();
 
         createTopicAssertions(branch, createdTopic, createdPost);
-        createTopicVerifications(branch);
+        createTopicVerifications(createdTopic);
         verify(subscriptionService).toggleTopicSubscription(createdTopic);
     }
 
@@ -239,7 +239,7 @@ public class TransactionalTopicModificationServiceTest {
         Post createdPost = createdTopic.getFirstPost();
 
         createTopicAssertions(branch, createdTopic, createdPost);
-        createTopicVerifications(branch);
+        createTopicVerifications(createdTopic);
         verify(subscriptionService, never()).toggleTopicSubscription(createdTopic);
     }
     
@@ -270,7 +270,7 @@ public class TransactionalTopicModificationServiceTest {
         Post createdPost = createdTopic.getFirstPost();
 
         createCodeReviewAssertions(branch, createdTopic, createdPost);
-        createTopicVerifications(branch);
+        createCodeReviewVerifications(branch);
         verify(subscriptionService).toggleTopicSubscription(createdTopic);
     }
 
@@ -288,7 +288,7 @@ public class TransactionalTopicModificationServiceTest {
         Post createdPost = createdTopic.getFirstPost();
 
         createCodeReviewAssertions(branch, createdTopic, createdPost);
-        createTopicVerifications(branch);
+        createCodeReviewVerifications(branch);
         verify(subscriptionService, never()).toggleTopicSubscription(createdTopic);
     }
 
@@ -305,7 +305,7 @@ public class TransactionalTopicModificationServiceTest {
         Post createdPost = createdTopic.getFirstPost();
 
         createCodeReviewAssertions(branch, createdTopic, createdPost);
-        createTopicVerifications(branch);
+        createCodeReviewVerifications(branch);
     }
 
     private void createTopicStubs(Branch branch) throws NotFoundException {
@@ -337,13 +337,20 @@ public class TransactionalTopicModificationServiceTest {
         assertEquals(createdTopic.getCodeReview().getComments().size(), 0);
     }
 
-    private void createTopicVerifications(Branch branch)
+    private void createCodeReviewVerifications(Branch branch)
             throws NotFoundException {
         verify(branchDao).saveOrUpdate(branch);
         verify(aclBuilder, times(2)).grant(GeneralPermission.WRITE);
         verify(notificationService).subscribedEntityChanged(branch);
     }
 
+    private void createTopicVerifications(Topic topic)
+            throws NotFoundException {
+        verify(branchDao).saveOrUpdate(topic.getBranch());
+        verify(aclBuilder, times(2)).grant(GeneralPermission.WRITE);
+        verify(notificationService).topicCreated(topic);
+    }    
+    
     @Test
     public void testDeleteTopic() throws NotFoundException {
         Collection<JCUser> subscribers = new ArrayList<JCUser>();

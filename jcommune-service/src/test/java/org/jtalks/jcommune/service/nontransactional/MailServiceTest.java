@@ -358,4 +358,24 @@ public class MailServiceTest {
         assertEquals(this.getMimeMailSubject(), subjectTemplate);
         assertTrue(this.getMimeMailBody().contains(bodyTemplate));
     }
+    
+    @Test
+    public void testSendTopicCreationMail() throws MessagingException, IOException {
+        long topicId = 777;
+        branch.addTopic(topic);
+        topic.setId(topicId);
+        service.sendTopicCreationMail(user, topic);
+        this.checkMailCredentials();
+        this.checkMailCredentials();
+
+        String subjectTemplate =
+                messageSource.getMessage("subscriptionNotification.subject",  new Object[]{}, user.getLanguage().getLocale());
+
+        String bodyTemplate =
+                messageSource.getMessage("branchSubscriptionNotification.content",  new Object[]{}, user.getLanguage().getLocale());
+
+        assertEquals(this.getMimeMailSubject(), subjectTemplate  + ": " + branch.getName());
+        assertTrue(this.getMimeMailBody().contains(bodyTemplate));      
+        assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/topics/" + topic.getId()));
+    }
 }

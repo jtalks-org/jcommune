@@ -174,7 +174,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(topic).flush();
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(first).flush();
 
-        notificationService.subscribedEntityChanged(branch);
+        notificationService.topicCreated(topic);
 
         subscribeOnTopicIfNotificationsEnabled(topic, currentUser);
         createOrUpdatePoll(topicDto.getPoll(), topic);
