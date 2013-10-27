@@ -171,4 +171,11 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
         branch.setDescription(description);
         getDao().saveOrUpdate(branch);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void checkIfBranchExists(long branchId) throws NotFoundException {
+        super.get(branchId);
+    }
 }
