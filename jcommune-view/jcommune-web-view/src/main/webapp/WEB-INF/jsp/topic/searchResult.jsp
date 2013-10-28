@@ -37,7 +37,7 @@
       <div class="pagination pull-right forum-pagination">
         <ul>
           <jtalks:pagination uri="${pageContext.request.contextPath}/search" page="${searchResultPage}"
-                             additionalParamsString="&searchText=${searchText}"/>
+                             additionalParamsString="&text=${searchText}"/>
         </ul>
       </div>
     </div>
@@ -53,7 +53,7 @@
       <div class="pagination pull-right forum-pagination">
         <ul>
           <jtalks:pagination uri="${pageContext.request.contextPath}/search" page="${searchResultPage}"
-                             additionalParamsString="&searchText=${searchText}"/>
+                             additionalParamsString="&text=${searchText}"/>
         </ul>
       </div>
     </div>
