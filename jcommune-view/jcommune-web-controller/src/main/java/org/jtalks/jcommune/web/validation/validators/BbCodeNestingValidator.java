@@ -18,7 +18,10 @@ import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeNesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -30,12 +33,19 @@ import java.util.regex.Pattern;
  * parsing and if we have a deep nesting, we'll run into StackOverflow error. Thus before posting something, we check
  * whether the nesting of BB-codes is not too deep.
  */
-public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting, String> {
+public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting, String>, ApplicationContextAware {
     private static final String TAG_LIST_ITEM = "[*]";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BbCodeNestingValidator.class);
     private UserService userService;
     private int maxNestingValue;
+    private ApplicationContext context;
+
+    /**
+     * Need for using in validator.validate(entity)
+     */
+    public BbCodeNestingValidator() {
+    }
 
     /**
      * Constructor
@@ -93,7 +103,7 @@ public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting
             }
             if (Math.abs(count) > maxNestingValue) {
                 LOGGER.warn("Possible attack: Too deep bb-code nesting. "
-                        + "User UUID: {}", userService.getCurrentUser().getUuid());
+                        + "User UUID: {}", getUserService().getCurrentUser().getUuid());
                 return false;
             }
         }
@@ -119,7 +129,23 @@ public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting
      */
     private boolean checkForQuote(String value) {
         final String regexForQuote = "\\[quote=\".*?\"\\]";
-        String cleanValue = value.replace(" ","");
+        String cleanValue = value.replace(" ", "");
         return checkNestingLevel(cleanValue, regexForQuote);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.context = applicationContext;
+    }
+
+    /**
+     * Get user service. Use lazy initialization
+     * @return
+     */
+    private UserService getUserService() {
+        if (userService == null) {
+            this.userService = this.context.getBean(UserService.class);
+        }
+        return this.userService;
     }
 }

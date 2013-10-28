@@ -93,9 +93,6 @@ function SwitchEditor() {
     else { // enter preview
         content = textboxelement.value;
         bbcode2html();
-        $(".show-on-preview").show();
-        $(".hide-on-preview").hide();
-        $("#preview")[0].value = $labelEdit;
     }
 }
 
@@ -124,7 +121,8 @@ function bbcode2html() {
     textdata = textdata.replace(/%5B/gi, "[");
     textdata = textdata.replace(/%22/gi, "\"");
     textdata = textdata.replace(/%20/gi, " ");
-	
+
+    alert(document.URL);
     $.ajax({
         type:"POST",
         url:$root + '/posts/bbToHtml', //todo
@@ -136,21 +134,28 @@ function bbcode2html() {
             } else {
                 result = decodeURI(data);
             }
-            result = result.replace(new RegExp(closeBracketCodePlaceholder, 'gi'), "%5D");
-            result = result.replace(new RegExp(openBracketCodePlaceholder, 'gi'), "%5B");
-            result = result.replace(new RegExp(slashCodePlaceholder, 'gi'), "%22");
-            result = result.replace(new RegExp(lowerThenPlaceholder, 'gi'), "&lt;");
 
-            $("#" + html_content_id).html(result.trim());
-            htmlcontentelement.style.display = "";
-            textboxelement.style.display = "none";
 
-            editorVisible = true;
-            
-			//enable code highlight
-			prettyPrint();
-            //enable image preview
-            $('a.prettyPhoto').prettyPhoto({social_tools:false});
+//                $(".show-on-preview").show();
+//                $(".hide-on-preview").hide();
+//                $("#preview")[0].value = $labelEdit;
+
+                result = result.replace(new RegExp(closeBracketCodePlaceholder, 'gi'), "%5D");
+                result = result.replace(new RegExp(openBracketCodePlaceholder, 'gi'), "%5B");
+                result = result.replace(new RegExp(slashCodePlaceholder, 'gi'), "%22");
+                result = result.replace(new RegExp(lowerThenPlaceholder, 'gi'), "&lt;");
+
+                $("#" + html_content_id).html(result.trim());
+                htmlcontentelement.style.display = "";
+                textboxelement.style.display = "none";
+
+                editorVisible = true;
+
+                //enable code highlight
+                prettyPrint();
+                //enable image preview
+                $('a.prettyPhoto').prettyPhoto({social_tools:false});
+
         }
     });
 }

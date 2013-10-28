@@ -21,17 +21,27 @@ import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.web.dto.PostDto;
+import org.jtalks.jcommune.web.dto.json.JsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.http.HttpRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
-import javax.validation.Valid;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.*;
+import java.util.*;
 
 
 /**
@@ -59,6 +69,9 @@ public class PostController {
     private TopicModificationService topicModificationService;
     private BBCodeService bbCodeService;
     private UserService userService;
+
+    @Autowired(required = true)
+    private ViewResolver viewResolver;
 
     /**
      * This method turns the trim binder on. Trim binder
@@ -113,7 +126,7 @@ public class PostController {
     /**
      * Edit post page filled with data from post with given id
      *
-     * @param postId  post id
+     * @param postId post id
      * @return redirect to post form page
      * @throws NotFoundException when topic or post not found
      */
@@ -144,7 +157,7 @@ public class PostController {
         Post post = postService.get(postId);
         if (result.hasErrors()) {
             return new ModelAndView("topic/editPost")
-                    .addObject(TOPIC_ID,post.getTopic().getId())
+                    .addObject(TOPIC_ID, post.getTopic().getId())
                     .addObject(POST_ID, postId);
         }
         postService.updatePost(post, postDto.getBodyText());
@@ -156,10 +169,10 @@ public class PostController {
      *
      * @param topicId the id of the topic for the answer
      * @return answering {@code ModelAndView} or redirect to the login page
-     * @throws NotFoundException when topic not found
+     * @throws NotFoundException     when topic not found
      * @throws AccessDeniedException besides other reasons, always throws this when Code Review is edited because it
-     *         shouldn't be possible to edit it. More details on requirements can be found here
-     *         <a href="http://jtalks.org/display/jcommune/1.1+Larks">here</a>.
+     *                               shouldn't be possible to edit it. More details on requirements can be found here
+     *                               <a href="http://jtalks.org/display/jcommune/1.1+Larks">here</a>.
      */
     @RequestMapping(method = RequestMethod.GET, value = "/posts/new")
     public ModelAndView addPost(@RequestParam(TOPIC_ID) Long topicId) throws NotFoundException {
@@ -252,8 +265,24 @@ public class PostController {
      * @return HTML content for post
      */
     @RequestMapping(method = RequestMethod.POST, value = "/posts/bbToHtml")
-    public ModelAndView preview(@RequestParam("bbContent") String content) {
+    @ResponseBody
+    public ModelAndView preview(@RequestParam("bbContent") String content, HttpServletRequest request) throws Exception {
         String signature = userService.getCurrentUser().getSignature();
+
+        PostDto post = new PostDto();
+        post.setBodyText(content);
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        Iterator<ConstraintViolation<PostDto>> constraintViolationsIterator = validator.validate(post).iterator();
+        ArrayList<String> errors = new ArrayList<>();
+        while (constraintViolationsIterator.hasNext()) {
+            errors.add(constraintViolationsIterator.next().getMessage());
+        }
+
+        if (errors.size() > 0) {
+            System.out.println(request.getRequestURL());
+            return new ModelAndView("redirect:" + request.getRequestURL());
+        }
         return new ModelAndView("ajax/postPreview")
                 .addObject("text", content)
                 .addObject("signature", signature);
