@@ -66,7 +66,7 @@ public class TopicSearchControllerTest {
 		when(topicFetchService.searchByTitleAndContent(DEFAULT_SEARCH_TEXT, START_PAGE))
 				.thenReturn(searchResultPage);
 
-		ModelAndView modelAndView = topicSearchController.initSearch(DEFAULT_SEARCH_TEXT);
+		ModelAndView modelAndView = topicSearchController.initSearch(DEFAULT_SEARCH_TEXT, "1");
 		Map<String, Object> model = modelAndView.getModel();
 		
 		Assert.assertEquals(searchResultPage, model.get(TopicSearchController.SEARCH_RESULT_ATTRIBUTE_NAME), 
@@ -85,7 +85,7 @@ public class TopicSearchControllerTest {
         when(topicFetchService.searchByTitleAndContent(DEFAULT_SEARCH_TEXT, page))
 				.thenReturn(searchResultPage);
 
-		ModelAndView modelAndView = topicSearchController.continueSearch(DEFAULT_SEARCH_TEXT, page);
+		ModelAndView modelAndView = topicSearchController.initSearch(DEFAULT_SEARCH_TEXT, page);
 		Map<String, Object> model = modelAndView.getModel();
 		
 		Assert.assertEquals(searchResultPage, model.get(TopicSearchController.SEARCH_RESULT_ATTRIBUTE_NAME), 

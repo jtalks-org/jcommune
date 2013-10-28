@@ -80,38 +80,12 @@ public class TopicSearchController {
      * @return redirect to the answer page
      */
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public ModelAndView initSearch(@RequestParam String searchText) {
-        String firstPage = "1";
-        return search(searchText, firstPage);
-    }
-
-    /**
-     * Full-text search for topics. It needed to continue the search.
-     * This method calls only if request contains parameters page and search.
-     *
-     * @param searchText search text
-     * @param page       page number
-     * @return redirect to answer page
-     */
-    @RequestMapping(value = "/search/{searchText}", method = RequestMethod.GET, params= {"page","search"})
-    public ModelAndView continueSearch(@PathVariable String searchText,
-            @RequestParam(value = "page", defaultValue = "1", required = true) String page) {
-        return search(searchText, page);
-    }
-
-    /**
-     * Contains a common logic for searching the text.
-     *
-     * @param searchText search text
-     * @param page       page number
-     * @return result of the search
-     */
-    private ModelAndView search(String searchText, String page) {
+    public ModelAndView initSearch(@RequestParam String searchText,
+                                   @RequestParam(value = "page", defaultValue = "1", required = false) String page) {
         Page<Topic> searchResultPage = topicSearchService.searchByTitleAndContent(searchText, page);
         lastReadPostService.fillLastReadPostForTopics(searchResultPage.getContent());
         return new ModelAndView(SEARCH_RESULT_VIEW_NAME).
                 addObject(SEARCH_RESULT_ATTRIBUTE_NAME, searchResultPage).
-                addObject(URI_ATTRIBUTE_NAME, searchText).
                 addObject(SEARCH_TEXT_ATTRIBUTE_NAME, searchText);
     }
 }
