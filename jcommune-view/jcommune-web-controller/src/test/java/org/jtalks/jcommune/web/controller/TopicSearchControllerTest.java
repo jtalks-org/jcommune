@@ -71,8 +71,6 @@ public class TopicSearchControllerTest {
 		
 		Assert.assertEquals(searchResultPage, model.get(TopicSearchController.SEARCH_RESULT_ATTRIBUTE_NAME), 
 				"The controller must return the result of TopicFullSearchService.");
-		Assert.assertEquals(DEFAULT_SEARCH_TEXT, model.get(TopicSearchController.URI_ATTRIBUTE_NAME),
-				"Uri and the search text must be identical.");
 		verify(topicFetchService).searchByTitleAndContent(DEFAULT_SEARCH_TEXT, START_PAGE);
 		verify(lastReadPostService).fillLastReadPostForTopics(searchResultPage.getContent());
 	}
@@ -90,8 +88,6 @@ public class TopicSearchControllerTest {
 		
 		Assert.assertEquals(searchResultPage, model.get(TopicSearchController.SEARCH_RESULT_ATTRIBUTE_NAME), 
 				"The controller must return the result of TopicFullSearchService.");
-		Assert.assertEquals(DEFAULT_SEARCH_TEXT, model.get(TopicSearchController.URI_ATTRIBUTE_NAME),
-				"Uri and the search text must be identical.");
 		verify(topicFetchService).searchByTitleAndContent(DEFAULT_SEARCH_TEXT, page);
 		verify(lastReadPostService).fillLastReadPostForTopics(searchResultPage.getContent());
 	}
