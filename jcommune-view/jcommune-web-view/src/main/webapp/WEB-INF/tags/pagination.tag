@@ -18,6 +18,7 @@
 <%@ tag body-content="empty" %>
 <%@ attribute name="uri" required="true" type="java.lang.String" %>
 <%@ attribute name="page" required="true" type="org.springframework.data.domain.Page" %>
+<%@ attribute name="additionalParamsString" required="false" type="java.lang.String" %>
 <%@ attribute name="numberLink" required="false" type="java.lang.Integer" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 
@@ -30,7 +31,7 @@
   <%--JSTL doesn't have reverse for-each, therefore this trick used.--%>
   <c:set var="j" value="${numberLink - i + 1}"/>
   <c:if test="${page.number > j}">
-    <li><a href="<c:out value="${uri}"/>?page=${page.number - j}">${page.number - j}</a></li>
+    <li><a href="<c:out value="${uri}"/>?page=${page.number - j}${additionalParamsString}">${page.number - j}</a></li>
   </c:if>
 </c:forEach>
 
@@ -41,6 +42,6 @@
 
 <c:forEach var="i" begin="0" step="1" end="${numberLink - 1}">
   <c:if test="${page.number + i < page.totalPages}">
-    <li><a href="<c:out value="${uri}"/>?page=${page.number + i + 1}">${page.number + i + 1}</a></li>
+    <li><a href="<c:out value="${uri}"/>?page=${page.number + i + 1}${additionalParamsString}">${page.number + i + 1}</a></li>
   </c:if>
 </c:forEach>

@@ -269,13 +269,6 @@
                         <fmt:message key='label.ukrainian'/>
                     </a>
                 </li>
-                <%-- Spanish is disabled since we are not able make full translation --%>
-                <!--                             <li id='lang-es'> -->
-                <!--                                 <a href="#"  onclick="window.location = getLanguageLink('es')"> -->
-                <%--                                     <img src="${pageContext.request.contextPath}/resources/images/flags/es.png" />  --%>
-                <%--                                     <fmt:message key='label.spanish'/> --%>
-                <!--                                 </a> -->
-                <!--                             </li> -->
             </ul>
         </li>
         <%-- END OF Language chooser --%>

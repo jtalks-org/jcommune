@@ -87,12 +87,13 @@ public class TopicSearchController {
 
     /**
      * Full-text search for topics. It needed to continue the search.
+     * This method calls only if request contains parameters page and search.
      *
      * @param searchText search text
      * @param page       page number
      * @return redirect to answer page
      */
-    @RequestMapping(value = "/search/{searchText}", method = RequestMethod.GET)
+    @RequestMapping(value = "/search/{searchText}", method = RequestMethod.GET, params= {"page","search"})
     public ModelAndView continueSearch(@PathVariable String searchText,
             @RequestParam(value = "page", defaultValue = "1", required = true) String page) {
         return search(searchText, page);
