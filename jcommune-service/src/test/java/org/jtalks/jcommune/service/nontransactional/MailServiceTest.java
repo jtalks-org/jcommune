@@ -23,8 +23,6 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.springframework.context.MessageSource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
@@ -122,7 +120,8 @@ public class MailServiceTest {
     }
 
     @Test
-    public void testSendUpdatesOnSubscriptionCodeReviewCase() throws MailingFailedException, IOException, MessagingException {
+    public void testSendUpdatesOnSubscriptionCodeReviewCase() 
+                            throws MailingFailedException, IOException, MessagingException {
         long id = 777;
         topic.setId(id);
         service.sendUpdatesOnSubscription(user, codeReview);
@@ -131,7 +130,8 @@ public class MailServiceTest {
     }
 
     @Test
-    public void testSendUpdatesOnSubscriptionCodeReview_CheckTitleInSubject() throws MailingFailedException, IOException, MessagingException {
+    public void testSendUpdatesOnSubscriptionCodeReview_CheckTitleInSubject() 
+                            throws MailingFailedException, IOException, MessagingException {
         long id = 777;
         topic.setId(id);
         service.sendUpdatesOnSubscription(user, codeReview);
@@ -285,7 +285,8 @@ public class MailServiceTest {
     }
     
     @Test
-    public void sendUserMentionedNotificationShouldNotSentWhenForumNotificationsAreDisabled() throws MessagingException, IOException {
+    public void sendUserMentionedNotificationShouldNotSentWhenForumNotificationsAreDisabled() 
+                        throws MessagingException, IOException {
         disableEmailNotifications();
         long postId = 25l;
         
@@ -366,13 +367,12 @@ public class MailServiceTest {
         topic.setId(topicId);
         service.sendTopicCreationMail(user, topic);
         this.checkMailCredentials();
-        this.checkMailCredentials();
 
-        String subjectTemplate =
-                messageSource.getMessage("subscriptionNotification.subject",  new Object[]{}, user.getLanguage().getLocale());
+        String subjectTemplate = messageSource.getMessage("subscriptionNotification.subject",  
+                                                          new Object[]{}, user.getLanguage().getLocale());
 
-        String bodyTemplate =
-                messageSource.getMessage("branchSubscriptionNotification.content",  new Object[]{}, user.getLanguage().getLocale());
+        String bodyTemplate = messageSource.getMessage("branchSubscriptionNotification.content",  
+                                                       new Object[]{}, user.getLanguage().getLocale());
 
         assertEquals(this.getMimeMailSubject(), subjectTemplate  + ": " + branch.getName());
         assertTrue(this.getMimeMailBody().contains(bodyTemplate));      
