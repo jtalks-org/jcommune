@@ -31,8 +31,6 @@ import java.util.Collection;
 
 import static org.jtalks.jcommune.model.entity.JCommuneProperty
         .SENDING_NOTIFICATIONS_ENABLED;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
@@ -76,6 +74,7 @@ public class NotificationServiceTest {
                 subscriptionService,
                 notificationsEnabledProperty);
         topic = new Topic(user1, "title");
+        topic.setId(TOPIC_ID);
         branch = new Branch("name", "description");
         branch.addTopic(topic);
         codeReview = new CodeReview();
@@ -225,7 +224,7 @@ public class NotificationServiceTest {
         branch.getSubscribers().add(user2);
         branch.getSubscribers().add(user3);
 
-        service.topicMoved(topic, TOPIC_ID);
+        service.sendNotificationAboutTopicMoved(topic);
 
         verify(mailService).sendTopicMovedMail(user2, TOPIC_ID);
         verify(mailService).sendTopicMovedMail(user3, TOPIC_ID);
@@ -238,7 +237,7 @@ public class NotificationServiceTest {
         branch.getSubscribers().add(user2);
         branch.getSubscribers().add(user3);
 
-        service.topicMoved(topic, TOPIC_ID);
+        service.sendNotificationAboutTopicMoved(topic);
 
         verify(mailService, times(2)).sendTopicMovedMail(any(JCUser.class), eq(TOPIC_ID));
         verify(mailService).sendTopicMovedMail(user2, TOPIC_ID);
@@ -252,7 +251,7 @@ public class NotificationServiceTest {
         when(userService.getCurrentUser()).thenReturn(user1);
         branch.getSubscribers().add(user2);
 
-        service.topicMoved(topic, TOPIC_ID);
+        service.sendNotificationAboutTopicMoved(topic);
 
         verify(mailService, Mockito.never()).sendTopicMovedMail(user2, TOPIC_ID);
     }
@@ -265,7 +264,7 @@ public class NotificationServiceTest {
         branch.getSubscribers().add(user2);
         branch.getSubscribers().add(user3);
 
-        service.topicMoved(topic, TOPIC_ID);
+        service.sendNotificationAboutTopicMoved(topic);
 
         Collection<JCUser> topicSubscribers = new ArrayList();
         topicSubscribers.add(user2);
@@ -327,7 +326,7 @@ public class NotificationServiceTest {
         branch.getSubscribers().add(currentUser);
         when(subscriptionService.getAllowedSubscribers(branch)).thenReturn(branch.getSubscribers());
         
-        service.topicCreated(topic);
+        service.sendNotificationAboutTopicCreated(topic);
         
         verify(mailService, times(1)).sendTopicCreationMail(user1, topic);
         verifyNoMoreInteractions(mailService);

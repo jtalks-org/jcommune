@@ -82,11 +82,9 @@ public class NotificationService {
 
     /**
      * Overload for skipping topic subscribers
-<<<<<<< HEAD
-=======
+     * 
      * @param entity
      * @param topicSubscribers
->>>>>>> parent of 08e0bc6... JC-1486
      */
     public void subscribedEntityChanged(SubscriptionAwareEntity entity, Collection<JCUser> topicSubscribers) {
         if (notificationsEnabledProperty.booleanValue()) {
@@ -108,9 +106,8 @@ public class NotificationService {
      * subscribers
      *
      * @param topic   topic moved
-     * @param topicId topic id
      */
-    public void topicMoved(Topic topic, long topicId) {
+    public void sendNotificationAboutTopicMoved(Topic topic) {
 
         if (notificationsEnabledProperty.booleanValue()) {
 
@@ -119,7 +116,7 @@ public class NotificationService {
             this.filterSubscribers(topicSubscribers);
 
             for (JCUser subscriber : topicSubscribers) {
-                mailService.sendTopicMovedMail(subscriber, topicId);
+                mailService.sendTopicMovedMail(subscriber, topic.getId());
             }
 
             //send notification to branch subscribers
@@ -128,7 +125,7 @@ public class NotificationService {
             this.filterSubscribers(branchSubscribers);
             for (JCUser subscriber : branchSubscribers) {
                 if(!topicSubscribers.contains(subscriber)) {
-                    mailService.sendTopicMovedMail(subscriber, topicId);
+                    mailService.sendTopicMovedMail(subscriber, topic.getId());
                 }
             }
         }
@@ -162,7 +159,7 @@ public class NotificationService {
      * Notify about new topic creation in the subscribed branch.
      * @param topic newly created topic
      */
-    public void topicCreated(Topic topic) {
+    public void sendNotificationAboutTopicCreated(Topic topic) {
         Collection<JCUser> branchSubscribers = subscriptionService.getAllowedSubscribers(topic.getBranch());
         this.filterSubscribers(branchSubscribers);
         for (JCUser subscriber : branchSubscribers) {
