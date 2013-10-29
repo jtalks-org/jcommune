@@ -26,7 +26,7 @@
 <head>
   <meta name="description" content="<c:out value="${label.user}"/>">
   <title>
-      <c:if test="${not empty cmpTitlePrefix}"><c:out value="${cmpTitlePrefix}"/> - </c:if>
+      <c:out value="${cmpTitlePrefix}"/>
       <spring:message code="label.user"/> - "${editedUser.username}"
   </title>
 </head>

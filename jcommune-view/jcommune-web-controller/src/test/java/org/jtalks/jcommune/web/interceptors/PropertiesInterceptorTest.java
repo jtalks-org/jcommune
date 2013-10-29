@@ -49,7 +49,7 @@ public class PropertiesInterceptorTest {
     private JCommuneProperty sapeShowDummyLinks = JCommuneProperty.CMP_SAPE_SHOW_DUMMY_LINKS;
     private JCommuneProperty logoToolTip = JCommuneProperty.LOGO_TOOLTIP;
     private JCommuneProperty lastChangeDate = JCommuneProperty.ADMIN_INFO_LAST_UPDATE_TIME;
-    private JCommuneProperty titlePrefix = JCommuneProperty.TITLE_PREFIX;
+    private JCommuneProperty titlePrefix = JCommuneProperty.ALL_PAGES_TITLE_PREFIX;
 
     @Mock
     private ComponentDao componentDao;

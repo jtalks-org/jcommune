@@ -214,6 +214,8 @@ function createAdministrationDialog() {
     $('#uploadLogo').tooltip();
     $('#removeIcon').tooltip();
     $('#removeLogo').tooltip();
+    $('#titlePrefix').attr('data-original-title', $labelTitlePrefixHint);
+    $('#titlePrefix').tooltip();
 
     var tabFunc = function (e) {
         if (document.activeElement.id == jDialog.options.dialogId && (e.keyCode || e.charCode) == tabCode) {

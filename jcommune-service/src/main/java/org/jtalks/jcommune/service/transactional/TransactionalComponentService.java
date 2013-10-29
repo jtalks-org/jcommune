@@ -39,7 +39,8 @@ public class TransactionalComponentService extends AbstractTransactionalEntitySe
         implements ComponentService {
 
     public static final String LOGO_TOOLTIP_PROPERTY = "jcommune.logo_tooltip";
-    public static final String TITLE_PREFIX_PROPERTY = "jcommune.title_prefix";
+    /** this is property for the prefix that should be added to the title of every page */
+    public static final String TITLE_PREFIX_PROPERTY = "jcommune.all_pages_title_prefix";
     public static final String LOGO_PROPERTY = "jcommune.logo";
     public static final String COMPONENT_FAVICON_ICO_PARAM = "jcommune.favicon.ico";
     public static final String COMPONENT_FAVICON_PNG_PARAM = "jcommune.favicon.png";

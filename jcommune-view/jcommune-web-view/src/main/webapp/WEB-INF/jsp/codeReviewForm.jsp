@@ -22,7 +22,7 @@
 <head>
   <meta name="description" content="<c:out value="${topicDto.topic.branch.name}"/>">
   <title>
-      <c:if test="${not empty cmpTitlePrefix}"><c:out value="${cmpTitlePrefix}"/> - </c:if>
+      <c:out value="${cmpTitlePrefix}"/>
       <c:out value="${topicDto.topic.branch.name}"/> - <spring:message code="label.addCodeReview"/>
   </title>
 </head>
