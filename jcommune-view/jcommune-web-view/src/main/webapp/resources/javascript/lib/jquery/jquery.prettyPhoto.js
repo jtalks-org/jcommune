@@ -8,7 +8,7 @@
 (function ($) {
     $.prettyPhoto = {version: '3.1.3'};
     $.fn.prettyPhoto = function (pp_settings) {
-        pp_settings = jQuery.extend({animation_speed: 'fast', slideshow: 5000, autoplay_slideshow: false, opacity: 0.80, show_title: true, allow_resize: true, default_width: 500, default_height: 344, counter_separator_label: '/', theme: 'pp_default', horizontal_padding: 20, hideflash: false, wmode: 'opaque', autoplay: true, modal: false, deeplinking: true, overlay_gallery: true, keyboard_shortcuts: true, changepicturecallback: function () {
+        pp_settings = jQuery.extend({animation_speed: 'fast', slideshow: 5000, autoplay_slideshow: false, opacity: 0.80, show_title: false, show_description: false, allow_resize: true, default_width: 500, default_height: 344, counter_separator_label: '/', theme: 'pp_default', horizontal_padding: 20, hideflash: false, wmode: 'opaque', autoplay: true, modal: false, deeplinking: true, overlay_gallery: true, keyboard_shortcuts: true, changepicturecallback: function () {
         }, callback: function () {
         }, ie6_fallback: true, markup: '<div class="pp_pic_holder"> \
       <div class="ppt">&nbsp;</div> \
@@ -58,7 +58,7 @@
          </ul> \
         </div> \
         <a href="#" class="pp_arrow_next">Next</a> \
-       </div>', image_markup: '<img id="fullResImage" src="{path}" />', flash_markup: '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="{width}" height="{height}"><param name="wmode" value="{wmode}" /><param name="allowfullscreen" value="true" /><param name="allowscriptaccess" value="always" /><param name="movie" value="{path}" /><embed src="{path}" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="{width}" height="{height}" wmode="{wmode}"></embed></object>', quicktime_markup: '<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" codebase="http://www.apple.com/qtactivex/qtplugin.cab" height="{height}" width="{width}"><param name="src" value="{path}"><param name="autoplay" value="{autoplay}"><param name="type" value="video/quicktime"><embed src="{path}" height="{height}" width="{width}" autoplay="{autoplay}" type="video/quicktime" pluginspage="http://www.apple.com/quicktime/download/"></embed></object>', iframe_markup: '<iframe src ="{path}" width="{width}" height="{height}" frameborder="no"></iframe>', inline_markup: '<div class="pp_inline">{content}</div>', custom_markup: '', social_tools: '<div class="twitter"><a href="http://twitter.com/share" class="twitter-share-button" data-count="none">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script></div><div class="facebook"><iframe src="http://www.facebook.com/plugins/like.php?locale=en_US&href={location_href}&amp;layout=button_count&amp;show_faces=true&amp;width=500&amp;action=like&amp;font&amp;colorscheme=light&amp;height=23" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:500px; height:23px;" allowTransparency="true"></iframe></div>'}, pp_settings);
+       </div>', image_markup: '<img id="fullResImage" src="{path}" />', flash_markup: '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="{width}" height="{height}"><param name="wmode" value="{wmode}" /><param name="allowfullscreen" value="true" /><param name="allowscriptaccess" value="always" /><param name="movie" value="{path}" /><embed src="{path}" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="{width}" height="{height}" wmode="{wmode}"></embed></object>', quicktime_markup: '<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" codebase="http://www.apple.com/qtactivex/qtplugin.cab" height="{height}" width="{width}"><param name="src" value="{path}"><param name="autoplay" value="{autoplay}"><param name="type" value="video/quicktime"><embed src="{path}" height="{height}" width="{width}" autoplay="{autoplay}" type="video/quicktime" pluginspage="http://www.apple.com/quicktime/download/"></embed></object>', iframe_markup: '<iframe src ="{path}" width="{width}" height="{height}" frameborder="no"></iframe>', inline_markup: '<div class="pp_inline">{content}</div>', custom_markup: '', social_tools: false}, pp_settings);
         var matchedObjects = this, percentBased = false, pp_dimensions, pp_open, pp_contentHeight, pp_contentWidth, pp_containerHeight, pp_containerWidth, windowHeight = $(window).height(), windowWidth = $(window).width(), pp_slideshow;
         doresize = true, scroll_pos = _get_scroll();
         $(window).unbind('resize.prettyphoto').bind('resize.prettyphoto', function () {
@@ -143,7 +143,7 @@
             if ($ppt.is(':hidden'))$ppt.css('opacity', 0).show();
             $pp_overlay.show().fadeTo(settings.animation_speed, settings.opacity);
             $pp_pic_holder.find('.currentTextHolder').text((set_position + 1) + settings.counter_separator_label + $(pp_images).size());
-            if (pp_descriptions[set_position] != "") {
+            if (pp_descriptions[set_position] != "" && settings.show_description) {
                 $pp_pic_holder.find('.pp_description').show().html(unescape(pp_descriptions[set_position]));
             } else {
                 $pp_pic_holder.find('.pp_description').hide();
