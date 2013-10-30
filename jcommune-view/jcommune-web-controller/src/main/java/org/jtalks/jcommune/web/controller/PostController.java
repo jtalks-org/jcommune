@@ -261,12 +261,13 @@ public class PostController {
      * Converts post with bb codes to HTML for client-side
      * preview in bbEditor
      *
+     *
      * @param content post with bb codes
      * @return HTML content for post
      */
     @RequestMapping(method = RequestMethod.POST, value = "/posts/bbToHtml")
     @ResponseBody
-    public ModelAndView preview(@RequestParam("bbContent") String content, HttpServletRequest request) throws Exception {
+    public JsonResponse preview(@RequestParam("bbContent") String content, HttpServletRequest request) throws Exception {
         String signature = userService.getCurrentUser().getSignature();
 
         PostDto post = new PostDto();
@@ -279,12 +280,15 @@ public class PostController {
             errors.add(constraintViolationsIterator.next().getMessage());
         }
 
-        if (errors.size() > 0) {
-            System.out.println(request.getRequestURL());
-            return new ModelAndView("redirect:" + request.getRequestURL());
-        }
-        return new ModelAndView("ajax/postPreview")
-                .addObject("text", content)
-                .addObject("signature", signature);
+        //if (errors.size() > 0) {
+            //System.out.println(request.getAttribute("referer"));
+            Map<String, Object> data = new HashMap<>();
+            data.put("content", request.getRequestDispatcher("ajax/postPreview.jsp"));
+            data.put("status", "failed");
+            return new JsonResponse(JsonResponseStatus.SUCCESS, data);
+        //}
+//        return new ModelAndView("ajax/postPreview")
+//                .addObject("text", content)
+//                .addObject("signature", signature);
     }
 }

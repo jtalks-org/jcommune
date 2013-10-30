@@ -122,7 +122,6 @@ function bbcode2html() {
     textdata = textdata.replace(/%22/gi, "\"");
     textdata = textdata.replace(/%20/gi, " ");
 
-    alert(document.URL);
     $.ajax({
         type:"POST",
         url:$root + '/posts/bbToHtml', //todo
