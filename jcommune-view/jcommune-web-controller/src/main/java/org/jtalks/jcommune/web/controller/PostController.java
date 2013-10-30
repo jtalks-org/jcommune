@@ -15,6 +15,8 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.*;
@@ -37,10 +39,17 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.support.RequestContextUtils;
+import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 import javax.validation.*;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.*;
 
 
@@ -262,12 +271,13 @@ public class PostController {
      * preview in bbEditor
      *
      *
+     *
      * @param content post with bb codes
      * @return HTML content for post
      */
     @RequestMapping(method = RequestMethod.POST, value = "/posts/bbToHtml")
     @ResponseBody
-    public JsonResponse preview(@RequestParam("bbContent") String content, HttpServletRequest request) throws Exception {
+    public ModelAndView preview(@RequestParam("bbContent") String content, HttpServletRequest request, HttpServletResponse response) throws Exception {
         String signature = userService.getCurrentUser().getSignature();
 
         PostDto post = new PostDto();
@@ -279,16 +289,9 @@ public class PostController {
         while (constraintViolationsIterator.hasNext()) {
             errors.add(constraintViolationsIterator.next().getMessage());
         }
-
-        //if (errors.size() > 0) {
-            //System.out.println(request.getAttribute("referer"));
-            Map<String, Object> data = new HashMap<>();
-            data.put("content", request.getRequestDispatcher("ajax/postPreview.jsp"));
-            data.put("status", "failed");
-            return new JsonResponse(JsonResponseStatus.SUCCESS, data);
-        //}
-//        return new ModelAndView("ajax/postPreview")
-//                .addObject("text", content)
-//                .addObject("signature", signature);
+        return new ModelAndView("ajax/postPreview")
+                .addObject("text", content)
+                .addObject("signature", signature)
+                .addObject("errors", errors);
     }
 }

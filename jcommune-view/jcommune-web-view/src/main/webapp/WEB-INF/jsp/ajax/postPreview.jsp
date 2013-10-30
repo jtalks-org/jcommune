@@ -14,6 +14,12 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="application/json" language="java" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
-<jtalks:postContent text="${text}" signature="${signature}"/>
+<%@ taglib prefix="json" uri="http://www.atg.com/taglibs/json" %>
+<json:object>
+<json:property name="itemCount" value="1"/>
+<json:property name="usingTheBody">
+    <jtalks:postContent text="${text}" signature="${signature}"/>
+</json:property>
+</json:object>
