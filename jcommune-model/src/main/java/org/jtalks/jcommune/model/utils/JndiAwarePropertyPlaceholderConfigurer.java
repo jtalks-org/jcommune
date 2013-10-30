@@ -29,8 +29,8 @@ import java.util.Properties;
  * wasn't found there, then usual algorithm of {@link PropertyPlaceholderConfigurer} is used.</p> <b>Justification</b>:
  * in order to simplify the deployment in different environment like DEV, UAT, we'd like to change Tomcat's {@code
  * $CATALINA_HOME/Catalina/localhost[jtalks_app.xml]} file rather than unzip the war file and change properties there.
- * We certainly don't want to use OS env vars because they are shared between different applications, moreover keeping
- * them there is not that secure.
+ * We certainly don't want to use OS env vars because they are available only for Tomcat runtime and will be reset with
+ * Tomcat shutting down.
  *
  * @author stanislav bashkirtsev
  */
