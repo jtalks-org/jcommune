@@ -14,10 +14,10 @@
  */
 package org.jtalks.jcommune.service.bb2htmlprocessors;
 
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import static org.testng.Assert.assertEquals;
 
 public class BBCodeListPreprocessorTest {
 
@@ -30,6 +30,8 @@ public class BBCodeListPreprocessorTest {
     
     @Test(dataProvider="validLists")
     public void testProcess(String bbCode, String expectedResult) {
+        System.out.println(bbCode);
+        System.out.println(expectedResult);
         String result = service.process(bbCode);
         assertEquals(result, expectedResult);
     }
@@ -52,6 +54,37 @@ public class BBCodeListPreprocessorTest {
         assertEquals(result.toString(), expectedResult);
     }
     
+    @Test(dataProvider = "nestedLists")
+    public void testProcessNestedLists(String bbCode, String expectedResult) {
+        CharSequence result = service.process(new StringBuilder(bbCode));
+        assertEquals(result.toString(), expectedResult);        
+    }    
+    
+    @Test(dataProvider = "badLists")
+    public void testBadLists(String bbCode, String expected) {
+        CharSequence result = service.process(new StringBuilder(bbCode));
+        assertEquals(result.toString(), expected);         
+    }
+    
+    @DataProvider
+    public Object[][] badLists() {
+        return new Object[][]{
+                {"[list=a:bcb294daef][*][/list]","[list=a:bcb294daef][*][/*][/list]"},
+                {"[list][/list]","[list][/list]"},
+                {"some long text", "some long text"},
+                {"[list][list][list]", "[list][list][list]"}
+        };
+    }
+    
+    @DataProvider
+    public Object[][] nestedLists(){
+        return new Object[][] {
+            {"[list][*]111[list][*]222[/list][/list]", "[list][*]111[list][*]222[/*][/list][/*][/list]"},    
+            {"before[list=1][*]111[*][list=2][*]222[list=3][*]333[*]444[/list][*]555[list=4][*]666[*]777[/list][*]888[/list][*]999[/list]after", 
+                "before[list=1][*]111[/*][*][list=2][*]222[list=3][*]333[/*][*]444[/*][/list][/*][*]555[list=4][*]666[/*][*]777[/*][/list][/*][*]888[/*][/list][/*][*]999[/*][/list]after"},
+        };
+    }
+    
     @DataProvider
     public Object[][] validLists() {
         return new Object[][]{  // {"bb code before", "bb code after"}
@@ -67,6 +100,7 @@ public class BBCodeListPreprocessorTest {
                 {"[list=a][*]aaa[*]bbb[/list]", "[list=a][*]aaa[/*][*]bbb[/*][/list]"},
                 {"aaa[list=1][*]bbb[*]ccc[/list]d[b]dda[/b]aa[list][*]bbb[*]ccc[/list]ddd", "aaa[list=1][*]bbb[/*][*]ccc[/*][/list]d[b]dda[/b]aa[list][*]bbb[/*][*]ccc[/*][/list]ddd"},
                 {"aaa[list]\n[*]bbb\n[*]ccc\n[/list]", "aaa[list]\n[*]bbb\n[/*][*]ccc\n[/*][/list]"},
+                {"a\nb\nc[list]a\nb\nc[*]a\nb\nc[/list]a\nb\nc", "a\nb\nc[list]a\nb\nc[*]a\nb\nc[/*][/list]a\nb\nc"},
                 {"", ""}
         };
     }
