@@ -30,8 +30,6 @@ public class BBCodeListPreprocessorTest {
     
     @Test(dataProvider="validLists")
     public void testProcess(String bbCode, String expectedResult) {
-        System.out.println(bbCode);
-        System.out.println(expectedResult);
         String result = service.process(bbCode);
         assertEquals(result, expectedResult);
     }

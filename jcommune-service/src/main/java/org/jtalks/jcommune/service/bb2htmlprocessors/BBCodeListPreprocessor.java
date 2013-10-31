@@ -44,7 +44,7 @@ public class BBCodeListPreprocessor implements TextProcessor {
     
     private final Logger logger = LoggerFactory.getLogger(getClass());
     
-    enum TagType {
+    private enum TagType {
         LIST,
         LIST_CLOSE,
         ITEM;
