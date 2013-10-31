@@ -276,8 +276,7 @@ public class PostController {
      * @return HTML content for post
      */
     @RequestMapping(method = RequestMethod.POST, value = "/posts/bbToHtml")
-    @ResponseBody
-    public ModelAndView preview(@RequestParam("bbContent") String content, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ModelAndView preview(@RequestParam("bbContent") String content) throws Exception {
         String signature = userService.getCurrentUser().getSignature();
 
         PostDto post = new PostDto();

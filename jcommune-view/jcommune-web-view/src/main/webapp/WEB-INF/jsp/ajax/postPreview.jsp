@@ -18,8 +18,9 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="json" uri="http://www.atg.com/taglibs/json" %>
 <json:object>
-<json:property name="itemCount" value="1"/>
-<json:property name="usingTheBody">
-    <jtalks:postContent text="${text}" signature="${signature}"/>
-</json:property>
+    <json:property name="is_errors" value="${errors.size()}" />
+    <json:array name="errors" items="${errors}"/>
+    <json:property name="html">
+        <jtalks:postContent text="${text}" signature="${signature}"/>
+    </json:property>
 </json:object>
