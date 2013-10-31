@@ -270,26 +270,16 @@ public class PostController {
      * Converts post with bb codes to HTML for client-side
      * preview in bbEditor
      *
-     *
-     *
-     * @param content post with bb codes
+     * @param postDto
+     * @param result
      * @return HTML content for post
+     * @throws Exception
      */
     @RequestMapping(method = RequestMethod.POST, value = "/posts/bbToHtml")
-    public ModelAndView preview(@RequestParam("bbContent") String content) throws Exception {
+    public ModelAndView preview(@Valid @ModelAttribute PostDto postDto, BindingResult result) throws Exception {
         String signature = userService.getCurrentUser().getSignature();
-        PostDto post = new PostDto();
-        post.setBodyText(content);
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-        Iterator<ConstraintViolation<PostDto>> constraintViolationsIterator = validator.validate(post).iterator();
-        ArrayList<ConstraintViolation<PostDto>> errors = new ArrayList<>();
-        while (constraintViolationsIterator.hasNext()) {
-            errors.add(constraintViolationsIterator.next());
-        }
         return new ModelAndView("ajax/postPreview")
-                .addObject("text", content)
-                .addObject("signature", signature)
-                .addObject("errors", errors);
+                .addObject("result", result)
+                .addObject("signature", signature);
     }
 }

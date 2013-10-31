@@ -126,7 +126,7 @@ function bbcode2html() {
         type:"POST",
         url:$root + '/posts/bbToHtml', //todo
         dataType: 'json',
-        data:{bbContent:textdata},
+        data:{bodyText:textdata},
         success:function (data) {
 
             var result = data.html;

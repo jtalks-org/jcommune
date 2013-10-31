@@ -20,14 +20,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <json:object>
-    <json:property name="is_errors" value="${errors.size()}" />
+    <json:property name="is_errors" value="${result.fieldErrorCount['bodyText']}" />
     <json:property name="html" escapeXml="false">
         <c:choose>
-            <c:when test="${errors.size() == 0}"><jtalks:postContent text="${text}" signature="${signature}"/></c:when>
-            <c:when test="${errors.size() > 0}">
+            <c:when test="${result.getFieldErrorCount('bodyText') == 0}"><jtalks:postContent text="${text}" signature="${signature}"/></c:when>
+            <c:when test="${result.getFieldErrorCount('bodyText') > 0}">
                 <div class="errors">
-                <c:forEach var="message" items="${errors}">
-                    <div class="help-inline">${message.message}</div>
+                <c:forEach var="message" items="${result.getFieldErrors('bodyText')}">
+                    <div class="help-inline">${message}</div>
                 </c:forEach>
                 </div>
             </c:when>
