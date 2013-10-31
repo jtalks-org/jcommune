@@ -499,6 +499,7 @@
             <exclude>**/empty</exclude>
             <exclude>**/lib/**</exclude>
             <exclude>**/wro/**</exclude>
+            <exclude>**/META-INF/context.xml</exclude>
           </excludes>
           <useDefaultExcludes>true</useDefaultExcludes>
           <strictCheck>true</strictCheck>
