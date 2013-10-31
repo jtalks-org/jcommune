@@ -125,19 +125,16 @@ function bbcode2html() {
     $.ajax({
         type:"POST",
         url:$root + '/posts/bbToHtml', //todo
+        dataType: 'json',
         data:{bbContent:textdata},
         success:function (data) {
-            var result;
-            if (data.toString() == "[object XMLDocument]") {
-                result = decodeURI(XMLtoString(data));
-            } else {
-                result = decodeURI(data);
-            }
 
+            var result = data.html;
 
-//                $(".show-on-preview").show();
-//                $(".hide-on-preview").hide();
-//                $("#preview")[0].value = $labelEdit;
+            if(data.is_errors == 0) {
+                $(".show-on-preview").show();
+                $(".hide-on-preview").hide();
+                $("#preview")[0].value = $labelEdit;
 
                 result = result.replace(new RegExp(closeBracketCodePlaceholder, 'gi'), "%5D");
                 result = result.replace(new RegExp(openBracketCodePlaceholder, 'gi'), "%5B");
@@ -154,7 +151,17 @@ function bbcode2html() {
                 prettyPrint();
                 //enable image preview
                 $('a.prettyPhoto').prettyPhoto({social_tools:false});
-
+                if($(".errors").length) {
+                    $(".errors").remove();
+                }
+                $("#" + baseHtmlElement_id).closest(".control-group").removeClass("error");
+            } else {
+                if($(".errors").length) {
+                    $(".errors").remove();
+                }
+                $("#" + baseHtmlElement_id).closest(".control-group").addClass("error");
+                $('.keymaps-caption').after(data.html);
+            }
         }
     });
 }

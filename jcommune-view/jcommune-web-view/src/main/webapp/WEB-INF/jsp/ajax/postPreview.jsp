@@ -17,10 +17,20 @@
 <%@ page contentType="application/json" language="java" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="json" uri="http://www.atg.com/taglibs/json" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <json:object>
     <json:property name="is_errors" value="${errors.size()}" />
-    <json:array name="errors" items="${errors}"/>
-    <json:property name="html">
-        <jtalks:postContent text="${text}" signature="${signature}"/>
+    <json:property name="html" escapeXml="false">
+        <c:choose>
+            <c:when test="${errors.size() == 0}"><jtalks:postContent text="${text}" signature="${signature}"/></c:when>
+            <c:when test="${errors.size() > 0}">
+                <div class="errors">
+                <c:forEach var="message" items="${errors}">
+                    <div class="help-inline">${message.message}</div>
+                </c:forEach>
+                </div>
+            </c:when>
+        </c:choose>
     </json:property>
 </json:object>

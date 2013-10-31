@@ -278,15 +278,14 @@ public class PostController {
     @RequestMapping(method = RequestMethod.POST, value = "/posts/bbToHtml")
     public ModelAndView preview(@RequestParam("bbContent") String content) throws Exception {
         String signature = userService.getCurrentUser().getSignature();
-
         PostDto post = new PostDto();
         post.setBodyText(content);
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
         Iterator<ConstraintViolation<PostDto>> constraintViolationsIterator = validator.validate(post).iterator();
-        ArrayList<String> errors = new ArrayList<>();
+        ArrayList<ConstraintViolation<PostDto>> errors = new ArrayList<>();
         while (constraintViolationsIterator.hasNext()) {
-            errors.add(constraintViolationsIterator.next().getMessage());
+            errors.add(constraintViolationsIterator.next());
         }
         return new ModelAndView("ajax/postPreview")
                 .addObject("text", content)
