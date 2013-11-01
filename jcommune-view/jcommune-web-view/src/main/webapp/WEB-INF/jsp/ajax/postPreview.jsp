@@ -20,18 +20,18 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <json:object>
-    <json:property name="is_errors" value="${bindingResult.getFieldErrorCount('bodyText')}" />
+    <json:property name="is_invalid" value="${bindingResult.hasFieldErrors('bodyText')}" />
     <c:choose>
-        <c:when test="${bindingResult.getFieldErrorCount('bodyText') == 0}">
+        <c:when test="${bindingResult.hasFieldErrors('bodyText')}">
+        <json:array name="errors" var="message" escapeXml="false"
+                    items="${bindingResult.getFieldErrors('bodyText')}">
+        <json:object><json:property name="defaultMessage" value="${message.defaultMessage}" /></json:object>
+        </json:array>
+        </c:when>
+        <c:otherwise>
             <json:property name="html" escapeXml="false">
                 <jtalks:postContent text="${data.bodyText}" signature="${signature}"/>
             </json:property>
-        </c:when>
-        <c:when test="${bindingResult.getFieldErrorCount('bodyText') > 0}">
-            <json:array name="errors" var="message" escapeXml="false"
-                        items="${bindingResult.getFieldErrors('bodyText')}">
-                <json:object><json:property name="defaultMessage" value="${message.defaultMessage}" /></json:object>
-            </json:array>
-        </c:when>
+        </c:otherwise>
     </c:choose>
 </json:object>

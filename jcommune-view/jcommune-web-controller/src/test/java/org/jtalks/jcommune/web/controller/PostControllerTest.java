@@ -38,8 +38,10 @@ import static java.util.Arrays.asList;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.ModelAndViewAssert.*;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -173,13 +175,13 @@ public class PostControllerTest {
         //check result
         this.assertAnswerMavIsCorrect(mav);
     }
-    
-    @Test(expectedExceptions=AccessDeniedException.class)
+
+    @Test(expectedExceptions = AccessDeniedException.class)
     public void testAnswerForCodeReview() throws NotFoundException {
         Topic topic = new Topic();
-        topic.setCodeReview(new CodeReview());        
+        topic.setCodeReview(new CodeReview());
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
-        
+
         controller.addPost(TOPIC_ID);
     }
 
@@ -200,18 +202,18 @@ public class PostControllerTest {
         PostDto actual = assertAndReturnModelAttributeOfType(mav, "postDto", PostDto.class);
         assertEquals(actual.getBodyText(), expected);
     }
-    
-    @Test(expectedExceptions=AccessDeniedException.class)
+
+    @Test(expectedExceptions = AccessDeniedException.class)
     public void testQuotedAnswerForCodeReview() throws NotFoundException {
         Post post = mock(Post.class);
         Topic topic = new Topic();
         topic.setId(TOPIC_ID);
-        topic.setCodeReview(new CodeReview());        
-        
+        topic.setCodeReview(new CodeReview());
+
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
         when(postService.get(POST_ID)).thenReturn(post);
         when(post.getTopic()).thenReturn(topic);
-        
+
         controller.addPostWithQuote(POST_ID, null);
     }
 
@@ -249,6 +251,7 @@ public class PostControllerTest {
 
         //check result
         assertViewName(mav, "redirect:/topics/" + TOPIC_ID + "?page=1#" + POST_ID);
+
     }
 
     @Test
@@ -281,6 +284,17 @@ public class PostControllerTest {
         controller.redirectToPageWithPost(POST_ID);
     }
 
+    @Test
+    public void testPostPreview() throws Exception {
+        BeanPropertyBindingResult BindingResult = mock(BeanPropertyBindingResult.class);
+        when(userService.getCurrentUser()).thenReturn(user);
+        ModelAndView mav = controller.preview(getDto(), BindingResult);
+        verify(userService, times(1)).getCurrentUser();
+        assertViewName(mav, "ajax/postPreview");
+        assertModelAttributeAvailable(mav, "bindingResult");
+        assertModelAttributeAvailable(mav, "signature");
+        assertModelAttributeAvailable(mav, "data");
+    }
 /*    @Test
     public void testPreview() {
         String postText = "[code]123[/code]";

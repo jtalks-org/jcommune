@@ -131,9 +131,12 @@ function bbcode2html() {
         success:function (data) {
 
             var result = data.html;
-
-            if(data.is_errors == 0) {
-
+            if(data.is_invalid) {
+                ErrorUtils.removeErrorMessage(elId);
+                for(var a=0; a<data.errors.length; a++) {
+                    ErrorUtils.addErrorMessage(elId, data.errors[a].defaultMessage);
+                }
+            } else {
                 $(".show-on-preview").show();
                 $(".hide-on-preview").hide();
                 $("#preview")[0].value = $labelEdit;
@@ -154,11 +157,6 @@ function bbcode2html() {
                 //enable image preview
                 $('a.prettyPhoto').prettyPhoto({social_tools:false});
                 ErrorUtils.removeErrorMessage(elId);
-            } else {
-                  ErrorUtils.removeErrorMessage(elId);
-                  for(var a=0; a<data.errors.length; a++) {
-                      ErrorUtils.addErrorMessage(elId, data.errors[a].defaultMessage);
-                  }
             }
         }
     });
