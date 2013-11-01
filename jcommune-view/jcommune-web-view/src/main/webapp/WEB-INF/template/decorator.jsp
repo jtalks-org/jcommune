@@ -164,6 +164,7 @@
     <script src="${pageContext.request.contextPath}/resources/javascript/lib/html5.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/lib/html5placeholder.jquery.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/lib/json2.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/lib/purl.js"></script>
 
     <script src="${pageContext.request.contextPath}/resources/javascript/app/keymaps.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/app/dialog.js"></script>

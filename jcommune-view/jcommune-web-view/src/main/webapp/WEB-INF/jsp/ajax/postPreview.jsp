@@ -14,23 +14,24 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
-<%@ page contentType="application/json" language="java" %>
+<%@ page contentType="application/json" pageEncoding="UTF-8" language="java" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="json" uri="http://www.atg.com/taglibs/json" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <json:object>
-    <json:property name="is_errors" value="${result.fieldErrorCount['bodyText']}" />
-    <json:property name="html" escapeXml="false">
-        <c:choose>
-            <c:when test="${result.getFieldErrorCount('bodyText') == 0}"><jtalks:postContent text="${text}" signature="${signature}"/></c:when>
-            <c:when test="${result.getFieldErrorCount('bodyText') > 0}">
-                <div class="errors">
-                <c:forEach var="message" items="${result.getFieldErrors('bodyText')}">
-                    <div class="help-inline">${message}</div>
-                </c:forEach>
-                </div>
-            </c:when>
-        </c:choose>
-    </json:property>
+    <json:property name="is_errors" value="${bindingResult.getFieldErrorCount('bodyText')}" />
+    <c:choose>
+        <c:when test="${bindingResult.getFieldErrorCount('bodyText') == 0}">
+            <json:property name="html" escapeXml="false">
+                <jtalks:postContent text="${data.bodyText}" signature="${signature}"/>
+            </json:property>
+        </c:when>
+        <c:when test="${bindingResult.getFieldErrorCount('bodyText') > 0}">
+            <json:array name="errors" var="message" escapeXml="false"
+                        items="${bindingResult.getFieldErrors('bodyText')}">
+                <json:object><json:property name="defaultMessage" value="${message.defaultMessage}" /></json:object>
+            </json:array>
+        </c:when>
+    </c:choose>
 </json:object>

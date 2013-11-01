@@ -109,6 +109,7 @@ var slashCodePlaceholder = "14@123435vggv4f";
 var lowerThenPlaceholder = "gertfgertgf@@@@@#4324234";
 
 function bbcode2html() {
+    elId = "#" + html_content_id;
     var textdata = " " + textboxelement.value;
     textdata = textdata.replace(/%5D/gi, closeBracketCodePlaceholder);
     textdata = textdata.replace(/%5B/gi, openBracketCodePlaceholder);
@@ -121,10 +122,10 @@ function bbcode2html() {
     textdata = textdata.replace(/%5B/gi, "[");
     textdata = textdata.replace(/%22/gi, "\"");
     textdata = textdata.replace(/%20/gi, " ");
-
+    previewUrl = $.url($(elId).closest("form").attr("action")).segment()[0];
     $.ajax({
         type:"POST",
-        url:$root + '/posts/bbToHtml', //todo
+        url:$root + '/' + previewUrl + '/bbToHtml', //todo
         dataType: 'json',
         data:{bodyText:textdata},
         success:function (data) {
@@ -132,6 +133,7 @@ function bbcode2html() {
             var result = data.html;
 
             if(data.is_errors == 0) {
+
                 $(".show-on-preview").show();
                 $(".hide-on-preview").hide();
                 $("#preview")[0].value = $labelEdit;
@@ -141,7 +143,7 @@ function bbcode2html() {
                 result = result.replace(new RegExp(slashCodePlaceholder, 'gi'), "%22");
                 result = result.replace(new RegExp(lowerThenPlaceholder, 'gi'), "&lt;");
 
-                $("#" + html_content_id).html(result.trim());
+                $(elId).html(result.trim());
                 htmlcontentelement.style.display = "";
                 textboxelement.style.display = "none";
 
@@ -151,16 +153,12 @@ function bbcode2html() {
                 prettyPrint();
                 //enable image preview
                 $('a.prettyPhoto').prettyPhoto({social_tools:false});
-                if($(".errors").length) {
-                    $(".errors").remove();
-                }
-                $("#" + baseHtmlElement_id).closest(".control-group").removeClass("error");
+                ErrorUtils.removeErrorMessage(elId);
             } else {
-                if($(".errors").length) {
-                    $(".errors").remove();
-                }
-                $("#" + baseHtmlElement_id).closest(".control-group").addClass("error");
-                $('.keymaps-caption').after(data.html);
+                  ErrorUtils.removeErrorMessage(elId);
+                  for(var a=0; a<data.errors.length; a++) {
+                      ErrorUtils.addErrorMessage(elId, data.errors[a].defaultMessage);
+                  }
             }
         }
     });

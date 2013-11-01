@@ -23,5 +23,6 @@
     <pattern>/admin/logo/IFrameLogoPreview*</pattern>
     <pattern>/admin/icon/IFrameFavIconPreview*</pattern>
     <pattern>/posts/bbToHtml</pattern>
+    <pattern>/topics/bbToHtml</pattern>
   </excludes>
 </decorators>

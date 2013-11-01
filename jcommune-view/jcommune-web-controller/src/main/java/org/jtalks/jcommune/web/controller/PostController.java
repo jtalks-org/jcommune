@@ -15,43 +15,25 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.web.dto.PostDto;
-import org.jtalks.jcommune.web.dto.json.JsonResponse;
-import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
+import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
-import org.springframework.http.HttpRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.support.RequestContextUtils;
-import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 import javax.validation.*;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.*;
-
 
 /**
  * Controller for post-related actions
@@ -62,6 +44,7 @@ import java.util.*;
  * @author Kirill Afonin
  * @author Alexandre Teterin
  * @author Evgeniy Naumenko
+ * @author Andrey Ivanov
  */
 @Controller
 public class PostController {
@@ -270,16 +253,39 @@ public class PostController {
      * Converts post with bb codes to HTML for client-side
      * preview in bbEditor
      *
-     * @param postDto
-     * @param result
+     * @param postDto  Current post dto
+     * @param result Spring MVC binding result
      * @return HTML content for post
      * @throws Exception
      */
     @RequestMapping(method = RequestMethod.POST, value = "/posts/bbToHtml")
     public ModelAndView preview(@Valid @ModelAttribute PostDto postDto, BindingResult result) throws Exception {
+        return getModelAndViewForPreview(result).addObject("data", postDto);
+    }
+
+    /**
+     * Converts topic with bb codes to HTML for client-side
+     * preview in bbEditor
+     *
+     * @param topicDto Current topic dto
+     * @param result Spring MVC binding result
+     * @return HTML content for topic
+     * @throws Exception
+     */
+    @RequestMapping(method = RequestMethod.POST, value = "/topics/bbToHtml")
+    public ModelAndView preview(@Valid @ModelAttribute TopicDto topicDto, BindingResult result) throws Exception {
+        return getModelAndViewForPreview(result).addObject("data", topicDto);
+    }
+
+    /**
+     * Prepare ModelAndView for showing preview
+     *
+     * @param result
+     * @return prepared ModelAndView for preview
+     */
+    private ModelAndView getModelAndViewForPreview(BindingResult result) {
         String signature = userService.getCurrentUser().getSignature();
-        return new ModelAndView("ajax/postPreview")
-                .addObject("result", result)
-                .addObject("signature", signature);
+        return new ModelAndView("ajax/postPreview").addObject("signature", signature)
+                .addObject("bindingResult", result);
     }
 }

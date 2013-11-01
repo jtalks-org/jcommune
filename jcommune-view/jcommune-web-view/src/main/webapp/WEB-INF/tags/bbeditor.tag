@@ -147,7 +147,7 @@
   </div>
 </div>
 
-<div class='control-group'>
+<div class='control-group controls'>
   <%-- <div id="helpline"><spring:message code="label.answer.tooltip"/></div>--%>
             <div id="editorBBCODEdiv">
                 <pre id="htmlContent"></pre>
