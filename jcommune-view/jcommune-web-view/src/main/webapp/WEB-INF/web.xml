@@ -42,7 +42,7 @@
     <servlet>
     <!-- Servlet for JETM results HTTP-console -->
     <servlet-name>performanceMonitor</servlet-name>
-        <servlet-class>etm.contrib.integration.spring.web.SpringHttpConsoleServlet</servlet-class>
+        <servlet-class>org.jtalks.jcommune.web.controller.JetmHttpConsoleServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
