@@ -66,13 +66,11 @@ public class TopicSearchControllerTest {
 		when(topicFetchService.searchByTitleAndContent(DEFAULT_SEARCH_TEXT, START_PAGE))
 				.thenReturn(searchResultPage);
 
-		ModelAndView modelAndView = topicSearchController.initSearch(DEFAULT_SEARCH_TEXT);
+		ModelAndView modelAndView = topicSearchController.initSearch(DEFAULT_SEARCH_TEXT, "1");
 		Map<String, Object> model = modelAndView.getModel();
 		
 		Assert.assertEquals(searchResultPage, model.get(TopicSearchController.SEARCH_RESULT_ATTRIBUTE_NAME), 
 				"The controller must return the result of TopicFullSearchService.");
-		Assert.assertEquals(DEFAULT_SEARCH_TEXT, model.get(TopicSearchController.URI_ATTRIBUTE_NAME),
-				"Uri and the search text must be identical.");
 		verify(topicFetchService).searchByTitleAndContent(DEFAULT_SEARCH_TEXT, START_PAGE);
 		verify(lastReadPostService).fillLastReadPostForTopics(searchResultPage.getContent());
 	}
@@ -85,13 +83,11 @@ public class TopicSearchControllerTest {
         when(topicFetchService.searchByTitleAndContent(DEFAULT_SEARCH_TEXT, page))
 				.thenReturn(searchResultPage);
 
-		ModelAndView modelAndView = topicSearchController.continueSearch(DEFAULT_SEARCH_TEXT, page);
+		ModelAndView modelAndView = topicSearchController.initSearch(DEFAULT_SEARCH_TEXT, page);
 		Map<String, Object> model = modelAndView.getModel();
 		
 		Assert.assertEquals(searchResultPage, model.get(TopicSearchController.SEARCH_RESULT_ATTRIBUTE_NAME), 
 				"The controller must return the result of TopicFullSearchService.");
-		Assert.assertEquals(DEFAULT_SEARCH_TEXT, model.get(TopicSearchController.URI_ATTRIBUTE_NAME),
-				"Uri and the search text must be identical.");
 		verify(topicFetchService).searchByTitleAndContent(DEFAULT_SEARCH_TEXT, page);
 		verify(lastReadPostService).fillLastReadPostForTopics(searchResultPage.getContent());
 	}

@@ -150,11 +150,11 @@
         <property name="defaultValue" value="0"/>
     </bean>
 
-    <bean id="componentPrefixTitleProperty" class="org.jtalks.jcommune.model.entity.JCommuneProperty"
+    <bean id="componentAllPagesTitlePrefixProperty" class="org.jtalks.jcommune.model.entity.JCommuneProperty"
           factory-method="valueOf">
-        <constructor-arg type="java.lang.String" value="TITLE_PREFIX"/>
+        <constructor-arg type="java.lang.String" value="ALL_PAGES_TITLE_PREFIX"/>
         <property name="propertyDao" ref="propertyDao"/>
-        <property name="name" value="jcommune.title_prefix"/>
+        <property name="name" value="jcommune.all_pages_title_prefix"/>
         <property name="defaultValue" value=""/>
     </bean>
 

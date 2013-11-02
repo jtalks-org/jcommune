@@ -26,7 +26,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
@@ -50,20 +49,22 @@ public class KaptchaPluginServiceTest {
     private final String POSSIBLE_SYMBOLS = "1234567890";
 
     private KaptchaPluginService service;
-
+    private MockHttpServletRequest request;
+    private HttpSession session;
+    
     @BeforeMethod
     public void setUp() throws Exception {
         service = spy(new KaptchaPluginService(IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_LENGTH, POSSIBLE_SYMBOLS));
+        session = new MockHttpSession();
+        request = new MockHttpServletRequest();
+        request.setSession(session);
     }
 
     @Test
     public void testNoCoincidenceCaptchaWithInputValue() throws Exception {
         UserDto userDto = createUserDto();
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        MockHttpSession session = new MockHttpSession();
         String captchaText = "1234";
         session.setAttribute(Constants.KAPTCHA_SESSION_KEY, captchaText);
-        request.setSession(session);
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
         Map<String, String> errors = service.validateCaptcha(userDto, 1L);
@@ -74,10 +75,7 @@ public class KaptchaPluginServiceTest {
     @Test
     public void testCoincidenceCaptchaWithInputValue() throws Exception {
         UserDto userDto = createUserDto();
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        MockHttpSession session = new MockHttpSession();
         session.setAttribute(Constants.KAPTCHA_SESSION_KEY, GENERATED_CAPTCHA_TEXT);
-        request.setSession(session);
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
         Map<String, String> errors = service.validateCaptcha(userDto, 1L);
@@ -105,40 +103,29 @@ public class KaptchaPluginServiceTest {
 
     @Test
     public void testGetHtml() throws Exception {
-        String newLine = System.getProperty("line.separator");
         Properties properties = createProperties();
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getScheme()).thenReturn("http");
-        when(request.getContextPath()).thenReturn("");
-        when(request.getServerName()).thenReturn("localhost");
-        when(request.getServerPort()).thenReturn(80);
         when(service.getProperties()).thenReturn(properties);
-        String expected = newLine + "<div class='control-group'>" + newLine +
-                "  <div class='controls captcha-images'>" + newLine +
-                "    <img class='captcha-img' alt='Captcha' src='http://localhost/plugin/1/refreshCaptcha'/>" + newLine +
-                "    <img class='captcha-refresh' alt='Refresh captcha'" +
-                " src='http://localhost/resources/images/captcha-refresh.png'/>" + newLine +
-                "  </div>" + newLine +
-                "  <div class='controls'>" + newLine +
-                "    <input type='text' id='plugin-1' name='userDto.captchas[plugin-1]'" + newLine +
-                "      placeholder='Captcha text' class='input-xlarge captcha'/>" + newLine +
-                "  </div>" + newLine +
-                "</div>";
 
         String actual = service.getHtml(request, "1", Locale.ENGLISH);
-        assertEquals(actual, expected);
+
+        assertTrue(actual.contains("<img class='captcha-img' "
+                + "alt='Captcha' src='http://localhost/plugin/1/refreshCaptcha'/>"));
+        assertTrue(actual.contains("<img class='captcha-refresh' alt='Refresh captcha' "
+                + "src='http://localhost/resources/images/captcha-refresh.png'/>"));
+        assertTrue(actual.contains("<input type='text' id='plugin-1' name='userDto.captchas[plugin-1]'"));
+        assertTrue(actual.contains("placeholder='Captcha text' class='input-xlarge captcha'/>"));
     }
 
     @Test
     public void testHandleRequestToCaptchaImage() throws Exception {
         HttpServletResponse response = mock(HttpServletResponse.class);
-        HttpServletRequest request = mock(HttpServletRequest.class);
+        session = mock(HttpSession.class);
+        request.setSession(session);
         ServletOutputStream out = mock(ServletOutputStream.class);
-        HttpSession session = mock(HttpSession.class);
         Producer captchaProducer = mock(Producer.class);
 
         int imageType = 1;
-        when(request.getSession()).thenReturn(session);
+
         when(response.getOutputStream()).thenReturn(out);
         when(service.getCaptchaProducer()).thenReturn(captchaProducer);
         when(captchaProducer.createText()).thenReturn(GENERATED_CAPTCHA_TEXT);

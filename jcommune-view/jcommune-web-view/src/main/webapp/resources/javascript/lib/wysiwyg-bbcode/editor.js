@@ -146,6 +146,12 @@ function bbcode2html() {
                 result = result.replace(new RegExp(slashCodePlaceholder, 'gi'), "%22");
                 result = result.replace(new RegExp(lowerThenPlaceholder, 'gi'), "&lt;");
 
+            editorVisible = true;
+            
+			//enable code highlight
+			prettyPrint();
+            //enable image preview
+            $('a.pretty-photo').prettyPhoto();
                 $(elId).html(result.trim());
                 htmlcontentelement.style.display = "";
                 textboxelement.style.display = "none";
@@ -262,7 +268,14 @@ function closeTag2(text) {
             domResult = domRegExp.exec(currentText);
         }
         if (domResult != null) {
-            currentText = closeTag2(domResult[1]) + domResult[2] + closeTag2(domResult[5]) + domResult[6] + closeTag2(domResult[8]) + closeTag2(domResult[9]);
+            isSpaceAware = domResult[6].indexOf(space);
+            if(isSpaceAware != -1) {
+                parsedCloseTags = domResult[6].split(space);
+                closeTag = parsedCloseTags[0] + "]";
+            } else {
+                closeTag = domResult[6];
+            }
+            currentText = closeTag2(domResult[1]) + domResult[2] + closeTag2(domResult[5]) + closeTag + closeTag2(domResult[8]) + closeTag2(domResult[9]);
         }
     }
 

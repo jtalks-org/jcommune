@@ -22,7 +22,7 @@
 <head>
   <meta name="description" content="<c:out value="${topicTitle}"/>">
   <title>
-      <c:if test="${not empty cmpTitlePrefix}"><c:out value="${cmpTitlePrefix}"/> - </c:if>
+      <c:out value="${cmpTitlePrefix}"/>
       <spring:message code="label.answer_to"/>: <c:out value="${topicTitle}"/>
   </title>
 </head>

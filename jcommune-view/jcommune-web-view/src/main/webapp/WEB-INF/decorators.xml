@@ -24,5 +24,6 @@
     <pattern>/admin/icon/IFrameFavIconPreview*</pattern>
     <pattern>/posts/bbToHtml</pattern>
     <pattern>/topics/bbToHtml</pattern>
+    <pattern>/performance/*</pattern>
   </excludes>
 </decorators>

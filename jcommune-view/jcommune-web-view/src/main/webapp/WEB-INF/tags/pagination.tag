@@ -18,6 +18,8 @@
 <%@ tag body-content="empty" %>
 <%@ attribute name="uri" required="true" type="java.lang.String" %>
 <%@ attribute name="page" required="true" type="org.springframework.data.domain.Page" %>
+<%--An additional parameter is needed in case the request, except the "page", to send other parameters.
+ They will add to "page" parameters. for example "&somaName=someValue"--%>
 <%@ attribute name="additionalParamsString" required="false" type="java.lang.String" %>
 <%@ attribute name="numberLink" required="false" type="java.lang.Integer" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>

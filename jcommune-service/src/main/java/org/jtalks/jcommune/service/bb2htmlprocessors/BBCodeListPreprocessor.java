@@ -15,9 +15,13 @@
 
 package org.jtalks.jcommune.service.bb2htmlprocessors;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.perm.kefir.bbcode.TextProcessor;
 
 /**
@@ -27,17 +31,53 @@ import ru.perm.kefir.bbcode.TextProcessor;
  * @author Vyacheslav Mishcheryakov
  */
 public class BBCodeListPreprocessor implements TextProcessor {
+    
+    private static final String LIST_TAG_OPEN = "[list";
+    private static final String LIST_TAG_CLOSE = "[/list]";
+    private static final String LIST_ITEM_TAG_OPEN = "[*]";
+    private static final String LIST_ITEM_CLOSE = "[/*]";
+        
+    /** Matches one of the following tags: [list],[/list],[*] */
+    private static final String TAG_PATTERN = "\\[list([^\\]\\[]+)?]|\\[\\*\\]|\\[\\/list\\]";
+    /** TAG + everything before next tag */
+    private static final String LIST_REGEX = "("+ TAG_PATTERN + ")(.*?)?(?=" + TAG_PATTERN + "|$)";    
+    
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+    
+    private enum TagType {
+        LIST,
+        LIST_CLOSE,
+        ITEM;
+        
+        /**
+         * @param tagString 
+         * @return appropriate tag for specified string
+         */
+        static TagType fromString(String tagString) {
+            if (tagString.equalsIgnoreCase(LIST_ITEM_TAG_OPEN)) {
+                return TagType.ITEM;
+            }
+            if (tagString.equalsIgnoreCase(LIST_TAG_CLOSE)) {
+                return TagType.LIST_CLOSE;
+            }
+            if (tagString.startsWith(LIST_TAG_OPEN)) {
+                return TagType.LIST;
+            }
+            throw new IllegalArgumentException("unknow tag type: " + tagString);
+        }
+    }    
+   
+    private final Pattern listPattern = Pattern.compile(LIST_REGEX, Pattern.DOTALL);
 
-    private static final String BBLIST_PATTERN = "(\\[list[\\]|=?\\]])(.*?)(\\[/list\\])";
-    private static final String LIST_ITEM_OPEN_TAG = "[*]";
-    private static final String LIST_ITEM_CLOSE_TAG = "[/*]";
-
+    private final Stack<TreeElement> listStack = new Stack<>();
+    
     /**
      * Process incoming text with replacing [*] tags by [*]...[/*]
      *
      * @param bbEncodedText BB encoded text to process
      * @return processed text
      */
+    @Override
     public String process(String bbEncodedText) {
         return process(new StringBuilder(bbEncodedText)).toString();
     }
@@ -49,54 +89,17 @@ public class BBCodeListPreprocessor implements TextProcessor {
      * @return processed text
      */
     private StringBuilder preprocessLists(String bbEncodedText) {
-        Pattern pattern = Pattern.compile(BBLIST_PATTERN, Pattern.DOTALL);
-        Matcher matcher = pattern.matcher(bbEncodedText);
-
-        StringBuilder result = new StringBuilder();
-        int lastEnd = 0;
-        while (matcher.find()) {
-            result.append(bbEncodedText.substring(lastEnd, matcher.start()));
-            result.append(matcher.group(1));
-            String listItems = matcher.group(2);
-            result.append(preprocessListItems(listItems));
-            result.append(matcher.group(3));
-            lastEnd = matcher.end();
-        }
-
-        result.append(bbEncodedText.substring(lastEnd, bbEncodedText.length()));
-
-        return result;
-    }
-
-    /**
-     * Process actual list items with replacing [*] by [*]...[/*]
-     *
-     * @param bbEncodedList text inside [list]...[/list] tags
-     * @return processed text
-     */
-    private StringBuilder preprocessListItems(String bbEncodedList) {
-        StringBuilder result = new StringBuilder();
-        int itemStart = bbEncodedList.indexOf(LIST_ITEM_OPEN_TAG);
-        if (itemStart == -1) {
-            // if no list items retun original text
-            result.append(bbEncodedList);
-        } else {
-            // append text before first item
-            result.append(bbEncodedList.substring(0, itemStart));
-
-            int itemEnd = 0;
-            int cutItemEnd = 0;
-            while (itemStart != -1) {
-                itemEnd = bbEncodedList.indexOf(LIST_ITEM_OPEN_TAG, itemStart + 1);
-                cutItemEnd = itemEnd != -1 ? itemEnd : bbEncodedList.length();
-
-                result.append(bbEncodedList.substring(itemStart, cutItemEnd));
-                result.append(LIST_ITEM_CLOSE_TAG);
-
-                itemStart = itemEnd;
+        try {
+            listStack.push(createRootElement(bbEncodedText));
+            Matcher matcher = listPattern.matcher(bbEncodedText);
+            while (matcher.find()) {
+                processMatch(matcher);
             }
-        }
-        return result;
+            return new StringBuilder(listStack.pop().toBBString());
+        } catch (Exception ex) {
+            logger.info("Error during bb-codes processing: " + bbEncodedText, ex);
+            return new StringBuilder(bbEncodedText);
+        } 
     }
 
     /**
@@ -132,5 +135,146 @@ public class BBCodeListPreprocessor implements TextProcessor {
     public StringBuffer process(StringBuffer bbEncodedText) {
         return new StringBuffer(process(bbEncodedText.toString()));
     }
+    
+    /**
+     * Create root element of the tags tree.
+     * @param str
+     * @return root element
+     */
+    private RootElement createRootElement(String str) {
+        RootElement newRoot = new RootElement();
+        int firstListPos = str.indexOf(LIST_TAG_OPEN);
+        if (firstListPos < 0) {
+            newRoot.text = str;
+        } else {
+            newRoot.text = str.substring(0, firstListPos);
+        }
+        return newRoot;
+    }
+    
+    /**
+     * Process matched tag.
+     * @param matcher 
+     */
+    private void processMatch(Matcher matcher) {
+        TagType tag = TagType.fromString(matcher.group(1));
+        if (tag == TagType.LIST) {
+            ListElement list = new ListElement();
+            list.params = matcher.group(2);
+            list.text = matcher.group(3);
+            listStack.peek().getLastChild().addChild(list);
+            listStack.push(list);
+        }
+        if (tag == TagType.LIST_CLOSE) {
+            ListElement lastList = (ListElement) listStack.pop();
+            lastList.endText = matcher.group(3);
+        }
+        if (tag == TagType.ITEM) {
+            ItemElement item = new ItemElement();
+            item.text = matcher.group(3);
+            listStack.peek().addChild(item);
+        }
+    }    
+    
+    /**
+     * Represents one element of the tags tree.
+     */
+    private class TreeElement {
+        String text = "";
+        List<TreeElement> children = new LinkedList<>();
+        
+        /**
+         * @return last element child
+         */
+        TreeElement getLastChild() {
+            return children.get(children.size() - 1);
+        }    
+        
+        /**
+         * @param newEl new sub-element
+         */
+        void addChild(TreeElement newEl) {
+            children.add(newEl);
+        }
+        
+        /**
+         * Return string representation of this element with tags and all children.
+         * @return BB-string
+         */
+        String toBBString() {
+            String rs = getOpenTag() + text;
+            for (TreeElement e : children) {
+                rs += e.toBBString();
+            }
+            return rs + getCloseTag();
+        }
+        
+        /**
+         * @return open tag
+         */
+        protected String getOpenTag() {
+            return "";
+        }
+        
+        /**
+         * @return close tag
+         */
+        protected String getCloseTag() {
+            return "";
+        }
+    }
 
+    /**
+     * Root of the tags tree. Contains all lists or just text.
+     */
+    private class RootElement extends TreeElement {
+        @Override
+        TreeElement getLastChild() {
+            return this;
+        }
+    }
+
+    /**
+     * List item element,[*]
+     */
+    private class ItemElement extends TreeElement {
+
+        @Override
+        protected String getOpenTag() {
+            return LIST_ITEM_TAG_OPEN;
+        }
+
+        @Override
+        protected String getCloseTag() {
+            return LIST_ITEM_CLOSE;
+        }
+    }
+    
+    /**
+     * List tag, [list].
+     */
+    private class ListElement extends TreeElement {
+        /** list params */
+        String params;
+        /** text after list close tag */
+        String endText;
+
+        @Override
+        protected String getOpenTag() {
+            return LIST_TAG_OPEN + getParams() + "]";
+        }
+
+        @Override
+        protected String getCloseTag() {
+            return LIST_TAG_CLOSE + getEndText();
+        }
+
+        public String getParams() {
+            return params != null ? params : "";
+        }
+
+        public String getEndText() {
+            return endText != null ? endText : "";
+        }
+    }    
 }

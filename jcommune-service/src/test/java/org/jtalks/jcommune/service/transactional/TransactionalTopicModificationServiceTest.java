@@ -42,8 +42,6 @@ import org.testng.annotations.Test;
 import java.util.*;
 
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.*;
@@ -348,7 +346,7 @@ public class TransactionalTopicModificationServiceTest {
             throws NotFoundException {
         verify(branchDao).saveOrUpdate(topic.getBranch());
         verify(aclBuilder, times(2)).grant(GeneralPermission.WRITE);
-        verify(notificationService).topicCreated(topic);
+        verify(notificationService).sendNotificationAboutTopicCreated(topic);
     }    
     
     @Test
@@ -618,7 +616,7 @@ public class TransactionalTopicModificationServiceTest {
 
         assertEquals(targetBranch.getTopicCount(), 1);
         verify(branchDao).saveOrUpdate(targetBranch);
-        verify(notificationService).topicMoved(topic, TOPIC_ID);
+        verify(notificationService).sendNotificationAboutTopicMoved(topic);
     }
 
     @Test

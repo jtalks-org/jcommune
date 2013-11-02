@@ -24,7 +24,7 @@
 <head>
   <meta name="description" content="<c:out value="${section.name}"/>">
   <title>
-      <c:if test="${not empty cmpTitlePrefix}"><c:out value="${cmpTitlePrefix}"/> - </c:if>
+      <c:out value="${cmpTitlePrefix}"/>
       <c:out value="${section.name}"/> - <c:out value="${cmpDescription}"/>
   </title>
 </head>

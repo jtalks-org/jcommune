@@ -100,8 +100,8 @@ public enum JCommuneProperty {
      * such as logo or favorite icon
      */
     ADMIN_INFO_LAST_UPDATE_TIME,
-    /** title prefix - should be displayed at the beginning of the every page */
-    TITLE_PREFIX
+    /** title prefix - should be displayed at the beginning of the title of the every page */
+    ALL_PAGES_TITLE_PREFIX
     ;
 
 

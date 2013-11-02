@@ -174,7 +174,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(topic).flush();
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(first).flush();
 
-        notificationService.topicCreated(topic);
+        notificationService.sendNotificationAboutTopicCreated(topic);
 
         subscribeOnTopicIfNotificationsEnabled(topic, currentUser);
         createOrUpdatePoll(topicDto.getPoll(), topic);
@@ -375,7 +375,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         }
         branchLastPostService.refreshLastPostInBranch(targetBranch);
 
-        notificationService.topicMoved(topic, topic.getId());
+        notificationService.sendNotificationAboutTopicMoved(topic);
 
         logger.info("Moved topic \"{}\". Topic id: {}", topic.getTitle(), topic.getId());
     }

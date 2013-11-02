@@ -29,8 +29,8 @@ import java.util.Properties;
  * wasn't found there, then usual algorithm of {@link PropertyPlaceholderConfigurer} is used.</p> <b>Justification</b>:
  * in order to simplify the deployment in different environment like DEV, UAT, we'd like to change Tomcat's {@code
  * $CATALINA_HOME/Catalina/localhost[jtalks_app.xml]} file rather than unzip the war file and change properties there.
- * We certainly don't want to use OS env vars because they are shared between different applications, moreover keeping
- * them there is not that secure.
+ * We certainly don't want to use OS env vars because they are available only for Tomcat runtime and will be reset with
+ * Tomcat shutting down.
  *
  * @author stanislav bashkirtsev
  */
@@ -57,19 +57,19 @@ public class JndiAwarePropertyPlaceholderConfigurer extends PropertyPlaceholderC
      * Takes a look at Tomcat JNDI environment ({@code java:/comp/env}) and tries to find the placeholder there. Returns
      * {@code null} if nothing found there, otherwise found value is returned as a string.
      *
-     * @param placeholder the property key to find its values
+     * @param name the property name to find its value
      * @return the value of the property from Tomcat JNDI or {@code null} if nothing found there
      */
-    private String resolveJndiProperty(String placeholder) {
+    public String resolveJndiProperty(String name) {
         String propValue = null;
         try {
             Context initContext = new InitialContext();
             Context envContext = (Context) initContext.lookup(TOMCAT_CONTEXT_NAME);
-            propValue = (String) envContext.lookup(placeholder);
-            logger.info("Property {} taken from JNDI.", placeholder, propValue);
+            propValue = (String) envContext.lookup(name);
+            logger.info("Property {} taken from JNDI.", name, propValue);
         } catch (NamingException e) {
             logger.info("Could not resolve JNDI property [{}]. Will be trying file properties, then System ones and " +
-                    "if not found anywhere, then defaults will be taken", placeholder);
+                    "if not found anywhere, then defaults will be taken", name);
         }
         return propValue;
     }

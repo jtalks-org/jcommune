@@ -39,9 +39,19 @@
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
+    <servlet>
+    <!-- Servlet for JETM results HTTP-console -->
+    <servlet-name>performanceMonitor</servlet-name>
+        <servlet-class>org.jtalks.jcommune.web.controller.JetmHttpConsoleServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
     <servlet-mapping>
         <servlet-name>spring-dispatcher</servlet-name>
         <url-pattern>/</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>performanceMonitor</servlet-name>
+        <url-pattern>/performance/*</url-pattern>
     </servlet-mapping>
 
     <!-- filter helps to remove whitespaces in resulting html pages -->

@@ -373,11 +373,6 @@
         <!-- JETM implementation using bean -->
         <bean id="etmMonitor" class="etm.core.monitor.NestedMonitor" init-method="start" destroy-method="stop"/>
 
-        <!-- JETM console -->
-        <bean id="etmHttpConsole" class="etm.contrib.console.HttpConsoleServer" init-method="start" destroy-method="stop">
-            <constructor-arg ref="etmMonitor"/>
-        </bean>
-
         <!-- Wrapper for JETM interceptor -->
         <bean id="etmMethodCallInterceptor" class="org.jtalks.jcommune.service.jetm.EtmMethodCallInterceptorWrapper">
             <constructor-arg ref="etmMonitor"/>

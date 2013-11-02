@@ -149,15 +149,14 @@ public class MailService {
      * @param locale    recipient locale
      * @throws MailingFailedException when mailing failed
      */
-    private void sendEmailOnForumUpdates(JCUser recipient, Map<String, Object> model, Locale locale, Entity entity, String subject, String nameTemplate)
-            throws MailingFailedException {
+    private void sendEmailOnForumUpdates(JCUser recipient, Map<String, Object> model, Locale locale,
+            Entity entity, String subject, String nameTemplate) throws MailingFailedException {
         model.put(USER, recipient);
         model.put(RECIPIENT_LOCALE, locale);
         String titleEntity = this.getTitleName(entity);
         this.sendEmail(recipient.getEmail(), messageSource.getMessage(subject,
                 new Object[]{}, locale) + titleEntity, model, nameTemplate);
     }
-
 
     /**
      * Sends notification to user about received private message.

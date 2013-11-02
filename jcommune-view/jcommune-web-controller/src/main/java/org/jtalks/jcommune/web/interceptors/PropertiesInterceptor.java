@@ -43,27 +43,28 @@ public class PropertiesInterceptor extends HandlerInterceptorAdapter {
     private JCommuneProperty sapeShowDummyLinksProperty;
     private JCommuneProperty logoTooltipProperty;
     private JCommuneProperty adminInfoChangeDateProperty;
-    private JCommuneProperty titlePrefixProperty;
+    private JCommuneProperty allPagesTitlePrefixProperty;
 
     /**
      * @param componentDescriptionProperty component description property
      * @param componentNameProperty        component name property
      * @param sapeShowDummyLinksProperty   show dummy links for SAPE on not
      * @param logoTooltipProperty          tooltip for forum logo
-     * @param titlePrefixProperty          title prefix property
+     * @param allPagesTitlePrefixProperty  property of the prefix that should be added to the beginning of the title
+     *                                     of every page
      */
     public PropertiesInterceptor(JCommuneProperty componentNameProperty,
                                  JCommuneProperty componentDescriptionProperty,
                                  JCommuneProperty sapeShowDummyLinksProperty,
                                  JCommuneProperty logoTooltipProperty,
                                  JCommuneProperty adminInfoChangeDateProperty,
-                                 JCommuneProperty titlePrefixProperty) {
+                                 JCommuneProperty allPagesTitlePrefixProperty) {
         this.componentDescriptionProperty = componentDescriptionProperty;
         this.componentNameProperty = componentNameProperty;
         this.sapeShowDummyLinksProperty = sapeShowDummyLinksProperty;
         this.logoTooltipProperty =  logoTooltipProperty;
         this.adminInfoChangeDateProperty = adminInfoChangeDateProperty;
-        this.titlePrefixProperty = titlePrefixProperty;
+        this.allPagesTitlePrefixProperty = allPagesTitlePrefixProperty;
     }
 
     /**
@@ -84,7 +85,7 @@ public class PropertiesInterceptor extends HandlerInterceptorAdapter {
             modelAndView.addObject(PARAM_CMP_DESCRIPTION, componentDescriptionProperty.getValueOfComponent());
             modelAndView.addObject(PARAM_SHOW_DUMMY_LINKS, sapeShowDummyLinksProperty.booleanValue());
             modelAndView.addObject(PARAM_LOGO_TOOLTIP, logoTooltipProperty.getValue());
-            modelAndView.addObject(PARAM_CMP_PREFIX, titlePrefixProperty.getValue());
+            modelAndView.addObject(PARAM_CMP_PREFIX, allPagesTitlePrefixProperty.getValue());
             modelAndView.addObject(PARAM_ADMIN_INFO_CHANGE_DATE, adminInfoChangeDateProperty.getValue());
         }
     }

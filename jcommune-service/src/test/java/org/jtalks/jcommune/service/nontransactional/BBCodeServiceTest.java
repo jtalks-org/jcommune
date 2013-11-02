@@ -88,7 +88,7 @@ public class BBCodeServiceTest {
                 {"[list=a][*]1й пункт[/*][*]2й пункт[/*][/list]", "<ol type=\"a\" class=\"list\"><li>1й пункт</li><li>2й пункт</li></ol>"},
                 //images
                 {"[img]http://narod.ru/avatar.jpg[/img]",
-                        "<a title=\"\" href=\"http://narod.ru/avatar.jpg\" class=\"prettyPhoto\">" +
+                        "<a title=\"\" href=\"http://narod.ru/avatar.jpg\" class=\"pretty-photo\">" +
                                 "<img class=\"thumbnail\" alt=\"\" src=\"http://narod.ru/avatar.jpg\"/></a>"},
                 //code
                 {"[code=sql]println(\"Hi!\");[/code]", "<pre class=\"prettyprint linenums sql\">println(&quot;Hi!&quot;);</pre>"},
