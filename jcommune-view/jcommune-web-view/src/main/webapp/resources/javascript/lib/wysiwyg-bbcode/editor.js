@@ -146,22 +146,15 @@ function bbcode2html() {
                 result = result.replace(new RegExp(slashCodePlaceholder, 'gi'), "%22");
                 result = result.replace(new RegExp(lowerThenPlaceholder, 'gi'), "&lt;");
 
-            editorVisible = true;
+                editorVisible = true;
             
-			//enable code highlight
-			prettyPrint();
-            //enable image preview
-            $('a.pretty-photo').prettyPhoto();
+			    //enable code highlight
+			    prettyPrint();
+                //enable image preview
+                $('a.pretty-photo').prettyPhoto({social_tools:false});
                 $(elId).html(result.trim());
                 htmlcontentelement.style.display = "";
                 textboxelement.style.display = "none";
-
-                editorVisible = true;
-
-                //enable code highlight
-                prettyPrint();
-                //enable image preview
-                $('a.prettyPhoto').prettyPhoto({social_tools:false});
                 ErrorUtils.removeErrorMessage(elId);
             }
         }
