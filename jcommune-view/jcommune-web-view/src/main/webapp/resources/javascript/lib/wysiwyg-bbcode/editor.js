@@ -207,6 +207,7 @@ function closeTags() {
             }
             currentContent = newContent + endStr;
         }
+        currentContent = currentContent.replace("[/user notified]", "[/user]");
     }
 
     currentContent = currentContent.replace(/\[size\]/gi, '[size=10]');
@@ -239,7 +240,6 @@ function closeTag2(text) {
     if (regexpForOpenBBtagResult != null) {
 
         var tagName = regexpForOpenBBtagResult[1];
-
         var regTwoTags = '([^\\[\\]]*)(\\[(' + tagName + ')(=[^\\[\\]]*)?\\])(.*?)(\\[\/(' + tagName + ')\\])([^\\[\\]]*)(.*)';
 
         var domRegExp = new RegExp(regTwoTags, 'ig');
@@ -267,15 +267,9 @@ function closeTag2(text) {
             domRegExp = new RegExp(regTwoTags, 'ig');
             domResult = domRegExp.exec(currentText);
         }
+
         if (domResult != null) {
-            isSpaceAware = domResult[6].indexOf(space);
-            if(isSpaceAware != -1) {
-                parsedCloseTags = domResult[6].split(space);
-                closeTag = parsedCloseTags[0] + "]";
-            } else {
-                closeTag = domResult[6];
-            }
-            currentText = closeTag2(domResult[1]) + domResult[2] + closeTag2(domResult[5]) + closeTag + closeTag2(domResult[8]) + closeTag2(domResult[9]);
+            currentText = closeTag2(domResult[1]) + domResult[2] + closeTag2(domResult[5]) + domResult[6] + closeTag2(domResult[8]) + closeTag2(domResult[9]);
         }
     }
 
