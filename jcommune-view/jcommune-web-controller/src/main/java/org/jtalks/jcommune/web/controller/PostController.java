@@ -260,7 +260,7 @@ public class PostController {
      */
     @RequestMapping(method = RequestMethod.POST, value = "/posts/bbToHtml")
     public ModelAndView preview(@Valid @ModelAttribute PostDto postDto, BindingResult result) throws Exception {
-        return getModelAndViewForPreview(result).addObject("data", postDto);
+        return getPreviewModelAndView().addObject("data", postDto).addObject("beanName", "postDto");
     }
 
     /**
@@ -274,18 +274,16 @@ public class PostController {
      */
     @RequestMapping(method = RequestMethod.POST, value = "/topics/bbToHtml")
     public ModelAndView preview(@Valid @ModelAttribute TopicDto topicDto, BindingResult result) throws Exception {
-        return getModelAndViewForPreview(result).addObject("data", topicDto);
+        return getPreviewModelAndView().addObject("data", topicDto).addObject("beanName", "topicDto");
     }
 
     /**
      * Prepare ModelAndView for showing preview
      *
-     * @param result
      * @return prepared ModelAndView for preview
      */
-    private ModelAndView getModelAndViewForPreview(BindingResult result) {
+    private ModelAndView getPreviewModelAndView() {
         String signature = userService.getCurrentUser().getSignature();
-        return new ModelAndView("ajax/postPreview").addObject("signature", signature)
-                .addObject("bindingResult", result);
+        return new ModelAndView("ajax/postPreview").addObject("signature", signature);
     }
 }

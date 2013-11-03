@@ -18,14 +18,17 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="json" uri="http://www.atg.com/taglibs/json" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<spring:hasBindErrors name="${beanName}">
+    <c:set var="isInvalid" value="${errors.hasFieldErrors('bodyText')}" />
+    <c:set var="errors" value="${errors}" />
+</spring:hasBindErrors>
 <json:object>
-    <json:property name="is_invalid" value="${bindingResult.hasFieldErrors('bodyText')}" />
+    <json:property name="is_invalid" value="${isInvalid}" />
     <c:choose>
-        <c:when test="${bindingResult.hasFieldErrors('bodyText')}">
-        <json:array name="errors" var="message" escapeXml="false"
-                    items="${bindingResult.getFieldErrors('bodyText')}">
-        <json:object><json:property name="defaultMessage" value="${message.defaultMessage}" /></json:object>
+        <c:when test="${isInvalid}">
+        <json:array name="errors" var="message" escapeXml="false" items="${errors.getFieldErrors('bodyText')}">
+            <json:object><json:property name="defaultMessage" value="${message.defaultMessage}" /></json:object>
         </json:array>
         </c:when>
         <c:otherwise>
