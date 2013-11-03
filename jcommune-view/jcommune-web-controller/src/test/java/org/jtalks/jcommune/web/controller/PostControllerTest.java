@@ -291,9 +291,10 @@ public class PostControllerTest {
         ModelAndView mav = controller.preview(getDto(), BindingResult);
         verify(userService, times(1)).getCurrentUser();
         assertViewName(mav, "ajax/postPreview");
-        assertModelAttributeAvailable(mav, "beanName");
+        assertModelAttributeAvailable(mav, "errors");
         assertModelAttributeAvailable(mav, "signature");
-        assertModelAttributeAvailable(mav, "data");
+        assertModelAttributeAvailable(mav, "content");
+        assertModelAttributeAvailable(mav, "isInvalid");
     }
 /*    @Test
     public void testPreview() {
