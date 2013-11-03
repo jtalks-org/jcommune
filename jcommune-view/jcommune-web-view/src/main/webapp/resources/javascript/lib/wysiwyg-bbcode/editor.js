@@ -81,7 +81,7 @@ function initEditor(textAreaId, htmlAreaId, baseDivId) {
  * Changes visual editor representation when toggling
  * preview mode.
  */
-function SwitchEditor() {
+function SwitchEditor(allowedUrls) {
     if (editorVisible) { // exit preview
         textboxelement.style.display = "";
         htmlcontentelement.style.display = "none";
@@ -92,7 +92,7 @@ function SwitchEditor() {
     }
     else { // enter preview
         content = textboxelement.value;
-        bbcode2html();
+        bbcode2html(allowedUrls);
     }
 }
 
@@ -108,7 +108,7 @@ var openBracketCodePlaceholder = "@ywdffgg434y@";
 var slashCodePlaceholder = "14@123435vggv4f";
 var lowerThenPlaceholder = "gertfgertgf@@@@@#4324234";
 
-function bbcode2html() {
+function bbcode2html(allowedUrls) {
     elId = "#" + html_content_id;
     var textdata = " " + textboxelement.value;
     textdata = textdata.replace(/%5D/gi, closeBracketCodePlaceholder);
@@ -122,7 +122,14 @@ function bbcode2html() {
     textdata = textdata.replace(/%5B/gi, "[");
     textdata = textdata.replace(/%22/gi, "\"");
     textdata = textdata.replace(/%20/gi, " ");
-    previewUrl = $.url($(elId).closest("form").attr("action")).segment()[0];
+    previewUrl = allowedUrls[0];
+    var segment = $.url($(elId).closest("form").attr("action")).segment();
+    for(var a=0; a<segment.length; a++) {
+        if($.inArray(segment[a], allowedUrls) != -1) {
+            previewUrl = segment[a];
+            break;
+        }
+    }
     $.ajax({
         type:"POST",
         url:$root + '/' + previewUrl + '/bbToHtml', //todo
