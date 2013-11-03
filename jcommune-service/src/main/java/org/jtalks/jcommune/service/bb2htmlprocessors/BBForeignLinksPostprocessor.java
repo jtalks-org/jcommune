@@ -86,7 +86,7 @@ public class BBForeignLinksPostprocessor implements TextPostProcessor {
      */
     @VisibleForTesting
     protected String getHrefPrefix() {
-        return "/out?=";
+        return "/out?url=";
     }
 
 }

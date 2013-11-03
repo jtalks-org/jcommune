@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.service.bb2htmlprocessors;
 
-import org.junit.BeforeClass;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
@@ -30,7 +29,7 @@ public class BBForeignLinksPostprocessorTest {
     private BBForeignLinksPostprocessor service;
     @Mock
     private HttpServletRequest request;
-    private String prefix = "/out?=";
+    private String prefix = "/out?url=";
     private String relAttr = "rel=\"nofollow\"";
     private String serverName = "server_name";
 

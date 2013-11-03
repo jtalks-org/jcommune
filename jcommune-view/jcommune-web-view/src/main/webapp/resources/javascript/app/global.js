@@ -148,7 +148,7 @@ $(document).ready(function () {
                 link = $(link).closest("a");
             }
 
-            link.attr('href', link.attr('href').replace('/out?=', ''));
+            link.attr('href', link.attr('href').replace('/out?url=', ''));
         });
 
     $(window).resize();
