@@ -101,7 +101,6 @@
     <c:if test="${fn:contains(uriString, 'topics') or fn:contains(uriString, 'branches')}">
       <script type="text/javascript"
               src="${pageContext.request.contextPath}/resources/wro/topic.js?${project.version}"></script>
-
       <link rel="stylesheet" type="text/css" media="all"
             href="${pageContext.request.contextPath}/resources/wro/topic.css?${project.version}"/>
     </c:if>
@@ -164,7 +163,6 @@
     <script src="${pageContext.request.contextPath}/resources/javascript/lib/html5.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/lib/html5placeholder.jquery.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/lib/json2.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/purl.js"></script>
 
     <script src="${pageContext.request.contextPath}/resources/javascript/app/keymaps.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/app/dialog.js"></script>
@@ -197,6 +195,7 @@
     <c:if test="${fn:contains(uriString, 'posts')}">
       <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/app/bbeditorEffects.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/purl.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"></script>
     </c:if>
 
@@ -233,6 +232,7 @@
       <script src="${pageContext.request.contextPath}/resources/javascript/app/poll.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/app/codeHighlighting.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/app/permissionService.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/purl.js"></script>
     </c:if>
   </c:otherwise>
 </c:choose>
