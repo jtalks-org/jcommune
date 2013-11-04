@@ -19,11 +19,14 @@ import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.model.plugins.Plugin;
+import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.dto.PluginActivatingListDto;
 import org.jtalks.jcommune.service.dto.PluginActivatingDto;
 import org.mockito.Mock;
+import org.springframework.ui.ExtendedModelMap;
+import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -36,6 +39,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 /**
  *
@@ -105,7 +109,8 @@ public class PluginControllerTest {
     }
 
     @Test
-    public void updateConfigurationShouldUpdateItByCallingServiceLayer() throws NotFoundException {
+    public void updateConfigurationShouldUpdateItByCallingServiceLayer()
+            throws NotFoundException, UnexpectedErrorException {
         long componentId = 25L;
         Component component = new Component();
         component.setId(componentId);
@@ -114,10 +119,10 @@ public class PluginControllerTest {
         PluginConfiguration newConfiguration = new PluginConfiguration();
         newConfiguration.setName(pluginName);
 
-        ModelAndView resultModelAndView = pluginController.updateConfiguration(newConfiguration);
+        Model model = new ExtendedModelMap();
+        String viewName = pluginController.updateConfiguration(model, newConfiguration);
 
-        assertViewName(resultModelAndView, "redirect:/plugins/configure/" + pluginName);
-        assertModelAttributeAvailable(resultModelAndView, "pluginConfiguration");
+        assertEquals(viewName, "redirect:/plugins/configure/" + pluginName);
         verify(pluginService).updateConfiguration(newConfiguration, componentId);
     }
 

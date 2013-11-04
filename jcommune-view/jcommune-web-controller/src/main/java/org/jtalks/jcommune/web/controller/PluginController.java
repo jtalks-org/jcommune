@@ -14,14 +14,17 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.plugins.Plugin;
+import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.dto.PluginActivatingListDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -88,12 +91,19 @@ public class PluginController {
      * @throws NotFoundException if configured plugin wasn't found
      */
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public ModelAndView updateConfiguration(
+    public String updateConfiguration(Model model,
             @ModelAttribute PluginConfiguration newConfiguration) throws NotFoundException {
         long componentId = getForumComponentId();
-        pluginService.updateConfiguration(newConfiguration, componentId);
-        return new ModelAndView("redirect:/plugins/configure/" + newConfiguration.getName())
-                .addObject("pluginConfiguration", newConfiguration);
+        try {
+            pluginService.updateConfiguration(newConfiguration, componentId);
+        } catch (UnexpectedErrorException ex) {
+            model.addAttribute("error", ex.getCause().getLocalizedMessage());
+            model.addAttribute("errorInformation", ExceptionUtils.getFullStackTrace(ex.getCause()).replace("\n", " <br/>  "));
+            model.addAttribute("pluginConfiguration", newConfiguration);
+            return "plugin/pluginConfiguration";
+        }
+
+        return "redirect:/plugins/configure/" + newConfiguration.getName();
     }
 
     /**

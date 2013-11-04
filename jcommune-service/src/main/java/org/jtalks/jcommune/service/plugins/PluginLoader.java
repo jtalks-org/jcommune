@@ -19,6 +19,7 @@ import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.dao.PluginConfigurationDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.plugins.Plugin;
+import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -146,7 +147,12 @@ public class PluginLoader {
                 configuration = new PluginConfiguration(name, false, plugin.getDefaultConfiguration());
                 pluginConfigurationDao.saveOrUpdate(configuration);
             }
-            plugin.configure(configuration);
+
+            try {
+                plugin.configure(configuration);
+            } catch (UnexpectedErrorException e) {
+                LOGGER.error("Can't configure plugin during loading. Plugin name = " + plugin.getName());
+            }
         }
     }
 

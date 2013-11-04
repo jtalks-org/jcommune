@@ -45,7 +45,8 @@ public class DummyPlugin extends StatefullPlugin {
 
     @Override
     protected Map<PluginProperty, String> applyConfiguration(List<PluginProperty> properties) {
-        return Collections.emptyMap();
+        throw new IllegalArgumentException("Some kind of error?");
+        //return Collections.emptyMap();
     }
 
     @Override

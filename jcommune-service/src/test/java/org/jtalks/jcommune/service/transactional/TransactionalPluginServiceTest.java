@@ -20,6 +20,7 @@ import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.model.plugins.RegistrationPlugin;
+import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.dto.PluginActivatingDto;
 import org.jtalks.jcommune.service.plugins.PluginLoader;
 import org.jtalks.jcommune.service.plugins.TypeFilter;
@@ -87,7 +88,8 @@ public class TransactionalPluginServiceTest {
     }
 
     @Test
-    public void updateConfigurationShouldSaveConfigurationProperties() throws NotFoundException {
+    public void updateConfigurationShouldSaveConfigurationProperties()
+            throws NotFoundException, UnexpectedErrorException {
         //GIVEN
         List<PluginProperty> properties = Arrays.asList(new PluginProperty());
         PluginConfiguration configuration = new PluginConfiguration("Dummy", false, properties);
@@ -99,7 +101,8 @@ public class TransactionalPluginServiceTest {
     }
 
     @Test
-    public void updateConfigurationShouldApplyConfigurationForPlugin() throws NotFoundException {
+    public void updateConfigurationShouldApplyConfigurationForPlugin()
+            throws NotFoundException, UnexpectedErrorException {
         //GIVEN
         String pluginName = "Should be configured";
         PluginConfiguration configuration = new PluginConfiguration(pluginName, true, Collections.EMPTY_LIST);
@@ -114,7 +117,8 @@ public class TransactionalPluginServiceTest {
     }
 
     @Test(expectedExceptions = NotFoundException.class)
-    public void updateConfigurationWhenPluginsNotLoadedShouldShowNotFoundError() throws NotFoundException {
+    public void updateConfigurationWhenPluginsNotLoadedShouldShowNotFoundError()
+            throws NotFoundException, UnexpectedErrorException {
         //GIVEN
         PluginConfiguration configuration = new PluginConfiguration();
         when(pluginLoader.getPlugins()).thenReturn(Collections.<Plugin> emptyList());
