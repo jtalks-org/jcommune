@@ -115,9 +115,7 @@ function bbcode2html(allowedUrls) {
     textdata = textdata.replace(/%5B/gi, openBracketCodePlaceholder);
     textdata = textdata.replace(/%22/gi, slashCodePlaceholder);
     textdata = textdata.replace(/</gi, lowerThenPlaceholder);
-	
-    textdata = encodeURI(textdata);
-	
+
     textdata = textdata.replace(/%5D/gi, "]");
     textdata = textdata.replace(/%5B/gi, "[");
     textdata = textdata.replace(/%22/gi, "\"");
@@ -130,6 +128,7 @@ function bbcode2html(allowedUrls) {
             break;
         }
     }
+
     $.ajax({
         type:"POST",
         url:$root + '/' + previewUrl + '/bbToHtml', //todo
