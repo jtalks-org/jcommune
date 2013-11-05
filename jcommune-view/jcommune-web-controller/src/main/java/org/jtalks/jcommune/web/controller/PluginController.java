@@ -98,7 +98,7 @@ public class PluginController {
             pluginService.updateConfiguration(newConfiguration, componentId);
         } catch (UnexpectedErrorException ex) {
             model.addAttribute("error", ex.getCause().getLocalizedMessage());
-            model.addAttribute("errorInformation", ExceptionUtils.getFullStackTrace(ex.getCause()).replace("\n", " <br/>  "));
+            model.addAttribute("errorInformation", ExceptionUtils.getFullStackTrace(ex.getCause()).substring(0, 6000).replace("\n", " <br/>  "));
             model.addAttribute("pluginConfiguration", newConfiguration);
             return "plugin/pluginConfiguration";
         }
