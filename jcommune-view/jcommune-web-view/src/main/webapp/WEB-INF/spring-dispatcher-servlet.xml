@@ -147,6 +147,7 @@
   <!-- simple pages -->
   <mvc:view-controller path="/errors/400" view-name="/errors/400"/>
   <mvc:view-controller path="/errors/403" view-name="/errors/accessDenied"/>
+  <mvc:view-controller path="/errors/redirect/403" view-name="redirect:/errors/403"/>
   <mvc:view-controller path="/errors/404" view-name="/errors/404"/>
   <mvc:view-controller path="/errors/redirect/404" view-name="redirect:/errors/404"/>
   <mvc:view-controller path="/errors/500" view-name="/errors/500"/>
