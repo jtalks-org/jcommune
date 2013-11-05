@@ -68,19 +68,35 @@ public class PoulpeAuthPluginTest {
     @Test
     public void pluginWithIncorrectParametersShouldNotBeConfigured() throws Exception {
         PluginConfiguration configuration = createConfiguration(null, "user", "1234");
-        plugin.configure(configuration);
+        try {
+            plugin.configure(configuration);
+        } catch (UnexpectedErrorException ex) {}
 
         assertTrue(plugin.getState() == Plugin.State.IN_ERROR,
                 "Plugin with incorrect parameters shouldn't be configured.");
     }
 
+    @Test(expectedExceptions = UnexpectedErrorException.class)
+    public void pluginWithIncorrectParametersShouldThrowException() throws Exception {
+        PluginConfiguration configuration = createConfiguration(null, "user", "1234");
+        plugin.configure(configuration);
+    }
+
     @Test
     public void pluginWithIncorrectUrlShouldNotBeConfigured() throws Exception {
         PluginConfiguration configuration = createConfiguration("http:/jtalks.org", "user", "1234");
-        plugin.configure(configuration);
+        try {
+            plugin.configure(configuration);
+        } catch (UnexpectedErrorException ex) {}
 
         assertTrue(plugin.getState() == Plugin.State.IN_ERROR,
                 "Plugin with incorrect Url shouldn't be configured.");
+    }
+
+    @Test(expectedExceptions = UnexpectedErrorException.class)
+    public void pluginWithIncorrectUrlShouldThrowException() throws Exception {
+        PluginConfiguration configuration = createConfiguration("http:/jtalks.org", "user", "1234");
+        plugin.configure(configuration);
     }
 
     @Test

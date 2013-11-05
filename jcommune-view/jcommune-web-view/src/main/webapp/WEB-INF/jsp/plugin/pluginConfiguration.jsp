@@ -21,6 +21,46 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <head>
     <title><c:out value="${pluginConfiguration.name}"/></title>
+    <c:if test="${not empty error}">
+        <script src="${pageContext.request.contextPath}/resources/javascript/app/dialog.js"></script>
+        <script >
+            $(function () {
+                var bodyContent = '<b><h3><c:out value="${error}"/></h3></b> </td> </tr> \
+                        <tr> <td> <b><c:out value="${errorInformation}" escapeXml="false"/>  </b>';
+
+                var footerContent = ' \
+                <button id="errorCloseButton" class="btn">Close</button>';
+
+                jDialog.createDialog({
+                    dialogId: 'pluginErrorDialog',
+                    title: 'Plugin Configuration Error:',
+                    bodyContent: bodyContent,
+                    footerContent: footerContent,
+                    maxWidth: 800,
+                    maxHeight: 600,
+                    firstFocus: true,
+                    tabNavigation: ['#errorCloseButton'],
+                    handlers: {
+                        '#errorCloseButton': {'static':'close'}
+                    }
+                });
+
+                $(".modal-header").dblclick(function() {
+                    var dialogBody = $(".modal-body");
+                    if (dialogBody.hasClass("hide-element")) {
+                        dialogBody.removeClass("hide-element");
+                    } else {
+                        dialogBody.addClass("hide-element");
+                    }
+                });
+
+                $("#pluginErrorDialog").draggable({
+                    handle: ".modal-header"
+                });
+
+            });
+        </script>
+    </c:if>
 </head>
 <body>
 <div class="container">

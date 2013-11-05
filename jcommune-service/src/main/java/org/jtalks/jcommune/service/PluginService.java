@@ -18,6 +18,7 @@ import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.model.plugins.RegistrationPlugin;
+import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.dto.PluginActivatingDto;
 import org.jtalks.jcommune.service.plugins.PluginFilter;
 
@@ -47,7 +48,8 @@ public interface PluginService extends EntityService<PluginConfiguration> {
      * @param forumComponentId    an identifier of forum component id, that is needed to check permissions
      * @throws NotFoundException when configuration passed for non-exists plugin
      */
-    void updateConfiguration(PluginConfiguration pluginConfiguration, long forumComponentId) throws NotFoundException;
+    void updateConfiguration(PluginConfiguration pluginConfiguration, long forumComponentId)
+            throws NotFoundException, UnexpectedErrorException;
 
     /**
      * Get configuration of plugin.

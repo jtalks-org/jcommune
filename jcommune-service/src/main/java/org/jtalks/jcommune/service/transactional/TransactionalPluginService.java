@@ -21,6 +21,7 @@ import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.model.plugins.RegistrationPlugin;
+import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.dto.PluginActivatingDto;
 import org.jtalks.jcommune.service.plugins.PluginFilter;
@@ -71,7 +72,7 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
     @Override
     @PreAuthorize("hasPermission(#forumComponentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
     public void updateConfiguration(PluginConfiguration pluginConfiguration,
-                                    long forumComponentId) throws NotFoundException {
+                                    long forumComponentId) throws NotFoundException, UnexpectedErrorException {
         String name = pluginConfiguration.getName();
         List<Plugin> pluginsList = pLuginLoader.getPlugins();
         Plugin willBeConfigured = findPluginByName(pluginsList, name);
@@ -79,7 +80,11 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
             throw new NotFoundException("Plugin " + name + " is not loaded");
         }
         willBeConfigured.configure(pluginConfiguration);
-        saveNewPluginConfiguration(pluginConfiguration);
+        try {
+            saveNewPluginConfiguration(pluginConfiguration);
+        } catch (RuntimeException ex) {
+            throw new UnexpectedErrorException(ex);
+        }
     }
 
     @Override

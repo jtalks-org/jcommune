@@ -16,6 +16,7 @@ package org.jtalks.jcommune.model.plugins;
 
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginProperty;
+import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 
 import java.util.List;
 
@@ -42,7 +43,7 @@ public interface Plugin {
 
     List<PluginProperty> getDefaultConfiguration();
 
-    void configure(PluginConfiguration configuration);
+    void configure(PluginConfiguration configuration) throws UnexpectedErrorException;
 
     boolean isEnabled();
 }

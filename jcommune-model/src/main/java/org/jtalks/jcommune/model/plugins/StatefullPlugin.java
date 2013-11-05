@@ -16,6 +16,7 @@ package org.jtalks.jcommune.model.plugins;
 
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginProperty;
+import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +45,7 @@ public abstract class StatefullPlugin implements Plugin {
      * {@inheritDoc}
      */
     @Override
-    public void configure(PluginConfiguration configuration) {
+    public void configure(PluginConfiguration configuration) throws UnexpectedErrorException {
         try {
             this.applyConfiguration(configuration.getProperties());
             if (configuration.isActive()){
@@ -57,6 +58,7 @@ public abstract class StatefullPlugin implements Plugin {
         } catch (RuntimeException e) {
             state = State.IN_ERROR;
             LOGGER.warn("Plugin {} configuration failed", this.getName(), e);
+            throw new UnexpectedErrorException(e);
         }
     }
 

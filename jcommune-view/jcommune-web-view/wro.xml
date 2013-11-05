@@ -71,6 +71,7 @@
     <js>/resources/javascript/app/leaveConfirm.js</js>
     <js>/resources/javascript/app/bbeditorEffects.js</js>
     <js>/resources/javascript/app/contextMenu.js</js>
+    <js>/resources/javascript/lib/purl.js</js>
   </group>
 
   <group name="user">
@@ -101,5 +102,6 @@
     <js>/resources/javascript/app/poll.js</js>
     <js>/resources/javascript/app/codeHighlighting.js</js>
     <js>/resources/javascript/app/permissionService.js</js>
+    <js>/resources/javascript/lib/purl.js</js>
   </group>
 </groups>
