@@ -82,8 +82,12 @@
       <bean class="org.jtalks.jcommune.web.interceptors.ChainBreakingInterceptor"/>
     </mvc:interceptor>
     <!--Figures out locale and language from url parameter-->
-    <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
-      <property name="paramName" value="lang"/>
+    <bean id="localeChangeInterceptor" class="org.jtalks.jcommune.web.interceptors.LocaleInterceptor">
+        <constructor-arg>
+            <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+                <property name="paramName" value="lang"/>
+            </bean>
+        </constructor-arg>
     </bean>
     <!--Disables browser caching for all non-static resources-->
     <bean id="webContentInterceptor"
