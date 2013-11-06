@@ -80,7 +80,11 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
             throw new NotFoundException("Plugin " + name + " is not loaded");
         }
         willBeConfigured.configure(pluginConfiguration);
-        saveNewPluginConfiguration(pluginConfiguration);
+        try {
+            saveNewPluginConfiguration(pluginConfiguration);
+        } catch (RuntimeException ex) {
+            throw new UnexpectedErrorException(ex);
+        }
     }
 
     @Override

@@ -606,6 +606,25 @@ div.anchor {
     line-height: 30px;
 }
 
+#pluginErrorDialog #errorArea {
+    max-height: 350px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+#pluginErrorDialog {
+    background-color: indianred;
+    width: 70%;
+}
+
+#pluginErrorDialog .modal-header, #pluginErrorDialog .modal-footer {
+    background-color: indianred;
+}
+
+#pluginErrorDialog .modal-header {
+    cursor: move;
+}
+
 .modal-body .help-block {
     line-height: 15px !important;
 }

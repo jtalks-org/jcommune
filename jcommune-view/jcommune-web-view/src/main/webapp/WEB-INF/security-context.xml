@@ -22,7 +22,7 @@
        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd
        ">
   <!-- Http Security -->
-  <security:http auto-config="true" use-expressions="true" create-session="ifRequired">
+  <security:http auto-config="true" use-expressions="true" create-session="ifRequired" disable-url-rewriting="true">
 
     <security:session-management session-authentication-strategy-ref="concurrentSessionControlStrategy"/>
     <security:custom-filter ref="rememberMeCheckFilter" before="FORM_LOGIN_FILTER"/>

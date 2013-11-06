@@ -17,6 +17,10 @@ package org.jtalks.jcommune.web.controller;
 
 import etm.contrib.integration.spring.web.SpringHttpConsoleServlet;
 import org.jtalks.jcommune.model.utils.JndiAwarePropertyPlaceholderConfigurer;
+import org.jtalks.jcommune.service.ComponentService;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -27,10 +31,9 @@ import java.io.IOException;
 /**
  * <p>Servlet that provides access to JETM HTTP-console like the
  * {@link etm.contrib.integration.spring.web.SpringHttpConsoleServlet}, but additionally check JNDI for the performance
- * Spring profile activation. In case loading the default Spring profile this servlet return HTTP 404 Not Found Error
- * for the mapped URL.</p>
- * <p>Note: the work of this overridden servlet can be replaced by the The Servlet 3.0 Dynamic Registration when
- * servlet container will support it.</p>
+ * Spring profile activation and user permissions to view JETM HTTP-console.</p>
+ * <p>Note: probably the work of this overridden servlet can be replaced by the The Servlet 3.0 Dynamic Registration
+ * when servlet container will support it.</p>
  *
  * @author Guram Savinov
  */
@@ -38,6 +41,8 @@ public class JetmHttpConsoleServlet extends SpringHttpConsoleServlet {
 
     private static final String ACTIVE_PROFILE_PROPERTY = "spring.profiles.active";
     private static final String PERFORMANCE_PROFILE = "performance";
+
+    private ComponentService componentService;
 
     /**
      * Invoke servlet initialization only when Spring performance profile is set, otherwise skip it. This skipping is
@@ -51,12 +56,16 @@ public class JetmHttpConsoleServlet extends SpringHttpConsoleServlet {
     public void init(ServletConfig aServletConfig) throws ServletException {
         if (profileIsActive()) {
             super.init(aServletConfig);
+            WebApplicationContext ctx = WebApplicationContextUtils
+                    .getRequiredWebApplicationContext(servletConfig.getServletContext());
+            componentService = (ComponentService) ctx.getBean("componentService");
         }
     }
 
     /**
      * Check for the Spring performance profile and depends from this return JETM HTTP-console page
-     * or HTTP 404 Not Found Error.
+     * or HTTP 404 Not Found error.
+     * Return HTTP 403 Forbidden error if current user haven't permissions to view the JETM HTTP-console.
      *
      * @param req the HTTP request
      * @param resp the HTTP response
@@ -66,7 +75,13 @@ public class JetmHttpConsoleServlet extends SpringHttpConsoleServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (profileIsActive()) {
-            super.doGet(req, resp);
+            long componentId = componentService.getComponentOfForum().getId();
+            try {
+                componentService.checkPermissionsForComponent(componentId);
+                super.doGet(req, resp);
+            } catch (AccessDeniedException e) {
+                resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+            }
         } else {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
