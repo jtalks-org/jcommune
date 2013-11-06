@@ -19,38 +19,52 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<% pageContext.setAttribute("newLineChar", "\n"); %>
 <head>
     <title><c:out value="${pluginConfiguration.name}"/></title>
     <c:if test="${not empty error}">
         <script src="${pageContext.request.contextPath}/resources/javascript/app/dialog.js"></script>
         <script >
             $(function () {
-                var bodyContent = '<b><h3><c:out value="${error}"/></h3></b> </td> </tr> \
-                        <tr> <td> <b><c:out value="${errorInformation}" escapeXml="false"/>  </b>';
+                var errorAreaCollapse = function (e) {
+                    e.preventDefault();
+                    var errorArea = $("#errorArea");
+                    if (errorArea.hasClass("hide-element")) {
+                        $("#errorAreaControlButton").html("Hide details");
+                        errorArea.removeClass("hide-element");
+                    } else {
+                        $("#errorAreaControlButton").html("Details");
+                        errorArea.addClass("hide-element");
+                    }
+                };
+                <c:set var="errorLines" value="${fn:split(errorInformation, newLineChar)}" />
+
+                var bodyContent = '<b><h3><c:out value="${error}"/></h3></b> <div id="errorArea" class="hide-element">' +
+                        <c:forEach var="errorLine" items="${errorLines}" varStatus="i">
+                            <c:if test="${i.index < 50}">
+                                '<c:out value="${errorLine}" escapeXml="false"/>' +
+                            </c:if>
+                        </c:forEach>
+                '</div>';
 
                 var footerContent = ' \
-                <button id="errorCloseButton" class="btn">Close</button>';
+                <button id="errorCloseButton" class="btn">Close</button> \
+                <button id="errorAreaControlButton" class="btn">Details</button>';
 
                 jDialog.createDialog({
                     dialogId: 'pluginErrorDialog',
                     title: 'Plugin Configuration Error:',
                     bodyContent: bodyContent,
                     footerContent: footerContent,
-                    maxWidth: 800,
+                    maxWidth: "70%",
                     maxHeight: 600,
+                    'backdrop': false,
                     firstFocus: true,
                     tabNavigation: ['#errorCloseButton'],
                     handlers: {
-                        '#errorCloseButton': {'static':'close'}
-                    }
-                });
-
-                $(".modal-header").dblclick(function() {
-                    var dialogBody = $(".modal-body");
-                    if (dialogBody.hasClass("hide-element")) {
-                        dialogBody.removeClass("hide-element");
-                    } else {
-                        dialogBody.addClass("hide-element");
+                        '#errorCloseButton': {'static':'close'},
+                        '#errorAreaControlButton' : {'click': errorAreaCollapse}
                     }
                 });
 

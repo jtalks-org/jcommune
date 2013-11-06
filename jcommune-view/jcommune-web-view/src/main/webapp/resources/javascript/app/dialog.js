@@ -131,7 +131,8 @@ $(function () {
             'handlersDelegate': {},
             'handlersLive': {},
             'dialogKeydown': Keymaps.defaultDialog,
-            'alertDefaultBut': 'alert-ok'
+            'alertDefaultBut': 'alert-ok',
+            'backdrop': 'static'
         }
 
         jDialog.createDialog = function (opts) {
@@ -144,7 +145,7 @@ $(function () {
 
             //modal function is bootstrap
             jDialog.dialog.modal({
-                'backdrop': 'static',
+                'backdrop' : jDialog.options.backdrop,
                 'keyboard': false,
                 'show': false
             }).css(
