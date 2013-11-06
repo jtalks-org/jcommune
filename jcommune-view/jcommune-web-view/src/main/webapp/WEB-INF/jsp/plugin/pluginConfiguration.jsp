@@ -40,7 +40,7 @@
                 };
                 <c:set var="errorLines" value="${fn:split(errorInformation, newLineChar)}" />
 
-                var bodyContent = '<b><h3><c:out value="${error}"/></h3></b> <div id="errorArea" class="hide-element">' +
+                var bodyContent = '<b><h4><c:out value="${error}"/></h4></b> <div id="errorArea" class="hide-element">' +
                         <c:forEach var="errorLine" items="${errorLines}" varStatus="i">
                             <c:if test="${i.index < 50}">
                                 '<c:out value="${errorLine}" escapeXml="false"/>' +
@@ -54,7 +54,7 @@
 
                 jDialog.createDialog({
                     dialogId: 'pluginErrorDialog',
-                    title: 'Plugin Configuration Error:',
+                    title: 'Plugin Configuration Error',
                     bodyContent: bodyContent,
                     footerContent: footerContent,
                     maxWidth: "70%",
