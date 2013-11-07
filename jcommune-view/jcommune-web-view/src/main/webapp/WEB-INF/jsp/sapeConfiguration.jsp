@@ -20,7 +20,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <html>
 <head>
-  <title><spring:message code="label.sapeConfiguration"/></title>
+  <title>
+      <c:out value="${cmpTitlePrefix}"/>
+      <spring:message code="label.sapeConfiguration"/>
+  </title>
   <script type="text/javascript">
     $(document).ready(function () {
       $('#enableSape1').change();

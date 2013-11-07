@@ -23,7 +23,10 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:useBean id="topicsPage" type="org.springframework.data.domain.Page" scope="request"/>
 <head>
-  <title><spring:message code="label.recent"/></title>
+  <title>
+      <c:out value="${cmpTitlePrefix}"/>
+      <spring:message code="label.recent"/>
+  </title>
 </head>
 <body>
 

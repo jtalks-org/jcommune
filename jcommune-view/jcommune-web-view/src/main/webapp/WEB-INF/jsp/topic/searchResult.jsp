@@ -24,7 +24,10 @@
 <jsp:useBean id="searchResultPage" type="org.springframework.data.domain.Page" scope="request"/>
 <jsp:useBean id="cmpDescription" type="java.lang.String" scope="request"/>
 <head>
-  <title><c:out value="${cmpDescription}"/></title>
+  <title>
+      <c:out value="${cmpTitlePrefix}"/>
+      <c:out value="${cmpDescription}"/>
+  </title>
 </head>
 <body>
 <div class="container">

@@ -22,7 +22,10 @@
 <%--@elvariable id="login_error" type="java.util.List"--%>
 <html>
 <head>
-  <title><spring:message code="label.signin"/></title>
+  <title>
+      <c:out value="${cmpTitlePrefix}"/>
+      <spring:message code="label.signin"/>
+  </title>
 </head>
 <body>
 

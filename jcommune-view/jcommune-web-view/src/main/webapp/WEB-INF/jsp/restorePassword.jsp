@@ -20,7 +20,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <head>
-  <title><spring:message code="label.restorePassword.header"/></title>
+  <title>
+      <c:out value="${cmpTitlePrefix}"/>
+      <spring:message code="label.restorePassword.header"/>
+  </title>
 </head>
 <div class="container form-login-related">
   <form:form id="form" name="form" modelAttribute="dto"

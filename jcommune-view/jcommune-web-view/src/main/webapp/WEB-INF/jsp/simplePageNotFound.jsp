@@ -22,7 +22,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <html>
 <head>
-  <title><spring:message code="label.404.title"/></title>
+  <title>
+      <c:out value="${cmpTitlePrefix}"/>
+      <spring:message code="label.404.title"/>
+  </title>
 </head>
 <body>
 <div class="container">

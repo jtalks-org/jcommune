@@ -17,7 +17,10 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <head>
-  <title><spring:message code="label.registration.success.title"/></title>
+  <title>
+      <c:out value="${cmpTitlePrefix}"/>
+      <spring:message code="label.registration.success.title"/>
+  </title>
 </head>
 <body>
 <div class="container">

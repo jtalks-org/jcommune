@@ -22,7 +22,10 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <sec:authentication property="principal.id" var="senderId"/>
 <head>
-  <title><spring:message code="label.new_pm"/></title>
+  <title>
+      <c:out value="${cmpTitlePrefix}"/>
+      <spring:message code="label.new_pm"/>
+  </title>
 </head>
 <body>
 

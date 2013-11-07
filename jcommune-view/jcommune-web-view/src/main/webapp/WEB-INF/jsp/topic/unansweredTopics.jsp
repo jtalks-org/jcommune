@@ -22,7 +22,10 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <jsp:useBean id="topicsPage" type="org.springframework.data.domain.Page" scope="request"/>
 <head>
-  <title><spring:message code="label.messagesWithoutAnswers"/></title>
+  <title>
+      <c:out value="${cmpTitlePrefix}"/>
+      <spring:message code="label.messagesWithoutAnswers"/>
+  </title>
 </head>
 <body>
 <div class="container">

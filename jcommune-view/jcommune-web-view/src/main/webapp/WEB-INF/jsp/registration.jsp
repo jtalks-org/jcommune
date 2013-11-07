@@ -22,7 +22,10 @@
 <jsp:useBean id="registrationPlugins" type="java.util.Map" scope="request"/>
 <html>
 <head>
-  <title><spring:message code="label.signup"/></title>
+  <title>
+      <c:out value="${cmpTitlePrefix}"/>
+      <spring:message code="label.signup"/>
+  </title>
 </head>
 
 <body>

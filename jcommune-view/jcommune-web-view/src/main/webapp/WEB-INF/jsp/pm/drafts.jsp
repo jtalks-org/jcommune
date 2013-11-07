@@ -20,7 +20,10 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <head>
-  <title><spring:message code="label.drafts"/></title>
+  <title>
+      <c:out value="${cmpTitlePrefix}"/>
+      <spring:message code="label.drafts"/>
+  </title>
 </head>
 <body>
 <div class="container">
