@@ -35,6 +35,8 @@ public class BranchDto {
     private long id;
     private String name;
     private String description;
+    /** Section id is used when new branch created */
+    private long sectionId;
 
     /**
      * Default constructor. All properties get default values
@@ -104,4 +106,11 @@ public class BranchDto {
         this.description = description.trim();
     }
 
+    public long getSectionId() {
+        return sectionId;
+    }
+
+    public void setSectionId(long sectionId) {
+        this.sectionId = sectionId;
+    }
 }

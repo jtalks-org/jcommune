@@ -150,6 +150,25 @@ public class AdministrationController {
         return new JsonResponse(JsonResponseStatus.SUCCESS, null);
     }
 
+    @RequestMapping(value = "/branch/new", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResponse createNewBranch(@Valid @RequestBody BranchDto branchDto, 
+                                            BindingResult result, Locale locale) throws NotFoundException {
+        if (result.hasErrors()) {
+            return new JsonResponse(JsonResponseStatus.FAIL, result.getAllErrors());
+        }
+
+        long forumId = componentService.getComponentOfForum().getId();
+
+        try {
+            branchService.createNewBranch(forumId, branchDto.getSectionId(), branchDto.getName(), branchDto.getDescription());
+        } catch (AccessDeniedException e) {
+            String errorMessage = messageSource.getMessage(ACCESS_DENIED_MESSAGE, null, locale);
+            return new JsonResponse(JsonResponseStatus.FAIL, errorMessage);
+        }
+
+        return new JsonResponse(JsonResponseStatus.SUCCESS, null);
+    }    
 
     /**
      * Returns redirect string to previous page

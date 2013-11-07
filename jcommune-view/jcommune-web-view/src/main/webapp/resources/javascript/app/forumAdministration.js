@@ -27,16 +27,30 @@ $(function () {
     $("#forumLogo").on('click', showForumConfigurationDialog);
 
     $("[id^=branchLabel]").on('click', showBranchEditDialog);
+    $("[id^=newBranch]").on('click', showNewBranchDialog);
 });
 
+/**
+ * Show dialog for new branch.
+ */
+function showNewBranchDialog(e) {
+    var sectionId = this.id.substring("newBranch".length);
+    showBranchEditDialog(e, sectionId)
+}
 
-function showBranchEditDialog(e) {
+/**
+ * Show dialog for edit or create branch. 
+ * sectionId should be specified if new branch created.
+ * @param {type} e
+ * @param {type} sectionId
+ */
+function showBranchEditDialog(e, sectionId) {
     e.preventDefault();
-
-    var brancLabelPrefix = "branchLabel";
-    var branchId = this.id.substring(brancLabelPrefix.length);
-    var descriptonLabel = $("#branchDescriptionLabel" + branchId);
-
+    if (!sectionId) {
+        var brancLabelPrefix = "branchLabel";
+        var branchId = this.id.substring(brancLabelPrefix.length);
+        var descriptonLabel = $("#branchDescriptionLabel" + branchId);
+    }
     var bodyContent = Utils.createFormElement($labelBranchName, 'branchName', 'text', 'first dialog-input')
         + Utils.createFormElement($labelBranchDescription, 'branchDescription', 'text', 'dialog-input') +
             '<div class="clearfix"/>';
@@ -60,9 +74,10 @@ function showBranchEditDialog(e) {
             '#administrationCancelButton': {'static':'close'}
         }
     });
-
-    $('#branchName').val(this.text.trim());
-    $('#branchDescription').val(descriptonLabel.text().trim());
+    if (!sectionId) {
+        $('#branchName').val(this.text.trim());
+        $('#branchDescription').val(descriptonLabel.text().trim());
+    }
     $('#branchName').focus();
 
     /**
@@ -76,11 +91,16 @@ function showBranchEditDialog(e) {
         branchInformation.id = parseInt(branchId);
         branchInformation.name = jDialog.dialog.find('#branchName').val();
         branchInformation.description = jDialog.dialog.find('#branchDescription').val();
-
+        if (sectionId) {
+            branchInformation.sectionId = sectionId;
+        }
         jDialog.dialog.find('*').attr('disabled', true);
-
+        var submitUrl = '/branch/edit';
+        if (sectionId) {
+            submitUrl = '/branch/new';
+        }
         $.ajax({
-            url: $root + '/branch/edit',
+            url: $root + submitUrl,
             type: "POST",
             contentType: "application/json",
             async: false,

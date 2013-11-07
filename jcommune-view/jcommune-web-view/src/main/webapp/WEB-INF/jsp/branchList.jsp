@@ -141,6 +141,13 @@
         </tbody>
       </c:otherwise>
     </c:choose>
+    <c:if test="${sessionScope.adminMode == true}">
+        <tr>
+            <td colspan="3">
+                <a href="#" id='newBranch${section.id}'>Add branch</a>
+            </td>
+        </tr>
+    </c:if>
   </table>
 
   <%-- Users --%>

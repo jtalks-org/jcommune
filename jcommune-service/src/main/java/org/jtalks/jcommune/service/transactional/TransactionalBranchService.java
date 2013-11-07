@@ -175,6 +175,20 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
     /**
      * {@inheritDoc}
      */
+    @Override
+    @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
+    public void createNewBranch(long componentId, long sectionId, String title, String description) {
+        Section section = sectionDao.get(sectionId);
+        Branch branch = new Branch(title, description);
+        branch.setSection(section);
+        section.addOrUpdateBranch(branch);
+        sectionDao.saveOrUpdate(section);
+    }  
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void checkIfBranchExists(long branchId) throws NotFoundException {
         super.get(branchId);
     }
