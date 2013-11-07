@@ -22,6 +22,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Class for intercepting and checking correct language.
+ * We need this one because spring locale interceptor throw exception when user set incorrect data for language.
+ *
+ * @author Andrey Ivanov
+ */
 public class LocaleInterceptor extends HandlerInterceptorAdapter {
 
     private LocaleChangeInterceptor springInterceptor;
