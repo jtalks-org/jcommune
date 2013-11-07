@@ -141,6 +141,13 @@
             </tr>
           </jtalks:hasPermission>
         </c:forEach>
+        <c:if test="${sessionScope.adminMode == true}">
+            <tr>
+                <td colspan="3">
+                    <div id='newBranch${section.id}' class="add-branch-button"> + Add branch</div>                
+                </td>
+            </tr>
+        </c:if>            
       </jtalks:isSectionVisible>
     </c:forEach>
     </tbody>
