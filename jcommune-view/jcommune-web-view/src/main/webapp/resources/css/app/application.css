@@ -791,3 +791,19 @@ div.anchor {
 .space-left-big-nf:not(:first-of-type)  {
     margin-left: 7px;
 }
+
+div.add-branch-button {
+    border-style: dashed;
+    border-color: gray;
+    -moz-border-radius: 10px;  
+    border-radius: 10px;
+    background-color: #dddddd;
+    padding: 7px;
+    font-size: larger;
+    color: gray;
+    border-width: 2px;
+}
+
+div.add-branch-button:hover {
+    background-color: #eeeeee;
+}

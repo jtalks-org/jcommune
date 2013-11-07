@@ -144,7 +144,7 @@
     <c:if test="${sessionScope.adminMode == true}">
         <tr>
             <td colspan="3">
-                <a href="#" id='newBranch${section.id}'>Add branch</a>
+                <div id='newBranch${section.id}' class="add-branch-button"> + Add branch</div>                
             </td>
         </tr>
     </c:if>
