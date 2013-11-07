@@ -257,6 +257,7 @@
     <property name="ehCacheConfigLocation" value="${EH_CACHE_CONFIG}"/>
   </bean>
 
+  <bean class="org.jtalks.jcommune.model.utils.PersistenceCleanupContextShutdownHook" destroy-method="dispose"/>
 
   <!-- Migrations, todo: 4 beans - that's weird, Ticket has been left for common to move init to one method -->
 

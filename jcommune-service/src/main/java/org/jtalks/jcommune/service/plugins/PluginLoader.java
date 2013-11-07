@@ -48,6 +48,7 @@ public class PluginLoader {
     private WatchKey watchKey;
     private String folder;
     private List<Plugin> plugins;
+    private WatchService watchService;
     private PluginConfigurationDao pluginConfigurationDao;
 
     /**
@@ -62,8 +63,8 @@ public class PluginLoader {
         Validate.notEmpty(pluginsFolderPath);
         this.folder = this.resolveUserHome(pluginsFolderPath);
         Path path = Paths.get(folder);
-        WatchService watcher = FileSystems.getDefault().newWatchService();
-        watchKey = path.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
+        watchService = FileSystems.getDefault().newWatchService();
+        watchKey = path.register(watchService, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
     }
 
     private String resolveUserHome(String path) {
@@ -110,7 +111,11 @@ public class PluginLoader {
         List events = watchKey.pollEvents();
         if (!events.isEmpty()) {
             watchKey.reset();
-            this.closePluginClassLoader();
+            try {
+                classLoader.close();
+            } catch (IOException e) {
+                LOGGER.error("Failed to close plugin class loader", e);
+            }
             this.initPluginList();
         }
     }
@@ -131,7 +136,7 @@ public class PluginLoader {
      * @param cl class name
      * @return plugin
      */
-    public Plugin getPluginByClassName(Class cl) {
+    public Plugin getPluginByClassName(Class<? extends Plugin> cl) {
         PluginFilter pluginFilter = new TypeFilter(cl);
         List<Plugin> plugins = getPlugins(pluginFilter);
         return !plugins.isEmpty() ? plugins.get(0) : null;
@@ -157,18 +162,15 @@ public class PluginLoader {
     }
 
     /**
-     * Will be called by container to release resource
-     * before bean destroying.
+     * Will be called by container to release resource before bean destroying.
      */
     public void destroy() {
-        this.closePluginClassLoader();
-    }
-
-    private void closePluginClassLoader() {
         try {
             classLoader.close();
-        } catch (IOException e) {
-            LOGGER.error("Failed to close plugin class loader", e);
+            watchService.close();
+        } catch (IOException e1) {
+            LOGGER.error("Failed to close plugin class loader", e1);
         }
     }
+
 }
