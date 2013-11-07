@@ -23,58 +23,7 @@
 <% pageContext.setAttribute("newLineChar", "\n"); %>
 <head>
     <title><c:out value="${pluginConfiguration.name}"/></title>
-    <c:if test="${not empty error}">
-        <script src="${pageContext.request.contextPath}/resources/javascript/app/dialog.js"></script>
-        <script >
-            $(function () {
-                var errorAreaCollapse = function (e) {
-                    e.preventDefault();
-                    var errorArea = $("#errorArea");
-                    if (errorArea.hasClass("hide-element")) {
-                        $("#errorAreaControlButton").html("Hide details");
-                        errorArea.removeClass("hide-element");
-                    } else {
-                        $("#errorAreaControlButton").html("Details");
-                        errorArea.addClass("hide-element");
-                    }
-                };
-                <c:set var="errorLines" value="${fn:split(errorInformation, newLineChar)}" />
-
-                var bodyContent = '<b><h4><c:out value="${error}"/></h4></b> <div id="errorArea" class="hide-element">' +
-                        <c:forEach var="errorLine" items="${errorLines}" varStatus="i">
-                            <c:if test="${i.index < 50}">
-                                '<c:out value="${errorLine}" escapeXml="false"/>' +
-                            </c:if>
-                        </c:forEach>
-                '</div>';
-
-                var footerContent = ' \
-                <button id="errorCloseButton" class="btn">Close</button> \
-                <button id="errorAreaControlButton" class="btn">Details</button>';
-
-                jDialog.createDialog({
-                    dialogId: 'pluginErrorDialog',
-                    title: 'Plugin Configuration Error',
-                    bodyContent: bodyContent,
-                    footerContent: footerContent,
-                    maxWidth: "70%",
-                    maxHeight: 600,
-                    'backdrop': false,
-                    firstFocus: true,
-                    tabNavigation: ['#errorCloseButton'],
-                    handlers: {
-                        '#errorCloseButton': {'static':'close'},
-                        '#errorAreaControlButton' : {'click': errorAreaCollapse}
-                    }
-                });
-
-                $("#pluginErrorDialog").draggable({
-                    handle: ".modal-header"
-                });
-
-            });
-        </script>
-    </c:if>
+    <script src="${pageContext.request.contextPath}/resources/javascript/app/pluginConfiguration.js"></script>
 </head>
 <body>
 <div class="container">
@@ -136,4 +85,16 @@
     </c:if>
   </form:form>
 </div>
+<c:if test="${not empty error}">
+    <c:set var="errorLines" value="${fn:split(errorInformation, newLineChar)}" />
+
+    <div id="errorInformation" class="hide-element">
+        <div id="errorHolder" class="hide-element"><h4><c:out value="${error}"/></h4></div>
+        <div id="errorInformationHolder" class="hide-element">
+            <c:forEach var="errorLine" items="${errorLines}">
+                <p><c:out value="${errorLine}" escapeXml="false"/></p>
+            </c:forEach>
+        </div>
+    </div>
+</c:if>
 </body>
