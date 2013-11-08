@@ -33,6 +33,7 @@ import org.testng.annotations.Test;
 
 import java.util.*;
 
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -124,6 +125,29 @@ public class PluginControllerTest {
 
         assertEquals(viewName, "redirect:/plugins/configure/" + pluginName);
         verify(pluginService).updateConfiguration(newConfiguration, componentId);
+    }
+
+    @Test
+    public void updateConfigurationShouldReturnConfigurationPageWithErrorWhenConfigurationWasFailed()
+            throws NotFoundException, UnexpectedErrorException {
+        long componentId = 25L;
+        Component component = new Component();
+        component.setId(componentId);
+        when(componentService.getComponentOfForum()).thenReturn(component);
+        String pluginName = "plugin";
+        PluginConfiguration newConfiguration = new PluginConfiguration();
+        newConfiguration.setName(pluginName);
+
+        doThrow(new UnexpectedErrorException(new IllegalArgumentException("Testing exception!")))
+                .when(pluginService).updateConfiguration(newConfiguration, componentId);
+
+        Model model = new ExtendedModelMap();
+        String viewName = pluginController.updateConfiguration(model, newConfiguration);
+
+        assertEquals(viewName, "plugin/pluginConfiguration");
+        assertTrue(model.containsAttribute("error"));
+        assertTrue(model.containsAttribute("errorInformation"));
+        assertTrue(model.containsAttribute("pluginConfiguration"));
     }
 
     @Test
