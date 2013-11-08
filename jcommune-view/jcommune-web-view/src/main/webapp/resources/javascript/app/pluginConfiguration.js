@@ -12,7 +12,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 $(function () {
 
     if ($("#errorHolder").length > 0) {
@@ -23,31 +22,31 @@ $(function () {
             var errorArea = $("#errorArea");
             var errorAreaControlButton = $("#errorAreaControlButton");
             if (errorArea.hasClass("hide-element")) {
-                errorAreaControlButton.html("Hide details");
+                errorAreaControlButton.html($labelHideDetails);
                 errorArea.removeClass("hide-element");
             } else {
-                errorAreaControlButton.html("Details");
+                errorAreaControlButton.html($labelShowDetails);
                 errorArea.addClass("hide-element");
             }
             jDialog.resizeDialog(jDialog.dialog);
         };
 
         var footerContent = ' \
-                    <button id="errorCloseButton" class="btn">Close</button> \
-                    <button id="errorAreaControlButton" class="btn">Details</button>';
+                    <button id="errorCloseButton" class="btn">' + $labelCloseDialog + '</button> \
+                    <button id="errorAreaControlButton" class="btn">' + $labelShowDetails + '</button>';
 
 
 
         jDialog.createDialog({
             dialogId: 'pluginErrorDialog',
-            title: 'Plugin Configuration Error',
+            title: $labelPluginConfigError,
             bodyContent: bodyContent,
             footerContent: footerContent,
             maxWidth: "70%",
             maxHeight: 600,
             'backdrop': false,
             firstFocus: true,
-            tabNavigation: ['#errorCloseButton'],
+            tabNavigation: ['#errorAreaControlButton', '#errorCloseButton'],
             handlers: {
                 '#errorCloseButton': {'static':'close'},
                 '#errorAreaControlButton' : {'click': errorAreaCollapse}

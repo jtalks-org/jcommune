@@ -613,12 +613,12 @@ div.anchor {
 }
 
 #pluginErrorDialog {
-    background-color: indianred;
+    background-color: #e6a394;
     width: 70%;
 }
 
 #pluginErrorDialog .modal-header, #pluginErrorDialog .modal-footer {
-    background-color: indianred;
+    background-color: #e6a394;
 }
 
 #pluginErrorDialog .modal-header {

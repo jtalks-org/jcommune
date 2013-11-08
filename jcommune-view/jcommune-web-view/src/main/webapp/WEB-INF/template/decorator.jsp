@@ -218,6 +218,7 @@
     <c:if test="${fn:contains(uriString, 'plugins')}">
       <script src="${pageContext.request.contextPath}/resources/javascript/app/utils.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/app/permissionService.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/app/pluginConfiguration.js"></script>
     </c:if>
 
     <c:if test="${fn:contains(uriString, 'topics') or fn:contains(uriString, 'branches')}">

@@ -88,6 +88,7 @@
   <group name="plugin">
     <js>/resources/javascript/app/utils.js</js>
     <js>/resources/javascript/app/permissionService.js</js>
+    <js>/resources/javascript/app/pluginConfiguration.js</js>
   </group>
 
   <group name="topic">

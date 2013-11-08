@@ -23,7 +23,6 @@
 <% pageContext.setAttribute("newLineChar", "\n"); %>
 <head>
     <title><c:out value="${pluginConfiguration.name}"/></title>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/pluginConfiguration.js"></script>
 </head>
 <body>
 <div class="container">

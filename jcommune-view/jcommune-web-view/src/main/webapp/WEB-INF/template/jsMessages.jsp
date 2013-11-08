@@ -130,3 +130,8 @@ $labelBranchName = '<spring:message code="label.branchName" htmlEscape="true"/>'
 $labelBranchDescription = '<spring:message code="label.branchDescription" htmlEscape="true"/>';
 $labelTitlePrefix = '<spring:message code="label.titlePrefix" htmlEscape="true"/>';
 $labelTitlePrefixHint = '<spring:message code="label.titlePrefixHint" htmlEscape="true"/>';
+
+$labelShowDetails = '<spring:message code="label.showDetails" htmlEscape="true"/>';
+$labelHideDetails = '<spring:message code="label.hideDetails" htmlEscape="true"/>';
+$labelPluginConfigError = '<spring:message code="label.pluginConfigError" htmlEscape="true"/>';
+$labelCloseDialog = '<spring:message code="label.closeDialog" htmlEscape="true"/>';
