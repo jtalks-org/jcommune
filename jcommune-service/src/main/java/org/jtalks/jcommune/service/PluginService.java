@@ -47,6 +47,8 @@ public interface PluginService extends EntityService<PluginConfiguration> {
      * @param pluginConfiguration contains new configuration of plugin
      * @param forumComponentId    an identifier of forum component id, that is needed to check permissions
      * @throws NotFoundException when configuration passed for non-exists plugin
+     * @throws UnexpectedErrorException when any RuntimeException was thrown during plugin configuration
+     *                                  or saving configuration in the database
      */
     void updateConfiguration(PluginConfiguration pluginConfiguration, long forumComponentId)
             throws NotFoundException, UnexpectedErrorException;

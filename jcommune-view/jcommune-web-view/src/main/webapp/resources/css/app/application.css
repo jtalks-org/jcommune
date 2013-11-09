@@ -607,9 +607,9 @@ div.anchor {
 }
 
 #pluginErrorDialog #errorArea {
-    max-height: 350px;
-    overflow-y: auto;
-    overflow-x: auto;
+    width: 100%;
+    height: 350px;
+    background-color: #e6a394;
 }
 
 #pluginErrorDialog {

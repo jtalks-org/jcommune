@@ -43,6 +43,11 @@ public interface Plugin {
 
     List<PluginProperty> getDefaultConfiguration();
 
+    /**
+     * Configuring plugin with specified new parameters
+     * @param configuration new parameters for the plugin
+     * @throws UnexpectedErrorException when any RuntimeException was thrown during plugin configuration
+     */
     void configure(PluginConfiguration configuration) throws UnexpectedErrorException;
 
     boolean isEnabled();

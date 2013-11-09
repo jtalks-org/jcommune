@@ -130,6 +130,18 @@ public class PluginControllerTest {
     @Test
     public void updateConfigurationShouldReturnConfigurationPageWithErrorWhenConfigurationWasFailed()
             throws NotFoundException, UnexpectedErrorException {
+        PluginConfiguration newConfiguration = createFailingConfiguration();
+
+        Model model = new ExtendedModelMap();
+        String viewName = pluginController.updateConfiguration(model, newConfiguration);
+
+        assertEquals(viewName, "plugin/pluginConfiguration");
+        assertTrue(model.containsAttribute("error"));
+        assertTrue(model.containsAttribute("errorInformation"));
+        assertTrue(model.containsAttribute("pluginConfiguration"));
+    }
+
+    private PluginConfiguration createFailingConfiguration() throws NotFoundException, UnexpectedErrorException {
         long componentId = 25L;
         Component component = new Component();
         component.setId(componentId);
@@ -140,14 +152,7 @@ public class PluginControllerTest {
 
         doThrow(new UnexpectedErrorException(new IllegalArgumentException("Testing exception!")))
                 .when(pluginService).updateConfiguration(newConfiguration, componentId);
-
-        Model model = new ExtendedModelMap();
-        String viewName = pluginController.updateConfiguration(model, newConfiguration);
-
-        assertEquals(viewName, "plugin/pluginConfiguration");
-        assertTrue(model.containsAttribute("error"));
-        assertTrue(model.containsAttribute("errorInformation"));
-        assertTrue(model.containsAttribute("pluginConfiguration"));
+        return newConfiguration;
     }
 
     @Test

@@ -123,6 +123,7 @@ $(function () {
             'maxHeight': 400,
             'overflow': 'hidden',
             'overflowBody': 'hidden',
+            'modal' : true,
             //first element focus
             'firstFocus': true,
             'tabNavigation': [],
@@ -139,9 +140,18 @@ $(function () {
             if (jDialog.dialog) {
                 jDialog.closeDialog();
             }
+
             //merge default options and users option
             jDialog.options = $.extend({}, jDialog.defaultOptions, opts);
             jDialog.dialog = jDialog.rootPanelFunc();
+
+            var enforceModalFocusFn = $.fn.modal.Constructor.prototype.enforceFocus;
+            if (jDialog.options.modal == false) {
+                jDialog.options.backdrop = false;
+                // this code removes "enforce focus" mechanism when user can't select any input outside the dialog
+                // Dialog becomes non-modal
+                $.fn.modal.Constructor.prototype.enforceFocus = function() {};
+            }
 
             //modal function is bootstrap
             jDialog.dialog.modal({
@@ -169,6 +179,10 @@ $(function () {
 
             // html5 placeholder emulation for old IE
             jDialog.dialog.find('input[placeholder]').placeholder();
+
+            $(jDialog.dialog).on('hidden', function() {
+                $.fn.modal.Constructor.prototype.enforceFocus = enforceModalFocusFn;
+            });
 
             return jDialog.dialog;
         }

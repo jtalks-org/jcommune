@@ -15,8 +15,10 @@
 $(function () {
 
     if ($("#errorHolder").length > 0) {
+
         var bodyContent = $("#errorHolder").html() +
-                       '<div id="errorArea" class="hide-element">' + $("#errorInformationHolder").html() + '</div>';
+                        '<textarea id="errorArea" class="hide-element" readonly="readonly">' +
+                        $("#errorInformationHolder").text() + '</textarea>';
         var errorAreaCollapse = function (e) {
             e.preventDefault();
             var errorArea = $("#errorArea");
@@ -35,8 +37,6 @@ $(function () {
                     <button id="errorCloseButton" class="btn">' + $labelCloseDialog + '</button> \
                     <button id="errorAreaControlButton" class="btn">' + $labelShowDetails + '</button>';
 
-
-
         jDialog.createDialog({
             dialogId: 'pluginErrorDialog',
             title: $labelPluginConfigError,
@@ -44,7 +44,7 @@ $(function () {
             footerContent: footerContent,
             maxWidth: "70%",
             maxHeight: 600,
-            'backdrop': false,
+            modal: false,
             firstFocus: true,
             tabNavigation: ['#errorAreaControlButton', '#errorCloseButton'],
             handlers: {
