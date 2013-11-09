@@ -794,10 +794,10 @@ div.anchor {
 
 div.add-branch-button {
     border-style: dashed;
-    border-color: gray;
+    border-color: #D8D7D7;
     -moz-border-radius: 10px;  
     border-radius: 10px;
-    background-color: #dddddd;
+    background-color: #E7E6E6;
     padding: 7px;
     font-size: larger;
     color: gray;
@@ -806,4 +806,5 @@ div.add-branch-button {
 
 div.add-branch-button:hover {
     background-color: #eeeeee;
+    cursor:pointer;
 }

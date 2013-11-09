@@ -142,11 +142,13 @@
           </jtalks:hasPermission>
         </c:forEach>
         <c:if test="${sessionScope.adminMode == true}">
-            <tr>
-                <td colspan="3">
-                    <div id='newBranch${section.id}' class="add-branch-button"> + Add branch</div>                
-                </td>
-            </tr>
+          <tr>
+            <td colspan="3">
+              <div id='newBranch${section.id}' class="add-branch-button"> + 
+                <spring:message code="label.branch.add"/>
+              </div>                
+            </td>
+          </tr>
         </c:if>            
       </jtalks:isSectionVisible>
     </c:forEach>
