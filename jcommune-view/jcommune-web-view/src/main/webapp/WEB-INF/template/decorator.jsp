@@ -27,6 +27,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=700, maximum-scale=1">
 
 <script>
   <%--Defines URL mapping root to be used in JS--%>
