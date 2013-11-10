@@ -19,13 +19,11 @@ import org.apache.commons.logging.Log;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.util.ReflectionUtils;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
 
 import static org.mockito.Matchers.anyString;
@@ -46,7 +44,9 @@ public class PrettyLogExceptionResolverTest {
     public void testLogExceptionWithIncomingNotFoundException() throws Exception {
         Log mockLog = replaceLoggerWithMock(prettyLogExceptionResolver);
         NotFoundException notFoundException = new NotFoundException("Entity not found");
-        prettyLogExceptionResolver.logException(notFoundException, mock(HttpServletRequest.class));
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/");
+        request.setContent("".getBytes());
+        prettyLogExceptionResolver.logException(notFoundException, request);
 
         verify(mockLog).info("Entity not found");
     }
@@ -59,6 +59,7 @@ public class PrettyLogExceptionResolverTest {
         MockHttpServletRequest request = new MockHttpServletRequest("POST", "/testing/url/42");
         request.setServerName("testserver.com");
         request.setServerPort(8080);
+        request.setContent("12345".getBytes());
         request.setUserPrincipal(new UsernamePasswordAuthenticationToken("username", "password"));
 
         prettyLogExceptionResolver.logException(accessDeniedException, request);
@@ -71,9 +72,11 @@ public class PrettyLogExceptionResolverTest {
     public void testLogExceptionWithoutNotFoundException() throws Exception {
         Log mockLog = replaceLoggerWithMock(prettyLogExceptionResolver);
         Exception exception = new Exception();
-        prettyLogExceptionResolver.logException(exception, mock(HttpServletRequest.class));
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/");
+        request.setContent("".getBytes());
+        prettyLogExceptionResolver.logException(exception, request);
 
-        verify(mockLog, times(0)).info(anyString());
+        verify(mockLog, times(1)).info(anyString());
     }
 
     private Log replaceLoggerWithMock(PrettyLogExceptionResolver resolver) throws Exception {

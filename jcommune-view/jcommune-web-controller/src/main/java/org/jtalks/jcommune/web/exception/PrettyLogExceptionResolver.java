@@ -19,6 +19,9 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.security.Principal;
 
 /**
@@ -50,5 +53,32 @@ public class PrettyLogExceptionResolver extends SimpleMappingExceptionResolver {
         } else {
             super.logException(ex, request);
         }
+        logger.info(getLogMessage(request));
+    }
+
+    /**
+     * Get info about occured exception: request method, url, cookies and data.
+     * @param request request
+     * @return log message
+     */
+    private String getLogMessage(HttpServletRequest request) {
+        String data = "";
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
+            String line;
+            StringBuilder stringBuilder = new StringBuilder();
+            while ((line=reader.readLine()) != null ) {
+                stringBuilder.append(line).append("\n");
+            }
+            data = stringBuilder.toString();
+        } catch (IOException e) {
+            logger.warn("Could not parse data from request");
+        }
+        String queryString = request.getQueryString();
+        String url = request.getRequestURL().toString();
+        if (queryString != null && !queryString.isEmpty()) {
+            url += "?" + queryString;
+        }
+        return String.format("[%s][%s][%s][%s]", request.getMethod(), url, request.getHeader("Cookie"), data);
     }
 }
