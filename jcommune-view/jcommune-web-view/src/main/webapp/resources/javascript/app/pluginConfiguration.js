@@ -17,7 +17,7 @@ $(function () {
     if ($("#errorHolder").length > 0) {
 
         var bodyContent = $("#errorHolder").html() +
-                        '<textarea id="errorArea" class="hide-element" readonly="readonly">' +
+                        '<textarea id="errorArea" class="hide-element" readonly="readonly" cols="200">' +
                         $("#errorInformationHolder").text() + '</textarea>';
         var errorAreaCollapse = function (e) {
             e.preventDefault();
