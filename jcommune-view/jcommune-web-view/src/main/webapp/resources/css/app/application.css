@@ -626,10 +626,12 @@ div.anchor {
 
 #pluginErrorDialog .modal-header, #pluginErrorDialog .modal-footer {
     background-color: #e6a394;
+    border-color: rgba(0, 0, 0, 0.3);
 }
 
 #pluginErrorDialog .modal-header {
     cursor: move;
+
 }
 
 .modal-body .help-block {
