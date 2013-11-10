@@ -67,6 +67,7 @@ $(function () {
                         if (resp.status == 'SUCCESS') {
                             // hide dialog and show success message
                             jDialog.createDialog({
+                                dialogId: 'registration-successful-dialog',
                                 type: jDialog.alertType,
                                 bodyMessage: $labelRegistrationSuccess
                             });
