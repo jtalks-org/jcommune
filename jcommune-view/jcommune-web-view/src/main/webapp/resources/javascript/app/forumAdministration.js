@@ -206,7 +206,7 @@ function createAdministrationDialog() {
         <form:hidden id="icon" path="icon"/> \
         ' + Utils.createFormElement($labelForumTitle, 'forumName', 'text', 'first dialog-input')
         + Utils.createFormElement($labelForumDescription, 'forumDescription', 'text', 'dialog-input')
-        + Utils.createFormElement($labelTitlePrefix, 'titlePrefix', 'text', 'first dialog-input')
+        + Utils.createFormElement($labelTitlePrefix, 'forumTitlePrefix', 'text', 'first dialog-input')
         + Utils.createFormElement($labelLogoTooltip, 'forumLogoTooltip', 'text', 'dialog-input') + ' \
             <div class="clearfix"';
 
@@ -222,7 +222,7 @@ function createAdministrationDialog() {
         maxWidth: 350,
         maxHeight: 700,
         firstFocus: true,
-        tabNavigation: ['#forumName', '#forumDescription','#forumLogoTooltip',
+        tabNavigation: ['#forumName', '#forumDescription', '#forumTitlePrefix', '#forumLogoTooltip',
                         '#administrationSubmitButton', '#administrationCancelButton'],
         handlers: {
             '#administrationSubmitButton': {'click': sendForumConfiguration},
@@ -234,8 +234,8 @@ function createAdministrationDialog() {
     $('#uploadLogo').tooltip();
     $('#removeIcon').tooltip();
     $('#removeLogo').tooltip();
-    $('#titlePrefix').attr('data-original-title', $labelTitlePrefixHint);
-    $('#titlePrefix').tooltip();
+    $('#forumTitlePrefix').attr('data-original-title', $labelTitlePrefixHint);
+    $('#forumTitlePrefix').tooltip();
 
     var tabFunc = function (e) {
         if (document.activeElement.id == jDialog.options.dialogId && (e.keyCode || e.charCode) == tabCode) {
@@ -272,7 +272,7 @@ function fillAdminDialogInputs() {
     $('#forumName').val(currentAdminValues.forumName);
     $('#forumDescription').val(currentAdminValues.forumDescription);
     $('#forumLogoTooltip').val(currentAdminValues.logoTooltip);
-    $('#titlePrefix').val(currentAdminValues.titlePrefix);
+    $('#forumTitlePrefix').val(currentAdminValues.titlePrefix);
     $('#logoPreview').attr('src', currentAdminValues.logoPreview);
     $('#iconPreview').attr('src', currentAdminValues.iconPreview);
     $('#logo').val(currentAdminValues.logo);
@@ -456,7 +456,7 @@ function saveInputValues() {
     currentAdminValues = {
         forumName: jDialog.dialog.find('#forumName').val(),
         forumDescription: jDialog.dialog.find('#forumDescription').val(),
-        titlePrefix: jDialog.dialog.find('#titlePrefix').val(),
+        titlePrefix: jDialog.dialog.find('#forumTitlePrefix').val(),
         logoTooltip: jDialog.dialog.find('#forumLogoTooltip').val(),
         logo: jDialog.dialog.find('#logo').val(),
         logoPreview: jDialog.dialog.find('#logoPreview').attr("src"),
