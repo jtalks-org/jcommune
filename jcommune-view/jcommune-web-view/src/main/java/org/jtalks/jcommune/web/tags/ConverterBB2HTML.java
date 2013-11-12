@@ -42,6 +42,7 @@ public class ConverterBB2HTML extends TagSupport {
     @Override
     public int doStartTag() throws JspException {
         try {
+            bbCode = bbCode.replaceAll("\\\\", "\\\\\\\\");
             String html = service.convertBbToHtml(bbCode);
             pageContext.getOut().print(html);
             return SKIP_BODY;
