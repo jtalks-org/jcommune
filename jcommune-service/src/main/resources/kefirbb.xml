@@ -108,6 +108,12 @@ get XSS attacks.</p>-->
             <pattern>[aquote]<var inherit="true"/>[/aquote]</pattern>
             <template>&amp;laquo;<var/>&amp;raquo;</template>
         </code>
+
+        <!-- Special html symbol for backslash -->
+        <code name="backslash" priority="12">
+            <pattern>\</pattern>
+            <template>&#92;</template>
+        </code>
     </scope>
 
     <!-- Root scope. This scope uses when processor started work and by default, if not set other scope -->
