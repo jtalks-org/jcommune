@@ -15,18 +15,22 @@
 
 --%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <head>
-  <title><spring:message code="label.400.title"/></title>
+    <title>
+        <c:out value="${cmpTitlePrefix}"/>
+        <spring:message code="label.400.title"/><
+    </title>
 </head>
 <body>
 <div class="container">
-  <div class="text_errorpage">
-    <h1><span class="error_errorpage"><spring:message code="label.error"/></span> 400</h1>
-    <spring:message code="label.400.detail"/>
-    <br/>
-    <spring:message code="label.400.checkRequest"/>&nbsp;
-    <a href="${pageContext.request.contextPath}/"><spring:message code="label.back2main"/></a>
-  </div>
+    <div class="text_errorpage">
+        <h1><span class="error_errorpage"><spring:message code="label.error"/></span> 400</h1>
+        <spring:message code="label.400.detail"/>
+        <br/>
+        <spring:message code="label.400.checkRequest"/>&nbsp;
+        <a href="${pageContext.request.contextPath}/"><spring:message code="label.back2main"/></a>
+    </div>
 </div>
 </body>
