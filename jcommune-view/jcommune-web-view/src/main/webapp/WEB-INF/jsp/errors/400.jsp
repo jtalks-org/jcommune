@@ -20,7 +20,7 @@
 <head>
     <title>
         <c:out value="${cmpTitlePrefix}"/>
-        <spring:message code="label.400.title"/><
+        <spring:message code="label.400.title"/>
     </title>
 </head>
 <body>
