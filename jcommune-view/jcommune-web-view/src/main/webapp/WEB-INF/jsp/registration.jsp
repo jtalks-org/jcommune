@@ -57,7 +57,7 @@
         <span class="reg_info"><spring:message code="label.tip.password"/></span>
 
         <div class="controls">
-          <form:password path="userDto.password" class="reg_input"  />
+          <form:password path="userDto.password" class="reg_input" showPassword="true" />
           <br/>
           <form:errors path="userDto.password" cssClass="help-inline"/>
         </div>
@@ -66,7 +66,7 @@
         <span class="reg_info"><spring:message code="label.tip.confirmation"/></span>
 
         <div class="controls">
-          <form:password path="passwordConfirm" class="reg_input"/>
+          <form:password path="passwordConfirm" class="reg_input" showPassword="true"/>
           <br/>
           <form:errors path="passwordConfirm" cssClass="help-inline"/>
         </div>
