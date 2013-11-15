@@ -632,10 +632,7 @@ div.anchor {
 
 #pluginErrorDialog .modal-header {
     cursor: move;
-}
 
-.help-inline._error {
-    color: #b94a48;
 }
 
 .modal-body .help-block {
@@ -820,4 +817,8 @@ div.add-branch-button {
 div.add-branch-button:hover {
     background-color: #eeeeee;
     cursor:pointer;
+}
+
+.help-inline._error {
+    color: #b94a48;
 }
