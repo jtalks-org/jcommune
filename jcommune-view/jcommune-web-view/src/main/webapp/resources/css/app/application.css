@@ -632,7 +632,10 @@ div.anchor {
 
 #pluginErrorDialog .modal-header {
     cursor: move;
+}
 
+.help-inline._error {
+    color: #b94a48;
 }
 
 .modal-body .help-block {
