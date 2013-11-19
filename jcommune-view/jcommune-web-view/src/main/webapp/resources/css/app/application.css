@@ -5,6 +5,10 @@
     body {
         padding-top: 50px; /*60px to make the container go all the way to the bottom of the topbar */
     }
+
+    .nav-collapse.collapse {
+        display: inline;
+    }
 }
 
 /*common body (application.css, bootstrap-responsive.css)*/
@@ -774,7 +778,7 @@ div.anchor {
     margin-left: 3px;
 }
 
-.space-left-medium  {
+.space-left-medium {
     margin-left: 4px;
 }
 
@@ -786,26 +790,26 @@ div.anchor {
     margin-left: 3px;
 }
 
-.margin-left-big  {
+.margin-left-big {
     margin-left: 5px;
 }
 
-.margin-right-big  {
+.margin-right-big {
     margin-right: 5px;
 }
 
-.space-left-medium-nf:not(:first-of-type)  {
+.space-left-medium-nf:not(:first-of-type) {
     margin-left: 4px;
 }
 
-.space-left-big-nf:not(:first-of-type)  {
+.space-left-big-nf:not(:first-of-type) {
     margin-left: 7px;
 }
 
 div.add-branch-button {
     border-style: dashed;
     border-color: #D8D7D7;
-    -moz-border-radius: 10px;  
+    -moz-border-radius: 10px;
     border-radius: 10px;
     background-color: #E7E6E6;
     padding: 7px;
@@ -816,7 +820,7 @@ div.add-branch-button {
 
 div.add-branch-button:hover {
     background-color: #eeeeee;
-    cursor:pointer;
+    cursor: pointer;
 }
 
 .help-inline._error {
