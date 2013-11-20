@@ -255,7 +255,9 @@
                 </configuration>
             </plugin>
             <plugin>
-              <!-- Compile JSP to check for errors -->
+              <!-- Compile JSP to check for errors. 
+              Executes during process-classes phase.
+              Use jspc:compile to execute plugin directly. -->
               <groupId>org.codehaus.mojo.jspc</groupId>
               <artifactId>jspc-maven-plugin</artifactId>
               <version>2.0-alpha-3</version>
