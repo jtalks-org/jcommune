@@ -14,14 +14,25 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.common.model.entity.Component;
+import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.BranchPermission;
+import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.model.permissions.JtalksPermission;
+import org.jtalks.common.model.permissions.ProfilePermission;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
+import org.jtalks.jcommune.model.PermissionManager;
+import org.jtalks.jcommune.model.dto.GroupsPermissions;
+import org.jtalks.jcommune.model.dto.PermissionChanges;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.service.security.AclClassName;
 import org.jtalks.jcommune.service.security.AclGroupPermissionEvaluator;
 import org.jtalks.jcommune.service.security.PermissionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
+
+import java.util.List;
 
 /**
  * Implementation of {@link org.jtalks.jcommune.service.security.PermissionService} interface
@@ -36,15 +47,18 @@ public class TransactionalPermissionService implements PermissionService {
     private static final String PERMISSION_FULLNAME_PATTERN = "%s.%s";
     private SecurityContextHolderFacade contextFacade;
     private AclGroupPermissionEvaluator aclEvaluator;
+    private PermissionManager permissionManager;
 
     /**
      * @param contextFacade to get {@link Authentication} object from security context
      * @param aclEvaluator  to evaluate permissions
      */
     public TransactionalPermissionService(SecurityContextHolderFacade contextFacade,
-                                          AclGroupPermissionEvaluator aclEvaluator) {
+                                          AclGroupPermissionEvaluator aclEvaluator,
+                                          PermissionManager permissionManager) {
         this.contextFacade = contextFacade;
         this.aclEvaluator = aclEvaluator;
+        this.permissionManager = permissionManager;
     }
 
     /**
@@ -87,6 +101,78 @@ public class TransactionalPermissionService implements PermissionService {
                             + targetClass + ": " + targetId
                             + ", permission - " + permission.getName());
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public GroupsPermissions<BranchPermission> getPermissionsFor(Branch branch) {
+        return permissionManager.getPermissionsMapFor(branch);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void changeGrants(Branch branch, PermissionChanges changes) {
+        permissionManager.changeGrants(branch, changes);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void changeRestrictions(Branch branch, PermissionChanges changes) {
+        permissionManager.changeRestrictions(branch, changes);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public GroupsPermissions<GeneralPermission> getPermissionsMapFor(Component component) {
+        return permissionManager.getPermissionsMapFor(component);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void changeGrants(Component component, PermissionChanges changes) {
+        permissionManager.changeGrants(component, changes);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void changeRestrictions(Component component, PermissionChanges changes) {
+        permissionManager.changeRestrictions(component, changes);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public GroupsPermissions<ProfilePermission> getPersonalPermissions(List<Group> groups) {
+        return permissionManager.getPermissionsMapFor(groups);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void changeGrants(Group group, PermissionChanges changes) {
+        permissionManager.changeGrants(group, changes);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void changeRestrictions(Group group, PermissionChanges changes) {
+        permissionManager.changeRestrictions(group, changes);
     }
 
 
