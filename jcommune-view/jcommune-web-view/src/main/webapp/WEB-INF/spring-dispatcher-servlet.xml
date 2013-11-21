@@ -154,7 +154,6 @@
   <mvc:view-controller path="/errors/redirect/403" view-name="redirect:/errors/403"/>
   <mvc:view-controller path="/errors/404" view-name="/errors/404"/>
   <mvc:view-controller path="/errors/redirect/404" view-name="redirect:/errors/404"/>
-  <mvc:view-controller path="/errors/500" view-name="/errors/500"/>
 
   <mvc:view-controller path="/faqEditor" view-name="simplePageEditor"/>
 
