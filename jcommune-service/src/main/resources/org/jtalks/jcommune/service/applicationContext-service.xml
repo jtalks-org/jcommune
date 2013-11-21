@@ -24,369 +24,376 @@
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.2.xsd">
 
-    <!-- Declaration AOP configs -->
+  <!-- Declaration AOP configs -->
+  <aop:config>
+    <aop:pointcut id="defaultTxPointcut"
+                  expression="within(org.jtalks.jcommune.service.transactional..*)"/>
+    <aop:advisor advice-ref="txAdvice" pointcut-ref="defaultTxPointcut"/>
+  </aop:config>
+
+  <tx:advice id="txAdvice">
+    <tx:attributes>
+      <tx:method name="*" isolation="READ_COMMITTED" rollback-for="java.lang.Exception"/>
+    </tx:attributes>
+  </tx:advice>
+
+  <!--Timers and executirs to be specified via annotations-->
+
+  <task:annotation-driven executor="executor" scheduler="scheduler"/>
+
+  <task:executor id="executor" pool-size="1"/>
+
+  <task:scheduler id="scheduler" pool-size="1"/>
+
+  <!--JMX configuration-->
+  <bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean">
+    <property name="locateExistingServerIfPossible" value="true"/>
+  </bean>
+
+  <bean id="jmxExporter" class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
+    <property name="beans">
+      <map>
+        <entry key="jcommune:name=logging">
+          <bean class="org.jtalks.jcommune.service.jmx.Log4jConfigurator"/>
+        </entry>
+        <entry key="jcommune:name=hibernateStatistics" value-ref="hibernateStatisticsMBean"/>
+      </map>
+    </property>
+  </bean>
+
+  <bean id="managementService" class="net.sf.ehcache.management.ManagementService"
+        init-method="init"
+        destroy-method="dispose">
+    <constructor-arg ref="localCache"/>
+    <constructor-arg ref="mbeanServer"/>
+    <constructor-arg index="2" value="true"/>
+    <constructor-arg index="3" value="true"/>
+    <constructor-arg index="4" value="true"/>
+    <constructor-arg index="5" value="true"/>
+  </bean>
+  <!--Declaration services bean -->
+
+  <bean id="avatarService" class="org.jtalks.jcommune.service.nontransactional.ImageService">
+    <constructor-arg index="0" ref="avatarPreprocessor"/>
+    <constructor-arg index="1" ref="base64Wrapper"/>
+    <constructor-arg index="2" value="org/jtalks/jcommune/service/avatar.gif"/>
+    <constructor-arg index="3" ref="avatarMaxSizeProperty"/>
+  </bean>
+
+  <bean id="forumLogoService" class="org.jtalks.jcommune.service.nontransactional.ImageService">
+    <constructor-arg index="0" ref="logoPreprocessor"/>
+    <constructor-arg index="1" ref="base64Wrapper"/>
+    <constructor-arg index="2" value="org/jtalks/jcommune/service/jcommune-logo.jpeg"/>
+    <constructor-arg index="3" ref="forumLogoMaxSizeProperty"/>
+  </bean>
+
+  <bean id="favIconServicePng" class="org.jtalks.jcommune.service.nontransactional.ImageService">
+    <constructor-arg index="0" ref="favIconPngPreprocessor"/>
+    <constructor-arg index="1" ref="base64Wrapper"/>
+    <constructor-arg index="2" value="org/jtalks/jcommune/service/favicon.png"/>
+    <constructor-arg index="3" ref="forumLogoMaxSizeProperty"/>
+  </bean>
+
+  <bean id="favIconServiceIco" class="org.jtalks.jcommune.service.nontransactional.ImageService">
+    <constructor-arg index="0" ref="favIconIcoPreprocessor"/>
+    <constructor-arg index="1" ref="base64Wrapper"/>
+    <constructor-arg index="2" value="org/jtalks/jcommune/service/favicon.ico"/>
+    <constructor-arg index="3" ref="forumLogoMaxSizeProperty"/>
+  </bean>
+
+  <bean id="base64Wrapper" class="org.jtalks.jcommune.service.nontransactional.Base64Wrapper"/>
+
+  <bean id="avatarPreprocessor" class="org.jtalks.jcommune.service.nontransactional.ImageConverter"
+        factory-method="createConverter">
+    <constructor-arg value="jpeg"/>
+    <constructor-arg value="100"/>
+    <constructor-arg value="100"/>
+  </bean>
+
+  <bean id="logoPreprocessor" class="org.jtalks.jcommune.service.nontransactional.ImageConverter"
+        factory-method="createConverter">
+    <constructor-arg value="jpeg"/>
+    <constructor-arg value="34"/>
+    <constructor-arg value="31"/>
+  </bean>
+
+  <bean id="favIconPngPreprocessor" class="org.jtalks.jcommune.service.nontransactional.ImageConverter"
+        factory-method="createConverter">
+    <constructor-arg value="png"/>
+    <constructor-arg value="32"/>
+    <constructor-arg value="32"/>
+  </bean>
+
+  <bean id="favIconIcoPreprocessor" class="org.jtalks.jcommune.service.nontransactional.ImageConverter"
+        factory-method="createConverter">
+    <constructor-arg value="ico"/>
+    <constructor-arg value="32"/>
+    <constructor-arg value="32"/>
+  </bean>
+
+  <bean id="locationService" class="org.jtalks.jcommune.service.nontransactional.LocationService">
+    <constructor-arg name="sessionRegistry" ref="sessionRegistry"/>
+    <constructor-arg name="userService" ref="userService"/>
+  </bean>
+
+  <bean id="userService" class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
+    <constructor-arg ref="userDao"/>
+    <constructor-arg ref="groupDao"/>
+    <constructor-arg ref="securityService"/>
+    <constructor-arg ref="mailService"/>
+    <constructor-arg ref="base64Wrapper"/>
+    <constructor-arg ref="encryptionService"/>
+    <constructor-arg ref="postDao"/>
+    <constructor-arg ref="authenticator"/>
+  </bean>
+
+  <bean id="authenticator" class="org.jtalks.jcommune.service.transactional.TransactionalAuthenticator">
+    <constructor-arg ref="pluginLoader"/>
+    <constructor-arg ref="userDao"/>
+    <constructor-arg ref="groupDao"/>
+    <constructor-arg ref="encryptionService"/>
+    <constructor-arg ref="mailService"/>
+    <constructor-arg ref="avatarService"/>
+    <constructor-arg ref="pluginService"/>
+    <constructor-arg ref="authenticationManager"/>
+    <constructor-arg ref="securityContextFacade"/>
+    <constructor-arg ref="rememberMeServices"/>
+    <constructor-arg ref="concurrentSessionControlStrategy"/>
+    <constructor-arg ref="validator"/>
+  </bean>
+
+  <bean id="userContactsService"
+        class="org.jtalks.jcommune.service.transactional.TransactionalUserContactsService">
+    <constructor-arg ref="userContactsDao"/>
+    <constructor-arg ref="userService"/>
+  </bean>
+
+  <bean id="postService"
+        class="org.jtalks.jcommune.service.transactional.TransactionalPostService">
+    <constructor-arg ref="postDao"/>
+    <constructor-arg ref="topicDao"/>
+    <constructor-arg ref="securityService"/>
+    <constructor-arg ref="notificationService"/>
+    <constructor-arg ref="lastReadPostService"/>
+    <constructor-arg ref="userService"/>
+    <constructor-arg ref="branchLastPostService"/>
+  </bean>
+
+  <bean id="topicModificationService"
+        class="org.jtalks.jcommune.service.transactional.TransactionalTopicModificationService">
+    <constructor-arg ref="topicDao"/>
+    <constructor-arg ref="securityService"/>
+    <constructor-arg ref="topicBranchDao"/>
+    <constructor-arg ref="notificationService"/>
+    <constructor-arg ref="subscriptionService"/>
+    <constructor-arg ref="userService"/>
+    <constructor-arg ref="pollService"/>
+    <constructor-arg ref="topicFetchService"/>
+    <constructor-arg ref="securityContextFacade"/>
+    <constructor-arg ref="aclGroupPermissionEvaluator"/>
+    <constructor-arg ref="branchLastPostService"/>
+  </bean>
+
+  <bean id="topicFetchService"
+        class="org.jtalks.jcommune.service.transactional.TransactionalTopicFetchService">
+    <constructor-arg ref="topicDao"/>
+    <constructor-arg ref="userService"/>
+    <constructor-arg ref="topicSearchDao"/>
+  </bean>
+
+  <bean id="topicBranchService"
+        class="org.jtalks.jcommune.service.transactional.TransactionalBranchService">
+    <constructor-arg ref="topicBranchDao"/>
+    <constructor-arg ref="branchSectionDao"/>
+    <constructor-arg ref="topicDao"/>
+    <constructor-arg ref="topicModificationService"/>
+    <constructor-arg ref="permissionService"/>
+  </bean>
+
+  <bean id="branchLastPostService"
+        class="org.jtalks.jcommune.service.transactional.TransactionalBranchLastPostService">
+    <constructor-arg ref="postDao"/>
+    <constructor-arg ref="topicBranchDao"/>
+  </bean>
+
+  <bean id="branchSectionService"
+        class="org.jtalks.jcommune.service.transactional.TransactionalSectionService">
+    <constructor-arg ref="branchSectionDao"/>
+    <constructor-arg ref="topicBranchService"/>
+    <constructor-arg ref="userService"/>
+    <constructor-arg ref="topicDao"/>
+  </bean>
+
+  <bean id="pmService"
+        class="org.jtalks.jcommune.service.transactional.TransactionalPrivateMessageService">
+    <constructor-arg ref="privateMessageDao"/>
+    <constructor-arg ref="securityService"/>
+    <constructor-arg ref="userService"/>
+    <constructor-arg ref="userDataCacheService"/>
+    <constructor-arg ref="mailService"/>
+    <constructor-arg ref="sendingNotificationsProperty"/>
+  </bean>
+
+  <bean id="pollService"
+        class="org.jtalks.jcommune.service.transactional.TransactionalPollService">
+    <constructor-arg ref="pollDao"/>
+    <constructor-arg ref="groupDao"/>
+    <constructor-arg ref="pollOptionDao"/>
+    <constructor-arg ref="securityService"/>
+    <constructor-arg ref="userService"/>
+  </bean>
+
+  <bean id="subscriptionService"
+        class="org.jtalks.jcommune.service.transactional.TransactionalSubscriptionService">
+    <constructor-arg ref="userService"/>
+    <constructor-arg ref="topicBranchDao"/>
+    <constructor-arg ref="topicDao"/>
+    <constructor-arg ref="codeReviewDao"/>
+  </bean>
+
+  <bean id="securityService"
+        class="org.jtalks.common.security.SecurityService">
+    <constructor-arg name="userDao" ref="userDao"/>
+    <constructor-arg ref="aclManager"/>
+  </bean>
+
+  <bean id="forumStatisticsService"
+        class="org.jtalks.jcommune.service.nontransactional.ForumStatisticsService">
+    <constructor-arg ref="forumStatisticsDAO"/>
+  </bean>
+
+  <bean id="lastReadPostService" class="org.jtalks.jcommune.service.transactional.TransactionalLastReadPostService">
+    <constructor-arg ref="userService"/>
+    <constructor-arg ref="lastReadPostHibernateDao"/>
+    <constructor-arg ref="userDao"/>
+  </bean>
+
+  <bean id="simplePageService"
+        class="org.jtalks.jcommune.service.transactional.TransactionalSimplePageService">
+    <constructor-arg ref="simplePageDao"/>
+    <constructor-arg ref="groupDao"/>
+    <constructor-arg ref="securityService"/>
+  </bean>
+
+  <bean id="bbCodeReviewProcessor" class="org.jtalks.jcommune.service.bb2htmlprocessors.BbCodeReviewProcessor"/>
+  <bean id="bbForeignLinksPostprocessor"
+        class="org.jtalks.jcommune.service.bb2htmlprocessors.BBForeignLinksPostprocessor"/>
+
+  <bean id="bbUserPreprocessor" class="org.jtalks.jcommune.service.bb2htmlprocessors.BbUserPreprocessor">
+    <constructor-arg ref="userService"/>
+  </bean>
+
+  <bean id="bbCodeService" class="org.jtalks.jcommune.service.nontransactional.BBCodeService">
+    <property name="preprocessors">
+      <list>
+        <bean class="org.jtalks.jcommune.service.bb2htmlprocessors.BBCodeListPreprocessor"/>
+        <ref local="bbCodeReviewProcessor"/>
+        <ref bean="bbUserPreprocessor"/>
+      </list>
+    </property>
+    <property name="postprocessors">
+      <list>
+        <ref local="bbCodeReviewProcessor"/>
+        <ref local="bbForeignLinksPostprocessor"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="codeReviewService" class="org.jtalks.jcommune.service.transactional.TransactionalCodeReviewService">
+    <constructor-arg ref="codeReviewDao"/>
+    <constructor-arg ref="userService"/>
+    <constructor-arg ref="permissionService"/>
+    <constructor-arg ref="notificationService"/>
+  </bean>
+
+  <bean id="codeReviewCommentService"
+        class="org.jtalks.jcommune.service.transactional.TransactionalCodeReviewCommentService">
+    <constructor-arg ref="codeReviewCommentDao"/>
+    <constructor-arg ref="permissionService"/>
+    <constructor-arg ref="userService"/>
+  </bean>
+
+  <bean id="permissionService" class="org.jtalks.jcommune.service.transactional.TransactionalPermissionService">
+    <constructor-arg ref="securityContextFacade"/>
+    <constructor-arg ref="aclGroupPermissionEvaluator"/>
+  </bean>
+
+  <bean id="branchPermissionManager" class="org.jtalks.jcommune.model.PermissionManager">
+    <constructor-arg index="0" ref="aclManager"/>
+    <constructor-arg index="1" ref="groupDao"/>
+    <constructor-arg index="2" ref="aclUtils"/>
+  </bean>
+
+  <bean id="bannerService" class="org.jtalks.jcommune.service.transactional.TransactionalBannerService">
+    <constructor-arg ref="bannerDao"/>
+  </bean>
+
+  <bean id="externalLinkService" class="org.jtalks.jcommune.service.transactional.TransactionalExternalLinkService">
+    <constructor-arg ref="externalLinkDao"/>
+  </bean>
+
+  <bean id="componentService" class="org.jtalks.jcommune.service.transactional.TransactionalComponentService">
+    <constructor-arg ref="favIconServiceIco"/>
+    <constructor-arg ref="componentDao"/>
+  </bean>
+
+  <bean id="configurationService" class="org.jtalks.jcommune.service.transactional.TransactionalConfigurationService">
+    <constructor-arg ref="componentSapeAccountProperty"/>
+    <constructor-arg ref="componentSapeTimeoutProperty"/>
+    <constructor-arg ref="componentSapeHostProperty"/>
+    <constructor-arg ref="componentSapeLinksCountProperty"/>
+    <constructor-arg ref="componentSapeOnMainPageEnableProperty"/>
+    <constructor-arg ref="componentSapeShowDummyLinksProperty"/>
+    <constructor-arg ref="componentSapeEnableServiceProperty"/>
+  </bean>
+
+  <bean id="pluginLoader" class="org.jtalks.jcommune.service.plugins.PluginLoader" init-method="init"
+        destroy-method="destroy">
+    <constructor-arg name="pluginsFolderPath" value="${JCOMMUNE_PLUGIN_FOLDER:~}"/>
+    <constructor-arg name="pluginConfigurationDao" ref="pluginConfigurationDao"/>
+  </bean>
+
+  <bean id="pluginService" class="org.jtalks.jcommune.service.transactional.TransactionalPluginService">
+    <constructor-arg name="dao" ref="pluginConfigurationDao"/>
+    <constructor-arg name="pluginLoader" ref="pluginLoader"/>
+  </bean>
+
+  <!--
+  Cache beans for user related data.
+  Now used for storing new private messages count.
+  -->
+  <bean id="localCache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+    <property name="configLocation" value="classpath:/org/jtalks/jcommune/model/entity/ehcache.xml"/>
+  </bean>
+
+  <bean id="userDataCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+    <property name="cacheManager" ref="localCache"/>
+    <property name="cacheName" value="cuserDataCache"/>
+  </bean>
+
+  <bean id="userDataCacheService"
+        class="org.jtalks.jcommune.service.nontransactional.UserDataCacheService">
+    <constructor-arg name="userDataCache" ref="userDataCache"/>
+  </bean>
+
+  <beans profile="performance">
+    <!-- JETM implementation using bean -->
+    <bean id="etmMonitor" class="etm.core.monitor.NestedMonitor" init-method="start" destroy-method="stop"/>
+
+    <!-- Wrapper for JETM interceptor -->
+    <bean id="etmMethodCallInterceptor" class="org.jtalks.jcommune.service.jetm.EtmMethodCallInterceptorWrapper">
+      <constructor-arg ref="etmMonitor"/>
+    </bean>
+
+    <!-- Declaration AOP for JETM -->
     <aop:config>
-        <aop:pointcut id="defaultTxPointcut"
-                      expression="within(org.jtalks.jcommune.service.transactional..*)"/>
-        <aop:advisor advice-ref="txAdvice" pointcut-ref="defaultTxPointcut"/>
+      <aop:pointcut id="JETMPointCutService" expression="within(org.jtalks.jcommune.service.transactional..*)"/>
+      <aop:advisor advice-ref="etmMethodCallInterceptor" pointcut-ref="JETMPointCutService"/>
     </aop:config>
 
-    <tx:advice id="txAdvice">
-        <tx:attributes>
-            <tx:method name="*" isolation="READ_COMMITTED" rollback-for="java.lang.Exception"/>
-        </tx:attributes>
-    </tx:advice>
-
-    <!--Timers and executirs to be specified via annotations-->
-
-    <task:annotation-driven executor="executor" scheduler="scheduler"/>
-
-    <task:executor id="executor" pool-size="1"/>
-
-    <task:scheduler id="scheduler" pool-size="1"/>
-
-    <!--JMX configuration-->
-    <bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean">
-        <property name="locateExistingServerIfPossible" value="true"/>
-    </bean>
-
-    <bean id="jmxExporter" class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
-        <property name="beans">
-            <map>
-                <entry key="jcommune:name=logging">
-                    <bean class="org.jtalks.jcommune.service.jmx.Log4jConfigurator"/>
-                </entry>
-                <entry key="jcommune:name=hibernateStatistics" value-ref="hibernateStatisticsMBean"/>
-            </map>
-        </property>
-    </bean>
-
-    <bean id="managementService" class="net.sf.ehcache.management.ManagementService"
-          init-method="init"
-          destroy-method="dispose">
-        <constructor-arg ref="localCache"/>
-        <constructor-arg ref="mbeanServer"/>
-        <constructor-arg index="2" value="true"/>
-        <constructor-arg index="3" value="true"/>
-        <constructor-arg index="4" value="true"/>
-        <constructor-arg index="5" value="true"/>
-    </bean>
-    <!--Declaration services bean -->
-
-    <bean id="avatarService" class="org.jtalks.jcommune.service.nontransactional.ImageService">
-        <constructor-arg index="0" ref="avatarPreprocessor"/>
-        <constructor-arg index="1" ref="base64Wrapper"/>
-        <constructor-arg index="2" value="org/jtalks/jcommune/service/avatar.gif"/>
-        <constructor-arg index="3" ref="avatarMaxSizeProperty"/>
-    </bean>
-
-    <bean id="forumLogoService" class="org.jtalks.jcommune.service.nontransactional.ImageService">
-        <constructor-arg index="0" ref="logoPreprocessor"/>
-        <constructor-arg index="1" ref="base64Wrapper"/>
-        <constructor-arg index="2" value="org/jtalks/jcommune/service/jcommune-logo.jpeg"/>
-        <constructor-arg index="3" ref="forumLogoMaxSizeProperty"/>
-    </bean>
-
-    <bean id="favIconServicePng" class="org.jtalks.jcommune.service.nontransactional.ImageService">
-        <constructor-arg index="0" ref="favIconPngPreprocessor"/>
-        <constructor-arg index="1" ref="base64Wrapper"/>
-        <constructor-arg index="2" value="org/jtalks/jcommune/service/favicon.png"/>
-        <constructor-arg index="3" ref="forumLogoMaxSizeProperty"/>
-    </bean>
-
-    <bean id="favIconServiceIco" class="org.jtalks.jcommune.service.nontransactional.ImageService">
-        <constructor-arg index="0" ref="favIconIcoPreprocessor"/>
-        <constructor-arg index="1" ref="base64Wrapper"/>
-        <constructor-arg index="2" value="org/jtalks/jcommune/service/favicon.ico"/>
-        <constructor-arg index="3" ref="forumLogoMaxSizeProperty"/>
-    </bean>
-
-    <bean id="base64Wrapper" class="org.jtalks.jcommune.service.nontransactional.Base64Wrapper"/>
-
-    <bean id="avatarPreprocessor" class="org.jtalks.jcommune.service.nontransactional.ImageConverter"
-          factory-method="createConverter">
-        <constructor-arg value="jpeg"/>
-        <constructor-arg value="100"/>
-        <constructor-arg value="100"/>
-    </bean>
-
-    <bean id="logoPreprocessor" class="org.jtalks.jcommune.service.nontransactional.ImageConverter"
-          factory-method="createConverter">
-        <constructor-arg value="jpeg"/>
-        <constructor-arg value="34"/>
-        <constructor-arg value="31"/>
-    </bean>
-
-    <bean id="favIconPngPreprocessor" class="org.jtalks.jcommune.service.nontransactional.ImageConverter"
-          factory-method="createConverter">
-        <constructor-arg value="png"/>
-        <constructor-arg value="32"/>
-        <constructor-arg value="32"/>
-    </bean>
-
-    <bean id="favIconIcoPreprocessor" class="org.jtalks.jcommune.service.nontransactional.ImageConverter"
-          factory-method="createConverter">
-        <constructor-arg value="ico"/>
-        <constructor-arg value="32"/>
-        <constructor-arg value="32"/>
-    </bean>
-
-    <bean id="locationService" class="org.jtalks.jcommune.service.nontransactional.LocationService">
-        <constructor-arg name="sessionRegistry" ref="sessionRegistry"/>
-        <constructor-arg name="userService" ref="userService"/>
-    </bean>
-
-    <bean id="userService" class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
-        <constructor-arg ref="userDao"/>
-        <constructor-arg ref="groupDao"/>
-        <constructor-arg ref="securityService"/>
-        <constructor-arg ref="mailService"/>
-        <constructor-arg ref="base64Wrapper"/>
-        <constructor-arg ref="encryptionService"/>
-        <constructor-arg ref="postDao"/>
-        <constructor-arg ref="authenticator"/>
-    </bean>
-
-    <bean id="authenticator" class="org.jtalks.jcommune.service.transactional.TransactionalAuthenticator">
-        <constructor-arg ref="pluginLoader"/>
-        <constructor-arg ref="userDao"/>
-        <constructor-arg ref="groupDao"/>
-        <constructor-arg ref="encryptionService"/>
-        <constructor-arg ref="mailService"/>
-        <constructor-arg ref="avatarService"/>
-        <constructor-arg ref="pluginService"/>
-        <constructor-arg ref="authenticationManager"/>
-        <constructor-arg ref="securityContextFacade"/>
-        <constructor-arg ref="rememberMeServices"/>
-        <constructor-arg ref="concurrentSessionControlStrategy"/>
-        <constructor-arg ref="validator"/>
-    </bean>
-
-    <bean id="userContactsService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalUserContactsService">
-        <constructor-arg ref="userContactsDao"/>
-        <constructor-arg ref="userService"/>
-    </bean>
-
-    <bean id="postService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalPostService">
-        <constructor-arg ref="postDao"/>
-        <constructor-arg ref="topicDao"/>
-        <constructor-arg ref="securityService"/>
-        <constructor-arg ref="notificationService"/>
-        <constructor-arg ref="lastReadPostService"/>
-        <constructor-arg ref="userService"/>
-        <constructor-arg ref="branchLastPostService"/>
-    </bean>
-
-    <bean id="topicModificationService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalTopicModificationService">
-        <constructor-arg ref="topicDao"/>
-        <constructor-arg ref="securityService"/>
-        <constructor-arg ref="topicBranchDao"/>
-        <constructor-arg ref="notificationService"/>
-        <constructor-arg ref="subscriptionService"/>
-        <constructor-arg ref="userService"/>
-        <constructor-arg ref="pollService"/>
-        <constructor-arg ref="topicFetchService"/>
-        <constructor-arg ref="securityContextFacade"/>
-        <constructor-arg ref="aclGroupPermissionEvaluator"/>
-        <constructor-arg ref="branchLastPostService"/>
-    </bean>
-
-    <bean id="topicFetchService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalTopicFetchService">
-        <constructor-arg ref="topicDao"/>
-        <constructor-arg ref="userService"/>
-        <constructor-arg ref="topicSearchDao"/>
-    </bean>
-
-    <bean id="topicBranchService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalBranchService">
-        <constructor-arg ref="topicBranchDao"/>
-        <constructor-arg ref="branchSectionDao"/>
-        <constructor-arg ref="topicDao"/>
-        <constructor-arg ref="topicModificationService"/>
-        <constructor-arg ref="permissionService"/>
-    </bean>
-
-    <bean id="branchLastPostService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalBranchLastPostService">
-        <constructor-arg ref="postDao"/>
-        <constructor-arg ref="topicBranchDao"/>
-    </bean>
-
-    <bean id="branchSectionService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalSectionService">
-        <constructor-arg ref="branchSectionDao"/>
-        <constructor-arg ref="topicBranchService"/>
-        <constructor-arg ref="userService"/>
-        <constructor-arg ref="topicDao"/>
-    </bean>
-
-    <bean id="pmService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalPrivateMessageService">
-        <constructor-arg ref="privateMessageDao"/>
-        <constructor-arg ref="securityService"/>
-        <constructor-arg ref="userService"/>
-        <constructor-arg ref="userDataCacheService"/>
-        <constructor-arg ref="mailService"/>
-        <constructor-arg ref="sendingNotificationsProperty"/>
-    </bean>
-
-    <bean id="pollService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalPollService">
-        <constructor-arg ref="pollDao"/>
-        <constructor-arg ref="groupDao"/>
-        <constructor-arg ref="pollOptionDao"/>
-        <constructor-arg ref="securityService"/>
-        <constructor-arg ref="userService"/>
-    </bean>
-
-    <bean id="subscriptionService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalSubscriptionService">
-        <constructor-arg ref="userService"/>
-        <constructor-arg ref="topicBranchDao"/>
-        <constructor-arg ref="topicDao"/>
-        <constructor-arg ref="codeReviewDao"/>
-    </bean>
-
-    <bean id="securityService"
-          class="org.jtalks.common.security.SecurityService">
-        <constructor-arg name="userDao" ref="userDao"/>
-        <constructor-arg ref="aclManager"/>
-    </bean>
-
-    <bean id="forumStatisticsService"
-          class="org.jtalks.jcommune.service.nontransactional.ForumStatisticsService">
-        <constructor-arg ref="forumStatisticsDAO"/>
-    </bean>
-
-    <bean id="lastReadPostService" class="org.jtalks.jcommune.service.transactional.TransactionalLastReadPostService">
-        <constructor-arg ref="userService"/>
-        <constructor-arg ref="lastReadPostHibernateDao"/>
-        <constructor-arg ref="userDao"/>
-    </bean>
-
-    <bean id="simplePageService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalSimplePageService">
-        <constructor-arg ref="simplePageDao"/>
-        <constructor-arg ref="groupDao"/>
-        <constructor-arg ref="securityService"/>
-    </bean>
-
-    <bean id="bbCodeReviewProcessor" class="org.jtalks.jcommune.service.bb2htmlprocessors.BbCodeReviewProcessor"/>
-    <bean id="bbForeignLinksPostprocessor"
-          class="org.jtalks.jcommune.service.bb2htmlprocessors.BBForeignLinksPostprocessor"/>
-
-    <bean id="bbUserPreprocessor" class="org.jtalks.jcommune.service.bb2htmlprocessors.BbUserPreprocessor">
-        <constructor-arg ref="userService"/>
-    </bean>
-
-    <bean id="bbCodeService" class="org.jtalks.jcommune.service.nontransactional.BBCodeService">
-        <property name="preprocessors">
-            <list>
-                <bean class="org.jtalks.jcommune.service.bb2htmlprocessors.BBCodeListPreprocessor"/>
-                <ref local="bbCodeReviewProcessor"/>
-                <ref bean="bbUserPreprocessor"/>
-            </list>
-        </property>
-        <property name="postprocessors">
-            <list>
-                <ref local="bbCodeReviewProcessor"/>
-                <ref local="bbForeignLinksPostprocessor"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="codeReviewService" class="org.jtalks.jcommune.service.transactional.TransactionalCodeReviewService">
-        <constructor-arg ref="codeReviewDao"/>
-        <constructor-arg ref="userService"/>
-        <constructor-arg ref="permissionService"/>
-        <constructor-arg ref="notificationService"/>
-    </bean>
-
-    <bean id="codeReviewCommentService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalCodeReviewCommentService">
-        <constructor-arg ref="codeReviewCommentDao"/>
-        <constructor-arg ref="permissionService"/>
-        <constructor-arg ref="userService"/>
-    </bean>
-
-    <bean id="permissionService" class="org.jtalks.jcommune.service.security.TransactionalPermissionService">
-        <constructor-arg ref="securityContextFacade"/>
-        <constructor-arg ref="aclGroupPermissionEvaluator"/>
-    </bean>
-
-    <bean id="bannerService" class="org.jtalks.jcommune.service.transactional.TransactionalBannerService">
-        <constructor-arg ref="bannerDao"/>
-    </bean>
-
-    <bean id="externalLinkService" class="org.jtalks.jcommune.service.transactional.TransactionalExternalLinkService">
-        <constructor-arg ref="externalLinkDao"/>
-    </bean>
-
-    <bean id="componentService" class="org.jtalks.jcommune.service.transactional.TransactionalComponentService">
-        <constructor-arg ref="favIconServiceIco"/>
-        <constructor-arg ref="componentDao"/>
-    </bean>
-
-    <bean id="configurationService" class="org.jtalks.jcommune.service.transactional.TransactionalConfigurationService">
-        <constructor-arg ref="componentSapeAccountProperty"/>
-        <constructor-arg ref="componentSapeTimeoutProperty"/>
-        <constructor-arg ref="componentSapeHostProperty"/>
-        <constructor-arg ref="componentSapeLinksCountProperty"/>
-        <constructor-arg ref="componentSapeOnMainPageEnableProperty"/>
-        <constructor-arg ref="componentSapeShowDummyLinksProperty"/>
-        <constructor-arg ref="componentSapeEnableServiceProperty"/>
-    </bean>
-
-    <bean id="pluginLoader" class="org.jtalks.jcommune.service.plugins.PluginLoader" init-method="init" destroy-method="destroy">
-        <constructor-arg name="pluginsFolderPath" value="${JCOMMUNE_PLUGIN_FOLDER:~}"/>
-        <constructor-arg name="pluginConfigurationDao" ref="pluginConfigurationDao"/>
-    </bean>
-
-    <bean id="pluginService" class="org.jtalks.jcommune.service.transactional.TransactionalPluginService">
-        <constructor-arg name="dao" ref="pluginConfigurationDao"/>
-        <constructor-arg name="pluginLoader" ref="pluginLoader"/>
-    </bean>
-
-    <!--
-    Cache beans for user related data.
-    Now used for storing new private messages count.
-    -->
-    <bean id="localCache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-        <property name="configLocation" value="classpath:/org/jtalks/jcommune/model/entity/ehcache.xml"/>
-    </bean>
-
-    <bean id="userDataCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
-        <property name="cacheManager" ref="localCache"/>
-        <property name="cacheName" value="cuserDataCache"/>
-    </bean>
-
-    <bean id="userDataCacheService"
-          class="org.jtalks.jcommune.service.nontransactional.UserDataCacheService">
-        <constructor-arg name="userDataCache" ref="userDataCache"/>
-    </bean>
-
-    <beans profile="performance">
-        <!-- JETM implementation using bean -->
-        <bean id="etmMonitor" class="etm.core.monitor.NestedMonitor" init-method="start" destroy-method="stop"/>
-
-        <!-- Wrapper for JETM interceptor -->
-        <bean id="etmMethodCallInterceptor" class="org.jtalks.jcommune.service.jetm.EtmMethodCallInterceptorWrapper">
-            <constructor-arg ref="etmMonitor"/>
-        </bean>
-
-        <!-- Declaration AOP for JETM -->
-        <aop:config>
-            <aop:pointcut id="JETMPointCutService" expression="within(org.jtalks.jcommune.service.transactional..*)" />
-            <aop:advisor advice-ref="etmMethodCallInterceptor" pointcut-ref="JETMPointCutService" />
-        </aop:config>
-
-        <aop:config>
-            <aop:pointcut id="JETMPointCutDao" expression="within(org.jtalks.jcommune.model.dao..*)" />
-            <aop:advisor advice-ref="etmMethodCallInterceptor" pointcut-ref="JETMPointCutDao" />
-        </aop:config>
-    </beans>
+    <aop:config>
+      <aop:pointcut id="JETMPointCutDao" expression="within(org.jtalks.jcommune.model.dao..*)"/>
+      <aop:advisor advice-ref="etmMethodCallInterceptor" pointcut-ref="JETMPointCutDao"/>
+    </aop:config>
+  </beans>
 </beans>

@@ -19,7 +19,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
-import org.jtalks.jcommune.model.PersistedObjectsFactory;
+import org.jtalks.jcommune.model.entity.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.search.SearchRequestFilter;

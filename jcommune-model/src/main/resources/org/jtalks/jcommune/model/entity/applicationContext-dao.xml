@@ -41,7 +41,7 @@
   <bean id="userDao" parent="genericDao"
         class="org.jtalks.jcommune.model.dao.hibernate.UserHibernateDao"/>
 
-  <bean id="groupDao" parent="genericDao"
+  <bean id="commonGroupDao" parent="genericDao"
         class="org.jtalks.common.model.dao.hibernate.GroupHibernateDao"/>
 
   <bean id="topicDao" parent="genericDao"
@@ -96,6 +96,9 @@
 
   <bean id="lastReadPostDao" parent="genericDao"
         class="org.jtalks.jcommune.model.dao.hibernate.LastReadPostHibernateDao"/>
+
+  <bean id="groupDao" parent="genericDao"
+        class="org.jtalks.jcommune.model.dao.hibernate.security.GroupHibernateDao"/>
 
   <bean id="codeReviewDao" parent="genericDao"
         class="org.jtalks.common.model.dao.hibernate.GenericDao">

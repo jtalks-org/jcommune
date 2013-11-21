@@ -16,7 +16,7 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.Crud;
-import org.jtalks.common.model.dao.GroupDao;
+import org.jtalks.jcommune.model.dao.security.GroupDao;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.common.security.SecurityService;

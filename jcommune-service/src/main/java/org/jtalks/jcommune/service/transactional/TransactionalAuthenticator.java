@@ -17,12 +17,12 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.hibernate.Session;
 import org.joda.time.DateTime;
-import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.dao.security.GroupDao;
 import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -310,7 +310,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
             user.setEnabled(Boolean.parseBoolean(authInfo.get("enabled")));
         }
         if (user.isEnabled() && user.getGroups().isEmpty()) {
-            Group group = groupDao.getGroupByName(AdministrationGroup.USER.getName());
+            Group group = groupDao.getByName(AdministrationGroup.USER.getName());
             user.addGroup(group);
         }
         getDao().saveOrUpdate(user);

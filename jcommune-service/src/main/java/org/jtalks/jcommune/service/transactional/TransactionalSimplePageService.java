@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.common.model.dao.GroupDao;
+import org.jtalks.jcommune.model.dao.security.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.SecurityService;
@@ -113,7 +113,7 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
 
         this.getDao().saveOrUpdate(simplePage);
 
-        Group group = groupDao.getGroupByName(AdministrationGroup.ADMIN.getName());
+        Group group = groupDao.getByName(AdministrationGroup.ADMIN.getName());
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(group).on(simplePage).flush();
 
         logger.info("SimplePage registered: {}", simplePage.getName());

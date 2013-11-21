@@ -16,7 +16,7 @@
 package org.jtalks.jcommune.service.transactional;
 
 
-import org.jtalks.common.model.dao.GroupDao;
+import org.jtalks.jcommune.model.dao.security.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.model.permissions.GeneralPermission;
@@ -111,7 +111,7 @@ public class TransactionalSimplePageServiceTest {
         JCUser user = new JCUser("username", "email", "password");
 
         when(dao.isExist(PATH_NAME)).thenReturn(false);
-        when(groupDao.getGroupByName(AdministrationGroup.ADMIN.getName())).thenReturn(new Group());
+        when(groupDao.getByName(AdministrationGroup.ADMIN.getName())).thenReturn(new Group());
 
         SimplePage actualSimplePage = simplePageService.createPage(simplePage, user);
 

@@ -16,11 +16,11 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
-import org.jtalks.jcommune.model.PersistedObjectsFactory;
+import org.jtalks.jcommune.model.entity.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.dao.security.GroupDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.ObjectsFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -265,7 +265,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         assertTrue(users.contains(nonActivated));
         assertEquals(users.size(), 1);
     }
-    
+
     /**
      * Creates a user with the specified username, stores it into database and clears the session so that we won't get
      * the same object from the session, but rather a new one will be returned from database.
@@ -287,7 +287,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
                 .uniqueResult())
                 .intValue();
     }
-    
+
     @Test
     public void getByUsernamesShouldReturnExistsInRepoUsers() {
         String firstExistsUsername = "Shogun";
@@ -295,7 +295,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         Set<String> existsUsernames = new HashSet<>(asList(firstExistsUsername));
 
         List<JCUser> foundByUsernames = dao.getByUsernames(existsUsernames);
-        
+
         assertTrue(foundByUsernames.size() == existsUsernames.size(), "It should return all users by their names.");
         assertTrue(foundByUsernames.contains(firstExistsUser), firstExistsUser.getUsername() + "should be found by his name.");
     }
@@ -371,14 +371,14 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         return expected;
     }
 
-    private JCUser createUserWithMail(String username, String email, boolean enabled){
+    private JCUser createUserWithMail(String username, String email, boolean enabled) {
         JCUser user = new JCUser(username, email, username + "pass");
         user.setEnabled(enabled);
         session.persist(user);
         return user;
     }
 
-    private JCUser createUser(String username, boolean enabled){
+    private JCUser createUser(String username, boolean enabled) {
         return createUserWithMail(username, username + "@mail.com", enabled);
     }
 

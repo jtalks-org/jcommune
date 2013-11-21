@@ -17,7 +17,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.common.model.dao.Crud;
-import org.jtalks.jcommune.model.PersistedObjectsFactory;
+import org.jtalks.jcommune.model.entity.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -16,7 +16,7 @@
 
 -->
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
   <class name="org.jtalks.common.model.entity.Group" table="GROUPS" abstract="true">
     <cache usage="nonstrict-read-write" region="org.jtalks.EHCOMMON"/>
@@ -46,4 +46,17 @@
       </many-to-many>
     </bag>
   </class>
+
+  <query name="findGroupByName">
+    <![CDATA[from Group g where g.name like concat ('%', :name, '%')]]>
+  </query>
+
+  <query name="findGroupExactlyByName">
+    <![CDATA[from Group g where lower(g.name) = lower(:name)]]>
+  </query>
+
+  <query name="findAllGroups">
+    <![CDATA[from Group]]>
+  </query>
+
 </hibernate-mapping>
