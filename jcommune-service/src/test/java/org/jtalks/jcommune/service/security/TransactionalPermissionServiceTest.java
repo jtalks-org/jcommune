@@ -17,6 +17,7 @@ package org.jtalks.jcommune.service.security;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
+import org.jtalks.jcommune.service.transactional.TransactionalPermissionService;
 import org.mockito.Mock;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -96,7 +97,7 @@ public class TransactionalPermissionServiceTest {
         permissionService.checkPermission(0, AclClassName.BRANCH, GeneralPermission.READ);
     }
 
-    @Test(expectedExceptions=AccessDeniedException.class)
+    @Test(expectedExceptions = AccessDeniedException.class)
     public void testCheckPermissionPermissionNotGranted() {
         doReturn(false).when(aclEvaluator)
                 .hasPermission(any(Authentication.class), any(Serializable.class), anyString(), anyString());

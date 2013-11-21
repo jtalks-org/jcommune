@@ -12,18 +12,21 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service.security;
+package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
+import org.jtalks.jcommune.service.security.AclClassName;
+import org.jtalks.jcommune.service.security.AclGroupPermissionEvaluator;
+import org.jtalks.jcommune.service.security.PermissionService;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 
 /**
- * Implementation of {@link PermissionService} interface
- * @author Vyacheslav Mishcheryakov
+ * Implementation of {@link org.jtalks.jcommune.service.security.PermissionService} interface
  *
+ * @author Vyacheslav Mishcheryakov
  */
 public class TransactionalPermissionService implements PermissionService {
     /**
@@ -33,13 +36,13 @@ public class TransactionalPermissionService implements PermissionService {
     private static final String PERMISSION_FULLNAME_PATTERN = "%s.%s";
     private SecurityContextHolderFacade contextFacade;
     private AclGroupPermissionEvaluator aclEvaluator;
-    
+
     /**
      * @param contextFacade to get {@link Authentication} object from security context
-     * @param aclEvaluator to evaluate permissions
+     * @param aclEvaluator  to evaluate permissions
      */
     public TransactionalPermissionService(SecurityContextHolderFacade contextFacade,
-            AclGroupPermissionEvaluator aclEvaluator) {
+                                          AclGroupPermissionEvaluator aclEvaluator) {
         this.contextFacade = contextFacade;
         this.aclEvaluator = aclEvaluator;
     }
@@ -50,7 +53,7 @@ public class TransactionalPermissionService implements PermissionService {
     @Override
     public boolean hasPermission(long targetId, AclClassName targetClass, JtalksPermission permission) {
         String stringPermission = String.format(PERMISSION_FULLNAME_PATTERN,
-                permission.getClass().getSimpleName(), permission.getName()); 
+                permission.getClass().getSimpleName(), permission.getName());
         return hasPermission(targetId, targetClass.toString(), stringPermission);
     }
 
@@ -63,7 +66,9 @@ public class TransactionalPermissionService implements PermissionService {
         return aclEvaluator.hasPermission(authentication, targetId, targetType, permission);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean hasBranchPermission(long branchId, BranchPermission permission) {
         return hasPermission(branchId, AclClassName.BRANCH, permission);
@@ -73,16 +78,16 @@ public class TransactionalPermissionService implements PermissionService {
      * {@inheritDoc}
      */
     @Override
-    public void checkPermission(long targetId, AclClassName targetClass, 
-            JtalksPermission permission){
+    public void checkPermission(long targetId, AclClassName targetClass,
+                                JtalksPermission permission) {
         if (!hasPermission(targetId, targetClass, permission)) {
             Authentication authentication = contextFacade.getContext().getAuthentication();
             throw new AccessDeniedException(
-                    "Access denied for " + authentication.getName() + ". " 
-                    + targetClass + ": " + targetId 
-                    + ", permission - " + permission.getName());
+                    "Access denied for " + authentication.getName() + ". "
+                            + targetClass + ": " + targetId
+                            + ", permission - " + permission.getName());
         }
     }
 
-    
+
 }

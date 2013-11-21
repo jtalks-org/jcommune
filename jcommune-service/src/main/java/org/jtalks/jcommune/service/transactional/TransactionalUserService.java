@@ -17,7 +17,7 @@ package org.jtalks.jcommune.service.transactional;
 import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
-import org.jtalks.common.model.dao.GroupDao;
+import org.jtalks.jcommune.model.dao.security.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.security.SecurityService;
@@ -227,7 +227,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         if (user == null) {
             throw new NotFoundException();
         } else if (!user.isEnabled()) {
-            Group group = groupDao.getGroupByName(AdministrationGroup.USER.getName());
+            Group group = groupDao.getByName(AdministrationGroup.USER.getName());
             user.addGroup(group);
             user.setEnabled(true);
             this.getDao().saveOrUpdate(user);

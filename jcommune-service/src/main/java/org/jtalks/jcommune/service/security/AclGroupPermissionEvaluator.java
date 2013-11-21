@@ -60,7 +60,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
 
     private final AclManager aclManager;
     private final AclUtil aclUtil;
-    private final GroupDao groupDao;
+    private final GroupDao commonGroupDao;
     private final JtalksSidFactory sidFactory;
     private final JdbcMutableAclService mutableAclService;
     private final UserDao userDao;
@@ -68,21 +68,22 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
     /**
      * @param aclManager        for getting permissions on object indentity
      * @param aclUtil           utilities to work with Spring ACL
-     * @param groupDao          dao for user group getting
+     * @param commonGroupDao    dao for user group getting
      * @param sidFactory        factory to work with principals
      * @param mutableAclService for checking existing of sids
      */
     public AclGroupPermissionEvaluator(@Nonnull org.jtalks.common.security.acl.AclManager aclManager,
-                                       @Nonnull AclUtil aclUtil, @Nonnull GroupDao groupDao,
+                                       @Nonnull AclUtil aclUtil,
+                                       @Nonnull GroupDao commonGroupDao,
                                        @Nonnull JtalksSidFactory sidFactory,
                                        @Nonnull JdbcMutableAclService mutableAclService,
                                        @Nonnull UserDao userDao) {
         this.aclManager = aclManager;
         this.aclUtil = aclUtil;
-        this.groupDao = groupDao;
         this.sidFactory = sidFactory;
         this.mutableAclService = mutableAclService;
         this.userDao = userDao;
+        this.commonGroupDao = commonGroupDao;
     }
 
     /**
@@ -352,7 +353,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
                                       Permission permission, boolean isCheckAllowedGrant) {
         return ace.isGranting() == isCheckAllowedGrant
                 && permission.equals(ace.getPermission())
-                && ace.getGroup(groupDao).getUsers().
+                && ace.getGroup(commonGroupDao).getUsers().
                 contains(authentication.getPrincipal());
     }
 
