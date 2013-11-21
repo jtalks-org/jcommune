@@ -316,9 +316,10 @@
   <bean id="permissionService" class="org.jtalks.jcommune.service.transactional.TransactionalPermissionService">
     <constructor-arg ref="securityContextFacade"/>
     <constructor-arg ref="aclGroupPermissionEvaluator"/>
+    <constructor-arg ref="permissionManager"/>
   </bean>
 
-  <bean id="branchPermissionManager" class="org.jtalks.jcommune.model.PermissionManager">
+  <bean id="permissionManager" class="org.jtalks.jcommune.model.PermissionManager">
     <constructor-arg index="0" ref="aclManager"/>
     <constructor-arg index="1" ref="groupDao"/>
     <constructor-arg index="2" ref="aclUtils"/>
