@@ -16,11 +16,11 @@
 package org.jtalks.jcommune.service.transactional;
 
 import com.google.common.collect.ImmutableMap;
+import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dao.UserDao;
-import org.jtalks.jcommune.model.dao.security.GroupDao;
 import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -193,7 +193,7 @@ public class TransactionalAuthenticatorTest {
         Map<String, String> authInfo = createAuthInfo(username, email);
         authInfo.put("enabled", "true");
         Group group = new Group(AdministrationGroup.USER.getName());
-        when(groupDao.getByName(AdministrationGroup.USER.getName())).thenReturn(group);
+        when(groupDao.getGroupByName(AdministrationGroup.USER.getName())).thenReturn(group);
         when(userDao.getByUsername(username)).thenReturn(oldUser);
         when(encryptionService.encryptPassword(password)).thenReturn(passwordHash);
         UsernamePasswordAuthenticationToken expectedToken = mock(UsernamePasswordAuthenticationToken.class);
@@ -221,7 +221,7 @@ public class TransactionalAuthenticatorTest {
         Group group = new Group(AdministrationGroup.USER.getName());
         User commonUser = new User(username, email, password, null);
         commonUser.getGroups().add(group);
-        when(groupDao.getByName(group.getName())).thenReturn(group);
+        when(groupDao.getGroupByName(group.getName())).thenReturn(group);
         when(userDao.getByUsername(username)).thenReturn(null);
         when(userDao.getCommonUserByUsername(username)).thenReturn(commonUser);
         when(encryptionService.encryptPassword(password)).thenReturn(passwordHash);

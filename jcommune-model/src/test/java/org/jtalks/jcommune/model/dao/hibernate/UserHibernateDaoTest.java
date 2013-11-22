@@ -16,11 +16,11 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.entity.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.UserDao;
-import org.jtalks.jcommune.model.dao.security.GroupDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.ObjectsFactory;
 import org.springframework.beans.factory.annotation.Autowired;
