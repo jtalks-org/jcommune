@@ -33,4 +33,32 @@ public class ErrorsHandlerController {
     public String handleInternalServerError() {
         return "/errors/500";
     }
+
+    @RequestMapping(value = "404")
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public String handleNotFoundError() {
+        return "/errors/404";
+    }
+
+    @RequestMapping(value = "redirect/404")
+    public String handleNotFoundRedirect() {
+        return "redirect:/errors/404";
+    }
+
+    @RequestMapping(value = "400")
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public String handleBadRequestError() {
+        return "/errors/400";
+    }
+
+    @RequestMapping(value = "403")
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
+    public String handleForbiddenError() {
+        return "/errors/accessDenied";
+    }
+
+    @RequestMapping(value = "redirect/403")
+    public String handleForbiddenRedirect() {
+        return "redirect:/errors/403";
+    }
 }
