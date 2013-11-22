@@ -21,14 +21,13 @@ import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.common.model.permissions.ProfilePermission;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
-import org.jtalks.jcommune.model.PermissionManager;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.service.security.AclClassName;
 import org.jtalks.jcommune.service.security.AclGroupPermissionEvaluator;
+import org.jtalks.jcommune.service.security.PermissionManager;
 import org.jtalks.jcommune.service.security.PermissionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 

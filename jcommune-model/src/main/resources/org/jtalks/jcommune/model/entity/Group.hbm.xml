@@ -59,4 +59,8 @@
     <![CDATA[from Group]]>
   </query>
 
+  <query name="findGroupsOfUser">
+    <![CDATA[from Group g where ? in g.users]]>
+  </query>
+
 </hibernate-mapping>

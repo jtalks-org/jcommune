@@ -17,7 +17,7 @@ package org.jtalks.jcommune.service.transactional;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
-import org.jtalks.jcommune.model.dao.security.GroupDao;
+import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.security.SecurityService;
@@ -296,7 +296,7 @@ public class TransactionalUserServiceTest {
     public void activateAccountShouldEnableUser() throws Exception {
         JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);
         when(userDao.getByUuid(user.getUuid())).thenReturn(user);
-        when(groupDao.getByName(AdministrationGroup.USER.getName())).thenReturn(new Group());
+        when(groupDao.getGroupByName(AdministrationGroup.USER.getName())).thenReturn(new Group());
 
         userService.activateAccount(user.getUuid());
         assertTrue(user.isEnabled());
@@ -307,7 +307,7 @@ public class TransactionalUserServiceTest {
         JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);
         when(userDao.getByUuid(user.getUuid())).thenReturn(user);
         Group registeredUsersGroup = new Group();
-        when(groupDao.getByName(AdministrationGroup.USER.getName())).thenReturn(registeredUsersGroup);
+        when(groupDao.getGroupByName(AdministrationGroup.USER.getName())).thenReturn(registeredUsersGroup);
 
         userService.activateAccount(user.getUuid());
         assertTrue(user.getGroups().contains(registeredUsersGroup));
@@ -326,7 +326,7 @@ public class TransactionalUserServiceTest {
         user.setEnabled(true);
         when(userDao.getByUuid(user.getUuid())).thenReturn(user);
         Group group = new Group();
-        when(groupDao.getByName(AdministrationGroup.USER.getName())).thenReturn(group);
+        when(groupDao.getGroupByName(AdministrationGroup.USER.getName())).thenReturn(group);
 
         userService.activateAccount(user.getUuid());
 

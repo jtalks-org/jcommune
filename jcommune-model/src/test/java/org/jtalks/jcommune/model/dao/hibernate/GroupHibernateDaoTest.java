@@ -12,14 +12,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao.hibernate.security;
+package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.entity.PersistedObjectsFactory;
-import org.jtalks.jcommune.model.dao.security.GroupDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.ObjectsFactory;
@@ -112,7 +112,7 @@ public class GroupHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
         saveAndEvict(group);
 
-        List<Group> actual = groupDao.getByNameContains(group.getName());
+        List<Group> actual = groupDao.getMatchedByName(group.getName());
         assertEquals(actual.size(), 1);
         assertReflectionEquals(actual.get(0), group);
     }
@@ -125,7 +125,7 @@ public class GroupHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         group = ObjectsFactory.getRandomGroup();
         saveAndEvict(group);
 
-        List<Group> actual = groupDao.getByNameContains(NO_FILTER);
+        List<Group> actual = groupDao.getMatchedByName(NO_FILTER);
         List<Group> all = groupDao.getAll();
         assertEquals(actual, all);
     }
@@ -136,7 +136,7 @@ public class GroupHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
         saveAndEvict(group);
 
-        Group actual = groupDao.getByName(group.getName());
+        Group actual = groupDao.getGroupByName(group.getName());
         assertReflectionEquals(actual, group);
     }
 
@@ -146,7 +146,7 @@ public class GroupHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
         saveAndEvict(group);
 
-        Group actual = groupDao.getByName(NO_FILTER);
+        Group actual = groupDao.getGroupByName(NO_FILTER);
         assertNull(actual);
     }
 
@@ -156,7 +156,7 @@ public class GroupHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
         saveAndEvict(group);
 
-        Group actual = groupDao.getByName(group.getName().toLowerCase());
+        Group actual = groupDao.getGroupByName(group.getName().toLowerCase());
         assertReflectionEquals(actual, group);
     }
 
@@ -166,7 +166,7 @@ public class GroupHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
         saveAndEvict(group);
 
-        Group actual = groupDao.getByName(group.getName().toUpperCase());
+        Group actual = groupDao.getGroupByName(group.getName().toUpperCase());
         assertReflectionEquals(actual, group);
     }
 
@@ -176,7 +176,7 @@ public class GroupHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         group.setName("!@#$%^&*()\"\'\\/");
         saveAndEvict(group);
 
-        Group actual = groupDao.getByName(group.getName());
+        Group actual = groupDao.getGroupByName(group.getName());
         assertReflectionEquals(actual, group);
     }
 

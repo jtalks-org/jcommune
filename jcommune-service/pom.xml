@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>jcommune</artifactId>
@@ -72,6 +73,10 @@
       <artifactId>ehcache-jgroupsreplication</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+    </dependency>
+    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
     </dependency>
@@ -120,15 +125,15 @@
 
 
     <dependency>
-        <groupId>org.jclarion</groupId>
-        <artifactId>image4j</artifactId>
-        <version>0.7</version>
+      <groupId>org.jclarion</groupId>
+      <artifactId>image4j</artifactId>
+      <version>0.7</version>
     </dependency>
-      <dependency>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-webmvc</artifactId>
-          <version>3.1.0.RELEASE</version>
-      </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+      <version>3.1.0.RELEASE</version>
+    </dependency>
   </dependencies>
 
   <properties>

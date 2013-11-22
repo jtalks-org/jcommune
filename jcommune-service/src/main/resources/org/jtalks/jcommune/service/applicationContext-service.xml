@@ -319,7 +319,7 @@
     <constructor-arg ref="permissionManager"/>
   </bean>
 
-  <bean id="permissionManager" class="org.jtalks.jcommune.model.PermissionManager">
+  <bean id="permissionManager" class="org.jtalks.jcommune.service.security.PermissionManager">
     <constructor-arg index="0" ref="aclManager"/>
     <constructor-arg index="1" ref="groupDao"/>
     <constructor-arg index="2" ref="aclUtils"/>

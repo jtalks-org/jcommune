@@ -13,9 +13,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.jtalks.jcommune.model;
+package org.jtalks.jcommune.service.security;
 
 
+import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Branch;
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.common.model.entity.Entity;
@@ -23,12 +24,12 @@ import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.model.permissions.JtalksPermission;
+import org.jtalks.common.model.permissions.ProfilePermission;
 import org.jtalks.common.security.acl.AclManager;
 import org.jtalks.common.security.acl.AclUtil;
 import org.jtalks.common.security.acl.GroupAce;
 import org.jtalks.common.security.acl.builders.AclBuilders;
 import org.jtalks.common.security.acl.sids.UserSid;
-import org.jtalks.jcommune.model.dao.security.GroupDao;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.AnonymousGroup;
@@ -39,8 +40,6 @@ import org.springframework.security.acls.model.Sid;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.jtalks.common.model.permissions.ProfilePermission;
 
 /**
  * Responsible for allowing, restricting or deleting the permissions of the User Groups to actions.
@@ -54,7 +53,8 @@ public class PermissionManager {
     private final GroupDao groupDao;
 
     /**
-     * Constructs {@link PermissionManager} with given {@link AclManager} and {@link GroupDao}
+     * Constructs {@link org.jtalks.jcommune.service.security.PermissionManager} with given
+     * {@link org.jtalks.common.security.acl.AclManager} and {@link GroupDao}
      *
      * @param aclManager manager instance
      * @param groupDao   group dao instance
@@ -111,20 +111,20 @@ public class PermissionManager {
     }
 
     /**
-     * Gets {@link org.jtalks.jcommune.model.dto.GroupsPermissions} for provided {@link Component}.
+     * Gets {@link org.jtalks.jcommune.model.dto.GroupsPermissions} for provided {@link org.jtalks.common.model.entity.Component}.
      *
      * @param component the component to obtain PermissionsMap for
-     * @return {@link org.jtalks.jcommune.model.dto.GroupsPermissions} for {@link Component}
+     * @return {@link org.jtalks.jcommune.model.dto.GroupsPermissions} for {@link org.jtalks.common.model.entity.Component}
      */
     public GroupsPermissions<GeneralPermission> getPermissionsMapFor(Component component) {
         return getPermissionsMapFor(GeneralPermission.getAllAsList(), component);
     }
 
     /**
-     * Gets for provided list of {@link Group}'s.
+     * Gets for provided list of {@link org.jtalks.common.model.entity.Group}'s.
      *
-     * @param groups the List {@link Group}'s to obtain PermissionsMap for
-     * @return for {@link Group}
+     * @param groups the List {@link org.jtalks.common.model.entity.Group}'s to obtain PermissionsMap for
+     * @return for {@link org.jtalks.common.model.entity.Group}
      */
     public GroupsPermissions<ProfilePermission> getPermissionsMapFor(List<Group> groups) {
         GroupsPermissions<ProfilePermission> permissions = new GroupsPermissions<ProfilePermission>(ProfilePermission.getAllAsList());
@@ -143,11 +143,11 @@ public class PermissionManager {
     }
 
     /**
-     * Gets {@link org.jtalks.jcommune.model.dto.GroupsPermissions} for provided {@link Entity}.
+     * Gets {@link org.jtalks.jcommune.model.dto.GroupsPermissions} for provided {@link org.jtalks.common.model.entity.Entity}.
      *
      * @param permissions the list of permissions to get
      * @param entity      the entity to get for
-     * @return {@link org.jtalks.jcommune.model.dto.GroupsPermissions} for provided {@link Entity}
+     * @return {@link org.jtalks.jcommune.model.dto.GroupsPermissions} for provided {@link org.jtalks.common.model.entity.Entity}
      */
     public <T extends JtalksPermission> GroupsPermissions<T> getPermissionsMapFor(List<T> permissions, Entity entity) {
         GroupsPermissions<T> groupsPermissions = new GroupsPermissions<T>(permissions);
@@ -170,7 +170,7 @@ public class PermissionManager {
 
     /**
      * @param groupAce from which if of group should be extracted
-     * @return {@link Group} extracted from {@link GroupAce}
+     * @return {@link org.jtalks.common.model.entity.Group} extracted from {@link org.jtalks.common.security.acl.GroupAce}
      */
     private Group getGroup(GroupAce groupAce) {
         return groupDao.get(groupAce.getGroupId());

@@ -57,7 +57,7 @@ public class AclGroupPermissionEvaluatorTest {
     @Mock
     private AclUtil aclUtil;
     @Mock
-    private GroupDao commonGroupDao;
+    private GroupDao groupDao;
     @Mock
     private JtalksSidFactory sidFactory;
     @Mock
@@ -87,7 +87,7 @@ public class AclGroupPermissionEvaluatorTest {
     @BeforeMethod
     public void init() throws NotFoundException {
         MockitoAnnotations.initMocks(this);
-        evaluator = new AclGroupPermissionEvaluator(aclManager, aclUtil, commonGroupDao,
+        evaluator = new AclGroupPermissionEvaluator(aclManager, aclUtil, groupDao,
                 sidFactory, mutableAclService, userDao);
         objectIdentity = new ObjectIdentityImpl(targetType, targetId);
         Mockito.when(aclUtil.createIdentity(targetId, targetType)).thenReturn(objectIdentity);
@@ -252,7 +252,7 @@ public class AclGroupPermissionEvaluatorTest {
         List<User> users = new ArrayList<User>();
         users.add(user);
         Mockito.when(group.getUsers()).thenReturn(users);
-        Mockito.when(groupAce.getGroup(commonGroupDao)).thenReturn(group);
+        Mockito.when(groupAce.getGroup(groupDao)).thenReturn(group);
         Mockito.when(groupAce.isGranting()).thenReturn(isGranted);
         Mockito.when(groupAce.getPermission()).thenReturn(permission);
         return groupAce;
