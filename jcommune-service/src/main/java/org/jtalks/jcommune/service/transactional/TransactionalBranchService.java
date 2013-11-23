@@ -15,18 +15,24 @@
 package org.jtalks.jcommune.service.transactional;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
+import org.jtalks.common.model.dao.GroupDao;
+import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicModificationService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.jtalks.jcommune.service.security.PermissionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +52,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private SectionDao sectionDao;
+    private GroupDao groupDao;
     private TopicDao topicDao;
     private TopicModificationService topicService;
     private PermissionService permissionService;
@@ -53,16 +60,17 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
     /**
      * Create an instance of entity based service
      *
-     * @param branchDao    data access object, which should be able do all CRUD operations.
-     * @param sectionDao   used for checking branch existence.
-     * @param topicDao     data access object for operations with topics
-     * @param topicService service to perform complex operations with topics
+     * @param branchDao         data access object, which should be able do all CRUD operations.
+     * @param sectionDao        used for checking branch existence.
+     * @param topicDao          data access object for operations with topics
+     * @param topicService      service to perform complex operations with topics
      * @param permissionService service to perform permissions operations
      */
     public TransactionalBranchService(
             BranchDao branchDao,
             SectionDao sectionDao,
             TopicDao topicDao,
+            GroupDao groupDao,
             TopicModificationService topicService,
             PermissionService permissionService) {
         super(branchDao);
@@ -70,6 +78,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
         this.topicDao = topicDao;
         this.topicService = topicService;
         this.permissionService = permissionService;
+        this.groupDao = groupDao;
     }
 
     /**
@@ -183,8 +192,15 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
         branch.setSection(section);
         section.addOrUpdateBranch(branch);
         sectionDao.saveOrUpdate(section);
-    }  
-    
+        //add default permission to view topics (for group Registered users)
+        Group registeredUsersGroup = groupDao.getGroupByName(AdministrationGroup.USER.getName());
+        Collection<Group> groups = new ArrayList<>(1);
+        groups.add(registeredUsersGroup);
+        PermissionChanges permissionChanges = new PermissionChanges(BranchPermission.VIEW_TOPICS, groups,
+                Collections.<Group>emptyList());
+        permissionService.changeGrants(branch, permissionChanges);
+    }
+
     /**
      * {@inheritDoc}
      */
