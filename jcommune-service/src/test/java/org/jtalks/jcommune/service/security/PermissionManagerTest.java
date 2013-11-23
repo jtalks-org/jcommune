@@ -65,15 +65,6 @@ import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-//import org.jtalks.common.model.permissions.GeneralPermission;
-//import org.jtalks.poulpe.model.dao.GroupDao;
-//import org.jtalks.poulpe.model.dto.AnonymousGroup;
-//import org.jtalks.poulpe.model.dto.GroupsPermissions;
-//import org.jtalks.poulpe.model.dto.PermissionChanges;
-//import org.jtalks.common.model.entity.Component;
-//import org.jtalks.poulpe.model.entity.PoulpeBranch;
-//import org.jtalks.poulpe.model.fixtures.TestFixtures;
-
 /**
  * @author stanislav bashkirtsev
  * @author Vyacheslav Zhivaev
