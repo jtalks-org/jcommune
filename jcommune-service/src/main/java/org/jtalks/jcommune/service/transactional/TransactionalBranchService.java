@@ -14,11 +14,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.Section;
@@ -37,6 +32,8 @@ import org.jtalks.jcommune.service.security.PermissionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.*;
 
 /**
  * The implementation of BranchService
@@ -194,8 +191,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
         sectionDao.saveOrUpdate(section);
         //add default permission to view topics (for group Registered users)
         Group registeredUsersGroup = groupDao.getGroupByName(AdministrationGroup.USER.getName());
-        Collection<Group> groups = new ArrayList<>(1);
-        groups.add(registeredUsersGroup);
+        Collection<Group> groups = Arrays.asList(registeredUsersGroup);
         PermissionChanges permissionChanges = new PermissionChanges(BranchPermission.VIEW_TOPICS, groups,
                 Collections.<Group>emptyList());
         permissionService.changeGrants(branch, permissionChanges);
