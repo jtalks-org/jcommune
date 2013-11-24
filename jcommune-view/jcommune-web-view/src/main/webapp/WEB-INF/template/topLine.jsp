@@ -131,7 +131,7 @@
         </a>
       </li>
       <script type="text/javascript">
-          $redirectUrl = "<c:url value='${pageContext.request.requestURI}' />";
+          $redirectUrl = "<c:url value='${pageContext.request.contextPath}${pageContext.request.requestURI}' />";
       </script>
     </sec:authorize>
     <%-- END OF Not logged in block --%>
