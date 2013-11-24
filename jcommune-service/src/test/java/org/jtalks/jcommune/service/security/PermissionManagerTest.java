@@ -234,7 +234,6 @@ public class PermissionManagerTest extends AbstractTransactionalTestNGSpringCont
     @Test
     public void testDeleteGrantsOfAnonymousGroup() throws Exception {
         Branch branch = ObjectsFactory.getDefaultBranch();
-        ;
         PermissionChanges changes = new PermissionChanges(BranchPermission.CLOSE_TOPICS);
         changes.addRemovedGroups(Lists.newArrayList(AnonymousGroup.ANONYMOUS_GROUP));
         manager.changeGrants(branch, changes);
