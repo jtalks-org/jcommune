@@ -33,7 +33,7 @@
     <property column="ENCODED_USERNAME" name="encodedUsername" not-null="true"/>
     <property column="EMAIL" name="email" unique="true" not-null="true"/>
     <property column="PASSWORD" name="password" not-null="true"/>
-    <property column="LAST_LOGIN" name="lastLogin"
+    <property column="LAST_LOGIN" name="lastLogin" optimistic-lock="false"
               type="org.joda.time.contrib.hibernate.PersistentDateTime" not-null="false"/>
     <property name="avatar" lazy="true">
       <column name="AVATAR" sql-type="blob"/>
