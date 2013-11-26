@@ -14,9 +14,16 @@
  */
 package org.jtalks.jcommune.service.security;
 
+import org.jtalks.common.model.entity.Component;
+import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.GeneralPermission;
+import org.jtalks.common.model.permissions.ProfilePermission;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
+import org.jtalks.jcommune.model.dto.GroupsPermissions;
+import org.jtalks.jcommune.model.dto.PermissionChanges;
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.service.transactional.TransactionalPermissionService;
 import org.mockito.Mock;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -25,10 +32,12 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.io.Serializable;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 public class TransactionalPermissionServiceTest {
@@ -39,12 +48,13 @@ public class TransactionalPermissionServiceTest {
     private AclGroupPermissionEvaluator aclEvaluator;
 
     private PermissionService permissionService;
+    private PermissionManager permissionManager;
 
     @BeforeMethod
     public void initEnvironmental() {
         initMocks(this);
-
-        permissionService = new TransactionalPermissionService(contextFacade, aclEvaluator);
+        permissionManager = mock(PermissionManager.class);
+        permissionService = spy(new TransactionalPermissionService(contextFacade, aclEvaluator, permissionManager));
     }
 
     @BeforeMethod
@@ -96,7 +106,7 @@ public class TransactionalPermissionServiceTest {
         permissionService.checkPermission(0, AclClassName.BRANCH, GeneralPermission.READ);
     }
 
-    @Test(expectedExceptions=AccessDeniedException.class)
+    @Test(expectedExceptions = AccessDeniedException.class)
     public void testCheckPermissionPermissionNotGranted() {
         doReturn(false).when(aclEvaluator)
                 .hasPermission(any(Authentication.class), any(Serializable.class), anyString(), anyString());
@@ -116,5 +126,52 @@ public class TransactionalPermissionServiceTest {
                 eq("BranchPermission.EDIT_OWN_POSTS"));
 
         permissionService.hasBranchPermission(1L, BranchPermission.EDIT_OWN_POSTS);
+    }
+
+    @Test
+    public void testGetPermissionsFor() {
+        Branch branch = mock(Branch.class);
+        when(permissionManager.getPermissionsMapFor(branch)).thenReturn(new GroupsPermissions<BranchPermission>());
+        assertNotNull(permissionService.getPermissionsFor(branch));
+    }
+
+    @Test
+    public void testChangeGrants() {
+        PermissionChanges changes = mock(PermissionChanges.class);
+        Branch branch = mock(Branch.class);
+        permissionService.changeGrants(branch, changes);
+
+        Component component = mock(Component.class);
+        permissionService.changeGrants(component, changes);
+
+        Group group = mock(Group.class);
+        permissionService.changeGrants(group, changes);
+    }
+
+    @Test
+    public void testChangeRestrictions() {
+        PermissionChanges changes = mock(PermissionChanges.class);
+        Branch branch = mock(Branch.class);
+        permissionService.changeRestrictions(branch, changes);
+
+        Component component = mock(Component.class);
+        permissionService.changeRestrictions(component, changes);
+
+        Group group = mock(Group.class);
+        permissionService.changeRestrictions(group, changes);
+    }
+
+    @Test
+    public void testGetPermissionsMapFor() {
+        Component component = mock(Component.class);
+        when(permissionManager.getPermissionsMapFor(component)).thenReturn(new GroupsPermissions<GeneralPermission>());
+        assertNotNull(permissionService.getPermissionsMapFor(component));
+    }
+
+    @Test
+    public void testGetPersonalPermissions() {
+        List<Group> groups = mock(List.class);
+        when(permissionManager.getPermissionsMapFor(groups)).thenReturn(new GroupsPermissions<ProfilePermission>());
+        assertNotNull(permissionService.getPersonalPermissions(groups));
     }
 }

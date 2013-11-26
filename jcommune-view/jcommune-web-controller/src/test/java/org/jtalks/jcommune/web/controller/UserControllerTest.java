@@ -45,6 +45,7 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContextUtils;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpServletRequest;
@@ -58,6 +59,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 /**
  * @author Evgeniy Naumenko
@@ -307,13 +309,14 @@ public class UserControllerTest {
         assertEquals("errors/activationExpired", viewName);
     }
 
-    @Test
-    public void testLoginUserLogged() {
+    @Test(dataProvider = "referers")
+    public void testLoginUserLogged(String referer) {
         when(userService.getCurrentUser()).thenReturn(new JCUser("username", null, null));
+        when(request.getHeader("referer")).thenReturn(referer);
 
-        String result = userController.loginPage();
+        ModelAndView mav = userController.loginPage(request);
 
-        assertEquals(result, "redirect:/");
+        assertEquals(mav.getViewName(), "redirect:" + referer);
         verify(userService).getCurrentUser();
     }
 
@@ -321,10 +324,19 @@ public class UserControllerTest {
     public void testLoginUserNotLogged() {
         when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
 
-        String result = userController.loginPage();
+        ModelAndView mav = userController.loginPage(request);
 
-        assertEquals(result, UserController.LOGIN);
+        assertEquals(mav.getViewName(), UserController.LOGIN);
         verify(userService).getCurrentUser();
+    }
+
+    @DataProvider
+    public Object[][] referers() {
+        return new Object[][]{
+                {"/"},
+                {"/referer1"},
+                {"/referer/url1"},
+        };
     }
 
     @Test(enabled = false)
@@ -381,7 +393,7 @@ public class UserControllerTest {
                 any(HttpServletRequest.class), any(HttpServletResponse.class)))
                 .thenReturn(true);
 
-        ModelAndView view = userController.login("user1", "password", "off", null, null);
+        ModelAndView view = userController.login("user1", "password", null, "off", null, null);
 
         assertEquals(view.getViewName(), "redirect:/");
         verify(userService).loginUser(eq("user1"), eq("password"), eq(false),
@@ -394,7 +406,7 @@ public class UserControllerTest {
                 any(HttpServletRequest.class), any(HttpServletResponse.class)))
                 .thenReturn(false);
 
-        ModelAndView view = userController.login(null, null, "off", null, null);
+        ModelAndView view = userController.login(null, null, null, "off", null, null);
 
         assertEquals(view.getViewName(), "login");
         verify(userService).loginUser(anyString(), anyString(), eq(false),
@@ -407,7 +419,7 @@ public class UserControllerTest {
                 any(HttpServletRequest.class), any(HttpServletResponse.class)))
                 .thenThrow(new NoConnectionException());
 
-        ModelAndView view = userController.login(null, null, "off", null, null);
+        ModelAndView view = userController.login(null, null, null, "off", null, null);
 
         assertEquals(view.getViewName(), UserController.AUTH_SERVICE_FAIL_URL);
         verify(userService).loginUser(anyString(), anyString(), eq(false),
@@ -420,7 +432,7 @@ public class UserControllerTest {
                 any(HttpServletRequest.class), any(HttpServletResponse.class)))
                 .thenThrow(new UnexpectedErrorException());
 
-        ModelAndView view = userController.login(null, null, "off", null, null);
+        ModelAndView view = userController.login(null, null, null, "off", null, null);
 
         assertEquals(view.getViewName(), UserController.AUTH_SERVICE_FAIL_URL);
         verify(userService).loginUser(anyString(), anyString(), eq(false),

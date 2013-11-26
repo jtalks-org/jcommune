@@ -18,7 +18,7 @@ import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
-import org.jtalks.jcommune.model.PersistedObjectsFactory;
+import org.jtalks.jcommune.model.entity.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.LastReadPostDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.LastReadPost;
@@ -128,7 +128,7 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
                 .list();
 
         for (Object[] record : resultCheckGetTopics) {
-            resultOfGetTopics.put(new Long(record[0].toString()), (DateTime)record[1]);
+            resultOfGetTopics.put(new Long(record[0].toString()), (DateTime) record[1]);
         }
 
         assertEquals(resultOfGetTopics, actualCountOfPosts);
@@ -181,45 +181,45 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
         assertEquals(actual.getId(), expected.getId(),
                 "Found incorrect last read post.");
     }
-    
+
     @Test
     public void getLastReadPostsForUserInTopicsShouldReturnThem() {
         int topicsSize = 10;
         JCUser user = PersistedObjectsFactory.getDefaultUser();
         List<Topic> userTopics = PersistedObjectsFactory.createAndSaveTopicListWithPosts(topicsSize);
         markAllTopicsASRead(userTopics, user);
-        
+
         List<LastReadPost> lastReadPosts = lastReadPostDao.getLastReadPosts(user, userTopics);
-        
-        assertEquals(lastReadPosts.size(), topicsSize, 
+
+        assertEquals(lastReadPosts.size(), topicsSize,
                 "For every passed topic it should return last read post.");
-        
+
     }
-    
+
     @Test
     public void getLastReadPostsForUserShouldReturnEmptyListForEmptyListOfTopics() {
         List<Topic> userTopics = Collections.emptyList();
         JCUser user = new JCUser("user", "user@gmail.com", "password");
-        
+
         List<LastReadPost> lastReadPosts = lastReadPostDao.getLastReadPosts(user, userTopics);
-        
+
         assertTrue(lastReadPosts.isEmpty(), "For passed empty list of topics it should return empty list.");
-        
+
     }
-    
+
     @Test
     public void deleteLastReadPostsShouldDeleteAllRecodrsForGivenUser() {
         List<Topic> topics = PersistedObjectsFactory.createAndSaveTopicListWithPosts(10);
         JCUser user = PersistedObjectsFactory.getDefaultUser();
         markAllTopicsASRead(topics, user);
-        
+
         lastReadPostDao.deleteLastReadPostsFor(user);
-    
+
         @SuppressWarnings("unchecked")
         List<LastReadPost> lastReadPostsOfUser = session.getNamedQuery("getAllOfUser")
-            .setParameter("user", user).list();
+                .setParameter("user", user).list();
         assertTrue(lastReadPostsOfUser.isEmpty(), "User shouldn't have any records, because they were cleared");
-        
+
     }
 
     /**
@@ -237,7 +237,7 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
         for (Topic tp : topics) {
             insertQuery.setParameter("uuid", UUID.randomUUID().toString())
                     .setParameter("user", user.getId())
-                    .setParameter("lastPostDate", ((DateTime)tp.getLastPost().getCreationDate()).toDate())
+                    .setParameter("lastPostDate", ((DateTime) tp.getLastPost().getCreationDate()).toDate())
                     .setParameter("topic", tp.getId())
                     .executeUpdate();
             listCountPostsToTopics.put(tp.getId(), tp.getLastPost().getCreationDate());

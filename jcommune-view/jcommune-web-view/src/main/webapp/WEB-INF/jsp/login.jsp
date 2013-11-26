@@ -78,6 +78,7 @@
                 code="label.restorePassword.prompt"/></a>
       </div>
     </fieldset>
+    <input type="hidden" name="referer" id="referer" value="<c:url value='${referer}'/>" />
   </form:form>
 </div>
 </body>
