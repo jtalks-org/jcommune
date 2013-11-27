@@ -226,8 +226,8 @@ public class NotificationServiceTest {
 
         service.sendNotificationAboutTopicMoved(topic);
 
-        verify(mailService).sendTopicMovedMail(user2, TOPIC_ID);
-        verify(mailService).sendTopicMovedMail(user3, TOPIC_ID);
+        verify(mailService).sendTopicMovedMail(user2, TOPIC_ID, "current");
+        verify(mailService).sendTopicMovedMail(user3, TOPIC_ID, "current");
     }
 
     @Test
@@ -239,9 +239,9 @@ public class NotificationServiceTest {
 
         service.sendNotificationAboutTopicMoved(topic);
 
-        verify(mailService, times(2)).sendTopicMovedMail(any(JCUser.class), eq(TOPIC_ID));
-        verify(mailService).sendTopicMovedMail(user2, TOPIC_ID);
-        verify(mailService).sendTopicMovedMail(user3, TOPIC_ID);
+        verify(mailService, times(2)).sendTopicMovedMail(any(JCUser.class), eq(TOPIC_ID), eq("current"));
+        verify(mailService).sendTopicMovedMail(user2, TOPIC_ID, "current");
+        verify(mailService).sendTopicMovedMail(user3, TOPIC_ID, "current");
         assertEquals(branch.getSubscribers().size(), 3);
     }
 
@@ -271,7 +271,7 @@ public class NotificationServiceTest {
 
         when(subscriptionService.getAllowedSubscribers(topic)).thenReturn(topicSubscribers);
 
-        verify(mailService, times(1)).sendTopicMovedMail(user3, TOPIC_ID);
+        verify(mailService, times(1)).sendTopicMovedMail(user3, TOPIC_ID, "current");
     }
     
     private void prepareDisabledProperty() {
@@ -291,7 +291,7 @@ public class NotificationServiceTest {
         subscribers.add(user1);
         subscribers.add(user2);
         service.sendNotificationAboutRemovingTopic(topic, subscribers);
-        verify(mailService).sendRemovingTopicMail(user2, topic);
+        verify(mailService).sendRemovingTopicMail(user2, topic, "current");
     }
 
     @Test

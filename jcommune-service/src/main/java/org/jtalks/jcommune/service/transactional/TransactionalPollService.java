@@ -48,13 +48,13 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
     /**
      * Create an instance of service for operations with a poll.
      *
-     * @param pollDao                   data access object, which should be able do
-     *                                  all CRUD operations with {@link org.jtalks.jcommune.model.entity.Poll}.
-     * @param groupDao                  this dao returns user group for permission granting
-     * @param pollOptionDao             data access object, which should be able do
-     *                                  all CRUD operations with {@link org.jtalks.jcommune.model.entity.PollItem}.
-     * @param securityService           the service for security operations
-     * @param userService               to fetch the user currently logged in
+     * @param pollDao         data access object, which should be able do
+     *                        all CRUD operations with {@link org.jtalks.jcommune.model.entity.Poll}.
+     * @param groupDao        this dao returns user group for permission granting
+     * @param pollOptionDao   data access object, which should be able do
+     *                        all CRUD operations with {@link org.jtalks.jcommune.model.entity.PollItem}.
+     * @param securityService the service for security operations
+     * @param userService     to fetch the user currently logged in
      */
     public TransactionalPollService(Crud<Poll> pollDao,
                                     GroupDao groupDao,
@@ -110,8 +110,8 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
         ListIterator<PollItem> updated = newItems.listIterator();
         while (updated.hasNext()) {
             PollItem item = updated.next();
-            for (PollItem old : existing){
-                if (item.getName().equals(old.getName())){
+            for (PollItem old : existing) {
+                if (item.getName().equals(old.getName())) {
                     updated.set(old);
                 }
             }

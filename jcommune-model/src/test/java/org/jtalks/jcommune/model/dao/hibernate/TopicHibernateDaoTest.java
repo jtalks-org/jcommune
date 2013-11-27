@@ -17,7 +17,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
-import org.jtalks.jcommune.model.PersistedObjectsFactory;
+import org.jtalks.jcommune.model.entity.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.*;
@@ -464,28 +464,28 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     }
 
     @Test
-    public void testGetSubscribersWithAllowedPermission(){
+    public void testGetSubscribersWithAllowedPermission() {
         Topic topic = createAndSaveTopicWithSubscribers();
         JCUser subscriber = topic.getTopicStarter();
         PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
                 topic.getBranch().getId(), String.valueOf(subscriber.getGroups().get(0).getId()), true);
         assertEquals(dao.getAllowedSubscribers(topic).size(), 1,
-            "Should return subscribers which are contained in some group with VIEW_TOPIC permission and not contained in any group with disallowed VIEW_TOPIC permission.");
+                "Should return subscribers which are contained in some group with VIEW_TOPIC permission and not contained in any group with disallowed VIEW_TOPIC permission.");
     }
 
     @Test
-    public void testGetSubscribersWithDisallowedPermission(){
+    public void testGetSubscribersWithDisallowedPermission() {
         Topic topic = createAndSaveTopicWithSubscribers();
         JCUser subscriber = topic.getTopicStarter();
         PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
                 topic.getBranch().getId(), String.valueOf(subscriber.getGroups().get(0).getId()), false);
 
         assertEquals(dao.getAllowedSubscribers(topic).size(), 0,
-            "Should not return subscribers which are contained in any group with disallowed VIEW_TOPIC permission.");
+                "Should not return subscribers which are contained in any group with disallowed VIEW_TOPIC permission.");
     }
 
     @Test
-    public void testGetSubscribersWithAllowedAndDisallowedPermission(){
+    public void testGetSubscribersWithAllowedAndDisallowedPermission() {
         Topic topic = createAndSaveTopicWithSubscribers();
         JCUser subscriber = topic.getTopicStarter();
         PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
@@ -498,14 +498,14 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     }
 
     @Test
-    public void testGetSubscribersWithoutAllowedAndDisallowedPermission(){
+    public void testGetSubscribersWithoutAllowedAndDisallowedPermission() {
         Topic topic = createAndSaveTopicWithSubscribers();
 
         assertEquals(dao.getAllowedSubscribers(topic).size(), 0,
                 "Should not return subscribers which are not contained in any group with VIEW_TOPIC permission.");
     }
 
-    private Topic createAndSaveTopicWithSubscribers(){
+    private Topic createAndSaveTopicWithSubscribers() {
         JCUser subscriber = PersistedObjectsFactory.getDefaultUserWithGroups();
         Branch branch = ObjectsFactory.getDefaultBranch();
         Topic topic = ObjectsFactory.getTopic(subscriber, 5);
@@ -516,7 +516,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     }
 
     @Test
-    public void testGetForbiddenBranchesIdsWithAnonymousUser(){
+    public void testGetForbiddenBranchesIdsWithAnonymousUser() {
 
         AnonymousUser user = new AnonymousUser();
 
@@ -529,21 +529,21 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     }
 
     @Test
-    public void testGetForbiddenBranchesIdsWithRealUser(){
+    public void testGetForbiddenBranchesIdsWithRealUser() {
 
-        JCUser user = new JCUser("username",null, null);
+        JCUser user = new JCUser("username", null, null);
         user.setGroups(ObjectsFactory.getDefaultGroupList());
 
         PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
                 ObjectsFactory.getDefaultBranch().getId(), String.valueOf(user.getGroups().get(0).getId()), false
         );
 
-       List<Long> collection = this.dao.getForbiddenBranchesIds(user);
-       assertFalse(collection.isEmpty());
+        List<Long> collection = this.dao.getForbiddenBranchesIds(user);
+        assertFalse(collection.isEmpty());
     }
 
     @Test
-    public void testGetAllowedBranchesIdsWithAnonymousUser(){
+    public void testGetAllowedBranchesIdsWithAnonymousUser() {
 
         AnonymousUser user = new AnonymousUser();
 
@@ -556,7 +556,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     }
 
     @Test
-    public void testGetAllowedBranchesIdsWithAnonymousUserAllowedAndRestricted(){
+    public void testGetAllowedBranchesIdsWithAnonymousUserAllowedAndRestricted() {
 
         AnonymousUser user = new AnonymousUser();
 
@@ -573,9 +573,9 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     }
 
     @Test
-    public void testGetAllowedBranchesIdsWithRealUser(){
+    public void testGetAllowedBranchesIdsWithRealUser() {
 
-        JCUser user = new JCUser("username",null, null);
+        JCUser user = new JCUser("username", null, null);
         user.setGroups(ObjectsFactory.getDefaultGroupList());
 
         PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
@@ -587,9 +587,9 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     }
 
     @Test
-    public void testGetAllowedBranchesIdsWithRealUserAllowedAndRestricted(){
+    public void testGetAllowedBranchesIdsWithRealUserAllowedAndRestricted() {
 
-        JCUser user = new JCUser("username",null, null);
+        JCUser user = new JCUser("username", null, null);
         user.setGroups(ObjectsFactory.getDefaultGroupList());
 
         PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
