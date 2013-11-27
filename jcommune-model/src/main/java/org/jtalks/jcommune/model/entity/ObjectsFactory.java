@@ -14,10 +14,11 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import com.google.common.collect.Lists;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.math.RandomUtils;
 import org.joda.time.DateTime;
-import org.jtalks.common.model.entity.Group;
-import org.jtalks.common.model.entity.Section;
+import org.jtalks.common.model.entity.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,12 +126,12 @@ public final class ObjectsFactory {
         topic.setId(1);
         return topic;
     }
-    
+
     public static Topic getTopic(JCUser author, int numberOfPosts) {
         Topic topic = new Topic(author, "some topic");
         for (int i = 0; i < numberOfPosts; i++) {
             topic.addPost(new Post(author, "post #" + (i + 1)));
-        }        
+        }
         return topic;
     }
 
@@ -231,4 +232,12 @@ public final class ObjectsFactory {
         }
         return banners;
     }
+
+    /**
+     * @return group with random name and description
+     */
+    public static Group getRandomGroup() {
+        return new Group("group" + RandomUtils.nextInt(10000), "description" + RandomUtils.nextInt(10000));
+    }
+
 }

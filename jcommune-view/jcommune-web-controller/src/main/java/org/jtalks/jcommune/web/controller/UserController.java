@@ -72,6 +72,7 @@ public class UserController {
     public static final String REGISTRATION = "registration";
     public static final String LOGIN = "login";
     public static final String AFTER_REGISTRATION = "afterRegistration";
+    public static final String REFERER_ATTR = "referer";
     public static final String AUTH_FAIL_URL = "redirect:/login?login_error=1";
     public static final String AUTH_SERVICE_FAIL_URL = "redirect:/login?login_error=3";
     public static final String REG_SERVICE_CONNECTION_ERROR_URL = "redirect:/user/new?reg_error=1";
@@ -281,15 +282,19 @@ public class UserController {
      * Shows login page. Also checks if user is already logged in.
      * If so he is redirected to main page.
      *
+     * @param request Current servlet request
      * @return login view name or redirect to main page
      */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String loginPage() {
+    public ModelAndView loginPage(HttpServletRequest request) {
         JCUser currentUser = userService.getCurrentUser();
+        String referer = request.getHeader("referer");
         if (currentUser.isAnonymous()) {
-            return LOGIN;
+            ModelAndView mav = new ModelAndView(LOGIN);
+            mav.addObject(REFERER_ATTR, referer);
+            return mav;
         } else {
-            return "redirect:/";
+            return new ModelAndView("redirect:" + referer);
         }
     }
 
@@ -325,6 +330,7 @@ public class UserController {
      *
      * @param username   username
      * @param password   password
+     * @param referer    referer url
      * @param rememberMe set remember me token if equal to "on"
      * @param request    servlet request
      * @param response   servlet response
@@ -333,6 +339,7 @@ public class UserController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ModelAndView login(@RequestParam("j_username") String username,
                               @RequestParam("j_password") String password,
+                              @RequestParam(REFERER_ATTR) String referer,
                               @RequestParam(value = "_spring_security_remember_me", defaultValue = "off")
                               String rememberMe,
                               HttpServletRequest request, HttpServletResponse response) {
@@ -348,11 +355,12 @@ public class UserController {
         if (isAuthenticated) {
             LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
             localeResolver.setLocale(request, response, userService.getCurrentUser().getLanguage().getLocale());
-            return new ModelAndView("redirect:/");
+            return new ModelAndView("redirect:" + referer);
         } else {
             ModelAndView modelAndView = new ModelAndView(LOGIN);
             modelAndView.addObject(ATTR_USERNAME, username);
             modelAndView.addObject(ATTR_LOGIN_ERROR, 1);
+            modelAndView.addObject(REFERER_ATTR, referer);
             return modelAndView;
         }
     }

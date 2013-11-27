@@ -14,24 +14,26 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.*;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicModificationService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.jtalks.jcommune.service.security.PermissionService;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -60,6 +62,8 @@ public class TransactionalBranchServiceTest {
     @Mock
     private TopicDao topicDao;
     @Mock
+    private GroupDao groupDao;
+    @Mock
     private BranchService branchService;
     @Mock
     private TopicModificationService topicService;
@@ -78,6 +82,7 @@ public class TransactionalBranchServiceTest {
                 branchDao,
                 sectionDao,
                 topicDao,
+                groupDao,
                 topicService,
                 permissionService);
         topic = null;

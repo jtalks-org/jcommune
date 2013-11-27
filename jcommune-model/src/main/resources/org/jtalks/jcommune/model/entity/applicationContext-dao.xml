@@ -42,7 +42,7 @@
         class="org.jtalks.jcommune.model.dao.hibernate.UserHibernateDao"/>
 
   <bean id="groupDao" parent="genericDao"
-        class="org.jtalks.common.model.dao.hibernate.GroupHibernateDao"/>
+        class="org.jtalks.jcommune.model.dao.hibernate.GroupHibernateDao"/>
 
   <bean id="topicDao" parent="genericDao"
         class="org.jtalks.jcommune.model.dao.hibernate.TopicHibernateDao"/>

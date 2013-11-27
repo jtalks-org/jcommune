@@ -12,15 +12,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model;
+package org.jtalks.jcommune.model.entity;
 
 import org.hibernate.Session;
 import org.joda.time.DateTime;
-import org.jtalks.common.model.entity.Component;
-import org.jtalks.common.model.entity.ComponentType;
-import org.jtalks.common.model.entity.Group;
-import org.jtalks.common.model.entity.Property;
-import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.common.model.entity.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,6 +40,11 @@ public final class PersistedObjectsFactory {
 
     public static void setSession(Session session) {
         PersistedObjectsFactory.session = session;
+    }
+
+    public static Branch getDefaultBranch() {
+        Branch branch = ObjectsFactory.getDefaultBranch();
+        return persist(branch);
     }
 
     public static Post getDefaultPost() {
@@ -84,11 +85,12 @@ public final class PersistedObjectsFactory {
 
     /**
      * Create and persist one single message.
+     *
      * @param status message status.
      * @return saved pm.
      */
     public static PrivateMessage createAndSaveMessage(PrivateMessageStatus status, JCUser userTo,
-                                            JCUser userFrom){
+                                                      JCUser userFrom) {
         PrivateMessage pm = new PrivateMessage(userTo, userFrom,
                 "Message title", "Private message body");
         pm.setStatus(status);
@@ -98,6 +100,7 @@ public final class PersistedObjectsFactory {
 
     /**
      * Create and persist list of private messages with all possible statuses.
+     *
      * @param size message number for DRAFT status. For other statuses message number is size / 2.
      * @return saved pm list.
      */
@@ -137,11 +140,11 @@ public final class PersistedObjectsFactory {
     }
 
     public static List<Topic> createAndSaveTopicList(int size) {
-        Branch branch = ObjectsFactory.getDefaultBranch();
+        org.jtalks.jcommune.model.entity.Branch branch = ObjectsFactory.getDefaultBranch();
         JCUser user = persist(ObjectsFactory.getDefaultUser());
         for (int i = 0; i < size; i++) {
             Topic topic = new Topic(user, "title" + i);
-            topic.addPost(new Post(user,"post_context" + i));
+            topic.addPost(new Post(user, "post_context" + i));
             branch.addTopic(topic);
         }
         persist(branch);
@@ -154,7 +157,7 @@ public final class PersistedObjectsFactory {
      * @return saved topics
      */
     public static List<Topic> createAndSaveTopicListWithPosts(int size) {
-        Branch branch = ObjectsFactory.getDefaultBranch();
+        org.jtalks.jcommune.model.entity.Branch branch = ObjectsFactory.getDefaultBranch();
         JCUser user = persist(ObjectsFactory.getRandomUser());
         for (int i = 0; i < size; i++) {
             Topic topic = new Topic(user, "title" + i);
@@ -242,7 +245,7 @@ public final class PersistedObjectsFactory {
         JCUser user = ObjectsFactory.getDefaultUser();
         user.setGroups(groups);
         persist(user);
-        
+
         return user;
     }
 
@@ -283,7 +286,7 @@ public final class PersistedObjectsFactory {
 
         return review;
     }
-    
+
     /**
      * Return first code review comment from persisted code review.
      *
@@ -292,7 +295,7 @@ public final class PersistedObjectsFactory {
     public static CodeReviewComment getDefaultCodeReviewComment() {
         return getDefaultCodeReview().getComments().get(0);
     }
-    
+
     public static Component getDefaultComponent() {
         Component component = new Component();
         component.setName("component.name");
@@ -315,7 +318,7 @@ public final class PersistedObjectsFactory {
     }
 
     public static PluginConfiguration getDefaultPluginConfiguration() {
-        PluginConfiguration configuration = new PluginConfiguration("Default name", true, Collections.<PluginProperty> emptyList());
+        PluginConfiguration configuration = new PluginConfiguration("Default name", true, Collections.<PluginProperty>emptyList());
         persist(configuration);
         return configuration;
     }
@@ -345,6 +348,25 @@ public final class PersistedObjectsFactory {
     private static <T> T persist(T entity) {
         session.save(entity);
         return entity;
+    }
+
+    /**
+     * @return group with randoms users
+     */
+    public static Group groupWithUsers(int count) {
+        List<JCUser> users = usersListOf(count);
+        Group group = ObjectsFactory.getRandomGroup();
+        group.setUsers((List<User>) (Object) users);
+        return persist(group);
+    }
+
+    public static List<JCUser> usersListOf(int n) {
+        List<JCUser> result = new ArrayList<>(n);
+
+        for (int i = 0; i < n; i++) {
+            result.add(persist(ObjectsFactory.getRandomUser()));
+        }
+        return result;
     }
 
 }

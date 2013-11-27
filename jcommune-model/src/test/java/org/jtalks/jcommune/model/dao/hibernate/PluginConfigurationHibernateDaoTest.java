@@ -17,7 +17,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.common.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.model.PersistedObjectsFactory;
+import org.jtalks.jcommune.model.entity.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.PluginConfigurationDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginProperty;
@@ -92,7 +92,7 @@ public class PluginConfigurationHibernateDaoTest extends AbstractTransactionalTe
 
     @Test
     public void saveOrUpdateShouldSaveNewPluginConfiguration() {
-        PluginConfiguration newPluginConfiguration = new PluginConfiguration("New PluginConfiguration", true, Collections.<PluginProperty> emptyList());
+        PluginConfiguration newPluginConfiguration = new PluginConfiguration("New PluginConfiguration", true, Collections.<PluginProperty>emptyList());
 
         pluginConfigurationDao.saveOrUpdate(newPluginConfiguration);
         session.evict(newPluginConfiguration);

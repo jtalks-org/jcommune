@@ -21,118 +21,120 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
               http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
 
-    <!-- Spring Security authentication manager -->
-    <security:authentication-manager alias="authenticationManager">
-        <security:authentication-provider user-service-ref="securityService">
-            <security:password-encoder hash="md5"/>
-        </security:authentication-provider>
-    </security:authentication-manager>
+  <!-- Spring Security authentication manager -->
+  <security:authentication-manager alias="authenticationManager">
+    <security:authentication-provider user-service-ref="securityService">
+      <security:password-encoder hash="md5"/>
+    </security:authentication-provider>
+  </security:authentication-manager>
 
-    <!-- Enable security annotations using specified expression handler -->
-    <security:global-method-security pre-post-annotations="enabled">
-        <security:expression-handler ref="securityExpressionHandler"/>
-    </security:global-method-security>
+  <!-- Enable security annotations using specified expression handler -->
+  <security:global-method-security pre-post-annotations="enabled">
+    <security:expression-handler ref="securityExpressionHandler"/>
+  </security:global-method-security>
 
-    <!-- Configure SpEL expressions handler for security annotations -->
-    <bean id="securityExpressionHandler"
-          class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
-        <!-- Enable SpEL hasPermission expression evaluation -->
-        <property name="permissionEvaluator" ref="aclGroupPermissionEvaluator"/>
-    </bean>
+  <!-- Configure SpEL expressions handler for security annotations -->
+  <bean id="securityExpressionHandler"
+        class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+    <!-- Enable SpEL hasPermission expression evaluation -->
+    <property name="permissionEvaluator" ref="aclGroupPermissionEvaluator"/>
+  </bean>
 
-    <!-- Evaluates hasPermission expression -->
-    <bean id="aclGroupPermissionEvaluator" class="org.jtalks.jcommune.service.security.AclGroupPermissionEvaluator">
-        <!-- Link to actual ACL Service -->
-        <constructor-arg name="aclManager" ref="aclManager"/>
-        <constructor-arg name="aclUtil" ref="aclUtils"/>
-        <constructor-arg name="groupDao" ref="groupDao"/>
-        <constructor-arg name="sidFactory" ref="jtalksSidFactory"/>
-        <constructor-arg name="mutableAclService" ref="aclService"/>
-        <constructor-arg name="userDao" ref="userDao"/>
-    </bean>
-    <bean id="aclUtils" class="org.jtalks.common.security.acl.AclUtil">
-        <constructor-arg name="mutableAclService" ref="aclService"/>
-        <property name="objectIdentityGenerator" ref="typeConvertingObjectIdentityGenerator"/>
-    </bean>
+  <!-- Evaluates hasPermission expression -->
+  <bean id="aclGroupPermissionEvaluator" class="org.jtalks.jcommune.service.security.AclGroupPermissionEvaluator">
+    <!-- Link to actual ACL Service -->
+    <constructor-arg name="aclManager" ref="aclManager"/>
+    <constructor-arg name="aclUtil" ref="aclUtils"/>
+    <constructor-arg name="groupDao" ref="groupDao"/>
+    <constructor-arg name="sidFactory" ref="jtalksSidFactory"/>
+    <constructor-arg name="mutableAclService" ref="aclService"/>
+    <constructor-arg name="userDao" ref="userDao"/>
+  </bean>
+  <bean id="aclUtils" class="org.jtalks.common.security.acl.AclUtil">
+    <constructor-arg name="mutableAclService" ref="aclService"/>
+    <property name="objectIdentityGenerator" ref="typeConvertingObjectIdentityGenerator"/>
+  </bean>
 
-    <bean id="typeConvertingObjectIdentityGenerator" class="org.jtalks.common.security.acl.TypeConvertingObjectIdentityGenerator">
-           <property name="additionalConversionRules">
-               <map>
-                   <entry key="org.jtalks.jcommune.model.entity.Branch" value="BRANCH"/>
-                   <entry key="org.jtalks.jcommune.model.entity.JCUser" value="USER"/>
-                   <entry key="org.jtalks.jcommune.model.entity.Poll" value="POLL"/>
-                   <entry key="org.jtalks.jcommune.model.entity.Post" value="POST"/>
-                   <entry key="org.jtalks.jcommune.model.entity.PrivateMessage" value="PRIVATE_MESSAGE"/>
-                   <entry key="org.jtalks.jcommune.model.entity.Topic" value="TOPIC"/>
-                   <entry key="org.jtalks.jcommune.model.entity.SimplePage" value="SIMPLE_PAGE"/>
-                   <entry key="org.jtalks.common.model.entity.Section" value="SECTION"/>
-                   <entry key="org.jtalks.common.model.entity.Component" value="COMPONENT"/>
-                   <entry key="org.jtalks.common.model.entity.Group" value="GROUP"/>
-               </map>
-           </property>
-    </bean>
+  <bean id="typeConvertingObjectIdentityGenerator"
+        class="org.jtalks.common.security.acl.TypeConvertingObjectIdentityGenerator">
+    <property name="additionalConversionRules">
+      <map>
+        <entry key="org.jtalks.jcommune.model.entity.Branch" value="BRANCH"/>
+        <entry key="org.jtalks.jcommune.model.entity.JCUser" value="USER"/>
+        <entry key="org.jtalks.jcommune.model.entity.Poll" value="POLL"/>
+        <entry key="org.jtalks.jcommune.model.entity.Post" value="POST"/>
+        <entry key="org.jtalks.jcommune.model.entity.PrivateMessage" value="PRIVATE_MESSAGE"/>
+        <entry key="org.jtalks.jcommune.model.entity.Topic" value="TOPIC"/>
+        <entry key="org.jtalks.jcommune.model.entity.SimplePage" value="SIMPLE_PAGE"/>
+        <entry key="org.jtalks.common.model.entity.Section" value="SECTION"/>
+        <entry key="org.jtalks.common.model.entity.Component" value="COMPONENT"/>
+        <entry key="org.jtalks.common.model.entity.Group" value="GROUP"/>
+      </map>
+    </property>
+  </bean>
 
-    <!-- Retrieves, modifies and strores access control lists -->
-    <bean id="aclService" class="org.springframework.security.acls.jdbc.JdbcMutableAclService">
-        <constructor-arg ref="dataSource"/>
-        <constructor-arg ref="lookupStrategy"/>
-        <constructor-arg ref="aclCache"/>
-        <property name="classIdentityQuery" value="SELECT @@IDENTITY"/>
-        <property name="sidIdentityQuery" value="SELECT @@IDENTITY"/>
-        <property name="sidFactory" ref="jtalksSidFactory"/>
-    </bean>
+  <!-- Retrieves, modifies and strores access control lists -->
+  <bean id="aclService" class="org.springframework.security.acls.jdbc.JdbcMutableAclService">
+    <constructor-arg ref="dataSource"/>
+    <constructor-arg ref="lookupStrategy"/>
+    <constructor-arg ref="aclCache"/>
+    <property name="classIdentityQuery" value="SELECT @@IDENTITY"/>
+    <property name="sidIdentityQuery" value="SELECT @@IDENTITY"/>
+    <property name="sidFactory" ref="jtalksSidFactory"/>
+  </bean>
 
-    <bean id="jtalksSidFactory" class="org.jtalks.common.security.acl.sids.JtalksSidFactory"/>
+  <bean id="jtalksSidFactory" class="org.jtalks.common.security.acl.sids.JtalksSidFactory"/>
 
-    <!-- Responsible for efficient retrieval of ACLs from database -->
-    <bean id="lookupStrategy" class="org.springframework.security.acls.jdbc.BasicLookupStrategy">
-        <constructor-arg ref="dataSource"/>
-        <constructor-arg ref="aclCache"/>
-        <constructor-arg ref="aclAuthorizationStrategy"/>
-        <constructor-arg>
-            <bean class="org.springframework.security.acls.domain.ConsoleAuditLogger"/>
-        </constructor-arg>
-        <property name="sidFactory" ref="jtalksSidFactory"/>
-        <property name="permissionFactory" ref="jtalksPermissionFactory"/>
-    </bean>
+  <!-- Responsible for efficient retrieval of ACLs from database -->
+  <bean id="lookupStrategy" class="org.springframework.security.acls.jdbc.BasicLookupStrategy">
+    <constructor-arg ref="dataSource"/>
+    <constructor-arg ref="aclCache"/>
+    <constructor-arg ref="aclAuthorizationStrategy"/>
+    <constructor-arg>
+      <bean class="org.springframework.security.acls.domain.ConsoleAuditLogger"/>
+    </constructor-arg>
+    <property name="sidFactory" ref="jtalksSidFactory"/>
+    <property name="permissionFactory" ref="jtalksPermissionFactory"/>
+  </bean>
 
-    <!-- ACL permission factory -->
-    <bean name="jtalksPermissionFactory" class="org.jtalks.common.security.acl.JtalksPermissionFactory" init-method="init"/>
+  <!-- ACL permission factory -->
+  <bean name="jtalksPermissionFactory" class="org.jtalks.common.security.acl.JtalksPermissionFactory"
+        init-method="init"/>
 
-    <!-- Caching support for ACLs -->
-    <bean id="aclCache" class="org.springframework.security.acls.domain.EhCacheBasedAclCache">
-        <constructor-arg>
-            <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean">
-                <property name="cacheManager" ref="localCache"/>
-                <property name="cacheName" value="org.jtalks.EHCOMMON"/>
-            </bean>
-        </constructor-arg>
-    </bean>
+  <!-- Caching support for ACLs -->
+  <bean id="aclCache" class="org.springframework.security.acls.domain.EhCacheBasedAclCache">
+    <constructor-arg>
+      <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+        <property name="cacheManager" ref="localCache"/>
+        <property name="cacheName" value="org.jtalks.EHCOMMON"/>
+      </bean>
+    </constructor-arg>
+  </bean>
 
-    <!-- Authorization for ACLs administration setup -->
-    <bean id="aclAuthorizationStrategy" class="org.jtalks.jcommune.service.security.AclAuthorizationStrategyImpl"/>
+  <!-- Authorization for ACLs administration setup -->
+  <bean id="aclAuthorizationStrategy" class="org.jtalks.jcommune.service.security.AclAuthorizationStrategyImpl"/>
 
-    <bean id="securityContextFacade"
-          class="org.jtalks.common.service.security.SecurityContextHolderFacade"/>
+  <bean id="securityContextFacade"
+        class="org.jtalks.common.service.security.SecurityContextHolderFacade"/>
 
-    <bean id="aclManager" class="org.jtalks.common.security.acl.AclManager">
-        <constructor-arg name="mutableAclService" ref="aclService"/>
-        <property name="aclUtil" ref="aclUtils"/>
-    </bean>
+  <bean id="aclManager" class="org.jtalks.common.security.acl.AclManager">
+    <constructor-arg name="mutableAclService" ref="aclService"/>
+    <property name="aclUtil" ref="aclUtils"/>
+  </bean>
 
-    <!--For Spring security custom tags-->
-    <bean name="sidRetrievalStrategy" class="org.jtalks.jcommune.service.security.SidRetrievalStrategyImpl">
-        <constructor-arg ref="jtalksSidFactory"/>
-    </bean>
-    <bean id="objectIdentityRetrievalStrategyImpl"
-          class="org.jtalks.jcommune.service.security.ObjectIdentityRetrievalStrategyImpl">
-        <constructor-arg name="aclUtil" ref="aclUtils"/>
-    </bean>
-    <!--For Spring security custom tags-->
+  <!--For Spring security custom tags-->
+  <bean name="sidRetrievalStrategy" class="org.jtalks.jcommune.service.security.SidRetrievalStrategyImpl">
+    <constructor-arg ref="jtalksSidFactory"/>
+  </bean>
+  <bean id="objectIdentityRetrievalStrategyImpl"
+        class="org.jtalks.jcommune.service.security.ObjectIdentityRetrievalStrategyImpl">
+    <constructor-arg name="aclUtil" ref="aclUtils"/>
+  </bean>
+  <!--For Spring security custom tags-->
 
-    <!-- Password encoding -->
-    <bean id="encryptionService" class="org.jtalks.jcommune.service.nontransactional.EncryptionService">
-        <constructor-arg ref="md5PasswordEncoder"/>
-    </bean>
-    <bean id="md5PasswordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
+  <!-- Password encoding -->
+  <bean id="encryptionService" class="org.jtalks.jcommune.service.nontransactional.EncryptionService">
+    <constructor-arg ref="md5PasswordEncoder"/>
+  </bean>
+  <bean id="md5PasswordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
 </beans>

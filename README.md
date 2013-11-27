@@ -13,9 +13,10 @@ For developers/QA/PMs/Leads:
 * [Code Conventions](http://jtalks.org/display/jtalks/Code+Conventions)
 
 ####State of Project
-First the project was connected to Poulpe a lot - everything was administrated via admin panel. Now we think that Poulpe should manage only Users and Groups and thus the project is in transition from "conifugration in Poulpe" state to "configuration in JCommune itself state.
+First the project was connected to Poulpe a lot - everything was administrated via admin panel. Now we think that Poulpe should manage only Users and Groups and thus the project is in transition from "conifugration in Poulpe" state to "configuration in JCommune itself" state.
 
 We usually follow 2 directions when we plan next features:
- - Finishing not-that-finished functionality, like administrating, banners, etc. which should be present in any forum
- - And developing of new features (like Code Review).
+ - Finishing not-that-finished functionality, like administrating. 
+ - Improving SEO and social integration
+ - Developing of new features (soon hope to start Q/A functionality).
  
