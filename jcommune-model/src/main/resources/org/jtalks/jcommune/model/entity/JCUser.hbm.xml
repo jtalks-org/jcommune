@@ -24,7 +24,6 @@
     <id column="ID" name="id" unsaved-value="0">
       <generator class="native"/>
     </id>
-    <version name="version" column="VERSION" type="java.lang.Long" />
 
     <property column="UUID" name="uuid" unique="true" not-null="true"/>
     <property column="FIRST_NAME" name="firstName"/>
@@ -33,7 +32,7 @@
     <property column="ENCODED_USERNAME" name="encodedUsername" not-null="true"/>
     <property column="EMAIL" name="email" unique="true" not-null="true"/>
     <property column="PASSWORD" name="password" not-null="true"/>
-    <property column="LAST_LOGIN" name="lastLogin"
+    <property column="LAST_LOGIN" name="lastLogin" optimistic-lock="false"
               type="org.joda.time.contrib.hibernate.PersistentDateTime" not-null="false"/>
     <property name="avatar" lazy="true">
       <column name="AVATAR" sql-type="blob"/>

@@ -62,6 +62,7 @@ public class MailService {
     private static final String CUR_USER = "cur_user";
     private static final String USER = "user";
     private static final String NAME = "name";
+    private static final String TOPIC = "topic";
     private static final String MESSAGE_SOURCE = "messageSource";
     private static final String RECIPIENT_LOCALE = "locale";
     private static final String NO_ARGS = "noArgs";
@@ -133,7 +134,7 @@ public class MailService {
             model.put(LINK, url);
             model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
             sendEmailOnForumUpdates(recipient, model, locale, (Entity) entity,
-                    "subscriptionNotification.subject","subscriptionNotification.vm");
+                    "subscriptionNotification.subject", "subscriptionNotification.vm");
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE,
                     entity.getClass().getCanonicalName(),
@@ -151,7 +152,7 @@ public class MailService {
      * @throws MailingFailedException when mailing failed
      */
     private void sendEmailOnForumUpdates(JCUser recipient, Map<String, Object> model, Locale locale,
-            Entity entity, String subject, String nameTemplate) throws MailingFailedException {
+                                         Entity entity, String subject, String nameTemplate) throws MailingFailedException {
         model.put(USER, recipient);
         model.put(RECIPIENT_LOCALE, locale);
         String titleEntity = this.getTitleName(entity);
@@ -252,7 +253,6 @@ public class MailService {
             LOGGER.error("Failed to sent activation mail for user: " + recipient.getUsername());
         }
     }
-
 
 
     /**
@@ -399,10 +399,10 @@ public class MailService {
      */
     public void sendRemovingTopicMail(JCUser recipient, Topic topic) {
         Locale locale = recipient.getLanguage().getLocale();
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put(USER, recipient);
         model.put(RECIPIENT_LOCALE, locale);
-        model.put("topic", topic);
+        model.put(TOPIC, topic);
 
         try {
 
@@ -431,13 +431,13 @@ public class MailService {
      * @param topic     Current topic
      * @param curUser   User that removed the topic
      */
-     public void sendRemovingTopicMail(JCUser recipient, Topic topic, String curUser) {
+    public void sendRemovingTopicMail(JCUser recipient, Topic topic, String curUser) {
         Locale locale = recipient.getLanguage().getLocale();
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put(USER, recipient);
         model.put(RECIPIENT_LOCALE, locale);
         model.put(CUR_USER, curUser);
-        model.put("topic", topic);
+        model.put(TOPIC, topic);
 
         try {
 
@@ -460,8 +460,9 @@ public class MailService {
 
     /**
      * Send email about new topic in the subscribed branch.
+     *
      * @param subscriber recipient
-     * @param topic newly created topic
+     * @param topic      newly created topic
      */
     void sendTopicCreationMail(JCUser subscriber, Topic topic) {
         try {

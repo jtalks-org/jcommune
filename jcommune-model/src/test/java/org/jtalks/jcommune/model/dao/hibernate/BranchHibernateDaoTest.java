@@ -17,7 +17,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.common.model.entity.Section;
-import org.jtalks.jcommune.model.PersistedObjectsFactory;
+import org.jtalks.jcommune.model.entity.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.LastReadPostDao;
 import org.jtalks.jcommune.model.entity.*;
@@ -276,18 +276,18 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     }
 
     @Test
-    public void testGetSubscribersWithAllowedPermission(){
+    public void testGetSubscribersWithAllowedPermission() {
         JCUser subscriber = PersistedObjectsFactory.getDefaultUserWithGroups();
         branch.getSubscribers().add(subscriber);
         session.save(branch);
         PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(
                 branch.getId(), String.valueOf(subscriber.getGroups().get(0).getId()), true);
         assertEquals(dao.getAllowedSubscribers(branch).size(), 1,
-            "Should return subscribers which are contained in some group with VIEW_TOPIC permission.");
+                "Should return subscribers which are contained in some group with VIEW_TOPIC permission.");
     }
 
     @Test
-     public void testGetSubscribersWithDisallowedPermission(){
+    public void testGetSubscribersWithDisallowedPermission() {
         JCUser subscriber = PersistedObjectsFactory.getDefaultUserWithGroups();
         branch.getSubscribers().add(subscriber);
         session.save(branch);
@@ -299,7 +299,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     }
 
     @Test
-    public void testGetSubscribersWithAllowedAndDisallowedPermission(){
+    public void testGetSubscribersWithAllowedAndDisallowedPermission() {
         JCUser subscriber = PersistedObjectsFactory.getDefaultUserWithGroups();
         branch.getSubscribers().add(subscriber);
         session.save(branch);
@@ -313,7 +313,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     }
 
     @Test
-    public void testGetSubscribersWithoutAllowedAndDisallowedPermission(){
+    public void testGetSubscribersWithoutAllowedAndDisallowedPermission() {
         JCUser subscriber = PersistedObjectsFactory.getDefaultUserWithGroups();
         branch.getSubscribers().add(subscriber);
         session.save(branch);
