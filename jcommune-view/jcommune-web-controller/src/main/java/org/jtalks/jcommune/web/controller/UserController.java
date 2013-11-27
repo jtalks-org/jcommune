@@ -37,6 +37,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.security.web.WebAttributes;
+import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -48,6 +50,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Locale;
@@ -288,7 +291,16 @@ public class UserController {
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ModelAndView loginPage(HttpServletRequest request) {
         JCUser currentUser = userService.getCurrentUser();
+
         String referer = request.getHeader("referer");
+        HttpSession session = request.getSession(false);
+        if(session != null) {
+            SavedRequest savedRequest = (SavedRequest) session.getAttribute(WebAttributes.SAVED_REQUEST);
+            if(savedRequest != null) {
+                referer = savedRequest.getRedirectUrl();
+            }
+        }
+
         if (currentUser.isAnonymous()) {
             ModelAndView mav = new ModelAndView(LOGIN);
             mav.addObject(REFERER_ATTR, referer);
