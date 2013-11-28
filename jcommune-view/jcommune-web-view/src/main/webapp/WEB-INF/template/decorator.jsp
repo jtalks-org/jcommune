@@ -255,10 +255,10 @@
       <div class="pull-left">
         <c:choose>
           <c:when test="${sessionScope.adminMode == true}">
-            <span id="userDefinedCopyright" class="cursor-pointer">${userDefinedCopyright}</span>
+            <span id="userDefinedCopyright" class="cursor-pointer"><c:out value='${userDefinedCopyright}'/></span>
           </c:when>
           <c:otherwise>
-            ${userDefinedCopyright}
+            <c:out value='${userDefinedCopyright}'/>
           </c:otherwise>
         </c:choose><br/>
         Powered by JCommune ${project.version} by <a class="space-left-small" href="http://jtalks.org">jtalks.org</a><br/>
