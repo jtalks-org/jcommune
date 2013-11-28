@@ -826,3 +826,6 @@ div.add-branch-button:hover {
 .help-inline._error {
     color: #b94a48;
 }
+.word-wrap {
+    font-family: Tahoma,Calibri,Verdana,Geneva,sans-serif;
+}
