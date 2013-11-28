@@ -17,10 +17,7 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.LastReadPostService;
-import org.jtalks.jcommune.service.TopicFetchService;
-import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.BranchDto;
@@ -68,6 +65,8 @@ public class BranchControllerTest {
     private LastReadPostService lastReadPostService;
     @Mock
     private UserService userService;
+    @Mock
+    private PostService postService;
 
     private BranchController controller;
 
@@ -80,7 +79,8 @@ public class BranchControllerTest {
                 lastReadPostService,
                 userService,
                 breadcrumbBuilder,
-                locationServiceImpl);
+                locationServiceImpl,
+                postService);
     }
 
     @Test

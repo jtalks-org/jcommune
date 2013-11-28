@@ -177,14 +177,19 @@
       </bean>
     </property>
 
-    <property name="defaultViews">
+    <property name="viewResolvers">
       <list>
-        <!-- RSS View -->
-        <bean class="org.jtalks.jcommune.web.view.RssViewer">
-          <property name="contentType" value="application/rss+xml;charset=UTF-8"/>
-        </bean>
+        <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
       </list>
     </property>
+  </bean>
+
+  <bean id="topic/recent" class="org.jtalks.jcommune.web.view.RssViewer">
+    <property name="contentType" value="application/rss+xml;charset=UTF-8"/>
+  </bean>
+
+  <bean id="posts/recent" class="org.jtalks.jcommune.web.view.BranchRssViewer">
+    <property name="contentType" value="application/rss+xml;charset=UTF-8"/>
   </bean>
 
   <bean class="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver">
