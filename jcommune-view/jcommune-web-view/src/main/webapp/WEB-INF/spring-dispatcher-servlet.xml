@@ -106,6 +106,8 @@
       <constructor-arg ref="componentLogoTooltipProperty"/>
       <constructor-arg ref="componentInfoChangeDateProperty"/>
       <constructor-arg ref="componentAllPagesTitlePrefixProperty"/>
+      <constructor-arg ref="componentCopyrightProperty"/>
+      
     </bean>
     <bean id="bannerInterceptor" class="org.jtalks.jcommune.web.interceptors.BannerInterceptor">
       <constructor-arg ref="bannerService"/>

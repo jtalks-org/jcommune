@@ -142,6 +142,14 @@
         <property name="defaultValue" value=""/>
     </bean>
 
+    <bean id="componentCopyrightProperty" class="org.jtalks.jcommune.model.entity.JCommuneProperty"
+          factory-method="valueOf">
+        <constructor-arg type="java.lang.String" value="COPYRIGHT"/>
+        <property name="propertyDao" ref="propertyDao"/>
+        <property name="name" value="jcommune.copyright"/>
+        <property name="defaultValue" value=""/>
+    </bean>
+
     <bean id="componentInfoChangeDateProperty" class="org.jtalks.jcommune.model.entity.JCommuneProperty"
           factory-method="valueOf">
         <constructor-arg type="java.lang.String" value="ADMIN_INFO_LAST_UPDATE_TIME"/>

@@ -46,6 +46,10 @@ public class ComponentInformation {
     @Size(min = 0, max = Component.COMPONENT_DESCRIPTION_MAX_LENGTH, message = "{validation.param.length}")
     private String titlePrefix;
 
+    @NotNull(message = "{validation.not_null}")
+    @Size(min = 0, max = Component.COMPONENT_DESCRIPTION_MAX_LENGTH, message = "{validation.param.length}")
+    private String copyright;
+    
     private String logo;
 
     private String icon;
@@ -173,4 +177,14 @@ public class ComponentInformation {
     public void setTitlePrefix(String titlePrefix) {
         this.titlePrefix = titlePrefix;
     }
+
+    public String getCopyright() {
+        return copyright;
+    }
+
+    public void setCopyright(String copyright) {
+        this.copyright = copyright;
+    }
+    
+    
 }
