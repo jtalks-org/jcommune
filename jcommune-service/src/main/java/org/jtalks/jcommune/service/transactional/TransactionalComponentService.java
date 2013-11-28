@@ -42,6 +42,7 @@ public class TransactionalComponentService extends AbstractTransactionalEntitySe
     /** this is property for the prefix that should be added to the title of every page */
     public static final String TITLE_PREFIX_PROPERTY = "jcommune.all_pages_title_prefix";
     public static final String LOGO_PROPERTY = "jcommune.logo";
+    public static final String COPYRIGHT_PROPERTY = "jcommune.copyright";
     public static final String COMPONENT_FAVICON_ICO_PARAM = "jcommune.favicon.ico";
     public static final String COMPONENT_FAVICON_PNG_PARAM = "jcommune.favicon.png";
 
@@ -85,7 +86,8 @@ public class TransactionalComponentService extends AbstractTransactionalEntitySe
         forumComponent.setDescription(componentInformation.getDescription());
         forumComponent.setProperty(LOGO_TOOLTIP_PROPERTY, componentInformation.getLogoTooltip());
         forumComponent.setProperty(TITLE_PREFIX_PROPERTY, componentInformation.getTitlePrefix());
-
+        forumComponent.setProperty(COPYRIGHT_PROPERTY, componentInformation.getCopyright());
+        
         if (!StringUtils.isEmpty(componentInformation.getLogo())) {
             forumComponent.setProperty(LOGO_PROPERTY, componentInformation.getLogo());
         }

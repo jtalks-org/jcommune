@@ -25,6 +25,7 @@ $(function () {
     $("#cmpName").on('click', showForumConfigurationDialog);
     $("#cmpDescription").on('click', showForumConfigurationDialog);
     $("#forumLogo").on('click', showForumConfigurationDialog);
+    $("#userDefinedCopyright").on('click', showForumConfigurationDialog);
 
     $("[id^=branchLabel]").on('click', showBranchEditDialog);
     $("[id^=newBranch]").on('click', showNewBranchDialog);
@@ -141,7 +142,8 @@ function getCurrentAdminValues() {
         logoPreview: $('#forumLogo').attr("src"),
         iconPreview: getFavIconUrl() || "",
         logo: null,
-        icon: null
+        icon: null,
+        copyright: $("#copyrightHolder").text() || ""
     }
 }
 
@@ -207,7 +209,8 @@ function createAdministrationDialog() {
         ' + Utils.createFormElement($labelForumTitle, 'forumName', 'text', 'first dialog-input')
         + Utils.createFormElement($labelForumDescription, 'forumDescription', 'text', 'dialog-input')
         + Utils.createFormElement($labelTitlePrefix, 'forumTitlePrefix', 'text', 'first dialog-input')
-        + Utils.createFormElement($labelLogoTooltip, 'forumLogoTooltip', 'text', 'dialog-input') + ' \
+        + Utils.createFormElement($labelLogoTooltip, 'forumLogoTooltip', 'text', 'dialog-input') 
+        + Utils.createFormElement($copyrightLabel, 'copyright', 'text', 'dialog-input') + ' \
             <div class="clearfix"';
 
     var footerContent = ' \
@@ -236,6 +239,8 @@ function createAdministrationDialog() {
     $('#removeLogo').tooltip();
     $('#forumTitlePrefix').attr('data-original-title', $labelTitlePrefixHint);
     $('#forumTitlePrefix').tooltip();
+    $('#copyright').attr('data-original-title', $copyrightHint);
+    $('#copyright').tooltip();
 
     var tabFunc = function (e) {
         if (document.activeElement.id == jDialog.options.dialogId && (e.keyCode || e.charCode) == tabCode) {
@@ -277,6 +282,7 @@ function fillAdminDialogInputs() {
     $('#iconPreview').attr('src', currentAdminValues.iconPreview);
     $('#logo').val(currentAdminValues.logo);
     $('#icon').val(currentAdminValues.icon);
+    $('#copyright').val(currentAdminValues.copyright);
 }
 
 /*
@@ -461,7 +467,8 @@ function saveInputValues() {
         logo: jDialog.dialog.find('#logo').val(),
         logoPreview: jDialog.dialog.find('#logoPreview').attr("src"),
         icon: jDialog.dialog.find('#icon').val(),
-        iconPreview: jDialog.dialog.find('#iconPreview').attr("src")
+        iconPreview: jDialog.dialog.find('#iconPreview').attr("src"),
+        copyright: jDialog.dialog.find('#copyright').val()
     }
 }
 
@@ -481,6 +488,7 @@ function sendForumConfiguration(e) {
     componentInformation.logo = currentAdminValues.logo;
     componentInformation.icon = currentAdminValues.icon;
     componentInformation.titlePrefix = currentAdminValues.titlePrefix;
+    componentInformation.copyright = currentAdminValues.copyright;
 
     jDialog.dialog.find('*').attr('disabled', true);
 

@@ -253,8 +253,15 @@
     <jtalks:banner banner="${banners['BOTTOM']}" position="${'BOTTOM'}"/>
     <div>
       <div class="pull-left">
-        Powered by JCommune ${project.version}<br/>
-        &copy; 2013 <a class="space-left-small" href="http://jtalks.org">jtalks.org</a><br/>
+        <c:choose>
+          <c:when test="${sessionScope.adminMode == true}">
+            <span id="userDefinedCopyright" class="cursor-pointer">${userDefinedCopyright}</span>
+          </c:when>
+          <c:otherwise>
+            ${userDefinedCopyright}
+          </c:otherwise>
+        </c:choose><br/>
+        Powered by JCommune ${project.version} by <a class="space-left-small" href="http://jtalks.org">jtalks.org</a><br/>
         Design with <a class="space-left-small" href="http://getbootstrap.com">Twitter Bootstrap</a>
       </div>
       <div>

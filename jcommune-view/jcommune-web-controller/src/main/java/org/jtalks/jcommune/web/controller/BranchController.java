@@ -17,11 +17,9 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.LastReadPostService;
-import org.jtalks.jcommune.service.TopicFetchService;
-import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.BranchDto;
@@ -51,6 +49,7 @@ public class BranchController {
 
     public static final String PAGE = "page";
     private BranchService branchService;
+    private PostService postService;
     private TopicFetchService topicFetchService;
     private LastReadPostService lastReadPostService;
     private UserService userService;
@@ -67,6 +66,7 @@ public class BranchController {
      * @param userService         to get user currently logged in
      * @param locationService     to fetch user forum page location info
      * @param breadcrumbBuilder   for creating breadcrumbs
+     * @param postService         to get separate posts
      */
     @Autowired
     public BranchController(BranchService branchService,
@@ -74,13 +74,15 @@ public class BranchController {
                             LastReadPostService lastReadPostService,
                             UserService userService,
                             BreadcrumbBuilder breadcrumbBuilder,
-                            LocationService locationService) {
+                            LocationService locationService,
+                            PostService postService) {
         this.branchService = branchService;
         this.topicFetchService = topicFetchService;
         this.lastReadPostService = lastReadPostService;
         this.userService = userService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.locationService = locationService;
+        this.postService = postService;
     }
 
     /**
@@ -111,6 +113,24 @@ public class BranchController {
                 .addObject("topicsPage", topicsPage)
                 .addObject("breadcrumbList", breadcrumbs)
                 .addObject("subscribed", branch.getSubscribers().contains(currentUser));
+    }
+
+    /**
+     * Displays last messages for the branch.
+     *
+     * @return {@code ModelAndView} with post list and vars for pagination
+     */
+    @RequestMapping("/branches/{branchId}/recent")
+    public ModelAndView recentBranchPostsPage(@PathVariable("branchId") long branchId) throws NotFoundException {
+        branchService.checkIfBranchExists(branchId);
+        Branch branch = branchService.get(branchId);
+
+        List<Post> posts = postService.getLastPostFor(branch, 15);
+
+        return new ModelAndView("posts/recent")
+                .addObject("branch", branch)
+                .addObject("posts", posts);
+
     }
 
     /**

@@ -66,4 +66,13 @@ public interface PostDao extends Crud<Post> {
      * @return last post that was posted in a topic of branch
      */
     Post getLastPostFor(Branch branch);
+
+    /**
+     * Get last posts that were posted in a topics of branch.
+     *
+     * @param branch in this branch post was posted
+     * @param postCount how many posts to return
+     * @return last posts that were posted in a topics of branch
+     */
+    List<Post> getLastPostFor(Branch branch, int postCount);
 }

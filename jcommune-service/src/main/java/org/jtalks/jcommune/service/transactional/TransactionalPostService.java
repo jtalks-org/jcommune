@@ -194,4 +194,12 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     public Post getLastPostFor(Branch branch) {
         return getDao().getLastPostFor(branch);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Post> getLastPostFor(Branch branch, int postCount) {
+        return getDao().getLastPostFor(branch, postCount);
+    }
 }

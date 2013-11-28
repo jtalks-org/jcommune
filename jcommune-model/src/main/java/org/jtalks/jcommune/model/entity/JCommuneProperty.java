@@ -101,7 +101,9 @@ public enum JCommuneProperty {
      */
     ADMIN_INFO_LAST_UPDATE_TIME,
     /** title prefix - should be displayed at the beginning of the title of the every page */
-    ALL_PAGES_TITLE_PREFIX
+    ALL_PAGES_TITLE_PREFIX,
+    
+    COPYRIGHT
     ;
 
 

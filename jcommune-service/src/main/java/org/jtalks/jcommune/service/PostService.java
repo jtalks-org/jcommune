@@ -22,6 +22,8 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 /**
  * This interface should have methods which give us more abilities in manipulating Post persistent entity.
  *
@@ -84,4 +86,13 @@ public interface PostService extends EntityService<Post> {
      * @return the last post that was posted in branch
      */
     Post getLastPostFor(Branch branch);
+
+    /**
+     * Get the last post, that was posted in a topic of branch.
+     *
+     * @param branch for this branch it gets the last post
+     * @param postCount how many posts to return
+     * @return the last post that was posted in branch
+     */
+    List<Post> getLastPostFor(Branch branch, int postCount);
 }

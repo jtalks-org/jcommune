@@ -74,6 +74,10 @@
         </c:choose>
       </span>
     </sec:authorize>
+    <a href="${pageContext.request.contextPath}/branches/${branch.id}/recent.rss"
+      title="<spring:message code='label.tips.feed_subsription'/>">
+      <img src="${pageContext.request.contextPath}/resources/images/rss-icon.png" alt="" class="rss-icon">
+    </a>
   </div>
   <span class="inline-block"></span>
 </div>

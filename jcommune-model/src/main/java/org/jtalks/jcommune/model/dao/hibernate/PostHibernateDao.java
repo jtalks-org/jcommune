@@ -93,11 +93,22 @@ public class PostHibernateDao extends GenericDao<Post> implements PostDao {
      */
     @Override
     public Post getLastPostFor(Branch branch) {
-        Post result = (Post) session()
+        List<Post> post = getLastPostFor(branch, 1);
+        if (post.size() == 1) {
+            return  post.get(0);
+        }
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Post> getLastPostFor(Branch branch, int postCount) {
+        List<Post> result = (List<Post>) session()
                 .getNamedQuery("getLastPostForBranch")
                 .setParameter("branch", branch)
-                .setMaxResults(1)
-                .uniqueResult();
+                .setMaxResults(postCount).list();
         return result;
     }
 }

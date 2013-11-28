@@ -135,3 +135,6 @@ $labelShowDetails = '<spring:message code="label.showDetails" htmlEscape="true"/
 $labelHideDetails = '<spring:message code="label.hideDetails" htmlEscape="true"/>';
 $labelPluginConfigError = '<spring:message code="label.pluginConfigError" htmlEscape="true"/>';
 $labelCloseDialog = '<spring:message code="label.closeDialog" htmlEscape="true"/>';
+
+$copyrightLabel = '<spring:message code="label.copyright" htmlEscape="true"/>';
+$copyrightHint = '<spring:message code="label.copyrightHint" htmlEscape="true"/>';

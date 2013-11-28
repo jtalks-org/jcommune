@@ -14,6 +14,10 @@
  */
 package org.jtalks.jcommune.web.interceptors;
 
+import org.hamcrest.MatcherAssert;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import org.joda.time.LocalDateTime;
 import org.jtalks.jcommune.model.dao.ComponentDao;
 import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.mockito.Mock;
@@ -50,6 +54,7 @@ public class PropertiesInterceptorTest {
     private JCommuneProperty logoToolTip = JCommuneProperty.LOGO_TOOLTIP;
     private JCommuneProperty lastChangeDate = JCommuneProperty.ADMIN_INFO_LAST_UPDATE_TIME;
     private JCommuneProperty titlePrefix = JCommuneProperty.ALL_PAGES_TITLE_PREFIX;
+    private JCommuneProperty copyright = JCommuneProperty.COPYRIGHT;
 
     @Mock
     private ComponentDao componentDao;
@@ -61,7 +66,7 @@ public class PropertiesInterceptorTest {
         initMocks(this);
         
         propertiesInterceptor = new PropertiesInterceptor(cmpName, 
-                cmpDescription, sapeShowDummyLinks, logoToolTip, lastChangeDate, titlePrefix);
+                cmpDescription, sapeShowDummyLinks, logoToolTip, lastChangeDate, titlePrefix, copyright);
         
         cmpName.setName("cmp.name");
         cmpDescription.setName("cmp.description");
@@ -76,6 +81,7 @@ public class PropertiesInterceptorTest {
         logoToolTip.setDefaultValue(LOGO_TOOLTIP);
         lastChangeDate.setDefaultValue(LAST_CHANGE_DATE);
         titlePrefix.setDefaultValue("prefix of the title");
+        copyright.setDefaultValue("My Copyright {current_year}");
         
         cmpName.setComponentDao(componentDao);
         cmpDescription.setComponentDao(componentDao);
@@ -97,6 +103,7 @@ public class PropertiesInterceptorTest {
         String logoTooltip = assertAndReturnModelAttributeOfType(mav, PARAM_LOGO_TOOLTIP, String.class);
         String lastChangeDate = assertAndReturnModelAttributeOfType(mav, PARAM_LAST_INFO_CHAGE, String.class);
         String titlePrefixProperty = assertAndReturnModelAttributeOfType(mav, "cmpTitlePrefix", String.class);
+        String copyrightValue = assertAndReturnModelAttributeOfType(mav, "userDefinedCopyright", String.class);
         
         assertEquals(cmpName, CMP_NAME);
         assertEquals(cmpDescription, CMP_DESCRIPTION);
@@ -104,6 +111,7 @@ public class PropertiesInterceptorTest {
         assertEquals(logoTooltip, LOGO_TOOLTIP);
         assertEquals(lastChangeDate, LAST_CHANGE_DATE);
         assertEquals(titlePrefixProperty, "prefix of the title");
+        assertThat(copyrightValue, equalTo("My Copyright " + getCurrentYear()));
     }
     
     @Test
@@ -122,6 +130,11 @@ public class PropertiesInterceptorTest {
         assertNull(mav.getModel().get(PARAM_LOGO_TOOLTIP));
         assertNull(mav.getModel().get(PARAM_LAST_INFO_CHAGE));
         assertNull(mav.getModel().get("cmpTitlePrefix"));
+        assertNull(mav.getModel().get("userDefinedCopyright"));
+    }
+
+    private int getCurrentYear() {
+        return new LocalDateTime().getYear();
     }
     
     

@@ -21,6 +21,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.joda.time.LocalDateTime;
 
 /**
  * Injects different JCommune properties into pages so that they can be 
@@ -37,6 +38,10 @@ public class PropertiesInterceptor extends HandlerInterceptorAdapter {
     private static final String PARAM_SHOW_DUMMY_LINKS = "sapeShowDummyLinks";
     private static final String PARAM_LOGO_TOOLTIP = "logoTooltip";
     private static final String PARAM_ADMIN_INFO_CHANGE_DATE = "infoChangeDate";
+    private static final String PARAM_COPYRIGHT_TEMPLATE = "copyrightTemplate";
+    private static final String PARAM_USER_DEFINED_COPYRIGHT = "userDefinedCopyright";
+    
+    private static final String CURRENT_YEAR_PLACEHOLDER = "{current_year}";
     
     private JCommuneProperty componentNameProperty;
     private JCommuneProperty componentDescriptionProperty;
@@ -44,6 +49,9 @@ public class PropertiesInterceptor extends HandlerInterceptorAdapter {
     private JCommuneProperty logoTooltipProperty;
     private JCommuneProperty adminInfoChangeDateProperty;
     private JCommuneProperty allPagesTitlePrefixProperty;
+    private JCommuneProperty copyrightProperty;
+    
+    private final String CURRENT_YEAR = String.valueOf(new LocalDateTime().getYear());
 
     /**
      * @param componentDescriptionProperty component description property
@@ -58,13 +66,15 @@ public class PropertiesInterceptor extends HandlerInterceptorAdapter {
                                  JCommuneProperty sapeShowDummyLinksProperty,
                                  JCommuneProperty logoTooltipProperty,
                                  JCommuneProperty adminInfoChangeDateProperty,
-                                 JCommuneProperty allPagesTitlePrefixProperty) {
+                                 JCommuneProperty allPagesTitlePrefixProperty,
+                                 JCommuneProperty copyrightProperty) {
         this.componentDescriptionProperty = componentDescriptionProperty;
         this.componentNameProperty = componentNameProperty;
         this.sapeShowDummyLinksProperty = sapeShowDummyLinksProperty;
         this.logoTooltipProperty =  logoTooltipProperty;
         this.adminInfoChangeDateProperty = adminInfoChangeDateProperty;
         this.allPagesTitlePrefixProperty = allPagesTitlePrefixProperty;
+        this.copyrightProperty = copyrightProperty;
     }
 
     /**
@@ -87,6 +97,12 @@ public class PropertiesInterceptor extends HandlerInterceptorAdapter {
             modelAndView.addObject(PARAM_LOGO_TOOLTIP, logoTooltipProperty.getValue());
             modelAndView.addObject(PARAM_CMP_PREFIX, allPagesTitlePrefixProperty.getValue());
             modelAndView.addObject(PARAM_ADMIN_INFO_CHANGE_DATE, adminInfoChangeDateProperty.getValue());
+            modelAndView.addObject(PARAM_COPYRIGHT_TEMPLATE, copyrightProperty.getValue());
+            modelAndView.addObject(PARAM_USER_DEFINED_COPYRIGHT, getCopyrightWithYear());
         }
+    }
+
+    private String getCopyrightWithYear() {
+        return copyrightProperty.getValue().replace(CURRENT_YEAR_PLACEHOLDER, CURRENT_YEAR);
     }
 }

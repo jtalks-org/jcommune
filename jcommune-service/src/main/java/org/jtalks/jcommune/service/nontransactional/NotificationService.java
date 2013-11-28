@@ -45,8 +45,8 @@ public class NotificationService {
     private JCommuneProperty notificationsEnabledProperty;
 
     /**
-     * @param userService to determine the update author
-     * @param mailService     to perform actual email notifications
+     * @param userService                  to determine the update author
+     * @param mailService                  to perform actual email notifications
      * @param notificationsEnabledProperty lets us know whether we can send notifications
      */
     public NotificationService(
@@ -82,7 +82,7 @@ public class NotificationService {
 
     /**
      * Overload for skipping topic subscribers
-     * 
+     *
      * @param entity
      * @param topicSubscribers
      */
@@ -93,7 +93,7 @@ public class NotificationService {
             subscribers.remove(userService.getCurrentUser());
 
             for (JCUser user : subscribers) {
-                if(!topicSubscribers.contains(user)){
+                if (!topicSubscribers.contains(user)) {
                     mailService.sendUpdatesOnSubscription(user, entity);
                 }
             }
@@ -105,18 +105,19 @@ public class NotificationService {
      * was moved to another sections and also notifies all branch
      * subscribers
      *
-     * @param topic   topic moved
+     * @param topic topic moved
      */
     public void sendNotificationAboutTopicMoved(Topic topic) {
 
         if (notificationsEnabledProperty.booleanValue()) {
+            String curUser = userService.getCurrentUser().getUsername();
 
             //send notification to topic subscribers
             Collection<JCUser> topicSubscribers = subscriptionService.getAllowedSubscribers(topic);
             this.filterSubscribers(topicSubscribers);
 
             for (JCUser subscriber : topicSubscribers) {
-                mailService.sendTopicMovedMail(subscriber, topic.getId());
+                mailService.sendTopicMovedMail(subscriber, topic.getId(), curUser);
             }
 
             //send notification to branch subscribers
@@ -124,8 +125,8 @@ public class NotificationService {
 
             this.filterSubscribers(branchSubscribers);
             for (JCUser subscriber : branchSubscribers) {
-                if(!topicSubscribers.contains(subscriber)) {
-                    mailService.sendTopicMovedMail(subscriber, topic.getId());
+                if (!topicSubscribers.contains(subscriber)) {
+                    mailService.sendTopicMovedMail(subscriber, topic.getId(), curUser);
                 }
             }
         }
@@ -133,30 +134,32 @@ public class NotificationService {
 
     /**
      * Filter collection - remove current user from subscribers
+     *
      * @param subscribers collection of subscribers
      */
-    private void filterSubscribers(Collection<JCUser> subscribers)
-    {
+    private void filterSubscribers(Collection<JCUser> subscribers) {
         subscribers.remove(userService.getCurrentUser());
     }
 
     /**
      * Send notification to subscribers about removing topic or code review.
      *
-     * @param topic Current topic
+     * @param topic       Current topic
      * @param subscribers Collection of subscribers
      */
     public void sendNotificationAboutRemovingTopic(Topic topic, Collection<JCUser> subscribers) {
         if (notificationsEnabledProperty.booleanValue()) {
+            String curUser = userService.getCurrentUser().getUsername();
             this.filterSubscribers(subscribers);
             for (JCUser subscriber : subscribers) {
-                mailService.sendRemovingTopicMail(subscriber, topic);
+                mailService.sendRemovingTopicMail(subscriber, topic, curUser);
             }
         }
     }
 
     /**
      * Notify about new topic creation in the subscribed branch.
+     *
      * @param topic newly created topic
      */
     public void sendNotificationAboutTopicCreated(Topic topic) {
@@ -164,7 +167,7 @@ public class NotificationService {
         this.filterSubscribers(branchSubscribers);
         for (JCUser subscriber : branchSubscribers) {
             mailService.sendTopicCreationMail(subscriber, topic);
-        }        
+        }
     }
 }
 
