@@ -34,6 +34,10 @@
       <c:out value="${cmpTitlePrefix}"/>
       <c:out value="${branch.name}"/> - <c:out value="${cmpDescription}"/>
   </title>
+  <spring:message code="label.rssFeed" var="branchRssTitle" arguments="${branch.name}" htmlEscape="true" javaScriptEscape="true"/>
+  <link rel="alternate" type="application/rss+xml"
+        href="${pageContext.request.contextPath}/branches/${branch.id}/recent.rss"
+        title="${branchRssTitle}">
 </head>
 <body>
 <div class="container">
@@ -76,6 +80,7 @@
     </sec:authorize>
     <a href="${pageContext.request.contextPath}/branches/${branch.id}/recent.rss"
       title="<spring:message code='label.tips.feed_subsription'/>">
+
       <img src="${pageContext.request.contextPath}/resources/images/rss-icon.png" alt="" class="rss-icon">
     </a>
   </div>
