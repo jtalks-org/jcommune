@@ -44,11 +44,11 @@ public class BbCodeAwareSizeValidator implements ConstraintValidator<BbCodeAware
      */
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value == null) {
+        if (value == null || value.length() > max) {
             return false;
         }
         int plainTextLength = removeBBCodes(value).trim().length();
-        return (plainTextLength >= min) && (plainTextLength <= max);
+        return (plainTextLength >= min);
     }
 
     /**
