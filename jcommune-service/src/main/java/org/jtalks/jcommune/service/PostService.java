@@ -94,5 +94,5 @@ public interface PostService extends EntityService<Post> {
      * @param postCount how many posts to return
      * @return the last post that was posted in branch
      */
-    List<Post> getLastPostFor(Branch branch, int postCount);
+    List<Post> getLastPostsFor(Branch branch, int postCount);
 }

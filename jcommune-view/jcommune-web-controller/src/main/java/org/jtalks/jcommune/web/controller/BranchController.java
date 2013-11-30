@@ -125,7 +125,7 @@ public class BranchController {
         branchService.checkIfBranchExists(branchId);
         Branch branch = branchService.get(branchId);
 
-        List<Post> posts = postService.getLastPostFor(branch, 15);
+        List<Post> posts = postService.getLastPostsFor(branch, 15);
 
         return new ModelAndView("posts/recent")
                 .addObject("branch", branch)

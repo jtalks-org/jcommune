@@ -307,6 +307,20 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     }
 
     @Test
+    public void getLastPostsForBranchShouldReturnLatestCreatedPosts() {
+        int size = 42;
+        List<Post> posts = PersistedObjectsFactory.createAndSavePostList(size);
+        Topic postsTopic = posts.get(0).getTopic();
+        Branch postsBranch = postsTopic.getBranch();
+
+        List<Post> actualLastPosts = dao.getLastPostsFor(postsBranch, 2);
+
+        assertEquals(actualLastPosts.size(), 2);
+        assertEquals(actualLastPosts.get(0).getId(), posts.get(40).getId());
+        assertEquals(actualLastPosts.get(1).getId(), posts.get(39).getId());
+    }
+
+    @Test
     public void testGetLastPostInEmptyBranch() {
         Topic topic = PersistedObjectsFactory.getDefaultTopic();
         Branch branch = topic.getBranch();
@@ -316,5 +330,17 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
         assertNull(dao.getLastPostFor(branch),
                 "The branch is empty, so last post mustn't be found");
+    }
+
+    @Test
+    public void getLastPostsInEmptyBranchShouldReturnEmptyList() {
+        Topic topic = PersistedObjectsFactory.getDefaultTopic();
+        Branch branch = topic.getBranch();
+        branch.deleteTopic(topic);
+
+        session.save(branch);
+
+        assertTrue(dao.getLastPostsFor(branch, 42).isEmpty(),
+                "The branch is empty, so last posts mustn't be found");
     }
 }
