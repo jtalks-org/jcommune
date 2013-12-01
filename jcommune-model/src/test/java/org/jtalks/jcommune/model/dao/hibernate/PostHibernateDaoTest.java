@@ -313,11 +313,23 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         Topic postsTopic = posts.get(0).getTopic();
         Branch postsBranch = postsTopic.getBranch();
 
+        ReflectionTestUtils.setField(
+                posts.get(0),
+                "creationDate",
+                new DateTime(2101, 12, 25, 0, 0, 0, 0));
+        session.save(posts.get(0));
+
+        ReflectionTestUtils.setField(
+                posts.get(1),
+                "creationDate",
+                new DateTime(2100, 12, 25, 0, 0, 0, 0));
+        session.save(posts.get(1));
+
         List<Post> actualLastPosts = dao.getLastPostsFor(postsBranch, 2);
 
         assertEquals(actualLastPosts.size(), 2);
-        //assertEquals(actualLastPosts.get(0).getId(), posts.get(40).getId());
-        //assertEquals(actualLastPosts.get(1).getId(), posts.get(39).getId());
+        assertEquals(actualLastPosts.get(0).getId(), posts.get(0).getId());
+        assertEquals(actualLastPosts.get(1).getId(), posts.get(1).getId());
     }
 
     @Test
