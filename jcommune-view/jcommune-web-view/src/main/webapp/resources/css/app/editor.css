@@ -1,4 +1,4 @@
-﻿﻿﻿.editorWYSIWYG {
+﻿﻿.editorWYSIWYG {
     /* font: 10pt Tahoma;
  border-bottom: 1px solid #b2b2b2;*/
 }
@@ -7,7 +7,7 @@
     /*font: 9pt "Courier New";*/
 }
 
-#htmlContent{
+#htmlContent {
     overflow: auto;
     height: 100%
 }
@@ -25,7 +25,7 @@ div.richeditor div button {
     width: 25px;
     height: 25px;
     border: 1px solid transparent;
-    background-color: Transparent;
+    background-color: transparent;
     cursor: pointer;
     color: Black;
     background-position: center;
@@ -131,11 +131,11 @@ div.richeditor iframe {
 }
 
 blockquote:after {
-        content: ".";
-        display: block;
-        height: 0;
-        clear: both;
-        visibility: hidden;
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
 }
 
 .code {
@@ -148,7 +148,7 @@ blockquote:after {
 
 .list li {
     padding: 3px 0;
-    list-style-position:inside;
+    list-style-position: inside;
 }
 
 .unordered-list {
@@ -177,9 +177,9 @@ blockquote:after {
 }
 
 pre {
-    white-space: pre-wrap;       /* css-3 */
-    white-space: -moz-pre-wrap;  /* Mozilla*/
-    white-space: -pre-wrap;      /* Opera 4-6 */
-    white-space: -o-pre-wrap;    /* Opera 7 */
-    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    white-space: pre-wrap; /* css-3 */
+    white-space: -moz-pre-wrap; /* Mozilla*/
+    white-space: -pre-wrap; /* Opera 4-6 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    word-wrap: break-word; /* Internet Explorer 5.5+ */
 }

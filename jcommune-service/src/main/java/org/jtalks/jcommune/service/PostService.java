@@ -36,7 +36,7 @@ public interface PostService extends EntityService<Post> {
     /**
      * Update current post with given content, add the modification date.
      *
-     * @param post      post to be updated
+     * @param post        post to be updated
      * @param postContent content of post
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when post not found
@@ -54,7 +54,7 @@ public interface PostService extends EntityService<Post> {
      * Get user's posts.
      *
      * @param userCreated user created post
-     * @param page page number, for which we will find posts
+     * @param page        page number, for which we will find posts
      * @return object that contains posts for one page(note, that one page may contain
      *         all posts, that were created by user) and information for pagination
      */
@@ -68,12 +68,12 @@ public interface PostService extends EntityService<Post> {
      * @return number of the page where the post will actually be
      */
     int calculatePageForPost(Post post);
-    
+
     /**
      * Get all posts in the topic of forum.
-     * 
+     *
      * @param topic for this topic we will find posts
-     * @param page page number, for which we will find posts
+     * @param page  page number, for which we will find posts
      * @return object that contains posts for one page(note, that one page may contain
      *         all posts) and information for pagination
      */
@@ -81,16 +81,16 @@ public interface PostService extends EntityService<Post> {
 
     /**
      * Get the last post, that was posted in a topic of branch.
-     * 
+     *
      * @param branch for this branch it gets the last post
      * @return the last post that was posted in branch
      */
     Post getLastPostFor(Branch branch);
 
     /**
-     * Get the last post, that was posted in a topic of branch.
+     * Get the last posts in a topic of branch.
      *
-     * @param branch for this branch it gets the last post
+     * @param branch    for this branch it gets the last post
      * @param postCount how many posts to return
      * @return the last post that was posted in branch
      */
