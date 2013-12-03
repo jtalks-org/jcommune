@@ -23,7 +23,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<div class="word-wrap"><jtalks:bb2html bbCode="${text}"/></div>
+<div class="word-wrap post-content-body"><jtalks:bb2html bbCode="${text}"/></div>
 <c:if test="${!empty signature}">
   <div class="signature-conatiner">
     <hr/>
