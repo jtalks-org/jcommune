@@ -131,9 +131,6 @@
           <fmt:message key="label.signin"/>
         </a>
       </li>
-      <script type="text/javascript">
-          $redirectUrl = "${pageContext.request.requestURI}";
-      </script>
     </sec:authorize>
     <%-- END OF Not logged in block --%>
 

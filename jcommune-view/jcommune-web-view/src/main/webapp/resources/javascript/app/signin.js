@@ -109,7 +109,7 @@ function sendLoginPost(e) {
             resp = eval('(' + resp + ')');
 
             if (resp.status == 'SUCCESS') {
-                window.location.href = $redirectUrl;
+                location.reload();
             }
             else {
                 if (resp.result && resp.result.customError) {
