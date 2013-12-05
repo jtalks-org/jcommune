@@ -40,6 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.savedrequest.SavedRequest;
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -85,6 +86,7 @@ public class UserController {
     private static final String REMEMBER_ME_ON = "on";
     protected static final String ATTR_USERNAME = "username";
     protected static final String ATTR_LOGIN_ERROR = "login_error";
+    private static final int LOGIN_TRIES_AFTER_LOCK = 3;
     private final UserService userService;
     private final Authenticator authenticator;
     private final PluginService pluginService;
@@ -234,7 +236,7 @@ public class UserController {
      * Get html from available registration plugins.
      *
      * @param request request
-     * @param locale  user locale
+     * @param locale user locale
      * @return map as pairs pluginId - html
      */
     private Map<String, String> getRegistrationPluginsHtml(HttpServletRequest request, Locale locale) {
@@ -258,7 +260,7 @@ public class UserController {
                              HttpServletRequest request, HttpServletResponse response) {
         try {
             Plugin plugin = pluginService.getPluginById(pluginId, new TypeFilter(ExtendedPlugin.class));
-            ((ExtendedPlugin) plugin).doAction(pluginId, action, request, response);
+            ((ExtendedPlugin)plugin).doAction(pluginId, action, request, response);
         } catch (org.jtalks.common.service.exceptions.NotFoundException ex) {
             LOGGER.error("Can't perform action {}: plugin with id {} not found", action, pluginId);
         }
@@ -338,7 +340,7 @@ public class UserController {
         boolean rememberMeBoolean = rememberMe.equals(REMEMBER_ME_ON);
         boolean isAuthenticated;
         try {
-            isAuthenticated = userService.loginUser(username, password, rememberMeBoolean, request, response);
+            isAuthenticated = loginWithLockingHandling(username, password, rememberMeBoolean, request, response);
         } catch (NoConnectionException e) {
             return new JsonResponse(JsonResponseStatus.FAIL,
                     new ImmutableMap.Builder<String, String>().put("customError", "connectionError").build());
@@ -376,7 +378,7 @@ public class UserController {
         boolean rememberMeBoolean = rememberMe.equals(REMEMBER_ME_ON);
         boolean isAuthenticated;
         try {
-            isAuthenticated = userService.loginUser(username, password, rememberMeBoolean, request, response);
+            isAuthenticated = loginWithLockingHandling(username, password, rememberMeBoolean, request, response);
         } catch (NoConnectionException e) {
             return new ModelAndView(AUTH_SERVICE_FAIL_URL);
         } catch (UnexpectedErrorException e) {
@@ -393,6 +395,22 @@ public class UserController {
             modelAndView.addObject(REFERER_ATTR, referer);
             return modelAndView;
         }
+    }
+
+    private boolean loginWithLockingHandling(String username, String password, boolean rememberMeBoolean,
+                                             HttpServletRequest request, HttpServletResponse response)
+            throws UnexpectedErrorException, NoConnectionException {
+        for (int i = 0; i <= LOGIN_TRIES_AFTER_LOCK; i++) {
+            try {
+                return userService.loginUser(username, password, rememberMeBoolean, request, response);
+            } catch (HibernateOptimisticLockingFailureException e) {
+                if (i == LOGIN_TRIES_AFTER_LOCK) {
+                    LOGGER.error("User have been locked {} times. Username: {}",
+                            LOGIN_TRIES_AFTER_LOCK, username);
+                }
+            }
+        }
+        return false;
     }
 
     /**
