@@ -32,6 +32,7 @@ import org.jtalks.jcommune.service.plugins.TypeFilter;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
+import org.jtalks.jcommune.web.interceptors.RefererKeepInterceptor;
 import org.jtalks.jcommune.web.validation.editors.DefaultStringEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -233,7 +234,7 @@ public class UserController {
      * Get html from available registration plugins.
      *
      * @param request request
-     * @param locale user locale
+     * @param locale  user locale
      * @return map as pairs pluginId - html
      */
     private Map<String, String> getRegistrationPluginsHtml(HttpServletRequest request, Locale locale) {
@@ -257,7 +258,7 @@ public class UserController {
                              HttpServletRequest request, HttpServletResponse response) {
         try {
             Plugin plugin = pluginService.getPluginById(pluginId, new TypeFilter(ExtendedPlugin.class));
-            ((ExtendedPlugin)plugin).doAction(pluginId, action, request, response);
+            ((ExtendedPlugin) plugin).doAction(pluginId, action, request, response);
         } catch (org.jtalks.common.service.exceptions.NotFoundException ex) {
             LOGGER.error("Can't perform action {}: plugin with id {} not found", action, pluginId);
         }
@@ -292,15 +293,7 @@ public class UserController {
     public ModelAndView loginPage(HttpServletRequest request) {
         JCUser currentUser = userService.getCurrentUser();
 
-        String referer = request.getHeader("referer");
-        HttpSession session = request.getSession(false);
-        if(session != null) {
-            SavedRequest savedRequest = (SavedRequest) session.getAttribute(WebAttributes.SAVED_REQUEST);
-            if(savedRequest != null) {
-                referer = savedRequest.getRedirectUrl();
-            }
-        }
-
+        String referer = getReferer(request);
         if (currentUser.isAnonymous()) {
             ModelAndView mav = new ModelAndView(LOGIN);
             mav.addObject(REFERER_ATTR, referer);
@@ -308,6 +301,31 @@ public class UserController {
         } else {
             return new ModelAndView("redirect:" + referer);
         }
+    }
+
+    /**
+     * Get request referer
+     *
+     * @param request
+     * @return
+     */
+    private String getReferer(HttpServletRequest request) {
+        String referer = request.getHeader("referer");
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            SavedRequest savedRequest = (SavedRequest) session.getAttribute(WebAttributes.SAVED_REQUEST);
+            if (savedRequest != null) {
+                referer = savedRequest.getRedirectUrl();
+            } else {
+                String customReferer =
+                        String.valueOf(session.getAttribute(RefererKeepInterceptor.CUSTOM_REFERER));
+                if (customReferer != null) {
+                    referer = customReferer;
+                }
+            }
+        }
+
+        return referer;
     }
 
     @RequestMapping(value = "/login_ajax", method = RequestMethod.POST)

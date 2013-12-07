@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +29,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Controller
 @RequestMapping("/errors/")
 public class ErrorsHandlerController {
+
+    @Autowired
+    private UserService userService;
 
     @RequestMapping(value = "500")
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
@@ -51,14 +56,14 @@ public class ErrorsHandlerController {
         return "/errors/400";
     }
 
-    @RequestMapping(value = "403")
-    @ResponseStatus(value = HttpStatus.FORBIDDEN)
-    public String handleForbiddenError() {
-        return "/errors/accessDenied";
-    }
-
     @RequestMapping(value = "redirect/403")
     public String handleForbiddenRedirect() {
         return "redirect:/errors/403";
+    }
+
+    @RequestMapping(value = "403")
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
+    public String handleForbiddenError() {
+        return userService.getCurrentUser().isAnonymous() ? "redirect:/login" : "/errors/accessDenied";
     }
 }
