@@ -96,4 +96,11 @@ public class BbCodeAwareSizeValidatorTest {
 
         //verify(validator).removeBBCodes(source);
     }
+    
+    @Test
+    public void testMaxLengthWithBbCodes() {
+    	String source = "[b][b]123[/b][/b]";
+    	
+    	assertFalse(validator.isValid(source, null));
+    }
 }
