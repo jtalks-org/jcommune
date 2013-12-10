@@ -127,13 +127,10 @@
       </li>
       <li class="divider-vertical"></li>
       <li>
-        <a id="signin" href="${pageContext.request.contextPath}/login">
+        <a id="signin" rel="${sessionScope.customReferer}" href="${pageContext.request.contextPath}/login">
           <fmt:message key="label.signin"/>
         </a>
       </li>
-      <script type="text/javascript">
-          $redirectUrl = "${pageContext.request.requestURI}";
-      </script>
     </sec:authorize>
     <%-- END OF Not logged in block --%>
 

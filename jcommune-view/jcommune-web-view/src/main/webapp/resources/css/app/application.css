@@ -829,3 +829,7 @@ div.add-branch-button:hover {
 .word-wrap {
     font-family: Tahoma,Calibri,Verdana,Geneva,sans-serif;
 }
+
+.post-content-body {
+    overflow: auto;
+}

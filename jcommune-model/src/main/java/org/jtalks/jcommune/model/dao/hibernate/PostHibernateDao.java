@@ -93,7 +93,7 @@ public class PostHibernateDao extends GenericDao<Post> implements PostDao {
      */
     @Override
     public Post getLastPostFor(Branch branch) {
-        List<Post> post = getLastPostFor(branch, 1);
+        List<Post> post = getLastPostsFor(branch, 1);
         if (post.size() == 1) {
             return  post.get(0);
         }
@@ -104,7 +104,7 @@ public class PostHibernateDao extends GenericDao<Post> implements PostDao {
      * {@inheritDoc}
      */
     @Override
-    public List<Post> getLastPostFor(Branch branch, int postCount) {
+    public List<Post> getLastPostsFor(Branch branch, int postCount) {
         List<Post> result = (List<Post>) session()
                 .getNamedQuery("getLastPostForBranch")
                 .setParameter("branch", branch)

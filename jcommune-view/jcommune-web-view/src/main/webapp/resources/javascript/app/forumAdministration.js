@@ -25,7 +25,7 @@ $(function () {
     $("#cmpName").on('click', showForumConfigurationDialog);
     $("#cmpDescription").on('click', showForumConfigurationDialog);
     $("#forumLogo").on('click', showForumConfigurationDialog);
-    $("#userDefinedCopyright").on('click', showForumConfigurationDialog);
+    $("#userDefinedCopyright").on('click', editCopyright);
 
     $("[id^=branchLabel]").on('click', showBranchEditDialog);
     $("[id^=newBranch]").on('click', showNewBranchDialog);
@@ -147,6 +147,14 @@ function getCurrentAdminValues() {
     }
 }
 
+/**
+ * Open configuration dialog and focus on copyright field.
+ */
+function editCopyright(e) {
+  showForumConfigurationDialog(e);
+  $("#forumCopyright").focus();
+}
+
 function showForumConfigurationDialog(e) {
     // prevent from following link
     e.preventDefault();
@@ -210,8 +218,8 @@ function createAdministrationDialog() {
         + Utils.createFormElement($labelForumDescription, 'forumDescription', 'text', 'dialog-input')
         + Utils.createFormElement($labelTitlePrefix, 'forumTitlePrefix', 'text', 'first dialog-input')
         + Utils.createFormElement($labelLogoTooltip, 'forumLogoTooltip', 'text', 'dialog-input') 
-        + Utils.createFormElement($copyrightLabel, 'copyright', 'text', 'dialog-input') + ' \
-            <div class="clearfix"';
+        + Utils.createFormElement($copyrightLabel, 'forumCopyright', 'text', 'dialog-input') + ' \
+            <div class="clearfix"></div>';
 
     var footerContent = ' \
             <button id="administrationCancelButton" class="btn">' + $labelCancel + '</button> \
@@ -225,7 +233,7 @@ function createAdministrationDialog() {
         maxWidth: 350,
         maxHeight: 700,
         firstFocus: true,
-        tabNavigation: ['#forumName', '#forumDescription', '#forumTitlePrefix', '#forumLogoTooltip',
+        tabNavigation: ['#forumName', '#forumDescription', '#forumTitlePrefix', '#forumLogoTooltip', '#forumCopyright',
                         '#administrationSubmitButton', '#administrationCancelButton'],
         handlers: {
             '#administrationSubmitButton': {'click': sendForumConfiguration},
@@ -239,8 +247,8 @@ function createAdministrationDialog() {
     $('#removeLogo').tooltip();
     $('#forumTitlePrefix').attr('data-original-title', $labelTitlePrefixHint);
     $('#forumTitlePrefix').tooltip();
-    $('#copyright').attr('data-original-title', $copyrightHint);
-    $('#copyright').tooltip();
+    $('#forumCopyright').attr('data-original-title', $copyrightHint);
+    $('#forumCopyright').tooltip();
 
     var tabFunc = function (e) {
         if (document.activeElement.id == jDialog.options.dialogId && (e.keyCode || e.charCode) == tabCode) {
@@ -282,7 +290,7 @@ function fillAdminDialogInputs() {
     $('#iconPreview').attr('src', currentAdminValues.iconPreview);
     $('#logo').val(currentAdminValues.logo);
     $('#icon').val(currentAdminValues.icon);
-    $('#copyright').val(currentAdminValues.copyright);
+    $('#forumCopyright').val(currentAdminValues.copyright);
 }
 
 /*
@@ -468,7 +476,7 @@ function saveInputValues() {
         logoPreview: jDialog.dialog.find('#logoPreview').attr("src"),
         icon: jDialog.dialog.find('#icon').val(),
         iconPreview: jDialog.dialog.find('#iconPreview').attr("src"),
-        copyright: jDialog.dialog.find('#copyright').val()
+        copyright: jDialog.dialog.find('#forumCopyright').val()
     }
 }
 

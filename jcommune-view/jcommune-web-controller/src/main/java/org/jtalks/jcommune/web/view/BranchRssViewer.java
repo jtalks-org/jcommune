@@ -17,12 +17,9 @@ package org.jtalks.jcommune.web.view;
 
 import com.sun.syndication.feed.rss.Channel;
 import com.sun.syndication.feed.rss.Content;
-import com.sun.syndication.feed.rss.Description;
 import com.sun.syndication.feed.rss.Item;
-import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.web.servlet.view.feed.AbstractRssFeedView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,14 +36,14 @@ import java.util.Map;
  */
 public class BranchRssViewer extends AbstractRssFeedView {
 
-    private static final String DEFAULT_FEED_TITLE = "";
-    private static final String DEFAULT_FEED_DESCRIPTION = "";
+    public static final String DEFAULT_FEED_TITLE = "";
+    public static final String DEFAULT_FEED_DESCRIPTION = "";
 
     /**
-     * Set meta data for all RSS feed
+     * Sets meta data for the whole RSS feed
      *
-     * @param model   news model
-     * @param feed    news feed
+     * @param model   RSS model
+     * @param feed    RSS feed
      * @param request http request
      */
     @Override
@@ -57,6 +54,10 @@ public class BranchRssViewer extends AbstractRssFeedView {
             feed.setTitle(branch.getName());
             feed.setDescription(branch.getDescription());
             feed.setLink(buildURL(request) + branch.prepareUrlSuffix());
+        } else {
+            feed.setTitle(DEFAULT_FEED_TITLE);
+            feed.setDescription(DEFAULT_FEED_DESCRIPTION);
+            feed.setLink(buildURL(request));
         }
 
         super.buildFeedMetadata(model, feed, request);
@@ -65,10 +66,10 @@ public class BranchRssViewer extends AbstractRssFeedView {
     /**
      * Set list data item news in RSS feed
      *
-     * @param model    news model
+     * @param model    model containing information about RSS items
      * @param request  http request
      * @param response http response
-     * @return list items
+     * @return list of RSS items
      * @throws IOException i/o exception
      */
     @Override
@@ -93,38 +94,35 @@ public class BranchRssViewer extends AbstractRssFeedView {
     }
 
     /**
-     * Create news item
+     * Creates feed item with information about the post
      *
      * @param post post to add to the feed
-     * @param url building URL
-     * @return item for news feed
+     * @param componentUrl base url of the forum component
+     * @return item for the RSS feed
      */
-    private Item createFeedItem(Post post, String url) {
+    private Item createFeedItem(Post post, String componentUrl) {
 
         Item item = new Item();
-        Description description = new Description();
-        description.setType("text");
-        description.setValue(post.getPostContent());
 
         Content content = new Content();
+        content.setType(Content.TEXT);
+        content.setValue(post.getPostContent());
         item.setContent(content);
 
         item.setTitle(post.getTopic().getTitle());
         item.setAuthor(post.getUserCreated().getUsername());
 
-        item.setLink(url + "/posts/" + post.getId());
+        item.setLink(componentUrl + "/posts/" + post.getId());
 
-        //item.setComments(topic.getTopicStarter().getSignature());
-        item.setDescription(description);
         item.setPubDate(post.getCreationDate().toDate());
         return item;
     }
 
     /**
-     * The implementation of building url
+     * Builds base url for the forum items (branches, posts,...)
      *
      * @param request HttpServletRequest
-     * @return url
+     * @return base url for the forum items
      */
     private String buildURL(HttpServletRequest request) {
         return request.getScheme()

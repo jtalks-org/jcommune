@@ -65,10 +65,8 @@ function showExternalLinksDialog() {
         '<table cellpadding="0" cellspacing="0" class="list-of-links"> <tbody>' +
             createLinksTableRows(elements) + ' \
          </tbody></table>' +
-            Utils.createFormElement($labelTitle, 'linkTitle', 'text', 'hide-element edit-links dialog-input') +
-            Utils.createFormElement($labelUrl, 'linkUrl', 'text', 'hide-element edit-links dialog-input') +
-            Utils.createFormElement($labelHint, 'linkHint', 'text', 'hide-element edit-links dialog-input') + ' \
-         <span class="confirm-delete-text remove-links"></span> ';
+         "<div id='linkEditorPlaceholder'></div>"+
+         '<span class="confirm-delete-text remove-links"></span> ';
 
     var editButtonClick = function (e) {
         e.preventDefault();
@@ -197,11 +195,18 @@ function listOfLinksVisible(visible) {
     }, '100');
 }
 
+function getLinkEditorFormElements() {
+    return  Utils.createFormElement($labelTitle, 'linkTitle', 'text', 'edit-links dialog-input') +
+            Utils.createFormElement($labelUrl, 'linkUrl', 'text', 'edit-links dialog-input') +
+            Utils.createFormElement($labelHint, 'linkHint', 'text', 'edit-links dialog-input');
+}
+
 function editLinksVisible(visible) {
     var intervalID = setInterval(function () {
         if ($('.edit-links')) {
             if (visible) {
                 var link = getLinkById(actionId);
+                $("#linkEditorPlaceholder").html(getLinkEditorFormElements());
                 $('#linkTitle').val(link.title);
                 $('#linkUrl').val(link.url);
                 $('#linkHint').val(link.hint);
@@ -248,6 +253,7 @@ function editLinksVisible(visible) {
                 });
             }
             else {
+                $("#linkEditorPlaceholder").html("");
                 $('.edit-links').addClass("hide-element");
             }
             clearInterval(intervalID)
@@ -288,6 +294,7 @@ function addLinkVisible(visible) {
     var intervalID = setInterval(function () {
         if ($('.edit-links')) {
             if (visible) {
+                $("#linkEditorPlaceholder").html(getLinkEditorFormElements());
                 $('#linkTitle').val("");
                 $('#linkUrl').val("");
                 $('#linkHint').val("");
@@ -334,6 +341,7 @@ function addLinkVisible(visible) {
                 });
             }
             else {
+                $("#linkEditorPlaceholder").html("");
                 $('.edit-links').addClass("hide-element");
             }
             clearInterval(intervalID)

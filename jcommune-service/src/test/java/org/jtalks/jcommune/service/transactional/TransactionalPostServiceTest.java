@@ -36,7 +36,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -419,5 +418,19 @@ public class TransactionalPostServiceTest {
 
         assertEquals(actualPost, expectedPost, "Service returned incorrect last post for branch");
         verify(postDao).getLastPostFor(postBranch);
+    }
+
+    @Test
+    public void testGetLastPostsForBranch() {
+        Branch postBranch = new Branch(null, null);
+        Post expectedPost = new Post(null, null);
+        List<Post> posts = Arrays.asList(expectedPost);
+        when(postDao.getLastPostsFor(Mockito.<Branch>any(), Mockito.eq(42)))
+                .thenReturn(posts);
+
+        List<Post> actualPosts = postService.getLastPostsFor(postBranch, 42);
+
+        assertEquals(actualPosts, posts, "Service returned incorrect last posts for branch");
+        verify(postDao).getLastPostsFor(postBranch, 42);
     }
 }

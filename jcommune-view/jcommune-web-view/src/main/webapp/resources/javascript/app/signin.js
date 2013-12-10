@@ -25,7 +25,7 @@ $(function () {
 
         var bodyContent = '\
         ' + Utils.createFormElement($labelUsername, 'j_username', 'text', 'first')
-         + Utils.createFormElement($labelPassword, 'j_password', 'password') + ' \
+            + Utils.createFormElement($labelPassword, 'j_password', 'password') + ' \
             <div id="rememberme-area" class="control-group"> \
                 <input name="_spring_security_remember_me" class="form-check-radio-box" type="checkbox" checked="checked"> \
                 <label class="string optional">' + $labelRememberMe + '</label> \
@@ -38,13 +38,13 @@ $(function () {
         var footerContent = '<button id="signin-submit-button" class="btn btn-primary" name="commit"> \
             ' + $labelSignin + '</button>';
 
-        var submitDialog = function(e){
+        var submitDialog = function (e) {
             if (e.keyCode == enterCode) {
                 //if focus on username then select password field
                 if ($(e.target).is('#j_username')) {
                     e.preventDefault();
-                    if($.browser.mozilla){
-                        setTimeout(function(){
+                    if ($.browser.mozilla) {
+                        setTimeout(function () {
                             jDialog.dialog.find('#j_password').focus();
                         }, 0);
                     }
@@ -64,7 +64,7 @@ $(function () {
             bodyContent: bodyContent,
             footerContent: footerContent,
             maxWidth: 350,
-            tabNavigation: ['#j_username','#j_password','#rememberme-area input','#restore-passwd a',
+            tabNavigation: ['#j_username', '#j_password', '#rememberme-area input', '#restore-passwd a',
                 '#signin-submit-button'],
             handlers: {
                 '#signin-submit-button': {'click': sendLoginPost}
@@ -109,7 +109,13 @@ function sendLoginPost(e) {
             resp = eval('(' + resp + ')');
 
             if (resp.status == 'SUCCESS') {
-                window.location.href = $redirectUrl;
+                referer = $("#signin").attr("rel");
+                if (referer) {
+                    window.location.href = referer;
+                } else {
+                    location.reload();
+                }
+
             }
             else {
                 if (resp.result && resp.result.customError) {

@@ -32,6 +32,7 @@ import org.jtalks.jcommune.service.plugins.TypeFilter;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
+import org.jtalks.jcommune.web.interceptors.RefererKeepInterceptor;
 import org.jtalks.jcommune.web.validation.editors.DefaultStringEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.savedrequest.SavedRequest;
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -84,6 +86,7 @@ public class UserController {
     private static final String REMEMBER_ME_ON = "on";
     protected static final String ATTR_USERNAME = "username";
     protected static final String ATTR_LOGIN_ERROR = "login_error";
+    private static final int LOGIN_TRIES_AFTER_LOCK = 3;
     private final UserService userService;
     private final Authenticator authenticator;
     private final PluginService pluginService;
@@ -292,15 +295,7 @@ public class UserController {
     public ModelAndView loginPage(HttpServletRequest request) {
         JCUser currentUser = userService.getCurrentUser();
 
-        String referer = request.getHeader("referer");
-        HttpSession session = request.getSession(false);
-        if(session != null) {
-            SavedRequest savedRequest = (SavedRequest) session.getAttribute(WebAttributes.SAVED_REQUEST);
-            if(savedRequest != null) {
-                referer = savedRequest.getRedirectUrl();
-            }
-        }
-
+        String referer = getReferer(request);
         if (currentUser.isAnonymous()) {
             ModelAndView mav = new ModelAndView(LOGIN);
             mav.addObject(REFERER_ATTR, referer);
@@ -308,6 +303,31 @@ public class UserController {
         } else {
             return new ModelAndView("redirect:" + referer);
         }
+    }
+
+    /**
+     * Get request referer
+     *
+     * @param request
+     * @return
+     */
+    private String getReferer(HttpServletRequest request) {
+        String referer = request.getHeader("referer");
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            SavedRequest savedRequest = (SavedRequest) session.getAttribute(WebAttributes.SAVED_REQUEST);
+            if (savedRequest != null) {
+                referer = savedRequest.getRedirectUrl();
+            } else {
+                String customReferer =
+                        String.valueOf(session.getAttribute(RefererKeepInterceptor.CUSTOM_REFERER));
+                if (customReferer != null) {
+                    referer = customReferer;
+                }
+            }
+        }
+
+        return referer;
     }
 
     @RequestMapping(value = "/login_ajax", method = RequestMethod.POST)
@@ -320,7 +340,7 @@ public class UserController {
         boolean rememberMeBoolean = rememberMe.equals(REMEMBER_ME_ON);
         boolean isAuthenticated;
         try {
-            isAuthenticated = userService.loginUser(username, password, rememberMeBoolean, request, response);
+            isAuthenticated = loginWithLockingHandling(username, password, rememberMeBoolean, request, response);
         } catch (NoConnectionException e) {
             return new JsonResponse(JsonResponseStatus.FAIL,
                     new ImmutableMap.Builder<String, String>().put("customError", "connectionError").build());
@@ -358,7 +378,7 @@ public class UserController {
         boolean rememberMeBoolean = rememberMe.equals(REMEMBER_ME_ON);
         boolean isAuthenticated;
         try {
-            isAuthenticated = userService.loginUser(username, password, rememberMeBoolean, request, response);
+            isAuthenticated = loginWithLockingHandling(username, password, rememberMeBoolean, request, response);
         } catch (NoConnectionException e) {
             return new ModelAndView(AUTH_SERVICE_FAIL_URL);
         } catch (UnexpectedErrorException e) {
@@ -375,6 +395,22 @@ public class UserController {
             modelAndView.addObject(REFERER_ATTR, referer);
             return modelAndView;
         }
+    }
+
+    private boolean loginWithLockingHandling(String username, String password, boolean rememberMeBoolean,
+                                             HttpServletRequest request, HttpServletResponse response)
+            throws UnexpectedErrorException, NoConnectionException {
+        for (int i = 0; i <= LOGIN_TRIES_AFTER_LOCK; i++) {
+            try {
+                return userService.loginUser(username, password, rememberMeBoolean, request, response);
+            } catch (HibernateOptimisticLockingFailureException e) {
+                if (i == LOGIN_TRIES_AFTER_LOCK) {
+                    LOGGER.error("User have been locked {} times. Username: {}",
+                            LOGIN_TRIES_AFTER_LOCK, username);
+                }
+            }
+        }
+        return false;
     }
 
     /**
