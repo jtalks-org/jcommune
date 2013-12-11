@@ -14,6 +14,10 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
 import org.jtalks.jcommune.service.UserContactsService;
@@ -23,12 +27,15 @@ import org.jtalks.jcommune.web.dto.json.FailValidationJsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * This controller handles creation and deletion of user contacts.
@@ -86,6 +93,7 @@ public class UserContactsController {
      * @throws NotFoundException when owner of contact wasn't found
      */
     @RequestMapping(value = "/contacts/remove/{contactOwnerId}/{contactId}", method = RequestMethod.DELETE)
+    @ResponseStatus(value = HttpStatus.OK)
     public void removeContact(@PathVariable long contactOwnerId, @PathVariable long contactId) throws NotFoundException{
         service.removeContact(contactOwnerId, contactId);
     }
