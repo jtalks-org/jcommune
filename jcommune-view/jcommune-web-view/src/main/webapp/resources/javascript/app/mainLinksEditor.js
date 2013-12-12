@@ -228,6 +228,7 @@ function editLinksVisible(visible) {
                             if (resp.status == "SUCCESS") {
                                 link.url = resp.result.url; //server can correct the url and hint
                                 link.hint = resp.result.hint;
+                                link.title = escapeHtml(link.title);
                                 updateExternalLink(link, bigScreenExternalLinkIdPrefix);
                                 updateExternalLink(link, smallScreenExternalLinkIdPrefix);
                                 toAction('list');
@@ -317,6 +318,7 @@ function addLinkVisible(visible) {
                                 link.url = resp.result.url; //server can correct the url and hint
                                 link.hint = resp.result.hint;
                                 link.id = resp.result.id;
+                                link.title = escapeHtml(link.title);
                                 addNewExternalLink(link);
                                 $('#editLink' + resp.result.id).focus();
                             } else {
@@ -432,6 +434,12 @@ function confirmRemoveVisible(visible) {
             clearInterval(intervalID)
         }
     }, '100');
+}
+
+function escapeHtml(unsafe) {
+    return unsafe
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
 }
 
 function toAction(typeOfAction) {
