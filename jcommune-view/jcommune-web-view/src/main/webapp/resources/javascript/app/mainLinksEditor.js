@@ -361,9 +361,9 @@ function addLinkVisible(visible) {
 
         function prepareNewLinkATag(externalLink, externalLinkIdPrefix) {
             return result = '<span><a id="' + externalLinkIdPrefix + externalLink.id + '"'
-                + 'href="' + externalLink.url + '"'
-                + 'data-original-title="' + externalLink.hint + '">'
-                + externalLink.title + " "
+                + 'href="' + escapeHtml(externalLink.url) + '"'
+                + 'data-original-title="' + escapeHtml(externalLink.hint) + '">'
+                + escapeHtml(externalLink.title) + " "
                 + '</a></span>';
         }
 
@@ -432,6 +432,15 @@ function confirmRemoveVisible(visible) {
             clearInterval(intervalID)
         }
     }, '100');
+}
+
+function escapeHtml(unsafe) {
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 function toAction(typeOfAction) {
