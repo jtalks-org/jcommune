@@ -14,8 +14,9 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
@@ -103,7 +104,8 @@
       <ul class="dropdown-menu links-menu">
         <c:if test="${not empty externalLinks}">
           <c:forEach var="link" items="${externalLinks}">
-            <li><a id="small-screen-external-link-${link.id}" data-original-title="${link.hint}" href="${link.url}">
+            <li><a id="small-screen-external-link-<c:out value='${link.id}'/>" 
+            data-original-title="<c:out value='${link.hint}'/>" href="<c:out value='${link.url}'/>">
               <c:out value="${link.title}"/>
             </a></li>
           </c:forEach>
@@ -127,7 +129,7 @@
       </li>
       <li class="divider-vertical"></li>
       <li>
-        <a id="signin" href="${pageContext.request.contextPath}/login">
+        <a id="signin" rel="${sessionScope.customReferer}" href="${pageContext.request.contextPath}/login">
           <fmt:message key="label.signin"/>
         </a>
       </li>

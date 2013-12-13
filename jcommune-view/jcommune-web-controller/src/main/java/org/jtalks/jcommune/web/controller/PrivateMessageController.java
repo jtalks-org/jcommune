@@ -196,7 +196,7 @@ public class PrivateMessageController {
      * @return redirect to /inbox on success or back to "/new_pm" on validation errors
      * @throws NotFoundException is invalid user set as recipient
      */
-    @RequestMapping(value = "/pm", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = "/pm", method = RequestMethod.POST)
     public String sendMessage(@Valid @ModelAttribute PrivateMessageDto pmDto,
                               BindingResult result) throws NotFoundException {
         if (result.hasErrors()) {
