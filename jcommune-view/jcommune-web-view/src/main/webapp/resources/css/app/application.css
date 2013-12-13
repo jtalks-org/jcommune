@@ -833,3 +833,7 @@ div.add-branch-button:hover {
 .post-content-body {
     overflow: auto;
 }
+
+.post-content-body ul {
+    margin: 0 0 0 18px !important;
+}
