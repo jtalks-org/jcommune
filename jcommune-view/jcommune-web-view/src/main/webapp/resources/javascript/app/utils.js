@@ -15,18 +15,29 @@
 var Utils = {};
 
 
-function quote(postId, branchId) {
-    // we need a synchronous POST here so we're creating a form. Found no better way to do it(
-    var form = document.createElement("form");
-    form.setAttribute("action", $root + "/posts/" + postId + "/quote?branchId=" + branchId);
-    form.setAttribute("method", "POST");
-    var field = document.createElement("input");
-    field.setAttribute("type", "hidden");
-    field.setAttribute("name", "selection");
-    field.setAttribute("value", getSelectedPostText());
-    form.appendChild(field);
-    document.body.appendChild(form);
-    form.submit();
+function quote(postId) {
+    var callback = function (text) {
+        console.log(text);
+        var answer = $('#postBody');
+        if (answer) {
+            answer.val(answer.val() + text);
+        }
+    }
+
+    $.ajax({
+        url: baseUrl + '/posts/' + postId + '/ajax_quote',
+        type: 'GET',
+        data: {
+            selection: getSelectedPostText()
+        },
+        success: function (data) {
+            callback(data.result);
+        },
+        error: function () {
+            callback('');
+        }
+    });
+
 }
 
 function getSelectedPostText() {
@@ -85,7 +96,7 @@ Utils.br2lf = function (s) {
 /**
  * Create form field with given label(placeholder), id, type
  */
-Utils.createFormElement = function(label, id, type, cls) {
+Utils.createFormElement = function (label, id, type, cls) {
     var elementHtml = ' \
         <div class="control-group"> \
             <div class="controls"> \

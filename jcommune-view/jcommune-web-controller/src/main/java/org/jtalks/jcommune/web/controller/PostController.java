@@ -15,17 +15,23 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.apache.commons.lang.StringUtils;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
+import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.PostDto;
 import org.jtalks.jcommune.web.dto.TopicDto;
+import org.jtalks.jcommune.web.dto.json.JsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -33,7 +39,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.ViewResolver;
 
-import javax.validation.*;
+import javax.validation.Valid;
 
 /**
  * Controller for post-related actions
@@ -53,6 +59,7 @@ public class PostController {
     public static final String POST_ID = "postId";
     public static final String POST_DTO = "postDto";
     public static final String TOPIC_TITLE = "topicTitle";
+    public static final String BREADCRUMB_LIST = "breadcrumbList";
 
     private PostService postService;
     private LastReadPostService lastReadPostService;
@@ -61,6 +68,9 @@ public class PostController {
     private TopicModificationService topicModificationService;
     private BBCodeService bbCodeService;
     private UserService userService;
+    private LocationService locationService;
+    private SessionRegistry sessionRegistry;
+
 
     @Autowired(required = true)
     private ViewResolver viewResolver;
@@ -91,7 +101,7 @@ public class PostController {
     public PostController(PostService postService, BreadcrumbBuilder breadcrumbBuilder,
                           TopicFetchService topicFetchService, TopicModificationService topicModificationService,
                           BBCodeService bbCodeService, LastReadPostService lastReadPostService,
-                          UserService userService) {
+                          UserService userService, LocationService locationService, SessionRegistry sessionRegistry) {
         this.postService = postService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.topicFetchService = topicFetchService;
@@ -99,6 +109,8 @@ public class PostController {
         this.bbCodeService = bbCodeService;
         this.lastReadPostService = lastReadPostService;
         this.userService = userService;
+        this.locationService = locationService;
+        this.sessionRegistry = sessionRegistry;
     }
 
     /**
@@ -204,6 +216,25 @@ public class PostController {
     }
 
     /**
+     * Get quote text.
+     * If user select nothing JS will substitute whole post contents here
+     * <p/>
+     * Supports post method to pass large quotations.
+     *
+     * @param postId    identifier os the post we're quoting
+     * @param selection text selected by user for the quotation
+     * @throws NotFoundException when topic was not found
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/posts/{postId}/ajax_quote")
+    @ResponseBody
+    public JsonResponse getQuote(@PathVariable(POST_ID) Long postId,
+                                 @RequestParam("selection") String selection) throws NotFoundException {
+        Post source = postService.get(postId);
+        String content = StringUtils.defaultString(selection, source.getPostContent());
+        return new JsonResponse(JsonResponseStatus.SUCCESS, bbCodeService.quote(content, source.getUserCreated()));
+    }
+
+    /**
      * Process the reply form. Adds new post to the specified topic and redirects to the
      * topic view page.
      *
@@ -213,14 +244,25 @@ public class PostController {
      * @throws NotFoundException when topic or branch not found
      */
     @RequestMapping(method = RequestMethod.POST, value = "/posts/new")
-    public ModelAndView create(@Valid @ModelAttribute PostDto postDto, BindingResult result) throws NotFoundException {
-        if (result.hasErrors()) {
-            // refill the form fields
-            ModelAndView mav = this.addPost(postDto.getTopicId());
-            mav.addObject(POST_DTO, postDto);
-            return mav;
-        }
+    public ModelAndView create(@RequestParam(value = "page", defaultValue = "1", required = false) String page,
+                               @Valid @ModelAttribute PostDto postDto,
+                               BindingResult result) throws NotFoundException {
+        JCUser currentUser = userService.getCurrentUser();
         Topic topic = topicFetchService.get(postDto.getTopicId());
+
+        Page<Post> postsPage = postService.getPosts(topic, page);
+
+        if (result.hasErrors()) {
+            return new ModelAndView("topic/postList")
+                    .addObject("viewList", locationService.getUsersViewing(topic))
+                    .addObject("usersOnline", sessionRegistry.getAllPrincipals())
+                    .addObject("postsPage", postsPage)
+                    .addObject("topic", topic)
+                    .addObject(POST_DTO, postDto)
+                    .addObject("subscribed", topic.getSubscribers().contains(currentUser))
+                    .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
+        }
+
         Post newbie = topicModificationService.replyToTopic(
                 postDto.getTopicId(), postDto.getBodyText(), topic.getBranch().getId());
         lastReadPostService.markTopicAsRead(topic);

@@ -18,6 +18,7 @@ import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
+import org.jtalks.jcommune.web.dto.PostDto;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,7 @@ public class TopicController {
     private static final String TOPIC_VIEW = "topic/topicForm";
     private static final String TOPIC_DTO = "topicDto";
     private static final String REDIRECT_URL = "redirect:/topics/";
+    public static final String POST_DTO = "postDto";
 
     private TopicModificationService topicModificationService;
     private TopicFetchService topicFetchService;
@@ -206,6 +208,7 @@ public class TopicController {
                 .addObject("usersOnline", sessionRegistry.getAllPrincipals())
                 .addObject("postsPage", postsPage)
                 .addObject("topic", topic)
+                .addObject(POST_DTO, new PostDto())
                 .addObject("subscribed", topic.getSubscribers().contains(currentUser))
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
     }

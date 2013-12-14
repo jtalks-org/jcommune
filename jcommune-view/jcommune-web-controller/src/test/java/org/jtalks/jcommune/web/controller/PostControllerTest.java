@@ -18,13 +18,16 @@ import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
+import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.PostDto;
+import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -38,10 +41,8 @@ import static java.util.Arrays.asList;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.ModelAndViewAssert.*;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -67,6 +68,10 @@ public class PostControllerTest {
     private LastReadPostService lastReadPostService;
     @Mock
     private UserService userService;
+    @Mock
+    private LocationService locationService;
+    @Mock
+    private SessionRegistry sessionRegistry;
 
     public static final long POST_ID = 1;
     public static final long TOPIC_ID = 1L;
@@ -99,7 +104,7 @@ public class PostControllerTest {
 
         controller = new PostController(
                 postService, breadcrumbBuilder, topicFetchService, topicModificationService,
-                bbCodeService, lastReadPostService, userService);
+                bbCodeService, lastReadPostService, userService, locationService, sessionRegistry);
     }
 
     @Test
@@ -192,6 +197,27 @@ public class PostControllerTest {
     }
 
     @Test
+    public void testGetQuotedAjax() throws NotFoundException {
+        String expected = "[quote=\"user\"]" + POST_CONTENT + "[/quote]";
+        when(bbCodeService.quote(POST_CONTENT, user)).thenReturn(expected);
+        JsonResponse response = controller.getQuote(post.getId(), null);
+
+        assertEquals(response.getResult(), expected);
+    }
+
+    @Test
+    public void testPartialQuotedAjax() throws NotFoundException {
+        String selection = "selected content";
+        String expected = "[quote=\"user\"]" + selection + "[/quote]";
+        when(postService.get(anyLong())).thenReturn(post);
+        when(bbCodeService.quote(selection, user)).thenReturn(expected);
+
+        JsonResponse response = controller.getQuote(post.getId(), selection);
+
+        assertEquals(response.getResult(), expected);
+    }
+
+    @Test
     public void testQuotedAnswer() throws NotFoundException {
         String expected = "[quote=\"user\"]" + POST_CONTENT + "[/quote]";
         when(bbCodeService.quote(POST_CONTENT, user)).thenReturn(expected);
@@ -244,7 +270,7 @@ public class PostControllerTest {
         when(topicModificationService.replyToTopic(anyLong(), Matchers.<String>any(), eq(BRANCH_ID))).thenReturn(post);
         when(postService.calculatePageForPost(post)).thenReturn(1);
         //invoke the object under test
-        ModelAndView mav = controller.create(getDto(), resultWithoutErrors);
+        ModelAndView mav = controller.create(null, getDto(), resultWithoutErrors);
 
         //check expectations
         verify(topicModificationService).replyToTopic(TOPIC_ID, POST_CONTENT, BRANCH_ID);
@@ -259,13 +285,13 @@ public class PostControllerTest {
         BeanPropertyBindingResult resultWithErrors = mock(BeanPropertyBindingResult.class);
         when(resultWithErrors.hasErrors()).thenReturn(true);
         //invoke the object under test
-        ModelAndView mav = controller.create(getDto(), resultWithErrors);
+        ModelAndView mav = controller.create(null, getDto(), resultWithErrors);
 
         //check expectations
         verify(topicModificationService, never()).replyToTopic(anyLong(), anyString(), eq(BRANCH_ID));
 
         //check result
-        assertViewName(mav, "topic/answer");
+        assertViewName(mav, "topic/postList");
     }
 
     @Test

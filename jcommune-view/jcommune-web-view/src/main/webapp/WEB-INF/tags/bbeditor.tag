@@ -30,115 +30,115 @@
 
 <div class="btn-toolbar hide-on-preview">
   <div class="btn-group">
-    <a id="format_b" class="btn" accesskey="b" href="#"
-       title="<spring:message code='label.answer.bold'/>">
+      <a id="format_b" class="btn" accesskey="b" href="#fake"
+         title="<spring:message code='label.answer.bold'/>">
       <i class="icon-bold"></i>
     </a>
-    <a id="format_i" class="btn" accesskey="i" href="#"
-       title="<spring:message code='label.answer.italic'/>">
+      <a id="format_i" class="btn" accesskey="i" href="#fake"
+         title="<spring:message code='label.answer.italic'/>">
       <i class="icon-italic"></i>
     </a>
-    <a id="format_u" class="btn" accesskey="u" href="#"
-       title="<spring:message code='label.answer.underline'/>">
+      <a id="format_u" class="btn" accesskey="u" href="#fake"
+         title="<spring:message code='label.answer.underline'/>">
       <i class="icon-underline"></i>
     </a>
-    <a id="format_s" class="btn" accesskey="s" href="#"
-       title="<spring:message code='label.answer.striked'/>">
+      <a id="format_s" class="btn" accesskey="s" href="#fake"
+         title="<spring:message code='label.answer.striked'/>">
       <i class="icon-strike"></i>
     </a>
-    <a id="format_highlight" class="btn" accesskey="h" href="#"
-       title='<spring:message code='label.answer.highlight'/>'>
+      <a id="format_highlight" class="btn" accesskey="h" href="#fake"
+         title='<spring:message code='label.answer.highlight'/>'>
       &nbsp;Highlight&nbsp;
     </a>
   </div>
   <div class='btn-group'>
-    <a id="format_left" class="btn" href="#"
-       title="<spring:message code='label.answer.align_left'/>">
+      <a id="format_left" class="btn" href="#fake"
+         title="<spring:message code='label.answer.align_left'/>">
       <i class="icon-align-left"></i>
     </a>
-    <a id="format_center" class="btn" accesskey="c" href="#"
-       title="<spring:message code='label.answer.align_center'/>">
+      <a id="format_center" class="btn" accesskey="c" href="#fake"
+         title="<spring:message code='label.answer.align_center'/>">
       <i class="icon-align-center"></i>
     </a>
-    <a id="format_right" class="btn" href="#"
-       title="<spring:message code='label.answer.align_right'/>">
+      <a id="format_right" class="btn" href="#fake"
+         title="<spring:message code='label.answer.align_right'/>">
       <i class="icon-align-right"></i>
     </a>
   </div>
   <div class='btn-group'>
-    <a id="format_list" class="btn" accesskey="l" href="#"
-       title="<spring:message code='label.answer.list'/>">
+      <a id="format_list" class="btn" accesskey="l" href="#fake"
+         title="<spring:message code='label.answer.list'/>">
       <i class="icon-list"></i>
     </a>
-    <a id="format_listeq" class="btn" accesskey="o" href="#"
-       title="<spring:message code='label.answer.list_item'/>">
+      <a id="format_listeq" class="btn" accesskey="o" href="#fake"
+         title="<spring:message code='label.answer.list_item'/>">
       <i class="icon-add-row"></i>
     </a>
   </div>
   <div class='btn-group'>
-    <a id="select_color" class="btn" href="#"
-       title="<spring:message code='label.answer.font_color'/>">
+      <a id="select_color" class="btn" href="#fake"
+         title="<spring:message code='label.answer.font_color'/>">
       <i class="icon-palette"></i>
     </a>
     <span id="colorpicker201" class="colorpicker201"></span>
 
-    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"
-       title="<spring:message code="label.answer.font_size"/>">
+      <a class="btn dropdown-toggle" data-toggle="dropdown" href="#fake"
+         title="<spring:message code="label.answer.font_size"/>">
       <i class="icon-text-height"></i>
       <span class="caret"></span>
     </a>
     <ul class="dropdown-menu" id='select_size'>
-      <li data-value='7'><a href="#"><spring:message code="label.answer.font_size.tiny"/></a></li>
-      <li data-value='9'><a href="#"><spring:message code="label.answer.font_size.small"/></a></li>
-      <li data-value='12'><a href="#"><spring:message code="label.answer.font_size.normal"/></a></li>
-      <li data-value='18'><a href="#"><spring:message code="label.answer.font_size.large"/></a></li>
-      <li data-value='24'><a href="#"><spring:message code="label.answer.font_size.huge"/></a></li>
+        <li data-value='7'><a href="#fake"><spring:message code="label.answer.font_size.tiny"/></a></li>
+        <li data-value='9'><a href="#fake"><spring:message code="label.answer.font_size.small"/></a></li>
+        <li data-value='12'><a href="#fake"><spring:message code="label.answer.font_size.normal"/></a></li>
+        <li data-value='18'><a href="#fake"><spring:message code="label.answer.font_size.large"/></a></li>
+        <li data-value='24'><a href="#fake"><spring:message code="label.answer.font_size.huge"/></a></li>
     </ul>
   </div>
   <div class='btn-group'>
-      <a id="format_img" class="btn" accesskey="p" href="#"
-       title="<spring:message code='label.answer.insert_picture'/>">
+      <a id="format_img" class="btn" accesskey="p" href="#fake"
+         title="<spring:message code='label.answer.insert_picture'/>">
       <i class="icon-picture"></i>
     </a>
-    <a id="format_url" class="btn" accesskey="w" href="#"
-       title="<spring:message code='label.answer.insert_link'/>">
+      <a id="format_url" class="btn" accesskey="w" href="#fake"
+         title="<spring:message code='label.answer.insert_link'/>">
       <i class="icon-link"></i>
     </a>
 
-    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+      <a class="btn dropdown-toggle" data-toggle="dropdown" href="#fake">
       <spring:message code="label.answer.font_code"/>
       <span class="caret"></span>
     </a>
     <ul class="dropdown-menu" id='select_code'>
-      <li data-value="cpp"><a href="#">C/C++</a></li>
-      <li data-value="csharp"><a href="#">C#</a></li>
-      <li data-value="java"><a href="#">Java</a></li>
-      <li data-value="php"><a href="#">PHP</a></li>
-      <li data-value="python"><a href="#">Python</a></li>
-      <li data-value="pascal"><a href="#">Pascal</a></li>
-      <li data-value="bash"><a href="#">Bash</a></li>
-      <li data-value="js"><a href="#">JavaScript</a></li>
-      <li data-value="html"><a href="#">HTML</a></li>
-      <li data-value="css"><a href="#">CSS</a></li>
-      <li data-value="sql"><a href="#">SQL</a></li>
-      <li data-value="xml"><a href="#">XML</a></li>
+        <li data-value="cpp"><a href="#fake">C/C++</a></li>
+        <li data-value="csharp"><a href="#fake">C#</a></li>
+        <li data-value="java"><a href="#fake">Java</a></li>
+        <li data-value="php"><a href="#fake">PHP</a></li>
+        <li data-value="python"><a href="#fake">Python</a></li>
+        <li data-value="pascal"><a href="#fake">Pascal</a></li>
+        <li data-value="bash"><a href="#fake">Bash</a></li>
+        <li data-value="js"><a href="#fake">JavaScript</a></li>
+        <li data-value="html"><a href="#fake">HTML</a></li>
+        <li data-value="css"><a href="#fake">CSS</a></li>
+        <li data-value="sql"><a href="#fake">SQL</a></li>
+        <li data-value="xml"><a href="#fake">XML</a></li>
     </ul>
 
-    <a id="format_quote" class="btn" accesskey="q" href="#"
-       title="<spring:message code='label.answer.quote'/>">
+      <a id="format_quote" class="btn" accesskey="q" href="#fake"
+         title="<spring:message code='label.answer.quote'/>">
       <i class="icon-quote"></i>
     </a>
   </div>
   <div class='btn-group'>
-    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"
-       title="<spring:message code="label.answer.indent"/>">
+      <a class="btn dropdown-toggle" data-toggle="dropdown" href="#fake"
+         title="<spring:message code="label.answer.indent"/>">
       <spring:message code="label.answer.indent"/>
       <span class="caret"></span>
     </a>
     <ul class="dropdown-menu" id='select_indent'>
-      <li data-value="15"><a href="#">15</a></li>
-      <li data-value="20"><a href="#">20</a></li>
-      <li data-value="25"><a href="#">25</a></li>
+        <li data-value="15"><a href="#fake">15</a></li>
+        <li data-value="20"><a href="#fake">20</a></li>
+        <li data-value="25"><a href="#fake">25</a></li>
     </ul>
   </div>
   <div class='btn-group'>

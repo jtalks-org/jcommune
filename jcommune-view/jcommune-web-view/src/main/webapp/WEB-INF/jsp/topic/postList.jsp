@@ -253,8 +253,8 @@
             <c:if test='${(!topic.closed || hasCloseTopicPermission) && topic.codeReview == null}'>
               <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
                                     permission='BranchPermission.CREATE_POSTS'>
-                <a class="btn btn-mini" href='javascript:quote(${post.id},${topic.branch.id});'
-                   title="<spring:message code='label.tips.quote_post'/>">
+                  <a class="btn btn-mini" href='javascript:quote(${post.id});'
+                     title="<spring:message code='label.tips.quote_post'/>">
                   <i class="icon-quote"></i><spring:message code="label.quotation"/>
                 </a>
               </jtalks:hasPermission>
@@ -355,6 +355,24 @@
   <%-- END OF Pagination --%>
 </div>
 
+<%--User can answer either if the topic is open, or he has a permission to close/open it--%>
+<c:if test="${(!topic.closed || hasCloseTopicPermission) && topic.codeReview == null}">
+    <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
+                          permission='BranchPermission.CREATE_POSTS'>
+        <form:form
+                action="${pageContext.request.contextPath}/posts/new?topicId=${topic.id}&page=${page}&branchId=${topic.branch.id}"
+                method="POST" class='well anti-multipost' modelAttribute="postDto">
+            <form:hidden path="topicId"/>
+            <jtalks:bbeditor labelForAction="label.answer"
+                             postText="${postDto.bodyText}"
+                             bodyParameterName="bodyText"
+                             back="${pageContext.request.contextPath}/topics/${topic.id}"/>
+        </form:form>
+
+
+    </jtalks:hasPermission>
+</c:if>
+
 <%-- Users --%>
 <div id="users-stats" class="well forum-user-stats-container">
   <jtalks:moderators moderators="${topic.branch.moderatorsGroup.users}"/>
@@ -369,4 +387,10 @@ Without it we're likely to get lots of problems simulating HTTP DELETE via JS in
 <form:form id="deleteForm" method="DELETE"/>
 </div>
 
+<script>
+    if ($('#bodyText\\.errors:visible').length > 0) {
+        Utils.focusFirstEl('#postBody');
+    }
+    ;
+</script>
 </body>
