@@ -360,7 +360,7 @@
     <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
                           permission='BranchPermission.CREATE_POSTS'>
         <form:form
-                action="${pageContext.request.contextPath}/posts/new?page=${page}"
+                action="${pageContext.request.contextPath}/posts/new?topicId=${topic.id}&page=${page}"
                 method="POST" class='well anti-multipost' modelAttribute="postDto">
             <form:hidden path="topicId"/>
             <jtalks:bbeditor labelForAction="label.answer"
