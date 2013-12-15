@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.controller;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
+import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.ComponentService;
@@ -27,16 +28,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Provides an ability to manage plugins of the forum.
  *
  * @author Anuar Nurmakanov
+ * @author Andrey Ivanov
  */
 @Controller
 @RequestMapping("/plugins")
+@SessionAttributes({"pluginConfiguration", "error", "errorInformation"})
 public class PluginController {
 
     private final PluginService pluginService;
@@ -83,6 +88,19 @@ public class PluginController {
                 .addObject("pluginConfiguration", pluginConfiguration);
     }
 
+    @RequestMapping(value = "/configure/error/{name}", method = RequestMethod.GET)
+    public String errorConfiguringPlugin(Model model,
+                                         @ModelAttribute PluginConfiguration newConfiguration) {
+        //System.out.println(error.getMessage());
+        //System.out.println(error.getInfo());
+        //model.addAttribute("error", error);
+        //model.addAttribute("errorInformation", errorInformation);
+        //model.addAttribute("error", error.getMessage());
+        //model.addAttribute("errorInformation", error.getInfo());
+        model.addAttribute("pluginConfiguration", newConfiguration);
+        return "plugin/pluginConfiguration";
+    }
+
     /**
      * Update the configuration of plugin/
      *
@@ -91,22 +109,26 @@ public class PluginController {
      * @throws NotFoundException if configured plugin wasn't found
      */
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public String updateConfiguration(Model model,
-            @ModelAttribute PluginConfiguration newConfiguration) throws NotFoundException {
+    public String updateConfiguration(Model model, @ModelAttribute PluginConfiguration newConfiguration)
+            throws NotFoundException {
         long componentId = getForumComponentId();
         try {
             pluginService.updateConfiguration(newConfiguration, componentId);
         } catch (UnexpectedErrorException ex) {
+           // MessageTransfer mt = new MessageTransfer();
+           // mt.setMessage(ex.getCause().getLocalizedMessage());
+           // mt.setInfo(ExceptionUtils.getFullStackTrace(ex.getCause()));
             model.addAttribute("error", ex.getCause().getLocalizedMessage());
-            model.addAttribute("errorInformation", ExceptionUtils.getFullStackTrace(ex.getCause()));
+           // model.addAttribute("errorInformation", ExceptionUtils.getFullStackTrace(ex.getCause()));
+//            model.addAttribute("error", mt);
             model.addAttribute("pluginConfiguration", newConfiguration);
-            return "plugin/pluginConfiguration";
+            return "redirect:/plugins/configure/error/" + newConfiguration.getName();
         }
 
         return "redirect:/plugins/configure/" + newConfiguration.getName();
     }
 
-    /**
+     /**
      * Update activating state of plugins.
      *
      * @param pluginsActivatingListDto contains activating state for the list of plugins
@@ -123,5 +145,26 @@ public class PluginController {
 
     private long getForumComponentId() {
         return componentService.getComponentOfForum().getId();
+    }
+}
+
+class MessageTransfer implements Serializable {
+    private String message;
+    private String info;
+
+    void setMessage(String message) {
+        this.message = message;
+    }
+
+    void setInfo(String info) {
+        this.info = info;
+    }
+
+    String getInfo() {
+        return info;
+    }
+
+    String getMessage() {
+        return message;
     }
 }
