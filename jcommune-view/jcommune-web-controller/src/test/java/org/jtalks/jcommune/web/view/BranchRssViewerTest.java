@@ -38,11 +38,11 @@ import static org.testng.Assert.assertTrue;
  * @author Andrei Alikov
  */
 public class BranchRssViewerTest {
-    private BranchRssViewer branchRssViewer;
+    private PostListRssViewer branchRssViewer;
 
     @BeforeMethod
     public void setUp() {
-        branchRssViewer = new BranchRssViewer();
+        branchRssViewer = new PostListRssViewer();
     }
 
     @Test
@@ -52,24 +52,25 @@ public class BranchRssViewerTest {
 
         branchRssViewer.buildFeedMetadata(model, channel, getMockRequest());
 
-        assertEquals(channel.getTitle(), BranchRssViewer.DEFAULT_FEED_TITLE);
-        assertEquals(channel.getDescription(), BranchRssViewer.DEFAULT_FEED_DESCRIPTION);
+        assertEquals(channel.getTitle(), PostListRssViewer.DEFAULT_FEED_TITLE);
+        assertEquals(channel.getDescription(), PostListRssViewer.DEFAULT_FEED_DESCRIPTION);
         assertEquals(channel.getLink(), "http://localhost:8080/jcommune");
     }
 
     @Test
     public void buildFeedMetadataShouldUseBranchInfoWhenThereIsBranchInModel() {
         Map<String, Object> model = new HashMap<>();
-        Branch branch = new Branch("my branch", "my description");
-        branch.setId(42);
-        model.put("branch", branch);
+
+        model.put("feedTitle", "my branch");
+        model.put("feedDescription", "my description");
+        model.put("urlSuffix", "/branches/42");
 
         Channel channel = new Channel();
 
         branchRssViewer.buildFeedMetadata(model, channel, getMockRequest());
 
-        assertEquals(channel.getTitle(), branch.getName());
-        assertEquals(channel.getDescription(), branch.getDescription());
+        assertEquals(channel.getTitle(), "my branch");
+        assertEquals(channel.getDescription(), "my description");
         assertEquals(channel.getLink(), "http://localhost:8080/jcommune/branches/42");
     }
 

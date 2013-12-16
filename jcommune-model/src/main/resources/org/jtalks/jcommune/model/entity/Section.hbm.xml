@@ -40,12 +40,12 @@
 
     <!--Returns the count of available display Brunches. Used to define: Available section to view or not.-->
     <!--For logged users - by groups-->
-    <query name="getCountAvailableBranchesByGroupsIds">
-        <![CDATA[SELECT COUNT(distinct view.branchId) FROM org.jtalks.jcommune.model.entity.ViewTopicsBranches view WHERE view.branchId IN (:branchIds) AND view.sid IN (:groupIds) AND view.branchId not in (select v.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches v where v.granting=0 and v.sid in (:groupIds))]]>
+    <query name="getAvailableBranchesByGroupsIds">
+        <![CDATA[SELECT distinct view.branchId FROM org.jtalks.jcommune.model.entity.ViewTopicsBranches view WHERE view.branchId IN (:branchIds) AND view.sid IN (:groupIds) AND view.branchId not in (select v.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches v where v.granting=0 and v.sid in (:groupIds))]]>
     </query>
     <!--For anonymous users-->
-    <query name="getCountAvailableBranchesForAnonymousUser">
-        <![CDATA[SELECT COUNT(distinct view.branchId) FROM org.jtalks.jcommune.model.entity.ViewTopicsBranches view WHERE view.branchId IN (:branchIds) AND view.sid LIKE 'anonymousUser' AND view.granting=1]]>
+    <query name="getAvailableBranchesForAnonymousUser">
+        <![CDATA[SELECT distinct view.branchId FROM org.jtalks.jcommune.model.entity.ViewTopicsBranches view WHERE view.branchId IN (:branchIds) AND view.sid LIKE 'anonymousUser' AND view.granting=1]]>
     </query>
 
 

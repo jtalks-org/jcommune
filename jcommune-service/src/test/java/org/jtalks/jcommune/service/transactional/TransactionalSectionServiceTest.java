@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.model.entity.Branch;
 import org.jtalks.common.model.entity.Section;
+import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -25,6 +26,7 @@ import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.security.access.AccessDeniedException;
 import org.testng.annotations.BeforeMethod;
@@ -58,13 +60,17 @@ public class TransactionalSectionServiceTest {
     private SectionService sectionService;
     private TopicDao topicDao;
 
+    @Mock
+    private PostDao postDao;
+
     @BeforeMethod
     public void setUp() throws Exception {
         sectionDao = mock(SectionDao.class);
         branchService = mock(BranchService.class);
         userService = mock(UserService.class);
         topicDao = mock(TopicDao.class);
-        sectionService = new TransactionalSectionService(sectionDao, branchService, userService, topicDao);
+
+        sectionService = new TransactionalSectionService(sectionDao, branchService, userService, topicDao, postDao);
     }
 
     @Test

@@ -30,11 +30,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Class forms a RSS feed view for a branch.
+ * Class forms a RSS feed view for posts list.
  *
  * @author Andrei Alikov
  */
-public class BranchRssViewer extends AbstractRssFeedView {
+public class PostListRssViewer extends AbstractRssFeedView {
 
     public static final String DEFAULT_FEED_TITLE = "";
     public static final String DEFAULT_FEED_DESCRIPTION = "";
@@ -49,16 +49,25 @@ public class BranchRssViewer extends AbstractRssFeedView {
     @Override
     protected void buildFeedMetadata(Map<String, Object> model, Channel feed,
                                      HttpServletRequest request) {
-        Branch branch = (Branch)model.get("branch");
-        if (branch != null) {
-            feed.setTitle(branch.getName());
-            feed.setDescription(branch.getDescription());
-            feed.setLink(buildURL(request) + branch.prepareUrlSuffix());
-        } else {
-            feed.setTitle(DEFAULT_FEED_TITLE);
-            feed.setDescription(DEFAULT_FEED_DESCRIPTION);
-            feed.setLink(buildURL(request));
+        String title = (String)model.get("feedTitle");
+        if (title == null) {
+            title = DEFAULT_FEED_TITLE;
         }
+
+        String description = (String)model.get("feedDescription");
+        if (description == null) {
+            description = DEFAULT_FEED_DESCRIPTION;
+        }
+
+        String link = buildURL(request);
+        String suffix = (String)model.get("urlSuffix");
+        if (suffix != null) {
+            link += suffix;
+        }
+
+        feed.setTitle(title);
+        feed.setDescription(description);
+        feed.setLink(link);
 
         super.buildFeedMetadata(model, feed, request);
     }

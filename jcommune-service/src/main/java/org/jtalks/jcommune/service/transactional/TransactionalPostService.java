@@ -33,6 +33,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -200,6 +202,6 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      */
     @Override
     public List<Post> getLastPostsFor(Branch branch, int postCount) {
-        return getDao().getLastPostsFor(branch, postCount);
+        return getDao().getLastPostsFor(Arrays.asList(branch.getId()), postCount);
     }
 }

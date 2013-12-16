@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.common.model.entity.Section;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.springframework.security.access.AccessDeniedException;
 
@@ -72,4 +73,6 @@ public interface SectionService extends EntityService<Section> {
      * @param currentTopicId topic id that we want to move
      */
     List<Section> getAllAvailableSections(long currentTopicId);
+
+    List<Post> getLastPostsForSection(Section section, int postsCount);
 }

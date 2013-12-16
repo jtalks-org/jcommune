@@ -59,7 +59,7 @@
     </query>
     
     <query name="getLastPostForBranch">
-        <![CDATA[FROM Post p WHERE p.topic.branch = :branch ORDER BY p.creationDate DESC]]>
+        <![CDATA[FROM Post p WHERE p.topic.branch.id in (:branchIds) ORDER BY p.creationDate DESC]]>
     </query>
 
 </hibernate-mapping>

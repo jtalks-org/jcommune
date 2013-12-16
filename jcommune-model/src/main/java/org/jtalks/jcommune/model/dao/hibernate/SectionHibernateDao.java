@@ -26,6 +26,7 @@ import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -60,37 +61,45 @@ public class SectionHibernateDao extends GenericDao<Section> implements SectionD
      * {@inheritDoc}
      */
     @Override
-    public Long getCountAvailableBranches(JCUser user, List<Branch> branches) {
+    public List<Long> getAvailableBranchIds(JCUser user, List<Branch> branches) {
         if (branches.isEmpty()) {
-            return 0L;
+            return Collections.emptyList();
         }
         List<Long> branchIds = getEntityIdsLongs(new ArrayList<Entity>(branches));
         if (!user.isAnonymous()) {
-            return countVisibleBranchesForLoggedIn(user, branchIds);
+            return visibleBranchesForLoggedIn(user, branchIds);
         }
-        Query query = session().getNamedQuery("getCountAvailableBranchesForAnonymousUser");
+        Query query = session().getNamedQuery("getAvailableBranchesForAnonymousUser");
         query.setParameterList("branchIds", branchIds);
-        return (Long) query.uniqueResult();
+        return query.list();
     }
 
     /**
-     * Get count visible branches, from branch ids, for logged user
+     * {@inheritDoc}
+     */
+    @Override
+    public long getCountAvailableBranches(JCUser user, List<Branch> branches) {
+        return getAvailableBranchIds(user, branches).size();
+    }
+
+    /**
+     * Get visible branches, from branch ids, for logged user
      *
      * @param user      user
      * @param branchIds branch ids
-     * @return count visible branches
+     * @return visible branch ids list
      */
-    private Long countVisibleBranchesForLoggedIn(JCUser user, List<Long> branchIds) {
+    private List<Long> visibleBranchesForLoggedIn(JCUser user, List<Long> branchIds) {
         List<Group> groups = user.getGroups();
         if (groups.isEmpty()) {
-            return 0L;
+            return Collections.emptyList();
         }
         List<String> groupIds = new ArrayList(getEntityIdsStrings(new ArrayList<Entity>(groups)));
 
-        Query query = session().getNamedQuery("getCountAvailableBranchesByGroupsIds");
+        Query query = session().getNamedQuery("getAvailableBranchesByGroupsIds");
         query.setParameterList("groupIds", groupIds);
         query.setParameterList("branchIds", branchIds);
-        return (Long) query.uniqueResult();
+        return query.list();
     }
 
     /**

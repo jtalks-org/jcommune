@@ -16,9 +16,11 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.model.entity.Branch;
 import org.jtalks.common.model.entity.Section;
+import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SectionService;
@@ -46,21 +48,30 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
     private UserService userService;
 
     private TopicDao topicDao;
+
+    private PostDao postDao;
+
+    /**
+     * Post count in the RSS for recent posts in the branch
+     */
+    private static final int RECENT_POST_COUNT = 15;
     
     /**
      * Create an instance of entity based service
      *
      * @param dao           data access object, which should be able do all CRUD operations.
-     * @param branchService autowired object, that represents service for the working with branches
-     * @param userService autowired object, that represents service for the working with users
-     * @param topicDao autowired object, that represents service for the working with topics
+     * @param branchService object, that represents service for the working with branches
+     * @param userService object, that represents service for the working with users
+     * @param topicDao object, that represents service for the working with topics
+     * @param postDao object, that represents service for the working with posts
      */
     public TransactionalSectionService(SectionDao dao, BranchService branchService, UserService userService,
-                                       TopicDao topicDao) {
+                                       TopicDao topicDao, PostDao postDao) {
         super(dao);
         this.branchService = branchService;
         this.userService = userService;
         this.topicDao = topicDao;
+        this.postDao = postDao;
     }
 
     /**
@@ -143,4 +154,14 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
             throw new AccessDeniedException("Access denied to view for section " + section.getId());
         }
     }
+
+    @Override
+    public List<Post> getLastPostsForSection(Section section, int postsCount) {
+        JCUser user = userService.getCurrentUser();
+        List<Branch> branches = new ArrayList<>(section.getBranches());
+        List<Long> branchIds = getDao().getAvailableBranchIds(user, branches);
+
+        return postDao.getLastPostsFor(branchIds, RECENT_POST_COUNT);
+    }
+
 }
