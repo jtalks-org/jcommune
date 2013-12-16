@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -41,7 +40,7 @@ import java.util.*;
  */
 @Controller
 @RequestMapping("/plugins")
-@SessionAttributes({"pluginConfiguration", "error", "errorInformation"})
+@SessionAttributes({"pluginConfiguration"})
 public class PluginController {
 
     private final PluginService pluginService;
@@ -88,16 +87,17 @@ public class PluginController {
                 .addObject("pluginConfiguration", pluginConfiguration);
     }
 
+    /**
+     * Show plugin with errors
+     *
+     * @param model current model
+     * @param configuration current plugin configuration
+     *
+     * @return the name of view and all parameters to display plugin that should be configured
+     */
     @RequestMapping(value = "/configure/error/{name}", method = RequestMethod.GET)
-    public String errorConfiguringPlugin(Model model,
-                                         @ModelAttribute PluginConfiguration newConfiguration) {
-        //System.out.println(error.getMessage());
-        //System.out.println(error.getInfo());
-        //model.addAttribute("error", error);
-        //model.addAttribute("errorInformation", errorInformation);
-        //model.addAttribute("error", error.getMessage());
-        //model.addAttribute("errorInformation", error.getInfo());
-        model.addAttribute("pluginConfiguration", newConfiguration);
+    public String errorConfiguringPlugin(Model model, @ModelAttribute PluginConfiguration configuration) {
+        model.addAttribute("pluginConfiguration", configuration);
         return "plugin/pluginConfiguration";
     }
 
@@ -109,18 +109,15 @@ public class PluginController {
      * @throws NotFoundException if configured plugin wasn't found
      */
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public String updateConfiguration(Model model, @ModelAttribute PluginConfiguration newConfiguration)
+    public String updateConfiguration(Model model, @ModelAttribute PluginConfiguration newConfiguration,
+                                      final RedirectAttributes redirectAttributes)
             throws NotFoundException {
         long componentId = getForumComponentId();
         try {
             pluginService.updateConfiguration(newConfiguration, componentId);
         } catch (UnexpectedErrorException ex) {
-           // MessageTransfer mt = new MessageTransfer();
-           // mt.setMessage(ex.getCause().getLocalizedMessage());
-           // mt.setInfo(ExceptionUtils.getFullStackTrace(ex.getCause()));
-            model.addAttribute("error", ex.getCause().getLocalizedMessage());
-           // model.addAttribute("errorInformation", ExceptionUtils.getFullStackTrace(ex.getCause()));
-//            model.addAttribute("error", mt);
+            redirectAttributes.addFlashAttribute("error", ex.getCause().getLocalizedMessage());
+            redirectAttributes.addFlashAttribute("errorInformation", ExceptionUtils.getFullStackTrace(ex.getCause()));
             model.addAttribute("pluginConfiguration", newConfiguration);
             return "redirect:/plugins/configure/error/" + newConfiguration.getName();
         }
@@ -145,26 +142,5 @@ public class PluginController {
 
     private long getForumComponentId() {
         return componentService.getComponentOfForum().getId();
-    }
-}
-
-class MessageTransfer implements Serializable {
-    private String message;
-    private String info;
-
-    void setMessage(String message) {
-        this.message = message;
-    }
-
-    void setInfo(String info) {
-        this.info = info;
-    }
-
-    String getInfo() {
-        return info;
-    }
-
-    String getMessage() {
-        return message;
     }
 }

@@ -24,18 +24,19 @@ import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.dto.PluginActivatingListDto;
 import org.jtalks.jcommune.service.dto.PluginActivatingDto;
+import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.*;
 
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
@@ -52,6 +53,8 @@ public class PluginControllerTest {
     private PluginService pluginService;
     @Mock
     private ComponentService componentService;
+    @Mock
+    private RedirectAttributes redirectAttributes;
 
     private PluginController pluginController;
 
@@ -121,7 +124,7 @@ public class PluginControllerTest {
         newConfiguration.setName(pluginName);
 
         Model model = new ExtendedModelMap();
-        String viewName = pluginController.updateConfiguration(model, newConfiguration);
+        String viewName = pluginController.updateConfiguration(model, newConfiguration, redirectAttributes);
 
         assertEquals(viewName, "redirect:/plugins/configure/" + pluginName);
         verify(pluginService).updateConfiguration(newConfiguration, componentId);
@@ -133,11 +136,10 @@ public class PluginControllerTest {
         PluginConfiguration newConfiguration = createFailingConfiguration();
 
         Model model = new ExtendedModelMap();
-        String viewName = pluginController.updateConfiguration(model, newConfiguration);
+        String viewName = pluginController.updateConfiguration(model, newConfiguration, redirectAttributes);
 
-        assertEquals(viewName, "plugin/pluginConfiguration");
-        assertTrue(model.containsAttribute("error"));
-        assertTrue(model.containsAttribute("errorInformation"));
+        assertEquals(viewName, "redirect:/plugins/configure/error/plugin");
+        verify(redirectAttributes).addFlashAttribute("error", "Testing exception!");
         assertTrue(model.containsAttribute("pluginConfiguration"));
     }
 
