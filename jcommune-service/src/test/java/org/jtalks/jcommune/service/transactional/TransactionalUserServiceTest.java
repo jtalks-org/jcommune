@@ -57,6 +57,7 @@ import java.util.Set;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
+import org.mockito.ArgumentMatcher;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -442,6 +443,22 @@ public class TransactionalUserServiceTest {
         assertEquals(userService.getUsernames(usernamePattern).size(), 3);
     }
 
+    @Test
+    public void testChangeLanguage() {
+        final JCUser user = user(USERNAME);
+        user.setLanguage(Language.ENGLISH);
+
+        userService.changeLanguage(user, Language.RUSSIAN);
+        
+        verify(userDao).saveOrUpdate(argThat(new ArgumentMatcher<JCUser>() {
+            @Override
+            public boolean matches(Object argument) {
+                JCUser argUser = (JCUser)argument;
+                return argument == user && Language.RUSSIAN.equals(argUser.getLanguage());
+            }
+        }));
+    }
+    
     public static <T> Set<T> asSet(T... values) {
         return new HashSet<T>(asList(values));
     }

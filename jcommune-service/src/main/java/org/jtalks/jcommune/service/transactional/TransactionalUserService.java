@@ -47,6 +47,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.List;
+import org.jtalks.jcommune.model.entity.Language;
 
 /**
  * User service class. This class contains method needed to manipulate with User persistent entity.
@@ -309,5 +310,14 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         }
 
         mentionedUsers.markUsersAsAlreadyNotified(postDao);
+    }
+
+    /**
+     * {@inheritDoc}
+     */    
+    @Override
+    public void changeLanguage(JCUser jcUser, Language newLang) {
+        jcUser.setLanguage(newLang);
+        this.getDao().saveOrUpdate(jcUser);
     }
 }

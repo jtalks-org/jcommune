@@ -241,13 +241,7 @@ public class UserProfileController {
         JCUser jcuser = userService.getCurrentUser();
         Language languageFromRequest = Language.byLocale(new Locale(lang));
         if (!jcuser.isAnonymous()) {
-            try {
-                jcuser.setLanguage(languageFromRequest);
-                userService.saveEditedUserProfile(jcuser.getId(),
-                        new EditUserProfileDto(jcuser).getUserInfoContainer());
-            } catch (NotFoundException e) {
-                throw new ServletException("Language save failed.", e);
-            }
+            userService.changeLanguage(jcuser, languageFromRequest);
         }
         LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
         localeResolver.setLocale(request, response, languageFromRequest.getLocale());
