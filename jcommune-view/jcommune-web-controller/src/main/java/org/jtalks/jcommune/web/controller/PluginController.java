@@ -83,22 +83,31 @@ public class PluginController {
     public ModelAndView startConfiguringPlugin(@PathVariable String name) throws NotFoundException {
         long componentId = getForumComponentId();
         PluginConfiguration pluginConfiguration = pluginService.getPluginConfiguration(name, componentId);
-        return new ModelAndView("plugin/pluginConfiguration")
-                .addObject("pluginConfiguration", pluginConfiguration);
+        return getModel(pluginConfiguration);
     }
 
     /**
      * Show plugin with errors
      *
-     * @param model current model
      * @param configuration current plugin configuration
      *
      * @return the name of view and all parameters to display plugin that should be configured
      */
     @RequestMapping(value = "/configure/error/{name}", method = RequestMethod.GET)
-    public String errorConfiguringPlugin(Model model, @ModelAttribute PluginConfiguration configuration) {
-        model.addAttribute("pluginConfiguration", configuration);
-        return "plugin/pluginConfiguration";
+    public ModelAndView errorConfiguringPlugin(@ModelAttribute PluginConfiguration configuration) {
+        return getModel(configuration);
+    }
+
+    /**
+     * Get model for showing plugin configuration
+     *
+     * @param configuration current plugin configuration
+     *
+     * @return ModelAndView
+     */
+    private ModelAndView getModel(PluginConfiguration configuration)
+    {
+        return new ModelAndView("plugin/pluginConfiguration").addObject("pluginConfiguration", configuration);
     }
 
     /**
