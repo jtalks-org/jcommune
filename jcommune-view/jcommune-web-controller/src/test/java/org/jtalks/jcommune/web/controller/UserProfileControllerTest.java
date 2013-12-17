@@ -41,6 +41,8 @@ import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import javax.servlet.ServletException;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
@@ -48,7 +50,10 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import org.springframework.mock.web.MockHttpServletRequest;
 import static org.springframework.test.web.ModelAndViewAssert.*;
+import static org.springframework.web.servlet.DispatcherServlet.LOCALE_RESOLVER_ATTRIBUTE;
+import org.springframework.web.servlet.LocaleResolver;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -301,6 +306,22 @@ public class UserProfileControllerTest {
         assertModelAttributeAvailable(mav, "postsPage");
     }
 
+    @Test
+    public void testSaveUserLanguage() throws ServletException {
+        LocaleResolver localeResolver = mock(LocaleResolver.class);
+        JCUser user = getUser();
+        MockHttpServletRequest reuqest = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        
+        reuqest.setAttribute(LOCALE_RESOLVER_ATTRIBUTE, localeResolver);
+        when(userService.getCurrentUser()).thenReturn(user);
+        
+        profileController.saveUserLanguage("ru", response, reuqest);
+        
+        verify(userService).changeLanguage(user, Language.RUSSIAN);
+        verify(localeResolver).setLocale(reuqest, response, Language.RUSSIAN.getLocale());
+    }
+    
     /**
      * @return {@link EditUserProfileDto} with default values
      */

@@ -99,7 +99,8 @@ function getContactHtml(data) {
     //HTML template for single contact. Should be in sync with corresponding JSP.
     var template =
         '	<li class="contact">'
-            + '		<input type="hidden" value="${contactId}"/>'
+            + '	    <input id="contactId" type="hidden" value="${contactId}"/>'
+            + '     <input id="contactOwnerId" type="hidden" value="${ownerId}"/>'
             + '		<a href="#" id="${buttonId}" class="btn btn-mini btn-danger button" title="' + $labelContactsTipsDelete + '">'
             + '			<i class="icon-remove icon-white"></i>'
             + '     </a>'
@@ -118,6 +119,7 @@ function getContactHtml(data) {
     html = html.replace('${contactId}', data.id);
     html = html.replace('${buttonId}', data.id);
     html = html.replace('${value}', actualValue);
+    html = html.replace('${ownerId}', data.ownerId);
 
     return html;
 }

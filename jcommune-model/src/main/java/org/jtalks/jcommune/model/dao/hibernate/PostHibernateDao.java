@@ -26,6 +26,8 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -93,7 +95,7 @@ public class PostHibernateDao extends GenericDao<Post> implements PostDao {
      */
     @Override
     public Post getLastPostFor(Branch branch) {
-        List<Post> post = getLastPostsFor(branch, 1);
+        List<Post> post = getLastPostsFor(Arrays.asList(branch.getId()), 1);
         if (post.size() == 1) {
             return  post.get(0);
         }
@@ -104,10 +106,10 @@ public class PostHibernateDao extends GenericDao<Post> implements PostDao {
      * {@inheritDoc}
      */
     @Override
-    public List<Post> getLastPostsFor(Branch branch, int postCount) {
+    public List<Post> getLastPostsFor(List<Long> brachIds, int postCount) {
         List<Post> result = (List<Post>) session()
                 .getNamedQuery("getLastPostForBranch")
-                .setParameter("branch", branch)
+                .setParameterList("branchIds", brachIds)
                 .setMaxResults(postCount).list();
         return result;
     }

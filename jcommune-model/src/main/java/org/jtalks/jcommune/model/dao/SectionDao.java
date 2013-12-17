@@ -42,5 +42,7 @@ public interface SectionDao extends Crud<Section> {
      * @param branches branches of current section
      * @return count branches
      */
-    Long getCountAvailableBranches(JCUser user, List<Branch> branches);
+    long getCountAvailableBranches(JCUser user, List<Branch> branches);
+
+    List<Long> getAvailableBranchIds(JCUser user, List<Branch> branches);
 }

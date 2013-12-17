@@ -56,6 +56,11 @@ public class BranchController {
     private BreadcrumbBuilder breadcrumbBuilder;
     private LocationService locationService;
 
+    /**
+     * Post count in the RSS for recent posts in the branch
+     */
+    private static final int RECENT_POST_COUNT = 15;
+
 
     /**
      * Constructor creates MVC controller with specified BranchService
@@ -125,10 +130,12 @@ public class BranchController {
         branchService.checkIfBranchExists(branchId);
         Branch branch = branchService.get(branchId);
 
-        List<Post> posts = postService.getLastPostsFor(branch, 15);
+        List<Post> posts = postService.getLastPostsFor(branch, RECENT_POST_COUNT);
 
         return new ModelAndView("posts/recent")
-                .addObject("branch", branch)
+                .addObject("feedTitle", branch.getName())
+                .addObject("feedDescription", branch.getDescription())
+                .addObject("urlSuffix", branch.prepareUrlSuffix())
                 .addObject("posts", posts);
 
     }

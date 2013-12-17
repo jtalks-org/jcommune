@@ -32,6 +32,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.testng.Assert.*;
@@ -325,7 +326,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
                 new DateTime(2100, 12, 25, 0, 0, 0, 0));
         session.save(posts.get(1));
 
-        List<Post> actualLastPosts = dao.getLastPostsFor(postsBranch, 2);
+        List<Post> actualLastPosts = dao.getLastPostsFor(Arrays.asList(postsBranch.getId()), 2);
 
         assertEquals(actualLastPosts.size(), 2);
         assertEquals(actualLastPosts.get(0).getId(), posts.get(0).getId());
@@ -352,7 +353,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
         session.save(branch);
 
-        assertTrue(dao.getLastPostsFor(branch, 42).isEmpty(),
+        assertTrue(dao.getLastPostsFor(Arrays.asList(branch.getId()), 42).isEmpty(),
                 "The branch is empty, so last posts mustn't be found");
     }
 }

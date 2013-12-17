@@ -27,6 +27,9 @@
       <c:out value="${cmpTitlePrefix}"/>
       <c:out value="${section.name}"/> - <c:out value="${cmpDescription}"/>
   </title>
+  <link rel="alternate" type="application/rss+xml"
+        href="${pageContext.request.contextPath}/sections/${section.id}/recent.rss"
+        title="${branchRssTitle}">
 </head>
 <body>
 
@@ -38,6 +41,13 @@
         <c:out value="${section.name}"/>
       </a>
     </h1>
+    <div id="right-block">
+      <a href="${pageContext.request.contextPath}/sections/${section.id}/recent.rss"
+         title="<spring:message code='label.tips.feed_subsription'/>">
+
+        <img src="${pageContext.request.contextPath}/resources/images/rss-icon.png" alt="" class="rss-icon">
+      </a>
+    </div>
     <span class="inline-block"></span>
   </div>
   <%-- END OF Branch header --%>

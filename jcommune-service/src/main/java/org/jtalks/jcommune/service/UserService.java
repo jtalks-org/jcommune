@@ -26,6 +26,7 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import org.jtalks.jcommune.model.entity.Language;
 
 /**
  * This interface should have methods which give us more abilities in manipulating User persistent entity.
@@ -170,4 +171,12 @@ public interface UserService extends EntityService<JCUser> {
      * @param pattern part of username
      */
     List<String> getUsernames(String pattern);
+
+    /**
+     * Update user language.
+     * @param jcUser
+     * @param newLang 
+     */
+    public void changeLanguage(JCUser jcUser, Language newLang);
+    
 }

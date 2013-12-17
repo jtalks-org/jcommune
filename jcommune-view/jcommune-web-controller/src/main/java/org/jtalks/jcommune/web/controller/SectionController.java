@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.common.model.entity.Section;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
@@ -56,6 +57,8 @@ public class SectionController {
     private SectionService sectionService;
     private ForumStatisticsProvider forumStaticsProvider;
     private LocationService locationService;
+
+    private static final int RECENT_POST_COUNT = 15;
 
     /**
      * Constructor creates MVC controller with specified SectionService
@@ -137,5 +140,25 @@ public class SectionController {
         return new ModelAndView("branchList")
                 .addObject("viewList", locationService.getUsersViewing(section))
                 .addObject("section", section);
+    }
+
+    /**
+     * Displays last messages for the section.
+     *
+     * @return {@code ModelAndView} with post list and vars for pagination
+     */
+    @RequestMapping("/sections/{sectionId}/recent")
+    public ModelAndView recentBranchPostsPage(@PathVariable("sectionId") long sectionId) throws NotFoundException {
+        Section section = sectionService.get(sectionId);
+        sectionService.ifSectionIsVisible(section);
+
+        List<Post> posts = sectionService.getLastPostsForSection(section, RECENT_POST_COUNT);
+
+        return new ModelAndView("sections/recent")
+                .addObject("feedTitle", section.getName())
+                .addObject("feedDescription", section.getDescription())
+                .addObject("urlSuffix", "/sections/" + section.getId())
+                .addObject("posts", posts);
+
     }
 }

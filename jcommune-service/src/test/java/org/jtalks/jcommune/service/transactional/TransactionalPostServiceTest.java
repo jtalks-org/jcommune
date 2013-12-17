@@ -425,12 +425,13 @@ public class TransactionalPostServiceTest {
         Branch postBranch = new Branch(null, null);
         Post expectedPost = new Post(null, null);
         List<Post> posts = Arrays.asList(expectedPost);
-        when(postDao.getLastPostsFor(Mockito.<Branch>any(), Mockito.eq(42)))
+        List<Long> branches = Arrays.asList(postBranch.getId());
+        when(postDao.getLastPostsFor(Mockito.<List<Long>>any(), Mockito.eq(42)))
                 .thenReturn(posts);
 
         List<Post> actualPosts = postService.getLastPostsFor(postBranch, 42);
 
         assertEquals(actualPosts, posts, "Service returned incorrect last posts for branch");
-        verify(postDao).getLastPostsFor(postBranch, 42);
+        verify(postDao).getLastPostsFor(branches, 42);
     }
 }

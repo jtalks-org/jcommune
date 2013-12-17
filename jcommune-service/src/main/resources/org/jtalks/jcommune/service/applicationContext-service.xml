@@ -223,6 +223,7 @@
     <constructor-arg ref="topicBranchService"/>
     <constructor-arg ref="userService"/>
     <constructor-arg ref="topicDao"/>
+    <constructor-arg ref="postDao"/>
   </bean>
 
   <bean id="pmService"

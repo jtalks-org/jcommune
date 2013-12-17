@@ -198,7 +198,11 @@
     <property name="contentType" value="application/rss+xml;charset=UTF-8"/>
   </bean>
 
-  <bean id="posts/recent.rss" class="org.jtalks.jcommune.web.view.BranchRssViewer">
+  <bean id="posts/recent.rss" class="org.jtalks.jcommune.web.view.PostListRssViewer">
+    <property name="contentType" value="application/rss+xml;charset=UTF-8"/>
+  </bean>
+
+  <bean id="sections/recent.rss" class="org.jtalks.jcommune.web.view.PostListRssViewer">
     <property name="contentType" value="application/rss+xml;charset=UTF-8"/>
   </bean>
 
