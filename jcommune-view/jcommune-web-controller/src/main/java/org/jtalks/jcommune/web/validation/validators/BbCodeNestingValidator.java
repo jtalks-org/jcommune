@@ -117,8 +117,7 @@ public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting
      * @return allowed or not allowed
      */
     private boolean checkForDifferent(String value) {
-        final String regexForSimples = "\\[/?([bius]|(left|center|right|highlight|list|img)|"
-        		+ "((size|url|code|indent|color)(=.+)?)|(quote(=.*)?))\\]";
+        final String regexForSimples = "\\[[^\\[\\]]*\\]|\\[/[^\\[\\]]*\\]";
         return checkNestingLevel(value, regexForSimples);
     }
 
@@ -149,5 +148,4 @@ public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting
         }
         return this.userService;
     }
-    
 }
