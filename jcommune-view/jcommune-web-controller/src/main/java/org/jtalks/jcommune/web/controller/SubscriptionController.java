@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * Manages the topic/branch subscription by email.
@@ -60,6 +61,7 @@ public class SubscriptionController {
      * @throws NotFoundException if no object is found for id given
      */
     @RequestMapping("topics/{id}/subscribe")
+    @ResponseBody
     public void subscribeToTopic(@PathVariable Long id) throws NotFoundException {
         Topic topic = topicFetchService.get(id);
         subscriptionService.toggleTopicSubscription(topic);
@@ -72,6 +74,7 @@ public class SubscriptionController {
      * @throws NotFoundException if no object is found for id given
      */
     @RequestMapping("topics/{id}/unsubscribe")
+    @ResponseBody
     public void unsubscribeFromTopic(@PathVariable Long id) throws NotFoundException {
         Topic topic = topicFetchService.get(id);
         subscriptionService.toggleTopicSubscription(topic);
@@ -85,6 +88,7 @@ public class SubscriptionController {
      * @throws NotFoundException if no object is found for id given
      */
     @RequestMapping("branches/{id}/subscribe")
+    @ResponseBody
     public void subscribeToBranch(@PathVariable Long id) throws NotFoundException {
         Branch branch = branchService.get(id);
         subscriptionService.toggleBranchSubscription(branch);
@@ -97,6 +101,7 @@ public class SubscriptionController {
      * @throws NotFoundException if no object is found for id given
      */
     @RequestMapping("branches/{id}/unsubscribe")
+    @ResponseBody
     public void unsubscribeFromBranch(@PathVariable Long id) throws NotFoundException {
         Branch branch = branchService.get(id);
         subscriptionService.toggleBranchSubscription(branch);
