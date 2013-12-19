@@ -27,9 +27,10 @@
       <c:out value="${cmpTitlePrefix}"/>
       <c:out value="${section.name}"/> - <c:out value="${cmpDescription}"/>
   </title>
+  <spring:message code="label.rssFeed" var="sectionRssTitle" arguments="${section.name}" htmlEscape="true" javaScriptEscape="true"/>
   <link rel="alternate" type="application/rss+xml"
         href="${pageContext.request.contextPath}/sections/${section.id}/recent.rss"
-        title="${branchRssTitle}">
+        title="${sectionRssTitle}">
 </head>
 <body>
 
