@@ -19,7 +19,6 @@ import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.ImageConverter;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
@@ -246,11 +245,28 @@ public class UserProfileController {
         JCUser jcuser = userService.getCurrentUser();
         Language languageFromRequest = Language.byLocale(new Locale(lang));
         if (!jcuser.isAnonymous()) {
-            userService.changeLanguage(jcuser, languageFromRequest);
+            changeLanguageWithLockHandling(jcuser, languageFromRequest);
         }
         LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
         localeResolver.setLocale(request, response, languageFromRequest.getLocale());
         return "redirect:" + request.getHeader("Referer");
+    }
+
+    private void changeLanguageWithLockHandling(JCUser user, Language language) {
+        for (int i = 0; i < UserController.LOGIN_TRIES_AFTER_LOCK; i++) {
+            try {
+                userService.changeLanguage(user, language);
+                return;
+            } catch (HibernateOptimisticLockingFailureException ignored) {
+            }
+        }
+        try {
+            userService.changeLanguage(user, language);
+        } catch (HibernateOptimisticLockingFailureException e) {
+            LOGGER.error("User has been optimistically locked and can't be reread {} times. Username: {}",
+                    UserController.LOGIN_TRIES_AFTER_LOCK, user.getUsername());
+            throw e;
+        }
     }
 
     private JCUser saveEditedProfileWithLockHandling(long editedUserId, EditUserProfileDto editedProfileDto)
@@ -258,7 +274,7 @@ public class UserProfileController {
         for (int i = 0; i < UserController.LOGIN_TRIES_AFTER_LOCK; i++) {
             try {
                 return userService.saveEditedUserProfile(editedUserId, editedProfileDto.getUserInfoContainer());
-            } catch (HibernateOptimisticLockingFailureException e) {
+            } catch (HibernateOptimisticLockingFailureException ignored) {
             }
         }
         try {
