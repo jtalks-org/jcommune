@@ -44,6 +44,8 @@ public class BBCodeListPreprocessor implements TextProcessor {
     
     private final Logger logger = LoggerFactory.getLogger(getClass());
     
+    private RootElement root;
+
     private enum TagType {
         LIST,
         LIST_CLOSE,
@@ -63,13 +65,13 @@ public class BBCodeListPreprocessor implements TextProcessor {
             if (tagString.startsWith(LIST_TAG_OPEN)) {
                 return TagType.LIST;
             }
-            throw new IllegalArgumentException("unknow tag type: " + tagString);
+            throw new BBCodeListParsingException("unknow tag type: " + tagString);
         }
     }    
    
     private final Pattern listPattern = Pattern.compile(LIST_REGEX, Pattern.DOTALL);
 
-    private final Stack<TreeElement> listStack = new Stack<>();
+    private final Stack<ListElement> listStack = new Stack<>();
     
     /**
      * Process incoming text with replacing [*] tags by [*]...[/*]
@@ -90,14 +92,17 @@ public class BBCodeListPreprocessor implements TextProcessor {
      */
     private StringBuilder preprocessLists(String bbEncodedText) {
         try {
-            listStack.push(createRootElement(bbEncodedText));
+            root = createRootElement(bbEncodedText);
             Matcher matcher = listPattern.matcher(bbEncodedText);
             while (matcher.find()) {
                 processMatch(matcher);
             }
-            return new StringBuilder(listStack.pop().toBBString());
+            return new StringBuilder(root.toBBString());
+        } catch (BBCodeListParsingException lpe) {
+            logger.info("Ignored invalid [list] tag:" + bbEncodedText);
+            return new StringBuilder(bbEncodedText);
         } catch (Exception ex) {
-            logger.info("Error during bb-codes processing: " + bbEncodedText, ex);
+            logger.warn("Unexpected error during bb-codes processing: " + bbEncodedText, ex);
             return new StringBuilder(bbEncodedText);
         } 
     }
@@ -162,19 +167,34 @@ public class BBCodeListPreprocessor implements TextProcessor {
             ListElement list = new ListElement();
             list.params = matcher.group(2);
             list.text = matcher.group(3);
-            listStack.peek().getLastChild().addChild(list);
+            getCurrentElement().addChild(list);
             listStack.push(list);
         }
         if (tag == TagType.LIST_CLOSE) {
-            ListElement lastList = (ListElement) listStack.pop();
+            ListElement lastList = listStack.pop();
             lastList.endText = matcher.group(3);
+            lastList.close();
         }
         if (tag == TagType.ITEM) {
             ItemElement item = new ItemElement();
             item.text = matcher.group(3);
-            listStack.peek().addChild(item);
+            getCurrentList().addChild(item);
         }
     }    
+    
+    private ListElement getCurrentList() {
+        if (listStack.isEmpty()) {
+            throw new BBCodeListParsingException("List not found.");
+        }
+        return listStack.peek();
+    }
+    
+    private TreeElement getCurrentElement() {
+        if (listStack.isEmpty()) {
+            return root;
+        }
+        return listStack.peek().getLastChild();
+    }
     
     /**
      * Represents one element of the tags tree.
@@ -187,6 +207,9 @@ public class BBCodeListPreprocessor implements TextProcessor {
          * @return last element child
          */
         TreeElement getLastChild() {
+            if (children.isEmpty()) {
+                throw new BBCodeListParsingException("Children elements not found");
+            }
             return children.get(children.size() - 1);
         }    
         
@@ -258,6 +281,8 @@ public class BBCodeListPreprocessor implements TextProcessor {
         String params;
         /** text after list close tag */
         String endText;
+        /** true if closed tag was found */
+        private boolean closed = false;
 
         @Override
         protected String getOpenTag() {
@@ -276,5 +301,29 @@ public class BBCodeListPreprocessor implements TextProcessor {
         public String getEndText() {
             return endText != null ? endText : "";
         }
+        
+        /**
+         * Mark the list as closed (valid).
+         */
+        public void close() {
+            closed = true;
+        }
+
+        @Override
+        String toBBString() {
+            if (!closed) {
+                throw new BBCodeListParsingException("toBBString() invocation isn't allowed for unclosed list");
+            }
+            return super.toBBString();
+        }
     }    
+    
+    /**
+     * Thrown in the case of parsing error.
+     */
+    private static class BBCodeListParsingException extends RuntimeException {
+        private BBCodeListParsingException(String string) {
+            super(string);
+        }
+    }
 }
