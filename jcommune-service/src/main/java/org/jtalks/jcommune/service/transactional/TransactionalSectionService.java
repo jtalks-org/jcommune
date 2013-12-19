@@ -50,11 +50,6 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
     private TopicDao topicDao;
 
     private PostDao postDao;
-
-    /**
-     * Post count in the RSS for recent posts in the branch
-     */
-    private static final int RECENT_POST_COUNT = 15;
     
     /**
      * Create an instance of entity based service
@@ -155,13 +150,16 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Post> getLastPostsForSection(Section section, int postsCount) {
         JCUser user = userService.getCurrentUser();
         List<Branch> branches = new ArrayList<>(section.getBranches());
         List<Long> branchIds = getDao().getAvailableBranchIds(user, branches);
 
-        return postDao.getLastPostsFor(branchIds, RECENT_POST_COUNT);
+        return postDao.getLastPostsFor(branchIds, postsCount);
     }
 
 }
