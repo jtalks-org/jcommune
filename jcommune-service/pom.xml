@@ -115,8 +115,8 @@
       <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
-      <groupId>kefir-bb</groupId>
-      <artifactId>kefir-bb</artifactId>
+      <groupId>org.kefirsf</groupId>
+      <artifactId>kefirbb</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jtalks.common</groupId>

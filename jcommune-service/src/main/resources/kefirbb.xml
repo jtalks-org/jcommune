@@ -22,8 +22,8 @@ valid HTML-related symbols, thus we need to replace them with their encoded equi
 get XSS attacks.</p>-->
 <!--See more docs on official site: http://kefir-bb.sourceforge.net/-->
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xmlns="http://kefir-bb.sourceforge.net/schemas"
-               xsi:schemaLocation="http://kefir-bb.sourceforge.net/schemas http://kefir-bb.sourceforge.net/schemas/kefir-bb-0.5.xsd">
+               xmlns="http://kefirsf.org/kefirbb/schema"
+               xsi:schemaLocation="http://kefirsf.org/kefirbb/schema http://kefirsf.org/kefirbb/schema/kefirbb-1.0.xsd">
     <!-- XML escape symbols -->
     <scope name="escapeXml">
         <code priority="100">

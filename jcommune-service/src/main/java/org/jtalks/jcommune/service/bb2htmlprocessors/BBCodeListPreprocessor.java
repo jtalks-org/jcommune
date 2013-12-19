@@ -22,7 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.perm.kefir.bbcode.TextProcessor;
+import org.kefirsf.bb.TextProcessor;
 
 /**
  * Preprocessor for bb2html encoding which replaces all list items like [*]
