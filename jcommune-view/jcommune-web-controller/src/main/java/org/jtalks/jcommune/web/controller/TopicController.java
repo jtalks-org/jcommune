@@ -21,9 +21,12 @@ import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.PostDto;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Controller;
@@ -57,6 +60,7 @@ public class TopicController {
     private static final String TOPIC_DTO = "topicDto";
     private static final String REDIRECT_URL = "redirect:/topics/";
     public static final String POST_DTO = "postDto";
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     private TopicModificationService topicModificationService;
     private TopicFetchService topicFetchService;
@@ -160,10 +164,26 @@ public class TopicController {
         }
         Topic topic = topicDto.getTopic();
         topic.setBranch(branch);
-        Topic createdTopic = topicModificationService.createTopic(topic, topicDto.getBodyText());
+        Topic createdTopic = createTopicWithLockHandling(topic, topicDto);
 
         lastReadPostService.markTopicAsRead(createdTopic);
         return new ModelAndView(REDIRECT_URL + createdTopic.getId());
+    }
+
+    private Topic createTopicWithLockHandling(Topic topic, TopicDto topicDto) throws NotFoundException {
+        for (int i = 0; i < UserController.LOGIN_TRIES_AFTER_LOCK; i++) {
+            try {
+                return topicModificationService.createTopic(topic, topicDto.getBodyText());
+            } catch (HibernateOptimisticLockingFailureException e) {
+            }
+        }
+        try {
+            return topicModificationService.createTopic(topic, topicDto.getBodyText());
+        } catch (HibernateOptimisticLockingFailureException e) {
+            LOGGER.error("User has been optimistically locked and can't be reread {} times. Username: {}",
+                    UserController.LOGIN_TRIES_AFTER_LOCK, userService.getCurrentUser().getUsername());
+            throw e;
+        }
     }
 
     /**

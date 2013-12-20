@@ -19,9 +19,7 @@ import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.ObjectsFactory;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.UserService;
@@ -38,6 +36,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -65,6 +64,7 @@ public class TransactionalSectionServiceTest {
 
     @BeforeMethod
     public void setUp() throws Exception {
+        initMocks(this);
         sectionDao = mock(SectionDao.class);
         branchService = mock(BranchService.class);
         userService = mock(UserService.class);
@@ -223,5 +223,44 @@ public class TransactionalSectionServiceTest {
         when(sectionDao.getCountAvailableBranches(user,branches)).thenReturn(1L);
 
         sectionService.ifSectionIsVisible(section);
+    }
+
+    @Test
+    public void getLastPostsForSectionShouldReturnEmptyListWhenThereIsNoPostsInTheSection() {
+        final int count = 42;
+        JCUser user = new JCUser(USER_NAME, EMAIL, USER_PASSWORD);
+        Section section = new Section(SECTION_NAME);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(sectionDao.getAvailableBranchIds(eq(user), anyList())).thenReturn(Collections.<Long>emptyList());
+        when(postDao.getLastPostsFor(anyList(), eq(count))).thenReturn(Collections.<Post>emptyList());
+
+        List<Post> posts = sectionService.getLastPostsForSection(section, count);
+
+        assertEquals(posts.size(), 0);
+    }
+
+    @Test
+    public void getLastPostsForSectionShouldReturnListOfTheLatestPosts() {
+        final int count = 42;
+        JCUser user = new JCUser(USER_NAME, EMAIL, USER_PASSWORD);
+        Section section = new Section(SECTION_NAME);
+        Branch branch1 = new Branch("my branch", "1");
+        branch1.setId(42);
+        Branch branch2 = new Branch("my branch2", "2");
+        branch2.setId(43);
+        section.addOrUpdateBranch(branch1);
+        section.addOrUpdateBranch(branch2);
+        when(userService.getCurrentUser()).thenReturn(user);
+        List<Long> branchIds = Arrays.asList(branch1.getId());
+        when(sectionDao.getAvailableBranchIds(user, section.getBranches())).thenReturn(branchIds);
+
+        List<Post> posts = new ArrayList<Post>();
+        posts.add(new Post(user, "post1"));
+        posts.add(new Post(user, "post2"));
+
+        when(postDao.getLastPostsFor(branchIds, count)).thenReturn(posts);
+        List<Post> actualPosts = sectionService.getLastPostsForSection(section, count);
+
+        assertEquals(actualPosts.size(), posts.size());
     }
 }

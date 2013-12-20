@@ -24,6 +24,7 @@
     <id column="ID" name="id" unsaved-value="0">
       <generator class="native"/>
     </id>
+    <version name="version" column="VERSION" type="java.lang.Long" />
 
     <property column="UUID" name="uuid" unique="true" not-null="true"/>
     <property column="FIRST_NAME" name="firstName"/>

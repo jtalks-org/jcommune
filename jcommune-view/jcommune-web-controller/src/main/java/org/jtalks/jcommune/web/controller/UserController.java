@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Controller;
@@ -85,6 +86,7 @@ public class UserController {
     private static final String REMEMBER_ME_ON = "on";
     protected static final String ATTR_USERNAME = "username";
     protected static final String ATTR_LOGIN_ERROR = "login_error";
+    public static final int LOGIN_TRIES_AFTER_LOCK = 3;
     private final UserService userService;
     private final Authenticator authenticator;
     private final PluginService pluginService;
@@ -338,7 +340,7 @@ public class UserController {
         boolean rememberMeBoolean = rememberMe.equals(REMEMBER_ME_ON);
         boolean isAuthenticated;
         try {
-            isAuthenticated = userService.loginUser(username, password, rememberMeBoolean, request, response);
+            isAuthenticated = loginWithLockHandling(username, password, rememberMeBoolean, request, response);
         } catch (NoConnectionException e) {
             return new JsonResponse(JsonResponseStatus.FAIL,
                     new ImmutableMap.Builder<String, String>().put("customError", "connectionError").build());
@@ -376,7 +378,7 @@ public class UserController {
         boolean rememberMeBoolean = rememberMe.equals(REMEMBER_ME_ON);
         boolean isAuthenticated;
         try {
-            isAuthenticated = userService.loginUser(username, password, rememberMeBoolean, request, response);
+            isAuthenticated = loginWithLockHandling(username, password, rememberMeBoolean, request, response);
         } catch (NoConnectionException e) {
             return new ModelAndView(AUTH_SERVICE_FAIL_URL);
         } catch (UnexpectedErrorException e) {
@@ -392,6 +394,23 @@ public class UserController {
             modelAndView.addObject(ATTR_LOGIN_ERROR, 1);
             modelAndView.addObject(REFERER_ATTR, referer);
             return modelAndView;
+        }
+    }
+
+    private boolean loginWithLockHandling(String username, String password, boolean rememberMeBoolean,
+                                             HttpServletRequest request, HttpServletResponse response)
+            throws UnexpectedErrorException, NoConnectionException {
+        for (int i = 0; i < LOGIN_TRIES_AFTER_LOCK; i++) {
+            try {
+                return userService.loginUser(username, password, rememberMeBoolean, request, response);
+            } catch (HibernateOptimisticLockingFailureException e) {
+            }
+        }
+        try {
+            return userService.loginUser(username, password, rememberMeBoolean, request, response);
+        } catch (HibernateOptimisticLockingFailureException e) {
+            LOGGER.error("User have been locked {} times. Username: {}", LOGIN_TRIES_AFTER_LOCK, username);
+            throw e;
         }
     }
 

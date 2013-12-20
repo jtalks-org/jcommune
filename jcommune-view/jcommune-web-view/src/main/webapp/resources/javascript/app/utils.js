@@ -60,11 +60,13 @@ function getSelectedPostText() {
  * @param s string to be encoded
  */
 Utils.htmlEncode = function (s) {
-    var el = document.createElement("div");
-    el.innerText = el.textContent = s;
-    s = el.innerHTML;
-    return s;
-}
+    return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+};
 
 /**
  * Do focus to element

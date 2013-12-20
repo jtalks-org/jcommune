@@ -16,7 +16,7 @@
 package org.jtalks.jcommune.service.bb2htmlprocessors;
 
 import org.jtalks.jcommune.service.UserService;
-import ru.perm.kefir.bbcode.TextProcessorAdapter;
+import org.kefirsf.bb.TextProcessorAdapter;
 
 /**
  * Process for [user][/user] code. It adds link to user mentioned in tag before starting

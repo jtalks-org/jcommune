@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.validation.validators;
 
+
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeNesting;
 import org.slf4j.Logger;
@@ -25,6 +26,7 @@ import org.springframework.context.ApplicationContextAware;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,6 +37,9 @@ import java.util.regex.Pattern;
  */
 public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting, String>, ApplicationContextAware {
     private static final String TAG_LIST_ITEM = "[*]";
+    private static final String REGEX_BBCODES = "(\\[/?([bius]|(left|center|right|highlight|list|img)|"
+    		+ "((size|url|code|indent|color)(=.+?)?))\\])";
+    private static final String REGEX_BBCODE_QUOTE = "(\\[/?quote((=\".*?\"\\])|(\\])))";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BbCodeNestingValidator.class);
     private UserService userService;
@@ -102,7 +107,7 @@ public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting
                 count++;
             }
             if (Math.abs(count) > maxNestingValue) {
-                LOGGER.warn("Possible attack: Too deep bb-code nesting. "
+            	LOGGER.warn("Possible attack: Too deep bb-code nesting. "
                         + "User UUID: {}", getUserService().getCurrentUser().getUuid());
                 return false;
             }
@@ -117,8 +122,7 @@ public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting
      * @return allowed or not allowed
      */
     private boolean checkForDifferent(String value) {
-        final String regexForSimples = "\\[[^\\[\\]]*\\]|\\[/[^\\[\\]]*\\]";
-        return checkNestingLevel(value, regexForSimples);
+        return checkNestingLevel(value, REGEX_BBCODES + "|" + REGEX_BBCODE_QUOTE);
     }
 
     /**
@@ -128,9 +132,14 @@ public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting
      * @return allowed or not allowed
      */
     private boolean checkForQuote(String value) {
-        final String regexForQuote = "\\[quote=\".*?\"\\]";
-        String cleanValue = value.replace(" ", "");
-        return checkNestingLevel(cleanValue, regexForQuote);
+        Pattern pattern = Pattern.compile(REGEX_BBCODE_QUOTE);
+        Matcher matcher = pattern.matcher(value);
+        while (matcher.find()) {
+        	if(!checkNestingLevel(matcher.group(), REGEX_BBCODES)) {
+        		return false;
+        	}
+        }
+        return true;
     }
 
     @Override

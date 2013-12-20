@@ -44,5 +44,11 @@ public interface SectionDao extends Crud<Section> {
      */
     long getCountAvailableBranches(JCUser user, List<Branch> branches);
 
+    /**
+     * Gets IDs of the branches with VIEW_TOPICS permission
+     * @param user current user
+     * @param branches all branches of current section
+     * @return IDs of the branches which the user can view
+     */
     List<Long> getAvailableBranchIds(JCUser user, List<Branch> branches);
 }

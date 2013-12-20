@@ -17,8 +17,8 @@ package org.jtalks.jcommune.service.nontransactional;
 import org.apache.commons.lang.Validate;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.bb2htmlprocessors.TextPostProcessor;
-import ru.perm.kefir.bbcode.BBProcessorFactory;
-import ru.perm.kefir.bbcode.TextProcessor;
+import org.kefirsf.bb.BBProcessorFactory;
+import org.kefirsf.bb.TextProcessor;
 
 import java.util.ArrayList;
 import java.util.List;

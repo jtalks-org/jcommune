@@ -342,9 +342,9 @@
         <version>1.6</version>
       </dependency>
       <dependency>
-        <groupId>kefir-bb</groupId>
-        <artifactId>kefir-bb</artifactId>
-        <version>0.6</version>
+        <groupId>org.kefirsf</groupId>
+        <artifactId>kefirbb</artifactId>
+        <version>1.0</version>
       </dependency>
 
       <!--Mail-->
