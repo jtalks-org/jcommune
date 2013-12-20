@@ -101,10 +101,7 @@ public class BBCodeListPreprocessor implements TextProcessor {
         } catch (BBCodeListParsingException lpe) {
             logger.info("Ignored invalid [list] tag:" + bbEncodedText);
             return new StringBuilder(bbEncodedText);
-        } catch (Exception ex) {
-            logger.warn("Unexpected error during bb-codes processing: " + bbEncodedText, ex);
-            return new StringBuilder(bbEncodedText);
-        } 
+        }
     }
 
     /**
