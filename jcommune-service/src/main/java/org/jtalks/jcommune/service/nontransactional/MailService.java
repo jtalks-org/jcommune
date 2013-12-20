@@ -46,14 +46,7 @@ import java.util.Map;
  */
 public class MailService {
 
-    private final JavaMailSender mailSender;
-    private final String from;
-    private final VelocityEngine velocityEngine;
-    private final MessageSource messageSource;
-    private final JCommuneProperty notificationsEnabledProperty;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(MailService.class);
-
     private static final String LOG_TEMPLATE = "Error occurred while sending updates of %s %d to %s";
     private static final String HTML_TEMPLATES_PATH = "org/jtalks/jcommune/service/templates/html/";
     private static final String PLAIN_TEXT_TEMPLATES_PATH = "org/jtalks/jcommune/service/templates/plaintext/";
@@ -67,6 +60,11 @@ public class MailService {
     private static final String MESSAGE_SOURCE = "messageSource";
     private static final String RECIPIENT_LOCALE = "locale";
     private static final String NO_ARGS = "noArgs";
+    private final JavaMailSender mailSender;
+    private final String from;
+    private final VelocityEngine velocityEngine;
+    private final MessageSource messageSource;
+    private final JCommuneProperty notificationsEnabledProperty;
 
     /**
      * Creates a mailing service with a default template message autowired.
@@ -116,7 +114,6 @@ public class MailService {
         LOGGER.info("Password recovery email sent for {}", name);
     }
 
-
     /**
      * Sends update notification to user specified if
      * {@link SubscriptionAwareEntity} was updated, e.g. when some new
@@ -134,7 +131,7 @@ public class MailService {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(LINK, url);
             model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
-            if(entity instanceof Branch){
+            if (entity instanceof Branch) {
                 model.put(LINK_UNSUBSCRIBE, this.getDeploymentRootUrl() + getUnsubscribeBranchLink(entity));
             }
             sendEmailOnForumUpdates(recipient, model, locale, (Entity) entity,
@@ -214,7 +211,7 @@ public class MailService {
      * Sends email to topic starter that his or her topic was moved
      *
      * @param recipient user to send notification
-     * @param topic   relocated topic
+     * @param topic     relocated topic
      */
     public void sendTopicMovedMail(JCUser recipient, Topic topic) {
         String urlSuffix = "/topics/" + topic.getId();
@@ -259,7 +256,6 @@ public class MailService {
             LOGGER.error("Failed to sent activation mail for user: " + recipient.getUsername());
         }
     }
-
 
     /**
      * Send email notification to user when he was mentioned in forum.
@@ -312,10 +308,7 @@ public class MailService {
             helper.setSubject(subject);
             helper.setText(plainText, htmlText);
             mailSender.send(message);
-        } catch (MailException e) {
-            LOGGER.error("Mail sending failed", e);
-            throw new MailingFailedException(e);
-        } catch (MessagingException e) {
+        } catch (MailException | MessagingException e) {
             LOGGER.error("Mail sending failed", e);
             throw new MailingFailedException(e);
         }
@@ -430,7 +423,6 @@ public class MailService {
         }
     }
 
-
     /**
      * Set mail about removing topic.
      *
@@ -489,18 +481,18 @@ public class MailService {
         }
     }
 
-    private String getUnsubscribeBranchLink(SubscriptionAwareEntity entity){
+    private String getUnsubscribeBranchLink(SubscriptionAwareEntity entity) {
         String result = "/branches/{0}/unsubscribe";
-        if(entity instanceof Branch){
-           return result.replace("{0}", "" + ((Branch) entity).getId());
+        if (entity instanceof Branch) {
+            return result.replace("{0}", "" + ((Branch) entity).getId());
         }
-        if(entity instanceof Topic){
+        if (entity instanceof Topic) {
             return result.replace("{0}", "" + ((Topic) entity).getBranch().getId());
         }
-        if(entity instanceof CodeReview){
+        if (entity instanceof CodeReview) {
             return result.replace("{0}", "" + ((CodeReview) entity).getTopic().getBranch().getId());
         }
-        if(entity instanceof Post){
+        if (entity instanceof Post) {
             return result.replace("{0}", "" + ((Post) entity).getTopic().getBranch().getId());
         }
         return null;
