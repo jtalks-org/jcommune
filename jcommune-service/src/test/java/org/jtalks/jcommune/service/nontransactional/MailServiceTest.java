@@ -75,6 +75,8 @@ public class MailServiceTest {
     private Branch branch = new Branch("title Branch", "description");
     private ArgumentCaptor<MimeMessage> captor;
     private ReloadableResourceBundleMessageSource messageSource;
+    private long topicId = 777;
+    private long branchId = 7;
 
     @BeforeMethod
     public void setUp() {
@@ -97,6 +99,9 @@ public class MailServiceTest {
         captor = ArgumentCaptor.forClass(MimeMessage.class);
         topic.setCodeReview(codeReview);
         codeReview.setTopic(topic);
+        topic.setId(topicId);
+        branch.setId(branchId);
+        topic.setBranch(branch);
     }
 
     @BeforeMethod
@@ -122,18 +127,14 @@ public class MailServiceTest {
     @Test
     public void testSendUpdatesOnSubscriptionCodeReviewCase() 
                             throws MailingFailedException, IOException, MessagingException {
-        long id = 777;
-        topic.setId(id);
         service.sendUpdatesOnSubscription(user, codeReview);
         this.checkMailCredentials();
-        assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/topics/" + id));
+        assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/topics/" + topicId));
     }
 
     @Test
     public void testSendUpdatesOnSubscriptionCodeReview_CheckTitleInSubject() 
                             throws MailingFailedException, IOException, MessagingException {
-        long id = 777;
-        topic.setId(id);
         service.sendUpdatesOnSubscription(user, codeReview);
         this.checkMailCredentials();
         assertTrue(this.getMimeMailSubject().contains("title Topic"));
@@ -173,17 +174,14 @@ public class MailServiceTest {
 
     @Test
     public void testSendBranchUpdateEmail() throws MailingFailedException, IOException, MessagingException {
-        branch.setId(1);
-
         service.sendUpdatesOnSubscription(user, branch);
 
         this.checkMailCredentials();
-        assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/branches/1"));
+        assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/branches/" + branchId));
     }
 
     @Test
     public void testSendBranchUpdateEmail_CheckTitleInSubject() throws MessagingException, IOException {
-        branch.setId(1);
         service.sendUpdatesOnSubscription(user, branch);
         this.checkMailCredentials();
         assertTrue(this.getMimeMailSubject().contains("title Branch"));
@@ -251,13 +249,13 @@ public class MailServiceTest {
 
     @Test
     public void testSendTopicMovedMail() throws IOException, MessagingException {
-        topic.setId(1);
-
-        service.sendTopicMovedMail(user, topic.getId());
+        service.sendTopicMovedMail(user, topic);
 
         this.checkMailCredentials();
         assertTrue(this.getMimeMailBody().contains(USERNAME));
-        assertTrue(this.getMimeMailBody().contains("http://coolsite.com/forum/topics/" + topic.getId()));
+        assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/topics/" + topicId));
+        assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/branches/" + branchId
+                + "/unsubscribe"));
     }
 
     @Test
@@ -265,12 +263,12 @@ public class MailServiceTest {
         Exception fail = new MailSendException("");
         doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
 
-        topic.setId(1);
-
-        service.sendTopicMovedMail(user, topic.getId());
+        service.sendTopicMovedMail(user, topic);
         
         this.checkMailCredentials();
-        assertTrue(this.getMimeMailBody().contains("http://coolsite.com/forum/topics/" + topic.getId()));
+        assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/topics/" + topicId));
+        assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/branches/" + branchId
+                + "/unsubscribe"));
     }
     
     @Test
@@ -328,6 +326,7 @@ public class MailServiceTest {
     @Test
     public void testSendRemovingTopicMailWhenTopicAsTopic() throws IOException, MessagingException {
         Topic topic = new Topic();
+        topic.setBranch(branch);
         service.sendRemovingTopicMail(user, topic);
 
         this.checkMailCredentials();
@@ -346,6 +345,7 @@ public class MailServiceTest {
     public void testSendRemovingTopicMailWhenTopicAsCodeReview() throws IOException, MessagingException {
         Topic topic = new Topic();
         topic.setCodeReview(new CodeReview());
+        topic.setBranch(branch);
         service.sendRemovingTopicMail(user, topic);
 
         this.checkMailCredentials();
@@ -362,9 +362,7 @@ public class MailServiceTest {
     
     @Test
     public void testSendTopicCreationMail() throws MessagingException, IOException {
-        long topicId = 777;
         branch.addTopic(topic);
-        topic.setId(topicId);
         service.sendTopicCreationMail(user, topic);
         this.checkMailCredentials();
 
@@ -377,5 +375,7 @@ public class MailServiceTest {
         assertEquals(this.getMimeMailSubject(), subjectTemplate  + ": " + branch.getName());
         assertTrue(this.getMimeMailBody().contains(bodyTemplate));      
         assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/topics/" + topic.getId()));
+        assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/branches/" + branchId
+                + "/unsubscribe"));
     }
 }

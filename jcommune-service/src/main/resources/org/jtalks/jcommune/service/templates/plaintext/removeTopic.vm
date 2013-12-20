@@ -18,6 +18,7 @@ ${messageSource.getMessage("greeting", $noArgs, $locale)} ${user.username}!
 
 ${messageSource.getMessage("removeTopic.topicHeader", $noArgs, $locale)} "${topic.title}" ${messageSource.getMessage("removeTopic.content", $noArgs, $locale)} ${messageSource.getMessage("moveTopic.by", $noArgs, $locale)} ${cur_user}
 
-${messageSource.getMessage("wish", $noArgs, $locale)}
+${messageSource.getMessage("subscriptionNotification.unsubscribe", $noArgs, $locale)} ${link_unsubscribe}.
 
+${messageSource.getMessage("wish", $noArgs, $locale)}
 ${messageSource.getMessage("signature", $noArgs, $locale)}

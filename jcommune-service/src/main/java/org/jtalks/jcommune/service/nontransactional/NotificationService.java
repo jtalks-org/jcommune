@@ -117,7 +117,7 @@ public class NotificationService {
             this.filterSubscribers(topicSubscribers);
 
             for (JCUser subscriber : topicSubscribers) {
-                mailService.sendTopicMovedMail(subscriber, topic.getId(), curUser);
+                mailService.sendTopicMovedMail(subscriber, topic, curUser);
             }
 
             //send notification to branch subscribers
@@ -126,7 +126,7 @@ public class NotificationService {
             this.filterSubscribers(branchSubscribers);
             for (JCUser subscriber : branchSubscribers) {
                 if (!topicSubscribers.contains(subscriber)) {
-                    mailService.sendTopicMovedMail(subscriber, topic.getId(), curUser);
+                    mailService.sendTopicMovedMail(subscriber, topic, curUser);
                 }
             }
         }

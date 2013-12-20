@@ -58,6 +58,7 @@ public class MailService {
     private static final String HTML_TEMPLATES_PATH = "org/jtalks/jcommune/service/templates/html/";
     private static final String PLAIN_TEXT_TEMPLATES_PATH = "org/jtalks/jcommune/service/templates/plaintext/";
     private static final String LINK = "link";
+    private static final String LINK_UNSUBSCRIBE = "link_unsubscribe";
     private static final String LINK_LABEL = "linkLabel";
     private static final String CUR_USER = "cur_user";
     private static final String USER = "user";
@@ -133,6 +134,9 @@ public class MailService {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(LINK, url);
             model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
+            if(entity instanceof Branch){
+                model.put(LINK_UNSUBSCRIBE, this.getDeploymentRootUrl() + getUnsubscribeBranchLink(entity));
+            }
             sendEmailOnForumUpdates(recipient, model, locale, (Entity) entity,
                     "subscriptionNotification.subject", "subscriptionNotification.vm");
         } catch (MailingFailedException e) {
@@ -210,15 +214,16 @@ public class MailService {
      * Sends email to topic starter that his or her topic was moved
      *
      * @param recipient user to send notification
-     * @param topicId   id of relocated topic
+     * @param topic   relocated topic
      */
-    public void sendTopicMovedMail(JCUser recipient, long topicId) {
-        String urlSuffix = "/topics/" + topicId;
+    public void sendTopicMovedMail(JCUser recipient, Topic topic) {
+        String urlSuffix = "/topics/" + topic.getId();
         String url = this.getDeploymentRootUrl() + urlSuffix;
         Locale locale = recipient.getLanguage().getLocale();
         Map<String, Object> model = new HashMap<String, Object>();
         model.put(NAME, recipient.getUsername());
         model.put(LINK, url);
+        model.put(LINK_UNSUBSCRIBE, this.getDeploymentRootUrl() + getUnsubscribeBranchLink(topic.getBranch()));
         model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
         model.put(RECIPIENT_LOCALE, locale);
         try {
@@ -233,17 +238,18 @@ public class MailService {
      * Sends email to topic starter that his or her topic was moved
      *
      * @param recipient user to send notification
-     * @param topicId   id of relocated topic
+     * @param topic     relocated topic
      * @param curUser   User that moved topic
      */
-    public void sendTopicMovedMail(JCUser recipient, long topicId, String curUser) {
-        String urlSuffix = "/topics/" + topicId;
+    public void sendTopicMovedMail(JCUser recipient, Topic topic, String curUser) {
+        String urlSuffix = "/topics/" + topic.getId();
         String url = this.getDeploymentRootUrl() + urlSuffix;
         Locale locale = recipient.getLanguage().getLocale();
         Map<String, Object> model = new HashMap<String, Object>();
         model.put(NAME, recipient.getUsername());
         model.put(CUR_USER, curUser);
         model.put(LINK, url);
+        model.put(LINK_UNSUBSCRIBE, this.getDeploymentRootUrl() + getUnsubscribeBranchLink(topic.getBranch()));
         model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
         model.put(RECIPIENT_LOCALE, locale);
         try {
@@ -402,6 +408,7 @@ public class MailService {
         Map<String, Object> model = new HashMap<>();
         model.put(USER, recipient);
         model.put(RECIPIENT_LOCALE, locale);
+        model.put(LINK_UNSUBSCRIBE, this.getDeploymentRootUrl() + getUnsubscribeBranchLink(topic.getBranch()));
         model.put(TOPIC, topic);
 
         try {
@@ -437,6 +444,7 @@ public class MailService {
         model.put(USER, recipient);
         model.put(RECIPIENT_LOCALE, locale);
         model.put(CUR_USER, curUser);
+        model.put(LINK_UNSUBSCRIBE, this.getDeploymentRootUrl() + getUnsubscribeBranchLink(topic.getBranch()));
         model.put(TOPIC, topic);
 
         try {
@@ -471,11 +479,30 @@ public class MailService {
             Locale locale = subscriber.getLanguage().getLocale();
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(LINK, url);
+            model.put(LINK_UNSUBSCRIBE, this.getDeploymentRootUrl()
+                    + getUnsubscribeBranchLink(topic.getBranch()));
             model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
             sendEmailOnForumUpdates(subscriber, model, locale, topic.getBranch(),
                     "subscriptionNotification.subject", "branchSubscriptionNotification.vm");
         } catch (MailingFailedException e) {
             LOGGER.error("Failed to sent mail about creation topic for user: " + subscriber.getUsername());
         }
+    }
+
+    private String getUnsubscribeBranchLink(SubscriptionAwareEntity entity){
+        String result = "/branches/{0}/unsubscribe";
+        if(entity instanceof Branch){
+           return result.replace("{0}", "" + ((Branch) entity).getId());
+        }
+        if(entity instanceof Topic){
+            return result.replace("{0}", "" + ((Topic) entity).getBranch().getId());
+        }
+        if(entity instanceof CodeReview){
+            return result.replace("{0}", "" + ((CodeReview) entity).getTopic().getBranch().getId());
+        }
+        if(entity instanceof Post){
+            return result.replace("{0}", "" + ((Post) entity).getTopic().getBranch().getId());
+        }
+        return null;
     }
 }
