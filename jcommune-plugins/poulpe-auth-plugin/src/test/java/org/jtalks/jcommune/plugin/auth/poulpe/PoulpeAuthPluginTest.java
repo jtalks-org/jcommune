@@ -219,7 +219,7 @@ public class PoulpeAuthPluginTest {
     @Test
     public void translateLabelWithExistingTranslation()
     {
-        assertEquals("Address", plugin.translateLabel("Url", Locale.forLanguageTag("en")));
+        assertEquals("Url", plugin.translateLabel("Url", Locale.forLanguageTag("en")));
     }
 
     @Test
