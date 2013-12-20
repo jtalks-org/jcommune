@@ -14,11 +14,13 @@
  */
 package org.jtalks.jcommune.model.plugins;
 
+import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  *
@@ -51,4 +53,12 @@ public interface Plugin {
     void configure(PluginConfiguration configuration) throws UnexpectedErrorException;
 
     boolean isEnabled();
+
+    /**
+     * @param code code for translation
+     * @param locale locale for translation
+     *
+     * @return translated label
+     */
+    public String translateLabel(String code, Locale locale);
 }

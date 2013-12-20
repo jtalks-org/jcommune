@@ -67,11 +67,20 @@
                         <tr>
                             <td>
                                 <form:hidden path="properties[${status.index}].name" value="${property.name}"/>
-                                <c:out value="${property.name}"/>
+                                <c:choose>
+                                    <c:when test="${labelsTranslation[property.name] != null}">
+                                        <c:out value="${labelsTranslation[property.name]}" />
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:out value="${property.name}" />
+                                    </c:otherwise>
+                                </c:choose>
                             </td>
                             <td>
                                 <form:hidden path="properties[${status.index}].type" value="${property.type}"/>
-                                <c:out value="${property.type}"/>
+                                <spring:message code="label.plugins.plugin.property.type.${property.type}"
+                                                var="propertyTranslation"/>
+                                <c:out value="${propertyTranslation}"/>
                             </td>
                             <td>
                                 <form:input path="properties[${status.index}].value" value="${property.value}"/>

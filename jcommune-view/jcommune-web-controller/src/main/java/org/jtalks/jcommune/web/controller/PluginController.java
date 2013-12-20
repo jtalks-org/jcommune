@@ -16,13 +16,17 @@ package org.jtalks.jcommune.web.controller;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jtalks.common.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.PluginService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.PluginActivatingListDto;
+import org.jtalks.jcommune.service.plugins.NameFilter;
+import org.jtalks.jcommune.service.plugins.PluginLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,17 +49,24 @@ public class PluginController {
 
     private final PluginService pluginService;
     private final ComponentService componentService;
+    private final PluginLoader pluginLoader;
+    private final UserService userService;
 
     /**
      * Constructs an instance with required fields.
      *
      * @param pluginService    to manage plugins
      * @param componentService to load an identifier of forum component
+     * @param pluginLoader     to load plugins
+     * @param userService      to work with user data
      */
     @Autowired
-    public PluginController(final PluginService pluginService, final ComponentService componentService) {
+    public PluginController(final PluginService pluginService, final ComponentService componentService,
+                            final PluginLoader pluginLoader, final UserService userService) {
         this.pluginService = pluginService;
         this.componentService = componentService;
+        this.pluginLoader = pluginLoader;
+        this.userService = userService;
     }
 
     /**
@@ -90,7 +101,6 @@ public class PluginController {
      * Show plugin with errors
      *
      * @param configuration current plugin configuration
-     *
      * @return the name of view and all parameters to display plugin that should be configured
      */
     @RequestMapping(value = "/configure/error/{name}", method = RequestMethod.GET)
@@ -102,12 +112,24 @@ public class PluginController {
      * Get model for showing plugin configuration
      *
      * @param configuration current plugin configuration
-     *
      * @return ModelAndView
      */
-    private ModelAndView getModel(PluginConfiguration configuration)
-    {
-        return new ModelAndView("plugin/pluginConfiguration").addObject("pluginConfiguration", configuration);
+    private ModelAndView getModel(PluginConfiguration configuration) {
+        Map<String, String> labels = new HashMap<>();
+        List<Plugin> plugins = pluginLoader.getPlugins(new NameFilter(configuration.getName()));
+        if (plugins.size() > 0) {
+            Plugin plugin = plugins.get(0);
+            if (plugin != null) {
+                Locale locale = userService.getCurrentUser().getLanguage().getLocale();
+                for (PluginProperty property : configuration.getProperties()) {
+                    String translation = plugin.translateLabel(property.getName(), locale);
+                    labels.put(property.getName(), translation);
+                }
+            }
+        }
+        return new ModelAndView("plugin/pluginConfiguration")
+                .addObject("pluginConfiguration", configuration)
+                .addObject("labelsTranslation", labels);
     }
 
     /**
@@ -134,7 +156,7 @@ public class PluginController {
         return "redirect:/plugins/configure/" + newConfiguration.getName();
     }
 
-     /**
+    /**
      * Update activating state of plugins.
      *
      * @param pluginsActivatingListDto contains activating state for the list of plugins

@@ -28,10 +28,7 @@ import org.testng.annotations.Test;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.jtalks.jcommune.model.entity.PluginProperty.Type.STRING;
 import static org.mockito.Mockito.when;
@@ -217,5 +214,17 @@ public class PoulpeAuthPluginTest {
         passwordProperty.setName("Password");
         return new PluginConfiguration("Poulpe Auth Plugin", true,
                 Arrays.asList(urlProperty, loginProperty, passwordProperty));
+    }
+
+    @Test
+    public void translateLabelWithExistingTranslation()
+    {
+        assertEquals("Address", plugin.translateLabel("Url", Locale.forLanguageTag("en")));
+    }
+
+    @Test
+    public void translateLabelWithoutExistingTranslation()
+    {
+        assertEquals("Url1", plugin.translateLabel("Url1", Locale.forLanguageTag("en")));
     }
 }

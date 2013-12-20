@@ -16,14 +16,18 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.common.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.PluginService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.PluginActivatingListDto;
 import org.jtalks.jcommune.service.dto.PluginActivatingDto;
+import org.jtalks.jcommune.service.plugins.NameFilter;
+import org.jtalks.jcommune.service.plugins.PluginLoader;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -38,13 +42,13 @@ import java.util.*;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.springframework.test.web.ModelAndViewAssert.assertCompareListModelAttribute;
 import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 /**
- *
  * @author Anuar Nurmakanov
  */
 public class PluginControllerTest {
@@ -55,13 +59,17 @@ public class PluginControllerTest {
     private ComponentService componentService;
     @Mock
     private RedirectAttributes redirectAttributes;
+    @Mock
+    private PluginLoader pluginLoader;
+    @Mock
+    private UserService userService;
 
     private PluginController pluginController;
 
     @BeforeMethod
     public void init() {
         initMocks(this);
-        this.pluginController = new PluginController(pluginService, componentService);
+        this.pluginController = new PluginController(pluginService, componentService, pluginLoader, userService);
     }
 
     @Test
@@ -89,13 +97,17 @@ public class PluginControllerTest {
         long componentId = 25L;
         Component component = new Component();
         component.setId(componentId);
+        List<Plugin> pluginList = Arrays.asList((Plugin) new DummyPlugin());
+
         when(componentService.getComponentOfForum()).thenReturn(component);
         when(pluginService.getPluginConfiguration(configuredPluginName, componentId)).thenReturn(expectedConfiguration);
+        when(pluginLoader.getPlugins(new NameFilter(configuredPluginName))).thenReturn(pluginList);
 
         ModelAndView pluginConfigModelAndView = pluginController.startConfiguringPlugin(configuredPluginName);
 
         assertViewName(pluginConfigModelAndView, "plugin/pluginConfiguration");
         assertModelAttributeAvailable(pluginConfigModelAndView, "pluginConfiguration");
+        assertModelAttributeAvailable(pluginConfigModelAndView, "labelsTranslation");
         PluginConfiguration actualPluginConfiguration = (PluginConfiguration) pluginConfigModelAndView.getModel().get("pluginConfiguration");
         assertEquals(actualPluginConfiguration, expectedConfiguration, "Plugin should be returned from services.");
     }
@@ -210,6 +222,11 @@ public class PluginControllerTest {
         @Override
         public boolean isEnabled() {
             return false;
+        }
+
+        @Override
+        public String translateLabel(String code, Locale locale) {
+            return "translation";
         }
     }
 }
