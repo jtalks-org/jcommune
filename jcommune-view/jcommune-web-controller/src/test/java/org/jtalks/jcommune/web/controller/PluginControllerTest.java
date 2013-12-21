@@ -58,8 +58,6 @@ public class PluginControllerTest {
     @Mock
     private ComponentService componentService;
     @Mock
-    private RedirectAttributes redirectAttributes;
-    @Mock
     private PluginLoader pluginLoader;
     @Mock
     private UserService userService;
@@ -136,9 +134,9 @@ public class PluginControllerTest {
         newConfiguration.setName(pluginName);
 
         Model model = new ExtendedModelMap();
-        String viewName = pluginController.updateConfiguration(model, newConfiguration, redirectAttributes);
+        ModelAndView mav = pluginController.updateConfiguration(model, newConfiguration);
 
-        assertEquals(viewName, "redirect:/plugins/configure/" + pluginName);
+        assertViewName(mav, "redirect:/plugins/configure/" + pluginName);
         verify(pluginService).updateConfiguration(newConfiguration, componentId);
     }
 
@@ -148,10 +146,9 @@ public class PluginControllerTest {
         PluginConfiguration newConfiguration = createFailingConfiguration();
 
         Model model = new ExtendedModelMap();
-        String viewName = pluginController.updateConfiguration(model, newConfiguration, redirectAttributes);
+        ModelAndView mav = pluginController.updateConfiguration(model, newConfiguration);
 
-        assertEquals(viewName, "redirect:/plugins/configure/error/plugin");
-        verify(redirectAttributes).addFlashAttribute("error", "Testing exception!");
+        assertViewName(mav, "plugin/pluginConfiguration");
         assertTrue(model.containsAttribute("pluginConfiguration"));
     }
 

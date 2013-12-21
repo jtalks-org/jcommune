@@ -44,7 +44,6 @@ import java.util.*;
  */
 @Controller
 @RequestMapping("/plugins")
-@SessionAttributes({"pluginConfiguration"})
 public class PluginController {
 
     private final PluginService pluginService;
@@ -61,8 +60,8 @@ public class PluginController {
      * @param userService      to work with user data
      */
     @Autowired
-    public PluginController(final PluginService pluginService, final ComponentService componentService,
-                            final PluginLoader pluginLoader, final UserService userService) {
+    public PluginController(PluginService pluginService, ComponentService componentService, PluginLoader pluginLoader,
+                            UserService userService) {
         this.pluginService = pluginService;
         this.componentService = componentService;
         this.pluginLoader = pluginLoader;
@@ -98,14 +97,26 @@ public class PluginController {
     }
 
     /**
-     * Show plugin with errors
+     * Update the configuration of plugin
      *
-     * @param configuration current plugin configuration
-     * @return the name of view and all parameters to display plugin that should be configured
+     * @param newConfiguration new configuration for plugin
+     * @return redirect to the page of plugin configuration
+     * @throws NotFoundException if configured plugin wasn't found
      */
-    @RequestMapping(value = "/configure/error/{name}", method = RequestMethod.GET)
-    public ModelAndView errorConfiguringPlugin(@ModelAttribute PluginConfiguration configuration) {
-        return getModel(configuration);
+    @RequestMapping(value = "/configure/{name}", method = RequestMethod.POST)
+    public ModelAndView updateConfiguration(Model model, @ModelAttribute PluginConfiguration newConfiguration)
+            throws NotFoundException {
+        long componentId = getForumComponentId();
+        try {
+            pluginService.updateConfiguration(newConfiguration, componentId);
+        } catch (UnexpectedErrorException ex) {
+            model.addAttribute("error", ex.getCause().getLocalizedMessage());
+            model.addAttribute("errorInformation", ExceptionUtils.getFullStackTrace(ex.getCause()));
+            model.addAttribute("pluginConfiguration", newConfiguration);
+            return getModel(newConfiguration);
+        }
+
+        return new ModelAndView("redirect:/plugins/configure/" + newConfiguration.getName());
     }
 
     /**
@@ -130,30 +141,6 @@ public class PluginController {
         return new ModelAndView("plugin/pluginConfiguration")
                 .addObject("pluginConfiguration", configuration)
                 .addObject("labelsTranslation", labels);
-    }
-
-    /**
-     * Update the configuration of plugin/
-     *
-     * @param newConfiguration new configuration for plugin
-     * @return redirect to the page of plugin configuration
-     * @throws NotFoundException if configured plugin wasn't found
-     */
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public String updateConfiguration(Model model, @ModelAttribute PluginConfiguration newConfiguration,
-                                      final RedirectAttributes redirectAttributes)
-            throws NotFoundException {
-        long componentId = getForumComponentId();
-        try {
-            pluginService.updateConfiguration(newConfiguration, componentId);
-        } catch (UnexpectedErrorException ex) {
-            redirectAttributes.addFlashAttribute("error", ex.getCause().getLocalizedMessage());
-            redirectAttributes.addFlashAttribute("errorInformation", ExceptionUtils.getFullStackTrace(ex.getCause()));
-            model.addAttribute("pluginConfiguration", newConfiguration);
-            return "redirect:/plugins/configure/error/" + newConfiguration.getName();
-        }
-
-        return "redirect:/plugins/configure/" + newConfiguration.getName();
     }
 
     /**
