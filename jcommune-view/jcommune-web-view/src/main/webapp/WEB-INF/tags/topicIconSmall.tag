@@ -10,30 +10,41 @@
     <%--if there are new posts this icon should be a link--%>
     <a href="${pageContext.request.contextPath}/posts/${topic.firstUnreadPostId}">
 </c:if>
-<c:if test="${topic.hasUpdates && topic.closed}">
-    <c:set var="iconName" value="closed-new-posts.png"/>
-    <c:set var="titleCode" value="label.topic.new_posts"/>
-    <c:set var="altCode" value="alt.topics.hasNewMessages"/>
-</c:if>
-<c:if test="${!topic.hasUpdates && topic.closed}">
-    <c:set var="iconName" value="closed-no-new-posts.png"/>
-    <c:set var="titleCode" value="label.topic.no_new_posts"/>
-    <c:set var="altCode" value="alt.topics.noNewMessages"/>
-</c:if>
-<c:if test="${topic.hasUpdates && !topic.closed}">
-    <c:set var="iconName" value="new-posts.png"/>
-    <c:set var="titleCode" value="label.topic.new_posts"/>
-    <c:set var="altCode" value="alt.topics.hasNewMessages"/>
-</c:if>
-<c:if test="${!topic.hasUpdates && !topic.closed}">
-    <c:set var="iconName" value="no-new-posts.png"/>
-    <c:set var="titleCode" value="label.topic.no_new_posts"/>
-    <c:set var="altCode" value="alt.topics.noNewMessages"/>
-</c:if>
+<c:choose>
+  <c:when test="${topic.codeReview != null}">
+    <c:if test="${topic.hasUpdates}">
+      <c:set var="iconName" value="code-review-new-posts.png"/>
+      <c:set var="titleCode" value="label.topic.new_posts"/>
+    </c:if>
+    <c:if test="${!topic.hasUpdates}">
+      <c:set var="iconName" value="code-review-no-new-posts.png"/>
+      <c:set var="titleCode" value="label.topic.no_new_posts"/>
+    </c:if>
+  </c:when>
+  <c:otherwise>
+    <c:if test="${topic.hasUpdates && topic.closed}">
+      <c:set var="iconName" value="closed-new-posts.png"/>
+      <c:set var="titleCode" value="label.topic.new_posts"/>
+    </c:if>
+    <c:if test="${!topic.hasUpdates && topic.closed}">
+      <c:set var="iconName" value="closed-no-new-posts.png"/>
+      <c:set var="titleCode" value="label.topic.no_new_posts"/>
+    </c:if>
+    <c:if test="${topic.hasUpdates && !topic.closed}">
+      <c:set var="iconName" value="new-posts.png"/>
+      <c:set var="titleCode" value="label.topic.new_posts"/>
+    </c:if>
+    <c:if test="${!topic.hasUpdates && !topic.closed}">
+      <c:set var="iconName" value="no-new-posts.png"/>
+      <c:set var="titleCode" value="label.topic.no_new_posts"/>
+    </c:if>
+  </c:otherwise>
+</c:choose>
+
 <img class="status-img-small"
      src="${pageContext.request.contextPath}/resources/images/${iconName}"
      data-original-title="<spring:message code="${titleCode}" htmlEscape="true" javaScriptEscape="true"/>"
-     alt="<spring:message code="${altCode}" htmlEscape="true" javaScriptEscape="true"/>"/>
+     alt="<spring:message code="${titleCode}" htmlEscape="true" javaScriptEscape="true"/>"/>
 <c:if test="${topic.hasUpdates}">
     </a>
 </c:if>
