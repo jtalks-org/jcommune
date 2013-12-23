@@ -41,19 +41,35 @@ public class BBCodeServiceTest {
         assertEquals(result, "[quote=\"name\"]source[/quote]");
     }
 
-    @Test
-    public void testRemoveBBCodes(){
-        String incoming = "[bb] lol [code] [/omg]";
-        String expected = " lol  ";
-
-        assertEquals(service.removeBBCodes(incoming), expected);
-    }
-
     @Test(dataProvider = "validBBCodes")
     public void testBBCodeConversion(String bbCode, String expectedResult) {
         assertEquals(service.convertBbToHtml(bbCode), expectedResult);
     }
 
+    @Test(dataProvider = "bbCodesToStrip") 
+    public void testBBCodesStripping(String bbCode, String expected, String message) {
+        assertEquals(service.stripBBCodes(bbCode), expected, message);
+    }
+    
+    @DataProvider
+    public Object[][] bbCodesToStrip() {
+        return new String[][]{ 
+            {"[b]text[/b]", "text", "strip [b]"},
+            {"[b][b]text[/b]", "[b]text", "unclosed tags are not stripped"}, 
+            {"[not a tag][][/b]text[/b][\\i]", "[not a tag][][/b]text[/b][\\i]", 
+                "invalid tags not becomes stripped"},
+            {"[code=java]text[/code]", "text", "strip code"},
+            {"[img]http://ya.ru/zzz.jpg[/img]", "http://ya.ru/zzz.jpg", "strip img"},
+            {"[offtop]offtop[/offtop]", "offtop", "strip offtop"},
+            {"[user=http://dev.jtalks.org/jcommune/users/1]admin[/user]text", "admintext", "strip user"},
+            {"[url=http://dev.jtalks.org/jcommune/topics/84]display[/url]", "display(http://dev.jtalks.org/jcommune/topics/84)", "strip url"},
+            {"[quote=\"admin\"]quote[/quote]", "quote", "strip named quote"},
+            {"[b][i][u][s][highlight][left][center][right][color=000033][size=12][quote][indent=15]"
+                + "Ваш текст[/indent][/quote][/size][/color][/right][/center][/left][/highlight][/s][/u][/i][/b]",
+             "Ваш текст", "strip a pack of bb-codes"}
+        };
+    }
+    
     @DataProvider
     public Object[][] validBBCodes() {
         return new Object[][]{  // {"bb code", "html code"}

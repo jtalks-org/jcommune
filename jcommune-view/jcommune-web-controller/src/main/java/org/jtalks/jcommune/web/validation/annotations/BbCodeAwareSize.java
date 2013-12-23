@@ -12,9 +12,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.validation.annotations;
+package org.jtalks.jcommune.web.validation.annotations;
 
-import org.jtalks.jcommune.model.validation.validators.BbCodeAwareSizeValidator;
+import org.jtalks.jcommune.web.validation.validators.BbCodeAwareSizeValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -37,27 +37,27 @@ import java.lang.annotation.Target;
 public @interface BbCodeAwareSize {
 
     /**
-     * Resource bundle code for error message
+     * @return resource bundle code for error message
      */
     String message() default "{javax.validation.constraints.Size.message}";
 
     /**
-     * Groups settings for this validation constraint
+     * @return groups settings for this validation constraint
      */
     Class<?>[] groups() default {};
 
     /**
-     * Payload, not used here
+     * @return payload, not used here
      */
     Class<? extends Payload>[] payload() default {};
 
     /**
-     * size the string must be higher or equal to
+     * @return size the string must be higher or equal to
      */
     int min() default 0;
 
     /**
-     * size the string must be lower or equal to
+     * @return size the string must be lower or equal to
      */
     int max() default Integer.MAX_VALUE;
 

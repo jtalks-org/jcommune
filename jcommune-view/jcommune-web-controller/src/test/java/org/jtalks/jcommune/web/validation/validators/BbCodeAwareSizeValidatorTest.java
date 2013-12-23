@@ -12,11 +12,12 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.validation;
+package org.jtalks.jcommune.web.validation.validators;
 
-import org.jtalks.jcommune.model.validation.annotations.BbCodeAwareSize;
-import org.jtalks.jcommune.model.validation.validators.BbCodeAwareSizeValidator;
+import org.jtalks.jcommune.service.nontransactional.BBCodeService;
+import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -32,34 +33,27 @@ public class BbCodeAwareSizeValidatorTest {
     @BbCodeAwareSize(min = 5, max = 10)
     public String value;
 
-    @Mock
     private BbCodeAwareSizeValidator validator;
+    
+    @Mock
+    private BBCodeService bbCodeService;
 
     @BeforeMethod
     public void init() throws NoSuchFieldException {
         BbCodeAwareSize annotation = (BbCodeAwareSize)
                 BbCodeAwareSizeValidatorTest.class.getField("value").getDeclaredAnnotations()[0];
         initMocks(this);
-        validator = new BbCodeAwareSizeValidator();
+        
+        validator = new BbCodeAwareSizeValidator(bbCodeService);
         validator.initialize(annotation);
-    }
-
-    @Test
-    public void testRemoveBBCodes() {
-        String incoming = "[bb] lol [code] [/omg]";
-        String expected = " lol  ";
-
-        //assertEquals(validator.removeBBCodes(incoming), expected);
     }
 
     @Test
     public void testValidationPassed() {
         String source = "1234567";
-        //when(validator.removeBBCodes(source)).thenReturn(source);
+        Mockito.when(bbCodeService.stripBBCodes(source)).thenReturn(source);
 
         assertTrue(validator.isValid(source, null));
-
-        //verify(validator).removeBBCodes(source);
     }
 
     @Test
@@ -70,31 +64,23 @@ public class BbCodeAwareSizeValidatorTest {
     @Test
     public void testValueTooLong() {
         String source = "123456789010";
-        //when(validator.removeBBCodes(source)).thenReturn(source);
 
         assertFalse(validator.isValid(source, null));
-
-        //verify(validator).removeBBCodes(source);
     }
 
     @Test
     public void testValueTooShort() {
         String source = "123";
-        //when(validator.removeBBCodes(source)).thenReturn(source);
-
+        Mockito.when(bbCodeService.stripBBCodes(source)).thenReturn(source);
+        
         assertFalse(validator.isValid(source, null));
-
-        //verify(validator).removeBBCodes(source);
     }
 
     @Test
     public void testSpaces() {
         String source = "             ";
-        //when(validator.removeBBCodes(source)).thenReturn(source);
-
+        
         assertFalse(validator.isValid(source, null));
-
-        //verify(validator).removeBBCodes(source);
     }
     
     @Test

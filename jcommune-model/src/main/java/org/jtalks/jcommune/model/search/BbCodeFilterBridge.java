@@ -27,6 +27,7 @@ import org.hibernate.search.bridge.StringBridge;
  * @see org.hibernate.search.annotations.FieldBridge
  */
 public class BbCodeFilterBridge implements StringBridge {
+    //TODO: BBCodeService.stripBBCodes should be used instead of this regexp
     private static final String BB_CODE_REGEXP_TEMPLATE = "\\[.*?\\]";
     
     /**
