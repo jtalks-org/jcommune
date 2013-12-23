@@ -243,7 +243,10 @@ public class UserController {
         Map<String, String> registrationPlugins = new HashMap<>();
         for (Map.Entry<Long, RegistrationPlugin> entry : pluginService.getRegistrationPlugins().entrySet()) {
             String pluginId = String.valueOf(entry.getKey());
-            registrationPlugins.put(pluginId, entry.getValue().getHtml(request, pluginId, locale));
+            String html = entry.getValue().getHtml(request, pluginId, locale);
+            if (html != null) {
+                registrationPlugins.put(pluginId, html);
+            }
         }
         return registrationPlugins;
     }
