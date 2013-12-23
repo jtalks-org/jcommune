@@ -23,8 +23,8 @@
 <head>
   <meta name="description" content="<c:out value="${topic.title}"/>">
   <title>
-      <c:out value="${cmpTitlePrefix}"/>
-      <spring:message code="label.answer_to"/>: <c:out value="${topic.title}"/>
+    <c:out value="${cmpTitlePrefix}"/>
+    <spring:message code="label.answer_to"/>: <c:out value="${topic.title}"/>
   </title>
 </head>
 <body>

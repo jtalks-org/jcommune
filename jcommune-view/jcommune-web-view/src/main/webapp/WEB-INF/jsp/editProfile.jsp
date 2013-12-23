@@ -26,8 +26,8 @@
 <head>
   <meta name="description" content="<c:out value="${label.user}"/>">
   <title>
-      <c:out value="${cmpTitlePrefix}"/>
-      <spring:message code="label.user"/> - "${editedUser.username}"
+    <c:out value="${cmpTitlePrefix}"/>
+    <spring:message code="label.user"/> - "${editedUser.username}"
   </title>
 </head>
 <body>
@@ -129,8 +129,8 @@
           <label class="control-label"><spring:message code="label.autosubscribe"/></label>
 
           <div class="controls padding-top-profile">
-              <spring:message var="autosubscribeTooltip"
-                              code="label.tips.autoSubscribe"/>
+            <spring:message var="autosubscribeTooltip"
+                            code="label.tips.autoSubscribe"/>
             <form:checkbox path="autosubscribe" value="${editedUser.autosubscribe}"
                            class="form-check-radio-box script-has-tooltip"
                            data-original-title='${autosubscribeTooltip}' tabindex="30"/>
@@ -153,13 +153,13 @@
         <div class="control-group">
           <label class="control-label"><spring:message code="label.send.pm.notification.enabled"/></label>
 
-            <div class="controls padding-top-profile">
-              <spring:message var="sendPmNotificationTooltip" code="label.tips.sendPmNotification"/>
-              <form:checkbox path="sendPmNotification"
-                             value="${editedUser.sendPmNotification}"
-                             class="form-check-radio-box script-has-tooltip"
-                             data-original-title='${sendPmNotificationTooltip}' tabindex="36"/>
-            </div>
+          <div class="controls padding-top-profile">
+            <spring:message var="sendPmNotificationTooltip" code="label.tips.sendPmNotification"/>
+            <form:checkbox path="sendPmNotification"
+                           value="${editedUser.sendPmNotification}"
+                           class="form-check-radio-box script-has-tooltip"
+                           data-original-title='${sendPmNotificationTooltip}' tabindex="36"/>
+          </div>
         </div>
 
         <div class="control-group">

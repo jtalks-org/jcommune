@@ -7,8 +7,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%--actual icon depends on both new posts presence and topic closed status--%>
 <c:if test="${topic.hasUpdates}">
-    <%--if there are new posts this icon should be a link--%>
-    <a href="${pageContext.request.contextPath}/posts/${topic.firstUnreadPostId}">
+  <%--if there are new posts this icon should be a link--%>
+  <a href="${pageContext.request.contextPath}/posts/${topic.firstUnreadPostId}">
 </c:if>
 <c:choose>
   <c:when test="${topic.codeReview != null}">
@@ -46,5 +46,5 @@
      data-original-title="<spring:message code="${titleCode}" htmlEscape="true" javaScriptEscape="true"/>"
      alt="<spring:message code="${titleCode}" htmlEscape="true" javaScriptEscape="true"/>"/>
 <c:if test="${topic.hasUpdates}">
-    </a>
+  </a>
 </c:if>

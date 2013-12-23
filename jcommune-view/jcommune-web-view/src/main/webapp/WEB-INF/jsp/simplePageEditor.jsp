@@ -23,8 +23,8 @@
 <html>
 <head>
   <title>
-      <c:out value="${cmpTitlePrefix}"/>
-      <spring:message code="label.edit"/>
+    <c:out value="${cmpTitlePrefix}"/>
+    <spring:message code="label.edit"/>
   </title>
 </head>
 <body>

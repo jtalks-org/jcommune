@@ -22,8 +22,8 @@
 <head>
   <meta name="description" content="<c:out value="${topicDto.topic.branch.name}"/>">
   <title>
-      <c:out value="${cmpTitlePrefix}"/>
-      <c:out value="${topicDto.topic.branch.name}"/> - <spring:message code="label.addCodeReview"/>
+    <c:out value="${cmpTitlePrefix}"/>
+    <c:out value="${topicDto.topic.branch.name}"/> - <spring:message code="label.addCodeReview"/>
   </title>
 </head>
 <body>

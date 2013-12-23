@@ -24,8 +24,8 @@
 <head>
   <meta name="description" content="<c:out value="${cmpDescription}"/>">
   <title>
-      <c:out value="${cmpTitlePrefix}"/>
-      <c:out value="${cmpDescription}"/>
+    <c:out value="${cmpTitlePrefix}"/>
+    <c:out value="${cmpDescription}"/>
   </title>
 </head>
 <body>
@@ -49,7 +49,8 @@
           <spring:message code="label.recent"/>
         </a>
         <br/>
-        <a href="${pageContext.request.contextPath}/topics/unanswered" title="" class="forum-sections-recent-unanswered">
+        <a href="${pageContext.request.contextPath}/topics/unanswered" title=""
+           class="forum-sections-recent-unanswered">
           <spring:message code="label.messagesWithoutAnswers"/>
         </a>
       </span>
@@ -101,18 +102,19 @@
                 <%--</sec:authorize>--%>
               <td class="title-col">
                 <h3 class="h-nostyle">
-                <c:if test="${sessionScope.adminMode == true}">
+                  <c:if test="${sessionScope.adminMode == true}">
                   <a class="branch-title" href="#" id='branchLabel${branch.id}'>
-                </c:if>
-                <c:if test="${sessionScope.adminMode != true}">
-                  <a class="branch-title" href="${pageContext.request.contextPath}/branches/${branch.id}">
-                </c:if>
-                <c:out value="${branch.name}"/>
-                  </a>
+                    </c:if>
+                    <c:if test="${sessionScope.adminMode != true}">
+                    <a class="branch-title" href="${pageContext.request.contextPath}/branches/${branch.id}">
+                      </c:if>
+                      <c:out value="${branch.name}"/>
+                    </a>
                 </h3>
                 <span class="forum-sections-branch-description-container" id='branchDescriptionLabel${branch.id}'>
                   <c:out value="${branch.description}"/>
                 </span>
+
                 <div class="forum-sections-moderators-container">
                   <jtalks:moderators moderators="${branch.moderatorsGroup.users}" visibleIfEmpty="false"/>
                 </div>
@@ -129,6 +131,7 @@
                   <a class="date" href="${pageContext.request.contextPath}/posts/${branch.lastPost.id}">
                     <jtalks:format value="${branch.lastPost.creationDate}"/>
                   </a>
+
                   <p>
                     <spring:message code="label.topic.last_post_by"/>
                     <a class="space-left-small"
@@ -144,12 +147,12 @@
         <c:if test="${sessionScope.adminMode == true}">
           <tr>
             <td colspan="3">
-              <div id='newBranch${section.id}' class="add-branch-button"> + 
+              <div id='newBranch${section.id}' class="add-branch-button"> +
                 <spring:message code="label.branch.add"/>
-              </div>                
+              </div>
             </td>
           </tr>
-        </c:if>            
+        </c:if>
       </jtalks:isSectionVisible>
     </c:forEach>
     </tbody>
@@ -173,11 +176,11 @@
       <span class='test-visitors-total'>
         <c:out value="${visitors}"/>
       </span>,
-      <span class="space-left-small"><spring:message code="label.onlineUsersInfo.visitors.registered"/></span>
+    <span class="space-left-small"><spring:message code="label.onlineUsersInfo.visitors.registered"/></span>
       <span class='test-visitors-registered'>
         <c:out value="${visitorsRegistered}"/>
       </span>,
-      <span class="space-left-small"><spring:message code="label.onlineUsersInfo.visitors.guests"/></span>
+    <span class="space-left-small"><spring:message code="label.onlineUsersInfo.visitors.guests"/></span>
       <span class='test-visitors-guests'>
         <c:out value="${visitorsGuests}"/>
       </span>
