@@ -62,7 +62,7 @@ public class BBCodeServiceTest {
             {"[img]http://ya.ru/zzz.jpg[/img]", "http://ya.ru/zzz.jpg", "strip img"},
             {"[offtop]offtop[/offtop]", "offtop", "strip offtop"},
             {"[user=http://dev.jtalks.org/jcommune/users/1]admin[/user]text", "admintext", "strip user"},
-            {"[url=http://dev.jtalks.org/jcommune/topics/84]display[/url]", "display(http://dev.jtalks.org/jcommune/topics/84)", "strip url"},
+            {"[url=http://dev.jtalks.org/jcommune/topics/84]display[/url]", "display", "strip url"},
             {"[quote=\"admin\"]quote[/quote]", "quote", "strip named quote"},
             {"[b][i][u][s][highlight][left][center][right][color=000033][size=12][quote][indent=15]"
                 + "Ваш текст[/indent][/quote][/size][/color][/right][/center][/left][/highlight][/s][/u][/i][/b]",

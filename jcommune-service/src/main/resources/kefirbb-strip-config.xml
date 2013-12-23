@@ -274,7 +274,7 @@ get XSS attacks.</p>-->
     <!-- HTTP -->
     <code name="url1" priority="2">
         <pattern>[url=<var name="protocol" regex="((ht|f)tps?:|\.{1,2})?"/>/<var name="url" scope="escapeXmlAndBr"/>]<var name="text" scope="url"/>[/url]</pattern>
-        <template><var name="text"/>(<var name="protocol"/>/<var name="url"/>)</template>
+        <template><var name="text"/></template>
     </code>
     <code name="url2" priority="2">
         <pattern>[url]<var name="protocol" regex="((ht|f)tps?:|\.{1,2})?"/>/<var name="url" scope="escapeXmlAndBr"/>[/url]</pattern>
