@@ -255,7 +255,7 @@ public class MailServiceTest {
         assertTrue(this.getMimeMailBody().contains(USERNAME));
         assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/topics/" + topicId));
         assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/branches/" + branchId
-                + "/unsubscribe"));
+                + "/unsubscribe_link"));
     }
 
     @Test
@@ -268,7 +268,7 @@ public class MailServiceTest {
         this.checkMailCredentials();
         assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/topics/" + topicId));
         assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/branches/" + branchId
-                + "/unsubscribe"));
+                + "/unsubscribe_link"));
     }
     
     @Test
@@ -376,6 +376,6 @@ public class MailServiceTest {
         assertTrue(this.getMimeMailBody().contains(bodyTemplate));      
         assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/topics/" + topic.getId()));
         assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/branches/" + branchId
-                + "/unsubscribe"));
+                + "/unsubscribe_link"));
     }
 }
