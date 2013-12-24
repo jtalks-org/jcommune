@@ -17,35 +17,37 @@ package org.jtalks.jcommune.web.validation.validators;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeNesting;
-import org.jtalks.jcommune.web.validation.validators.BbCodeNestingValidator;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import static org.apache.commons.lang.StringUtils.repeat;
-import static org.mockito.Mockito.mock;
+import org.mockito.Mock;
 import static org.mockito.Mockito.when;
+import org.mockito.MockitoAnnotations;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 public class BbCodeNestingValidatorTest {
     private BbCodeNestingValidator bbCodeNestingValidator;
+    @Mock
     private UserService userService;
-    @BbCodeNesting
-    private String text;
-
+    @Mock
+    private BbCodeNesting annotation;
+        
     @BeforeMethod
     public void initMocks() throws NoSuchFieldException {
-        userService = mock(UserService.class);
+        MockitoAnnotations.initMocks(this);
+        
+        when(annotation.maxNestingValue()).thenReturn(50);
+        when(userService.getCurrentUser()).thenReturn(new JCUser("", "", ""));
+        
         bbCodeNestingValidator = new BbCodeNestingValidator(userService);
-        BbCodeNesting bbCodeNesting = (BbCodeNesting) BbCodeNestingValidatorTest.class
-                .getDeclaredField("text").getDeclaredAnnotations()[0];
-        bbCodeNestingValidator.initialize(bbCodeNesting);
+        bbCodeNestingValidator.initialize(annotation);
     }
 
     @Test(dataProvider = "tooDeepNestingMessages")
     public void testValidationFail(String message) {
-        when(userService.getCurrentUser()).thenReturn(new JCUser("", "", ""));
         assertFalse(bbCodeNestingValidator.isValid(message, null));
     }
 
@@ -56,13 +58,11 @@ public class BbCodeNestingValidatorTest {
 
     @Test
     public void onlyOpeningBbCodesShouldResultInError() {
-        when(userService.getCurrentUser()).thenReturn(new JCUser("", "", ""));
         assertFalse(bbCodeNestingValidator.isValid(repeat("[b]", 100), null));
     }
 
     @Test
     public void onlyClosingBbCodesShouldResultInError() {
-        when(userService.getCurrentUser()).thenReturn(new JCUser("", "", ""));
         assertFalse(bbCodeNestingValidator.isValid(repeat("[/b]", 100), null));
     }
 
