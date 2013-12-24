@@ -52,35 +52,31 @@ public class BbCodeNestingValidatorTest {
     }
     
     @Test(dataProvider = "validMessages")
-    public void testValidMessages(String message) {
-        assertTrue(bbCodeNestingValidator.isValid(message, null), message);
+    public void testValidMessages(String message, String assertinMessage) {
+        assertTrue(bbCodeNestingValidator.isValid(message, null), message + " - " + assertinMessage);
     }
     
     @Test(dataProvider = "invalidMessages")
-    public void testInvalidMessages(String message) {
-        assertFalse(bbCodeNestingValidator.isValid(message, null), message);
+    public void testInvalidMessages(String message, String assertionMessage) {
+        assertFalse(bbCodeNestingValidator.isValid(message, null), message + " - " + assertionMessage);
     }    
     
     @DataProvider
     public String[][] invalidMessages() {
         return new String[][] {
-            {"[b][b][b]text"},
-            {"[quote][b][i]text[/i][/b][/quote]"},
-            {"[quote=\"name\"][b][i]text[/i][/b][/quote]"},
-            {"[b][b][b]text[/b][/b][/b]"}
+            {"[b][b][b]text", "Test open tags without close tags counted as nesting."},
+            {"[b][b][b]text[/b][/b][/b]", "Nesting limit is 2, codes nesting in the message is 3."}
         };
     } 
     
     @DataProvider
     public String[][] validMessages() {
         return new String[][] {
-            {"[b][b]text"},
-            {"[qoute][b]text[/b][/qoute]"},
-            {"[qoute name=\"name\"][b]text[/b][/qoute]"},
-            {"[*][*][*][*][*]"},
-            {"[/b][/b][/b][/b][/b]"},
-            {"[b]a[/b]b[b]c[/b]d[b]e[/b]a[b]b[/b]c[b]d[/b]e"},
-            {"[z][z][z][z][z][z][z][z][z]"}
+            {"[b][b]text[/b][/b]", "Test message with depth 2 when depth limit is 2."},
+            {"[*][*][*][*][*]", "List items are not taking into account as nesting."},
+            {"[/b][/b][/b][/b][/b]", "Close tags without respective open tags are ignored."},
+            {"[b]a[/b]b[b]c[/b]d[b]e[/b]a[b]b[/b]c[b]d[/b]e", "Test long sequence of tags with normal nesting depth."},
+            {"[z][z][z][z][z][z][z][z][z]", "Invalid bb-codes are ignored."}
         };
     } 
 }
