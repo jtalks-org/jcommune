@@ -21,7 +21,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import static org.apache.commons.lang.StringUtils.repeat;
 import org.mockito.Mock;
 import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
@@ -38,32 +37,12 @@ public class BbCodeNestingValidatorTest {
     @BeforeMethod
     public void initMocks() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
-        
-        when(annotation.maxNestingValue()).thenReturn(50);
+        // limit nesting to 2
+        when(annotation.maxNestingValue()).thenReturn(2);
         when(userService.getCurrentUser()).thenReturn(new JCUser("", "", ""));
         
         bbCodeNestingValidator = new BbCodeNestingValidator(userService);
         bbCodeNestingValidator.initialize(annotation);
-    }
-
-    @Test(dataProvider = "tooDeepNestingMessages")
-    public void testValidationFail(String message) {
-        assertFalse(bbCodeNestingValidator.isValid(message, null));
-    }
-
-    @Test(dataProvider = "validMessages")
-    public void testValidationSuccess(String message) {
-        assertTrue(bbCodeNestingValidator.isValid(message, null));
-    }
-
-    @Test
-    public void onlyOpeningBbCodesShouldResultInError() {
-        assertFalse(bbCodeNestingValidator.isValid(repeat("[b]", 100), null));
-    }
-
-    @Test
-    public void onlyClosingBbCodesShouldResultInError() {
-        assertFalse(bbCodeNestingValidator.isValid(repeat("[/b]", 100), null));
     }
 
     @Test
@@ -71,40 +50,37 @@ public class BbCodeNestingValidatorTest {
         assertTrue(bbCodeNestingValidator.isValid(null, null));
         assertTrue(bbCodeNestingValidator.isValid("", null));
     }
-
+    
+    @Test(dataProvider = "validMessages")
+    public void testValidMessages(String message) {
+        assertTrue(bbCodeNestingValidator.isValid(message, null), message);
+    }
+    
+    @Test(dataProvider = "invalidMessages")
+    public void testInvalidMessages(String message) {
+        assertFalse(bbCodeNestingValidator.isValid(message, null), message);
+    }    
+    
+    @DataProvider
+    public String[][] invalidMessages() {
+        return new String[][] {
+            {"[b][b][b]text"},
+            {"[quote][b][i]text[/i][/b][/quote]"},
+            {"[quote=\"name\"][b][i]text[/i][/b][/quote]"},
+            {"[b][b][b]text[/b][/b][/b]"}
+        };
+    } 
+    
     @DataProvider
     public String[][] validMessages() {
-        return new String[][]{ // {"message"}
-                {"[b][/b][b][/b][u][/u][u][/u][u][u][u][/u][/u][/u]"},
-                {"[b][/b][b][/b][u][/u][u]text[/u][u][u][u][/u][/u][/u]text"},
-                {"[u][/u]"},
-                {"text"},
-                {"[*][*][*][*][*][*][*][*][*][*][*][*][*][*][*]"},
-                {repeat("[b]",50)},
-                {"[quote=\"name\"]"+repeat("[b]",49)+"[//quote]"},
-                {repeat("[*]",51)},
-                {repeat("[/u]",50)},
-                {"[quote="+repeat("[/b]",49)+"]text[/quote]"},
-                {repeat("[quote=\"abc\"]text[/quote]",51)},
-                {repeat("[quote][/quote]",100)},
-                {"[quote="+repeat("[b]",50)+"]text[/quote]"},
-                {repeat("[url=http://javatalks.ru/ftopic14473.php]text[/url]", 100)},
-                {repeat("[ERROR]", 100)}
+        return new String[][] {
+            {"[b][b]text"},
+            {"[qoute][b]text[/b][/qoute]"},
+            {"[qoute name=\"name\"][b]text[/b][/qoute]"},
+            {"[*][*][*][*][*]"},
+            {"[/b][/b][/b][/b][/b]"},
+            {"[b]a[/b]b[b]c[/b]d[b]e[/b]a[b]b[/b]c[b]d[/b]e"},
+            {"[z][z][z][z][z][z][z][z][z]"}
         };
-    }
-
-    @DataProvider
-    public String[][] tooDeepNestingMessages() {
-        return new String[][]{ // {"message"}
-                {repeat("[b]",51)},
-                {repeat("[color][u]",50)},
-                {repeat("[/u]",51)},
-                {"[quote=\"name\"]"+repeat("[b]",50)+"[//quote]"},
-                {"[quote=\"Имя%%%+===hhh\"]"+repeat("[b]",50)+"[//quote]"},
-                {"[quote="+repeat("[b]",51)+"]text[//quote]"},
-                {repeat("[quote=[url=123]]",51)},
-                {repeat("[quote=\"\"]",51)},
-                {"[quote=\""+repeat("[url=123]",51)+"\"]"}
-        };
-    }
+    } 
 }
