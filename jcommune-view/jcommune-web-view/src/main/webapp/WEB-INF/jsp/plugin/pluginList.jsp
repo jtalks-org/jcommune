@@ -62,7 +62,7 @@
                                 <c:out value="${plugin.name}"/>
                             </td>
                             <td>
-                                <a href="<spring:url value="${pageContext.request.contextPath}/plugins/configure/{pluginName}">
+                                <a href="<spring:url value="/plugins/configure/{pluginName}">
                                     <spring:param name="pluginName" value="${plugin.name}" />
                                 </spring:url>"
                                      title="<spring:message code='label.plugins.plugin.configure.hint'/>">

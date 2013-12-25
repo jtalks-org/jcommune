@@ -27,9 +27,12 @@ import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Controller;
@@ -60,6 +63,7 @@ public class PostController {
     public static final String POST_DTO = "postDto";
     public static final String TOPIC_TITLE = "topicTitle";
     public static final String BREADCRUMB_LIST = "breadcrumbList";
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     private PostService postService;
     private LastReadPostService lastReadPostService;
@@ -123,8 +127,25 @@ public class PostController {
     @RequestMapping(method = RequestMethod.DELETE, value = "/posts/{postId}")
     public String delete(@PathVariable(POST_ID) Long postId) throws NotFoundException {
         Post post = postService.get(postId);
-        postService.deletePost(post);
+        deletePostWithLockHandling(post);
         return "redirect:/topics/" + post.getTopic().getId();
+    }
+
+    private void deletePostWithLockHandling(Post post) {
+        for (int i = 0; i < UserController.LOGIN_TRIES_AFTER_LOCK; i++) {
+            try {
+                postService.deletePost(post);
+                return;
+            } catch (HibernateOptimisticLockingFailureException e) {
+            }
+        }
+        try {
+            postService.deletePost(post);
+        } catch (HibernateOptimisticLockingFailureException e) {
+            LOGGER.error("User has been optimistically locked and can't be reread {} times. Username: {}",
+                    UserController.LOGIN_TRIES_AFTER_LOCK, userService.getCurrentUser().getUsername());
+            throw e;
+        }
     }
 
     /**
@@ -263,10 +284,27 @@ public class PostController {
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
         }
 
-        Post newbie = topicModificationService.replyToTopic(
-                postDto.getTopicId(), postDto.getBodyText(), topic.getBranch().getId());
+        Post newbie = replyToTopicWithLockHandling(postDto, topic);
         lastReadPostService.markTopicAsRead(topic);
         return new ModelAndView(this.redirectToPageWithPost(newbie.getId()));
+    }
+
+    private Post replyToTopicWithLockHandling(PostDto postDto, Topic topic) throws NotFoundException {
+        for (int i = 0; i < UserController.LOGIN_TRIES_AFTER_LOCK; i++) {
+            try {
+                return topicModificationService.replyToTopic(
+                        postDto.getTopicId(), postDto.getBodyText(), topic.getBranch().getId());
+            } catch (HibernateOptimisticLockingFailureException e) {
+            }
+        }
+        try {
+            return topicModificationService.replyToTopic(
+                    postDto.getTopicId(), postDto.getBodyText(), topic.getBranch().getId());
+        } catch (HibernateOptimisticLockingFailureException e) {
+            LOGGER.error("User has been optimistically locked and can't be reread {} times. Username: {}",
+                    UserController.LOGIN_TRIES_AFTER_LOCK, userService.getCurrentUser().getUsername());
+            throw e;
+        }
     }
 
     /**

@@ -5,7 +5,7 @@
   <groupId>org.jtalks.jcommune</groupId>
   <artifactId>jcommune</artifactId>
   <packaging>pom</packaging>
-  <version>2.3-SNAPSHOT</version>
+  <version>2.4-SNAPSHOT</version>
   <name>${project.artifactId}</name>
   <modules>
     <module>jcommune-model</module>
@@ -342,9 +342,9 @@
         <version>1.6</version>
       </dependency>
       <dependency>
-        <groupId>kefir-bb</groupId>
-        <artifactId>kefir-bb</artifactId>
-        <version>0.6</version>
+        <groupId>org.kefirsf</groupId>
+        <artifactId>kefirbb</artifactId>
+        <version>1.0</version>
       </dependency>
 
       <!--Mail-->

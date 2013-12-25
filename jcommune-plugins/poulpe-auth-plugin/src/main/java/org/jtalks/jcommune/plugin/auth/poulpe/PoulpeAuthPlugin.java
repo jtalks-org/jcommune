@@ -17,6 +17,7 @@ package org.jtalks.jcommune.plugin.auth.poulpe;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.jtalks.jcommune.model.dto.UserDto;
+import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.model.plugins.AuthenticationPlugin;
 import org.jtalks.jcommune.model.plugins.RegistrationPlugin;
@@ -26,6 +27,7 @@ import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.plugin.auth.poulpe.service.PoulpeAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.JAXBException;
@@ -171,5 +173,12 @@ public class PoulpeAuthPlugin extends StatefullPlugin
     @VisibleForTesting
     void setPluginService(PoulpeAuthService service) {
         this.service = service;
+    }
+
+    @Override
+    public String translateLabel(String code, Locale locale) {
+        String fullCode = "label.plugins.plugin.poulpe.property.name." + code;
+        ResourceBundle messages = ResourceBundle.getBundle("messages", locale);
+        return messages.containsKey(fullCode) ? messages.getString(fullCode) : code;
     }
 }

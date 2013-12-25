@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.dao.PluginConfigurationDao;
+import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.model.plugins.Plugin;
@@ -288,6 +289,10 @@ public class TransactionalPluginServiceTest {
             return false;
         }
 
+        @Override
+        public String translateLabel(String code, Locale locale) {
+            return null;
+        }
 
     }
 }

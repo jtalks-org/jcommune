@@ -21,13 +21,14 @@
  * one and vice versa
  */
 $(document).ready(function () {
-    $('a#subscription').click(function () {
+    $('a#subscription').click(function (e) {
         var link = $(this)[0];
         $.ajax({
             url:link.href,
             type:"GET",
             async:false,
             success:function (data) {
+                $(e.target).tooltip('destroy');
                 if (link.href.indexOf("unsubscribe") == -1) {
                     // subscribe operation success
                     link.textContent = $labelUnsubscribe;
@@ -39,6 +40,7 @@ $(document).ready(function () {
                     link.setAttribute('data-original-title', $labelSubscribeTooltip);
                     link.href = link.href.replace("unsubscribe", "subscribe");
                 }
+                $(e.target).tooltip();
             }});
         return false;
     })

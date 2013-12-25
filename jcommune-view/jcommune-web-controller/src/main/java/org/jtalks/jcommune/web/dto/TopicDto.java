@@ -17,7 +17,7 @@ package org.jtalks.jcommune.web.dto;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.validation.annotations.BbCodeAwareSize;
+import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeNesting;
 
 import javax.validation.Valid;

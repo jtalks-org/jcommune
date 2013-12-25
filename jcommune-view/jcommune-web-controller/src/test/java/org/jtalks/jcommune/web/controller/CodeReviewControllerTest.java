@@ -75,7 +75,8 @@ public class CodeReviewControllerTest {
                 breadcrumbBuilder,
                 topicModificationService,
                 lastReadPostService,
-                codeReviewService);
+                codeReviewService,
+                userService);
     }
 
     @BeforeMethod

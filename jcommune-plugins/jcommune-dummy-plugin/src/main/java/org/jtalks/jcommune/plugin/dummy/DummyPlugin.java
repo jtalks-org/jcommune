@@ -17,10 +17,7 @@ package org.jtalks.jcommune.plugin.dummy;
 import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.model.plugins.StatefullPlugin;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.jtalks.jcommune.model.entity.PluginProperty.Type.STRING;
 
@@ -52,5 +49,10 @@ public class DummyPlugin extends StatefullPlugin {
     public List<PluginProperty> getDefaultConfiguration() {
         PluginProperty url = new PluginProperty("URL", STRING, "http://localhost:1234");
         return Arrays.asList(url);
+    }
+
+    @Override
+    public String translateLabel(String code, Locale locale) {
+        return null;
     }
 }

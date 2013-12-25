@@ -17,17 +17,17 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.CodeReviewService;
-import org.jtalks.jcommune.service.LastReadPostService;
-import org.jtalks.jcommune.service.TopicModificationService;
+import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.CodeReviewDto;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -55,12 +55,14 @@ public class CodeReviewController {
     private static final String SUBMIT_URL = "submitUrl";
     private static final String TOPIC_DTO = "topicDto";
     private static final String REDIRECT_URL = "redirect:/topics/";
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     private BranchService branchService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private TopicModificationService topicModificationService;
     private LastReadPostService lastReadPostService;
     private CodeReviewService codeReviewService;
+    private UserService userService;
 
     /**
      * @param branchService            the object which provides actions on
@@ -76,12 +78,14 @@ public class CodeReviewController {
                                 BreadcrumbBuilder breadcrumbBuilder,
                                 TopicModificationService topicModificationService,
                                 LastReadPostService lastReadPostService,
-                                CodeReviewService codeReviewService) {
+                                CodeReviewService codeReviewService,
+                                UserService userService) {
         this.branchService = branchService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.topicModificationService = topicModificationService;
         this.lastReadPostService = lastReadPostService;
         this.codeReviewService = codeReviewService;
+        this.userService = userService;
     }
 
     /**
@@ -131,6 +135,22 @@ public class CodeReviewController {
 
         lastReadPostService.markTopicAsRead(createdTopic);
         return new ModelAndView(REDIRECT_URL + createdTopic.getId());
+    }
+
+    private Topic createCodeReviewWithLockHandling(Topic topic, TopicDto topicDto) throws NotFoundException {
+        for (int i = 0; i < UserController.LOGIN_TRIES_AFTER_LOCK; i++) {
+            try {
+                return topicModificationService.createTopic(topic, topicDto.getBodyText());
+            } catch (HibernateOptimisticLockingFailureException e) {
+            }
+        }
+        try {
+            return topicModificationService.createTopic(topic, topicDto.getBodyText());
+        } catch (HibernateOptimisticLockingFailureException e) {
+            LOGGER.error("User has been optimistically locked and can't be reread {} times. Username: {}",
+                    UserController.LOGIN_TRIES_AFTER_LOCK, userService.getCurrentUser().getUsername());
+            throw e;
+        }
     }
 
     /**

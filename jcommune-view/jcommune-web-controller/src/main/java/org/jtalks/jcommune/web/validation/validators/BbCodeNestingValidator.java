@@ -29,6 +29,12 @@ import javax.validation.ConstraintValidatorContext;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.commons.lang.StringUtils;
+import org.kefirsf.bb.BBProcessorFactory;
+import org.kefirsf.bb.ConfigurationFactory;
+import org.kefirsf.bb.TextProcessor;
+import org.kefirsf.bb.TextProcessorNestingException;
+import org.kefirsf.bb.conf.Configuration;
 
 /**
  * Checked nesting bb code level (maxNestingValue). This is required because our BB-code processor uses recursion for
@@ -36,21 +42,13 @@ import java.util.regex.Pattern;
  * whether the nesting of BB-codes is not too deep.
  */
 public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting, String>, ApplicationContextAware {
-    private static final String TAG_LIST_ITEM = "[*]";
-    private static final String REGEX_BBCODES = "(\\[/?([bius]|(left|center|right|highlight|list|img)|"
-    		+ "((size|url|code|indent|color)(=.+?)?))\\])";
-    private static final String REGEX_BBCODE_QUOTE = "(\\[/?quote((=\".*?\"\\])|(\\])))";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BbCodeNestingValidator.class);
     private UserService userService;
     private int maxNestingValue;
     private ApplicationContext context;
-
-    /**
-     * Need for using in validator.validate(entity)
-     */
-    public BbCodeNestingValidator() {
-    }
+    private Configuration kefirBbConfig;
+    private TextProcessor processor;
 
     /**
      * Constructor
@@ -68,6 +66,10 @@ public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting
     @Override
     public void initialize(BbCodeNesting constraintAnnotation) {
         maxNestingValue = constraintAnnotation.maxNestingValue();
+        kefirBbConfig = ConfigurationFactory.getInstance().create();
+        kefirBbConfig.setPropagateNestingException(true);
+        kefirBbConfig.setNestingLimit(maxNestingValue);
+        processor = BBProcessorFactory.getInstance().create(kefirBbConfig);
     }
 
     /**
@@ -75,71 +77,16 @@ public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting
      */
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value == null) {
+        if (StringUtils.isEmpty(value)) {
             return true;
         }
-        if (!checkForDifferent(value) ||
-                !checkForQuote(value)) {
+        try {
+            processor.process(value);
+            return true;
+        } catch (TextProcessorNestingException e) {
+            logNestingLimitExced();
             return false;
         }
-        return true;
-    }
-
-    /**
-     * Checked nesting bb code level (maxNestingValue)
-     *
-     * @param text  text with bb code
-     * @param regex regular expression for check
-     * @return allowed or not allowed
-     */
-    private boolean checkNestingLevel(String text, String regex) {
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(text);
-        int count = 0;
-        while (matcher.find()) {
-            String tag = matcher.group();
-            if (tag.isEmpty() || tag.equals(TAG_LIST_ITEM)) {
-                continue;
-            }
-            if (tag.length() > 1 && tag.charAt(1) == '/') {
-                count--;
-            } else {
-                count++;
-            }
-            if (Math.abs(count) > maxNestingValue) {
-            	LOGGER.warn("Possible attack: Too deep bb-code nesting. "
-                        + "User UUID: {}", getUserService().getCurrentUser().getUuid());
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Check nesting level for different bb-codes
-     *
-     * @param value text value
-     * @return allowed or not allowed
-     */
-    private boolean checkForDifferent(String value) {
-        return checkNestingLevel(value, REGEX_BBCODES + "|" + REGEX_BBCODE_QUOTE);
-    }
-
-    /**
-     * Check nesting level for quote bb-code, This bb-code can be in their element with another bb codes.
-     *
-     * @param value text value
-     * @return allowed or not allowed
-     */
-    private boolean checkForQuote(String value) {
-        Pattern pattern = Pattern.compile(REGEX_BBCODE_QUOTE);
-        Matcher matcher = pattern.matcher(value);
-        while (matcher.find()) {
-        	if(!checkNestingLevel(matcher.group(), REGEX_BBCODES)) {
-        		return false;
-        	}
-        }
-        return true;
     }
 
     @Override
@@ -156,5 +103,10 @@ public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting
             this.userService = this.context.getBean(UserService.class);
         }
         return this.userService;
+    }
+
+    private void logNestingLimitExced() {
+        LOGGER.warn("Possible attack: Too deep bb-code nesting. "
+                        + "User UUID: {}", getUserService().getCurrentUser().getUuid());
     }
 }

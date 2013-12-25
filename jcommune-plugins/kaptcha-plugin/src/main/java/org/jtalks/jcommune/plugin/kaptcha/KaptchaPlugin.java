@@ -110,6 +110,11 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
     }
 
     @Override
+    public String translateLabel(String code, Locale locale) {
+        return code;
+    }
+
+    @Override
     public Map<String, String> registerUser(UserDto userDto, Long pluginId)
             throws NoConnectionException, UnexpectedErrorException {
         return getService().validateCaptcha(userDto, pluginId);

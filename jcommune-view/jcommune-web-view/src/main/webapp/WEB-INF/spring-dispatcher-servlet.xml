@@ -81,7 +81,7 @@
       <mvc:mapping path="/resources/**"/>
       <bean class="org.jtalks.jcommune.web.interceptors.ChainBreakingInterceptor"/>
     </mvc:interceptor>
-    <!--Figures out locale and language from url parameter-->
+    <!--Figures out locale and locale from url parameter-->
     <bean id="localeChangeInterceptor" class="org.jtalks.jcommune.web.interceptors.LocaleInterceptor">
         <constructor-arg>
             <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">

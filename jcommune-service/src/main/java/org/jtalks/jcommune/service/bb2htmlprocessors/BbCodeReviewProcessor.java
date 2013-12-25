@@ -22,8 +22,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import ru.perm.kefir.bbcode.TextProcessor;
-import ru.perm.kefir.bbcode.TextProcessorAdapter;
+import org.kefirsf.bb.TextProcessor;
+import org.kefirsf.bb.TextProcessorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;

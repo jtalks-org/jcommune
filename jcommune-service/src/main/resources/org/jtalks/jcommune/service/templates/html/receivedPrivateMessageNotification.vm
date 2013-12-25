@@ -23,11 +23,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 </head>
 <body>
 <p>${messageSource.getMessage("greeting", $noArgs, $locale)} ${recipient.username}!</p>
-<br>
+<br />
 <p>${messageSource.getMessage("receivedPrivateMessageNotification.content", $noArgs, $locale)}<br>
 ${messageSource.getMessage("receivedPrivateMessageNotification.link", $noArgs, $locale)} <a href="${link}">${linkLabel}</a>.</p>
+<br />
 <p>${messageSource.getMessage("wish", $noArgs, $locale)}</p>
-<br>
 <p>${messageSource.getMessage("signature", $noArgs, $locale)}</p>
 </body>
 </html>

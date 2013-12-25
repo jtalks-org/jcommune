@@ -29,8 +29,7 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static org.jtalks.jcommune.model.entity.JCommuneProperty
-        .SENDING_NOTIFICATIONS_ENABLED;
+import static org.jtalks.jcommune.model.entity.JCommuneProperty.SENDING_NOTIFICATIONS_ENABLED;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
@@ -226,8 +225,8 @@ public class NotificationServiceTest {
 
         service.sendNotificationAboutTopicMoved(topic);
 
-        verify(mailService).sendTopicMovedMail(user2, TOPIC_ID, "current");
-        verify(mailService).sendTopicMovedMail(user3, TOPIC_ID, "current");
+        verify(mailService).sendTopicMovedMail(user2, topic, "current");
+        verify(mailService).sendTopicMovedMail(user3, topic, "current");
     }
 
     @Test
@@ -239,9 +238,9 @@ public class NotificationServiceTest {
 
         service.sendNotificationAboutTopicMoved(topic);
 
-        verify(mailService, times(2)).sendTopicMovedMail(any(JCUser.class), eq(TOPIC_ID), eq("current"));
-        verify(mailService).sendTopicMovedMail(user2, TOPIC_ID, "current");
-        verify(mailService).sendTopicMovedMail(user3, TOPIC_ID, "current");
+        verify(mailService, times(2)).sendTopicMovedMail(any(JCUser.class), eq(topic), eq("current"));
+        verify(mailService).sendTopicMovedMail(user2, topic, "current");
+        verify(mailService).sendTopicMovedMail(user3, topic, "current");
         assertEquals(branch.getSubscribers().size(), 3);
     }
 
@@ -253,7 +252,7 @@ public class NotificationServiceTest {
 
         service.sendNotificationAboutTopicMoved(topic);
 
-        verify(mailService, Mockito.never()).sendTopicMovedMail(user2, TOPIC_ID);
+        verify(mailService, Mockito.never()).sendTopicMovedMail(user2, topic);
     }
 
     @Test
@@ -271,7 +270,7 @@ public class NotificationServiceTest {
 
         when(subscriptionService.getAllowedSubscribers(topic)).thenReturn(topicSubscribers);
 
-        verify(mailService, times(1)).sendTopicMovedMail(user3, TOPIC_ID, "current");
+        verify(mailService, times(1)).sendTopicMovedMail(user3, topic, "current");
     }
     
     private void prepareDisabledProperty() {

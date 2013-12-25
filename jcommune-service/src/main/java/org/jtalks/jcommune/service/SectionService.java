@@ -74,5 +74,11 @@ public interface SectionService extends EntityService<Section> {
      */
     List<Section> getAllAvailableSections(long currentTopicId);
 
+    /**
+     * Gets last posts created in the section
+     * @param section the section to get latest posts
+     * @param postsCount maximum posts count to retrieve
+     * @return list of the latest posts in the given section
+     */
     List<Post> getLastPostsForSection(Section section, int postsCount);
 }

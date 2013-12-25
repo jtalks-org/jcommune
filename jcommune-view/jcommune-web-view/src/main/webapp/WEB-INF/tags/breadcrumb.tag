@@ -23,30 +23,30 @@
   <c:forEach var="breadcrumb" items="${breadcrumbList}" varStatus="loop">
     <li>
       <c:if test="${loop.index == 1}">
-        <h3 class="h-nostyle">
-      </c:if>
-      <c:if test="${loop.index == 2}">
+      <h3 class="h-nostyle">
+        </c:if>
+        <c:if test="${loop.index == 2}">
         <h2 class="h-nostyle">
-      </c:if>
-      <c:choose>
-        <%--create root breadcrumb--%>
-        <c:when test="${breadcrumb.value == 'Forum'}">
+          </c:if>
+          <c:choose>
+            <%--create root breadcrumb--%>
+          <c:when test="${breadcrumb.value == 'Forum'}">
           <a href="${pageContext.request.contextPath}/${breadcrumb.breadcrumbLocation.name}">
             <fmt:message key="label.forum"/>
           </a>
-        </c:when>
-        <%--create section, topic, branch, post breadcrumb (items with id)--%>
-        <c:otherwise>
+          </c:when>
+            <%--create section, topic, branch, post breadcrumb (items with id)--%>
+          <c:otherwise>
           <a href="${pageContext.request.contextPath}/${breadcrumb.breadcrumbLocation.name}/${breadcrumb.id}">
             <c:out value="${breadcrumb.value}"/>
           </a>
-        </c:otherwise>
-      </c:choose>
-      <c:if test='${!loop.last}'>
-        <span class="divider">/</span>
-      </c:if>
-      <c:if test="${loop.index == 1}">
-        </h3>
+          </c:otherwise>
+          </c:choose>
+          <c:if test='${!loop.last}'>
+          <span class="divider">/</span>
+          </c:if>
+          <c:if test="${loop.index == 1}">
+      </h3>
       </c:if>
       <c:if test="${loop.index == 2}">
         </h2>

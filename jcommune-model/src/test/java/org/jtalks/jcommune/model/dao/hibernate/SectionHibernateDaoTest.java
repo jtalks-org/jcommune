@@ -239,6 +239,29 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
                 new ArrayList<org.jtalks.common.model.entity.Branch>(branches)) == 0);
     }
 
+    @Test
+    public void getAvailableBranchIdsShouldReturnEmptyListForEmptyBranchList() {
+        JCUser user = ObjectsFactory.getDefaultUser();
+        assertEquals(dao.getAvailableBranchIds(user,
+                new ArrayList<org.jtalks.common.model.entity.Branch>()).size(), 0);
+    }
+
+    @Test
+    public void getAvailableBranchIdsShouldReturnEmptyListWhenUserHasNoGroupAssigned() {
+        JCUser user = ObjectsFactory.getDefaultUser();
+        user.setGroups(new ArrayList<Group>());
+        List<Branch> branches = ObjectsFactory.getDefaultBranchList();
+        assertEquals(dao.getAvailableBranchIds(user,
+                new ArrayList<org.jtalks.common.model.entity.Branch>(branches)).size(), 0);
+    }
+
+    @Test
+    public void getAvailableBranchIdsShouldReturnEmptyListWhenAnonymousUserHasNoGroupAssigned() {
+        List<Branch> branches = ObjectsFactory.getDefaultBranchList();
+        assertEquals(dao.getAvailableBranchIds(new AnonymousUser(),
+                new ArrayList<org.jtalks.common.model.entity.Branch>(branches)).size(), 0);
+    }
+
     private int getSectionCount() {
         return ((Number) session.createQuery("select count(*) from org.jtalks.common.model.entity.Section").uniqueResult()).intValue();
     }

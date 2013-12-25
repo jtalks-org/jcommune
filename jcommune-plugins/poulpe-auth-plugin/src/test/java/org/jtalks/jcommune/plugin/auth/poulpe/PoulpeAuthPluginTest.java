@@ -28,10 +28,7 @@ import org.testng.annotations.Test;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.jtalks.jcommune.model.entity.PluginProperty.Type.STRING;
 import static org.mockito.Mockito.when;
@@ -46,7 +43,6 @@ public class PoulpeAuthPluginTest {
 
     @Mock
     PoulpeAuthService service;
-
     PoulpeAuthPlugin plugin;
 
     @BeforeMethod
@@ -70,7 +66,8 @@ public class PoulpeAuthPluginTest {
         PluginConfiguration configuration = createConfiguration(null, "user", "1234");
         try {
             plugin.configure(configuration);
-        } catch (UnexpectedErrorException ex) {}
+        } catch (UnexpectedErrorException ex) {
+        }
 
         assertTrue(plugin.getState() == Plugin.State.IN_ERROR,
                 "Plugin with incorrect parameters shouldn't be configured.");
@@ -87,7 +84,8 @@ public class PoulpeAuthPluginTest {
         PluginConfiguration configuration = createConfiguration("http:/jtalks.org", "user", "1234");
         try {
             plugin.configure(configuration);
-        } catch (UnexpectedErrorException ex) {}
+        } catch (UnexpectedErrorException ex) {
+        }
 
         assertTrue(plugin.getState() == Plugin.State.IN_ERROR,
                 "Plugin with incorrect Url shouldn't be configured.");
@@ -119,7 +117,7 @@ public class PoulpeAuthPluginTest {
             throws UnexpectedErrorException, NoConnectionException, IOException, JAXBException {
         UserDto userDto = createUserDto("user", "1234", "email@email.em");
 
-        when(service.registerUser(userDto, true)).thenReturn(Collections.EMPTY_MAP);
+        when(service.registerUser(userDto, true)).thenReturn(new HashMap<String, String>());
 
         Map<String, String> result = plugin.registerUser(userDto, null);
 
@@ -217,5 +215,15 @@ public class PoulpeAuthPluginTest {
         passwordProperty.setName("Password");
         return new PluginConfiguration("Poulpe Auth Plugin", true,
                 Arrays.asList(urlProperty, loginProperty, passwordProperty));
+    }
+
+    @Test
+    public void translateLabelWithExistingTranslation() {
+        assertEquals("Url", plugin.translateLabel("Url", Locale.forLanguageTag("en")));
+    }
+
+    @Test
+    public void translateLabelWithoutExistingTranslation() {
+        assertEquals("Url1", plugin.translateLabel("Url1", Locale.forLanguageTag("en")));
     }
 }

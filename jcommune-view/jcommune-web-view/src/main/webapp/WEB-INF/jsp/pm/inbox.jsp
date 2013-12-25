@@ -21,8 +21,8 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <head>
   <title>
-      <c:out value="${cmpTitlePrefix}"/>
-      <spring:message code="label.inbox"/>
+    <c:out value="${cmpTitlePrefix}"/>
+    <spring:message code="label.inbox"/>
   </title>
 </head>
 <body>
@@ -87,16 +87,16 @@
               </c:choose>
               <td><input type="checkbox" id="${pm.id}" class="checker"/></td>
               <td class="pm_user_to_from">
-                  <c:choose>
+                <c:choose>
                   <c:when test="${!jtalks:isExists(pm.userFrom)}">
-                      <b><spring:message code="label.outbox.deleted_user"/></b>
+                    <b><spring:message code="label.outbox.deleted_user"/></b>
                   </c:when>
                   <c:otherwise>
-                      <a href="${pageContext.request.contextPath}/users/${pm.userFrom.id}">
-                          <c:out value="${pm.userFrom.username}"/>
-                      </a>
+                    <a href="${pageContext.request.contextPath}/users/${pm.userFrom.id}">
+                      <c:out value="${pm.userFrom.username}"/>
+                    </a>
                   </c:otherwise>
-                  </c:choose>
+                </c:choose>
               </td>
               <td>
                 <a href="${pageContext.request.contextPath}/pm/inbox/${pm.id}">

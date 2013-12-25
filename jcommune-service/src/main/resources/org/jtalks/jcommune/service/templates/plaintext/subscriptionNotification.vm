@@ -20,5 +20,8 @@ ${messageSource.getMessage("subscriptionNotification.content", $noArgs, $locale)
 ${messageSource.getMessage("subscriptionNotification.link", $noArgs, $locale)} ${link}.
 
 ${messageSource.getMessage("wish", $noArgs, $locale)}
-
 ${messageSource.getMessage("signature", $noArgs, $locale)}
+
+#if ($link_unsubscribe)
+    ${messageSource.getMessage("subscriptionNotification.unsubscribe", $noArgs, $locale)} ${link_unsubscribe}
+#end

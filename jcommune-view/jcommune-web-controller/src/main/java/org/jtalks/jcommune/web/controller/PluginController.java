@@ -22,15 +22,23 @@ import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.PluginService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.PluginActivatingListDto;
+import org.jtalks.jcommune.service.plugins.NameFilter;
+import org.jtalks.jcommune.service.plugins.PluginLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Provides an ability to manage plugins of the forum.
@@ -40,22 +48,28 @@ import java.util.*;
  */
 @Controller
 @RequestMapping("/plugins")
-@SessionAttributes({"pluginConfiguration"})
 public class PluginController {
 
     private final PluginService pluginService;
     private final ComponentService componentService;
+    private final PluginLoader pluginLoader;
+    private final UserService userService;
 
     /**
      * Constructs an instance with required fields.
      *
      * @param pluginService    to manage plugins
      * @param componentService to load an identifier of forum component
+     * @param pluginLoader     to load plugins
+     * @param userService      to work with user data
      */
     @Autowired
-    public PluginController(final PluginService pluginService, final ComponentService componentService) {
+    public PluginController(PluginService pluginService, ComponentService componentService, PluginLoader pluginLoader,
+                            UserService userService) {
         this.pluginService = pluginService;
         this.componentService = componentService;
+        this.pluginLoader = pluginLoader;
+        this.userService = userService;
     }
 
     /**
@@ -87,54 +101,53 @@ public class PluginController {
     }
 
     /**
-     * Show plugin with errors
+     * Update the configuration of plugin
      *
-     * @param configuration current plugin configuration
-     *
-     * @return the name of view and all parameters to display plugin that should be configured
+     * @param newConfiguration new configuration for plugin
+     * @return redirect to the page of plugin configuration
+     * @throws NotFoundException if configured plugin wasn't found
      */
-    @RequestMapping(value = "/configure/error/{name}", method = RequestMethod.GET)
-    public ModelAndView errorConfiguringPlugin(@ModelAttribute PluginConfiguration configuration) {
-        return getModel(configuration);
+    @RequestMapping(value = "/configure/{name}", method = RequestMethod.POST)
+    public ModelAndView updateConfiguration(Model model, @ModelAttribute PluginConfiguration newConfiguration)
+            throws NotFoundException {
+        long componentId = getForumComponentId();
+        try {
+            pluginService.updateConfiguration(newConfiguration, componentId);
+        } catch (UnexpectedErrorException ex) {
+            model.addAttribute("error", ex.getCause().getLocalizedMessage());
+            model.addAttribute("errorInformation", ExceptionUtils.getFullStackTrace(ex.getCause()));
+            model.addAttribute("pluginConfiguration", newConfiguration);
+            return getModel(newConfiguration);
+        }
+
+        return new ModelAndView("redirect:/plugins/configure/" + newConfiguration.getName());
     }
 
     /**
      * Get model for showing plugin configuration
      *
      * @param configuration current plugin configuration
-     *
      * @return ModelAndView
      */
-    private ModelAndView getModel(PluginConfiguration configuration)
-    {
-        return new ModelAndView("plugin/pluginConfiguration").addObject("pluginConfiguration", configuration);
+    private ModelAndView getModel(PluginConfiguration configuration) {
+        Map<String, String> labels = new HashMap<>();
+        List<Plugin> plugins = pluginLoader.getPlugins(new NameFilter(configuration.getName()));
+        if (plugins.size() > 0) {
+            Plugin plugin = plugins.get(0);
+            if (plugin != null) {
+                Locale locale = userService.getCurrentUser().getLanguage().getLocale();
+                for (PluginProperty property : configuration.getProperties()) {
+                    String translation = plugin.translateLabel(property.getName(), locale);
+                    labels.put(property.getName(), translation);
+                }
+            }
+        }
+        return new ModelAndView("plugin/pluginConfiguration")
+                .addObject("pluginConfiguration", configuration)
+                .addObject("labelsTranslation", labels);
     }
 
     /**
-     * Update the configuration of plugin/
-     *
-     * @param newConfiguration new configuration for plugin
-     * @return redirect to the page of plugin configuration
-     * @throws NotFoundException if configured plugin wasn't found
-     */
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public String updateConfiguration(Model model, @ModelAttribute PluginConfiguration newConfiguration,
-                                      final RedirectAttributes redirectAttributes)
-            throws NotFoundException {
-        long componentId = getForumComponentId();
-        try {
-            pluginService.updateConfiguration(newConfiguration, componentId);
-        } catch (UnexpectedErrorException ex) {
-            redirectAttributes.addFlashAttribute("error", ex.getCause().getLocalizedMessage());
-            redirectAttributes.addFlashAttribute("errorInformation", ExceptionUtils.getFullStackTrace(ex.getCause()));
-            model.addAttribute("pluginConfiguration", newConfiguration);
-            return "redirect:/plugins/configure/error/" + newConfiguration.getName();
-        }
-
-        return "redirect:/plugins/configure/" + newConfiguration.getName();
-    }
-
-     /**
      * Update activating state of plugins.
      *
      * @param pluginsActivatingListDto contains activating state for the list of plugins

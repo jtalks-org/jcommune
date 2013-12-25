@@ -17,7 +17,6 @@ package org.jtalks.jcommune.web.view;
 
 import com.sun.syndication.feed.rss.Channel;
 import com.sun.syndication.feed.rss.Item;
-import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -37,12 +36,12 @@ import static org.testng.Assert.assertTrue;
 /**
  * @author Andrei Alikov
  */
-public class BranchRssViewerTest {
-    private PostListRssViewer branchRssViewer;
+public class PostListRssViewerTest {
+    private PostListRssViewer postListRssViewer;
 
     @BeforeMethod
     public void setUp() {
-        branchRssViewer = new PostListRssViewer();
+        postListRssViewer = new PostListRssViewer();
     }
 
     @Test
@@ -50,7 +49,7 @@ public class BranchRssViewerTest {
         Map<String, Object> model = new HashMap<>();
         Channel channel = new Channel();
 
-        branchRssViewer.buildFeedMetadata(model, channel, getMockRequest());
+        postListRssViewer.buildFeedMetadata(model, channel, getMockRequest());
 
         assertEquals(channel.getTitle(), PostListRssViewer.DEFAULT_FEED_TITLE);
         assertEquals(channel.getDescription(), PostListRssViewer.DEFAULT_FEED_DESCRIPTION);
@@ -67,7 +66,7 @@ public class BranchRssViewerTest {
 
         Channel channel = new Channel();
 
-        branchRssViewer.buildFeedMetadata(model, channel, getMockRequest());
+        postListRssViewer.buildFeedMetadata(model, channel, getMockRequest());
 
         assertEquals(channel.getTitle(), "my branch");
         assertEquals(channel.getDescription(), "my description");
@@ -80,7 +79,7 @@ public class BranchRssViewerTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        List<Item> result = branchRssViewer.buildFeedItems(model, request, response);
+        List<Item> result = postListRssViewer.buildFeedItems(model, request, response);
 
         assertEquals(response.getStatus(), 302);
         assertNull(result);
@@ -93,7 +92,7 @@ public class BranchRssViewerTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         model.put("posts", new ArrayList<Post>());
 
-        List<Item> result = branchRssViewer.buildFeedItems(model, request, response);
+        List<Item> result = postListRssViewer.buildFeedItems(model, request, response);
 
         assertTrue(result.isEmpty());
     }
@@ -116,7 +115,7 @@ public class BranchRssViewerTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        List<Item> result = branchRssViewer.buildFeedItems(model, request, response);
+        List<Item> result = postListRssViewer.buildFeedItems(model, request, response);
 
         assertEquals(result.get(0).getAuthor(), user.getUsername());
         assertEquals(result.get(1).getAuthor(), user2.getUsername());
@@ -140,7 +139,7 @@ public class BranchRssViewerTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        List<Item> result = branchRssViewer.buildFeedItems(model, request, response);
+        List<Item> result = postListRssViewer.buildFeedItems(model, request, response);
 
         assertEquals(result.get(0).getContent().getValue(), post.getPostContent());
         assertEquals(result.get(1).getContent().getValue(), post2.getPostContent());
@@ -164,7 +163,7 @@ public class BranchRssViewerTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        List<Item> result = branchRssViewer.buildFeedItems(model, request, response);
+        List<Item> result = postListRssViewer.buildFeedItems(model, request, response);
 
         assertEquals(result.get(0).getTitle(), topic.getTitle());
         assertEquals(result.get(1).getTitle(), topic.getTitle());
@@ -189,7 +188,7 @@ public class BranchRssViewerTest {
 
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        List<Item> result = branchRssViewer.buildFeedItems(model, getMockRequest(), response);
+        List<Item> result = postListRssViewer.buildFeedItems(model, getMockRequest(), response);
 
         assertEquals(result.get(0).getLink(), "http://localhost:8080/jcommune/posts/1");
         assertEquals(result.get(1).getLink(), "http://localhost:8080/jcommune/posts/3");
@@ -214,7 +213,7 @@ public class BranchRssViewerTest {
 
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        List<Item> result = branchRssViewer.buildFeedItems(model, getMockRequest(), response);
+        List<Item> result = postListRssViewer.buildFeedItems(model, getMockRequest(), response);
 
         assertEquals(result.get(0).getPubDate(), post.getCreationDate().toDate());
         assertEquals(result.get(1).getPubDate(), post2.getCreationDate().toDate());

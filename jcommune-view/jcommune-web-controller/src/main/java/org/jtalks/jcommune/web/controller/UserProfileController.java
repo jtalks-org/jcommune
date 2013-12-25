@@ -25,10 +25,13 @@ import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.validation.editors.DefaultStringEditor;
 import org.jtalks.jcommune.web.validation.editors.LanguageEditor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -58,6 +61,7 @@ public class UserProfileController {
     public static final String EDIT_PROFILE = "editProfile";
     public static final String EDITED_USER = "editedUser";
     public static final String BREADCRUMB_LIST = "breadcrumbList";
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
 
     private UserService userService;
@@ -193,7 +197,7 @@ public class UserProfileController {
         }
         long editedUserId = editedProfileDto.getUserId();
         checkPermissionsToEditProfile(editedUserId);
-        JCUser user = userService.saveEditedUserProfile(editedUserId, editedProfileDto.getUserInfoContainer());
+        JCUser user = saveEditedProfileWithLockHandling(editedUserId, editedProfileDto);
         //redirect to the view profile page
         return new ModelAndView("redirect:/users/" + user.getId());
     }
@@ -241,11 +245,44 @@ public class UserProfileController {
         JCUser jcuser = userService.getCurrentUser();
         Language languageFromRequest = Language.byLocale(new Locale(lang));
         if (!jcuser.isAnonymous()) {
-            userService.changeLanguage(jcuser, languageFromRequest);
+            changeLanguageWithLockHandling(jcuser, languageFromRequest);
         }
         LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
         localeResolver.setLocale(request, response, languageFromRequest.getLocale());
         return "redirect:" + request.getHeader("Referer");
     }
 
+    private void changeLanguageWithLockHandling(JCUser user, Language language) {
+        for (int i = 0; i < UserController.LOGIN_TRIES_AFTER_LOCK; i++) {
+            try {
+                userService.changeLanguage(user, language);
+                return;
+            } catch (HibernateOptimisticLockingFailureException ignored) {
+            }
+        }
+        try {
+            userService.changeLanguage(user, language);
+        } catch (HibernateOptimisticLockingFailureException e) {
+            LOGGER.error("User has been optimistically locked and can't be reread {} times. Username: {}",
+                    UserController.LOGIN_TRIES_AFTER_LOCK, user.getUsername());
+            throw e;
+        }
+    }
+
+    private JCUser saveEditedProfileWithLockHandling(long editedUserId, EditUserProfileDto editedProfileDto)
+            throws NotFoundException {
+        for (int i = 0; i < UserController.LOGIN_TRIES_AFTER_LOCK; i++) {
+            try {
+                return userService.saveEditedUserProfile(editedUserId, editedProfileDto.getUserInfoContainer());
+            } catch (HibernateOptimisticLockingFailureException ignored) {
+            }
+        }
+        try {
+            return userService.saveEditedUserProfile(editedUserId, editedProfileDto.getUserInfoContainer());
+        } catch (HibernateOptimisticLockingFailureException e) {
+            LOGGER.error("User has been optimistically locked and can't be reread {} times. Username: {}",
+                    UserController.LOGIN_TRIES_AFTER_LOCK, editedProfileDto.getUsername());
+            throw e;
+        }
+    }
 }

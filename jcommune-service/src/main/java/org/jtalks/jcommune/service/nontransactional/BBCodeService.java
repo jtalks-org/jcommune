@@ -17,8 +17,8 @@ package org.jtalks.jcommune.service.nontransactional;
 import org.apache.commons.lang.Validate;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.bb2htmlprocessors.TextPostProcessor;
-import ru.perm.kefir.bbcode.BBProcessorFactory;
-import ru.perm.kefir.bbcode.TextProcessor;
+import org.kefirsf.bb.BBProcessorFactory;
+import org.kefirsf.bb.TextProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,8 @@ public class BBCodeService {
     private static final String QUOTE_PATEERN = "[quote=\"%s\"]%s[/quote]";
     /** Processor is thread safe as it's explicitly stated in documentation */
     private final TextProcessor processor = BBProcessorFactory.getInstance().create();
-
+    /** Processor to strip bb-codes */
+    private final TextProcessor stripBBCodesProcessor = BBProcessorFactory.getInstance().createFromResource("kefirbb-strip-config.xml");
     /** Preprocessors of BB encoded text used before actual BB2HTML converter */
     private final List<TextProcessor> preprocessors = new ArrayList<TextProcessor>();
 
@@ -78,16 +79,6 @@ public class BBCodeService {
         return bbEncodedText;
     }
 
-    /**
-     * Removes all BB codes from the text given, simply cutting out all [...]-style tags found.
-     *
-     * @param source text to cleanup
-     * @return plain text without BB tags
-     */
-    public String removeBBCodes(String source) {
-        return source.replaceAll("\\[.*?\\]", "");
-    }
-
     /** @param preprocessors objects that process input text from users post before the actual bb-converting is
      *                       started */
     public void setPreprocessors(List<TextProcessor> preprocessors) {
@@ -103,4 +94,14 @@ public class BBCodeService {
         this.postprocessors.addAll(postprocessors);
     }
 
+    /**
+     * Remove bb-codes from the specified string.
+     * It remove ONLY VALID bb-codes. So, something like [zzz][/zzz] is unchanged.
+     * Also it doesn't strip open bb-code when there are no appropriate close tag.
+     * @param bbCode text with bb-codes
+     * @return text without bb-codes
+     */
+    public String stripBBCodes(String bbCode) {
+        return stripBBCodesProcessor.process(bbCode);
+    }
 }

@@ -25,6 +25,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Manages the topic/branch subscription by email.
@@ -105,5 +106,18 @@ public class SubscriptionController {
     public void unsubscribeFromBranch(@PathVariable Long id) throws NotFoundException {
         Branch branch = branchService.get(id);
         subscriptionService.toggleBranchSubscription(branch);
+    }
+
+    /**
+     * Deactivates branch updates subscription for the current user
+     *
+     * @param id identifies branch to unsubscribe from
+     * @throws NotFoundException if no object is found for id given
+     */
+    @RequestMapping("branches/{id}/unsubscribe_link")
+    public ModelAndView  unsubscribeFromBranchByLink(@PathVariable Long id) throws NotFoundException {
+        Branch branch = branchService.get(id);
+        subscriptionService.toggleBranchSubscription(branch);
+        return new ModelAndView("redirect:/branches/" + id);
     }
 }

@@ -80,7 +80,7 @@ public class TopicSearchController {
      * @return redirect to the answer page
      */
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public ModelAndView initSearch(@RequestParam(value = "text", required = true) String searchText,
+    public ModelAndView initSearch(@RequestParam(value = "text", defaultValue = "", required = false) String searchText,
                                    @RequestParam(value = "page", defaultValue = "1", required = false) String page) {
         Page<Topic> searchResultPage = topicSearchService.searchByTitleAndContent(searchText, page);
         lastReadPostService.fillLastReadPostForTopics(searchResultPage.getContent());
