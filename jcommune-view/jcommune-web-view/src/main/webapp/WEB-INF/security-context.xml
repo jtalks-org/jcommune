@@ -46,6 +46,7 @@
     <security:intercept-url pattern="/inbox" access="isAuthenticated()"/>
     <security:intercept-url pattern="/inbox/**" access="isAuthenticated()"/>
     <security:intercept-url pattern="/outbox" access="isAuthenticated()"/>
+    <security:intercept-url pattern="/outbox/**" access="isAuthenticated()"/>
     <security:intercept-url pattern="/reply/**" access="isAuthenticated()"/>
     <security:intercept-url pattern="/quote/*" access="isAuthenticated()"/>
     <security:intercept-url pattern="/quote" access="isAuthenticated()"/>
