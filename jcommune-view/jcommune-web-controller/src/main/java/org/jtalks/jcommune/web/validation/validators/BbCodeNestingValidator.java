@@ -15,20 +15,13 @@
 package org.jtalks.jcommune.web.validation.validators;
 
 
-import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeNesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.kefirsf.bb.BBProcessorFactory;
 import org.kefirsf.bb.ConfigurationFactory;
