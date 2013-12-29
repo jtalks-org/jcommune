@@ -264,13 +264,14 @@ public class PostController {
      * @return redirect to the topic or back to answer pae if validation failed
      * @throws NotFoundException when topic or branch not found
      */
-    @RequestMapping(method = RequestMethod.POST, value = "/posts/new")
+    @RequestMapping(method = RequestMethod.POST, value = "/topics/{topicId}")
     public ModelAndView create(@RequestParam(value = "page", defaultValue = "1", required = false) String page,
+                               @PathVariable(TOPIC_ID) Long topicId,
                                @Valid @ModelAttribute PostDto postDto,
                                BindingResult result) throws NotFoundException {
         JCUser currentUser = userService.getCurrentUser();
-        Topic topic = topicFetchService.get(postDto.getTopicId());
-
+        Topic topic = topicFetchService.get(topicId);
+        postDto.setTopicId(topicId);
         Page<Post> postsPage = postService.getPosts(topic, page);
 
         if (result.hasErrors()) {
