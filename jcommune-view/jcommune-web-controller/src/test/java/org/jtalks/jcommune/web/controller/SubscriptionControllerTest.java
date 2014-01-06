@@ -104,7 +104,7 @@ public class SubscriptionControllerTest {
 
         controller.unsubscribeFromBranchByLink(id);
 
-        verify(subscriptionService).toggleBranchSubscription(branch);
+        verify(subscriptionService).unsubscribeFromBranch(branch);
     }
 
     @Test(expectedExceptions = NotFoundException.class)

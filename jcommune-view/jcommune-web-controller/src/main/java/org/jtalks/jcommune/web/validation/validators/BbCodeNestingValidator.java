@@ -15,20 +15,13 @@
 package org.jtalks.jcommune.web.validation.validators;
 
 
-import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeNesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.kefirsf.bb.BBProcessorFactory;
 import org.kefirsf.bb.ConfigurationFactory;
@@ -41,34 +34,19 @@ import org.kefirsf.bb.conf.Configuration;
  * parsing and if we have a deep nesting, we'll run into StackOverflow error. Thus before posting something, we check
  * whether the nesting of BB-codes is not too deep.
  */
-public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting, String>, ApplicationContextAware {
+public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting, String> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BbCodeNestingValidator.class);
-    private UserService userService;
-    private int maxNestingValue;
-    private ApplicationContext context;
-    private Configuration kefirBbConfig;
     private TextProcessor processor;
-
-    /**
-     * Constructor
-     *
-     * @param userService user service
-     */
-    @Autowired
-    public BbCodeNestingValidator(UserService userService) {
-        this.userService = userService;
-    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     public void initialize(BbCodeNesting constraintAnnotation) {
-        maxNestingValue = constraintAnnotation.maxNestingValue();
-        kefirBbConfig = ConfigurationFactory.getInstance().create();
+        Configuration kefirBbConfig = ConfigurationFactory.getInstance().create();
         kefirBbConfig.setPropagateNestingException(true);
-        kefirBbConfig.setNestingLimit(maxNestingValue);
+        kefirBbConfig.setNestingLimit(constraintAnnotation.maxNestingValue());
         processor = BBProcessorFactory.getInstance().create(kefirBbConfig);
     }
 
@@ -84,29 +62,8 @@ public class BbCodeNestingValidator implements ConstraintValidator<BbCodeNesting
             processor.process(value);
             return true;
         } catch (TextProcessorNestingException e) {
-            logNestingLimitExced();
+            LOGGER.warn("Too deep bb-code nesting: " + value);
             return false;
         }
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.context = applicationContext;
-    }
-
-    /**
-     * Get user service. Use lazy initialization
-     * @return
-     */
-    private UserService getUserService() {
-        if (userService == null) {
-            this.userService = this.context.getBean(UserService.class);
-        }
-        return this.userService;
-    }
-
-    private void logNestingLimitExced() {
-        LOGGER.warn("Possible attack: Too deep bb-code nesting. "
-                        + "User UUID: {}", getUserService().getCurrentUser().getUuid());
     }
 }

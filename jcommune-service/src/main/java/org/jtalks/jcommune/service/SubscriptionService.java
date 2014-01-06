@@ -55,6 +55,13 @@ public interface SubscriptionService {
     void toggleBranchSubscription(Branch branch);
 
     /**
+     * Unsubscribe current user from branch.
+     *
+     * @param branch branch to unsubscribe
+     */
+    void unsubscribeFromBranch(Branch branch);
+
+    /**
      * Toggle subscription state for the {@link SubscriptionAwareEntity} given. Thus, if user is subscribed
      * to the  updates the method call will unsubscribe him and vice versa.
      * Subscription will be applied to the current user logged in.

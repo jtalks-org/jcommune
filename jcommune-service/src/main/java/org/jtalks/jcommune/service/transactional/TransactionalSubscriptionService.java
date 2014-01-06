@@ -21,6 +21,7 @@ import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
+
 import java.util.Collection;
 
 /**
@@ -80,6 +81,18 @@ public class TransactionalSubscriptionService implements SubscriptionService {
             branch.getSubscribers().remove(current);
         } else {
             branch.getSubscribers().add(current);
+        }
+        branchDao.saveOrUpdate(branch);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void unsubscribeFromBranch(Branch branch) {
+        JCUser current = userService.getCurrentUser();
+        if (branch.getSubscribers().contains(current)) {
+            branch.getSubscribers().remove(current);
         }
         branchDao.saveOrUpdate(branch);
     }

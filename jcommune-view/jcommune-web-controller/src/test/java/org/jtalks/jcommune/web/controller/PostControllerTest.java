@@ -270,7 +270,7 @@ public class PostControllerTest {
         when(topicModificationService.replyToTopic(anyLong(), Matchers.<String>any(), eq(BRANCH_ID))).thenReturn(post);
         when(postService.calculatePageForPost(post)).thenReturn(1);
         //invoke the object under test
-        ModelAndView mav = controller.create(null, getDto(), resultWithoutErrors);
+        ModelAndView mav = controller.create(null, TOPIC_ID, getDto(), resultWithoutErrors);
 
         //check expectations
         verify(topicModificationService).replyToTopic(TOPIC_ID, POST_CONTENT, BRANCH_ID);
@@ -285,7 +285,7 @@ public class PostControllerTest {
         BeanPropertyBindingResult resultWithErrors = mock(BeanPropertyBindingResult.class);
         when(resultWithErrors.hasErrors()).thenReturn(true);
         //invoke the object under test
-        ModelAndView mav = controller.create(null, getDto(), resultWithErrors);
+        ModelAndView mav = controller.create(null, TOPIC_ID, getDto(), resultWithErrors);
 
         //check expectations
         verify(topicModificationService, never()).replyToTopic(anyLong(), anyString(), eq(BRANCH_ID));

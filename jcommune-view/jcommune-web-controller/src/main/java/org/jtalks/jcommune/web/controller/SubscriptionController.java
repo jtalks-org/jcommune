@@ -117,7 +117,7 @@ public class SubscriptionController {
     @RequestMapping("branches/{id}/unsubscribe_link")
     public ModelAndView  unsubscribeFromBranchByLink(@PathVariable Long id) throws NotFoundException {
         Branch branch = branchService.get(id);
-        subscriptionService.toggleBranchSubscription(branch);
+        subscriptionService.unsubscribeFromBranch(branch);
         return new ModelAndView("redirect:/branches/" + id);
     }
 }

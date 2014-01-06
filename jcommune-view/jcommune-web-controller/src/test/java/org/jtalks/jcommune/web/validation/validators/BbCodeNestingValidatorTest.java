@@ -14,69 +14,66 @@
  */
 package org.jtalks.jcommune.web.validation.validators;
 
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeNesting;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import org.mockito.Mock;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 public class BbCodeNestingValidatorTest {
-    private BbCodeNestingValidator bbCodeNestingValidator;
-    @Mock
-    private UserService userService;
-    @Mock
-    private BbCodeNesting annotation;
+    private BbCodeNestingValidator instance;
         
     @BeforeMethod
     public void initMocks() throws NoSuchFieldException {
-        MockitoAnnotations.initMocks(this);
+        BbCodeNesting annotation = mock(BbCodeNesting.class);
         // limit nesting to 2
         when(annotation.maxNestingValue()).thenReturn(2);
-        when(userService.getCurrentUser()).thenReturn(new JCUser("", "", ""));
-        
-        bbCodeNestingValidator = new BbCodeNestingValidator(userService);
-        bbCodeNestingValidator.initialize(annotation);
+        instance = new BbCodeNestingValidator();
+        instance.initialize(annotation);
     }
 
     @Test
     public void nullAndEmptyStringShouldBeTreatedAsValid() {
-        assertTrue(bbCodeNestingValidator.isValid(null, null));
-        assertTrue(bbCodeNestingValidator.isValid("", null));
+        assertTrue(instance.isValid(null, null));
+        assertTrue(instance.isValid("", null));
     }
     
     @Test(dataProvider = "validMessages")
     public void testValidMessages(String message, String assertinMessage) {
-        assertTrue(bbCodeNestingValidator.isValid(message, null), message + " - " + assertinMessage);
+        assertTrue(instance.isValid(message, null), message + " - " + assertinMessage);
     }
     
     @Test(dataProvider = "invalidMessages")
     public void testInvalidMessages(String message, String assertionMessage) {
-        assertFalse(bbCodeNestingValidator.isValid(message, null), message + " - " + assertionMessage);
+        assertFalse(instance.isValid(message, null), message + " - " + assertionMessage);
     }    
     
     @DataProvider
     public String[][] invalidMessages() {
         return new String[][] {
-            {"[b][b][b]text", "Test open tags without close tags counted as nesting."},
-            {"[b][b][b]text[/b][/b][/b]", "Nesting limit is 2, codes nesting in the message is 3."}
+            {"[b][b][b]text", "Open tags without close tags are still counted when validating the nesteness."},
+            {"[b][b][b]text[/b][/b][/b]", "Message with depth 3 "
+                                        + "when depth limit is 2 should be considered as invalid."}
         };
     } 
     
     @DataProvider
     public String[][] validMessages() {
         return new String[][] {
-            {"[b][b]text[/b][/b]", "Test message with depth 2 when depth limit is 2."},
-            {"[*][*][*][*][*]", "List items are not taking into account as nesting."},
-            {"[/b][/b][/b][/b][/b]", "Close tags without respective open tags are ignored."},
-            {"[b]a[/b]b[b]c[/b]d[b]e[/b]a[b]b[/b]c[b]d[/b]e", "Test long sequence of tags with normal nesting depth."},
-            {"[z][z][z][z][z][z][z][z][z]", "Invalid bb-codes are ignored."}
+            {"[b][b]text[/b][/b]", "Testing boundary: message with depth 2 "
+                                    + "when depth limit is 2 should be considered as valid."},
+            {"[*][*][*][*][*]", "List items are not taking into account as nesting. "
+                                + "Message should be considered as valid"},
+            {"[/b][/b][/b][/b][/b]", "Close tags without respective open tags should be ignored in depth validation."
+                                        + "Message should be considered as valid"},
+            {"[b]a[/b]b[b]c[/b]d[b]e[/b]a[b]b[/b]c[b]d[/b]e", "Test long sequence of tags with nesting depth 1. "
+                                                            + "The message shoud be treated as valid."},
+            {"[z][z][z][z][z][z][z][z][z]", "In the depth validation only valid tags should be taken into account. "
+                                            + "Invalid tags should be ignored and the message should be treated as valid."}
         };
     } 
 }
