@@ -97,20 +97,23 @@
     <security:intercept-url pattern="/plugins/**" access="isAuthenticated()"/>
   </security:http>
 
-    <bean id="rememberMeServices" class="org.jtalks.jcommune.web.rememberme.RememberMeServices">
-        <property name="rememberMeCookieDecoder" ref="rememberMeCookieDecoder"/>
-        <property name="userDetailsService" ref="securityService"/>
-        <property name="tokenRepository" ref="tokenRepository"/>
-        <property name="jdbcTemplate" ref="jdbcTemplate"/>
-        <property name="key" value="JTalks"/>
-    </bean>
-    <bean id="rememberMeCookieDecoder" class="org.jtalks.jcommune.web.rememberme.RememberMeCookieDecoderImpl" />
-    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
-    <bean id="successAuthHandler" class="org.jtalks.jcommune.web.util.SuccessfulAuthenticationHandler">
-        <constructor-arg ref="userService"/>
-    </bean>
+  <bean id="rememberMeServices"
+        class="org.jtalks.jcommune.web.rememberme.RememberMeServices">
+    <constructor-arg ref="rememberMeCookieDecoder"/>
+    <constructor-arg name="jdbcTemplate" ref="jdbcTemplate"/>
+    <property name="userDetailsService" ref="securityService"/>
+    <property name="tokenRepository" ref="tokenRepository"/>
+    <property name="key" value="JTalks"/>
+  </bean>
+  <bean id="rememberMeCookieDecoder"
+        class="org.jtalks.jcommune.web.rememberme.RememberMeCookieDecoderImpl" />
+  <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+    <property name="dataSource" ref="dataSource"/>
+  </bean>
+  <bean id="successAuthHandler"
+        class="org.jtalks.jcommune.web.util.SuccessfulAuthenticationHandler">
+    <constructor-arg ref="userService"/>
+  </bean>
 
     <!--Needed to correct operation "logout". Was added with UsernamePasswordAuthenticationFilter.-->
   <bean id="failureAuthHandler"

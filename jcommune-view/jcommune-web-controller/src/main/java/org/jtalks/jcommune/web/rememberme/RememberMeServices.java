@@ -21,26 +21,39 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * JCommune implementation of {@link PersistentTokenBasedRememberMeServices}
+ * <p/>
+ * Needed to properly remove the token when user logged out
+ */
+
+public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
+
+    private final RememberMeCookieDecoder rememberMeCookieDecoder;
+    private final JdbcTemplate jdbcTemplate;
+    private final static String removeTokenQuery = "delete from persistent_logins where series = ? and token = ?";
+
     /**
-     * {@inheritDoc}
+     * Creates RememberMeServices
+     *
+     * @param rememberMeCookieDecoder needed for extracting rememberme cookies
+     * @param jdbcTemplate needed to execute the sql queries
+     * @throws Exception
      */
-    public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
-
-    private RememberMeCookieDecoder rememberMeCookieDecoder;
-    private JdbcTemplate jdbcTemplate;
-
-    public RememberMeServices() throws Exception {
+    public RememberMeServices(RememberMeCookieDecoder rememberMeCookieDecoder, JdbcTemplate jdbcTemplate) throws Exception {
         super();
-    }
-
-    public void setRememberMeCookieDecoder(RememberMeCookieDecoder rememberMeCookieDecoder) {
         this.rememberMeCookieDecoder = rememberMeCookieDecoder;
-    }
-
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    /**
+     * Causes a logout to be completed. The method must complete successfully.
+     * Removes client's token which is extracted from the HTTP request
+     *
+     * @param request the HTTP request
+     * @param response the HTTP response
+     * @param authentication the current principal details
+     */
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         String cookie = rememberMeCookieDecoder.exctractRememberMeCookieValue(request);
@@ -49,6 +62,6 @@ import javax.servlet.http.HttpServletResponse;
             logger.debug( "Logout of user " + (authentication == null ? "Unknown" : authentication.getName()));
         }
         cancelCookie(request, response);
-        jdbcTemplate.update("delete from persistent_logins where series = ? and token = ?", seriesAndToken);
+        jdbcTemplate.update(removeTokenQuery, seriesAndToken);
     }
 }
