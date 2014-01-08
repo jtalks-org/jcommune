@@ -168,6 +168,9 @@ public class BBCodeListPreprocessor implements TextProcessor {
             listStack.push(list);
         }
         if (tag == TagType.LIST_CLOSE) {
+            if (listStack.isEmpty()) {
+                throw new BBCodeListParsingException("[/list] tag without respective [list]");
+            }
             ListElement lastList = listStack.pop();
             lastList.endText = matcher.group(3);
             lastList.close();
