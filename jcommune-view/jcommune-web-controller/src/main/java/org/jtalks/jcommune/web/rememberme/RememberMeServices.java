@@ -22,25 +22,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * JCommune implementation of {@link PersistentTokenBasedRememberMeServices}
- * <p/>
- * Needed to properly remove the token when user logged out
+ * Implements our custom Remember Me service to replace the Spring default one. This implementation removes Remember Me
+ * token only for a single session.
+ * <p><b>Justification:</b> Spring's * {@link PersistentTokenBasedRememberMeServices} removes all the tokens from DB
+ * for a user whose session expired - even the sessions started on a different machine or device. Thus users were
+ * frustrated when their sessions expired on the machines where the Remember Me checkbox was checked.
+ * </p>
  */
-
 public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
-
+    private final static String REMOVE_TOKEN_QUERY = "DELETE FROM persistent_logins WHERE series = ? AND token = ?";
     private final RememberMeCookieDecoder rememberMeCookieDecoder;
     private final JdbcTemplate jdbcTemplate;
-    private final static String removeTokenQuery = "delete from persistent_logins where series = ? and token = ?";
 
     /**
-     * Creates RememberMeServices
-     *
      * @param rememberMeCookieDecoder needed for extracting rememberme cookies
-     * @param jdbcTemplate needed to execute the sql queries
-     * @throws Exception
+     * @param jdbcTemplate            needed to execute the sql queries
+     * @throws Exception - see why {@link PersistentTokenBasedRememberMeServices} throws it
      */
-    public RememberMeServices(RememberMeCookieDecoder rememberMeCookieDecoder, JdbcTemplate jdbcTemplate) throws Exception {
+    public RememberMeServices(RememberMeCookieDecoder rememberMeCookieDecoder, JdbcTemplate jdbcTemplate)
+            throws Exception {
         super();
         this.rememberMeCookieDecoder = rememberMeCookieDecoder;
         this.jdbcTemplate = jdbcTemplate;
@@ -48,20 +48,17 @@ public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
 
     /**
      * Causes a logout to be completed. The method must complete successfully.
-     * Removes client's token which is extracted from the HTTP request
-     *
-     * @param request the HTTP request
-     * @param response the HTTP response
-     * @param authentication the current principal details
+     * Removes client's token which is extracted from the HTTP request.
+     * {@inheritDoc}
      */
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         String cookie = rememberMeCookieDecoder.exctractRememberMeCookieValue(request);
         String[] seriesAndToken = rememberMeCookieDecoder.extractSeriesAndToken(cookie);
         if (logger.isDebugEnabled()) {
-            logger.debug( "Logout of user " + (authentication == null ? "Unknown" : authentication.getName()));
+            logger.debug("Logout of user " + (authentication == null ? "Unknown" : authentication.getName()));
         }
         cancelCookie(request, response);
-        jdbcTemplate.update(removeTokenQuery, seriesAndToken);
+        jdbcTemplate.update(REMOVE_TOKEN_QUERY, seriesAndToken);
     }
 }

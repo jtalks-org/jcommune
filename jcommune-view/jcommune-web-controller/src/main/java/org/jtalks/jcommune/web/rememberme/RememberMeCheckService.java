@@ -22,7 +22,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 
 /**
  * Provides an ability to check remember me data that were passed in cookie value.
- * We need this functionality for cases when user can't log by using remember me cookie
+ * We need this functionality for cases when user can't log in using remember me cookie
  * in application. So we catch such kind of cases and log all data that can help
  * to find the reason of root problem.
  * 
