@@ -56,12 +56,16 @@ public class BBForeignLinksPostprocessor implements TextPostProcessor {
         Pattern linkPattern = Pattern.compile(URL_PATTERN, Pattern.DOTALL);
         Matcher linkMatcher = linkPattern.matcher(decodedText);
         String href;
-
+        String encoded;
         while (linkMatcher.find()) {
             href = linkMatcher.group();
+            encoded = href.replaceAll(" ", "%20");
             if (!href.contains(serverName) && href.split("(http|ftp|https)://", 2).length == 2) {
-                decodedText = decodedText
-                        .replace(href, href.replace("href=\"", "rel=\"nofollow\" href=\"" + getHrefPrefix()));
+                decodedText = decodedText.replace(href,
+                        encoded.replaceFirst("<a.*href=\"", "<a rel=\"nofollow\" href=\"" + getHrefPrefix()));
+            } else {
+                decodedText = decodedText.replace(href,
+                        encoded.replaceFirst("<a.*href=\"", "<a href=\""));
             }
         }
 
