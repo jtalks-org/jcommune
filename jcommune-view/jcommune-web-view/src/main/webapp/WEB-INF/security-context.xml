@@ -87,7 +87,7 @@
                            authentication-failure-handler-ref="failureAuthHandler"/>
 
     <security:logout logout-url="/logout" logout-success-url="/" invalidate-session="true"/>
-    <security:remember-me services-ref="rememberMeServices"  />
+    <security:remember-me services-ref="rememberMeServices" key="JTalks" />
 
     <security:intercept-url pattern="/admin/enter" access="isAuthenticated()"/>
     <security:intercept-url pattern="/admin/exit" access="isAuthenticated()"/>
