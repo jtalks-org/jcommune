@@ -86,13 +86,16 @@ function SwitchEditor(allowedUrls) {
         textboxelement.style.display = "";
         htmlcontentelement.style.display = "none";
         editorVisible = false;
-        $(".hide-on-preview").show();
-        $(".show-on-preview").hide();
-        $("#preview")[0].value = $labelPreview;
+        $('.hide-on-preview').show();
+        $('.show-on-preview').hide();
+        $('#preview')[0].value = $labelPreview;
+        $('.keymaps-caption').show();
+        $('#postBody').focus();
     }
     else { // enter preview
         content = textboxelement.value;
         bbcode2html(allowedUrls);
+        $('.keymaps-caption').hide();
     }
 }
 
