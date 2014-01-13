@@ -30,12 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -133,7 +128,6 @@ public class CodeReviewController {
         topic.setBranch(branch);
         Topic createdTopic = topicModificationService.createCodeReview(topic, topicDto.getBodyText());
 
-        lastReadPostService.markTopicAsRead(createdTopic);
         return new ModelAndView(REDIRECT_URL + createdTopic.getId());
     }
 

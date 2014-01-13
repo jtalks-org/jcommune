@@ -166,7 +166,6 @@ public class TopicController {
         topic.setBranch(branch);
         Topic createdTopic = createTopicWithLockHandling(topic, topicDto);
 
-        lastReadPostService.markTopicAsRead(createdTopic);
         return new ModelAndView(REDIRECT_URL + createdTopic.getId());
     }
 
