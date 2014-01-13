@@ -157,15 +157,15 @@ function bbcode2html(allowedUrls) {
                 result = result.replace(new RegExp(lowerThenPlaceholder, 'gi'), "&lt;");
 
                 editorVisible = true;
-            
-			    //enable code highlight
-			    prettyPrint();
+
                 //enable image preview
                 $('a.pretty-photo').prettyPhoto({social_tools:false});
                 $(elId).html(result.trim());
                 htmlcontentelement.style.display = "";
                 textboxelement.style.display = "none";
                 ErrorUtils.removeErrorMessage(elId);
+                //do code highlight
+                prettyPrint();
             }
         }
     });
