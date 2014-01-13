@@ -72,6 +72,38 @@ $(function () {
             dialogKeydown: submitDialog
         });
     });
+
+
+    var success = $('#restorePassSuccess');
+    console.log(success);
+    if (success.length > 0) {
+        var bodyContent = '\
+            <div id="restore-passwd" class="control-group"> \
+                <h4>' + success.val() + '</h4> \
+            </div>';
+
+        var footerContent = '<button id="restore-ok-button" class="btn btn-primary" name="confirm"> \
+            ' + $labelSignin + '</button>';
+
+        var goToMain = function (e) {
+            if (e) {
+                e.preventDefault();
+            }
+            window.location.href = $('.brand').attr('href');
+        };
+
+        jDialog.createDialog({
+            dialogId: 'restore-password-modal-dialog',
+            closeDialog: goToMain,
+            bodyContent: bodyContent,
+            footerContent: footerContent,
+            maxWidth: 350,
+            tabNavigation: ['#restore-ok-button'],
+            handlers: {
+                '#restore-ok-button': {'click': goToMain}
+            }
+        });
+    }
 });
 
 
