@@ -60,6 +60,7 @@
     <js>/resources/javascript/app/updateSaveButtonStateOnPmForm.js</js>
     <js>/resources/javascript/app/leaveConfirm.js</js>
     <js>/resources/javascript/app/contextMenu.js</js>
+    <js>/resources/javascript/lib/purl.js</js>
   </group>
 
   <!--code review-->

@@ -190,6 +190,7 @@
       </script>
       <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/purl.js"></script>
     </c:if>
 
     <c:if test="${fn:contains(uriString, 'posts')}">
