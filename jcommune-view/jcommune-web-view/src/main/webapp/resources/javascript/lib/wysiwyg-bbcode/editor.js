@@ -165,7 +165,7 @@ function bbcode2html(allowedUrls) {
                 textboxelement.style.display = "none";
                 ErrorUtils.removeErrorMessage(elId);
                 //do code highlight
-                prettyPrint();
+                prettyPrint(null, '#htmlContent');
             }
         }
     });
