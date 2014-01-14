@@ -85,22 +85,22 @@ $(function () {
         var footerContent = '<button id="restore-ok-button" class="btn btn-primary" name="confirm"> \
             ' + $labelSignin + '</button>';
 
-        var goToMain = function (e) {
+        var goToLoginPage = function (e) {
             if (e) {
                 e.preventDefault();
             }
-            window.location.href = $('.brand').attr('href');
+            window.location.href = $('.brand').attr('href') + '/login';
         };
 
         jDialog.createDialog({
             dialogId: 'restore-password-modal-dialog',
-            closeDialog: goToMain,
+            closeDialog: goToLoginPage,
             bodyContent: bodyContent,
             footerContent: footerContent,
             maxWidth: 350,
             tabNavigation: ['#restore-ok-button'],
             handlers: {
-                '#restore-ok-button': {'click': goToMain}
+                '#restore-ok-button': {'click': goToLoginPage}
             }
         });
     }
