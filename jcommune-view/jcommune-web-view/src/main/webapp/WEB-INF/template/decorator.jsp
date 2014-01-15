@@ -28,6 +28,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=800, maximum-scale=0.8">
+<meta property="og:image" content="/admin/logo"/>
 
 <script>
   <%--Defines URL mapping root to be used in JS--%>
