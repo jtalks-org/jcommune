@@ -15,6 +15,8 @@
 
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.common.model.permissions.BranchPermission;
+import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
@@ -22,6 +24,7 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
+import org.jtalks.jcommune.service.security.PermissionService;
 import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
@@ -55,6 +58,7 @@ public class BranchController {
     private UserService userService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private LocationService locationService;
+    private PermissionService permissionService;
 
     /**
      * Post count in the RSS for recent posts in the branch
@@ -80,7 +84,8 @@ public class BranchController {
                             UserService userService,
                             BreadcrumbBuilder breadcrumbBuilder,
                             LocationService locationService,
-                            PostService postService) {
+                            PostService postService,
+                            PermissionService permissionService) {
         this.branchService = branchService;
         this.topicFetchService = topicFetchService;
         this.lastReadPostService = lastReadPostService;
@@ -88,6 +93,7 @@ public class BranchController {
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.locationService = locationService;
         this.postService = postService;
+        this.permissionService = permissionService;
     }
 
     /**
@@ -213,5 +219,21 @@ public class BranchController {
                 on(Branch.class).getId(),
                 on(Branch.class).getName());
         return dtos.toArray(new BranchDto[dtos.size()]);
+    }
+
+    /**
+     * Displays to user a list of branch permissions.
+     *
+     */
+    @RequestMapping(value = "/branch/permissions/{branchId}", method = RequestMethod.GET)
+    public ModelAndView showBranchPermissions(@PathVariable("branchId") long branchId) throws NotFoundException {
+
+        branchService.checkIfBranchExists(branchId);
+        Branch branch = branchService.get(branchId);
+        GroupsPermissions<BranchPermission> permissions = permissionService.getPermissionsFor(branch);
+
+        return new ModelAndView("branchPermissions")
+                .addObject("branch", branch)
+                .addObject("permissions", permissions);
     }
 }

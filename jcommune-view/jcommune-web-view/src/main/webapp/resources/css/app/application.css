@@ -837,3 +837,46 @@ div.add-branch-button:hover {
 .post-content-body ul {
     margin: 0 0 0 18px !important;
 }
+
+.permission-block {
+    border: 2px solid #000;
+    width: 80%;
+    padding: 5px;
+}
+
+.permission-type {
+    padding: 5px 10px;
+    width: 100px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.permission-header {
+    font-weight: bold;
+    font-size: 1.2em;
+    position: relative;
+    top: 10px;
+    left: 10px;
+    padding: 0px 5px;
+    background-image: url("../../images/fabric-plaid.png");
+    display: inline;
+}
+
+.permissions-list {
+    margin: 0px;
+    padding: 0px;
+}
+
+.permissions-list li {
+    border: 2px solid #000;
+    list-style: none;
+    margin-right: 20px;
+    margin-top: 5px;
+    padding: 5px 10px;
+    display: inline-block;
+}
+
+.permissions-container {
+    margin-left: 120px;
+    padding: 0px;
+}

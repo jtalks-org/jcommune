@@ -20,6 +20,7 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
+import org.jtalks.jcommune.service.security.PermissionService;
 import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
@@ -67,6 +68,8 @@ public class BranchControllerTest {
     private UserService userService;
     @Mock
     private PostService postService;
+    @Mock
+    private PermissionService permissionService;
 
     private BranchController controller;
 
@@ -80,7 +83,8 @@ public class BranchControllerTest {
                 userService,
                 breadcrumbBuilder,
                 locationServiceImpl,
-                postService);
+                postService,
+                permissionService);
     }
 
     @Test
