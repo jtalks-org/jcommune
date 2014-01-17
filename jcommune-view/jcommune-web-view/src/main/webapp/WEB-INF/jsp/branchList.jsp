@@ -94,22 +94,29 @@
                 <%--</td>--%>
                 <%--</sec:authorize>--%>
               <td class="title-col">
-                <h2 class="h-nostyle">
-                <c:if test="${sessionScope.adminMode == true}">
-                   <a class="branch-title" href="#" id='branchLabel${branch.id}'>
-                </c:if>
-                <c:if test="${sessionScope.adminMode != true}">
-                   <a class="branch-title" href="${pageContext.request.contextPath}/branches/${branch.id}">
-                </c:if>
-                <c:out value="${branch.name}"/>
-                   </a>
-                </h2>
-                <span class="forum-sections-branch-description-container" id='branchDescriptionLabel${branch.id}'>
-                  <c:out value="${branch.description}"/>
-                </span>
-                <div class="forum-sections-moderators-container">
-                  <jtalks:moderators moderators="${branch.moderatorsGroup.users}" visibleIfEmpty="false"/>
+                <div class="pull-left">
+                  <h2 class="h-nostyle">
+                  <c:if test="${sessionScope.adminMode == true}">
+                     <a class="branch-title" href="#" id='branchLabel${branch.id}'>
+                  </c:if>
+                  <c:if test="${sessionScope.adminMode != true}">
+                     <a class="branch-title" href="${pageContext.request.contextPath}/branches/${branch.id}">
+                  </c:if>
+                  <c:out value="${branch.name}"/>
+                     </a>
+                  </h2>
+                  <span class="forum-sections-branch-description-container" id='branchDescriptionLabel${branch.id}'>
+                    <c:out value="${branch.description}"/>
+                  </span>
+                  <div class="forum-sections-moderators-container">
+                    <jtalks:moderators moderators="${branch.moderatorsGroup.users}" visibleIfEmpty="false"/>
+                  </div>
                 </div>
+                <c:if test="${sessionScope.adminMode == true}">
+                  <div class="add-branch-button pull-right">
+                    <a href="${pageContext.request.contextPath}/branch/permissions/${branch.id}"> Edit permissions </a>
+                  </div>
+                </c:if>
               </td>
               <td class="topics-posts">
                 <spring:message code="label.section.header.topics"/>:

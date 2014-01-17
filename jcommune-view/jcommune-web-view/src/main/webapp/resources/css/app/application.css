@@ -842,6 +842,7 @@ div.add-branch-button:hover {
     border: 2px solid #000;
     width: 80%;
     padding: 5px;
+    border-radius: 3px;
 }
 
 .permission-type {
@@ -873,6 +874,7 @@ div.add-branch-button:hover {
     margin-right: 20px;
     margin-top: 5px;
     padding: 5px 10px;
+    border-radius: 3px;
     display: inline-block;
 }
 
