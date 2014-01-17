@@ -13,7 +13,7 @@
         <dependency>
             <groupId>org.jtalks.jcommune</groupId>
             <artifactId>jcommune-service</artifactId>
-            <version>2.5-SNAPSHOT</version>
+            <version>2.4-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
