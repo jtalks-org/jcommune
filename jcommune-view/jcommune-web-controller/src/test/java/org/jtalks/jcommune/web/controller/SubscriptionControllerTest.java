@@ -22,13 +22,13 @@ import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.TopicFetchService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.Mock;
+import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 
 /**
  * @author Evgeniy Naumenko
@@ -89,6 +89,22 @@ public class SubscriptionControllerTest {
         controller.unsubscribeFromBranch(id);
 
         verify(subscriptionService).toggleBranchSubscription(branch);
+    }
+
+    @Test
+    public void testRedirectWhenUnsubscribeFromBranchByLink() throws NotFoundException {
+        when(branchService.get(id)).thenReturn(branch);
+        ModelAndView actualMav = controller.unsubscribeFromBranchByLink(id);
+        assertViewName(actualMav, "redirect:/branches/" + id);
+    }
+
+    @Test
+    public void testUnsubscribeFromBranchByLink() throws NotFoundException {
+        when(branchService.get(id)).thenReturn(branch);
+
+        controller.unsubscribeFromBranchByLink(id);
+
+        verify(subscriptionService).unsubscribeFromBranch(branch);
     }
 
     @Test(expectedExceptions = NotFoundException.class)

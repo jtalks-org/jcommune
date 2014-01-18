@@ -31,26 +31,27 @@
 <head>
   <meta name="description" content="<c:out value="${branch.name}"/>">
   <title>
-      <c:out value="${cmpTitlePrefix}"/>
-      <c:out value="${branch.name}"/> - <c:out value="${cmpDescription}"/>
+    <c:out value="${cmpTitlePrefix}"/>
+    <c:out value="${branch.name}"/> - <c:out value="${cmpDescription}"/>
   </title>
-  <spring:message code="label.rssFeed" var="branchRssTitle" arguments="${branch.name}" htmlEscape="true" javaScriptEscape="true"/>
+  <spring:message code="label.rssFeed" var="branchRssTitle" arguments="${branch.name}" htmlEscape="true"
+                  javaScriptEscape="true"/>
   <link rel="alternate" type="application/rss+xml"
         href="${pageContext.request.contextPath}/branches/${branch.id}/recent.rss"
         title="${branchRssTitle}">
 </head>
 <body>
 <div class="container">
-<%-- Branch header --%>
-<div id="branch-header">
-  <h1>
-    <a class="invisible-link" href="${pageContext.request.contextPath}/branches/${branch.id}">
-      <c:out value="${branch.name}"/>
-    </a>
-  </h1>
+  <%-- Branch header --%>
+  <div id="branch-header">
+    <h1>
+      <a class="invisible-link" href="${pageContext.request.contextPath}/branches/${branch.id}">
+        <c:out value="${branch.name}"/>
+      </a>
+    </h1>
 
-  <div id="right-block">
-    <sec:authorize access="isAuthenticated()">
+    <div id="right-block">
+      <sec:authorize access="isAuthenticated()">
       <span id="mark-all-viewed">
         <i class="icon-check"></i>
         <a href="${pageContext.request.contextPath}/branches/${branch.id}/markread">
@@ -77,88 +78,90 @@
           </c:otherwise>
         </c:choose>
       </span>
-    </sec:authorize>
-    <a href="${pageContext.request.contextPath}/branches/${branch.id}/recent.rss"
-      title="<spring:message code='label.tips.feed_subsription'/>">
+      </sec:authorize>
+      <a href="${pageContext.request.contextPath}/branches/${branch.id}/recent.rss"
+         title="<spring:message code='label.tips.feed_subsription'/>">
 
-      <img src="${pageContext.request.contextPath}/resources/images/rss-icon.png" alt="" class="rss-icon">
-    </a>
-  </div>
-  <span class="inline-block"></span>
-</div>
-<%-- END OF Branch header --%>
-
-<jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-
-<%-- Upper pagination --%>
-<div class="row-fluid upper-pagination forum-pagination-container">
-  <div class="span4">
-    <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' permission='BranchPermission.CREATE_POSTS'>
-    <a class="new-topic-btn btn btn-primary space-left-medium-nf"
-         href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"
-         title="<spring:message code='label.addtopic.tip'/>" data-placement="right">
-        <spring:message code="label.addtopic"/>
+        <img src="${pageContext.request.contextPath}/resources/images/rss-icon.png" alt="" class="rss-icon">
       </a>
-    </jtalks:hasPermission>
-    <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' permission='BranchPermission.CREATE_CODE_REVIEW'>
-    <a class="new-code-review-btn btn btn-primary space-left-medium-nf"
-         href="${pageContext.request.contextPath}/reviews/new?branchId=${branch.id}"
-         title="<spring:message code='label.addCodeReview.tip'/>" data-placement="right">
-        <spring:message code="label.addCodeReview"/>
-      </a>
-    </jtalks:hasPermission>
-    &nbsp; <%-- For proper pagination layout without buttons--%>
-  </div>
-  <div class="span8">
-    <div class="pagination pull-right forum-pagination">
-      <ul>
-        <jtalks:pagination uri="${branch.id}" page="${topicsPage}"/>
-      </ul>
     </div>
+    <span class="inline-block"></span>
   </div>
+  <%-- END OF Branch header --%>
 
-</div>
-<%-- END OF Upper pagination --%>
+  <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
+
+  <%-- Upper pagination --%>
+  <div class="row-fluid upper-pagination forum-pagination-container">
+    <div class="span4">
+      <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' permission='BranchPermission.CREATE_POSTS'>
+        <a class="new-topic-btn btn btn-primary space-left-medium-nf"
+           href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"
+           title="<spring:message code='label.addtopic.tip'/>" data-placement="right">
+          <spring:message code="label.addtopic"/>
+        </a>
+      </jtalks:hasPermission>
+      <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
+                            permission='BranchPermission.CREATE_CODE_REVIEW'>
+        <a class="new-code-review-btn btn btn-primary space-left-medium-nf"
+           href="${pageContext.request.contextPath}/reviews/new?branchId=${branch.id}"
+           title="<spring:message code='label.addCodeReview.tip'/>" data-placement="right">
+          <spring:message code="label.addCodeReview"/>
+        </a>
+      </jtalks:hasPermission>
+      &nbsp; <%-- For proper pagination layout without buttons--%>
+    </div>
+    <div class="span8">
+      <div class="pagination pull-right forum-pagination">
+        <ul>
+          <jtalks:pagination uri="${branch.id}" page="${topicsPage}"/>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+  <%-- END OF Upper pagination --%>
 
   <%--you cannot use <spring> tag inside of an attribute, thus defining it as a separate var--%>
   <spring:message code="label.branch.empty" var="messageToShowIfNoTopics"/>
   <jtalks:topicList topics="${topicsPage.content}" messageToShowIfNoTopics='${messageToShowIfNoTopics}'/>
 
-<%-- Bottom pagination --%>
-<div class="row-fluid upper-pagination forum-pagination-container">
-  <div class="span4">
-    <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' permission='BranchPermission.CREATE_POSTS'>
-      <a class="new-topic-btn btn btn-primary space-left-medium-nf"
-         href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"
-         title="<spring:message code='label.addtopic.tip'/>" data-placement="right">
-        <spring:message code="label.addtopic"/>
-      </a>
-    </jtalks:hasPermission>
-    <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' permission='BranchPermission.CREATE_CODE_REVIEW'>
-      <a class="new-code-review-btn btn btn-primary space-left-medium-nf"
-         href="${pageContext.request.contextPath}/reviews/new?branchId=${branch.id}"
-         title="<spring:message code="label.addCodeReview.tip"/>" data-placement="right">
-        <spring:message code="label.addCodeReview"/>
-      </a>
-    </jtalks:hasPermission>
-    &nbsp; <%-- For proper pagination layout without buttons--%>
-  </div>
-
-  <div class="span8">
-    <div class="pagination pull-right forum-pagination">
-      <ul><jtalks:pagination uri="${branch.id}" page="${topicsPage}"/></ul>
+  <%-- Bottom pagination --%>
+  <div class="row-fluid upper-pagination forum-pagination-container">
+    <div class="span4">
+      <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' permission='BranchPermission.CREATE_POSTS'>
+        <a class="new-topic-btn btn btn-primary space-left-medium-nf"
+           href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"
+           title="<spring:message code='label.addtopic.tip'/>" data-placement="right">
+          <spring:message code="label.addtopic"/>
+        </a>
+      </jtalks:hasPermission>
+      <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
+                            permission='BranchPermission.CREATE_CODE_REVIEW'>
+        <a class="new-code-review-btn btn btn-primary space-left-medium-nf"
+           href="${pageContext.request.contextPath}/reviews/new?branchId=${branch.id}"
+           title="<spring:message code="label.addCodeReview.tip"/>" data-placement="right">
+          <spring:message code="label.addCodeReview"/>
+        </a>
+      </jtalks:hasPermission>
+      &nbsp; <%-- For proper pagination layout without buttons--%>
     </div>
-  </div>
 
-</div>
-<%-- END OF Bottom pagination --%>
-<%-- Users --%>
-<div id="users-stats" class="well forum-user-stats-container">
-  <jtalks:moderators moderators="${branch.moderatorsGroup.users}"/>
-  <br/>
-  <strong><spring:message code="label.branch.now_browsing"/></strong>
-  <jtalks:users users="${viewList}" branch="${branch}"/>
-</div>
-<%-- END OF Users --%>
+    <div class="span8">
+      <div class="pagination pull-right forum-pagination">
+        <ul><jtalks:pagination uri="${branch.id}" page="${topicsPage}"/></ul>
+      </div>
+    </div>
+
+  </div>
+  <%-- END OF Bottom pagination --%>
+  <%-- Users --%>
+  <div id="users-stats" class="well forum-user-stats-container">
+    <jtalks:moderators moderators="${branch.moderatorsGroup.users}"/>
+    <br/>
+    <strong><spring:message code="label.branch.now_browsing"/></strong>
+    <jtalks:users users="${viewList}" branch="${branch}"/>
+  </div>
+  <%-- END OF Users --%>
 </div>
 </body>

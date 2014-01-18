@@ -23,8 +23,8 @@
 
 <head>
   <title>
-      <c:out value="${cmpTitlePrefix}"/>
-      <spring:message code="label.pm_title"/>
+    <c:out value="${cmpTitlePrefix}"/>
+    <spring:message code="label.pm_title"/>
   </title>
 </head>
 <body>
@@ -42,21 +42,21 @@
       <div class="pm_buttons">
         <jtalks:hasPermission targetId='${user.id}' targetType='USER'
                               permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
-            <c:if test="${jtalks:isExists(pm.userTo)}" >
-              <c:if test="${(pm.userTo eq user)}">
-                <a class="btn btn-primary"
-                   href="${pageContext.request.contextPath}/reply/${pm.id}?userId=${user.id}">
-                  <i class="icon-share-alt icon-white"></i>
-                  <spring:message code="label.reply"/>
-                </a>
+          <c:if test="${jtalks:isExists(pm.userTo)}">
+            <c:if test="${(pm.userTo eq user)}">
+              <a class="btn btn-primary"
+                 href="${pageContext.request.contextPath}/reply/${pm.id}?userId=${user.id}">
+                <i class="icon-share-alt icon-white"></i>
+                <spring:message code="label.reply"/>
+              </a>
 
-                <a class="btn margin-left-big"
-                   href="${pageContext.request.contextPath}/quote/${pm.id}?userId=${user.id}">
-                  <i class="icon-quote"></i>
-                  <spring:message code="label.quote"/>
-                </a>
-              </c:if>
+              <a class="btn margin-left-big"
+                 href="${pageContext.request.contextPath}/quote/${pm.id}?userId=${user.id}">
+                <i class="icon-quote"></i>
+                <spring:message code="label.quote"/>
+              </a>
             </c:if>
+          </c:if>
         </jtalks:hasPermission>
 
                 <span class="del">

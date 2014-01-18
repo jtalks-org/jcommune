@@ -76,7 +76,7 @@ public class TransactionalSubscriptionServiceTest {
     }
 
     @Test
-    public void testBranchSubscription() {
+    public void testToggleBranchSubscription() {
         service.toggleBranchSubscription(branch);
 
         assertTrue(branch.getSubscribers().contains(user));
@@ -93,10 +93,19 @@ public class TransactionalSubscriptionServiceTest {
     }
 
     @Test
-    public void testBranchUnsubscription() {
+    public void testToggleBranchUnsubscription() {
         branch.getSubscribers().add(user);
 
         service.toggleBranchSubscription(branch);
+
+        assertFalse(branch.getSubscribers().contains(user));
+    }
+
+    @Test
+    public void testBranchUnsubscription() {
+        branch.getSubscribers().add(user);
+
+        service.unsubscribeFromBranch(branch);
 
         assertFalse(branch.getSubscribers().contains(user));
     }

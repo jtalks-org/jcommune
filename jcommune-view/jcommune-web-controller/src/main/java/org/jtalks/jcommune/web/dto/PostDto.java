@@ -16,7 +16,7 @@ package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.validation.annotations.BbCodeAwareSize;
+import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeNesting;
 
 /**

@@ -21,8 +21,8 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <head>
   <title>
-      <c:out value="${cmpTitlePrefix}"/>
-      <spring:message code="label.drafts"/>
+    <c:out value="${cmpTitlePrefix}"/>
+    <spring:message code="label.drafts"/>
   </title>
 </head>
 <body>

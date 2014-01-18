@@ -16,6 +16,8 @@
 *.iml
 *.ipr
 *.iws
+*.war
+*.jar
 
 # Netbeans project files
 nbproject
@@ -33,4 +35,3 @@ logs
 /jcommune-view/jcommune-web-view/src/main/webapp/resources/wro
 /jcommune-service/bin
 /jcommune-model/bin
-/jcommune-view/jcommune-web-view/src/main/resources/org/jtalks/jcommune/model/datasource.properties

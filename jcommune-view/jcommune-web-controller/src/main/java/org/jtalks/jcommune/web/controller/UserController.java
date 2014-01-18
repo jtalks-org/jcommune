@@ -87,6 +87,7 @@ public class UserController {
     protected static final String ATTR_USERNAME = "username";
     protected static final String ATTR_LOGIN_ERROR = "login_error";
     public static final int LOGIN_TRIES_AFTER_LOCK = 3;
+    public static final int SLEEP_MILLISECONDS_AFTER_LOCK = 500;
     private final UserService userService;
     private final Authenticator authenticator;
     private final PluginService pluginService;
@@ -243,7 +244,10 @@ public class UserController {
         Map<String, String> registrationPlugins = new HashMap<>();
         for (Map.Entry<Long, RegistrationPlugin> entry : pluginService.getRegistrationPlugins().entrySet()) {
             String pluginId = String.valueOf(entry.getKey());
-            registrationPlugins.put(pluginId, entry.getValue().getHtml(request, pluginId, locale));
+            String html = entry.getValue().getHtml(request, pluginId, locale);
+            if (html != null) {
+                registrationPlugins.put(pluginId, html);
+            }
         }
         return registrationPlugins;
     }

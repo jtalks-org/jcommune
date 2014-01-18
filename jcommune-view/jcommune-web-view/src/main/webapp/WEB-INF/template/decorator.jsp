@@ -138,7 +138,6 @@
     <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/jquery.contextMenu.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/jquery-fieldselection.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/contextmenu/textarea-helper.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/textarea-helper.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/prettify.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-apollo.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-clj.js"></script>

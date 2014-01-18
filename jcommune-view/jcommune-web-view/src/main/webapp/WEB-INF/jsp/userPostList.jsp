@@ -23,8 +23,8 @@
 <head>
   <meta name="description" content="<c:out value="${user.username}"/>">
   <title>
-      <c:out value="${cmpTitlePrefix}"/>
-      <spring:message code="label.postListOfUser"/> <c:out value="${user.username}"/>
+    <c:out value="${cmpTitlePrefix}"/>
+    <spring:message code="label.postListOfUser"/> <c:out value="${user.username}"/>
   </title>
 </head>
 <body>
@@ -56,41 +56,41 @@
           </thead>
           <tbody>
           <c:forEach var="post" items="${postsPage.content}" varStatus="i">
-              <tr class='post-content-tr'>
-                <td class='userinfo'>
-                  <spring:message code='label.branch.header.branches'/>:
-                  <a class="forum_message_cell_text space-left-small-m"
-                     href="${pageContext.request.contextPath}/branches/${post.topic.branch.id}">
-                    <c:out value="${post.topic.branch.name}"/></a>
+            <tr class='post-content-tr'>
+              <td class='userinfo'>
+                <spring:message code='label.branch.header.branches'/>:
+                <a class="forum_message_cell_text space-left-small-m"
+                   href="${pageContext.request.contextPath}/branches/${post.topic.branch.id}">
+                  <c:out value="${post.topic.branch.name}"/></a>
+                <br/>
+                <spring:message code='label.branch.header.topics'/>:
+                <a class="forum_message_cell_text space-left-small-m"
+                   href="${pageContext.request.contextPath}/topics/${post.topic.id}">
+                  <c:out value="${post.topic.title}"/></a>
+                <br/>
+                <spring:message code="label.added"/>&nbsp;
+                <jtalks:format value="${post.creationDate}" pattern="dd.MM.yy"/>
+                <br/>
+                <c:if test="${post.modificationDate!=null}">
+                  <spring:message code="label.modify"/>&nbsp;
+                  <jtalks:format value="${post.modificationDate}" pattern="dd.MM.yy"/>
                   <br/>
-                  <spring:message code='label.branch.header.topics'/>:
-                  <a class="forum_message_cell_text space-left-small-m"
-                     href="${pageContext.request.contextPath}/topics/${post.topic.id}">
-                    <c:out value="${post.topic.title}"/></a>
-                  <br/>
-                  <spring:message code="label.added"/>&nbsp;
-                  <jtalks:format value="${post.creationDate}" pattern="dd.MM.yy"/>
-                  <br/>
-                  <c:if test="${post.modificationDate!=null}">
-                    <spring:message code="label.modify"/>&nbsp;
-                    <jtalks:format value="${post.modificationDate}" pattern="dd.MM.yy"/>
-                    <br/>
-                  </c:if>
-                  <br/>
+                </c:if>
+                <br/>
 
-                  <div>
-                    <a class="btn"
-                       href="${pageContext.request.contextPath}/posts/${post.id}">
-                      <spring:message code="label.goToPost"/>
-                    </a>
-                  </div>
-                  <br/>
-                </td>
-                <td class='post-content-td'>
-                  <jtalks:postContent text="${post.postContent}"/>
-                  <br/>
-                </td>
-              </tr>
+                <div>
+                  <a class="btn"
+                     href="${pageContext.request.contextPath}/posts/${post.id}">
+                    <spring:message code="label.goToPost"/>
+                  </a>
+                </div>
+                <br/>
+              </td>
+              <td class='post-content-td'>
+                <jtalks:postContent text="${post.postContent}"/>
+                <br/>
+              </td>
+            </tr>
           </c:forEach>
           </tbody>
         </c:when>

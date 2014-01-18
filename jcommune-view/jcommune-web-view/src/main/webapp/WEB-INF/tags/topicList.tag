@@ -34,7 +34,7 @@
           </sec:authorize>
           <td class="posts-td-small">
             <h2 class="h-nostyle">
-                    <%--Some topic types should have a special prefix when displayed--%>
+                <%--Some topic types should have a special prefix when displayed--%>
               <c:if test="${topic.announcement=='true'}">
                 <span class="sticky space-left-small-nf"><spring:message code="label.marked_as_announcement"/></span>
               </c:if>
@@ -78,7 +78,8 @@
               <jtalks:format value="${topic.lastPost.creationDate}"/>
             </a>&thinsp;
             <spring:message code="label.topic.last_post_by"/>
-            <a class="space-left-small" href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.id}">
+            <a class="space-left-small"
+               href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.id}">
               <c:out value="${topic.lastPost.userCreated.username}"/>
             </a>
           </td>
@@ -87,7 +88,11 @@
       </tbody>
     </c:when>
     <c:otherwise>
-      <tbody><tr><td><c:out value="${messageToShowIfNoTopics}"/></td></tr></tbody>
+      <tbody>
+      <tr>
+        <td><c:out value="${messageToShowIfNoTopics}"/></td>
+      </tr>
+      </tbody>
     </c:otherwise>
   </c:choose>
 </table>

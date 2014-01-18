@@ -72,7 +72,8 @@ public class BBCodeListPreprocessorTest {
                 {"some long text", "some long text"},
                 {"[list][list][list]", "[list][list][list]"},
                 {"[*]Duplicate", "[*]Duplicate"},
-                {"before list[list][*]listitem[list]after list", "before list[list][*]listitem[list]after list"}
+                {"before list[list][*]listitem[list]after list", "before list[list][*]listitem[list]after list"},
+                {"zzz[/list]", "zzz[/list]"}
         };
     }
     

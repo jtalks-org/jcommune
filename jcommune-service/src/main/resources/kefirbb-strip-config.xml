@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+    Copyright (C) 2011  JTalks.org Team
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+-->
+
+<!--We use Kefir BB for converting BB codes into HTML tags. This configures what symbols are treated as BB codes.-->
+<!--Also, this file describes encoding of special symbols that are treated by browsers as HTML. For instance, <> are
+valid HTML-related symbols, thus we need to replace them with their encoded equivalent like &amp;lt. Thus we don't
+get XSS attacks.</p>-->
+<!--See more docs on official site: http://kefir-bb.sourceforge.net/-->
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns="http://kefirsf.org/kefirbb/schema"
+               xsi:schemaLocation="http://kefirsf.org/kefirbb/schema http://kefirsf.org/kefirbb/schema/kefirbb-1.0.xsd">
+    <!-- XML escape symbols -->
+    <scope name="escapeXml">
+        <code priority="100">
+            <pattern>&amp;</pattern>
+            <template>&amp;amp;</template>
+        </code>
+        <code priority="100">
+            <pattern>&apos;</pattern>
+            <template>&amp;apos;</template>
+        </code>
+        <code priority="100">
+            <pattern>&lt;</pattern>
+            <template>&amp;lt;</template>
+        </code>
+        <code priority="100">
+            <pattern>&gt;</pattern>
+            <template>&amp;gt;</template>
+        </code>
+        <code priority="100">
+            <pattern>&quot;</pattern>
+            <template>&amp;quot;</template>
+        </code>
+    </scope>
+
+    <scope name="escapeXmlAndBr" parent="escapeXml">
+        <code priority="100">
+            <pattern><var regex="\n"/></pattern>
+            <template>&lt;br/&gt;</template>
+        </code>
+    </scope>
+
+
+    <!-- Scope for escaping bb spec chars -->
+    <scope name="escapeBb" parent="escapeXmlAndBr">
+        <!--
+            Escape bb-code symbols
+            double slash to slash
+            slash + square bracket to square bracket
+         -->
+        <code name="slash" priority="10">
+            <pattern>\\</pattern>
+            <template>\</template>
+        </code>
+        <code name="left_square_bracket" priority="9">
+            <pattern>\[</pattern>
+            <template>[</template>
+        </code>
+        <code name="right_square_bracket" priority="9">
+            <pattern>\]</pattern>
+            <template>]</template>
+        </code>
+    </scope>
+
+    <!-- Escape basic HTML char sequences -->
+    <scope name="basic" parent="escapeBb">
+        <!-- line feed characters -->
+        <code name="br1" priority="3">
+            <pattern>&#x0A;&#x0D;</pattern>
+            <template>&lt;br/&gt;</template>
+        </code>
+        <code name="br2" priority="2">
+            <pattern>&#x0D;&#x0A;</pattern>
+            <template>&lt;br/&gt;</template>
+        </code>
+        <code name="br3" priority="1">
+            <pattern>&#x0A;</pattern>
+            <template>&lt;br/&gt;</template>
+        </code>
+        <code name="br4" priority="0">
+            <pattern>&#x0D;</pattern>
+            <template>&lt;br/&gt;</template>
+        </code>
+
+        <!-- Special html symbols -->
+        <code name="symbol">
+            <pattern>[symbol=<var scope="escapeXmlAndBr"/>/]</pattern>
+            <template>&amp;<var/>;</template>
+        </code>
+
+        <!-- angle quotes -->
+        <code name="aquote">
+            <pattern>[aquote]<var inherit="true"/>[/aquote]</pattern>
+            <template>&amp;laquo;<var/>&amp;raquo;</template>
+        </code>
+
+        <!-- Special html symbol for backslash -->
+        <code name="backslash" priority="12">
+            <pattern>\</pattern>
+            <template>&#92;</template>
+        </code>
+    </scope>
+
+    <!-- Root scope. This scope uses when processor started work and by default, if not set other scope -->
+    <scope name="ROOT" parent="basic">
+        <!-- Formatting -->
+        <coderef name="bold"/>
+        <coderef name="u"/>
+        <coderef name="s"/>
+        <coderef name="i"/>
+        <coderef name="color_code"/>
+        <coderef name="color_name"/>
+        <coderef name="size"/>
+        <coderef name="font"/>
+        <coderef name="highlight"/>
+        <coderef name="left"/>
+        <coderef name="right"/>
+        <coderef name="center"/>
+        <coderef name="indent"/>
+        <coderef name="list"/>
+        <coderef name="orderedList"/>
+        <coderef name="offtop"/>
+
+        <!-- Quotes -->
+        <coderef name="code"/>
+        <coderef name="quote"/>
+        <coderef name="quote_named"/>
+
+        <!-- Images -->
+        <coderef name="img1"/>
+
+        <!-- links -->
+        <coderef name="url1"/>
+        <coderef name="url2"/>
+        <coderef name="url3"/>
+        <coderef name="url4"/>
+        <coderef name="url6"/>
+        <coderef name="url7"/>
+
+        <!-- Table -->
+        <coderef name="table"/>
+        
+        <!-- User mentioning -->
+        <coderef name="user"/>
+    </scope>
+
+    <!-- Simple formatting -->
+    <code name="bold">
+        <pattern>[b]<var inherit="true"/>[/b]</pattern>
+        <template><var/></template>
+    </code>
+    <code name="u">
+        <pattern>[u]<var inherit="true"/>[/u]</pattern>
+        <template><var/></template>
+    </code>
+    <code name="s">
+        <pattern>[s]<var inherit="true"/>[/s]</pattern>
+        <template><var/></template>
+    </code>
+    <code name="i">
+        <pattern>[i]<var inherit="true"/>[/i]</pattern>
+        <template><var/></template>
+    </code>
+
+    <!-- Font color -->
+    <code name="color_name">
+        <pattern>[color=<var name="color"  regex="\D*"  scope="escapeXmlAndBr"/>]<var name="text" inherit="true"/>[/color]</pattern>
+        <template><var name="text"/></template>
+    </code>
+
+    <code name="color_code">
+        <pattern>[color=<var name="color" regex="[A-F0-9]{6}" scope="escapeXmlAndBr"/>]<var name="text" inherit="true"/>[/color]</pattern>
+        <template><var name="text"/></template>
+    </code>
+
+    <!-- Font size -->
+    <code name="size">
+        <pattern>[size=<var name="size" scope="escapeXmlAndBr"/>]<var name="text" inherit="true"/>[/size]</pattern>
+        <template><var name="text"/></template>
+    </code>
+
+    <!-- Font family -->
+    <code name="font">
+        <pattern>[font=<var name="family" scope="escapeXmlAndBr"/>]<var name="text" inherit="true"/>[/font]</pattern>
+        <template><var name="text"/></template>
+    </code>
+
+    <!-- Text highlight -->
+    <code name="highlight">
+        <pattern>[highlight]<var name="text" inherit="true"/>[/highlight]</pattern>
+        <template><var name="text"/></template>
+    </code>
+
+    <!-- Text, align to left -->
+    <code name="left">
+        <pattern>[left]<var name="text" inherit="true"/>[/left]</pattern>
+        <template><var name="text"/></template>
+    </code>
+
+    <!-- Text, align to right -->
+    <code name="right">
+        <pattern>[right]<var name="text" inherit="true"/>[/right]</pattern>
+        <template><var name="text"/></template>
+    </code>
+
+    <!-- Text, align to center -->
+    <code name="center">
+        <pattern>[center]<var name="text" inherit="true"/>[/center]</pattern>
+        <template><var name="text"/></template>
+    </code>
+
+    <!-- Text indent -->
+    <code name="indent">
+        <pattern>[indent=<var name="size" scope="escapeXmlAndBr"/>]<var name="text" inherit="true"/>[/indent]</pattern>
+        <template><var name="text"/></template>
+    </code>
+
+    <!-- List -->
+    <code name="list">
+        <pattern>[list]<var scope="listScope"/>[/list]</pattern>
+        <template><var/></template>
+    </code>
+    <code name="orderedList">
+        <pattern>[list=<var name="listType"/>]<var name="listItems" scope="listScope"/>[/list]</pattern>
+        <template><var name="listItems"/></template>
+    </code>
+    <scope name="listScope" ignoreText="false">
+        <code name="li">
+            <pattern>[*]<var scope="ROOT"/>[/*]</pattern>
+            <template>*<var/></template>
+        </code>
+    </scope>
+
+    <!-- Insert image -->
+    <code name="img1" priority="2">
+        <pattern>[img]<var name="protocol" regex="((ht|f)tps?:|\.{1,2})?"/>/<var name="addr" scope="escapeXmlAndBr"/>[/img]</pattern>
+        <template><var name="protocol"/>/<var name="addr"/></template>
+    </code>
+
+
+    <!-- Links. http, https, mailto protocols -->
+    <scope name="url" parent="basic">
+        <coderef name="bold"/>
+        <coderef name="u"/>
+        <coderef name="s"/>
+        <coderef name="i"/>
+        <coderef name="color_name"/>
+        <coderef name="color_code"/>
+        <coderef name="size"/>
+        <coderef name="highlight"/>
+        <coderef name="left"/>
+        <coderef name="right"/>
+        <coderef name="center"/>
+        <coderef name="indent"/>
+        <coderef name="list"/>
+        <coderef name="img1"/>
+    </scope>
+
+    <!-- HTTP -->
+    <code name="url1" priority="2">
+        <pattern>[url=<var name="protocol" regex="((ht|f)tps?:|\.{1,2})?"/>/<var name="url" scope="escapeXmlAndBr"/>]<var name="text" scope="url"/>[/url]</pattern>
+        <template><var name="text"/></template>
+    </code>
+    <code name="url2" priority="2">
+        <pattern>[url]<var name="protocol" regex="((ht|f)tps?:|\.{1,2})?"/>/<var name="url" scope="escapeXmlAndBr"/>[/url]</pattern>
+        <template>&lt;a href=&quot;<var name="protocol"/>/<var name="url"/>&quot;&gt;<var name="protocol"/>/<var name="url"/>&lt;/a&gt;</template>
+    </code>
+    <code name="url3" priority="1">
+        <pattern>[url=<var name="url" scope="escapeXmlAndBr"/>]<var name="text" scope="url"/>[/url]</pattern>
+        <template>&lt;a href=&quot;http://<var name="url"/>&quot;&gt;<var name="text"/>&lt;/a&gt;</template>
+    </code>
+    <code name="url4" priority="1">
+        <pattern>[url]<var name="url" scope="escapeXmlAndBr"/>[/url]</pattern>
+        <template>&lt;a href=&quot;http://<var name="url"/>&quot;&gt;<var name="url"/>&lt;/a&gt;</template>
+    </code>
+
+
+    <!-- MAILTO -->
+    <code name="url6" priority="2">
+        <pattern>[url=mailto:<var name="url" scope="escapeXmlAndBr"/>]<var name="text" scope="url"/>[/url]</pattern>
+        <template>&lt;a href=&quot;mailto:<var name="url"/>&quot;&gt;<var name="text"/>&lt;/a&gt;</template>
+    </code>
+    <code name="url7" priority="2">
+        <pattern>[url]mailto:<var name="url" scope="escapeXmlAndBr"/>[/url]</pattern>
+        <template>&lt;a href=&quot;mailto:<var name="url"/>&quot;&gt;mailto:<var name="url"/>&lt;/a&gt;</template>
+    </code>
+
+    <!-- Quote block -->
+    <code name="quote">
+        <pattern>[quote]<var inherit="true"/>[/quote]</pattern>
+        <template><var/></template>
+    </code>
+
+    <code name="quote_named">
+        <pattern>[quote="<var name="author" inherit="true"/>"]<var name="content" inherit="true"/>[/quote]</pattern>
+        <template><var name="content"/></template>
+    </code>
+
+    <!-- Code block -->
+    <code name="code">
+        <pattern>[code=<var name="lang"/>]<var name="code" scope="escapeXml"/>[/code]</pattern>
+        <template><var name="code"/></template>
+    </code>
+
+    <!-- Offtopic block -->
+    <code name="offtop">
+        <pattern>[offtop]<var scope="basic"/>[/offtop]</pattern>
+        <template><var/></template>
+    </code>
+
+    <!-- Simple table -->
+    <code name="table">
+        <pattern>[table]<var scope="tableScope"/>[/table]</pattern>
+        <template>&lt;table&gt;<var/>&lt;/table&gt;</template>
+    </code>
+    <scope name="tableScope" ignoreText="true">
+        <code name="tr">
+            <pattern>[tr]<var scope="trScope"/>[/tr]</pattern>
+            <template>&lt;tr&gt;<var/>&lt;/tr&gt;</template>
+        </code>
+    </scope>
+    <scope name="trScope" ignoreText="true">
+        <code name="th">
+            <pattern>[th]<var/>[/th]</pattern>
+            <template>&lt;th&gt;<var/>&lt;/th&gt;</template>
+        </code>
+        <code name="td">
+            <pattern>[td]<var/>[/td]</pattern>
+            <template>&lt;td&gt;<var/>&lt;/td&gt;</template>
+        </code>
+    </scope>
+    
+    <!-- User mentioning -->
+    <code name="user">
+        <pattern>[user=<var name="mentionedUserProfileLink"/>]<var name="mentionedUser" inherit="true"/>[/user]</pattern>
+        <template><var name="mentionedUser"/></template>
+    </code>
+</configuration>

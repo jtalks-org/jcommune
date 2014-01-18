@@ -22,8 +22,8 @@
 <head>
   <meta name="description" content="<c:out value="${topicDto.topic.branch.name}"/>">
   <title>
-      <c:out value="${cmpTitlePrefix}"/>
-      <c:out value="${topicDto.topic.branch.name}"/> - <spring:message code="h.new_topic"/>
+    <c:out value="${cmpTitlePrefix}"/>
+    <c:out value="${topicDto.topic.branch.name}"/> - <spring:message code="h.new_topic"/>
   </title>
 </head>
 <body>
