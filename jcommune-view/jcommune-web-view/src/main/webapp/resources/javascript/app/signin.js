@@ -75,7 +75,6 @@ $(function () {
 
 
     var success = $('#restorePassSuccess');
-    console.log(success);
     if (success.length > 0) {
         var bodyContent = '\
             <div id="restore-passwd" class="control-group"> \
@@ -83,13 +82,13 @@ $(function () {
             </div>';
 
         var footerContent = '<button id="restore-ok-button" class="btn btn-primary" name="confirm"> \
-            ' + $labelSignin + '</button>';
+            ' + $labelOk + '</button>';
 
         var goToLoginPage = function (e) {
             if (e) {
                 e.preventDefault();
             }
-            window.location.href = $('.brand').attr('href') + '/login';
+            window.location.href = $('.brand').attr('href') + 'login';
         };
 
         jDialog.createDialog({
