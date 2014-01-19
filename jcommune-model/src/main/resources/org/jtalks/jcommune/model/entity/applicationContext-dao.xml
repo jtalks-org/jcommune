@@ -250,12 +250,7 @@
     <property name="location"
               value="classpath:/org/jtalks/jcommune/model/datasource.properties"/>
   </bean>
-<!-- TODO: temporary disabled
-  <bean id="hibernateStatisticsMBean"
-        class="org.hibernate.jmx.StatisticsService">
-    <property name="statisticsEnabled" value="true"/>
-    <property name="sessionFactory" ref="sessionFactory"/>
-  </bean>-->
+
   <bean class="org.jtalks.jcommune.model.utils.ConfigurationLogger">
     <property name="ehCacheConfigLocation" value="${EH_CACHE_CONFIG}"/>
   </bean>

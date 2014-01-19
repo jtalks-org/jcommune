@@ -105,7 +105,7 @@ public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
             query.setCriteriaQuery(criteria);
 
             topics = query.list();
-            resultSize = query.getResultSize();
+            resultSize = topics.size(); 
         }
 
         return new PageImpl<Topic>(topics, pageRequest, resultSize);

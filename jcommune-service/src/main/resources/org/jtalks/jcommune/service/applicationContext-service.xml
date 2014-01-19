@@ -50,17 +50,6 @@
     <property name="locateExistingServerIfPossible" value="true"/>
   </bean>
 
-  <bean id="jmxExporter" class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
-    <property name="beans">
-      <map>
-        <entry key="jcommune:name=logging">
-          <bean class="org.jtalks.jcommune.service.jmx.Log4jConfigurator"/>
-        </entry>
-        <entry key="jcommune:name=hibernateStatistics" value-ref="hibernateStatisticsMBean"/>
-      </map>
-    </property>
-  </bean>
-
   <bean id="managementService" class="net.sf.ehcache.management.ManagementService"
         init-method="init"
         destroy-method="dispose">
