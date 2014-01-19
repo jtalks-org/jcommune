@@ -113,8 +113,8 @@
                   </div>
                 </div>
                 <c:if test="${sessionScope.adminMode == true}">
-                  <div class="add-branch-button edit-permissions-button pull-right">
-                    <a href="${pageContext.request.contextPath}/branch/permissions/${branch.id}">
+                  <div class="pull-right">
+                    <a class="btn" href="${pageContext.request.contextPath}/branch/permissions/${branch.id}">
                       <spring:message code="permissions.edit"/>
                     </a>
                   </div>

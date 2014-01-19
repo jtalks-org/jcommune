@@ -877,12 +877,14 @@ div.add-branch-button:hover {
 }
 
 .permissions-list li {
-    border: 2px solid #000;
+    border: 2px solid #D8D7D7;
+    background-color: rgb(235, 235, 235);
     list-style: none;
     margin-right: 20px;
     margin-top: 5px;
     padding: 5px 10px;
-    border-radius: 3px;
+    -moz-border-radius: 10px;
+    border-radius: 5px;
     display: inline-block;
 }
 

@@ -42,34 +42,34 @@
 
   <div class="permissions">
     <c:forEach items="${permissions.permissions}" var="entry">
-      <div class="permission-header"> ${entry.name}</div>
-      <div class="permission-block">
+      <div class="panel panel-primary">
+        <div class="panel-heading">${entry.name}</div>
+        <div class="panel-body">
+          <div class="pull-left permission-type permission-allowed">
+            <spring:message code="permissions.allowed"/>
+          </div>
+          <div class="permissions-container">
+            <ul class="permissions-list">
+              <c:forEach items="${permissions.accessListMap[entry].allowed}" var="group">
+                <li> ${group.name}</li>
+              </c:forEach>
+            </ul>
+          </div>
+          <div class="cleared"></div>
 
-        <div class="pull-left permission-type permission-allowed">
-          <spring:message code="permissions.allowed"/>
+          <div class="pull-left permission-type permission-restricted">
+            <spring:message code="permissions.restricted"/>
+          </div>
+          <div class="permissions-container">
+            <ul class="permissions-list">
+              <c:forEach items="${permissions.accessListMap[entry].restricted}" var="group">
+                <li> ${group.name}</li>
+              </c:forEach>
+            </ul>
+          </div>
+          <div class="cleared"></div>
         </div>
-        <div class="permissions-container">
-          <ul class="permissions-list">
-            <c:forEach items="${permissions.accessListMap[entry].allowed}" var="group">
-              <li> ${group.name}</li>
-            </c:forEach>
-          </ul>
-        </div>
-        <div class="cleared"></div>
-
-        <div class="pull-left permission-type permission-restricted">
-          <spring:message code="permissions.restricted"/>
-        </div>
-        <div class="permissions-container">
-          <ul class="permissions-list">
-            <c:forEach items="${permissions.accessListMap[entry].restricted}" var="group">
-              <li> ${group.name}</li>
-            </c:forEach>
-          </ul>
-        </div>
-        <div class="cleared"></div>
       </div>
-      <div class="cleared"></div>
     </c:forEach>
     <div/>
   </div>
