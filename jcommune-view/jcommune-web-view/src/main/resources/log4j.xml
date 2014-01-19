@@ -67,7 +67,10 @@
     <level value="WARN"/>
     <appender-ref ref="BULK"/>
   </logger>
-
+  <logger name="org.jtalks.hibernate4.spring.fix" additivity="false">
+    <level value="WARN"/>
+    <appender-ref ref="BULK"/>
+  </logger>
   <root>
     <priority value="INFO"/>
     <appender-ref ref="BULK"/>

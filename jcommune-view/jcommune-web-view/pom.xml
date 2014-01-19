@@ -177,7 +177,7 @@
                 <configuration>
                     <!--useCache=true needed for maven replacer plugin to access resources,
                         as well as prepare-package phase and goal exploded in execution-->
-                    <useCache>false</useCache>
+                    <useCache>true</useCache>
                     <packagingExcludes>
                         resources/css/app/**,resources/css/lib/**,resources/javascript/**,
                     <!-- Ignore jsp-classes compiled by jspc -->
