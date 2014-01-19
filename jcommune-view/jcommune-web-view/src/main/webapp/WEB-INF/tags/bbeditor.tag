@@ -141,10 +141,6 @@
       <li data-value="25"><a href="#fake">25</a></li>
     </ul>
   </div>
-  <div class='btn-group'>
-    <a href="" class='btn' onclick="closeTags();return false;"
-       title='<spring:message code="label.answer.close_tags"/>'>[/..]</a>
-  </div>
 </div>
 
 <div class='control-group controls'>
