@@ -61,6 +61,8 @@
 
     <security:intercept-url pattern="/reviews/new" access="isAuthenticated()"/>
 
+    <security:intercept-url pattern="/branch/permissions/*" access="isAuthenticated()"/>
+
     <!-- Since DELETE method is actually POST with _method=DELETE parameter -->
     <security:intercept-url pattern="/branches/*" method="DELETE"/>
     <security:intercept-url pattern="/sections/*" method="DELETE"/>

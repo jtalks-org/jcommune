@@ -68,8 +68,6 @@ public class BranchControllerTest {
     private UserService userService;
     @Mock
     private PostService postService;
-    @Mock
-    private PermissionService permissionService;
 
     private BranchController controller;
 
@@ -83,8 +81,7 @@ public class BranchControllerTest {
                 userService,
                 breadcrumbBuilder,
                 locationServiceImpl,
-                postService,
-                permissionService);
+                postService);
     }
 
     @Test

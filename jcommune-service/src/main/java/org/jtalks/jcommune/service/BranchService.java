@@ -14,10 +14,12 @@
  */
 package org.jtalks.jcommune.service;
 
-import java.util.List;
-
+import org.jtalks.common.model.permissions.BranchPermission;
+import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+
+import java.util.List;
 
 /**
  * The interface to manipulate with branches
@@ -91,4 +93,13 @@ public interface BranchService extends EntityService<Branch> {
      * @throws NotFoundException if branch does not exist
      */
     void checkIfBranchExists(long branchId) throws NotFoundException;
+
+    /**
+     * Gets the list of permissions for given branch
+     * @param componentId ID of the component of the branch
+     * @param branchId ID of the branch to the permissions
+     * @return information about the permissions of the branch
+     * @throws NotFoundException when branch does not exist
+     */
+    GroupsPermissions<BranchPermission> getPermissionsFor(long componentId, long branchId) throws NotFoundException;
 }
