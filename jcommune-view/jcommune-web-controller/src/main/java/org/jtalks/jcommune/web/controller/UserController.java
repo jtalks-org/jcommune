@@ -87,6 +87,7 @@ public class UserController {
     protected static final String ATTR_USERNAME = "username";
     protected static final String ATTR_LOGIN_ERROR = "login_error";
     public static final int LOGIN_TRIES_AFTER_LOCK = 3;
+    public static final int SLEEP_MILLISECONDS_AFTER_LOCK = 500;
     private final UserService userService;
     private final Authenticator authenticator;
     private final PluginService pluginService;

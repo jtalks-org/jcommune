@@ -54,11 +54,13 @@ public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         String cookie = rememberMeCookieDecoder.exctractRememberMeCookieValue(request);
-        String[] seriesAndToken = rememberMeCookieDecoder.extractSeriesAndToken(cookie);
-        if (logger.isDebugEnabled()) {
-            logger.debug("Logout of user " + (authentication == null ? "Unknown" : authentication.getName()));
+        if (cookie != null) {
+            String[] seriesAndToken = rememberMeCookieDecoder.extractSeriesAndToken(cookie);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Logout of user " + (authentication == null ? "Unknown" : authentication.getName()));
+            }
+            cancelCookie(request, response);
+            jdbcTemplate.update(REMOVE_TOKEN_QUERY, seriesAndToken);
         }
-        cancelCookie(request, response);
-        jdbcTemplate.update(REMOVE_TOKEN_QUERY, seriesAndToken);
     }
 }

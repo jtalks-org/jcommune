@@ -24,7 +24,7 @@ import org.jtalks.jcommune.service.nontransactional.ImageConverter;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.validation.editors.DefaultStringEditor;
-import org.jtalks.jcommune.web.validation.editors.LanguageEditor;
+import org.jtalks.jcommune.web.validation.editors.PageSizeEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,8 +83,7 @@ public class UserProfileController {
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, "newUserPassword", new DefaultStringEditor(true));
         binder.registerCustomEditor(String.class, "newUserPasswordConfirm", new DefaultStringEditor(true));
-        binder.registerCustomEditor(Language.class, "language",
-                new LanguageEditor(userService.getCurrentUser().getLanguage()));
+        binder.registerCustomEditor(Integer.class, "pageSize", new PageSizeEditor());
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
