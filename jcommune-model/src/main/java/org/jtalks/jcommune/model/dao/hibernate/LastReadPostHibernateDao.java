@@ -100,13 +100,22 @@ public class LastReadPostHibernateDao extends GenericDao<LastReadPost>
                 .setParameter("branch", branch.getId())
                 .executeUpdate();
 
+        @SuppressWarnings("unchecked")
+        List<Object[]> topicsOfBranch = session.getNamedQuery("getTopicAndLatestPostDateInBranch")
+                .setParameter("branch", branch.getId())
+                .list();
+
         SQLQuery insertQuery = (SQLQuery) session.getNamedQuery("markAllTopicsRead");
         insertQuery
                 .addSynchronizedEntityClass(LastReadPost.class);
 
-            insertQuery.setParameter("branch", branch.getId())
+        for (Object[] o : topicsOfBranch) {
+            insertQuery.setParameter("uuid", UUID.randomUUID().toString())
                     .setParameter("user", forWho.getId())
+                    .setParameter("lastPostDate", ((DateTime) o[1]).toDate())
+                    .setParameter("topic", o[0])
                     .executeUpdate();
+        }
 
         session.flush();
     }

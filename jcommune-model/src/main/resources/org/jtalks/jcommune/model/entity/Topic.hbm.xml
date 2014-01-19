@@ -117,11 +117,18 @@ This might be tuned further in the future if the page size itself changes.-->
         <![CDATA[FROM Topic t WHERE t.posts.size=1 AND t.branch.id in (select distinct branch.id from org.jtalks.jcommune.model.entity.Branch branch, org.jtalks.jcommune.model.entity.ViewTopicsBranches view where branch.id=view.branchId and view.granting=1 and view.sid like 'anonymousUser' ) ORDER BY modificationDate DESC]]>
     </query>
 
+    <!--Get all the topics ID and the number of posts (to them) from the branch-->
+    <sql-query name="getTopicAndLatestPostDateInBranch">
+        <return-scalar column="topic" type="string"/>
+        <return-scalar column="last_date" type="org.joda.time.contrib.hibernate.PersistentDateTime"/>
+        SELECT tp.TOPIC_ID as topic, MAX(p.POST_DATE) as last_date FROM TOPIC tp left join POST p ON
+        tp.TOPIC_ID=p.TOPIC_ID where BRANCH_ID=:branch group by tp.TOPIC_ID
+    </sql-query>
+
     <!--Mark topic as read for user-->
     <sql-query name="markAllTopicsRead">
         INSERT INTO LAST_READ_POSTS(UUID,USER_ID,LAST_READ_POST_DATE,TOPIC_ID)
-        SELECT UUID(), :user, MAX(p.POST_DATE), tp.TOPIC_ID FROM TOPIC tp left join POST p ON
-        tp.TOPIC_ID=p.TOPIC_ID where BRANCH_ID=:branch group by tp.TOPIC_ID
+        VALUES(:uuid,:user,:lastPostDate,:topic)
     </sql-query>
 
     <!--Mark all topics unread for user-->
