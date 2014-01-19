@@ -159,6 +159,23 @@ public class GroupsPermissions<T extends JtalksPermission> {
     }
 
     /**
+     * @return copy of the Access List Map
+     */
+    public Map<T, GroupAccessList> getAccessListMap() {
+        Map<T, GroupAccessList > accessListMapCopy = new HashMap <T, GroupAccessList>();
+
+        Set<T> permissions = getPermissions();
+        for (T permission : permissions) {
+            GroupAccessList groupAccessList = new GroupAccessList();
+            groupAccessList.setAllowed(getAllowed(permission));
+            groupAccessList.setRestricted(getRestricted(permission));
+            accessListMapCopy.put(permission, groupAccessList);
+        }
+
+        return accessListMapCopy;
+    }
+
+    /**
      * Gets groups permissions with all the profile permissions but no groups restricted or allowed.
      *
      * @return groups permissions with all the profile permissions but no groups restricted or allowed

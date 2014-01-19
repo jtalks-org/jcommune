@@ -50,9 +50,9 @@
         </div>
         <div class="permissions-container">
           <ul class="permissions-list">
-            <%--<c:forEach items="${permissions.getAllowed(entry)}" var="group">
+            <c:forEach items="${permissions.accessListMap[entry].allowed}" var="group">
               <li> ${group.name}</li>
-            </c:forEach>--%>
+            </c:forEach>
           </ul>
         </div>
         <div class="cleared"></div>
@@ -62,9 +62,9 @@
         </div>
         <div class="permissions-container">
           <ul class="permissions-list">
-            <%--<c:forEach items="${permissions.getRestricted(entry)}" var="group">
+            <c:forEach items="${permissions.accessListMap[entry].restricted}" var="group">
               <li> ${group.name}</li>
-            </c:forEach>--%>
+            </c:forEach>
           </ul>
         </div>
         <div class="cleared"></div>
