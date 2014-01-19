@@ -121,6 +121,7 @@ public class TopicControllerTest {
         assertViewName(actualMav, "redirect:/branches/" + BRANCH_ID);
         verify(topicModificationService).deleteTopic(topic);
     }
+
     //TODO: this has to be improved - too complicated test!=
     @Test
     public void showTopicPageShouldShowListOfPostsWithUpdatedInfoAboutLastReadPosts() throws NotFoundException {
@@ -182,7 +183,6 @@ public class TopicControllerTest {
 
         ModelAndView mav = controller.createTopic(dto, result, BRANCH_ID);
 
-        verify(lastReadPostService).markTopicAsRead(topic);
         verify(topicModificationService).createTopic(topic, TOPIC_CONTENT);
         //
         assertViewName(mav, "redirect:/topics/1");

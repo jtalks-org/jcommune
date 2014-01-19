@@ -192,6 +192,7 @@
     <constructor-arg ref="securityContextFacade"/>
     <constructor-arg ref="aclGroupPermissionEvaluator"/>
     <constructor-arg ref="branchLastPostService"/>
+    <constructor-arg ref="lastReadPostService"/>
   </bean>
 
   <bean id="topicFetchService"
