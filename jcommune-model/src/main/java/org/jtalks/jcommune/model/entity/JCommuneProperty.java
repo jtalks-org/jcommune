@@ -217,7 +217,7 @@ public enum JCommuneProperty {
      * @return defaultValue
      */
     private String getDefaultValue() {
-        LOGGER.debug("[{}] property was not found, using default value [{}]", name, defaultValue);
+        LOGGER.trace("[{}] property was not found, using default value [{}]", name, defaultValue);
         return defaultValue;
     }
 
