@@ -846,10 +846,18 @@ div.add-branch-button:hover {
 }
 
 .permission-type {
-    padding: 5px 10px;
+    padding: 7px 10px;
     width: 100px;
     font-weight: bold;
     margin-top: 5px;
+}
+
+.permission-allowed {
+    color: #292;
+}
+
+.permission-restricted {
+    color: #922;
 }
 
 .permission-header {
@@ -881,4 +889,18 @@ div.add-branch-button:hover {
 .permissions-container {
     margin-left: 120px;
     padding: 0px;
+}
+
+.permissions-branch-header {
+    overflow: hidden;
+    margin: 20px 0px;
+}
+
+#moderators-label {
+    color: rgb(0, 136, 204);
+}
+
+.edit-permissions-button a {
+    color: rgb(128, 128, 128);
+    text-decoration: none;
 }

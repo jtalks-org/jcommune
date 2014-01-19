@@ -22,41 +22,55 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <head>
-    <meta name="description" content="<c:out value="${cmpDescription}"/>">
-    <title>
-        <c:out value="${cmpTitlePrefix}"/>
-        <c:out value="${cmpDescription}"/>
-    </title>
+  <meta name="description" content="<c:out value="${cmpDescription}"/>">
+  <title>
+    <c:out value="${cmpTitlePrefix}"/>
+    <c:out value="${cmpDescription}"/>
+  </title>
 </head>
 <body>
 <div class="container">
-    <div class="permissions">
-        <c:forEach items="${permissions.permissions}" var="entry">
-            <div class="permission-header"> ${entry.name}</div>
-            <div class="permission-block">
+  <div class="permissions-branch-header">
+    <h1>${branch.name}</h1>
+  </div>
 
-                <div class="pull-left permission-type"> Allowed </div>
-                <div class="permissions-container">
-                    <ul class="permissions-list">
-                        <c:forEach items="${permissions.getAllowed(entry)}" var="group">
-                            <li> ${group.name}</li>
-                        </c:forEach>
-                    </ul>
-                </div>
-                <div class="cleared"></div>
+  <div class="permissions-branch-header">
+    <h2 id="moderators-label">
+      <spring:message code="permissions.moderators"/>: <spring:message code="permissions.group"/>
+    </h2>
+  </div>
 
-                <div class="pull-left permission-type"> Restricted </div>
-                <div class="permissions-container">
-                    <ul class="permissions-list">
-                        <c:forEach items="${permissions.getRestricted(entry)}" var="group">
-                            <li> ${group.name}</li>
-                        </c:forEach>
-                    </ul>
-                </div>
-                <div class="cleared"></div>
-            </div>
-            <div class="cleared"></div>
-        </c:forEach>
+  <div class="permissions">
+    <c:forEach items="${permissions.permissions}" var="entry">
+      <div class="permission-header"> ${entry.name}</div>
+      <div class="permission-block">
+
+        <div class="pull-left permission-type permission-allowed">
+          <spring:message code="permissions.allowed"/>
+        </div>
+        <div class="permissions-container">
+          <ul class="permissions-list">
+            <c:forEach items="${permissions.getAllowed(entry)}" var="group">
+              <li> ${group.name}</li>
+            </c:forEach>
+          </ul>
+        </div>
+        <div class="cleared"></div>
+
+        <div class="pull-left permission-type permission-restricted">
+          <spring:message code="permissions.restricted"/>
+        </div>
+        <div class="permissions-container">
+          <ul class="permissions-list">
+            <c:forEach items="${permissions.getRestricted(entry)}" var="group">
+              <li> ${group.name}</li>
+            </c:forEach>
+          </ul>
+        </div>
+        <div class="cleared"></div>
+      </div>
+      <div class="cleared"></div>
+    </c:forEach>
     <div/>
-</div>
+  </div>
 </body>
