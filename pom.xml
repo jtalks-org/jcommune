@@ -221,9 +221,14 @@
         <version>2.6.6</version>
       </dependency>
       <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-ehcache</artifactId>
+        <version>4.3.0.CR1</version>
+      </dependency>      
+      <dependency>
         <groupId>net.sf.ehcache</groupId>
         <artifactId>ehcache-jgroupsreplication</artifactId>
-        <version>1.5</version>
+        <version>1.7</version>
       </dependency>
       <!--
             Used for monitoring. Has conflicts with used version of slf4j
