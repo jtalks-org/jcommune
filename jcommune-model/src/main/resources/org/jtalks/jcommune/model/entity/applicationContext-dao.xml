@@ -177,7 +177,7 @@
   </bean>
 
   <bean id="sessionFactory"
-        class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
+        class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
         depends-on="flyway_jcommune">
     <property name="dataSource" ref="dataSource"/>
     <property name="mappingResources">
@@ -211,7 +211,7 @@
     <property name="hibernateProperties">
       <props>
         <prop key="hibernate.query.factory_class">
-          org.hibernate.hql.ast.ASTQueryTranslatorFactory
+          org.hibernate.hql.internal.ast.ASTQueryTranslatorFactory
         </prop>
         <prop key="hibernate.dialect">${hibernate.dialect}</prop>
         <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
@@ -219,7 +219,7 @@
         <prop key="hibernate.connection.charset">${encoding}</prop>
         <prop key="hibernate.connection.release_mode">auto</prop>
         <prop key="hibernate.cache.region.factory_class">
-          ${HIBERNATE_CACHE_FACTORY:net.sf.ehcache.hibernate.SingletonEhCacheRegionFactory}
+          ${HIBERNATE_CACHE_FACTORY:org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory}
         </prop>
         <prop key="hibernate.cache.use_second_level_cache">
           ${hibernate.use_second_level_cache}
@@ -236,23 +236,26 @@
         <prop key="hibernate.search.default.indexBase">
           ${hibernate.search.default.indexBase}
         </prop>
+        <prop key="hibernate.current_session_context_class">
+          org.jtalks.hibernate4.spring.fix.SpringSessionContext
+        </prop>        
       </props>
     </property>
   </bean>
   <bean id="transactionManager"
-        class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        class="org.jtalks.hibernate4.spring.fix.HibernateTransactionManager">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
   <bean class="org.jtalks.jcommune.model.utils.JndiAwarePropertyPlaceholderConfigurer">
     <property name="location"
               value="classpath:/org/jtalks/jcommune/model/datasource.properties"/>
   </bean>
-
+<!-- TODO: temporary disabled
   <bean id="hibernateStatisticsMBean"
         class="org.hibernate.jmx.StatisticsService">
     <property name="statisticsEnabled" value="true"/>
     <property name="sessionFactory" ref="sessionFactory"/>
-  </bean>
+  </bean>-->
   <bean class="org.jtalks.jcommune.model.utils.ConfigurationLogger">
     <property name="ehCacheConfigLocation" value="${EH_CACHE_CONFIG}"/>
   </bean>

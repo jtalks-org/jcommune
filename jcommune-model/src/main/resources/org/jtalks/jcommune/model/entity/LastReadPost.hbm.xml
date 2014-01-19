@@ -28,7 +28,7 @@
         <many-to-one name="user" column="USER_ID" class="org.jtalks.jcommune.model.entity.JCUser"/>
         <many-to-one name="topic" column="TOPIC_ID" class="Topic"/>
         <property name="postCreationDate" column="LAST_READ_POST_DATE"
-                  type="org.joda.time.contrib.hibernate.PersistentDateTime" not-null="true"/>
+                  type="org.jadira.usertype.dateandtime.joda.PersistentDateTime" not-null="true"/>
     </class>
     
     <query name="getLastReadPostInTopicForAllUsers">

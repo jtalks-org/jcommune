@@ -14,8 +14,8 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.classic.Session;
 import org.jtalks.common.model.entity.Property;
 import org.jtalks.jcommune.model.dao.PropertyDao;
 import org.springframework.beans.factory.annotation.Autowired;

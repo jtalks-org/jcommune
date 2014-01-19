@@ -49,6 +49,7 @@ public class BannerHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
 
     @BeforeMethod
     public void init() {
+        
         session = sessionFactory.getCurrentSession();
     }
     /*===== Common methods =====*/

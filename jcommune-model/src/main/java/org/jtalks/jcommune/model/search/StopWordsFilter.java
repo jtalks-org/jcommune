@@ -25,7 +25,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.CharArraySet;
 import org.apache.lucene.util.Version;
 import org.apache.solr.analysis.StopFilterFactory;
-import org.hibernate.search.util.HibernateSearchResourceLoader;
+import org.hibernate.search.util.impl.HibernateSearchResourceLoader;
 
 /**
  * Deletes stop words in the search text.

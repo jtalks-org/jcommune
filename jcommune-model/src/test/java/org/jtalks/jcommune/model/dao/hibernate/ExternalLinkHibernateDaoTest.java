@@ -17,7 +17,6 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.hibernate.SessionFactory;
-import org.hibernate.classic.Session;
 import org.jtalks.jcommune.model.dao.ExternalLinkDao;
 import org.jtalks.jcommune.model.entity.ExternalLink;
 import org.jtalks.jcommune.model.entity.ObjectsFactory;
@@ -31,6 +30,7 @@ import org.testng.annotations.Test;
 
 import javax.validation.ConstraintViolationException;
 import java.util.List;
+import org.hibernate.Session;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;

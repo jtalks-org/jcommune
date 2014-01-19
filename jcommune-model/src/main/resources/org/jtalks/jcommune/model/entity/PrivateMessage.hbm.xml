@@ -30,7 +30,7 @@
                      foreign-key="FK_USER_FROM" not-null="true"/>
         <many-to-one name="userTo" class="org.jtalks.jcommune.model.entity.JCUser" column="USER_TO"
                      not-null="false" foreign-key="FK_USER_TO"/>
-        <property name="creationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
+        <property name="creationDate" type="org.jadira.usertype.dateandtime.joda.PersistentDateTime"
                   column="CREATION_DATE" not-null="true"/>
         <property name="title" column="TITLE"/>
         <property name="body" type="text" column="BODY"/>

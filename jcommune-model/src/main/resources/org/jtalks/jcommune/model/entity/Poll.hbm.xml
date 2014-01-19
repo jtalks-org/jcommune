@@ -27,7 +27,7 @@
         <property column="UUID" name="uuid" unique="true" not-null="true"/>
         <property column="TITLE" name="title" not-null="true"/>
         <property column="ENDING_DATE" name="endingDate" not-null="false"
-                  type="org.joda.time.contrib.hibernate.PersistentDateTime"/>
+                  type="org.jadira.usertype.dateandtime.joda.PersistentDateTime"/>
         <property column="MULTIPLE_ANSWER" name="multipleAnswer" not-null="true"/>
         <one-to-one name="topic" constrained="true" property-ref="poll"
                     class="org.jtalks.jcommune.model.entity.Topic" />

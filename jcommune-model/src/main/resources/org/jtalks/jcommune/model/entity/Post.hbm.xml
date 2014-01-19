@@ -26,9 +26,9 @@
         </id>
         <property name="uuid" column="UUID" unique="true" not-null="true"/>
         <property name="creationDate" column="POST_DATE"
-                  type="org.joda.time.contrib.hibernate.PersistentDateTime"
+                  type="org.jadira.usertype.dateandtime.joda.PersistentDateTime"
                   not-null="true"/>
-        <property name="modificationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
+        <property name="modificationDate" type="org.jadira.usertype.dateandtime.joda.PersistentDateTime"
                   column="MODIFICATION_DATE" not-null="false"/>
         <property name="postContent" type="text" column="POST_CONTENT" not-null="true"/>
 

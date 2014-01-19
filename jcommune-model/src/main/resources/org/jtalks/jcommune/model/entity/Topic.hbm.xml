@@ -26,9 +26,9 @@
         </id>
         <property column="UUID" name="uuid" unique="true" not-null="true"/>
         <property column="TITLE" name="title" not-null="true"/>
-        <property name="creationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
+        <property name="creationDate" type="org.jadira.usertype.dateandtime.joda.PersistentDateTime"
                   column="CREATION_DATE" not-null="true"/>
-        <property name="modificationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
+        <property name="modificationDate" type="org.jadira.usertype.dateandtime.joda.PersistentDateTime"
                   column="MODIFICATION_DATE" not-null="false"/>
         <property name="sticked" column="STICKED" not-null="true"/>
         <property name="views" column="VIEWS"/>
@@ -120,7 +120,7 @@ This might be tuned further in the future if the page size itself changes.-->
     <!--Get all the topics ID and the number of posts (to them) from the branch-->
     <sql-query name="getTopicAndLatestPostDateInBranch">
         <return-scalar column="topic" type="string"/>
-        <return-scalar column="last_date" type="org.joda.time.contrib.hibernate.PersistentDateTime"/>
+        <return-scalar column="last_date" type="org.jadira.usertype.dateandtime.joda.PersistentDateTime"/>
         SELECT tp.TOPIC_ID as topic, MAX(p.POST_DATE) as last_date FROM TOPIC tp left join POST p ON
         tp.TOPIC_ID=p.TOPIC_ID where BRANCH_ID=:branch group by tp.TOPIC_ID
     </sql-query>

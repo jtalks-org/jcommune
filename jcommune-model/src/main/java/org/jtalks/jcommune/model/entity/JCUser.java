@@ -14,13 +14,13 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import org.apache.commons.collections.set.UnmodifiableSet;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.commons.collections.set.UnmodifiableSet;
 
 /**
  * Stores information about the forum user.

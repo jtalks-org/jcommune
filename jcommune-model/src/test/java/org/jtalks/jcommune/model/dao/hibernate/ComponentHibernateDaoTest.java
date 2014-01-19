@@ -14,8 +14,8 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.classic.Session;
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.common.model.entity.ComponentType;
 import org.jtalks.jcommune.model.entity.PersistedObjectsFactory;

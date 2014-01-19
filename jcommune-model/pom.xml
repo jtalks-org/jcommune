@@ -99,16 +99,6 @@
     </dependency>
     <dependency>
       <groupId>joda-time</groupId>
-      <artifactId>joda-time-hibernate</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.hibernate</groupId>
-          <artifactId>hibernate</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
     </dependency>
     <dependency>
@@ -129,6 +119,11 @@
       <groupId>net.sf.ehcache</groupId>
       <artifactId>ehcache-jgroupsreplication</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.jadira.usertype</groupId>
+      <artifactId>usertype.core</artifactId>
+      <version>3.1.0.CR10</version>
+    </dependency>      
     <!--
         Used for cache monitoring. Has conflicts with used version of slf4j.
     -->
@@ -151,6 +146,12 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <version>3.2.1</version>
+      <type>jar</type>
     </dependency>
   </dependencies>
 

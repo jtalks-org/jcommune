@@ -27,7 +27,7 @@
         <property column="UUID" name="uuid" unique="true" not-null="true"/>
         <property column="LINE_NUMBER" name="lineNumber"/>
         <property name="creationDate" column="CREATION_DATE"
-                  type="org.joda.time.contrib.hibernate.PersistentDateTime"
+                  type="org.jadira.usertype.dateandtime.joda.PersistentDateTime"
                   not-null="true"/>
         <property column="BODY" name="body" type="text"/>
         
