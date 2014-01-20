@@ -4252,7 +4252,7 @@ a.invisible-link:hover {
 
 
 .panel {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     background-color: #ffffff;
     border: 1px solid transparent;
     border-radius: 4px;
@@ -4270,7 +4270,7 @@ a.invisible-link:hover {
 }
 
 .panel-heading {
-    padding: 10px 15px;
+    padding: 5px 15px;
     border-bottom: 1px solid transparent;
     border-top-right-radius: 3px;
     border-top-left-radius: 3px;
