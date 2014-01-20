@@ -25,7 +25,7 @@ function quote(postId) {
     }
 
     $.ajax({
-        url: baseUrl + '/posts/' + postId + '/ajax_quote',
+        url: baseUrl + '/posts/' + postId + '/quote',
         type: 'GET',
         data: {
             selection: getSelectedPostText()
