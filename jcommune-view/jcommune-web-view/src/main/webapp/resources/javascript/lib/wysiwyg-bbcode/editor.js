@@ -275,9 +275,10 @@ function doLink() {
 
         var submitFunc = function(e){
             e.preventDefault();
+            var input = $("#urlId");
             if ($('#urlAltId')) {
                 mylink = $('#urlAltId').val();
-                var link = $.trim($('#urlId').val());
+                var link = $.trim(input.val());
                 if ((link != null) && (link != '')) {
                     if (mylink == null || mylink == '') {
                         mylink = link;
@@ -288,6 +289,7 @@ function doLink() {
                 } else {
                     ErrorUtils.removeErrorMessage('#urlId', $labelErrorsNotEmpty);
                     ErrorUtils.addErrorMessage('#urlId', $labelErrorsNotEmpty);
+                    input.focus();
                     return false;
                 }
             }
@@ -331,7 +333,8 @@ function doImage() {
 
         var submitFunc = function(e){
             e.preventDefault();
-            myimg = $('#imgId').val();
+            var input = $('#imgId');
+            myimg = $.trim(input.val());
             if ((myimg != null) && (myimg != '')) {
                 jDialog.closeDialog();
                 AddTag('[img]' + myimg, '[/img]', selection);
@@ -339,6 +342,7 @@ function doImage() {
             }else {
                 ErrorUtils.removeErrorMessage('#imgId', $labelErrorsNotEmpty);
                 ErrorUtils.addErrorMessage('#imgId', $labelErrorsNotEmpty);
+                input.focus();
                 return false;
             }
         }
