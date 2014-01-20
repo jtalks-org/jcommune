@@ -106,6 +106,11 @@ $(function () {
             return footer + '</div>';
         }
 
+        jDialog.closeDialog = function () {
+            jDialog.dialog.modal('hide');
+            jDialog.dialog.remove();
+        }
+
         //if user sets options with name which exists in default then default option overridden, else adds
         jDialog.defaultOptions = {
             'type': jDialog.infoType,
@@ -115,6 +120,7 @@ $(function () {
             'rootPanelFunc': jDialog.rootPanelFunc,
             'bodyContentFunc': jDialog.bodyContentFunc,
             'footerContentFunc': jDialog.footerContentFunc,
+            'closeDialog': jDialog.closeDialog,
             'bodyContent': '',
             //for confirm, alert types
             'bodyMessage': '',
@@ -187,11 +193,6 @@ $(function () {
             return jDialog.dialog;
         }
 
-        jDialog.closeDialog = function () {
-            jDialog.dialog.modal('hide');
-            jDialog.dialog.remove();
-        }
-
         /*
          * first elemnts it is element which have class "first",
          * or first "input" element, or first "button"
@@ -258,11 +259,11 @@ $(function () {
 
         var addHandlers = function () {
             $('.modal-backdrop').live('click', function (e) {
-                jDialog.closeDialog();
+                jDialog.options.closeDialog();
             });
 
             jDialog.dialog.find('.close').bind('click', function (e) {
-                jDialog.closeDialog();
+                jDialog.options.closeDialog();
             });
 
             jDialog.dialog.on('keydown', jDialog.options.dialogKeydown);
@@ -280,7 +281,7 @@ $(function () {
                         $(k).on(ke, ve);
                     }
                 })
-            })
+            });
 
             $.each(jDialog.options.handlersDelegate, function (k, v) {
                 $.each(v, function (ke, ve) {
@@ -291,7 +292,7 @@ $(function () {
                         }
                     }
                 )
-            })
+            });
 
             $.each(jDialog.options.handlersLive, function (k, v) {
                 $.each(v, function (ke, ve) {
@@ -323,8 +324,8 @@ $(function () {
                 case 'close':
                    return function(e) {
                         e.preventDefault();
-                        jDialog.closeDialog();
-                    };
+                       jDialog.options.closeDialog();
+                   };
                     break;
             }
         }
