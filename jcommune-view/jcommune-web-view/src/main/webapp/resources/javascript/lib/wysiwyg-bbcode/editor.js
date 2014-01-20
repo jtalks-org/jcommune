@@ -95,7 +95,6 @@ function SwitchEditor(allowedUrls) {
     else { // enter preview
         content = textboxelement.value;
         bbcode2html(allowedUrls);
-        $('.keymaps-caption').hide();
     }
 }
 
@@ -140,13 +139,13 @@ function bbcode2html(allowedUrls) {
         success:function (data) {
 
             var result = decodeURI(data.html);
-
             if(data.is_invalid) {
                 ErrorUtils.removeErrorMessage(elId);
                 for(var a=0; a<data.errors.length; a++) {
                     ErrorUtils.addErrorMessage(elId, data.errors[a].defaultMessage);
                 }
             } else {
+                $('.keymaps-caption').hide();
                 $(".show-on-preview").show();
                 $(".hide-on-preview").hide();
                 $("#preview")[0].value = $labelEdit;
@@ -157,6 +156,9 @@ function bbcode2html(allowedUrls) {
                 result = result.replace(new RegExp(lowerThenPlaceholder, 'gi'), "&lt;");
 
                 editorVisible = true;
+
+			    //enable code highlight
+			    prettyPrint();
 
                 //enable image preview
                 $('a.pretty-photo').prettyPhoto({social_tools:false});
