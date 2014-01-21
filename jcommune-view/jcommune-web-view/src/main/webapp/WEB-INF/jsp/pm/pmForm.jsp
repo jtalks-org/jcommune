@@ -38,7 +38,7 @@
     </div>
 
     <div class="span9">
-      <form:form action="${pageContext.request.contextPath}/pm"
+      <form:form action="${pageContext.request.contextPath}/pm/new"
                  method="POST" modelAttribute="privateMessageDto" name="editForm"
                  class="well anti-multipost">
         <form:hidden path="id"/>

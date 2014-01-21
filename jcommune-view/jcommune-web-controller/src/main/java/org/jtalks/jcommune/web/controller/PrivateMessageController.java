@@ -71,9 +71,9 @@ public class PrivateMessageController {
     }
 
     /**
-     * @param pmService       for PrivateMessage-related operation
-     * @param bbCodeService   for qutes creation
-     * @param userService to get current user
+     * @param pmService     for PrivateMessage-related operation
+     * @param bbCodeService for qutes creation
+     * @param userService   to get current user
      */
     @Autowired
     public PrivateMessageController(PrivateMessageService pmService, BBCodeService bbCodeService,
@@ -98,7 +98,7 @@ public class PrivateMessageController {
                 .addObject("inboxPage", inboxPage);
     }
 
-     /**
+    /**
      * Render the PM outbox page with the list of sent messages for the /outbox URI.
      *
      * @param page the private message page number.
@@ -109,7 +109,7 @@ public class PrivateMessageController {
         Page<PrivateMessage> outboxPage = pmService.getOutboxForCurrentUser(page);
 
         return new ModelAndView("pm/outbox")
-            .addObject("outboxPage", outboxPage);
+                .addObject("outboxPage", outboxPage);
     }
 
     /**
@@ -127,34 +127,21 @@ public class PrivateMessageController {
 
     /**
      * Render the page with a form for creation new Private Message with empty {@link PrivateMessageDto} bound.
-     * 
+     *
      * @return {@code ModelAndView} with the form
      */
     @RequestMapping(value = "/pm/new", method = RequestMethod.GET)
-    public ModelAndView newPmPage() {
+    public ModelAndView newPmPage(@RequestParam(value = "recipientId", required = false) Long recipientId)
+            throws NotFoundException {
         Long senderId = userService.getCurrentUser().getId();
         pmService.checkPermissionsToSend(senderId);
+        PrivateMessageDto pmDto = new PrivateMessageDto();
+        if (recipientId != null) {
+            String name = userService.get(recipientId).getUsername();
+            pmDto.setRecipient(name);
+        }
         return new ModelAndView(PM_FORM)
-            .addObject(DTO, new PrivateMessageDto());
-    }
-
-    /**
-     * Render the page with a form for creation new Private Message for particular user.
-     * This method performs no validation on username given simply passing it to the view as is.
-     *
-     * @param recipientId an identifier of recipient of private message
-     * @return {@code ModelAndView} with the form
-     * @throws NotFoundException if no user has been found for given id
-     */
-    @RequestMapping(value = "/pm/new/{id}", method = RequestMethod.GET)
-    public ModelAndView newPmPageForUser(
-            @PathVariable("id") Long recipientId) throws NotFoundException {
-        Long senderId = userService.getCurrentUser().getId();
-        pmService.checkPermissionsToSend(senderId);
-        PrivateMessageDto dto = new PrivateMessageDto();
-        String name = userService.get(recipientId).getUsername();
-        dto.setRecipient(name);
-        return new ModelAndView(PM_FORM).addObject(DTO, dto);
+                .addObject(DTO, pmDto);
     }
 
     /**
@@ -196,21 +183,22 @@ public class PrivateMessageController {
      * @return redirect to /inbox on success or back to "/new_pm" on validation errors
      * @throws NotFoundException is invalid user set as recipient
      */
-    @RequestMapping(value = "/pm", method = RequestMethod.POST)
-    public String sendMessage(@Valid @ModelAttribute PrivateMessageDto pmDto,
-                              BindingResult result) throws NotFoundException {
+    @RequestMapping(value = "/pm/new", method = RequestMethod.POST)
+    public ModelAndView sendMessage(@Valid @ModelAttribute PrivateMessageDto pmDto,
+                                    BindingResult result) throws NotFoundException {
         if (result.hasErrors()) {
-            return PM_FORM;
+            return new ModelAndView(PM_FORM)
+                    .addObject(DTO, pmDto);
         }
         JCUser userFrom = userService.getCurrentUser();
-        JCUser userTo =  userService.getByUsername(pmDto.getRecipient());
+        JCUser userTo = userService.getByUsername(pmDto.getRecipient());
         // todo: we can easily get current user in service
         if (pmDto.getId() > 0) {
             pmService.sendDraft(pmDto.getId(), pmDto.getTitle(), pmDto.getBody(), userTo, userFrom);
         } else {
             pmService.sendMessage(pmDto.getTitle(), pmDto.getBody(), userTo, userFrom);
         }
-        return "redirect:/outbox";
+        return new ModelAndView("redirect:/outbox");
     }
 
     /**
@@ -255,7 +243,7 @@ public class PrivateMessageController {
     @RequestMapping(value = "/pm/save", method = {RequestMethod.POST, RequestMethod.GET})
     public String saveDraft(@ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
         String targetView = "redirect:/drafts";
-        
+
         JCUser userFrom = userService.getCurrentUser();
         try {
             pmService.saveDraft(pmDto.getId(), pmDto.getRecipient(), pmDto.getTitle(), pmDto.getBody(), userFrom);

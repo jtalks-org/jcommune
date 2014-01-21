@@ -141,10 +141,10 @@ public class PrivateMessageControllerTest {
     }
 
     @Test
-    public void newPmPage() {
+    public void newPmPage() throws NotFoundException {
         when(userService.getCurrentUser()).thenReturn(JC_USER);
         //invoke the object under test
-        ModelAndView mav = controller.newPmPage();
+        ModelAndView mav = controller.newPmPage(null);
 
         //check result
         verify(pmService).checkPermissionsToSend(JC_USER.getId());
@@ -157,7 +157,7 @@ public class PrivateMessageControllerTest {
         //invoke the object under test
         when(userService.getCurrentUser()).thenReturn(JC_USER);
         when(userService.get(JC_USER.getId())).thenReturn(JC_USER);
-        ModelAndView mav = controller.newPmPageForUser(JC_USER.getId());
+        ModelAndView mav = controller.newPmPage(JC_USER.getId());
 
         //check result
         verify(pmService).checkPermissionsToSend(JC_USER.getId());
@@ -171,7 +171,7 @@ public class PrivateMessageControllerTest {
         when(userService.getCurrentUser()).thenReturn(JC_USER);
         doThrow(new NotFoundException()).when(userService).get(JC_USER.getId());
 
-        controller.newPmPageForUser(JC_USER.getId());
+        controller.newPmPage(JC_USER.getId());
     }
 
     @Test
@@ -182,9 +182,9 @@ public class PrivateMessageControllerTest {
         dto.setRecipient(USERNAME);
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
 
-        String view = controller.sendMessage(dto, bindingResult);
+        ModelAndView mav = controller.sendMessage(dto, bindingResult);
 
-        assertEquals(view, "redirect:/outbox");
+        assertEquals(mav.getViewName(), "redirect:/outbox");
         verify(pmService).sendMessage(dto.getTitle(), dto.getBody(), JC_USER, JC_USER);
     }
 
@@ -197,9 +197,9 @@ public class PrivateMessageControllerTest {
         dto.setId(4);
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
 
-        String view = controller.sendMessage(dto, bindingResult);
+        ModelAndView mav = controller.sendMessage(dto, bindingResult);
 
-        assertEquals(view, "redirect:/outbox");
+        assertEquals(mav.getViewName(), "redirect:/outbox");
         verify(pmService).sendDraft(dto.getId(), dto.getTitle(), dto.getBody(), JC_USER, JC_USER);
     }
 
@@ -209,9 +209,9 @@ public class PrivateMessageControllerTest {
         BeanPropertyBindingResult resultWithErrors = mock(BeanPropertyBindingResult.class);
         when(resultWithErrors.hasErrors()).thenReturn(true);
 
-        String view = controller.sendMessage(dto, resultWithErrors);
+        ModelAndView mav = controller.sendMessage(dto, resultWithErrors);
 
-        assertEquals(view, "pm/pmForm");
+        assertEquals(mav.getViewName(), "pm/pmForm");
     }
 
     @Test(expectedExceptions = NotFoundException.class)
