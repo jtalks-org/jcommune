@@ -129,34 +129,36 @@
                   </div>
                 </c:if>
               </td>
-              <td class="topics-posts shrink-to-fit">
-                <spring:message code="label.section.header.topics"/>:
-                <span class='test-topics-count space-left-small'><c:out value="${branch.topicCount}"/></span><br/>
-                <spring:message code="label.section.header.messages"/>:
-                <span class='test-posts-count space-left-small'><c:out value="${branch.postCount}"/></span>
-              </td>
-              <td class="latest-by shrink-to-fit">
-                <c:if test="${branch.topicCount>0}">
-                  <i class="icon-calendar"></i>
-                  <a class="date" href="${pageContext.request.contextPath}/posts/${branch.lastPost.id}">
-                    <jtalks:format value="${branch.lastPost.creationDate}"/>
-                  </a>
-
-                  <p>
-                    <spring:message code="label.topic.last_post_by"/>
-                    <a class="space-left-small"
-                       href="${pageContext.request.contextPath}/users/${branch.lastPost.userCreated.id}">
-                      <c:out value="${branch.lastPost.userCreated.username}"/>
+              <c:if test="${sessionScope.adminMode != true}">
+                <td class="topics-posts shrink-to-fit">
+                  <spring:message code="label.section.header.topics"/>:
+                  <span class='test-topics-count space-left-small'><c:out value="${branch.topicCount}"/></span><br/>
+                  <spring:message code="label.section.header.messages"/>:
+                  <span class='test-posts-count space-left-small'><c:out value="${branch.postCount}"/></span>
+                </td>
+                <td class="latest-by shrink-to-fit">
+                  <c:if test="${branch.topicCount>0}">
+                    <i class="icon-calendar"></i>
+                    <a class="date" href="${pageContext.request.contextPath}/posts/${branch.lastPost.id}">
+                      <jtalks:format value="${branch.lastPost.creationDate}"/>
                     </a>
-                  </p>
-                </c:if>
-              </td>
+
+                    <p>
+                      <spring:message code="label.topic.last_post_by"/>
+                      <a class="space-left-small"
+                         href="${pageContext.request.contextPath}/users/${branch.lastPost.userCreated.id}">
+                        <c:out value="${branch.lastPost.userCreated.username}"/>
+                      </a>
+                    </p>
+                  </c:if>
+                </td>
+              </c:if>
             </tr>
           </jtalks:hasPermission>
         </c:forEach>
         <c:if test="${sessionScope.adminMode == true}">
           <tr>
-            <td colspan="3">
+            <td>
               <div id='newBranch${section.id}' class="add-branch-button"> +
                 <spring:message code="label.branch.add"/>
               </div>
