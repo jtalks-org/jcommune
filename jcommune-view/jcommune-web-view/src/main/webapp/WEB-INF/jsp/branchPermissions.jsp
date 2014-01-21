@@ -36,7 +36,10 @@
 
   <div class="permissions-branch-header">
     <h2 id="moderators-label">
-      <spring:message code="permissions.moderators"/>: ["${branch.moderatorsGroup.name}"] <spring:message code="permissions.group"/>
+      <spring:message code="permissions.moderators"/>:
+      <c:if test="${not empty branch.moderatorsGroup.name}">
+        ["${branch.moderatorsGroup.name}"]&nbsp;<spring:message code="permissions.group"/>
+      </c:if>
     </h2>
   </div>
 
