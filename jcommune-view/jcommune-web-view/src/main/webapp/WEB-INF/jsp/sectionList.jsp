@@ -66,10 +66,9 @@
   <table id="topics-table" class="table table-row table-with-titles">
     <tbody>
     <c:set var="colspanOfSectionName" value="3"/>
-    <sec:authorize access="isAuthenticated()">
-      <%-- TODO: change to 4 during below fix about unread posts --%>
-      <c:set var="colspanOfSectionName" value="3"/>
-    </sec:authorize>
+    <c:if test="${sessionScope.adminMode == true}">
+      <c:set var="colspanOfSectionName" value="1"/>
+    </c:if>
 
     <c:forEach var="section" items="${sectionList}">
       <jtalks:isSectionVisible section="${section}">
