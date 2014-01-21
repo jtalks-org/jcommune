@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
  */
 public class BBForeignLinksPostprocessor implements TextPostProcessor {
 
-    private static final String URL_PATTERN = "<a .*?href=(\"|').*?(\"|')";
+    private static final String URL_PATTERN = "(<a .*?href=(\"|').*?(\"|')|<img .*?src=(\"|').*?(\"|'))";
 
     /**
      * Process incoming text with adding prefix "/out" to foreign links. This prefix
@@ -60,12 +60,16 @@ public class BBForeignLinksPostprocessor implements TextPostProcessor {
         while (linkMatcher.find()) {
             href = linkMatcher.group();
             encoded = href.replaceAll(" ", "%20");
-            if (!href.contains(serverName) && href.split("(http|ftp|https)://", 2).length == 2) {
+            if (!href.contains(serverName) && href.split("(http|ftp|https)://", 2).length == 2
+                    && href.startsWith("<a")) {
                 decodedText = decodedText.replace(href,
                         encoded.replaceFirst("<a.*href=\"", "<a rel=\"nofollow\" href=\"" + getHrefPrefix()));
-            } else {
+            } else if(href.startsWith("<a")){
                 decodedText = decodedText.replace(href,
                         encoded.replaceFirst("<a.*href=\"", "<a href=\""));
+            } else if(href.startsWith("<img")) {
+                decodedText = decodedText.replace(href,
+                        encoded.replaceFirst("<img.*src=\"", "<img class=\"thumbnail\" src=\""));
             }
         }
 

@@ -47,6 +47,11 @@ public class BBForeignLinksPostprocessorTest {
         assertEquals(service.postProcess(incomingText), outcomingText);
     }
 
+    @Test(dataProvider = "preProcessingImages")
+    public void postprocessorShouldCorrectlyReplaceSpaceInImg(String incomingText, String outcomingText) {
+        assertEquals(service.postProcess(incomingText), outcomingText);
+    }
+
     @Test(dataProvider = "preProcessingSubDomainLinks")
     public void postprocessorShouldCorrectlyRecognizeSubDomains(String incomingText, String outcomingText) {
         assertEquals(service.postProcess(incomingText), outcomingText);
@@ -55,6 +60,15 @@ public class BBForeignLinksPostprocessorTest {
     @Test(dataProvider = "preProcessingLocalLinks")
     public void postprocessorShouldCorrectlyRecognizeLocalLinks(String incomingText, String outcomingText) {
         assertEquals(service.postProcess(incomingText), outcomingText);
+    }
+
+    @DataProvider
+    public Object[][] preProcessingImages() {
+        return new Object[][]{
+                {"<img src=\"http://javatalks.ru/common img\">",
+                        "<img class=\"thumbnail\" src=\"http://javatalks.ru/common%20img\">"}
+
+        };
     }
 
     @DataProvider
