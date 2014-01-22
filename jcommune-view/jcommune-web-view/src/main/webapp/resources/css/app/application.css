@@ -842,13 +842,6 @@ div.add-branch-button:hover {
     margin: 0 0 0 18px !important;
 }
 
-.permission-block {
-    border: 2px solid #000;
-    width: 80%;
-    padding: 5px;
-    border-radius: 3px;
-}
-
 .permission-type {
     padding: 7px 10px;
     width: 100px;
@@ -862,17 +855,6 @@ div.add-branch-button:hover {
 
 .permission-restricted {
     color: #922;
-}
-
-.permission-header {
-    font-weight: bold;
-    font-size: 1.2em;
-    position: relative;
-    top: 10px;
-    left: 10px;
-    padding: 0px 5px;
-    background-image: url("../../images/fabric-plaid.png");
-    display: inline;
 }
 
 .permissions-list {

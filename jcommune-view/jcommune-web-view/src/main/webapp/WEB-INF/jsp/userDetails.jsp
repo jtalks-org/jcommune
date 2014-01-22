@@ -53,8 +53,8 @@
     <jtalks:hasPermission targetId='${userId}' targetType='USER' permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
       <div class="user-profile-buttons-send">
         <a class="btn btn-mini btn-info"
-           href="${pageContext.request.contextPath}/pm/new/${user.id}">
-          <spring:message code="label.pm.send"/>
+           href="${pageContext.request.contextPath}/pm/new?recipientId=${user.id}">
+        <spring:message code="label.pm.send"/>
         </a>
       </div>
     </jtalks:hasPermission>

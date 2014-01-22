@@ -15,32 +15,29 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.model.dao.GroupDao;
-import org.jtalks.common.model.entity.*;
+import org.jtalks.common.model.entity.Section;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.dto.PermissionChanges;
+import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.entity.*;
-import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicModificationService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.jtalks.jcommune.service.security.PermissionService;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 /**
  * This test class is intended to test all topic-related forum branch facilities
@@ -279,6 +276,28 @@ public class TransactionalBranchServiceTest {
         when(branchDao.isExist(branchId)).thenReturn(false);
 
         branchService.changeBranchInfo(0, branchId, "", "");
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void getPermissionsShouldThrowExceptionWhenBranchDoesNotExist() throws NotFoundException {
+        long branchId = 42;
+        when(branchDao.isExist(branchId)).thenReturn(false);
+
+        branchService.getPermissionsFor(0, branchId);
+    }
+
+    @Test
+    public void getPermissionsShouldReturnPermissionsWhenBranchExist() throws NotFoundException {
+        long branchId = 42;
+        GroupsPermissions<BranchPermission> expectedPermissions = new GroupsPermissions<>();
+
+        Branch expectedBranch = new Branch("name", "description");
+        when(branchDao.isExist(branchId)).thenReturn(true);
+        when(branchDao.get(branchId)).thenReturn(expectedBranch);
+        when(permissionService.getPermissionsFor(expectedBranch)).thenReturn(expectedPermissions);
+
+        GroupsPermissions<BranchPermission> permissions = branchService.getPermissionsFor(0, branchId);
+        assertEquals(permissions, expectedPermissions);
     }
 
 }
