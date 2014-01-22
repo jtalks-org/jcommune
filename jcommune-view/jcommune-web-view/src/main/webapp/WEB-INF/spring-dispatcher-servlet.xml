@@ -56,6 +56,7 @@
         <prop key="org.jtalks.jcommune.service.exceptions.NotFoundException">redirect:/errors/404</prop>
         <prop key="org.springframework.security.access.AccessDeniedException">redirect:/errors/403</prop>
         <prop key="org.springframework.beans.TypeMismatchException">redirect:/errors/400</prop>
+        <prop key="org.springframework.security.web.authentication.rememberme.CookieTheftException">redirect:/login</prop>
       </props>
     </property>
     <property name="warnLogCategory" value="org.jtalks.jcommune"/>
