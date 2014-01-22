@@ -79,8 +79,18 @@
         <input id="savePM" type="submit" class="btn margin-left-big" tabindex="500" name="save_pm"
                value="<spring:message code="label.save"/>"
                onclick="document.editForm.action='${pageContext.request.contextPath}/pm/save';return true;"/>
-
-      </form:form>
+        <span class="del">
+            <a id="deleteOnePM"
+               class="btn btn-danger delete margin-left-big"
+               href="${pageContext.request.contextPath}/pm"
+               data-confirmationMessage="<spring:message code="label.deletePMConfirmation"/>">
+               <i class="icon-trash icon-white"></i>
+               <spring:message code="label.delete"/>
+            </a>
+        </span>
+      </form:form> 
+      <input id="PMId" type="hidden" value="${pm.id}"/>
+      <form:form id="deleteForm" method="DELETE"/>
 
     </div>
   </div>
