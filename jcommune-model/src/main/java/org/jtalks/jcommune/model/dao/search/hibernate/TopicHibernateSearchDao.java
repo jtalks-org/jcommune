@@ -103,9 +103,9 @@ public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
                     Restrictions.in("branch.id", allowedBranchesIds)
             );
             query.setCriteriaQuery(criteria);
-
+            
             topics = query.list();
-            resultSize = topics.size(); 
+            resultSize = getTotalSearchResultSize(filteredSearchText, allowedBranchesIds);
         }
 
         return new PageImpl<Topic>(topics, pageRequest, resultSize);
@@ -148,10 +148,10 @@ public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
                 createQuery();
 
         FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery);
-
-        query.setFirstResult(pageRequest.getOffset());
-        query.setMaxResults(pageRequest.getPageSize());
-
+        if (pageRequest != null) {
+            query.setFirstResult(pageRequest.getOffset());
+            query.setMaxResults(pageRequest.getPageSize());
+        }
         return query;
     }
 
@@ -175,5 +175,14 @@ public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
     @Override
     public void rebuildIndex() {
         getFullTextSession().createIndexer(Topic.class).start();
+    }
+
+    private int getTotalSearchResultSize(String searchText, List<Long> allowedBranchesIds) {
+        FullTextQuery query = createSearchQuery(getFullTextSession(), searchText, null);
+        Criteria criteria = getFullTextSession().createCriteria(Topic.class).add(
+                Restrictions.in("branch.id", allowedBranchesIds)
+        );
+        query.setCriteriaQuery(criteria);
+        return query.list().size();
     }
 }
