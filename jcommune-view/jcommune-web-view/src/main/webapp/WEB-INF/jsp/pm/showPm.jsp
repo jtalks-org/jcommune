@@ -68,7 +68,7 @@
                       <i class="icon-trash icon-white"></i>
                       <spring:message code="label.delete"/>
                     </a>
-                    <input id="PMId" type="hidden" value="${pm.id}"/>
+                    <input id="pmId" type="hidden" value="${pm.id}"/>
                     <form:form id="deleteForm" method="DELETE"/>
                 </span>
         <!-- del -->
