@@ -28,6 +28,7 @@ import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.exceptions.UserActivationException;
 import org.jtalks.jcommune.service.plugins.TypeFilter;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
@@ -279,12 +280,18 @@ public class UserController {
      * @return redirect to the login page
      */
     @RequestMapping(value = "user/activate/{uuid}")
-    public String activateAccount(@PathVariable String uuid) {
+    public String activateAccount(@PathVariable String uuid,
+                                  HttpServletRequest request, HttpServletResponse response)
+            throws UnexpectedErrorException, NoConnectionException {
         try {
             userService.activateAccount(uuid);
-            return "redirect:/login";
+            JCUser user = userService.getByUuid(uuid);
+            userService.loginUser(user.getUsername(), user.getPassword(), true, request, response);
+            return "redirect:/";
         } catch (NotFoundException e) {
             return "errors/activationExpired";
+        } catch(UserActivationException e) {
+            return "redirect:/";
         }
     }
 

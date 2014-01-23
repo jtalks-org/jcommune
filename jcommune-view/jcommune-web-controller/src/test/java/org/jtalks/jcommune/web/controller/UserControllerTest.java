@@ -30,6 +30,7 @@ import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.exceptions.UserActivationException;
 import org.jtalks.jcommune.service.plugins.TypeFilter;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
@@ -75,6 +76,7 @@ public class UserControllerTest {
     private LocaleResolver localeResolver;
     private RequestContextUtils requestContextUtils;
     private HttpServletRequest request;
+    private HttpServletResponse response;
 
     @BeforeMethod
     public void setUp() throws IOException {
@@ -84,6 +86,7 @@ public class UserControllerTest {
         requestContextUtils= mock(RequestContextUtils.class);
         localeResolver = mock(LocaleResolver.class, "en");
         request = mock(HttpServletRequest.class);
+        response = mock(HttpServletResponse.class);
         SecurityContextHolderFacade securityFacade = mock(SecurityContextHolderFacade.class);
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityFacade.getContext()).thenReturn(securityContext);
@@ -293,20 +296,40 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testActivateAccount() throws NotFoundException {
-        String viewName = userController.activateAccount(USER_NAME);
+    public void testActivateAccount() throws NotFoundException, UnexpectedErrorException, NoConnectionException,
+            UserActivationException {
 
+        JCUser user = new JCUser("username", "password", null);
+        user.setPassword("password");
+        when(userService.getByUuid(USER_NAME)).thenReturn(user);
+        String viewName = userController.activateAccount(USER_NAME, request, response);
         verify(userService, times(1)).activateAccount(USER_NAME);
-        assertEquals("redirect:/login", viewName);
+        verify(userService, times(1)).loginUser("username", "password", true, request, response);
+
+        assertEquals("redirect:/", viewName);
     }
 
     @Test
-    public void testActivateAccountFail() throws NotFoundException {
+    public void testActivateAccountFail() throws NotFoundException, UserActivationException,
+            UnexpectedErrorException, NoConnectionException {
         doThrow(new NotFoundException()).when(userService).activateAccount(anyString());
 
-        String viewName = userController.activateAccount(USER_NAME);
+        String viewName = userController.activateAccount(USER_NAME, request, response);
 
         assertEquals("errors/activationExpired", viewName);
+    }
+
+    @Test
+    public void testActivateAccountAgain() throws NotFoundException, UserActivationException,
+            UnexpectedErrorException, NoConnectionException {
+
+        JCUser user = new JCUser("username", "password", null);
+        user.setEnabled(true);
+        when(userService.getByUuid(USER_NAME)).thenReturn(user);
+        doThrow(new UserActivationException()).when(userService).activateAccount(anyString());
+
+        String viewName = userController.activateAccount(USER_NAME, request, response);
+        assertEquals("redirect:/", viewName);
     }
 
     @Test(dataProvider = "referers")

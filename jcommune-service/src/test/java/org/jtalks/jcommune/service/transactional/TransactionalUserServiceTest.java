@@ -32,6 +32,7 @@ import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.exceptions.UserActivationException;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
@@ -315,14 +316,14 @@ public class TransactionalUserServiceTest {
     }
 
     @Test(expectedExceptions = NotFoundException.class)
-    public void testActivateNotFoundAccountTest() throws NotFoundException {
+    public void testActivateNotFoundAccountTest() throws NotFoundException, UserActivationException {
         when(userDao.getByUsername(USERNAME)).thenReturn(null);
 
         userService.activateAccount(USERNAME);
     }
 
     @Test
-    public void testActivateAccountAlreadyEnabled() throws NotFoundException {
+    public void testActivateAccountAlreadyEnabled() throws NotFoundException, UserActivationException {
         JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);
         user.setEnabled(true);
         when(userDao.getByUuid(user.getUuid())).thenReturn(user);

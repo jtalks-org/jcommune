@@ -33,6 +33,7 @@ import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.exceptions.UserActivationException;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
@@ -223,7 +224,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public void activateAccount(String uuid) throws NotFoundException {
+    public void activateAccount(String uuid) throws NotFoundException, UserActivationException {
         JCUser user = this.getDao().getByUuid(uuid);
         if (user == null) {
             throw new NotFoundException();
@@ -232,6 +233,21 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
             user.addGroup(group);
             user.setEnabled(true);
             this.getDao().saveOrUpdate(user);
+        } else {
+            throw new UserActivationException();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JCUser getByUuid(String uuid) throws NotFoundException {
+        JCUser user = this.getDao().getByUuid(uuid);
+        if (user == null) {
+            throw new NotFoundException();
+        } else {
+            return user;
         }
     }
 
