@@ -159,6 +159,9 @@ public class GroupsPermissions<T extends JtalksPermission> {
     }
 
     /**
+     * Returns copy of the Access List Map where keys are the same like in the original map.
+     * Values (GroupAccessList) are newly created objects based on data from the values in the original map
+     * but they were created with unmodified list with data from the original allowed and restricted group lists.
      * @return copy of the Access List Map
      */
     public Map<T, GroupAccessList> getAccessListMap() {

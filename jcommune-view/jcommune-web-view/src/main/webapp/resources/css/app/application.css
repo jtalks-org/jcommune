@@ -884,11 +884,58 @@ div.add-branch-button:hover {
     margin: 20px 0px;
 }
 
-#moderators-label {
-    color: rgb(0, 136, 204);
-}
-
 .edit-permissions-button a {
     color: rgb(128, 128, 128);
     text-decoration: none;
+}
+
+#moderators-group-name {
+    padding: 0px 15px;
+}
+
+.panel {
+    margin-bottom: 15px;
+    background-color: #ffffff;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.panel-body {
+    padding: 5px;
+}
+
+
+.panel-body:after {
+    clear: both;
+}
+
+.panel-heading {
+    padding: 5px 15px;
+    border-bottom: 1px solid transparent;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+}
+
+.panel-title {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 16px;
+    color: inherit;
+}
+
+.panel-title > a {
+    color: inherit;
+}
+
+.panel-primary {
+    border-color: rgb(163, 163, 163);
+}
+
+.panel-primary > .panel-heading {
+    color: #000000;
+    font-weight: bold;
+    background-color: rgb(200, 200, 200);
+    border-color: rgb(163, 163, 163);
 }

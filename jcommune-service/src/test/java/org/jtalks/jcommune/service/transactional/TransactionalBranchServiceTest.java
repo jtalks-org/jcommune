@@ -279,15 +279,14 @@ public class TransactionalBranchServiceTest {
     }
 
     @Test(expectedExceptions = NotFoundException.class)
-    public void getPermissionsShouldThrowExceptionWhenBranchDoesNotExist() throws NotFoundException {
-        long branchId = 42;
-        when(branchDao.isExist(branchId)).thenReturn(false);
+    public void getPermissionsShouldThrowExceptionWhenBranchDoesNotExist() throws Exception {
+        when(branchDao.isExist(42L)).thenReturn(false);
 
-        branchService.getPermissionsFor(0, branchId);
+        branchService.getPermissionsFor(0, 42L);
     }
 
     @Test
-    public void getPermissionsShouldReturnPermissionsWhenBranchExist() throws NotFoundException {
+    public void getPermissionsShouldReturnPermissionsWhenBranchExist() throws Exception {
         long branchId = 42;
         GroupsPermissions<BranchPermission> expectedPermissions = new GroupsPermissions<>();
 

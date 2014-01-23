@@ -96,7 +96,7 @@ public interface BranchService extends EntityService<Branch> {
 
     /**
      * Gets the list of permissions for given branch
-     * @param componentId ID of the component of the branch
+     * @param componentId ID of the component of the branch (needed only for the authorization purpose)
      * @param branchId ID of the branch to the permissions
      * @return information about the permissions of the branch
      * @throws NotFoundException when branch does not exist

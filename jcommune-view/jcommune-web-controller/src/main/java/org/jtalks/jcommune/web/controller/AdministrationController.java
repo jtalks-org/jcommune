@@ -179,11 +179,10 @@ public class AdministrationController {
      */
     @RequestMapping(value = "/branch/permissions/{branchId}", method = RequestMethod.GET)
     public ModelAndView showBranchPermissions(@PathVariable("branchId") long branchId) throws NotFoundException {
-
+        branchService.checkIfBranchExists(branchId);
         long forumId = componentService.getComponentOfForum().getId();
         Branch branch = branchService.get(branchId);
         GroupsPermissions<BranchPermission> permissions = branchService.getPermissionsFor(forumId, branchId);
-
         return new ModelAndView("branchPermissions")
                 .addObject("branch", branch)
                 .addObject("permissions", permissions);
