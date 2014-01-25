@@ -26,6 +26,9 @@
     <security:authentication-provider user-service-ref="securityService">
       <security:password-encoder hash="md5"/>
     </security:authentication-provider>
+    <security:authentication-provider user-service-ref="securityService">
+      <security:password-encoder hash="plaintext"/>
+    </security:authentication-provider>
   </security:authentication-manager>
 
   <!-- Enable security annotations using specified expression handler -->
