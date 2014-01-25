@@ -160,8 +160,8 @@ public class GroupsPermissions<T extends JtalksPermission> {
 
     /**
      * Access List Map is a internal object - map where key is the permission of type <T extends JtalksPermission> and
-     * the value is GroupAccessList object containing the lists for the groups which have this permission ("allowed") or
-     * do not have ("restricted").
+     * the value is GroupAccessList object containing groups which have this permission ("allowed")
+     * or do not have ("restricted").
      * This method returns copy of the Access List Map where keys are the same like in the original map.
      * Values (GroupAccessList) are newly created objects based on data from the values in the original map
      * but they were created with unmodified list with data from the original allowed and restricted group lists.
