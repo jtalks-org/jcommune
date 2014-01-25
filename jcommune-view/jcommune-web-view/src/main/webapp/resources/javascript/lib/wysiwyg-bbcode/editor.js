@@ -130,15 +130,13 @@ function bbcode2html(allowedUrls) {
             break;
         }
     }
-
     $.ajax({
         type:"POST",
         url:$root + '/' + previewUrl + '/bbToHtml', //todo
         dataType: 'json',
-        data:{bodyText:textdata},
+        data:{bodyText: decodeURI(textdata)},
         success:function (data) {
-
-            var result = decodeURI(data.html);
+            var result = data.html;
             if(data.is_invalid) {
                 ErrorUtils.removeErrorMessage(elId);
                 for(var a=0; a<data.errors.length; a++) {
