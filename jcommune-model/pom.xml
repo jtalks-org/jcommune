@@ -126,7 +126,6 @@
     <dependency>
       <groupId>org.jadira.usertype</groupId>
       <artifactId>usertype.core</artifactId>
-      <version>3.1.0.CR10</version>
     </dependency>      
     <!--
         Used for cache monitoring. Has conflicts with used version of slf4j.
@@ -154,8 +153,6 @@
     <dependency>
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
-      <version>3.2.1</version>
-      <type>jar</type>
     </dependency>
   </dependencies>
 
