@@ -92,16 +92,21 @@ public class UserController {
     private final UserService userService;
     private final Authenticator authenticator;
     private final PluginService pluginService;
+    private final Authenticator plainPasswordAuthenticatorStrategy;
 
     /**
      * @param userService   to delegate business logic invocation
+     * @param authenticator default authenticator
      * @param pluginService for communication with available registration or authentication plugins
+     * @param plainPasswordAuthenticatorStrategy strategy for authenticating by password without hashing
      */
     @Autowired
-    public UserController(UserService userService, Authenticator authenticator, PluginService pluginService) {
+    public UserController(UserService userService, Authenticator authenticator, PluginService pluginService,
+                          Authenticator plainPasswordAuthenticatorStrategy) {
         this.userService = userService;
         this.authenticator = authenticator;
         this.pluginService = pluginService;
+        this.plainPasswordAuthenticatorStrategy = plainPasswordAuthenticatorStrategy;
     }
 
     /**
@@ -280,13 +285,13 @@ public class UserController {
      * @return redirect to the login page
      */
     @RequestMapping(value = "user/activate/{uuid}")
-    public String activateAccount(@PathVariable String uuid,
-                                  HttpServletRequest request, HttpServletResponse response)
+    public String activateAccount(@PathVariable String uuid, HttpServletRequest request, HttpServletResponse response)
             throws UnexpectedErrorException, NoConnectionException {
         try {
             userService.activateAccount(uuid);
             JCUser user = userService.getByUuid(uuid);
-            userService.loginUser(user.getUsername(), user.getPassword(), true, request, response);
+            loginWithLockHandling(user.getUsername(), user.getPassword(), true, request, response,
+                    plainPasswordAuthenticatorStrategy);
             return "redirect:/";
         } catch (NotFoundException e) {
             return "errors/activationExpired";
@@ -351,7 +356,8 @@ public class UserController {
         boolean rememberMeBoolean = rememberMe.equals(REMEMBER_ME_ON);
         boolean isAuthenticated;
         try {
-            isAuthenticated = loginWithLockHandling(username, password, rememberMeBoolean, request, response);
+            isAuthenticated = loginWithLockHandling(username, password, rememberMeBoolean, request, response,
+                    authenticator);
         } catch (NoConnectionException e) {
             return new JsonResponse(JsonResponseStatus.FAIL,
                     new ImmutableMap.Builder<String, String>().put("customError", "connectionError").build());
@@ -389,7 +395,8 @@ public class UserController {
         boolean rememberMeBoolean = rememberMe.equals(REMEMBER_ME_ON);
         boolean isAuthenticated;
         try {
-            isAuthenticated = loginWithLockHandling(username, password, rememberMeBoolean, request, response);
+            isAuthenticated = loginWithLockHandling(username, password, rememberMeBoolean, request, response,
+                    authenticator);
         } catch (NoConnectionException e) {
             return new ModelAndView(AUTH_SERVICE_FAIL_URL);
         } catch (UnexpectedErrorException e) {
@@ -409,16 +416,17 @@ public class UserController {
     }
 
     private boolean loginWithLockHandling(String username, String password, boolean rememberMeBoolean,
-                                             HttpServletRequest request, HttpServletResponse response)
+                                          HttpServletRequest request, HttpServletResponse response,
+                                          Authenticator authenticator)
             throws UnexpectedErrorException, NoConnectionException {
         for (int i = 0; i < LOGIN_TRIES_AFTER_LOCK; i++) {
             try {
-                return userService.loginUser(username, password, rememberMeBoolean, request, response);
+                return userService.loginUser(username, password, rememberMeBoolean, request, response, authenticator);
             } catch (HibernateOptimisticLockingFailureException e) {
             }
         }
         try {
-            return userService.loginUser(username, password, rememberMeBoolean, request, response);
+            return userService.loginUser(username, password, rememberMeBoolean, request, response, authenticator);
         } catch (HibernateOptimisticLockingFailureException e) {
             LOGGER.error("User have been locked {} times. Username: {}", LOGIN_TRIES_AFTER_LOCK, username);
             throw e;

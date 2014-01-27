@@ -153,11 +153,13 @@ public interface UserService extends EntityService<JCUser> {
      * @param rememberMe remember this user or not
      * @param request    HTTP request
      * @param response   HTTP response
+     * @param authStrategy authenticating strategy
      * @return true if user was logged in. false if there were any errors during
      *         logging in.
      */
     boolean loginUser(String username, String password, boolean rememberMe, HttpServletRequest request,
-                      HttpServletResponse response) throws UnexpectedErrorException, NoConnectionException;
+                      HttpServletResponse response, Authenticator authStrategy)
+            throws UnexpectedErrorException, NoConnectionException;
 
     /**
      * Parses the input of some post which contains [user] bb code,

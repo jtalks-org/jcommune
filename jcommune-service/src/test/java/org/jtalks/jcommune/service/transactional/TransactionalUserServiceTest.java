@@ -127,8 +127,7 @@ public class TransactionalUserServiceTest {
                 mailService,
                 base64Wrapper,
                 encryptionService,
-                postDao,
-                authenticator);
+                postDao);
     }
 
     @Test
@@ -322,7 +321,7 @@ public class TransactionalUserServiceTest {
         userService.activateAccount(USERNAME);
     }
 
-    @Test
+    @Test(expectedExceptions = UserActivationException.class)
     public void testActivateAccountAlreadyEnabled() throws NotFoundException, UserActivationException {
         JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);
         user.setEnabled(true);
@@ -384,7 +383,7 @@ public class TransactionalUserServiceTest {
         when(authenticator.authenticate("username", "password", true, httpRequest, httpResponse))
                 .thenReturn(true);
 
-        boolean result = userService.loginUser("username", "password", true, httpRequest, httpResponse);
+        boolean result = userService.loginUser("username", "password", true, httpRequest, httpResponse, authenticator);
 
         assertTrue(result, "Login user with correct credentials should be successful.");
     }
@@ -397,7 +396,7 @@ public class TransactionalUserServiceTest {
         when(authenticator.authenticate("", "password", true, httpRequest, httpResponse))
                 .thenReturn(false);
 
-        boolean result = userService.loginUser("", "password", true, httpRequest, httpResponse);
+        boolean result = userService.loginUser("", "password", true, httpRequest, httpResponse, authenticator);
 
         assertFalse(result, "Login user with bad credentials should fail.");
     }

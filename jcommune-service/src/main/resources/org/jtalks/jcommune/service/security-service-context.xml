@@ -26,10 +26,20 @@
     <security:authentication-provider user-service-ref="securityService">
       <security:password-encoder hash="md5"/>
     </security:authentication-provider>
-    <security:authentication-provider user-service-ref="securityService">
-      <security:password-encoder hash="plaintext"/>
-    </security:authentication-provider>
   </security:authentication-manager>
+
+  <bean id="plainPasswordAuth" class="org.springframework.security.authentication.ProviderManager">
+      <property name="providers">
+          <list>
+              <bean class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+                  <property name="userDetailsService" ref="securityService"/>
+                  <property name="passwordEncoder">
+                      <bean class="org.springframework.security.authentication.encoding.PlaintextPasswordEncoder" />
+                  </property>
+              </bean>
+          </list>
+      </property>
+  </bean>
 
   <!-- Enable security annotations using specified expression handler -->
   <security:global-method-security pre-post-annotations="enabled">
