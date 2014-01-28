@@ -52,8 +52,6 @@ public class BranchHibernateDao extends GenericDao<Branch>
     @SuppressWarnings("unchecked")
     @Override
     public List<Branch> getAllBranches() {
-        Session session = session();
-        
         List<Branch> branches = session()
                 .getNamedQuery("getAllBranches")
                 .list();
