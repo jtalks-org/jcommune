@@ -35,9 +35,11 @@ import org.jtalks.jcommune.service.plugins.TypeFilter;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
+import org.jtalks.jcommune.web.util.AddableHttpRequest;
 import org.jtalks.jcommune.web.validation.editors.DefaultStringEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -83,7 +85,7 @@ public class UserControllerTest {
         userService = mock(UserService.class);
         pluginService = mock(PluginService.class);
         authenticator = mock(Authenticator.class);
-        requestContextUtils= mock(RequestContextUtils.class);
+        requestContextUtils = mock(RequestContextUtils.class);
         localeResolver = mock(LocaleResolver.class, "en");
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
@@ -304,8 +306,8 @@ public class UserControllerTest {
         when(userService.getByUuid(USER_NAME)).thenReturn(user);
         String viewName = userController.activateAccount(USER_NAME, request, response);
         verify(userService, times(1)).activateAccount(USER_NAME);
-        verify(userService, times(1)).loginUser("username", "password", true, request, response, authenticator);
-
+        verify(userService, times(1)).loginUser(eq(user.getUsername()), eq(user.getPassword()), eq(true),
+                any(AddableHttpRequest.class), eq(response), eq(authenticator));
         assertEquals("redirect:/", viewName);
     }
 
@@ -463,7 +465,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testGetUsernameListSuccess(){
+    public void testGetUsernameListSuccess() {
         String pattern = "us";
         List<String> usernames = Lists.newArrayList("User1", "User2", "User3");
         when(userService.getUsernames(pattern)).thenReturn(usernames);

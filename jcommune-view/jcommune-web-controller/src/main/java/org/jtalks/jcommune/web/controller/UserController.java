@@ -34,6 +34,7 @@ import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.interceptors.RefererKeepInterceptor;
+import org.jtalks.jcommune.web.util.AddableHttpRequest;
 import org.jtalks.jcommune.web.validation.editors.DefaultStringEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.springframework.security.web.WebAttributes;
+import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -92,21 +94,21 @@ public class UserController {
     private final UserService userService;
     private final Authenticator authenticator;
     private final PluginService pluginService;
-    private final Authenticator plainPasswordAuthenticatorStrategy;
+    private final Authenticator plainPasswordAuthenticator;
 
     /**
      * @param userService   to delegate business logic invocation
      * @param authenticator default authenticator
      * @param pluginService for communication with available registration or authentication plugins
-     * @param plainPasswordAuthenticatorStrategy strategy for authenticating by password without hashing
+     * @param plainPasswordAuthenticator strategy for authenticating by password without hashing
      */
     @Autowired
     public UserController(UserService userService, Authenticator authenticator, PluginService pluginService,
-                          Authenticator plainPasswordAuthenticatorStrategy) {
+                          Authenticator plainPasswordAuthenticator) {
         this.userService = userService;
         this.authenticator = authenticator;
         this.pluginService = pluginService;
-        this.plainPasswordAuthenticatorStrategy = plainPasswordAuthenticatorStrategy;
+        this.plainPasswordAuthenticator = plainPasswordAuthenticator;
     }
 
     /**
@@ -290,8 +292,10 @@ public class UserController {
         try {
             userService.activateAccount(uuid);
             JCUser user = userService.getByUuid(uuid);
-            loginWithLockHandling(user.getUsername(), user.getPassword(), true, request, response,
-                    plainPasswordAuthenticatorStrategy);
+            AddableHttpRequest wrappedRequest = new AddableHttpRequest(request);
+            wrappedRequest.addParameter(AbstractRememberMeServices.DEFAULT_PARAMETER, "true");
+            loginWithLockHandling(user.getUsername(), user.getPassword(), true, wrappedRequest, response,
+                    plainPasswordAuthenticator);
             return "redirect:/";
         } catch (NotFoundException e) {
             return "errors/activationExpired";
