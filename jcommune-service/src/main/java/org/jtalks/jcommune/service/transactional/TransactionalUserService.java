@@ -33,6 +33,7 @@ import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.exceptions.UserActivationException;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
@@ -72,7 +73,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     //Important, use for every password creation.
     private EncryptionService encryptionService;
     private final PostDao postDao;
-    private Authenticator authenticator;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalUserService.class);
 
@@ -86,7 +86,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * @param base64Wrapper     for avatar image-related operations
      * @param encryptionService encodes user password before store
      * @param postDao           for operations with posts
-     * @param authenticator     for authentication and registration
      */
     public TransactionalUserService(UserDao dao,
                                     GroupDao groupDao,
@@ -94,18 +93,14 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
                                     MailService mailService,
                                     Base64Wrapper base64Wrapper,
                                     EncryptionService encryptionService,
-
-                                    PostDao postDao,
-                                    Authenticator authenticator) {
+                                    PostDao postDao) {
         super(dao);
         this.groupDao = groupDao;
         this.securityService = securityService;
         this.mailService = mailService;
         this.base64Wrapper = base64Wrapper;
         this.encryptionService = encryptionService;
-
         this.postDao = postDao;
-        this.authenticator = authenticator;
     }
 
     /**
@@ -223,7 +218,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public void activateAccount(String uuid) throws NotFoundException {
+    public void activateAccount(String uuid) throws NotFoundException, UserActivationException {
         JCUser user = this.getDao().getByUuid(uuid);
         if (user == null) {
             throw new NotFoundException();
@@ -232,6 +227,21 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
             user.addGroup(group);
             user.setEnabled(true);
             this.getDao().saveOrUpdate(user);
+        } else {
+            throw new UserActivationException();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JCUser getByUuid(String uuid) throws NotFoundException {
+        JCUser user = this.getDao().getByUuid(uuid);
+        if (user == null) {
+            throw new NotFoundException();
+        } else {
+            return user;
         }
     }
 
@@ -283,7 +293,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      */
     @Override
     public boolean loginUser(String username, String password, boolean rememberMe,
-                             HttpServletRequest request, HttpServletResponse response)
+                             HttpServletRequest request, HttpServletResponse response, Authenticator authenticator)
             throws UnexpectedErrorException, NoConnectionException {
         return authenticator.authenticate(username, password, rememberMe, request, response);
     }

@@ -144,7 +144,6 @@
     <constructor-arg ref="base64Wrapper"/>
     <constructor-arg ref="encryptionService"/>
     <constructor-arg ref="postDao"/>
-    <constructor-arg ref="authenticator"/>
   </bean>
 
   <bean id="authenticator" class="org.jtalks.jcommune.service.transactional.TransactionalAuthenticator">
@@ -155,11 +154,19 @@
     <constructor-arg ref="mailService"/>
     <constructor-arg ref="avatarService"/>
     <constructor-arg ref="pluginService"/>
-    <constructor-arg ref="authenticationManager"/>
     <constructor-arg ref="securityContextFacade"/>
     <constructor-arg ref="rememberMeServices"/>
     <constructor-arg ref="concurrentSessionControlStrategy"/>
     <constructor-arg ref="validator"/>
+    <property name="authenticationManager">
+        <ref bean="authenticationManager" />
+    </property>
+  </bean>
+
+  <bean id="plainPasswordAuthenticator" parent="authenticator">
+    <property name="authenticationManager">
+        <ref bean="plainPasswordAuthenticationManager"/>
+    </property>
   </bean>
 
   <bean id="userContactsService"

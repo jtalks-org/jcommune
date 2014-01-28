@@ -92,7 +92,6 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
     private ImageService avatarService;
     private GroupDao groupDao;
     private PluginService pluginService;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalAuthenticator.class);
 
 
@@ -100,7 +99,6 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      * @param pluginLoader          used for obtain auth plugin
      * @param dao                   for operations with data storage
      * @param encryptionService     encodes user password
-     * @param authenticationManager used in login logic
      * @param securityFacade        used in login logic
      * @param rememberMeServices    used in login logic to specify remember user or
      *                              not
@@ -112,7 +110,6 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
                                       MailService mailService,
                                       ImageService avatarService,
                                       PluginService pluginService,
-                                      AuthenticationManager authenticationManager,
                                       SecurityContextHolderFacade securityFacade,
                                       RememberMeServices rememberMeServices,
                                       SessionAuthenticationStrategy sessionStrategy,
@@ -124,7 +121,6 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         this.mailService = mailService;
         this.avatarService = avatarService;
         this.pluginService = pluginService;
-        this.authenticationManager = authenticationManager;
         this.securityFacade = securityFacade;
         this.rememberMeServices = rememberMeServices;
         this.sessionStrategy = sessionStrategy;
@@ -341,6 +337,14 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
             }
         }
         return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
     }
 
     public void registerByPlugin(UserDto userDto, boolean dryRun, BindingResult bindingResult)

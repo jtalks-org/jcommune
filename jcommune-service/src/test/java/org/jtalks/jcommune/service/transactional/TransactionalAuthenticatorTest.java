@@ -110,8 +110,9 @@ public class TransactionalAuthenticatorTest {
     public void setUp() throws Exception {
         initMocks(this);
         authenticator = new TransactionalAuthenticator(pluginLoader, userDao, groupDao,
-                encryptionService, mailService, avatarService, pluginService, authenticationManager,
+                encryptionService, mailService, avatarService, pluginService,
                 securityFacade, rememberMeServices, sessionStrategy, validator);
+        authenticator.setAuthenticationManager(authenticationManager);
     }
 
     private JCUser prepareOldUser(String username) {
