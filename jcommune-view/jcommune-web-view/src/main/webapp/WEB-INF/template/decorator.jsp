@@ -237,10 +237,6 @@
       <script src="${pageContext.request.contextPath}/resources/javascript/lib/purl.js"></script>
     </c:if>
       
-    <c:if test="${fn:contains(uriString,'pm') and fn:contains(uriString,'new')}">
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script> 
-    </c:if>
-      
   </c:otherwise>
 </c:choose>
 
