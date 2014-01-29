@@ -173,6 +173,10 @@
         <location>/errors/redirect/404</location>
     </error-page>
     <error-page>
+        <error-code>501</error-code>
+        <location>/errors/500</location>
+    </error-page>
+    <error-page>
         <exception-type>org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationException
         </exception-type>
         <location>/exception/rememberMe</location>
