@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import org.jtalks.jcommune.model.entity.Language;
-import org.jtalks.jcommune.service.exceptions.UserActivationException;
+import org.jtalks.jcommune.service.exceptions.UserTriesActivatingAccountAgainException;
 
 /**
  * This interface should have methods which give us more abilities in manipulating User persistent entity.
@@ -92,9 +92,9 @@ public interface UserService extends EntityService<JCUser> {
      *
      * @param uuid unique entity identifier to locate user account
      * @throws NotFoundException if there is no user matching username given
-     * @throws UserActivationException if user try to activate account again
+     * @throws org.jtalks.jcommune.service.exceptions.UserTriesActivatingAccountAgainException if user try to activate account again
      */
-    void activateAccount(String uuid) throws NotFoundException, UserActivationException;
+    void activateAccount(String uuid) throws NotFoundException, UserTriesActivatingAccountAgainException;
 
     /**
      * Get user by UUID
@@ -153,12 +153,12 @@ public interface UserService extends EntityService<JCUser> {
      * @param rememberMe remember this user or not
      * @param request    HTTP request
      * @param response   HTTP response
-     * @param authenticator authenticating strategy
+     *
      * @return true if user was logged in. false if there were any errors during
      *         logging in.
      */
     boolean loginUser(String username, String password, boolean rememberMe, HttpServletRequest request,
-                      HttpServletResponse response, Authenticator authenticator)
+                      HttpServletResponse response)
             throws UnexpectedErrorException, NoConnectionException;
 
     /**

@@ -21,21 +21,24 @@ import java.util.HashMap;
 
 /**
  * Class provides possibility for adding params to HttpServletRequest.
- * We need this for adding special key for Spring' remember me functionality
+ * We need this one for adding special key for {@link org.springframework.security.web.authentication.rememberme}
+ * Also we can use it in another cases when we should add new parameter to request.
  *
  * @author Andrey Ivanov <a.nigredo@gmail.com>
  */
-public class AddableHttpRequest extends HttpServletRequestWrapper {
+public class MutableHttpRequest extends HttpServletRequestWrapper {
 
     private HashMap<String, String> params = new HashMap();
 
-    public AddableHttpRequest(HttpServletRequest request) {
+    public MutableHttpRequest(HttpServletRequest request) {
         super(request);
     }
 
     /**
+     * Get parameter from request
+     *
      * @param name parameter name
-     * @return
+     * @return value of parameter
      */
     public String getParameter(String name) {
         if (params.containsKey(name)) {
@@ -46,6 +49,8 @@ public class AddableHttpRequest extends HttpServletRequestWrapper {
     }
 
     /**
+     * Add parameter to request
+     *
      * @param name  parameter name
      * @param value parameter value
      */

@@ -59,10 +59,4 @@ public interface Authenticator {
             throws UnexpectedErrorException, NoConnectionException;
 
 
-    /**
-     * Set authentication manager
-     *
-     * @param authenticationManager
-     */
-    void setAuthenticationManager(AuthenticationManager authenticationManager);
 }

@@ -104,6 +104,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      *                              not
      * @param sessionStrategy       used in login logic to call onAuthentication hook
      *                              which stored this user to online uses list.
+     * @param authenticationManager for authenticate user
      */
     public TransactionalAuthenticator(PluginLoader pluginLoader, UserDao dao, GroupDao groupDao,
                                       EncryptionService encryptionService,
@@ -113,7 +114,8 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
                                       SecurityContextHolderFacade securityFacade,
                                       RememberMeServices rememberMeServices,
                                       SessionAuthenticationStrategy sessionStrategy,
-                                      Validator validator) {
+                                      Validator validator,
+                                      AuthenticationManager authenticationManager) {
         super(dao);
         this.groupDao = groupDao;
         this.pluginLoader = pluginLoader;
@@ -125,6 +127,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         this.rememberMeServices = rememberMeServices;
         this.sessionStrategy = sessionStrategy;
         this.validator = validator;
+        this.authenticationManager = authenticationManager;
     }
 
     /**
@@ -337,14 +340,6 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
             }
         }
         return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
     }
 
     public void registerByPlugin(UserDto userDto, boolean dryRun, BindingResult bindingResult)

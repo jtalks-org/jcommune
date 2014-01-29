@@ -32,7 +32,7 @@ import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.exceptions.UserActivationException;
+import org.jtalks.jcommune.service.exceptions.UserTriesActivatingAccountAgainException;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
@@ -127,7 +127,7 @@ public class TransactionalUserServiceTest {
                 mailService,
                 base64Wrapper,
                 encryptionService,
-                postDao);
+                postDao, authenticator);
     }
 
     @Test
@@ -315,14 +315,14 @@ public class TransactionalUserServiceTest {
     }
 
     @Test(expectedExceptions = NotFoundException.class)
-    public void testActivateNotFoundAccountTest() throws NotFoundException, UserActivationException {
+    public void testActivateNotFoundAccountTest() throws NotFoundException, UserTriesActivatingAccountAgainException {
         when(userDao.getByUsername(USERNAME)).thenReturn(null);
 
         userService.activateAccount(USERNAME);
     }
 
-    @Test(expectedExceptions = UserActivationException.class)
-    public void testActivateAccountAlreadyEnabled() throws NotFoundException, UserActivationException {
+    @Test(expectedExceptions = UserTriesActivatingAccountAgainException.class)
+    public void testActivateAccountAlreadyEnabled() throws NotFoundException, UserTriesActivatingAccountAgainException {
         JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);
         user.setEnabled(true);
         when(userDao.getByUuid(user.getUuid())).thenReturn(user);
@@ -383,7 +383,7 @@ public class TransactionalUserServiceTest {
         when(authenticator.authenticate("username", "password", true, httpRequest, httpResponse))
                 .thenReturn(true);
 
-        boolean result = userService.loginUser("username", "password", true, httpRequest, httpResponse, authenticator);
+        boolean result = userService.loginUser("username", "password", true, httpRequest, httpResponse);
 
         assertTrue(result, "Login user with correct credentials should be successful.");
     }
@@ -396,7 +396,7 @@ public class TransactionalUserServiceTest {
         when(authenticator.authenticate("", "password", true, httpRequest, httpResponse))
                 .thenReturn(false);
 
-        boolean result = userService.loginUser("", "password", true, httpRequest, httpResponse, authenticator);
+        boolean result = userService.loginUser("", "password", true, httpRequest, httpResponse);
 
         assertFalse(result, "Login user with bad credentials should fail.");
     }

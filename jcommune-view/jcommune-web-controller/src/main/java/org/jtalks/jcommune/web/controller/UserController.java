@@ -28,13 +28,13 @@ import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.exceptions.UserActivationException;
+import org.jtalks.jcommune.service.exceptions.UserTriesActivatingAccountAgainException;
 import org.jtalks.jcommune.service.plugins.TypeFilter;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.interceptors.RefererKeepInterceptor;
-import org.jtalks.jcommune.web.util.AddableHttpRequest;
+import org.jtalks.jcommune.web.util.MutableHttpRequest;
 import org.jtalks.jcommune.web.validation.editors.DefaultStringEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,21 +94,21 @@ public class UserController {
     private final UserService userService;
     private final Authenticator authenticator;
     private final PluginService pluginService;
-    private final Authenticator plainPasswordAuthenticator;
+    private final UserService plainPasswordUserService;
 
     /**
      * @param userService   to delegate business logic invocation
      * @param authenticator default authenticator
      * @param pluginService for communication with available registration or authentication plugins
-     * @param plainPasswordAuthenticator strategy for authenticating by password without hashing
+     * @param plainPasswordUserService strategy for authenticating by password without hashing
      */
     @Autowired
     public UserController(UserService userService, Authenticator authenticator, PluginService pluginService,
-                          Authenticator plainPasswordAuthenticator) {
+                          UserService plainPasswordUserService) {
         this.userService = userService;
         this.authenticator = authenticator;
         this.pluginService = pluginService;
-        this.plainPasswordAuthenticator = plainPasswordAuthenticator;
+        this.plainPasswordUserService = plainPasswordUserService;
     }
 
     /**
@@ -292,14 +292,14 @@ public class UserController {
         try {
             userService.activateAccount(uuid);
             JCUser user = userService.getByUuid(uuid);
-            AddableHttpRequest wrappedRequest = new AddableHttpRequest(request);
+            MutableHttpRequest wrappedRequest = new MutableHttpRequest(request);
             wrappedRequest.addParameter(AbstractRememberMeServices.DEFAULT_PARAMETER, "true");
             loginWithLockHandling(user.getUsername(), user.getPassword(), true, wrappedRequest, response,
-                    plainPasswordAuthenticator);
+                    plainPasswordUserService);
             return "redirect:/";
         } catch (NotFoundException e) {
             return "errors/activationExpired";
-        } catch(UserActivationException e) {
+        } catch(UserTriesActivatingAccountAgainException e) {
             return "redirect:/";
         }
     }
@@ -361,7 +361,7 @@ public class UserController {
         boolean isAuthenticated;
         try {
             isAuthenticated = loginWithLockHandling(username, password, rememberMeBoolean, request, response,
-                    authenticator);
+            userService);
         } catch (NoConnectionException e) {
             return new JsonResponse(JsonResponseStatus.FAIL,
                     new ImmutableMap.Builder<String, String>().put("customError", "connectionError").build());
@@ -400,7 +400,7 @@ public class UserController {
         boolean isAuthenticated;
         try {
             isAuthenticated = loginWithLockHandling(username, password, rememberMeBoolean, request, response,
-                    authenticator);
+                    userService);
         } catch (NoConnectionException e) {
             return new ModelAndView(AUTH_SERVICE_FAIL_URL);
         } catch (UnexpectedErrorException e) {
@@ -421,16 +421,16 @@ public class UserController {
 
     private boolean loginWithLockHandling(String username, String password, boolean rememberMeBoolean,
                                           HttpServletRequest request, HttpServletResponse response,
-                                          Authenticator authenticator)
+                                          UserService userService)
             throws UnexpectedErrorException, NoConnectionException {
         for (int i = 0; i < LOGIN_TRIES_AFTER_LOCK; i++) {
             try {
-                return userService.loginUser(username, password, rememberMeBoolean, request, response, authenticator);
+                return userService.loginUser(username, password, rememberMeBoolean, request, response);
             } catch (HibernateOptimisticLockingFailureException e) {
             }
         }
         try {
-            return userService.loginUser(username, password, rememberMeBoolean, request, response, authenticator);
+            return userService.loginUser(username, password, rememberMeBoolean, request, response);
         } catch (HibernateOptimisticLockingFailureException e) {
             LOGGER.error("User have been locked {} times. Username: {}", LOGIN_TRIES_AFTER_LOCK, username);
             throw e;

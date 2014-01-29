@@ -16,9 +16,9 @@
 package org.jtalks.jcommune.service.exceptions;
 
 /**
- * Throws if user try to activate your account again
+ * Throws if user tries to activate account again
  *
  * @author Andrey Ivanov
  */
-public class UserActivationException extends Exception {
+public class UserTriesActivatingAccountAgainException extends Exception {
 }

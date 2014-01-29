@@ -136,37 +136,48 @@
     <constructor-arg name="userService" ref="userService"/>
   </bean>
 
-  <bean id="userService" class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
-    <constructor-arg ref="userDao"/>
-    <constructor-arg ref="groupDao"/>
-    <constructor-arg ref="securityService"/>
-    <constructor-arg ref="mailService"/>
-    <constructor-arg ref="base64Wrapper"/>
-    <constructor-arg ref="encryptionService"/>
-    <constructor-arg ref="postDao"/>
+  <bean id="abstractUserService" abstract="true">
+      <constructor-arg ref="userDao"/>
+      <constructor-arg ref="groupDao"/>
+      <constructor-arg ref="securityService"/>
+      <constructor-arg ref="mailService"/>
+      <constructor-arg ref="base64Wrapper"/>
+      <constructor-arg ref="encryptionService"/>
+      <constructor-arg ref="postDao"/>
   </bean>
 
-  <bean id="authenticator" class="org.jtalks.jcommune.service.transactional.TransactionalAuthenticator">
-    <constructor-arg ref="pluginLoader"/>
-    <constructor-arg ref="userDao"/>
-    <constructor-arg ref="groupDao"/>
-    <constructor-arg ref="encryptionService"/>
-    <constructor-arg ref="mailService"/>
-    <constructor-arg ref="avatarService"/>
-    <constructor-arg ref="pluginService"/>
-    <constructor-arg ref="securityContextFacade"/>
-    <constructor-arg ref="rememberMeServices"/>
-    <constructor-arg ref="concurrentSessionControlStrategy"/>
-    <constructor-arg ref="validator"/>
-    <property name="authenticationManager">
-        <ref bean="authenticationManager" />
-    </property>
+  <bean id="userService" parent="abstractUserService"
+        class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
+    <constructor-arg index="7" ref="authenticator"/>
   </bean>
 
-  <bean id="plainPasswordAuthenticator" parent="authenticator">
-    <property name="authenticationManager">
-        <ref bean="plainPasswordAuthenticationManager"/>
-    </property>
+  <bean id="plainPasswordUserService" parent="abstractUserService"
+       class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
+    <constructor-arg index="7" ref="plainPasswordAuthenticator"/>
+  </bean>
+
+  <bean id="abstractAuthenticator" abstract="true">
+      <constructor-arg ref="pluginLoader"/>
+      <constructor-arg ref="userDao"/>
+      <constructor-arg ref="groupDao"/>
+      <constructor-arg ref="encryptionService"/>
+      <constructor-arg ref="mailService"/>
+      <constructor-arg ref="avatarService"/>
+      <constructor-arg ref="pluginService"/>
+      <constructor-arg ref="securityContextFacade"/>
+      <constructor-arg ref="rememberMeServices"/>
+      <constructor-arg ref="concurrentSessionControlStrategy"/>
+      <constructor-arg ref="validator"/>
+  </bean>
+
+  <bean id="authenticator" parent="abstractAuthenticator"
+        class="org.jtalks.jcommune.service.transactional.TransactionalAuthenticator">
+      <constructor-arg  index="11" ref="authenticationManager"/>
+  </bean>
+
+  <bean id="plainPasswordAuthenticator" parent="abstractAuthenticator"
+        class="org.jtalks.jcommune.service.transactional.TransactionalAuthenticator">
+      <constructor-arg index="11" ref="plainPasswordAuthenticationManager" />
   </bean>
 
   <bean id="userContactsService"
