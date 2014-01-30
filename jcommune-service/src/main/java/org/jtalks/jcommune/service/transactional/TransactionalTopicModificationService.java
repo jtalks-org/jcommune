@@ -161,6 +161,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
     @PreAuthorize("hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_POSTS')")
     public Topic createTopic(Topic topicDto, String bodyText) throws NotFoundException {
         JCUser currentUser = userService.getCurrentUser();
+        Branch branch = topicDto.getBranch();
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);
         Topic topic = new Topic(currentUser, topicDto.getTitle());
@@ -169,9 +170,11 @@ public class TransactionalTopicModificationService implements TopicModificationS
         topic.setBranch(topicDto.getBranch());
         Post first = new Post(currentUser, bodyText);
         topic.addPost(first);
-        topic.setBranch(topicDto.getBranch());
+        topic.setBranch(branch);
+        branch.setLastPost(first);
 
         dao.saveOrUpdate(topic);
+        branchDao.saveOrUpdate(branch);
 
         JCUser user = userService.getCurrentUser();
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(topic).flush();
@@ -199,6 +202,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
     @PreAuthorize("hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_CODE_REVIEW')")
     public Topic createCodeReview(Topic topicDto, String bodyText) throws NotFoundException {
         JCUser currentUser = userService.getCurrentUser();
+        Branch branch = topicDto.getBranch();
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);
         Topic topic = new Topic(currentUser, topicDto.getTitle());
@@ -207,9 +211,11 @@ public class TransactionalTopicModificationService implements TopicModificationS
         CodeReview codeReview = new CodeReview();
         codeReview.setTopic(topic);
         topic.setCodeReview(codeReview);
-        topic.setBranch(topicDto.getBranch());
+        topic.setBranch(branch);
+        branch.setLastPost(first);
 
         dao.saveOrUpdate(topic);
+        branchDao.saveOrUpdate(branch);
 
         JCUser user = userService.getCurrentUser();
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(topic).flush();

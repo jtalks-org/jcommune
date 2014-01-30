@@ -309,6 +309,26 @@ public class TransactionalTopicModificationServiceTest {
         createCodeReviewVerifications(branch);
     }
 
+    @Test
+    private void updateLastPostInBranchByCreateTopic() throws NotFoundException {
+        Branch branch = createBranch();
+        createTopicStubs(branch);
+        Topic tmp = createTopic();
+        tmp.setBranch(branch);
+        Topic topic = topicService.createTopic(tmp, "content");
+        assertEquals(branch.getLastPost(), topic.getFirstPost());
+    }
+
+    @Test
+    private void updateLastPostInBranchByCreateReview() throws NotFoundException {
+        Branch branch = createBranch();
+        createTopicStubs(branch);
+        Topic tmp = createTopic();
+        tmp.setBranch(branch);
+        Topic review = topicService.createCodeReview(tmp, "content");
+        assertEquals(branch.getLastPost(), review.getFirstPost());
+    }
+
     private void createTopicStubs(Branch branch) throws NotFoundException {
         when(userService.getCurrentUser()).thenReturn(user);
         when(branchDao.get(BRANCH_ID)).thenReturn(branch);
@@ -349,7 +369,7 @@ public class TransactionalTopicModificationServiceTest {
         verify(aclBuilder, times(2)).grant(GeneralPermission.WRITE);
         verify(notificationService).sendNotificationAboutTopicCreated(topic);
         verify(lastReadPostService).markTopicAsRead(topic);
-    }    
+    }
     
     @Test
     public void testDeleteTopic() throws NotFoundException {
