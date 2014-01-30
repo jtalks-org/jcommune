@@ -102,8 +102,6 @@
     <c:if test="${fn:contains(uriString, 'topics') or fn:contains(uriString, 'branches')}">
       <script type="text/javascript"
               src="${pageContext.request.contextPath}/resources/wro/topic.js?${project.version}"></script>
-      <link rel="stylesheet" type="text/css" media="all"
-            href="${pageContext.request.contextPath}/resources/wro/topic.css?${project.version}"/>
     </c:if>
   </c:when>
 
