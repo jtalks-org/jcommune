@@ -32,11 +32,11 @@ public class NotMeValidator implements ConstraintValidator<NotMe, String> {
     private UserService service;
 
     /**
-     * @param service  to get the current user
+     * @param userService  to get the current user
      */
     @Autowired
-    public NotMeValidator(UserService service) {
-        this.service = service;
+    public NotMeValidator(UserService userService) {
+        this.service = userService;
     }
 
     /**
