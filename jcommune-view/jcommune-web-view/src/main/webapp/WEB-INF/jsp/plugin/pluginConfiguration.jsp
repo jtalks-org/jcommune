@@ -34,7 +34,7 @@
     </div>
     <span class="inline-block"></span>
 
-    <form:form action="${pageContext.request.contextPath}/plugins/configure/${pluginConfiguration.name}" method="POST"
+    <form:form action="${pageContext.request.contextPath}/plugins/configure/${jtalks:encodeUrl(pluginConfiguration.name)}" method="POST"
                modelAttribute="pluginConfiguration">
         <%-- Plugin configuration values --%>
         <form:hidden path="id" value="${pluginConfiguration.id}"/>
