@@ -104,7 +104,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      *                              not
      * @param sessionStrategy       used in login logic to call onAuthentication hook
      *                              which stored this user to online uses list.
-     * @param authenticationManager for authenticate user
+     * @param authenticationManager to authenticate users
      */
     public TransactionalAuthenticator(PluginLoader pluginLoader, UserDao dao, GroupDao groupDao,
                                       EncryptionService encryptionService,

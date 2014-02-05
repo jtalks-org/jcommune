@@ -16,9 +16,15 @@
 package org.jtalks.jcommune.service.exceptions;
 
 /**
- * Throws if user tries to activate account again
+ * Throws if user tries to activate account second time following the same activation link. At first it doesn't seem
+ * important to deny second activation, but then
+ * <a href="http://jira.jtalks.org/browse/JC-1184">auto-login during activation</a> was implemented which would allow
+ * bad guys to sign in if they figure out the activation link of the user.
  *
  * @author Andrey Ivanov
  */
 public class UserTriesActivatingAccountAgainException extends Exception {
+    public UserTriesActivatingAccountAgainException() {
+        super("User tried to activate his account for the second time which is not allowed.");
+    }
 }
