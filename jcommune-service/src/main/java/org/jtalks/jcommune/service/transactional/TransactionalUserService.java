@@ -25,6 +25,7 @@ import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
@@ -48,7 +49,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.List;
-import org.jtalks.jcommune.model.entity.Language;
 
 /**
  * User service class. This class contains method needed to manipulate with User persistent entity.
@@ -66,15 +66,15 @@ import org.jtalks.jcommune.model.entity.Language;
 public class TransactionalUserService extends AbstractTransactionalEntityService<JCUser, UserDao>
         implements UserService {
 
-    private GroupDao groupDao;
-    private SecurityService securityService;
-    private MailService mailService;
-    private Base64Wrapper base64Wrapper;
-    //Important, use for every password creation.
-    private EncryptionService encryptionService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalUserService.class);
     private final PostDao postDao;
     private final Authenticator authenticator;
-    private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalUserService.class);
+    private final GroupDao groupDao;
+    private final SecurityService securityService;
+    private final MailService mailService;
+    private final Base64Wrapper base64Wrapper;
+    //Important, use for every password creation.
+    private final EncryptionService encryptionService;
 
     /**
      * Create an instance of User entity based service
@@ -224,13 +224,19 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     public void activateAccount(String uuid) throws NotFoundException, UserTriesActivatingAccountAgainException {
         JCUser user = this.getDao().getByUuid(uuid);
         if (user == null) {
+            LOGGER.info("Could not activate user with UUID[{}] because it doesn't exist. Either it was removed from DB "
+                    + "because too much time passed between registration and activation, or there is an error in link"
+                    + ", might be possible the user searches for vulnerabilities in the forum.", uuid);
             throw new NotFoundException();
         } else if (!user.isEnabled()) {
             Group group = groupDao.getGroupByName(AdministrationGroup.USER.getName());
             user.addGroup(group);
             user.setEnabled(true);
             this.getDao().saveOrUpdate(user);
+            LOGGER.info("User [{}] successfully activated", user.getUsername());
         } else {
+            LOGGER.info("User [{}] tried to activate his account again, but that's impossible. Either he clicked the " +
+                    "link again, or someone looks for vulnerabilities in the forum.", user.getUsername());
             throw new UserTriesActivatingAccountAgainException();
         }
     }
@@ -271,7 +277,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     public void checkPermissionToEditOtherProfiles(Long userId) {
         LOGGER.debug("Check permission to edit other profiles for user - " + userId);
     }
-
 
     /**
      * {@inheritDoc}
@@ -327,7 +332,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
 
     /**
      * {@inheritDoc}
-     */    
+     */
     @Override
     public void changeLanguage(JCUser jcUser, Language newLang) {
         jcUser.setLanguage(newLang);

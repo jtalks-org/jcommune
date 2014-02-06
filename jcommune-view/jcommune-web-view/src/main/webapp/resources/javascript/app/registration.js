@@ -73,7 +73,23 @@ $(function () {
                             });
                         }
                         else {
-                            if (resp.result.customError) {
+                            if (!resp.result.customError) {
+                                // we need to remove complex part (userDto. and userDto.captchas[..]) of complex fields,
+                                // such as userDto.email, because these fields are used as elements ids,
+                                // and jquery selector doesn't work with id containing dot.
+                                for (var i = 0; i < resp.result.length; i++) {
+                                    resp.result[i].field = resp.result[i].field.replace(/userDto.captchas\[/g, '')
+                                        .replace(/]/g, '').replace(/userDto./g, '');
+                                    if (resp.result[i].field == "passwordConfirm") {
+                                        $('#password').val('');
+                                        $('#passwordConfirm').val('');
+                                    }
+                                }
+                                // remove previous errors and show new errors
+                                jDialog.prepareDialog(jDialog.dialog);
+                                refreshCaptcha(jDialog.dialog);
+                                jDialog.showErrors(jDialog.dialog, resp.result, '', '');
+                            } else {
                                 if (resp.result.customError == 'connectionError') {
                                     jDialog.createDialog({
                                         type: jDialog.alertType,
@@ -85,18 +101,6 @@ $(function () {
                                         bodyMessage: $labelRegistrationFailture
                                     });
                                 }
-                            } else {
-                                // we need to remove complex part (userDto. and userDto.captchas[..]) of complex fields,
-                                // such as userDto.email, because these fields are used as elements ids,
-                                // and jquery selector doesn't work with id containing dot.
-                                for (var i = 0; i < resp.result.length; i++) {
-                                    resp.result[i].field = resp.result[i].field.replace(/userDto.captchas\[/g, '')
-                                        .replace(/]/g, '').replace(/userDto./g,'');
-                                }
-                                // remove previous errors and show new errors
-                                jDialog.prepareDialog(jDialog.dialog);
-                                refreshCaptcha(jDialog.dialog);
-                                jDialog.showErrors(jDialog.dialog, resp.result, '', '');
                             }
                         }
                     },

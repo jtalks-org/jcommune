@@ -12,19 +12,35 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+package org.jtalks.jcommune.web.tags;
 
-package org.jtalks.jcommune.service.exceptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
- * Throws if user tries to activate account second time following the same activation link. At first it doesn't seem
- * important to deny second activation, but then
- * <a href="http://jira.jtalks.org/browse/JC-1184">auto-login during activation</a> was implemented which would allow
- * bad guys to sign in if they figure out the activation link of the user.
- *
- * @author Andrey Ivanov
+ * The class contains functions for the work with urls.
  */
-public class UserTriesActivatingAccountAgainException extends Exception {
-    public UserTriesActivatingAccountAgainException() {
-        super("User tried to activate his account for the second time which is not allowed.");
+public class UrlUtil {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UrlUtil.class);
+
+    /**
+     * The function encode url.
+     *
+     * @param url not encoded string of url,
+     * @return encoded string.
+     */
+    public static String encodeUrl(String url) {
+        if (url != null) {
+            try {
+                return URLEncoder.encode(url, "UTF-8").replace("+", "%20");
+            } catch (UnsupportedEncodingException e) {
+                LOGGER.error("Could not encode url '{}'", url);
+            }
+        }
+        return "";
     }
+
 }

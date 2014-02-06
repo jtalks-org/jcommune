@@ -66,7 +66,7 @@ public class BBForeignLinksPostprocessorTest {
     public Object[][] preProcessingImages() {
         return new Object[][]{
                 {"<img src=\"http://javatalks.ru/common img\">",
-                        "<img class=\"thumbnail\" src=\"http://javatalks.ru/common%20img\">"}
+                        "<img alt=\" \" class=\"thumbnail\" src=\"http://javatalks.ru/common%20img\">"}
 
         };
     }

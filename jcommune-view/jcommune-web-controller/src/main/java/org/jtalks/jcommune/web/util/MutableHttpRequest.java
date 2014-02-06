@@ -27,18 +27,17 @@ import java.util.HashMap;
  * @author Andrey Ivanov <a.nigredo@gmail.com>
  */
 public class MutableHttpRequest extends HttpServletRequestWrapper {
+    private final HashMap<String, String> params = new HashMap<>();
 
-    private HashMap<String, String> params = new HashMap();
-
-    public MutableHttpRequest(HttpServletRequest request) {
-        super(request);
+    /**
+     * {@inheritDoc}
+     */
+    public MutableHttpRequest(HttpServletRequest originalRequestToWrap) {
+        super(originalRequestToWrap);
     }
 
     /**
-     * Get parameter from request
-     *
-     * @param name parameter name
-     * @return value of parameter
+     * {@inheritDoc}
      */
     public String getParameter(String name) {
         if (params.containsKey(name)) {
@@ -49,12 +48,11 @@ public class MutableHttpRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * Add parameter to request
-     *
-     * @param name  parameter name
-     * @param value parameter value
+     * Adds another parameters to the request, overrides if there was such a parameter.
      */
     public void addParameter(String name, String value) {
         params.put(name, value);
     }
+
+
 }

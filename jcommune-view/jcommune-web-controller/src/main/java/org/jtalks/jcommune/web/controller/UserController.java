@@ -73,10 +73,6 @@ import java.util.Map;
  */
 @Controller
 public class UserController {
-
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
-
     public static final String REGISTRATION = "registration";
     public static final String LOGIN = "login";
     public static final String AFTER_REGISTRATION = "afterRegistration";
@@ -85,21 +81,21 @@ public class UserController {
     public static final String AUTH_SERVICE_FAIL_URL = "redirect:/login?login_error=3";
     public static final String REG_SERVICE_CONNECTION_ERROR_URL = "redirect:/user/new?reg_error=1";
     public static final String REG_SERVICE_UNEXPECTED_ERROR_URL = "redirect:/user/new?reg_error=2";
-
-    private static final String REMEMBER_ME_ON = "on";
-    protected static final String ATTR_USERNAME = "username";
-    protected static final String ATTR_LOGIN_ERROR = "login_error";
     public static final int LOGIN_TRIES_AFTER_LOCK = 3;
     public static final int SLEEP_MILLISECONDS_AFTER_LOCK = 500;
+    protected static final String ATTR_USERNAME = "username";
+    protected static final String ATTR_LOGIN_ERROR = "login_error";
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+    private static final String REMEMBER_ME_ON = "on";
     private final UserService userService;
     private final Authenticator authenticator;
     private final PluginService pluginService;
     private final UserService plainPasswordUserService;
 
     /**
-     * @param userService   to delegate business logic invocation
-     * @param authenticator default authenticator
-     * @param pluginService for communication with available registration or authentication plugins
+     * @param userService              to delegate business logic invocation
+     * @param authenticator            default authenticator
+     * @param pluginService            for communication with available registration or authentication plugins
      * @param plainPasswordUserService strategy for authenticating by password without hashing
      */
     @Autowired
@@ -299,7 +295,7 @@ public class UserController {
             return "redirect:/";
         } catch (NotFoundException e) {
             return "errors/activationExpired";
-        } catch(UserTriesActivatingAccountAgainException e) {
+        } catch (UserTriesActivatingAccountAgainException e) {
             return "redirect:/";
         }
     }
@@ -326,10 +322,9 @@ public class UserController {
     }
 
     /**
-     * Get request referer
-     *
-     * @param request
-     * @return
+     * Gets request referrer - a page user was directed from e.g. when user followed a link or there was a redirect. In
+     * most cases when user browses our forum we put the referer on our own - the page user previously was at. This is
+     * done so that we can sign in and sign out user and redirect him back to original page.
      */
     private String getReferer(HttpServletRequest request) {
         String referer = request.getHeader("referer");
@@ -361,7 +356,7 @@ public class UserController {
         boolean isAuthenticated;
         try {
             isAuthenticated = loginWithLockHandling(username, password, rememberMeBoolean, request, response,
-            userService);
+                    userService);
         } catch (NoConnectionException e) {
             return new JsonResponse(JsonResponseStatus.FAIL,
                     new ImmutableMap.Builder<String, String>().put("customError", "connectionError").build());
@@ -427,6 +422,8 @@ public class UserController {
             try {
                 return userService.loginUser(username, password, rememberMeBoolean, request, response);
             } catch (HibernateOptimisticLockingFailureException e) {
+                //we don't handle the exception for several times, just re-reading the content and trying again
+                //after the max times exceeds, only then we give up.
             }
         }
         try {

@@ -69,7 +69,7 @@ public class BBForeignLinksPostprocessor implements TextPostProcessor {
                         encoded.replaceFirst("<a.*href=\"", "<a href=\""));
             } else if(href.startsWith("<img")) {
                 decodedText = decodedText.replace(href,
-                        encoded.replaceFirst("<img.*src=\"", "<img class=\"thumbnail\" src=\""));
+                        encoded.replaceFirst("<img.*src=\"", "<img alt=\" \" class=\"thumbnail\" src=\""));
             }
         }
 
