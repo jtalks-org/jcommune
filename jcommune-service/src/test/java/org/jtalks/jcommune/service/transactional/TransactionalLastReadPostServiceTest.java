@@ -184,7 +184,7 @@ public class TransactionalLastReadPostServiceTest {
     }
 
     @Test
-    public void markTopicPageAsReadShouldReupdateLastReadPostInRepository() {
+    public void markTopicPageAsReadShouldReupdateLastReadPostInRepositoryWhenLastPostOnPageDateIsNewer() {
         Topic topic = this.createTestTopic();
         LastReadPost post = new LastReadPost(user, topic, topic.getLastPost().getCreationDate().minusMinutes(1));
         when(userService.getCurrentUser()).thenReturn(user);
@@ -197,7 +197,7 @@ public class TransactionalLastReadPostServiceTest {
     }
 
     @Test
-    public void markTopicPageAsReadShouldNotReupdateLastReadPostInRepository() {
+    public void markTopicPageAsReadShouldNotReupdateLastReadPostInRepositoryLastPostOnPageDateIsNotNewer() {
         Topic topic = this.createTestTopic();
         LastReadPost post = new LastReadPost(user, topic, topic.getLastPost().getCreationDate());
         when(userService.getCurrentUser()).thenReturn(user);
