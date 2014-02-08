@@ -135,8 +135,8 @@ public class TransactionalLastReadPostServiceTest {
     @Test
     public void updateLastReadPostToAuthUserWhenAllForumMarkedBefore() {
         Topic topic = this.createTestTopic();
-        user.setAllForumMarkedAsReadTime(topic.getModificationDate().minusSeconds(1));
-        LastReadPost post = new LastReadPost(user, topic, new DateTime());
+        user.setAllForumMarkedAsReadTime(topic.getModificationDate().minusMinutes(2));
+        LastReadPost post = new LastReadPost(user, topic, topic.getLastPost().getCreationDate().minusMinutes(1));
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
 
@@ -149,7 +149,7 @@ public class TransactionalLastReadPostServiceTest {
     public void updateLastReadPostToAuthUserWhenAllForumMarkedNull() {
         Topic topic = this.createTestTopic();
         user.setAllForumMarkedAsReadTime(null);
-        LastReadPost post = new LastReadPost(user, topic, new DateTime());
+        LastReadPost post = new LastReadPost(user, topic, topic.getLastPost().getCreationDate().minusMinutes(1));
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
 
@@ -186,13 +186,26 @@ public class TransactionalLastReadPostServiceTest {
     @Test
     public void markTopicPageAsReadShouldReupdateLastReadPostInRepository() {
         Topic topic = this.createTestTopic();
-        LastReadPost post = new LastReadPost(user, topic, new DateTime());
+        LastReadPost post = new LastReadPost(user, topic, topic.getLastPost().getCreationDate().minusMinutes(1));
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
 
         lastReadPostService.markTopicPageAsRead(topic, 1);
 
         verify(lastReadPostDao).saveOrUpdate(argThat(
+                new LastReadPostMatcher(topic, topic.getLastPost().getCreationDate())));
+    }
+
+    @Test
+    public void markTopicPageAsReadShouldNotReupdateLastReadPostInRepository() {
+        Topic topic = this.createTestTopic();
+        LastReadPost post = new LastReadPost(user, topic, topic.getLastPost().getCreationDate());
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
+
+        lastReadPostService.markTopicPageAsRead(topic, 1);
+
+        verify(lastReadPostDao, never()).saveOrUpdate(argThat(
                 new LastReadPostMatcher(topic, topic.getLastPost().getCreationDate())));
     }
 
@@ -236,15 +249,28 @@ public class TransactionalLastReadPostServiceTest {
     }
 
     @Test
-    public void markTopicAsReadShouldReupdateLastReadPostInRepository() {
+    public void markTopicAsReadShouldReupdateLastReadPostInRepositoryIfLastReadDateIsNewer() {
         Topic topic = this.createTestTopic();
-        LastReadPost post = new LastReadPost(user, topic, new DateTime());
+        LastReadPost post = new LastReadPost(user, topic, new DateTime(1L));
         when(userService.getCurrentUser()).thenReturn(user);
         when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
 
         lastReadPostService.markTopicAsRead(topic);
 
         verify(lastReadPostDao).saveOrUpdate(argThat(
+                new LastReadPostMatcher(topic, topic.getLastPost().getCreationDate())));
+    }
+
+    @Test
+    public void markTopicAsReadShouldNotReupdateLastReadPostInRepositoryIfLastReadDateIsNotNew() {
+        Topic topic = this.createTestTopic();
+        LastReadPost post = new LastReadPost(user, topic, topic.getLastPost().getCreationDate());
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
+
+        lastReadPostService.markTopicAsRead(topic);
+
+        verify(lastReadPostDao, never()).saveOrUpdate(argThat(
                 new LastReadPostMatcher(topic, topic.getLastPost().getCreationDate())));
     }
 
