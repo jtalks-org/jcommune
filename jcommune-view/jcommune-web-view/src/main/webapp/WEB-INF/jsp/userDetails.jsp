@@ -236,8 +236,7 @@
         </h4>
         <ul id="contacts" class="contacts">
           <c:forEach var="contact" items="${user.userContacts}">
-            <li><span class="contact"
-                    title="<c:out value='${contact.type.typeName}'/>">
+            <li><span class="contact">
                   <img src="${pageContext.request.contextPath}${contact.type.icon}"
                        alt="<c:out value="${contact.type.typeName}"/>" title="<c:out value="${contact.type.typeName}"/>">
                   <span class="space-left-small">
