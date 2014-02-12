@@ -23,6 +23,8 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.rememberme.CookieTheftException;
@@ -40,11 +42,21 @@ import org.springframework.security.web.authentication.rememberme.RememberMeAuth
  * </p>
  */
 public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
+    
+    private final static Logger LOGGER = LoggerFactory.getLogger(RememberMeServices.class);
     private final static String REMOVE_TOKEN_QUERY = "DELETE FROM persistent_logins WHERE series = ? AND token = ?";
-    private final static int TOCKEN_CACHE_MAX_SIZE = 500;
+    
+    /**
+     * We need provide RememberMeServices sufficiently large cache to hold information about 
+     * a lot of requests, because "remember-me" authentication bug is rarely reproduced.
+     * @see <a href="http://jira.jtalks.org/browse/JC-1743">JIRA issue</a>
+     */
+    private final static int TOKEN_CACHE_MAX_SIZE = 500;
+    private final static String BROWSER_VERSION_REQUEST_HEADER = "User-Agent";
+    
     private final RememberMeCookieDecoder rememberMeCookieDecoder;
     private final JdbcTemplate jdbcTemplate;
-    private final Queue<PersistentRememberMeToken> tokenCache = new ConcurrentLinkedQueue<>();
+    private final Queue<UserInfo> userInfoCache = new ConcurrentLinkedQueue<>();
     private PersistentTokenRepository tokenRepository;
 
     /**
@@ -74,59 +86,59 @@ public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
             }
             cancelCookie(request, response);
             jdbcTemplate.update(REMOVE_TOKEN_QUERY, seriesAndToken);
-            removeTokenFromCache(seriesAndToken);
+            removeUserInfoFromCache(seriesAndToken[0]);
         }
     }
     
     /**
      * Temporary solution to localize "remember-me" authentication bug. 
-     * Recently used tokens stores in cache. If CookieTheftException was thrown, performed search of tokens in cache. 
+     * Recently used tokens and information about users, who use this tokens  stores in cache. 
+     * If CookieTheftException was thrown, performed search of user info in cache. 
      * {@inheritDoc}
+     * @see <a href="http://jira.jtalks.org/browse/JC-1743">JIRA issue</a>
      */
     @Override
     protected UserDetails processAutoLoginCookie(String[] cookieTokens, HttpServletRequest request, HttpServletResponse response) {
-         if (cookieTokens.length != 2) {
+        if (cookieTokens.length != 2) {
             throw new InvalidCookieException("Cookie token did not contain " + 2 +
                     " tokens, but contained '" + Arrays.asList(cookieTokens) + "'");
         }
          
-        final String presentedSeries = cookieTokens[0];
-        final PersistentRememberMeToken token = tokenRepository.getTokenForSeries(presentedSeries);
-        
+        String presentedSeries = cookieTokens[0];
+        PersistentRememberMeToken token = tokenRepository.getTokenForSeries(presentedSeries);
          if (token == null) {
             throw new RememberMeAuthenticationException("No persistent token found for series id: " + presentedSeries);
         }
-        cacheToken(token);
+        UserInfo info = new UserInfo(token, request.getRemoteAddr(), request.getRequestURI(), System.currentTimeMillis(),
+                request.getHeader(BROWSER_VERSION_REQUEST_HEADER), request.getLocale());
+        cacheUserInfo(info);
         
         try {
-            final UserDetails userDetails = super.processAutoLoginCookie(cookieTokens, request, response); 
+            UserDetails userDetails = super.processAutoLoginCookie(cookieTokens, request, response); 
             return userDetails;
             
         } catch (CookieTheftException cte) {
-            
-            logger.debug("Search for token in token cache");
-            
-            final PersistentRememberMeToken cachedTocken = findTockenInCache(cookieTokens);
-            if (cachedTocken == null) {
-                if (logger.isDebugEnabled()) {
-                logger.debug("Token with series '" + cachedTocken.getSeries() + "' and value '"
-                        + cachedTocken.getTokenValue() + "' not found in cache");
+
+            LOGGER.debug("Search for user info in cache");
+            UserInfo cachedInfo = findUserInfoInCache(cookieTokens);
+            if (cachedInfo == null) {
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Equivalent user info not found in cache. Current user info is {}", info);
                 }
                 throw cte;
             }
             
-            if (logger.isDebugEnabled()) {
-                logger.debug("Token for user '" + cachedTocken.getUsername() + "', series '" +
-                    cachedTocken.getSeries() + "' found in cache");
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("User info {} found in cache", cachedInfo);
             }
             try {
-                tokenRepository.createNewToken(cachedTocken);
-                setCookie(new String[] {cachedTocken.getSeries(), cachedTocken.getTokenValue()}, getTokenValiditySeconds(),
-                        request, response);
+                tokenRepository.createNewToken(cachedInfo.getToken());
+                setCookie(new String[] {cachedInfo.getToken().getSeries(), cachedInfo.getToken().getTokenValue()}, 
+                        getTokenValiditySeconds(), request, response);
             } catch (DataAccessException e) {
-                 logger.error("Failed to save persistent token ", e);
+                 LOGGER.error("Failed to save persistent token ", e);
             }
-            return getUserDetailsService().loadUserByUsername(cachedTocken.getUsername());
+            return getUserDetailsService().loadUserByUsername(cachedInfo.getToken().getUsername());
         }
     }
     
@@ -140,30 +152,29 @@ public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
     }
     
 
-    private void cacheToken(PersistentRememberMeToken token) {
-        if (tokenCache.size() == TOCKEN_CACHE_MAX_SIZE) {
-            tokenCache.poll();
+    private void cacheUserInfo(UserInfo info) {
+        if (userInfoCache.size() >= TOKEN_CACHE_MAX_SIZE) {
+            userInfoCache.poll();
         }
-        tokenCache.add(token);
+        userInfoCache.add(info);
     }
     
-    private PersistentRememberMeToken findTockenInCache(String[] cookieTokens) {
-        final String presentedSeries = cookieTokens[0];
-        final String presentedToken = cookieTokens[1];
-        for (final PersistentRememberMeToken token : tokenCache) {
-            if (presentedToken.equals(token.getTokenValue()) && presentedSeries.equals(token.getSeries())) {
-                return token;
+    private UserInfo findUserInfoInCache(String[] cookieTokens) {
+        String presentedSeries = cookieTokens[0];
+        String presentedToken = cookieTokens[1];
+        for (UserInfo info : userInfoCache) {
+            if (presentedToken.equals(info.getToken().getTokenValue()) 
+                    && presentedSeries.equals(info.getToken().getSeries())) {
+                return info;
             }
         }
         return null;
     }
     
-    private void removeTokenFromCache(String[] seriesAndToken) {
-        final String presentedSeries = seriesAndToken[0];
-        final String presentedToken = seriesAndToken[1];
-        for (final PersistentRememberMeToken token : tokenCache) {
-            if (presentedToken.equals(token.getTokenValue()) && presentedSeries.equals(token.getSeries())) {
-                tokenCache.remove(token);
+    private void removeUserInfoFromCache(String presentedSeries) {
+        for (UserInfo info : userInfoCache) {
+            if (presentedSeries.equals(info.getToken().getTokenValue())) {
+                userInfoCache.remove(info);
             }
         }
     }
