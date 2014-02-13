@@ -81,6 +81,7 @@ public class UserController {
     public static final String AUTH_SERVICE_FAIL_URL = "redirect:/login?login_error=3";
     public static final String REG_SERVICE_CONNECTION_ERROR_URL = "redirect:/user/new?reg_error=1";
     public static final String REG_SERVICE_UNEXPECTED_ERROR_URL = "redirect:/user/new?reg_error=2";
+    public static final String NULL_REPRESENTATION = "null";
     public static final int LOGIN_TRIES_AFTER_LOCK = 3;
     public static final int SLEEP_MILLISECONDS_AFTER_LOCK = 500;
     protected static final String ATTR_USERNAME = "username";
@@ -336,7 +337,10 @@ public class UserController {
             } else {
                 String customReferer =
                         String.valueOf(session.getAttribute(RefererKeepInterceptor.CUSTOM_REFERER));
-                if (customReferer != null) {
+                /** We need check this !NULL_REPRESENTATION.equals(referer) strange condition 
+                 *  because after CookieTheftException customReferer equals "null" (not null)
+                 */
+                if (customReferer != null && !NULL_REPRESENTATION.equals(customReferer)) {
                     referer = customReferer;
                 }
             }
@@ -406,9 +410,8 @@ public class UserController {
             localeResolver.setLocale(request, response, userService.getCurrentUser().getLanguage().getLocale());
             return new ModelAndView("redirect:" + referer);
         } else {
-            ModelAndView modelAndView = new ModelAndView(LOGIN);
+            ModelAndView modelAndView = new ModelAndView(AUTH_FAIL_URL);
             modelAndView.addObject(ATTR_USERNAME, username);
-            modelAndView.addObject(ATTR_LOGIN_ERROR, 1);
             modelAndView.addObject(REFERER_ATTR, referer);
             return modelAndView;
         }
