@@ -82,6 +82,7 @@ public class UserController {
     public static final String REG_SERVICE_CONNECTION_ERROR_URL = "redirect:/user/new?reg_error=1";
     public static final String REG_SERVICE_UNEXPECTED_ERROR_URL = "redirect:/user/new?reg_error=2";
     public static final String NULL_REPRESENTATION = "null";
+    public static final String MAIN_PAGE_REFERER = "/";
     public static final int LOGIN_TRIES_AFTER_LOCK = 3;
     public static final int SLEEP_MILLISECONDS_AFTER_LOCK = 500;
     protected static final String ATTR_USERNAME = "username";
@@ -397,6 +398,9 @@ public class UserController {
                               HttpServletRequest request, HttpServletResponse response) {
         boolean rememberMeBoolean = rememberMe.equals(REMEMBER_ME_ON);
         boolean isAuthenticated;
+        if (referer == null || referer.contains(LOGIN)) {
+            referer = MAIN_PAGE_REFERER;
+        }
         try {
             isAuthenticated = loginWithLockHandling(username, password, rememberMeBoolean, request, response,
                     userService);
