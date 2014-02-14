@@ -230,11 +230,4 @@
       <function-signature>boolean isExists(org.jtalks.jcommune.model.entity.JCUser)</function-signature>
   </function>
 
-  <function>
-      <description>The function to encode url.</description>
-      <name>encodeUrl</name>
-      <function-class>org.jtalks.jcommune.web.tags.UrlUtil</function-class>
-      <function-signature>java.lang.String encodeUrl(java.lang.String)</function-signature>
-  </function>
-
 </taglib>

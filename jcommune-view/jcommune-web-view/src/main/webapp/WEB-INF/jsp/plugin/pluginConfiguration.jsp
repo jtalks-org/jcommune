@@ -34,8 +34,10 @@
     </div>
     <span class="inline-block"></span>
 
-    <form:form action="${pageContext.request.contextPath}/plugins/configure/${jtalks:encodeUrl(pluginConfiguration.name)}" method="POST"
-               modelAttribute="pluginConfiguration">
+    <spring:url var="action" value="${pageContext.request.contextPath}/plugins/configure/{pluginName}">
+        <spring:param name="pluginName" value="${pluginConfiguration.name}" />
+    </spring:url>
+    <form:form action="${action}" method="POST" modelAttribute="pluginConfiguration">
         <%-- Plugin configuration values --%>
         <form:hidden path="id"/>
         <form:hidden path="name" />
