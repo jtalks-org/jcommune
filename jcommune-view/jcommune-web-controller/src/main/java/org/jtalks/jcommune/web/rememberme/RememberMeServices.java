@@ -53,6 +53,7 @@ public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
      */
     private final static int TOKEN_CACHE_MAX_SIZE = 500;
     private final static String BROWSER_VERSION_REQUEST_HEADER = "User-Agent";
+    private final static String IP_ADDESS_HEADER = "X-FORWARDED-FOR";
     
     private final RememberMeCookieDecoder rememberMeCookieDecoder;
     private final JdbcTemplate jdbcTemplate;
@@ -109,7 +110,7 @@ public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
          if (token == null) {
             throw new RememberMeAuthenticationException("No persistent token found for series id: " + presentedSeries);
         }
-        UserInfo info = new UserInfo(token, request.getRemoteAddr(), request.getRequestURI(), System.currentTimeMillis(),
+        UserInfo info = new UserInfo(token, getClientIpAddress(request), request.getRequestURI(), System.currentTimeMillis(),
                 request.getHeader(BROWSER_VERSION_REQUEST_HEADER), request.getLocale());
         cacheUserInfo(info);
         
@@ -177,5 +178,13 @@ public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
                 userInfoCache.remove(info);
             }
         }
+    }
+    
+    private String getClientIpAddress(HttpServletRequest request) {
+        String ipAddress = request.getHeader(IP_ADDESS_HEADER);
+        if (ipAddress == null) {
+            ipAddress = request.getRemoteAddr();
+        }
+        return ipAddress;
     }
 }
