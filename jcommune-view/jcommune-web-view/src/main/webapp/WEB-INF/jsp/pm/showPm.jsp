@@ -20,6 +20,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <head>
   <title>
@@ -30,7 +31,8 @@
 <body>
 
 <div class="container">
-  <h2><c:out value="${pm.title}"/></h2>
+  <h2><c:out value="${fn:substring(pm.title,0,60)}"/></h2>
+    <h2><c:out value="${fn:substring(pm.title,60,fn:length(pm.title))}"/></h2>
   <hr/>
   <div class="row">
     <div class="span2">
