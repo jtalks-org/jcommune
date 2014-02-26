@@ -18,6 +18,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.validation.annotations.Matches;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Null;
 
 /**
  * DTO for {@link org.jtalks.jcommune.model.entity.JCUser} object. Required for validation and binding
@@ -32,6 +33,9 @@ public class RegisterUserDto {
     private UserDto userDto;
 
     private String passwordConfirm;
+    
+    @Null
+    private String honeypotCaptcha;
 
     /**
      * Get password confirmation.
@@ -76,5 +80,13 @@ public class RegisterUserDto {
      */
     public void setUserDto(UserDto userDto) {
         this.userDto = userDto;
+    }
+
+    public String getHoneypotCaptcha() {
+        return honeypotCaptcha;
+    }
+
+    public void setHoneypotCaptcha(String honeypotCaptcha) {
+        this.honeypotCaptcha = honeypotCaptcha;
     }
 }

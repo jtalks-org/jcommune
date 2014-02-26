@@ -35,6 +35,7 @@ $labelContactsAddDialog = '<spring:message code="label.contacts.addDialog" htmlE
 $labelRegistrationSuccess = '<spring:message code="label.registration.success" htmlEscape="true"/>';
 $labelRegistrationFailture = '<spring:message code="label.registration.failture" htmlEscape="true"/>';
 $labelRegistrationConnectionError = '<spring:message code="label.registration.connection.error" htmlEscape="true"/>';
+$labelHoneypotCaptchaFilled = '<spring:message code="label.honeypot.not.null" htmlEscape="true"/>';
 $labelAuthenticationConnectionError = '<spring:message code="label.authentication.connection.error" htmlEscape="true"/>';
 $labelUrlHeader = '<spring:message code="label.url.header" htmlEscape="true"/>';
 $labelUrlText = '<spring:message code="label.url.text" htmlEscape="true"/>';
@@ -74,6 +75,7 @@ $labelUsername = '<spring:message code="label.username" htmlEscape="true"/>';
 $labelEmail = '<spring:message code="label.tip.email" htmlEscape="true"/>';
 $labelPassword = '<spring:message code="label.password" htmlEscape="true"/>';
 $labelPasswordConfirmation = '<spring:message code="label.confirmation" htmlEscape="true"/>';
+$lableHoneypotCaptcha = '<spring:message code="label.tip.honeypot.captcha" htmlEscape="true"/>';
 $signupButtonLabel = '<spring:message code="label.signup" htmlEscape="true"/>';
 $labelCaptcha = '<spring:message code="label.tip.captcha" htmlEscape="true"/>';
 $altCaptcha = '<spring:message code="alt.captcha.image" htmlEscape="true" javaScriptEscape="true"/>';

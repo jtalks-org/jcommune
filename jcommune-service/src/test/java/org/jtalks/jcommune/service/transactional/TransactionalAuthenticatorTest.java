@@ -56,10 +56,17 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.jtalks.jcommune.model.plugins.exceptions.HoneypotCaptchaException;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import static org.testng.Assert.*;
 
 /**
@@ -307,8 +314,8 @@ public class TransactionalAuthenticatorTest {
 
     @Test
     public void registerUserWithCorrectDetailsShouldBeSuccessful()
-            throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
+            throws UnexpectedErrorException, NotFoundException, NoConnectionException, HoneypotCaptchaException {
+        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em", null);
         User commonUser = new User("username", "email@email.em", "password", null);
         when(registrationPlugin.getState()).thenReturn(Plugin.State.ENABLED);
         when(registrationPlugin.registerUser(userDto.getUserDto(), null)).thenReturn(Collections.EMPTY_MAP);
@@ -316,15 +323,15 @@ public class TransactionalAuthenticatorTest {
         when(bindingResult.hasErrors()).thenReturn(false);
         when(userDao.getCommonUserByUsername("username")).thenReturn(commonUser);
 
-        authenticator.register(userDto);
+        authenticator.register(userDto, httpRequest);
 
         verify(bindingResult, never()).rejectValue(anyString(), anyString(), anyString());
     }
 
     @Test
     public void registerUserWithIncorrectDetailsShouldFail()
-            throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        RegisterUserDto userDto = createRegisterUserDto("", "", "");
+            throws UnexpectedErrorException, NotFoundException, NoConnectionException, HoneypotCaptchaException {
+        RegisterUserDto userDto = createRegisterUserDto("", "", "", null);
         Map<String, String> errors = new HashMap<>();
         errors.put("userDto.email", "Invalid email length");
         errors.put("userDto.username", "Invalid username length");
@@ -339,15 +346,15 @@ public class TransactionalAuthenticatorTest {
 
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        BindingResult result = authenticator.register(userDto);
+        BindingResult result = authenticator.register(userDto, httpRequest);
 
         assertEquals(result.getFieldErrors().size(), 3);
     }
 
     @Test(expectedExceptions = NoConnectionException.class)
     public void registerUserShouldFailIfPluginThrowsNoConnectionException()
-            throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
+            throws UnexpectedErrorException, NotFoundException, NoConnectionException, HoneypotCaptchaException {
+        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em", null);
         RegistrationPlugin plugin = mock(RegistrationPlugin.class);
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
         when(plugin.registerUser(userDto.getUserDto(), 1L))
@@ -357,13 +364,13 @@ public class TransactionalAuthenticatorTest {
 
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        authenticator.register(userDto);
+        authenticator.register(userDto, httpRequest);
     }
 
     @Test(expectedExceptions = UnexpectedErrorException.class)
     public void registerUserShouldFailIfPluginThrowsUnexpectedErrorException()
-            throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
+            throws UnexpectedErrorException, NotFoundException, NoConnectionException, HoneypotCaptchaException {
+        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em", null);
         RegistrationPlugin plugin = mock(RegistrationPlugin.class);
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
         when(plugin.registerUser(userDto.getUserDto(), 1L))
@@ -371,40 +378,60 @@ public class TransactionalAuthenticatorTest {
         when(pluginService.getRegistrationPlugins()).thenReturn(
                 new ImmutableMap.Builder<Long, RegistrationPlugin>().put(1L, plugin).build());
 
-        authenticator.register(userDto);
+        authenticator.register(userDto, httpRequest);
+    }
+    
+    @Test(expectedExceptions = HoneypotCaptchaException.class)
+    public void registerUserWithNotNullHoneypotCaptchaShouldFail()
+            throws UnexpectedErrorException, NotFoundException, NoConnectionException, HoneypotCaptchaException {
+        final RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em", "anyString");
+        doAnswer(new Answer() {
+
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                BeanPropertyBindingResult res = (BeanPropertyBindingResult)args[1];
+                res.addError(new FieldError("registrationDao", TransactionalAuthenticator.HONEYPOT_FIELD,
+                        "Must not be null"));
+                return res;
+            }
+        }).when(validator).validate(any(), any(BeanPropertyBindingResult.class));
+
+        authenticator.register(userDto, httpRequest);
     }
 
     @Test
     public void defaultRegistrationShouldFailIfValidationErrorsOccurred()
-            throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
+            throws UnexpectedErrorException, NotFoundException, NoConnectionException, HoneypotCaptchaException {
+        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em", null);
         when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Collections.EMPTY_LIST);
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        authenticator.register(userDto);
+        authenticator.register(userDto, httpRequest);
 
         verify(bindingResult, never()).rejectValue(anyString(), anyString(), anyString());
     }
 
     @Test
     public void defaultRegistrationWithCorrectDetailsShouldBeSuccessful()
-            throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
+            throws UnexpectedErrorException, NotFoundException, NoConnectionException, HoneypotCaptchaException {
+        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em", null);
         when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Collections.EMPTY_LIST);
         when(bindingResult.hasErrors()).thenReturn(false);
 
-        authenticator.register(userDto);
+        authenticator.register(userDto, httpRequest);
 
         verify(bindingResult, never()).rejectValue(anyString(), anyString(), anyString());
     }
 
-    private RegisterUserDto createRegisterUserDto(String username, String password, String email) {
+    private RegisterUserDto createRegisterUserDto(String username, String password, String email, String honeypotCaptcha) {
         RegisterUserDto registerUserDto = new RegisterUserDto();
         UserDto userDto = new UserDto();
         userDto.setUsername(username);
         userDto.setEmail(email);
         userDto.setPassword(password);
         registerUserDto.setUserDto(userDto);
+        registerUserDto.setHoneypotCaptcha(honeypotCaptcha);
         return registerUserDto;
     }
 }

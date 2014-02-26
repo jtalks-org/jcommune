@@ -60,6 +60,8 @@ import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import org.jtalks.jcommune.model.dto.UserDto;
+import org.jtalks.jcommune.model.plugins.exceptions.HoneypotCaptchaException;
 
 /**
  * This controller handles custom authentication actions
@@ -81,6 +83,7 @@ public class UserController {
     public static final String AUTH_SERVICE_FAIL_URL = "redirect:/login?login_error=3";
     public static final String REG_SERVICE_CONNECTION_ERROR_URL = "redirect:/user/new?reg_error=1";
     public static final String REG_SERVICE_UNEXPECTED_ERROR_URL = "redirect:/user/new?reg_error=2";
+    public static final String REG_SERVICE_HONEYPOT_FILLED_ERROR_URL = "redirect:/user/new?reg_error=3";
     public static final String NULL_REPRESENTATION = "null";
     public static final String MAIN_PAGE_REFERER = "/";
     public static final int LOGIN_TRIES_AFTER_LOCK = 3;
@@ -193,11 +196,13 @@ public class UserController {
         BindingResult errors;
         try {
             registerUserDto.getUserDto().setLanguage(Language.byLocale(locale));
-            errors = authenticator.register(registerUserDto);
+            errors = authenticator.register(registerUserDto, request);
         } catch (NoConnectionException e) {
             return new ModelAndView(REG_SERVICE_CONNECTION_ERROR_URL);
         } catch (UnexpectedErrorException e) {
             return new ModelAndView(REG_SERVICE_UNEXPECTED_ERROR_URL);
+        } catch (HoneypotCaptchaException e) {
+            return new ModelAndView(REG_SERVICE_HONEYPOT_FILLED_ERROR_URL);
         }
         if (errors.hasErrors()) {
             ModelAndView mav = new ModelAndView(REGISTRATION);
@@ -220,17 +225,21 @@ public class UserController {
     @RequestMapping(value = "/user/new_ajax", method = RequestMethod.POST)
     @ResponseBody
     public JsonResponse registerUserAjax(@ModelAttribute("newUser") RegisterUserDto registerUserDto,
+                                         HttpServletRequest request,
                                          Locale locale) {
         BindingResult errors;
         try {
             registerUserDto.getUserDto().setLanguage(Language.byLocale(locale));
-            errors = authenticator.register(registerUserDto);
+            errors = authenticator.register(registerUserDto, request);
         } catch (NoConnectionException e) {
             return new JsonResponse(JsonResponseStatus.FAIL,
                     new ImmutableMap.Builder<String, String>().put("customError", "connectionError").build());
         } catch (UnexpectedErrorException e) {
             return new JsonResponse(JsonResponseStatus.FAIL,
                     new ImmutableMap.Builder<String, String>().put("customError", "unexpectedError").build());
+        } catch (HoneypotCaptchaException e) {
+            return new JsonResponse(JsonResponseStatus.FAIL,
+                    new ImmutableMap.Builder<String, String>().put("customError", "honeypotCaptchaNotNull").build());
         }
         if (errors.hasErrors()) {
             return new JsonResponse(JsonResponseStatus.FAIL, errors.getAllErrors());
@@ -238,7 +247,7 @@ public class UserController {
 
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
-
+        
     /**
      * Get html from available registration plugins.
      *

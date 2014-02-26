@@ -59,6 +59,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import org.jtalks.jcommune.model.plugins.exceptions.HoneypotCaptchaException;
 
 /**
  * Serves for authentication and registration user.
@@ -80,6 +81,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      */
     public static final boolean DEFAULT_AUTOSUBSCRIBE = true;
     public static final boolean DEFAULT_SEND_PM_NOTIFICATION = true;
+    public static final String HONEYPOT_FIELD = "honeypotCaptcha";
 
     private PluginLoader pluginLoader;
     private EncryptionService encryptionService;
@@ -320,8 +322,8 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      * {@inheritDoc}
      */
     @Override
-    public BindingResult register(RegisterUserDto registerUserDto)
-            throws UnexpectedErrorException, NoConnectionException {
+    public BindingResult register(RegisterUserDto registerUserDto, HttpServletRequest request)
+            throws UnexpectedErrorException, NoConnectionException, HoneypotCaptchaException {
         BindingResult result = new BeanPropertyBindingResult(registerUserDto, "newUser");
         BindingResult jcErrors = new BeanPropertyBindingResult(registerUserDto, "newUser");
         validator.validate(registerUserDto, jcErrors);
@@ -338,6 +340,10 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
                 userDto.setPassword(encodedPassword);
                 storeRegisteredUser(registerUserDto.getUserDto());
             }
+        } else if (honeypotCaptchaFilled(result)) {
+                LOGGER.debug("Bot try to register. Username - {}, email - {}, ip - {}", 
+                        new String[]{userDto.getUsername(), userDto.getEmail(), getClientIpAddress(request)});
+                throw new HoneypotCaptchaException();
         }
         return result;
     }
@@ -364,6 +370,13 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
                 dstErrors.addError(error);
             }
         }
+    }
+    
+    private boolean honeypotCaptchaFilled(BindingResult errors) {
+        if (errors.hasFieldErrors(HONEYPOT_FIELD)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -397,5 +410,13 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         mailService.sendAccountActivationMail(user);
         LOGGER.info("JCUser registered: {}", user.getUsername());
         return user;
+    }
+    
+    /**
+     * Sets specified validator. Needed for tests.
+     * @param validator Validator to be setted.
+     */
+    public void setValidator(Validator validator) {
+        this.validator = validator;
     }
 }
