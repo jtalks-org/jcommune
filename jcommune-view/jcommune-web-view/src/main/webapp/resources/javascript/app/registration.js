@@ -43,7 +43,8 @@ $(function () {
                 Utils.createFormElement($labelUsername, 'username', 'text', 'first') +
                     Utils.createFormElement($labelEmail, 'email', 'text') +
                     Utils.createFormElement($labelPassword, 'password', 'password') +
-                    Utils.createFormElement($labelPasswordConfirmation, 'passwordConfirm', 'password');
+                    Utils.createFormElement($labelPasswordConfirmation, 'passwordConfirm', 'password') +
+                    Utils.createFormElement($lableHoneypotCaptcha, 'honeypotCaptcha', 'text', 'hide-element');
             for (var pluginId in params) {
                 bodyContent += params[pluginId];
             }
@@ -90,17 +91,10 @@ $(function () {
                                 refreshCaptcha(jDialog.dialog);
                                 jDialog.showErrors(jDialog.dialog, resp.result, '', '');
                             } else {
-                                if (resp.result.customError == 'connectionError') {
-                                    jDialog.createDialog({
-                                        type: jDialog.alertType,
-                                        bodyMessage: $labelRegistrationConnectionError
-                                    });
-                                } else {
-                                    jDialog.createDialog({
-                                        type: jDialog.alertType,
-                                        bodyMessage: $labelRegistrationFailture
-                                    });
-                                }
+                                jDialog.createDialog({
+                                    type: jDialog.alertType,
+                                    bodyMessage: getCustomErrorMessage(resp.result.customError)
+                                });
                             }
                         }
                     },
@@ -181,9 +175,20 @@ function composeQuery(signupDialog) {
     var query = 'userDto.username=' + encodeURIComponent(signupDialog.find('#username').val()) +
         '&userDto.password=' + encodeURIComponent(signupDialog.find('#password').val()) +
         '&passwordConfirm=' + encodeURIComponent(signupDialog.find('#passwordConfirm').val()) +
-        '&userDto.email=' + encodeURIComponent(signupDialog.find('#email').val());
+        '&userDto.email=' + encodeURIComponent(signupDialog.find('#email').val()) + 
+        '&honeypotCaptcha=' +encodeURIComponent(signupDialog.find('#honeypotCaptcha').val());
     signupDialog.find('.captcha').each(function() {
         query += '&userDto.captchas[' + $(this).attr('id') + ']=' + encodeURIComponent($(this).val());
     });
     return query;
+}
+
+function getCustomErrorMessage(customError) {
+    if (customError == 'connectionError') {
+        return $labelRegistrationConnectionError;
+    } else if (customError == 'unexpectedError') {
+        return $labelRegistrationFailture;
+    } else {
+        return $labelHoneypotCaptchaFilled
+    }
 }
