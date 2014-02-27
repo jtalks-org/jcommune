@@ -22,14 +22,15 @@ import static org.testng.Assert.assertEquals;
 
 /**
  * @author Evgeniy Naumenko
+ * @author Andrey Pogorelov
  */
 public class EditUserProfileDtoTest {
 
-    private EditUserProfileDto dto;
+    private UserProfileDto dto;
 
     @BeforeMethod
     public void setUp(){
-       dto = new EditUserProfileDto(new JCUser("","",""));
+       dto = new UserProfileDto(new JCUser("","",""));
     }
     @Test
     public void testSetSignature() throws Exception {

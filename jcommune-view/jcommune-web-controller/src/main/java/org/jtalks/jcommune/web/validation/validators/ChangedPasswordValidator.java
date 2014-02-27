@@ -19,7 +19,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
-import org.jtalks.jcommune.web.dto.EditUserProfileDto;
+import org.jtalks.jcommune.web.dto.UserSecurityDto;
 import org.jtalks.jcommune.web.validation.annotations.ChangedPassword;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -32,7 +32,7 @@ import javax.validation.ConstraintValidatorContext;
  *
  * @author Evgeniy Naumenko
  */
-public class ChangedPasswordValidator implements ConstraintValidator<ChangedPassword, EditUserProfileDto> {
+public class ChangedPasswordValidator implements ConstraintValidator<ChangedPassword, UserSecurityDto> {
 
     private String message;
 
@@ -61,7 +61,7 @@ public class ChangedPasswordValidator implements ConstraintValidator<ChangedPass
      * {@inheritDoc}
      */
     @Override
-    public boolean isValid(EditUserProfileDto dto, ConstraintValidatorContext context) {
+    public boolean isValid(UserSecurityDto dto, ConstraintValidatorContext context) {
         JCUser currentUser = userService.getCurrentUser();
         String editedUserName = getUsername(dto.getUserId());
         String currentUserName = currentUser.getUsername();

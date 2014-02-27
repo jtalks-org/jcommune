@@ -14,18 +14,15 @@
  */
 package org.jtalks.jcommune.web.dto;
 
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
-import org.jtalks.common.model.entity.User;
-import org.jtalks.common.validation.annotations.Email;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
-import org.jtalks.jcommune.model.validation.annotations.Matches;
+import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
-import org.jtalks.jcommune.web.validation.annotations.*;
+import org.jtalks.jcommune.service.dto.UserNotificationsContainer;
+import org.jtalks.jcommune.service.dto.UserSecurityContainer;
 
-import javax.validation.constraints.Size;
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * This dto used for transferring data in edit {@link org.jtalks.jcommune.model.entity.JCUser} profile operation.
@@ -35,40 +32,51 @@ import javax.validation.constraints.Size;
  *
  * @author Osadchuck Eugeny
  */
-@Matches(field = "newUserPassword", verifyField = "newUserPasswordConfirm", message = "{password_not_matches}")
-@ChangedEmail
-@ChangedPassword
 public class EditUserProfileDto {
+
+    public static final String SECURITY = "security";
+    public static final String PROFILE = "profile";
+    public static final String NOTIFICATIONS = "notifications";
+    public static final String CONTACTS = "contacts";
+
     private long userId;
     private String username;
-
-    @NotBlank(message = "{validation.not_null}")
-    @Size(max = User.EMAIL_MAX_LENGTH, message = "{user.email.illegal_length}")
-    @Email(message = "{validation.invalid_email_format}")
-    private String email;
-
-    @Size(max = User.USERNAME_FIRSTNAME_MAX_LENGTH, message = "{user.last_name.illegal_length}")
-    private String firstName;
-
-    @Size(max = User.USERNAME_LASTNAME_MAX_LENGTH, message = "{user.first_name.illegal_length}")
-    private String lastName;
-    @Size(max = JCUser.MAX_SIGNATURE_SIZE, message = "{validation.signature.length}")
-    @BbCodeNesting
-    private String signature;
-    private String currentUserPassword;
-    @NullableNotBlank(message = "{validation.not_null}")
-    @Size(min = User.PASSWORD_MIN_LENGTH, max = User.PASSWORD_MAX_LENGTH)
-    private String newUserPassword;
-    private String newUserPasswordConfirm;
-    private Language language;
-    @PageSize(message = "{validation.profile.page.size}")
-    private int pageSize;
-    private boolean autosubscribe;
-    private boolean mentioningNotificationsEnabled;
-    private boolean sendPmNotification;
     private String avatar;
-    @Length(max = JCUser.MAX_LOCATION_SIZE)
-    private String location;
+
+    @Valid
+    UserProfileDto userProfileDto;
+
+    @Valid
+    UserNotificationsDto userNotificationsDto;
+
+    @Valid
+    UserSecurityDto userSecurityDto;
+
+    List<UserContact> contacts;
+
+    public EditUserProfileDto(UserProfileDto userProfileDto, JCUser user) {
+        this.userId = user.getId();
+        this.username = user.getUsername();
+        this.userProfileDto = userProfileDto;
+    }
+
+    public EditUserProfileDto(UserSecurityDto userSecurityDto, JCUser user) {
+        this.userId = user.getId();
+        this.username = user.getUsername();
+        this.userSecurityDto = userSecurityDto;
+    }
+
+    public EditUserProfileDto(UserNotificationsDto userNotificationsDto, JCUser user) {
+        this.userId = user.getId();
+        this.username = user.getUsername();
+        this.userNotificationsDto = userNotificationsDto;
+    }
+
+    public EditUserProfileDto(List<UserContact> contacts, JCUser user) {
+        this.userId = user.getId();
+        this.username = user.getUsername();
+        this.contacts = contacts;
+    }
 
     /**
      * Returns all the page size values available for the user
@@ -94,15 +102,6 @@ public class EditUserProfileDto {
     public EditUserProfileDto(JCUser user) {
         this.userId = user.getId();
         this.username = user.getUsername();
-        this.firstName = user.getFirstName();
-        this.lastName = user.getLastName();
-        this.email = user.getEmail();
-        this.signature = user.getSignature();
-        this.pageSize = user.getPageSize();
-        this.autosubscribe = user.isAutosubscribe();
-        this.mentioningNotificationsEnabled = user.isMentioningNotificationsEnabled();
-        this.location = user.getLocation();
-        this.sendPmNotification = user.isSendPmNotification();
     }
 
     /**
@@ -112,10 +111,31 @@ public class EditUserProfileDto {
      * @return user profile modification info for the service tier
      */
     public UserInfoContainer getUserInfoContainer() {
-        return new UserInfoContainer(this.getFirstName(), this.getLastName(), this.getEmail(),
-                this.getCurrentUserPassword(), this.getNewUserPassword(), this.getSignature(),
-                this.getAvatar(), this.getPageSize(), this.isAutosubscribe(),
-                this.isMentioningNotificationsEnabled(), this.getLocation(), this.isSendPmNotification());
+        UserProfileDto dto = this.getUserProfileDto();
+        return new UserInfoContainer(dto.getFirstName(), dto.getLastName(), dto.getEmail(), dto.getSignature(),
+                this.getAvatar(), dto.getPageSize(), dto.isAutosubscribe(), dto.getLocation());
+    }
+
+    /**
+     * Transforms DTO security info container object - convenience implementation to
+     * be passed to the service layer.
+     *
+     * @return user profile modification info for the service tier
+     */
+    public UserSecurityContainer getUserSecurityContainer() {
+        UserSecurityDto dto = this.getUserSecurityDto();
+        return new UserSecurityContainer(dto.getCurrentUserPassword(), dto.getNewUserPassword());
+    }
+
+    /**
+     * Transforms DTO notification settings container object - convenience implementation to
+     * be passed to the service layer.
+     *
+     * @return user profile modification info for the service tier
+     */
+    public UserNotificationsContainer getUserNotificationsContainer() {
+        UserNotificationsDto dto = this.getUserNotificationsDto();
+        return new UserNotificationsContainer(dto.isMentioningNotificationsEnabled(), dto.isSendPmNotification());
     }
 
     /**
@@ -136,112 +156,6 @@ public class EditUserProfileDto {
         this.userId = userId;
     }
 
-    /**
-     * @return - current user password
-     */
-    public String getCurrentUserPassword() {
-        return currentUserPassword;
-    }
-
-    /**
-     * Set current user password
-     *
-     * @param currentUserPassword - current user password
-     */
-    public void setCurrentUserPassword(String currentUserPassword) {
-        this.currentUserPassword = currentUserPassword;
-    }
-
-    /**
-     * @return - new user password
-     */
-    public String getNewUserPassword() {
-        return newUserPassword;
-    }
-
-    /**
-     * Set new user password
-     *
-     * @param newUserPassword - new user password
-     */
-    public void setNewUserPassword(String newUserPassword) {
-        this.newUserPassword = newUserPassword;
-    }
-
-    /**
-     * @return - new user password confirmation
-     */
-    public String getNewUserPasswordConfirm() {
-        return newUserPasswordConfirm;
-    }
-
-    /**
-     * Set new user password confirmation.
-     *
-     * @param newUserPasswordConfirm - new user password confirmation
-     */
-    public void setNewUserPasswordConfirm(String newUserPasswordConfirm) {
-        this.newUserPasswordConfirm = newUserPasswordConfirm;
-    }
-
-    /**
-     * @see org.jtalks.jcommune.model.entity.JCUser#isAutosubscribe()
-     */
-    public boolean isAutosubscribe() {
-        return autosubscribe;
-    }
-
-    /**
-     * @see JCUser#setAutosubscribe(boolean)
-     */
-    public void setAutosubscribe(boolean autosubscribe) {
-        this.autosubscribe = autosubscribe;
-    }
-
-    /**
-     * @see JCUser#isMentioningNotificationsEnabled()
-     */
-    public boolean isMentioningNotificationsEnabled() {
-        return mentioningNotificationsEnabled;
-    }
-
-    /**
-     * @see JCUser#setMentioningNotificationsEnabled(boolean)
-     */
-    public void setMentioningNotificationsEnabled(
-            boolean mentioningNotificationsEnabled) {
-        this.mentioningNotificationsEnabled = mentioningNotificationsEnabled;
-    }
-
-    /**
-     * @return - user avatar
-     */
-    public String getAvatar() {
-        return avatar;
-    }
-
-    /**
-     * Set user avatar.
-     *
-     * @param avatar - user avatar
-     */
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    /**
-     * @return user page size
-     */
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    /**
-     * @param pageSize user page size
-     */
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
 
     /**
      * Returns all the languages available for the user
@@ -271,103 +185,53 @@ public class EditUserProfileDto {
         this.username = username;
     }
 
+
     /**
-     * Get email.
+     * @return - user avatar
+     */
+    public String getAvatar() {
+        return avatar;
+    }
+
+    /**
+     * Set user avatar.
      *
-     * @return email
+     * @param avatar - user avatar
      */
-    public String getEmail() {
-        return email;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
-    /**
-     * Set email.
-     *
-     * @param email email
-     */
-    public void setEmail(String email) {
-        this.email = email;
+    public List<UserContact> getContacts() {
+        return contacts;
     }
 
-    /**
-     * Get first name.
-     *
-     * @return first name
-     */
-    public String getFirstName() {
-        return firstName;
+    public void setContacts(List<UserContact> contacts) {
+        this.contacts = contacts;
     }
 
-    /**
-     * Set first name.
-     *
-     * @param firstName first name
-     */
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public UserProfileDto getUserProfileDto() {
+        return userProfileDto;
     }
 
-    /**
-     * Get last name.
-     *
-     * @return last name
-     */
-    public String getLastName() {
-        return lastName;
+    public void setUserProfileDto(UserProfileDto userProfileDto) {
+        this.userProfileDto = userProfileDto;
     }
 
-    /**
-     * Set last name.
-     *
-     * @param lastName last name
-     */
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public UserNotificationsDto getUserNotificationsDto() {
+        return userNotificationsDto;
     }
 
-    /**
-     * @return signature
-     */
-    public String getSignature() {
-        return StringUtils.trimToNull(signature);
+    public void setUserNotificationsDto(UserNotificationsDto userNotificationsDto) {
+        this.userNotificationsDto = userNotificationsDto;
     }
 
-    /**
-     * @param signature user signature
-     */
-    public void setSignature(String signature) {
-        this.signature = signature;
+    public UserSecurityDto getUserSecurityDto() {
+        return userSecurityDto;
     }
 
-    /**
-     * @return user location
-     */
-    public String getLocation() {
-        return location;
+    public void setUserSecurityDto(UserSecurityDto userSecurityDto) {
+        this.userSecurityDto = userSecurityDto;
     }
 
-    /**
-     * @param location user location
-     */
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    /**
-     * Check - sending notification is allow
-     *
-     * @return if allow return true else false
-     */
-    public boolean isSendPmNotification() {
-        return sendPmNotification;
-    }
-
-    /**
-     * Set send notification or not
-     *
-     * @param sendPmNotification Send notification or not
-     */
-    public void setSendPmNotification(boolean sendPmNotification) {
-        this.sendPmNotification = sendPmNotification;
-    }
 }
