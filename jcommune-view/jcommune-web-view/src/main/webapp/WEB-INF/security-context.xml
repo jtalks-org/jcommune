@@ -24,7 +24,9 @@
   <!-- Http Security -->
   <security:http auto-config="true" use-expressions="true" create-session="ifRequired" disable-url-rewriting="true">
 
-    <security:session-management session-authentication-strategy-ref="concurrentSessionControlStrategy"/>
+    <security:session-management session-fixation-protection="newSession">
+        <security:concurrency-control session-registry-ref="sessionRegistry" max-sessions="1"/>
+    </security:session-management>
     <security:custom-filter ref="rememberMeCheckFilter" before="FORM_LOGIN_FILTER"/>
 
     <security:intercept-url pattern="/posts/new" access="isAuthenticated()"/>

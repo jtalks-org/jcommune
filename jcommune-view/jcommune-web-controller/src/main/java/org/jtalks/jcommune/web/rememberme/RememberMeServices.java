@@ -125,12 +125,14 @@ public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
             if (cachedInfo == null) {
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("Equivalent user info not found in cache. Current user info is {}", info);
+                    LOGGER.debug("Number of items cached - {}", userInfoCache.size());
                 }
                 throw cte;
             }
             
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("User info {} found in cache", cachedInfo);
+                LOGGER.debug("Number of items cached - {}", userInfoCache.size());
             }
             try {
                 tokenRepository.createNewToken(cachedInfo.getToken());

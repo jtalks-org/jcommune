@@ -71,6 +71,12 @@
           <form:errors path="passwordConfirm" cssClass="help-inline"/>
         </div>
       </div>
+      <div class="hide-element">
+        <span class="reg_info"><spring:message code="label.tip.honeypot.captcha"/></span>
+        <div class="controls">
+          <form:input path="honeypotCaptcha" class="reg_input"/>
+        </div>
+      </div>
 
       <c:forEach items="${registrationPlugins}" var="plugin">
         <div id="plugin-${plugin.key}-body" class="control-group">
@@ -89,6 +95,9 @@
                     </c:when>
                     <c:when test="${param.reg_error == 2}">
                       <spring:message code="label.registration.failture"/>
+                    </c:when>
+                    <c:when test="${param.reg_error == 3}">
+                      <spring:message code="label.honeypot.not.null"/>
                     </c:when>
                   </c:choose>
               </span>

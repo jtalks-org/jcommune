@@ -140,13 +140,7 @@ function sendLoginPost(e) {
             resp = eval('(' + resp + ')');
 
             if (resp.status == 'SUCCESS') {
-                referer = $("#signin").attr("rel");
-                if (referer) {
-                    window.location.href = referer;
-                } else {
-                    location.reload();
-                }
-
+                location.reload();
             }
             else {
                 if (resp.result && resp.result.customError) {

@@ -29,7 +29,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentReme
 class UserInfo {
 
     private static final String STRING_FORMAT = "User info: name - %s, ip-addres - %s, browser ver. - %s, "
-            + "requested URL - %s locale - %s. Token info: value - %s, series - %s, expire date - %s, "
+            + "requested URL - %s locale - %s. Token info: value - %s, series - %s, created - %s, "
             + "holded in cache - %s";
 
     private final PersistentRememberMeToken token;

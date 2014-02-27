@@ -16,12 +16,12 @@ package org.jtalks.jcommune.web.validation.validators;
 
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static org.mockito.MockitoAnnotations.initMocks;
+import org.mockito.Spy;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
@@ -35,8 +35,8 @@ public class BbCodeAwareSizeValidatorTest {
 
     private BbCodeAwareSizeValidator validator;
     
-    @Mock
-    private BBCodeService bbCodeService;
+    @Spy
+    private BBCodeService bbCodeService = new BBCodeService();
 
     @BeforeMethod
     public void init() throws NoSuchFieldException {
@@ -85,8 +85,29 @@ public class BbCodeAwareSizeValidatorTest {
     
     @Test
     public void testMaxLengthWithBbCodes() {
-    	String source = "[b][b]123[/b][/b]";
-    	
+    	String source = "[b][b]1234567890[/b][/b]";
+        
+    	assertTrue(validator.isValid(source, null));
+    }
+    
+    @Test
+    public void testTooLongWithBbCodes() {
+        String source = "[b][b]12345678901[/b][/b]";
+        
+    	assertFalse(validator.isValid(source, null));
+    }
+    
+    @Test
+    public void testTooShortWithBbCodes() {
+        String source = "[b][b]12[/b][/b]";
+        
+    	assertFalse(validator.isValid(source, null));
+    }
+    
+    @Test
+    public void testBBCodesOnly() {
+        String source = "[b][b][/b][/b]";
+        
     	assertFalse(validator.isValid(source, null));
     }
 }

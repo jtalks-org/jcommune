@@ -125,21 +125,23 @@ public class PostController {
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/posts/{postId}")
     public String delete(@PathVariable(POST_ID) Long postId) throws NotFoundException {
-        Post post = postService.get(postId);
-        deletePostWithLockHandling(post);
-        return "redirect:/topics/" + post.getTopic().getId();
+        Topic topic = deletePostWithLockHandling(postId);
+        return "redirect:/topics/" + topic.getId();
     }
 
-    private void deletePostWithLockHandling(Post post) {
+    private Topic deletePostWithLockHandling(Long postId) throws NotFoundException {
         for (int i = 0; i < UserController.LOGIN_TRIES_AFTER_LOCK; i++) {
             try {
+                Post post = postService.get(postId);
                 postService.deletePost(post);
-                return;
+                return post.getTopic();
             } catch (HibernateOptimisticLockingFailureException e) {
             }
         }
         try {
+            Post post = postService.get(postId);
             postService.deletePost(post);
+            return post.getTopic();
         } catch (HibernateOptimisticLockingFailureException e) {
             LOGGER.error("User has been optimistically locked and can't be reread {} times. Username: {}",
                     UserController.LOGIN_TRIES_AFTER_LOCK, userService.getCurrentUser().getUsername());
@@ -221,12 +223,13 @@ public class PostController {
                                @PathVariable(TOPIC_ID) Long topicId,
                                @Valid @ModelAttribute PostDto postDto,
                                BindingResult result) throws NotFoundException {
-        JCUser currentUser = userService.getCurrentUser();
-        Topic topic = topicFetchService.get(topicId);
         postDto.setTopicId(topicId);
-        Page<Post> postsPage = postService.getPosts(topic, page);
-
         if (result.hasErrors()) {
+            JCUser currentUser = userService.getCurrentUser();
+            Topic topic = topicFetchService.get(topicId);
+            postDto.setTopicId(topicId);
+            Page<Post> postsPage = postService.getPosts(topic, page);
+
             return new ModelAndView("topic/postList")
                     .addObject("viewList", locationService.getUsersViewing(topic))
                     .addObject("usersOnline", sessionRegistry.getAllPrincipals())
@@ -237,22 +240,24 @@ public class PostController {
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
         }
 
-        Post newbie = replyToTopicWithLockHandling(postDto, topic);
-        lastReadPostService.markTopicAsRead(topic);
+        Post newbie = replyToTopicWithLockHandling(postDto, topicId);
+        lastReadPostService.markTopicAsRead(newbie.getTopic());
         return new ModelAndView(this.redirectToPageWithPost(newbie.getId()));
     }
 
-    private Post replyToTopicWithLockHandling(PostDto postDto, Topic topic) throws NotFoundException {
+    private Post replyToTopicWithLockHandling(PostDto postDto, Long topicId) throws NotFoundException {
+        Topic topic = topicFetchService.get(topicId);
+        long branchId = topic.getBranch().getId();
         for (int i = 0; i < UserController.LOGIN_TRIES_AFTER_LOCK; i++) {
             try {
                 return topicModificationService.replyToTopic(
-                        postDto.getTopicId(), postDto.getBodyText(), topic.getBranch().getId());
+                        postDto.getTopicId(), postDto.getBodyText(), branchId);
             } catch (HibernateOptimisticLockingFailureException e) {
             }
         }
         try {
             return topicModificationService.replyToTopic(
-                    postDto.getTopicId(), postDto.getBodyText(), topic.getBranch().getId());
+                    postDto.getTopicId(), postDto.getBodyText(), branchId);
         } catch (HibernateOptimisticLockingFailureException e) {
             LOGGER.error("User has been optimistically locked and can't be reread {} times. Username: {}",
                     UserController.LOGIN_TRIES_AFTER_LOCK, userService.getCurrentUser().getUsername());
