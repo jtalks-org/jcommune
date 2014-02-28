@@ -141,8 +141,8 @@ input.form-check-radio-box[type="radio"] {
 }
 
 .user-profile-container {
-    max-width: 480px;
-    margin: 0 auto;
+    max-width: 630px;
+    margin: 5% 0 0 15%;
     position: relative;
 }
 
@@ -160,7 +160,6 @@ input.form-check-radio-box[type="radio"] {
 }
 
 .user-profile-buttons-send {
-    width: 100px;
     display: inline-block;
     text-align: center;
 }

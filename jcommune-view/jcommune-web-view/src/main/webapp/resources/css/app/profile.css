@@ -9,8 +9,8 @@ input[readonly] {
 }
 
 .userprofile { 
-  display: block; 
-  width: auto; 
+  display: inline-block;
+  width: 450px;
   background-color: #f9f9f9; 
   border: 1px solid #ccc; 
   -moz-border-radius: 5px; 
@@ -64,4 +64,17 @@ input[readonly] {
     display: inline-block;
     height: 100%;
     width: 1px;
+}
+
+.profile-menu-btn {
+    width: 100%;
+    padding: 7px;
+    margin-bottom: 10px;
+}
+
+.user-profile-menu {
+    width: 110px;
+    display: inline-block;
+    margin-right: 30px;
+    vertical-align: top;
 }

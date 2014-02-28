@@ -24,25 +24,27 @@ import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.ImageConverter;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
+import org.jtalks.jcommune.web.dto.UserProfileDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.mockito.Mock;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.servlet.ServletException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import javax.servlet.ServletException;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
@@ -50,10 +52,9 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import org.springframework.mock.web.MockHttpServletRequest;
-import static org.springframework.test.web.ModelAndViewAssert.*;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.springframework.web.servlet.DispatcherServlet.LOCALE_RESOLVER_ATTRIBUTE;
-import org.springframework.web.servlet.LocaleResolver;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -101,19 +102,6 @@ public class UserProfileControllerTest {
     }
 
     @Test
-    public void showProfilePageShouldMovePassedUserToUserProfile() throws Exception {
-        JCUser user = new JCUser("username", "email", "password");
-        user.setLanguage(LANGUAGE);
-        when(userService.get(user.getId())).thenReturn(user);
-
-        ModelAndView mav = profileController.showProfilePage(user.getId());
-
-        assertViewName(mav, "userDetails");
-        assertModelAttributeAvailable(mav, "user");
-        assertModelAttributeAvailable(mav, "language");
-    }
-
-    @Test
     public void showCurrentUserProfilePageShouldMoveToCurrentUserProfile() throws NotFoundException {
         JCUser user = new JCUser(USER_NAME, EMAIL, PASSWORD);
         when(userService.getCurrentUser()).thenReturn(user);
@@ -123,58 +111,6 @@ public class UserProfileControllerTest {
         assertViewName(mav, "userDetails");
         assertModelAttributeAvailable(mav, "user");
         assertModelAttributeAvailable(mav, "language");
-    }
-
-    @Test
-    public void startEditUserProfilePageShouldMoveUserToPageForEditing() throws NotFoundException {
-        Long editedUserId = 1l;
-        JCUser user = getUser();
-        when(userService.getCurrentUser()).thenReturn(user);
-        when(userService.get(editedUserId)).thenReturn(user);
-
-        ModelAndView mav = profileController.startEditUserProfile(editedUserId);
-
-        assertViewName(mav, "editProfile");
-        EditUserProfileDto dto = assertAndReturnModelAttributeOfType(mav, "editedUser", EditUserProfileDto.class);
-        assertEquals(dto.getFirstName(), user.getFirstName(), "First name is not equal");
-        assertEquals(dto.getLastName(), user.getLastName(), "Last name is not equal");
-        assertEquals(dto.getEmail(), user.getEmail(), "Last name is not equal");
-    }
-
-    @Test
-    public void startEditUserProfilePageShouldShowCorrectUserContacts() throws NotFoundException {
-        Long editedUserId = 1l;
-        JCUser user = getUser();
-        when(userService.getCurrentUser()).thenReturn(user);
-        when(userService.get(editedUserId)).thenReturn(user);
-
-        ModelAndView mav = profileController.startEditUserProfile(editedUserId);
-
-        assertModelAttributeAvailable(mav, "contacts");
-    }
-    
-    @Test(expectedExceptions = AccessDeniedException.class)
-    public void startEditUserProfileShouldShowErrorIfUserDoesNotHavePermissionToEditOwnProfile() throws NotFoundException {
-        Long editedUserId = 1l;
-        JCUser editorUser = getUser();
-        editorUser.setId(editedUserId);
-        when(userService.getCurrentUser()).thenReturn(editorUser);
-        when(userService.get(editedUserId)).thenReturn(editorUser);
-        doThrow(new AccessDeniedException(StringUtils.EMPTY)).when(userService).checkPermissionToEditOwnProfile((anyLong()));
-        
-        profileController.startEditUserProfile(editedUserId);
-    }
-    
-    @Test(expectedExceptions = AccessDeniedException.class)
-    public void startEditUserProfileShouldShowErrorIfUserDoesNotHavePermissionToEditOtherProfile() throws NotFoundException {
-        Long editedUserId = 1l;
-        JCUser user = getUser();
-        user.setId(2l);
-        when(userService.getCurrentUser()).thenReturn(user);
-        when(userService.get(editedUserId)).thenReturn(user);
-        doThrow(new AccessDeniedException(StringUtils.EMPTY)).when(userService).checkPermissionToEditOtherProfiles((anyLong()));
-        
-        profileController.startEditUserProfile(editedUserId);
     }
 
     @Test(enabled = false)
@@ -224,24 +160,13 @@ public class UserProfileControllerTest {
         verify(userService, never()).saveEditedUserProfile(anyLong() , any(UserInfoContainer.class));
     }
 
-    @Test
-    public void saveEditedProfileWithValidationErrorsShouldShowCorrectContactsToUser() throws NotFoundException {
-        JCUser user = getUser();
-        when(userService.getCurrentUser()).thenReturn(user);
 
-        EditUserProfileDto dto = getEditUserProfileDto();
-        BindingResult bindingResult = mock(BindingResult.class);
-        when(bindingResult.hasErrors()).thenReturn(true);
-        when(userService.get(anyLong())).thenReturn(user);
-        ModelAndView mav = profileController.saveEditedProfile(dto, bindingResult, new MockHttpServletResponse());
-
-        assertModelAttributeAvailable(mav, "contacts");
-    }
-    
     @Test(expectedExceptions = AccessDeniedException.class)
     public void saveEditedProfileShouldShowErrorWhenUserDoesNotHavePermissionToEditOwnProfile() throws NotFoundException {
         JCUser user = getUser();
         EditUserProfileDto userDto = getEditUserProfileDto();
+        userDto.setUserProfileDto(new UserProfileDto());
+        userDto.getUserProfileDto().setUserId(userDto.getUserId());
         MockHttpServletResponse response = new MockHttpServletResponse();
         //
         when(userService.saveEditedUserProfile(anyLong(), any(UserInfoContainer.class))).thenReturn(user);
@@ -258,6 +183,8 @@ public class UserProfileControllerTest {
         JCUser editorUser = getUser();
         JCUser editedUser = getUser();
         EditUserProfileDto userDto = getEditUserProfileDto();
+        userDto.setUserProfileDto(new UserProfileDto());
+        userDto.getUserProfileDto().setUserId(userDto.getUserId());
         MockHttpServletResponse response = new MockHttpServletResponse();
         //
         when(userService.saveEditedUserProfile(anyLong(), any(UserInfoContainer.class))).thenReturn(editedUser);
@@ -338,10 +265,6 @@ public class UserProfileControllerTest {
         user.setAutosubscribe(AUTOSUBSCRIBE);
 
         EditUserProfileDto dto = new EditUserProfileDto(user);
-        dto.setCurrentUserPassword(PASSWORD);
-        dto.setNewUserPassword(NEW_PASSWORD);
-        dto.setNewUserPasswordConfirm(NEW_PASSWORD);
-        dto.setAvatar(avatar);
         return dto;
     }
 

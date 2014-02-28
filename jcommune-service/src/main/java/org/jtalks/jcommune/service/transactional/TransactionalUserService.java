@@ -32,6 +32,8 @@ import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.Authenticator;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
+import org.jtalks.jcommune.service.dto.UserNotificationsContainer;
+import org.jtalks.jcommune.service.dto.UserSecurityContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.UserTriesActivatingAccountAgainException;
@@ -176,11 +178,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         JCUser editedUser = this.get(editedUserId);
         byte[] decodedAvatar = base64Wrapper.decodeB64Bytes(editedUserProfileInfo.getB64EncodedAvatar());
 
-        String newPassword = editedUserProfileInfo.getNewPassword();
-        if (newPassword != null) {
-            String encryptedPassword = encryptionService.encryptPassword(newPassword);
-            editedUser.setPassword(encryptedPassword);
-        }
         editedUser.setEmail(editedUserProfileInfo.getEmail());
 
         if (!Arrays.equals(editedUser.getAvatar(), decodedAvatar)) {
@@ -193,11 +190,45 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         editedUser.setPageSize(editedUserProfileInfo.getPageSize());
         editedUser.setLocation(editedUserProfileInfo.getLocation());
         editedUser.setAutosubscribe(editedUserProfileInfo.isAutosubscribe());
-        editedUser.setMentioningNotificationsEnabled(editedUserProfileInfo.isMentioningNotificationsEnabled());
-        editedUser.setSendPmNotification(editedUserProfileInfo.isSendPmNotification());
 
         this.getDao().saveOrUpdate(editedUser);
         LOGGER.info("Updated user profile. Username: {}", editedUser.getUsername());
+        return editedUser;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JCUser saveEditedUserSecurity(long editedUserId, UserSecurityContainer userSecurityInfo)
+            throws NotFoundException {
+        JCUser editedUser = this.get(editedUserId);
+
+        String newPassword = userSecurityInfo.getNewPassword();
+        if (newPassword != null) {
+            String encryptedPassword = encryptionService.encryptPassword(newPassword);
+            editedUser.setPassword(encryptedPassword);
+        }
+
+        this.getDao().saveOrUpdate(editedUser);
+        LOGGER.info("Updated user security settings. Username: {}", editedUser.getUsername());
+        return editedUser;
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JCUser saveEditedUserNotifications(long editedUserId, UserNotificationsContainer userNotificationsInfo)
+            throws NotFoundException {
+        JCUser editedUser = this.get(editedUserId);
+
+        editedUser.setMentioningNotificationsEnabled(userNotificationsInfo.isMentioningNotificationsEnabled());
+        editedUser.setSendPmNotification(userNotificationsInfo.isSendPmNotification());
+
+        this.getDao().saveOrUpdate(editedUser);
+        LOGGER.info("Updated user notification settings. Username: {}", editedUser.getUsername());
         return editedUser;
     }
 

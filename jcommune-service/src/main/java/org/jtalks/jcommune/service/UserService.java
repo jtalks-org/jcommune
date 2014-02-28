@@ -21,6 +21,8 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
+import org.jtalks.jcommune.service.dto.UserNotificationsContainer;
+import org.jtalks.jcommune.service.dto.UserSecurityContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.UserTriesActivatingAccountAgainException;
@@ -65,7 +67,7 @@ public interface UserService extends EntityService<JCUser> {
     void updateLastLoginTime(JCUser user);
 
     /**
-     * Update user entity.
+     * Update user profile.
      *
      * @param editedUserId          an identifier of edited user
      * @param editedUserProfileInfo modified profile info holder
@@ -73,6 +75,30 @@ public interface UserService extends EntityService<JCUser> {
      * @throws NotFoundException if edited user doesn't exists in system
      */
     JCUser saveEditedUserProfile(long editedUserId, UserInfoContainer editedUserProfileInfo) throws NotFoundException;
+
+    /**
+     * Update user security settings.
+     *
+     *
+     * @param editedUserId          an identifier of edited user
+     * @param editedUserSecurityInfo modified security info holder
+     * @return edited user
+     * @throws NotFoundException if edited user doesn't exists in system
+     */
+    JCUser saveEditedUserSecurity(long editedUserId, UserSecurityContainer editedUserSecurityInfo)
+            throws NotFoundException;
+
+    /**
+     * Update user notification settings.
+     *
+     *
+     * @param editedUserId          an identifier of edited user
+     * @param editedUserNotificationsInfo modified notification info holder
+     * @return edited user
+     * @throws NotFoundException if edited user doesn't exists in system
+     */
+    JCUser saveEditedUserNotifications(long editedUserId, UserNotificationsContainer editedUserNotificationsInfo)
+            throws NotFoundException;
 
     /**
      * Performs the following:

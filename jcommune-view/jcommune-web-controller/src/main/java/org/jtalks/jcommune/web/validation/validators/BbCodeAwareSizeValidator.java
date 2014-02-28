@@ -31,7 +31,10 @@ import org.springframework.context.ApplicationContextAware;
  * @author Evgeniy Naumenko
  */
 public class BbCodeAwareSizeValidator implements ConstraintValidator<BbCodeAwareSize, String>, ApplicationContextAware {
-
+    
+    public static final String NEW_LINE_HTML = "<br/>";
+    public static final String QUOTE_HTML = "&quot";
+    
     private int min;
     private int max;
     private ApplicationContext context;
@@ -56,11 +59,12 @@ public class BbCodeAwareSizeValidator implements ConstraintValidator<BbCodeAware
      */
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value == null || value.length() > max) {
-            return false;
+        if (value != null) {
+            String trimed = removeBBCodes(value).trim();
+            int plainTextLength = getDisplayedLength(trimed);
+            return plainTextLength >= min && plainTextLength <= max;
         }
-        int plainTextLength = removeBBCodes(value).trim().length();
-        return (plainTextLength >= min);
+        return false;
     }
 
     /**
@@ -84,5 +88,15 @@ public class BbCodeAwareSizeValidator implements ConstraintValidator<BbCodeAware
             bbCodeService = this.context.getBean(BBCodeService.class);
         }
         return bbCodeService;
+    }
+    
+    /**
+     * Calculate length of string which be displayed.
+     * Needed because method <b>removeBBCodes</b> leaves "&quot" "<br/>" symbols.
+     * @param s String to calculate length.
+     * @return Length of string which be displayed.
+     */
+    private int getDisplayedLength(String s) {
+        return s.replaceAll(QUOTE_HTML, "\"").replaceAll(NEW_LINE_HTML, "\n\r").length();
     }
 }

@@ -22,6 +22,9 @@ import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.ImageConverter;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
+import org.jtalks.jcommune.web.dto.UserNotificationsDto;
+import org.jtalks.jcommune.web.dto.UserProfileDto;
+import org.jtalks.jcommune.web.dto.UserSecurityDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.validation.editors.DefaultStringEditor;
 import org.jtalks.jcommune.web.validation.editors.PageSizeEditor;
@@ -44,6 +47,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Locale;
 
 /**
@@ -106,19 +110,6 @@ public class UserProfileController {
     }
 
     /**
-     * Show user profile page with user info.
-     *
-     * @param id user identifier
-     * @return user details view with {@link JCUser} object.
-     * @throws NotFoundException if user with given id not found.
-     */
-    @RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
-    public ModelAndView showProfilePage(@PathVariable Long id) throws NotFoundException {
-        JCUser user = userService.get(id);
-        return getUserProfileModelAndView(user);
-    }
-
-    /**
      * This method is a shortcut for user profile access. It may be usefull when we haven't got
      * the specific id, but simply want to access current user's profile.
      * <p/>
@@ -151,27 +142,67 @@ public class UserProfileController {
      * @return edit user profile page
      * @throws NotFoundException throws if current logged in user was not found
      */
-    @RequestMapping(value = "/users/edit/{editedUserId}", method = RequestMethod.GET)
+    @RequestMapping(value = {"/users/{editedUserId}/profile", "/users/{editedUserId}"}, method = RequestMethod.GET)
     public ModelAndView startEditUserProfile(@PathVariable Long editedUserId) throws NotFoundException {
-        checkPermissionsToEditProfile(editedUserId);
         JCUser editedUser = userService.get(editedUserId);
-        EditUserProfileDto editedUserDto = convertUserForView(editedUser);
-        ModelAndView mav = new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUserDto);
-        mav.addObject("contacts", editedUser.getUserContacts());
-        return mav;
+        EditUserProfileDto editedUserDto = new EditUserProfileDto(new UserProfileDto(editedUser), editedUser);
+        setAvatarToUserProfileView(editedUserDto, editedUser);
+        return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUserDto);
     }
 
     /**
-     * Converts passed user to data transfer object for view.
+     * Show edit user contacts page for current logged in user.
+     *
+     * @return edit user contacts page
+     * @throws NotFoundException throws if current logged in user was not found
+     */
+    @RequestMapping(value = "/users/{editedUserId}/contacts", method = RequestMethod.GET)
+    public ModelAndView startEditUserContacts(@PathVariable Long editedUserId) throws NotFoundException {
+        JCUser editedUser = userService.get(editedUserId);
+        EditUserProfileDto editedUserDto =
+                new EditUserProfileDto(new ArrayList<>(editedUser.getUserContacts()), editedUser);
+        setAvatarToUserProfileView(editedUserDto, editedUser);
+        return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUserDto);
+    }
+
+    /**
+     * Show edit user notifications page for current logged in user.
+     *
+     * @return edit user notifications page
+     * @throws NotFoundException throws if current logged in user was not found
+     */
+    @RequestMapping(value = "/users/{editedUserId}/notifications", method = RequestMethod.GET)
+    public ModelAndView startEditUserNotifications(@PathVariable Long editedUserId) throws NotFoundException {
+        checkPermissionsToEditProfile(editedUserId);
+        JCUser editedUser = userService.get(editedUserId);
+        EditUserProfileDto editedUserDto = new EditUserProfileDto(new UserNotificationsDto(editedUser), editedUser);
+        setAvatarToUserProfileView(editedUserDto, editedUser);
+        return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUserDto);
+    }
+
+    /**
+     * Show edit user security page for current logged in user.
+     *
+     * @return edit user security page
+     * @throws NotFoundException throws if current logged in user was not found
+     */
+    @RequestMapping(value = "/users/{editedUserId}/security", method = RequestMethod.GET)
+    public ModelAndView startEditUserSecurity(@PathVariable Long editedUserId) throws NotFoundException {
+        checkPermissionsToEditProfile(editedUserId);
+        JCUser editedUser = userService.get(editedUserId);
+        EditUserProfileDto editedUserDto = new EditUserProfileDto(new UserSecurityDto(editedUser), editedUser);
+        setAvatarToUserProfileView(editedUserDto, editedUser);
+        return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUserDto);
+    }
+
+    /**
+     * Set avatar to data transfer object for view.
      *
      * @param user passed user
-     * @return data transfer object for view
      */
-    private EditUserProfileDto convertUserForView(JCUser user) {
-        EditUserProfileDto editUserProfileDto = new EditUserProfileDto(user);
+    private void setAvatarToUserProfileView(EditUserProfileDto editUserProfileDto, JCUser user) {
         byte[] avatar = user.getAvatar();
         editUserProfileDto.setAvatar(imageConverter.prepareHtmlImgSrc(avatar));
-        return editUserProfileDto;
     }
 
     /**
@@ -185,18 +216,87 @@ public class UserProfileController {
      * @return in case of errors return back to edit profile page, in another case return to user details page
      * @throws NotFoundException if edited user doesn't exist in system
      */
-    @RequestMapping(value = "/users/edit/**", method = RequestMethod.POST)
+    @RequestMapping(value = "/users/*/profile", method = RequestMethod.POST)
     public ModelAndView saveEditedProfile(@Valid @ModelAttribute(EDITED_USER) EditUserProfileDto editedProfileDto,
                                           BindingResult result, HttpServletResponse response) throws NotFoundException {
         if (result.hasErrors()) {
-            JCUser editedUser = userService.get(editedProfileDto.getUserId());
-            ModelAndView mav = new ModelAndView(EDIT_PROFILE, EDITED_USER, editedProfileDto);
-            mav.addObject("contacts", editedUser.getUserContacts());
-            return mav;
+            return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedProfileDto);
+        }
+        long editedUserId = editedProfileDto.getUserProfileDto().getUserId();
+        checkPermissionsToEditProfile(editedUserId);
+        JCUser user = saveEditedProfileWithLockHandling(editedUserId, editedProfileDto, EditUserProfileDto.PROFILE);
+        //redirect to the view profile page
+        return new ModelAndView("redirect:/users/" + user.getId());
+    }
+
+    /**
+     * Update user notification settings. Check if the user enter valid data and update settings in database.
+     * In error case return into the edit profile page and draw the error.
+     * <p/>
+     *
+     * @param editedProfileDto dto populated by user
+     * @param result           binding result which contains the validation result
+     * @param response         http servlet response
+     * @return in case of errors return back to edit profile page, in another case return to user details page
+     * @throws NotFoundException if edited user doesn't exist in system
+     */
+    @RequestMapping(value = "/users/*/notifications", method = RequestMethod.POST)
+    public ModelAndView saveEditedNotifications(@Valid @ModelAttribute(EDITED_USER) EditUserProfileDto editedProfileDto,
+                                          BindingResult result, HttpServletResponse response) throws NotFoundException {
+        if (result.hasErrors()) {
+            return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedProfileDto);
         }
         long editedUserId = editedProfileDto.getUserId();
         checkPermissionsToEditProfile(editedUserId);
-        JCUser user = saveEditedProfileWithLockHandling(editedUserId, editedProfileDto);
+        JCUser user = saveEditedProfileWithLockHandling(editedUserId, editedProfileDto, EditUserProfileDto.NOTIFICATIONS);
+        //redirect to the view profile page
+        return new ModelAndView("redirect:/users/" + user.getId());
+    }
+
+    /**
+     * Update user security info. Check if the user enter valid data and update user security info in database.
+     * In error case return into the edit profile page and draw the error.
+     * <p/>
+     *
+     * @param editedProfileDto dto populated by user
+     * @param result           binding result which contains the validation result
+     * @param response         http servlet response
+     * @return in case of errors return back to edit profile page, in another case return to user details page
+     * @throws NotFoundException if edited user doesn't exist in system
+     */
+    @RequestMapping(value = "/users/*/security", method = RequestMethod.POST)
+    public ModelAndView saveEditedSecurity(@Valid @ModelAttribute(EDITED_USER) EditUserProfileDto editedProfileDto,
+                                          BindingResult result, HttpServletResponse response) throws NotFoundException {
+        if (result.hasErrors()) {
+            return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedProfileDto);
+        }
+        long editedUserId = editedProfileDto.getUserId();
+        checkPermissionsToEditProfile(editedUserId);
+        JCUser user = saveEditedProfileWithLockHandling(editedUserId, editedProfileDto, EditUserProfileDto.SECURITY);
+        //redirect to the view profile page
+        return new ModelAndView("redirect:/users/" + user.getId());
+    }
+
+    /**
+     * Update user contacts. Check if the user enter valid data and update contacts in database.
+     * In error case return into the edit profile page and draw the error.
+     * <p/>
+     *
+     * @param editedProfileDto dto populated by user
+     * @param result           binding result which contains the validation result
+     * @param response         http servlet response
+     * @return in case of errors return back to edit profile page, in another case return to user details page
+     * @throws NotFoundException if edited user doesn't exist in system
+     */
+    @RequestMapping(value = "/users/*/contacts", method = RequestMethod.POST)
+    public ModelAndView saveEditedContacts(@Valid @ModelAttribute(EDITED_USER) EditUserProfileDto editedProfileDto,
+                                           BindingResult result, HttpServletResponse response) throws NotFoundException {
+        if (result.hasErrors()) {
+            return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedProfileDto);
+        }
+        long editedUserId = editedProfileDto.getUserId();
+        checkPermissionsToEditProfile(editedUserId);
+        JCUser user = saveEditedProfileWithLockHandling(editedUserId, editedProfileDto, EditUserProfileDto.CONTACTS);
         //redirect to the view profile page
         return new ModelAndView("redirect:/users/" + user.getId());
     }
@@ -268,16 +368,35 @@ public class UserProfileController {
         }
     }
 
-    private JCUser saveEditedProfileWithLockHandling(long editedUserId, EditUserProfileDto editedProfileDto)
+    private JCUser saveEditedProfileWithLockHandling(long editedUserId, EditUserProfileDto editedProfileDto,
+                                                     String settingsType)
             throws NotFoundException {
         for (int i = 0; i < UserController.LOGIN_TRIES_AFTER_LOCK; i++) {
             try {
-                return userService.saveEditedUserProfile(editedUserId, editedProfileDto.getUserInfoContainer());
+                switch(settingsType) {
+                    case EditUserProfileDto.PROFILE:
+                        return userService.saveEditedUserProfile(editedUserId, editedProfileDto.getUserInfoContainer());
+                    case EditUserProfileDto.SECURITY:
+                        return userService.saveEditedUserSecurity(editedUserId, editedProfileDto.getUserSecurityContainer());
+                    case EditUserProfileDto.NOTIFICATIONS:
+                        return userService.saveEditedUserNotifications(editedUserId, editedProfileDto.getUserNotificationsContainer());
+                    case EditUserProfileDto.CONTACTS:
+                        return userService.saveEditedUserProfile(editedUserId, editedProfileDto.getUserInfoContainer());
+                }
             } catch (HibernateOptimisticLockingFailureException ignored) {
             }
         }
         try {
-            return userService.saveEditedUserProfile(editedUserId, editedProfileDto.getUserInfoContainer());
+            switch(settingsType) {
+                case EditUserProfileDto.PROFILE:
+                    return userService.saveEditedUserProfile(editedUserId, editedProfileDto.getUserInfoContainer());
+                case EditUserProfileDto.SECURITY:
+                    return userService.saveEditedUserProfile(editedUserId, editedProfileDto.getUserInfoContainer());
+                case EditUserProfileDto.NOTIFICATIONS:
+                    return userService.saveEditedUserProfile(editedUserId, editedProfileDto.getUserInfoContainer());
+                default:
+                    return userService.saveEditedUserProfile(editedUserId, editedProfileDto.getUserInfoContainer());
+            }
         } catch (HibernateOptimisticLockingFailureException e) {
             LOGGER.error("User has been optimistically locked and can't be reread {} times. Username: {}",
                     UserController.LOGIN_TRIES_AFTER_LOCK, editedProfileDto.getUsername());
