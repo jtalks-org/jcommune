@@ -110,4 +110,13 @@ public class BbCodeAwareSizeValidatorTest {
         
     	assertFalse(validator.isValid(source, null));
     }
+    
+    @Test
+    public void testBBCodesListOnly() {
+        String source = "[list]\n" +
+                "[*]\n" +
+                "[/list]";
+        
+        assertFalse(validator.isValid(source, null));
+    }
 }
