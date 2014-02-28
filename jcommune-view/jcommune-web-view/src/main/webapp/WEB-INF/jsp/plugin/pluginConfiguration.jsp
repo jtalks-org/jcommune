@@ -34,7 +34,7 @@
     </div>
     <span class="inline-block"></span>
 
-    <spring:url var="action" value="${pageContext.request.contextPath}/plugins/configure/{pluginName}">
+    <spring:url var="action" value="/plugins/configure/{pluginName}">
         <spring:param name="pluginName" value="${pluginConfiguration.name}" />
     </spring:url>
     <form:form action="${action}" method="POST" modelAttribute="pluginConfiguration">
