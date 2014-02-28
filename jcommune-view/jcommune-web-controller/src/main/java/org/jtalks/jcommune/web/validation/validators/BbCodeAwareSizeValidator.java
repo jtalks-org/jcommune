@@ -34,6 +34,7 @@ public class BbCodeAwareSizeValidator implements ConstraintValidator<BbCodeAware
     
     public static final String NEW_LINE_HTML = "<br/>";
     public static final String QUOTE_HTML = "&quot";
+    public static final String LIST_ELEMENT_BB_REGEXP = "\\[\\*\\]";
     
     private int min;
     private int max;
@@ -92,11 +93,12 @@ public class BbCodeAwareSizeValidator implements ConstraintValidator<BbCodeAware
     
     /**
      * Calculate length of string which be displayed.
-     * Needed because method <b>removeBBCodes</b> leaves "&quot" "<br/>" symbols.
+     * Needed because method <b>removeBBCodes</b> leaves "&quot", "<br/>" and "[*]" symbols.
      * @param s String to calculate length.
      * @return Length of string which be displayed.
      */
     private int getDisplayedLength(String s) {
-        return s.replaceAll(QUOTE_HTML, "\"").replaceAll(NEW_LINE_HTML, "\n\r").length();
+        return s.replaceAll(QUOTE_HTML, "\"").replaceAll(NEW_LINE_HTML, "\n\r")
+                .replaceAll(LIST_ELEMENT_BB_REGEXP, "").length();
     }
 }
