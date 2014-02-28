@@ -111,7 +111,9 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
 
     @Override
     public String translateLabel(String code, Locale locale) {
-        return code;
+        String fullCode = "label.plugins.plugin.kaptcha.property.name." + code.replaceAll(" ", "_");
+        ResourceBundle messages = ResourceBundle.getBundle("org.jtalks.jcommune.plugin.kaptcha.messages", locale);
+        return messages.containsKey(fullCode) ? messages.getString(fullCode) : code;
     }
 
     @Override
