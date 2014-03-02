@@ -23,43 +23,44 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <head>
-  <title>
-    <c:out value="${cmpTitlePrefix}"/>
-    <spring:message code="label.pm_title"/>
-  </title>
+    <title>
+        <c:out value="${cmpTitlePrefix}"/>
+        <spring:message code="label.pm_title"/>
+    </title>
 </head>
 <body>
 
 <div class="container">
-  <h2><c:out value="${fn:substring(pm.title,0,60)}"/></h2>
-    <h2><c:out value="${fn:substring(pm.title,60,fn:length(pm.title))}"/></h2>
-  <hr/>
-  <div class="row">
-    <div class="span2">
-      <jsp:include page="../../template/newPrivateMessage.jsp"/>
-      <jsp:include page="../../template/pmFolders.jsp"/>
-    </div>
-    <!-- /span2 -->
-    <div class="span9">
-      <div class="pm_buttons">
-        <jtalks:hasPermission targetId='${user.id}' targetType='USER'
-                              permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
-          <c:if test="${jtalks:isExists(pm.userTo)}">
-            <c:if test="${(pm.userTo eq user)}">
-              <a class="btn btn-primary"
-                 href="${pageContext.request.contextPath}/reply/${pm.id}?userId=${user.id}">
-                <i class="icon-share-alt icon-white"></i>
-                <spring:message code="label.reply"/>
-              </a>
+    <c:set var="textLength" value="60"/>
+    <h2><c:out value="${fn:substring(pm.title,0, textLength)}"/></h2>
+    <h2><c:out value="${fn:substring(pm.title, textLength, fn:length(pm.title))}"/></h2>
+    <hr/>
+    <div class="row">
+        <div class="span2">
+            <jsp:include page="../../template/newPrivateMessage.jsp"/>
+            <jsp:include page="../../template/pmFolders.jsp"/>
+        </div>
+        <!-- /span2 -->
+        <div class="span9">
+            <div class="pm_buttons">
+                <jtalks:hasPermission targetId='${user.id}' targetType='USER'
+                                      permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
+                    <c:if test="${jtalks:isExists(pm.userTo)}">
+                        <c:if test="${(pm.userTo eq user)}">
+                            <a class="btn btn-primary"
+                               href="${pageContext.request.contextPath}/reply/${pm.id}?userId=${user.id}">
+                                <i class="icon-share-alt icon-white"></i>
+                                <spring:message code="label.reply"/>
+                            </a>
 
-              <a class="btn margin-left-big"
-                 href="${pageContext.request.contextPath}/quote/${pm.id}?userId=${user.id}">
-                <i class="icon-quote"></i>
-                <spring:message code="label.quote"/>
-              </a>
-            </c:if>
-          </c:if>
-        </jtalks:hasPermission>
+                            <a class="btn margin-left-big"
+                               href="${pageContext.request.contextPath}/quote/${pm.id}?userId=${user.id}">
+                                <i class="icon-quote"></i>
+                                <spring:message code="label.quote"/>
+                            </a>
+                        </c:if>
+                    </c:if>
+                </jtalks:hasPermission>
 
                 <span class="del">
                     <a id="deleteOnePM"
@@ -67,39 +68,39 @@
                        href="${pageContext.request.contextPath}/pm"
                        data-confirmationMessage="<spring:message code="label.deletePMConfirmation"/>">
 
-                      <i class="icon-trash icon-white"></i>
-                      <spring:message code="label.delete"/>
+                        <i class="icon-trash icon-white"></i>
+                        <spring:message code="label.delete"/>
                     </a>
                     <input id="pmId" type="hidden" value="${pm.id}"/>
                     <form:form id="deleteForm" method="DELETE"/>
                 </span>
-        <!-- del -->
+                <!-- del -->
 
-      </div>
-      <!-- pm_buttons -->
+            </div>
+            <!-- pm_buttons -->
 
-      <div class="well pm_message_view">
-        <div class="row pm_message_detail">
-          <div class="pull-left thumbnail pm_message_avatar">
-            <img src="${pageContext.request.contextPath}/users/${pm.userFrom.id}/avatar" alt=""/>
-          </div>
-          <div class="pm_message_userTo_link">
-            <a href="${pageContext.request.contextPath}/users/${pm.userFrom.id}">
-              <i class="icon-white-user"></i><c:out value="${pm.userFrom.username}"/>
-            </a>
-            <br/>
-            <span><i class="icon-white-calendar"></i><jtalks:format value="${pm.creationDate}"/></span>
-          </div>
+            <div class="well pm_message_view">
+                <div class="row pm_message_detail">
+                    <div class="pull-left thumbnail pm_message_avatar">
+                        <img src="${pageContext.request.contextPath}/users/${pm.userFrom.id}/avatar" alt=""/>
+                    </div>
+                    <div class="pm_message_userTo_link">
+                        <a href="${pageContext.request.contextPath}/users/${pm.userFrom.id}">
+                            <i class="icon-white-user"></i><c:out value="${pm.userFrom.username}"/>
+                        </a>
+                        <br/>
+                        <span><i class="icon-white-calendar"></i><jtalks:format value="${pm.creationDate}"/></span>
+                    </div>
+                </div>
+                <div class="pm-text-box">
+                    <jtalks:postContent text="${pm.body}" signature="${pm.userFrom.signature}"/>
+                </div>
+            </div>
+
         </div>
-        <div class="pm-text-box">
-          <jtalks:postContent text="${pm.body}" signature="${pm.userFrom.signature}"/>
-        </div>
-      </div>
 
     </div>
-
-  </div>
-  <!-- /row -->
+    <!-- /row -->
 
 </div>
 <!-- /container -->
