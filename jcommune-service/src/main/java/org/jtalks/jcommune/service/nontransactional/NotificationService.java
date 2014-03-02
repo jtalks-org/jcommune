@@ -163,6 +163,9 @@ public class NotificationService {
      * @param topic newly created topic
      */
     public void sendNotificationAboutTopicCreated(Topic topic) {
+        if (!notificationsEnabledProperty.booleanValue()) {
+            return;
+        }
         Collection<JCUser> branchSubscribers = subscriptionService.getAllowedSubscribers(topic.getBranch());
         this.filterSubscribers(branchSubscribers);
         for (JCUser subscriber : branchSubscribers) {
