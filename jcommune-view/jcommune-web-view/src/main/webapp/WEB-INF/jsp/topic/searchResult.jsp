@@ -40,8 +40,8 @@
     <div class="span9">
       <div class="pagination pull-right forum-pagination">
         <ul>
-          <jtalks:pagination uri="${pageContext.request.contextPath}/search" page="${searchResultPage}"
-                             additionalParamsString="&text=${fn:escapeXml(searchText)}"/>
+          <jtalks:pagination uri="" page="${searchResultPage}"
+                             additionalParams="${urlParams}"/>
         </ul>
       </div>
     </div>
@@ -56,8 +56,8 @@
     <div class="span12">
       <div class="pagination pull-right forum-pagination">
         <ul>
-          <jtalks:pagination uri="${pageContext.request.contextPath}/search" page="${searchResultPage}"
-                             additionalParamsString="&text=${fn:escapeXml(searchText)}"/>
+          <jtalks:pagination uri="" page="${searchResultPage}"
+                             additionalParams="${urlParams}"/>
         </ul>
       </div>
     </div>
