@@ -319,7 +319,7 @@ public class NotificationServiceTest {
     }
     
     @Test
-    public void testTopicCreated() {
+    public void notificationMailShouldBeSendAfterTopicWasCreated() {
         prepareEnabledProperty();
         branch.getSubscribers().add(user1);
         branch.getSubscribers().add(currentUser);
@@ -328,6 +328,19 @@ public class NotificationServiceTest {
         service.sendNotificationAboutTopicCreated(topic);
         
         verify(mailService, times(1)).sendTopicCreationMail(user1, topic);
+        verifyNoMoreInteractions(mailService);
+    }
+
+    @Test
+    public void notificationMailShouldNotBeSendAfterTopicWasCreatedAndNotificationWasDisabled() {
+        prepareDisabledProperty();
+        branch.getSubscribers().add(user1);
+        branch.getSubscribers().add(currentUser);
+        when(subscriptionService.getAllowedSubscribers(branch)).thenReturn(branch.getSubscribers());
+
+        service.sendNotificationAboutTopicCreated(topic);
+
+        verify(mailService, never()).sendTopicCreationMail(user1, topic);
         verifyNoMoreInteractions(mailService);
     }
 }
