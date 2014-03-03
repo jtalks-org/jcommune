@@ -15,12 +15,14 @@
 package org.jtalks.jcommune.service.transactional;
 
 
+import com.google.common.collect.Lists;
 import org.jtalks.jcommune.model.dao.UserContactsDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
 import org.jtalks.jcommune.service.UserContactsService;
 import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.dto.UserContactContainer;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 import java.util.List;
@@ -29,6 +31,7 @@ import java.util.List;
  * User contacts service class. This class contains method needed to manipulate with UserContactTypes persistent entity.
  *
  * @author Michael Gamov
+ * @author Andrey Pogorelov
  */
 public class TransactionalUserContactsService
         extends AbstractTransactionalEntityService<UserContactType, UserContactsDao> implements UserContactsService {
@@ -56,14 +59,46 @@ public class TransactionalUserContactsService
     /**
      * {@inheritDoc}
      */
-    public UserContact addContact(long ownerId, String value, long typeId) throws NotFoundException {
-        JCUser user = userService.get(ownerId);
+    public JCUser saveEditedUserContacts(long editedUserId, List<UserContactContainer> contacts)
+            throws NotFoundException {
+        JCUser user = userService.get(editedUserId);
+        // temporary contact list for excluding concurrent modification ex
+        List<UserContact> tmpContactList = Lists.newArrayList(user.getUserContacts());
+        // Remove deleted contacts
+        for (UserContact contact : tmpContactList) {
+            if (!contactExistInList(contact, contacts)) {
+                user.removeContact(contact);
+            }
+        }
+        // Add new and edit existing contacts
+        for (UserContactContainer contactContainer: contacts) {
+            UserContactType actualType = get(contactContainer.getTypeId());
+            UserContact contact = contactContainer.getId() == null ? null
+                    : this.getDao().getContactById(contactContainer.getId());
+            if (contact != null && contact.getOwner().getId() == user.getId()) {
+                contact.setValue(contactContainer.getValue());
+                contact.setType(actualType);
+            } else {
+                contact = new UserContact(contactContainer.getValue(), actualType);
+                user.addContact(contact);
+            }
+        }
+        return user;
+    }
 
-        //explicitly getting UserContactType because we need to populate it with data before returning
-        UserContactType actualType = get(typeId);
-        UserContact contact = new UserContact(value, actualType);
-        user.addContact(contact);
-        return contact;
+    /**
+     * Check if contact exist in list of contact dto's
+     * @param userContact user contact
+     * @param contacts list of edited contacts
+     * @return contact exist in list
+     */
+    private boolean contactExistInList(UserContact userContact, List<UserContactContainer> contacts) {
+        for (UserContactContainer contact : contacts) {
+            if (userContact.getId() == contact.getId()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

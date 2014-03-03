@@ -14,8 +14,10 @@
  */
 package org.jtalks.jcommune.service;
 
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
+import org.jtalks.jcommune.service.dto.UserContactContainer;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 import java.util.List;
@@ -36,15 +38,12 @@ public interface UserContactsService extends EntityService<UserContactType> {
     List<UserContactType> getAvailableContactTypes();
 
     /**
-     * Adds contact to current user contacts.
-     * 
-     * @param ownerId owner of contact that will be created
-     * @param value actually contact
-     * @param typeId identifier of contact type to be added
-     * @return saved user contact entity
-     * @throws NotFoundException when contact type was not found
+     * Update user contacts.
+     *
+     * @param editedUserId @return updated contacts
+     * @throws NotFoundException if edited user or contacts don't exists in system
      */
-    UserContact addContact(long ownerId, String value, long typeId) throws NotFoundException;
+    JCUser saveEditedUserContacts(long editedUserId, List<UserContactContainer> contacts) throws NotFoundException;
 
     /**
      * Removes contact from contacts of current user.
