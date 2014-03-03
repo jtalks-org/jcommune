@@ -939,3 +939,7 @@ div.add-branch-button:hover {
     background-color: rgb(200, 200, 200);
     border-color: rgb(163, 163, 163);
 }
+
+a.mentioned-user {
+    color: #333333 !important;
+}
