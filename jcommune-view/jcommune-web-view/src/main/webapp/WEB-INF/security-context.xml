@@ -26,7 +26,9 @@
 
     <security:session-management session-authentication-strategy-ref="concurrentSessionControlStrategy"/>
     <security:custom-filter ref="rememberMeCheckFilter" before="FORM_LOGIN_FILTER"/>
-
+    <security:intercept-url pattern="/resources/**" filters="none"/>
+    <security:intercept-url pattern="/errors/**" filters="none"/>
+    <security:intercept-url pattern="/admin/**" filters="none"/>
     <security:intercept-url pattern="/posts/new" access="isAuthenticated()"/>
     <security:intercept-url pattern="/posts/*/delete" method="GET" access="isAuthenticated()"/>
     <security:intercept-url pattern="/posts/*" method="DELETE" access="isAuthenticated()"/>
@@ -81,9 +83,7 @@
 
     <security:intercept-url pattern="/recent/forum/markread" access="isAuthenticated()"/>
     <security:intercept-url pattern="/main/forum/markread" access="isAuthenticated()"/>
-
-    <security:intercept-url pattern="*" access="permitAll()"/>
-
+    
     <security:form-login login-page="/login" login-processing-url="/j_spring_security_check"
                            default-target-url="/"
                            authentication-success-handler-ref="successAuthHandler"
