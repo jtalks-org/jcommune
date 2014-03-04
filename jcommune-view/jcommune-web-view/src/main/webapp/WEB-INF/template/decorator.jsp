@@ -212,7 +212,6 @@
       <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/app/codeHighlighting.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/app/registration.js"></script>
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/profileWatchingHistory.js"></script>
     </c:if>
 
     <c:if test="${fn:contains(uriString, 'plugins')}">
