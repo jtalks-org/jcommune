@@ -59,6 +59,7 @@ import java.util.Set;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
+import org.jtalks.jcommune.model.dto.LoginUserDto;
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import org.mockito.ArgumentMatcher;
 import static org.mockito.Matchers.any;
@@ -484,10 +485,11 @@ public class TransactionalUserServiceTest {
             throws UnexpectedErrorException, NoConnectionException {
         HttpServletRequest httpRequest = new MockHttpServletRequest();
         HttpServletResponse httpResponse = new MockHttpServletResponse();
-        when(authenticator.authenticate("username", "password", true, httpRequest, httpResponse))
+        LoginUserDto loginUserDto = new LoginUserDto("username", "password", true, "192.168.1.1");
+        when(authenticator.authenticate(loginUserDto, httpRequest, httpResponse))
                 .thenReturn(true);
 
-        boolean result = userService.loginUser("username", "password", true, httpRequest, httpResponse);
+        boolean result = userService.loginUser(loginUserDto, httpRequest, httpResponse);
 
         assertTrue(result, "Login user with correct credentials should be successful.");
     }
@@ -497,10 +499,11 @@ public class TransactionalUserServiceTest {
             throws UnexpectedErrorException, NoConnectionException {
         HttpServletRequest httpRequest = new MockHttpServletRequest();
         HttpServletResponse httpResponse = new MockHttpServletResponse();
-        when(authenticator.authenticate("", "password", true, httpRequest, httpResponse))
+        LoginUserDto loginUserDto = new LoginUserDto("", "password", true, "192.168.1.1");
+        when(authenticator.authenticate(loginUserDto, httpRequest, httpResponse))
                 .thenReturn(false);
 
-        boolean result = userService.loginUser("", "password", true, httpRequest, httpResponse);
+        boolean result = userService.loginUser(loginUserDto, httpRequest, httpResponse);
 
         assertFalse(result, "Login user with bad credentials should fail.");
     }

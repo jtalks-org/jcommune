@@ -17,11 +17,11 @@ package org.jtalks.jcommune.service;
 import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.validation.BindingResult;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.jtalks.jcommune.model.dto.LoginUserDto;
 import org.jtalks.jcommune.model.plugins.exceptions.HoneypotCaptchaException;
 
 /**
@@ -44,8 +44,7 @@ public interface Authenticator {
      * @throws UnexpectedErrorException if external service returns unexpected result
      * @throws NoConnectionException    if we can't connect for any reason to external authentication service
      */
-    public boolean authenticate(String username, String password, boolean rememberMe,
-                                HttpServletRequest request, HttpServletResponse response)
+    public boolean authenticate(LoginUserDto loginUserDto, HttpServletRequest request, HttpServletResponse response)
             throws UnexpectedErrorException, NoConnectionException;
 
     /**

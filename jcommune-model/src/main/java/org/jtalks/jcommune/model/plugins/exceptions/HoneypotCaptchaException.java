@@ -16,9 +16,11 @@
 package org.jtalks.jcommune.model.plugins.exceptions;
 
 /**
- *  Exception, which to be thrown, when honeypot captcha filled.
+ * Exception, which to be thrown, when honeypot captcha filled.
+ * If honeypot captcha filled it means that bot try to register.
  * 
  * @author Mikhail Stryzhonok
+ * @see <a href="http://jira.jtalks.org/browse/JC-1750">JIRA issue</a>
  */
 public class HoneypotCaptchaException extends Exception{
     
@@ -26,7 +28,7 @@ public class HoneypotCaptchaException extends Exception{
         super();
     }
     
-    public HoneypotCaptchaException(Exception cause) {
-        super(cause);
+    public HoneypotCaptchaException(String message) {
+        super(message);
     }
 }

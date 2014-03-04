@@ -59,6 +59,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import org.jtalks.jcommune.model.dto.LoginUserDto;
 import org.jtalks.jcommune.model.plugins.exceptions.HoneypotCaptchaException;
 
 /**
@@ -136,22 +137,21 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      * {@inheritDoc}
      */
     @Override
-    public boolean authenticate(String username, String password, boolean rememberMe, HttpServletRequest request,
+    public boolean authenticate(LoginUserDto loginUserDto, HttpServletRequest request,
                                 HttpServletResponse response) throws UnexpectedErrorException, NoConnectionException {
         boolean result;
         JCUser user;
         try {
-            user = getByUsername(username);
-            result = authenticateDefault(user, password, rememberMe, request, response);
+            user = getByUsername(loginUserDto.getUserName());
+            result = authenticateDefault(user, loginUserDto.getPassword(), loginUserDto.isRememberMe(), request, response);
         } catch (NotFoundException e) {
-            String ipAddress = getClientIpAddress(request);
-            LOGGER.info("User was not found during login process, username = {}, IP={}", username, ipAddress);
-            result = authenticateByPluginAndUpdateUserInfo(username, password, true, rememberMe, request, response);
+            LOGGER.info("User was not found during login process, username = {}, IP={}", 
+                    loginUserDto.getUserName(), loginUserDto.getClientIp());
+            result = authenticateByPluginAndUpdateUserInfo(loginUserDto, true, request, response);
         } catch (AuthenticationException e) {
-            String ipAddress = getClientIpAddress(request);
             LOGGER.info("AuthenticationException: username = {}, IP={}, message={}",
-                    new Object[]{username, ipAddress, e.getMessage()});
-            result = authenticateByPluginAndUpdateUserInfo(username, password, false, rememberMe, request, response);
+                    new String[]{loginUserDto.getUserName(), loginUserDto.getClientIp(), e.getMessage()});
+            result = authenticateByPluginAndUpdateUserInfo(loginUserDto, false, request, response);
         }
         return result;
     }
@@ -166,26 +166,27 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      * @throws UnexpectedErrorException if some unexpected error occurred
      * @throws NoConnectionException    if some connection error occurred
      */
-    private boolean authenticateByPluginAndUpdateUserInfo(String username, String password, boolean newUser,
-                                                          boolean rememberMe, HttpServletRequest request,
+    private boolean authenticateByPluginAndUpdateUserInfo(LoginUserDto loginUserDto, boolean newUser,
+                                                          HttpServletRequest request,
                                                           HttpServletResponse response)
             throws UnexpectedErrorException, NoConnectionException {
-        String passwordHash = encryptionService.encryptPassword(password);
+        String passwordHash = encryptionService.encryptPassword(loginUserDto.getPassword());
         String encodedUsername;
         try {
-            encodedUsername = username == null ? null : URLEncoder.encode(username, "UTF-8").replace("+", "%20");
+            encodedUsername = loginUserDto.getUserName() == null ? null : 
+                    URLEncoder.encode(loginUserDto.getUserName(), "UTF-8").replace("+", "%20");
         } catch (UnsupportedEncodingException e) {
-            LOGGER.error("Could not encode username '{}'", username);
+            LOGGER.error("Could not encode username '{}'", loginUserDto.getUserName());
             throw new UnexpectedErrorException(e);
         }
         Map<String, String> authInfo = authenticateByAvailablePlugin(encodedUsername, passwordHash);
         if (authInfo.isEmpty() || !authInfo.containsKey("email") || !authInfo.containsKey("username")) {
-            LOGGER.info("Could not authenticate user '{}' by plugin.", username);
+            LOGGER.info("Could not authenticate user '{}' by plugin.", loginUserDto.getUserName());
             return false;
         }
         JCUser user = saveUser(authInfo, passwordHash, newUser);
         try {
-            return authenticateDefault(user, password, rememberMe, request, response);
+            return authenticateDefault(user, loginUserDto.getUserName(), loginUserDto.isRememberMe(), request, response);
         } catch (AuthenticationException e) {
             return false;
         }
@@ -247,14 +248,6 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
             throw new NotFoundException();
         }
         return user;
-    }
-
-    private String getClientIpAddress(HttpServletRequest request) {
-        String ipAddress = request.getHeader("X-FORWARDED-FOR");
-        if (ipAddress == null) {
-            ipAddress = request.getRemoteAddr();
-        }
-        return ipAddress;
     }
 
     private void copyFieldsFromUserToJCUser(User commonUser, JCUser user) {
@@ -342,7 +335,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
             }
         } else if (honeypotCaptchaFilled(result)) {
                 LOGGER.debug("Bot try to register. Username - {}, email - {}, ip - {}", 
-                        new String[]{userDto.getUsername(), userDto.getEmail(), getClientIpAddress(request)});
+                        new String[]{userDto.getUsername(), userDto.getEmail(), registerUserDto.getClientIp()});
                 throw new HoneypotCaptchaException();
         }
         return result;
@@ -372,11 +365,15 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         }
     }
     
+    /**
+     * Detects the presence honeypot captcha filing error.
+     * If honeypot captcha filled it means that bot try to register. 
+     * @param errors Errors that detected by validator.
+     * @return <code>true</code> if error present, <code>false</code> otherwise.
+     * @see <a href="http://jira.jtalks.org/browse/JC-1750">JIRA issue</a>
+     */
     private boolean honeypotCaptchaFilled(BindingResult errors) {
-        if (errors.hasFieldErrors(HONEYPOT_FIELD)) {
-            return true;
-        }
-        return false;
+        return errors.hasFieldErrors(HONEYPOT_FIELD); 
     }
 
     /**
@@ -412,11 +409,4 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         return user;
     }
     
-    /**
-     * Sets specified validator. Needed for tests.
-     * @param validator Validator to be setted.
-     */
-    public void setValidator(Validator validator) {
-        this.validator = validator;
-    }
 }

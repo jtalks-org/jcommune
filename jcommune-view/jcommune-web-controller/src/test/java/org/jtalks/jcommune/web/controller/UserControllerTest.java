@@ -55,6 +55,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import org.jtalks.jcommune.model.dto.LoginUserDto;
 import org.jtalks.jcommune.model.plugins.exceptions.HoneypotCaptchaException;
 
 import static org.mockito.Matchers.any;
@@ -92,7 +93,7 @@ public class UserControllerTest {
         SecurityContextHolderFacade securityFacade = mock(SecurityContextHolderFacade.class);
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityFacade.getContext()).thenReturn(securityContext);
-
+        when(request.getHeader("X-FORWARDED-FOR")).thenReturn("192.168.1.1");
         userController = new UserController(userService, authenticator, pluginService, userService);
     }
 
@@ -177,8 +178,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testRegisterValidationFail() 
-            throws UnexpectedErrorException, NotFoundException,NoConnectionException, HoneypotCaptchaException {
+    public void testRegisterValidationFail() throws Exception {
         RegisterUserDto dto = createRegisterUserDto(null);
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
@@ -190,8 +190,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testRegisterFailIfUnexpectedErrorOccurred()
-            throws UnexpectedErrorException, NotFoundException, NoConnectionException, HoneypotCaptchaException {
+    public void testRegisterFailIfUnexpectedErrorOccurred() throws Exception {
         RegisterUserDto dto = createRegisterUserDto(null);
         doThrow(new UnexpectedErrorException()).when(authenticator)
                 .register(dto, request);
@@ -202,8 +201,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testRegisterFailIfConnectionErrorOccurred()
-            throws UnexpectedErrorException, NotFoundException, NoConnectionException, HoneypotCaptchaException {
+    public void testRegisterFailIfConnectionErrorOccurred() throws Exception {
         RegisterUserDto dto = createRegisterUserDto(null);
         doThrow(new NoConnectionException()).when(authenticator)
                 .register(dto, request);
@@ -214,8 +212,7 @@ public class UserControllerTest {
     }
     
     @Test
-    public void testRegisterFailIfHoneypotCaptchaNotNull() 
-            throws UnexpectedErrorException, NotFoundException, NoConnectionException, HoneypotCaptchaException {
+    public void testRegisterFailIfHoneypotCaptchaNotNull() throws Exception {
         RegisterUserDto dto = createRegisterUserDto("anyString");
         doThrow(new HoneypotCaptchaException()).when(authenticator)
                 .register(dto, request);
@@ -238,8 +235,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testRegisterAjaxValidationFail() 
-            throws UnexpectedErrorException, NotFoundException, NoConnectionException, HoneypotCaptchaException {
+    public void testRegisterAjaxValidationFail() throws Exception {
         RegisterUserDto dto = createRegisterUserDto(null);
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
@@ -252,8 +248,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testRegisterAjaxFailIfUnexpectedErrorOccurred()
-            throws UnexpectedErrorException, NotFoundException, NoConnectionException, HoneypotCaptchaException {
+    public void testRegisterAjaxFailIfUnexpectedErrorOccurred() throws Exception {
         RegisterUserDto dto = createRegisterUserDto(null);
         doThrow(new UnexpectedErrorException()).when(authenticator).register(dto, request);
 
@@ -263,8 +258,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testRegisterAjaxFailIfConnectionErrorOccurred()
-            throws UnexpectedErrorException, NotFoundException, NoConnectionException, HoneypotCaptchaException {
+    public void testRegisterAjaxFailIfConnectionErrorOccurred() throws Exception {
         RegisterUserDto dto = createRegisterUserDto(null);
         doThrow(new NoConnectionException()).when(authenticator).register(dto, request);
 
@@ -274,8 +268,7 @@ public class UserControllerTest {
     }
     
     @Test
-    public void testRegisterAjaxFailIfHoneypotCaptchaNotNull() 
-            throws UnexpectedErrorException, NotFoundException, NoConnectionException, HoneypotCaptchaException {
+    public void testRegisterAjaxFailIfHoneypotCaptchaNotNull() throws Exception {
         RegisterUserDto dto = createRegisterUserDto("anyString");
         doThrow(new HoneypotCaptchaException()).when(authenticator).register(dto, request);
 
@@ -290,7 +283,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testRestorePassword() throws IOException, NotFoundException, MailingFailedException {
+    public void testRestorePassword() throws Exception {
         RestorePasswordDto dto = new RestorePasswordDto();
         dto.setUserEmail(EMAIL);
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "email");
@@ -300,7 +293,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testRestorePasswordWrongMail() throws IOException, NotFoundException, MailingFailedException {
+    public void testRestorePasswordWrongMail() throws Exception {
         RestorePasswordDto dto = new RestorePasswordDto();
         dto.setUserEmail(EMAIL);
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "email");
@@ -311,7 +304,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testRestorePasswordFail() throws NotFoundException, MailingFailedException {
+    public void testRestorePasswordFail() throws Exception {
         Exception fail = new MailingFailedException(new RuntimeException());
         doThrow(fail).when(userService).restorePassword(anyString());
         RestorePasswordDto dto = new RestorePasswordDto();
@@ -323,22 +316,19 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testActivateAccount() throws NotFoundException, UnexpectedErrorException, NoConnectionException,
-            UserTriesActivatingAccountAgainException {
+    public void testActivateAccount() throws Exception {
 
         JCUser user = new JCUser("username", "password", null);
         user.setPassword("password");
         when(userService.getByUuid(USER_NAME)).thenReturn(user);
         String viewName = userController.activateAccount(USER_NAME, request, response);
         verify(userService, times(1)).activateAccount(USER_NAME);
-        verify(userService, times(1)).loginUser(eq(user.getUsername()), eq(user.getPassword()), eq(true),
-                any(MutableHttpRequest.class), eq(response));
+        verify(userService, times(1)).loginUser(any(LoginUserDto.class), any(MutableHttpRequest.class), eq(response));
         assertEquals("redirect:/", viewName);
     }
 
     @Test
-    public void testActivateAccountFail() throws NotFoundException, UserTriesActivatingAccountAgainException,
-            UnexpectedErrorException, NoConnectionException {
+    public void testActivateAccountFail() throws Exception {
         doThrow(new NotFoundException()).when(userService).activateAccount(anyString());
 
         String viewName = userController.activateAccount(USER_NAME, request, response);
@@ -347,8 +337,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testActivateAccountAgain() throws NotFoundException, UserTriesActivatingAccountAgainException,
-            UnexpectedErrorException, NoConnectionException {
+    public void testActivateAccountAgain() throws Exception {
 
         JCUser user = new JCUser("username", "password", null);
         user.setEnabled(true);
@@ -391,101 +380,96 @@ public class UserControllerTest {
 
     @Test(enabled = false)
     public void testAjaxLoginSuccess() throws Exception {
-        when(userService.loginUser(anyString(), anyString(), anyBoolean(),
-                any(HttpServletRequest.class), any(HttpServletResponse.class)))
-                .thenReturn(true);
+        when(userService.loginUser(any(LoginUserDto.class), any(HttpServletRequest.class), 
+                any(HttpServletResponse.class))).thenReturn(true);
 
-        JsonResponse response = userController.loginAjax(null, null, "on", null, null);
+        JsonResponse response = userController.loginAjax(null, null, null);
         assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
-        verify(userService).loginUser(anyString(), anyString(), eq(true),
+        LoginUserDto loginUserDto = new LoginUserDto("userName", "password", true, "192.168.1.1");
+        verify(userService).loginUser(loginUserDto,
                 any(HttpServletRequest.class), any(HttpServletResponse.class));
     }
 
     @Test
     public void testAjaxLoginFailure() throws Exception {
-        when(userService.loginUser(anyString(), anyString(), anyBoolean(),
-                any(HttpServletRequest.class), any(HttpServletResponse.class)))
-                .thenReturn(false);
-
-        JsonResponse response = userController.loginAjax(null, null, "off", null, null);
+        when(userService.loginUser(any(LoginUserDto.class),any(HttpServletRequest.class), 
+                any(HttpServletResponse.class))).thenReturn(false);
+        LoginUserDto loginUserDto = new LoginUserDto();
+        loginUserDto.setRememberMe(false);
+        JsonResponse response = userController.loginAjax(loginUserDto, request, null);
         assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
-        verify(userService).loginUser(anyString(), anyString(), eq(false),
-                any(HttpServletRequest.class), any(HttpServletResponse.class));
+        verify(userService).loginUser(eq(loginUserDto), any(HttpServletRequest.class), any(HttpServletResponse.class));
     }
 
     @Test
     public void testLoginAjaxUserShouldFailIfConnectionErrorOccurred() throws Exception {
-        when(userService.loginUser(anyString(), anyString(), anyBoolean(),
-                any(HttpServletRequest.class), any(HttpServletResponse.class)))
+        when(userService.loginUser(any(LoginUserDto.class), any(HttpServletRequest.class), any(HttpServletResponse.class)))
                 .thenThrow(new NoConnectionException());
-
-        JsonResponse response = userController.loginAjax(null, null, "off", null, null);
+        
+        LoginUserDto loginUserDto = new LoginUserDto();
+        JsonResponse response = userController.loginAjax(loginUserDto, request, null);
         assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
-        verify(userService).loginUser(anyString(), anyString(), eq(false),
-                any(HttpServletRequest.class), any(HttpServletResponse.class));
+        verify(userService).loginUser(eq(loginUserDto), any(HttpServletRequest.class), any(HttpServletResponse.class));
     }
 
     @Test
     public void testLoginAjaxUserShouldFailIfUnexpectedErrorOccurred() throws Exception {
-        when(userService.loginUser(anyString(), anyString(), anyBoolean(),
-                any(HttpServletRequest.class), any(HttpServletResponse.class)))
+        when(userService.loginUser(any(LoginUserDto.class), any(HttpServletRequest.class), any(HttpServletResponse.class)))
                 .thenThrow(new UnexpectedErrorException());
-
-        JsonResponse response = userController.loginAjax(null, null, "off", null, null);
+        
+        LoginUserDto loginUserDto = new LoginUserDto();
+        JsonResponse response = userController.loginAjax(loginUserDto, request, null);
         assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
-        verify(userService).loginUser(anyString(), anyString(), eq(false),
-                any(HttpServletRequest.class), any(HttpServletResponse.class));
+        verify(userService).loginUser(eq(loginUserDto), any(HttpServletRequest.class), any(HttpServletResponse.class));
     }
 
     @Test(enabled = false)
     public void testLoginWithCorrectParametersShouldBeSuccessful() throws Exception {
-        when(userService.loginUser(eq("user1"), eq("password"), anyBoolean(),
-                any(HttpServletRequest.class), any(HttpServletResponse.class)))
+        LoginUserDto loginUserDto = new LoginUserDto("userName", "password", true, "192.168.1.1");
+        when(userService.loginUser(loginUserDto, any(HttpServletRequest.class), any(HttpServletResponse.class)))
                 .thenReturn(true);
-
-        ModelAndView view = userController.login("user1", "password", null, "off", null, null);
+        
+        ModelAndView view = userController.login(loginUserDto, null, request, null);
 
         assertEquals(view.getViewName(), "redirect:/");
-        verify(userService).loginUser(eq("user1"), eq("password"), eq(false),
-                any(HttpServletRequest.class), any(HttpServletResponse.class));
+        verify(userService).loginUser(loginUserDto, any(HttpServletRequest.class), any(HttpServletResponse.class));
     }
 
     @Test
     public void testLoginWithIncorrectParametersShouldFail() throws Exception {
-        when(userService.loginUser(anyString(), anyString(), anyBoolean(),
-                any(HttpServletRequest.class), any(HttpServletResponse.class)))
+        when(userService.loginUser(any(LoginUserDto.class), any(HttpServletRequest.class), any(HttpServletResponse.class)))
                 .thenReturn(false);
-
-        ModelAndView view = userController.login(null, null, null, "off", null, null);
+        
+        LoginUserDto loginUserDto = new LoginUserDto();
+        ModelAndView view = userController.login(loginUserDto, null, request, null);
 
 //        assertEquals(view.getViewName(), "login");
-        verify(userService).loginUser(anyString(), anyString(), eq(false),
-                any(HttpServletRequest.class), any(HttpServletResponse.class));
+        verify(userService).loginUser(any(LoginUserDto.class), any(HttpServletRequest.class), any(HttpServletResponse.class));
     }
 
     @Test
     public void testLoginUserShouldFailIfConnectionErrorOccurred() throws Exception {
-        when(userService.loginUser(anyString(), anyString(), anyBoolean(),
+        when(userService.loginUser(any(LoginUserDto.class),
                 any(HttpServletRequest.class), any(HttpServletResponse.class)))
                 .thenThrow(new NoConnectionException());
-
-        ModelAndView view = userController.login(null, null, null, "off", null, null);
+        
+        LoginUserDto loginUserDto = new LoginUserDto();
+        ModelAndView view = userController.login(loginUserDto, null, request, null);
 
         assertEquals(view.getViewName(), UserController.AUTH_SERVICE_FAIL_URL);
-        verify(userService).loginUser(anyString(), anyString(), eq(false),
-                any(HttpServletRequest.class), any(HttpServletResponse.class));
+        verify(userService).loginUser(eq(loginUserDto), any(HttpServletRequest.class), any(HttpServletResponse.class));
     }
 
     @Test
     public void testLoginUserShouldFailIfUnexpectedErrorOccurred() throws Exception {
-        when(userService.loginUser(anyString(), anyString(), anyBoolean(),
-                any(HttpServletRequest.class), any(HttpServletResponse.class)))
+        when(userService.loginUser(any(LoginUserDto.class), any(HttpServletRequest.class), any(HttpServletResponse.class)))
                 .thenThrow(new UnexpectedErrorException());
-
-        ModelAndView view = userController.login(null, null, null, "off", null, null);
+        
+        LoginUserDto loginUserDto = new LoginUserDto();
+        ModelAndView view = userController.login(loginUserDto, null, request, null);
 
         assertEquals(view.getViewName(), UserController.AUTH_SERVICE_FAIL_URL);
-        verify(userService).loginUser(anyString(), anyString(), eq(false),
+        verify(userService).loginUser(eq(loginUserDto),
                 any(HttpServletRequest.class), any(HttpServletResponse.class));
     }
 

@@ -30,6 +30,7 @@ import org.jtalks.jcommune.service.exceptions.UserTriesActivatingAccountAgainExc
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import org.jtalks.jcommune.model.dto.LoginUserDto;
 
 /**
  * This interface should have methods which give us more abilities in manipulating User persistent entity.
@@ -183,8 +184,7 @@ public interface UserService extends EntityService<JCUser> {
      * @return true if user was logged in. false if there were any errors during
      *         logging in.
      */
-    boolean loginUser(String username, String password, boolean rememberMe, HttpServletRequest request,
-                      HttpServletResponse response)
+    boolean loginUser(LoginUserDto loginUserDto, HttpServletRequest request, HttpServletResponse response)
             throws UnexpectedErrorException, NoConnectionException;
 
     /**
