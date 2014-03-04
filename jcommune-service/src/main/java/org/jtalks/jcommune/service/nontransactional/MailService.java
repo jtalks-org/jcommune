@@ -266,21 +266,19 @@ public class MailService {
      * @param postId    id of post where user was mentioned
      */
     public void sendUserMentionedNotification(JCUser recipient, long postId) {
-        if (notificationsEnabledProperty.booleanValue()) {
-            String urlSuffix = "/posts/" + postId;
-            String url = this.getDeploymentRootUrl() + urlSuffix;
-            Locale locale = recipient.getLanguage().getLocale();
-            Map<String, Object> model = new HashMap<String, Object>();
-            model.put(NAME, recipient.getUsername());
-            model.put(LINK, url);
-            model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
-            model.put(RECIPIENT_LOCALE, locale);
-            try {
-                this.sendEmail(recipient.getEmail(), messageSource.getMessage("userMentioning.subject",
-                        new Object[]{}, locale), model, "userMentioning.vm");
-            } catch (MailingFailedException e) {
-                LOGGER.error("Failed to sent activation mail for user: " + recipient.getUsername());
-            }
+        String urlSuffix = "/posts/" + postId;
+        String url = this.getDeploymentRootUrl() + urlSuffix;
+        Locale locale = recipient.getLanguage().getLocale();
+        Map<String, Object> model = new HashMap<String, Object>();
+        model.put(NAME, recipient.getUsername());
+        model.put(LINK, url);
+        model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
+        model.put(RECIPIENT_LOCALE, locale);
+        try {
+            this.sendEmail(recipient.getEmail(), messageSource.getMessage("userMentioning.subject",
+                    new Object[]{}, locale), model, "userMentioning.vm");
+        } catch (MailingFailedException e) {
+            LOGGER.error("Failed to sent activation mail for user: " + recipient.getUsername());
         }
     }
 
@@ -296,6 +294,9 @@ public class MailService {
      */
     private void sendEmail(String to, String subject, Map<String, Object> model,
                            String templateName) throws MailingFailedException {
+        if (!notificationsEnabledProperty.booleanValue()) {
+            return;
+        }
         try {
             model.put(MESSAGE_SOURCE, messageSource);
             model.put(NO_ARGS, new Object[]{});
