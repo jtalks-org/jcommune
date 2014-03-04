@@ -56,6 +56,8 @@ public class BbCodeAwareSizeValidator implements ConstraintValidator<BbCodeAware
     }
 
     /**
+     * The database stores both bb codes and symbols visible for users.
+     * Post length with bb codes can't be greater than max value.
      * {@inheritDoc}
      */
     @Override
@@ -63,7 +65,7 @@ public class BbCodeAwareSizeValidator implements ConstraintValidator<BbCodeAware
         if (value != null) {
             String trimed = removeBBCodes(value).trim();
             int plainTextLength = getDisplayedLength(trimed);
-            return plainTextLength >= min && plainTextLength <= max;
+            return plainTextLength >= min && value.length() <= max;
         }
         return false;
     }
