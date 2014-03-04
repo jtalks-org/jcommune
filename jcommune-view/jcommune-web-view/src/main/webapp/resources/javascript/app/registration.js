@@ -184,11 +184,9 @@ function composeQuery(signupDialog) {
 }
 
 function getCustomErrorMessage(customError) {
-    if (customError == 'connectionError') {
-        return $labelRegistrationConnectionError;
-    } else if (customError == 'unexpectedError') {
-        return $labelRegistrationFailture;
-    } else {
-        return $labelHoneypotCaptchaFilled
+    switch (customError) {
+        case 'connectionError' : return $labelRegistrationConnectionError;
+        case 'honeypotCaptchaNotNull' : return $labelHoneypotCaptchaFilled;
+        default : return $labelRegistrationFailture;
     }
 }

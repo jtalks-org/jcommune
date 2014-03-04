@@ -60,6 +60,7 @@ import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import org.jtalks.jcommune.model.dto.LoginUserDto;
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.plugins.exceptions.HoneypotCaptchaException;
 
@@ -86,6 +87,11 @@ public class UserController {
     public static final String REG_SERVICE_HONEYPOT_FILLED_ERROR_URL = "redirect:/user/new?reg_error=3";
     public static final String NULL_REPRESENTATION = "null";
     public static final String MAIN_PAGE_REFERER = "/";
+    public static final String CUSTOM_ERROR = "customError";
+    public static final String CONNECTION_ERROR = "connectionError";
+    public static final String UNEXPECTED_ERROR = "unexpectedError";
+    public static final String HONEYPOT_CAPTCHA_ERROR = "honeypotCaptchaNotNull";
+    public static final String LOGIN_DTO = "loginUserDto";
     public static final int LOGIN_TRIES_AFTER_LOCK = 3;
     public static final int SLEEP_MILLISECONDS_AFTER_LOCK = 500;
     protected static final String ATTR_USERNAME = "username";
@@ -232,20 +238,22 @@ public class UserController {
             registerUserDto.getUserDto().setLanguage(Language.byLocale(locale));
             errors = authenticator.register(registerUserDto, request);
         } catch (NoConnectionException e) {
-            return new JsonResponse(JsonResponseStatus.FAIL,
-                    new ImmutableMap.Builder<String, String>().put("customError", "connectionError").build());
+            return getCustomErrorResponse(CONNECTION_ERROR);
         } catch (UnexpectedErrorException e) {
-            return new JsonResponse(JsonResponseStatus.FAIL,
-                    new ImmutableMap.Builder<String, String>().put("customError", "unexpectedError").build());
+            return getCustomErrorResponse(UNEXPECTED_ERROR);
         } catch (HoneypotCaptchaException e) {
-            return new JsonResponse(JsonResponseStatus.FAIL,
-                    new ImmutableMap.Builder<String, String>().put("customError", "honeypotCaptchaNotNull").build());
+            return getCustomErrorResponse(HONEYPOT_CAPTCHA_ERROR);
         }
         if (errors.hasErrors()) {
             return new JsonResponse(JsonResponseStatus.FAIL, errors.getAllErrors());
         }
 
         return new JsonResponse(JsonResponseStatus.SUCCESS);
+    }
+    
+    private JsonResponse getCustomErrorResponse(String customError) {
+        return new JsonResponse(JsonResponseStatus.FAIL, 
+                new ImmutableMap.Builder<String, String>().put(CUSTOM_ERROR, customError).build());
     }
         
     /**
@@ -301,8 +309,8 @@ public class UserController {
             JCUser user = userService.getByUuid(uuid);
             MutableHttpRequest wrappedRequest = new MutableHttpRequest(request);
             wrappedRequest.addParameter(AbstractRememberMeServices.DEFAULT_PARAMETER, "true");
-            loginWithLockHandling(user.getUsername(), user.getPassword(), true, wrappedRequest, response,
-                    plainPasswordUserService);
+            LoginUserDto loginUserDto = new LoginUserDto(user.getUsername(), user.getPassword(), true, getClientIpAddress(request));
+            loginWithLockHandling(loginUserDto, wrappedRequest, response, plainPasswordUserService);
             return "redirect:/";
         } catch (NotFoundException e) {
             return "errors/activationExpired";
@@ -326,6 +334,8 @@ public class UserController {
         if (currentUser.isAnonymous()) {
             ModelAndView mav = new ModelAndView(LOGIN);
             mav.addObject(REFERER_ATTR, referer);
+            LoginUserDto loginUserDto = new LoginUserDto();
+            mav.addObject(LOGIN_DTO, loginUserDto);
             return mav;
         } else {
             return new ModelAndView("redirect:" + referer);
@@ -361,22 +371,18 @@ public class UserController {
 
     @RequestMapping(value = "/login_ajax", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResponse loginAjax(@RequestParam("j_username") String username,
-                                  @RequestParam("j_password") String password,
-                                  @RequestParam(value = "_spring_security_remember_me", defaultValue = "off")
-                                  String rememberMe,
+    public JsonResponse loginAjax(@RequestBody LoginUserDto loginUserDto,
                                   HttpServletRequest request, HttpServletResponse response) {
-        boolean rememberMeBoolean = rememberMe.equals(REMEMBER_ME_ON);
         boolean isAuthenticated;
         try {
-            isAuthenticated = loginWithLockHandling(username, password, rememberMeBoolean, request, response,
+            isAuthenticated = loginWithLockHandling(loginUserDto, request, response,
                     userService);
         } catch (NoConnectionException e) {
             return new JsonResponse(JsonResponseStatus.FAIL,
-                    new ImmutableMap.Builder<String, String>().put("customError", "connectionError").build());
+                    new ImmutableMap.Builder<String, String>().put(CUSTOM_ERROR, CONNECTION_ERROR).build());
         } catch (UnexpectedErrorException e) {
             return new JsonResponse(JsonResponseStatus.FAIL,
-                    new ImmutableMap.Builder<String, String>().put("customError", "unexpectedError").build());
+                    new ImmutableMap.Builder<String, String>().put(CUSTOM_ERROR, CONNECTION_ERROR).build());
         }
         if (isAuthenticated) {
             LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
@@ -399,19 +405,15 @@ public class UserController {
      * @return "success" or "fail" response status
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ModelAndView login(@RequestParam("j_username") String username,
-                              @RequestParam("j_password") String password,
+    public ModelAndView login(@ModelAttribute(LOGIN_DTO) LoginUserDto loginUserDto,
                               @RequestParam(REFERER_ATTR) String referer,
-                              @RequestParam(value = "_spring_security_remember_me", defaultValue = "off")
-                              String rememberMe,
                               HttpServletRequest request, HttpServletResponse response) {
-        boolean rememberMeBoolean = rememberMe.equals(REMEMBER_ME_ON);
         boolean isAuthenticated;
         if (referer == null || referer.contains(LOGIN)) {
             referer = MAIN_PAGE_REFERER;
         }
         try {
-            isAuthenticated = loginWithLockHandling(username, password, rememberMeBoolean, request, response,
+            isAuthenticated = loginWithLockHandling(loginUserDto, request, response,
                     userService);
         } catch (NoConnectionException e) {
             return new ModelAndView(AUTH_SERVICE_FAIL_URL);
@@ -424,28 +426,28 @@ public class UserController {
             return new ModelAndView("redirect:" + referer);
         } else {
             ModelAndView modelAndView = new ModelAndView(AUTH_FAIL_URL);
-            modelAndView.addObject(ATTR_USERNAME, username);
+            modelAndView.addObject(ATTR_USERNAME, loginUserDto.getUserName());
             modelAndView.addObject(REFERER_ATTR, referer);
             return modelAndView;
         }
     }
 
-    private boolean loginWithLockHandling(String username, String password, boolean rememberMeBoolean,
-                                          HttpServletRequest request, HttpServletResponse response,
-                                          UserService userService)
+    private boolean loginWithLockHandling(LoginUserDto loginUserDto, HttpServletRequest request,
+                                          HttpServletResponse response, UserService userService)
             throws UnexpectedErrorException, NoConnectionException {
+        loginUserDto.setClientIp(getClientIpAddress(request));
         for (int i = 0; i < LOGIN_TRIES_AFTER_LOCK; i++) {
             try {
-                return userService.loginUser(username, password, rememberMeBoolean, request, response);
+                return userService.loginUser(loginUserDto, request, response);
             } catch (HibernateOptimisticLockingFailureException e) {
                 //we don't handle the exception for several times, just re-reading the content and trying again
                 //after the max times exceeds, only then we give up.
             }
         }
         try {
-            return userService.loginUser(username, password, rememberMeBoolean, request, response);
+            return userService.loginUser(loginUserDto, request, response);
         } catch (HibernateOptimisticLockingFailureException e) {
-            LOGGER.error("User have been locked {} times. Username: {}", LOGIN_TRIES_AFTER_LOCK, username);
+            LOGGER.error("User have been locked {} times. Username: {}", LOGIN_TRIES_AFTER_LOCK, loginUserDto.getUserName());
             throw e;
         }
     }
@@ -460,6 +462,14 @@ public class UserController {
     @ResponseBody
     public JsonResponse usernameList(@RequestParam("pattern") String pattern) {
         return new JsonResponse(JsonResponseStatus.SUCCESS, userService.getUsernames(pattern));
+    }
+    
+    private String getClientIpAddress(HttpServletRequest request) {
+        String ipAddress = request.getHeader("X-FORWARDED-FOR");
+        if (ipAddress == null) {
+            ipAddress = request.getRemoteAddr();
+        }
+        return ipAddress;
     }
 
 }

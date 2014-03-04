@@ -51,6 +51,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.List;
+import org.jtalks.jcommune.model.dto.LoginUserDto;
 
 /**
  * User service class. This class contains method needed to manipulate with User persistent entity.
@@ -331,10 +332,9 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public boolean loginUser(String username, String password, boolean rememberMe,
-                             HttpServletRequest request, HttpServletResponse response)
+    public boolean loginUser(LoginUserDto loginUserDto, HttpServletRequest request, HttpServletResponse response)
             throws UnexpectedErrorException, NoConnectionException {
-        return authenticator.authenticate(username, password, rememberMe, request, response);
+        return authenticator.authenticate(loginUserDto, request, response);
     }
 
     /**

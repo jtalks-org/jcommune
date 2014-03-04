@@ -31,8 +31,8 @@
 
 <%-- Container --%>
 <div class="container form-login-related">
-  <form:form id="login-form" name="form" action='${pageContext.request.contextPath}/login'
-                  method="POST" class='form-vertical'>
+  <form:form id="login-form" name="form" action='${pageContext.request.contextPath}/login' 
+             modelAttribute="loginUserDto" method="POST" class='form-vertical'>
     <fieldset>
       <legend><spring:message code="label.signin"/></legend>
 
@@ -40,7 +40,7 @@
         <label for="j_username" class="control-label"><spring:message code="label.username"/> </label>
 
         <div class="controls">
-          <input class="reg_input" type="text" name="j_username" id="j_username" value="${username}">
+          <form:input class="reg_input" type="text" name="j_username" path="userName" id="j_username"/>
         </div>
       </div>
 
@@ -48,7 +48,7 @@
         <label for="j_password" class="control-label"><spring:message code="label.password"/> </label>
 
         <div class="controls">
-          <input type="password" name="j_password" id="j_password">
+            <form:input type="password" name="j_password" path="password" id="j_password"/>
           <c:if test="${not empty param.login_error}">
             <span class="help-inline">
               <c:choose>
@@ -68,7 +68,7 @@
       </div>
 
       <div class="control-group">
-        <input type="checkbox" name="_spring_security_remember_me" class="form-check-radio-box" checked="checked">
+        <form:checkbox path = "rememberMe" name="_spring_security_remember_me" class="form-check-radio-box" checked="checked"/>
         <label class="string optional"><spring:message code="label.auto_logon"/></label>
       </div>
 

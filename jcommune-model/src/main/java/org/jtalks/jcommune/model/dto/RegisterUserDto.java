@@ -36,6 +36,8 @@ public class RegisterUserDto {
     
     @Null
     private String honeypotCaptcha;
+    
+    private String clientIp;
 
     /**
      * Get password confirmation.
@@ -88,5 +90,13 @@ public class RegisterUserDto {
 
     public void setHoneypotCaptcha(String honeypotCaptcha) {
         this.honeypotCaptcha = honeypotCaptcha;
+    }
+
+    public String getClientIp() {
+        return clientIp;
+    }
+
+    public void setClientIp(String clientIp) {
+        this.clientIp = clientIp;
     }
 }
