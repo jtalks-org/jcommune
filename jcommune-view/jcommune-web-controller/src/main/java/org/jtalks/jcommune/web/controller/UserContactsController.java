@@ -68,26 +68,6 @@ public class UserContactsController {
     }
 
     /**
-     * Handles creation of new contact for current user.
-     * @param userContact user contact information
-     * @return saved user contact (with updated id)
-     * @throws NotFoundException when contact type was not found
-     */
-    @RequestMapping(value="/contacts/add", method = RequestMethod.POST)
-    @ResponseBody
-    public JsonResponse addContact(@Valid @RequestBody UserContactDto userContact,
-                                                     BindingResult result) throws NotFoundException {
-        if(result.hasErrors()){
-            return new FailValidationJsonResponse(result.getAllErrors());
-        }
-        UserContact addedContact = service.addContact(
-                userContact.getOwnerId(),
-                userContact.getValue(),
-                userContact.getTypeId());
-        return new JsonResponse(JsonResponseStatus.SUCCESS, new UserContactDto(addedContact));
-    }
-    
-    /**
      * Removes contact identified by contactId from user contacts.
      * @param contactId identifier of contact to be removed
      * @throws NotFoundException when owner of contact wasn't found

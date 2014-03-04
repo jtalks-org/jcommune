@@ -16,12 +16,13 @@ package org.jtalks.jcommune.web.dto;
 
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
-import org.jtalks.jcommune.model.entity.UserContact;
+import org.jtalks.jcommune.service.dto.UserContactContainer;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.dto.UserNotificationsContainer;
 import org.jtalks.jcommune.service.dto.UserSecurityContainer;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,6 +32,7 @@ import java.util.List;
  * org.springframework.validation.BindingResult, javax.servlet.http.HttpServletResponse)}.
  *
  * @author Osadchuck Eugeny
+ * @author Andrey Pogorelov
  */
 public class EditUserProfileDto {
 
@@ -52,7 +54,8 @@ public class EditUserProfileDto {
     @Valid
     UserSecurityDto userSecurityDto;
 
-    List<UserContact> contacts;
+    @Valid
+    UserContactsDto userContactsDto;
 
     public EditUserProfileDto(UserProfileDto userProfileDto, JCUser user) {
         this.userId = user.getId();
@@ -72,10 +75,18 @@ public class EditUserProfileDto {
         this.userNotificationsDto = userNotificationsDto;
     }
 
-    public EditUserProfileDto(List<UserContact> contacts, JCUser user) {
+    public EditUserProfileDto(UserContactsDto userContactsDto, JCUser user) {
         this.userId = user.getId();
         this.username = user.getUsername();
-        this.contacts = contacts;
+        this.userContactsDto = userContactsDto;
+    }
+
+    public UserContactsDto getUserContactsDto() {
+        return userContactsDto;
+    }
+
+    public void setUserContactsDto(UserContactsDto userContactsDto) {
+        this.userContactsDto = userContactsDto;
     }
 
     /**
@@ -136,6 +147,22 @@ public class EditUserProfileDto {
     public UserNotificationsContainer getUserNotificationsContainer() {
         UserNotificationsDto dto = this.getUserNotificationsDto();
         return new UserNotificationsContainer(dto.isMentioningNotificationsEnabled(), dto.isSendPmNotification());
+    }
+
+    /**
+     * Transforms DTO user contacts container object - convenience implementation to
+     * be passed to the service layer.
+     *
+     * @return user profile modification info for the service tier
+     */
+    public List<UserContactContainer> getUserContacts() {
+        UserContactsDto dto = this.getUserContactsDto();
+        List<UserContactContainer> contacts = new ArrayList<>();
+        for (UserContactDto contact : dto.getContacts()) {
+            contacts.add(new UserContactContainer(contact.getId(),
+                    contact.getValue(), contact.getType().getId()));
+        }
+        return contacts;
     }
 
     /**
@@ -200,14 +227,6 @@ public class EditUserProfileDto {
      */
     public void setAvatar(String avatar) {
         this.avatar = avatar;
-    }
-
-    public List<UserContact> getContacts() {
-        return contacts;
-    }
-
-    public void setContacts(List<UserContact> contacts) {
-        this.contacts = contacts;
     }
 
     public UserProfileDto getUserProfileDto() {

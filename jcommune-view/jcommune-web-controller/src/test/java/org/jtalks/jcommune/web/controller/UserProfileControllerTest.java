@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.controller;
 import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.UserContactsService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -83,6 +84,8 @@ public class UserProfileControllerTest {
     private PostService postService;
     @Mock
     private UserService userService;
+    @Mock
+    private UserContactsService userContactsService;
     //
     private UserProfileController profileController;
 
@@ -98,7 +101,8 @@ public class UserProfileControllerTest {
                 userService,
                 breadcrumbBuilder,
                 imageConverter,
-                postService);
+                postService,
+                userContactsService);
     }
 
     @Test
@@ -108,9 +112,7 @@ public class UserProfileControllerTest {
 
         ModelAndView mav = profileController.showCurrentUserProfilePage();
 
-        assertViewName(mav, "userDetails");
-        assertModelAttributeAvailable(mav, "user");
-        assertModelAttributeAvailable(mav, "language");
+        assertViewName(mav, "editProfile");
     }
 
     @Test(enabled = false)

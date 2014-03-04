@@ -21,9 +21,65 @@ package org.jtalks.jcommune.service.dto;
  *
  * @author Andrey Pogorelov
  */
-public class UserContactsContainer {
+public class UserContactContainer {
 
-    public UserContactsContainer() {
+    private Long id;
 
+    private String value;
+
+    private long typeId;
+
+    public UserContactContainer(Long id, String value, long typeId) {
+        this.id = id;
+        this.value = value;
+        this.typeId = typeId;
+    }
+
+    /**
+     * @return id
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * Set contact id
+     *
+     * @param id of contact
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    /**
+     * @return contact value
+     */
+    public String getValue() {
+        return value;
+    }
+
+    /**
+     * Set contact value
+     *
+     * @param value of contact
+     */
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    /**
+     * @return id of user contact type
+     */
+    public long getTypeId() {
+        return typeId;
+    }
+
+    /**
+     * Set id of user contact type
+     *
+     * @param typeId of user contact type
+     */
+    public void setTypeId(long typeId) {
+        this.typeId = typeId;
     }
 }

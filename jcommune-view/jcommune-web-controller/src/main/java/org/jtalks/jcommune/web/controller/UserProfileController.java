@@ -18,13 +18,11 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.UserContactsService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.ImageConverter;
-import org.jtalks.jcommune.web.dto.EditUserProfileDto;
-import org.jtalks.jcommune.web.dto.UserNotificationsDto;
-import org.jtalks.jcommune.web.dto.UserProfileDto;
-import org.jtalks.jcommune.web.dto.UserSecurityDto;
+import org.jtalks.jcommune.web.dto.*;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.validation.editors.DefaultStringEditor;
 import org.jtalks.jcommune.web.validation.editors.PageSizeEditor;
@@ -47,7 +45,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.Locale;
 
 /**
@@ -72,6 +69,7 @@ public class UserProfileController {
     private BreadcrumbBuilder breadcrumbBuilder;
     private ImageConverter imageConverter;
     private PostService postService;
+    private UserContactsService contactsService;
 
     /**
      * This method turns the trim binder on. Trim binder
@@ -102,11 +100,13 @@ public class UserProfileController {
                                  BreadcrumbBuilder breadcrumbBuilder,
                                  @Qualifier("avatarPreprocessor")
                                  ImageConverter imageConverter,
-                                 PostService postService) {
+                                 PostService postService,
+                                 UserContactsService contactsService) {
         this.userService = userService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.imageConverter = imageConverter;
         this.postService = postService;
+        this.contactsService = contactsService;
     }
 
     /**
@@ -130,10 +130,9 @@ public class UserProfileController {
      * @return user's details
      */
     private ModelAndView getUserProfileModelAndView(JCUser user) {
-        return new ModelAndView("userDetails")
-                .addObject("user", user)
-                        // bind separately to get localized value
-                .addObject("language", user.getLanguage());
+        EditUserProfileDto editedUserDto = new EditUserProfileDto(new UserProfileDto(user), user);
+        setAvatarToUserProfileView(editedUserDto, user);
+        return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUserDto);
     }
 
     /**
@@ -145,9 +144,7 @@ public class UserProfileController {
     @RequestMapping(value = {"/users/{editedUserId}/profile", "/users/{editedUserId}"}, method = RequestMethod.GET)
     public ModelAndView startEditUserProfile(@PathVariable Long editedUserId) throws NotFoundException {
         JCUser editedUser = userService.get(editedUserId);
-        EditUserProfileDto editedUserDto = new EditUserProfileDto(new UserProfileDto(editedUser), editedUser);
-        setAvatarToUserProfileView(editedUserDto, editedUser);
-        return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUserDto);
+        return getUserProfileModelAndView(editedUser);
     }
 
     /**
@@ -159,8 +156,8 @@ public class UserProfileController {
     @RequestMapping(value = "/users/{editedUserId}/contacts", method = RequestMethod.GET)
     public ModelAndView startEditUserContacts(@PathVariable Long editedUserId) throws NotFoundException {
         JCUser editedUser = userService.get(editedUserId);
-        EditUserProfileDto editedUserDto =
-                new EditUserProfileDto(new ArrayList<>(editedUser.getUserContacts()), editedUser);
+        EditUserProfileDto editedUserDto = new EditUserProfileDto(new UserContactsDto(editedUser), editedUser);
+        editedUserDto.getUserContactsDto().setContactTypes(contactsService.getAvailableContactTypes());
         setAvatarToUserProfileView(editedUserDto, editedUser);
         return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUserDto);
     }
@@ -292,6 +289,7 @@ public class UserProfileController {
     public ModelAndView saveEditedContacts(@Valid @ModelAttribute(EDITED_USER) EditUserProfileDto editedProfileDto,
                                            BindingResult result, HttpServletResponse response) throws NotFoundException {
         if (result.hasErrors()) {
+            editedProfileDto.getUserContactsDto().setContactTypes(contactsService.getAvailableContactTypes());
             return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedProfileDto);
         }
         long editedUserId = editedProfileDto.getUserId();
@@ -377,11 +375,13 @@ public class UserProfileController {
                     case EditUserProfileDto.PROFILE:
                         return userService.saveEditedUserProfile(editedUserId, editedProfileDto.getUserInfoContainer());
                     case EditUserProfileDto.SECURITY:
-                        return userService.saveEditedUserSecurity(editedUserId, editedProfileDto.getUserSecurityContainer());
+                        return userService.saveEditedUserSecurity(editedUserId,
+                                editedProfileDto.getUserSecurityContainer());
                     case EditUserProfileDto.NOTIFICATIONS:
-                        return userService.saveEditedUserNotifications(editedUserId, editedProfileDto.getUserNotificationsContainer());
+                        return userService.saveEditedUserNotifications(editedUserId,
+                                editedProfileDto.getUserNotificationsContainer());
                     case EditUserProfileDto.CONTACTS:
-                        return userService.saveEditedUserProfile(editedUserId, editedProfileDto.getUserInfoContainer());
+                        return contactsService.saveEditedUserContacts(editedUserId, editedProfileDto.getUserContacts());
                 }
             } catch (HibernateOptimisticLockingFailureException ignored) {
             }
@@ -391,9 +391,13 @@ public class UserProfileController {
                 case EditUserProfileDto.PROFILE:
                     return userService.saveEditedUserProfile(editedUserId, editedProfileDto.getUserInfoContainer());
                 case EditUserProfileDto.SECURITY:
-                    return userService.saveEditedUserProfile(editedUserId, editedProfileDto.getUserInfoContainer());
+                    return userService.saveEditedUserSecurity(editedUserId,
+                                                                editedProfileDto.getUserSecurityContainer());
                 case EditUserProfileDto.NOTIFICATIONS:
-                    return userService.saveEditedUserProfile(editedUserId, editedProfileDto.getUserInfoContainer());
+                    return userService.saveEditedUserNotifications(editedUserId,
+                                                                editedProfileDto.getUserNotificationsContainer());
+                case EditUserProfileDto.CONTACTS:
+                    return contactsService.saveEditedUserContacts(editedUserId, editedProfileDto.getUserContacts());
                 default:
                     return userService.saveEditedUserProfile(editedUserId, editedProfileDto.getUserInfoContainer());
             }

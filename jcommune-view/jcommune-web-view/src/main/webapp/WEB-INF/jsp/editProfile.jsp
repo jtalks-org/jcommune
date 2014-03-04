@@ -1,4 +1,4 @@
-﻿﻿<%--
+﻿?<%--
 
     Copyright (C) 2011  JTalks.org Team
     This library is free software; you can redistribute it and/or
@@ -60,7 +60,7 @@
      tabindex="60"><spring:message code="label.profile"/></a>
   <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/contacts"
       <c:choose>
-        <c:when test="${editedUser.contacts != null}">class="btn space-left-medium profile-menu-btn active"</c:when>
+        <c:when test="${editedUser.userContactsDto.contacts != null}">class="btn space-left-medium profile-menu-btn active"</c:when>
         <c:otherwise>class="btn space-left-medium profile-menu-btn"</c:otherwise>
       </c:choose>
      tabindex="60"><spring:message code="label.contacts"/></a>
@@ -93,7 +93,7 @@
   <c:when test="${editedUser.userNotificationsDto != null}">
     <c:set var="formAction" value="${pageContext.request.contextPath}/users/${editedUser.userId}/notifications"/>
   </c:when>
-  <c:when test="${editedUser.contacts != null}">
+  <c:when test="${editedUser.userContactsDto.contacts != null}">
     <c:set var="formAction" value="${pageContext.request.contextPath}/users/${editedUser.userId}/contacts"/>
   </c:when>
 </c:choose>
@@ -102,12 +102,13 @@
            modelAttribute="editedUser" method="POST" class="form-horizontal">
 
   <div class='user-profile-header'>
-          <span class="pull-left thumbnail">
-            <span id="avatarPreviewContainer" class="wraptocenter">
-              <%--String prefix "data:image/jpeg;base64," needed for correct image rendering--%>
-              <img id="avatarPreview" src="data:image/jpeg;base64,${editedUser.avatar}" alt=""/>
-            </span>
-          </span>
+    <form:hidden id="avatar" path="avatar" value="${editedUser.avatar}"/>
+    <span class="pull-left thumbnail">
+      <span id="avatarPreviewContainer" class="wraptocenter">
+        <%--String prefix "data:image/jpeg;base64," needed for correct image rendering--%>
+        <img id="avatarPreview" src="data:image/jpeg;base64,${editedUser.avatar}" alt=""/>
+      </span>
+    </span>
 
     <h2 class="pull-right user-profile-username"><c:out value="${editedUser.username}"/></h2>
   </div>
@@ -119,7 +120,6 @@
     <%--Profile--%>
     <c:when test="${editedUser.userProfileDto != null}">
 
-      <form:hidden id="avatar" path="avatar"/>
       <form:hidden id="editedUserId" path="userProfileDto.userId" value="${editedUser.userId}"/>
       <form:hidden id="editedUsername" path="username" value="${editedUser.username}"/>
 
@@ -163,7 +163,8 @@
               <div class="control-group">
                 <label class="control-label"><spring:message code="label.firstname"/></label>
                 <div class="controls">
-                  <form:input class="input-xlarge" path="userProfileDto.firstName" value="${editedUser.userProfileDto.firstName}" tabindex="1"/>
+                  <form:input class="input-xlarge" path="userProfileDto.firstName"
+                              value="${editedUser.userProfileDto.firstName}" tabindex="1"/>
                   <br/>
                   <form:errors path="userProfileDto.firstName" cssClass="help-inline"/>
                 </div>
@@ -172,7 +173,8 @@
               <div class="control-group">
                 <label class="control-label"><spring:message code="label.lastname"/></label>
                 <div class="controls">
-                  <form:input class="input-xlarge" path="userProfileDto.lastName" value="${editedUser.userProfileDto.lastName}" tabindex="5"/>
+                  <form:input class="input-xlarge" path="userProfileDto.lastName"
+                              value="${editedUser.userProfileDto.lastName}" tabindex="5"/>
                   <br/>
                   <form:errors path="userProfileDto.lastName" cssClass="help-inline"/>
                 </div>
@@ -340,7 +342,7 @@
     </c:when>
 
     <%--Contacts--%>
-    <c:when test="${editedUser.contacts != null}">
+    <c:when test="${editedUser.userContactsDto.contacts != null}">
       <form:hidden id="editedUserId" path="userId" value="${editedUser.userId}"/>
       <form:hidden id="editedUsername" path="username" value="${editedUser.username}"/>
 
@@ -351,11 +353,10 @@
           <c:when test="${isCanEditProfile}">
             <h4><spring:message code="label.contacts"/></h4>
             <ul id='contacts' class="contacts">
-              <c:forEach var="contact" items="${editedUser.contacts}" varStatus="loop">
+              <c:forEach var="contact" items="${editedUser.userContactsDto.contacts}" varStatus="loop">
                 <%-- Class 'contact' used in js for binding --%>
                 <li class="contact">
                   <input id="contactId" type="hidden" value="${contact.id}"/>
-                  <input id="contactOwnerId" type="hidden" value="${editedUser.userId}"/>
                     <%-- Class 'button' used in js for binding --%>
                   <a href="#" id="${contact.id}" class="btn btn-mini btn-danger button"
                      title="<spring:message code='label.contacts.tips.delete'/>">
@@ -363,11 +364,17 @@
                   </a>
 
                   <span class="contact" title="<c:out value='${contact.type.typeName}'/>">
-
-                    <span class="space-left-small">
-                        <jtalks:prepareLink incomingLink='${contact.displayValue}'/>
-                    </span>
+                      <form:hidden path="userContactsDto.contacts[${loop.index}].id" value="${contact.id}"/>
                   </span>
+                  <div class="controls">
+                    <form:select class="input-medium" path="userContactsDto.contacts[${loop.index}].type.id"
+                                 items="${editedUser.userContactsDto.contactTypes}" />
+                    <form:input class="input-large" type="text" path="userContactsDto.contacts[${loop.index}].value"
+                                tabindex="45" value="${contact.value}"/>
+                    <br/>
+                    <form:errors path="userContactsDto.contacts[${loop.index}].value" cssClass="help-inline"/>
+                  </div>
+
                 </li>
               </c:forEach>
             </ul>
@@ -378,12 +385,12 @@
           </c:when>
 
           <c:otherwise>
-            <c:if test="${!empty editedUser.contacts}">
+            <c:if test="${!empty editedUser.userContactsDto.contacts}">
               <h4>
                 <spring:message code="label.contacts.header"/>
               </h4>
               <ul id="contacts" class="contacts">
-                <c:forEach var="contact" items="${editedUser.contacts}">
+                <c:forEach var="contact" items="${editedUser.userContactsDto.contacts}">
                   <li><span class="contact">
                   <img src="${pageContext.request.contextPath}${contact.type.icon}"
                        alt="<c:out value="${contact.type.typeName}"/>" title="<c:out value="${contact.type.typeName}"/>">
@@ -441,7 +448,7 @@
     </c:when>
   </c:choose>
 
-  <c:if test="${isCanEditProfile && editedUser.contacts == null}">
+  <c:if test="${isCanEditProfile}">
     <hr class='user-profile-hr'/>
     <div class='user-profile-buttons-form-actions'>
       <button id="saveChanges" class="btn btn-primary" type="submit" tabindex="60">
