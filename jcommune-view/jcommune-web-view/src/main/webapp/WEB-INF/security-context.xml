@@ -28,7 +28,8 @@
     <security:custom-filter ref="rememberMeCheckFilter" before="FORM_LOGIN_FILTER"/>
     <security:intercept-url pattern="/resources/**" filters="none"/>
     <security:intercept-url pattern="/errors/**" filters="none"/>
-    <security:intercept-url pattern="/admin/**" filters="none"/>
+    <security:intercept-url pattern="/admin/logo" filters="none"/>
+    <security:intercept-url pattern="/admin/icon/**" filters="none"/>
     <security:intercept-url pattern="/posts/new" access="isAuthenticated()"/>
     <security:intercept-url pattern="/posts/*/delete" method="GET" access="isAuthenticated()"/>
     <security:intercept-url pattern="/posts/*" method="DELETE" access="isAuthenticated()"/>
