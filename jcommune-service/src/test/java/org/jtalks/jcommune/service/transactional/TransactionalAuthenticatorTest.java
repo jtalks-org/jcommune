@@ -57,7 +57,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.jtalks.jcommune.model.dto.LoginUserDto;
-import org.jtalks.jcommune.model.plugins.exceptions.HoneypotCaptchaException;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -312,7 +311,7 @@ public class TransactionalAuthenticatorTest {
         when(bindingResult.hasErrors()).thenReturn(false);
         when(userDao.getCommonUserByUsername("username")).thenReturn(commonUser);
 
-        authenticator.register(userDto, httpRequest);
+        authenticator.register(userDto);
 
         verify(bindingResult, never()).rejectValue(anyString(), anyString(), anyString());
     }
@@ -334,7 +333,7 @@ public class TransactionalAuthenticatorTest {
 
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        BindingResult result = authenticator.register(userDto, httpRequest);
+        BindingResult result = authenticator.register(userDto);
 
         assertEquals(result.getFieldErrors().size(), 3);
     }
@@ -351,7 +350,7 @@ public class TransactionalAuthenticatorTest {
 
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        authenticator.register(userDto, httpRequest);
+        authenticator.register(userDto);
     }
 
     @Test(expectedExceptions = UnexpectedErrorException.class)
@@ -364,25 +363,7 @@ public class TransactionalAuthenticatorTest {
         when(pluginService.getRegistrationPlugins()).thenReturn(
                 new ImmutableMap.Builder<Long, RegistrationPlugin>().put(1L, plugin).build());
 
-        authenticator.register(userDto, httpRequest);
-    }
-    
-    @Test(expectedExceptions = HoneypotCaptchaException.class)
-    public void registerUserWithNotNullHoneypotCaptchaShouldFail() throws Exception {
-        final RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em", "anyString");
-        doAnswer(new Answer() {
-
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Object[] args = invocation.getArguments();
-                BeanPropertyBindingResult res = (BeanPropertyBindingResult)args[1];
-                res.addError(new FieldError("registrationDao", TransactionalAuthenticator.HONEYPOT_FIELD,
-                        "Must not be null"));
-                return res;
-            }
-        }).when(validator).validate(any(), any(BeanPropertyBindingResult.class));
-
-        authenticator.register(userDto, httpRequest);
+        authenticator.register(userDto);
     }
 
     @Test
@@ -391,7 +372,7 @@ public class TransactionalAuthenticatorTest {
         when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Collections.EMPTY_LIST);
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        authenticator.register(userDto, httpRequest);
+        authenticator.register(userDto);
 
         verify(bindingResult, never()).rejectValue(anyString(), anyString(), anyString());
     }
@@ -402,7 +383,7 @@ public class TransactionalAuthenticatorTest {
         when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Collections.EMPTY_LIST);
         when(bindingResult.hasErrors()).thenReturn(false);
 
-        authenticator.register(userDto, httpRequest);
+        authenticator.register(userDto);
 
         verify(bindingResult, never()).rejectValue(anyString(), anyString(), anyString());
     }

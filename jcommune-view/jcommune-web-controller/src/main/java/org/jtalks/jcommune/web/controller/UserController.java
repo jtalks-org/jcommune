@@ -61,8 +61,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import org.jtalks.jcommune.model.dto.LoginUserDto;
-import org.jtalks.jcommune.model.dto.UserDto;
-import org.jtalks.jcommune.model.plugins.exceptions.HoneypotCaptchaException;
+
+
 
 /**
  * This controller handles custom authentication actions
@@ -96,8 +96,8 @@ public class UserController {
     public static final int SLEEP_MILLISECONDS_AFTER_LOCK = 500;
     protected static final String ATTR_USERNAME = "username";
     protected static final String ATTR_LOGIN_ERROR = "login_error";
+    public static final String HONEYPOT_FIELD = "honeypotCaptcha";
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
-    private static final String REMEMBER_ME_ON = "on";
     private final UserService userService;
     private final Authenticator authenticator;
     private final PluginService pluginService;
@@ -174,6 +174,8 @@ public class UserController {
     /**
      * Render registration page with bind objects to form.
      *
+     * @param request Servlet request.
+     * @param locale To set currently selected language as user's default
      * @return {@code ModelAndView} with "registration" view, any additional html from registration plugins and
      *         {@link org.jtalks.jcommune.model.dto.RegisterUserDto} with name "newUser
      */
@@ -191,6 +193,7 @@ public class UserController {
      * todo: redirect to the latest url we came from instead of root
      *
      * @param registerUserDto {@link RegisterUserDto} populated in form
+     * @param request         Servlet request.
      * @param locale          to set currently selected language as user's default
      * @return redirect to / if registration successful or back to "/registration" if failed
      */
@@ -202,13 +205,17 @@ public class UserController {
         BindingResult errors;
         try {
             registerUserDto.getUserDto().setLanguage(Language.byLocale(locale));
-            errors = authenticator.register(registerUserDto, request);
+            errors = authenticator.register(registerUserDto);
         } catch (NoConnectionException e) {
             return new ModelAndView(REG_SERVICE_CONNECTION_ERROR_URL);
         } catch (UnexpectedErrorException e) {
             return new ModelAndView(REG_SERVICE_UNEXPECTED_ERROR_URL);
-        } catch (HoneypotCaptchaException e) {
-            return new ModelAndView(REG_SERVICE_HONEYPOT_FILLED_ERROR_URL);
+        } 
+        if (isHoneypotCaptchaFilled(errors)) {
+            LOGGER.debug("Bot try to register. Username - {}, email - {}, ip - {}", 
+                        new String[]{registerUserDto.getUserDto().getUsername(), registerUserDto.getUserDto().getEmail(),
+                            getClientIpAddress(request)});
+             return new ModelAndView(REG_SERVICE_HONEYPOT_FILLED_ERROR_URL);
         }
         if (errors.hasErrors()) {
             ModelAndView mav = new ModelAndView(REGISTRATION);
@@ -216,7 +223,6 @@ public class UserController {
             mav.addAllObjects(errors.getModel());
             return mav;
         }
-
         return new ModelAndView(AFTER_REGISTRATION);
     }
 
@@ -225,6 +231,7 @@ public class UserController {
      * <p/>
      *
      * @param registerUserDto {@link RegisterUserDto} populated in form
+     * @param request   Servlet request.
      * @param locale          to set currently selected language as user's default
      * @return redirect validation result in JSON format
      */
@@ -236,22 +243,25 @@ public class UserController {
         BindingResult errors;
         try {
             registerUserDto.getUserDto().setLanguage(Language.byLocale(locale));
-            errors = authenticator.register(registerUserDto, request);
+            errors = authenticator.register(registerUserDto);
         } catch (NoConnectionException e) {
-            return getCustomErrorResponse(CONNECTION_ERROR);
+            return getCustomErrorJsonResponse(CONNECTION_ERROR);
         } catch (UnexpectedErrorException e) {
-            return getCustomErrorResponse(UNEXPECTED_ERROR);
-        } catch (HoneypotCaptchaException e) {
-            return getCustomErrorResponse(HONEYPOT_CAPTCHA_ERROR);
+            return getCustomErrorJsonResponse(UNEXPECTED_ERROR);
+        }
+        if (isHoneypotCaptchaFilled(errors)) {
+            LOGGER.debug("Bot try to register. Username - {}, email - {}, ip - {}", 
+                        new String[]{registerUserDto.getUserDto().getUsername(), registerUserDto.getUserDto().getEmail(),
+                            getClientIpAddress(request)});
+            return getCustomErrorJsonResponse(HONEYPOT_CAPTCHA_ERROR);
         }
         if (errors.hasErrors()) {
             return new JsonResponse(JsonResponseStatus.FAIL, errors.getAllErrors());
         }
-
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
     
-    private JsonResponse getCustomErrorResponse(String customError) {
+    private JsonResponse getCustomErrorJsonResponse(String customError) {
         return new JsonResponse(JsonResponseStatus.FAIL, 
                 new ImmutableMap.Builder<String, String>().put(CUSTOM_ERROR, customError).build());
     }
@@ -299,7 +309,11 @@ public class UserController {
      * by script or any other tool.
      *
      * @param uuid unique entity identifier
+     * @param request Servlet request.
+     * @param response Servlet response.
      * @return redirect to the login page
+     * @throws org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException
+     * @throws org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException
      */
     @RequestMapping(value = "user/activate/{uuid}")
     public String activateAccount(@PathVariable String uuid, HttpServletRequest request, HttpServletResponse response)
@@ -378,11 +392,9 @@ public class UserController {
             isAuthenticated = loginWithLockHandling(loginUserDto, request, response,
                     userService);
         } catch (NoConnectionException e) {
-            return new JsonResponse(JsonResponseStatus.FAIL,
-                    new ImmutableMap.Builder<String, String>().put(CUSTOM_ERROR, CONNECTION_ERROR).build());
+            return getCustomErrorJsonResponse(CONNECTION_ERROR);
         } catch (UnexpectedErrorException e) {
-            return new JsonResponse(JsonResponseStatus.FAIL,
-                    new ImmutableMap.Builder<String, String>().put(CUSTOM_ERROR, CONNECTION_ERROR).build());
+            return getCustomErrorJsonResponse(UNEXPECTED_ERROR);
         }
         if (isAuthenticated) {
             LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
@@ -395,11 +407,8 @@ public class UserController {
 
     /**
      * Handles login action.
-     *
-     * @param username   username
-     * @param password   password
+     * @param loginUserDto {@link RegisterUserDto} populated in form
      * @param referer    referer url
-     * @param rememberMe set remember me token if equal to "on"
      * @param request    servlet request
      * @param response   servlet response
      * @return "success" or "fail" response status
@@ -470,6 +479,17 @@ public class UserController {
             ipAddress = request.getRemoteAddr();
         }
         return ipAddress;
+    }
+    
+    /**
+     * Detects the presence honeypot captcha filing error.
+     * If honeypot captcha filled it means that bot try to register. 
+     * @param errors Errors that detected by validator.
+     * @return <code>true</code> if error present, <code>false</code> otherwise.
+     * @see <a href="http://jira.jtalks.org/browse/JC-1750">JIRA issue</a>
+     */
+    private boolean isHoneypotCaptchaFilled(BindingResult errors) {
+        return errors.hasFieldErrors(HONEYPOT_FIELD); 
     }
 
 }

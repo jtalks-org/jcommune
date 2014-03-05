@@ -60,7 +60,6 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import org.jtalks.jcommune.model.dto.LoginUserDto;
-import org.jtalks.jcommune.model.plugins.exceptions.HoneypotCaptchaException;
 
 /**
  * Serves for authentication and registration user.
@@ -82,7 +81,6 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      */
     public static final boolean DEFAULT_AUTOSUBSCRIBE = true;
     public static final boolean DEFAULT_SEND_PM_NOTIFICATION = true;
-    public static final String HONEYPOT_FIELD = "honeypotCaptcha";
 
     private PluginLoader pluginLoader;
     private EncryptionService encryptionService;
@@ -315,8 +313,8 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      * {@inheritDoc}
      */
     @Override
-    public BindingResult register(RegisterUserDto registerUserDto, HttpServletRequest request)
-            throws UnexpectedErrorException, NoConnectionException, HoneypotCaptchaException {
+    public BindingResult register(RegisterUserDto registerUserDto)
+            throws UnexpectedErrorException, NoConnectionException {
         BindingResult result = new BeanPropertyBindingResult(registerUserDto, "newUser");
         BindingResult jcErrors = new BeanPropertyBindingResult(registerUserDto, "newUser");
         validator.validate(registerUserDto, jcErrors);
@@ -333,11 +331,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
                 userDto.setPassword(encodedPassword);
                 storeRegisteredUser(registerUserDto.getUserDto());
             }
-        } else if (honeypotCaptchaFilled(result)) {
-                LOGGER.debug("Bot try to register. Username - {}, email - {}, ip - {}", 
-                        new String[]{userDto.getUsername(), userDto.getEmail(), registerUserDto.getClientIp()});
-                throw new HoneypotCaptchaException();
-        }
+        } 
         return result;
     }
 
@@ -364,18 +358,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
             }
         }
     }
-    
-    /**
-     * Detects the presence honeypot captcha filing error.
-     * If honeypot captcha filled it means that bot try to register. 
-     * @param errors Errors that detected by validator.
-     * @return <code>true</code> if error present, <code>false</code> otherwise.
-     * @see <a href="http://jira.jtalks.org/browse/JC-1750">JIRA issue</a>
-     */
-    private boolean honeypotCaptchaFilled(BindingResult errors) {
-        return errors.hasFieldErrors(HONEYPOT_FIELD); 
-    }
-
+   
     /**
      * Just saves a new {@link JCUser} or upgrade {@link org.jtalks.common.model.entity.User}
      * to {@link JCUser} without any additional checks
