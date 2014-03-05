@@ -29,6 +29,7 @@ public class UserNotificationsDto {
 
     private boolean mentioningNotificationsEnabled;
     private boolean sendPmNotification;
+    private boolean autosubscribe;
 
     /**
      * Form info population only, please do not call it explicitly
@@ -43,6 +44,7 @@ public class UserNotificationsDto {
      */
     public UserNotificationsDto(JCUser user) {
         this.userId = user.getId();
+        this.autosubscribe = user.isAutosubscribe();
         this.mentioningNotificationsEnabled = user.isMentioningNotificationsEnabled();
         this.sendPmNotification = user.isSendPmNotification();
     }
@@ -96,5 +98,19 @@ public class UserNotificationsDto {
      */
     public void setSendPmNotification(boolean sendPmNotification) {
         this.sendPmNotification = sendPmNotification;
+    }
+
+    /**
+     * @see org.jtalks.jcommune.model.entity.JCUser#isAutosubscribe()
+     */
+    public boolean isAutosubscribe() {
+        return autosubscribe;
+    }
+
+    /**
+     * @see org.jtalks.jcommune.model.entity.JCUser#setAutosubscribe(boolean)
+     */
+    public void setAutosubscribe(boolean autosubscribe) {
+        this.autosubscribe = autosubscribe;
     }
 }

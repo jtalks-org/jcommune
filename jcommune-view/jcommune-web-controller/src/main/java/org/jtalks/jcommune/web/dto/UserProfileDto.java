@@ -56,7 +56,6 @@ public class UserProfileDto {
     private String signature;
     @PageSize(message = "{validation.profile.page.size}")
     private int pageSize;
-    private boolean autosubscribe;
 
     @Length(max = JCUser.MAX_LOCATION_SIZE)
     private String location;
@@ -92,7 +91,6 @@ public class UserProfileDto {
         this.email = user.getEmail();
         this.signature = user.getSignature();
         this.pageSize = user.getPageSize();
-        this.autosubscribe = user.isAutosubscribe();
         this.location = user.getLocation();
         this.postCount = user.getPostCount();
         this.registrationDate = user.getRegistrationDate();
@@ -116,21 +114,6 @@ public class UserProfileDto {
     public void setUserId(long userId) {
         this.userId = userId;
     }
-
-    /**
-     * @see org.jtalks.jcommune.model.entity.JCUser#isAutosubscribe()
-     */
-    public boolean isAutosubscribe() {
-        return autosubscribe;
-    }
-
-    /**
-     * @see org.jtalks.jcommune.model.entity.JCUser#setAutosubscribe(boolean)
-     */
-    public void setAutosubscribe(boolean autosubscribe) {
-        this.autosubscribe = autosubscribe;
-    }
-
 
     /**
      * @return user page size

@@ -46,6 +46,7 @@ public class UserContactsDto {
         for (UserContact contact : contactList) {
             contacts.add(new UserContactDto(contact));
         }
+        Collections.sort(contacts);
     }
 
     public List<UserContactDto> getContacts() {

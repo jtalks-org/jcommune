@@ -163,11 +163,10 @@ public class TransactionalUserServiceTest {
         String newAvatar = new String(new byte[12]);
 
         JCUser editedUser = userService.saveEditedUserProfile(USER_ID,
-                new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL, SIGNATURE, newAvatar, 50, true, "location"));
+                new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL, SIGNATURE, newAvatar, 50, "location"));
 
         verify(userDao).saveOrUpdate(user);
         assertUserProfileUpdated(editedUser);
-
     }
 
     private void assertUserProfileUpdated(JCUser user) {
@@ -183,7 +182,7 @@ public class TransactionalUserServiceTest {
         when(userDao.isExist(USER_ID)).thenReturn(Boolean.FALSE);
 
         userService.saveEditedUserProfile(USER_ID,
-                new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL, SIGNATURE, newAvatar, 50, true, "location"));
+                new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL, SIGNATURE, newAvatar, 50, "location"));
     }
 
     @Test
@@ -199,7 +198,7 @@ public class TransactionalUserServiceTest {
         String newAvatar = new String(new byte[12]);
 
         JCUser editedUser = userService.saveEditedUserProfile(USER_ID,
-                new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL, SIGNATURE, newAvatar, 50, true, "location"));
+                new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL, SIGNATURE, newAvatar, 50, "location"));
 
         verify(userDao).saveOrUpdate(user);
 
@@ -213,6 +212,7 @@ public class TransactionalUserServiceTest {
                 user.isMentioningNotificationsEnabled(), "User mentioning notifications was changed");
         assertEquals(editedUser.isSendPmNotification(),
                 user.isSendPmNotification(), "Send pm notification was changed");
+        assertEquals(editedUser.isAutosubscribe(), user.isAutosubscribe(), "Autosubscribe was changed");
     }
 
     @Test
@@ -269,6 +269,7 @@ public class TransactionalUserServiceTest {
                 user.isMentioningNotificationsEnabled(), "User mentioning notifications was changed");
         assertEquals(editedUser.isSendPmNotification(),
                 user.isSendPmNotification(), "Send pm notification was changed");
+        assertEquals(editedUser.isAutosubscribe(), user.isAutosubscribe(), "Autosubscribe was changed");
     }
 
     @Test
@@ -279,13 +280,14 @@ public class TransactionalUserServiceTest {
         when(userDao.get(USER_ID)).thenReturn(user);
 
         JCUser editedUser = userService.saveEditedUserNotifications(USER_ID,
-                new UserNotificationsContainer(false, false));
+                new UserNotificationsContainer(true, false, false));
 
         verify(userDao).saveOrUpdate(user);
 
+        assertEquals(editedUser.isAutosubscribe(), true, "Autosubscribe was not changed");
+        assertEquals(editedUser.isSendPmNotification(), false, "Send pm notification was not changed");
         assertEquals(editedUser.isMentioningNotificationsEnabled(), false,
                 "User mentioning notifications was not changed");
-        assertEquals(editedUser.isSendPmNotification(), false, "Send pm notification was not changed");
     }
 
     @Test
@@ -296,7 +298,7 @@ public class TransactionalUserServiceTest {
         when(userDao.get(USER_ID)).thenReturn(user);
 
         JCUser editedUser = userService.saveEditedUserNotifications(USER_ID,
-                new UserNotificationsContainer(false, false));
+                new UserNotificationsContainer(true, false, false));
 
         verify(userDao).saveOrUpdate(user);
 
@@ -323,7 +325,7 @@ public class TransactionalUserServiceTest {
         String newAvatar = new String(new byte[0]);
 
         JCUser editedUser = userService.saveEditedUserProfile(USER_ID,
-                new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL, SIGNATURE, newAvatar, 50, true, "location"));
+                new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL, SIGNATURE, newAvatar, 50, "location"));
 
         verify(userDao).saveOrUpdate(user);
         assertEquals(editedUser.getEmail(), EMAIL, "Email was changed");

@@ -119,8 +119,8 @@
   <c:choose>
     <%--Profile--%>
     <c:when test="${editedUser.userProfileDto != null}">
-
-      <form:hidden id="editedUserId" path="userProfileDto.userId" value="${editedUser.userId}"/>
+      <form:hidden path="userId" value="${editedUser.userId}"/>
+      <form:hidden id="editedUserId" path="userProfileDto.userId" value="${editedUser.userProfileDto.userId}"/>
       <form:hidden id="editedUsername" path="username" value="${editedUser.username}"/>
 
       <div class="user-profile-top-buttons">
@@ -237,16 +237,6 @@
                 <form:errors path="userProfileDto.pageSize" cssClass="help-inline"/>
               </div>
             </div>
-
-            <div class="control-group">
-              <label class="control-label"><spring:message code="label.autosubscribe"/></label>
-              <div class="controls padding-top-profile">
-                <spring:message var="autosubscribeTooltip" code="label.tips.autoSubscribe"/>
-                    <form:checkbox path="userProfileDto.autosubscribe" value="${editedUser.userProfileDto.autosubscribe}"
-                                   class="form-check-radio-box script-has-tooltip"
-                                   data-original-title='${autosubscribeTooltip}' tabindex="30"/>
-              </div>
-            </div>
           </c:if>
 
           <div class="control-group">
@@ -306,8 +296,10 @@
     </c:when>
 
      <%--Notifications--%>
-    <c:when test="${editedUser.userNotificationsDto != null && isCanEditProfile}">
-        <form:hidden id="editedUserId" path="userId" value="${editedUser.userId}"/>
+    <c:when test="${editedUser.userNotificationsDto != null}">
+        <form:hidden path="userId" value="${editedUser.userId}"/>
+        <form:hidden id="editedUserId" path="userNotificationsDto.userId"
+                     value="${editedUser.userNotificationsDto.userId}"/>
         <form:hidden id="editedUsername" path="username" value="${editedUser.username}"/>
 
         <div class="clearfix"></div>
@@ -315,6 +307,16 @@
 
         <div>
           <fieldset>
+            <div class="control-group">
+              <label class="control-label"><spring:message code="label.autosubscribe"/></label>
+              <div class="controls padding-top-profile">
+                <spring:message var="autosubscribeTooltip" code="label.tips.autoSubscribe"/>
+                <form:checkbox path="userNotificationsDto.autosubscribe" class="form-check-radio-box script-has-tooltip"
+                               value="${editedUser.userNotificationsDto.autosubscribe}"
+                               data-original-title='${autosubscribeTooltip}' tabindex="30"/>
+              </div>
+            </div>
+
             <div class="control-group">
               <label class="control-label"><spring:message code="label.mentioning.notifications.enabled"/></label>
               <div class="controls padding-top-profile">
@@ -356,25 +358,26 @@
               <c:forEach var="contact" items="${editedUser.userContactsDto.contacts}" varStatus="loop">
                 <%-- Class 'contact' used in js for binding --%>
                 <li class="contact">
-                  <input id="contactId" type="hidden" value="${contact.id}"/>
-                    <%-- Class 'button' used in js for binding --%>
-                  <a href="#" id="${contact.id}" class="btn btn-mini btn-danger button"
-                     title="<spring:message code='label.contacts.tips.delete'/>">
-                    <i class="icon-remove icon-white"></i>
-                  </a>
+                  <div class="control-group">
+                    <input id="contactId" type="hidden" value="${contact.id}"/>
+                      <%-- Class 'button' used in js for binding --%>
+                    <a href="#" id="${contact.id}" class="btn btn-mini btn-danger button"
+                       title="<spring:message code='label.contacts.tips.delete'/>">
+                      <i class="icon-remove icon-white"></i>
+                    </a>
 
-                  <span class="contact" title="<c:out value='${contact.type.typeName}'/>">
-                      <form:hidden path="userContactsDto.contacts[${loop.index}].id" value="${contact.id}"/>
-                  </span>
-                  <div class="controls">
-                    <form:select class="input-medium" path="userContactsDto.contacts[${loop.index}].type.id"
-                                 items="${editedUser.userContactsDto.contactTypes}" />
-                    <form:input class="input-large" type="text" path="userContactsDto.contacts[${loop.index}].value"
-                                tabindex="45" value="${contact.value}"/>
-                    <br/>
-                    <form:errors path="userContactsDto.contacts[${loop.index}].value" cssClass="help-inline"/>
+                    <span class="contact" title="<c:out value='${contact.type.typeName}'/>">
+                        <form:hidden path="userContactsDto.contacts[${loop.index}].id" value="${contact.id}"/>
+                    </span>
+                    <div class="controls">
+                      <form:select class="input-medium" path="userContactsDto.contacts[${loop.index}].type.id"
+                                   items="${editedUser.userContactsDto.contactTypes}" />
+                      <form:input class="input-large" type="text" path="userContactsDto.contacts[${loop.index}].value"
+                                  tabindex="45" value="${contact.value}"/>
+                      <br/>
+                      <form:errors path="userContactsDto.contacts[${loop.index}]" cssClass="help-inline contact-error"/>
+                    </div>
                   </div>
-
                 </li>
               </c:forEach>
             </ul>
@@ -406,8 +409,9 @@
         </c:choose>
     </c:when>
 
-    <c:when test="${editedUser.userSecurityDto != null && isCanEditProfile}">
-      <form:hidden id="editedUserId" path="userId" value="${editedUser.userId}"/>
+    <c:when test="${editedUser.userSecurityDto != null}">
+      <form:hidden path="userId" value="${editedUser.userId}"/>
+      <form:hidden id="editedUserId" path="userSecurityDto.userId" value="${editedUser.userSecurityDto.userId}"/>
       <form:hidden id="editedUsername" path="username" value="${editedUser.username}"/>
 
       <div class="clearfix"></div>
@@ -415,7 +419,7 @@
 
       <div>
         <fieldset>
-          <c:if test="${userId == editedUser.userId}">
+          <c:if test="${userId == editedUser.userSecurityDto.userId}">
             <div class="control-group">
               <label class="control-label"><spring:message code="label.currentPassword"/></label>
               <div class="controls">

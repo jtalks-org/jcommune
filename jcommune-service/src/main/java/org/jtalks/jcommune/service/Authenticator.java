@@ -22,7 +22,6 @@ import org.springframework.validation.BindingResult;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jtalks.jcommune.model.dto.LoginUserDto;
-import org.jtalks.jcommune.model.plugins.exceptions.HoneypotCaptchaException;
 
 /**
  * Serves for authentication and registration user.
@@ -51,13 +50,12 @@ public interface Authenticator {
      * Register user with given details.
      *
      * @param registerUserDto user details
-     * @param request HTTP request
      * @return errors occurred during registration
      * @throws UnexpectedErrorException if external service returns unexpected result
      * @throws NoConnectionException    if we can't connect for any reason to external authentication service
      */
-    public BindingResult register(RegisterUserDto registerUserDto, HttpServletRequest request)
-            throws UnexpectedErrorException, NoConnectionException, HoneypotCaptchaException;
+    public BindingResult register(RegisterUserDto registerUserDto)
+            throws UnexpectedErrorException, NoConnectionException;
 
 
 }

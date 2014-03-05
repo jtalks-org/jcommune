@@ -56,7 +56,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import org.jtalks.jcommune.model.dto.LoginUserDto;
-import org.jtalks.jcommune.model.plugins.exceptions.HoneypotCaptchaException;
+import static org.jtalks.jcommune.web.controller.UserController.REG_SERVICE_HONEYPOT_FILLED_ERROR_URL;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -169,12 +169,12 @@ public class UserControllerTest {
     public void testRegisterUserShouldBeSuccessful() throws Exception {
         RegisterUserDto dto = createRegisterUserDto(null);
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
-        when(authenticator.register(dto, request)).thenReturn(bindingResult);
+        when(authenticator.register(dto)).thenReturn(bindingResult);
 
         ModelAndView mav = userController.registerUser(dto, request, Locale.ENGLISH);
 
         assertViewName(mav, "afterRegistration");
-        verify(authenticator).register(dto, request);
+        verify(authenticator).register(dto);
     }
 
     @Test
@@ -182,7 +182,7 @@ public class UserControllerTest {
         RegisterUserDto dto = createRegisterUserDto(null);
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
-        when(authenticator.register(dto, request)).thenReturn(bindingResult);
+        when(authenticator.register(dto)).thenReturn(bindingResult);
 
         ModelAndView mav = userController.registerUser(dto, request, Locale.ENGLISH);
 
@@ -192,8 +192,7 @@ public class UserControllerTest {
     @Test
     public void testRegisterFailIfUnexpectedErrorOccurred() throws Exception {
         RegisterUserDto dto = createRegisterUserDto(null);
-        doThrow(new UnexpectedErrorException()).when(authenticator)
-                .register(dto, request);
+        doThrow(new UnexpectedErrorException()).when(authenticator).register(dto);
 
         ModelAndView mav = userController.registerUser(dto, request, Locale.ENGLISH);
 
@@ -203,8 +202,7 @@ public class UserControllerTest {
     @Test
     public void testRegisterFailIfConnectionErrorOccurred() throws Exception {
         RegisterUserDto dto = createRegisterUserDto(null);
-        doThrow(new NoConnectionException()).when(authenticator)
-                .register(dto, request);
+        doThrow(new NoConnectionException()).when(authenticator).register(dto);
 
         ModelAndView mav = userController.registerUser(dto, request, Locale.ENGLISH);
 
@@ -214,8 +212,9 @@ public class UserControllerTest {
     @Test
     public void testRegisterFailIfHoneypotCaptchaNotNull() throws Exception {
         RegisterUserDto dto = createRegisterUserDto("anyString");
-        doThrow(new HoneypotCaptchaException()).when(authenticator)
-                .register(dto, request);
+        BindingResult errors = mock(BindingResult.class);
+        when(errors.hasFieldErrors(UserController.HONEYPOT_FIELD)).thenReturn(true);
+        when(authenticator.register(dto)).thenReturn(errors);
         
         ModelAndView mav = userController.registerUser(dto, request, Locale.ENGLISH);
         
@@ -226,7 +225,7 @@ public class UserControllerTest {
     public void testRegisterUserAjaxShouldBeSuccessful() throws Exception {
         RegisterUserDto dto = createRegisterUserDto(null);
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
-        when(authenticator.register(dto, request)).thenReturn(bindingResult);
+        when(authenticator.register(dto)).thenReturn(bindingResult);
 
         JsonResponse response = userController.registerUserAjax(dto, request, Locale.ENGLISH);
 
@@ -239,7 +238,7 @@ public class UserControllerTest {
         RegisterUserDto dto = createRegisterUserDto(null);
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
-        when(authenticator.register(dto, request)).thenReturn(bindingResult);
+        when(authenticator.register(dto)).thenReturn(bindingResult);
 
         JsonResponse response = userController.registerUserAjax(dto, request, Locale.ENGLISH);
 
@@ -250,7 +249,7 @@ public class UserControllerTest {
     @Test
     public void testRegisterAjaxFailIfUnexpectedErrorOccurred() throws Exception {
         RegisterUserDto dto = createRegisterUserDto(null);
-        doThrow(new UnexpectedErrorException()).when(authenticator).register(dto, request);
+        doThrow(new UnexpectedErrorException()).when(authenticator).register(dto);
 
         JsonResponse response = userController.registerUserAjax(dto, request, Locale.ENGLISH);
 
@@ -260,7 +259,7 @@ public class UserControllerTest {
     @Test
     public void testRegisterAjaxFailIfConnectionErrorOccurred() throws Exception {
         RegisterUserDto dto = createRegisterUserDto(null);
-        doThrow(new NoConnectionException()).when(authenticator).register(dto, request);
+        doThrow(new NoConnectionException()).when(authenticator).register(dto);
 
         JsonResponse response = userController.registerUserAjax(dto, request, Locale.ENGLISH);
 
@@ -270,7 +269,9 @@ public class UserControllerTest {
     @Test
     public void testRegisterAjaxFailIfHoneypotCaptchaNotNull() throws Exception {
         RegisterUserDto dto = createRegisterUserDto("anyString");
-        doThrow(new HoneypotCaptchaException()).when(authenticator).register(dto, request);
+        BindingResult errors = mock(BindingResult.class);
+        when(errors.hasFieldErrors(UserController.HONEYPOT_FIELD)).thenReturn(true);
+        when(authenticator.register(dto)).thenReturn(errors);
 
         JsonResponse response = userController.registerUserAjax(dto, request, Locale.ENGLISH);
         

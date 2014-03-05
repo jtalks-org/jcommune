@@ -124,7 +124,7 @@ public class EditUserProfileDto {
     public UserInfoContainer getUserInfoContainer() {
         UserProfileDto dto = this.getUserProfileDto();
         return new UserInfoContainer(dto.getFirstName(), dto.getLastName(), dto.getEmail(), dto.getSignature(),
-                this.getAvatar(), dto.getPageSize(), dto.isAutosubscribe(), dto.getLocation());
+                this.getAvatar(), dto.getPageSize(), dto.getLocation());
     }
 
     /**
@@ -146,7 +146,8 @@ public class EditUserProfileDto {
      */
     public UserNotificationsContainer getUserNotificationsContainer() {
         UserNotificationsDto dto = this.getUserNotificationsDto();
-        return new UserNotificationsContainer(dto.isMentioningNotificationsEnabled(), dto.isSendPmNotification());
+        return new UserNotificationsContainer(dto.isAutosubscribe(),
+                dto.isMentioningNotificationsEnabled(), dto.isSendPmNotification());
     }
 
     /**
