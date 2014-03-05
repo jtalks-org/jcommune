@@ -34,7 +34,7 @@ public class BbCodeAwareSizeValidator implements ConstraintValidator<BbCodeAware
     
     public static final String NEW_LINE_HTML = "<br/>";
     public static final String QUOTE_HTML = "&quot";
-    public static final String LIST_ELEMENT_BB_REGEXP = "\\[\\*\\]";
+    public static final String EMPTY_LIST_BB_REGEXP = "\\[list\\][\n\r\\s]*(\\[\\*\\][\n\r\\s]*)*\\[\\/list\\]";
     
     private int min;
     private int max;
@@ -63,6 +63,7 @@ public class BbCodeAwareSizeValidator implements ConstraintValidator<BbCodeAware
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         if (value != null) {
+            value = removeEmptyListBb(value);
             String trimed = removeBBCodes(value).trim();
             int plainTextLength = getDisplayedLength(trimed);
             return plainTextLength >= min && value.length() <= max;
@@ -95,12 +96,21 @@ public class BbCodeAwareSizeValidator implements ConstraintValidator<BbCodeAware
     
     /**
      * Calculate length of string which be displayed.
-     * Needed because method <b>removeBBCodes</b> leaves "&quot", "<br/>" and "[*]" symbols.
+     * Needed because method <b>removeBBCodes</b> leaves "&quot" and "<br/>"  symbols.
      * @param s String to calculate length.
      * @return Length of string which be displayed.
      */
     private int getDisplayedLength(String s) {
-        return s.replaceAll(QUOTE_HTML, "\"").replaceAll(NEW_LINE_HTML, "\n\r")
-                .replaceAll(LIST_ELEMENT_BB_REGEXP, "").length();
+        return s.replaceAll(QUOTE_HTML, "\"").replaceAll(NEW_LINE_HTML, "\n\r").length();
+    }
+    
+    /**
+     * Removes all empty lists from text. Needed because <b>removeBBCodes</b> deletes
+     * bb codes for list but not deletes bb codes for list elements.
+     * @param text Text to remove empty lists.
+     * @return Text without empty lists.
+     */
+    private String removeEmptyListBb(String text) {
+        return text.replaceAll(EMPTY_LIST_BB_REGEXP, "");
     }
 }
