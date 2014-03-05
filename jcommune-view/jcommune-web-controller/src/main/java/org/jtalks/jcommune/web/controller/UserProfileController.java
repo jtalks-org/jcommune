@@ -243,7 +243,7 @@ public class UserProfileController {
         if (result.hasErrors()) {
             return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedProfileDto);
         }
-        long editedUserId = editedProfileDto.getUserId();
+        long editedUserId = editedProfileDto.getUserNotificationsDto().getUserId();
         checkPermissionForEditNotificationsOrSecurity(editedUserId);
         JCUser user = saveEditedProfileWithLockHandling(editedUserId, editedProfileDto, EditUserProfileDto.NOTIFICATIONS);
         //redirect to the view profile page
@@ -267,7 +267,7 @@ public class UserProfileController {
         if (result.hasErrors()) {
             return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedProfileDto);
         }
-        long editedUserId = editedProfileDto.getUserId();
+        long editedUserId = editedProfileDto.getUserSecurityDto().getUserId();
         checkPermissionForEditNotificationsOrSecurity(editedUserId);
         JCUser user = saveEditedProfileWithLockHandling(editedUserId, editedProfileDto, EditUserProfileDto.SECURITY);
         //redirect to the view profile page

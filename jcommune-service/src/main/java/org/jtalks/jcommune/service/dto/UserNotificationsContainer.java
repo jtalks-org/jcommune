@@ -25,14 +25,18 @@ public class UserNotificationsContainer {
 
     private boolean mentioningNotificationsEnabled;
     private boolean sendPmNotification;
+    private boolean autosubscribe;
 
     /**
      * Create instance with required fields.
      *
+     * @param autosubscribe   autosubscribe to topic/post flag
      * @param mentioningNotificationsEnabled whether email notifications are send when user was mentioned in forum
      * @param sendPmNotification send notification when get PM
      */
-    public UserNotificationsContainer(boolean mentioningNotificationsEnabled, boolean sendPmNotification) {
+    public UserNotificationsContainer(boolean autosubscribe,
+                                      boolean mentioningNotificationsEnabled, boolean sendPmNotification) {
+        this.autosubscribe = autosubscribe;
         this.mentioningNotificationsEnabled = mentioningNotificationsEnabled;
         this.sendPmNotification = sendPmNotification;
     }
@@ -57,5 +61,20 @@ public class UserNotificationsContainer {
      */
     public boolean isSendPmNotification() {
         return sendPmNotification;
+    }
+
+
+    /**
+     * @see org.jtalks.jcommune.model.entity.JCUser#isAutosubscribe()
+     */
+    public boolean isAutosubscribe() {
+        return autosubscribe;
+    }
+
+    /**
+     * @see org.jtalks.jcommune.model.entity.JCUser#setAutosubscribe(boolean)
+     */
+    public void setAutosubscribe(boolean autosubscribe) {
+        this.autosubscribe = autosubscribe;
     }
 }

@@ -81,25 +81,61 @@ public class TransactionalUserContactsServiceTest {
     }
 
     @Test
-    public void saveEditedContactsShouldUpdateThemAndReturnItFromRepository() throws NotFoundException {
-        JCUser editedUser = new JCUser(USERNAME, EMAIL, PASSWORD);
-        AddContactsToUser(editedUser, 1, 1);
+    public void saveEditedContactsShouldAddNewContacts() throws NotFoundException {
+        long contactTypeId1 = 1;
         long typeIdForNewContact = 2;
-        UserContactType typeForNewContact = createUserContactType(typeIdForNewContact);
-        List<UserContactContainer> contacts = getContacts(3, typeIdForNewContact, editedUser.getUserContacts());
-        when(userService.get(editedUser.getId())).thenReturn(editedUser);
-        List<UserContact> userContactList = Lists.newArrayList(editedUser.getUserContacts());
-        UserContactType contactType = userContactList.get(0).getType();
-        when(userContactsDao.getContactById(userContactList.get(0).getId())).thenReturn(userContactList.get(0));
 
-        when(userContactsDao.get(contactType.getId())).thenReturn(contactType);
+        List<UserContactContainer> contacts = new ArrayList<>(addContactsToUser(user, 2, contactTypeId1));
+        UserContactType typeForNewContact = createUserContactType(typeIdForNewContact);
+        contacts.addAll(createNewContacts(3, typeIdForNewContact));
+
+        prepareContactsMocks();
         when(userContactsDao.get(typeForNewContact.getId())).thenReturn(typeForNewContact);
         when(userContactsDao.isExist(anyLong())).thenReturn(true);
 
-        JCUser resultUser = userContactsService.saveEditedUserContacts(editedUser.getId(), contacts);
+        JCUser resultUser = userContactsService.saveEditedUserContacts(user.getId(), contacts);
+        assertEquals(resultUser.getUserContacts().size(), 5);
+    }
+
+    @Test
+    public void saveEditedContactsShouldRemoveDeletedContacts() throws NotFoundException {
+        long contactTypeId1 = 1;
+        long contactTypeId2 = 2;
+        List<UserContactContainer> contacts = new ArrayList<>(addContactsToUser(user, 3, contactTypeId1));
+        contacts.addAll(addContactsToUser(user, 2, contactTypeId2));
+        contacts.remove(1);
+
+        prepareContactsMocks();
+
+        when(userContactsDao.isExist(anyLong())).thenReturn(true);
+
+        JCUser resultUser = userContactsService.saveEditedUserContacts(user.getId(), contacts);
         assertEquals(resultUser.getUserContacts().size(), 4);
     }
-    
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void saveEditedContactsShouldThrowNotFoundExceptionIfContactTypeNotFound() throws NotFoundException {
+        long contactTypeId = 1;
+        List<UserContactContainer> contacts = new ArrayList<>(addContactsToUser(user, 3, contactTypeId));
+
+        prepareContactsMocks();
+        when(userContactsDao.isExist(contactTypeId)).thenReturn(false);
+
+        userContactsService.saveEditedUserContacts(user.getId(), contacts);
+    }
+
+    private void prepareContactsMocks() throws NotFoundException {
+        when(userService.get(user.getId())).thenReturn(user);
+        List<UserContact> userContactList = Lists.newArrayList(user.getUserContacts());
+        for (UserContact contact : userContactList) {
+            if (contact.getId() != 0) {
+                when(userContactsDao.getContactById(contact.getId())).thenReturn(contact);
+                UserContactType contactType = contact.getType();
+                when(userContactsDao.get(contactType.getId())).thenReturn(contactType);
+            }
+        }
+    }
+
     @Test
     public void removeContactShouldNotRemoveItIfContaxtDoesNotExist() throws NotFoundException {
         UserContact userContact = new UserContact(CONTACT, createUserContactType(1));
@@ -138,23 +174,36 @@ public class TransactionalUserContactsServiceTest {
         return userContactType;
     }
 
-    private static JCUser AddContactsToUser(JCUser user, long contactsSize, long contactTypeId) {
-        for (int i = 0; i < contactsSize; i++) {
-            UserContact contact = new UserContact("contact" +i, createUserContactType(contactTypeId));
-            contact.setId(i);
+    /**
+     *
+     * @param user user to whom add contacts
+     * @param contactsCount contacts count
+     * @param contactTypeId contact type id
+     * @return added contacts as contact containers
+     */
+    private static List<UserContactContainer> addContactsToUser(JCUser user, long contactsCount, long contactTypeId) {
+        List<UserContactContainer> contacts = new ArrayList<>();
+        for (int i = 0; i < contactsCount; i++) {
+            UserContact contact = new UserContact("contact" + i, createUserContactType(contactTypeId));
+            contact.setId(user.getUserContacts().size() + 1);
             user.addContact(contact);
+            contacts.add(new UserContactContainer(contact.getId(), contact.getValue(), contact.getType().getId()));
         }
-        return user;
+        return contacts;
     }
 
-    private static List<UserContactContainer> getContacts(long newContactsSize, long contactTypeId,
-                                                          Set<UserContact> userContacts) {
+    private static List<UserContactContainer> getContacts(Set<UserContact> userContacts) {
         List<UserContactContainer> contacts = new ArrayList<>();
         for (UserContact contact : userContacts) {
             contacts.add(new UserContactContainer(contact.getId(), contact.getValue(), contact.getType().getId()));
         }
+        return contacts;
+    }
+
+    private static List<UserContactContainer> createNewContacts(long newContactsSize, long contactTypeId) {
+        List<UserContactContainer> contacts = new ArrayList<>();
         for (long i = 0; i < newContactsSize; i++) {
-            contacts.add(new UserContactContainer(null, "contact" + i, contactTypeId));
+            contacts.add(new UserContactContainer(null, "contact" + (contacts.size() + 1), contactTypeId));
         }
         return contacts;
     }

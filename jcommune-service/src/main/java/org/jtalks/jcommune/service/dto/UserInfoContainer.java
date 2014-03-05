@@ -29,7 +29,6 @@ public class UserInfoContainer {
     private String signature;
     private String b64EncodedAvatar;
     private int pageSize;
-    private boolean autosubscribe;
     private String location;
 
     /**
@@ -41,18 +40,16 @@ public class UserInfoContainer {
      * @param signature       user's signature
      * @param avatar          B64 encoded avatar
      * @param pageSize        page size chosen
-     * @param autosubscribe   autosubscribe to topic/post flag
      * @param location        geographic user location
      */
     public UserInfoContainer(String firstName, String lastName, String email, String signature, String avatar,
-                             int pageSize, boolean autosubscribe, String location) {
+                             int pageSize, String location) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.signature = signature;
         this.b64EncodedAvatar = avatar;
         this.pageSize = pageSize;
-        this.autosubscribe = autosubscribe;
         this.location = location;
     }
 
@@ -100,20 +97,6 @@ public class UserInfoContainer {
         return pageSize;
     }
 
-    /**
-     * @see org.jtalks.jcommune.model.entity.JCUser#isAutosubscribe()
-     */
-    public boolean isAutosubscribe() {
-        return autosubscribe;
-    }
-
-    /**
-     * @see org.jtalks.jcommune.model.entity.JCUser#setAutosubscribe(boolean)
-     */
-    public void setAutosubscribe(boolean autosubscribe) {
-        this.autosubscribe = autosubscribe;
-    }
-    
     /**
      * @return user location
      */

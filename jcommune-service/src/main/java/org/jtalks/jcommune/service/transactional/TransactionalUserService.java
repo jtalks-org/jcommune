@@ -190,7 +190,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         editedUser.setLastName(editedUserProfileInfo.getLastName());
         editedUser.setPageSize(editedUserProfileInfo.getPageSize());
         editedUser.setLocation(editedUserProfileInfo.getLocation());
-        editedUser.setAutosubscribe(editedUserProfileInfo.isAutosubscribe());
 
         this.getDao().saveOrUpdate(editedUser);
         LOGGER.info("Updated user profile. Username: {}", editedUser.getUsername());
@@ -227,6 +226,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
 
         editedUser.setMentioningNotificationsEnabled(userNotificationsInfo.isMentioningNotificationsEnabled());
         editedUser.setSendPmNotification(userNotificationsInfo.isSendPmNotification());
+        editedUser.setAutosubscribe(userNotificationsInfo.isAutosubscribe());
 
         this.getDao().saveOrUpdate(editedUser);
         LOGGER.info("Updated user notification settings. Username: {}", editedUser.getUsername());

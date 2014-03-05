@@ -119,8 +119,8 @@
   <c:choose>
     <%--Profile--%>
     <c:when test="${editedUser.userProfileDto != null}">
-
-      <form:hidden id="editedUserId" path="userProfileDto.userId" value="${editedUser.userId}"/>
+      <form:hidden path="userId" value="${editedUser.userId}"/>
+      <form:hidden id="editedUserId" path="userProfileDto.userId" value="${editedUser.userProfileDto.userId}"/>
       <form:hidden id="editedUsername" path="username" value="${editedUser.username}"/>
 
       <div class="user-profile-top-buttons">
@@ -237,16 +237,6 @@
                 <form:errors path="userProfileDto.pageSize" cssClass="help-inline"/>
               </div>
             </div>
-
-            <div class="control-group">
-              <label class="control-label"><spring:message code="label.autosubscribe"/></label>
-              <div class="controls padding-top-profile">
-                <spring:message var="autosubscribeTooltip" code="label.tips.autoSubscribe"/>
-                    <form:checkbox path="userProfileDto.autosubscribe" value="${editedUser.userProfileDto.autosubscribe}"
-                                   class="form-check-radio-box script-has-tooltip"
-                                   data-original-title='${autosubscribeTooltip}' tabindex="30"/>
-              </div>
-            </div>
           </c:if>
 
           <div class="control-group">
@@ -307,7 +297,9 @@
 
      <%--Notifications--%>
     <c:when test="${editedUser.userNotificationsDto != null}">
-        <form:hidden id="editedUserId" path="userId" value="${editedUser.userId}"/>
+        <form:hidden path="userId" value="${editedUser.userId}"/>
+        <form:hidden id="editedUserId" path="userNotificationsDto.userId"
+                     value="${editedUser.userNotificationsDto.userId}"/>
         <form:hidden id="editedUsername" path="username" value="${editedUser.username}"/>
 
         <div class="clearfix"></div>
@@ -315,6 +307,16 @@
 
         <div>
           <fieldset>
+            <div class="control-group">
+              <label class="control-label"><spring:message code="label.autosubscribe"/></label>
+              <div class="controls padding-top-profile">
+                <spring:message var="autosubscribeTooltip" code="label.tips.autoSubscribe"/>
+                <form:checkbox path="userNotificationsDto.autosubscribe" class="form-check-radio-box script-has-tooltip"
+                               value="${editedUser.userNotificationsDto.autosubscribe}"
+                               data-original-title='${autosubscribeTooltip}' tabindex="30"/>
+              </div>
+            </div>
+
             <div class="control-group">
               <label class="control-label"><spring:message code="label.mentioning.notifications.enabled"/></label>
               <div class="controls padding-top-profile">
@@ -408,7 +410,8 @@
     </c:when>
 
     <c:when test="${editedUser.userSecurityDto != null}">
-      <form:hidden id="editedUserId" path="userId" value="${editedUser.userId}"/>
+      <form:hidden path="userId" value="${editedUser.userId}"/>
+      <form:hidden id="editedUserId" path="userSecurityDto.userId" value="${editedUser.userSecurityDto.userId}"/>
       <form:hidden id="editedUsername" path="username" value="${editedUser.username}"/>
 
       <div class="clearfix"></div>
@@ -416,7 +419,7 @@
 
       <div>
         <fieldset>
-          <c:if test="${userId == editedUser.userId}">
+          <c:if test="${userId == editedUser.userSecurityDto.userId}">
             <div class="control-group">
               <label class="control-label"><spring:message code="label.currentPassword"/></label>
               <div class="controls">
