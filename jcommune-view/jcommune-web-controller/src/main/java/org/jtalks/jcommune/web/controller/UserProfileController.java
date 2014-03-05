@@ -170,7 +170,7 @@ public class UserProfileController {
      */
     @RequestMapping(value = "/users/{editedUserId}/notifications", method = RequestMethod.GET)
     public ModelAndView startEditUserNotifications(@PathVariable Long editedUserId) throws NotFoundException {
-        checkPermissionsToEditProfile(editedUserId);
+        checkPermissionForEditNotificationsOrSecurity(editedUserId);
         JCUser editedUser = userService.get(editedUserId);
         EditUserProfileDto editedUserDto = new EditUserProfileDto(new UserNotificationsDto(editedUser), editedUser);
         setAvatarToUserProfileView(editedUserDto, editedUser);
@@ -185,7 +185,7 @@ public class UserProfileController {
      */
     @RequestMapping(value = "/users/{editedUserId}/security", method = RequestMethod.GET)
     public ModelAndView startEditUserSecurity(@PathVariable Long editedUserId) throws NotFoundException {
-        checkPermissionsToEditProfile(editedUserId);
+        checkPermissionForEditNotificationsOrSecurity(editedUserId);
         JCUser editedUser = userService.get(editedUserId);
         EditUserProfileDto editedUserDto = new EditUserProfileDto(new UserSecurityDto(editedUser), editedUser);
         setAvatarToUserProfileView(editedUserDto, editedUser);
@@ -244,7 +244,7 @@ public class UserProfileController {
             return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedProfileDto);
         }
         long editedUserId = editedProfileDto.getUserId();
-        checkPermissionsToEditProfile(editedUserId);
+        checkPermissionForEditNotificationsOrSecurity(editedUserId);
         JCUser user = saveEditedProfileWithLockHandling(editedUserId, editedProfileDto, EditUserProfileDto.NOTIFICATIONS);
         //redirect to the view profile page
         return new ModelAndView("redirect:/users/" + user.getId());
@@ -268,7 +268,7 @@ public class UserProfileController {
             return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedProfileDto);
         }
         long editedUserId = editedProfileDto.getUserId();
-        checkPermissionsToEditProfile(editedUserId);
+        checkPermissionForEditNotificationsOrSecurity(editedUserId);
         JCUser user = saveEditedProfileWithLockHandling(editedUserId, editedProfileDto, EditUserProfileDto.SECURITY);
         //redirect to the view profile page
         return new ModelAndView("redirect:/users/" + user.getId());
@@ -297,6 +297,20 @@ public class UserProfileController {
         JCUser user = saveEditedProfileWithLockHandling(editedUserId, editedProfileDto, EditUserProfileDto.CONTACTS);
         //redirect to the view profile page
         return new ModelAndView("redirect:/users/" + user.getId());
+    }
+
+    /**
+     * User doesn't need to have permission to edit his password and notifications.
+     * For other users we have to check permission to edit other profiles.
+     *
+     * @param editedUserId an identifier of edited user
+     * @see <a href="http://jira.jtalks.org/browse/JC-1740">JC-1740</a>
+     */
+    private void checkPermissionForEditNotificationsOrSecurity(long editedUserId) {
+        JCUser editorUser = userService.getCurrentUser();
+        if (editorUser.getId() != editedUserId) {
+            userService.checkPermissionToEditOtherProfiles(editorUser.getId());
+        }
     }
 
     /**

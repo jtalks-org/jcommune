@@ -26,7 +26,7 @@ import org.jtalks.jcommune.web.validation.annotations.ValidUserContact;
  * @author Michael Gamov
  */
 
-@ValidUserContact(field="value", storedTypeId="type.id")
+@ValidUserContact(field="value", storedTypeId="type.id", message = "{validation.usercontact.notmatch}")
 public class UserContactDto implements Comparable<UserContactDto> {
 
     private Long id;

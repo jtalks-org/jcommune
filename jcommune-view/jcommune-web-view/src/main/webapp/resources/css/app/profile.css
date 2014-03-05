@@ -49,12 +49,20 @@ input[readonly] {
 }
 
 li.contact .controls {
-  display: inline-block;
+  display: inline;
   margin-left: 5px;
 }
 
 li.contact .controls input {
   margin-left: 10px;
+}
+
+li.contact .controls span.help-inline {
+  margin-left: 25px;
+}
+
+li.contact .control-group {
+  margin-bottom: 9px;
 }
 
 .wraptocenter {
@@ -66,24 +74,24 @@ li.contact .controls input {
 }
 
 .wraptocenter * {
-    vertical-align: middle;
+  vertical-align: middle;
 }
 
 .wraptocenter span {
-    display: inline-block;
-    height: 100%;
-    width: 1px;
+  display: inline-block;
+  height: 100%;
+  width: 1px;
 }
 
 .profile-menu-btn {
-    width: 100%;
-    padding: 7px;
-    margin-bottom: 10px;
+  width: 100%;
+  padding: 7px;
+  margin-bottom: 10px;
 }
 
 .user-profile-menu {
-    width: 110px;
-    display: inline-block;
-    margin-right: 30px;
-    vertical-align: top;
+  width: 110px;
+  display: inline-block;
+  margin-right: 30px;
+  vertical-align: top;
 }

@@ -306,7 +306,7 @@
     </c:when>
 
      <%--Notifications--%>
-    <c:when test="${editedUser.userNotificationsDto != null && isCanEditProfile}">
+    <c:when test="${editedUser.userNotificationsDto != null}">
         <form:hidden id="editedUserId" path="userId" value="${editedUser.userId}"/>
         <form:hidden id="editedUsername" path="username" value="${editedUser.username}"/>
 
@@ -356,25 +356,26 @@
               <c:forEach var="contact" items="${editedUser.userContactsDto.contacts}" varStatus="loop">
                 <%-- Class 'contact' used in js for binding --%>
                 <li class="contact">
-                  <input id="contactId" type="hidden" value="${contact.id}"/>
-                    <%-- Class 'button' used in js for binding --%>
-                  <a href="#" id="${contact.id}" class="btn btn-mini btn-danger button"
-                     title="<spring:message code='label.contacts.tips.delete'/>">
-                    <i class="icon-remove icon-white"></i>
-                  </a>
+                  <div class="control-group">
+                    <input id="contactId" type="hidden" value="${contact.id}"/>
+                      <%-- Class 'button' used in js for binding --%>
+                    <a href="#" id="${contact.id}" class="btn btn-mini btn-danger button"
+                       title="<spring:message code='label.contacts.tips.delete'/>">
+                      <i class="icon-remove icon-white"></i>
+                    </a>
 
-                  <span class="contact" title="<c:out value='${contact.type.typeName}'/>">
-                      <form:hidden path="userContactsDto.contacts[${loop.index}].id" value="${contact.id}"/>
-                  </span>
-                  <div class="controls">
-                    <form:select class="input-medium" path="userContactsDto.contacts[${loop.index}].type.id"
-                                 items="${editedUser.userContactsDto.contactTypes}" />
-                    <form:input class="input-large" type="text" path="userContactsDto.contacts[${loop.index}].value"
-                                tabindex="45" value="${contact.value}"/>
-                    <br/>
-                    <form:errors path="userContactsDto.contacts[${loop.index}].value" cssClass="help-inline"/>
+                    <span class="contact" title="<c:out value='${contact.type.typeName}'/>">
+                        <form:hidden path="userContactsDto.contacts[${loop.index}].id" value="${contact.id}"/>
+                    </span>
+                    <div class="controls">
+                      <form:select class="input-medium" path="userContactsDto.contacts[${loop.index}].type.id"
+                                   items="${editedUser.userContactsDto.contactTypes}" />
+                      <form:input class="input-large" type="text" path="userContactsDto.contacts[${loop.index}].value"
+                                  tabindex="45" value="${contact.value}"/>
+                      <br/>
+                      <form:errors path="userContactsDto.contacts[${loop.index}]" cssClass="help-inline contact-error"/>
+                    </div>
                   </div>
-
                 </li>
               </c:forEach>
             </ul>
@@ -406,7 +407,7 @@
         </c:choose>
     </c:when>
 
-    <c:when test="${editedUser.userSecurityDto != null && isCanEditProfile}">
+    <c:when test="${editedUser.userSecurityDto != null}">
       <form:hidden id="editedUserId" path="userId" value="${editedUser.userId}"/>
       <form:hidden id="editedUsername" path="username" value="${editedUser.username}"/>
 
