@@ -263,7 +263,7 @@ public class UserController {
      */
     private boolean isHoneypotCaptchaFilled(RegisterUserDto registerUserDto, String ip) {
         if (registerUserDto.getHoneypotCaptcha() != null) {
-            LOGGER.debug("Bot try to register. Username - {}, email - {}, ip - {}", 
+            LOGGER.debug("Bot tried to register. Username - {}, email - {}, ip - {}", 
                         new String[]{registerUserDto.getUserDto().getUsername(),
                             registerUserDto.getUserDto().getEmail(),ip});
             return true;
