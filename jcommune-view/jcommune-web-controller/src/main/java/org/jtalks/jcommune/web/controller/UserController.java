@@ -393,7 +393,12 @@ public class UserController {
 
         return referer;
     }
-
+    
+    /*
+     * This method can't get LoginUserDto object as parameter because in this case imposible
+     * to provide setting request parameter "_spring_security_remember_me". 
+     * This parameter should be setted for remember-me functional implementation.
+     */
     @RequestMapping(value = "/login_ajax", method = RequestMethod.POST)
     @ResponseBody
     public JsonResponse loginAjax(@RequestParam("j_username") String username,
