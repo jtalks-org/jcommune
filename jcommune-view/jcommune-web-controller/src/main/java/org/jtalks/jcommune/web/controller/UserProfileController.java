@@ -56,6 +56,7 @@ import java.util.Locale;
  * @author Eugeny Batov
  * @author Evgeniy Naumenko
  * @author Anuar_Nurmakanov
+ * @author Andrey Pogorelov
  */
 @Controller
 public class UserProfileController {
@@ -94,6 +95,7 @@ public class UserProfileController {
      * @param breadcrumbBuilder the object which provides actions on {@link BreadcrumbBuilder} entity
      * @param imageConverter    to prepare user avatar for view
      * @param postService       to get all user's posts
+     * @param contactsService   for edit user contacts
      */
     @Autowired
     public UserProfileController(UserService userService,
@@ -136,25 +138,25 @@ public class UserProfileController {
     }
 
     /**
-     * Show edit user profile page for current logged in user.
+     * Show user profile page for specified user.
      *
      * @return edit user profile page
      * @throws NotFoundException throws if current logged in user was not found
      */
     @RequestMapping(value = {"/users/{editedUserId}/profile", "/users/{editedUserId}"}, method = RequestMethod.GET)
-    public ModelAndView startEditUserProfile(@PathVariable Long editedUserId) throws NotFoundException {
+    public ModelAndView showUserProfile(@PathVariable Long editedUserId) throws NotFoundException {
         JCUser editedUser = userService.get(editedUserId);
         return getUserProfileModelAndView(editedUser);
     }
 
     /**
-     * Show edit user contacts page for current logged in user.
+     * Show user contacts page for specified user.
      *
      * @return edit user contacts page
      * @throws NotFoundException throws if current logged in user was not found
      */
     @RequestMapping(value = "/users/{editedUserId}/contacts", method = RequestMethod.GET)
-    public ModelAndView startEditUserContacts(@PathVariable Long editedUserId) throws NotFoundException {
+    public ModelAndView showUserContacts(@PathVariable Long editedUserId) throws NotFoundException {
         JCUser editedUser = userService.get(editedUserId);
         EditUserProfileDto editedUserDto = new EditUserProfileDto(new UserContactsDto(editedUser), editedUser);
         editedUserDto.getUserContactsDto().setContactTypes(contactsService.getAvailableContactTypes());
@@ -163,13 +165,13 @@ public class UserProfileController {
     }
 
     /**
-     * Show edit user notifications page for current logged in user.
+     * Show user notifications page for specified user.
      *
      * @return edit user notifications page
      * @throws NotFoundException throws if current logged in user was not found
      */
     @RequestMapping(value = "/users/{editedUserId}/notifications", method = RequestMethod.GET)
-    public ModelAndView startEditUserNotifications(@PathVariable Long editedUserId) throws NotFoundException {
+    public ModelAndView showUserNotificationSettings(@PathVariable Long editedUserId) throws NotFoundException {
         checkPermissionForEditNotificationsOrSecurity(editedUserId);
         JCUser editedUser = userService.get(editedUserId);
         EditUserProfileDto editedUserDto = new EditUserProfileDto(new UserNotificationsDto(editedUser), editedUser);
@@ -178,13 +180,13 @@ public class UserProfileController {
     }
 
     /**
-     * Show edit user security page for current logged in user.
+     * Show user security page for specified user.
      *
      * @return edit user security page
      * @throws NotFoundException throws if current logged in user was not found
      */
     @RequestMapping(value = "/users/{editedUserId}/security", method = RequestMethod.GET)
-    public ModelAndView startEditUserSecurity(@PathVariable Long editedUserId) throws NotFoundException {
+    public ModelAndView showUserSecuritySettings(@PathVariable Long editedUserId) throws NotFoundException {
         checkPermissionForEditNotificationsOrSecurity(editedUserId);
         JCUser editedUser = userService.get(editedUserId);
         EditUserProfileDto editedUserDto = new EditUserProfileDto(new UserSecurityDto(editedUser), editedUser);
@@ -210,7 +212,7 @@ public class UserProfileController {
      * @param editedProfileDto dto populated by user
      * @param result           binding result which contains the validation result
      * @param response         http servlet response
-     * @return in case of errors return back to edit profile page, in another case return to user details page
+     * @return return to user profile page
      * @throws NotFoundException if edited user doesn't exist in system
      */
     @RequestMapping(value = "/users/*/profile", method = RequestMethod.POST)
@@ -234,7 +236,7 @@ public class UserProfileController {
      * @param editedProfileDto dto populated by user
      * @param result           binding result which contains the validation result
      * @param response         http servlet response
-     * @return in case of errors return back to edit profile page, in another case return to user details page
+     * @return in case of errors return back to edit notifications page, in another case return to user profile page
      * @throws NotFoundException if edited user doesn't exist in system
      */
     @RequestMapping(value = "/users/*/notifications", method = RequestMethod.POST)
@@ -258,7 +260,7 @@ public class UserProfileController {
      * @param editedProfileDto dto populated by user
      * @param result           binding result which contains the validation result
      * @param response         http servlet response
-     * @return in case of errors return back to edit profile page, in another case return to user details page
+     * @return in case of errors return back to edit security page, in another case return to user profile page
      * @throws NotFoundException if edited user doesn't exist in system
      */
     @RequestMapping(value = "/users/*/security", method = RequestMethod.POST)
@@ -282,7 +284,7 @@ public class UserProfileController {
      * @param editedProfileDto dto populated by user
      * @param result           binding result which contains the validation result
      * @param response         http servlet response
-     * @return in case of errors return back to edit profile page, in another case return to user details page
+     * @return in case of errors return back to edit contacts page, in another case return to user profile page
      * @throws NotFoundException if edited user doesn't exist in system
      */
     @RequestMapping(value = "/users/*/contacts", method = RequestMethod.POST)
