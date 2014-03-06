@@ -30,7 +30,7 @@ import static org.testng.Assert.assertTrue;
  */
 public class BbCodeAwareSizeValidatorTest {
 
-    @BbCodeAwareSize(min = 3, max = 10)
+    @BbCodeAwareSize(min = 3, max = 25)
     public String value;
 
     private BbCodeAwareSizeValidator validator;
@@ -63,7 +63,7 @@ public class BbCodeAwareSizeValidatorTest {
 
     @Test
     public void testValueTooLong() {
-        String source = "123456789010";
+        String source = "12345678901234567890123456";
 
         assertFalse(validator.isValid(source, null));
     }
@@ -92,7 +92,7 @@ public class BbCodeAwareSizeValidatorTest {
     
     @Test
     public void testTooLongWithBbCodes() {
-        String source = "[b][b]123[/b][/b]";
+        String source = "[b][b]1234567890123[/b][/b]";
         
     	assertFalse(validator.isValid(source, null));
     }
@@ -114,6 +114,7 @@ public class BbCodeAwareSizeValidatorTest {
     @Test
     public void testBBCodesListOnly() {
         String source = "[list]\n" +
+                "[*]\n" +
                 "[*]\n" +
                 "[/list]";
         
