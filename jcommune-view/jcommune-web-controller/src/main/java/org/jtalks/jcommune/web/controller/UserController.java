@@ -99,7 +99,6 @@ public class UserController {
     public static final String HONEYPOT_FIELD = "honeypotCaptcha";
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
     private static final String REMEMBER_ME_ON = "on";
-    private static final String REMEMBER_ME_ATTRIBUTE_NAME = "_spring_security_remember_me";
     private final UserService userService;
     private final Authenticator authenticator;
     private final PluginService pluginService;
@@ -413,11 +412,9 @@ public class UserController {
             isAuthenticated = loginWithLockHandling(loginUserDto, request, response,
                     userService);
         } catch (NoConnectionException e) {
-            return new JsonResponse(JsonResponseStatus.FAIL,
-                    new ImmutableMap.Builder<String, String>().put("customError", "connectionError").build());
+            return getCustomErrorJsonResponse("connectionError");
         } catch (UnexpectedErrorException e) {
-            return new JsonResponse(JsonResponseStatus.FAIL,
-                    new ImmutableMap.Builder<String, String>().put("customError", "unexpectedError").build());
+            return getCustomErrorJsonResponse("unexpectedError");
         }
         if (isAuthenticated) {
             LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
