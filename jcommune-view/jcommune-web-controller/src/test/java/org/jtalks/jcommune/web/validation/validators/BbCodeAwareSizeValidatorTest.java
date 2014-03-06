@@ -85,7 +85,7 @@ public class BbCodeAwareSizeValidatorTest {
     
     @Test
     public void testMaxLengthWithBbCodes() {
-    	String source = "[b]123[/b]";
+    	String source = "[b]123456789012345678[/b]";
         validator.isValid(source, null);
     	assertTrue(validator.isValid(source, null));
     }
