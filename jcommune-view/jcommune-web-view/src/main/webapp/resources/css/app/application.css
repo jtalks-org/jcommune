@@ -940,6 +940,6 @@ div.add-branch-button:hover {
 }
 
 a.mentioned-user {
-    color: #333333 !important;
+    color: inherit;
     font-weight: bold;
 }
