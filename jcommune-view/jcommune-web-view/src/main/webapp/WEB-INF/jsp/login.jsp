@@ -68,7 +68,7 @@
       </div>
 
       <div class="control-group">
-        <form:checkbox path = "rememberMe" name="_spring_security_remember_me" class="form-check-radio-box" checked="checked"/>
+        <input type="checkbox" name="_spring_security_remember_me" class="form-check-radio-box" checked="checked">
         <label class="string optional"><spring:message code="label.auto_logon"/></label>
       </div>
 

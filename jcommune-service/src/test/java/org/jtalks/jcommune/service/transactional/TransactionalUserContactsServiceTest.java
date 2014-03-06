@@ -81,6 +81,29 @@ public class TransactionalUserContactsServiceTest {
     }
 
     @Test
+    public void saveEditedContactsShouldUpdateEditedContacts() throws NotFoundException {
+        long contactTypeId1 = 1;
+        long contactTypeId2 = 2;
+        String newValue2 = "new value 2";
+
+        List<UserContactContainer> contacts = new ArrayList<>(addContactsToUser(user, 1, contactTypeId1));
+        UserContactContainer contact1 = contacts.get(0);
+        contact1.setTypeId(contactTypeId2);
+        contact1.setValue(newValue2);
+
+        prepareContactsMocks();
+        UserContactType contactType = createUserContactType(contactTypeId2);
+        when(userContactsDao.get(contactType.getId())).thenReturn(contactType);
+        when(userContactsDao.isExist(anyLong())).thenReturn(true);
+
+        JCUser resultUser = userContactsService.saveEditedUserContacts(user.getId(), contacts);
+        assertEquals(resultUser.getUserContacts().size(), 1);
+        List<UserContact> resultContacts = new ArrayList<>(resultUser.getUserContacts());
+        assertEquals(resultContacts.get(0).getValue(), newValue2, "Value of contact 1 was not changed");
+        assertEquals(resultContacts.get(0).getType().getId(), contactTypeId2, "Type of contact 1 was not changed");
+    }
+
+    @Test
     public void saveEditedContactsShouldAddNewContacts() throws NotFoundException {
         long contactTypeId1 = 1;
         long typeIdForNewContact = 2;

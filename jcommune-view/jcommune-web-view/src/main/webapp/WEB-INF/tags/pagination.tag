@@ -35,7 +35,7 @@
   <%--JSTL doesn't have reverse for-each, therefore this trick used.--%>
   <c:set var="j" value="${numberLink - i + 1}"/>
   <c:if test="${page.number > j}">
-    <spring:url var="url" value="${uri}">
+    <spring:url var="link" value="${uri}">
         <spring:param name="page" value="${page.number - j}"/>
         <c:if test="${fn:length(additionalParams) > 0 }">
             <c:forEach var="params" items="${additionalParams}">
@@ -43,7 +43,7 @@
             </c:forEach>
         </c:if>
     </spring:url>
-    <li><a href="${url}">${page.number - j}</a></li>
+    <li><a href="${link}">${page.number - j}</a></li>
   </c:if>
 </c:forEach>
 
@@ -54,7 +54,7 @@
 
 <c:forEach var="i" begin="0" step="1" end="${numberLink - 1}">
   <c:if test="${page.number + i < page.totalPages}">
-      <spring:url var="url" value="${uri}">
+      <spring:url var="link" value="${uri}">
           <spring:param name="page" value="${page.number + i + 1}" />
           <c:if test="${fn:length(additionalParams) > 0 }">
             <c:forEach var="params" items="${additionalParams}">
@@ -62,6 +62,6 @@
             </c:forEach>
           </c:if>
       </spring:url>
-    <li><a href="${url}">${page.number + i + 1}</a></li>
+    <li><a href="${link}">${page.number + i + 1}</a></li>
   </c:if>
 </c:forEach>

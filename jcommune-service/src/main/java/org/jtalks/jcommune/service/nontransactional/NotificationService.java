@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.jtalks.jcommune.model.entity.SubscriptionAwareEntity;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.SubscriptionService;
@@ -46,7 +45,7 @@ public class NotificationService {
     /**
      * @param userService                  to determine the update author
      * @param mailService                  to perform actual email notifications
-     * @param notificationsEnabledProperty lets us know whether we can send notifications
+     * @param subscriptionService          to get the subscribers of the entity
      */
     public NotificationService(
             UserService userService,

@@ -130,17 +130,15 @@ function sendLoginPost(e) {
     if (remember_me) {
         query = query + '&_spring_security_remember_me=on';
     }
-    var loginUserDto = {};
-    loginUserDto.userName = username;
-    loginUserDto.password = password;
-    loginUserDto.rememberMe = remember_me;
+
     $.ajax({
         type: 'POST',
         url: $root + '/login_ajax',
-        contentType: "application/json",
-        async: false,
-        data: JSON.stringify(loginUserDto),
+        data: query,
+        dataType: 'html',
         success: function (resp) {
+            resp = eval('(' + resp + ')');
+
             if (resp.status == 'SUCCESS') {
                 location.reload();
             }

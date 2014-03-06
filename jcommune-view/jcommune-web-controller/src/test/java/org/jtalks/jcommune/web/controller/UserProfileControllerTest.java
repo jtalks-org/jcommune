@@ -20,12 +20,12 @@ import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.UserContactsService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
+import org.jtalks.jcommune.service.dto.UserNotificationsContainer;
+import org.jtalks.jcommune.service.dto.UserSecurityContainer;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.ImageConverter;
-import org.jtalks.jcommune.web.dto.Breadcrumb;
-import org.jtalks.jcommune.web.dto.EditUserProfileDto;
-import org.jtalks.jcommune.web.dto.UserProfileDto;
+import org.jtalks.jcommune.web.dto.*;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.mockito.Mock;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -62,6 +62,7 @@ import static org.testng.Assert.assertEquals;
  * @author Kirill Afonin
  * @author Osadchuck Eugeny
  * @author Anuar_Nurmakanov
+ * @author Andrey Pogorelov
  */
 public class UserProfileControllerTest {
     private static final long USER_ID = 1l;
@@ -147,12 +148,178 @@ public class UserProfileControllerTest {
     }
 
     @Test
+    public void showUserProfileShouldReturnUserView() throws NotFoundException {
+        JCUser user = getUser();
+        user.setId(USER_ID);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.get(USER_ID)).thenReturn(user);
+
+        ModelAndView mav = profileController.showUserProfile(USER_ID);
+
+        assertViewName(mav, "editProfile");
+    }
+
+    @Test
+    public void showUserSecuritySettingsShouldReturnUserView() throws NotFoundException {
+        JCUser user = getUser();
+        user.setId(USER_ID);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.get(USER_ID)).thenReturn(user);
+
+        ModelAndView mav = profileController.showUserSecuritySettings(USER_ID);
+
+        assertViewName(mav, "editProfile");
+    }
+
+    @Test
+    public void showUserNotificationSettingsShouldReturnUserView() throws NotFoundException {
+        JCUser user = getUser();
+        user.setId(USER_ID);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.get(USER_ID)).thenReturn(user);
+
+        ModelAndView mav = profileController.showUserNotificationSettings(USER_ID);
+
+        assertViewName(mav, "editProfile");
+    }
+
+    @Test
+    public void showUserContactsShouldReturnUserView() throws NotFoundException {
+        JCUser user = getUser();
+        user.setId(USER_ID);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.get(USER_ID)).thenReturn(user);
+
+        ModelAndView mav = profileController.showUserContacts(USER_ID);
+
+        assertViewName(mav, "editProfile");
+    }
+
+    @Test(expectedExceptions = AccessDeniedException.class)
+    public void showUserNotificationSettingsShouldThrowAccessExceptionIfUserDoesNotHavePermissionToEditOtherProfiles()
+            throws NotFoundException {
+        JCUser user = getUser();
+        JCUser editorUser = getUser();
+        user.setId(USER_ID);
+        editorUser.setId(5);
+
+        when(userService.getCurrentUser()).thenReturn(editorUser);
+        doThrow(new AccessDeniedException(StringUtils.EMPTY))
+                .when(userService).checkPermissionToEditOtherProfiles(editorUser.getId());
+
+        ModelAndView mav = profileController.showUserNotificationSettings(USER_ID);
+
+        assertViewName(mav, "editProfile");
+    }
+
+    @Test(expectedExceptions = AccessDeniedException.class)
+    public void showUserSecuritySettingsShouldThrowAccessExceptionIfUserDoesNotHavePermissionToEditOtherProfiles()
+            throws NotFoundException {
+        JCUser user = getUser();
+        JCUser editorUser = getUser();
+        user.setId(USER_ID);
+        editorUser.setId(5);
+
+        when(userService.getCurrentUser()).thenReturn(editorUser);
+        doThrow(new AccessDeniedException(StringUtils.EMPTY))
+                .when(userService).checkPermissionToEditOtherProfiles(editorUser.getId());
+
+        ModelAndView mav = profileController.showUserSecuritySettings(USER_ID);
+
+        assertViewName(mav, "editProfile");
+    }
+
+
+    @Test
+    public void saveEditedProfileWithCorrectDataShouldSaveProfileSettings() throws NotFoundException {
+        JCUser user = getUser();
+        user.setId(USER_ID);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.get(user.getId())).thenReturn(user);
+
+        EditUserProfileDto dto = getEditUserProfileDto(user);
+        dto.setUserProfileDto(new UserProfileDto(user));
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(false);
+        when(userService.saveEditedUserProfile(eq(user.getId()), any(UserInfoContainer.class))).thenReturn(user);
+
+        ModelAndView mav = profileController.saveEditedProfile(dto, bindingResult, new MockHttpServletResponse());
+
+        String expectedUrl = "redirect:/users/" + user.getId();
+        assertViewName(mav, expectedUrl);
+        verify(userService, times(1)).saveEditedUserProfile(eq(user.getId()), any(UserInfoContainer.class));
+    }
+
+    @Test
+    public void saveEditedSecurityWithCorrectDataShouldSaveSecuritySettings() throws NotFoundException {
+        JCUser user = getUser();
+        user.setId(USER_ID);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.get(user.getId())).thenReturn(user);
+
+        EditUserProfileDto dto = getEditUserProfileDto(user);
+        dto.setUserSecurityDto(new UserSecurityDto(user));
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(false);
+        when(userService.saveEditedUserSecurity(eq(user.getId()), any(UserSecurityContainer.class))).thenReturn(user);
+
+        ModelAndView mav = profileController.saveEditedSecurity(dto, bindingResult, new MockHttpServletResponse());
+
+        String expectedUrl = "redirect:/users/" + user.getId();
+        assertViewName(mav, expectedUrl);
+        verify(userService, times(1)).saveEditedUserSecurity(eq(user.getId()), any(UserSecurityContainer.class));
+    }
+
+    @Test
+    public void saveEditedNotificationsWithCorrectDataShouldSaveNotificationsSettings() throws NotFoundException {
+        JCUser user = getUser();
+        user.setId(USER_ID);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.get(user.getId())).thenReturn(user);
+
+        EditUserProfileDto dto = getEditUserProfileDto(user);
+        dto.setUserNotificationsDto(new UserNotificationsDto(user));
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(false);
+        when(userService.saveEditedUserNotifications(eq(user.getId()), any(UserNotificationsContainer.class)))
+                .thenReturn(user);
+
+        ModelAndView mav = profileController.saveEditedNotifications(dto, bindingResult, new MockHttpServletResponse());
+
+        String expectedUrl = "redirect:/users/" + user.getId();
+        assertViewName(mav, expectedUrl);
+        verify(userService, times(1)).saveEditedUserNotifications(eq(user.getId()),
+                any(UserNotificationsContainer.class));
+    }
+
+    @Test
+    public void saveEditedContactsWithCorrectDataShouldSaveUserContacts() throws NotFoundException {
+        JCUser user = getUser();
+        user.setId(USER_ID);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.get(user.getId())).thenReturn(user);
+
+        EditUserProfileDto dto = getEditUserProfileDto(user);
+        dto.setUserContactsDto(new UserContactsDto(user));
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(false);
+        when(userContactsService.saveEditedUserContacts(eq(user.getId()), any(List.class)))
+                .thenReturn(user);
+
+        ModelAndView mav = profileController.saveEditedContacts(dto, bindingResult, new MockHttpServletResponse());
+
+        String expectedUrl = "redirect:/users/" + user.getId();
+        assertViewName(mav, expectedUrl);
+        verify(userContactsService, times(1)).saveEditedUserContacts(eq(user.getId()), any(List.class));
+    }
+
+    @Test
     public void saveEditedProfileWithValidationErrorsShouldShowThemToUser() throws NotFoundException {
         JCUser user = getUser();
         when(userService.getCurrentUser()).thenReturn(user);
-        when(userService.get(anyLong())).thenReturn(user);
+        when(userService.get(user.getId())).thenReturn(user);
 
-        EditUserProfileDto dto = getEditUserProfileDto();
+        EditUserProfileDto dto = getEditUserProfileDto(user);
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
 
@@ -162,40 +329,161 @@ public class UserProfileControllerTest {
         verify(userService, never()).saveEditedUserProfile(anyLong() , any(UserInfoContainer.class));
     }
 
+    @Test
+    public void saveEditedNotificationsWithValidationErrorsShouldShowThemToUser() throws NotFoundException {
+        JCUser user = getUser();
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.get(user.getId())).thenReturn(user);
+
+        EditUserProfileDto dto = getEditUserProfileDto(user);
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        ModelAndView mav = profileController.saveEditedNotifications(dto, bindingResult, new MockHttpServletResponse());
+
+        assertViewName(mav, "editProfile");
+        verify(userService, never()).saveEditedUserNotifications(anyLong(), any(UserNotificationsContainer.class));
+    }
+
+    @Test
+    public void saveEditedSecurityWithValidationErrorsShouldShowThemToUser() throws NotFoundException {
+        JCUser user = getUser();
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.get(user.getId())).thenReturn(user);
+
+        EditUserProfileDto dto = getEditUserProfileDto(user);
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        ModelAndView mav = profileController.saveEditedSecurity(dto, bindingResult, new MockHttpServletResponse());
+
+        assertViewName(mav, "editProfile");
+        verify(userService, never()).saveEditedUserSecurity(anyLong(), any(UserSecurityContainer.class));
+    }
+
+    @Test
+    public void saveEditedContactsWithValidationErrorsShouldShowThemToUser() throws NotFoundException {
+        JCUser user = getUser();
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.get(user.getId())).thenReturn(user);
+
+        EditUserProfileDto dto = getEditUserProfileDto(user);
+        dto.setUserContactsDto(new UserContactsDto(user));
+
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        ModelAndView mav = profileController.saveEditedContacts(dto, bindingResult, new MockHttpServletResponse());
+
+        assertViewName(mav, "editProfile");
+        verify(userContactsService, never()).saveEditedUserContacts(anyLong(), any(List.class));
+    }
 
     @Test(expectedExceptions = AccessDeniedException.class)
-    public void saveEditedProfileShouldShowErrorWhenUserDoesNotHavePermissionToEditOwnProfile() throws NotFoundException {
+    public void saveEditedProfileShouldShowErrorIfUserDoesNotHavePermissionToEditOwnProfile() throws NotFoundException {
         JCUser user = getUser();
+        user.setId(USER_ID);
         EditUserProfileDto userDto = getEditUserProfileDto();
-        userDto.setUserProfileDto(new UserProfileDto());
-        userDto.getUserProfileDto().setUserId(userDto.getUserId());
+        userDto.setUserProfileDto(new UserProfileDto(user));
         MockHttpServletResponse response = new MockHttpServletResponse();
-        //
-        when(userService.saveEditedUserProfile(anyLong(), any(UserInfoContainer.class))).thenReturn(user);
         when(userService.getCurrentUser()).thenReturn(user);
-        doThrow(new AccessDeniedException(StringUtils.EMPTY)).when(userService).checkPermissionToEditOtherProfiles(anyLong());
-        //
+        doThrow(new AccessDeniedException(StringUtils.EMPTY)).when(userService)
+                .checkPermissionToEditOwnProfile(user.getId());
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
         profileController.saveEditedProfile(userDto, bindingResult, response);
     }
-    
+
     @Test(expectedExceptions = AccessDeniedException.class)
-    public void saveEditedProfileShouldShowErrorWhenUserDoesNotHavePermissionToEditOtherProfile() throws NotFoundException {
-        JCUser editorUser = getUser();
-        JCUser editedUser = getUser();
-        EditUserProfileDto userDto = getEditUserProfileDto();
-        userDto.setUserProfileDto(new UserProfileDto());
-        userDto.getUserProfileDto().setUserId(userDto.getUserId());
+    public void saveEditedContactsShouldShowErrorIfUserDoesNotHavePermissionToEditOwnProfile() throws NotFoundException {
+        JCUser user = getUser();
+        user.setId(USER_ID);
+        EditUserProfileDto userDto = getEditUserProfileDto(user);
+        userDto.setUserContactsDto(new UserContactsDto(user));
+
         MockHttpServletResponse response = new MockHttpServletResponse();
-        //
-        when(userService.saveEditedUserProfile(anyLong(), any(UserInfoContainer.class))).thenReturn(editedUser);
-        when(userService.getCurrentUser()).thenReturn(editorUser);
-        doThrow(new AccessDeniedException(StringUtils.EMPTY)).when(userService).checkPermissionToEditOtherProfiles((anyLong()));
-        //
+        when(userService.getCurrentUser()).thenReturn(user);
+        doThrow(new AccessDeniedException(StringUtils.EMPTY)).when(userService)
+                .checkPermissionToEditOwnProfile(user.getId());
+
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
-        profileController.saveEditedProfile(userDto, bindingResult, response);
+        profileController.saveEditedContacts(userDto, bindingResult, response);
+    }
+    
+    @Test(expectedExceptions = AccessDeniedException.class)
+    public void saveEditedProfileShouldShowErrorIfUserDoesNotHavePermissionToEditOtherProfile() throws NotFoundException {
+        JCUser editedUser = getUser();
+        editedUser.setId(USER_ID);
+        JCUser editorUser = getUser();
+        editorUser.setId(3);
+        EditUserProfileDto userDto = getEditUserProfileDto(editedUser);
+        userDto.setUserProfileDto(new UserProfileDto(editedUser));
+
+        when(userService.getCurrentUser()).thenReturn(editorUser);
+        doThrow(new AccessDeniedException(StringUtils.EMPTY)).when(userService)
+                .checkPermissionToEditOtherProfiles(editorUser.getId());
+
+        BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
+
+        profileController.saveEditedProfile(userDto, bindingResult, null);
+    }
+
+    @Test(expectedExceptions = AccessDeniedException.class)
+    public void saveEditedNotificationsShouldShowErrorIfUserDoesNotHavePermissionToEditOtherProfile()
+            throws NotFoundException {
+        JCUser editedUser = getUser();
+        editedUser.setId(USER_ID);
+        JCUser editorUser = getUser();
+        editorUser.setId(3);
+        EditUserProfileDto userDto = getEditUserProfileDto(editedUser);
+        userDto.setUserNotificationsDto(new UserNotificationsDto(editedUser));
+
+        when(userService.getCurrentUser()).thenReturn(editorUser);
+        doThrow(new AccessDeniedException(StringUtils.EMPTY))
+                .when(userService).checkPermissionToEditOtherProfiles(editorUser.getId());
+
+        BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
+
+        profileController.saveEditedNotifications(userDto, bindingResult, null);
+    }
+
+    @Test(expectedExceptions = AccessDeniedException.class)
+    public void saveEditedSecurityShouldShowErrorIfUserDoesNotHavePermissionToEditOtherProfile()
+            throws NotFoundException {
+        JCUser editedUser = getUser();
+        editedUser.setId(USER_ID);
+        JCUser editorUser = getUser();
+        editorUser.setId(3);
+        EditUserProfileDto userDto = getEditUserProfileDto(editedUser);
+        userDto.setUserSecurityDto(new UserSecurityDto(editedUser));
+
+        when(userService.getCurrentUser()).thenReturn(editorUser);
+        doThrow(new AccessDeniedException(StringUtils.EMPTY))
+                .when(userService).checkPermissionToEditOtherProfiles(editorUser.getId());
+
+        BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
+
+        profileController.saveEditedSecurity(userDto, bindingResult, null);
+    }
+
+    @Test(expectedExceptions = AccessDeniedException.class)
+    public void saveEditedContactsShouldShowErrorIfUserDoesNotHavePermissionToEditOtherProfile()
+            throws NotFoundException {
+        JCUser editedUser = getUser();
+        editedUser.setId(USER_ID);
+        JCUser editorUser = getUser();
+        editorUser.setId(3);
+        EditUserProfileDto userDto = getEditUserProfileDto(editedUser);
+        userDto.setUserContactsDto(new UserContactsDto(editedUser));
+
+        when(userService.getCurrentUser()).thenReturn(editorUser);
+        doThrow(new AccessDeniedException(StringUtils.EMPTY))
+                .when(userService).checkPermissionToEditOtherProfiles(editorUser.getId());
+
+        BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
+
+        profileController.saveEditedContacts(userDto, bindingResult, null);
     }
 
     @Test
@@ -255,8 +543,6 @@ public class UserProfileControllerTest {
      * @return {@link EditUserProfileDto} with default values
      */
     private EditUserProfileDto getEditUserProfileDto() {
-        String NEW_PASSWORD = "newPassword";
-
         JCUser user = new JCUser("username", EMAIL, PASSWORD);
         user.setId(USER_ID);
         user.setFirstName(FIRST_NAME);
@@ -266,14 +552,24 @@ public class UserProfileControllerTest {
         user.setPageSize(PAGE_SIZE);
         user.setAutosubscribe(AUTOSUBSCRIBE);
 
-        EditUserProfileDto dto = new EditUserProfileDto(user);
-        return dto;
+        return new EditUserProfileDto(user);
+    }
+
+    /**
+     * @return {@link EditUserProfileDto} retrieved from user
+     */
+    private EditUserProfileDto getEditUserProfileDto(JCUser user) {
+        return new EditUserProfileDto(user);
     }
 
     private JCUser getUser() {
         JCUser newUser = new JCUser(USER_NAME, EMAIL, PASSWORD);
         newUser.setFirstName(FIRST_NAME);
         newUser.setLastName(LAST_NAME);
+        newUser.setSignature(SIGNATURE);
+        newUser.setLanguage(LANGUAGE);
+        newUser.setPageSize(PAGE_SIZE);
+        newUser.setAutosubscribe(AUTOSUBSCRIBE);
         newUser.setAvatar(avatarByteArray);
         UserContact contact = new UserContact("test contact", new UserContactType());
         newUser.addContact(contact);
