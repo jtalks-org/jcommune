@@ -40,8 +40,7 @@
   </jtalks:hasPermission>
 </c:if>
 <c:if test="${editedUser.username == auth}">
-  <jtalks:hasPermission targetId='${userId}' targetType='USER'
-                        permission='ProfilePermission.EDIT_OWN_PROFILE'>
+  <jtalks:hasPermission targetId='${userId}' targetType='USER' permission='ProfilePermission.EDIT_OWN_PROFILE'>
     <c:set var="isCanEditProfile" value="true"/>
     <c:set var="isShowAllFields" value="true"/>
   </jtalks:hasPermission>
@@ -103,6 +102,8 @@
 
   <div class='user-profile-header'>
     <form:hidden id="avatar" path="avatar" value="${editedUser.avatar}"/>
+    <form:hidden id="editedUserId" path="userId" value="${editedUser.userId}"/>
+    <form:hidden id="editedUsername" path="username" value="${editedUser.username}"/>
     <span class="pull-left thumbnail">
       <span id="avatarPreviewContainer" class="wraptocenter">
         <%--String prefix "data:image/jpeg;base64," needed for correct image rendering--%>
@@ -119,9 +120,7 @@
   <c:choose>
     <%--Profile--%>
     <c:when test="${editedUser.userProfileDto != null}">
-      <form:hidden path="userId" value="${editedUser.userId}"/>
-      <form:hidden id="editedUserId" path="userProfileDto.userId" value="${editedUser.userProfileDto.userId}"/>
-      <form:hidden id="editedUsername" path="username" value="${editedUser.username}"/>
+      <form:hidden path="userProfileDto.userId" value="${editedUser.userProfileDto.userId}"/>
 
       <div class="user-profile-top-buttons">
         <c:if test="${isCanEditProfile}">
@@ -297,10 +296,7 @@
 
      <%--Notifications--%>
     <c:when test="${editedUser.userNotificationsDto != null}">
-        <form:hidden path="userId" value="${editedUser.userId}"/>
-        <form:hidden id="editedUserId" path="userNotificationsDto.userId"
-                     value="${editedUser.userNotificationsDto.userId}"/>
-        <form:hidden id="editedUsername" path="username" value="${editedUser.username}"/>
+        <form:hidden path="userNotificationsDto.userId" value="${editedUser.userNotificationsDto.userId}"/>
 
         <div class="clearfix"></div>
         <hr class='user-profile-hr'/>
@@ -345,8 +341,6 @@
 
     <%--Contacts--%>
     <c:when test="${editedUser.userContactsDto.contacts != null}">
-      <form:hidden id="editedUserId" path="userId" value="${editedUser.userId}"/>
-      <form:hidden id="editedUsername" path="username" value="${editedUser.username}"/>
 
       <div class="clearfix"></div>
       <hr class='user-profile-hr'/>
@@ -410,9 +404,7 @@
     </c:when>
 
     <c:when test="${editedUser.userSecurityDto != null}">
-      <form:hidden path="userId" value="${editedUser.userId}"/>
-      <form:hidden id="editedUserId" path="userSecurityDto.userId" value="${editedUser.userSecurityDto.userId}"/>
-      <form:hidden id="editedUsername" path="username" value="${editedUser.username}"/>
+      <form:hidden path="userSecurityDto.userId" value="${editedUser.userSecurityDto.userId}"/>
 
       <div class="clearfix"></div>
       <hr class='user-profile-hr'/>
