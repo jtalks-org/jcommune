@@ -159,36 +159,6 @@ public class TransactionalUserContactsServiceTest {
         }
     }
 
-    @Test
-    public void removeContactShouldNotRemoveItIfContaxtDoesNotExist() throws NotFoundException {
-        UserContact userContact = new UserContact(CONTACT, createUserContactType(1));
-        userContact.setId(1L);
-        user.addContact(userContact); 
-        long userId = 1L;
-        user.setId(userId);
-        when(userService.get(userId)).thenReturn(user);
-        
-        userContactsService.removeContact(userId, 2L);
-        
-        assertEquals(user.getUserContacts().size(), 1);
-    }
-
-    @Test
-    public void removeContactShouldRemoveItIfContaxtExists() throws NotFoundException {
-        UserContact userContact = new UserContact(CONTACT, createUserContactType(1));
-        userContact.setId(1L);
-        user.addContact(userContact);
-        when(userContactsDao.getContactById(1L)).thenReturn(userContact);
-        long userId = 1L;
-        user.setId(userId);
-        when(userService.get(userId)).thenReturn(user);
-
-        userContactsService.removeContact(userId, 1L);
-        
-        assertEquals(user.getUserContacts().size(), 0);
-    }
-
-    
     private static UserContactType createUserContactType(long contactTypeId) {
         UserContactType userContactType = new UserContactType();
         userContactType.setId(contactTypeId);

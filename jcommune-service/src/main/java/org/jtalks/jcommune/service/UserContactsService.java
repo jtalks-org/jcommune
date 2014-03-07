@@ -44,13 +44,4 @@ public interface UserContactsService extends EntityService<UserContactType> {
      * @throws NotFoundException if edited user or contacts don't exists in system
      */
     JCUser saveEditedUserContacts(long editedUserId, List<UserContactContainer> contacts) throws NotFoundException;
-
-    /**
-     * Removes contact from contacts of current user.
-     * 
-     * @param removedContactOwnerId owner of removedContact
-     * @param userContactId id of user contact to be removed
-     * @throws NotFoundException if owner of removed contact doesn't exist
-     */
-    void removeContact(long removedContactOwnerId, long userContactId) throws NotFoundException;
 }

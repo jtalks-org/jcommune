@@ -66,15 +66,4 @@ public class UserContactsController {
         List<UserContactType> types = service.getAvailableContactTypes();
         return types.toArray(new UserContactType[types.size()]);
     }
-
-    /**
-     * Removes contact identified by contactId from user contacts.
-     * @param contactId identifier of contact to be removed
-     * @throws NotFoundException when owner of contact wasn't found
-     */
-    @RequestMapping(value = "/contacts/remove/{contactOwnerId}/{contactId}", method = RequestMethod.DELETE)
-    @ResponseStatus(value = HttpStatus.OK)
-    public void removeContact(@PathVariable long contactOwnerId, @PathVariable long contactId) throws NotFoundException{
-        service.removeContact(contactOwnerId, contactId);
-    }
 }

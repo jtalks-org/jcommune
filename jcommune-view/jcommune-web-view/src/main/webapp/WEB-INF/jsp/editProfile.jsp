@@ -32,17 +32,17 @@
 </head>
 <body>
 <c:set var="isCanEditProfile" value="false"/>
-<c:set var="isShowAllFields" value="false"/>
+<c:set var="isCanEditNotificationsAndSecurity" value="false"/>
 <c:if test="${editedUser.username != auth}">
   <jtalks:hasPermission targetId='${userId}' targetType='USER' permission='ProfilePermission.EDIT_OTHERS_PROFILE'>
     <c:set var="isCanEditProfile" value="true"/>
-    <c:set var="isShowAllFields" value="true"/>
+    <c:set var="isCanEditNotificationsAndSecurity" value="true"/>
   </jtalks:hasPermission>
 </c:if>
 <c:if test="${editedUser.username == auth}">
+  <c:set var="isCanEditNotificationsAndSecurity" value="true"/>
   <jtalks:hasPermission targetId='${userId}' targetType='USER' permission='ProfilePermission.EDIT_OWN_PROFILE'>
     <c:set var="isCanEditProfile" value="true"/>
-    <c:set var="isShowAllFields" value="true"/>
   </jtalks:hasPermission>
 </c:if>
 
@@ -52,31 +52,37 @@
 <div id="profileMenu" class="user-profile-menu">
 
   <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/profile"
-     <c:choose>
-       <c:when test="${editedUser.userProfileDto != null}">class="btn space-left-medium profile-menu-btn active"</c:when>
-       <c:otherwise>class="btn space-left-medium profile-menu-btn"</c:otherwise>
-     </c:choose>
-     tabindex="60"><spring:message code="label.profile"/></a>
+    <c:choose>
+     <c:when test="${editedUser.userProfileDto != null}">class="btn space-left-medium profile-menu-btn active"</c:when>
+     <c:otherwise>class="btn space-left-medium profile-menu-btn"</c:otherwise>
+    </c:choose>
+    tabindex="60"><spring:message code="label.profile"/>
+  </a>
   <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/contacts"
+    <c:choose>
+      <c:when test="${editedUser.userContactsDto.contacts != null}">
+        class="btn space-left-medium profile-menu-btn active"
+      </c:when>
+      <c:otherwise>class="btn space-left-medium profile-menu-btn"</c:otherwise>
+    </c:choose>
+    tabindex="60"><spring:message code="label.contacts"/>
+  </a>
+
+  <c:if test="${isCanEditProfile || isCanEditNotificationsAndSecurity}">
+    <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/notifications"
       <c:choose>
-        <c:when test="${editedUser.userContactsDto.contacts != null}">class="btn space-left-medium profile-menu-btn active"</c:when>
+        <c:when test="${editedUser.userNotificationsDto != null}">
+          class="btn space-left-medium profile-menu-btn active"</c:when>
         <c:otherwise>class="btn space-left-medium profile-menu-btn"</c:otherwise>
       </c:choose>
-     tabindex="60"><spring:message code="label.contacts"/></a>
-
-  <c:if test="${isCanEditProfile}">
-    <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/notifications"
-        <c:choose>
-          <c:when test="${editedUser.userNotificationsDto != null}">class="btn space-left-medium profile-menu-btn active"</c:when>
-          <c:otherwise>class="btn space-left-medium profile-menu-btn"</c:otherwise>
-        </c:choose>
-       tabindex="60"><spring:message code="label.notifications"/></a>
+     tabindex="60"><spring:message code="label.notifications"/>
+    </a>
     <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/security"
-        <c:choose>
-          <c:when test="${editedUser.userSecurityDto != null}">class="btn space-left-medium profile-menu-btn active"</c:when>
-          <c:otherwise>class="btn space-left-medium profile-menu-btn"</c:otherwise>
-        </c:choose>
-       tabindex="60"><spring:message code="label.security"/></a>
+      <c:choose>
+        <c:when test="${editedUser.userSecurityDto != null}">class="btn space-left-medium profile-menu-btn active"</c:when>
+        <c:otherwise>class="btn space-left-medium profile-menu-btn"</c:otherwise>
+      </c:choose>
+      tabindex="60"><spring:message code="label.security"/></a>
   </c:if>
 </div>
 <div id="editUserDetails" class="userprofile">
@@ -256,7 +262,7 @@
             </div>
           </div>
 
-          <c:if test="${isShowAllFields}">
+          <c:if test="${isCanEditProfile}">
             <div class="control-group">
               <label class="control-label"> <spring:message code="label.registrationDate"/>
               </label>
@@ -295,7 +301,7 @@
     </c:when>
 
      <%--Notifications--%>
-    <c:when test="${editedUser.userNotificationsDto != null}">
+    <c:when test="${editedUser.userNotificationsDto != null && isCanEditNotificationsAndSecurity}">
         <form:hidden path="userNotificationsDto.userId" value="${editedUser.userNotificationsDto.userId}"/>
 
         <div class="clearfix"></div>
@@ -382,10 +388,10 @@
           </c:when>
 
           <c:otherwise>
+            <h4>
+              <spring:message code="label.contacts.header"/>
+            </h4>
             <c:if test="${!empty editedUser.userContactsDto.contacts}">
-              <h4>
-                <spring:message code="label.contacts.header"/>
-              </h4>
               <ul id="contacts" class="contacts">
                 <c:forEach var="contact" items="${editedUser.userContactsDto.contacts}">
                   <li><span class="contact">
@@ -403,7 +409,7 @@
         </c:choose>
     </c:when>
 
-    <c:when test="${editedUser.userSecurityDto != null}">
+    <c:when test="${editedUser.userSecurityDto != null && isCanEditNotificationsAndSecurity}">
       <form:hidden path="userSecurityDto.userId" value="${editedUser.userSecurityDto.userId}"/>
 
       <div class="clearfix"></div>
@@ -444,7 +450,8 @@
     </c:when>
   </c:choose>
 
-  <c:if test="${isCanEditProfile}">
+  <c:if test="${isCanEditProfile || (isCanEditNotificationsAndSecurity &&
+                                    (editedUser.userSecurityDto != null || editedUser.userNotificationsDto != null))}">
     <hr class='user-profile-hr'/>
     <div class='user-profile-buttons-form-actions'>
       <button id="saveChanges" class="btn btn-primary" type="submit" tabindex="60">
