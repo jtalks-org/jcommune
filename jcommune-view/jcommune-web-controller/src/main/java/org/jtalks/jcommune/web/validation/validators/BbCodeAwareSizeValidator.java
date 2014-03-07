@@ -63,8 +63,8 @@ public class BbCodeAwareSizeValidator implements ConstraintValidator<BbCodeAware
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         if (value != null) {
-            value = removeEmptyListBb(value);
-            String trimed = removeBBCodes(value).trim();
+            String emptyListRemoved = removeEmptyListBb(value);
+            String trimed = removeBBCodes(emptyListRemoved).trim();
             int plainTextLength = getDisplayedLength(trimed);
             return plainTextLength >= min && value.length() <= max;
         }

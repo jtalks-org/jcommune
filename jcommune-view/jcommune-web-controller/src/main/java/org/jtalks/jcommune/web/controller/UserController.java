@@ -98,6 +98,7 @@ public class UserController {
     protected static final String ATTR_LOGIN_ERROR = "login_error";
     public static final String HONEYPOT_FIELD = "honeypotCaptcha";
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+    private static final String REMEMBER_ME_ON = "on";
     private final UserService userService;
     private final Authenticator authenticator;
     private final PluginService pluginService;
@@ -201,6 +202,9 @@ public class UserController {
     public ModelAndView registerUser(@ModelAttribute("newUser") RegisterUserDto registerUserDto,
                                      HttpServletRequest request,
                                      Locale locale) {
+        if (isHoneypotCaptchaFilled(registerUserDto, getClientIpAddress(request))) {
+            return new ModelAndView(REG_SERVICE_HONEYPOT_FILLED_ERROR_URL);
+        }
         Map<String, String> registrationPlugins = getRegistrationPluginsHtml(request, locale);
         BindingResult errors;
         try {
@@ -211,12 +215,6 @@ public class UserController {
         } catch (UnexpectedErrorException e) {
             return new ModelAndView(REG_SERVICE_UNEXPECTED_ERROR_URL);
         } 
-        if (isHoneypotCaptchaFilled(errors)) {
-            LOGGER.debug("Bot try to register. Username - {}, email - {}, ip - {}", 
-                        new String[]{registerUserDto.getUserDto().getUsername(), registerUserDto.getUserDto().getEmail(),
-                            getClientIpAddress(request)});
-             return new ModelAndView(REG_SERVICE_HONEYPOT_FILLED_ERROR_URL);
-        }
         if (errors.hasErrors()) {
             ModelAndView mav = new ModelAndView(REGISTRATION);
             mav.addObject("registrationPlugins", registrationPlugins);
@@ -240,6 +238,9 @@ public class UserController {
     public JsonResponse registerUserAjax(@ModelAttribute("newUser") RegisterUserDto registerUserDto,
                                          HttpServletRequest request,
                                          Locale locale) {
+        if (isHoneypotCaptchaFilled(registerUserDto, getClientIpAddress(request))) {
+             return getCustomErrorJsonResponse(HONEYPOT_CAPTCHA_ERROR);
+        }
         BindingResult errors;
         try {
             registerUserDto.getUserDto().setLanguage(Language.byLocale(locale));
@@ -249,16 +250,25 @@ public class UserController {
         } catch (UnexpectedErrorException e) {
             return getCustomErrorJsonResponse(UNEXPECTED_ERROR);
         }
-        if (isHoneypotCaptchaFilled(errors)) {
-            LOGGER.debug("Bot try to register. Username - {}, email - {}, ip - {}", 
-                        new String[]{registerUserDto.getUserDto().getUsername(), registerUserDto.getUserDto().getEmail(),
-                            getClientIpAddress(request)});
-            return getCustomErrorJsonResponse(HONEYPOT_CAPTCHA_ERROR);
-        }
         if (errors.hasErrors()) {
             return new JsonResponse(JsonResponseStatus.FAIL, errors.getAllErrors());
         }
         return new JsonResponse(JsonResponseStatus.SUCCESS);
+    }
+    
+    /**
+     * Detects the presence honeypot captcha filing error.
+     * If honeypot captcha filled it means that bot try to register. .
+     * @see <a href="http://jira.jtalks.org/browse/JC-1750">JIRA issue</a>
+     */
+    private boolean isHoneypotCaptchaFilled(RegisterUserDto registerUserDto, String ip) {
+        if (registerUserDto.getHoneypotCaptcha() != null) {
+            LOGGER.debug("Bot tried to register. Username - {}, email - {}, ip - {}", 
+                        new String[]{registerUserDto.getUserDto().getUsername(),
+                            registerUserDto.getUserDto().getEmail(),ip});
+            return true;
+        }
+        return false;
     }
     
     private JsonResponse getCustomErrorJsonResponse(String customError) {
@@ -382,19 +392,29 @@ public class UserController {
 
         return referer;
     }
-
+    
+    /*
+     * This method can't get LoginUserDto object as parameter because in this case imposible
+     * to provide setting request parameter "_spring_security_remember_me". 
+     * This parameter should be setted for remember-me functional implementation.
+     */
     @RequestMapping(value = "/login_ajax", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResponse loginAjax(@RequestBody LoginUserDto loginUserDto,
+    public JsonResponse loginAjax(@RequestParam("j_username") String username,
+                                  @RequestParam("j_password") String password,
+                                  @RequestParam(value = "_spring_security_remember_me", defaultValue = "off")
+                                  String rememberMe,
                                   HttpServletRequest request, HttpServletResponse response) {
+        LoginUserDto loginUserDto = new LoginUserDto(username, password, rememberMe.equals(REMEMBER_ME_ON),
+                getClientIpAddress(request));
         boolean isAuthenticated;
         try {
             isAuthenticated = loginWithLockHandling(loginUserDto, request, response,
                     userService);
         } catch (NoConnectionException e) {
-            return getCustomErrorJsonResponse(CONNECTION_ERROR);
+            return getCustomErrorJsonResponse("connectionError");
         } catch (UnexpectedErrorException e) {
-            return getCustomErrorJsonResponse(UNEXPECTED_ERROR);
+            return getCustomErrorJsonResponse("unexpectedError");
         }
         if (isAuthenticated) {
             LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
@@ -416,8 +436,12 @@ public class UserController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ModelAndView login(@ModelAttribute(LOGIN_DTO) LoginUserDto loginUserDto,
                               @RequestParam(REFERER_ATTR) String referer,
+                              @RequestParam(value = "_spring_security_remember_me", defaultValue = "off")
+                              String rememberMe,
                               HttpServletRequest request, HttpServletResponse response) {
         boolean isAuthenticated;
+        loginUserDto.setRememberMe(rememberMe.equals(REMEMBER_ME_ON));
+        loginUserDto.setClientIp(getClientIpAddress(request));
         if (referer == null || referer.contains(LOGIN)) {
             referer = MAIN_PAGE_REFERER;
         }
@@ -444,7 +468,6 @@ public class UserController {
     private boolean loginWithLockHandling(LoginUserDto loginUserDto, HttpServletRequest request,
                                           HttpServletResponse response, UserService userService)
             throws UnexpectedErrorException, NoConnectionException {
-        loginUserDto.setClientIp(getClientIpAddress(request));
         for (int i = 0; i < LOGIN_TRIES_AFTER_LOCK; i++) {
             try {
                 return userService.loginUser(loginUserDto, request, response);
@@ -481,15 +504,5 @@ public class UserController {
         return ipAddress;
     }
     
-    /**
-     * Detects the presence honeypot captcha filing error.
-     * If honeypot captcha filled it means that bot try to register. 
-     * @param errors Errors that detected by validator.
-     * @return <code>true</code> if error present, <code>false</code> otherwise.
-     * @see <a href="http://jira.jtalks.org/browse/JC-1750">JIRA issue</a>
-     */
-    private boolean isHoneypotCaptchaFilled(BindingResult errors) {
-        return errors.hasFieldErrors(HONEYPOT_FIELD); 
-    }
 
 }
