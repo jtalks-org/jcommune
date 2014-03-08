@@ -22,7 +22,7 @@ import javax.validation.Valid;
 import java.util.*;
 
 /**
- * This dto used for transferring data in edit {@link org.jtalks.jcommune.model.entity.JCUser} profile operation.
+ * This dto used for transferring data in edit {@link org.jtalks.jcommune.model.entity.JCUser} operation.
  * To get more info see
  * {@link org.jtalks.jcommune.web.controller.UserProfileController#saveEditedContacts(EditUserProfileDto,
  * org.springframework.validation.BindingResult, javax.servlet.http.HttpServletResponse)}.
@@ -49,18 +49,34 @@ public class UserContactsDto {
         Collections.sort(contacts);
     }
 
+    /**
+     * @return user contact dto's
+     */
     public List<UserContactDto> getContacts() {
         return contacts;
     }
 
+    /**
+     * Set user contacts
+     *
+     * @param contacts user contacts
+     */
     public void setContacts(List<UserContactDto> contacts) {
         this.contacts = contacts;
     }
 
+    /**
+     * @return user contact types as pairs contactTypeId - contactTypeName
+     */
     public Map<Long, String> getContactTypes() {
         return contactTypes;
     }
 
+    /**
+     * Set user contact types
+     *
+     * @param contactTypes user contact types as pairs contactTypeId - contactTypeName
+     */
     public void setContactTypes(Map<Long, String> contactTypes) {
         this.contactTypes = contactTypes;
     }

@@ -53,17 +53,19 @@
 
   <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/profile"
     <c:choose>
-     <c:when test="${editedUser.userProfileDto != null}">class="btn space-left-medium profile-menu-btn active"</c:when>
-     <c:otherwise>class="btn space-left-medium profile-menu-btn"</c:otherwise>
+     <c:when test="${editedUser.userProfileDto != null}">
+       class="btn space-left-medium profile-menu-btn selected-tab"
+     </c:when>
+     <c:otherwise>class="btn space-left-medium profile-menu-btn active"</c:otherwise>
     </c:choose>
     tabindex="60"><spring:message code="label.profile"/>
   </a>
   <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/contacts"
     <c:choose>
       <c:when test="${editedUser.userContactsDto.contacts != null}">
-        class="btn space-left-medium profile-menu-btn active"
+        class="btn space-left-medium profile-menu-btn selected-tab"
       </c:when>
-      <c:otherwise>class="btn space-left-medium profile-menu-btn"</c:otherwise>
+      <c:otherwise>class="btn space-left-medium profile-menu-btn active"</c:otherwise>
     </c:choose>
     tabindex="60"><spring:message code="label.contacts"/>
   </a>
@@ -72,15 +74,18 @@
     <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/notifications"
       <c:choose>
         <c:when test="${editedUser.userNotificationsDto != null}">
-          class="btn space-left-medium profile-menu-btn active"</c:when>
-        <c:otherwise>class="btn space-left-medium profile-menu-btn"</c:otherwise>
+          class="btn space-left-medium profile-menu-btn selected-tab"
+        </c:when>
+        <c:otherwise>class="btn space-left-medium profile-menu-btn active"</c:otherwise>
       </c:choose>
      tabindex="60"><spring:message code="label.notifications"/>
     </a>
     <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/security"
       <c:choose>
-        <c:when test="${editedUser.userSecurityDto != null}">class="btn space-left-medium profile-menu-btn active"</c:when>
-        <c:otherwise>class="btn space-left-medium profile-menu-btn"</c:otherwise>
+        <c:when test="${editedUser.userSecurityDto != null}">
+          class="btn space-left-medium profile-menu-btn selected-tab"
+        </c:when>
+        <c:otherwise>class="btn space-left-medium profile-menu-btn active"</c:otherwise>
       </c:choose>
       tabindex="60"><spring:message code="label.security"/></a>
   </c:if>
@@ -309,7 +314,7 @@
 
         <div>
           <fieldset>
-            <div class="control-group">
+            <div class="control-group notification-control">
               <label class="control-label"><spring:message code="label.autosubscribe"/></label>
               <div class="controls padding-top-profile">
                 <spring:message var="autosubscribeTooltip" code="label.tips.autoSubscribe"/>
@@ -319,7 +324,7 @@
               </div>
             </div>
 
-            <div class="control-group">
+            <div class="control-group notification-control">
               <label class="control-label"><spring:message code="label.mentioning.notifications.enabled"/></label>
               <div class="controls padding-top-profile">
                 <spring:message var="mentioningNotificationsTooltip" code="label.tips.userMentioningNotification"/>
@@ -330,7 +335,7 @@
               </div>
             </div>
 
-            <div class="control-group">
+            <div class="control-group notification-control">
               <label class="control-label"><spring:message code="label.send.pm.notification.enabled"/></label>
               <div class="controls padding-top-profile">
                 <spring:message var="sendPmNotificationTooltip" code="label.tips.sendPmNotification"/>

@@ -40,7 +40,8 @@ public interface UserContactsService extends EntityService<UserContactType> {
     /**
      * Update user contacts.
      *
-     * @param editedUserId @return updated contacts
+     * @param editedUserId an identifier of edited user
+     * @return updated contacts
      * @throws NotFoundException if edited user or contacts don't exists in system
      */
     JCUser saveEditedUserContacts(long editedUserId, List<UserContactContainer> contacts) throws NotFoundException;

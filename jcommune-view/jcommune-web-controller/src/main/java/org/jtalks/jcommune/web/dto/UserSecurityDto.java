@@ -22,7 +22,7 @@ import org.jtalks.jcommune.web.validation.annotations.*;
 import javax.validation.constraints.Size;
 
 /**
- * This dto used for transferring data in edit {@link org.jtalks.jcommune.model.entity.JCUser} profile operation.
+ * This dto used for transferring data in edit {@link org.jtalks.jcommune.model.entity.JCUser} operation.
  * To get more info see
  * {@link org.jtalks.jcommune.web.controller.UserProfileController#saveEditedSecurity(EditUserProfileDto,
  * org.springframework.validation.BindingResult, javax.servlet.http.HttpServletResponse)}.
@@ -42,16 +42,6 @@ public class UserSecurityDto {
     private String newUserPasswordConfirm;
 
     /**
-     * Returns all the page size values available for the user
-     * to choose from.
-     *
-     * @return array of page sizes available
-     */
-    public int[] getPageSizesAvailable() {
-        return JCUser.PAGE_SIZES_AVAILABLE;
-    }
-
-    /**
      * Form info population only, please do not call it explicitly
      */
     public UserSecurityDto() {
@@ -65,16 +55,6 @@ public class UserSecurityDto {
     public UserSecurityDto(JCUser user) {
         this.userId = user.getId();
     }
-
-//    /**
-//     * Transforms DTO into container object - convenience implementation to
-//     * be passed to the service layer.
-//     *
-//     * @return user profile modification info for the service tier
-//     */
-//    public UserInfoContainer getUserInfoContainer() {
-//        return new UserInfoContainer(this.getCurrentUserPassword(), this.getNewUserPassword());
-//    }
 
     /**
      * Get the primary id of the user.

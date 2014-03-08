@@ -100,7 +100,7 @@ function validationHandler() {
     input.attr('placeholder', AddContact.selectedContactType.mask);
     if (value.length == 0
         || (value.length > 0 && !value.match(new RegExp(AddContact.selectedContactType.validationPattern)))) {
-        if (AddContact.isValueValid[contactId] == undefined || AddContact.isValueValid[contactId]) {
+        if (contactId == '' || AddContact.isValueValid[contactId] == undefined || AddContact.isValueValid[contactId]) {
             ErrorUtils.removeErrorMessage(input);
             ErrorUtils.addErrorMessage(input, $labelValidationUsercontactNotMatch);
             AddContact.isValueValid[contactId] = false;
@@ -166,7 +166,9 @@ function addContact(json) {
     $('#contacts').append(content);
     var addedContact = $('li.contact').last();
     bindValidationHandler(addedContact);
+    $("#add_contact").removeAttr('disabled');
     addedContact.keyup();
+    addedContact.focus();
 }
 
 function getContactTypes(callback, parameters) {
@@ -178,7 +180,10 @@ function getContactTypes(callback, parameters) {
 $(document).ready(function () {
     //"Add contact" button handler
     $("#add_contact").on("click", function () {
-        getContactTypes(addContact);
+        if (!$(this).attr('disabled')) {
+            getContactTypes(addContact);
+            $(this).attr('disabled', 'disabled');
+        }
     });
 
     bindDeleteHandler();

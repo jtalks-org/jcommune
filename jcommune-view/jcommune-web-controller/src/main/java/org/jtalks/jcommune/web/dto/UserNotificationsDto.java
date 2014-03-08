@@ -17,7 +17,7 @@ package org.jtalks.jcommune.web.dto;
 import org.jtalks.jcommune.model.entity.JCUser;
 
 /**
- * This dto used for transferring data in edit {@link org.jtalks.jcommune.model.entity.JCUser} profile operation.
+ * This dto used for transferring data in edit {@link org.jtalks.jcommune.model.entity.JCUser} operation.
  * To get more info see
  * {@link org.jtalks.jcommune.web.controller.UserProfileController#saveEditedNotifications(EditUserProfileDto,
  * org.springframework.validation.BindingResult, javax.servlet.http.HttpServletResponse)}.

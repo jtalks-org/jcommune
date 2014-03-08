@@ -86,12 +86,42 @@ li.contact .control-group {
 .profile-menu-btn {
   width: 100%;
   padding: 7px;
-  margin-bottom: 10px;
+  border-radius: 0;
+}
+
+.profile-menu-btn.selected-tab {
+  border: 1px solid #ddd;
+  background-color: #fafafa;
+  box-shadow: 0 0 4px 4px rgba(240, 240, 240, 0.5), 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0 0 4px 4px rgba(240, 240, 240, 0.5), 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0 0 4px 4px rgba(240, 240, 240, 0.5), 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+}
+
+.profile-menu-btn.active:hover {
+  background-color: #f1f1f1;
+}
+
+.profile-menu-btn.selected-tab:hover {
+  background-color: #fcfcfc;
+  background-position: 0 40px;
+}
+
+.profile-menu-btn:first-child {
+  border-radius: 4px 0 0 0;
+}
+
+.profile-menu-btn:last-child {
+  border-radius: 0 0 0 4px;
 }
 
 .user-profile-menu {
   width: 110px;
   display: inline-block;
-  margin-right: 30px;
+  margin-right: 10px;
   vertical-align: top;
+  margin-top: 3px;
+}
+
+.notification-control {
+  margin-left: 80px;
 }

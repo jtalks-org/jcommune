@@ -221,26 +221,50 @@ public class UserProfileDto {
         this.location = location;
     }
 
+    /**
+     * Set user post count
+     *
+     * @param postCount count of user posts
+     */
     public void setPostCount(int postCount) {
         this.postCount = postCount;
     }
 
+    /**
+     * @return count of user posts
+     */
     public int getPostCount() {
         return postCount;
     }
 
+    /**
+     * Set last login time
+     *
+     * @param lastLogin last login time
+     */
     public void setLastLogin(DateTime lastLogin) {
         this.lastLogin = lastLogin;
     }
 
+    /**
+     * @return last login time
+     */
     public DateTime getLastLogin() {
         return lastLogin;
     }
 
+    /**
+     * Set registration date
+     *
+     * @param registrationDate registration date
+     */
     public void setRegistrationDate(DateTime registrationDate) {
         this.registrationDate = registrationDate;
     }
 
+    /**
+     * @return registration date
+     */
     public DateTime getRegistrationDate() {
         return registrationDate;
     }
