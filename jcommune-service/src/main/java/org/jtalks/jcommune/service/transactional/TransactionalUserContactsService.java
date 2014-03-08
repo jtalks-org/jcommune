@@ -100,13 +100,4 @@ public class TransactionalUserContactsService
         }
         return false;
     }
-
-    /**
-    * {@inheritDoc}
-    */
-    public void removeContact(long removedContactOwnerId, long userContactId) throws NotFoundException {
-        JCUser user = userService.get(removedContactOwnerId);
-        UserContact contact = this.getDao().getContactById(userContactId);
-        user.removeContact(contact);
-    }
 }

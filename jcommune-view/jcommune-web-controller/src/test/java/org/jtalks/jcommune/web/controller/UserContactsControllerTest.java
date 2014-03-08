@@ -69,25 +69,6 @@ public class UserContactsControllerTest {
         assertEquals(types[0].getTypeName(), expectedType.getTypeName());
     }
 
-    @Test
-    public void removeContactShouldRemoveItInRepository() throws NotFoundException {
-    	long contactId = 1l;
-    	long contactOwnerId = 2l;
-    	
-    	controller.removeContact(contactOwnerId, contactId);
-    	
-    	verify(service).removeContact(contactOwnerId, contactId);
-    }
-    
-    @Test(expectedExceptions = NotFoundException.class)
-    public void removeContactShouldNotRemoveItIfOwnerWasNotFound() throws NotFoundException {
-        long contactId = 1l;
-        long contactOwnerId = 2l;
-        doThrow(new NotFoundException()).when(service).removeContact(contactOwnerId, contactId);
-        
-        controller.removeContact(contactOwnerId, contactId);
-    }
-
     private UserContact createUserContact(long ownerId, UserContactType contactType){
         JCUser owner = new JCUser("username", "email", "password");
         owner.setId(ownerId);
