@@ -43,11 +43,6 @@ function deleteContactHandler(e) {
     // We need rebind all id's and names (paths to properties of contacts)
     // for correct processing backing object by spring
     contacts.each(function (index, el) {
-        $(el).find('.contact input, .controls select, .controls input').each(function(){
-            $(this).attr('name', '');
-        });
-    });
-    contacts.each(function (index, el) {
         $(el).find('.contact input').each(function(){
             $(this).attr('id', 'userContactsDto.contacts' + index + '.id');
             $(this).attr('name', 'userContactsDto.contacts[' + index + '].id')
@@ -148,7 +143,7 @@ function addContact(json) {
     var contactIndex = contactItems.length;
     var content = '<li class="contact" data-original-title=""><div class="control-group">' +
         '<input id="contactId" type="hidden">' +
-        '<a href="#" class="btn btn-mini btn-danger button" data-original-title="Удалить контакт">' +
+        '<a href="#" class="btn btn-mini btn-danger button" data-original-title="' + $labelContactsTipsDelete + '">' +
         '<i class="icon-remove icon-white"></i></a><span class="contact" data-original-title="">' +
         '<input id="userContactsDto.contacts' + contactIndex + '.id" ' +
         'name="userContactsDto.contacts[' + contactIndex + '].id" type="hidden">' +
@@ -181,8 +176,12 @@ $(document).ready(function () {
     //"Add contact" button handler
     $("#add_contact").on("click", function () {
         if (!$(this).attr('disabled')) {
-            getContactTypes(addContact);
             $(this).attr('disabled', 'disabled');
+            if (AddContact.contactTypes === null) {
+                getContactTypes(addContact);
+            } else {
+                addContact(AddContact.contactTypes);
+            }
         }
     });
 

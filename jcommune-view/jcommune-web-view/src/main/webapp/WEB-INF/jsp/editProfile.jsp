@@ -33,6 +33,29 @@
 <body>
 <c:set var="isCanEditProfile" value="false"/>
 <c:set var="isCanEditNotificationsAndSecurity" value="false"/>
+<c:set var="isEditProfile" value="false"/>
+<c:set var="isEditContacts" value="false"/>
+<c:set var="isEditNotifications" value="false"/>
+<c:set var="isEditSecurity" value="false"/>
+
+<c:set var="formAction" value="${pageContext.request.contextPath}"/>
+<c:if test="${editedUser.userProfileDto != null}">
+  <c:set var="isEditProfile" value="true"/>
+  <c:set var="formAction" value="${pageContext.request.contextPath}/users/${editedUser.userId}/profile"/>
+</c:if>
+<c:if test="${editedUser.userContactsDto.contacts != null}">
+  <c:set var="isEditContacts" value="true"/>
+  <c:set var="formAction" value="${pageContext.request.contextPath}/users/${editedUser.userId}/contacts"/>
+</c:if>
+<c:if test="${editedUser.userNotificationsDto != null}">
+  <c:set var="isEditNotifications" value="true"/>
+  <c:set var="formAction" value="${pageContext.request.contextPath}/users/${editedUser.userId}/notifications"/>
+</c:if>
+<c:if test="${editedUser.userSecurityDto != null}">
+  <c:set var="isEditSecurity" value="true"/>
+  <c:set var="formAction" value="${pageContext.request.contextPath}/users/${editedUser.userId}/security"/>
+</c:if>
+
 <c:if test="${editedUser.username != auth}">
   <jtalks:hasPermission targetId='${userId}' targetType='USER' permission='ProfilePermission.EDIT_OTHERS_PROFILE'>
     <c:set var="isCanEditProfile" value="true"/>
@@ -53,7 +76,7 @@
 
   <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/profile"
     <c:choose>
-     <c:when test="${editedUser.userProfileDto != null}">
+     <c:when test="${isEditProfile}">
        class="btn space-left-medium profile-menu-btn selected-tab"
      </c:when>
      <c:otherwise>class="btn space-left-medium profile-menu-btn active"</c:otherwise>
@@ -62,7 +85,7 @@
   </a>
   <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/contacts"
     <c:choose>
-      <c:when test="${editedUser.userContactsDto.contacts != null}">
+      <c:when test="${isEditContacts}">
         class="btn space-left-medium profile-menu-btn selected-tab"
       </c:when>
       <c:otherwise>class="btn space-left-medium profile-menu-btn active"</c:otherwise>
@@ -73,7 +96,7 @@
   <c:if test="${isCanEditProfile || isCanEditNotificationsAndSecurity}">
     <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/notifications"
       <c:choose>
-        <c:when test="${editedUser.userNotificationsDto != null}">
+        <c:when test="${isEditNotifications}">
           class="btn space-left-medium profile-menu-btn selected-tab"
         </c:when>
         <c:otherwise>class="btn space-left-medium profile-menu-btn active"</c:otherwise>
@@ -82,7 +105,7 @@
     </a>
     <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/security"
       <c:choose>
-        <c:when test="${editedUser.userSecurityDto != null}">
+        <c:when test="${isEditSecurity}">
           class="btn space-left-medium profile-menu-btn selected-tab"
         </c:when>
         <c:otherwise>class="btn space-left-medium profile-menu-btn active"</c:otherwise>
@@ -92,21 +115,7 @@
 </div>
 <div id="editUserDetails" class="userprofile">
 
-<c:set var="formAction" value="${pageContext.request.contextPath}"/>
-<c:choose>
-  <c:when test="${editedUser.userProfileDto != null}">
-    <c:set var="formAction" value="${pageContext.request.contextPath}/users/${editedUser.userId}/profile"/>
-  </c:when>
-  <c:when test="${editedUser.userSecurityDto != null}">
-    <c:set var="formAction" value="${pageContext.request.contextPath}/users/${editedUser.userId}/security"/>
-  </c:when>
-  <c:when test="${editedUser.userNotificationsDto != null}">
-    <c:set var="formAction" value="${pageContext.request.contextPath}/users/${editedUser.userId}/notifications"/>
-  </c:when>
-  <c:when test="${editedUser.userContactsDto.contacts != null}">
-    <c:set var="formAction" value="${pageContext.request.contextPath}/users/${editedUser.userId}/contacts"/>
-  </c:when>
-</c:choose>
+
 
 <form:form id="editProfileForm" name="editProfileForm" action="${formAction}"
            modelAttribute="editedUser" method="POST" class="form-horizontal">
@@ -130,7 +139,7 @@
 
   <c:choose>
     <%--Profile--%>
-    <c:when test="${editedUser.userProfileDto != null}">
+    <c:when test="${isEditProfile}">
       <form:hidden path="userProfileDto.userId" value="${editedUser.userProfileDto.userId}"/>
 
       <div class="user-profile-top-buttons">
@@ -306,7 +315,7 @@
     </c:when>
 
      <%--Notifications--%>
-    <c:when test="${editedUser.userNotificationsDto != null && isCanEditNotificationsAndSecurity}">
+    <c:when test="${isEditNotifications && isCanEditNotificationsAndSecurity}">
         <form:hidden path="userNotificationsDto.userId" value="${editedUser.userNotificationsDto.userId}"/>
 
         <div class="clearfix"></div>
@@ -351,7 +360,7 @@
     </c:when>
 
     <%--Contacts--%>
-    <c:when test="${editedUser.userContactsDto.contacts != null}">
+    <c:when test="${isEditContacts}">
 
       <div class="clearfix"></div>
       <hr class='user-profile-hr'/>
@@ -414,7 +423,7 @@
         </c:choose>
     </c:when>
 
-    <c:when test="${editedUser.userSecurityDto != null && isCanEditNotificationsAndSecurity}">
+    <c:when test="${isEditSecurity && isCanEditNotificationsAndSecurity}">
       <form:hidden path="userSecurityDto.userId" value="${editedUser.userSecurityDto.userId}"/>
 
       <div class="clearfix"></div>
@@ -455,8 +464,7 @@
     </c:when>
   </c:choose>
 
-  <c:if test="${isCanEditProfile || (isCanEditNotificationsAndSecurity &&
-                                    (editedUser.userSecurityDto != null || editedUser.userNotificationsDto != null))}">
+  <c:if test="${isCanEditProfile || (isCanEditNotificationsAndSecurity && (isEditSecurity || isEditNotifications))}">
     <hr class='user-profile-hr'/>
     <div class='user-profile-buttons-form-actions'>
       <button id="saveChanges" class="btn btn-primary" type="submit" tabindex="60">

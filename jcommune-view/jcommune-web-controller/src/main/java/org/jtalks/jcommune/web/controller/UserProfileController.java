@@ -122,17 +122,32 @@ public class UserProfileController {
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public ModelAndView showCurrentUserProfilePage() {
         JCUser user = userService.getCurrentUser();
-        return getUserProfileModelAndView(user);
+        return getUserProfileModelAndView(user, EditUserProfileDto.PROFILE);
     }
 
     /**
      * Formats model and view for representing user's details
      *
      * @param user user
+     * @param settingsType type of user settings (profile, contacts, security or notifications)
      * @return user's details
      */
-    private ModelAndView getUserProfileModelAndView(JCUser user) {
-        EditUserProfileDto editedUserDto = new EditUserProfileDto(new UserProfileDto(user), user);
+    private ModelAndView getUserProfileModelAndView(JCUser user, String settingsType) {
+        EditUserProfileDto editedUserDto;
+        switch(settingsType) {
+            case EditUserProfileDto.CONTACTS:
+                editedUserDto = new EditUserProfileDto(new UserContactsDto(user), user);
+                editedUserDto.getUserContactsDto().setContactTypes(contactsService.getAvailableContactTypes());
+                break;
+            case EditUserProfileDto.NOTIFICATIONS:
+                editedUserDto = new EditUserProfileDto(new UserNotificationsDto(user), user);
+                break;
+            case EditUserProfileDto.SECURITY:
+                editedUserDto = new EditUserProfileDto(new UserSecurityDto(user), user);
+                break;
+            default:
+                editedUserDto = new EditUserProfileDto(new UserProfileDto(user), user);
+        }
         setAvatarToUserProfileView(editedUserDto, user);
         return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUserDto);
     }
@@ -146,7 +161,7 @@ public class UserProfileController {
     @RequestMapping(value = {"/users/{editedUserId}/profile", "/users/{editedUserId}"}, method = RequestMethod.GET)
     public ModelAndView showUserProfile(@PathVariable Long editedUserId) throws NotFoundException {
         JCUser editedUser = userService.get(editedUserId);
-        return getUserProfileModelAndView(editedUser);
+        return getUserProfileModelAndView(editedUser, EditUserProfileDto.PROFILE);
     }
 
     /**
@@ -158,10 +173,7 @@ public class UserProfileController {
     @RequestMapping(value = "/users/{editedUserId}/contacts", method = RequestMethod.GET)
     public ModelAndView showUserContacts(@PathVariable Long editedUserId) throws NotFoundException {
         JCUser editedUser = userService.get(editedUserId);
-        EditUserProfileDto editedUserDto = new EditUserProfileDto(new UserContactsDto(editedUser), editedUser);
-        editedUserDto.getUserContactsDto().setContactTypes(contactsService.getAvailableContactTypes());
-        setAvatarToUserProfileView(editedUserDto, editedUser);
-        return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUserDto);
+        return getUserProfileModelAndView(editedUser, EditUserProfileDto.CONTACTS);
     }
 
     /**
@@ -174,9 +186,7 @@ public class UserProfileController {
     public ModelAndView showUserNotificationSettings(@PathVariable Long editedUserId) throws NotFoundException {
         checkPermissionForEditNotificationsOrSecurity(editedUserId);
         JCUser editedUser = userService.get(editedUserId);
-        EditUserProfileDto editedUserDto = new EditUserProfileDto(new UserNotificationsDto(editedUser), editedUser);
-        setAvatarToUserProfileView(editedUserDto, editedUser);
-        return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUserDto);
+        return getUserProfileModelAndView(editedUser, EditUserProfileDto.NOTIFICATIONS);
     }
 
     /**
@@ -189,9 +199,7 @@ public class UserProfileController {
     public ModelAndView showUserSecuritySettings(@PathVariable Long editedUserId) throws NotFoundException {
         checkPermissionForEditNotificationsOrSecurity(editedUserId);
         JCUser editedUser = userService.get(editedUserId);
-        EditUserProfileDto editedUserDto = new EditUserProfileDto(new UserSecurityDto(editedUser), editedUser);
-        setAvatarToUserProfileView(editedUserDto, editedUser);
-        return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUserDto);
+        return getUserProfileModelAndView(editedUser, EditUserProfileDto.SECURITY);
     }
 
     /**
@@ -382,41 +390,40 @@ public class UserProfileController {
         }
     }
 
+    /**
+     * Save user profile settings depending on settings type.
+     *
+     * @param userId user Id
+     * @param userProfileDto dto with user settings
+     * @param settingsType user settings type
+     * @return updated user
+     * @throws NotFoundException
+     */
+    private JCUser saveUserData(long userId, EditUserProfileDto userProfileDto, String settingsType)
+            throws NotFoundException {
+        switch(settingsType) {
+            case EditUserProfileDto.SECURITY:
+                return userService.saveEditedUserSecurity(userId, userProfileDto.getUserSecurityContainer());
+            case EditUserProfileDto.NOTIFICATIONS:
+                return userService.saveEditedUserNotifications(userId, userProfileDto.getUserNotificationsContainer());
+            case EditUserProfileDto.CONTACTS:
+                return contactsService.saveEditedUserContacts(userId, userProfileDto.getUserContacts());
+            default:
+                return userService.saveEditedUserProfile(userId, userProfileDto.getUserInfoContainer());
+        }
+    }
+
     private JCUser saveEditedProfileWithLockHandling(long editedUserId, EditUserProfileDto editedProfileDto,
                                                      String settingsType)
             throws NotFoundException {
         for (int i = 0; i < UserController.LOGIN_TRIES_AFTER_LOCK; i++) {
             try {
-                switch(settingsType) {
-                    case EditUserProfileDto.PROFILE:
-                        return userService.saveEditedUserProfile(editedUserId, editedProfileDto.getUserInfoContainer());
-                    case EditUserProfileDto.SECURITY:
-                        return userService.saveEditedUserSecurity(editedUserId,
-                                editedProfileDto.getUserSecurityContainer());
-                    case EditUserProfileDto.NOTIFICATIONS:
-                        return userService.saveEditedUserNotifications(editedUserId,
-                                editedProfileDto.getUserNotificationsContainer());
-                    case EditUserProfileDto.CONTACTS:
-                        return contactsService.saveEditedUserContacts(editedUserId, editedProfileDto.getUserContacts());
-                }
+                return saveUserData(editedUserId, editedProfileDto, settingsType);
             } catch (HibernateOptimisticLockingFailureException ignored) {
             }
         }
         try {
-            switch(settingsType) {
-                case EditUserProfileDto.PROFILE:
-                    return userService.saveEditedUserProfile(editedUserId, editedProfileDto.getUserInfoContainer());
-                case EditUserProfileDto.SECURITY:
-                    return userService.saveEditedUserSecurity(editedUserId,
-                                                                editedProfileDto.getUserSecurityContainer());
-                case EditUserProfileDto.NOTIFICATIONS:
-                    return userService.saveEditedUserNotifications(editedUserId,
-                                                                editedProfileDto.getUserNotificationsContainer());
-                case EditUserProfileDto.CONTACTS:
-                    return contactsService.saveEditedUserContacts(editedUserId, editedProfileDto.getUserContacts());
-                default:
-                    return userService.saveEditedUserProfile(editedUserId, editedProfileDto.getUserInfoContainer());
-            }
+            return saveUserData(editedUserId, editedProfileDto, settingsType);
         } catch (HibernateOptimisticLockingFailureException e) {
             LOGGER.error("User has been optimistically locked and can't be reread {} times. Username: {}",
                     UserController.LOGIN_TRIES_AFTER_LOCK, editedProfileDto.getUsername());
