@@ -18,6 +18,8 @@ package org.jtalks.jcommune.service.dto;
  * This class is used when transferring user contacts updates
  * from web tier to the service layer. For various reasons
  * we can't use domain model class and MVC command object.
+ * Dto's marked with validation annotations located in controller layer,
+ * and in some cases we need another set of fields.
  *
  * @author Andrey Pogorelov
  */
@@ -29,6 +31,13 @@ public class UserContactContainer {
 
     private long typeId;
 
+    /**
+     * Create instance with required fields.
+     *
+     * @param id contact id
+     * @param value contact value
+     * @param typeId contact type id
+     */
     public UserContactContainer(Long id, String value, long typeId) {
         this.id = id;
         this.value = value;

@@ -201,7 +201,7 @@ public class UserProfileControllerTest {
         JCUser user = getUser();
         JCUser editorUser = getUser();
         user.setId(USER_ID);
-        editorUser.setId(5);
+        editorUser.setId(USER_ID + 1);
 
         when(userService.getCurrentUser()).thenReturn(editorUser);
         doThrow(new AccessDeniedException(StringUtils.EMPTY))
@@ -218,7 +218,7 @@ public class UserProfileControllerTest {
         JCUser user = getUser();
         JCUser editorUser = getUser();
         user.setId(USER_ID);
-        editorUser.setId(5);
+        editorUser.setId(USER_ID + 1);
 
         when(userService.getCurrentUser()).thenReturn(editorUser);
         doThrow(new AccessDeniedException(StringUtils.EMPTY))
@@ -416,7 +416,7 @@ public class UserProfileControllerTest {
         JCUser editedUser = getUser();
         editedUser.setId(USER_ID);
         JCUser editorUser = getUser();
-        editorUser.setId(3);
+        editorUser.setId(USER_ID + 1);
         EditUserProfileDto userDto = getEditUserProfileDto(editedUser);
         userDto.setUserProfileDto(new UserProfileDto(editedUser));
 
@@ -435,7 +435,7 @@ public class UserProfileControllerTest {
         JCUser editedUser = getUser();
         editedUser.setId(USER_ID);
         JCUser editorUser = getUser();
-        editorUser.setId(3);
+        editorUser.setId(USER_ID + 1);
         EditUserProfileDto userDto = getEditUserProfileDto(editedUser);
         userDto.setUserNotificationsDto(new UserNotificationsDto(editedUser));
 
@@ -454,7 +454,7 @@ public class UserProfileControllerTest {
         JCUser editedUser = getUser();
         editedUser.setId(USER_ID);
         JCUser editorUser = getUser();
-        editorUser.setId(3);
+        editorUser.setId(USER_ID + 1);
         EditUserProfileDto userDto = getEditUserProfileDto(editedUser);
         userDto.setUserSecurityDto(new UserSecurityDto(editedUser));
 
@@ -473,7 +473,7 @@ public class UserProfileControllerTest {
         JCUser editedUser = getUser();
         editedUser.setId(USER_ID);
         JCUser editorUser = getUser();
-        editorUser.setId(3);
+        editorUser.setId(USER_ID + 1);
         EditUserProfileDto userDto = getEditUserProfileDto(editedUser);
         userDto.setUserContactsDto(new UserContactsDto(editedUser));
 

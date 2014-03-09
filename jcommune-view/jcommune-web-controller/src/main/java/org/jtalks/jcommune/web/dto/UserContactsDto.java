@@ -32,14 +32,22 @@ import java.util.*;
 public class UserContactsDto {
 
     @Valid
-    List<UserContactDto> contacts;
+    private List<UserContactDto> contacts;
 
-    Map<Long, String> contactTypes;
+    private Map<Long, String> contactTypes;
 
+    /**
+     * Form info population only, please do not call it explicitly
+     */
     public UserContactsDto() {
 
     }
 
+    /**
+     * Constructor which fills dto fields from user.
+     *
+     * @param user copying source
+     */
     public UserContactsDto(JCUser user) {
         contacts = new ArrayList<>();
         Set<UserContact> contactList = user.getUserContacts();

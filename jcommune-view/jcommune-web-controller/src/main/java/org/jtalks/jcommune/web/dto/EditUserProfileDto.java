@@ -36,6 +36,10 @@ import java.util.List;
  */
 public class EditUserProfileDto {
 
+    /**
+     * We need this properties for determining
+     * the desired operation while saving user
+     */
     public static final String SECURITY = "security";
     public static final String PROFILE = "profile";
     public static final String NOTIFICATIONS = "notifications";
@@ -46,46 +50,58 @@ public class EditUserProfileDto {
     private String avatar;
 
     @Valid
-    UserProfileDto userProfileDto;
+    private UserProfileDto userProfileDto;
 
     @Valid
-    UserNotificationsDto userNotificationsDto;
+    private UserNotificationsDto userNotificationsDto;
 
     @Valid
-    UserSecurityDto userSecurityDto;
+    private UserSecurityDto userSecurityDto;
 
     @Valid
-    UserContactsDto userContactsDto;
+    private UserContactsDto userContactsDto;
 
+    /**
+     * Create instance with UserProfileDto. All required fields retrieved from JCUser.
+     * @param userProfileDto dto for user profile fields
+     * @param user edited user
+     */
     public EditUserProfileDto(UserProfileDto userProfileDto, JCUser user) {
         this.userId = user.getId();
         this.username = user.getUsername();
         this.userProfileDto = userProfileDto;
     }
 
+    /**
+     * Create instance with UserSecurityDto. All required fields retrieved from JCUser.
+     * @param userSecurityDto dto for user security settings
+     * @param user edited user
+     */
     public EditUserProfileDto(UserSecurityDto userSecurityDto, JCUser user) {
         this.userId = user.getId();
         this.username = user.getUsername();
         this.userSecurityDto = userSecurityDto;
     }
 
+    /**
+     * Create instance with UserNotificationsDto. All required fields retrieved from JCUser.
+     * @param userNotificationsDto dto for user notification settings
+     * @param user edited user
+     */
     public EditUserProfileDto(UserNotificationsDto userNotificationsDto, JCUser user) {
         this.userId = user.getId();
         this.username = user.getUsername();
         this.userNotificationsDto = userNotificationsDto;
     }
 
+    /**
+     * Create instance with UserContactsDto. All required fields retrieved from JCUser.
+     * @param userContactsDto dto for user contacts settings
+     * @param user edited user
+     */
     public EditUserProfileDto(UserContactsDto userContactsDto, JCUser user) {
         this.userId = user.getId();
         this.username = user.getUsername();
-        this.userContactsDto = userContactsDto;
-    }
-
-    public UserContactsDto getUserContactsDto() {
-        return userContactsDto;
-    }
-
-    public void setUserContactsDto(UserContactsDto userContactsDto) {
         this.userContactsDto = userContactsDto;
     }
 
@@ -230,28 +246,68 @@ public class EditUserProfileDto {
         this.avatar = avatar;
     }
 
+    /**
+     * @return dto with user profile fields
+     */
     public UserProfileDto getUserProfileDto() {
         return userProfileDto;
     }
 
+    /**
+     * Set UserProfileDto.
+     *
+     * @param userProfileDto - user dto with profile fields
+     */
     public void setUserProfileDto(UserProfileDto userProfileDto) {
         this.userProfileDto = userProfileDto;
     }
 
+    /**
+     * @return user dto with notification settings
+     */
     public UserNotificationsDto getUserNotificationsDto() {
         return userNotificationsDto;
     }
 
+    /**
+     * Set UserNotificationsDto.
+     *
+     * @param userNotificationsDto - user dto with notification settings
+     */
     public void setUserNotificationsDto(UserNotificationsDto userNotificationsDto) {
         this.userNotificationsDto = userNotificationsDto;
     }
 
+    /**
+     * @return user dto with security settings
+     */
     public UserSecurityDto getUserSecurityDto() {
         return userSecurityDto;
     }
 
+    /**
+     * Set UserSecurityDto.
+     *
+     * @param userSecurityDto - user dto with security settings
+     */
     public void setUserSecurityDto(UserSecurityDto userSecurityDto) {
         this.userSecurityDto = userSecurityDto;
+    }
+
+    /**
+     * @return dto with user contacts
+     */
+    public UserContactsDto getUserContactsDto() {
+        return userContactsDto;
+    }
+
+    /**
+     * Set UserContactsDto.
+     *
+     * @param userContactsDto - dto with user contacts
+     */
+    public void setUserContactsDto(UserContactsDto userContactsDto) {
+        this.userContactsDto = userContactsDto;
     }
 
 }

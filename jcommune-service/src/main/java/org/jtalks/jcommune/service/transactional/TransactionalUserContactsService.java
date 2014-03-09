@@ -94,7 +94,7 @@ public class TransactionalUserContactsService
      */
     private boolean contactExistInList(UserContact userContact, List<UserContactContainer> contacts) {
         for (UserContactContainer contact : contacts) {
-            if (userContact.getId() == contact.getId()) {
+            if (contact.getId() != null && userContact.getId() == contact.getId()) {
                 return true;
             }
         }
