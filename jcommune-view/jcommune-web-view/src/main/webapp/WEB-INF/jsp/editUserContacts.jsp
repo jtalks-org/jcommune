@@ -43,9 +43,9 @@
                     </span>
             <div class="controls">
               <form:select class="input-medium" path="userContactsDto.contacts[${loop.index}].type.id"
-                           items="${editedUser.userContactsDto.contactTypes}" />
+                           tabindex="${loop.index + 1}" items="${editedUser.userContactsDto.contactTypes}" />
               <form:input class="input-large" type="text" path="userContactsDto.contacts[${loop.index}].value"
-                          tabindex="45" value="${contact.value}"/>
+                          tabindex="${loop.index + 1}" value="${contact.value}"/>
               <br/>
               <form:errors path="userContactsDto.contacts[${loop.index}]" cssClass="help-inline contact-error"/>
             </div>

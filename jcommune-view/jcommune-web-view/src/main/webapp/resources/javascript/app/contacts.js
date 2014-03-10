@@ -148,7 +148,7 @@ function addContact(json) {
         '<input id="userContactsDto.contacts' + contactIndex + '.id" ' +
         'name="userContactsDto.contacts[' + contactIndex + '].id" type="hidden">' +
         '<div class="controls">';
-    content += '<select id="userContactsDto.contacts' + contactIndex + '.type.id"' +
+    content += '<select id="userContactsDto.contacts' + contactIndex + '.type.id" tabindex="' + contactIndex + '"' +
         ' name="userContactsDto.contacts[' + contactIndex + '].type.id" class="input-medium">';
     $.each(json, function (i, obj) {
         content += '<option value="' + obj.id + '">' + obj.typeName + '</option>';
@@ -156,7 +156,7 @@ function addContact(json) {
     content += '</select>';
     content += '<input id="userContactsDto.contacts' + contactIndex + '.value" ' +
         'name="userContactsDto.contacts[' + contactIndex + '].value" ' +
-        'tabindex="45" class="input-large" type="text"><br></div></div></li>';
+        'tabindex="' + (contactIndex + 1) + '" class="input-large" type="text"><br></div></div></li>';
 
     $('#contacts').append(content);
     var addedContact = $('li.contact').last();

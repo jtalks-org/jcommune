@@ -81,7 +81,7 @@
      </c:when>
      <c:otherwise>class="btn space-left-medium profile-menu-btn active"</c:otherwise>
     </c:choose>
-    tabindex="60"><spring:message code="label.profile"/>
+    tabindex="71"><spring:message code="label.profile"/>
   </a>
   <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/contacts"
     <c:choose>
@@ -90,7 +90,7 @@
       </c:when>
       <c:otherwise>class="btn space-left-medium profile-menu-btn active"</c:otherwise>
     </c:choose>
-    tabindex="60"><spring:message code="label.contacts"/>
+    tabindex="72"><spring:message code="label.contacts"/>
   </a>
 
   <c:if test="${isCanEditProfile || isCanEditNotificationsAndSecurity}">
@@ -101,7 +101,7 @@
         </c:when>
         <c:otherwise>class="btn space-left-medium profile-menu-btn active"</c:otherwise>
       </c:choose>
-     tabindex="60"><spring:message code="label.notifications"/>
+     tabindex="73"><spring:message code="label.notifications"/>
     </a>
     <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/security"
       <c:choose>
@@ -110,7 +110,7 @@
         </c:when>
         <c:otherwise>class="btn space-left-medium profile-menu-btn active"</c:otherwise>
       </c:choose>
-      tabindex="60"><spring:message code="label.security"/></a>
+      tabindex="74"><spring:message code="label.security"/></a>
   </c:if>
 </div>
 <div id="editUserDetails" class="userprofile">
