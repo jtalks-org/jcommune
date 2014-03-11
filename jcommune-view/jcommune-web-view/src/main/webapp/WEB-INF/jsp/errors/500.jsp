@@ -26,7 +26,7 @@
 <body>
 <div class="container">
     <div class="text_errorpage">
-        <h1><span class="error_errorpage"><spring:message code="label.error"/></span> 500</h1>
+        <h1><span class="error_errorpage"><spring:message code="label.error"/></span>&nbsp;500</h1>
         <spring:message code="label.500.detail"/>
         <br/>
         <spring:message code="label.500.refresh"/>&nbsp;

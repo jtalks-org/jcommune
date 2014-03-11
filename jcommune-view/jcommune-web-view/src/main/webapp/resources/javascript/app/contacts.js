@@ -56,14 +56,17 @@ function deleteContactHandler(e) {
             $(this).attr('name', 'userContactsDto.contacts[' + index + '].value')
         });
     });
+    if ($('.control-group.error').size() == 0) {
+        $('#saveChanges').removeAttr('disabled');
+    }
     e.preventDefault();
 }
 
 /**
  * Binds click handler for "X" buttons (delete contact)
  */
-function bindDeleteHandler() {
-    $("#contacts").find(".contact").find("a.button").each(function () {
+function bindDeleteHandler(contacts) {
+    contacts.find("a.button").each(function () {
         this.onclick = deleteContactHandler;
     });
 }
@@ -160,6 +163,7 @@ function addContact(json) {
 
     $('#contacts').append(content);
     var addedContact = $('li.contact').last();
+    bindDeleteHandler(addedContact);
     bindValidationHandler(addedContact);
     $("#add_contact").removeAttr('disabled');
     addedContact.keyup();
@@ -185,6 +189,7 @@ $(document).ready(function () {
         }
     });
 
-    bindDeleteHandler();
-    bindValidationHandler($('li.contact'));
+    var contacts = $('li.contact');
+    bindDeleteHandler(contacts);
+    bindValidationHandler(contacts);
 });

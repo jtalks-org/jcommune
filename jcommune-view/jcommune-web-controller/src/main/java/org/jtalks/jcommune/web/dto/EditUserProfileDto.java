@@ -175,6 +175,9 @@ public class EditUserProfileDto {
     public List<UserContactContainer> getUserContacts() {
         UserContactsDto dto = this.getUserContactsDto();
         List<UserContactContainer> contacts = new ArrayList<>();
+        if (dto == null) {
+            return contacts;
+        }
         for (UserContactDto contact : dto.getContacts()) {
             contacts.add(new UserContactContainer(contact.getId(),
                     contact.getValue(), contact.getType().getId()));
