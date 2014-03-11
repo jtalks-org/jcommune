@@ -26,9 +26,13 @@
 
     <security:session-management session-authentication-strategy-ref="concurrentSessionControlStrategy"/>
     <security:custom-filter ref="rememberMeCheckFilter" before="FORM_LOGIN_FILTER"/>
+    
     <security:intercept-url pattern="/resources/**" filters="none"/>
     <security:intercept-url pattern="/admin/logo" filters="none"/>
     <security:intercept-url pattern="/admin/icon/**" filters="none"/>
+    <security:intercept-url pattern="/errors/**" filters="none"/>
+    <security:intercept-url pattern="/users/*/avatar" filters="none"/>
+    
     <security:intercept-url pattern="/posts/new" access="isAuthenticated()"/>
     <security:intercept-url pattern="/posts/*/delete" method="GET" access="isAuthenticated()"/>
     <security:intercept-url pattern="/posts/*" method="DELETE" access="isAuthenticated()"/>
@@ -36,7 +40,6 @@
 
     <security:intercept-url pattern="/login" method="GET" access="permitAll()"/>
     <security:intercept-url pattern="/users/new" method="GET" access="permitAll()"/>
-    <security:intercept-url pattern="/users/*/avatar" method="GET" access="permitAll()"/>
     <security:intercept-url pattern="/user" method="GET" access="isAuthenticated()"/>
     <security:intercept-url pattern="/user/" method="GET" access="isAuthenticated()"/>
     <security:intercept-url pattern="/users/**" access="isAuthenticated()"/>

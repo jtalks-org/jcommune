@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.web.tags;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 
@@ -60,6 +60,9 @@ public class HasPermissionTest {
     
     @Mock
     private SecurityContext securityContext;
+    
+    @Mock
+    private Authentication authentication;
     
     @BeforeMethod
     public void setUp() {
@@ -136,6 +139,7 @@ public class HasPermissionTest {
     
     @Test
     public void testHasPermission() throws JspException {
+        when(securityContextFacade.getContext().getAuthentication()).thenReturn(authentication);
         when(aclEvaluator.hasPermission(
                 Matchers.any(Authentication.class), 
                 Matchers.any(Serializable.class), 
@@ -145,6 +149,7 @@ public class HasPermissionTest {
         tag.setTargetId(1L);
         tag.setTargetType("BRANCH");
         tag.setPermission("PERMISSION");
+        tag.doStartTag();;
         
         assertEquals(tag.doStartTag(), Tag.EVAL_BODY_INCLUDE);
     }

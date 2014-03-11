@@ -87,6 +87,9 @@ public class HasPermission extends TagSupport {
         }
 
         Authentication authentication = securityContextFacade.getContext().getAuthentication();
+        if (authentication == null) {
+            return Tag.SKIP_BODY;
+        }
         
         if (aclEvaluator.hasPermission(authentication, targetId, targetType, permission)) {
             return Tag.EVAL_BODY_INCLUDE;
