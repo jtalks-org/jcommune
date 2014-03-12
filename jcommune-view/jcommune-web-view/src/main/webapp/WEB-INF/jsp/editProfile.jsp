@@ -77,40 +77,40 @@
   <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/profile"
     <c:choose>
      <c:when test="${isEditProfile}">
-       class="btn space-left-medium profile-menu-btn selected-tab"
+       class="space-left-medium profile-menu-btn selected-tab"
      </c:when>
-     <c:otherwise>class="btn space-left-medium profile-menu-btn active"</c:otherwise>
+     <c:otherwise>class="space-left-medium profile-menu-btn active"</c:otherwise>
     </c:choose>
-    tabindex="71"><spring:message code="label.profile"/>
+    tabindex="71"><i class="icon-user"></i><spring:message code="label.profile"/>
   </a>
   <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/contacts"
     <c:choose>
       <c:when test="${isEditContacts}">
-        class="btn space-left-medium profile-menu-btn selected-tab"
+        class="space-left-medium profile-menu-btn selected-tab"
       </c:when>
-      <c:otherwise>class="btn space-left-medium profile-menu-btn active"</c:otherwise>
+      <c:otherwise>class="space-left-medium profile-menu-btn active"</c:otherwise>
     </c:choose>
-    tabindex="72"><spring:message code="label.contacts"/>
+    tabindex="72"><i class="icon-envelope"></i><spring:message code="label.contacts"/>
   </a>
 
   <c:if test="${isCanEditProfile || isCanEditNotificationsAndSecurity}">
     <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/notifications"
       <c:choose>
         <c:when test="${isEditNotifications}">
-          class="btn space-left-medium profile-menu-btn selected-tab"
+          class="space-left-medium profile-menu-btn selected-tab"
         </c:when>
-        <c:otherwise>class="btn space-left-medium profile-menu-btn active"</c:otherwise>
+        <c:otherwise>class="space-left-medium profile-menu-btn active"</c:otherwise>
       </c:choose>
-     tabindex="73"><spring:message code="label.notifications"/>
+     tabindex="73"><i class="icon-flag"></i><spring:message code="label.notifications"/>
     </a>
     <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/security"
       <c:choose>
         <c:when test="${isEditSecurity}">
-          class="btn space-left-medium profile-menu-btn selected-tab"
+          class="space-left-medium profile-menu-btn selected-tab"
         </c:when>
-        <c:otherwise>class="btn space-left-medium profile-menu-btn active"</c:otherwise>
+        <c:otherwise>class="space-left-medium profile-menu-btn active"</c:otherwise>
       </c:choose>
-      tabindex="74"><spring:message code="label.security"/></a>
+      tabindex="74"><i class="icon-eye-close"></i><spring:message code="label.security"/></a>
   </c:if>
 </div>
 <div id="editUserDetails" class="userprofile">
