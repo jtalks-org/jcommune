@@ -38,22 +38,31 @@
 <c:set var="isEditNotifications" value="false"/>
 <c:set var="isEditSecurity" value="false"/>
 
+<c:set var="editProfileMenuClass" value="space-left-medium profile-menu-btn active"/>
+<c:set var="editContactsMenuClass" value="space-left-medium profile-menu-btn active"/>
+<c:set var="editNotificationsMenuClass" value="space-left-medium profile-menu-btn active"/>
+<c:set var="editSecurityMenuClass" value="space-left-medium profile-menu-btn active"/>
+
 <c:set var="formAction" value="${pageContext.request.contextPath}"/>
 <c:if test="${editedUser.userProfileDto != null}">
   <c:set var="isEditProfile" value="true"/>
   <c:set var="formAction" value="${pageContext.request.contextPath}/users/${editedUser.userId}/profile"/>
+  <c:set var="editProfileMenuClass" value="space-left-medium profile-menu-btn selected-tab"/>
 </c:if>
 <c:if test="${editedUser.userContactsDto.contacts != null}">
   <c:set var="isEditContacts" value="true"/>
   <c:set var="formAction" value="${pageContext.request.contextPath}/users/${editedUser.userId}/contacts"/>
+  <c:set var="editContactsMenuClass" value="space-left-medium profile-menu-btn selected-tab"/>
 </c:if>
 <c:if test="${editedUser.userNotificationsDto != null}">
   <c:set var="isEditNotifications" value="true"/>
   <c:set var="formAction" value="${pageContext.request.contextPath}/users/${editedUser.userId}/notifications"/>
+  <c:set var="editNotificationsMenuClass" value="space-left-medium profile-menu-btn selected-tab"/>
 </c:if>
 <c:if test="${editedUser.userSecurityDto != null}">
   <c:set var="isEditSecurity" value="true"/>
   <c:set var="formAction" value="${pageContext.request.contextPath}/users/${editedUser.userId}/security"/>
+  <c:set var="editSecurityMenuClass" value="space-left-medium profile-menu-btn selected-tab"/>
 </c:if>
 
 <c:if test="${editedUser.username != auth}">
@@ -73,43 +82,19 @@
 
 <div class="user-profile-container">
 <div id="profileMenu" class="user-profile-menu">
-
-  <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/profile"
-    <c:choose>
-     <c:when test="${isEditProfile}">
-       class="space-left-medium profile-menu-btn selected-tab"
-     </c:when>
-     <c:otherwise>class="space-left-medium profile-menu-btn active"</c:otherwise>
-    </c:choose>
+  <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/profile" class="${editProfileMenuClass}"
     tabindex="71"><i class="icon-user"></i><spring:message code="label.profile"/>
   </a>
-  <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/contacts"
-    <c:choose>
-      <c:when test="${isEditContacts}">
-        class="space-left-medium profile-menu-btn selected-tab"
-      </c:when>
-      <c:otherwise>class="space-left-medium profile-menu-btn active"</c:otherwise>
-    </c:choose>
+  <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/contacts" class="${editContactsMenuClass}"
     tabindex="72"><i class="icon-envelope"></i><spring:message code="label.contacts"/>
   </a>
 
   <c:if test="${isCanEditProfile || isCanEditNotificationsAndSecurity}">
     <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/notifications"
-      <c:choose>
-        <c:when test="${isEditNotifications}">
-          class="space-left-medium profile-menu-btn selected-tab"
-        </c:when>
-        <c:otherwise>class="space-left-medium profile-menu-btn active"</c:otherwise>
-      </c:choose>
-     tabindex="73"><i class="icon-flag"></i><spring:message code="label.notifications"/>
+       class="${editNotificationsMenuClass}" tabindex="73">
+      <i class="icon-flag"></i><spring:message code="label.notifications"/>
     </a>
-    <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/security"
-      <c:choose>
-        <c:when test="${isEditSecurity}">
-          class="space-left-medium profile-menu-btn selected-tab"
-        </c:when>
-        <c:otherwise>class="space-left-medium profile-menu-btn active"</c:otherwise>
-      </c:choose>
+    <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/security" class="${editSecurityMenuClass}"
       tabindex="74"><i class="icon-eye-close"></i><spring:message code="label.security"/></a>
   </c:if>
 </div>

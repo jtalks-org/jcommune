@@ -60,6 +60,16 @@ import java.util.Locale;
  */
 @Controller
 public class UserProfileController {
+
+    /**
+     * We need this properties for determining
+     * the desired operation while saving user
+     */
+    public static final String SECURITY = "security";
+    public static final String PROFILE = "profile";
+    public static final String NOTIFICATIONS = "notifications";
+    public static final String CONTACTS = "contacts";
+    
     public static final String EDIT_PROFILE = "editProfile";
     public static final String EDITED_USER = "editedUser";
     public static final String BREADCRUMB_LIST = "breadcrumbList";
@@ -122,7 +132,7 @@ public class UserProfileController {
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public ModelAndView showCurrentUserProfilePage() {
         JCUser user = userService.getCurrentUser();
-        return getUserProfileModelAndView(user, EditUserProfileDto.PROFILE);
+        return getUserProfileModelAndView(user, PROFILE);
     }
 
     /**
@@ -135,14 +145,14 @@ public class UserProfileController {
     private ModelAndView getUserProfileModelAndView(JCUser user, String settingsType) {
         EditUserProfileDto editedUserDto;
         switch(settingsType) {
-            case EditUserProfileDto.CONTACTS:
+            case CONTACTS:
                 editedUserDto = new EditUserProfileDto(new UserContactsDto(user), user);
                 editedUserDto.getUserContactsDto().setContactTypes(contactsService.getAvailableContactTypes());
                 break;
-            case EditUserProfileDto.NOTIFICATIONS:
+            case NOTIFICATIONS:
                 editedUserDto = new EditUserProfileDto(new UserNotificationsDto(user), user);
                 break;
-            case EditUserProfileDto.SECURITY:
+            case SECURITY:
                 editedUserDto = new EditUserProfileDto(new UserSecurityDto(user), user);
                 break;
             default:
@@ -161,7 +171,7 @@ public class UserProfileController {
     @RequestMapping(value = {"/users/{editedUserId}/profile", "/users/{editedUserId}"}, method = RequestMethod.GET)
     public ModelAndView showUserProfile(@PathVariable Long editedUserId) throws NotFoundException {
         JCUser editedUser = userService.get(editedUserId);
-        return getUserProfileModelAndView(editedUser, EditUserProfileDto.PROFILE);
+        return getUserProfileModelAndView(editedUser, PROFILE);
     }
 
     /**
@@ -173,7 +183,7 @@ public class UserProfileController {
     @RequestMapping(value = "/users/{editedUserId}/contacts", method = RequestMethod.GET)
     public ModelAndView showUserContacts(@PathVariable Long editedUserId) throws NotFoundException {
         JCUser editedUser = userService.get(editedUserId);
-        return getUserProfileModelAndView(editedUser, EditUserProfileDto.CONTACTS);
+        return getUserProfileModelAndView(editedUser, CONTACTS);
     }
 
     /**
@@ -186,7 +196,7 @@ public class UserProfileController {
     public ModelAndView showUserNotificationSettings(@PathVariable Long editedUserId) throws NotFoundException {
         checkPermissionForEditNotificationsOrSecurity(editedUserId);
         JCUser editedUser = userService.get(editedUserId);
-        return getUserProfileModelAndView(editedUser, EditUserProfileDto.NOTIFICATIONS);
+        return getUserProfileModelAndView(editedUser, NOTIFICATIONS);
     }
 
     /**
@@ -199,7 +209,7 @@ public class UserProfileController {
     public ModelAndView showUserSecuritySettings(@PathVariable Long editedUserId) throws NotFoundException {
         checkPermissionForEditNotificationsOrSecurity(editedUserId);
         JCUser editedUser = userService.get(editedUserId);
-        return getUserProfileModelAndView(editedUser, EditUserProfileDto.SECURITY);
+        return getUserProfileModelAndView(editedUser, SECURITY);
     }
 
     /**
@@ -231,9 +241,9 @@ public class UserProfileController {
         }
         long editedUserId = editedProfileDto.getUserProfileDto().getUserId();
         checkPermissionsToEditProfile(editedUserId);
-        JCUser user = saveEditedProfileWithLockHandling(editedUserId, editedProfileDto, EditUserProfileDto.PROFILE);
+        JCUser user = saveEditedProfileWithLockHandling(editedUserId, editedProfileDto, PROFILE);
         //redirect to the view profile page
-        return new ModelAndView("redirect:/users/" + user.getId());
+        return new ModelAndView("redirect:/users/" + user.getId() +"/" + PROFILE);
     }
 
     /**
@@ -255,9 +265,9 @@ public class UserProfileController {
         }
         long editedUserId = editedProfileDto.getUserNotificationsDto().getUserId();
         checkPermissionForEditNotificationsOrSecurity(editedUserId);
-        JCUser user = saveEditedProfileWithLockHandling(editedUserId, editedProfileDto, EditUserProfileDto.NOTIFICATIONS);
+        JCUser user = saveEditedProfileWithLockHandling(editedUserId, editedProfileDto, NOTIFICATIONS);
         //redirect to the view profile page
-        return new ModelAndView("redirect:/users/" + user.getId());
+        return new ModelAndView("redirect:/users/" + user.getId() +"/" + NOTIFICATIONS);
     }
 
     /**
@@ -279,9 +289,9 @@ public class UserProfileController {
         }
         long editedUserId = editedProfileDto.getUserSecurityDto().getUserId();
         checkPermissionForEditNotificationsOrSecurity(editedUserId);
-        JCUser user = saveEditedProfileWithLockHandling(editedUserId, editedProfileDto, EditUserProfileDto.SECURITY);
+        JCUser user = saveEditedProfileWithLockHandling(editedUserId, editedProfileDto, SECURITY);
         //redirect to the view profile page
-        return new ModelAndView("redirect:/users/" + user.getId());
+        return new ModelAndView("redirect:/users/" + user.getId() +"/" + SECURITY);
     }
 
     /**
@@ -304,9 +314,9 @@ public class UserProfileController {
         }
         long editedUserId = editedProfileDto.getUserId();
         checkPermissionsToEditProfile(editedUserId);
-        JCUser user = saveEditedProfileWithLockHandling(editedUserId, editedProfileDto, EditUserProfileDto.CONTACTS);
+        JCUser user = saveEditedProfileWithLockHandling(editedUserId, editedProfileDto, CONTACTS);
         //redirect to the view profile page
-        return new ModelAndView("redirect:/users/" + user.getId());
+        return new ModelAndView("redirect:/users/" + user.getId() +"/" + CONTACTS);
     }
 
     /**
@@ -402,11 +412,11 @@ public class UserProfileController {
     private JCUser saveUserData(long userId, EditUserProfileDto userProfileDto, String settingsType)
             throws NotFoundException {
         switch(settingsType) {
-            case EditUserProfileDto.SECURITY:
+            case SECURITY:
                 return userService.saveEditedUserSecurity(userId, userProfileDto.getUserSecurityContainer());
-            case EditUserProfileDto.NOTIFICATIONS:
+            case NOTIFICATIONS:
                 return userService.saveEditedUserNotifications(userId, userProfileDto.getUserNotificationsContainer());
-            case EditUserProfileDto.CONTACTS:
+            case CONTACTS:
                 return contactsService.saveEditedUserContacts(userId, userProfileDto.getUserContacts());
             default:
                 return userService.saveEditedUserProfile(userId, userProfileDto.getUserInfoContainer());

@@ -36,15 +36,6 @@ import java.util.List;
  */
 public class EditUserProfileDto {
 
-    /**
-     * We need this properties for determining
-     * the desired operation while saving user
-     */
-    public static final String SECURITY = "security";
-    public static final String PROFILE = "profile";
-    public static final String NOTIFICATIONS = "notifications";
-    public static final String CONTACTS = "contacts";
-
     private long userId;
     private String username;
     private String avatar;

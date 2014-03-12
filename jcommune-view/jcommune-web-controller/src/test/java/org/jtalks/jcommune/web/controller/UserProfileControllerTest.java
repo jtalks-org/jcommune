@@ -245,7 +245,7 @@ public class UserProfileControllerTest {
 
         ModelAndView mav = profileController.saveEditedProfile(dto, bindingResult, new MockHttpServletResponse());
 
-        String expectedUrl = "redirect:/users/" + user.getId();
+        String expectedUrl = "redirect:/users/" + user.getId() + "/" + UserProfileController.PROFILE;
         assertViewName(mav, expectedUrl);
         verify(userService, times(1)).saveEditedUserProfile(eq(user.getId()), any(UserInfoContainer.class));
     }
@@ -265,7 +265,7 @@ public class UserProfileControllerTest {
 
         ModelAndView mav = profileController.saveEditedSecurity(dto, bindingResult, new MockHttpServletResponse());
 
-        String expectedUrl = "redirect:/users/" + user.getId();
+        String expectedUrl = "redirect:/users/" + user.getId() + "/" + UserProfileController.SECURITY;
         assertViewName(mav, expectedUrl);
         verify(userService, times(1)).saveEditedUserSecurity(eq(user.getId()), any(UserSecurityContainer.class));
     }
@@ -286,7 +286,7 @@ public class UserProfileControllerTest {
 
         ModelAndView mav = profileController.saveEditedNotifications(dto, bindingResult, new MockHttpServletResponse());
 
-        String expectedUrl = "redirect:/users/" + user.getId();
+        String expectedUrl = "redirect:/users/" + user.getId() + "/" + UserProfileController.NOTIFICATIONS;
         assertViewName(mav, expectedUrl);
         verify(userService, times(1)).saveEditedUserNotifications(eq(user.getId()),
                 any(UserNotificationsContainer.class));
@@ -308,7 +308,7 @@ public class UserProfileControllerTest {
 
         ModelAndView mav = profileController.saveEditedContacts(dto, bindingResult, new MockHttpServletResponse());
 
-        String expectedUrl = "redirect:/users/" + user.getId();
+        String expectedUrl = "redirect:/users/" + user.getId() + "/" + UserProfileController.CONTACTS;
         assertViewName(mav, expectedUrl);
         verify(userContactsService, times(1)).saveEditedUserContacts(eq(user.getId()), any(List.class));
     }
