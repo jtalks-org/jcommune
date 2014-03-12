@@ -563,6 +563,10 @@ div.anchor {
     cursor: pointer;
 }
 
+*:focus {
+    outline: none;
+}
+
 .modal-body table {
     width: 100%;
 }
@@ -587,6 +591,7 @@ div.anchor {
     max-width: 20px;
     min-width: 20px;
     margin-right: 10px;
+    outline: none;
 }
 
 .modal-body .icon-trash {
