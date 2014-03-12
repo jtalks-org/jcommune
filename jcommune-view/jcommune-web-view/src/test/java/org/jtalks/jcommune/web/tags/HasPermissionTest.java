@@ -149,9 +149,24 @@ public class HasPermissionTest {
         tag.setTargetId(1L);
         tag.setTargetType("BRANCH");
         tag.setPermission("PERMISSION");
-        tag.doStartTag();;
         
         assertEquals(tag.doStartTag(), Tag.EVAL_BODY_INCLUDE);
+    }
+    
+    @Test
+    public void testHasPermissionWithNullAuthentication() throws JspException {
+        when(securityContextFacade.getContext().getAuthentication()).thenReturn(null);
+        when(aclEvaluator.hasPermission(
+                Matchers.any(Authentication.class), 
+                Matchers.any(Serializable.class), 
+                Matchers.anyString(), 
+                Matchers.anyString()))
+                .thenReturn(true);
+        tag.setTargetId(1L);
+        tag.setTargetType("BRANCH");
+        tag.setPermission("PERMISSION");
+        
+        assertEquals(tag.doStartTag(), Tag.SKIP_BODY);
     }
     
 }

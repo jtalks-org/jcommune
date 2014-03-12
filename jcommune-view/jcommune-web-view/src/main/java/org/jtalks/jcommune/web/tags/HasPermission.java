@@ -87,6 +87,7 @@ public class HasPermission extends TagSupport {
         }
 
         Authentication authentication = securityContextFacade.getContext().getAuthentication();
+        //Authentication can be null when request not goes through spring security filters
         if (authentication == null) {
             return Tag.SKIP_BODY;
         }

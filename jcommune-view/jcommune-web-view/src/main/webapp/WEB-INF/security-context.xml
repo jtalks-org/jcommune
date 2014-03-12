@@ -26,7 +26,10 @@
 
     <security:session-management session-authentication-strategy-ref="concurrentSessionControlStrategy"/>
     <security:custom-filter ref="rememberMeCheckFilter" before="FORM_LOGIN_FILTER"/>
-    
+    <!--
+        We need disable filtering of all resources e.g. js, css, images, errors to provide 
+        filtering of only one request to every page. Otherwise bug JC-1743 will occur.
+    -->
     <security:intercept-url pattern="/resources/**" filters="none"/>
     <security:intercept-url pattern="/admin/logo" filters="none"/>
     <security:intercept-url pattern="/admin/icon/**" filters="none"/>
