@@ -32,7 +32,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 public class RememberMeCheckService {
     private static final Logger LOGGER = LoggerFactory.getLogger(RememberMeCheckService.class);
     private static final String NOT_EQUALS_TOKENS_ERROR_TEMPLATE = 
-            "%s presented token %s of series %s isn't equal to persistent token %s";
+            "%s presented token %s of series %s isn't equal for persistent token %s";
     
     private final PersistentTokenRepository persistentTokenRepository;
     
