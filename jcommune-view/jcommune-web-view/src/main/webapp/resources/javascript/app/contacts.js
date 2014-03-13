@@ -37,7 +37,7 @@ AddContact.contactTypes = null;
 /** if entered contact is valid */
 AddContact.isValueValid = [];
 
-AddContact.tooltip = '<span class="dialog-info">' + $labelContactValueInfo + '</span>';
+AddContact.tooltip = '<span class="help-inline contact-tooltip">' + $labelContactValueInfo + '</span>';
 
 function deleteContactHandler(e) {
     $(this).parent().parent().remove();
@@ -47,20 +47,18 @@ function deleteContactHandler(e) {
     contacts.each(function (index, el) {
         $(el).find('.contact input').each(function(){
             $(this).attr('id', 'userContactsDto.contacts' + index + '.id');
-            $(this).attr('name', 'userContactsDto.contacts[' + index + '].id')
+            $(this).attr('name', 'userContactsDto.contacts[' + index + '].id');
         });
         $(el).find('.controls select').each(function(){
             $(this).attr('id', 'userContactsDto.contacts' + index + '.type.id');
-            $(this).attr('name', 'userContactsDto.contacts[' + index + '].type.id')
+            $(this).attr('name', 'userContactsDto.contacts[' + index + '].type.id');
         });
         $(el).find('.controls input').each(function(){
             $(this).attr('id', 'userContactsDto.contacts' + index + '.value');
-            $(this).attr('name', 'userContactsDto.contacts[' + index + '].value')
+            $(this).attr('name', 'userContactsDto.contacts[' + index + '].value');
         });
     });
-    if ($('.control-group.error').size() == 0) {
-        $('#saveChanges').removeAttr('disabled');
-    }
+    enableOrDisableSaveChangesBtn();
     e.preventDefault();
 }
 
@@ -104,17 +102,21 @@ function validationHandler() {
             ErrorUtils.removeErrorMessage(input);
             ErrorUtils.addErrorMessage(input, $labelValidationUsercontactNotMatch);
             AddContact.isValueValid[contactId] = false;
-            $(this).find('.dialog-info').remove();
+            $(this).find('.contact-tooltip').remove();
         }
     } else {
         ErrorUtils.removeErrorMessage(input);
         AddContact.isValueValid[contactId] = true;
         if (value.length > 0 && valueValid) {
-            $(this).find('.dialog-info').remove();
-        } else if (value.length == 0 && $(this).find('.dialog-info').size() < 1) {
+            $(this).find('.contact-tooltip').remove();
+        } else if (value.length == 0 && $(this).find('.contact-tooltip').size() < 1) {
             $(this).find('.controls').append(AddContact.tooltip);
         }
     }
+    enableOrDisableSaveChangesBtn();
+}
+
+function enableOrDisableSaveChangesBtn() {
     var contacts = $('#contacts');
     var emptyContactsSize = contacts.find('div.control-group .contact .controls input').filter(function() {
         return !this.value;
