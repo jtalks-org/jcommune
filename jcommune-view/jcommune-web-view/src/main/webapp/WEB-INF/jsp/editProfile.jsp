@@ -155,8 +155,7 @@
       <button id="saveChanges" class="btn btn-primary" type="submit" tabindex="60">
         <spring:message code="label.save_changes"/>
       </button>
-      <a href="${pageContext.request.contextPath}/users/${editedUser.userId}" class="btn space-left-medium"
-         tabindex="60"><spring:message code="label.cancel"/>
+      <a href="${formAction}" class="btn space-left-medium" tabindex="60"><spring:message code="label.cancel"/>
       </a>
     </div>
   </c:if>

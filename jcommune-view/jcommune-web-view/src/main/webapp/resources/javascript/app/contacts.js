@@ -37,6 +37,8 @@ AddContact.contactTypes = null;
 /** if entered contact is valid */
 AddContact.isValueValid = [];
 
+AddContact.tooltip = '<span class="dialog-info">' + $labelContactValueInfo + '</span>';
+
 function deleteContactHandler(e) {
     $(this).parent().parent().remove();
     var contacts = $("#contacts").find("li.contact");
@@ -96,18 +98,28 @@ function validationHandler() {
     var value = input.val();
     AddContact.selectedContactType = AddContact.getContactType(contactTypeId, AddContact.contactTypes);
     input.attr('placeholder', AddContact.selectedContactType.mask);
-    if (value.length == 0
-        || (value.length > 0 && !value.match(new RegExp(AddContact.selectedContactType.validationPattern)))) {
+    var valueValid = value.match(new RegExp(AddContact.selectedContactType.validationPattern));
+    if (value.length > 0 && !valueValid) {
         if (contactId == '' || AddContact.isValueValid[contactId] == undefined || AddContact.isValueValid[contactId]) {
             ErrorUtils.removeErrorMessage(input);
             ErrorUtils.addErrorMessage(input, $labelValidationUsercontactNotMatch);
             AddContact.isValueValid[contactId] = false;
+            $(this).find('.dialog-info').remove();
         }
     } else {
         ErrorUtils.removeErrorMessage(input);
         AddContact.isValueValid[contactId] = true;
+        if (value.length > 0 && valueValid) {
+            $(this).find('.dialog-info').remove();
+        } else if (value.length == 0 && $(this).find('.dialog-info').size() < 1) {
+            $(this).find('.controls').append(AddContact.tooltip);
+        }
     }
-    if ($('#contacts').find('div.control-group.error').size() > 0) {
+    var contacts = $('#contacts');
+    var emptyContactsSize = contacts.find('div.control-group .contact .controls input').filter(function() {
+        return !this.value;
+    }).size();
+    if (contacts.find('div.control-group.error').size() > 0 || emptyContactsSize > 0) {
         $('#saveChanges').attr('disabled', 'disabled');
     } else {
         $('#saveChanges').removeAttr('disabled')
@@ -151,15 +163,16 @@ function addContact(json) {
         '<input id="userContactsDto.contacts' + contactIndex + '.id" ' +
         'name="userContactsDto.contacts[' + contactIndex + '].id" type="hidden">' +
         '<div class="controls">';
-    content += '<select id="userContactsDto.contacts' + contactIndex + '.type.id" tabindex="' + contactIndex + '"' +
-        ' name="userContactsDto.contacts[' + contactIndex + '].type.id" class="input-medium">';
+    content += '<select id="userContactsDto.contacts' + contactIndex + '.type.id" tabindex="' + (contactIndex + 1) +
+        '"' + ' name="userContactsDto.contacts[' + contactIndex + '].type.id" class="input-medium">';
     $.each(json, function (i, obj) {
         content += '<option value="' + obj.id + '">' + obj.typeName + '</option>';
     });
     content += '</select>';
     content += '<input id="userContactsDto.contacts' + contactIndex + '.value" ' +
         'name="userContactsDto.contacts[' + contactIndex + '].value" ' +
-        'tabindex="' + (contactIndex + 1) + '" class="input-large" type="text"><br></div></div></li>';
+        'tabindex="' + (contactIndex + 1) + '" class="input-large" type="text"><br>' + AddContact.tooltip +
+        '</div></div></li>';
 
     $('#contacts').append(content);
     var addedContact = $('li.contact').last();

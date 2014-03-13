@@ -57,7 +57,8 @@ li.contact .controls input {
   margin-left: 10px;
 }
 
-li.contact .controls span.help-inline {
+li.contact .controls span.help-inline,
+li.contact .controls span.dialog-info {
   margin-left: 25px;
 }
 
