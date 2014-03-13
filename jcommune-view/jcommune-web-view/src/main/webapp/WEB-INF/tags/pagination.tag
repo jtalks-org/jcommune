@@ -25,24 +25,27 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 
 <%--Set default value for numberLink attribute, if it it wasn't passed.--%>
 <c:if test="${empty numberLink}">
   <c:set var="numberLink" value="7"/>
 </c:if>
 
+<c:if test="${page.number > 1}">
+  <jtalks:pageUrl var="link" value="${uri}" page="1" params="${additionalParams}"/>
+  <li>
+    <a href="${link}" title="<spring:message code='pagination.first'/>">
+      <i class="icon-chevron-left"></i>
+    </a>
+  </li>
+</c:if>
+
 <c:forEach var="i" begin="1" step="1" end="${numberLink}">
   <%--JSTL doesn't have reverse for-each, therefore this trick used.--%>
   <c:set var="j" value="${numberLink - i + 1}"/>
   <c:if test="${page.number > j}">
-    <spring:url var="link" value="${uri}">
-        <spring:param name="page" value="${page.number - j}"/>
-        <c:if test="${fn:length(additionalParams) > 0 }">
-            <c:forEach var="params" items="${additionalParams}">
-                <spring:param name="${params.key}" value="${params.value}"/>
-            </c:forEach>
-        </c:if>
-    </spring:url>
+    <jtalks:pageUrl var="link" value="${uri}" page="${page.number - j}" params="${additionalParams}"/>
     <li><a href="${link}">${page.number - j}</a></li>
   </c:if>
 </c:forEach>
@@ -54,14 +57,16 @@
 
 <c:forEach var="i" begin="0" step="1" end="${numberLink - 1}">
   <c:if test="${page.number + i < page.totalPages}">
-      <spring:url var="link" value="${uri}">
-          <spring:param name="page" value="${page.number + i + 1}" />
-          <c:if test="${fn:length(additionalParams) > 0 }">
-            <c:forEach var="params" items="${additionalParams}">
-                <spring:param name="${params.key}" value="${params.value}"/>
-            </c:forEach>
-          </c:if>
-      </spring:url>
+    <jtalks:pageUrl var="link" value="${uri}" page="${page.number + i + 1}" params="${additionalParams}"/>
     <li><a href="${link}">${page.number + i + 1}</a></li>
   </c:if>
 </c:forEach>
+
+<c:if test="${page.number < page.totalPages}">
+  <jtalks:pageUrl var="link" value="${uri}" page="${page.totalPages}" params="${additionalParams}"/>
+  <li>
+    <a href="${link}" title="<spring:message code='pagination.last'/>">
+      <i class="icon-chevron-right"></i>
+    </a>
+  </li>
+</c:if>
