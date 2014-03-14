@@ -181,8 +181,12 @@ function addContact(json) {
     bindDeleteHandler(addedContact);
     bindValidationHandler(addedContact);
     $("#add_contact").removeAttr('disabled');
-    addedContact.keyup();
-    addedContact.focus();
+    var contactInput = addedContact.find('.controls input');
+    contactInput.keyup();
+    contactInput.focus();
+    $('html, body').animate({
+        scrollTop: contactInput.offset().top
+    }, 1000);
 }
 
 function getContactTypes(callback, parameters) {
