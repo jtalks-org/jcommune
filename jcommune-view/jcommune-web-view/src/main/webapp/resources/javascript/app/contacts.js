@@ -193,13 +193,14 @@ function getContactTypes(callback, parameters) {
 
 $(document).ready(function () {
     //"Add contact" button handler
-    $("#add_contact").on("click", function () {
+    $("#add_contact").on("click", function (e) {
         if (!$(this).attr('disabled')) {
             $(this).attr('disabled', 'disabled');
             if (AddContact.contactTypes === null) {
                 getContactTypes(addContact);
             } else {
                 addContact(AddContact.contactTypes);
+                e.preventDefault();
             }
         }
     });
