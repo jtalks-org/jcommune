@@ -141,7 +141,7 @@ input.form-check-radio-box[type="radio"] {
 }
 
 .user-profile-container {
-    max-width: 630px;
+    width: 630px;
     margin: 5% 0 0 15%;
     position: relative;
 }
