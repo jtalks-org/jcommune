@@ -47,7 +47,7 @@
               <form:input class="input-large" type="text" path="userContactsDto.contacts[${loop.index}].value"
                           tabindex="${loop.index + 1}" value="${contact.value}"/>
               <br/>
-              <form:errors path="userContactsDto.contacts[${loop.index}]" cssClass="help-inline contact-error"/>
+              <form:errors path="userContactsDto.contacts[${loop.index}].value" cssClass="help-inline contact-error"/>
             </div>
           </div>
         </li>

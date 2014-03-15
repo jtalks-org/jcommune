@@ -20,6 +20,8 @@ import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
 import org.jtalks.jcommune.web.validation.annotations.ValidUserContact;
 
+import javax.validation.constraints.Size;
+
 /**
  * Dto for transferring user contacts to client side.
  *
@@ -30,7 +32,8 @@ import org.jtalks.jcommune.web.validation.annotations.ValidUserContact;
 public class UserContactDto implements Comparable<UserContactDto> {
 
     private Long id;
-    
+
+    @Size(max = UserContact.CONTACT_MAX_LENGTH, message = "{user.contact.illegal_length}")
     private String value;
 
     private String displayValue;
