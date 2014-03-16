@@ -104,17 +104,27 @@
            modelAttribute="editedUser" method="POST" class="form-horizontal">
 
   <div class='user-profile-header'>
-    <form:hidden id="avatar" path="avatar" value="${editedUser.avatar}"/>
-    <form:hidden id="editedUserId" path="userId" value="${editedUser.userId}"/>
-    <form:hidden id="editedUsername" path="username" value="${editedUser.username}"/>
+    <c:if test="${isCanEditProfile || (isCanEditNotificationsAndSecurity && (isEditSecurity || isEditNotifications))}">
+      <form:hidden id="avatar" path="avatar" value="${editedUser.avatar}"/>
+      <form:hidden id="editedUserId" path="userId" value="${editedUser.userId}"/>
+      <form:hidden id="editedUsername" path="username" value="${editedUser.username}"/>
+    </c:if>
     <span class="pull-left thumbnail">
       <span id="avatarPreviewContainer" class="wraptocenter">
-        <%--String prefix "data:image/jpeg;base64," needed for correct image rendering--%>
-        <img id="avatarPreview" src="data:image/jpeg;base64,${editedUser.avatar}" alt=""/>
+        <c:choose>
+          <c:when test="${isCanEditProfile
+                          || (isCanEditNotificationsAndSecurity && (isEditSecurity || isEditNotifications))}">
+            <%--String prefix "data:image/jpeg;base64," needed for correct image rendering--%>
+            <img id="avatarPreview" src="data:image/jpeg;base64,${editedUser.avatar}" alt=""/>
+          </c:when>
+          <c:otherwise>
+            <img src="${pageContext.request.contextPath}/users/${editedUser.userId}/avatar" alt=""/>
+          </c:otherwise>
+        </c:choose>
       </span>
     </span>
 
-    <h2 class="pull-right user-profile-username"><c:out value="${editedUser.username}"/></h2>
+    <h2 class="pull-right user-profile-username"><span><c:out value="${editedUser.username}"/></span></h2>
   </div>
   <div class="clearfix"></div>
 
