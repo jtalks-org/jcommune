@@ -109,9 +109,9 @@
 
   <div class='user-profile-header'>
     <c:if test="${isCanEditProfile || (isCanEditNotificationsAndSecurity && (isEditSecurity || isEditNotifications))}">
-      <form:hidden id="avatar" path="avatar" value="${editedUser.avatar}"/>
-      <form:hidden id="editedUserId" path="userId" value="${editedUser.userId}"/>
-      <form:hidden id="editedUsername" path="username" value="${editedUser.username}"/>
+      <form:hidden id="avatar" path="avatar"/>
+      <form:hidden id="editedUserId" path="userId"/>
+      <form:hidden id="editedUsername" path="username"/>
     </c:if>
     <span class="pull-left thumbnail">
       <span id="avatarPreviewContainer" class="wraptocenter">

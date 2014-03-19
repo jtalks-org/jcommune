@@ -19,7 +19,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 
-<form:hidden path="userNotificationsDto.userId" value="${editedUser.userNotificationsDto.userId}"/>
+<form:hidden path="userNotificationsDto.userId"/>
 
 <div class="clearfix"></div>
 <hr class='user-profile-hr'/>
@@ -31,7 +31,7 @@
       <div class="controls padding-top-profile">
         <spring:message var="autosubscribeTooltip" code="label.tips.autoSubscribe"/>
         <form:checkbox path="userNotificationsDto.autosubscribe" class="form-check-radio-box script-has-tooltip"
-                       value="${editedUser.userNotificationsDto.autosubscribe}"
+                       value="${editedUser.userNotificationsDto.autosubscribe}" data-placement="top"
                        data-original-title='${autosubscribeTooltip}' tabindex="30"/>
       </div>
     </div>
@@ -42,7 +42,7 @@
         <spring:message var="mentioningNotificationsTooltip" code="label.tips.userMentioningNotification"/>
         <form:checkbox path="userNotificationsDto.mentioningNotificationsEnabled"
                        value="${editedUser.userNotificationsDto.mentioningNotificationsEnabled}"
-                       class="form-check-radio-box script-has-tooltip"
+                       class="form-check-radio-box script-has-tooltip" data-placement="top"
                        data-original-title='${mentioningNotificationsTooltip}' tabindex="35"/>
       </div>
     </div>
@@ -53,7 +53,7 @@
         <spring:message var="sendPmNotificationTooltip" code="label.tips.sendPmNotification"/>
         <form:checkbox path="userNotificationsDto.sendPmNotification"
                        value="${editedUser.userNotificationsDto.sendPmNotification}"
-                       class="form-check-radio-box script-has-tooltip"
+                       class="form-check-radio-box script-has-tooltip" data-placement="top"
                        data-original-title='${sendPmNotificationTooltip}' tabindex="36"/>
       </div>
     </div>

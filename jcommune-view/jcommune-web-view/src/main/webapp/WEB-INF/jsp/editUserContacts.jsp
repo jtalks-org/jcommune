@@ -31,7 +31,6 @@
         <%-- Class 'contact' used in js for binding --%>
         <li class="contact">
           <div class="control-group">
-            <input id="contactId" type="hidden" value="${contact.id}"/>
             <%-- Class 'button' used in js for binding --%>
             <a href="#" id="${contact.id}" class="btn btn-mini btn-danger button"
                title="<spring:message code='label.contacts.tips.delete'/>">
@@ -39,13 +38,13 @@
             </a>
 
                     <span class="contact" title="<c:out value='${contact.type.typeName}'/>">
-                        <form:hidden path="userContactsDto.contacts[${loop.index}].id" value="${contact.id}"/>
+                        <form:hidden path="userContactsDto.contacts[${loop.index}].id"/>
                     </span>
             <div class="controls">
               <form:select class="input-medium" path="userContactsDto.contacts[${loop.index}].type.id"
                            tabindex="${loop.index + 1}" items="${editedUser.userContactsDto.contactTypes}" />
               <form:input class="input-large" type="text" path="userContactsDto.contacts[${loop.index}].value"
-                          tabindex="${loop.index + 1}" value="${contact.value}"/>
+                          tabindex="${loop.index + 1}"/>
               <br/>
               <form:errors path="userContactsDto.contacts[${loop.index}].value" cssClass="help-inline contact-error"/>
             </div>
