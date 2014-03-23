@@ -223,11 +223,41 @@ function doClick(command) {
                 AddList('[list][*]', '[/list]');
                 break;
             case 'listElement':
-                AddTag('[*]', '');
+                if (isInTag('[list]', '[/list]')) {
+                    AddTag('[*]','');
+                } else {
+                    AddList('[list][*]', '[/list]');
+                }
                 break;
         }
     }
 }
+
+function isInTag(t1, t2) {
+     var selectionStart = textboxelement.selectionStart;
+     var beforeText = textboxelement.value.substring(0,selectionStart);
+     var afterText = textboxelement.value.substring(selectionStart + 1);
+     var openIndex = beforeText.indexOf(t1);
+     var closeIndex = -1; 
+     if (openIndex != -1) {
+         closeIndex = beforeText.indexOf(t2, openIndex);
+     }
+     var open = false;
+     while (openIndex != -1) { 
+         if (closeIndex == -1) {
+             open = true;
+             break;
+         }
+         openIndex = beforeText.indexOf(t1, openIndex + 1);
+         closeIndex = beforeText.indexOf(t2, closeIndex + 1);
+     }
+     if (open && (afterText.indexOf(t2) != -1)) {
+         return true;
+     } else {
+         return false;
+     }
+}
+
 
 function doSize(selectedElement) {
     if (!editorVisible) {
