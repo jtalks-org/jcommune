@@ -394,6 +394,10 @@ function MozillaInsertText(element, text, pos) {
     element.value = element.value.slice(0, pos) + text + element.value.slice(pos);
 }
 
+function MozillaReplaceText(element, text, from_pos, to_pos) {
+    element.value = element.value.slice(0, from_pos) + text + element.value.slice(to_pos);
+}
+
 function AddTag(t1, t2, selection) {
 
     var element = textboxelement;
@@ -461,10 +465,6 @@ function AddTag(t1, t2, selection) {
         var sel_start = element.selectionStart;
         var sel_end = element.selectionEnd;
 
-        if (!isSelectionEqualsToLinkText(element) && t2 == "[/url]") {
-            sel_start = sel_end;
-        }
-
         if (element.value == "" && $.browser.opera) {
             // for Opera browser null value (textarea empty) for selectionStart and selectionEnd is '20'
             sel_start = sel_start - 20;
@@ -472,11 +472,7 @@ function AddTag(t1, t2, selection) {
         }
 
         MozillaInsertText(element, t1, sel_start);
-        if (sel_start == sel_end && t2 == "[/url]") {
-            MozillaInsertText(element, mylink + t2, sel_end + t1.length);
-            sel_start = sel_start + t1.length;
-            sel_end = sel_end + t1.length + mylink.length;
-        } else if (t2 == "[/img]") {
+        if (t2 == "[/img]") {
             MozillaInsertText(element, t2, sel_end + t1.length);
             sel_end = sel_end + t1.length;
             sel_start = sel_start + t2.length-1;
@@ -484,6 +480,10 @@ function AddTag(t1, t2, selection) {
             MozillaInsertText(element, dummyText + t2, sel_end + t1.length);
             sel_start = sel_start + t1.length;
             sel_end = sel_start + dummyText.length;
+        } else if (t2 == "[/url]") {
+            MozillaReplaceText(element, mylink + t2, sel_start + t1.length, sel_end + t1.length);
+            sel_start = sel_start + t1.length;
+            sel_end = sel_start + mylink.length;
         } else {
             MozillaInsertText(element, t2, sel_end + t1.length);
             sel_start = sel_start + t1.length;
@@ -503,15 +503,6 @@ function AddTag(t1, t2, selection) {
             element.value = element.value + t1 + t2;
         }
     }
-}
-
-/**
- * @param {type} element
- * @returns {Boolean} true if selected text is the same as link text
- */
-function isSelectionEqualsToLinkText(element) {
-   // Need to ignore '\n' symbols because they are removed from 'myLink' var
-   return element.value.substring(element.selectionStart, element.selectionEnd).replace(/\n/gi, '') === mylink;
 }
 
 function AddList(t1, t2) {
