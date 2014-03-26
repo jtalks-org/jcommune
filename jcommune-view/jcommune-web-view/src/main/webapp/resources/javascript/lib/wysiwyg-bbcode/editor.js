@@ -396,19 +396,19 @@ function doImage() {
  * @param text text to insert
  * @param pos begin position for inserting text
  */
-function mozillaInsertText(element, text, pos) {
+function insertText(element, text, pos) {
     element.value = element.value.slice(0, pos) + text + element.value.slice(pos);
 }
 
 /**
- * Replaces text with specified one.
+ * Replaces an arbitrary text with new one.
  *
  * @param element element for text replacing
  * @param text text to insert
  * @param fromPos old text begin position
  * @param toPos old text last position
  */
-function mozillaReplaceText(element, text, fromPos, toPos) {
+function replaceText(element, text, fromPos, toPos) {
     element.value = element.value.slice(0, fromPos) + text + element.value.slice(toPos);
 }
 
@@ -420,7 +420,6 @@ function mozillaReplaceText(element, text, fromPos, toPos) {
  * @param selection selection text
  */
 function addTag(t1, t2, selection) {
-
     var element = textboxelement;
     var dummyText = $labelDummyTextBBCode;
 
@@ -475,21 +474,21 @@ function addTag(t1, t2, selection) {
             sel_end = sel_end - 20;
         }
 
-        mozillaInsertText(element, t1, sel_start);
+        insertText(element, t1, sel_start);
         if (t2 == "[/img]") {
-            mozillaInsertText(element, t2, sel_end + t1.length);
+            insertText(element, t2, sel_end + t1.length);
             sel_end = sel_end + t1.length;
             sel_start = sel_start + t2.length-1;
         } else if (t2 == "[/url]") {
-            mozillaReplaceText(element, mylink + t2, sel_start + t1.length, sel_end + t1.length);
+            replaceText(element, mylink + t2, sel_start + t1.length, sel_end + t1.length);
             sel_start = sel_start + t1.length;
             sel_end = sel_start + mylink.length;
         } else if (element.value.substring(sel_start, sel_end).length == 0) {
-            mozillaInsertText(element, dummyText + t2, sel_end + t1.length);
+            insertText(element, dummyText + t2, sel_end + t1.length);
             sel_start = sel_start + t1.length;
             sel_end = sel_start + dummyText.length;
         } else {
-            mozillaInsertText(element, t2, sel_end + t1.length);
+            insertText(element, t2, sel_end + t1.length);
             sel_start = sel_start + t1.length;
             sel_end = sel_end + t1.length;
         }
@@ -560,8 +559,8 @@ function AddList(t1, t2) {
         }
         var needDummy = (sel_start == sel_end);
         var str1 = needDummy ? dummyText + t2 : t2;
-        mozillaInsertText(element, t1, sel_start);
-        mozillaInsertText(element, str1, sel_end + t1.length);
+        insertText(element, t1, sel_start);
+        insertText(element, str1, sel_end + t1.length);
 
         sel_end = sel_end + t1.length + t2.length + (needDummy ? dummyText.length : 0);
 
