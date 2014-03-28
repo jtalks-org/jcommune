@@ -61,6 +61,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
     private PermissionEvaluator permissionEvaluator;
     private SecurityContextFacade securityContextFacade;
     private BranchLastPostService branchLastPostService;
+    private LastReadPostService lastReadPostService;
 
     /**
      * Create an instance of User entity based service.
@@ -76,6 +77,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
      * @param securityContextFacade authentication object retrieval
      * @param permissionEvaluator   for authorization purposes
      * @param branchLastPostService to refresh the last post of the branch
+     * @param lastReadPostService   to work with last read post
      */
     public TransactionalTopicModificationService(TopicDao dao, SecurityService securityService,
                                                  BranchDao branchDao,
@@ -86,7 +88,8 @@ public class TransactionalTopicModificationService implements TopicModificationS
                                                  TopicFetchService topicFetchService,
                                                  SecurityContextFacade securityContextFacade,
                                                  PermissionEvaluator permissionEvaluator,
-                                                 BranchLastPostService branchLastPostService) {
+                                                 BranchLastPostService branchLastPostService,
+                                                 LastReadPostService lastReadPostService) {
         this.dao = dao;
         this.securityService = securityService;
         this.branchDao = branchDao;
@@ -98,6 +101,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         this.securityContextFacade = securityContextFacade;
         this.permissionEvaluator = permissionEvaluator;
         this.branchLastPostService = branchLastPostService;
+        this.lastReadPostService = lastReadPostService;
     }
 
     /**
@@ -157,17 +161,19 @@ public class TransactionalTopicModificationService implements TopicModificationS
     @PreAuthorize("hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_POSTS')")
     public Topic createTopic(Topic topicDto, String bodyText) throws NotFoundException {
         JCUser currentUser = userService.getCurrentUser();
+        Branch branch = topicDto.getBranch();
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);
         Topic topic = new Topic(currentUser, topicDto.getTitle());
         topic.setAnnouncement(topicDto.isAnnouncement());
         topic.setSticked(topicDto.isSticked());
+        topic.setBranch(topicDto.getBranch());
         Post first = new Post(currentUser, bodyText);
         topic.addPost(first);
-        Branch branch = topicDto.getBranch();
-
-        branch.addTopic(topic);
+        topic.setBranch(branch);
         branch.setLastPost(first);
+
+        dao.saveOrUpdate(topic);
         branchDao.saveOrUpdate(branch);
 
         JCUser user = userService.getCurrentUser();
@@ -179,11 +185,13 @@ public class TransactionalTopicModificationService implements TopicModificationS
         subscribeOnTopicIfNotificationsEnabled(topic, currentUser);
         createOrUpdatePoll(topicDto.getPoll(), topic);
 
-        dao.saveOrUpdate(topic);
+
         userService.notifyAndMarkNewlyMentionedUsers(topic.getFirstPost());
-        
+
+        lastReadPostService.markTopicAsRead(topic);
+
         logger.debug("Created new topic id={}, branch id={}, author={}",
-                new Object[]{topic.getId(), branch.getId(), currentUser.getUsername()});
+                new Object[]{topic.getId(), topic.getBranch().getId(), currentUser.getUsername()});
         return topic;
     }
 
@@ -194,6 +202,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
     @PreAuthorize("hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_CODE_REVIEW')")
     public Topic createCodeReview(Topic topicDto, String bodyText) throws NotFoundException {
         JCUser currentUser = userService.getCurrentUser();
+        Branch branch = topicDto.getBranch();
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);
         Topic topic = new Topic(currentUser, topicDto.getTitle());
@@ -202,23 +211,24 @@ public class TransactionalTopicModificationService implements TopicModificationS
         CodeReview codeReview = new CodeReview();
         codeReview.setTopic(topic);
         topic.setCodeReview(codeReview);
-
-        Branch branch = topicDto.getBranch();
-        branch.addTopic(topic);
+        topic.setBranch(branch);
         branch.setLastPost(first);
+
+        dao.saveOrUpdate(topic);
         branchDao.saveOrUpdate(branch);
 
         JCUser user = userService.getCurrentUser();
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(topic).flush();
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(first).flush();
 
-        notificationService.subscribedEntityChanged(branch);
+        notificationService.subscribedEntityChanged(topic.getBranch());
 
         subscribeOnTopicIfNotificationsEnabled(topic, currentUser);
 
-        dao.saveOrUpdate(topic);
+        lastReadPostService.markTopicAsRead(topic);
+
         logger.debug("Created new code review topic id={}, branch id={}, author={}",
-                new Object[]{topic.getId(), branch.getId(), currentUser.getUsername()});
+                new Object[]{topic.getId(), topic.getBranch().getId(), currentUser.getUsername()});
         return topic;
     }
 

@@ -183,7 +183,9 @@ Keymaps.defaultDialog = function (e) {
 Keymaps.bbeditor = function (e) {
     if (e.ctrlKey && e.keyCode == enterCode) {
         e.preventDefault();
-        $('input[type="submit"]').click();
+        if($('.keymaps-caption:visible').length > 0){
+            $('input[type="submit"]').click();
+        }
     }
     //check bb-editor toolbar
     if ($(e.target).parents('form').find('.btn-toolbar').length > 0) {

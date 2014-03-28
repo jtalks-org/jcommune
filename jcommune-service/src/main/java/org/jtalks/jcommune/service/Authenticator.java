@@ -21,6 +21,7 @@ import org.springframework.validation.BindingResult;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.jtalks.jcommune.model.dto.LoginUserDto;
 
 /**
  * Serves for authentication and registration user.
@@ -42,8 +43,7 @@ public interface Authenticator {
      * @throws UnexpectedErrorException if external service returns unexpected result
      * @throws NoConnectionException    if we can't connect for any reason to external authentication service
      */
-    public boolean authenticate(String username, String password, boolean rememberMe,
-                                HttpServletRequest request, HttpServletResponse response)
+    public boolean authenticate(LoginUserDto loginUserDto, HttpServletRequest request, HttpServletResponse response)
             throws UnexpectedErrorException, NoConnectionException;
 
     /**
@@ -56,4 +56,6 @@ public interface Authenticator {
      */
     public BindingResult register(RegisterUserDto registerUserDto)
             throws UnexpectedErrorException, NoConnectionException;
+
+
 }

@@ -15,8 +15,12 @@
 package org.jtalks.jcommune.web.dto;
 
 
+import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.entity.UserContact;
+import org.jtalks.jcommune.model.entity.UserContactType;
 import org.jtalks.jcommune.web.validation.annotations.ValidUserContact;
+
+import javax.validation.constraints.Size;
 
 /**
  * Dto for transferring user contacts to client side.
@@ -24,17 +28,18 @@ import org.jtalks.jcommune.web.validation.annotations.ValidUserContact;
  * @author Michael Gamov
  */
 
-@ValidUserContact(field="value", storedTypeId="typeId")
-public class UserContactDto {
+@ValidUserContact(field="value", storedTypeId="type.id", message = "{validation.usercontact.notmatch}")
+public class UserContactDto implements Comparable<UserContactDto> {
 
     private Long id;
-    
-    private Long ownerId;
-    
+
+    @Size(max = UserContact.CONTACT_MAX_LENGTH, message = "{user.contact.illegal_length}")
     private String value;
-    
-    private long typeId;
-    
+
+    private String displayValue;
+
+    private UserContactType type;
+
     /**
      * Create dto from {@link UserContact)
      *
@@ -42,11 +47,10 @@ public class UserContactDto {
      */
     public UserContactDto(UserContact contact) {
         id = contact.getId();
-        ownerId = contact.getOwner().getId();
         value = contact.getValue();
-        typeId = contact.getType().getId();
+        type = contact.getType();
     }
-    
+
     /**
      * Default constructor. Creates objects with all fields set to null
      */
@@ -70,22 +74,6 @@ public class UserContactDto {
     }
 
     /**
-     * @return owner id
-     */
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    /**
-     * Set owner id of contact
-     *
-     * @param ownerId owner id
-     */
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
-    }
-
-    /**
      * @return contact value
      */
     public String getValue() {
@@ -101,20 +89,26 @@ public class UserContactDto {
         this.value = value;
     }
 
-    /**
-     * @return id of user contact type
-     */
-    public long getTypeId() {
-        return typeId;
+    public UserContactType getType() {
+        return type;
+    }
+
+    public void setType(UserContactType type) {
+        this.type = type;
     }
 
     /**
-     * Set id of user contact type
-     *
-     * @param typeId of user contact type
+     * Replaced stubs in display pattern for this contact type by actual
+     * contact value
+     * @return actual ready-to-display contact
      */
-    public void setTypeId(long typeId) {
-        this.typeId = typeId;
+    public String getDisplayValue() {
+        String replacement = StringUtils.defaultIfBlank(value, "");
+        return type.getDisplayValue(replacement);
     }
 
+    @Override
+    public int compareTo(UserContactDto o) {
+        return o == null ? -1 : Long.compare(this.type.getId(), o.getType().getId());
+    }
 }

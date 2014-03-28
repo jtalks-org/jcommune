@@ -14,17 +14,17 @@
  */
 package org.jtalks.jcommune.web.validation.validators;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-
 import org.apache.commons.lang.ObjectUtils;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.web.dto.EditUserProfileDto;
+import org.jtalks.jcommune.web.dto.UserProfileDto;
 import org.jtalks.jcommune.web.validation.annotations.ChangedEmail;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 
 /**
  * Validates if email change is valid. For detailed validation
@@ -32,7 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * @author Evgeniy Naumneko
  */
-public class ChangedEmailValidator implements ConstraintValidator<ChangedEmail, EditUserProfileDto> {
+public class ChangedEmailValidator implements ConstraintValidator<ChangedEmail, UserProfileDto> {
 
     private UserService userService;
     private UserDao userDao;
@@ -60,7 +60,7 @@ public class ChangedEmailValidator implements ConstraintValidator<ChangedEmail, 
      * {@inheritDoc}
      */
     @Override
-    public boolean isValid(EditUserProfileDto userProfile, ConstraintValidatorContext context) {
+    public boolean isValid(UserProfileDto userProfile, ConstraintValidatorContext context) {
         String changedEmail = userProfile.getEmail();
         if (changedEmail == null) {
             // null emails checks are out of scope, pls use separate annotation for that

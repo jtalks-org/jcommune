@@ -20,9 +20,11 @@
 <%@ attribute name="page" required="true" type="org.springframework.data.domain.Page" %>
 <%--An additional parameter is needed in case the request, except the "page", to send other parameters.
  They will add to "page" parameters. for example "&somaName=someValue"--%>
-<%@ attribute name="additionalParamsString" required="false" type="java.lang.String" %>
+<%@ attribute name="additionalParams" required="false" type="java.util.HashMap" %>
 <%@ attribute name="numberLink" required="false" type="java.lang.Integer" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <%--Set default value for numberLink attribute, if it it wasn't passed.--%>
 <c:if test="${empty numberLink}">
@@ -33,7 +35,15 @@
   <%--JSTL doesn't have reverse for-each, therefore this trick used.--%>
   <c:set var="j" value="${numberLink - i + 1}"/>
   <c:if test="${page.number > j}">
-    <li><a href="<c:out value="${uri}"/>?page=${page.number - j}${additionalParamsString}">${page.number - j}</a></li>
+    <spring:url var="link" value="${uri}">
+        <spring:param name="page" value="${page.number - j}"/>
+        <c:if test="${fn:length(additionalParams) > 0 }">
+            <c:forEach var="params" items="${additionalParams}">
+                <spring:param name="${params.key}" value="${params.value}"/>
+            </c:forEach>
+        </c:if>
+    </spring:url>
+    <li><a href="${link}">${page.number - j}</a></li>
   </c:if>
 </c:forEach>
 
@@ -44,6 +54,14 @@
 
 <c:forEach var="i" begin="0" step="1" end="${numberLink - 1}">
   <c:if test="${page.number + i < page.totalPages}">
-    <li><a href="<c:out value="${uri}"/>?page=${page.number + i + 1}${additionalParamsString}">${page.number + i + 1}</a></li>
+      <spring:url var="link" value="${uri}">
+          <spring:param name="page" value="${page.number + i + 1}" />
+          <c:if test="${fn:length(additionalParams) > 0 }">
+            <c:forEach var="params" items="${additionalParams}">
+                <spring:param name="${params.key}" value="${params.value}"/>
+            </c:forEach>
+          </c:if>
+      </spring:url>
+    <li><a href="${link}">${page.number + i + 1}</a></li>
   </c:if>
 </c:forEach>

@@ -15,13 +15,17 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.UserContactType;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.testng.Assert.assertEquals;
 
 /**
- * @author Evgeniy Naumenko
+ * @author Andrey Pogorelov
  */
 public class EditUserProfileDtoTest {
 
@@ -29,23 +33,30 @@ public class EditUserProfileDtoTest {
 
     @BeforeMethod
     public void setUp(){
-       dto = new EditUserProfileDto(new JCUser("","",""));
-    }
-    @Test
-    public void testSetSignature() throws Exception {
-        dto.setSignature("Signature");
-        assertEquals(dto.getSignature(), "Signature", "Signature is not null");
+        dto = new EditUserProfileDto(new JCUser("username", "email", "password"));
     }
 
     @Test
-    public void testSetEmptySignature() throws Exception {
-        dto.setSignature("  ");
-        assertEquals(dto.getSignature(), null, "Signature is not null");
+    public void getUserContactsShouldReturnEmptyListIfThereAreNoContacts() {
+        dto.setUserContactsDto(null);
+
+        assertEquals(dto.getUserContacts().size(), 0);
     }
 
     @Test
-    public void testSetNullSignature() throws Exception {
-        dto.setSignature(null);
-        assertEquals(dto.getSignature(), null, "Signature is not null");
+    public void getUserContactsShouldReturnContactsFromDto() {
+        UserContactDto contact = new UserContactDto();
+        contact.setId(1L);
+        contact.setValue("value");
+        contact.setType(new UserContactType());
+        List<UserContactDto> contactList = new ArrayList<>();
+        contactList.add(contact);
+
+        UserContactsDto contactsDto = new UserContactsDto();
+        contactsDto.setContacts(contactList);
+        dto.setUserContactsDto(contactsDto);
+
+        assertEquals(dto.getUserContacts().size(), 1);
     }
+
 }

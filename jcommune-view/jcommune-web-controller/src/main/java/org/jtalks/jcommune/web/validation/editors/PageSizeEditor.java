@@ -14,36 +14,28 @@
  */
 package org.jtalks.jcommune.web.validation.editors;
 
-import org.jtalks.jcommune.model.entity.Language;
+import org.jtalks.jcommune.model.entity.JCUser;
 
 import java.beans.PropertyEditorSupport;
 
 /**
- * Default property editor for Language. Spring MVC uses it to convert the language from and to string.
+ * Editor for using when user set page size in profile.
+ * We need this one because user can set invalid value via firebug or other web-plugin in browser
  *
  * @author Andrey Ivanov
  */
-public class LanguageEditor extends PropertyEditorSupport {
-    /**
-     * Default language which we should use when user passes incorrect language.
-     */
-    private final Language defaultLanguage;
+public class PageSizeEditor extends PropertyEditorSupport {
 
     /**
-     * @param defaultLanguage default language which we should use when user passes incorrect language
+     * @param text current value
      */
-    public LanguageEditor(Language defaultLanguage) {
-        this.defaultLanguage = defaultLanguage;
-    }
-
     @Override
     public void setAsText(String text) {
-        for (Language lang : Language.values()) {
-            if (text.equals(lang.toString())) {
-                setValue(text);
+        for (int pageSize : JCUser.PAGE_SIZES_AVAILABLE) {
+            if (String.valueOf(pageSize).equals(text)) {
+                setValue(pageSize);
                 return;
             }
         }
-        setValue(this.defaultLanguage);
     }
 }

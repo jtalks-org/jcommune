@@ -191,7 +191,7 @@
         </div>
         <ul class="dropdown-menu">
           <li>
-            <a href="${pageContext.request.contextPath}/user">
+            <a href="${pageContext.request.contextPath}/user" id="user-menu-profile">
               <fmt:message key="label.profile"/>
             </a>
           </li>
@@ -200,14 +200,14 @@
             <jtalks:hasPermission permission="GeneralPermission.ADMIN"
                                   targetId="${forumComponent.id}" targetType="COMPONENT">
               <li>
-                <a href='<c:url value="/configuration/sape"/>'>
+                <a href='<c:url value="/configuration/sape"/>' id="user-menu-configuration">
                   <spring:message code="label.sapeConfiguration"/>
                 </a>
               </li>
             </jtalks:hasPermission>
           </c:if>
           <li>
-            <a href="${pageContext.request.contextPath}/inbox">
+            <a href="${pageContext.request.contextPath}/inbox" id="user-menu-private-messages">
               <fmt:message key="label.pm"/>
               <c:if test="${newPmCount != null}">
                 <span id="new-pm-count" title="<fmt:message key='label.tips.pm_count'>
@@ -229,7 +229,7 @@
                 </li>
             --%>
           <li>
-            <a href="${pageContext.request.contextPath}/logout">
+            <a href="${pageContext.request.contextPath}/logout" id="user-menu-logout">
               <fmt:message key="label.logout"/>
             </a>
           </li>
@@ -244,7 +244,7 @@
             <div id="lang-selector-toggle" class="dropdown-toggle topline-dropdown-menu"
                  data-toggle="dropdown"
                  title="<fmt:message key='label.click_language'/>">
-                <a href="#">
+                <a href="#" id="languages-menu">
                     <img src="${pageContext.request.contextPath}/resources/images/flags/<fmt:message key='locale.code'/>.png"
                          alt="<fmt:message key='locale.name'/>"/>
                 </a>

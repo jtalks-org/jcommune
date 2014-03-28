@@ -31,7 +31,11 @@ import org.springframework.context.ApplicationContextAware;
  * @author Evgeniy Naumenko
  */
 public class BbCodeAwareSizeValidator implements ConstraintValidator<BbCodeAwareSize, String>, ApplicationContextAware {
-
+    
+    public static final String NEW_LINE_HTML = "<br/>";
+    public static final String QUOTE_HTML = "&quot";
+    public static final String EMPTY_LIST_BB_REGEXP = "\\[list\\][\n\r\\s]*(\\[\\*\\][\n\r\\s]*)*\\[\\/list\\]";
+    
     private int min;
     private int max;
     private ApplicationContext context;
@@ -52,15 +56,19 @@ public class BbCodeAwareSizeValidator implements ConstraintValidator<BbCodeAware
     }
 
     /**
+     * The database stores both bb codes and symbols visible for users.
+     * Post length with bb codes can't be greater than max value.
      * {@inheritDoc}
      */
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value == null || value.length() > max) {
-            return false;
+        if (value != null) {
+            String emptyListRemoved = removeEmptyListBb(value);
+            String trimed = removeBBCodes(emptyListRemoved).trim();
+            int plainTextLength = getDisplayedLength(trimed);
+            return plainTextLength >= min && value.length() <= max;
         }
-        int plainTextLength = removeBBCodes(value).trim().length();
-        return (plainTextLength >= min);
+        return false;
     }
 
     /**
@@ -84,5 +92,25 @@ public class BbCodeAwareSizeValidator implements ConstraintValidator<BbCodeAware
             bbCodeService = this.context.getBean(BBCodeService.class);
         }
         return bbCodeService;
+    }
+    
+    /**
+     * Calculate length of string which be displayed.
+     * Needed because method <b>removeBBCodes</b> leaves "&quot" and "<br/>"  symbols.
+     * @param s String to calculate length.
+     * @return Length of string which be displayed.
+     */
+    private int getDisplayedLength(String s) {
+        return s.replaceAll(QUOTE_HTML, "\"").replaceAll(NEW_LINE_HTML, "\n\r").length();
+    }
+    
+    /**
+     * Removes all empty lists from text. Needed because <b>removeBBCodes</b> deletes
+     * bb codes for list but not deletes bb codes for list elements.
+     * @param text Text to remove empty lists.
+     * @return Text without empty lists.
+     */
+    private String removeEmptyListBb(String text) {
+        return text.replaceAll(EMPTY_LIST_BB_REGEXP, "");
     }
 }

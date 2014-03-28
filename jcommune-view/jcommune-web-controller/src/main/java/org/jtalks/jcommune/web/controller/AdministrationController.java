@@ -14,10 +14,14 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.common.model.permissions.BranchPermission;
+import org.jtalks.jcommune.model.dto.GroupsPermissions;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.security.PermissionService;
 import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
@@ -26,10 +30,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -168,7 +170,22 @@ public class AdministrationController {
         }
 
         return new JsonResponse(JsonResponseStatus.SUCCESS, null);
-    }    
+    }
+
+    /**
+     * Displays to user a list of branch permissions.
+     * @param branchId id of the branch
+     *
+     */
+    @RequestMapping(value = "/branch/permissions/{branchId}", method = RequestMethod.GET)
+    public ModelAndView showBranchPermissions(@PathVariable("branchId") long branchId) throws NotFoundException {
+        long forumId = componentService.getComponentOfForum().getId();
+        GroupsPermissions<BranchPermission> permissions = branchService.getPermissionsFor(forumId, branchId);
+        Branch branch = branchService.get(branchId);
+        return new ModelAndView("branchPermissions")
+                .addObject("branch", branch)
+                .addObject("permissions", permissions);
+    }
 
     /**
      * Returns redirect string to previous page

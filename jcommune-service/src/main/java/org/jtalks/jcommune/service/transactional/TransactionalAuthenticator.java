@@ -59,6 +59,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import org.jtalks.jcommune.model.dto.LoginUserDto;
 
 /**
  * Serves for authentication and registration user.
@@ -92,7 +93,6 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
     private ImageService avatarService;
     private GroupDao groupDao;
     private PluginService pluginService;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalAuthenticator.class);
 
 
@@ -100,23 +100,23 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      * @param pluginLoader          used for obtain auth plugin
      * @param dao                   for operations with data storage
      * @param encryptionService     encodes user password
-     * @param authenticationManager used in login logic
      * @param securityFacade        used in login logic
      * @param rememberMeServices    used in login logic to specify remember user or
      *                              not
      * @param sessionStrategy       used in login logic to call onAuthentication hook
      *                              which stored this user to online uses list.
+     * @param authenticationManager to authenticate users
      */
     public TransactionalAuthenticator(PluginLoader pluginLoader, UserDao dao, GroupDao groupDao,
                                       EncryptionService encryptionService,
                                       MailService mailService,
                                       ImageService avatarService,
                                       PluginService pluginService,
-                                      AuthenticationManager authenticationManager,
                                       SecurityContextHolderFacade securityFacade,
                                       RememberMeServices rememberMeServices,
                                       SessionAuthenticationStrategy sessionStrategy,
-                                      Validator validator) {
+                                      Validator validator,
+                                      AuthenticationManager authenticationManager) {
         super(dao);
         this.groupDao = groupDao;
         this.pluginLoader = pluginLoader;
@@ -124,33 +124,32 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         this.mailService = mailService;
         this.avatarService = avatarService;
         this.pluginService = pluginService;
-        this.authenticationManager = authenticationManager;
         this.securityFacade = securityFacade;
         this.rememberMeServices = rememberMeServices;
         this.sessionStrategy = sessionStrategy;
         this.validator = validator;
+        this.authenticationManager = authenticationManager;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean authenticate(String username, String password, boolean rememberMe, HttpServletRequest request,
+    public boolean authenticate(LoginUserDto loginUserDto, HttpServletRequest request,
                                 HttpServletResponse response) throws UnexpectedErrorException, NoConnectionException {
         boolean result;
         JCUser user;
         try {
-            user = getByUsername(username);
-            result = authenticateDefault(user, password, rememberMe, request, response);
+            user = getByUsername(loginUserDto.getUserName());
+            result = authenticateDefault(user, loginUserDto.getPassword(), loginUserDto.isRememberMe(), request, response);
         } catch (NotFoundException e) {
-            String ipAddress = getClientIpAddress(request);
-            LOGGER.info("User was not found during login process, username = {}, IP={}", username, ipAddress);
-            result = authenticateByPluginAndUpdateUserInfo(username, password, true, rememberMe, request, response);
+            LOGGER.info("User was not found during login process, username = {}, IP={}", 
+                    loginUserDto.getUserName(), loginUserDto.getClientIp());
+            result = authenticateByPluginAndUpdateUserInfo(loginUserDto, true, request, response);
         } catch (AuthenticationException e) {
-            String ipAddress = getClientIpAddress(request);
             LOGGER.info("AuthenticationException: username = {}, IP={}, message={}",
-                    new Object[]{username, ipAddress, e.getMessage()});
-            result = authenticateByPluginAndUpdateUserInfo(username, password, false, rememberMe, request, response);
+                    new String[]{loginUserDto.getUserName(), loginUserDto.getClientIp(), e.getMessage()});
+            result = authenticateByPluginAndUpdateUserInfo(loginUserDto, false, request, response);
         }
         return result;
     }
@@ -165,26 +164,27 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      * @throws UnexpectedErrorException if some unexpected error occurred
      * @throws NoConnectionException    if some connection error occurred
      */
-    private boolean authenticateByPluginAndUpdateUserInfo(String username, String password, boolean newUser,
-                                                          boolean rememberMe, HttpServletRequest request,
+    private boolean authenticateByPluginAndUpdateUserInfo(LoginUserDto loginUserDto, boolean newUser,
+                                                          HttpServletRequest request,
                                                           HttpServletResponse response)
             throws UnexpectedErrorException, NoConnectionException {
-        String passwordHash = encryptionService.encryptPassword(password);
+        String passwordHash = encryptionService.encryptPassword(loginUserDto.getPassword());
         String encodedUsername;
         try {
-            encodedUsername = username == null ? null : URLEncoder.encode(username, "UTF-8").replace("+", "%20");
+            encodedUsername = loginUserDto.getUserName() == null ? null : 
+                    URLEncoder.encode(loginUserDto.getUserName(), "UTF-8").replace("+", "%20");
         } catch (UnsupportedEncodingException e) {
-            LOGGER.error("Could not encode username '{}'", username);
+            LOGGER.error("Could not encode username '{}'", loginUserDto.getUserName());
             throw new UnexpectedErrorException(e);
         }
         Map<String, String> authInfo = authenticateByAvailablePlugin(encodedUsername, passwordHash);
         if (authInfo.isEmpty() || !authInfo.containsKey("email") || !authInfo.containsKey("username")) {
-            LOGGER.info("Could not authenticate user '{}' by plugin.", username);
+            LOGGER.info("Could not authenticate user '{}' by plugin.", loginUserDto.getUserName());
             return false;
         }
         JCUser user = saveUser(authInfo, passwordHash, newUser);
         try {
-            return authenticateDefault(user, password, rememberMe, request, response);
+            return authenticateDefault(user, loginUserDto.getUserName(), loginUserDto.isRememberMe(), request, response);
         } catch (AuthenticationException e) {
             return false;
         }
@@ -246,14 +246,6 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
             throw new NotFoundException();
         }
         return user;
-    }
-
-    private String getClientIpAddress(HttpServletRequest request) {
-        String ipAddress = request.getHeader("X-FORWARDED-FOR");
-        if (ipAddress == null) {
-            ipAddress = request.getRemoteAddr();
-        }
-        return ipAddress;
     }
 
     private void copyFieldsFromUserToJCUser(User commonUser, JCUser user) {
@@ -339,7 +331,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
                 userDto.setPassword(encodedPassword);
                 storeRegisteredUser(registerUserDto.getUserDto());
             }
-        }
+        } 
         return result;
     }
 
@@ -366,7 +358,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
             }
         }
     }
-
+   
     /**
      * Just saves a new {@link JCUser} or upgrade {@link org.jtalks.common.model.entity.User}
      * to {@link JCUser} without any additional checks
@@ -399,4 +391,5 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         LOGGER.info("JCUser registered: {}", user.getUsername());
         return user;
     }
+    
 }

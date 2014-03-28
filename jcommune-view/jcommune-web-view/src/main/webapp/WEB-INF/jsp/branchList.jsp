@@ -63,12 +63,14 @@
             <%--<th class="status-col"></th>--%>
             <%--</sec:authorize>--%>
           <th><spring:message code="label.section.header.branches"/></th>
-          <th class="topics-posts forum-posts-view-header shrink-to-fit">
-            <spring:message code="label.branch.header.topics_posts"/>
-          </th>
-          <th class="latest-by forum-latest-by-header shrink-to-fit">
-            <spring:message code="label.branch.header.lastMessage"/>
-          </th>
+          <c:if test="${sessionScope.adminMode != true}">
+            <th class="topics-posts forum-posts-view-header shrink-to-fit">
+              <spring:message code="label.branch.header.topics_posts"/>
+            </th>
+            <th class="latest-by forum-latest-by-header shrink-to-fit">
+              <spring:message code="label.branch.header.lastMessage"/>
+            </th>
+          </c:if>
         </tr>
         </thead>
 
@@ -94,49 +96,60 @@
                 <%--</td>--%>
                 <%--</sec:authorize>--%>
               <td class="title-col">
-                <h2 class="h-nostyle">
-                <c:if test="${sessionScope.adminMode == true}">
-                   <a class="branch-title" href="#" id='branchLabel${branch.id}'>
-                </c:if>
-                <c:if test="${sessionScope.adminMode != true}">
-                   <a class="branch-title" href="${pageContext.request.contextPath}/branches/${branch.id}">
-                </c:if>
-                <c:out value="${branch.name}"/>
-                   </a>
-                </h2>
-                <span class="forum-sections-branch-description-container" id='branchDescriptionLabel${branch.id}'>
-                  <c:out value="${branch.description}"/>
-                </span>
-                <div class="forum-sections-moderators-container">
-                  <jtalks:moderators moderators="${branch.moderatorsGroup.users}" visibleIfEmpty="false"/>
+                <div class="pull-left">
+                  <h2 class="h-nostyle">
+                  <c:if test="${sessionScope.adminMode == true}">
+                     <a class="branch-title" href="#" id='branchLabel${branch.id}'>
+                  </c:if>
+                  <c:if test="${sessionScope.adminMode != true}">
+                     <a class="branch-title" href="${pageContext.request.contextPath}/branches/${branch.id}">
+                  </c:if>
+                  <c:out value="${branch.name}"/>
+                     </a>
+                  </h2>
+                  <span class="forum-sections-branch-description-container" id='branchDescriptionLabel${branch.id}'>
+                    <c:out value="${branch.description}"/>
+                  </span>
+                  <div class="forum-sections-moderators-container">
+                    <jtalks:moderators moderators="${branch.moderatorsGroup.users}" visibleIfEmpty="false"/>
+                  </div>
                 </div>
-              </td>
-              <td class="topics-posts">
-                <spring:message code="label.section.header.topics"/>:
-                  <span class='test-topics-count space-left-small'>
-                    <c:out value="${branch.topicCount}"/>
-                  </span>
-                <br/>
-                <spring:message code="label.section.header.messages"/>:
-                  <span class='test-posts-count space-left-small'>
-                    <c:out value="${branch.postCount}"/>
-                  </span>
-              </td>
-              <td class="latest-by">
-                <c:if test="${branch.topicCount>0}">
-                  <i class="icon-calendar"></i>
-                  <a class="date" href="${pageContext.request.contextPath}/posts/${branch.lastPost.id}">
-                    <jtalks:format value="${branch.lastPost.creationDate}"/>
-                  </a>
-
-                  <p><spring:message code="label.topic.last_post_by"/>
-                    <a class="space-left-small"
-                       href="${pageContext.request.contextPath}/users/${branch.lastPost.userCreated.id}">
-                      <c:out value="${branch.lastPost.userCreated.username}"/>
+                <c:if test="${sessionScope.adminMode == true}">
+                  <div class="pull-right">
+                    <a class="btn" href="${pageContext.request.contextPath}/branch/permissions/${branch.id}">
+                      <spring:message code="permissions.edit"/>
                     </a>
-                  </p>
+                  </div>
                 </c:if>
               </td>
+              <c:if test="${sessionScope.adminMode != true}">
+                <td class="topics-posts">
+                  <spring:message code="label.section.header.topics"/>:
+                    <span class='test-topics-count space-left-small'>
+                      <c:out value="${branch.topicCount}"/>
+                    </span>
+                  <br/>
+                  <spring:message code="label.section.header.messages"/>:
+                    <span class='test-posts-count space-left-small'>
+                      <c:out value="${branch.postCount}"/>
+                    </span>
+                </td>
+                <td class="latest-by">
+                  <c:if test="${branch.topicCount>0}">
+                    <i class="icon-calendar"></i>
+                    <a class="date" href="${pageContext.request.contextPath}/posts/${branch.lastPost.id}">
+                      <jtalks:format value="${branch.lastPost.creationDate}"/>
+                    </a>
+
+                    <p><spring:message code="label.topic.last_post_by"/>
+                      <a class="space-left-small"
+                         href="${pageContext.request.contextPath}/users/${branch.lastPost.userCreated.id}">
+                        <c:out value="${branch.lastPost.userCreated.username}"/>
+                      </a>
+                    </p>
+                  </c:if>
+                </td>
+              </c:if>
             </tr>
           </jtalks:hasPermission>
         </c:forEach>
@@ -154,7 +167,7 @@
     </c:choose>
     <c:if test="${sessionScope.adminMode == true}">
       <tr>
-        <td colspan="3">
+        <td>
           <div id='newBranch${section.id}' class="add-branch-button"> + 
             <spring:message code="label.branch.add"/>
           </div>                

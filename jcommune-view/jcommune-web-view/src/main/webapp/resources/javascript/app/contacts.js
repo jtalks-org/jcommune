@@ -35,93 +35,40 @@ AddContact.selectedContactType = null;
 AddContact.contactTypes = null;
 
 /** if entered contact is valid */
-AddContact.isValueValid = true;
+AddContact.isValueValid = [];
 
-function deleteContactHandler() {
-    var element = $(this).parent();
-    var contactId = $(this).parent().find("#contactId:hidden").attr("value");
-    var contactOwnerId = $(this).parent().find("#contactOwnerId:hidden").attr("value");
+AddContact.tooltip = '<span class="help-inline contact-tooltip">' + $labelContactValueInfo + '</span>';
 
-    var footerContent = ' \
-            <button id="remove-contact-cancel" class="btn">' + $labelCancel + '</button> \
-            <button id="remove-contact-ok" class="btn btn-primary">' + $labelOk + '</button>'
-
-    var submitFunc = function (e) {
-        e.preventDefault();
-        $.ajax({
-            url: baseUrl + '/contacts/remove/' + contactOwnerId + '/' + contactId,
-            // this is the way Spring MVC represents HTTP DELETE for better browser compatibility
-            type: "POST",
-            data: {'_method': 'DELETE'},
-            success: function () {
-                element.fadeOut();
-                jDialog.closeDialog();
-            },
-            error: function () {
-                jDialog.createDialog({
-                    type: jDialog.alertType,
-                    bodyMessage: $labelDeleteContactFailture
-                });
-            }
+function deleteContactHandler(e) {
+    $(this).parent().parent().remove();
+    var contacts = $("#contacts").find("li.contact");
+    // We need rebind all id's and names (paths to properties of contacts)
+    // for correct processing backing object by spring
+    contacts.each(function (index, el) {
+        $(el).find('.contact input').each(function(){
+            $(this).attr('id', 'userContactsDto.contacts' + index + '.id');
+            $(this).attr('name', 'userContactsDto.contacts[' + index + '].id');
         });
-    };
-
-    jDialog.createDialog({
-        type: jDialog.confirmType,
-        bodyMessage: $labelDeleteContactConfirmation,
-        firstFocus: false,
-        footerContent: footerContent,
-        maxWidth: 300,
-        tabNavigation: ['#remove-contact-ok', '#remove-contact-cancel'],
-        handlers: {
-            '#remove-contact-ok': {'click': submitFunc},
-            '#remove-contact-cancel': {'static':'close'}
-        }
+        $(el).find('.controls select').each(function(){
+            $(this).attr('id', 'userContactsDto.contacts' + index + '.type.id');
+            $(this).attr('name', 'userContactsDto.contacts[' + index + '].type.id');
+        });
+        $(el).find('.controls input').each(function(){
+            $(this).attr('id', 'userContactsDto.contacts' + index + '.value');
+            $(this).attr('name', 'userContactsDto.contacts[' + index + '].value');
+        });
     });
-
-    $('#remove-contact-ok').focus();
+    enableOrDisableSaveChangesBtn();
+    e.preventDefault();
 }
 
 /**
  * Binds click handler for "X" buttons (delete contact)
  */
-function bindDeleteHandler() {
-    $("#contacts").find(".contact").find("a.button").each(function () {
+function bindDeleteHandler(contacts) {
+    contacts.find("a.button").each(function () {
         this.onclick = deleteContactHandler;
     });
-}
-
-/**
- *  Returns HTML code for new contact populated with data
- * @param data user contact
- */
-function getContactHtml(data) {
-    //HTML template for single contact. Should be in sync with corresponding JSP.
-    var template =
-        '	<li class="contact">'
-            + '	    <input id="contactId" type="hidden" value="${contactId}"/>'
-            + '     <input id="contactOwnerId" type="hidden" value="${ownerId}"/>'
-            + '		<a href="#" id="${buttonId}" class="btn btn-mini btn-danger button" title="' + $labelContactsTipsDelete + '">'
-            + '			<i class="icon-remove icon-white"></i>'
-            + '     </a>'
-            + '		<span class="contact" title="${typeName}">'
-            + '     	<img src="${icon}">'
-            + '         ${value}'
-            + '     </span>'
-            + '</li>';
-
-    var contactTypeInfo = AddContact.getContactType($('#contact_type').val(), AddContact.contactTypes);
-    var actualValue = contactTypeInfo.displayPattern.replace(new RegExp('%s', 'gi'), $('#contact').val());
-
-    var html = template;
-    html = html.replace('${icon}', baseUrl + contactTypeInfo.icon);
-    html = html.replace('${typeName}', contactTypeInfo.typeName);
-    html = html.replace('${contactId}', data.id);
-    html = html.replace('${buttonId}', data.id);
-    html = html.replace('${value}', actualValue);
-    html = html.replace('${ownerId}', data.ownerId);
-
-    return html;
 }
 
 /**
@@ -140,139 +87,129 @@ AddContact.getContactType = function (id, contactTypes) {
     }
 
     return result;
+};
+
+function validationHandler() {
+    var contactTypeId = $(this).find('.controls select').val();
+    var contactId = $(this).find('input').val();
+    var input = $(this).find('.controls input');
+    var value = input.val();
+    AddContact.selectedContactType = AddContact.getContactType(contactTypeId, AddContact.contactTypes);
+    input.attr('placeholder', AddContact.selectedContactType.mask);
+    var valueValid = value.match(new RegExp(AddContact.selectedContactType.validationPattern));
+    if (value.length > 0 && !valueValid) {
+        if (contactId == '' || AddContact.isValueValid[contactId] == undefined || AddContact.isValueValid[contactId]) {
+            ErrorUtils.removeErrorMessage(input);
+            ErrorUtils.addErrorMessage(input, $labelValidationUsercontactNotMatch);
+            AddContact.isValueValid[contactId] = false;
+            $(this).find('.contact-tooltip').remove();
+        }
+    } else {
+        ErrorUtils.removeErrorMessage(input);
+        AddContact.isValueValid[contactId] = true;
+        if (value.length > 0 && valueValid) {
+            $(this).find('.contact-tooltip').remove();
+        } else if (value.length == 0 && $(this).find('.contact-tooltip').size() < 1) {
+            $(this).find('.controls').append(AddContact.tooltip);
+        }
+    }
+    enableOrDisableSaveChangesBtn();
+}
+
+function enableOrDisableSaveChangesBtn() {
+    var contacts = $('#contacts');
+    var emptyContactsSize = contacts.find('div.control-group .contact .controls input').filter(function() {
+        return !this.value;
+    }).size();
+    if (contacts.find('div.control-group.error').size() > 0 || emptyContactsSize > 0) {
+        $('#saveChanges').attr('disabled', 'disabled');
+    } else {
+        $('#saveChanges').removeAttr('disabled')
+    }
+}
+
+function bindReceivedContactTypes(json, contacts) {
+    AddContact.contactTypes = json;
+    AddContact.selectedContactType = json[0];
+    bindValidationHandler(contacts);
+}
+
+
+function bindValidationHandler(contacts) {
+    if (AddContact.contactTypes === null) {
+        getContactTypes(bindReceivedContactTypes, contacts);
+    } else {
+        contacts.each(function (index, el) {
+            $(el).find('.controls select').each(function(){
+                $(el).on('change', validationHandler);
+            });
+            $(el).find('.controls input').each(function(){
+                $(el).on('keyup', validationHandler);
+            });
+        });
+    }
 }
 
 /**
- * Reset all variables. Used when new popup is displayed
+ * Creates empty contact row
+ *
+ * @param json contact types
  */
-AddContact.resetVariables = function () {
-    AddContact.isValueValid = true;
-    AddContact.contactTypes = null;
-    AddContact.selectedContactType = null;
+function addContact(json) {
+    var contactItems = $('li.contact');
+    var contactIndex = contactItems.length;
+    var content = '<li class="contact" data-original-title=""><div class="control-group">' +
+        '<input id="contactId" type="hidden">' +
+        '<a href="#" class="btn btn-mini btn-danger button" data-original-title="' + $labelContactsTipsDelete + '">' +
+        '<i class="icon-remove icon-white"></i></a><span class="contact" data-original-title="">' +
+        '<input id="userContactsDto.contacts' + contactIndex + '.id" ' +
+        'name="userContactsDto.contacts[' + contactIndex + '].id" type="hidden">' +
+        '<div class="controls">';
+    content += '<select id="userContactsDto.contacts' + contactIndex + '.type.id" tabindex="' + (contactIndex + 1) +
+        '"' + ' name="userContactsDto.contacts[' + contactIndex + '].type.id" class="input-medium">';
+    $.each(json, function (i, obj) {
+        content += '<option value="' + obj.id + '">' + obj.typeName + '</option>';
+    });
+    content += '</select>';
+    content += '<input id="userContactsDto.contacts' + contactIndex + '.value" ' +
+        'name="userContactsDto.contacts[' + contactIndex + '].value" ' +
+        'tabindex="' + (contactIndex + 1) + '" class="input-large" type="text"><br>' + AddContact.tooltip +
+        '</div></div></li>';
+
+    $('#contacts').append(content);
+    var addedContact = $('li.contact').last();
+    bindDeleteHandler(addedContact);
+    bindValidationHandler(addedContact);
+    $("#add_contact").removeAttr('disabled');
+    var contactInput = addedContact.find('.controls input');
+    contactInput.keyup();
+    contactInput.focus();
+    $('html, body').animate({
+        scrollTop: contactInput.offset().top
+    }, 1000);
 }
 
+function getContactTypes(callback, parameters) {
+    $.getJSON(baseUrl + "/contacts/types", function (json) {
+        callback(json, parameters);
+    });
+}
 
 $(document).ready(function () {
-
-
-    $('body').on('keyup', '#contact', function () {
-        var value = $(this).val();
-        if (value.length > 0 && !value.match(new RegExp(AddContact.selectedContactType.validationPattern))) {
-            if (AddContact.isValueValid) {
-                ErrorUtils.removeErrorMessage('#contact');
-                ErrorUtils.addErrorMessage('#contact', $labelValidationUsercontactNotMatch);
-                AddContact.isValueValid = false;
+    //"Add contact" button handler
+    $("#add_contact").on("click", function (e) {
+        if (!$(this).attr('disabled')) {
+            $(this).attr('disabled', 'disabled');
+            if (AddContact.contactTypes === null) {
+                getContactTypes(addContact);
+            } else {
+                addContact(AddContact.contactTypes);
+                e.preventDefault();
             }
-        } else {
-            ErrorUtils.removeErrorMessage('#contact');
-            AddContact.isValueValid = true;
         }
     });
 
-    // when user selects other contact type
-    $('body').on('change', '#contact_type', function () {
-        var contactId = $(this).val();
-        AddContact.selectedContactType = AddContact.getContactType(contactId, AddContact.contactTypes);
-        $('#contact').attr('placeholder', AddContact.selectedContactType.mask);
-        $('#contact').keyup();
-    });
-
-    //"Add contact" button handler
-    $("#add_contact").on("click", function () {
-
-        AddContact.resetVariables();
-
-        $.getJSON(baseUrl + "/contacts/types", function (json) {
-
-            AddContact.contactTypes = json;
-            AddContact.selectedContactType = json[0];
-
-            // select
-            var bodyContent = '<div class="control-group">'
-                + '<label for="contact_type" class="control-label">' + $labelContactType + '</label>'
-                + '<div class="controls">'
-                +   '<select name="contact_type" id="contact_type" class="first dialog-input">';
-
-            $.each(json, function (i, obj) {
-                bodyContent += '<option value="' + obj.id + '">' + obj.typeName + '</option>';
-            });
-            bodyContent += '</select></div></div>';
-
-            // text input
-            bodyContent += '<div class="control-group">'
-            bodyContent += '	<label for="contact_type" class="control-label">' + $labelContactValue + '</label>';
-            bodyContent += '	<div class="controls">';
-            bodyContent += '		<input type="text" name="contact" id="contact" placeholder="'
-                + AddContact.selectedContactType.mask + '" />';
-            bodyContent += '	</div>';
-            bodyContent += '	<span class="dialog-info">' + $labelContactValueInfo + '</span>';
-            bodyContent += '</div>';
-
-            var footerContent = ' \
-            <button id="add-contact-cancel" class="btn">' + $labelCancel + '</button> \
-            <button id="add-contact-ok" class="btn btn-primary">' + $labelOk + '</button>';
-
-            var submitFunc = function (e) {
-                e.preventDefault();
-               if (AddContact.isValueValid && $('#contact').val() != '' && $('#contact').length > 0) {
-                    var ownerId = $("#editedUserId").val();
-
-                    var contact = {
-                        ownerId: ownerId,
-                        value: $('#contact').val(),
-                        typeId: $('#contact_type').val()
-                    };
-
-                    $.ajax({
-                        url: baseUrl + '/contacts/add',
-                        type: "POST",
-                        contentType: "application/json",
-                        async: false,
-                        data: JSON.stringify(contact),
-                        success: function (data) {
-                            if(data.status === 'SUCCESS'){
-                                //populate contact template and append to page
-                                $("#contacts").append(getContactHtml(data.result));
-                                bindDeleteHandler();
-                                jDialog.closeDialog();
-                            }else{
-                                ErrorUtils.removeErrorMessage('#contact');
-                                ErrorUtils.addErrorMessage('#contact', $labelValidationUsercontactNotMatch);
-                                AddContact.isValueValid = false;
-                            }
-                        },
-                        error: function (data) {
-                            ErrorUtils.removeErrorMessage('#contact');
-                            ErrorUtils.addErrorMessage('#contact', $labelValidationUsercontactNotMatch);
-                            AddContact.isValueValid = false;
-                        }
-                    });
-                }else{
-                   ErrorUtils.removeErrorMessage('#contact');
-                   ErrorUtils.addErrorMessage('#contact', $labelValidationUsercontactNotMatch);
-                   AddContact.isValueValid = false;
-               }
-                jQuery('.contact').tooltip({placement: 'right'});
-                jQuery("a").tooltip();
-                jQuery('.btn').tooltip({placement: 'bottom'});
-                jQuery('.script-has-tooltip').tooltip();
-            }
-
-            jDialog.createDialog({
-                dialogId: 'add-contact-dialog',
-                title: $labelContactsAddDialog,
-                bodyContent: bodyContent,
-                footerContent: footerContent,
-                maxWidth: 350,
-                maxHeight: 350,
-                tabNavigation: ['#contact_type', '#contact', '#add-contact-ok', '#add-contact-cancel'],
-                handlers: {
-                    '#add-contact-ok': {'click': submitFunc},
-                    '#add-contact-cancel': {'static':'close'}
-                }
-            });
-        });
-    });
-
-    bindDeleteHandler();
+    var contacts = $('li.contact');
+    bindDeleteHandler(contacts);
+    bindValidationHandler(contacts);
 });

@@ -9,8 +9,8 @@ input[readonly] {
 }
 
 .userprofile { 
-  display: block; 
-  width: auto; 
+  display: inline-block;
+  width: 450px;
   background-color: #f9f9f9; 
   border: 1px solid #ccc; 
   -moz-border-radius: 5px; 
@@ -26,9 +26,9 @@ input[readonly] {
 }
 
 .contacts li {
-  margin: 0;
   padding: 0;
   padding-top: 5px;
+  margin: 0 0 5px;
 }
 
 .contacts li i {
@@ -45,7 +45,26 @@ input[readonly] {
 
 .contacts .btn-mini {
   padding: 0px;
-  width:14px;
+  width: 14px;
+}
+
+li.contact .controls {
+  display: inline;
+  margin-left: 5px;
+}
+
+li.contact .controls input {
+  margin-left: 10px;
+  width: 245px;
+}
+
+li.contact .controls span.help-inline,
+li.contact .controls span.dialog-info {
+  margin-left: 25px;
+}
+
+li.contact .control-group {
+  margin-bottom: 9px;
 }
 
 .wraptocenter {
@@ -57,11 +76,48 @@ input[readonly] {
 }
 
 .wraptocenter * {
-    vertical-align: middle;
+  vertical-align: middle;
 }
 
 .wraptocenter span {
-    display: inline-block;
-    height: 100%;
-    width: 1px;
+  display: inline-block;
+  height: 100%;
+  width: 1px;
+}
+
+.profile-menu-btn {
+  width: 100%;
+  margin: 7px 7px 7px 7px;
+  float: right;
+  border-radius: 0;
+  color: black;
+  border-bottom: 1px solid gray;
+  padding-bottom: 10px;
+  font-size: 14px;
+}
+
+.profile-menu-btn i {
+  margin: 1px 5px 0 3px;
+  padding-top: 2px;
+}
+
+.profile-menu-btn.selected-tab {
+  background-color: transparent;
+  border-bottom: 2px solid #3a87ad;
+  font-weight: bold;
+}
+
+.profile-menu-btn.selected-tab:hover {
+  background-position: 0 40px;
+}
+
+.user-profile-menu {
+  width: 145px;
+  display: inline-block;
+  vertical-align: top;
+  margin-top: 3px;
+}
+
+.notification-control {
+  margin-left: 80px;
 }

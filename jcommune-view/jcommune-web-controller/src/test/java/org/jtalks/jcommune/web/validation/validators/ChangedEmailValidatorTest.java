@@ -14,23 +14,23 @@
  */
 package org.jtalks.jcommune.web.validation.validators;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.anyLong;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-
-import javax.validation.ConstraintValidatorContext;
-
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.web.dto.EditUserProfileDto;
+import org.jtalks.jcommune.web.dto.UserProfileDto;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import javax.validation.ConstraintValidatorContext;
+
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 /**
  * 
@@ -62,7 +62,7 @@ public class ChangedEmailValidatorTest {
 
 	@Test
 	public void emptyEmailShouldBeValidBecauseItIsNotBusy() {
-		EditUserProfileDto editedUserProfile = new EditUserProfileDto();
+		UserProfileDto editedUserProfile = new UserProfileDto();
 		editedUserProfile.setEmail(null);
         boolean isValid = validator.isValid(editedUserProfile, validatorContext);
 
@@ -71,7 +71,7 @@ public class ChangedEmailValidatorTest {
 
 	@Test
 	public void notChangedEmailShouldBeValid() {
-	    EditUserProfileDto editedUserProfile = new EditUserProfileDto();
+        UserProfileDto editedUserProfile = new UserProfileDto();
         editedUserProfile.setEmail(userEmail);
 
 		boolean isValid = validator.isValid(editedUserProfile, validatorContext);
@@ -81,7 +81,7 @@ public class ChangedEmailValidatorTest {
 
 	@Test
 	public void changedEmailShouldBeValidIfItIsNotBusy() {
-	    EditUserProfileDto editedUserProfile = new EditUserProfileDto();
+        UserProfileDto editedUserProfile = new UserProfileDto();
         editedUserProfile.setEmail("new_current_user@gmail.com");
 
 	    boolean isValid = validator.isValid(editedUserProfile, validatorContext);
@@ -93,7 +93,7 @@ public class ChangedEmailValidatorTest {
     public void changedEmailShouldNotBeValidIfItIsBusy() {
         when(userDao.getByEmail(anyString())).thenReturn(
                 new JCUser("new_current_user@gmail.com", "email", "password"));
-        EditUserProfileDto editedUserProfile = new EditUserProfileDto();
+        UserProfileDto editedUserProfile = new UserProfileDto();
         editedUserProfile.setEmail("new_current_user@gmail.com");
         when(validatorContext.buildConstraintViolationWithTemplate(null)).
                 thenReturn(violationBuilder);

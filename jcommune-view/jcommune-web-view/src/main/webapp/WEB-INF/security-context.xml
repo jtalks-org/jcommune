@@ -26,7 +26,16 @@
 
     <security:session-management session-authentication-strategy-ref="concurrentSessionControlStrategy"/>
     <security:custom-filter ref="rememberMeCheckFilter" before="FORM_LOGIN_FILTER"/>
-
+    <!--
+        We need disable filtering of all resources e.g. js, css, images, errors to provide 
+        filtering of only one request to every page. Otherwise bug JC-1743 will occur.
+    -->
+    <security:intercept-url pattern="/resources/**" filters="none"/>
+    <security:intercept-url pattern="/admin/logo" filters="none"/>
+    <security:intercept-url pattern="/admin/icon/**" filters="none"/>
+    <security:intercept-url pattern="/errors/**" filters="none"/>
+    <security:intercept-url pattern="/users/*/avatar" filters="none"/>
+    
     <security:intercept-url pattern="/posts/new" access="isAuthenticated()"/>
     <security:intercept-url pattern="/posts/*/delete" method="GET" access="isAuthenticated()"/>
     <security:intercept-url pattern="/posts/*" method="DELETE" access="isAuthenticated()"/>
@@ -34,8 +43,8 @@
 
     <security:intercept-url pattern="/login" method="GET" access="permitAll()"/>
     <security:intercept-url pattern="/users/new" method="GET" access="permitAll()"/>
-    <security:intercept-url pattern="/users/*/avatar" method="GET" access="permitAll()"/>
     <security:intercept-url pattern="/user" method="GET" access="isAuthenticated()"/>
+    <security:intercept-url pattern="/user/" method="GET" access="isAuthenticated()"/>
     <security:intercept-url pattern="/users/**" access="isAuthenticated()"/>
     <security:intercept-url pattern="/user/activate/**" access="permitAll()"/>
 
@@ -61,6 +70,8 @@
 
     <security:intercept-url pattern="/reviews/new" access="isAuthenticated()"/>
 
+    <security:intercept-url pattern="/branch/permissions/*" access="isAuthenticated()"/>
+
     <!-- Since DELETE method is actually POST with _method=DELETE parameter -->
     <security:intercept-url pattern="/branches/*" method="DELETE"/>
     <security:intercept-url pattern="/sections/*" method="DELETE"/>
@@ -78,9 +89,7 @@
 
     <security:intercept-url pattern="/recent/forum/markread" access="isAuthenticated()"/>
     <security:intercept-url pattern="/main/forum/markread" access="isAuthenticated()"/>
-
-    <security:intercept-url pattern="*" access="permitAll()"/>
-
+    
     <security:form-login login-page="/login" login-processing-url="/j_spring_security_check"
                            default-target-url="/"
                            authentication-success-handler-ref="successAuthHandler"

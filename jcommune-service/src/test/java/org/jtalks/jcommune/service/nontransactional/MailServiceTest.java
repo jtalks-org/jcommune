@@ -84,7 +84,6 @@ public class MailServiceTest {
         //
         notificationsEnabledProperty.setPropertyDao(propertyDao);
         notificationsEnabledProperty.setName(PROPERTY_NAME);
-        enableEmailNotifications();
         //
         VelocityEngine velocityEngine = new VelocityEngine();
         velocityEngine.setProperty("resource.loader", "class");
@@ -115,7 +114,8 @@ public class MailServiceTest {
     }
 
     @Test
-    public void testSendPasswordRecoveryMail() throws MailingFailedException, IOException, MessagingException {
+    public void testSendPasswordRecoveryMail() throws Exception {
+        enableEmailNotifications();
         service.sendPasswordRecoveryMail(user, PASSWORD);
 
         this.checkMailCredentials();
@@ -125,23 +125,46 @@ public class MailServiceTest {
     }
 
     @Test
-    public void testSendUpdatesOnSubscriptionCodeReviewCase() 
-                            throws MailingFailedException, IOException, MessagingException {
+    public void passwordRecoveryMailShouldNotBeSentIfNotificationsAreDisabled() throws Exception {
+        disableEmailNotifications();
+        service.sendPasswordRecoveryMail(user, PASSWORD);
+        verify(sender, never()).send(any(MimeMessage.class));
+    }
+
+    @Test
+    public void testSendUpdatesOnSubscriptionCodeReviewCase() throws Exception {
+        enableEmailNotifications();
         service.sendUpdatesOnSubscription(user, codeReview);
         this.checkMailCredentials();
         assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/topics/" + topicId));
     }
 
     @Test
-    public void testSendUpdatesOnSubscriptionCodeReview_CheckTitleInSubject() 
-                            throws MailingFailedException, IOException, MessagingException {
+    public void updatesOnSubscriptionCodeReviewCaseShouldNotBeSentIfNotificationsAreDisabled() throws Exception {
+        disableEmailNotifications();
+        service.sendUpdatesOnSubscription(user, codeReview);
+        verify(sender, never()).send(any(MimeMessage.class));
+    }
+
+    @Test
+    public void testSendUpdatesOnSubscriptionCodeReview_CheckTitleInSubject() throws Exception {
+        enableEmailNotifications();
         service.sendUpdatesOnSubscription(user, codeReview);
         this.checkMailCredentials();
         assertTrue(this.getMimeMailSubject().contains("title Topic"));
     }
 
     @Test
+    public void updatesOnSubscriptionCodeReviewCheckTitleInSubjectShouldNotBeSentIfNotificationsAreDisabled()
+            throws Exception {
+        disableEmailNotifications();
+        service.sendUpdatesOnSubscription(user, codeReview);
+        verify(sender, never()).send(any(MimeMessage.class));
+    }
+
+    @Test
     public void testSendUpdatesOnSubscriptionExceptionCase() {
+        enableEmailNotifications();
         Exception fail = new MailSendException("");
         doThrow(fail).when(sender).send(Matchers.<MimeMessage>any());
         service.sendUpdatesOnSubscription(user, codeReview);
@@ -149,7 +172,8 @@ public class MailServiceTest {
     }
 
     @Test
-    public void testSendTopicUpdatesEmail() throws MailingFailedException, IOException, MessagingException {
+    public void testSendTopicUpdatesEmail() throws Exception {
+        enableEmailNotifications();
         Post post = new Post(user, "content");
         post.setId(1);
         topic.addPost(post);
@@ -161,7 +185,19 @@ public class MailServiceTest {
     }
 
     @Test
-    public void testSendTopicUpdateEmail_CheckTitleInSubject() throws MessagingException, IOException {
+    public void topicUpdatesEmailShouldNotBeSentIfNotificationsAreDisabled() throws Exception {
+        disableEmailNotifications();
+        Post post = new Post(user, "content");
+        post.setId(1);
+        topic.addPost(post);
+
+        service.sendUpdatesOnSubscription(user, topic);
+        verify(sender, never()).send(any(MimeMessage.class));
+    }
+
+    @Test
+    public void testSendTopicUpdateEmailCheckTitleInSubject() throws Exception {
+        enableEmailNotifications();
         Post post = new Post(user, "content");
         post.setId(1);
         topic.addPost(post);
@@ -173,7 +209,8 @@ public class MailServiceTest {
     }
 
     @Test
-    public void testSendBranchUpdateEmail() throws MailingFailedException, IOException, MessagingException {
+    public void testSendBranchUpdateEmail() throws Exception {
+        enableEmailNotifications();
         service.sendUpdatesOnSubscription(user, branch);
 
         this.checkMailCredentials();
@@ -181,14 +218,23 @@ public class MailServiceTest {
     }
 
     @Test
-    public void testSendBranchUpdateEmail_CheckTitleInSubject() throws MessagingException, IOException {
+    public void branchUpdateEmailShouldNotBeSentIfNotificationsAreDisabled() throws Exception {
+        disableEmailNotifications();
+        service.sendUpdatesOnSubscription(user, branch);
+        verify(sender, never()).send(any(MimeMessage.class));
+    }
+
+    @Test
+    public void testSendBranchUpdateEmailCheckTitleInSubject() throws Exception {
+        enableEmailNotifications();
         service.sendUpdatesOnSubscription(user, branch);
         this.checkMailCredentials();
         assertTrue(this.getMimeMailSubject().contains("title Branch"));
     }
 
     @Test
-    public void testSendReceivedPrivateMessageNotification() throws IOException, MessagingException {
+    public void testSendReceivedPrivateMessageNotification() throws Exception {
+        enableEmailNotifications();
         PrivateMessage message = new PrivateMessage(null, null, "title", "body");
         message.setId(1);
 
@@ -200,7 +246,18 @@ public class MailServiceTest {
     }
 
     @Test
-    public void testSendActivationMail() throws IOException, MessagingException {
+    public void receivedPrivateMessageNotificationShouldNotBeSentIfNotificationsAreDisabled() throws Exception {
+        disableEmailNotifications();
+        PrivateMessage message = new PrivateMessage(null, null, "title", "body");
+        message.setId(1);
+
+        service.sendReceivedPrivateMessageNotification(user, message);
+        verify(sender, never()).send(any(MimeMessage.class));
+    }
+
+    @Test
+    public void testSendActivationMail() throws Exception {
+        enableEmailNotifications();
         JCUser user = new JCUser(USERNAME, TO, PASSWORD);
         service.sendAccountActivationMail(user);
         this.checkMailCredentials();
@@ -208,7 +265,16 @@ public class MailServiceTest {
     }
 
     @Test
+    public void activationMailShouldNotBeSentIfNotificationsAreDisabled() throws Exception {
+        disableEmailNotifications();
+        JCUser user = new JCUser(USERNAME, TO, PASSWORD);
+        service.sendAccountActivationMail(user);
+        verify(sender, never()).send(any(MimeMessage.class));
+    }
+
+    @Test
     public void testSendActivationMailFail() {
+        enableEmailNotifications();
         Exception fail = new MailSendException("");
         doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
 
@@ -217,6 +283,7 @@ public class MailServiceTest {
 
     @Test(expectedExceptions = MailingFailedException.class)
     public void testRestorePasswordFail() throws NotFoundException, MailingFailedException {
+        enableEmailNotifications();
         Exception fail = new MailSendException("");
         doThrow(fail).when(sender).send(Matchers.<MimeMessage>any());
 
@@ -225,6 +292,7 @@ public class MailServiceTest {
 
     @Test
     public void testTopicUpdateNotificationFail() throws NotFoundException {
+        enableEmailNotifications();
         Exception fail = new MailSendException("");
         doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
 
@@ -233,6 +301,7 @@ public class MailServiceTest {
 
     @Test
     public void testBranchUpdateNotificationFail() throws NotFoundException {
+        enableEmailNotifications();
         Exception fail = new MailSendException("");
         doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
 
@@ -241,6 +310,7 @@ public class MailServiceTest {
 
     @Test
     public void testSendReceivedPrivateMessageNotificationFail() {
+        enableEmailNotifications();
         Exception fail = new MailSendException("");
         doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
 
@@ -248,7 +318,8 @@ public class MailServiceTest {
     }
 
     @Test
-    public void testSendTopicMovedMail() throws IOException, MessagingException {
+    public void testSendTopicMovedMail() throws Exception {
+        enableEmailNotifications();
         service.sendTopicMovedMail(user, topic);
 
         this.checkMailCredentials();
@@ -259,7 +330,15 @@ public class MailServiceTest {
     }
 
     @Test
-    public void testSendTopicMovedMailFailed() throws MessagingException, IOException {
+    public void topicMovedMailShouldNotBeSentIfNotificationsAreDisabled() throws Exception {
+        disableEmailNotifications();
+        service.sendTopicMovedMail(user, topic);
+        verify(sender, never()).send(any(MimeMessage.class));
+    }
+
+    @Test
+    public void testSendTopicMovedMailFailed() throws Exception {
+        enableEmailNotifications();
         Exception fail = new MailSendException("");
         doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
 
@@ -272,7 +351,8 @@ public class MailServiceTest {
     }
     
     @Test
-    public void sendUserMentionedNotificationShouldSentIt() throws MessagingException, IOException {
+    public void sendUserMentionedNotificationShouldSentIt() throws Exception {
+        enableEmailNotifications();
         long postId = 25l;
         
         service.sendUserMentionedNotification(user, postId);
@@ -284,13 +364,13 @@ public class MailServiceTest {
     
     @Test
     public void sendUserMentionedNotificationShouldNotSentWhenForumNotificationsAreDisabled() 
-                        throws MessagingException, IOException {
+                        throws Exception {
         disableEmailNotifications();
         long postId = 25l;
         
         service.sendUserMentionedNotification(user, postId);
         
-        verify(sender, never()).send(captor.capture());
+        verify(sender, never()).send(any(MimeMessage.class));
     }
 
     private String getMimeMailBody() throws IOException, MessagingException {
@@ -324,7 +404,8 @@ public class MailServiceTest {
     }
 
     @Test
-    public void testSendRemovingTopicMailWhenTopicAsTopic() throws IOException, MessagingException {
+    public void testSendRemovingTopicMailWhenTopicAsTopic() throws Exception {
+        enableEmailNotifications();
         Topic topic = new Topic();
         topic.setBranch(branch);
         service.sendRemovingTopicMail(user, topic);
@@ -342,7 +423,18 @@ public class MailServiceTest {
     }
 
     @Test
-    public void testSendRemovingTopicMailWhenTopicAsCodeReview() throws IOException, MessagingException {
+    public void removingTopicMailWhenTopicAsTopicShouldNotSentWhenForumNotificationsAreDisabled() throws Exception {
+        disableEmailNotifications();
+        Topic topic = new Topic();
+        topic.setBranch(branch);
+        service.sendRemovingTopicMail(user, topic);
+
+        verify(sender, never()).send(any(MimeMessage.class));
+    }
+
+    @Test
+    public void testSendRemovingTopicMailWhenTopicAsCodeReview() throws Exception {
+        enableEmailNotifications();
         Topic topic = new Topic();
         topic.setCodeReview(new CodeReview());
         topic.setBranch(branch);
@@ -359,9 +451,21 @@ public class MailServiceTest {
         assertEquals(this.getMimeMailSubject(), subjectTemplate);
         assertTrue(this.getMimeMailBody().contains(bodyTemplate));
     }
+
+    @Test
+    public void removingTopicMailWhenTopicAsCodeReviewShouldNotSentWhenForumNotificationsAreDisabled()
+            throws Exception {
+        disableEmailNotifications();
+        Topic topic = new Topic();
+        topic.setCodeReview(new CodeReview());
+        topic.setBranch(branch);
+        service.sendRemovingTopicMail(user, topic);
+        verify(sender, never()).send(any(MimeMessage.class));
+    }
     
     @Test
-    public void testSendTopicCreationMail() throws MessagingException, IOException {
+    public void testSendTopicCreationMail() throws Exception {
+        enableEmailNotifications();
         branch.addTopic(topic);
         service.sendTopicCreationMail(user, topic);
         this.checkMailCredentials();
@@ -377,5 +481,13 @@ public class MailServiceTest {
         assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/topics/" + topic.getId()));
         assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/branches/" + branchId
                 + "/unsubscribe_link"));
+    }
+
+    @Test
+    public void topicCreationMailShouldNotSentWhenForumNotificationsAreDisabled() throws Exception {
+        disableEmailNotifications();
+        branch.addTopic(topic);
+        service.sendTopicCreationMail(user, topic);
+        verify(sender, never()).send(any(MimeMessage.class));
     }
 }

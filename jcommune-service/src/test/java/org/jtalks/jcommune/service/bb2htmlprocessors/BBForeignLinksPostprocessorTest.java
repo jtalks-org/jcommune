@@ -41,9 +41,14 @@ public class BBForeignLinksPostprocessorTest {
         doReturn(request).when(service).getServletRequest();
         when(request.getServerName()).thenReturn(serverName);
     }
-    
+
     @Test(dataProvider = "preProcessingCommonLinks")
     public void postprocessorShouldCorrectlyAddPrefix(String incomingText, String outcomingText) {
+        assertEquals(service.postProcess(incomingText), outcomingText);
+    }
+
+    @Test(dataProvider = "preProcessingImages")
+    public void postprocessorShouldCorrectlyReplaceSpaceInImg(String incomingText, String outcomingText) {
         assertEquals(service.postProcess(incomingText), outcomingText);
     }
 
@@ -58,14 +63,25 @@ public class BBForeignLinksPostprocessorTest {
     }
 
     @DataProvider
+    public Object[][] preProcessingImages() {
+        return new Object[][]{
+                {"<img src=\"http://javatalks.ru/common img\">",
+                        "<img alt=\" \" class=\"thumbnail\" src=\"http://javatalks.ru/common%20img\">"}
+
+        };
+    }
+
+    @DataProvider
     public Object[][] preProcessingCommonLinks() {
         return new Object[][]{  // {"incoming link (before)", "outcoming link (after)"}
-            {"<a href=\"http://javatalks.ru/common\"></a>",
-                    "<a " + relAttr + " href=\""+ prefix +"http://javatalks.ru/common\"></a>"},
-            {"<a href=\"https://forum.javatalks.ru\"></a>",
-                    "<a " + relAttr + " href=\""+ prefix +"https://forum.javatalks.ru\"></a>"},
-            {"<a href=\"http://javatalks.ru/common\"></a>",
-                    "<a " + relAttr + " href=\""+ prefix +"http://javatalks.ru/common\"></a>"}
+                {"<a href=\"http://javatalks.ru/common\"></a>",
+                        "<a " + relAttr + " href=\"" + prefix + "http://javatalks.ru/common\"></a>"},
+                {"<a href=\"https://forum.javatalks.ru\"></a>",
+                        "<a " + relAttr + " href=\"" + prefix + "https://forum.javatalks.ru\"></a>"},
+                {"<a href=\"http://javatalks.ru/common\"></a>",
+                        "<a " + relAttr + " href=\"" + prefix + "http://javatalks.ru/common\"></a>"},
+                {"<a href=\"http://javatalks.ru/common space\"></a>",
+                        "<a " + relAttr + " href=\"" + prefix + "http://javatalks.ru/common%20space\"></a>"}
 
         };
     }
@@ -74,20 +90,24 @@ public class BBForeignLinksPostprocessorTest {
     public Object[][] preProcessingSubDomainLinks() {
         return new Object[][]{  // {"incoming link (before)", "outcoming link (after)"}
                 {"<a href=\"http://blog.javatalks.ru\"></a>",
-                        "<a " + relAttr + " href=\""+ prefix +"http://blog.javatalks.ru\"></a>"},
+                        "<a " + relAttr + " href=\"" + prefix + "http://blog.javatalks.ru\"></a>"},
                 {"<a href=\"http://www.blog.javatalks.ru\"></a>",
-                        "<a " + relAttr + " href=\""+ prefix +"http://www.blog.javatalks.ru\"></a>"},
+                        "<a " + relAttr + " href=\"" + prefix + "http://www.blog.javatalks.ru\"></a>"},
                 {"<a href=\"http://com.blog.javatalks.ru\"></a>",
-                        "<a " + relAttr + " href=\""+ prefix +"http://com.blog.javatalks.ru\"></a>"},
+                        "<a " + relAttr + " href=\"" + prefix + "http://com.blog.javatalks.ru\"></a>"},
+                {"<a href=\"http://com.blog.javatalks.ru/space space\"></a>",
+                        "<a " + relAttr + " href=\"" + prefix + "http://com.blog.javatalks.ru/space%20space\"></a>"},
         };
     }
 
     @DataProvider
     public Object[][] preProcessingLocalLinks() {
         return new Object[][]{  // {"incoming link (before)", "outcoming link (after)"}
-                {"<a href=\"" + serverName + ".ru\"></a>", "<a href=\""+serverName+".ru\"></a>"},
+                {"<a href=\"" + serverName + ".ru\"></a>", "<a href=\"" + serverName + ".ru\"></a>"},
                 {"<a href=\"http://blog." + serverName + ".ru\"></a>",
-                        "<a href=\"http://blog." + serverName + ".ru\"></a>"}
+                        "<a href=\"http://blog." + serverName + ".ru\"></a>"},
+                {"<a href=\"http://blog." + serverName + ".ru/space space\"></a>",
+                        "<a href=\"http://blog." + serverName + ".ru/space%20space\"></a>"}
         };
     }
 }

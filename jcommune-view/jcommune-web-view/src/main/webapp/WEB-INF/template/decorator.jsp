@@ -37,12 +37,16 @@
   <jsp:include page="jsMessages.jsp"/>
 </script>
 
-
-<link rel="shortcut icon" type="image/x-icon"
-      href="${pageContext.request.contextPath}/admin/icon/ico?v=${infoChangeDate}"/>
+<%--
+These are favicons, that are shown on the browser tab near the site name. This image represents the web resource.
+According to this: http://www.whatwg.org/specs/web-apps/current-work/multipage/links.html#rel-icon there migth be
+several favicons of different types and user agents (browsers) should decide what icon to choose (there is no standard).
+I'm not quite sure whether we should add attributes like sizes though it looks like it's encouraged. To be discussed
+in the future.
+--%>
+<link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/admin/icon/ico?v=${infoChangeDate}"/>
 <link rel="icon" type="image/png" href="${pageContext.request.contextPath}/admin/icon/png?v=${infoChangeDate}"/>
 
-<%--@elvariable id="cmpName" type="java.lang.String"--%>
 <c:if test="${cmpName == null}">
   <spring:message code="label.error" var="cmpName"/>
 </c:if>
@@ -103,8 +107,6 @@
     <c:if test="${fn:contains(uriString, 'topics') or fn:contains(uriString, 'branches')}">
       <script type="text/javascript"
               src="${pageContext.request.contextPath}/resources/wro/topic.js?${project.version}"></script>
-      <link rel="stylesheet" type="text/css" media="all"
-            href="${pageContext.request.contextPath}/resources/wro/topic.css?${project.version}"/>
     </c:if>
   </c:when>
 
@@ -191,6 +193,7 @@
       </script>
       <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/purl.js"></script>
     </c:if>
 
     <c:if test="${fn:contains(uriString, 'posts')}">
@@ -236,6 +239,7 @@
       <script src="${pageContext.request.contextPath}/resources/javascript/app/permissionService.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/lib/purl.js"></script>
     </c:if>
+      
   </c:otherwise>
 </c:choose>
 

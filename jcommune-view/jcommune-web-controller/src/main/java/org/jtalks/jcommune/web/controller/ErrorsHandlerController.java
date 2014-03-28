@@ -66,4 +66,15 @@ public class ErrorsHandlerController {
     public String handleForbiddenError() {
         return userService.getCurrentUser().isAnonymous() ? "redirect:/login" : "/errors/accessDenied";
     }
+
+    @RequestMapping(value = "redirect/501")
+    public String handleNotImplementedRedirect() {
+        return "redirect:/errors/501";
+    }
+
+    @RequestMapping(value = "501")
+    @ResponseStatus(value = HttpStatus.NOT_IMPLEMENTED)
+    public String handleNotImplementedError() {
+        return "/errors/501";
+    }
 }

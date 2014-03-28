@@ -34,12 +34,14 @@
     </div>
     <span class="inline-block"></span>
 
-    <form:form action="${pageContext.request.contextPath}/plugins/configure/${pluginConfiguration.name}" method="POST"
-               modelAttribute="pluginConfiguration">
+    <spring:url var="action" value="/plugins/configure/{pluginName}">
+        <spring:param name="pluginName" value="${pluginConfiguration.name}" />
+    </spring:url>
+    <form:form action="${action}" method="POST" modelAttribute="pluginConfiguration">
         <%-- Plugin configuration values --%>
-        <form:hidden path="id" value="${pluginConfiguration.id}"/>
-        <form:hidden path="name" value="${pluginConfiguration.name}"/>
-        <form:hidden path="active" value="${pluginConfiguration.active}"/>
+        <form:hidden path="id"/>
+        <form:hidden path="name" />
+        <form:hidden path="active" />
         <%-- Plugin configuration properties. --%>
         <table id="plugins-table" class="table table-row table-bordered">
             <c:choose>
@@ -63,10 +65,10 @@
                     <tbody>
                     <c:forEach var="property" items="${pluginConfiguration.properties}" varStatus="status">
                         <%-- Property --%>
-                        <form:hidden path="properties[${status.index}].id" value="${property.id}"/>
                         <tr>
                             <td>
-                                <form:hidden path="properties[${status.index}].name" value="${property.name}"/>
+                                <form:hidden path="properties[${status.index}].id" />
+                                <form:hidden path="properties[${status.index}].name" />
                                 <c:choose>
                                     <c:when test="${labelsTranslation[property.name] != null}">
                                         <c:out value="${labelsTranslation[property.name]}" />
@@ -77,13 +79,13 @@
                                 </c:choose>
                             </td>
                             <td>
-                                <form:hidden path="properties[${status.index}].type" value="${property.type}"/>
+                                <form:hidden path="properties[${status.index}].type" />
                                 <spring:message code="label.plugins.plugin.property.type.${property.type}"
                                                 var="propertyTranslation"/>
                                 <c:out value="${propertyTranslation}"/>
                             </td>
                             <td>
-                                <form:input path="properties[${status.index}].value" value="${property.value}"/>
+                                <form:input path="properties[${status.index}].value" />
                             </td>
                         </tr>
                     </c:forEach>

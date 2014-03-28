@@ -86,9 +86,11 @@ function SwitchEditor(allowedUrls) {
         textboxelement.style.display = "";
         htmlcontentelement.style.display = "none";
         editorVisible = false;
-        $(".hide-on-preview").show();
-        $(".show-on-preview").hide();
-        $("#preview")[0].value = $labelPreview;
+        $('.hide-on-preview').show();
+        $('.show-on-preview').hide();
+        $('#preview')[0].value = $labelPreview;
+        $('.keymaps-caption').show();
+        $('#postBody').focus();
     }
     else { // enter preview
         content = textboxelement.value;
@@ -128,22 +130,20 @@ function bbcode2html(allowedUrls) {
             break;
         }
     }
-
     $.ajax({
         type:"POST",
         url:$root + '/' + previewUrl + '/bbToHtml', //todo
         dataType: 'json',
-        data:{bodyText:textdata},
+        data:{bodyText: decodeURI(textdata)},
         success:function (data) {
-
-            var result = decodeURI(data.html);
-
+            var result = data.html;
             if(data.is_invalid) {
                 ErrorUtils.removeErrorMessage(elId);
                 for(var a=0; a<data.errors.length; a++) {
                     ErrorUtils.addErrorMessage(elId, data.errors[a].defaultMessage);
                 }
             } else {
+                $('.keymaps-caption').hide();
                 $(".show-on-preview").show();
                 $(".hide-on-preview").hide();
                 $("#preview")[0].value = $labelEdit;
@@ -154,15 +154,18 @@ function bbcode2html(allowedUrls) {
                 result = result.replace(new RegExp(lowerThenPlaceholder, 'gi'), "&lt;");
 
                 editorVisible = true;
-            
+
 			    //enable code highlight
 			    prettyPrint();
+
                 //enable image preview
                 $('a.pretty-photo').prettyPhoto({social_tools:false});
                 $(elId).html(result.trim());
                 htmlcontentelement.style.display = "";
                 textboxelement.style.display = "none";
                 ErrorUtils.removeErrorMessage(elId);
+                //do code highlight
+                prettyPrint(null, '#htmlContent');
             }
         }
     });
@@ -181,105 +184,6 @@ function XMLtoString(elem) {
         serialized = elem.xml;
     }
     return serialized;
-}
-
-function closeTags() {
-    var currentContent = textboxelement.value;
-
-    currentContent = closeTag2(currentContent);
-
-    if(currentContent) {
-        /* start removing duplication close tags */
-        var openTags = currentContent.match(new RegExp("([\\[]{1}[\\s\\d\\w]{0,}(=(.*?))*[\\]]{1})", "ig"));
-        var closeTags = currentContent.match(new RegExp("([\\[]{1})([\\/]{1})(.*?)([\\]]{1})", "ig"));
-        var start = 0;
-        var newContent = "";
-        if((openTags && closeTags) && (openTags.length != closeTags.length)) {
-            for(a=0; a<closeTags.length; a++) {
-                var endStr = "";
-                if(openTags[a] != undefined) {
-                    start = currentContent.indexOf(closeTags[a], start)+closeTags[a].length;
-                    newContent = currentContent.slice(0, start);
-                } else {
-                    start = currentContent.indexOf(closeTags[a], start)+closeTags[a].length;
-                    endStr = currentContent.slice(start);
-                }
-            }
-            currentContent = newContent + endStr;
-        }
-        currentContent = currentContent.replace("[/user notified]", "[/user]");
-    }
-
-    currentContent = currentContent.replace(/\[size\]/gi, '[size=10]');
-    currentContent = currentContent.replace(/\[color\]/gi, '[color=000000]');
-    currentContent = currentContent.replace(/\[url\]/gi, '[url=]');
-    currentContent = currentContent.replace(/\[indent\]/gi, '[indent=15]');
-
-    content = currentContent;
-    textboxelement.value = content;
-    textboxelement.focus();
-}
-
-function closeTag2(text) {
-    var currentText = text;
-
-    {
-        var n = "&U999000A;";
-        var space = "&999U000B;";
-        var star = "&U999000C;";
-
-        currentText = currentText.replace(/\n/gi, n);
-        currentText = currentText.replace(/\s/gi, space);
-        currentText = currentText.replace(/\[\*\]/gi, star);
-    }
-
-    var regexpForOpenBBtag = new RegExp(patternForOpenBBtag, 'ig');
-    var regexpForOpenBBtagResult = regexpForOpenBBtag.exec(currentText);
-
-    // find first(!) open tag
-    if (regexpForOpenBBtagResult != null) {
-
-        var tagName = regexpForOpenBBtagResult[1];
-        var regTwoTags = '([^\\[\\]]*)(\\[(' + tagName + ')(=[^\\[\\]]*)?\\])(.*?)(\\[\/(' + tagName + ')\\])([^\\[\\]]*)(.*)';
-
-        var domRegExp = new RegExp(regTwoTags, 'ig');
-        /**
-         * Example: "some [size=10][i]text[/i] for[/size] a [b]example[/b]...".
-         * Tag name is "size".
-         *
-         * domResult[0] - full expression result
-         * domResult[1] - prefix ("some ")
-         * domResult[2] - full open tag ("[size=10]")
-         * domResult[3] - tag name ("size")
-         * domResult[4] - tag parameter value if exist ("=10")
-         * domResult[5] - tag content ("[i]text[/i] for")
-         * domResult[6] - close tag ("[/size]")
-         * domResult[7] - tag name ("size")
-         * domResult[8] - postffix without other tags (" a ")
-         * domResult[9] - postffix with other tags if exist ("[b]example[/b]...")
-         */
-
-        var domResult = domRegExp.exec(currentText);
-        if (domResult == null) {
-            // add close tag
-            currentText += "[/" + tagName + "]";
-            // update domRegExp
-            domRegExp = new RegExp(regTwoTags, 'ig');
-            domResult = domRegExp.exec(currentText);
-        }
-
-        if (domResult != null) {
-            currentText = closeTag2(domResult[1]) + domResult[2] + closeTag2(domResult[5]) + domResult[6] + closeTag2(domResult[8]) + closeTag2(domResult[9]);
-        }
-    }
-
-    {
-        currentText = currentText.replace(new RegExp(n, 'ig'), "\n");
-        currentText = currentText.replace(new RegExp(space, 'ig'), " ");
-        currentText = currentText.replace(new RegExp(star, 'ig'), "[*]");
-    }
-
-    return  currentText;
 }
 
 function doQuote() {
@@ -319,11 +223,41 @@ function doClick(command) {
                 AddList('[list][*]', '[/list]');
                 break;
             case 'listElement':
-                AddTag('[*]', '');
+                if (isInTag('[list]', '[/list]')) {
+                    AddTag('[*]','');
+                } else {
+                    AddList('[list][*]', '[/list]');
+                }
                 break;
         }
     }
 }
+
+function isInTag(t1, t2) {
+     var selectionStart = textboxelement.selectionStart;
+     var beforeText = textboxelement.value.substring(0,selectionStart);
+     var afterText = textboxelement.value.substring(selectionStart + 1);
+     var openIndex = beforeText.indexOf(t1);
+     var closeIndex = -1; 
+     if (openIndex != -1) {
+         closeIndex = beforeText.indexOf(t2, openIndex);
+     }
+     var open = false;
+     while (openIndex != -1) { 
+         if (closeIndex == -1) {
+             open = true;
+             break;
+         }
+         openIndex = beforeText.indexOf(t1, openIndex + 1);
+         closeIndex = beforeText.indexOf(t2, closeIndex + 1);
+     }
+     if (open && (afterText.indexOf(t2) != -1)) {
+         return true;
+     } else {
+         return false;
+     }
+}
+
 
 function doSize(selectedElement) {
     if (!editorVisible) {
@@ -369,9 +303,10 @@ function doLink() {
 
         var submitFunc = function(e){
             e.preventDefault();
+            var input = $("#urlId");
             if ($('#urlAltId')) {
                 mylink = $('#urlAltId').val();
-                var link = $.trim($('#urlId').val());
+                var link = $.trim(input.val());
                 if ((link != null) && (link != '')) {
                     if (mylink == null || mylink == '') {
                         mylink = link;
@@ -382,6 +317,7 @@ function doLink() {
                 } else {
                     ErrorUtils.removeErrorMessage('#urlId', $labelErrorsNotEmpty);
                     ErrorUtils.addErrorMessage('#urlId', $labelErrorsNotEmpty);
+                    input.focus();
                     return false;
                 }
             }
@@ -425,7 +361,8 @@ function doImage() {
 
         var submitFunc = function(e){
             e.preventDefault();
-            myimg = $('#imgId').val();
+            var input = $('#imgId');
+            myimg = $.trim(input.val());
             if ((myimg != null) && (myimg != '')) {
                 jDialog.closeDialog();
                 AddTag('[img]' + myimg, '[/img]', selection);
@@ -433,6 +370,7 @@ function doImage() {
             }else {
                 ErrorUtils.removeErrorMessage('#imgId', $labelErrorsNotEmpty);
                 ErrorUtils.addErrorMessage('#imgId', $labelErrorsNotEmpty);
+                input.focus();
                 return false;
             }
         }

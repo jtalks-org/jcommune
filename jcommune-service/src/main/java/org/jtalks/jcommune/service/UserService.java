@@ -16,17 +16,21 @@ package org.jtalks.jcommune.service;
 
 import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
+import org.jtalks.jcommune.service.dto.UserNotificationsContainer;
+import org.jtalks.jcommune.service.dto.UserSecurityContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.exceptions.UserTriesActivatingAccountAgainException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import org.jtalks.jcommune.model.entity.Language;
+import org.jtalks.jcommune.model.dto.LoginUserDto;
 
 /**
  * This interface should have methods which give us more abilities in manipulating User persistent entity.
@@ -64,7 +68,7 @@ public interface UserService extends EntityService<JCUser> {
     void updateLastLoginTime(JCUser user);
 
     /**
-     * Update user entity.
+     * Update user profile.
      *
      * @param editedUserId          an identifier of edited user
      * @param editedUserProfileInfo modified profile info holder
@@ -72,6 +76,30 @@ public interface UserService extends EntityService<JCUser> {
      * @throws NotFoundException if edited user doesn't exists in system
      */
     JCUser saveEditedUserProfile(long editedUserId, UserInfoContainer editedUserProfileInfo) throws NotFoundException;
+
+    /**
+     * Update user security settings.
+     *
+     *
+     * @param editedUserId          an identifier of edited user
+     * @param editedUserSecurityInfo modified security info holder
+     * @return edited user
+     * @throws NotFoundException if edited user doesn't exists in system
+     */
+    JCUser saveEditedUserSecurity(long editedUserId, UserSecurityContainer editedUserSecurityInfo)
+            throws NotFoundException;
+
+    /**
+     * Update user notification settings.
+     *
+     *
+     * @param editedUserId          an identifier of edited user
+     * @param editedUserNotificationsInfo modified notification info holder
+     * @return edited user
+     * @throws NotFoundException if edited user doesn't exists in system
+     */
+    JCUser saveEditedUserNotifications(long editedUserId, UserNotificationsContainer editedUserNotificationsInfo)
+            throws NotFoundException;
 
     /**
      * Performs the following:
@@ -91,8 +119,18 @@ public interface UserService extends EntityService<JCUser> {
      *
      * @param uuid unique entity identifier to locate user account
      * @throws NotFoundException if there is no user matching username given
+     * @throws UserTriesActivatingAccountAgainException
+     *                           if user tries to activate account for the second time
      */
-    void activateAccount(String uuid) throws NotFoundException;
+    void activateAccount(String uuid) throws NotFoundException, UserTriesActivatingAccountAgainException;
+
+    /**
+     * Get user by UUID
+     *
+     * @param uuid unique entity identifier to locate user account
+     * @throws NotFoundException if there is no user matching username given
+     */
+    JCUser getByUuid(String uuid) throws NotFoundException;
 
     /**
      * This method will be called automatically every hour to check
@@ -146,8 +184,8 @@ public interface UserService extends EntityService<JCUser> {
      * @return true if user was logged in. false if there were any errors during
      *         logging in.
      */
-    boolean loginUser(String username, String password, boolean rememberMe, HttpServletRequest request,
-                      HttpServletResponse response) throws UnexpectedErrorException, NoConnectionException;
+    boolean loginUser(LoginUserDto loginUserDto, HttpServletRequest request, HttpServletResponse response)
+            throws UnexpectedErrorException, NoConnectionException;
 
     /**
      * Parses the input of some post which contains [user] bb code,
@@ -174,9 +212,7 @@ public interface UserService extends EntityService<JCUser> {
 
     /**
      * Update user language.
-     * @param jcUser
-     * @param newLang 
      */
-    public void changeLanguage(JCUser jcUser, Language newLang);
-    
+    void changeLanguage(JCUser jcUser, Language newLang);
+
 }

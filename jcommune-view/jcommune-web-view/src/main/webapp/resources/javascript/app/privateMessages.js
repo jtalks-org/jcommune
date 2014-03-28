@@ -110,7 +110,7 @@ $(document).ready(function () {
         $(this).click(function (e) {
             e.preventDefault();
             var identifiers = [];
-            identifiers[0] = $('#PMId').val();
+            identifiers[0] = $('#pmId').val();
             deleteMessages(identifiers);
         });
     });

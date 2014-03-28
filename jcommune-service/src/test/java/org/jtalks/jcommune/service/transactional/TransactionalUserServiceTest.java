@@ -30,8 +30,11 @@ import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.Authenticator;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
+import org.jtalks.jcommune.service.dto.UserNotificationsContainer;
+import org.jtalks.jcommune.service.dto.UserSecurityContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.exceptions.UserTriesActivatingAccountAgainException;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
@@ -56,6 +59,7 @@ import java.util.Set;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
+import org.jtalks.jcommune.model.dto.LoginUserDto;
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import org.mockito.ArgumentMatcher;
 import static org.mockito.Matchers.any;
@@ -126,8 +130,7 @@ public class TransactionalUserServiceTest {
                 mailService,
                 base64Wrapper,
                 encryptionService,
-                postDao,
-                authenticator);
+                postDao, authenticator);
     }
 
     @Test
@@ -154,27 +157,23 @@ public class TransactionalUserServiceTest {
         when(securityService.getCurrentUserUsername()).thenReturn(StringUtils.EMPTY);
         when(userDao.getByUsername(anyString())).thenReturn(user);
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
-        when(encryptionService.encryptPassword(NEW_PASSWORD))
-                .thenReturn(NEW_PASSWORD_MD5_HASH);
+        when(encryptionService.encryptPassword(NEW_PASSWORD)).thenReturn(NEW_PASSWORD_MD5_HASH);
         when(userDao.isExist(USER_ID)).thenReturn(Boolean.TRUE);
         when(userDao.get(USER_ID)).thenReturn(user);
         String newAvatar = new String(new byte[12]);
 
-        JCUser editedUser = userService.saveEditedUserProfile(USER_ID, new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, 50, true, true,
-                "location", true));
+        JCUser editedUser = userService.saveEditedUserProfile(USER_ID,
+                new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL, SIGNATURE, newAvatar, 50, "location"));
 
         verify(userDao).saveOrUpdate(user);
-        assertUserUpdated(editedUser);
-        assertEquals(editedUser.getLanguage(), Language.ENGLISH, "language was not changed");
+        assertUserProfileUpdated(editedUser);
     }
 
-    private void assertUserUpdated(JCUser user) {
+    private void assertUserProfileUpdated(JCUser user) {
         assertEquals(user.getEmail(), EMAIL, "Email was not changed");
         assertEquals(user.getSignature(), SIGNATURE, "Signature was not changed");
         assertEquals(user.getFirstName(), FIRST_NAME, "first name was not changed");
         assertEquals(user.getLastName(), LAST_NAME, "last name was not changed");
-        assertEquals(user.getPassword(), NEW_PASSWORD_MD5_HASH, "new password was not accepted");
     }
 
     @Test(expectedExceptions = {NotFoundException.class})
@@ -182,9 +181,52 @@ public class TransactionalUserServiceTest {
         String newAvatar = new String(new byte[12]);
         when(userDao.isExist(USER_ID)).thenReturn(Boolean.FALSE);
 
-        userService.saveEditedUserProfile(USER_ID, new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, 50, true, true,
-                "location", true));
+        userService.saveEditedUserProfile(USER_ID,
+                new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL, SIGNATURE, newAvatar, 50, "location"));
+    }
+
+    @Test
+    public void editUserProfileShouldNotUpdateOtherSettings() throws NotFoundException {
+        JCUser user = user(USERNAME);
+        when(securityService.getCurrentUserUsername()).thenReturn(StringUtils.EMPTY);
+        when(userDao.getByUsername(anyString())).thenReturn(user);
+        when(userDao.getByEmail(EMAIL)).thenReturn(null);
+        when(encryptionService.encryptPassword(NEW_PASSWORD))
+                .thenReturn(NEW_PASSWORD_MD5_HASH);
+        when(userDao.isExist(USER_ID)).thenReturn(Boolean.TRUE);
+        when(userDao.get(USER_ID)).thenReturn(user);
+        String newAvatar = new String(new byte[12]);
+
+        JCUser editedUser = userService.saveEditedUserProfile(USER_ID,
+                new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL, SIGNATURE, newAvatar, 50, "location"));
+
+        verify(userDao).saveOrUpdate(user);
+
+        assertUserSecurityAndNotificationsAreSame(user, editedUser);
+        assertEquals(editedUser.getLanguage(), Language.ENGLISH, "language was changed");
+    }
+
+    private void assertUserSecurityAndNotificationsAreSame(JCUser user, JCUser editedUser) {
+        assertEquals(editedUser.getPassword(), user.getPassword(), "User password was changed");
+        assertEquals(editedUser.isMentioningNotificationsEnabled(),
+                user.isMentioningNotificationsEnabled(), "User mentioning notifications was changed");
+        assertEquals(editedUser.isSendPmNotification(),
+                user.isSendPmNotification(), "Send pm notification was changed");
+        assertEquals(editedUser.isAutosubscribe(), user.isAutosubscribe(), "Autosubscribe was changed");
+    }
+
+    @Test
+    public void editUserProfileSecurityShouldUpdatePassword() throws NotFoundException {
+        JCUser user = user(USERNAME);
+        when(encryptionService.encryptPassword(NEW_PASSWORD)).thenReturn(NEW_PASSWORD_MD5_HASH);
+        when(userDao.isExist(USER_ID)).thenReturn(Boolean.TRUE);
+        when(userDao.get(USER_ID)).thenReturn(user);
+
+        JCUser editedUser = userService.saveEditedUserSecurity(USER_ID,
+                new UserSecurityContainer(PASSWORD, NEW_PASSWORD));
+
+        verify(userDao).saveOrUpdate(user);
+        assertEquals(editedUser.getPassword(), NEW_PASSWORD_MD5_HASH, "new password was not accepted");
     }
 
     @Test
@@ -195,15 +237,81 @@ public class TransactionalUserServiceTest {
         when(encryptionService.encryptPassword(null)).thenReturn(null);
         when(userDao.isExist(USER_ID)).thenReturn(Boolean.TRUE);
         when(userDao.get(USER_ID)).thenReturn(user);
-        String newAvatar = new String(new byte[12]);
         String newPassword = null;
-        UserInfoContainer userInfo = new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, newPassword, SIGNATURE, newAvatar, 50, true, true,
-                "location", true);
-
-        JCUser editedUser = userService.saveEditedUserProfile(USER_ID, userInfo);
+        JCUser editedUser = userService.saveEditedUserSecurity(USER_ID,
+                new UserSecurityContainer(PASSWORD, newPassword));
 
         assertEquals(editedUser.getPassword(), user.getPassword());
+    }
+
+    @Test
+    public void editUserProfileSecurityShouldNotUpdateOtherSettings() throws NotFoundException {
+        JCUser user = user(USERNAME);
+        when(encryptionService.encryptPassword(NEW_PASSWORD)).thenReturn(NEW_PASSWORD_MD5_HASH);
+        when(userDao.isExist(USER_ID)).thenReturn(Boolean.TRUE);
+        when(userDao.get(USER_ID)).thenReturn(user);
+
+        JCUser editedUser = userService.saveEditedUserSecurity(USER_ID,
+                new UserSecurityContainer(PASSWORD, NEW_PASSWORD));
+
+        verify(userDao).saveOrUpdate(user);
+
+        assertUserProfileAndNotificationsAreSame(user, editedUser);
+        assertEquals(editedUser.getLanguage(), Language.ENGLISH, "language was changed");
+    }
+
+    private void assertUserProfileAndNotificationsAreSame(JCUser user, JCUser editedUser) {
+        assertEquals(editedUser.getEmail(), user.getEmail(), "Email was changed");
+        assertEquals(editedUser.getSignature(), user.getSignature(), "Signature was changed");
+        assertEquals(editedUser.getFirstName(), user.getFirstName(), "First name was changed");
+        assertEquals(editedUser.getLastName(), user.getLastName(), "Last name was changed");
+        assertEquals(editedUser.isMentioningNotificationsEnabled(),
+                user.isMentioningNotificationsEnabled(), "User mentioning notifications was changed");
+        assertEquals(editedUser.isSendPmNotification(),
+                user.isSendPmNotification(), "Send pm notification was changed");
+        assertEquals(editedUser.isAutosubscribe(), user.isAutosubscribe(), "Autosubscribe was changed");
+    }
+
+    @Test
+    public void editUserProfileNotificationsShouldUpdateMentioningAndSendPmMessages() throws NotFoundException {
+        JCUser user = user(USERNAME);
+        when(encryptionService.encryptPassword(NEW_PASSWORD)).thenReturn(NEW_PASSWORD_MD5_HASH);
+        when(userDao.isExist(USER_ID)).thenReturn(Boolean.TRUE);
+        when(userDao.get(USER_ID)).thenReturn(user);
+
+        JCUser editedUser = userService.saveEditedUserNotifications(USER_ID,
+                new UserNotificationsContainer(true, false, false));
+
+        verify(userDao).saveOrUpdate(user);
+
+        assertEquals(editedUser.isAutosubscribe(), true, "Autosubscribe was not changed");
+        assertEquals(editedUser.isSendPmNotification(), false, "Send pm notification was not changed");
+        assertEquals(editedUser.isMentioningNotificationsEnabled(), false,
+                "User mentioning notifications was not changed");
+    }
+
+    @Test
+    public void editUserProfileNotificationsShouldNotUpdateOtherSettings() throws NotFoundException {
+        JCUser user = user(USERNAME);
+        when(encryptionService.encryptPassword(NEW_PASSWORD)).thenReturn(NEW_PASSWORD_MD5_HASH);
+        when(userDao.isExist(USER_ID)).thenReturn(Boolean.TRUE);
+        when(userDao.get(USER_ID)).thenReturn(user);
+
+        JCUser editedUser = userService.saveEditedUserNotifications(USER_ID,
+                new UserNotificationsContainer(true, false, false));
+
+        verify(userDao).saveOrUpdate(user);
+
+        assertUserProfileAndSecurityAreSame(user, editedUser);
+        assertEquals(editedUser.getLanguage(), Language.ENGLISH, "language was changed");
+    }
+
+    private void assertUserProfileAndSecurityAreSame(JCUser user, JCUser editedUser) {
+        assertEquals(editedUser.getEmail(), user.getEmail(), "Email was changed");
+        assertEquals(editedUser.getSignature(), user.getSignature(), "Signature was changed");
+        assertEquals(editedUser.getFirstName(), user.getFirstName(), "First name was changed");
+        assertEquals(editedUser.getLastName(), user.getLastName(), "Last name was changed");
+        assertEquals(editedUser.getPassword(), user.getPassword(), "User password was changed");
     }
 
     @Test
@@ -216,9 +324,8 @@ public class TransactionalUserServiceTest {
         when(userDao.get(USER_ID)).thenReturn(user);
         String newAvatar = new String(new byte[0]);
 
-        JCUser editedUser = userService.saveEditedUserProfile(USER_ID, new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, 50, true, true,
-                "location", true));
+        JCUser editedUser = userService.saveEditedUserProfile(USER_ID,
+                new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL, SIGNATURE, newAvatar, 50, "location"));
 
         verify(userDao).saveOrUpdate(user);
         assertEquals(editedUser.getEmail(), EMAIL, "Email was changed");
@@ -315,14 +422,14 @@ public class TransactionalUserServiceTest {
     }
 
     @Test(expectedExceptions = NotFoundException.class)
-    public void testActivateNotFoundAccountTest() throws NotFoundException {
+    public void testActivateNotFoundAccountTest() throws NotFoundException, UserTriesActivatingAccountAgainException {
         when(userDao.getByUsername(USERNAME)).thenReturn(null);
 
         userService.activateAccount(USERNAME);
     }
 
-    @Test
-    public void testActivateAccountAlreadyEnabled() throws NotFoundException {
+    @Test(expectedExceptions = UserTriesActivatingAccountAgainException.class)
+    public void testActivateAccountAlreadyEnabled() throws NotFoundException, UserTriesActivatingAccountAgainException {
         JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);
         user.setEnabled(true);
         when(userDao.getByUuid(user.getUuid())).thenReturn(user);
@@ -380,10 +487,11 @@ public class TransactionalUserServiceTest {
             throws UnexpectedErrorException, NoConnectionException {
         HttpServletRequest httpRequest = new MockHttpServletRequest();
         HttpServletResponse httpResponse = new MockHttpServletResponse();
-        when(authenticator.authenticate("username", "password", true, httpRequest, httpResponse))
+        LoginUserDto loginUserDto = new LoginUserDto("username", "password", true, "192.168.1.1");
+        when(authenticator.authenticate(loginUserDto, httpRequest, httpResponse))
                 .thenReturn(true);
 
-        boolean result = userService.loginUser("username", "password", true, httpRequest, httpResponse);
+        boolean result = userService.loginUser(loginUserDto, httpRequest, httpResponse);
 
         assertTrue(result, "Login user with correct credentials should be successful.");
     }
@@ -393,10 +501,11 @@ public class TransactionalUserServiceTest {
             throws UnexpectedErrorException, NoConnectionException {
         HttpServletRequest httpRequest = new MockHttpServletRequest();
         HttpServletResponse httpResponse = new MockHttpServletResponse();
-        when(authenticator.authenticate("", "password", true, httpRequest, httpResponse))
+        LoginUserDto loginUserDto = new LoginUserDto("", "password", true, "192.168.1.1");
+        when(authenticator.authenticate(loginUserDto, httpRequest, httpResponse))
                 .thenReturn(false);
 
-        boolean result = userService.loginUser("", "password", true, httpRequest, httpResponse);
+        boolean result = userService.loginUser(loginUserDto, httpRequest, httpResponse);
 
         assertFalse(result, "Login user with bad credentials should fail.");
     }
@@ -478,6 +587,7 @@ public class TransactionalUserServiceTest {
         user.setLastName(LAST_NAME);
         user.setAvatar(new byte[10]);
         user.setMentioningNotificationsEnabled(true);
+        user.setSendPmNotification(true);
         return user;
     }
 

@@ -56,6 +56,7 @@
         <prop key="org.jtalks.jcommune.service.exceptions.NotFoundException">redirect:/errors/404</prop>
         <prop key="org.springframework.security.access.AccessDeniedException">redirect:/errors/403</prop>
         <prop key="org.springframework.beans.TypeMismatchException">redirect:/errors/400</prop>
+        <prop key="org.springframework.security.web.authentication.rememberme.CookieTheftException">/login?login_error=2</prop>
       </props>
     </property>
     <property name="warnLogCategory" value="org.jtalks.jcommune"/>
@@ -156,6 +157,8 @@
           <mvc:mapping path="/sections/**"/>
           <mvc:mapping path="/pm/**"/>
           <mvc:mapping path="/"/>
+          <mvc:exclude-mapping path="/users/*/avatar"/>
+          <mvc:exclude-mapping path="/login"/>
           <bean id="redirectInterceptor" class="org.jtalks.jcommune.web.interceptors.RefererKeepInterceptor"/>
       </mvc:interceptor>
   </mvc:interceptors>

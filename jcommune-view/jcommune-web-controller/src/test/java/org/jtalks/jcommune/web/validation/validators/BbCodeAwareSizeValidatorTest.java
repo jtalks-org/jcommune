@@ -16,12 +16,12 @@ package org.jtalks.jcommune.web.validation.validators;
 
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static org.mockito.MockitoAnnotations.initMocks;
+import org.mockito.Spy;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
@@ -30,13 +30,13 @@ import static org.testng.Assert.assertTrue;
  */
 public class BbCodeAwareSizeValidatorTest {
 
-    @BbCodeAwareSize(min = 5, max = 10)
+    @BbCodeAwareSize(min = 3, max = 25)
     public String value;
 
     private BbCodeAwareSizeValidator validator;
     
-    @Mock
-    private BBCodeService bbCodeService;
+    @Spy
+    private BBCodeService bbCodeService = new BBCodeService();
 
     @BeforeMethod
     public void init() throws NoSuchFieldException {
@@ -63,14 +63,14 @@ public class BbCodeAwareSizeValidatorTest {
 
     @Test
     public void testValueTooLong() {
-        String source = "123456789010";
+        String source = "12345678901234567890123456";
 
         assertFalse(validator.isValid(source, null));
     }
 
     @Test
     public void testValueTooShort() {
-        String source = "123";
+        String source = "12";
         Mockito.when(bbCodeService.stripBBCodes(source)).thenReturn(source);
         
         assertFalse(validator.isValid(source, null));
@@ -85,8 +85,39 @@ public class BbCodeAwareSizeValidatorTest {
     
     @Test
     public void testMaxLengthWithBbCodes() {
-    	String source = "[b][b]123[/b][/b]";
-    	
+    	String source = "[b]123456789012345678[/b]";
+        validator.isValid(source, null);
+    	assertTrue(validator.isValid(source, null));
+    }
+    
+    @Test
+    public void testTooLongWithBbCodes() {
+        String source = "[b][b]1234567890123[/b][/b]";
+        
     	assertFalse(validator.isValid(source, null));
+    }
+    
+    @Test
+    public void testTooShortWithBbCodes() {
+        String source = "[b][b]12[/b][/b]";
+        
+    	assertFalse(validator.isValid(source, null));
+    }
+    
+    @Test
+    public void testBBCodesOnly() {
+        String source = "[b][b][/b][/b]";
+        
+    	assertFalse(validator.isValid(source, null));
+    }
+    
+    @Test
+    public void testBBCodesListOnly() {
+        String source = "[list]\n" +
+                "[*]\n" +
+                "[*]\n" +
+                "[/list]";
+        
+        assertFalse(validator.isValid(source, null));
     }
 }

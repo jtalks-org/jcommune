@@ -159,6 +159,29 @@ public class GroupsPermissions<T extends JtalksPermission> {
     }
 
     /**
+     * Access List Map is a internal object - map where key is the permission of type <T extends JtalksPermission> and
+     * the value is GroupAccessList object containing groups which have this permission ("allowed")
+     * or do not have ("restricted").
+     * This method returns copy of the Access List Map where keys are the same like in the original map.
+     * Values (GroupAccessList) are newly created objects based on data from the values in the original map
+     * but they were created with unmodified list with data from the original allowed and restricted group lists.
+     * @return copy of the Access List Map
+     */
+    public Map<T, GroupAccessList> getAccessListMap() {
+        Map<T, GroupAccessList > accessListMapCopy = new HashMap <T, GroupAccessList>();
+
+        Set<T> permissions = getPermissions();
+        for (T permission : permissions) {
+            GroupAccessList groupAccessList = new GroupAccessList();
+            groupAccessList.setAllowed(getAllowed(permission));
+            groupAccessList.setRestricted(getRestricted(permission));
+            accessListMapCopy.put(permission, groupAccessList);
+        }
+
+        return accessListMapCopy;
+    }
+
+    /**
      * Gets groups permissions with all the profile permissions but no groups restricted or allowed.
      *
      * @return groups permissions with all the profile permissions but no groups restricted or allowed

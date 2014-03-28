@@ -43,7 +43,8 @@ $(function () {
                 Utils.createFormElement($labelUsername, 'username', 'text', 'first') +
                     Utils.createFormElement($labelEmail, 'email', 'text') +
                     Utils.createFormElement($labelPassword, 'password', 'password') +
-                    Utils.createFormElement($labelPasswordConfirmation, 'passwordConfirm', 'password');
+                    Utils.createFormElement($labelPasswordConfirmation, 'passwordConfirm', 'password') +
+                    Utils.createFormElement($lableHoneypotCaptcha, 'honeypotCaptcha', 'text', 'hide-element');
             for (var pluginId in params) {
                 bodyContent += params[pluginId];
             }
@@ -73,30 +74,27 @@ $(function () {
                             });
                         }
                         else {
-                            if (resp.result.customError) {
-                                if (resp.result.customError == 'connectionError') {
-                                    jDialog.createDialog({
-                                        type: jDialog.alertType,
-                                        bodyMessage: $labelRegistrationConnectionError
-                                    });
-                                } else {
-                                    jDialog.createDialog({
-                                        type: jDialog.alertType,
-                                        bodyMessage: $labelRegistrationFailture
-                                    });
-                                }
-                            } else {
+                            if (!resp.result.customError) {
                                 // we need to remove complex part (userDto. and userDto.captchas[..]) of complex fields,
                                 // such as userDto.email, because these fields are used as elements ids,
                                 // and jquery selector doesn't work with id containing dot.
                                 for (var i = 0; i < resp.result.length; i++) {
                                     resp.result[i].field = resp.result[i].field.replace(/userDto.captchas\[/g, '')
-                                        .replace(/]/g, '').replace(/userDto./g,'');
+                                        .replace(/]/g, '').replace(/userDto./g, '');
+                                    if (resp.result[i].field == "passwordConfirm") {
+                                        $('#password').val('');
+                                        $('#passwordConfirm').val('');
+                                    }
                                 }
                                 // remove previous errors and show new errors
                                 jDialog.prepareDialog(jDialog.dialog);
                                 refreshCaptcha(jDialog.dialog);
                                 jDialog.showErrors(jDialog.dialog, resp.result, '', '');
+                            } else {
+                                jDialog.createDialog({
+                                    type: jDialog.alertType,
+                                    bodyMessage: getCustomErrorMessage(resp.result.customError)
+                                });
                             }
                         }
                     },
@@ -177,9 +175,18 @@ function composeQuery(signupDialog) {
     var query = 'userDto.username=' + encodeURIComponent(signupDialog.find('#username').val()) +
         '&userDto.password=' + encodeURIComponent(signupDialog.find('#password').val()) +
         '&passwordConfirm=' + encodeURIComponent(signupDialog.find('#passwordConfirm').val()) +
-        '&userDto.email=' + encodeURIComponent(signupDialog.find('#email').val());
+        '&userDto.email=' + encodeURIComponent(signupDialog.find('#email').val()) + 
+        '&honeypotCaptcha=' +encodeURIComponent(signupDialog.find('#honeypotCaptcha').val());
     signupDialog.find('.captcha').each(function() {
         query += '&userDto.captchas[' + $(this).attr('id') + ']=' + encodeURIComponent($(this).val());
     });
     return query;
+}
+
+function getCustomErrorMessage(customError) {
+    switch (customError) {
+        case 'connectionError' : return $labelRegistrationConnectionError;
+        case 'honeypotCaptchaNotNull' : return $labelHoneypotCaptchaFilled;
+        default : return $labelRegistrationFailture;
+    }
 }

@@ -14,12 +14,12 @@
  */
 package org.jtalks.jcommune.service.dto;
 
-import org.jtalks.jcommune.model.entity.Language;
-
 /**
  * This class is used when transferring user profile updates
  * from web tier to the service layer. For various reasons
  * we can't use domain model class and MVC command object.
+ * Dto's marked with validation annotations located in controller layer,
+ * and in some cases we need another set of fields.
  *
  * @author Evgeniy Naumenko
  */
@@ -28,14 +28,9 @@ public class UserInfoContainer {
     private String firstName;
     private String lastName;
     private String email;
-    private String currentPassword;
-    private String newPassword;
     private String signature;
     private String b64EncodedAvatar;
     private int pageSize;
-    private boolean autosubscribe;
-    private boolean mentioningNotificationsEnabled;
-    private boolean sendPmNotification;
     private String location;
 
     /**
@@ -44,32 +39,20 @@ public class UserInfoContainer {
      * @param firstName       user's first name
      * @param lastName        user's last name
      * @param email           email set for user
-     * @param currentPassword current user password to verify identity, may be null is we're not changing password
-     * @param newPassword     new password to be set, may be null is we're not changing password
      * @param signature       user's signature
      * @param avatar          B64 encoded avatar
      * @param pageSize        page size chosen
-     * @param autosubscribe   autosubscribe to topic/post flag
-     * @param mentioningNotificationsEnabled whether email notifications are send when user was mentioned in forum
      * @param location        geographic user location
-     * @param sendPmNotification send notification when get PM
      */
-    public UserInfoContainer(String firstName, String lastName, String email, String currentPassword,
-                             String newPassword, String signature, String avatar, int pageSize,
-                             boolean autosubscribe, boolean mentioningNotificationsEnabled,
-                             String location, boolean sendPmNotification) {
+    public UserInfoContainer(String firstName, String lastName, String email, String signature, String avatar,
+                             int pageSize, String location) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.currentPassword = currentPassword;
-        this.newPassword = newPassword;
         this.signature = signature;
         this.b64EncodedAvatar = avatar;
         this.pageSize = pageSize;
-        this.autosubscribe = autosubscribe;
-        this.mentioningNotificationsEnabled = mentioningNotificationsEnabled;
         this.location = location;
-        this.sendPmNotification = sendPmNotification;
     }
 
     /**
@@ -103,14 +86,6 @@ public class UserInfoContainer {
     }
 
     /**
-     * @return password
-     */
-    public String getCurrentPassword() {
-        return currentPassword;
-    }
-
-
-    /**
      * @return user signature
      */
     public String getSignature() {
@@ -125,52 +100,9 @@ public class UserInfoContainer {
     }
 
     /**
-     * @see org.jtalks.jcommune.model.entity.JCUser#isAutosubscribe()
-     */
-    public boolean isAutosubscribe() {
-        return autosubscribe;
-    }
-
-    /**
-     * @see org.jtalks.jcommune.model.entity.JCUser#setAutosubscribe(boolean)
-     */
-    public void setAutosubscribe(boolean autosubscribe) {
-        this.autosubscribe = autosubscribe;
-    }
-    
-    /**
-     * @see org.jtalks.jcommune.model.entity.JCUser#isMentioningNotificationsEnabled()
-     */
-    public boolean isMentioningNotificationsEnabled() {
-        return mentioningNotificationsEnabled;
-    }
-    
-    /**
-     * @see org.jtalks.jcommune.model.entity.JCUser#setMentioningNotificationsEnabled(boolean)
-     */
-    public void setMentioningNotificationsEnabled(
-            boolean mentioningNotificationsEnabled) {
-        this.mentioningNotificationsEnabled = mentioningNotificationsEnabled;
-    }
-
-    /**
-     * @return new password set during profile updates
-     */
-    public String getNewPassword() {
-        return newPassword;
-    }
-
-    /**
      * @return user location
      */
     public String getLocation() {
         return location;
-    }
-
-    /**
-     * @return send pm notification or not
-     */
-    public boolean isSendPmNotification() {
-        return sendPmNotification;
     }
 }

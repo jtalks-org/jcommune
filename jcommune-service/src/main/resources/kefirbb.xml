@@ -348,6 +348,6 @@ get XSS attacks.</p>-->
     <!-- User mentioning -->
     <code name="user">
         <pattern>[user=<var name="mentionedUserProfileLink"/>]<var name="mentionedUser" inherit="true"/>[/user]</pattern>
-        <template>&lt;a style=&quot;font-weight:bold;text-decoration:underline;&quot; href=&quot;<var name="mentionedUserProfileLink"/>&quot;&gt;<var name="mentionedUser"/>&lt;/a&gt;</template>
+        <template>&lt;a  href=&quot;<var name="mentionedUserProfileLink"/>&quot; class=&quot;mentioned-user&quot; &gt;<var name="mentionedUser"/>&lt;/a&gt;</template>
     </code>
 </configuration>

@@ -136,7 +136,7 @@
     <constructor-arg name="userService" ref="userService"/>
   </bean>
 
-  <bean id="userService" class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
+  <bean id="abstractUserService" abstract="true">
     <constructor-arg ref="userDao"/>
     <constructor-arg ref="groupDao"/>
     <constructor-arg ref="securityService"/>
@@ -144,10 +144,19 @@
     <constructor-arg ref="base64Wrapper"/>
     <constructor-arg ref="encryptionService"/>
     <constructor-arg ref="postDao"/>
-    <constructor-arg ref="authenticator"/>
   </bean>
 
-  <bean id="authenticator" class="org.jtalks.jcommune.service.transactional.TransactionalAuthenticator">
+  <bean id="userService" parent="abstractUserService"
+        class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
+    <constructor-arg index="7" ref="authenticator"/>
+  </bean>
+
+  <bean id="plainPasswordUserService" parent="abstractUserService"
+        class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
+    <constructor-arg index="7" ref="plainPasswordAuthenticator"/>
+  </bean>
+
+  <bean id="abstractAuthenticator" abstract="true">
     <constructor-arg ref="pluginLoader"/>
     <constructor-arg ref="userDao"/>
     <constructor-arg ref="groupDao"/>
@@ -155,21 +164,42 @@
     <constructor-arg ref="mailService"/>
     <constructor-arg ref="avatarService"/>
     <constructor-arg ref="pluginService"/>
-    <constructor-arg ref="authenticationManager"/>
     <constructor-arg ref="securityContextFacade"/>
     <constructor-arg ref="rememberMeServices"/>
     <constructor-arg ref="concurrentSessionControlStrategy"/>
     <constructor-arg ref="validator"/>
   </bean>
+  <!--Is used during usual user log in.-->
+  <bean id="authenticator" parent="abstractAuthenticator"
+        class="org.jtalks.jcommune.service.transactional.TransactionalAuthenticator">
+    <constructor-arg index="11" ref="authenticationManager"/>
+  </bean>
+  <!--
+  Is needed for the cases when we activate user account and he doesn't need to enter the password. Therefore we have
+  only its password hash from DB and we consider it as a plain password and check it for equity. The check itself is
+  done by AuthenticationManager.
+  -->
+  <bean id="plainPasswordAuthenticator" parent="abstractAuthenticator"
+        class="org.jtalks.jcommune.service.transactional.TransactionalAuthenticator">
+    <constructor-arg index="11">
+      <bean id="plainPasswordAuthenticationManager" class="org.springframework.security.authentication.ProviderManager">
+        <property name="providers">
+          <list>
+            <bean class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+              <property name="userDetailsService" ref="securityService"/>
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </constructor-arg>
+  </bean>
 
-  <bean id="userContactsService"
-        class="org.jtalks.jcommune.service.transactional.TransactionalUserContactsService">
+  <bean id="userContactsService" class="org.jtalks.jcommune.service.transactional.TransactionalUserContactsService">
     <constructor-arg ref="userContactsDao"/>
     <constructor-arg ref="userService"/>
   </bean>
 
-  <bean id="postService"
-        class="org.jtalks.jcommune.service.transactional.TransactionalPostService">
+  <bean id="postService" class="org.jtalks.jcommune.service.transactional.TransactionalPostService">
     <constructor-arg ref="postDao"/>
     <constructor-arg ref="topicDao"/>
     <constructor-arg ref="securityService"/>
@@ -192,6 +222,7 @@
     <constructor-arg ref="securityContextFacade"/>
     <constructor-arg ref="aclGroupPermissionEvaluator"/>
     <constructor-arg ref="branchLastPostService"/>
+    <constructor-arg ref="lastReadPostService"/>
   </bean>
 
   <bean id="topicFetchService"

@@ -37,6 +37,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Serves topic management web requests
@@ -166,7 +167,6 @@ public class TopicController {
         topic.setBranch(branch);
         Topic createdTopic = createTopicWithLockHandling(topic, topicDto);
 
-        lastReadPostService.markTopicAsRead(createdTopic);
         return new ModelAndView(REDIRECT_URL + createdTopic.getId());
     }
 
@@ -174,7 +174,11 @@ public class TopicController {
         for (int i = 0; i < UserController.LOGIN_TRIES_AFTER_LOCK; i++) {
             try {
                 return topicModificationService.createTopic(topic, topicDto.getBodyText());
-            } catch (HibernateOptimisticLockingFailureException e) {
+            } catch (HibernateOptimisticLockingFailureException lockingFailureException) {
+                try {
+                    TimeUnit.MILLISECONDS.sleep(UserController.SLEEP_MILLISECONDS_AFTER_LOCK);
+                } catch (InterruptedException e) {
+                }
             }
         }
         try {

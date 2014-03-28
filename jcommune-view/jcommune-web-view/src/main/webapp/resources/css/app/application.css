@@ -654,7 +654,6 @@ div.anchor {
 
 .remove-links {
     max-width: 180px;
-    width: 180px;
 }
 
 .hide-element {
@@ -832,8 +831,115 @@ div.add-branch-button:hover {
 
 .post-content-body {
     overflow: auto;
+    line-height: 16px;
+    font-size: 13px;
+    text-align: left;
+    vertical-align: top;
 }
 
 .post-content-body ul {
     margin: 0 0 0 18px !important;
+}
+
+.permission-type {
+    padding: 7px 10px;
+    width: 100px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.permission-allowed {
+    color: #292;
+}
+
+.permission-restricted {
+    color: #922;
+}
+
+.permissions-list {
+    margin: 0px;
+    padding: 0px;
+}
+
+.permissions-list li {
+    border: 2px solid #D8D7D7;
+    background-color: rgb(235, 235, 235);
+    list-style: none;
+    margin-right: 20px;
+    margin-top: 5px;
+    padding: 5px 10px;
+    -moz-border-radius: 10px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.permissions-container {
+    margin-left: 120px;
+    padding: 0px;
+}
+
+.permissions-branch-header {
+    overflow: hidden;
+    margin: 20px 0px;
+}
+
+.edit-permissions-button a {
+    color: rgb(128, 128, 128);
+    text-decoration: none;
+}
+
+#moderators-group-name {
+    padding: 0px 15px;
+}
+
+.panel {
+    margin-bottom: 15px;
+    background-color: #ffffff;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.panel-body {
+    padding: 5px;
+}
+
+
+.panel-body:after {
+    clear: both;
+}
+
+.panel-heading {
+    padding: 5px 15px;
+    border-bottom: 1px solid transparent;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+}
+
+.panel-title {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 16px;
+    color: inherit;
+}
+
+.panel-title > a {
+    color: inherit;
+}
+
+.panel-primary {
+    border-color: rgb(163, 163, 163);
+}
+
+.panel-primary > .panel-heading {
+    color: #000000;
+    font-weight: bold;
+    background-color: rgb(200, 200, 200);
+    border-color: rgb(163, 163, 163);
+}
+
+a.mentioned-user {
+    color: inherit;
+    font-weight: bold;
 }

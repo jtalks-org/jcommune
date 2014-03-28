@@ -310,9 +310,9 @@
                                 permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
             <c:if test='${userId != post.userCreated.id}'>
               <div>
-                <a href="${pageContext.request.contextPath}/pm/new/${post.userCreated.id}"
+                <a href="${pageContext.request.contextPath}/pm/new?recipientId=${post.userCreated.id}"
                    title='<spring:message code="label.pm.send"/>'>
-                  <img src="${pageContext.request.contextPath}/resources/images/message-icon.png"/>
+                  <img alt='<spring:message code="label.pm.send"/>' src="${pageContext.request.contextPath}/resources/images/message-icon.png"/>
                 </a>
               </div>
             </c:if>

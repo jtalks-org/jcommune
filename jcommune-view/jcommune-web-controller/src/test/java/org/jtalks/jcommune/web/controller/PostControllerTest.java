@@ -14,7 +14,10 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
@@ -26,7 +29,6 @@ import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
@@ -169,34 +171,6 @@ public class PostControllerTest {
     }
 
     @Test
-    public void testAnswer() throws NotFoundException {
-        //invoke the object under test
-        ModelAndView mav = controller.addPost(TOPIC_ID);
-
-        //check expectations
-        verify(topicFetchService).get(TOPIC_ID);
-        verify(breadcrumbBuilder).getForumBreadcrumb(Matchers.<Topic>any());
-
-        //check result
-        this.assertAnswerMavIsCorrect(mav);
-    }
-
-    @Test(expectedExceptions = AccessDeniedException.class)
-    public void testAnswerForCodeReview() throws NotFoundException {
-        Topic topic = new Topic();
-        topic.setCodeReview(new CodeReview());
-        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
-
-        controller.addPost(TOPIC_ID);
-    }
-
-    @Test(expectedExceptions = NotFoundException.class)
-    public void testAnswerForUnexistingTopic() throws NotFoundException {
-        doThrow(new NotFoundException()).when(topicFetchService).get(TOPIC_ID);
-        controller.addPost(TOPIC_ID);
-    }
-
-    @Test
     public void testGetQuotedAjax() throws NotFoundException {
         String expected = "[quote=\"user\"]" + POST_CONTENT + "[/quote]";
         when(bbCodeService.quote(POST_CONTENT, user)).thenReturn(expected);
@@ -215,52 +189,6 @@ public class PostControllerTest {
         JsonResponse response = controller.getQuote(post.getId(), selection);
 
         assertEquals(response.getResult(), expected);
-    }
-
-    @Test
-    public void testQuotedAnswer() throws NotFoundException {
-        String expected = "[quote=\"user\"]" + POST_CONTENT + "[/quote]";
-        when(bbCodeService.quote(POST_CONTENT, user)).thenReturn(expected);
-
-        ModelAndView mav = controller.addPostWithQuote(post.getId(), null);
-        //check expectations
-
-        PostDto actual = assertAndReturnModelAttributeOfType(mav, "postDto", PostDto.class);
-        assertEquals(actual.getBodyText(), expected);
-    }
-
-    @Test(expectedExceptions = AccessDeniedException.class)
-    public void testQuotedAnswerForCodeReview() throws NotFoundException {
-        Post post = mock(Post.class);
-        Topic topic = new Topic();
-        topic.setId(TOPIC_ID);
-        topic.setCodeReview(new CodeReview());
-
-        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
-        when(postService.get(POST_ID)).thenReturn(post);
-        when(post.getTopic()).thenReturn(topic);
-
-        controller.addPostWithQuote(POST_ID, null);
-    }
-
-    @Test
-    public void testPartialQuotedAnswer() throws NotFoundException {
-        String selection = "selected content";
-        String expected = "[quote=\"user\"]" + selection + "[/quote]";
-        when(postService.get(anyLong())).thenReturn(post);
-        when(bbCodeService.quote(selection, user)).thenReturn(expected);
-
-        ModelAndView mav = controller.addPostWithQuote(TOPIC_ID, selection);
-        //check expectations
-
-        PostDto actual = assertAndReturnModelAttributeOfType(mav, "postDto", PostDto.class);
-        assertEquals(actual.getBodyText(), expected);
-    }
-
-    @Test(expectedExceptions = NotFoundException.class)
-    public void testQuotedAnswerForUnexistingTopic() throws NotFoundException {
-        doThrow(new NotFoundException()).when(postService).get(anyLong());
-        controller.addPostWithQuote(TOPIC_ID, "");
     }
 
     @Test

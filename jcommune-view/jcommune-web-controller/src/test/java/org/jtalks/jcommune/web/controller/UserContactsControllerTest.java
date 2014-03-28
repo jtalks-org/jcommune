@@ -69,53 +69,6 @@ public class UserContactsControllerTest {
         assertEquals(types[0].getTypeName(), expectedType.getTypeName());
     }
 
-    @Test
-    public void testAddContactSuccess() throws NotFoundException {
-    	long ownerId = 1l;
-        UserContactType contactType = createUserContactType();
-        UserContact contact = createUserContact(ownerId, contactType);
-        UserContactDto incomingContactDto = new UserContactDto(contact);
-
-    	when(service.addContact(ownerId, contact.getValue(), contact.getType().getId())).thenReturn(contact);
-
-        JsonResponse response = controller.addContact(incomingContactDto, result);
-
-        UserContactDto contactDto = (UserContactDto) response.getResult();
-    	assertEquals(contactDto.getTypeId(), contactType.getId(), "Type of contact should be the same.");
-    	assertEquals(contactDto.getValue(), contact.getValue(), "Type of contact should be the same.");
-    	assertEquals(contactDto.getOwnerId(), Long.valueOf(ownerId), "Owner id should be the same.");
-    }
-
-    @Test
-    public void testAddContactShouldFailIfValidationErrorsOccurs() throws NotFoundException {
-        UserContactDto incomingContactDto = new UserContactDto();
-
-        when(result.hasErrors()).thenReturn(true);
-
-        JsonResponse response = controller.addContact(incomingContactDto, result);
-
-        assertEquals(response.getStatus(), JsonResponseStatus.FAIL, "Status should be FAIL.");
-    }
-    
-    @Test
-    public void removeContactShouldRemoveItInRepository() throws NotFoundException {
-    	long contactId = 1l;
-    	long contactOwnerId = 2l;
-    	
-    	controller.removeContact(contactOwnerId, contactId);
-    	
-    	verify(service).removeContact(contactOwnerId, contactId);
-    }
-    
-    @Test(expectedExceptions = NotFoundException.class)
-    public void removeContactShouldNotRemoveItIfOwnerWasNotFound() throws NotFoundException {
-        long contactId = 1l;
-        long contactOwnerId = 2l;
-        doThrow(new NotFoundException()).when(service).removeContact(contactOwnerId, contactId);
-        
-        controller.removeContact(contactOwnerId, contactId);
-    }
-
     private UserContact createUserContact(long ownerId, UserContactType contactType){
         JCUser owner = new JCUser("username", "email", "password");
         owner.setId(ownerId);

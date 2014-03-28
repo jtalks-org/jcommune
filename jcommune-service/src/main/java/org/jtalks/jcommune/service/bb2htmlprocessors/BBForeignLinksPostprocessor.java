@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
  */
 public class BBForeignLinksPostprocessor implements TextPostProcessor {
 
-    private static final String URL_PATTERN = "<a .*?href=(\"|').*?(\"|')";
+    private static final String URL_PATTERN = "(<a .*?href=(\"|').*?(\"|')|<img .*?src=(\"|').*?(\"|'))";
 
     /**
      * Process incoming text with adding prefix "/out" to foreign links. This prefix
@@ -56,12 +56,20 @@ public class BBForeignLinksPostprocessor implements TextPostProcessor {
         Pattern linkPattern = Pattern.compile(URL_PATTERN, Pattern.DOTALL);
         Matcher linkMatcher = linkPattern.matcher(decodedText);
         String href;
-
+        String encoded;
         while (linkMatcher.find()) {
             href = linkMatcher.group();
-            if (!href.contains(serverName) && href.split("(http|ftp|https)://", 2).length == 2) {
-                decodedText = decodedText
-                        .replace(href, href.replace("href=\"", "rel=\"nofollow\" href=\"" + getHrefPrefix()));
+            encoded = href.replaceAll(" ", "%20");
+            if (!href.contains(serverName) && href.split("(http|ftp|https)://", 2).length == 2
+                    && href.startsWith("<a")) {
+                decodedText = decodedText.replace(href,
+                        encoded.replaceFirst("<a.*href=\"", "<a rel=\"nofollow\" href=\"" + getHrefPrefix()));
+            } else if(href.startsWith("<a")){
+                decodedText = decodedText.replace(href,
+                        encoded.replaceFirst("<a.*href=\"", "<a href=\""));
+            } else if(href.startsWith("<img")) {
+                decodedText = decodedText.replace(href,
+                        encoded.replaceFirst("<img.*src=\"", "<img alt=\" \" class=\"thumbnail\" src=\""));
             }
         }
 

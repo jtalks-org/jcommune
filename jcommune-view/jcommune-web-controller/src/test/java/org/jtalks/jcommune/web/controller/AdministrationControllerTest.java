@@ -16,6 +16,9 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.common.model.entity.ComponentType;
+import org.jtalks.common.model.permissions.BranchPermission;
+import org.jtalks.jcommune.model.dto.GroupsPermissions;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.ComponentService;
@@ -27,7 +30,10 @@ import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.util.ImageControllerUtils;
 import org.mockito.Mock;
 import org.springframework.context.MessageSource;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.ObjectError;
 import org.testng.annotations.BeforeMethod;
@@ -40,6 +46,8 @@ import java.util.Locale;
 import static org.jgroups.util.Util.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 
@@ -68,6 +76,8 @@ public class AdministrationControllerTest {
 
     @Mock
     BranchService branchService;
+
+    private MockMvc mockMvc;
 
     //
     private AdministrationController administrationController;
@@ -159,5 +169,24 @@ public class AdministrationControllerTest {
         JsonResponse response = administrationController.setBranchInformation(branchDto, bindingResult, Locale.UK);
 
         assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
+    }
+
+    @Test
+    public void showBranchPermissionsShouldReturnModelAndViewWithBranchAndPermissionsInformation()
+            throws Exception {
+        long branchId = 42;
+        Component component = new Component();
+        component.setId(1L);
+        when(componentService.getComponentOfForum()).thenReturn(component);
+
+        GroupsPermissions<BranchPermission> expectedPermissions = new GroupsPermissions<>();
+        Branch expectedBranch = new Branch("name", "description");
+        when(branchService.get(branchId)).thenReturn(expectedBranch);
+        when(branchService.getPermissionsFor(component.getId(), branchId)).thenReturn(expectedPermissions);
+
+        mockMvc = MockMvcBuilders.standaloneSetup(administrationController).build();
+        this.mockMvc.perform(get("/branch/permissions/42").accept(MediaType.TEXT_HTML))
+                .andExpect(model().attribute("branch", expectedBranch))
+                .andExpect(model().attribute("permissions", expectedPermissions));
     }
 }

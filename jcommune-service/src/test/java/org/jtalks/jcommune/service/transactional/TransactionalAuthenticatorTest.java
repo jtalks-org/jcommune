@@ -56,10 +56,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.jtalks.jcommune.model.dto.LoginUserDto;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.FieldError;
 import static org.testng.Assert.*;
 
 /**
@@ -110,8 +114,8 @@ public class TransactionalAuthenticatorTest {
     public void setUp() throws Exception {
         initMocks(this);
         authenticator = new TransactionalAuthenticator(pluginLoader, userDao, groupDao,
-                encryptionService, mailService, avatarService, pluginService, authenticationManager,
-                securityFacade, rememberMeServices, sessionStrategy, validator);
+                encryptionService, mailService, avatarService, pluginService,
+                securityFacade, rememberMeServices, sessionStrategy, validator, authenticationManager);
     }
 
     private JCUser prepareOldUser(String username) {
@@ -129,8 +133,7 @@ public class TransactionalAuthenticatorTest {
         return authInfo;
     }
 
-    private void preparePlugin(String username, String passwordHash, Map<String, String> authInfo)
-            throws UnexpectedErrorException, NoConnectionException {
+    private void preparePlugin(String username, String passwordHash, Map<String, String> authInfo) throws Exception {
         Class authPluginClass = AuthenticationPlugin.class;
         when(pluginLoader.getPluginByClassName(authPluginClass)).thenReturn(authPlugin);
         when(authPlugin.authenticate(username, passwordHash)).thenReturn(authInfo);
@@ -149,62 +152,57 @@ public class TransactionalAuthenticatorTest {
 
     @Test
     public void authenticateExistingUserShouldBeSuccessful() throws Exception {
-        String username = "user";
-        String password = "password";
         String passwordHash = "5f4dcc3b5aa765d61d8327deb882cf99";
-        String email = "email@email.em";
-        Map<String, String> authInfo = createAuthInfo(username, email);
-        JCUser user = new JCUser(username, email, password);
-        when(userDao.getByUsername(username)).thenReturn(user);
-        when(encryptionService.encryptPassword(password)).thenReturn(passwordHash);
+        JCUser user = getDefaultUser();
+        LoginUserDto loginUserDto = createDefaultLoginUserDto();
+        Map<String, String> authInfo = createAuthInfo(user.getUsername(), user.getEmail());
+        when(userDao.getByUsername(user.getUsername())).thenReturn(user);
+        when(encryptionService.encryptPassword(user.getPassword())).thenReturn(passwordHash);
         prepareAuth();
-        preparePlugin(username, passwordHash, authInfo);
+        preparePlugin(user.getUsername(), passwordHash, authInfo);
 
-        boolean result = authenticator.authenticate(username, password, true, httpRequest, httpResponse);
+        boolean result = authenticator.authenticate(loginUserDto, httpRequest, httpResponse);
 
         assertTrue(result, "Authentication existing user with correct credentials should be successful.");
     }
 
     @Test
     public void authenticateNotExistingUserShouldBeSuccessful() throws Exception {
-        String username = "user";
-        String password = "password";
         String passwordHash = "5f4dcc3b5aa765d61d8327deb882cf99";
-        String email = "email@email.em";
-        Map<String, String> authInfo = createAuthInfo(username, email);
-        JCUser user = new JCUser(username, email, password);
-        when(userDao.getByUsername(username)).thenReturn(null).thenReturn(null).thenReturn(user);
-        when(encryptionService.encryptPassword(password)).thenReturn(passwordHash);
+        LoginUserDto loginUserDto = createDefaultLoginUserDto();
+        JCUser user = getDefaultUser();
+        Map<String, String> authInfo = createAuthInfo(user.getUsername(), user.getEmail());
+        when(userDao.getByUsername(user.getUsername())).thenReturn(null).thenReturn(null).thenReturn(user);
+        when(encryptionService.encryptPassword(user.getPassword())).thenReturn(passwordHash);
         prepareAuth();
-        preparePlugin(username, passwordHash, authInfo);
+        preparePlugin(user.getUsername(), passwordHash, authInfo);
 
-        boolean result = authenticator.authenticate(username, password, true, httpRequest, httpResponse);
+        boolean result = authenticator.authenticate(loginUserDto, httpRequest, httpResponse);
 
         assertTrue(result, "Authentication not existing user with correct credentials should be successful.");
     }
 
     @Test
     public void authenticateUserWithNewCredentialsShouldBeSuccessful() throws Exception {
-        String username = "user";
-        String password = "password";
         String passwordHash = "5f4dcc3b5aa765d61d8327deb882cf99";
         String email = "email@email.em";
-        JCUser oldUser = prepareOldUser(username);
-        Map<String, String> authInfo = createAuthInfo(username, email);
+        LoginUserDto loginUserDto = createDefaultLoginUserDto();
+        JCUser oldUser = prepareOldUser(loginUserDto.getUserName());
+        Map<String, String> authInfo = createAuthInfo(oldUser.getUsername(), email);
         authInfo.put("enabled", "true");
         Group group = new Group(AdministrationGroup.USER.getName());
         when(groupDao.getGroupByName(AdministrationGroup.USER.getName())).thenReturn(group);
-        when(userDao.getByUsername(username)).thenReturn(oldUser);
-        when(encryptionService.encryptPassword(password)).thenReturn(passwordHash);
+        when(userDao.getByUsername(oldUser.getUsername())).thenReturn(oldUser);
+        when(encryptionService.encryptPassword(loginUserDto.getPassword())).thenReturn(passwordHash);
         UsernamePasswordAuthenticationToken expectedToken = mock(UsernamePasswordAuthenticationToken.class);
         when(securityFacade.getContext()).thenReturn(securityContext);
         when(expectedToken.isAuthenticated()).thenReturn(true);
 
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenThrow(new BadCredentialsException(null)).thenReturn(expectedToken);
-        preparePlugin(username, passwordHash, authInfo);
+        preparePlugin(oldUser.getUsername(), passwordHash, authInfo);
 
-        boolean result = authenticator.authenticate(username, password, true, httpRequest, httpResponse);
+        boolean result = authenticator.authenticate(loginUserDto, httpRequest, httpResponse);
 
         verify(userDao).saveOrUpdate(oldUser);
 
@@ -217,6 +215,7 @@ public class TransactionalAuthenticatorTest {
         String password = "password";
         String passwordHash = "5f4dcc3b5aa765d61d8327deb882cf99";
         String email = "email@email.em";
+        LoginUserDto loginUserDto = createDefaultLoginUserDto();
         Map<String, String> authInfo = createAuthInfo(username, email);
         Group group = new Group(AdministrationGroup.USER.getName());
         User commonUser = new User(username, email, password, null);
@@ -228,7 +227,7 @@ public class TransactionalAuthenticatorTest {
         prepareAuth();
         preparePlugin(username, passwordHash, authInfo);
 
-        boolean result = authenticator.authenticate(username, password, true, httpRequest, httpResponse);
+        boolean result = authenticator.authenticate(loginUserDto, httpRequest, httpResponse);
 
         assertTrue(result, "Authentication not existing user with correct credentials should be successful " +
                 "if case Plugin and JCommune use the same database.");
@@ -236,12 +235,11 @@ public class TransactionalAuthenticatorTest {
 
     @Test
     public void authenticateUserWithNewCredentialsShouldFailIfPluginNotFound() throws Exception {
-        String username = "user";
-        String password = "password";
         String passwordHash = "5f4dcc3b5aa765d61d8327deb882cf99";
-        JCUser oldUser = prepareOldUser(username);
-        when(userDao.getByUsername(username)).thenReturn(oldUser);
-        when(encryptionService.encryptPassword(password)).thenReturn(passwordHash);
+        LoginUserDto loginUserDto = createDefaultLoginUserDto();
+        JCUser oldUser = prepareOldUser(loginUserDto.getUserName());
+        when(userDao.getByUsername(oldUser.getUsername())).thenReturn(oldUser);
+        when(encryptionService.encryptPassword(loginUserDto.getPassword())).thenReturn(passwordHash);
         UsernamePasswordAuthenticationToken expectedToken = mock(UsernamePasswordAuthenticationToken.class);
         when(securityFacade.getContext()).thenReturn(securityContext);
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
@@ -250,65 +248,62 @@ public class TransactionalAuthenticatorTest {
 
         when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Collections.EMPTY_LIST);
 
-        boolean result = authenticator.authenticate(username, password, true, httpRequest, httpResponse);
+        boolean result = authenticator.authenticate(loginUserDto, httpRequest, httpResponse);
 
         assertFalse(result, "Authenticate user with new credentials should fail if plugin not found.");
     }
 
     @Test
-    public void authenticateUserWithBadCredentialsShouldFail() throws UnexpectedErrorException, NoConnectionException {
-        String username = "user";
+    public void authenticateUserWithBadCredentialsShouldFail() throws Exception {
         String password = "password";
         String passwordHash = "5f4dcc3b5aa765d61d8327deb882cf99";
-        JCUser oldUser = prepareOldUser(username);
-        when(userDao.getByUsername(username)).thenReturn(oldUser);
+        LoginUserDto loginUserDto = createDefaultLoginUserDto();
+        JCUser oldUser = prepareOldUser(loginUserDto.getUserName());
+        when(userDao.getByUsername(oldUser.getUsername())).thenReturn(oldUser);
         when(encryptionService.encryptPassword(password)).thenReturn(passwordHash);
         when(securityFacade.getContext()).thenReturn(securityContext);
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenThrow(new BadCredentialsException(null));
 
-        preparePlugin(username, passwordHash, Collections.EMPTY_MAP);
+        preparePlugin(oldUser.getUsername(), passwordHash, Collections.EMPTY_MAP);
 
-        boolean result = authenticator.authenticate(username, password, true, httpRequest, httpResponse);
+        boolean result = authenticator.authenticate(loginUserDto, httpRequest, httpResponse);
 
         assertFalse(result, "Authenticate user with bad credentials should fail.");
     }
 
     @Test(expectedExceptions = NoConnectionException.class)
     public void authenticateShouldFailIfThereAreNoConnectionToAuthService() throws Exception {
-        String username = "user";
-        String password = "password";
         String passwordHash = "5f4dcc3b5aa765d61d8327deb882cf99";
+        LoginUserDto loginUserDto = createDefaultLoginUserDto();
 
-        when(encryptionService.encryptPassword(password)).thenReturn(passwordHash);
+        when(encryptionService.encryptPassword(loginUserDto.getPassword())).thenReturn(passwordHash);
         when(authPlugin.getState()).thenReturn(Plugin.State.ENABLED);
-        when(userDao.getByUsername(username)).thenReturn(null);
+        when(userDao.getByUsername(loginUserDto.getUserName())).thenReturn(null);
         Class cl = AuthenticationPlugin.class;
         when(pluginLoader.getPluginByClassName(cl)).thenReturn(authPlugin);
-        when(authPlugin.authenticate(username, passwordHash)).thenThrow(new NoConnectionException());
+        when(authPlugin.authenticate(loginUserDto.getUserName(), passwordHash)).thenThrow(new NoConnectionException());
 
-        authenticator.authenticate(username, password, true, httpRequest, httpResponse);
+        authenticator.authenticate(loginUserDto, httpRequest, httpResponse);
     }
 
     @Test(expectedExceptions = UnexpectedErrorException.class)
     public void authenticateShouldFailIfPluginThrowsAnUnexpectedException() throws Exception {
-        String username = "user";
-        String password = "password";
         String passwordHash = "5f4dcc3b5aa765d61d8327deb882cf99";
+        LoginUserDto loginUserDto = createDefaultLoginUserDto();
 
-        when(encryptionService.encryptPassword(password)).thenReturn(passwordHash);
+        when(encryptionService.encryptPassword(loginUserDto.getPassword())).thenReturn(passwordHash);
         when(authPlugin.getState()).thenReturn(Plugin.State.ENABLED);
         Class cl = AuthenticationPlugin.class;
         when(pluginLoader.getPluginByClassName(cl)).thenReturn(authPlugin);
-        when(authPlugin.authenticate(username, passwordHash)).thenThrow(new UnexpectedErrorException());
+        when(authPlugin.authenticate(loginUserDto.getUserName(), passwordHash)).thenThrow(new UnexpectedErrorException());
 
-        authenticator.authenticate(username, password, true, httpRequest, httpResponse);
+        authenticator.authenticate(loginUserDto, httpRequest, httpResponse);
     }
 
     @Test
-    public void registerUserWithCorrectDetailsShouldBeSuccessful()
-            throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
+    public void registerUserWithCorrectDetailsShouldBeSuccessful() throws Exception {
+        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em", null);
         User commonUser = new User("username", "email@email.em", "password", null);
         when(registrationPlugin.getState()).thenReturn(Plugin.State.ENABLED);
         when(registrationPlugin.registerUser(userDto.getUserDto(), null)).thenReturn(Collections.EMPTY_MAP);
@@ -322,9 +317,8 @@ public class TransactionalAuthenticatorTest {
     }
 
     @Test
-    public void registerUserWithIncorrectDetailsShouldFail()
-            throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        RegisterUserDto userDto = createRegisterUserDto("", "", "");
+    public void registerUserWithIncorrectDetailsShouldFail() throws Exception {
+        RegisterUserDto userDto = createRegisterUserDto("", "", "", null);
         Map<String, String> errors = new HashMap<>();
         errors.put("userDto.email", "Invalid email length");
         errors.put("userDto.username", "Invalid username length");
@@ -345,9 +339,8 @@ public class TransactionalAuthenticatorTest {
     }
 
     @Test(expectedExceptions = NoConnectionException.class)
-    public void registerUserShouldFailIfPluginThrowsNoConnectionException()
-            throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
+    public void registerUserShouldFailIfPluginThrowsNoConnectionException() throws Exception {
+        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em", null);
         RegistrationPlugin plugin = mock(RegistrationPlugin.class);
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
         when(plugin.registerUser(userDto.getUserDto(), 1L))
@@ -361,9 +354,8 @@ public class TransactionalAuthenticatorTest {
     }
 
     @Test(expectedExceptions = UnexpectedErrorException.class)
-    public void registerUserShouldFailIfPluginThrowsUnexpectedErrorException()
-            throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
+    public void registerUserShouldFailIfPluginThrowsUnexpectedErrorException() throws Exception {
+        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em", null);
         RegistrationPlugin plugin = mock(RegistrationPlugin.class);
         when(plugin.getState()).thenReturn(Plugin.State.ENABLED);
         when(plugin.registerUser(userDto.getUserDto(), 1L))
@@ -375,9 +367,8 @@ public class TransactionalAuthenticatorTest {
     }
 
     @Test
-    public void defaultRegistrationShouldFailIfValidationErrorsOccurred()
-            throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
+    public void defaultRegistrationShouldFailIfValidationErrorsOccurred() throws Exception {
+        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em", null);
         when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Collections.EMPTY_LIST);
         when(bindingResult.hasErrors()).thenReturn(true);
 
@@ -387,9 +378,8 @@ public class TransactionalAuthenticatorTest {
     }
 
     @Test
-    public void defaultRegistrationWithCorrectDetailsShouldBeSuccessful()
-            throws UnexpectedErrorException, NotFoundException, NoConnectionException {
-        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em");
+    public void defaultRegistrationWithCorrectDetailsShouldBeSuccessful() throws Exception {
+        RegisterUserDto userDto = createRegisterUserDto("username", "password", "email@email.em", null);
         when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Collections.EMPTY_LIST);
         when(bindingResult.hasErrors()).thenReturn(false);
 
@@ -398,13 +388,22 @@ public class TransactionalAuthenticatorTest {
         verify(bindingResult, never()).rejectValue(anyString(), anyString(), anyString());
     }
 
-    private RegisterUserDto createRegisterUserDto(String username, String password, String email) {
+    private RegisterUserDto createRegisterUserDto(String username, String password, String email, String honeypotCaptcha) {
         RegisterUserDto registerUserDto = new RegisterUserDto();
         UserDto userDto = new UserDto();
         userDto.setUsername(username);
         userDto.setEmail(email);
         userDto.setPassword(password);
         registerUserDto.setUserDto(userDto);
+        registerUserDto.setHoneypotCaptcha(honeypotCaptcha);
         return registerUserDto;
+    }
+    
+    private JCUser getDefaultUser() {
+        return new JCUser("user", "email@email.em", "password");
+    }
+    
+    private LoginUserDto createDefaultLoginUserDto() {
+        return new LoginUserDto("user", "password", true, "192.168.1.1");
     }
 }

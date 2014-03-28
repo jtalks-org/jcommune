@@ -21,6 +21,7 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <jsp:useBean id="searchResultPage" type="org.springframework.data.domain.Page" scope="request"/>
 <jsp:useBean id="cmpDescription" type="java.lang.String" scope="request"/>
 <head>
@@ -39,8 +40,8 @@
     <div class="span9">
       <div class="pagination pull-right forum-pagination">
         <ul>
-          <jtalks:pagination uri="${pageContext.request.contextPath}/search" page="${searchResultPage}"
-                             additionalParamsString="&text=${searchText}"/>
+          <jtalks:pagination uri="" page="${searchResultPage}"
+                             additionalParams="${urlParams}"/>
         </ul>
       </div>
     </div>
@@ -55,8 +56,8 @@
     <div class="span12">
       <div class="pagination pull-right forum-pagination">
         <ul>
-          <jtalks:pagination uri="${pageContext.request.contextPath}/search" page="${searchResultPage}"
-                             additionalParamsString="&text=${searchText}"/>
+          <jtalks:pagination uri="" page="${searchResultPage}"
+                             additionalParams="${urlParams}"/>
         </ul>
       </div>
     </div>

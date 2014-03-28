@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jtalks.jcommune</groupId>
     <artifactId>jcommune-plugins</artifactId>
-    <version>2.4-SNAPSHOT</version>
+    <version>2.6-SNAPSHOT</version>
     <packaging>pom</packaging>
 
   <modules>
@@ -44,6 +44,45 @@
           <target>1.7</target>
           <encoding>UTF-8</encoding>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.mycila.maven-license-plugin</groupId>
+        <artifactId>maven-license-plugin</artifactId>
+        <version>1.9.0</version>
+        <inherited>false</inherited>
+        <configuration>
+          <header>${basedir}/../header.txt</header>
+          <aggregate>true</aggregate>
+          <includes>
+            <include>src/**</include>
+            <include>**/*.java</include>
+            <include>**/test/**</include>
+            <include>**/main/**</include>
+          </includes>
+          <excludes>
+            <exclude>target/**</exclude>
+            <exclude>**/*.properties</exclude>
+            <exclude>**/*.txt</exclude>
+            <exclude>**/*.sql</exclude>
+            <exclude>**/*.css</exclude>
+            <exclude>**/*.vm</exclude>
+            <exclude>**/.*</exclude>
+            <exclude>**/empty</exclude>
+            <exclude>**/lib/**</exclude>
+            <exclude>**/wro/**</exclude>
+            <exclude>**/META-INF/context.xml</exclude>
+          </excludes>
+          <useDefaultExcludes>true</useDefaultExcludes>
+          <strictCheck>true</strictCheck>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

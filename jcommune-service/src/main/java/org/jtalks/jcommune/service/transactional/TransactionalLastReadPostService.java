@@ -182,15 +182,21 @@ public class TransactionalLastReadPostService implements LastReadPostService {
     private void saveLastReadPost(JCUser user, Topic topic, Post lastPost) {
         DateTime lastTimeForumWasMarkedRead = user.getAllForumMarkedAsReadTime();
         DateTime topicModifiedDate = topic.getModificationDate();
-        if (lastTimeForumWasMarkedRead == null || topicModifiedDate.isAfter(lastTimeForumWasMarkedRead)) {
-            LastReadPost lastReadPost = lastReadPostDao.getLastReadPost(user, topic);
-            if (lastReadPost == null) {
-                lastReadPost = new LastReadPost(user, topic, lastPost.getCreationDate());
-            } else {
-                lastReadPost.setPostCreationDate(lastPost.getCreationDate());
-            }
-            lastReadPostDao.saveOrUpdate(lastReadPost);
+        if (lastTimeForumWasMarkedRead != null && topicModifiedDate.isBefore(lastTimeForumWasMarkedRead)) {
+            return;
         }
+
+        LastReadPost lastReadPost = lastReadPostDao.getLastReadPost(user, topic);
+        if (lastReadPost == null) {
+            lastReadPost = new LastReadPost(user, topic, lastPost.getCreationDate());
+        } else {
+            if (lastPost.getCreationDate().isAfter(lastReadPost.getPostCreationDate())) {
+                lastReadPost.setPostCreationDate(lastPost.getCreationDate());
+            } else {
+                return;
+            }
+        }
+        lastReadPostDao.saveOrUpdate(lastReadPost);
     }
 
     /**

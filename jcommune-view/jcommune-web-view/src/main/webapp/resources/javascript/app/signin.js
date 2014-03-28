@@ -72,6 +72,37 @@ $(function () {
             dialogKeydown: submitDialog
         });
     });
+
+
+    var success = $('#restorePassSuccess');
+    if (success.length > 0) {
+        var bodyContent = '\
+            <div id="restore-passwd" class="control-group"> \
+                <h4>' + success.val() + '</h4> \
+            </div>';
+
+        var footerContent = '<button id="restore-ok-button" class="btn btn-primary" name="confirm"> \
+            ' + $labelOk + '</button>';
+
+        var goToLoginPage = function (e) {
+            if (e) {
+                e.preventDefault();
+            }
+            window.location.href = $('.brand').attr('href') + 'login';
+        };
+
+        jDialog.createDialog({
+            dialogId: 'restore-password-modal-dialog',
+            closeDialog: goToLoginPage,
+            bodyContent: bodyContent,
+            footerContent: footerContent,
+            maxWidth: 350,
+            tabNavigation: ['#restore-ok-button'],
+            handlers: {
+                '#restore-ok-button': {'click': goToLoginPage}
+            }
+        });
+    }
 });
 
 
@@ -109,13 +140,7 @@ function sendLoginPost(e) {
             resp = eval('(' + resp + ')');
 
             if (resp.status == 'SUCCESS') {
-                referer = $("#signin").attr("rel");
-                if (referer) {
-                    window.location.href = referer;
-                } else {
-                    location.reload();
-                }
-
+                location.reload();
             }
             else {
                 if (resp.result && resp.result.customError) {

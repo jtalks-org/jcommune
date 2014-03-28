@@ -24,6 +24,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.HashMap;
+
 /**
  * The controller for the full-text search topics.
  *
@@ -84,8 +86,11 @@ public class TopicSearchController {
                                    @RequestParam(value = "page", defaultValue = "1", required = false) String page) {
         Page<Topic> searchResultPage = topicSearchService.searchByTitleAndContent(searchText, page);
         lastReadPostService.fillLastReadPostForTopics(searchResultPage.getContent());
+        HashMap<String, Object> urlParams = new HashMap<>();
+        urlParams.put("text", searchText);
         return new ModelAndView(SEARCH_RESULT_VIEW_NAME).
                 addObject(SEARCH_RESULT_ATTRIBUTE_NAME, searchResultPage).
-                addObject(SEARCH_TEXT_ATTRIBUTE_NAME, searchText);
+                addObject(SEARCH_TEXT_ATTRIBUTE_NAME, searchText).
+                addObject("urlParams", urlParams);
     }
 }

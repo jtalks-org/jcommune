@@ -33,7 +33,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -126,21 +125,23 @@ public class PostController {
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/posts/{postId}")
     public String delete(@PathVariable(POST_ID) Long postId) throws NotFoundException {
-        Post post = postService.get(postId);
-        deletePostWithLockHandling(post);
-        return "redirect:/topics/" + post.getTopic().getId();
+        Topic topic = deletePostWithLockHandling(postId);
+        return "redirect:/topics/" + topic.getId();
     }
 
-    private void deletePostWithLockHandling(Post post) {
+    private Topic deletePostWithLockHandling(Long postId) throws NotFoundException {
         for (int i = 0; i < UserController.LOGIN_TRIES_AFTER_LOCK; i++) {
             try {
+                Post post = postService.get(postId);
                 postService.deletePost(post);
-                return;
+                return post.getTopic();
             } catch (HibernateOptimisticLockingFailureException e) {
             }
         }
         try {
+            Post post = postService.get(postId);
             postService.deletePost(post);
+            return post.getTopic();
         } catch (HibernateOptimisticLockingFailureException e) {
             LOGGER.error("User has been optimistically locked and can't be reread {} times. Username: {}",
                     UserController.LOGIN_TRIES_AFTER_LOCK, userService.getCurrentUser().getUsername());
@@ -190,53 +191,6 @@ public class PostController {
     }
 
     /**
-     * Creates the answering page with empty answer form
-     *
-     * @param topicId the id of the topic for the answer
-     * @return answering {@code ModelAndView} or redirect to the login page
-     * @throws NotFoundException     when topic not found
-     * @throws AccessDeniedException besides other reasons, always throws this when Code Review is edited because it
-     *                               shouldn't be possible to edit it. More details on requirements can be found here
-     *                               <a href="http://jtalks.org/display/jcommune/1.1+Larks">here</a>.
-     */
-    @RequestMapping(method = RequestMethod.GET, value = "/posts/new")
-    public ModelAndView addPost(@RequestParam(TOPIC_ID) Long topicId) throws NotFoundException {
-        Topic answeringTopic = topicFetchService.get(topicId);
-        if (answeringTopic.getCodeReview() != null) {
-            throw new AccessDeniedException("It is not possible to add posts to code review except the initial one!");
-        }
-        return new ModelAndView("topic/answer")
-                .addObject("topic", answeringTopic)
-                .addObject(TOPIC_ID, topicId)
-                .addObject(POST_DTO, new PostDto())
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(answeringTopic));
-    }
-
-
-    /**
-     * Creates the answering page with quotation.
-     * If user select nothing JS will substitute whole post contents here
-     * <p/>
-     * Supports post method to pass large quotations.
-     * Supports get method as language switching always use get requests.
-     *
-     * @param postId    identifier os the post we're quoting
-     * @param selection text selected by user for the quotation.
-     * @return the same view as topic answering page with textarea prefilled with quoted text
-     * @throws NotFoundException when topic was not found
-     */
-    @RequestMapping(method = {RequestMethod.POST, RequestMethod.GET}, value = "/posts/{postId}/quote")
-    public ModelAndView addPostWithQuote(@PathVariable(POST_ID) Long postId,
-                                         @RequestParam("selection") String selection) throws NotFoundException {
-        Post source = postService.get(postId);
-        ModelAndView mav = addPost(source.getTopic().getId());
-        PostDto dto = (PostDto) mav.getModel().get(POST_DTO);
-        String content = StringUtils.defaultString(selection, source.getPostContent());
-        dto.setBodyText(bbCodeService.quote(content, source.getUserCreated()));
-        return mav;
-    }
-
-    /**
      * Get quote text.
      * If user select nothing JS will substitute whole post contents here
      * <p/>
@@ -246,7 +200,7 @@ public class PostController {
      * @param selection text selected by user for the quotation
      * @throws NotFoundException when topic was not found
      */
-    @RequestMapping(method = RequestMethod.GET, value = "/posts/{postId}/ajax_quote")
+    @RequestMapping(method = RequestMethod.GET, value = "/posts/{postId}/quote")
     @ResponseBody
     public JsonResponse getQuote(@PathVariable(POST_ID) Long postId,
                                  @RequestParam("selection") String selection) throws NotFoundException {
@@ -269,12 +223,13 @@ public class PostController {
                                @PathVariable(TOPIC_ID) Long topicId,
                                @Valid @ModelAttribute PostDto postDto,
                                BindingResult result) throws NotFoundException {
-        JCUser currentUser = userService.getCurrentUser();
-        Topic topic = topicFetchService.get(topicId);
         postDto.setTopicId(topicId);
-        Page<Post> postsPage = postService.getPosts(topic, page);
-
         if (result.hasErrors()) {
+            JCUser currentUser = userService.getCurrentUser();
+            Topic topic = topicFetchService.get(topicId);
+            postDto.setTopicId(topicId);
+            Page<Post> postsPage = postService.getPosts(topic, page);
+
             return new ModelAndView("topic/postList")
                     .addObject("viewList", locationService.getUsersViewing(topic))
                     .addObject("usersOnline", sessionRegistry.getAllPrincipals())
@@ -285,22 +240,24 @@ public class PostController {
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
         }
 
-        Post newbie = replyToTopicWithLockHandling(postDto, topic);
-        lastReadPostService.markTopicAsRead(topic);
+        Post newbie = replyToTopicWithLockHandling(postDto, topicId);
+        lastReadPostService.markTopicAsRead(newbie.getTopic());
         return new ModelAndView(this.redirectToPageWithPost(newbie.getId()));
     }
 
-    private Post replyToTopicWithLockHandling(PostDto postDto, Topic topic) throws NotFoundException {
+    private Post replyToTopicWithLockHandling(PostDto postDto, Long topicId) throws NotFoundException {
+        Topic topic = topicFetchService.get(topicId);
+        long branchId = topic.getBranch().getId();
         for (int i = 0; i < UserController.LOGIN_TRIES_AFTER_LOCK; i++) {
             try {
                 return topicModificationService.replyToTopic(
-                        postDto.getTopicId(), postDto.getBodyText(), topic.getBranch().getId());
+                        postDto.getTopicId(), postDto.getBodyText(), branchId);
             } catch (HibernateOptimisticLockingFailureException e) {
             }
         }
         try {
             return topicModificationService.replyToTopic(
-                    postDto.getTopicId(), postDto.getBodyText(), topic.getBranch().getId());
+                    postDto.getTopicId(), postDto.getBodyText(), branchId);
         } catch (HibernateOptimisticLockingFailureException e) {
             LOGGER.error("User has been optimistically locked and can't be reread {} times. Username: {}",
                     UserController.LOGIN_TRIES_AFTER_LOCK, userService.getCurrentUser().getUsername());

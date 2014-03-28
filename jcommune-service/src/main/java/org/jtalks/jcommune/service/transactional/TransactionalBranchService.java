@@ -21,6 +21,7 @@ import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -203,5 +204,15 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
     @Override
     public void checkIfBranchExists(long branchId) throws NotFoundException {
         super.get(branchId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
+    public GroupsPermissions<BranchPermission> getPermissionsFor(long componentId, long branchId)
+            throws NotFoundException {
+        return permissionService.getPermissionsFor(get(branchId));
     }
 }

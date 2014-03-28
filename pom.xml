@@ -5,7 +5,7 @@
   <groupId>org.jtalks.jcommune</groupId>
   <artifactId>jcommune</artifactId>
   <packaging>pom</packaging>
-  <version>2.4-SNAPSHOT</version>
+  <version>2.6-SNAPSHOT</version>
   <name>${project.artifactId}</name>
   <modules>
     <module>jcommune-model</module>
@@ -584,7 +584,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <headerBaseDir>${basedir}</headerBaseDir>
     <pathtoHeader>${headerBaseDir}/header.txt</pathtoHeader>
-    <commonVersion>0.55</commonVersion>
+    <commonVersion>0.56</commonVersion>
     <isJsCompressed>true</isJsCompressed>
   </properties>
 
