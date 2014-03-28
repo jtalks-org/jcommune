@@ -29,6 +29,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=800, maximum-scale=0.8">
 <meta property="og:image" content="/admin/logo"/>
+<meta property="twitter:card" content="summary"/>
 
 <script>
   <%--Defines URL mapping root to be used in JS--%>
@@ -239,7 +240,7 @@ in the future.
       <script src="${pageContext.request.contextPath}/resources/javascript/app/permissionService.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/lib/purl.js"></script>
     </c:if>
-      
+
   </c:otherwise>
 </c:choose>
 
