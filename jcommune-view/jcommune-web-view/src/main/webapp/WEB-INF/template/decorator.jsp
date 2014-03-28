@@ -28,8 +28,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=800, maximum-scale=0.8">
-<meta property="og:image" content="/admin/logo"/>
-<meta property="twitter:card" content="summary"/>
+<meta property="og:image" content="${pageContext.request.contextPath}/admin/logo"/>
+<%-- Twitter card --%>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:description" content="<decorator:title/>"/>
+<meta name="twitter:title" content="<decorator:title/>"/>
 
 <script>
   <%--Defines URL mapping root to be used in JS--%>
