@@ -20,6 +20,7 @@ import org.jtalks.common.model.entity.User;
 import org.jtalks.common.validation.annotations.Email;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
+import org.jtalks.jcommune.model.validation.annotations.NotBlankSize;
 import org.jtalks.jcommune.model.validation.annotations.Unique;
 
 import javax.validation.constraints.Size;
@@ -34,9 +35,8 @@ import java.util.Map;
  */
 public class UserDto {
 
-    final String user_message = "{user.not_null_begin} " + User.USERNAME_MIN_LENGTH + " {user.not_null_middle}" + 
-        User.USERNAME_MAX_LENGTH + " {user.not_null_end}";
-    @NotBlank(message = user_message)
+	@NotBlankSize(min = User.USERNAME_MIN_LENGTH, max = User.USERNAME_MAX_LENGTH,
+            message = "{user.username.length_constraint_violation}")
 	@Size(min = User.USERNAME_MIN_LENGTH, max = User.USERNAME_MAX_LENGTH,
             message = "{user.username.length_constraint_violation}")
     @Unique(entity = JCUser.class, field = "username", message = "{user.username.already_exists}", ignoreCase = true)
@@ -48,10 +48,10 @@ public class UserDto {
     @Unique(entity = JCUser.class, field = "email", message = "{user.email.already_exists}", ignoreCase = true)
     private String email;
 
-    final String password_message = "{password.not_null_begin} " + User.PASSWORD_MIN_LENGTH + " {password.not_null_middle}" + 
-            User.PASSWORD_MAX_LENGTH + " {password.not_null_end}";
-    @NotBlank(message = password_message)
-    @Size(min = User.PASSWORD_MIN_LENGTH, max = User.PASSWORD_MAX_LENGTH)
+    @NotBlankSize(min = User.PASSWORD_MIN_LENGTH, max = User.PASSWORD_MAX_LENGTH, 
+    		message = "{user.password.length_constraint_violation}")
+    @Size(min = User.PASSWORD_MIN_LENGTH, max = User.PASSWORD_MAX_LENGTH, 
+    		message = "{user.password.length_constraint_violation}")
     private String password;
 
     private Language language = Language.ENGLISH;
