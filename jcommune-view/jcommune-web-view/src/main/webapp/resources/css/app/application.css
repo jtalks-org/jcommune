@@ -457,6 +457,11 @@ div.anchor {
     margin: 0px 10px 9px 25px;
 }
 
+.rememberme-lbl:hover {
+    cursor: hand;
+    cursor: pointer;
+}
+
 #signup-modal-dialog {
     width: 350px;
     max-height: none;
