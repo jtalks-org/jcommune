@@ -94,9 +94,11 @@ public class UserProfileController {
      */
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(String.class, "newUserPassword", new DefaultStringEditor(true));
-        binder.registerCustomEditor(String.class, "newUserPasswordConfirm", new DefaultStringEditor(true));
-        binder.registerCustomEditor(Integer.class, "pageSize", new PageSizeEditor());
+        binder.registerCustomEditor(String.class, "userSecurityDto.currentUserPassword", new DefaultStringEditor(true));
+        binder.registerCustomEditor(String.class, "userSecurityDto.newUserPassword", new DefaultStringEditor(true));
+        binder.registerCustomEditor(String.class, "userSecurityDto.newUserPasswordConfirm",
+                new DefaultStringEditor(true));
+        binder.registerCustomEditor(Integer.class, "userProfileDto.pageSize", new PageSizeEditor());
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 

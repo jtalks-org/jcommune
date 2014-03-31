@@ -45,7 +45,7 @@ input[readonly] {
 
 .contacts .btn-mini {
   padding: 0px;
-  width:14px;
+  width: 14px;
 }
 
 li.contact .controls {
@@ -55,9 +55,11 @@ li.contact .controls {
 
 li.contact .controls input {
   margin-left: 10px;
+  width: 245px;
 }
 
-li.contact .controls span.help-inline {
+li.contact .controls span.help-inline,
+li.contact .controls span.dialog-info {
   margin-left: 25px;
 }
 

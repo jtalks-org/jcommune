@@ -82,20 +82,24 @@
 
 <div class="user-profile-container">
 <div id="profileMenu" class="user-profile-menu">
-  <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/profile" class="${editProfileMenuClass}"
-    tabindex="71"><i class="icon-user"></i><spring:message code="label.profile"/>
+  <a id="profileBtn"
+      href="${pageContext.request.contextPath}/users/${editedUser.userId}/profile" class="${editProfileMenuClass}"
+      tabindex="71"><i class="icon-user"></i><spring:message code="label.profile"/>
   </a>
-  <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/contacts" class="${editContactsMenuClass}"
-    tabindex="72"><i class="icon-envelope"></i><spring:message code="label.contacts"/>
+  <a id="contactsBtn"
+      href="${pageContext.request.contextPath}/users/${editedUser.userId}/contacts" class="${editContactsMenuClass}"
+      tabindex="72"><i class="icon-envelope"></i><spring:message code="label.contacts"/>
   </a>
 
   <c:if test="${isCanEditProfile || isCanEditNotificationsAndSecurity}">
-    <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/notifications"
-       class="${editNotificationsMenuClass}" tabindex="73">
+    <a id="notificationsBtn"
+        href="${pageContext.request.contextPath}/users/${editedUser.userId}/notifications"
+        class="${editNotificationsMenuClass}" tabindex="73">
       <i class="icon-flag"></i><spring:message code="label.notifications"/>
     </a>
-    <a href="${pageContext.request.contextPath}/users/${editedUser.userId}/security" class="${editSecurityMenuClass}"
-      tabindex="74"><i class="icon-eye-close"></i><spring:message code="label.security"/></a>
+    <a id="securityBtn"
+        href="${pageContext.request.contextPath}/users/${editedUser.userId}/security" class="${editSecurityMenuClass}"
+        tabindex="74"><i class="icon-eye-close"></i><spring:message code="label.security"/></a>
   </c:if>
 </div>
 <div id="editUserDetails" class="userprofile">
@@ -104,17 +108,27 @@
            modelAttribute="editedUser" method="POST" class="form-horizontal">
 
   <div class='user-profile-header'>
-    <form:hidden id="avatar" path="avatar" value="${editedUser.avatar}"/>
-    <form:hidden id="editedUserId" path="userId" value="${editedUser.userId}"/>
-    <form:hidden id="editedUsername" path="username" value="${editedUser.username}"/>
+    <c:if test="${isCanEditProfile || (isCanEditNotificationsAndSecurity && (isEditSecurity || isEditNotifications))}">
+      <form:hidden id="avatar" path="avatar"/>
+      <form:hidden id="editedUserId" path="userId"/>
+      <form:hidden id="editedUsername" path="username"/>
+    </c:if>
     <span class="pull-left thumbnail">
       <span id="avatarPreviewContainer" class="wraptocenter">
-        <%--String prefix "data:image/jpeg;base64," needed for correct image rendering--%>
-        <img id="avatarPreview" src="data:image/jpeg;base64,${editedUser.avatar}" alt=""/>
+        <c:choose>
+          <c:when test="${isCanEditProfile
+                          || (isCanEditNotificationsAndSecurity && (isEditSecurity || isEditNotifications))}">
+            <%--String prefix "data:image/jpeg;base64," needed for correct image rendering--%>
+            <img id="avatarPreview" src="data:image/jpeg;base64,${editedUser.avatar}" alt=""/>
+          </c:when>
+          <c:otherwise>
+            <img src="${pageContext.request.contextPath}/users/${editedUser.userId}/avatar" alt=""/>
+          </c:otherwise>
+        </c:choose>
       </span>
     </span>
 
-    <h2 class="pull-right user-profile-username"><c:out value="${editedUser.username}"/></h2>
+    <h2 class="pull-right user-profile-username"><span><c:out value="${editedUser.username}"/></span></h2>
   </div>
   <div class="clearfix"></div>
 
@@ -155,8 +169,7 @@
       <button id="saveChanges" class="btn btn-primary" type="submit" tabindex="60">
         <spring:message code="label.save_changes"/>
       </button>
-      <a href="${pageContext.request.contextPath}/users/${editedUser.userId}" class="btn space-left-medium"
-         tabindex="60"><spring:message code="label.cancel"/>
+      <a href="${formAction}" class="btn space-left-medium" tabindex="60"><spring:message code="label.cancel"/>
       </a>
     </div>
   </c:if>

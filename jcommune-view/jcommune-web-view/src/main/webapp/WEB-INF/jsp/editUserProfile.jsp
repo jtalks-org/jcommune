@@ -20,7 +20,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 
-<form:hidden path="userProfileDto.userId" value="${editedUser.userProfileDto.userId}"/>
+<form:hidden path="userProfileDto.userId"/>
 
 <div class="user-profile-top-buttons">
   <c:if test="${param.isCanEditProfile}">
@@ -62,8 +62,7 @@
         <div class="control-group">
           <label class="control-label"><spring:message code="label.firstname"/></label>
           <div class="controls">
-            <form:input class="input-xlarge" path="userProfileDto.firstName"
-                        value="${editedUser.userProfileDto.firstName}" tabindex="1"/>
+            <form:input class="input-xlarge" path="userProfileDto.firstName" tabindex="1"/>
             <br/>
             <form:errors path="userProfileDto.firstName" cssClass="help-inline"/>
           </div>
@@ -72,8 +71,7 @@
         <div class="control-group">
           <label class="control-label"><spring:message code="label.lastname"/></label>
           <div class="controls">
-            <form:input class="input-xlarge" path="userProfileDto.lastName"
-                        value="${editedUser.userProfileDto.lastName}" tabindex="5"/>
+            <form:input class="input-xlarge" path="userProfileDto.lastName" tabindex="5"/>
             <br/>
             <form:errors path="userProfileDto.lastName" cssClass="help-inline"/>
           </div>
@@ -82,8 +80,7 @@
         <div class="control-group">
           <label class="control-label"><spring:message code="label.signature"/></label>
           <div class="controls">
-            <form:textarea class="input-xlarge" path="userProfileDto.signature"
-                           value="${editedUser.userProfileDto.signature}" tabindex="10"/>
+            <form:textarea class="input-xlarge" path="userProfileDto.signature" tabindex="10"/>
             <br/>
             <form:errors path="userProfileDto.signature" cssClass="help-inline"/>
           </div>
@@ -143,8 +140,7 @@
       <div class="controls">
         <c:choose>
           <c:when test="${param.isCanEditProfile}">
-            <form:input path="userProfileDto.location" class="input-xlarge"
-                        value="${editedUser.userProfileDto.location}" tabindex="40"/><br/>
+            <form:input path="userProfileDto.location" class="input-xlarge" tabindex="40"/><br/>
             <form:errors path="userProfileDto.location" cssClass="help-inline"/>
           </c:when>
           <c:otherwise>

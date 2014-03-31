@@ -25,6 +25,9 @@ import org.jtalks.common.model.entity.Entity;
  * Used in {@code UserDetails} rather than {@link org.jtalks.common.model.entity.User} itself.
  */
 public class UserContact extends Entity {
+
+    public static final int CONTACT_MAX_LENGTH = 255;
+
     private String value;
     private JCUser owner;
     private UserContactType type;

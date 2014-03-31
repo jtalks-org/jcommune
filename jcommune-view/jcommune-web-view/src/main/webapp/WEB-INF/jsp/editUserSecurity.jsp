@@ -19,7 +19,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 
-<form:hidden path="userSecurityDto.userId" value="${editedUser.userSecurityDto.userId}"/>
+<form:hidden path="userSecurityDto.userId"/>
 
 <div class="clearfix"></div>
 <hr class='user-profile-hr'/>
