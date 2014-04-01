@@ -160,7 +160,6 @@ $(document).ready(function () {
         replaceImages: true,
         playSound: true,
         shrink: true,
-        scrambleLinks: true,
         scrambleText: true
     });
     april.fool();
