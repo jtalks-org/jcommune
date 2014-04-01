@@ -295,8 +295,12 @@ public class MailService {
     private void sendEmail(String to, String subject, Map<String, Object> model,
                            String templateName) throws MailingFailedException {
         if (!notificationsEnabledProperty.booleanValue()) {
+            LOGGER.debug("Email notifications are turned off in Forum Settings, skip sending to [{}]" +
+                    " mail with subject [{}]. User with Admin Permissions can enter Poulpe (that should be changed" +
+                    " soon) and change the setting.", to, subject);
             return;
         }
+        LOGGER.debug("Sending email to [{}] with subject [{}]", to, subject);
         try {
             model.put(MESSAGE_SOURCE, messageSource);
             model.put(NO_ARGS, new Object[]{});
@@ -308,7 +312,16 @@ public class MailService {
             helper.setFrom(from);
             helper.setSubject(subject);
             helper.setText(plainText, htmlText);
+
+            long started = System.currentTimeMillis();
             mailSender.send(message);
+            long secsTook = (System.currentTimeMillis() - started) / 1000;
+            if (secsTook > 5) {
+                LOGGER.info("Sending email took long time [{}] for receiver: [{}]", secsTook, to);
+            }
+            LOGGER.debug("Email was sent to [{}] with subject [{}]. Note that this doesn't mean the mail" +
+                    " is delivered to the end user, this only means that mail server accepted the email and will" +
+                    " try to send it further.", to, subject);
         } catch (MailException | MessagingException e) {
             LOGGER.error("Mail sending failed", e);
             throw new MailingFailedException(e);
