@@ -21,6 +21,14 @@
 
 <form:hidden path="userSecurityDto.userId"/>
 
+<c:if test="${isPasswordChanged}">
+    <script type="text/javascript">
+        $isMessageChangedMessage = '<spring:message code="user.security.message.changed_password" htmlEscape="true"/>';
+    </script>
+    <script type="text/javascript"
+            src="${pageContext.request.contextPath}/resources/javascript/app/passwordChangedMessage.js"></script>
+</c:if>
+
 <div class="clearfix"></div>
 <hr class='user-profile-hr'/>
 
