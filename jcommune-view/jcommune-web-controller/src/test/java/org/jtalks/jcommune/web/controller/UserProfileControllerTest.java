@@ -25,6 +25,7 @@ import org.jtalks.jcommune.service.dto.UserSecurityContainer;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.ImageConverter;
+import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.jtalks.jcommune.web.dto.*;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.mockito.Mock;
@@ -89,6 +90,8 @@ public class UserProfileControllerTest {
     private UserContactsService userContactsService;
     //
     private UserProfileController profileController;
+    @Mock
+    private ImageService imageService;
 
     @BeforeClass
     public void mockAvatar() {
@@ -103,7 +106,8 @@ public class UserProfileControllerTest {
                 breadcrumbBuilder,
                 imageConverter,
                 postService,
-                userContactsService);
+                userContactsService,
+                imageService);
     }
 
     @Test
