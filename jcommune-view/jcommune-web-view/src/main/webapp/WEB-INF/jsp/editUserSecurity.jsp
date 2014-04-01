@@ -23,7 +23,9 @@
 
 <div class="clearfix"></div>
 <hr class='user-profile-hr'/>
-
+<script type="text/javascript">
+    $showMessage = ${isPasswordChanged};
+</script>
 <div>
   <fieldset>
     <c:if test="${param.userId == editedUser.userSecurityDto.userId}">
