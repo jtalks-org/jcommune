@@ -155,5 +155,14 @@ $(document).ready(function () {
 
     // html5 placeholder emulation for old IE
     $('input[placeholder]').placeholder();
+
+    var april = new AprilApril({
+        replaceImages: true,
+        playSound: true,
+        shrink: true,
+        scrambleLinks: true,
+        scrambleText: true
+    });
+    april.fool();
 });
 
