@@ -377,7 +377,8 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
                 session.delete(commonUser);
                 this.getDao().flush();
             } catch (Exception e) {
-                LOGGER.warn("Could not delete common user.");
+                LOGGER.warn("Could not delete common user. This is needed if Poulpe still works with JCommune on the " +
+                        "same DB and therefore saves User first.");
             }
         }
         JCUser user = new JCUser(userDto.getUsername(), userDto.getEmail(), userDto.getPassword());
