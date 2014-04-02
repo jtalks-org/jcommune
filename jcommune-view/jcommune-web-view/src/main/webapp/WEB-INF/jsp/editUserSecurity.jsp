@@ -24,7 +24,10 @@
 <div class="clearfix"></div>
 <hr class='user-profile-hr'/>
 <script type="text/javascript">
-    $showMessage = ${isPasswordChanged};
+  <c:if test="${empty isPasswordChanged}">
+    <c:set var="isPasswordChanged" value="false" />
+  </c:if>
+  $showMessage = ${isPasswordChanged};
 </script>
 <div>
   <fieldset>
