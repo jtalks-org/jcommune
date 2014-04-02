@@ -3,7 +3,7 @@
     <parent>
         <artifactId>jcommune-plugins</artifactId>
         <groupId>org.jtalks.jcommune</groupId>
-        <version>2.6-SNAPSHOT</version>
+        <version>2.7-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -13,7 +13,7 @@
         <dependency>
             <groupId>org.jtalks.jcommune</groupId>
             <artifactId>jcommune-service</artifactId>
-            <version>2.6-SNAPSHOT</version>
+            <version>2.7-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

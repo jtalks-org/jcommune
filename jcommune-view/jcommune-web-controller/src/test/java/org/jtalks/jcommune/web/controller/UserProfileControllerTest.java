@@ -25,6 +25,7 @@ import org.jtalks.jcommune.service.dto.UserSecurityContainer;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.ImageConverter;
+import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.jtalks.jcommune.web.dto.*;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.mockito.Mock;
@@ -39,6 +40,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -89,6 +91,10 @@ public class UserProfileControllerTest {
     private UserContactsService userContactsService;
     //
     private UserProfileController profileController;
+    @Mock
+    private ImageService imageService;
+    @Mock
+    private RedirectAttributes redirectAttributes;
 
     @BeforeClass
     public void mockAvatar() {
@@ -103,7 +109,8 @@ public class UserProfileControllerTest {
                 breadcrumbBuilder,
                 imageConverter,
                 postService,
-                userContactsService);
+                userContactsService,
+                imageService);
     }
 
     @Test
@@ -263,7 +270,8 @@ public class UserProfileControllerTest {
         when(bindingResult.hasErrors()).thenReturn(false);
         when(userService.saveEditedUserSecurity(eq(user.getId()), any(UserSecurityContainer.class))).thenReturn(user);
 
-        ModelAndView mav = profileController.saveEditedSecurity(dto, bindingResult, new MockHttpServletResponse());
+        ModelAndView mav = profileController.saveEditedSecurity(dto, bindingResult, new MockHttpServletResponse(),
+                redirectAttributes);
 
         String expectedUrl = "redirect:/users/" + user.getId() + "/" + UserProfileController.SECURITY;
         assertViewName(mav, expectedUrl);
@@ -355,7 +363,8 @@ public class UserProfileControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        ModelAndView mav = profileController.saveEditedSecurity(dto, bindingResult, new MockHttpServletResponse());
+        ModelAndView mav = profileController.saveEditedSecurity(dto, bindingResult, new MockHttpServletResponse(),
+                redirectAttributes);
 
         assertViewName(mav, "editProfile");
         verify(userService, never()).saveEditedUserSecurity(anyLong(), any(UserSecurityContainer.class));
@@ -464,7 +473,7 @@ public class UserProfileControllerTest {
 
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
-        profileController.saveEditedSecurity(userDto, bindingResult, null);
+        profileController.saveEditedSecurity(userDto, bindingResult, null, redirectAttributes);
     }
 
     @Test(expectedExceptions = AccessDeniedException.class)

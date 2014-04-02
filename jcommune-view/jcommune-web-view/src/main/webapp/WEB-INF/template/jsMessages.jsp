@@ -140,3 +140,5 @@ $labelCloseDialog = '<spring:message code="label.closeDialog" htmlEscape="true"/
 
 $copyrightLabel = '<spring:message code="label.copyright" htmlEscape="true"/>';
 $copyrightHint = '<spring:message code="label.copyrightHint" htmlEscape="true"/>';
+
+$isMessageChangedMessage = '<spring:message code="user.security.message.changed_password" htmlEscape="true"/>';

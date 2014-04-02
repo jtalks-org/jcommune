@@ -188,7 +188,7 @@ function XMLtoString(elem) {
 
 function doQuote() {
     if (!editorVisible) {
-        AddTag('[quote]', '[/quote]');
+        addTag('[quote]', '[/quote]');
     }
 }
 
@@ -196,57 +196,87 @@ function doClick(command) {
     if (!editorVisible) {
         switch (command) {
             case 'bold':
-                AddTag('[b]', '[/b]');
+                addTag('[b]', '[/b]');
                 break;
             case 'italic':
-                AddTag('[i]', '[/i]');
+                addTag('[i]', '[/i]');
                 break;
             case 'underline':
-                AddTag('[u]', '[/u]');
+                addTag('[u]', '[/u]');
                 break;
             case 'line-through':
-                AddTag('[s]', '[/s]');
+                addTag('[s]', '[/s]');
                 break;
             case 'highlight':
-                AddTag('[highlight]', '[/highlight]');
+                addTag('[highlight]', '[/highlight]');
                 break;
             case 'left':
-                AddTag('[left]', '[/left]');
+                addTag('[left]', '[/left]');
                 break;
             case 'right':
-                AddTag('[right]', '[/right]');
+                addTag('[right]', '[/right]');
                 break;
             case 'center':
-                AddTag('[center]', '[/center]');
+                addTag('[center]', '[/center]');
                 break;
             case 'InsertUnorderedList':
                 AddList('[list][*]', '[/list]');
                 break;
             case 'listElement':
-                AddTag('[*]', '');
+                if (isInTag('[list]', '[/list]')) {
+                    addTag('[*]','');
+                } else {
+                    AddList('[list][*]', '[/list]');
+                }
                 break;
         }
     }
 }
 
+function isInTag(t1, t2) {
+     var selectionStart = textboxelement.selectionStart;
+     var beforeText = textboxelement.value.substring(0,selectionStart);
+     var afterText = textboxelement.value.substring(selectionStart + 1);
+     var openIndex = beforeText.indexOf(t1);
+     var closeIndex = -1; 
+     if (openIndex != -1) {
+         closeIndex = beforeText.indexOf(t2, openIndex);
+     }
+     var open = false;
+     while (openIndex != -1) { 
+         if (closeIndex == -1) {
+             open = true;
+             break;
+         }
+         openIndex = beforeText.indexOf(t1, openIndex + 1);
+         closeIndex = beforeText.indexOf(t2, closeIndex + 1);
+     }
+     if (open && (afterText.indexOf(t2) != -1)) {
+         return true;
+     } else {
+         return false;
+     }
+}
+
+
 function doSize(selectedElement) {
     if (!editorVisible) {
 		var size = $(selectedElement).parent().attr('data-value');
-        AddTag('[size=' + size + ']', '[/size]');
+        addTag('[size=' + size + ']', '[/size]');
     }
 }
 
 function doCode(selectedElement) {
     if (!editorVisible) {
 		var code = $(selectedElement).parent().attr('data-value');
-        AddTag('[code=' + code + ']', '[/code]');
+        addTag('[code=' + code + ']', '[/code]');
     }
 }
 
 function doIndent(selectedElement) {
     if (!editorVisible) {
         var indent = $(selectedElement).parent().attr('data-value');
-        AddTag('[indent=' + indent + ']', '[/indent]');
+        addTag('[indent=' + indent + ']', '[/indent]');
     }
 }
 
@@ -282,7 +312,7 @@ function doLink() {
                         mylink = link;
                     }
                     jDialog.closeDialog();
-                    AddTag('[url=' + link + ']', '[/url]', selection);
+                    addTag('[url=' + link + ']', '[/url]', selection);
                     textboxelement.focus();
                 } else {
                     ErrorUtils.removeErrorMessage('#urlId', $labelErrorsNotEmpty);
@@ -291,7 +321,7 @@ function doLink() {
                     return false;
                 }
             }
-        }
+        };
 
         jDialog.createDialog({
             title: $labelUrlHeader,
@@ -335,7 +365,7 @@ function doImage() {
             myimg = $.trim(input.val());
             if ((myimg != null) && (myimg != '')) {
                 jDialog.closeDialog();
-                AddTag('[img]' + myimg, '[/img]', selection);
+                addTag('[img]' + myimg, '[/img]', selection);
                 textboxelement.focus();
             }else {
                 ErrorUtils.removeErrorMessage('#imgId', $labelErrorsNotEmpty);
@@ -343,7 +373,7 @@ function doImage() {
                 input.focus();
                 return false;
             }
-        }
+        };
 
         jDialog.createDialog({
             title: $labelImgHeader,
@@ -359,13 +389,37 @@ function doImage() {
     }
 }
 
-//textarea-mode functions
-function MozillaInsertText(element, text, pos) {
+/**
+ * Inserts text to element from specified position.
+ *
+ * @param element element for text inserting
+ * @param text text to insert
+ * @param pos begin position for inserting text
+ */
+function insertText(element, text, pos) {
     element.value = element.value.slice(0, pos) + text + element.value.slice(pos);
 }
 
-function AddTag(t1, t2, selection) {
+/**
+ * Replaces an arbitrary text with new one.
+ *
+ * @param element element for text replacing
+ * @param text text to insert
+ * @param fromPos old text begin position
+ * @param toPos old text last position
+ */
+function replaceText(element, text, fromPos, toPos) {
+    element.value = element.value.slice(0, fromPos) + text + element.value.slice(toPos);
+}
 
+/**
+ * Inserts bb tag.
+ *
+ * @param t1 start tag
+ * @param t2 end tag
+ * @param selection selection text
+ */
+function addTag(t1, t2, selection) {
     var element = textboxelement;
     var dummyText = $labelDummyTextBBCode;
 
@@ -384,35 +438,20 @@ function AddTag(t1, t2, selection) {
                 str.text = str.text + t1 + t2;
                 sel_end = sel_end + t1.length + t2.length;
                 sel_start = sel_end;
+            } else if (t2 == "[/url]") {
+                str.text = t1 + mylink + t2;
+                sel_start = sel_start + t1.length;
+                sel_end = sel_start + mylink.length;
             } else if (str.text == "") {
-                if (t2 == "[/url]") {
-                    if (str.text != mylink) {
-                        str.text = str.text + t1 + mylink + t2;
-                        sel_start = sel_start + t1.length;
-                        sel_end = sel_end + t1.length + mylink.length;
-                    } else {
-                        str.text = t1 + mylink + t2;
-                        sel_start = sel_start + t1.length;
-                        sel_end = sel_end + t1.length + mylink.length;
-                    }
-                } else {
-                    str.text = t1 + dummyText + t2;
-                    sel_start = sel_start + t1.length;
-                    sel_end = sel_start + dummyText.length;
-                }
-            }
-            else if (txt.indexOf(str.text) >= 0) {
+                str.text = t1 + dummyText + t2;
+                sel_start = sel_start + t1.length;
+                sel_end = sel_start + dummyText.length;
+            } else if (txt.indexOf(str.text) >= 0) {
                 str.text = t1 + str.text + t2;
                 sel_start = sel_start + t1.length;
                 sel_end = sel_end + t1.length;
-            }
-            else {
-                if (t2 == "[/url]") {
-                    element.value = txt + t1 + mylink + t2;
-                } else {
-                    element.value = txt + t1 + dummyText + t2;
-                }
-
+            } else {
+                element.value = txt + t1 + dummyText + t2;
             }
             window.setTimeout(function(){
                 element.selectionStart = sel_start;
@@ -425,15 +464,9 @@ function AddTag(t1, t2, selection) {
 
             element.focus();
         }
-    }
-    else if (typeof(element.selectionStart) != 'undefined') {
-
-        var sel_start = element.selectionStart;
-        var sel_end = element.selectionEnd;
-
-        if (!isSelectionEqualsToLinkText(element) && t2 == "[/url]") {
-            sel_start = sel_end;
-        }
+    } else if (typeof(element.selectionStart) != 'undefined') {
+        sel_start = element.selectionStart;
+        sel_end = element.selectionEnd;
 
         if (element.value == "" && $.browser.opera) {
             // for Opera browser null value (textarea empty) for selectionStart and selectionEnd is '20'
@@ -441,21 +474,21 @@ function AddTag(t1, t2, selection) {
             sel_end = sel_end - 20;
         }
 
-        MozillaInsertText(element, t1, sel_start);
-        if (sel_start == sel_end && t2 == "[/url]") {
-            MozillaInsertText(element, mylink + t2, sel_end + t1.length);
-            sel_start = sel_start + t1.length;
-            sel_end = sel_end + t1.length + mylink.length;
-        } else if (t2 == "[/img]") {
-            MozillaInsertText(element, t2, sel_end + t1.length);
+        insertText(element, t1, sel_start);
+        if (t2 == "[/img]") {
+            insertText(element, t2, sel_end + t1.length);
             sel_end = sel_end + t1.length;
             sel_start = sel_start + t2.length-1;
+        } else if (t2 == "[/url]") {
+            replaceText(element, mylink + t2, sel_start + t1.length, sel_end + t1.length);
+            sel_start = sel_start + t1.length;
+            sel_end = sel_start + mylink.length;
         } else if (element.value.substring(sel_start, sel_end).length == 0) {
-            MozillaInsertText(element, dummyText + t2, sel_end + t1.length);
+            insertText(element, dummyText + t2, sel_end + t1.length);
             sel_start = sel_start + t1.length;
             sel_end = sel_start + dummyText.length;
         } else {
-            MozillaInsertText(element, t2, sel_end + t1.length);
+            insertText(element, t2, sel_end + t1.length);
             sel_start = sel_start + t1.length;
             sel_end = sel_end + t1.length;
         }
@@ -465,23 +498,13 @@ function AddTag(t1, t2, selection) {
             element.selectionEnd = sel_end;
         }, 1);
         element.focus();
-    }
-    else {
+    } else {
         if (t2 == "[/url]") {
             element.value = element.value + t1 + mylink + t2;
         } else {
             element.value = element.value + t1 + t2;
         }
     }
-}
-
-/**
- * @param {type} element
- * @returns {Boolean} true if selected text is the same as link text
- */
-function isSelectionEqualsToLinkText(element) {
-   // Need to ignore '\n' symbols because they are removed from 'myLink' var
-   return element.value.substring(element.selectionStart, element.selectionEnd).replace(/\n/gi, '') === mylink;
 }
 
 function AddList(t1, t2) {
@@ -536,8 +559,8 @@ function AddList(t1, t2) {
         }
         var needDummy = (sel_start == sel_end);
         var str1 = needDummy ? dummyText + t2 : t2;
-        MozillaInsertText(element, t1, sel_start);
-        MozillaInsertText(element, str1, sel_end + t1.length);
+        insertText(element, t1, sel_start);
+        insertText(element, str1, sel_end + t1.length);
 
         sel_end = sel_end + t1.length + t2.length + (needDummy ? dummyText.length : 0);
 
@@ -610,7 +633,7 @@ function getLeft2() {
 //function setCCbldID2(val, textBoxID) { document.getElementById(textBoxID).value = val; }
 function setCCbldID2(val) {
     if (!editorVisible)
-        AddTag('[color=' + val + ']', '[/color]');
+        addTag('[color=' + val + ']', '[/color]');
 }
 
 function setCCbldSty2(objID, prop, val) {
@@ -682,7 +705,7 @@ function showColorGrid2(Sam, textBoxId) {
             var rgb_color = $('#o5582n66a').css('backgroundColor');
             var hex_color = getHexRGBColor(rgb_color);
             jDialog.closeDialog();
-            AddTag('[color=' + hex_color + ']', '[/color]', selection);
+            addTag('[color=' + hex_color + ']', '[/color]', selection);
             textboxelement.focus();
         }
 
