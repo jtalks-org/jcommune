@@ -33,8 +33,6 @@
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:description" content="<decorator:title/>"/>
 <meta name="twitter:title" content="<decorator:title/>"/>
-<script src="${pageContext.request.contextPath}/resources/javascript/app/script.js"></script>
-<script src="${pageContext.request.contextPath}/resources/javascript/lib/scriptsound.js"></script>
 <script>
   <%--Defines URL mapping root to be used in JS--%>
   $root = "${pageContext.request.contextPath}";
