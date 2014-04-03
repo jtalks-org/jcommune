@@ -457,6 +457,11 @@ div.anchor {
     margin: 0px 10px 9px 25px;
 }
 
+.rememberme-lbl:hover {
+    cursor: hand;
+    cursor: pointer;
+}
+
 #signup-modal-dialog {
     width: 350px;
     max-height: none;
@@ -563,6 +568,10 @@ div.anchor {
     cursor: pointer;
 }
 
+*:focus {
+    outline: none;
+}
+
 .modal-body table {
     width: 100%;
 }
@@ -587,6 +596,7 @@ div.anchor {
     max-width: 20px;
     min-width: 20px;
     margin-right: 10px;
+    outline: none;
 }
 
 .modal-body .icon-trash {
