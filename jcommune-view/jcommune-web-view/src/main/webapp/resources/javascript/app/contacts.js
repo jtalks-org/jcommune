@@ -93,7 +93,7 @@ function validationHandler() {
     var contactTypeId = $(this).find('.controls select').val();
     var contactId = $(this).find('input').val();
     var input = $(this).find('.controls input');
-    var value = input.val();
+    var value = input.val().trim();
     AddContact.selectedContactType = AddContact.getContactType(contactTypeId, AddContact.contactTypes);
     input.attr('placeholder', AddContact.selectedContactType.mask);
     var valueValid = value.match(new RegExp(AddContact.selectedContactType.validationPattern));
