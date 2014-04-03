@@ -315,9 +315,14 @@ public class MailService {
 
             long started = System.currentTimeMillis();
             mailSender.send(message);
+
             long secsTook = (System.currentTimeMillis() - started) / 1000;
-            if (secsTook > 5) {
-                LOGGER.info("Sending email took long time [{}] for receiver: [{}]", secsTook, to);
+            if (secsTook > 30) {
+                LOGGER.warn("Sending email took long time [{}] for receiver: [{}]. Subject: [{}]",
+                        new Object[]{secsTook, to, subject});
+            } else if (secsTook > 5) {
+                LOGGER.info("Sending email took long time [{}] for receiver: [{}]. Subject: [{}]",
+                        new Object[]{secsTook, to, subject});
             }
             LOGGER.debug("Email was sent to [{}] with subject [{}]. Note that this doesn't mean the mail" +
                     " is delivered to the end user, this only means that mail server accepted the email and will" +
