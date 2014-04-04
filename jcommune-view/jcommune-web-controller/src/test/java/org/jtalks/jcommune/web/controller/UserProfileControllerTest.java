@@ -65,6 +65,7 @@ import static org.testng.Assert.assertEquals;
  * @author Osadchuck Eugeny
  * @author Anuar_Nurmakanov
  * @author Andrey Pogorelov
+ * @author Andrey Ivanov
  */
 public class UserProfileControllerTest {
     private static final long USER_ID = 1l;
@@ -265,7 +266,9 @@ public class UserProfileControllerTest {
         when(userService.get(user.getId())).thenReturn(user);
 
         EditUserProfileDto dto = getEditUserProfileDto(user);
-        dto.setUserSecurityDto(new UserSecurityDto(user));
+        UserSecurityDto userSecurityDto = new UserSecurityDto(user);
+        userSecurityDto.setNewUserPassword("new_password");
+        dto.setUserSecurityDto(userSecurityDto);
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(false);
         when(userService.saveEditedUserSecurity(eq(user.getId()), any(UserSecurityContainer.class))).thenReturn(user);
@@ -276,6 +279,7 @@ public class UserProfileControllerTest {
         String expectedUrl = "redirect:/users/" + user.getId() + "/" + UserProfileController.SECURITY;
         assertViewName(mav, expectedUrl);
         verify(userService, times(1)).saveEditedUserSecurity(eq(user.getId()), any(UserSecurityContainer.class));
+        verify(redirectAttributes, times(1)).addFlashAttribute(profileController.IS_PASSWORD_CHANGED_ATTRIB, true);
     }
 
     @Test
@@ -360,6 +364,9 @@ public class UserProfileControllerTest {
         when(userService.get(user.getId())).thenReturn(user);
 
         EditUserProfileDto dto = getEditUserProfileDto(user);
+        UserSecurityDto userSecurityDto = new UserSecurityDto(user);
+        userSecurityDto.setNewUserPassword("new password");
+        dto.setUserSecurityDto(userSecurityDto);
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
 
@@ -368,6 +375,7 @@ public class UserProfileControllerTest {
 
         assertViewName(mav, "editProfile");
         verify(userService, never()).saveEditedUserSecurity(anyLong(), any(UserSecurityContainer.class));
+        verify(redirectAttributes, never()).addFlashAttribute(profileController.IS_PASSWORD_CHANGED_ATTRIB, true);
     }
 
     @Test

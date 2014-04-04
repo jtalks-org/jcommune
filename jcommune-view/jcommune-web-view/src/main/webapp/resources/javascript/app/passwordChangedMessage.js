@@ -13,19 +13,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 $("document").ready(function () {
-    if($showMessage == true) {
+    if($showMessage != "undefined" && $showMessage == true) {
         jDialog.createDialog({
-            type: jDialog.confirmType,
+            type: jDialog.alertType,
             bodyMessage: $isMessageChangedMessage,
-            maxWidth: 400,
-            footerContent:
-                '<button id="okButton" class="btn btn-primary">' + $labelOk + '</button>',
-            handlers: {
-                '#okButton': {'click': function (e) {
-                    e.preventDefault();
-                    jDialog.closeDialog(jDialog.dialog);
-                }}
-            }
+            maxWidth: 400
         });
     }
 });

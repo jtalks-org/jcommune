@@ -78,6 +78,7 @@ public class UserProfileController {
     public static final String EDITED_USER = "editedUser";
     public static final String BREADCRUMB_LIST = "breadcrumbList";
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+    public static final String IS_PASSWORD_CHANGED_ATTRIB = "isPasswordChanged";
 
     private ImageService imageService;
     private UserService userService;
@@ -310,7 +311,7 @@ public class UserProfileController {
         checkPermissionForEditNotificationsOrSecurity(editedUserId);
         JCUser user = saveEditedProfileWithLockHandling(editedUserId, editedProfileDto, SECURITY);
         if (editedProfileDto.getUserSecurityDto().getNewUserPassword() != null) {
-            redirectAttributes.addFlashAttribute("isPasswordChanged", true);
+            redirectAttributes.addFlashAttribute(IS_PASSWORD_CHANGED_ATTRIB, true);
         }
         //redirect to the view profile page
         return new ModelAndView("redirect:/users/" + user.getId() + "/" + SECURITY);
