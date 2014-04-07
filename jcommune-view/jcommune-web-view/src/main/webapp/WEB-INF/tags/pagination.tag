@@ -29,7 +29,7 @@
 
 <%--Set default value for numberLink attribute, if it it wasn't passed.--%>
 <c:if test="${empty numberLink}">
-  <c:set var="numberLink" value="7"/>
+  <c:set var="numberLink" value="3"/>
 </c:if>
 
 <c:if test="${page.number > 1}">

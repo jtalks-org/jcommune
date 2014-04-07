@@ -28,14 +28,24 @@
   <aop:config>
     <aop:pointcut id="defaultTxPointcut"
                   expression="within(org.jtalks.jcommune.service.transactional..*)"/>
-    <aop:advisor advice-ref="txAdvice" pointcut-ref="defaultTxPointcut"/>
+    <aop:advisor advice-ref="txAdviceEx" pointcut-ref="defaultTxPointcut"/>
   </aop:config>
 
-  <tx:advice id="txAdvice">
+  <bean id="txAdviceEx" class="org.jtalks.jcommune.model.utils.TransactionInterceptor">
+    <property name="transactionManager" ref="transactionManager" />
+    <property name="transactionAttributes">
+      <props>
+        <prop key="*">PROPAGATION_REQUIRED,ISOLATION_READ_COMMITTED,-java.lang.Exception</prop>
+      </props>
+    </property>
+
+  </bean>
+
+  <!-- <tx:advice id="txAdvice">
     <tx:attributes>
       <tx:method name="*" isolation="READ_COMMITTED" rollback-for="java.lang.Exception"/>
     </tx:attributes>
-  </tx:advice>
+  </tx:advice>   -->
 
   <!--Timers and executirs to be specified via annotations-->
 

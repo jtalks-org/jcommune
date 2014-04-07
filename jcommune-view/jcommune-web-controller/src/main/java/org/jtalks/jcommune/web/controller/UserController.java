@@ -214,7 +214,7 @@ public class UserController {
             return new ModelAndView(REG_SERVICE_CONNECTION_ERROR_URL);
         } catch (UnexpectedErrorException e) {
             return new ModelAndView(REG_SERVICE_UNEXPECTED_ERROR_URL);
-        } 
+        }
         if (errors.hasErrors()) {
             ModelAndView mav = new ModelAndView(REGISTRATION);
             mav.addObject("registrationPlugins", registrationPlugins);
@@ -255,7 +255,7 @@ public class UserController {
         }
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
-    
+
     /**
      * Detects the presence honeypot captcha filing error.
      * If honeypot captcha filled it means that bot try to register. .
@@ -263,19 +263,19 @@ public class UserController {
      */
     private boolean isHoneypotCaptchaFilled(RegisterUserDto registerUserDto, String ip) {
         if (registerUserDto.getHoneypotCaptcha() != null) {
-            LOGGER.debug("Bot tried to register. Username - {}, email - {}, ip - {}", 
+            LOGGER.debug("Bot tried to register. Username - {}, email - {}, ip - {}",
                         new String[]{registerUserDto.getUserDto().getUsername(),
                             registerUserDto.getUserDto().getEmail(),ip});
             return true;
         }
         return false;
     }
-    
+
     private JsonResponse getCustomErrorJsonResponse(String customError) {
-        return new JsonResponse(JsonResponseStatus.FAIL, 
+        return new JsonResponse(JsonResponseStatus.FAIL,
                 new ImmutableMap.Builder<String, String>().put(CUSTOM_ERROR, customError).build());
     }
-        
+
     /**
      * Get html from available registration plugins.
      *
@@ -381,7 +381,7 @@ public class UserController {
             } else {
                 String customReferer =
                         String.valueOf(session.getAttribute(RefererKeepInterceptor.CUSTOM_REFERER));
-                /** We need check this !NULL_REPRESENTATION.equals(referer) strange condition 
+                /** We need check this !NULL_REPRESENTATION.equals(referer) strange condition
                  *  because after CookieTheftException customReferer equals "null" (not null)
                  */
                 if (customReferer != null && !NULL_REPRESENTATION.equals(customReferer)) {
@@ -392,10 +392,10 @@ public class UserController {
 
         return referer;
     }
-    
+
     /*
      * This method can't get LoginUserDto object as parameter because in this case imposible
-     * to provide setting request parameter "_spring_security_remember_me". 
+     * to provide setting request parameter "_spring_security_remember_me".
      * This parameter should be setted for remember-me functional implementation.
      */
     @RequestMapping(value = "/login_ajax", method = RequestMethod.POST)
@@ -495,7 +495,7 @@ public class UserController {
     public JsonResponse usernameList(@RequestParam("pattern") String pattern) {
         return new JsonResponse(JsonResponseStatus.SUCCESS, userService.getUsernames(pattern));
     }
-    
+
     private String getClientIpAddress(HttpServletRequest request) {
         String ipAddress = request.getHeader("X-FORWARDED-FOR");
         if (ipAddress == null) {
@@ -503,6 +503,6 @@ public class UserController {
         }
         return ipAddress;
     }
-    
+
 
 }

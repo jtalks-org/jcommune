@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -21,8 +22,11 @@ import org.jtalks.jcommune.model.entity.ComponentInformation;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.security.PermissionService;
+import org.jtalks.jcommune.service.security.PermissionManager;
 import org.jtalks.jcommune.web.dto.BranchDto;
+import org.jtalks.jcommune.web.dto.GroupDto;
+import org.jtalks.jcommune.web.dto.PermissionGroupRequestDto;
+import org.jtalks.jcommune.web.dto.PermissionGroupsDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +39,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -54,20 +60,24 @@ public class AdministrationController {
     private final ComponentService componentService;
     private final MessageSource messageSource;
     private final BranchService branchService;
+    private final PermissionManager permissionManager;
 
     /**
      * Creates instance of the service
      *
      * @param componentService service to work with the forum component
      * @param messageSource    to resolve locale-dependent messages
+     * @param permissionManager
      */
     @Autowired
     public AdministrationController(ComponentService componentService,
                                     MessageSource messageSource,
-                                    BranchService branchService) {
+                                    BranchService branchService,
+                                    PermissionManager permissionManager) {
         this.messageSource = messageSource;
         this.componentService = componentService;
         this.branchService = branchService;
+        this.permissionManager = permissionManager;
     }
 
     /**
@@ -185,6 +195,45 @@ public class AdministrationController {
         return new ModelAndView("branchPermissions")
                 .addObject("branch", branch)
                 .addObject("permissions", permissions);
+    }
+
+    @RequestMapping(value = "/branch/permissions/json", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResponse getGroupsForBranchPermission(@RequestBody PermissionGroupRequestDto permissionInfo) {
+        long forumId = componentService.getComponentOfForum().getId();
+        PermissionGroupsDto permission = new PermissionGroupsDto();
+
+        try {
+            GroupsPermissions<BranchPermission> permissions =
+                    branchService.getPermissionsFor(forumId, permissionInfo.getBranchId());
+
+            BranchPermission branchPermission = BranchPermission.findByMask(permissionInfo.getPermissionMask());
+            List<Group> selected = permissionInfo.isAllowed()? permissions.getAllowed(branchPermission) :
+                                                               permissions.getRestricted(branchPermission);
+
+            List<String> alreadySelectedGroupNames = new ArrayList<String>();
+            List<GroupDto> alreadySelected = new ArrayList<GroupDto>();
+            for (Group group: selected) {
+                alreadySelected.add(new GroupDto(group.getId(), group.getName()));
+                alreadySelectedGroupNames.add(group.getName());
+            }
+
+            List<GroupDto> remaining = new ArrayList<GroupDto>();
+            List<Group> allGroups = permissionManager.getAllGroups();
+            for (Group group : allGroups) {
+                if (!alreadySelectedGroupNames.contains(group.getName())) {
+                    remaining.add(new GroupDto(group.getId(), group.getName()));
+                }
+            }
+
+            permission.setSelectedGroups(alreadySelected);
+            permission.setRemainingGroups(remaining);
+
+        } catch (NotFoundException e) {
+            return new JsonResponse(JsonResponseStatus.FAIL, null);
+        }
+
+        return new JsonResponse(JsonResponseStatus.SUCCESS, permission);
     }
 
     /**
