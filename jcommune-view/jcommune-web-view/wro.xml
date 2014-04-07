@@ -53,6 +53,7 @@
     <js>/resources/javascript/app/events.js</js>
     <js>/resources/javascript/app/banner.js</js>
     <js>/resources/javascript/app/forumAdministration.js</js>
+    <js>/resources/javascript/app/editPermissions.js</js>
   </group>
 
   <group name="pm">
