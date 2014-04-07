@@ -9,7 +9,7 @@ import javax.validation.Payload;
 import javax.validation.ReportAsSingleViolation;
 import javax.validation.constraints.NotNull;
 
-import org.jtalks.jcommune.model.validation.validators.SizeOrNullValidator;
+import org.jtalks.jcommune.model.validation.validators.SizeAndNotBlankValidator;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.CONSTRUCTOR;
@@ -19,19 +19,19 @@ import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * This annotation to check the size which should be between the specified boundaries (included)
+ * This annotation to check that a string's trimmed length which should be between the specified boundaries (included)
  * Otherwise issued error message
  *
  * @author Alexandra Khekhneva
  */
 @Documented
-@Constraint(validatedBy = { SizeOrNullValidator.class })
+@Constraint(validatedBy = { SizeAndNotBlankValidator.class })
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER })
 @Retention(RUNTIME)
 @ReportAsSingleViolation
 @NotNull
-public @interface SizeOrNull {
-    String message() default "{org.jtalks.jcommune.model.validation.annotations.SizeOrNull.message}";
+public @interface SizeAndNotBlank {
+    String message() default "{org.jtalks.jcommune.model.validation.annotations.SizeAndNotBlank.message}";
 
     Class<?>[] groups() default { };
 
@@ -54,6 +54,6 @@ public @interface SizeOrNull {
     @Retention(RUNTIME)
     @Documented
     public @interface List {
-        SizeOrNull[] value();
+        SizeAndNotBlank[] value();
     }
 }

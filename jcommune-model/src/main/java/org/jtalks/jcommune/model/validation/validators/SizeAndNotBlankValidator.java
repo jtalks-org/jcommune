@@ -4,7 +4,7 @@ package org.jtalks.jcommune.model.validation.validators;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import org.jtalks.jcommune.model.validation.annotations.SizeOrNull;
+import org.jtalks.jcommune.model.validation.annotations.SizeAndNotBlank;
 
 /**
  * Check that a string's trimmed length is not empty
@@ -12,7 +12,7 @@ import org.jtalks.jcommune.model.validation.annotations.SizeOrNull;
  *
  * @author Alexandra Khekhneva
  */
-public class SizeOrNullValidator implements ConstraintValidator<SizeOrNull, String> {
+public class SizeAndNotBlankValidator implements ConstraintValidator<SizeAndNotBlank, String> {
 
      private int min;
      private int max;
@@ -22,7 +22,7 @@ public class SizeOrNullValidator implements ConstraintValidator<SizeOrNull, Stri
       * {@inheritDoc}
       */
      @Override
-     public void initialize(SizeOrNull annotation) {
+     public void initialize(SizeAndNotBlank annotation) {
          this.min = annotation.min();
          this.max = annotation.max();
     }
