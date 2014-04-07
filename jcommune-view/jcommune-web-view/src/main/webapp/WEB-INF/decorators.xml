@@ -25,6 +25,5 @@
     <pattern>/posts/bbToHtml</pattern>
     <pattern>/topics/bbToHtml</pattern>
     <pattern>/performance/*</pattern>
-    <pattern>/branch/permissions/json</pattern>
   </excludes>
 </decorators>

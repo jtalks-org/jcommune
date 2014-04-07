@@ -51,15 +51,6 @@
           <div class="pull-left permission-type permission-allowed">
             <spring:message code="permissions.allowed"/>
           </div>
-          <div class="pull-right edit-permission">
-            <a class="editAllowedPermission"
-               data-permission="${entry.mask}"
-               data-branch="${branch.id}"
-               class="btn"
-               href="#">
-              Редактировать
-            </a>
-          </div>
           <div class="permissions-container">
             <ul class="permissions-list">
               <c:forEach items="${permissions.accessListMap[entry].allowed}" var="group">
@@ -67,20 +58,10 @@
               </c:forEach>
             </ul>
           </div>
-
           <div class="cleared"></div>
 
           <div class="pull-left permission-type permission-restricted">
             <spring:message code="permissions.restricted"/>
-          </div>
-          <div class="pull-right edit-permission">
-            <a class="editRestrictedPermission"
-               data-permission="${entry.mask}"
-               data-branch="${branch.id}"
-               class="btn"
-               href="#">
-              Edit
-            </a>
           </div>
           <div class="permissions-container">
             <ul class="permissions-list">

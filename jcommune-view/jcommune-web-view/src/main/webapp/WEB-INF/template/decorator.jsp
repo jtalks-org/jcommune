@@ -188,7 +188,6 @@ in the future.
     <script src="${pageContext.request.contextPath}/resources/javascript/app/events.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/app/banner.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/app/forumAdministration.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/editPermissions.js"></script>
 
     <c:if test="${fn:contains(uriString, 'inbox') or fn:contains(uriString, 'outbox')
       or fn:contains(uriString, 'drafts') or fn:contains(uriString, 'pm')}">

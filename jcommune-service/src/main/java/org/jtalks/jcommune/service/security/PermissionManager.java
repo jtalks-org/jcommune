@@ -168,10 +168,6 @@ public class PermissionManager {
         return groupsPermissions;
     }
 
-    public List<Group> getAllGroups() {
-        return groupDao.getAll();
-    }
-
     /**
      * @param groupAce from which if of group should be extracted
      * @return {@link org.jtalks.common.model.entity.Group} extracted from {@link org.jtalks.common.security.acl.GroupAce}

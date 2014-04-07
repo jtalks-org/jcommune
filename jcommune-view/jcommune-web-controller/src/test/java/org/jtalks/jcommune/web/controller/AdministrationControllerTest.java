@@ -89,7 +89,7 @@ public class AdministrationControllerTest {
         Component component = new Component("Forum", "Cool Forum", ComponentType.FORUM);
         component.setId(42);
 
-        administrationController = new AdministrationController(componentService, messageSource, branchService, null);
+        administrationController = new AdministrationController(componentService, messageSource, branchService);
     }
 
     @Test
