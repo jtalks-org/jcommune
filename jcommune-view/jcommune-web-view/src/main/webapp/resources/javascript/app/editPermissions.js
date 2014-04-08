@@ -18,18 +18,18 @@ $(function () {
 
     $(".editAllowedPermission").on('click', function (e) {
         e.preventDefault();
-        editGroups($(this).data("branch"), $(this).data("permission"), true);
+        editGroups($(this).data("branch"), $(this).data("permission"), $(this).data("permission-name"), true);
     });
 
     $(".editRestrictedPermission").on('click', function (e) {
         e.preventDefault();
-        editGroups($(this).data("branch"), $(this).data("permission"), false);
+        editGroups($(this).data("branch"), $(this).data("permission"), $(this).data("permission-name"), false);
     });
 
-    function editGroups(branchId, permission, allowed) {
+    function editGroups(branchId, permissionMask, permissionName, allowed) {
         var permissionInfo = {
             branchId: branchId,
-            permissionMask: permission,
+            permissionMask: permissionMask,
             allowed: allowed
         };
 
@@ -40,7 +40,7 @@ $(function () {
             async: false,
             data: JSON.stringify(permissionInfo),
             success: function (resp) {
-                showDialog(resp.result.selectedGroups, resp.result.remainingGroups);
+                showDialog(resp.result.selectedGroups, resp.result.remainingGroups, permissionName, allowed);
             },
             error: function (resp) {
                 jDialog.createDialog({
@@ -51,25 +51,37 @@ $(function () {
         });
     }
 
-    function showDialog(selectedGroups, remainingGroups) {
-        var content = "<div class='two-list-selector'> <div class='pull-left from-list-container'>";
-        for(var i = 0, size = selectedGroups.length; i < size ; i++){
-            content += "<div><input type='checkbox'>" + selectedGroups[i].name + "</input></div>";
+    function showDialog(selectedGroups, remainingGroups, permissionName, allowed) {
+        var content = "<div class='two-list-selector'> <div class='pull-left list-container'> \
+                        <div>\
+                        <input type='checkbox' id='selectAllRemaining'/>\
+                        <label for='selectAllRemaining' class='group-caption'>Available:</label>\
+                        </div>";
+        for(var i = 0, size = remainingGroups.length; i < size ; i++){
+            content += "<div><input type='checkbox' id='group" + remainingGroups[i].id + "' /> \
+                        <label for='group" + remainingGroups[i].id + "'>" + remainingGroups[i].name + "</label> </div>";
         }
-        content += "</select></div> \
+        content += "</div> \
                     <div class='two-list-selector-controls'> \
+                        <div><a class='btn'>&gt</a></div>\
                         <div><a class='btn'>→</a></div>\
                         <div><a class='btn'>←</a></div> \
+                        <div><a class='btn'>&lt</a></div> \
                     </div>";
-        content += "<div class='pull-right to-list-container'>";
-        for(var i = 0, size = remainingGroups.length; i < size ; i++){
-            content += "<div><input type='checkbox'>" + remainingGroups[i].name + "</input></div>";
+        content += "<div class='pull-right list-container'> \
+                    <div>\
+                        <input type='checkbox' id='selectAllAlreadyAdded'/>\
+                        <label for='selectAllRemaining' class='group-caption'>Already added:</label>\
+                        </div>";
+        for(var i = 0, size = selectedGroups.length; i < size ; i++){
+            content += "<div><input type='checkbox' id='group" + selectedGroups[i].id + "' /> \
+                        <label for='group" + selectedGroups[i].id + "'>" + selectedGroups[i].name + "</label> </div>";
         }
         content += "</div></div>";
 
         jDialog.createDialog({
             dialogId: 'mainLinksEditor',
-            title: "Permissions",
+            title: permissionName + ": " + (allowed == true ? "Allowed" : "Restricted"),
             bodyContent: content,
             maxWidth: 800,
             maxHeight: 600

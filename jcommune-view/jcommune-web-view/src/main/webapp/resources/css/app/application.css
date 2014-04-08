@@ -969,16 +969,27 @@ a.mentioned-user {
 .two-list-selector-controls {
     width: 30px;
     display: inline-block;
-    margin: 5px;
+    margin: 40px 5px;
 }
 
-.from-list-container, .to-list-container {
+.list-container {
     width: 240px;
     height: 200px;
-    border: solid 1px #000000;
+/*border: solid 1px #000000;*/
     overflow: scroll;
 }
 
-.from-list-container input, .to-list-container input {
+.list-container input{
     margin: 5px;
+}
+
+.list-container input[type="checkbox"] + label {
+    display:inline-block;
+    margin:-1px 4px 0 0;
+    vertical-align:middle;
+}
+
+.group-caption {
+    font-weight: bold;
+    font-size: 120%;
 }

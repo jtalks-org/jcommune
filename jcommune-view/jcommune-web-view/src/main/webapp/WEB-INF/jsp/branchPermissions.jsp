@@ -52,10 +52,10 @@
             <spring:message code="permissions.allowed"/>
           </div>
           <div class="pull-right edit-permission">
-            <a class="editAllowedPermission"
+            <a class="btn editAllowedPermission"
                data-permission="${entry.mask}"
                data-branch="${branch.id}"
-               class="btn"
+               data-permission-name="${entry.name}"
                href="#">
               Редактировать
             </a>
@@ -74,10 +74,10 @@
             <spring:message code="permissions.restricted"/>
           </div>
           <div class="pull-right edit-permission">
-            <a class="editRestrictedPermission"
+            <a class="btn editRestrictedPermission"
                data-permission="${entry.mask}"
                data-branch="${branch.id}"
-               class="btn"
+               data-permission-name="${entry.name}"
                href="#">
               Edit
             </a>
