@@ -876,6 +876,12 @@ div.add-branch-button:hover {
     padding: 0px;
 }
 
+.edit-permission {
+    padding: 2px 10px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
 .permissions-list li {
     border: 2px solid #D8D7D7;
     background-color: rgb(235, 235, 235);
@@ -890,6 +896,7 @@ div.add-branch-button:hover {
 
 .permissions-container {
     margin-left: 120px;
+    margin-right: 120px;
     padding: 0px;
 }
 
@@ -957,4 +964,21 @@ div.add-branch-button:hover {
 a.mentioned-user {
     color: inherit;
     font-weight: bold;
+}
+
+.two-list-selector-controls {
+    width: 30px;
+    display: inline-block;
+    margin: 5px;
+}
+
+.from-list-container, .to-list-container {
+    width: 240px;
+    height: 200px;
+    border: solid 1px #000000;
+    overflow: scroll;
+}
+
+.from-list-container input, .to-list-container input {
+    margin: 5px;
 }
