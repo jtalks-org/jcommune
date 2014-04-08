@@ -84,7 +84,6 @@
     <js>/resources/javascript/app/contextMenu.js</js>
     <js>/resources/javascript/app/codeHighlighting.js</js>
     <js>/resources/javascript/app/registration.js</js>
-    <js>/resources/javascript/app/passwordChangedMessage.js</js>
   </group>
 
   <group name="plugin">

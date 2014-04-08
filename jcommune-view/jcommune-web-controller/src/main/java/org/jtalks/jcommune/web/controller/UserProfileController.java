@@ -78,7 +78,7 @@ public class UserProfileController {
     public static final String EDITED_USER = "editedUser";
     public static final String BREADCRUMB_LIST = "breadcrumbList";
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
-    public static final String IS_PASSWORD_CHANGED_ATTRIB = "isPasswordChanged";
+    public static final String IS_PASSWORD_CHANGED_ATTRIB = "isPasswordChangedMessage";
 
     private ImageService imageService;
     private UserService userService;

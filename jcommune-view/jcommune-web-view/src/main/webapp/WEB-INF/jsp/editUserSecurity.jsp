@@ -23,12 +23,17 @@
 
 <div class="clearfix"></div>
 <hr class='user-profile-hr'/>
+<c:if test="${isPasswordChangedMessage}">
 <script type="text/javascript">
-  <c:if test="${empty isPasswordChanged}">
-    <c:set var="isPasswordChanged" value="false" />
-  </c:if>
-  $showMessage = ${isPasswordChanged};
+  $("document").ready(function () {
+      jDialog.createDialog({
+         type: jDialog.alertType,
+         bodyMessage: $isMessageChangedMessage,
+         maxWidth: 400
+       });
+  });
 </script>
+</c:if>
 <div>
   <fieldset>
     <c:if test="${param.userId == editedUser.userSecurityDto.userId}">
