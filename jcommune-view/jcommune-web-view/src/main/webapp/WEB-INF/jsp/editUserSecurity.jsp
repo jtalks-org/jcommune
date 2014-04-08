@@ -28,7 +28,7 @@
   $("document").ready(function () {
       jDialog.createDialog({
          type: jDialog.alertType,
-         bodyMessage: $isMessageChangedMessage,
+         bodyMessage: $isPasswordChangedMessage,
          maxWidth: 400
        });
   });
