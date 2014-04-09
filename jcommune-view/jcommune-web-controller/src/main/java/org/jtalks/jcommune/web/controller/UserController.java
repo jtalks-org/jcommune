@@ -132,8 +132,9 @@ public class UserController {
     @InitBinder({"dto", "newUser"})
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
-        binder.registerCustomEditor(String.class, "password", new DefaultStringEditor(true));
-        binder.registerCustomEditor(String.class, "passwordConfirm", new DefaultStringEditor(true));
+        binder.registerCustomEditor(String.class, "userDto.username", new StringTrimmerEditor(false));
+        binder.registerCustomEditor(String.class, "userDto.password", new DefaultStringEditor(false));
+        binder.registerCustomEditor(String.class, "passwordConfirm", new DefaultStringEditor(false));
     }
 
     /**

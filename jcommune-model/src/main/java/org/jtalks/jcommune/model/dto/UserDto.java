@@ -22,7 +22,6 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 
 import org.jtalks.jcommune.model.validation.annotations.Unique;
-import org.jtalks.jcommune.model.validation.annotations.SizeAndNotBlank;
 
 import javax.validation.constraints.Size;
 import java.util.HashMap;
@@ -35,8 +34,8 @@ import java.util.Map;
  */
 public class UserDto {
 
-    @SizeAndNotBlank(min = User.USERNAME_MIN_LENGTH, max = User.USERNAME_MAX_LENGTH,
-         message = "{user.username.length_constraint_violation}")
+    @Size(min = User.USERNAME_MIN_LENGTH, max = User.USERNAME_MAX_LENGTH,
+             message = "{user.username.length_constraint_violation}")
     @Unique(entity = JCUser.class, field = "username", message = "{user.username.already_exists}", ignoreCase = true)
     private String username;
 
@@ -46,7 +45,7 @@ public class UserDto {
     @Unique(entity = JCUser.class, field = "email", message = "{user.email.already_exists}", ignoreCase = true)
     private String email;
 
-    @SizeAndNotBlank(min = User.PASSWORD_MIN_LENGTH, max = User.PASSWORD_MAX_LENGTH,
+    @Size(min = User.PASSWORD_MIN_LENGTH, max = User.PASSWORD_MAX_LENGTH,
             message = "{user.password.length_constraint_violation}")
     private String password;
 
