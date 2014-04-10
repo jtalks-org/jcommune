@@ -975,8 +975,24 @@ a.mentioned-user {
 .list-container {
     width: 240px;
     height: 200px;
-/*border: solid 1px #000000;*/
+    margin: 0px;
+    border: 1px solid rgb(128, 128, 128);
+    border-radius: 4px;
+}
+
+.group-list-caption-container {
+    height: 32px;
+    border-bottom: solid 1px rgb(128, 128, 128);
+}
+
+.group-list {
+    height: 168px;
     overflow: scroll;
+}
+
+.group-list-caption-container, .group-list {
+    width: 240px;
+    margin: 0px;
 }
 
 .list-container input{
@@ -996,4 +1012,8 @@ a.mentioned-user {
 
 pre.prettyprint {
     margin: 6px;
+}
+
+.two-list-selector-control {
+    padding: 2px 7px;
 }

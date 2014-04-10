@@ -52,39 +52,58 @@ $(function () {
     }
 
     function showDialog(selectedGroups, remainingGroups, permissionName, allowed) {
+        var footerContent = ' \
+            <button id="cancelEditPermission" class="btn">' + $labelCancel + '</button> \
+            <button id="savePermission" class="btn btn-primary">' + $labelOk + '</button>';
+
         var content = "<div class='two-list-selector'> <div class='pull-left list-container'> \
-                        <div>\
+                        <div class='group-list-caption-container'>\
                         <input type='checkbox' id='selectAllRemaining'/>\
                         <label for='selectAllRemaining' class='group-caption'>Available:</label>\
-                        </div>";
+                        </div><div class='group-list' id='remainingGroupList'>";
         for(var i = 0, size = remainingGroups.length; i < size ; i++){
             content += "<div><input type='checkbox' id='group" + remainingGroups[i].id + "' /> \
                         <label for='group" + remainingGroups[i].id + "'>" + remainingGroups[i].name + "</label> </div>";
         }
-        content += "</div> \
+        content += "</div> </div>\
                     <div class='two-list-selector-controls'> \
-                        <div><a class='btn'>&gt</a></div>\
-                        <div><a class='btn'>→</a></div>\
-                        <div><a class='btn'>←</a></div> \
-                        <div><a class='btn'>&lt</a></div> \
+                        <div class='two-list-selector-control'><a href='#'><i class='icon-chevron-right'></i></a></div>\
+                        <div class='two-list-selector-control'><a href='#'><i class='icon-forward'></i></a></div>\
+                        <div class='two-list-selector-control'><a href='#'><i class='icon-chevron-left'></i></a></div> \
+                        <div class='two-list-selector-control'><a href='#'><i class='icon-backward'></i></a></div> \
                     </div>";
         content += "<div class='pull-right list-container'> \
-                    <div>\
+                    <div class='group-list-caption-container'>\
                         <input type='checkbox' id='selectAllAlreadyAdded'/>\
                         <label for='selectAllRemaining' class='group-caption'>Already added:</label>\
-                        </div>";
+                        </div><div class='group-list' id='alreadyAddedGroupList'>";
         for(var i = 0, size = selectedGroups.length; i < size ; i++){
             content += "<div><input type='checkbox' id='group" + selectedGroups[i].id + "' /> \
                         <label for='group" + selectedGroups[i].id + "'>" + selectedGroups[i].name + "</label> </div>";
         }
-        content += "</div></div>";
+        content += "</div></div></div>";
 
         jDialog.createDialog({
             dialogId: 'mainLinksEditor',
+            footerContent: footerContent,
             title: permissionName + ": " + (allowed == true ? "Allowed" : "Restricted"),
             bodyContent: content,
             maxWidth: 800,
             maxHeight: 600
+        });
+
+        $("#selectAllRemaining").on('click', function (e) {
+            selectAllInputs("remainingGroupList", $("#selectAllRemaining").prop('checked'));
+        });
+
+        $("#selectAllAlreadyAdded").on('click', function (e) {
+            selectAllInputs("alreadyAddedGroupList", $("#selectAllAlreadyAdded").prop('checked'));
+        });
+    }
+
+    function selectAllInputs(parent, select) {
+        $("#" + parent + " input[type='checkbox']").each(function() {
+            $(this).prop('checked', select);
         });
     }
 });
