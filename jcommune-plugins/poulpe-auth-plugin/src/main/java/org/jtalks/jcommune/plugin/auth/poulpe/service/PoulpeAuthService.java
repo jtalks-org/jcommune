@@ -251,7 +251,7 @@ public class PoulpeAuthService {
         if (dryRun) {
             addHeaderAttribute(clientResource, DRY_RUN_PARAM, TRUE);
         }
-
+        writeRequestInfoToLog(clientResource);
         try {
             clientResource.post(user);
         } catch (ResourceException e) {
@@ -273,12 +273,23 @@ public class PoulpeAuthService {
         if (login != null && !login.isEmpty() && password != null && !password.isEmpty()) {
             clientResource.setChallengeResponse(ChallengeScheme.HTTP_BASIC, login, password);
         }
+        writeRequestInfoToLog(clientResource);
         try {
             clientResource.get();
         } catch (ResourceException e) {
             logger.debug("Poulpe authentication request error: {}", e.getStatus());
         }
         return clientResource;
+    }
+
+    private void writeRequestInfoToLog(ClientResource clientResource) {
+        ConcurrentMap<String, Object> attrs = clientResource.getRequest().getAttributes();
+        Series<Header> headers = (Series<Header>) attrs.get(HeaderConstants.ATTRIBUTE_HEADERS);
+        if (headers != null) {
+            String h = headers.toString();
+        }
+        logger.debug("Request to Poulpe: requested URI - {}, request headers - {}, request body - {}",
+                new Object[]{clientResource.getRequest().getResourceRef(), headers, clientResource.getRequest()});
     }
 
     private ClientResource createClientResource(String url, boolean buffering) {
