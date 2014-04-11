@@ -318,6 +318,23 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     }
 
     /**
+    * Get next post to post by Id. Return previous one if it is last post in
+    * topic.
+    * 
+    * @param id
+    * @return next post
+    */
+    public Post getNextPostByPostId(long id) {
+	for (int i = posts.size() - 1; i > 0; i--) {
+		if (posts.get(i).getId() == id) {
+			return (i == posts.size() - 1) ? posts.get(i - 1) : posts
+					.get(i + 1);
+		}
+	}
+	return getFirstPost();
+    }
+
+    /**
      * @return date and time when theme was changed last time
      */
     public DateTime getModificationDate() {
@@ -536,14 +553,16 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     /**
      * {@inheritDoc}
      */
-    public Set<JCUser> getSubscribers() {
+    @Override
+	public Set<JCUser> getSubscribers() {
         return subscribers;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void setSubscribers(Set<JCUser> subscribers) {
+    @Override
+	public void setSubscribers(Set<JCUser> subscribers) {
         this.subscribers = subscribers;
     }
 

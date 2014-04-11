@@ -116,17 +116,17 @@ public class PostControllerTest {
         verify(binder).registerCustomEditor(eq(String.class), any(StringTrimmerEditor.class));
     }
 
-    @Test
-    public void testDeletePost() throws NotFoundException {
-        //invoke the object under test
-        String view = controller.delete(POST_ID);
+	@Test
+	public void testDeletePost() throws NotFoundException {
+		// invoke the object under test
+		ModelAndView mav = controller.delete(POST_ID);
 
-        //check expectations
-        verify(postService).deletePost(post);
+		// check expectations
+		verify(postService).deletePost(post);
 
-        //check result
-        assertEquals(view, "redirect:/topics/" + TOPIC_ID);
-    }
+		// check result
+		assertViewName(mav, "redirect:/posts/" + POST_ID);
+	}
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testDeleteUnexistingPost() throws NotFoundException {

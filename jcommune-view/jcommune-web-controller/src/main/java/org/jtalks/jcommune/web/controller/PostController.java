@@ -120,20 +120,23 @@ public class PostController {
      * Delete post by given id
      *
      * @param postId post
-     * @return redirect to topic page
+     * @return redirect to post next to deleted one. Redirects to previous post in case if it's last post in topic. 
      * @throws NotFoundException when post was not found
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/posts/{postId}")
-    public String delete(@PathVariable(POST_ID) Long postId) throws NotFoundException {
-        Topic topic = deletePostWithLockHandling(postId);
-        return "redirect:/topics/" + topic.getId();
+	public ModelAndView delete(@PathVariable(POST_ID) Long postId)
+			throws NotFoundException {
+		Post post = this.postService.get(postId);
+		Post nextPost = post.getTopic().getNextPostByPostId(postId);
+		deletePostWithLockHandling(postId);
+		return new ModelAndView("redirect:/posts/" + nextPost.getId());
     }
 
     private Topic deletePostWithLockHandling(Long postId) throws NotFoundException {
         for (int i = 0; i < UserController.LOGIN_TRIES_AFTER_LOCK; i++) {
             try {
                 Post post = postService.get(postId);
-                postService.deletePost(post);
+				postService.deletePost(post);
                 return post.getTopic();
             } catch (HibernateOptimisticLockingFailureException e) {
             }
