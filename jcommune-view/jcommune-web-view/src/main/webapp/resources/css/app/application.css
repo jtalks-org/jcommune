@@ -972,6 +972,10 @@ a.mentioned-user {
     margin: 40px 5px;
 }
 
+.two-list-selector {
+    height: 200px;
+}
+
 .list-container {
     width: 240px;
     height: 200px;
@@ -987,7 +991,13 @@ a.mentioned-user {
 
 .group-list {
     height: 168px;
-    overflow: scroll;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.group-container {
+    white-space: nowrap;
+    width: 100%;
 }
 
 .group-list-caption-container, .group-list {
@@ -1003,6 +1013,14 @@ a.mentioned-user {
     display:inline-block;
     margin:-1px 4px 0 0;
     vertical-align:middle;
+}
+
+.list-container label{
+    width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    -webkit-text-overflow: ellipsis;
 }
 
 .group-caption {

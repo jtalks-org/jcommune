@@ -62,7 +62,7 @@ $(function () {
                         <label for='selectAllRemaining' class='group-caption'>Available:</label>\
                         </div><div class='group-list' id='remainingGroupList'>";
         for(var i = 0, size = remainingGroups.length; i < size ; i++){
-            content += "<div><input type='checkbox' id='group" + remainingGroups[i].id + "' /> \
+            content += "<div class='group-container'><input type='checkbox' id='group" + remainingGroups[i].id + "' /> \
                         <label for='group" + remainingGroups[i].id + "'>" + remainingGroups[i].name + "</label> </div>";
         }
         content += "</div> </div>\
@@ -78,7 +78,7 @@ $(function () {
                         <label for='selectAllRemaining' class='group-caption'>Already added:</label>\
                         </div><div class='group-list' id='alreadyAddedGroupList'>";
         for(var i = 0, size = selectedGroups.length; i < size ; i++){
-            content += "<div><input type='checkbox' id='group" + selectedGroups[i].id + "' /> \
+            content += "<div class='group-container'><input type='checkbox' id='group" + selectedGroups[i].id + "' /> \
                         <label for='group" + selectedGroups[i].id + "'>" + selectedGroups[i].name + "</label> </div>";
         }
         content += "</div></div></div>";
@@ -88,8 +88,7 @@ $(function () {
             footerContent: footerContent,
             title: permissionName + ": " + (allowed == true ? "Allowed" : "Restricted"),
             bodyContent: content,
-            maxWidth: 800,
-            maxHeight: 600
+            maxWidth: 800
         });
 
         $("#selectAllRemaining").on('click', function (e) {
