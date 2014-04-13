@@ -969,28 +969,29 @@ a.mentioned-user {
 .two-list-selector-controls {
     width: 30px;
     display: inline-block;
-    margin: 40px 5px;
+    margin: 170px 5px;
 }
 
 .two-list-selector {
-    height: 200px;
+    height: 400px;
 }
 
 .list-container {
     width: 240px;
-    height: 200px;
+    height: 400px;
     margin: 0px;
-    border: 1px solid rgb(128, 128, 128);
-    border-radius: 4px;
+    border: 2px solid rgb(128, 128, 128);
+    border-radius: 5px;
 }
 
 .group-list-caption-container {
     height: 32px;
-    border-bottom: solid 1px rgb(128, 128, 128);
+    padding-top: 5px;
+    border-bottom: solid 2px rgb(128, 128, 128);
 }
 
 .group-list {
-    height: 168px;
+    height: 368px;
     overflow-x: hidden;
     overflow-y: scroll;
 }
