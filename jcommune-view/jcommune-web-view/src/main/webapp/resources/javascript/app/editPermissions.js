@@ -51,11 +51,11 @@ $(function () {
         });
     }
 
-    function getGroupListHtml(prefix, groupsInfo) {
+    function getGroupListHtml(idSuffix, groupsInfo) {
         var content = "<div class='group-list-caption-container'>\
-                        <input type='checkbox' id='selectAll'" + prefix + "/>\
-                        <label for='selectAll" + prefix + "' class='group-caption'>Already added:</label>\
-                        </div><div class='group-list' id='" + prefix + "GroupList'>";
+                        <input type='checkbox' id='selectAll" + idSuffix + "'/>\
+                        <label for='selectAll" + idSuffix + "' class='group-caption'>Already added:</label>\
+                        </div><div class='group-list' id='groupList" + idSuffix + "'>";
         for(var i = 0, size = groupsInfo.length; i < size ; i++){
             content += "<div class='group-container'><input type='checkbox' id='group" + groupsInfo[i].id + "' /> \
                         <label for='group" + groupsInfo[i].id + "'>" + groupsInfo[i].name + "</label> </div>";
@@ -70,7 +70,7 @@ $(function () {
             <button id="savePermission" class="btn btn-primary">' + $labelOk + '</button>';
 
         var content = "<div class='two-list-selector'> <div class='pull-left list-container'>"
-            + getGroupListHtml("AllRemaining", remainingGroups);
+            + getGroupListHtml("Remaining", remainingGroups);
 
         content += "</div>\
                     <div class='two-list-selector-controls'> \
@@ -94,11 +94,11 @@ $(function () {
         });
 
         $("#selectAllRemaining").on('click', function (e) {
-            selectAllInputs("remainingGroupList", $("#selectAllRemaining").prop('checked'));
+            selectAllInputs("groupListRemaining", $("#selectAllRemaining").prop('checked'));
         });
 
         $("#selectAllAlreadyAdded").on('click', function (e) {
-            selectAllInputs("alreadyAddedGroupList", $("#selectAllAlreadyAdded").prop('checked'));
+            selectAllInputs("groupListAlreadyAdded", $("#selectAllAlreadyAdded").prop('checked'));
         });
     }
 
