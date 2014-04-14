@@ -967,9 +967,9 @@ a.mentioned-user {
 }
 
 .two-list-selector-controls {
-    width: 30px;
+    width: 40px;
     display: inline-block;
-    margin: 170px 5px;
+    margin: 160px 0px 160px 8px;
 }
 
 .two-list-selector {
@@ -977,7 +977,7 @@ a.mentioned-user {
 }
 
 .list-container {
-    width: 240px;
+    width: 235px;
     height: 400px;
     margin: 0px;
     border: 2px solid rgb(128, 128, 128);
@@ -991,7 +991,7 @@ a.mentioned-user {
 }
 
 .group-list {
-    height: 368px;
+    height: 360px;
     overflow-x: hidden;
     overflow-y: scroll;
 }
@@ -1002,7 +1002,7 @@ a.mentioned-user {
 }
 
 .group-list-caption-container, .group-list {
-    width: 240px;
+    width: 235px;
     margin: 0px;
 }
 
@@ -1034,5 +1034,5 @@ pre.prettyprint {
 }
 
 .two-list-selector-control {
-    padding: 2px 7px;
+    padding: 2px 0px;
 }

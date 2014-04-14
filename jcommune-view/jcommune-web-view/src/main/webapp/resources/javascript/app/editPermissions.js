@@ -74,10 +74,18 @@ $(function () {
 
         content += "</div>\
                     <div class='two-list-selector-controls'> \
-                        <div class='two-list-selector-control'><a href='#'><i class='icon-chevron-right'></i></a></div>\
-                        <div class='two-list-selector-control'><a href='#'><i class='icon-forward'></i></a></div>\
-                        <div class='two-list-selector-control'><a href='#'><i class='icon-chevron-left'></i></a></div> \
-                        <div class='two-list-selector-control'><a href='#'><i class='icon-backward'></i></a></div> \
+                        <div class='two-list-selector-control'>\
+                            <a href='#' class='btn'><i class='icon-chevron-right'></i></a>\
+                        </div>\
+                        <div class='two-list-selector-control'>\
+                            <a href='#' class='btn'><i class='icon-forward'></i></a>\
+                        </div>\
+                        <div class='two-list-selector-control'>\
+                            <a href='#' class='btn'><i class='icon-chevron-left'></i></a>\
+                        </div> \
+                        <div class='two-list-selector-control'>\
+                            <a href='#' class='btn'><i class='icon-backward'></i></a>\
+                        </div> \
                     </div>";
         content += "<div class='pull-right list-container'>"
             + getGroupListHtml("AlreadyAdded", selectedGroups, $permissionsGroupAlreadyAdded)
