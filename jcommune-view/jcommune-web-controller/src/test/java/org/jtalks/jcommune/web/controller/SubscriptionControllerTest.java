@@ -59,7 +59,7 @@ public class SubscriptionControllerTest {
     public void testSubscribeToTopic() throws NotFoundException {
         when(topicFetchService.get(id)).thenReturn(topic);
 
-        controller.subscribeToTopic(id);
+        controller.subscribeToTopic(id, "");
 
         verify(subscriptionService).toggleTopicSubscription(topic);
     }
@@ -68,7 +68,7 @@ public class SubscriptionControllerTest {
     public void testUnsubscribeFromTopic() throws NotFoundException {
         when(topicFetchService.get(id)).thenReturn(topic);
 
-       controller.unsubscribeFromTopic(id);
+       controller.unsubscribeFromTopic(id, "");
 
         verify(subscriptionService).toggleTopicSubscription(topic);
     }
@@ -77,7 +77,7 @@ public class SubscriptionControllerTest {
     public void testSubscribeOnBranch() throws NotFoundException {
         when(branchService.get(id)).thenReturn(branch);
 
-        controller.subscribeToBranch(id);
+        controller.subscribeToBranch(id, "");
 
         verify(subscriptionService).toggleBranchSubscription(branch);
     }
@@ -86,7 +86,7 @@ public class SubscriptionControllerTest {
     public void testUnsubscribeFromBranch() throws NotFoundException {
         when(branchService.get(id)).thenReturn(branch);
 
-        controller.unsubscribeFromBranch(id);
+        controller.unsubscribeFromBranch(id, "");
 
         verify(subscriptionService).toggleBranchSubscription(branch);
     }
@@ -110,24 +110,24 @@ public class SubscriptionControllerTest {
     @Test(expectedExceptions = NotFoundException.class)
     public void testSubscribeToNonexistingTopic() throws NotFoundException {
         doThrow(new NotFoundException()).when(topicFetchService).get(id);
-        controller.subscribeToTopic(id);
+        controller.subscribeToTopic(id, "");
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testUnsubscribeFromNonexistingTopic() throws NotFoundException {
         doThrow(new NotFoundException()).when(topicFetchService).get(id);
-        controller.unsubscribeFromTopic(id);
+        controller.unsubscribeFromTopic(id, "");
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testSubscribeOnNonexistingBranch() throws NotFoundException {
         doThrow(new NotFoundException()).when(branchService).get(id);
-        controller.subscribeToBranch(id);
+        controller.subscribeToBranch(id, "");
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testUnsubscribeFromNonexistingBranch() throws NotFoundException {
         doThrow(new NotFoundException()).when(branchService).get(id);
-        controller.unsubscribeFromBranch(id);
+        controller.unsubscribeFromBranch(id, "");
     }
 }

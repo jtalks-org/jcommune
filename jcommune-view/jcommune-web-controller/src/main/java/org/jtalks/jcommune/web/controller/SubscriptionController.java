@@ -23,6 +23,7 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -63,9 +64,10 @@ public class SubscriptionController {
      */
     @RequestMapping("topics/{id}/subscribe")
     @ResponseBody
-    public void subscribeToTopic(@PathVariable Long id) throws NotFoundException {
+    public ModelAndView subscribeToTopic(@PathVariable Long id, @RequestHeader(value="X-Requested-With", defaultValue="NotAjax") String header) throws NotFoundException {
         Topic topic = topicFetchService.get(id);
         subscriptionService.toggleTopicSubscription(topic);
+        return new ModelAndView("redirect:/topics/" + id);
     }
 
     /**
@@ -76,10 +78,13 @@ public class SubscriptionController {
      */
     @RequestMapping("topics/{id}/unsubscribe")
     @ResponseBody
-    public void unsubscribeFromTopic(@PathVariable Long id) throws NotFoundException {
+    public ModelAndView unsubscribeFromTopic(@PathVariable Long id, @RequestHeader(value="X-Requested-With", defaultValue="NotAjax") String header
+    ) throws NotFoundException {
         Topic topic = topicFetchService.get(id);
         subscriptionService.toggleTopicSubscription(topic);
+        return new ModelAndView("redirect:/topics/" + id);
     }
+
 
     /**
      * Activates branch updates subscription for the current user.
@@ -90,9 +95,10 @@ public class SubscriptionController {
      */
     @RequestMapping("branches/{id}/subscribe")
     @ResponseBody
-    public void subscribeToBranch(@PathVariable Long id) throws NotFoundException {
+    public ModelAndView subscribeToBranch(@PathVariable Long id, @RequestHeader(value="X-Requested-With", defaultValue="NotAjax") String header) throws NotFoundException {
         Branch branch = branchService.get(id);
         subscriptionService.toggleBranchSubscription(branch);
+        return new ModelAndView("redirect:/branches/" + id);
     }
 
     /**
@@ -103,9 +109,10 @@ public class SubscriptionController {
      */
     @RequestMapping("branches/{id}/unsubscribe")
     @ResponseBody
-    public void unsubscribeFromBranch(@PathVariable Long id) throws NotFoundException {
+    public ModelAndView unsubscribeFromBranch(@PathVariable Long id, @RequestHeader(value="X-Requested-With", defaultValue="NotAjax") String header) throws NotFoundException {
         Branch branch = branchService.get(id);
         subscriptionService.toggleBranchSubscription(branch);
+        return new ModelAndView("redirect:/branches/" + id);
     }
 
     /**
