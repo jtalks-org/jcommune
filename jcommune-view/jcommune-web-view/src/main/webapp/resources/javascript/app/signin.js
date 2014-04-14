@@ -36,9 +36,6 @@ $(function () {
 
         var footerContent = '<input  type="submit" id="signin-submit-button" value="' + $labelSignin + '" class="btn btn-primary" name="commit"/>';
 
-  //      var footerContent = '<button id="signin-submit-button" class="btn btn-primary" name="commit"> \
-   //         ' + $labelSignin + '</button>';
-
         var submitDialog = function (e) {
             if (e.keyCode == enterCode) {
                 //if focus on username then select password field
