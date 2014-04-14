@@ -51,10 +51,10 @@ $(function () {
         });
     }
 
-    function getGroupListHtml(idSuffix, groupsInfo) {
+    function getGroupListHtml(idSuffix, groupsInfo, selectAllCaption) {
         var content = "<div class='group-list-caption-container'>\
                         <input type='checkbox' id='selectAll" + idSuffix + "'/>\
-                        <label for='selectAll" + idSuffix + "' class='group-caption'>Already added:</label>\
+                        <label for='selectAll" + idSuffix + "' class='group-caption'>" + selectAllCaption + ":</label>\
                         </div><div class='group-list' id='groupList" + idSuffix + "'>";
         for(var i = 0, size = groupsInfo.length; i < size ; i++){
             content += "<div class='group-container'><input type='checkbox' id='group" + groupsInfo[i].id + "' /> \
@@ -70,7 +70,7 @@ $(function () {
             <button id="savePermission" class="btn btn-primary">' + $labelOk + '</button>';
 
         var content = "<div class='two-list-selector'> <div class='pull-left list-container'>"
-            + getGroupListHtml("Remaining", remainingGroups);
+            + getGroupListHtml("Remaining", remainingGroups, $permissionsGroupAvailable);
 
         content += "</div>\
                     <div class='two-list-selector-controls'> \
@@ -80,14 +80,14 @@ $(function () {
                         <div class='two-list-selector-control'><a href='#'><i class='icon-backward'></i></a></div> \
                     </div>";
         content += "<div class='pull-right list-container'>"
-            + getGroupListHtml("AlreadyAdded", selectedGroups)
+            + getGroupListHtml("AlreadyAdded", selectedGroups, $permissionsGroupAlreadyAdded)
 
         content += "</div></div>";
 
         jDialog.createDialog({
             dialogId: 'permissionsEditor',
             footerContent: footerContent,
-            title: permissionName + ": " + (allowed == true ? "Allowed" : "Restricted"),
+            title: permissionName + ": " + (allowed == true ? $permissionsAllowed : $permissionsRestricted),
             bodyContent: content,
             maxWidth: 800,
             maxHeight: 600
