@@ -168,6 +168,11 @@ public class PermissionManager {
         return groupsPermissions;
     }
 
+    /**
+     * Get the list of all groups.
+     *
+     * @return list of groups
+     */
     public List<Group> getAllGroups() {
         return groupDao.getAll();
     }
