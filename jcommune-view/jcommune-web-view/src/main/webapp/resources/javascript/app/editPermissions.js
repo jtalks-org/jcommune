@@ -102,7 +102,7 @@ $(function () {
             handlers: {
                 '#cancelEditPermission' : {'static':'close'},
                 '#savePermission' : {'static':'close'}
-            },
+            }
         });
 
         $("#selectAllRemaining").on('click', function (e) {
