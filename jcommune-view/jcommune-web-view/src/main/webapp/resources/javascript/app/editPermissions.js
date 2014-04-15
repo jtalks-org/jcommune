@@ -49,30 +49,29 @@ $(function () {
                 });
             }
         });
-    }
 
-    function getGroupListHtml(idSuffix, groupsInfo, selectAllCaption) {
-        var content = "<div class='group-list-caption-container'>\
+        function getGroupListHtml(idSuffix, groupsInfo, selectAllCaption) {
+            var content = "<div class='group-list-caption-container'>\
                         <input type='checkbox' id='selectAll" + idSuffix + "'/>\
                         <label for='selectAll" + idSuffix + "' class='group-caption'>" + selectAllCaption + ":</label>\
                         </div><div class='group-list' id='groupList" + idSuffix + "'>";
-        for(var i = 0, size = groupsInfo.length; i < size ; i++){
-            content += "<div class='group-container'><input type='checkbox' id='group" + groupsInfo[i].id + "' /> \
+            for(var i = 0, size = groupsInfo.length; i < size ; i++){
+                content += "<div class='group-container'><input type='checkbox' id='group" + groupsInfo[i].id + "' /> \
                         <label for='group" + groupsInfo[i].id + "'>" + groupsInfo[i].name + "</label> </div>";
+            }
+            content += "</div>";
+            return content;
         }
-        content += "</div>";
-        return content;
-    }
 
-    function showDialog(selectedGroups, remainingGroups, permissionName, allowed) {
-        var footerContent = ' \
+        function showDialog(selectedGroups, remainingGroups, permissionName, allowed) {
+            var footerContent = ' \
             <button id="cancelEditPermission" class="btn" href="#">' + $labelCancel + '</button> \
             <button id="savePermission" class="btn btn-primary" href="#">' + $labelOk + '</button>';
 
-        var content = "<div class='two-list-selector'> <div class='pull-left list-container'>"
-            + getGroupListHtml("Remaining", remainingGroups, $permissionsGroupAvailable);
+            var content = "<div class='two-list-selector'> <div class='pull-left list-container'>"
+                + getGroupListHtml("Remaining", remainingGroups, $permissionsGroupAvailable);
 
-        content += "</div>\
+            content += "</div>\
                     <div class='two-list-selector-controls'> \
                         <div class='two-list-selector-control'>\
                             <a href='#' class='btn'><i class='icon-chevron-right'></i></a>\
@@ -87,36 +86,37 @@ $(function () {
                             <a href='#' class='btn'><i class='icon-backward'></i></a>\
                         </div> \
                     </div>";
-        content += "<div class='pull-right list-container'>"
-            + getGroupListHtml("AlreadyAdded", selectedGroups, $permissionsGroupAlreadyAdded)
+            content += "<div class='pull-right list-container'>"
+                + getGroupListHtml("AlreadyAdded", selectedGroups, $permissionsGroupAlreadyAdded)
 
-        content += "</div></div>";
+            content += "</div></div>";
 
-        jDialog.createDialog({
-            dialogId: 'permissionsEditor',
-            footerContent: footerContent,
-            title: permissionName + ": " + (allowed == true ? $permissionsAllowed : $permissionsRestricted),
-            bodyContent: content,
-            maxWidth: 800,
-            maxHeight: 600,
-            handlers: {
-                '#cancelEditPermission' : {'static':'close'},
-                '#savePermission' : {'static':'close'}
-            }
-        });
+            jDialog.createDialog({
+                dialogId: 'permissionsEditor',
+                footerContent: footerContent,
+                title: permissionName + ": " + (allowed == true ? $permissionsAllowed : $permissionsRestricted),
+                bodyContent: content,
+                maxWidth: 800,
+                maxHeight: 600,
+                handlers: {
+                    '#cancelEditPermission' : {'static':'close'},
+                    '#savePermission' : {'static':'close'}
+                }
+            });
 
-        $("#selectAllRemaining").on('click', function (e) {
-            selectAllInputs("groupListRemaining", $("#selectAllRemaining").prop('checked'));
-        });
+            $("#selectAllRemaining").on('click', function (e) {
+                selectAllInputs("groupListRemaining", $("#selectAllRemaining").prop('checked'));
+            });
 
-        $("#selectAllAlreadyAdded").on('click', function (e) {
-            selectAllInputs("groupListAlreadyAdded", $("#selectAllAlreadyAdded").prop('checked'));
-        });
-    }
+            $("#selectAllAlreadyAdded").on('click', function (e) {
+                selectAllInputs("groupListAlreadyAdded", $("#selectAllAlreadyAdded").prop('checked'));
+            });
+        }
 
-    function selectAllInputs(parent, select) {
-        $("#" + parent + " input[type='checkbox']").each(function() {
-            $(this).prop('checked', select);
-        });
+        function selectAllInputs(parent, select) {
+            $("#" + parent + " input[type='checkbox']").each(function() {
+                $(this).prop('checked', select);
+            });
+        }
     }
 });
