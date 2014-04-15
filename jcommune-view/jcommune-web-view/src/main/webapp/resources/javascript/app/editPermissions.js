@@ -40,7 +40,7 @@ $(function () {
             async: false,
             data: JSON.stringify(permissionInfo),
             success: function (resp) {
-                showDialog(resp.result.selectedGroups, resp.result.remainingGroups, permissionName, allowed);
+                showDialog(resp.result.selectedGroups, resp.result.availableGroups, permissionName, allowed);
             },
             error: function (resp) {
                 jDialog.createDialog({
@@ -63,13 +63,13 @@ $(function () {
             return content;
         }
 
-        function showDialog(selectedGroups, remainingGroups, permissionName, allowed) {
+        function showDialog(selectedGroups, availableGroups, permissionName, allowed) {
             var footerContent = ' \
             <button id="cancelEditPermission" class="btn" href="#">' + $labelCancel + '</button> \
             <button id="savePermission" class="btn btn-primary" href="#">' + $labelOk + '</button>';
 
             var content = "<div class='two-list-selector'> <div class='pull-left list-container'>"
-                + getGroupListHtml("Remaining", remainingGroups, $permissionsGroupAvailable);
+                + getGroupListHtml("Available", availableGroups, $permissionsGroupAvailable);
 
             content += "</div>\
                     <div class='two-list-selector-controls'> \
@@ -104,8 +104,8 @@ $(function () {
                 }
             });
 
-            $("#selectAllRemaining").on('click', function (e) {
-                selectAllInputs("groupListRemaining", $("#selectAllRemaining").prop('checked'));
+            $("#selectAllAvailable").on('click', function (e) {
+                selectAllInputs("groupListAvailable", $("#selectAllAvailable").prop('checked'));
             });
 
             $("#selectAllAlreadyAdded").on('click', function (e) {
