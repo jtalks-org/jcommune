@@ -66,8 +66,8 @@ $(function () {
 
     function showDialog(selectedGroups, remainingGroups, permissionName, allowed) {
         var footerContent = ' \
-            <button id="cancelEditPermission" class="btn">' + $labelCancel + '</button> \
-            <button id="savePermission" class="btn btn-primary">' + $labelOk + '</button>';
+            <button id="cancelEditPermission" class="btn" href="#">' + $labelCancel + '</button> \
+            <button id="savePermission" class="btn btn-primary" href="#">' + $labelOk + '</button>';
 
         var content = "<div class='two-list-selector'> <div class='pull-left list-container'>"
             + getGroupListHtml("Remaining", remainingGroups, $permissionsGroupAvailable);
@@ -98,7 +98,11 @@ $(function () {
             title: permissionName + ": " + (allowed == true ? $permissionsAllowed : $permissionsRestricted),
             bodyContent: content,
             maxWidth: 800,
-            maxHeight: 600
+            maxHeight: 600,
+            handlers: {
+                '#cancelEditPermission' : {'static':'close'},
+                '#savePermission' : {'static':'close'}
+            },
         });
 
         $("#selectAllRemaining").on('click', function (e) {
