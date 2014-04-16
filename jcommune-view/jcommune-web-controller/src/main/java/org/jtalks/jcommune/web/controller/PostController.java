@@ -127,7 +127,7 @@ public class PostController {
 	public ModelAndView delete(@PathVariable(POST_ID) Long postId)
 			throws NotFoundException {
 		Post post = this.postService.get(postId);
-		Post nextPost = post.getTopic().getNextPostByPostId(postId);
+		Post nextPost = post.getTopic().getNeighborPost(post);
 		deletePostWithLockHandling(postId);
 		return new ModelAndView("redirect:/posts/" + nextPost.getId());
     }

@@ -317,22 +317,22 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
         return posts.get(posts.size() - 1);
     }
 
-    /**
-    * Get next post to post by Id. Return previous one if it is last post in
-    * topic.
-    * 
-    * @param id
-    * @return next post
-    */
-    public Post getNextPostByPostId(long id) {
-	for (int i = posts.size() - 1; i > 0; i--) {
-		if (posts.get(i).getId() == id) {
-			return (i == posts.size() - 1) ? posts.get(i - 1) : posts
-					.get(i + 1);
+	/**
+	 * Get next post to post by Id. Return previous one if it is last post in
+	 * topic.
+	 * 
+	 * @param post
+	 * @return Neighbor post
+	 */
+	public Post getNeighborPost(Post post) {
+		for (int i = posts.size() - 1; i > 0; i--) {
+			if (posts.get(i).getId() == post.getId()) {
+				return (i == posts.size() - 1) ? posts.get(i - 1) : posts
+						.get(i + 1);
+			}
 		}
+		return getFirstPost();
 	}
-	return getFirstPost();
-    }
 
     /**
      * @return date and time when theme was changed last time
