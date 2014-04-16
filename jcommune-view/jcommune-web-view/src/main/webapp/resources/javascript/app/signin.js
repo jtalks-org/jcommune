@@ -34,8 +34,7 @@ $(function () {
                 <a href="' + $root + '/password/restore' + '">' + $labelRestorePassword + '</a> \
             </div>';
 
-        var footerContent = '<button id="signin-submit-button" class="btn btn-primary" name="commit"> \
-            ' + $labelSignin + '</button>';
+        var footerContent = '<input  type="submit" id="signin-submit-button" value="' + $labelSignin + '" class="btn btn-primary" name="commit"/>';
 
         var submitDialog = function (e) {
             if (e.keyCode == enterCode) {
@@ -66,7 +65,7 @@ $(function () {
             tabNavigation: ['#j_username', '#j_password', '#rememberme-area input', '#restore-passwd a',
                 '#signin-submit-button'],
             handlers: {
-                '#signin-submit-button': {'click': sendLoginPost}
+                '#signin-modal-dialog': {'submit': sendLoginPost}
             },
             dialogKeydown: submitDialog
         });
@@ -114,7 +113,6 @@ $(function () {
  */
 function sendLoginPost(e) {
     e.preventDefault();
-
     var rememberMeElement = jDialog.dialog.find('input[name=_spring_security_remember_me]');
     var usernameElement = jDialog.dialog.find('#j_username');
     var passwordElement = jDialog.dialog.find('#j_password');

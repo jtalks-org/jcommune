@@ -40,6 +40,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -197,6 +198,11 @@ public class AdministrationController {
                 .addObject("permissions", permissions);
     }
 
+    /**
+     * Process permission information request
+     * @param permissionInfo information about permission for which data was requested
+     * @return DTO with two lists for already selected groups and still available groups
+     */
     @RequestMapping(value = "/branch/permissions/json", method = RequestMethod.POST)
     @ResponseBody
     public JsonResponse getGroupsForBranchPermission(@RequestBody PermissionGroupRequestDto permissionInfo) {
@@ -226,8 +232,10 @@ public class AdministrationController {
                 }
             }
 
+            Collections.sort(alreadySelected, GroupDto.BY_NAME_COMPARATOR);
+            Collections.sort(remaining, GroupDto.BY_NAME_COMPARATOR);
             permission.setSelectedGroups(alreadySelected);
-            permission.setRemainingGroups(remaining);
+            permission.setAvailableGroups(remaining);
 
         } catch (NotFoundException e) {
             return new JsonResponse(JsonResponseStatus.FAIL, null);

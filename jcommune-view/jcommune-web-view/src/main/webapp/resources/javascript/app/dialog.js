@@ -55,7 +55,7 @@ $(function () {
 
         jDialog.rootPanelFunc = function () {
             var dialog = $(' \
-        <form style="display: none" class="modal" id="' + jDialog.options.dialogId + '" tabindex="-1" role="dialog" \
+        <form style="display: none" method="post" class="modal" id="' + jDialog.options.dialogId + '" tabindex="-1" role="dialog" \
                     aria-hidden="true"> \
             <div class="modal-header"> \
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> \

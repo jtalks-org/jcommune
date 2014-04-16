@@ -14,28 +14,66 @@
  */
 package org.jtalks.jcommune.web.dto;
 
+import java.util.Comparator;
+
+/**
+ * @author Andrei Alikov
+ * DTO class for user group containing only ID and name of the group
+ *
+ */
 public class GroupDto {
     private long id;
     private String name;
 
+    /**
+     * Instanciates new GroupDto object
+     * @param id id of the group
+     * @param name name of the group
+     */
     public GroupDto(long id, String name) {
         this.id = id;
         this.name = name;
     }
 
+    /**
+     * Gets id of the group
+     * @return id of the group
+     */
     public long getId() {
         return id;
     }
 
+    /**
+     * Sets id of the group
+     * @param id id of the group
+     */
     public void setId(long id) {
         this.id = id;
     }
 
+    /**
+     * Gets name of the group
+     * @return name of the group
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets name of the group
+     * @param name name of the group
+     */
     public void setName(String name) {
         this.name = name;
     }
+
+    /**
+     * Comparator comparing two objects by their names
+     */
+    public static Comparator<GroupDto> BY_NAME_COMPARATOR = new Comparator<GroupDto>() {
+        @Override
+        public int compare(GroupDto o1, GroupDto o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
+    };
 }

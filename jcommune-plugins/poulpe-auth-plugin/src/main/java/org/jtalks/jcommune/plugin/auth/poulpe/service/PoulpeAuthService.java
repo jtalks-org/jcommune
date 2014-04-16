@@ -76,7 +76,9 @@ public class PoulpeAuthService {
             throws IOException, NoConnectionException, JAXBException, UnexpectedErrorException {
         User user = createUser(userDto.getUsername(), userDto.getPassword(), userDto.getEmail());
         ClientResource clientResource = sendRegistrationRequest(user, dryRun);
-        return getRegistrationResult(clientResource, userDto.getLanguage().getLocale());
+        Map<String, String> result = getRegistrationResult(clientResource, userDto.getLanguage().getLocale());
+        closeRestletConnection(clientResource);
+        return result;
     }
 
     /**
@@ -90,7 +92,19 @@ public class PoulpeAuthService {
     public Map<String, String> authenticate(String username, String passwordHash)
             throws JAXBException, IOException, NoConnectionException {
         ClientResource clientResource = sendAuthRequest(username, passwordHash);
-        return getAuthResult(clientResource);
+        Map<String, String> result = getAuthResult(clientResource);
+        closeRestletConnection(clientResource);
+        return result;
+    }
+
+
+
+    private void closeRestletConnection(ClientResource clientResource) {
+        try {
+            clientResource.getResponseEntity().exhaust();
+        } catch (IOException e) {
+            logger.warn("Error closing connection: {}", e.getMessage() );
+        }
     }
 
     /**

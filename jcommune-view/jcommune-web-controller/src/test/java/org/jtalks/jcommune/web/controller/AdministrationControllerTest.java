@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.common.model.entity.Component;
-import org.jtalks.common.model.entity.ComponentType;
+import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -24,7 +24,10 @@ import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.ImageService;
+import org.jtalks.jcommune.service.security.PermissionManager;
 import org.jtalks.jcommune.web.dto.BranchDto;
+import org.jtalks.jcommune.web.dto.PermissionGroupRequestDto;
+import org.jtalks.jcommune.web.dto.PermissionGroupsDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.util.ImageControllerUtils;
@@ -41,6 +44,9 @@ import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 import static org.jgroups.util.Util.assertTrue;
@@ -77,6 +83,9 @@ public class AdministrationControllerTest {
     @Mock
     BranchService branchService;
 
+    @Mock
+    PermissionManager permissionManager;
+
     private MockMvc mockMvc;
 
     //
@@ -86,10 +95,7 @@ public class AdministrationControllerTest {
     public void init() {
         initMocks(this);
 
-        Component component = new Component("Forum", "Cool Forum", ComponentType.FORUM);
-        component.setId(42);
-
-        administrationController = new AdministrationController(componentService, messageSource, branchService, null);
+        administrationController = new AdministrationController(componentService, messageSource, branchService, permissionManager);
     }
 
     @Test
@@ -188,5 +194,75 @@ public class AdministrationControllerTest {
         this.mockMvc.perform(get("/branch/permissions/42").accept(MediaType.TEXT_HTML))
                 .andExpect(model().attribute("branch", expectedBranch))
                 .andExpect(model().attribute("permissions", expectedPermissions));
+    }
+
+    @Test
+    public void getGroupsForBranchPermissionShouldReturnFailIfBranchWasNotFound() throws Exception {
+        Component component = new Component();
+        component.setId(1L);
+        when(componentService.getComponentOfForum()).thenReturn(component);
+
+        Long branchId = 42L;
+        when(branchService.getPermissionsFor(component.getId(), branchId)).thenThrow(new NotFoundException());
+
+        PermissionGroupRequestDto dto = new PermissionGroupRequestDto();
+        dto.setAllowed(true);
+        dto.setBranchId(branchId);
+        dto.setPermissionMask(BranchPermission.CREATE_POSTS.getMask());
+        JsonResponse jsonResponse = administrationController.getGroupsForBranchPermission(dto);
+
+        assertEquals(jsonResponse.getStatus(), JsonResponseStatus.FAIL);
+    }
+
+    @Test
+    public void getGroupsForBranchPermissionShouldReturnSuccessIfBranchExistsAndPermissionHasNoGroups()
+            throws Exception {
+        Component component = new Component();
+        component.setId(1L);
+        when(componentService.getComponentOfForum()).thenReturn(component);
+
+        Long branchId = 42L;
+        GroupsPermissions<BranchPermission> permissions = new GroupsPermissions<BranchPermission>();
+        when(branchService.getPermissionsFor(component.getId(), branchId)).thenReturn(permissions);
+        when(permissionManager.getAllGroups()).thenReturn(Collections.EMPTY_LIST);
+
+        PermissionGroupRequestDto dto = new PermissionGroupRequestDto();
+        dto.setAllowed(true);
+        dto.setBranchId(branchId);
+        dto.setPermissionMask(BranchPermission.CREATE_POSTS.getMask());
+        JsonResponse jsonResponse = administrationController.getGroupsForBranchPermission(dto);
+
+        assertEquals(jsonResponse.getStatus(), JsonResponseStatus.SUCCESS);
+    }
+
+    @Test
+    public void getGroupsForBranchPermissionShouldReturnSuccessIfBranchExists() throws Exception {
+        Component component = new Component();
+        component.setId(1L);
+        when(componentService.getComponentOfForum()).thenReturn(component);
+
+        Long branchId = 42L;
+        BranchPermission targetPermission = BranchPermission.CREATE_POSTS;
+        GroupsPermissions <BranchPermission> permissions = new GroupsPermissions<BranchPermission>();
+        permissions.addAllowed(targetPermission, new Group("1"));
+        permissions.addAllowed(targetPermission, new Group("2"));
+        permissions.addAllowed(targetPermission, new Group("3"));
+        when(branchService.getPermissionsFor(component.getId(), branchId)).thenReturn(permissions);
+
+        List<Group> allGroupList = Arrays.asList(new Group("1"), new Group("2"), new Group("3"),
+                                                 new Group("4"), new Group("5"), new Group("6"));
+        when(permissionManager.getAllGroups()).thenReturn(allGroupList);
+
+        PermissionGroupRequestDto dto = new PermissionGroupRequestDto();
+        dto.setAllowed(true);
+        dto.setBranchId(branchId);
+        dto.setPermissionMask(targetPermission.getMask());
+        JsonResponse jsonResponse = administrationController.getGroupsForBranchPermission(dto);
+
+        assertEquals(jsonResponse.getStatus(), JsonResponseStatus.SUCCESS);
+        assertTrue(jsonResponse.getResult() instanceof PermissionGroupsDto);
+        PermissionGroupsDto result = (PermissionGroupsDto)jsonResponse.getResult();
+        assertEquals(result.getAvailableGroups().size(), 3);
+        assertEquals(result.getSelectedGroups().size(), 3);
     }
 }

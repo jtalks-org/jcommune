@@ -967,31 +967,42 @@ a.mentioned-user {
 }
 
 .two-list-selector-controls {
-    width: 30px;
+    width: 40px;
     display: inline-block;
-    margin: 40px 5px;
+    margin: 160px 0px 160px 8px;
+}
+
+.two-list-selector {
+    height: 400px;
 }
 
 .list-container {
-    width: 240px;
-    height: 200px;
+    width: 235px;
+    height: 400px;
     margin: 0px;
-    border: 1px solid rgb(128, 128, 128);
-    border-radius: 4px;
+    border: 2px solid rgb(128, 128, 128);
+    border-radius: 5px;
 }
 
 .group-list-caption-container {
     height: 32px;
-    border-bottom: solid 1px rgb(128, 128, 128);
+    padding-top: 5px;
+    border-bottom: solid 2px rgb(128, 128, 128);
 }
 
 .group-list {
-    height: 168px;
-    overflow: scroll;
+    height: 360px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.group-container {
+    white-space: nowrap;
+    width: 100%;
 }
 
 .group-list-caption-container, .group-list {
-    width: 240px;
+    width: 235px;
     margin: 0px;
 }
 
@@ -1005,6 +1016,14 @@ a.mentioned-user {
     vertical-align:middle;
 }
 
+.list-container label{
+    width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    -webkit-text-overflow: ellipsis;
+}
+
 .group-caption {
     font-weight: bold;
     font-size: 120%;
@@ -1015,5 +1034,5 @@ pre.prettyprint {
 }
 
 .two-list-selector-control {
-    padding: 2px 7px;
+    padding: 2px 0px;
 }

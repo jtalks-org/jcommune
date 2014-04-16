@@ -102,7 +102,11 @@ public class BBCodeListPreprocessorTest {
                 {"aaa[list=1][*]bbb[*]ccc[/list]d[b]dda[/b]aa[list][*]bbb[*]ccc[/list]ddd", "aaa[list=1][*]bbb[/*][*]ccc[/*][/list]d[b]dda[/b]aa[list][*]bbb[/*][*]ccc[/*][/list]ddd"},
                 {"aaa[list]\n[*]bbb\n[*]ccc\n[/list]", "aaa[list]\n[*]bbb\n[/*][*]ccc\n[/*][/list]"},
                 {"a\nb\nc[list]a\nb\nc[*]a\nb\nc[/list]a\nb\nc", "a\nb\nc[list]a\nb\nc[*]a\nb\nc[/*][/list]a\nb\nc"},
-                {"", ""}
+                {"", ""},
+                {"[*]text[list][*]text[/list]","[*]text[list][*]text[/*][/list]"},
+                {"[*][list][*]text[/list]","[*][list][*]text[/*][/list]"},
+                {"[list][*]text[/list][*]","[list][*]text[/*][/list][*]"},
+                {"[list][*]text[/list]text[*]text", "[list][*]text[/*][/list]text[*]text"}
         };
     }
 }

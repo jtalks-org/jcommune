@@ -38,6 +38,8 @@ class ListItemsProcessor {
 
     private RootElement root;
 
+    private ListElement lastElement;
+
     private enum TagType {
 
         LIST,
@@ -119,27 +121,26 @@ class ListItemsProcessor {
             list.text = matcher.group(3);
             getCurrentElement().addChild(list);
             listStack.push(list);
+            lastElement = list;
         }
         if (tag == ListItemsProcessor.TagType.LIST_CLOSE) {
             if (listStack.isEmpty()) {
                 throw new BBCodeListParsingException("[/list] tag without respective [list]");
             }
-            ListElement lastList = listStack.pop();
-            lastList.endText = matcher.group(3);
-            lastList.close();
+            ListElement closingList = listStack.pop();
+            closingList.endText = matcher.group(3);
+            closingList.close();
+            lastElement = closingList;
         }
         if (tag == ListItemsProcessor.TagType.ITEM) {
-            ItemElement item = new ItemElement();
-            item.text = matcher.group(3);
-            getCurrentList().addChild(item);
+            if (!listStack.isEmpty()) {
+                ItemElement item = new ItemElement();
+                item.text = matcher.group(3);
+                listStack.peek().addChild(item);
+            } else if (lastElement != null) {
+                lastElement.endText += LIST_ITEM_TAG_OPEN + matcher.group(3);
+            }
         }
-    }
-
-    private ListElement getCurrentList() throws BBCodeListParsingException {
-        if (listStack.isEmpty()) {
-            throw new BBCodeListParsingException("List not found.");
-        }
-        return listStack.peek();
     }
 
     private TreeElement getCurrentElement() throws BBCodeListParsingException {
