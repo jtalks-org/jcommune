@@ -15,12 +15,13 @@
 package org.jtalks.jcommune.web.dto;
 
 /**
- * @author Andrei Alikov
  * DTO for the request from the client side to get information about branch permission.
  * Contains Branch ID for which information is requested, permission mask and
  * information about if information was requested for Restricted or Allowed part
+ *
+ * @author Andrei Alikov
  */
-public class PermissionGroupRequestDto {
+public class BranchPermissionDto {
     private boolean allowed;
     private long branchId;
     private int permissionMask;

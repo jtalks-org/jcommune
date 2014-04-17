@@ -215,4 +215,19 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
             throws NotFoundException {
         return permissionService.getPermissionsFor(get(branchId));
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
+    public List<Group> getPermissionsFor(long componentId, long branchId, boolean allowed, BranchPermission permission)
+            throws NotFoundException {
+        GroupsPermissions<BranchPermission> allPermissions = permissionService.getPermissionsFor(get(branchId));
+        if (allowed) {
+            return allPermissions.getAllowed(permission);
+        }
+
+        return allPermissions.getRestricted(permission);
+    }
 }

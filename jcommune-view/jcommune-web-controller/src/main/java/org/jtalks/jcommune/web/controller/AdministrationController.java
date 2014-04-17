@@ -24,8 +24,8 @@ import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.security.PermissionManager;
 import org.jtalks.jcommune.web.dto.BranchDto;
+import org.jtalks.jcommune.web.dto.BranchPermissionDto;
 import org.jtalks.jcommune.web.dto.GroupDto;
-import org.jtalks.jcommune.web.dto.PermissionGroupRequestDto;
 import org.jtalks.jcommune.web.dto.PermissionGroupsDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
@@ -39,8 +39,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -205,41 +203,25 @@ public class AdministrationController {
      */
     @RequestMapping(value = "/branch/permissions/json", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResponse getGroupsForBranchPermission(@RequestBody PermissionGroupRequestDto permissionInfo) {
+    public JsonResponse getGroupsForBranchPermission(@RequestBody BranchPermissionDto permissionInfo) {
         long forumId = componentService.getComponentOfForum().getId();
         PermissionGroupsDto permission = new PermissionGroupsDto();
 
+        BranchPermission branchPermission = BranchPermission.findByMask(permissionInfo.getPermissionMask());
+        List<Group> selectedGroups;
         try {
-            GroupsPermissions<BranchPermission> permissions =
-                    branchService.getPermissionsFor(forumId, permissionInfo.getBranchId());
-
-            BranchPermission branchPermission = BranchPermission.findByMask(permissionInfo.getPermissionMask());
-            List<Group> selected = permissionInfo.isAllowed()? permissions.getAllowed(branchPermission) :
-                                                               permissions.getRestricted(branchPermission);
-
-            List<String> alreadySelectedGroupNames = new ArrayList<String>();
-            List<GroupDto> alreadySelected = new ArrayList<GroupDto>();
-            for (Group group: selected) {
-                alreadySelected.add(new GroupDto(group.getId(), group.getName()));
-                alreadySelectedGroupNames.add(group.getName());
-            }
-
-            List<GroupDto> remaining = new ArrayList<GroupDto>();
-            List<Group> allGroups = permissionManager.getAllGroups();
-            for (Group group : allGroups) {
-                if (!alreadySelectedGroupNames.contains(group.getName())) {
-                    remaining.add(new GroupDto(group.getId(), group.getName()));
-                }
-            }
-
-            Collections.sort(alreadySelected, GroupDto.BY_NAME_COMPARATOR);
-            Collections.sort(remaining, GroupDto.BY_NAME_COMPARATOR);
-            permission.setSelectedGroups(alreadySelected);
-            permission.setAvailableGroups(remaining);
-
+            selectedGroups = branchService.getPermissionsFor(forumId, permissionInfo.getBranchId(),
+                    permissionInfo.isAllowed(), branchPermission);
         } catch (NotFoundException e) {
             return new JsonResponse(JsonResponseStatus.FAIL, null);
         }
+        List<GroupDto> alreadySelected = GroupDto.convertGroupList(selectedGroups, true);
+
+        List<Group> availableGroups = permissionManager.getAllGroupsWithoutExcluded(selectedGroups);
+        List<GroupDto> available = GroupDto.convertGroupList(availableGroups, true);
+
+        permission.setSelectedGroups(alreadySelected);
+        permission.setAvailableGroups(available);
 
         return new JsonResponse(JsonResponseStatus.SUCCESS, permission);
     }

@@ -26,7 +26,7 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.jtalks.jcommune.service.security.PermissionManager;
 import org.jtalks.jcommune.web.dto.BranchDto;
-import org.jtalks.jcommune.web.dto.PermissionGroupRequestDto;
+import org.jtalks.jcommune.web.dto.BranchPermissionDto;
 import org.jtalks.jcommune.web.dto.PermissionGroupsDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
@@ -44,10 +44,7 @@ import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import static org.jgroups.util.Util.assertTrue;
 import static org.mockito.Mockito.*;
@@ -131,9 +128,7 @@ public class AdministrationControllerTest {
 
     @Test
     public void validForumInformationShouldProduceSuccessResponse() {
-        Component component = new Component();
-        component.setId(1L);
-        when(componentService.getComponentOfForum()).thenReturn(component);
+        Component component = setupComponentMock();
 
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(new Object(), "");
         ComponentInformation ci = new ComponentInformation();
@@ -156,9 +151,7 @@ public class AdministrationControllerTest {
 
     @Test
     public void validBranchInformationShouldProduceSuccessResponse() throws NotFoundException {
-        Component component = new Component();
-        component.setId(1L);
-        when(componentService.getComponentOfForum()).thenReturn(component);
+        Component component = setupComponentMock();
 
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(new Object(), "");
         BranchDto branchDto = new BranchDto();
@@ -181,9 +174,7 @@ public class AdministrationControllerTest {
     public void showBranchPermissionsShouldReturnModelAndViewWithBranchAndPermissionsInformation()
             throws Exception {
         long branchId = 42;
-        Component component = new Component();
-        component.setId(1L);
-        when(componentService.getComponentOfForum()).thenReturn(component);
+        Component component = setupComponentMock();
 
         GroupsPermissions<BranchPermission> expectedPermissions = new GroupsPermissions<>();
         Branch expectedBranch = new Branch("name", "description");
@@ -198,17 +189,13 @@ public class AdministrationControllerTest {
 
     @Test
     public void getGroupsForBranchPermissionShouldReturnFailIfBranchWasNotFound() throws Exception {
-        Component component = new Component();
-        component.setId(1L);
-        when(componentService.getComponentOfForum()).thenReturn(component);
+        Component component = setupComponentMock();
 
-        Long branchId = 42L;
-        when(branchService.getPermissionsFor(component.getId(), branchId)).thenThrow(new NotFoundException());
+        BranchPermission targetPermission = BranchPermission.CREATE_POSTS;
+        BranchPermissionDto dto = createBranchPermissionDto(targetPermission);
+        when(branchService.getPermissionsFor(component.getId(), dto.getBranchId(), dto.isAllowed(), targetPermission))
+                .thenThrow(new NotFoundException());
 
-        PermissionGroupRequestDto dto = new PermissionGroupRequestDto();
-        dto.setAllowed(true);
-        dto.setBranchId(branchId);
-        dto.setPermissionMask(BranchPermission.CREATE_POSTS.getMask());
         JsonResponse jsonResponse = administrationController.getGroupsForBranchPermission(dto);
 
         assertEquals(jsonResponse.getStatus(), JsonResponseStatus.FAIL);
@@ -217,19 +204,15 @@ public class AdministrationControllerTest {
     @Test
     public void getGroupsForBranchPermissionShouldReturnSuccessIfBranchExistsAndPermissionHasNoGroups()
             throws Exception {
-        Component component = new Component();
-        component.setId(1L);
-        when(componentService.getComponentOfForum()).thenReturn(component);
+        Component component = setupComponentMock();
 
-        Long branchId = 42L;
-        GroupsPermissions<BranchPermission> permissions = new GroupsPermissions<BranchPermission>();
-        when(branchService.getPermissionsFor(component.getId(), branchId)).thenReturn(permissions);
-        when(permissionManager.getAllGroups()).thenReturn(Collections.EMPTY_LIST);
+        BranchPermission targetPermission = BranchPermission.CREATE_POSTS;
+        BranchPermissionDto dto = createBranchPermissionDto(targetPermission);
+        when(branchService.getPermissionsFor(component.getId(), dto.getBranchId(), dto.isAllowed(), targetPermission))
+                .thenReturn(Collections.EMPTY_LIST);
+        when(permissionManager.getAllGroupsWithoutExcluded(anyList())).thenReturn(Collections.EMPTY_LIST);
 
-        PermissionGroupRequestDto dto = new PermissionGroupRequestDto();
-        dto.setAllowed(true);
-        dto.setBranchId(branchId);
-        dto.setPermissionMask(BranchPermission.CREATE_POSTS.getMask());
+
         JsonResponse jsonResponse = administrationController.getGroupsForBranchPermission(dto);
 
         assertEquals(jsonResponse.getStatus(), JsonResponseStatus.SUCCESS);
@@ -237,26 +220,18 @@ public class AdministrationControllerTest {
 
     @Test
     public void getGroupsForBranchPermissionShouldReturnSuccessIfBranchExists() throws Exception {
-        Component component = new Component();
-        component.setId(1L);
-        when(componentService.getComponentOfForum()).thenReturn(component);
+        Component component = setupComponentMock();
 
-        Long branchId = 42L;
         BranchPermission targetPermission = BranchPermission.CREATE_POSTS;
-        GroupsPermissions <BranchPermission> permissions = new GroupsPermissions<BranchPermission>();
-        permissions.addAllowed(targetPermission, new Group("1"));
-        permissions.addAllowed(targetPermission, new Group("2"));
-        permissions.addAllowed(targetPermission, new Group("3"));
-        when(branchService.getPermissionsFor(component.getId(), branchId)).thenReturn(permissions);
+        BranchPermissionDto dto = createBranchPermissionDto(targetPermission);
 
-        List<Group> allGroupList = Arrays.asList(new Group("1"), new Group("2"), new Group("3"),
-                                                 new Group("4"), new Group("5"), new Group("6"));
-        when(permissionManager.getAllGroups()).thenReturn(allGroupList);
+        List<Group> selectedGroupList = Arrays.asList(new Group("1"), new Group("2"), new Group("3"));
+        when(branchService.getPermissionsFor(component.getId(), dto.getBranchId(), dto.isAllowed(), targetPermission))
+                .thenReturn(selectedGroupList);
 
-        PermissionGroupRequestDto dto = new PermissionGroupRequestDto();
-        dto.setAllowed(true);
-        dto.setBranchId(branchId);
-        dto.setPermissionMask(targetPermission.getMask());
+        List<Group> allGroupList = Arrays.asList(new Group("4"), new Group("5"), new Group("6"));
+        when(permissionManager.getAllGroupsWithoutExcluded(selectedGroupList)).thenReturn(allGroupList);
+
         JsonResponse jsonResponse = administrationController.getGroupsForBranchPermission(dto);
 
         assertEquals(jsonResponse.getStatus(), JsonResponseStatus.SUCCESS);
@@ -264,5 +239,20 @@ public class AdministrationControllerTest {
         PermissionGroupsDto result = (PermissionGroupsDto)jsonResponse.getResult();
         assertEquals(result.getAvailableGroups().size(), 3);
         assertEquals(result.getSelectedGroups().size(), 3);
+    }
+
+    private Component setupComponentMock() {
+        Component component = new Component();
+        component.setId(1L);
+        when(componentService.getComponentOfForum()).thenReturn(component);
+        return component;
+    }
+
+    private BranchPermissionDto createBranchPermissionDto(BranchPermission targetPermission) {
+        BranchPermissionDto dto = new BranchPermissionDto();
+        dto.setAllowed(true);
+        dto.setBranchId(42L);
+        dto.setPermissionMask(targetPermission.getMask());
+        return dto;
     }
 }

@@ -18,15 +18,23 @@ $(function () {
 
     $(".editAllowedPermission").on('click', function (e) {
         e.preventDefault();
-        editGroups($(this).data("branch"), $(this).data("permission"), $(this).data("permission-name"), true);
+        showEditGroupsDialog($(this).data("branch"), $(this).data("permission"), $(this).data("permission-name"), true);
     });
 
     $(".editRestrictedPermission").on('click', function (e) {
         e.preventDefault();
-        editGroups($(this).data("branch"), $(this).data("permission"), $(this).data("permission-name"), false);
+        showEditGroupsDialog($(this).data("branch"), $(this).data("permission"), $(this).data("permission-name"), false);
     });
 
-    function editGroups(branchId, permissionMask, permissionName, allowed) {
+    /**
+     * Shows dialog for set up permission groups details: User can select which groups will have the selected
+     * permission from the list of the all available groups
+     * @param branchId id of the branch for which permission is edited
+     * @param permissionMask mask of the permission to be changed
+     * @param permissionName name of the permission to be changed
+     * @param allowed allow or restrict selected permission for the selected groups
+     */
+    function showEditGroupsDialog(branchId, permissionMask, permissionName, allowed) {
         var permissionInfo = {
             branchId: branchId,
             permissionMask: permissionMask,
@@ -45,7 +53,7 @@ $(function () {
             error: function (resp) {
                 jDialog.createDialog({
                     type: jDialog.alertType,
-                    bodyMessage: "Failed to load group list"
+                    bodyMessage: $labelFailedToLoadGroups
                 });
             }
         });
@@ -105,17 +113,15 @@ $(function () {
             });
 
             $("#selectAllAvailable").on('click', function (e) {
-                selectAllInputs("groupListAvailable", $("#selectAllAvailable").prop('checked'));
+                $("#groupListAvailable input[type='checkbox']").each(function() {
+                    $(this).prop('checked', $("#selectAllAvailable").prop('checked'));
+                });
             });
 
             $("#selectAllAlreadyAdded").on('click', function (e) {
-                selectAllInputs("groupListAlreadyAdded", $("#selectAllAlreadyAdded").prop('checked'));
-            });
-        }
-
-        function selectAllInputs(parent, select) {
-            $("#" + parent + " input[type='checkbox']").each(function() {
-                $(this).prop('checked', select);
+                $("#groupListAlreadyAdded input[type='checkbox']").each(function() {
+                    $(this).prop('checked', $("#selectAllAlreadyAdded").prop('checked'));
+                });
             });
         }
     }

@@ -169,12 +169,14 @@ public class PermissionManager {
     }
 
     /**
-     * Get the list of all groups.
-     *
-     * @return list of groups
+     * Gets the list of the all group existing in the System except the group in specified group list
+     * @param excludedGroupsList groups which should be excluded from the result
+     * @return the list of the all group existing in the System except the group in specified group list
      */
-    public List<Group> getAllGroups() {
-        return groupDao.getAll();
+    public List<Group> getAllGroupsWithoutExcluded(List<Group> excludedGroupsList) {
+        List<Group> allGroups = groupDao.getAll();
+        allGroups.removeAll(excludedGroupsList);
+        return allGroups;
     }
 
     /**

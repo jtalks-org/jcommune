@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.model.dao.GroupDao;
+import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.jcommune.model.dao.BranchDao;
@@ -297,6 +298,45 @@ public class TransactionalBranchServiceTest {
 
         GroupsPermissions<BranchPermission> permissions = branchService.getPermissionsFor(0, branchId);
         assertEquals(permissions, expectedPermissions);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void getPermissionGroupsShouldThrowExceptionWhenBranchDoesNotExist() throws Exception {
+        when(branchDao.isExist(42L)).thenReturn(false);
+
+        branchService.getPermissionsFor(0, 42L, true, BranchPermission.CLOSE_TOPICS);
+    }
+
+    @Test
+    public void getPermissionGroupsShouldReturnAllowedPermissionGroupsWhenBranchExist() throws Exception {
+        long branchId = 42;
+        BranchPermission permission = BranchPermission.CLOSE_TOPICS;
+        GroupsPermissions<BranchPermission> expectedPermissions = new GroupsPermissions<>();
+        expectedPermissions.addAllowed(permission, new Group("1"));
+
+        Branch expectedBranch = new Branch("name", "description");
+        when(branchDao.isExist(branchId)).thenReturn(true);
+        when(branchDao.get(branchId)).thenReturn(expectedBranch);
+        when(permissionService.getPermissionsFor(expectedBranch)).thenReturn(expectedPermissions);
+
+        List<Group> result = branchService.getPermissionsFor(0, branchId, true, permission);
+        assertEquals(result, expectedPermissions.getAllowed(permission));
+    }
+
+    @Test
+    public void getPermissionGroupsShouldReturnRestrictedPermissionGroupsWhenBranchExist() throws Exception {
+        long branchId = 42;
+        BranchPermission permission = BranchPermission.CLOSE_TOPICS;
+        GroupsPermissions<BranchPermission> expectedPermissions = new GroupsPermissions<>();
+        expectedPermissions.addRestricted(permission, new Group("1"));
+
+        Branch expectedBranch = new Branch("name", "description");
+        when(branchDao.isExist(branchId)).thenReturn(true);
+        when(branchDao.get(branchId)).thenReturn(expectedBranch);
+        when(permissionService.getPermissionsFor(expectedBranch)).thenReturn(expectedPermissions);
+
+        List<Group> result = branchService.getPermissionsFor(0, branchId, false, permission);
+        assertEquals(result, expectedPermissions.getRestricted(permission));
     }
 
 }
