@@ -30,6 +30,7 @@ public class TopicTest {
     private Topic topic;
     Post post1 = new Post();
     Post post2 = new Post();
+	Post post3 = new Post();
 
     @BeforeMethod
     public void setUp() {
@@ -37,6 +38,37 @@ public class TopicTest {
         topic.addPost(post1);
         topic.addPost(post2);
     }
+
+	@Test
+	public void getNeighborPostIfOnlyOnePostInTheTopic() {
+		Post singlePost = new Post();
+		Topic topicWithSinglePost = new Topic(new JCUser(), "title2");
+		topicWithSinglePost.addPost(singlePost);
+
+		Post post = topicWithSinglePost.getNeighborPost(singlePost);
+
+		assertEquals(post, singlePost);
+	}
+
+	@Test
+	public void getNeighborPostForMiddlePostInTheTopic() {
+		addAdditionalPost(); // setup
+		Post post = topic.getNeighborPost(post2);
+
+		assertEquals(post, post3);
+
+		removeAdditionalPost(); // cleanup
+	}
+
+	@Test
+	public void getNeighborPostForLastPostInTheTopic() {
+		addAdditionalPost(); // setup
+		Post post = topic.getNeighborPost(post3);
+
+		assertEquals(post, post2);
+
+		removeAdditionalPost(); // cleanup
+	}
 
     @Test
     public void firstPostShouldReturnFirstPostOfTheTopic() {
@@ -165,4 +197,12 @@ public class TopicTest {
         assertTrue(topic.userSubscribed(subscribedUser));
         assertFalse(topic.userSubscribed(notSubscribedUser));
     }
+
+	private void addAdditionalPost() {
+		topic.addPost(post3);
+	}
+
+	private void removeAdditionalPost() {
+		topic.removePost(post3);
+	}
 }
