@@ -317,30 +317,30 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
         return posts.get(posts.size() - 1);
     }
 
-	/**
-	 * Get next post to given post in topic. Following basic cases are possible:
-	 * <ol>
-	 * <li>In case of one post in topic it returns it back (not valid case from
-	 * end-user point of view).</li>
-	 * <li>In case if we pass post in the middle of the topic it returns next
-	 * post.</li>
-	 * <li>In case if we pass last post in the topic it returns previous one.</li>
-	 * </ol>
-	 * Used to find closest post which is good to be displayed after deletion of
-	 * post we pass as a parameter.
-	 * 
-	 * @param post
-	 * @return Neighbor post
-	 */
-	public Post getNeighborPost(Post post) {
-		for (int i = posts.size() - 1; i > 0; i--) {
-			if (posts.get(i).equals(post)) {
-				return (i == posts.size() - 1) ? posts.get(i - 1) : posts
-						.get(i + 1);
-			}
-		}
-		return getFirstPost();
-	}
+    /**
+     * Get next post to given post in topic. Following basic cases are possible:
+     * <ol>
+     * <li>In case of one post in topic it returns it back (not valid case from
+     * end-user point of view).</li>
+     * <li>In case if we pass post in the middle of the topic it returns next
+     * post.</li>
+     * <li>In case if we pass last post in the topic it returns previous one.</li>
+     * </ol>
+     * Used to find closest post which is good to be displayed after deletion of
+     * post we pass as a parameter.
+     * 
+     * @param post
+     * @return Neighbor post
+     */
+    public Post getNeighborPost(Post post) {
+        for (int i = posts.size() - 1; i > 0; i--) {
+            if (posts.get(i).equals(post)) {
+                return (i == posts.size() - 1) ? posts.get(i - 1) : posts
+                        .get(i + 1);
+            }
+        }
+        return getFirstPost();
+    }
 
     /**
      * @return date and time when theme was changed last time

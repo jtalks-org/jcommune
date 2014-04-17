@@ -30,7 +30,6 @@ public class TopicTest {
     private Topic topic;
     Post post1 = new Post();
     Post post2 = new Post();
-    Post post3 = new Post();
 
     @BeforeMethod
     public void setUp() {
@@ -42,7 +41,8 @@ public class TopicTest {
     @Test
     public void getNeighborPostIfOnlyOnePostInTheTopic() {
         Post singlePost = new Post();
-        Topic topicWithSinglePost = new Topic(new JCUser(), "title2");
+        Topic topicWithSinglePost = new Topic(new JCUser(),
+                "title4getNeighborPostIfOnlyOnePostInTheTopic");
         topicWithSinglePost.addPost(singlePost);
 
         Post post = topicWithSinglePost.getNeighborPost(singlePost);
@@ -52,22 +52,23 @@ public class TopicTest {
 
     @Test
     public void getNeighborPostForMiddlePostInTheTopic() {
-        addAdditionalPost(); // setup
-        Post post = topic.getNeighborPost(post2);
+        Topic topicLocal = new Topic(new JCUser(),
+                "title4getNeighborPostForMiddlePostInTheTopic");
+        Post[] posts = new Post[3];
+        for (int i = 0; i < posts.length; i++) {
+            posts[i] = new Post();
+            topicLocal.addPost(posts[i]);
+        }
+        Post post = topicLocal.getNeighborPost(posts[1]);
 
-        assertEquals(post, post3);
-
-        removeAdditionalPost(); // cleanup
+        assertEquals(post, posts[2]);
     }
 
     @Test
     public void getNeighborPostForLastPostInTheTopic() {
-        addAdditionalPost(); // setup
-        Post post = topic.getNeighborPost(post3);
+        Post post = topic.getNeighborPost(post2);
 
-        assertEquals(post, post2);
-
-        removeAdditionalPost(); // cleanup
+        assertEquals(post, post1);
     }
 
     @Test
@@ -196,13 +197,5 @@ public class TopicTest {
         topic.setSubscribers(subscribers);
         assertTrue(topic.userSubscribed(subscribedUser));
         assertFalse(topic.userSubscribed(notSubscribedUser));
-    }
-
-    private void addAdditionalPost() {
-        topic.addPost(post3);
-    }
-
-    private void removeAdditionalPost() {
-        topic.removePost(post3);
     }
 }
