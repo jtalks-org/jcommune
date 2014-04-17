@@ -30,7 +30,7 @@ public class TopicTest {
     private Topic topic;
     Post post1 = new Post();
     Post post2 = new Post();
-	Post post3 = new Post();
+    Post post3 = new Post();
 
     @BeforeMethod
     public void setUp() {
@@ -39,36 +39,36 @@ public class TopicTest {
         topic.addPost(post2);
     }
 
-	@Test
-	public void getNeighborPostIfOnlyOnePostInTheTopic() {
-		Post singlePost = new Post();
-		Topic topicWithSinglePost = new Topic(new JCUser(), "title2");
-		topicWithSinglePost.addPost(singlePost);
+    @Test
+    public void getNeighborPostIfOnlyOnePostInTheTopic() {
+        Post singlePost = new Post();
+        Topic topicWithSinglePost = new Topic(new JCUser(), "title2");
+        topicWithSinglePost.addPost(singlePost);
 
-		Post post = topicWithSinglePost.getNeighborPost(singlePost);
+        Post post = topicWithSinglePost.getNeighborPost(singlePost);
 
-		assertEquals(post, singlePost);
-	}
+        assertEquals(post, singlePost);
+    }
 
-	@Test
-	public void getNeighborPostForMiddlePostInTheTopic() {
-		addAdditionalPost(); // setup
-		Post post = topic.getNeighborPost(post2);
+    @Test
+    public void getNeighborPostForMiddlePostInTheTopic() {
+        addAdditionalPost(); // setup
+        Post post = topic.getNeighborPost(post2);
 
-		assertEquals(post, post3);
+        assertEquals(post, post3);
 
-		removeAdditionalPost(); // cleanup
-	}
+        removeAdditionalPost(); // cleanup
+    }
 
-	@Test
-	public void getNeighborPostForLastPostInTheTopic() {
-		addAdditionalPost(); // setup
-		Post post = topic.getNeighborPost(post3);
+    @Test
+    public void getNeighborPostForLastPostInTheTopic() {
+        addAdditionalPost(); // setup
+        Post post = topic.getNeighborPost(post3);
 
-		assertEquals(post, post2);
+        assertEquals(post, post2);
 
-		removeAdditionalPost(); // cleanup
-	}
+        removeAdditionalPost(); // cleanup
+    }
 
     @Test
     public void firstPostShouldReturnFirstPostOfTheTopic() {
@@ -198,11 +198,11 @@ public class TopicTest {
         assertFalse(topic.userSubscribed(notSubscribedUser));
     }
 
-	private void addAdditionalPost() {
-		topic.addPost(post3);
-	}
+    private void addAdditionalPost() {
+        topic.addPost(post3);
+    }
 
-	private void removeAdditionalPost() {
-		topic.removePost(post3);
-	}
+    private void removeAdditionalPost() {
+        topic.removePost(post3);
+    }
 }
