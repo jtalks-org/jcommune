@@ -16,23 +16,45 @@ package org.jtalks.jcommune.web.dto;
 
 import java.util.List;
 
+/**
+ * @author Andrei Alikov
+ * DTO for the permission for the branch containing two group lists:
+ * one for groups which already have been selected for this permission and
+ * another one for groups which are still available for selection
+ */
 public class PermissionGroupsDto {
     List<GroupDto> selectedGroups;
-    List<GroupDto> remainingGroups;
+    List<GroupDto> availableGroups;
 
+    /**
+     * Gets the list of already selected groups
+     * @return the list of already selected groups
+     */
     public List<GroupDto> getSelectedGroups() {
         return selectedGroups;
     }
 
+    /**
+     * Sets the list of already selected groups
+     * @param selectedGroups the list of already selected groups
+     */
     public void setSelectedGroups(List<GroupDto> selectedGroups) {
         this.selectedGroups = selectedGroups;
     }
 
-    public List<GroupDto> getRemainingGroups() {
-        return remainingGroups;
+    /**
+     * Get the list of still available groups
+     * @return the list of still available groups
+     */
+    public List<GroupDto> getAvailableGroups() {
+        return availableGroups;
     }
 
-    public void setRemainingGroups(List<GroupDto> remainingGroups) {
-        this.remainingGroups = remainingGroups;
+    /**
+     * Sets the list of still available groups
+     * @param availableGroups the list of still available groups
+     */
+    public void setAvailableGroups(List<GroupDto> availableGroups) {
+        this.availableGroups = availableGroups;
     }
 }

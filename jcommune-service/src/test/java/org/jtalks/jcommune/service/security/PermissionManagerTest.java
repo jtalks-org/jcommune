@@ -54,6 +54,8 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -62,6 +64,7 @@ import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
@@ -244,6 +247,28 @@ public class PermissionManagerTest extends AbstractTransactionalTestNGSpringCont
 
         verify(aclManager, times(changes.getNewlyAddedGroupsAsArray().length)).
                 grant(eq(sids), eq(listFromArray(changes.getPermission())), eq(branch));
+    }
+
+    @Test
+    public void getAllGroupsWithoutExcludedShouldReturnAllGroupsWhenExcludedListIsEmpty() {
+        List<Group> allGroups = Arrays.asList(new Group("1"), new Group("2"));
+        when(groupDao.getAll()).thenReturn(allGroups);
+
+        List<Group> result = manager.getAllGroupsWithoutExcluded(Collections.EMPTY_LIST);
+
+        assertEquals(allGroups, result);
+    }
+
+    @Test
+    public void getAllGroupsWithoutExcludedShouldReturnAllGroupsWithoutExcluded() {
+        Group excludedGroup = new Group("1");
+        List<Group> allGroups = new ArrayList<>(Arrays.asList(excludedGroup, new Group("2")));
+        when(groupDao.getAll()).thenReturn(allGroups);
+
+        List<Group> result = manager.getAllGroupsWithoutExcluded(Arrays.asList(excludedGroup));
+
+        assertEquals(result.size(), 1);
+        assertEquals(result.get(0), allGroups.get(0));
     }
 
     @DataProvider

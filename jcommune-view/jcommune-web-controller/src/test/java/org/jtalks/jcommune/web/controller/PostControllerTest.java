@@ -118,13 +118,8 @@ public class PostControllerTest {
 
 	@Test
 	public void testDeletePost() throws NotFoundException {
-		// invoke the object under test
 		ModelAndView mav = controller.delete(POST_ID);
-
-		// check expectations
 		verify(postService).deletePost(post);
-
-		// check result
 		assertViewName(mav, "redirect:/posts/" + POST_ID);
 	}
 

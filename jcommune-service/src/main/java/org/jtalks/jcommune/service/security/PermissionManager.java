@@ -168,8 +168,15 @@ public class PermissionManager {
         return groupsPermissions;
     }
 
-    public List<Group> getAllGroups() {
-        return groupDao.getAll();
+    /**
+     * Gets the list of the all group existing in the System except the group in specified group list
+     * @param excludedGroupsList groups which should be excluded from the result
+     * @return the list of the all group existing in the System except the group in specified group list
+     */
+    public List<Group> getAllGroupsWithoutExcluded(List<Group> excludedGroupsList) {
+        List<Group> allGroups = groupDao.getAll();
+        allGroups.removeAll(excludedGroupsList);
+        return allGroups;
     }
 
     /**

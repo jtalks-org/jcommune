@@ -147,3 +147,4 @@ $permissionsRestricted = '<spring:message code="permissions.restricted" htmlEsca
 
 $permissionsGroupAvailable = '<spring:message code="permissions.group.available" htmlEscape="true"/>';
 $permissionsGroupAlreadyAdded = '<spring:message code="permissions.group.already.added" htmlEscape="true"/>';
+$labelFailedToLoadGroups = '<spring:message code="permissions.group.load.failed" htmlEscape="true"/>';

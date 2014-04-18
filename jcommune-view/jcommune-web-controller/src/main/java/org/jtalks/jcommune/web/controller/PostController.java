@@ -118,18 +118,18 @@ public class PostController {
 
     /**
      * Delete post by given id
-     *
+     * 
      * @param postId post
-     * @return redirect to post next to deleted one. Redirects to previous post in case if it's last post in topic. 
+     * @return redirect to post next to deleted one. Redirects to previous post in case if it's last post in topic.
      * @throws NotFoundException when post was not found
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/posts/{postId}")
-	public ModelAndView delete(@PathVariable(POST_ID) Long postId)
-			throws NotFoundException {
-		Post post = this.postService.get(postId);
-		Post nextPost = post.getTopic().getNextPostByPostId(postId);
-		deletePostWithLockHandling(postId);
-		return new ModelAndView("redirect:/posts/" + nextPost.getId());
+    public ModelAndView delete(@PathVariable(POST_ID) Long postId)
+            throws NotFoundException {
+        Post post = this.postService.get(postId);
+        Post nextPost = post.getTopic().getNeighborPost(post);
+        deletePostWithLockHandling(postId);
+        return new ModelAndView("redirect:/posts/" + nextPost.getId());
     }
 
     private Topic deletePostWithLockHandling(Long postId) throws NotFoundException {

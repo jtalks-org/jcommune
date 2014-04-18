@@ -39,6 +39,39 @@ public class TopicTest {
     }
 
     @Test
+    public void getNeighborPostIfOnlyOnePostInTheTopic() {
+        Post singlePost = new Post();
+        Topic topicWithSinglePost = new Topic(new JCUser(),
+                "title4getNeighborPostIfOnlyOnePostInTheTopic");
+        topicWithSinglePost.addPost(singlePost);
+
+        Post post = topicWithSinglePost.getNeighborPost(singlePost);
+
+        assertEquals(post, singlePost);
+    }
+
+    @Test
+    public void getNeighborPostForMiddlePostInTheTopic() {
+        Topic topicLocal = new Topic(new JCUser(),
+                "title4getNeighborPostForMiddlePostInTheTopic");
+        Post[] posts = new Post[3];
+        for (int i = 0; i < posts.length; i++) {
+            posts[i] = new Post();
+            topicLocal.addPost(posts[i]);
+        }
+        Post post = topicLocal.getNeighborPost(posts[1]);
+
+        assertEquals(post, posts[2]);
+    }
+
+    @Test
+    public void getNeighborPostForLastPostInTheTopic() {
+        Post post = topic.getNeighborPost(post2);
+
+        assertEquals(post, post1);
+    }
+
+    @Test
     public void firstPostShouldReturnFirstPostOfTheTopic() {
         Post firstPost = topic.getFirstPost();
 
