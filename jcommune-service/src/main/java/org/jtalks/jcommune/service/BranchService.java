@@ -114,6 +114,6 @@ public interface BranchService extends EntityService<Branch> {
      * @return the list of the groups for which permission has been allowed or restricted
      * @throws NotFoundException when branch does not exist
      */
-    List<Group> getPermissionsFor(long componentId, long branchId, boolean allowed, BranchPermission permission)
+    List<Group> getPermissionGroupsFor(long componentId, long branchId, boolean allowed, BranchPermission permission)
             throws NotFoundException;
 }

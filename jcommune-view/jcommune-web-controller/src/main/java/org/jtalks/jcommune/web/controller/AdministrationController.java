@@ -210,7 +210,7 @@ public class AdministrationController {
         BranchPermission branchPermission = BranchPermission.findByMask(permissionInfo.getPermissionMask());
         List<Group> selectedGroups;
         try {
-            selectedGroups = branchService.getPermissionsFor(forumId, permissionInfo.getBranchId(),
+            selectedGroups = branchService.getPermissionGroupsFor(forumId, permissionInfo.getBranchId(),
                     permissionInfo.isAllowed(), branchPermission);
         } catch (NotFoundException e) {
             return new JsonResponse(JsonResponseStatus.FAIL, null);

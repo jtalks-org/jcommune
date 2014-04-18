@@ -304,7 +304,7 @@ public class TransactionalBranchServiceTest {
     public void getPermissionGroupsShouldThrowExceptionWhenBranchDoesNotExist() throws Exception {
         when(branchDao.isExist(42L)).thenReturn(false);
 
-        branchService.getPermissionsFor(0, 42L, true, BranchPermission.CLOSE_TOPICS);
+        branchService.getPermissionGroupsFor(0, 42L, true, BranchPermission.CLOSE_TOPICS);
     }
 
     @Test
@@ -319,7 +319,7 @@ public class TransactionalBranchServiceTest {
         when(branchDao.get(branchId)).thenReturn(expectedBranch);
         when(permissionService.getPermissionsFor(expectedBranch)).thenReturn(expectedPermissions);
 
-        List<Group> result = branchService.getPermissionsFor(0, branchId, true, permission);
+        List<Group> result = branchService.getPermissionGroupsFor(0, branchId, true, permission);
         assertEquals(result, expectedPermissions.getAllowed(permission));
     }
 
@@ -335,7 +335,7 @@ public class TransactionalBranchServiceTest {
         when(branchDao.get(branchId)).thenReturn(expectedBranch);
         when(permissionService.getPermissionsFor(expectedBranch)).thenReturn(expectedPermissions);
 
-        List<Group> result = branchService.getPermissionsFor(0, branchId, false, permission);
+        List<Group> result = branchService.getPermissionGroupsFor(0, branchId, false, permission);
         assertEquals(result, expectedPermissions.getRestricted(permission));
     }
 

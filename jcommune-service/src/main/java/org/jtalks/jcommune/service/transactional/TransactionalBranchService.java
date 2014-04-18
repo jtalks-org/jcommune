@@ -221,7 +221,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
      */
     @Override
     @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
-    public List<Group> getPermissionsFor(long componentId, long branchId, boolean allowed, BranchPermission permission)
+    public List<Group> getPermissionGroupsFor(long componentId, long branchId, boolean allowed, BranchPermission permission)
             throws NotFoundException {
         GroupsPermissions<BranchPermission> allPermissions = permissionService.getPermissionsFor(get(branchId));
         if (allowed) {
