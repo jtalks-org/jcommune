@@ -73,19 +73,22 @@ public class BBCodeListPreprocessorTest {
                 {"[list][list][list]", "[list][list][list]"},
                 {"[*]Duplicate", "[*]Duplicate"},
                 {"before list[list][*]listitem[list]after list", "before list[list][*]listitem[list]after list"},
-                {"zzz[/list]", "zzz[/list]"}
+                {"zzz[/list]", "zzz[/list]"},
+                {"[list][*]text[/list][*]text[/list]","[list][*]text[/*][/list][*]text[/list]"},
+                {"[/list][list][*]text[/list][*]text","[/list][list][*]text[/*][/list][*]text"}
         };
     }
     
     @DataProvider
     public Object[][] nestedLists(){
         return new Object[][] {
-            {"[list][*]111[list][*]222[/list][/list]", "[list][*]111[list][*]222[/*][/list][/*][/list]"},    
-            {"before[list=1][*]111[*][list=2][*]222[list=3][*]333[*]444[/list][*]555[list=4][*]666[*]777[/list][*]888[/list][*]999[/list]after", 
+            {"[list][*]111[list][*]222[/list][/list]", "[list][*]111[list][*]222[/*][/list][/*][/list]"},
+            {"before[list=1][*]111[*][list=2][*]222[list=3][*]333[*]444[/list][*]555[list=4][*]666[*]777[/list][*]888[/list][*]999[/list]after",
                 "before[list=1][*]111[/*][*][list=2][*]222[list=3][*]333[/*][*]444[/*][/list][/*][*]555[list=4][*]666[/*][*]777[/*][/list][/*][*]888[/*][/list][/*][*]999[/*][/list]after"},
+            {"[list][list][*]text[/list][*]text[/list]","[list][list][*]text[/*][/list][*]text[/*][/list]"}
         };
     }
-    
+
     @DataProvider
     public Object[][] validLists() {
         return new Object[][]{  // {"bb code before", "bb code after"}

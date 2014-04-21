@@ -125,7 +125,10 @@ class ListItemsProcessor {
         }
         if (tag == ListItemsProcessor.TagType.LIST_CLOSE) {
             if (listStack.isEmpty()) {
-                throw new BBCodeListParsingException("[/list] tag without respective [list]");
+                if (lastElement != null) {
+                    lastElement.endText += matcher.group(3) + LIST_TAG_CLOSE;
+                }
+                return;
             }
             ListElement closingList = listStack.pop();
             closingList.endText = matcher.group(3);
@@ -163,7 +166,7 @@ class ListItemsProcessor {
          */
         TreeElement getLastChild() throws BBCodeListParsingException {
             if (children.isEmpty()) {
-                throw new BBCodeListParsingException("Children elements not found");
+                return this;
             }
             return children.get(children.size() - 1);
         }
