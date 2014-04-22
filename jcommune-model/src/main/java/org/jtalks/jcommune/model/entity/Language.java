@@ -23,9 +23,8 @@ public enum Language {
 
     //simple alphabetical order, no holywars please
     ENGLISH("label.english", "en"),
-    RUSSIAN("label.russian", "ru"),
-// Spanish is disabled since we are not able make full translation    
-//    SPANISH("label.spanish", "es"),
+    RUSSIAN("label.russian", "ru"),    
+    SPANISH("label.spanish", "es"),
     UKRAINIAN("label.ukrainian", "uk");
 
     private String label;
