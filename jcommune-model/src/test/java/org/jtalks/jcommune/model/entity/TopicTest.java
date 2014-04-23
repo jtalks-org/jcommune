@@ -198,7 +198,7 @@ public class TopicTest {
     }
 
     private Post[] postList(int numberOfPosts, Topic topic) {
-        Post[] posts = new Post[3];
+        Post[] posts = new Post[numberOfPosts];
         for (int i = 0; i < posts.length; i++) {
             posts[i] = new Post();
             topic.addPost(posts[i]);
