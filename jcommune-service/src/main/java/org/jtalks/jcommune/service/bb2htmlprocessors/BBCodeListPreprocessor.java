@@ -15,8 +15,6 @@
 package org.jtalks.jcommune.service.bb2htmlprocessors;
 
 import org.kefirsf.bb.TextProcessor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Preprocessor for bb2html encoding which replaces all list items like [*] with [*]...[/*] tags. This allows create
@@ -26,7 +24,6 @@ import org.slf4j.LoggerFactory;
  */
 public class BBCodeListPreprocessor implements TextProcessor {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * Process incoming text with replacing [*] tags by [*]...[/*]
@@ -46,13 +43,8 @@ public class BBCodeListPreprocessor implements TextProcessor {
      * @return processed text
      */
     private StringBuilder preprocessLists(String bbEncodedText) {
-        try {
             ListItemsProcessor processor = new ListItemsProcessor(bbEncodedText);
             return processor.getTextWithClosedTags();
-        } catch (BBCodeListParsingException lpe) {
-            logger.info("Ignored invalid [list] tag:" + bbEncodedText);
-            return new StringBuilder(bbEncodedText);
-        }
     }
 
     /**

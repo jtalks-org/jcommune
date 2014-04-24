@@ -25,7 +25,6 @@ import java.util.regex.Pattern;
  * Support nested lists processing.
  * Transform the incoming text to the tree-like structure and recreate the text with closed tags
  * by this tree.
- * @throws BBCodeListParsingException in the case of invalid input, for example when the close [/list] tag missed.
  * 
  * @author Pavel Vervenko, Mikhail Stryzhonok
  */
@@ -58,7 +57,7 @@ class ListItemsProcessor {
         this.initialText = bbEncodedText;
     }
 
-    StringBuilder getTextWithClosedTags() throws BBCodeListParsingException {
+    StringBuilder getTextWithClosedTags() {
         root = createRootElement(initialText);
         Matcher matcher = listPattern.matcher(initialText);
         while (matcher.find()) {
@@ -88,9 +87,8 @@ class ListItemsProcessor {
      * Creates tag depending on needed tag type
      * @param tagString String tag representation
      * @return Newly created tag
-     * @throws BBCodeListParsingException if given tag type unknown
      */
-    private Tag createTag(String tagString) throws BBCodeListParsingException {
+    private Tag createTag(String tagString) {
         if (tagString.equalsIgnoreCase(LIST_ITEM_TAG_OPEN)) {
             return new ItemElement();
         }
@@ -100,7 +98,7 @@ class ListItemsProcessor {
         if (tagString.startsWith(LIST_TAG_OPEN)) {
             return new ListElement();
         } else {
-            throw new BBCodeListParsingException("Unknown tag type " + tagString);
+            throw new IllegalArgumentException("Unknown tag type " + tagString);
         }
     }
 
@@ -141,7 +139,7 @@ class ListItemsProcessor {
          *
          * @return BB-string
          */
-        String toBBString() throws BBCodeListParsingException {
+        String toBBString()  {
             String rs = getOpenTag() + text;
             for (TreeElement e : children) {
                 rs += e.toBBString();
@@ -192,6 +190,11 @@ class ListItemsProcessor {
      */
     private class ItemElement extends Tag {
 
+        /**
+         * We need store parent element to check if it closed
+         */
+        private ListElement parent;
+
         @Override
         protected String getOpenTag() {
             return LIST_ITEM_TAG_OPEN;
@@ -199,7 +202,11 @@ class ListItemsProcessor {
 
         @Override
         protected String getCloseTag() {
-            return LIST_ITEM_CLOSE;
+            if (parent.closed) {
+                return LIST_ITEM_CLOSE;
+            } else {
+                return "";
+            }
         }
 
         /**
@@ -210,6 +217,7 @@ class ListItemsProcessor {
             if (!listStack.isEmpty()) {
                 this.text = matcher.group(3);
                 listStack.peek().addChild(this);
+                this.parent = listStack.peek();
             } else if (lastElement != null) {
                 lastElement.endText += LIST_ITEM_TAG_OPEN + matcher.group(3);
             }
@@ -241,7 +249,11 @@ class ListItemsProcessor {
 
         @Override
         protected String getCloseTag() {
-            return LIST_TAG_CLOSE + getEndText();
+            if (closed) {
+                return LIST_TAG_CLOSE + getEndText();
+            } else {
+                return "";
+            }
         }
 
         public String getParams() {
@@ -257,14 +269,6 @@ class ListItemsProcessor {
          */
         public void close() {
             closed = true;
-        }
-
-        @Override
-        String toBBString() throws BBCodeListParsingException{
-            if (!closed) {
-                throw new BBCodeListParsingException("toBBString() invocation isn't allowed for unclosed list");
-            }
-            return super.toBBString();
         }
 
         /**
@@ -304,12 +308,3 @@ class ListItemsProcessor {
     }
 }
 
-/**
- * Thrown in the case of parsing error.
- */
-class BBCodeListParsingException extends Exception {
-
-    BBCodeListParsingException(String string) {
-        super(string);
-    }
-}

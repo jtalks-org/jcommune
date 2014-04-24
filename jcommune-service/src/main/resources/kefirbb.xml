@@ -240,6 +240,8 @@ get XSS attacks.</p>-->
         <template>&lt;ol type=&quot;<var name="listType"/>&quot; class=&quot;list&quot;&gt;<var name="listItems"/>&lt;/ol&gt;</template>
     </code>
     <scope name="listScope" ignoreText="false">
+        <coderef name="list"/>
+        <coderef name="orderedList"/>
         <code name="li">
             <pattern>[*]<var scope="ROOT"/>[/*]</pattern>
             <template>&lt;li&gt;<var/>&lt;/li&gt;</template>
