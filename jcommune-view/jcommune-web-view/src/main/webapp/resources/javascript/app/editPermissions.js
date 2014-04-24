@@ -102,7 +102,7 @@ $(function () {
             jDialog.createDialog({
                 dialogId: 'permissionsEditor',
                 footerContent: footerContent,
-                title: permissionName + ": " + (allowed == true ? $permissionsAllowed : $permissionsRestricted),
+                title: (allowed == true ? $allowPermission : $restrictPermission) + ' ' + permissionName,
                 bodyContent: content,
                 maxWidth: 800,
                 maxHeight: 600,

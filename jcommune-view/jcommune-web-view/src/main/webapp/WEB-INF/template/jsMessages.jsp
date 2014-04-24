@@ -142,8 +142,8 @@ $copyrightLabel = '<spring:message code="label.copyright" htmlEscape="true"/>';
 $copyrightHint = '<spring:message code="label.copyrightHint" htmlEscape="true"/>';
 
 $isPasswordChangedMessage = '<spring:message code="user.security.message.changed_password" htmlEscape="true"/>';
-$permissionsAllowed = '<spring:message code="permissions.allowed" htmlEscape="true"/>';
-$permissionsRestricted = '<spring:message code="permissions.restricted" htmlEscape="true"/>';
+$allowPermission = '<spring:message code="permissions.allow" htmlEscape="true"/>';
+$restrictPermission = '<spring:message code="permissions.restrict" htmlEscape="true"/>';
 
 $permissionsGroupAvailable = '<spring:message code="permissions.group.available" htmlEscape="true"/>';
 $permissionsGroupAlreadyAdded = '<spring:message code="permissions.group.already.added" htmlEscape="true"/>';

@@ -1017,7 +1017,7 @@ a.mentioned-user {
 }
 
 .list-container label{
-    width: 200px;
+    width: 190px;
     overflow: hidden;
     text-overflow: ellipsis;
     -o-text-overflow: ellipsis;

@@ -46,7 +46,7 @@ public class TopicTest {
         topicWithSinglePost.addPost(singlePost);
 
         Post post = topicWithSinglePost.getNeighborPost(singlePost);
-
+        // same post (singlePost) should be returned
         assertEquals(post, singlePost);
     }
 
@@ -54,20 +54,18 @@ public class TopicTest {
     public void getNeighborPostForMiddlePostInTheTopic() {
         Topic topicLocal = new Topic(new JCUser(),
                 "title4getNeighborPostForMiddlePostInTheTopic");
-        Post[] posts = new Post[3];
-        for (int i = 0; i < posts.length; i++) {
-            posts[i] = new Post();
-            topicLocal.addPost(posts[i]);
-        }
+        // add 3 posts to topic
+        Post[] posts = postList(3, topicLocal);
+        // get neighbor for post in the middle.
         Post post = topicLocal.getNeighborPost(posts[1]);
-
+        // next post (post2) should be returned
         assertEquals(post, posts[2]);
     }
 
     @Test
     public void getNeighborPostForLastPostInTheTopic() {
         Post post = topic.getNeighborPost(post2);
-
+        // previous post (post1) should be returned
         assertEquals(post, post1);
     }
 
@@ -197,5 +195,14 @@ public class TopicTest {
         topic.setSubscribers(subscribers);
         assertTrue(topic.userSubscribed(subscribedUser));
         assertFalse(topic.userSubscribed(notSubscribedUser));
+    }
+
+    private Post[] postList(int numberOfPosts, Topic topic) {
+        Post[] posts = new Post[numberOfPosts];
+        for (int i = 0; i < posts.length; i++) {
+            posts[i] = new Post();
+            topic.addPost(posts[i]);
+        }
+        return posts;
     }
 }
