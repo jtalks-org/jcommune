@@ -64,7 +64,7 @@ class ListItemsProcessor {
             Tag tag = createTag(matcher.group(1));
             tag.processMatch(matcher);
         }
-        return new StringBuilder(root.toBBString());
+        return root.toBBString();
     }
 
     /**
@@ -139,12 +139,13 @@ class ListItemsProcessor {
          *
          * @return BB-string
          */
-        String toBBString()  {
-            String rs = getOpenTag() + text;
+        StringBuilder toBBString()  {
+            StringBuilder res = new StringBuilder(getOpenTag());
+            res.append(text);
             for (TreeElement e : children) {
-                rs += e.toBBString();
+                res.append(e.toBBString());
             }
-            return rs + getCloseTag();
+            return res.append(getCloseTag());
         }
 
         /**
