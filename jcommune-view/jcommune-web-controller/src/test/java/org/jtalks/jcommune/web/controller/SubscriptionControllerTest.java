@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.controller;
 
 
+import junit.framework.Assert;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
@@ -28,7 +29,6 @@ import org.testng.annotations.Test;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 
 /**
  * @author Evgeniy Naumenko
@@ -59,7 +59,7 @@ public class SubscriptionControllerTest {
     public void testSubscribeToTopic() throws NotFoundException {
         when(topicFetchService.get(id)).thenReturn(topic);
 
-        controller.subscribeToTopic(id, "");
+        controller.subscribeToTopic(id, anyString());
 
         verify(subscriptionService).toggleTopicSubscription(topic);
     }
@@ -68,7 +68,7 @@ public class SubscriptionControllerTest {
     public void testUnsubscribeFromTopic() throws NotFoundException {
         when(topicFetchService.get(id)).thenReturn(topic);
 
-       controller.unsubscribeFromTopic(id, "");
+       controller.unsubscribeFromTopic(id, anyString());
 
         verify(subscriptionService).toggleTopicSubscription(topic);
     }
@@ -77,7 +77,7 @@ public class SubscriptionControllerTest {
     public void testSubscribeOnBranch() throws NotFoundException {
         when(branchService.get(id)).thenReturn(branch);
 
-        controller.subscribeToBranch(id, "");
+        controller.subscribeToBranch(id, anyString());
 
         verify(subscriptionService).toggleBranchSubscription(branch);
     }
@@ -86,7 +86,7 @@ public class SubscriptionControllerTest {
     public void testUnsubscribeFromBranch() throws NotFoundException {
         when(branchService.get(id)).thenReturn(branch);
 
-        controller.unsubscribeFromBranch(id, "");
+        controller.unsubscribeFromBranch(id, anyString());
 
         verify(subscriptionService).toggleBranchSubscription(branch);
     }
@@ -94,40 +94,40 @@ public class SubscriptionControllerTest {
     @Test
     public void testRedirectWhenUnsubscribeFromBranchByLink() throws NotFoundException {
         when(branchService.get(id)).thenReturn(branch);
-        ModelAndView actualMav = controller.unsubscribeFromBranchByLink(id);
-        assertViewName(actualMav, "redirect:/branches/" + id);
+        ModelAndView actualMav = controller.unsubscribeFromBranch(id, anyString());
+        Assert.assertEquals(actualMav, null);
     }
 
     @Test
     public void testUnsubscribeFromBranchByLink() throws NotFoundException {
         when(branchService.get(id)).thenReturn(branch);
 
-        controller.unsubscribeFromBranchByLink(id);
+        controller.unsubscribeFromBranch(id, anyString());
 
-        verify(subscriptionService).unsubscribeFromBranch(branch);
+        verify(subscriptionService).toggleBranchSubscription(branch);
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testSubscribeToNonexistingTopic() throws NotFoundException {
         doThrow(new NotFoundException()).when(topicFetchService).get(id);
-        controller.subscribeToTopic(id, "");
+        controller.subscribeToTopic(id, anyString());
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testUnsubscribeFromNonexistingTopic() throws NotFoundException {
         doThrow(new NotFoundException()).when(topicFetchService).get(id);
-        controller.unsubscribeFromTopic(id, "");
+        controller.unsubscribeFromTopic(id, anyString());
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testSubscribeOnNonexistingBranch() throws NotFoundException {
         doThrow(new NotFoundException()).when(branchService).get(id);
-        controller.subscribeToBranch(id, "");
+        controller.subscribeToBranch(id, anyString());
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testUnsubscribeFromNonexistingBranch() throws NotFoundException {
         doThrow(new NotFoundException()).when(branchService).get(id);
-        controller.unsubscribeFromBranch(id, "");
+        controller.unsubscribeFromBranch(id, anyString());
     }
 }

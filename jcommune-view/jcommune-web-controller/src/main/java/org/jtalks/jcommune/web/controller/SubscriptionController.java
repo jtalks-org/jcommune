@@ -64,10 +64,16 @@ public class SubscriptionController {
      */
     @RequestMapping("topics/{id}/subscribe")
     @ResponseBody
-    public ModelAndView subscribeToTopic(@PathVariable Long id, @RequestHeader(value="X-Requested-With", defaultValue="NotAjax") String header) throws NotFoundException {
+    public ModelAndView subscribeToTopic(@PathVariable Long id, @RequestHeader(value = "X-Requested-With", defaultValue = "NotAjax") String header) throws NotFoundException {
         Topic topic = topicFetchService.get(id);
         subscriptionService.toggleTopicSubscription(topic);
-        return new ModelAndView("redirect:/topics/" + id);
+        if (header.equals("NotAjax")) {
+            //redirect to new page
+            return new ModelAndView("redirect:/topics/" + id);
+        } else {
+            //no redirecting, perform AJAX request
+            return null;
+        }
     }
 
     /**
@@ -78,11 +84,17 @@ public class SubscriptionController {
      */
     @RequestMapping("topics/{id}/unsubscribe")
     @ResponseBody
-    public ModelAndView unsubscribeFromTopic(@PathVariable Long id, @RequestHeader(value="X-Requested-With", defaultValue="NotAjax") String header
+    public ModelAndView unsubscribeFromTopic(@PathVariable Long id, @RequestHeader(value = "X-Requested-With", defaultValue = "NotAjax") String header
     ) throws NotFoundException {
         Topic topic = topicFetchService.get(id);
         subscriptionService.toggleTopicSubscription(topic);
-        return new ModelAndView("redirect:/topics/" + id);
+        if (header.equals("NotAjax")) {
+            //redirect to new page
+            return new ModelAndView("redirect:/topics/" + id);
+        } else {
+            //no redirecting, perform AJAX request
+            return null;
+        }
     }
 
 
@@ -95,10 +107,16 @@ public class SubscriptionController {
      */
     @RequestMapping("branches/{id}/subscribe")
     @ResponseBody
-    public ModelAndView subscribeToBranch(@PathVariable Long id, @RequestHeader(value="X-Requested-With", defaultValue="NotAjax") String header) throws NotFoundException {
+    public ModelAndView subscribeToBranch(@PathVariable Long id, @RequestHeader(value = "X-Requested-With", defaultValue = "NotAjax") String header) throws NotFoundException {
         Branch branch = branchService.get(id);
         subscriptionService.toggleBranchSubscription(branch);
-        return new ModelAndView("redirect:/branches/" + id);
+        if (header.equals("NotAjax")) {
+            //redirect to new page
+            return new ModelAndView("redirect:/branches/" + id);
+        } else {
+            //no redirecting, perform AJAX request
+            return null;
+        }
     }
 
     /**
@@ -109,22 +127,15 @@ public class SubscriptionController {
      */
     @RequestMapping("branches/{id}/unsubscribe")
     @ResponseBody
-    public ModelAndView unsubscribeFromBranch(@PathVariable Long id, @RequestHeader(value="X-Requested-With", defaultValue="NotAjax") String header) throws NotFoundException {
+    public ModelAndView unsubscribeFromBranch(@PathVariable Long id, @RequestHeader(value = "X-Requested-With", defaultValue = "NotAjax") String header) throws NotFoundException {
         Branch branch = branchService.get(id);
         subscriptionService.toggleBranchSubscription(branch);
-        return new ModelAndView("redirect:/branches/" + id);
-    }
-
-    /**
-     * Deactivates branch updates subscription for the current user
-     *
-     * @param id identifies branch to unsubscribe from
-     * @throws NotFoundException if no object is found for id given
-     */
-    @RequestMapping("branches/{id}/unsubscribe_link")
-    public ModelAndView  unsubscribeFromBranchByLink(@PathVariable Long id) throws NotFoundException {
-        Branch branch = branchService.get(id);
-        subscriptionService.unsubscribeFromBranch(branch);
-        return new ModelAndView("redirect:/branches/" + id);
+        if (header.equals("NotAjax")) {
+            //redirect to new page
+            return new ModelAndView("redirect:/branches/" + id);
+        } else {
+            //no redirecting, perform AJAX request
+            return null;
+        }
     }
 }
