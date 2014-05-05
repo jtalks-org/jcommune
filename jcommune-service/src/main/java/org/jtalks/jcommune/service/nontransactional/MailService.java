@@ -501,7 +501,7 @@ public class MailService {
     }
 
     private String getUnsubscribeBranchLink(SubscriptionAwareEntity entity) {
-        String result = "/branches/{0}/unsubscribe_link";
+        String result = "/branches/{0}/unsubscribe";
         if (entity instanceof Branch) {
             return result.replace("{0}", "" + ((Branch) entity).getId());
         }
