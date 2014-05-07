@@ -14,8 +14,13 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Property;
+import org.hibernate.criterion.Restrictions;
 import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dto.PageRequest;
@@ -26,7 +31,6 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -90,13 +94,33 @@ public class PostHibernateDao extends GenericDao<Post> implements PostDao {
     }
 
     /**
-     * {@inheritDoc}
+     * Get last post that was posted in a topic of branch.
+     * Uses hibernate criteria instead of invoking {@link #getLastPostsFor} method that uses hql query.
+     * Done for better performance results. This solution can return only one last post so method
+     * {@link #getLastPostsFor} stay without changes.
+     *
+     * @param branch in this branch post was posted
+     * @return last post that was posted in a topic of branch
      */
     @Override
     public Post getLastPostFor(Branch branch) {
-        List<Post> post = getLastPostsFor(Arrays.asList(branch.getId()), 1);
-        if (post.size() == 1) {
-            return  post.get(0);
+        String creationDateProperty = "creationDate";
+        DetachedCriteria postMaxCreationDateCriteria =
+                DetachedCriteria.forClass(Post.class)
+                        .setProjection(Projections.max(creationDateProperty))
+                        .createAlias("topic", "t", Criteria.INNER_JOIN)
+                        .createAlias("t.branch", "b", Criteria.INNER_JOIN)
+                        .add(Restrictions.eq("b.id", branch.getId()));
+        //possible that the two topics will be modified at the same time
+        List<Post> posts =  (List<Post>) session()
+                .createCriteria(Post.class)
+                .createAlias("topic", "t", Criteria.INNER_JOIN)
+                .createAlias("t.branch", "b", Criteria.INNER_JOIN)
+                .add(Restrictions.eq("b.id", branch.getId()))
+                .add(Property.forName(creationDateProperty).eq(postMaxCreationDateCriteria))
+                .list();
+        if (posts.size() == 1) {
+            return  posts.get(0);
         }
         return null;
     }
@@ -105,10 +129,10 @@ public class PostHibernateDao extends GenericDao<Post> implements PostDao {
      * {@inheritDoc}
      */
     @Override
-    public List<Post> getLastPostsFor(List<Long> brachIds, int postCount) {
+    public List<Post> getLastPostsFor(List<Long> branchIds, int postCount) {
         List<Post> result = (List<Post>) session()
                 .getNamedQuery("getLastPostForBranch")
-                .setParameterList("branchIds", brachIds)
+                .setParameterList("branchIds", branchIds)
                 .setMaxResults(postCount).list();
         return result;
     }
