@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.lucene.analysis.CharArraySet;
 import org.apache.lucene.util.Version;
 import org.apache.solr.analysis.StopFilterFactory;
 import org.hibernate.search.util.HibernateSearchResourceLoader;
@@ -67,19 +66,16 @@ public class StopWordsFilter implements SearchRequestFilter {
      */
     private String filter(String searchText, String stopWordsFile) {
         StopFilterFactory filterFactory = new StopFilterFactory();
-        Map<String, String> arguments = new HashMap<String, String>();
+        Map<String, String> arguments = new HashMap<>();
         arguments.put("words", stopWordsFile);
         arguments.put("luceneMatchVersion", String.valueOf(Version.LUCENE_31));
         arguments.put("ignoreCase", String.valueOf(ignoreCase));
         filterFactory.init(arguments);
         filterFactory.inform(new HibernateSearchResourceLoader());
         
-        Set<?> stopWords = filterFactory.getStopWords();
+        Set<String> stopWords = (Set<String>)filterFactory.getStopWords();
         List<String> searchTerms = splitSearchText(searchText);
-        for(Object stopWord: (CharArraySet) stopWords) {
-            String stopWordString = String.valueOf((char[]) stopWord).trim();
-            searchTerms.remove(stopWordString);
-        }
+        searchTerms.removeAll(stopWords);
         return joinSearchTerms(searchTerms);
     }
     
@@ -93,7 +89,7 @@ public class StopWordsFilter implements SearchRequestFilter {
         if (ignoreCase) {
             searchText = searchText.toLowerCase();
         }
-        return new ArrayList<String>(
+        return new ArrayList<>(
                 Arrays.asList(searchText.split("\\s"))
         );
     }

@@ -16,7 +16,6 @@ package org.jtalks.jcommune.model.search;
 
 import java.util.Arrays;
 
-import org.jtalks.jcommune.model.search.StopWordsFilter;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -41,24 +40,38 @@ public class StopWordsFilterTest {
 		String searchText = "The book";
 		
 		searchText = filter.filter(searchText);
-		
-		boolean excluded = true;
-		for (String piece : searchText.split(" ")) {
-			if (stopWord.equalsIgnoreCase(piece)) {
-				excluded = false;
-			}
-		}
-		Assert.assertEquals(excluded, true, "The word has not been excluded.");
+
+		Assert.assertEquals(isAllWordsExcluded(searchText, stopWord), true, "The word has not been excluded.");
 	}
-	
-	
+
+    @Test
+    public void testExcludeMoreThanOneStopWord() {
+        String stopWord = "the";
+        String searchText = "The text the word";
+
+        searchText = filter.filter(searchText);
+
+        Assert.assertEquals(isAllWordsExcluded(searchText, stopWord), true, "The word has not been excluded.");
+    }
+
+
 	@Test
 	public void testCorrectSearchText() {
 		String searchText = "nice book";
-		
+
 		String filterResult = filter.filter(searchText);
-		
+
 		Assert.assertEquals(searchText, filterResult, "The search text should remain the same.");
 	}
+
+    private boolean isAllWordsExcluded(String searchText, String stopWord) {
+        boolean excluded = true;
+        for (String piece : searchText.split(" ")) {
+            if (stopWord.equalsIgnoreCase(piece)) {
+                excluded = false;
+            }
+        }
+        return  excluded;
+    }
 	
 }

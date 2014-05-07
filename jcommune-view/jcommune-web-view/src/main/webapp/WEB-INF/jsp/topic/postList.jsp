@@ -286,24 +286,7 @@
                    </span>
 
       <div>
-        &nbsp;<br/>
-
-        <div>
-          <spring:message code="label.topic.registered"/>
-            <span class="space-left-small">
-              <jtalks:format pattern="dd.MM.yy" value="${post.userCreated.registrationDate}"/>
-            </span>
-        </div>
-        <c:if test="${post.userCreated.location != null}">
-          <div>
-            <spring:message code="label.topic.from_whence"/>
-            <span class="space-left-small"><c:out value="${post.userCreated.location}"/></span>
-          </div>
-        </c:if>
-        <div>
-          <spring:message code="label.topic.message_count"/>
-          <span class="space-left-small"><c:out value="${post.userCreated.postCount}"/></span>
-        </div>
+          &nbsp;<br/>
         <sec:authorize access="isAuthenticated()">
           <sec:authentication property="principal.id" var="userId"/>
           <jtalks:hasPermission targetId='${userId}' targetType='USER'

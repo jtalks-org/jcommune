@@ -272,6 +272,13 @@
                         <fmt:message key='label.ukrainian'/>
                     </a>
                 </li>
+                <li id='lang-es'>
+                    <a href="${pageContext.request.requestURL}/language/?lang=es">
+                        <img src="${pageContext.request.contextPath}/resources/images/flags/es.png"
+                             alt="<fmt:message key='label.spanish'/>"/>
+                        <fmt:message key='label.spanish'/>
+                    </a>
+                </li>
             </ul>
         </li>
         <%-- END OF Language chooser --%>

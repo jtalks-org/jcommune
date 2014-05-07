@@ -16,12 +16,15 @@ var Utils = {};
 
 
 function quote(postId) {
-    var callback = function (text) {
+	Utils.focusFirstEl('#postBody');
+
+	var callback = function (text) {
         console.log(text);
         var answer = $('#postBody');
         if (answer) {
             answer.val(answer.val() + text);
         }
+
     }
 
     $.ajax({
@@ -37,7 +40,6 @@ function quote(postId) {
             callback('');
         }
     });
-
 }
 
 function getSelectedPostText() {
