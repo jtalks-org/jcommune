@@ -17,7 +17,12 @@ package org.jtalks.jcommune.web.rememberme;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
 
 /**
- * We need this class to store token and caching time in cache
+ * Wrapper for <code>PersistentRememberMeToken</code> class.
+ * Tokens used for linking information about user with information which stored in user's remember-me cookies.
+ * All this information stores in database. Token value updates every time when be accessed.
+ * We need this class to store "remember-me" token and caching time in cache.
+ * @see PersistentRememberMeToken
+ * @see RememberMeServices
  *
  * @author  Mikhail Stryzhonok
  */
@@ -31,20 +36,12 @@ public class PersistentRememberMeTokenWrapper {
         this.cachingTime = cachingTime;
     }
 
-    public PersistentRememberMeToken getToken() {
-        return token;
-    }
-
-    public void setToken(PersistentRememberMeToken token) {
-        this.token = token;
-    }
-
+    /**
+     * Gets token date and time of token caching as milliseconds
+     * @return Date and time of token caching
+     */
     public long getCachingTime() {
         return cachingTime;
-    }
-
-    public void setCachingTime(long cachingTime) {
-        this.cachingTime = cachingTime;
     }
 
     public String getTokenSeries() {

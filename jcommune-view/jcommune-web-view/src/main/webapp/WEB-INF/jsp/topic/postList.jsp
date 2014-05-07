@@ -286,7 +286,11 @@
                    </span>
 
       <div>
-          &nbsp;<br/>
+        &nbsp;<br/>
+        <div>
+          <spring:message code="label.topic.message_count"/>
+          <span class="space-left-small"><c:out value="${post.userCreated.postCount}"/></span>
+        </div>
         <sec:authorize access="isAuthenticated()">
           <sec:authentication property="principal.id" var="userId"/>
           <jtalks:hasPermission targetId='${userId}' targetType='USER'
