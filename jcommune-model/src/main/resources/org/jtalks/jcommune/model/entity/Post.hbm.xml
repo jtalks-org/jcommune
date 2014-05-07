@@ -57,9 +57,4 @@
     <query name="getPostsInTopic">
         <![CDATA[FROM Post WHERE topic = :topic ORDER BY creationDate]]>
     </query>
-    
-    <query name="getLastPostForBranch">
-        <![CDATA[FROM Post p WHERE p.topic.branch.id in (:branchIds) ORDER BY p.creationDate DESC]]>
-    </query>
-
 </hibernate-mapping>
