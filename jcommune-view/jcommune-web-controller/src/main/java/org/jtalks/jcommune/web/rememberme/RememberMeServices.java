@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.rememberme;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,14 +36,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
     private final static String REMOVE_TOKEN_QUERY = "DELETE FROM persistent_logins WHERE series = ? AND token = ?";
-    // 5 seconds should be enough for processing request and sending response to client
-    private static final int CACHED_TOKEN_VALIDITY_TIME = 5 * 1000;
     // We should store a lot of tokens to prevent cache overflow
     private static final int TOKEN_CACHE_MAX_SIZE = 100;
     private final RememberMeCookieDecoder rememberMeCookieDecoder;
     private final JdbcTemplate jdbcTemplate;
     private final Queue<PersistentRememberMeTokenWrapper> tokenCache = new ConcurrentLinkedQueue<>();
     private PersistentTokenRepository tokenRepository = new InMemoryTokenRepositoryImpl();
+    // 5 seconds should be enough for processing request and sending response to client
+    private int cachedTokenValidityTime = 5 * 1000;
 
     /**
      * @param rememberMeCookieDecoder needed for extracting rememberme cookies
@@ -80,6 +81,7 @@ public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
      * from client was send. This method implementation stores token in cache for <link>CACHED_TOKEN_VALIDITY_TIME</link>
      * milliseconds and check token presence in cache before process authentication. If there is no equivalent token in
      * cache authentication performs normally. If equivalent present in cache we should not update token in database.
+     * This approach can provide acceptable security level and prevent errors.
      * {@inheritDoc}
      * @see <a href="http://jira.jtalks.org/browse/JC-1743">JC-1743</a>
      * @see <a href="https://developers.google.com/chrome/whitepapers/prerender?csw=1">Page preloading in Google Chrome</a>
@@ -105,14 +107,32 @@ public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
 
         if (isTokenCached(presentedSeries, presentedToken)) {
             details = getUserDetailsService().loadUserByUsername(token.getUsername());
-            setCookie(new String[] {token.getSeries(), token.getTokenValue()}, getTokenValiditySeconds(), request, response);
+            rewriteCookie(token, request, response);
         } else {
-            details =  super.processAutoLoginCookie(cookieTokens, request, response);
+            details =  loginWithSpringSecurity(cookieTokens, request, response);
         }
         cacheToken(token);
         validateTokenCache();
 
         return details;
+    }
+
+    /**
+     * Calls PersistentTokenBasedRememberMeServices#processAutoLoginCookie method.
+     * Needed for possibility to test.
+     */
+    @VisibleForTesting
+    UserDetails loginWithSpringSecurity(String[] cookieTokens, HttpServletRequest request, HttpServletResponse response) {
+        return super.processAutoLoginCookie(cookieTokens, request, response);
+    }
+
+    /**
+     * Sets valid cookie to response/
+     * Needed for possibility to test.
+     */
+    @VisibleForTesting
+    void rewriteCookie(PersistentRememberMeToken token, HttpServletRequest request, HttpServletResponse response) {
+        setCookie(new String[] {token.getSeries(), token.getTokenValue()}, getTokenValiditySeconds(), request, response);
     }
 
     @Override
@@ -124,6 +144,7 @@ public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
     /**
      * Stores token in cache.
      * @param token Token to be stored
+     * @see org.jtalks.jcommune.web.rememberme.PersistentRememberMeTokenWrapper
      */
     private void cacheToken(PersistentRememberMeToken token) {
         if (tokenCache.size() >= TOKEN_CACHE_MAX_SIZE) {
@@ -149,9 +170,10 @@ public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
      * @param tokenWrapper Token wrapper to be checked
      * @return <code>true</code> tokenWrapper was stored in cache less than <link>CACHED_TOKEN_VALIDITY_TIME</link> milliseconds ago.
      * <code>false</code> otherwise.
+     * @see org.jtalks.jcommune.web.rememberme.PersistentRememberMeTokenWrapper
      */
     private boolean isTokenWrapperValid(PersistentRememberMeTokenWrapper tokenWrapper) {
-        if ((System.currentTimeMillis() - tokenWrapper.getCachingTime()) >= CACHED_TOKEN_VALIDITY_TIME) {
+        if ((System.currentTimeMillis() - tokenWrapper.getCachingTime()) >= cachedTokenValidityTime) {
             return false;
         } else {
             return true;
@@ -166,11 +188,15 @@ public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
      */
     private boolean isTokenCached(String series, String value) {
         for (PersistentRememberMeTokenWrapper tokenWrapper : tokenCache) {
-            if (tokenWrapper.getTokenSeries().equals(series) && tokenWrapper.getTokenValue().equals(value)) {
+            if (tokenWrapper.getTokenSeries().equals(series) && tokenWrapper.getTokenValue().equals(value)
+                    && isTokenWrapperValid(tokenWrapper)) {
                 return true;
             }
         }
         return false;
     }
 
+    public void setCachedTokenValidityTime(int cachedTokenValidityTime) {
+        this.cachedTokenValidityTime = cachedTokenValidityTime;
+    }
 }
