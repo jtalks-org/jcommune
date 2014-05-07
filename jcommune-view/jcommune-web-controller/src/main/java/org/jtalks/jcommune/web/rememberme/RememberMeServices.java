@@ -109,9 +109,12 @@ public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
             details = getUserDetailsService().loadUserByUsername(token.getUsername());
             rewriteCookie(token, request, response);
         } else {
+            /* IMPORTANT: We should store token in cache before calling <code>loginWithSpringSecurity</code> method.
+               Because execution of this method can take a long time.
+             */
+            cacheToken(token);
             details =  loginWithSpringSecurity(cookieTokens, request, response);
         }
-        cacheToken(token);
         validateTokenCache();
 
         return details;
