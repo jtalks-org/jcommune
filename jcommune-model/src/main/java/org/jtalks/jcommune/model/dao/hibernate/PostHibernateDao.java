@@ -14,13 +14,8 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Property;
-import org.hibernate.criterion.Restrictions;
 import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dto.PageRequest;
@@ -111,20 +106,10 @@ public class PostHibernateDao extends GenericDao<Post> implements PostDao {
      */
     @Override
     public List<Post> getLastPostsFor(List<Long> brachIds, int postCount) {
-        String creationDateProperty = "creationDate";
-        DetachedCriteria postMaxCreationDateCriteria =
-                DetachedCriteria.forClass(Post.class)
-                        .setProjection(Projections.max(creationDateProperty))
-                        .createAlias("topic", "t", Criteria.INNER_JOIN)
-                        .createAlias("t.branch", "b", Criteria.INNER_JOIN)
-                        .add(Restrictions.in("b.id", brachIds));
-        //possible that the two topics will be modified at the same time
-        return (List<Post>) session()
-                .createCriteria(Post.class)
-                .createAlias("topic", "t", Criteria.INNER_JOIN)
-                .createAlias("t.branch", "b", Criteria.INNER_JOIN)
-                .add(Restrictions.in("b.id", brachIds))
-                .add(Property.forName(creationDateProperty).eq(postMaxCreationDateCriteria))
-                .list();
+        List<Post> result = (List<Post>) session()
+                .getNamedQuery("getLastPostForBranch")
+                .setParameterList("branchIds", brachIds)
+                .setMaxResults(postCount).list();
+        return result;
     }
 }
