@@ -112,15 +112,16 @@ public class PostHibernateDao extends GenericDao<Post> implements PostDao {
                         .createAlias("t.branch", "b", Criteria.INNER_JOIN)
                         .add(Restrictions.eq("b.id", branch.getId()));
         //possible that the two topics will be modified at the same time
-        List<Post> posts =  (List<Post>) session()
+        List<Post> posts = (List<Post>) session()
                 .createCriteria(Post.class)
                 .createAlias("topic", "t", Criteria.INNER_JOIN)
                 .createAlias("t.branch", "b", Criteria.INNER_JOIN)
                 .add(Restrictions.eq("b.id", branch.getId()))
                 .add(Property.forName(creationDateProperty).eq(postMaxCreationDateCriteria))
+                .setMaxResults(1)
                 .list();
-        if (posts.size() == 1) {
-            return  posts.get(0);
+        if (!posts.isEmpty()) {
+            return posts.get(0);
         }
         return null;
     }
