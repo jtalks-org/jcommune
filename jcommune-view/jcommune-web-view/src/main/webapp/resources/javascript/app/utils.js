@@ -44,7 +44,7 @@ function quote(postId) {
 
 function getSelectedPostText() {
     var txt = '';
-    if (document.getSelection) {
+    /*if (document.getSelection) {
         txt = document.getSelection().toString();
     }
     else if (window.getSelection) {
@@ -52,7 +52,7 @@ function getSelectedPostText() {
     }
     else if (document.selection) {
         txt = document.selection.createRange().text;
-    }
+    }*/
     return txt;
 }
 
