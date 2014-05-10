@@ -1036,3 +1036,25 @@ pre.prettyprint {
 .two-list-selector-control {
     padding: 2px 0px;
 }
+
+.text_errorpage {
+    max-width: 420px;
+    display: inline-block;
+}
+
+.linear_transitions {
+    transition:all .2s linear;
+    -o-transition:all .2s linear;
+    -moz-transition:all .2s linear;
+    -webkit-transition:all .2s linear;
+}
+
+.image_errorpage {
+    padding-left: 420px;
+}
+
+@media (max-width: 800px) {
+    .image_errorpage {
+        display: none;
+    }
+}
