@@ -16,12 +16,15 @@ var Utils = {};
 
 
 function quote(postId) {
-    var callback = function (text) {
+	Utils.focusFirstEl('#postBody');
+
+	var callback = function (text) {
         console.log(text);
         var answer = $('#postBody');
         if (answer) {
             answer.val(answer.val() + text);
         }
+
     }
 
     $.ajax({
@@ -37,12 +40,11 @@ function quote(postId) {
             callback('');
         }
     });
-
 }
 
 function getSelectedPostText() {
     var txt = '';
-    if (document.getSelection) {
+    /*if (document.getSelection) {
         txt = document.getSelection().toString();
     }
     else if (window.getSelection) {
@@ -50,7 +52,7 @@ function getSelectedPostText() {
     }
     else if (document.selection) {
         txt = document.selection.createRange().text;
-    }
+    }*/
     return txt;
 }
 

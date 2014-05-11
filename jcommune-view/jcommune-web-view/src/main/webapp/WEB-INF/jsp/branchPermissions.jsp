@@ -57,7 +57,7 @@
                data-branch="${branch.id}"
                data-permission-name="${entry.name}"
                href="#">
-              </span><spring:message code="label.edit"/>
+              <span><spring:message code="label.edit"/></span>
             </a>
           </div>
           <div class="permissions-container">
@@ -79,7 +79,7 @@
                data-branch="${branch.id}"
                data-permission-name="${entry.name}"
                href="#">
-              </span><spring:message code="label.edit"/>
+              <span><spring:message code="label.edit"/></span>
             </a>
           </div>
           <div class="permissions-container">

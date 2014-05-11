@@ -24,7 +24,7 @@
     </title>
 </head>
 <body>
-<div class="container">
+<div class="container linear_transitions">
     <div class="text_errorpage">
         <h1><span class="error_errorpage"><spring:message code="label.error"/></span>&nbsp;404</h1>
         <spring:message code="label.404.detail"/>
@@ -32,5 +32,8 @@
         <spring:message code="label.404.checkurl"/>&nbsp;
         <a href="${pageContext.request.contextPath}/"><spring:message code="label.back2main"/></a>
     </div>
+    <div class="image_errorpage">
+      <img src="${pageContext.request.contextPath}/resources/images/404.png" alt="404">
+  </div>
 </div>
 </body>

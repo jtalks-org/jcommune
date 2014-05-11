@@ -23,6 +23,7 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -63,9 +64,16 @@ public class SubscriptionController {
      */
     @RequestMapping("topics/{id}/subscribe")
     @ResponseBody
-    public void subscribeToTopic(@PathVariable Long id) throws NotFoundException {
+    public ModelAndView subscribeToTopic(@PathVariable Long id, @RequestHeader(value = "X-Requested-With", defaultValue = "NotAjax") String header) throws NotFoundException {
         Topic topic = topicFetchService.get(id);
         subscriptionService.toggleTopicSubscription(topic);
+        if (header.equals("NotAjax")) {
+            //redirect to new page
+            return new ModelAndView("redirect:/topics/" + id);
+        } else {
+            //no redirecting, perform AJAX request
+            return null;
+        }
     }
 
     /**
@@ -76,10 +84,19 @@ public class SubscriptionController {
      */
     @RequestMapping("topics/{id}/unsubscribe")
     @ResponseBody
-    public void unsubscribeFromTopic(@PathVariable Long id) throws NotFoundException {
+    public ModelAndView unsubscribeFromTopic(@PathVariable Long id, @RequestHeader(value = "X-Requested-With", defaultValue = "NotAjax") String header
+    ) throws NotFoundException {
         Topic topic = topicFetchService.get(id);
         subscriptionService.toggleTopicSubscription(topic);
+        if (header.equals("NotAjax")) {
+            //redirect to new page
+            return new ModelAndView("redirect:/topics/" + id);
+        } else {
+            //no redirecting, perform AJAX request
+            return null;
+        }
     }
+
 
     /**
      * Activates branch updates subscription for the current user.
@@ -90,9 +107,16 @@ public class SubscriptionController {
      */
     @RequestMapping("branches/{id}/subscribe")
     @ResponseBody
-    public void subscribeToBranch(@PathVariable Long id) throws NotFoundException {
+    public ModelAndView subscribeToBranch(@PathVariable Long id, @RequestHeader(value = "X-Requested-With", defaultValue = "NotAjax") String header) throws NotFoundException {
         Branch branch = branchService.get(id);
         subscriptionService.toggleBranchSubscription(branch);
+        if (header.equals("NotAjax")) {
+            //redirect to new page
+            return new ModelAndView("redirect:/branches/" + id);
+        } else {
+            //no redirecting, perform AJAX request
+            return null;
+        }
     }
 
     /**
@@ -103,21 +127,15 @@ public class SubscriptionController {
      */
     @RequestMapping("branches/{id}/unsubscribe")
     @ResponseBody
-    public void unsubscribeFromBranch(@PathVariable Long id) throws NotFoundException {
+    public ModelAndView unsubscribeFromBranch(@PathVariable Long id, @RequestHeader(value = "X-Requested-With", defaultValue = "NotAjax") String header) throws NotFoundException {
         Branch branch = branchService.get(id);
         subscriptionService.toggleBranchSubscription(branch);
-    }
-
-    /**
-     * Deactivates branch updates subscription for the current user
-     *
-     * @param id identifies branch to unsubscribe from
-     * @throws NotFoundException if no object is found for id given
-     */
-    @RequestMapping("branches/{id}/unsubscribe_link")
-    public ModelAndView  unsubscribeFromBranchByLink(@PathVariable Long id) throws NotFoundException {
-        Branch branch = branchService.get(id);
-        subscriptionService.unsubscribeFromBranch(branch);
-        return new ModelAndView("redirect:/branches/" + id);
+        if (header.equals("NotAjax")) {
+            //redirect to new page
+            return new ModelAndView("redirect:/branches/" + id);
+        } else {
+            //no redirecting, perform AJAX request
+            return null;
+        }
     }
 }

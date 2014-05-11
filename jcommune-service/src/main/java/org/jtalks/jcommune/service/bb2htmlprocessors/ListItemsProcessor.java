@@ -25,9 +25,8 @@ import java.util.regex.Pattern;
  * Support nested lists processing.
  * Transform the incoming text to the tree-like structure and recreate the text with closed tags
  * by this tree.
- * @throws BBCodeListParsingException in the case of invalid input, for example when the close [/list] tag missed.
  * 
- * @author Pavel Vervenko
+ * @author Pavel Vervenko, Mikhail Stryzhonok
  */
 class ListItemsProcessor {
 
@@ -39,30 +38,6 @@ class ListItemsProcessor {
     private RootElement root;
 
     private ListElement lastElement;
-
-    private enum TagType {
-
-        LIST,
-        LIST_CLOSE,
-        ITEM;
-
-        /**
-         * @param tagString
-         * @return appropriate tag for specified string
-         */
-        static ListItemsProcessor.TagType fromString(String tagString) throws BBCodeListParsingException {
-            if (tagString.equalsIgnoreCase(LIST_ITEM_TAG_OPEN)) {
-                return ListItemsProcessor.TagType.ITEM;
-            }
-            if (tagString.equalsIgnoreCase(LIST_TAG_CLOSE)) {
-                return ListItemsProcessor.TagType.LIST_CLOSE;
-            }
-            if (tagString.startsWith(LIST_TAG_OPEN)) {
-                return ListItemsProcessor.TagType.LIST;
-            }
-            throw new BBCodeListParsingException("unknow tag type: " + tagString);
-        }
-    }
 
     private final Pattern listPattern = Pattern.compile(LIST_REGEX, Pattern.DOTALL);
 
@@ -82,19 +57,19 @@ class ListItemsProcessor {
         this.initialText = bbEncodedText;
     }
 
-    StringBuilder getTextWithClosedTags() throws BBCodeListParsingException {
+    StringBuilder getTextWithClosedTags() {
         root = createRootElement(initialText);
         Matcher matcher = listPattern.matcher(initialText);
         while (matcher.find()) {
-            processMatch(matcher);
+            Tag tag = createTag(matcher.group(1));
+            tag.processMatch(matcher);
         }
-        return new StringBuilder(root.toBBString());
+        return root.toBBString();
     }
 
     /**
      * Create root element of the tags tree.
-     *
-     * @param str
+     * @param str String from which root element will be created
      * @return root element
      */
     private RootElement createRootElement(String str) {
@@ -109,44 +84,25 @@ class ListItemsProcessor {
     }
 
     /**
-     * Process matched tag.
-     *
-     * @param matcher
+     * Creates tag depending on needed tag type
+     * @param tagString String tag representation
+     * @return Newly created tag
      */
-    private void processMatch(Matcher matcher) throws BBCodeListParsingException {
-        ListItemsProcessor.TagType tag = ListItemsProcessor.TagType.fromString(matcher.group(1));
-        if (tag == ListItemsProcessor.TagType.LIST) {
-            ListElement list = new ListElement();
-            list.params = matcher.group(2);
-            list.text = matcher.group(3);
-            getCurrentElement().addChild(list);
-            listStack.push(list);
-            lastElement = list;
+    private Tag createTag(String tagString) {
+        if (tagString.equalsIgnoreCase(LIST_ITEM_TAG_OPEN)) {
+            return new ItemElement();
         }
-        if (tag == ListItemsProcessor.TagType.LIST_CLOSE) {
-            if (listStack.isEmpty()) {
-                if (lastElement != null) {
-                    lastElement.endText += matcher.group(3) + LIST_TAG_CLOSE;
-                }
-                return;
-            }
-            ListElement closingList = listStack.pop();
-            closingList.endText = matcher.group(3);
-            closingList.close();
-            lastElement = closingList;
+        if (tagString.equalsIgnoreCase(LIST_TAG_CLOSE)) {
+            return new ClosingList();
         }
-        if (tag == ListItemsProcessor.TagType.ITEM) {
-            if (!listStack.isEmpty()) {
-                ItemElement item = new ItemElement();
-                item.text = matcher.group(3);
-                listStack.peek().addChild(item);
-            } else if (lastElement != null) {
-                lastElement.endText += LIST_ITEM_TAG_OPEN + matcher.group(3);
-            }
+        if (tagString.startsWith(LIST_TAG_OPEN)) {
+            return new ListElement();
+        } else {
+            throw new IllegalArgumentException("Unknown tag type " + tagString);
         }
     }
 
-    private TreeElement getCurrentElement() throws BBCodeListParsingException {
+    private TreeElement getCurrentElement() {
         if (listStack.isEmpty()) {
             return root;
         }
@@ -156,7 +112,7 @@ class ListItemsProcessor {
     /**
      * Represents one element of the tags tree.
      */
-    private class TreeElement {
+    private abstract class TreeElement {
 
         String text = "";
         List<TreeElement> children = new LinkedList<>();
@@ -164,7 +120,7 @@ class ListItemsProcessor {
         /**
          * @return last element child
          */
-        TreeElement getLastChild() throws BBCodeListParsingException {
+        TreeElement getLastChild() {
             if (children.isEmpty()) {
                 return this;
             }
@@ -183,12 +139,13 @@ class ListItemsProcessor {
          *
          * @return BB-string
          */
-        String toBBString() throws BBCodeListParsingException {
-            String rs = getOpenTag() + text;
+        StringBuilder toBBString()  {
+            StringBuilder res = new StringBuilder(getOpenTag());
+            res.append(text);
             for (TreeElement e : children) {
-                rs += e.toBBString();
+                res.append(e.toBBString());
             }
-            return rs + getCloseTag();
+            return res.append(getCloseTag());
         }
 
         /**
@@ -218,9 +175,26 @@ class ListItemsProcessor {
     }
 
     /**
+     * Root class of all kind of list tags. E.g. ListElement, ListItem, ClosingList
+     */
+    private abstract class Tag extends TreeElement {
+
+        /**
+         * Process matching tag
+         * @param matcher Matcher object
+         */
+        public abstract void processMatch(Matcher matcher);
+    }
+
+    /**
      * List item element,[*]
      */
-    private class ItemElement extends TreeElement {
+    private class ItemElement extends Tag {
+
+        /**
+         * We need store parent element to check if it closed
+         */
+        private ListElement parent;
 
         @Override
         protected String getOpenTag() {
@@ -229,14 +203,32 @@ class ListItemsProcessor {
 
         @Override
         protected String getCloseTag() {
-            return LIST_ITEM_CLOSE;
+            if (parent.closed) {
+                return LIST_ITEM_CLOSE;
+            } else {
+                return "";
+            }
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void processMatch(Matcher matcher) {
+            if (!listStack.isEmpty()) {
+                this.text = matcher.group(3);
+                listStack.peek().addChild(this);
+                this.parent = listStack.peek();
+            } else if (lastElement != null) {
+                lastElement.endText += LIST_ITEM_TAG_OPEN + matcher.group(3);
+            }
         }
     }
 
     /**
      * List tag, [list].
      */
-    private class ListElement extends TreeElement {
+    private class ListElement extends Tag {
 
         /**
          * list params
@@ -258,7 +250,11 @@ class ListItemsProcessor {
 
         @Override
         protected String getCloseTag() {
-            return LIST_TAG_CLOSE + getEndText();
+            if (closed) {
+                return LIST_TAG_CLOSE + getEndText();
+            } else {
+                return "";
+            }
         }
 
         public String getParams() {
@@ -276,23 +272,40 @@ class ListItemsProcessor {
             closed = true;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
-        String toBBString() throws BBCodeListParsingException{
-            if (!closed) {
-                throw new BBCodeListParsingException("toBBString() invocation isn't allowed for unclosed list");
-            }
-            return super.toBBString();
+        public void processMatch(Matcher matcher) {
+            this.params = matcher.group(2);
+            this.text = matcher.group(3);
+            getCurrentElement().addChild(this);
+            listStack.push(this);
+            lastElement = this;
         }
     }
 
-}
+    /**
+     * Class for closing list tags. Needed for separate matching processing.
+     */
+    private class ClosingList extends Tag {
 
-/**
- * Thrown in the case of parsing error.
- */
-class BBCodeListParsingException extends Exception {
-
-    BBCodeListParsingException(String string) {
-        super(string);
+       /**
+        * {@inheritDoc}
+        */
+        @Override
+        public void processMatch(Matcher matcher) {
+            if (listStack.isEmpty()) {
+                if (lastElement != null) {
+                    lastElement.endText += matcher.group(3) + LIST_TAG_CLOSE;
+                }
+                return;
+            }
+            ListElement closingList = listStack.pop();
+            closingList.endText = matcher.group(3);
+            closingList.close();
+            lastElement = closingList;
+        }
     }
 }
+
