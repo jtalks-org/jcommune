@@ -41,15 +41,13 @@ $(document).ready(function () {
  *
  */
 function SwitchPoll() {
-    pollEditFormVisible = !pollEditFormVisible;
-    if (!pollEditFormVisible) {  // enter preview
         if (isPollSet()) {
             previewFormElement.html(prepareTitle() + prepareItems());
             previewFormElement.show();
         }
-    } else {
+     else {
         previewFormElement.hide();
-    }
+        }
 }
 
 function isPollSet() {
