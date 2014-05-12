@@ -23,8 +23,8 @@ import org.springframework.security.web.authentication.rememberme.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Implements our custom Remember Me service to replace the Spring default one. This implementation removes Remember Me
@@ -40,7 +40,7 @@ public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
     private static final int TOKEN_CACHE_MAX_SIZE = 100;
     private final RememberMeCookieDecoder rememberMeCookieDecoder;
     private final JdbcTemplate jdbcTemplate;
-    private final Map<String, PersistentRememberMeTokenWrapper> tokenCache = new ConcurrentHashMap<>();
+    private final Queue<PersistentRememberMeTokenWrapper> tokenCache = new ConcurrentLinkedQueue<>();
     private PersistentTokenRepository tokenRepository = new InMemoryTokenRepositoryImpl();
     // 5 seconds should be enough for processing request and sending response to client
     private int cachedTokenValidityTime = 5 * 1000;
@@ -72,8 +72,6 @@ public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
             }
             cancelCookie(request, response);
             jdbcTemplate.update(REMOVE_TOKEN_QUERY, seriesAndToken);
-            tokenCache.remove(seriesAndToken[0]);
-            validateTokenCache();
         }
     }
 
@@ -153,19 +151,19 @@ public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
      */
     private void cacheToken(PersistentRememberMeToken token) {
         if (tokenCache.size() >= TOKEN_CACHE_MAX_SIZE) {
-            validateTokenCache();
+            tokenCache.poll();
         }
-        PersistentRememberMeTokenWrapper tokenWrapper = new PersistentRememberMeTokenWrapper(token.getTokenValue(), System.currentTimeMillis());
-        tokenCache.put(token.getSeries(), tokenWrapper);
+        PersistentRememberMeTokenWrapper tokenWrapper = new PersistentRememberMeTokenWrapper(token, System.currentTimeMillis());
+        tokenCache.add(tokenWrapper);
     }
 
     /**
      * Removes from cache tokens which were stored more than <link>CACHED_TOKEN_VALIDITY_TIME</link> milliseconds ago.
      */
     private void validateTokenCache() {
-        for (Map.Entry<String, PersistentRememberMeTokenWrapper> entry: tokenCache.entrySet()) {
-            if (!isTokenWrapperValid(entry.getValue())) {
-                tokenCache.remove(entry);
+        for (PersistentRememberMeTokenWrapper tokenWrapper : tokenCache) {
+            if (!isTokenWrapperValid(tokenWrapper)) {
+                tokenCache.remove(tokenWrapper);
             }
         }
     }
@@ -192,9 +190,11 @@ public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
      * @return <code>true</code> if token stored in cache< <code>false</code> otherwise.
      */
     private boolean isTokenCached(String series, String value) {
-        if (tokenCache.containsKey(series) && isTokenWrapperValid(tokenCache.get(series))
-                && value.equals(tokenCache.get(series))) {
-            return true;
+        for (PersistentRememberMeTokenWrapper tokenWrapper : tokenCache) {
+            if (tokenWrapper.getTokenSeries().equals(series) && tokenWrapper.getTokenValue().equals(value)
+                    && isTokenWrapperValid(tokenWrapper)) {
+                return true;
+            }
         }
         return false;
     }
