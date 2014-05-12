@@ -28,11 +28,11 @@ import org.springframework.security.web.authentication.rememberme.PersistentReme
  */
 public class PersistentRememberMeTokenWrapper {
 
-    private PersistentRememberMeToken token;
+    private String value;
     long cachingTime;
 
-    public PersistentRememberMeTokenWrapper(PersistentRememberMeToken token, long cachingTime) {
-        this.token = token;
+    public PersistentRememberMeTokenWrapper(String tokenValue, long cachingTime) {
+        this.value = tokenValue;
         this.cachingTime = cachingTime;
     }
 
@@ -44,11 +44,7 @@ public class PersistentRememberMeTokenWrapper {
         return cachingTime;
     }
 
-    public String getTokenSeries() {
-        return token.getSeries();
-    }
-
-    public String getTokenValue() {
-        return token.getTokenValue();
+    public String getValue() {
+        return value;
     }
 }
