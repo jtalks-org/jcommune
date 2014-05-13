@@ -658,11 +658,6 @@ div.anchor {
     font-size: 14px;
 }
 
-#externalLinks .tooltip{
-    padding-left: 30px;
-    max-width: 100px !important;
-}
-
 #externalLinks span:not(:last-child):after {
     content: " | ";
 }
