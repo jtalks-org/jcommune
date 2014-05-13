@@ -28,19 +28,19 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Implements our custom Remember Me service to replace the Spring default one. This implementation removes Remember Me
- * token only for a single session.
+ * token only for a single session and prevents sequent remember me authentication from single client..
  * <p><b>Justification:</b> Spring's * {@link PersistentTokenBasedRememberMeServices} removes all the tokens from DB
  * for a user whose session expired - even the sessions started on a different machine or device. Thus users were
  * frustrated when their sessions expired on the machines where the Remember Me checkbox was checked.
  * </p>
  */
-public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
+public class ThrottlingRememberMeService extends PersistentTokenBasedRememberMeServices {
     private final static String REMOVE_TOKEN_QUERY = "DELETE FROM persistent_logins WHERE series = ? AND token = ?";
     // We should store a lot of tokens to prevent cache overflow
     private static final int TOKEN_CACHE_MAX_SIZE = 100;
     private final RememberMeCookieDecoder rememberMeCookieDecoder;
     private final JdbcTemplate jdbcTemplate;
-    private final Map<String, PersistentRememberMeTokenWrapper> tokenCache = new ConcurrentHashMap<>();
+    private final Map<String, CachedRememberMeTokenInfo> tokenCache = new ConcurrentHashMap<>();
     private PersistentTokenRepository tokenRepository = new InMemoryTokenRepositoryImpl();
     // 5 seconds should be enough for processing request and sending response to client
     private int cachedTokenValidityTime = 5 * 1000;
@@ -50,7 +50,7 @@ public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
      * @param jdbcTemplate            needed to execute the sql queries
      * @throws Exception - see why {@link PersistentTokenBasedRememberMeServices} throws it
      */
-    public RememberMeServices(RememberMeCookieDecoder rememberMeCookieDecoder, JdbcTemplate jdbcTemplate)
+    public ThrottlingRememberMeService(RememberMeCookieDecoder rememberMeCookieDecoder, JdbcTemplate jdbcTemplate)
             throws Exception {
         super();
         this.rememberMeCookieDecoder = rememberMeCookieDecoder;
@@ -108,6 +108,7 @@ public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
         UserDetails details = null;
 
         if (isTokenCached(presentedSeries, presentedToken)) {
+            tokenCache.remove(presentedSeries);
             details = getUserDetailsService().loadUserByUsername(token.getUsername());
             rewriteCookie(token, request, response);
         } else {
@@ -115,7 +116,16 @@ public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
                Because execution of this method can take a long time.
              */
             cacheToken(token);
-            details =  loginWithSpringSecurity(cookieTokens, request, response);
+            try {
+                details = loginWithSpringSecurity(cookieTokens, request, response);
+            //We should remove token from cache if cookie really was stolen or other authentication error occurred
+            } catch (CookieTheftException ex) {
+                tokenCache.remove(token.getSeries());
+                throw ex;
+            } catch (RememberMeAuthenticationException ex) {
+                tokenCache.remove(token.getSeries());
+                throw ex;
+            }
         }
         validateTokenCache();
 
@@ -132,7 +142,7 @@ public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
     }
 
     /**
-     * Sets valid cookie to response/
+     * Sets valid cookie to response
      * Needed for possibility to test.
      */
     @VisibleForTesting
@@ -149,13 +159,13 @@ public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
     /**
      * Stores token in cache.
      * @param token Token to be stored
-     * @see org.jtalks.jcommune.web.rememberme.PersistentRememberMeTokenWrapper
+     * @see CachedRememberMeTokenInfo
      */
     private void cacheToken(PersistentRememberMeToken token) {
         if (tokenCache.size() >= TOKEN_CACHE_MAX_SIZE) {
             validateTokenCache();
         }
-        PersistentRememberMeTokenWrapper tokenWrapper = new PersistentRememberMeTokenWrapper(token.getTokenValue(), System.currentTimeMillis());
+        CachedRememberMeTokenInfo tokenWrapper = new CachedRememberMeTokenInfo(token.getTokenValue(), System.currentTimeMillis());
         tokenCache.put(token.getSeries(), tokenWrapper);
     }
 
@@ -163,7 +173,7 @@ public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
      * Removes from cache tokens which were stored more than <link>CACHED_TOKEN_VALIDITY_TIME</link> milliseconds ago.
      */
     private void validateTokenCache() {
-        for (Map.Entry<String, PersistentRememberMeTokenWrapper> entry: tokenCache.entrySet()) {
+        for (Map.Entry<String, CachedRememberMeTokenInfo> entry: tokenCache.entrySet()) {
             if (!isTokenWrapperValid(entry.getValue())) {
                 tokenCache.remove(entry);
             }
@@ -175,9 +185,9 @@ public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
      * @param tokenWrapper Token wrapper to be checked
      * @return <code>true</code> tokenWrapper was stored in cache less than <link>CACHED_TOKEN_VALIDITY_TIME</link> milliseconds ago.
      * <code>false</code> otherwise.
-     * @see org.jtalks.jcommune.web.rememberme.PersistentRememberMeTokenWrapper
+     * @see CachedRememberMeTokenInfo
      */
-    private boolean isTokenWrapperValid(PersistentRememberMeTokenWrapper tokenWrapper) {
+    private boolean isTokenWrapperValid(CachedRememberMeTokenInfo tokenWrapper) {
         if ((System.currentTimeMillis() - tokenWrapper.getCachingTime()) >= cachedTokenValidityTime) {
             return false;
         } else {
@@ -199,6 +209,9 @@ public class RememberMeServices extends PersistentTokenBasedRememberMeServices {
         return false;
     }
 
+    /**
+     * Needed for possibility to test.
+     */
     public void setCachedTokenValidityTime(int cachedTokenValidityTime) {
         this.cachedTokenValidityTime = cachedTokenValidityTime;
     }

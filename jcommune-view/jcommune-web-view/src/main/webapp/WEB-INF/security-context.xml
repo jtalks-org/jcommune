@@ -108,7 +108,7 @@
   </security:http>
 
   <bean id="rememberMeServices"
-        class="org.jtalks.jcommune.web.rememberme.RememberMeServices">
+        class="org.jtalks.jcommune.web.rememberme.ThrottlingRememberMeService">
     <constructor-arg ref="rememberMeCookieDecoder"/>
     <constructor-arg name="jdbcTemplate" ref="jdbcTemplate"/>
     <property name="userDetailsService" ref="securityService"/>
