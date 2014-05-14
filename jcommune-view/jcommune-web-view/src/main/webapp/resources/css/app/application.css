@@ -658,11 +658,6 @@ div.anchor {
     font-size: 14px;
 }
 
-#externalLinks .tooltip{
-    padding-left: 30px;
-    max-width: 100px !important;
-}
-
 #externalLinks span:not(:last-child):after {
     content: " | ";
 }
@@ -1035,4 +1030,30 @@ pre.prettyprint {
 
 .two-list-selector-control {
     padding: 2px 0px;
+}
+
+@media (min-width: 800px) {
+    .text_errorpage {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        font-size: 20px;
+    }
+}
+
+.linear_transitions {
+    transition:all .2s linear;
+    -o-transition:all .2s linear;
+    -moz-transition:all .2s linear;
+    -webkit-transition:all .2s linear;
+}
+
+.image_errorpage {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (max-width: 400px) {
+    .image_errorpage {
+        display: none;
+    }
 }
