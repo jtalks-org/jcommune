@@ -1032,12 +1032,9 @@ pre.prettyprint {
     padding: 2px 0px;
 }
 
-@media (min-width: 800px) {
-    .text_errorpage {
-        margin-top: 20px;
-        margin-bottom: 20px;
-        font-size: 20px;
-    }
+.text_errorpage {
+    max-width: 420px;
+    display: inline-block;
 }
 
 .linear_transitions {
@@ -1048,11 +1045,10 @@ pre.prettyprint {
 }
 
 .image_errorpage {
-    margin-left: auto;
-    margin-right: auto;
+    padding-left: 420px;
 }
 
-@media (max-width: 400px) {
+@media (max-width: 800px) {
     .image_errorpage {
         display: none;
     }
