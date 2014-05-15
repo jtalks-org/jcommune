@@ -172,7 +172,7 @@ public class ThrottlingRememberMeService extends PersistentTokenBasedRememberMeS
     private void validateTokenCache() {
         for (Map.Entry<String, CachedRememberMeTokenInfo> entry: tokenCache.entrySet()) {
             if (!isTokenInfoValid(entry.getValue())) {
-                tokenCache.remove(entry);
+                tokenCache.remove(entry.getKey());
             }
         }
     }
