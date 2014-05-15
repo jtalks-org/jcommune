@@ -58,8 +58,13 @@
         <![CDATA[FROM Post WHERE topic = :topic ORDER BY creationDate]]>
     </query>
 
-    <query name="getLastPostForBranch">
+    <query name="getLastPostsForBranch">
         <![CDATA[FROM Post p WHERE p.topic.branch.id in (:branchIds) ORDER BY p.creationDate DESC]]>
+    </query>
+
+    <query name="getLastPostForBranch">
+        <![CDATA[FROM Post p WHERE p.topic.branch.id = :branchId AND creationDate =
+                    (SELECT MAX(pp.creationDate) FROM Post pp WHERE pp.topic.branch.id = :branchId)]]>
     </query>
 
 </hibernate-mapping>

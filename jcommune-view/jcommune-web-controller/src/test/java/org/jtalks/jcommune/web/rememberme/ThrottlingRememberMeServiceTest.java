@@ -34,7 +34,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
  *
  * @author Mikhail Stryzhonok.
  */
-public class RememberMeServicesTest {
+public class ThrottlingRememberMeServiceTest {
     private static final String PRESENTED_SERIES = "61ikbvB7Nd1Wk3jDXgN/TQ==";
     private static final String PRESENTED_TOKEN = "FGGNNSS0KoIg7zO9+VlSaw==";
 
@@ -51,7 +51,7 @@ public class RememberMeServicesTest {
     private UserDetailsService detailsService;
 
     @Spy
-    private RememberMeServices services;
+    private ThrottlingRememberMeService services;
 
 
     private PersistentRememberMeToken token = new PersistentRememberMeToken("user", PRESENTED_SERIES, PRESENTED_TOKEN, new Date());
@@ -59,7 +59,7 @@ public class RememberMeServicesTest {
 
     @BeforeMethod
     public void init() throws Exception{
-        services = new RememberMeServices(null, null);
+        services = new ThrottlingRememberMeService(null, null);
         initMocks(this);
 
         doReturn(details).when(services).loginWithSpringSecurity(any(String[].class),any(HttpServletRequest.class), any(HttpServletResponse.class));
