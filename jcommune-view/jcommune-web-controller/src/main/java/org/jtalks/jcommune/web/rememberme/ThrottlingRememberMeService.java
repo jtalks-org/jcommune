@@ -119,9 +119,6 @@ public class ThrottlingRememberMeService extends PersistentTokenBasedRememberMeS
             try {
                 details = loginWithSpringSecurity(cookieTokens, request, response);
             //We should remove token from cache if cookie really was stolen or other authentication error occurred
-            } catch (CookieTheftException ex) {
-                tokenCache.remove(token.getSeries());
-                throw ex;
             } catch (RememberMeAuthenticationException ex) {
                 tokenCache.remove(token.getSeries());
                 throw ex;
@@ -174,21 +171,21 @@ public class ThrottlingRememberMeService extends PersistentTokenBasedRememberMeS
      */
     private void validateTokenCache() {
         for (Map.Entry<String, CachedRememberMeTokenInfo> entry: tokenCache.entrySet()) {
-            if (!isTokenWrapperValid(entry.getValue())) {
+            if (!isTokenInfoValid(entry.getValue())) {
                 tokenCache.remove(entry);
             }
         }
     }
 
     /**
-     * Checks if given tokenWrapper valid.
-     * @param tokenWrapper Token wrapper to be checked
-     * @return <code>true</code> tokenWrapper was stored in cache less than <link>CACHED_TOKEN_VALIDITY_TIME</link> milliseconds ago.
+     * Checks if given tokenInfo valid.
+     * @param tokenInfo Token wrapper to be checked
+     * @return <code>true</code> tokenInfo was stored in cache less than <link>CACHED_TOKEN_VALIDITY_TIME</link> milliseconds ago.
      * <code>false</code> otherwise.
      * @see CachedRememberMeTokenInfo
      */
-    private boolean isTokenWrapperValid(CachedRememberMeTokenInfo tokenWrapper) {
-        if ((System.currentTimeMillis() - tokenWrapper.getCachingTime()) >= cachedTokenValidityTime) {
+    private boolean isTokenInfoValid(CachedRememberMeTokenInfo tokenInfo) {
+        if ((System.currentTimeMillis() - tokenInfo.getCachingTime()) >= cachedTokenValidityTime) {
             return false;
         } else {
             return true;
@@ -202,7 +199,7 @@ public class ThrottlingRememberMeService extends PersistentTokenBasedRememberMeS
      * @return <code>true</code> if token stored in cache< <code>false</code> otherwise.
      */
     private boolean isTokenCached(String series, String value) {
-        if (tokenCache.containsKey(series) && isTokenWrapperValid(tokenCache.get(series))
+        if (tokenCache.containsKey(series) && isTokenInfoValid(tokenCache.get(series))
                 && value.equals(tokenCache.get(series).getValue())) {
             return true;
         }
