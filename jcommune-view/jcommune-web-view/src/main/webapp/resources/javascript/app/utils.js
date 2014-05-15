@@ -14,13 +14,11 @@
  */
 var Utils = {};
 
-
 function quote(postId) {
-	Utils.focusFirstEl('#postBody');
-
 	var callback = function (text) {
         console.log(text);
         var answer = $('#postBody');
+        answer.focus();
         if (answer) {
             answer.val(answer.val() + text);
         }
@@ -44,15 +42,16 @@ function quote(postId) {
 
 function getSelectedPostText() {
     var txt = '';
-    /*if (document.getSelection) {
-        txt = document.getSelection().toString();
-    }
-    else if (window.getSelection) {
-        txt = window.getSelection().toString();
-    }
-    else if (document.selection) {
-        txt = document.selection.createRange().text;
-    }*/
+        if ((document.getSelection) && ($('#post').focus())){
+        	txt = document.getSelection().toString();
+        }
+        else if ((window.getSelection) && ($('#post').focus())){
+            txt = window.getSelection().toString();
+        }
+        else if ((document.selection) && ($('#post').focus())) {
+            txt = document.selection.createRange().text;
+        }
+
     return txt;
 }
 
