@@ -609,6 +609,11 @@ div.anchor {
     padding-right: 10px;
 }
 
+#externalLinks .tooltip {
+    white-space:pre-wrap;
+    max-width:200px;    
+}
+
 .external-links-bar {
     margin-bottom: 10px;
 }
