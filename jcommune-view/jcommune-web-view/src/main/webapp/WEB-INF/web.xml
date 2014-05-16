@@ -60,7 +60,7 @@
         <filter-class>org.jtalks.jcommune.web.filters.TrimFilter</filter-class>
         <init-param>
             <param-name>excludePatterns</param-name>
-            <param-value>^.*/resources/.*</param-value>
+            <param-value>(^.*/resources/.*|^.*/users/.*/security)</param-value>
         </init-param>
     </filter>
     <filter-mapping>
