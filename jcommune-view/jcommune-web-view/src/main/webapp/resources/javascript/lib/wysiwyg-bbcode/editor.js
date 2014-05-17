@@ -238,12 +238,12 @@ function isInTag(t1, t2) {
      var beforeText = textboxelement.value.substring(0,selectionStart);
      var afterText = textboxelement.value.substring(selectionStart + 1);
      var openIndex = beforeText.indexOf(t1);
-     var closeIndex = -1; 
+     var closeIndex = -1;
      if (openIndex != -1) {
          closeIndex = beforeText.indexOf(t2, openIndex);
      }
      var open = false;
-     while (openIndex != -1) { 
+     while (openIndex != -1) {
          if (closeIndex == -1) {
              open = true;
              break;
@@ -295,8 +295,13 @@ function doLink() {
         str = element.value.substring(sel_start, sel_end);
     }
     if (!editorVisible) {
-        var bodyContent = createFormRow($labelUrlText, str, 'urlAltId', $labelUrlInfo, 'first') +
-        createFormRow($labelUrl, '', 'urlId', $labelUrlRequired,'');
+        var urlAltIdClass = 'first';
+        if(str.length > 0) {
+            urlAltIdClass = '';
+            var urlIdClass = 'first';
+        }
+        var bodyContent = createFormRow($labelUrlText, str, 'urlAltId', $labelUrlInfo, urlAltIdClass) +
+        createFormRow($labelUrl, '', 'urlId', $labelUrlRequired, urlIdClass);
         var footerContent = '' +
             '<button id="bb-link-cancel" class="btn">' + $labelCancel + '</button> \
             <button id="bb-link-ok" class="btn btn-primary">' + $labelOk + '</button>';
@@ -348,7 +353,7 @@ function createFormRow(text, value, idForElement, info, cls) {
     	    '</div>' +
     	    '<span class="dialog-info">' + info + '</span>' +
         '</div>';
-    
+
 }
 
 function doImage() {
@@ -755,11 +760,11 @@ $(document).ready(function() {
         format_listeq: function(){doClick('listElement');},
         format_quote: function(){doQuote();}
     }
-    
+
     // assign onclick action to each button
     for (var k in actionsMap) {
         if (actionsMap.hasOwnProperty(k)) {
-           $('#' + k).click(actionsMap[k]);  
+           $('#' + k).click(actionsMap[k]);
         }
     }
 
