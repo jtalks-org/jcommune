@@ -296,9 +296,10 @@ function doLink() {
     }
     if (!editorVisible) {
         var urlAltIdClass = 'first';
+        var urlIdClass = '';
         if(str.length > 0) {
             urlAltIdClass = '';
-            var urlIdClass = 'first';
+            urlIdClass = 'first';
         }
         var bodyContent = createFormRow($labelUrlText, str, 'urlAltId', $labelUrlInfo, urlAltIdClass) +
         createFormRow($labelUrl, '', 'urlId', $labelUrlRequired, urlIdClass);
