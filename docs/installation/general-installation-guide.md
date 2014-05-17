@@ -1,7 +1,7 @@
 Installation Guide
 ---
 You have 4 options:
- - If you want just _to see the app_, take a look at one of our environments like [UAT](http://uat.jtalks.org/jcommune). You can register a user, create topics, code review, etc.
+ - If you want just _to see the app_, take a look at one of our environments like [QA](http://qa.jtalks.org/jcommune). You can register a user, create topics, code review, etc.
  - You can start a local virtual environment without pulluting your OS and without tedious configuration. See our
  [JTalks VM project](https://github.com/jtalks-org/jtalks-vm)
  - If you'd like to _run it locally_, install the project from binaries (war file), see below.
