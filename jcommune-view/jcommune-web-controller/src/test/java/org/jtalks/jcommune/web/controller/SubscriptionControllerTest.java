@@ -29,6 +29,7 @@ import org.testng.annotations.Test;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 
 /**
  * @author Evgeniy Naumenko
@@ -59,42 +60,97 @@ public class SubscriptionControllerTest {
     public void testSubscribeToTopic() throws NotFoundException {
         when(topicFetchService.get(id)).thenReturn(topic);
 
-        controller.subscribeToTopic(id, anyString());
+        ModelAndView actualMav = controller.subscribeToTopic(id, "NotAjax");
 
         verify(subscriptionService).toggleTopicSubscription(topic);
+        assertViewName(actualMav, "redirect:/topics/" + id);
+    }
+
+    @Test
+    public void testSubscribeToTopicReturnNull() throws NotFoundException {
+        when(topicFetchService.get(id)).thenReturn(topic);
+
+        ModelAndView actualMav = controller.subscribeToTopic(id, anyString());
+
+        verify(subscriptionService).toggleTopicSubscription(topic);
+        Assert.assertEquals(actualMav, null);
     }
 
     @Test
     public void testUnsubscribeFromTopic() throws NotFoundException {
         when(topicFetchService.get(id)).thenReturn(topic);
 
-       controller.unsubscribeFromTopic(id, anyString());
+        ModelAndView actualMav = controller.unsubscribeFromTopic(id, "NotAjax");
 
         verify(subscriptionService).toggleTopicSubscription(topic);
+        assertViewName(actualMav, "redirect:/topics/" + id);
+    }
+
+    @Test
+    public void testUnsubscribeFromTopicReturnNull() throws NotFoundException {
+        when(topicFetchService.get(id)).thenReturn(topic);
+
+        ModelAndView actualMav = controller.unsubscribeFromTopic(id, anyString());
+
+        verify(subscriptionService).toggleTopicSubscription(topic);
+        Assert.assertEquals(actualMav, null);
     }
 
     @Test
     public void testSubscribeOnBranch() throws NotFoundException {
         when(branchService.get(id)).thenReturn(branch);
 
-        controller.subscribeToBranch(id, anyString());
+        ModelAndView actualMav = controller.subscribeToBranch(id, "NotAjax");
 
         verify(subscriptionService).toggleBranchSubscription(branch);
+        assertViewName(actualMav, "redirect:/branches/" + id);
     }
+
+    @Test
+    public void testSubscribeOnBranchReturnNull() throws NotFoundException {
+        when(branchService.get(id)).thenReturn(branch);
+
+        ModelAndView actualMav = controller.subscribeToBranch(id, anyString());
+
+        verify(subscriptionService).toggleBranchSubscription(branch);
+        Assert.assertEquals(actualMav, null);
+    }
+
 
     @Test
     public void testUnsubscribeFromBranch() throws NotFoundException {
         when(branchService.get(id)).thenReturn(branch);
 
-        controller.unsubscribeFromBranch(id, anyString());
+        ModelAndView actualMav = controller.unsubscribeFromBranch(id, "NotAjax");
 
         verify(subscriptionService).toggleBranchSubscription(branch);
+        assertViewName(actualMav, "redirect:/branches/" + id);
+    }
+
+    @Test
+    public void testUnsubscribeFromBranchReturnNull() throws NotFoundException {
+        when(branchService.get(id)).thenReturn(branch);
+
+        ModelAndView actualMav = controller.unsubscribeFromBranch(id, anyString());
+
+        verify(subscriptionService).toggleBranchSubscription(branch);
+        Assert.assertEquals(actualMav, null);
     }
 
     @Test
     public void testRedirectWhenUnsubscribeFromBranchByLink() throws NotFoundException {
         when(branchService.get(id)).thenReturn(branch);
+        ModelAndView actualMav = controller.unsubscribeFromBranch(id, "NotAjax");
+        assertViewName(actualMav, "redirect:/branches/" + id);
+    }
+
+    @Test
+    public void testUnsubscribeFromBranchByLinkReturnNull() throws NotFoundException {
+        when(branchService.get(id)).thenReturn(branch);
+
         ModelAndView actualMav = controller.unsubscribeFromBranch(id, anyString());
+
+        verify(subscriptionService).toggleBranchSubscription(branch);
         Assert.assertEquals(actualMav, null);
     }
 
@@ -102,7 +158,7 @@ public class SubscriptionControllerTest {
     public void testUnsubscribeFromBranchByLink() throws NotFoundException {
         when(branchService.get(id)).thenReturn(branch);
 
-        controller.unsubscribeFromBranch(id, anyString());
+        ModelAndView actualMav = controller.unsubscribeFromBranch(id, "NotAjax");
 
         verify(subscriptionService).toggleBranchSubscription(branch);
     }
