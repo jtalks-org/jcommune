@@ -19,9 +19,9 @@ $(document).ready(function () {
     previewFormElement = $("#previewPoll");
     previewFormElement.hide();
     multipleButtonElement = $("#multipleChecker");
-    $("#preview").click(function () {
-        SwitchPoll();
-    });
+//    $("#preview").click(function () {
+//        SwitchPoll();
+//    });
 
     $("#deleteEndingDate").click(function () {
         $("#datepicker").val("");
@@ -41,10 +41,13 @@ $(document).ready(function () {
  *
  */
 function SwitchPoll() {
+    pollEditFormVisible = !pollEditFormVisible;
+    if (!pollEditFormVisible) {  // enter preview
         if (isPollSet()) {
             previewFormElement.html(prepareTitle() + prepareItems());
-            previewFormElement.show();
+            previewFormElement.hide();
         }
+    }
      else {
         previewFormElement.hide();
         }

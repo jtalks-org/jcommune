@@ -82,6 +82,9 @@ function initEditor(textAreaId, htmlAreaId, baseDivId) {
  * preview mode.
  */
 function SwitchEditor(allowedUrls) {
+
+    SwitchPoll();
+
     if (editorVisible) { // exit preview
         textboxelement.style.display = "";
         htmlcontentelement.style.display = "none";
@@ -138,11 +141,18 @@ function bbcode2html(allowedUrls) {
         success:function (data) {
             var result = data.html;
             if(data.is_invalid) {
+
                 ErrorUtils.removeErrorMessage(elId);
                 for(var a=0; a<data.errors.length; a++) {
                     ErrorUtils.addErrorMessage(elId, data.errors[a].defaultMessage);
                 }
-            } else {
+
+                //                Now we going to find out either poll view has been set
+
+            } else if(isPollSet()) {
+
+                $("#previewPoll").show();
+
                 $('.keymaps-caption').hide();
                 $(".show-on-preview").show();
                 $(".hide-on-preview").hide();
