@@ -1,6 +1,6 @@
 <%@ tag language="java" pageEncoding="UTF-8" %>
 <%@ tag body-content="empty" %>
-<%@ attribute name="topic" required="true" type="org.jtalks.jcommune.web.dto.TopicViewDto" %>
+<%@ attribute name="topic" required="true" type="org.jtalks.jcommune.model.entity.Topic" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
