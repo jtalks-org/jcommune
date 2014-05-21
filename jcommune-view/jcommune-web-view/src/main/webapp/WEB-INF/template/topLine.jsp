@@ -240,7 +240,7 @@
 
     <%-- Language chooser --%>
         <%-- Language chooser --%>
-        <li class="dropdown">
+        <li id="lang-selector-toggle-li" class="dropdown">
             <div id="lang-selector-toggle" class="dropdown-toggle topline-dropdown-menu"
                  data-toggle="dropdown"
                  title="<fmt:message key='label.click_language'/>">

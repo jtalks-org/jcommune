@@ -1063,3 +1063,8 @@ pre.prettyprint {
         display: none;
     }
 }
+
+#lang-selector-toggle-li .tooltip {
+    white-space: pre-wrap;
+    max-width: 61px;
+}
