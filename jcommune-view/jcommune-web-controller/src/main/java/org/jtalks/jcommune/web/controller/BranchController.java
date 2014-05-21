@@ -24,13 +24,16 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
+import org.jtalks.jcommune.web.dto.TopicViewDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static ch.lambdaj.Lambda.on;
@@ -108,14 +111,14 @@ public class BranchController {
         Branch branch = branchService.get(branchId);
         Page<Topic> topicsPage = topicFetchService.getTopics(branch, page);
         lastReadPostService.fillLastReadPostForTopics(topicsPage.getContent());
-
+        Page<TopicViewDto> dtoPage = convertTopicPageToTopicViewDtoPage(topicsPage);
         JCUser currentUser = userService.getCurrentUser();
         List<Breadcrumb> breadcrumbs = breadcrumbBuilder.getForumBreadcrumb(branch);
 
         return new ModelAndView("topic/topicList")
                 .addObject("viewList", locationService.getUsersViewing(branch))
                 .addObject("branch", branch)
-                .addObject("topicsPage", topicsPage)
+                .addObject("topicsPage", dtoPage)
                 .addObject("breadcrumbList", breadcrumbs)
                 .addObject("subscribed", branch.getSubscribers().contains(currentUser));
     }
@@ -151,9 +154,9 @@ public class BranchController {
             @RequestParam(value = PAGE, defaultValue = "1", required = false) String page) {
         Page<Topic> topicsPage = topicFetchService.getRecentTopics(page);
         lastReadPostService.fillLastReadPostForTopics(topicsPage.getContent());
-
+        Page<TopicViewDto> dtoPage = convertTopicPageToTopicViewDtoPage(topicsPage);
         return new ModelAndView("topic/recent")
-                .addObject("topicsPage", topicsPage)
+                .addObject("topicsPage", dtoPage)
                 .addObject("topics", topicsPage.getContent());  // for rssViewer
     }
 
@@ -213,5 +216,13 @@ public class BranchController {
                 on(Branch.class).getId(),
                 on(Branch.class).getName());
         return dtos.toArray(new BranchDto[dtos.size()]);
+    }
+
+    private Page<TopicViewDto> convertTopicPageToTopicViewDtoPage(Page<Topic> topicPage) {
+        List<TopicViewDto> dtoList = new ArrayList<>();
+        for (Topic topic : topicPage) {
+            dtoList.add(new TopicViewDto(topic));
+        }
+        return new PageImpl<>(dtoList);
     }
 }

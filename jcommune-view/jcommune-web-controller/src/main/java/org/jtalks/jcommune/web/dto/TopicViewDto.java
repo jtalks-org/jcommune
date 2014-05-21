@@ -14,9 +14,7 @@
  */
 package org.jtalks.jcommune.web.dto;
 
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 
 /**
  * @author  Mikhail Stryzhonok.
@@ -35,6 +33,8 @@ public class TopicViewDto {
     private Long firstUnreadPostId;
     private JCUser topicStarter;
     private Post lastPost;
+    private Branch branch;
+    private CodeReview codeReview;
 
     public TopicViewDto(Topic topic) {
         this.id = topic.getId();
@@ -49,6 +49,8 @@ public class TopicViewDto {
         this.firstUnreadPostId = topic.getFirstUnreadPostId();
         this.topicStarter = topic.getTopicStarter();
         this.lastPost = topic.getLastPost();
+        this.branch = topic.getBranch();
+        this.codeReview = topic.getCodeReview();
     }
 
     public long getId() {
@@ -145,5 +147,21 @@ public class TopicViewDto {
 
     public void setLastPost(Post lastPost) {
         this.lastPost = lastPost;
+    }
+
+    public Branch getBranch() {
+        return branch;
+    }
+
+    public void setBranch(Branch branch) {
+        this.branch = branch;
+    }
+
+    public CodeReview getCodeReview() {
+        return codeReview;
+    }
+
+    public void setCodeReview(CodeReview codeReview) {
+        this.codeReview = codeReview;
     }
 }
