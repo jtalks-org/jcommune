@@ -25,7 +25,7 @@
 </head>
 <body>
 <div class="container linear_transitions">
-    <div class="text_errorpage">
+    <div class="text_errorpage pull-left">
         <h1><span class="error_errorpage"><spring:message code="label.error"/></span>&nbsp;404</h1>
         <spring:message code="label.404.detail"/>
         <br/>
