@@ -12,16 +12,12 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-var pollEditFormVisible = true;
 var previewFormElement, multipleButtonElement;
 
 $(document).ready(function () {
     previewFormElement = $("#previewPoll");
     previewFormElement.hide();
     multipleButtonElement = $("#multipleChecker");
-//    $("#preview").click(function () {
-//        SwitchPoll();
-//    });
 
     $("#deleteEndingDate").click(function () {
         $("#datepicker").val("");
@@ -37,20 +33,25 @@ $(document).ready(function () {
 });
 
 /**
- * Switch between poll edit and poll preview modes.
+ * exits the poll preview mode and enters the poll edit mode.
  *
  */
-function SwitchPoll() {
-    pollEditFormVisible = !pollEditFormVisible;
-    if (!pollEditFormVisible) {  // enter preview
-        if (isPollSet()) {
-            previewFormElement.html(prepareTitle() + prepareItems());
-            previewFormElement.hide();
-        }
+function exitPollPreviewMode() {
+    previewFormElement.hide();
+}
+
+/**
+ * Enters the poll preview mode and exits the poll edit mode
+ * only if the poll data was specified by user. Otherwise exits the poll preview mode.
+ *
+ */
+function enterPollPreviewMode() {
+    if (isPollSet()) {
+        previewFormElement.html(prepareTitle() + prepareItems());
+        previewFormElement.show();
+    } else {
+        exitPollPreviewMode();
     }
-     else {
-        previewFormElement.hide();
-        }
 }
 
 function isPollSet() {

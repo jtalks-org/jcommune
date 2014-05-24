@@ -167,7 +167,7 @@
 
 <input id="preview" type="button" class="btn btn-success space-left-medium-nf" name="preview" tabindex="400"
        value="<spring:message code="label.answer.preview"/>"
-       onclick="SwitchEditor(new Array('posts', 'topics'));return null;"/>
+       onclick="togglePreviewMode(new Array('posts', 'topics'));return null;"/>
 <script type="text/javascript">
   initEditor("postBody", "editorBBCODEdiv", "htmlContent");
 </script>

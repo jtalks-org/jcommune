@@ -81,10 +81,7 @@ function initEditor(textAreaId, htmlAreaId, baseDivId) {
  * Changes visual editor representation when toggling
  * preview mode.
  */
-function SwitchEditor(allowedUrls) {
-
-    SwitchPoll();
-
+function togglePreviewMode(allowedUrls) {
     if (editorVisible) { // exit preview
         textboxelement.style.display = "";
         htmlcontentelement.style.display = "none";
@@ -146,13 +143,9 @@ function bbcode2html(allowedUrls) {
                 for(var a=0; a<data.errors.length; a++) {
                     ErrorUtils.addErrorMessage(elId, data.errors[a].defaultMessage);
                 }
-
-                //                Now we going to find out either poll view has been set
-
-            } else if(isPollSet()) {
-
-                $("#previewPoll").show();
-
+                exitPollPreviewMode();
+            } else {
+                enterPollPreviewMode();
                 $('.keymaps-caption').hide();
                 $(".show-on-preview").show();
                 $(".hide-on-preview").hide();
