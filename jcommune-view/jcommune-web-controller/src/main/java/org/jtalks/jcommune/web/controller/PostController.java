@@ -203,7 +203,7 @@ public class PostController {
      * @param selection text selected by user for the quotation
      * @throws NotFoundException when topic was not found
      */
-    @RequestMapping(method = RequestMethod.GET, value = "/posts/{postId}/quote")
+    @RequestMapping(method = RequestMethod.POST, value = "/posts/{postId}/quote")
     @ResponseBody
     public JsonResponse getQuote(@PathVariable(POST_ID) Long postId,
                                  @RequestParam("selection") String selection) throws NotFoundException {
