@@ -16,6 +16,7 @@ var Utils = {};
 
 function quote(postId) {
 	var callback = function (text) {
+        $('#post').focus();
         console.log(text);
         var answer = $('#postBody');
         answer.focus();
@@ -42,17 +43,17 @@ function quote(postId) {
 
 function getSelectedPostText() {
     var txt = '';
-        if ((document.getSelection) && ($('#post').focus())){
-        	txt = document.getSelection().toString();
-        }
-        else if ((window.getSelection) && ($('#post').focus())){
-            txt = window.getSelection().toString();
-        }
-        else if ((document.selection) && ($('#post').focus())) {
-            txt = document.selection.createRange().text;
-        }
-
+    if (window.getSelection && isRangeInPost(window.getSelection().getRangeAt(0))) {
+        txt = window.getSelection().toString();
+    }
+    else if (document.selection && isRangeInPost(document.selection.createRange())) {
+        txt = document.selection.createRange().text;
+    }
     return txt;
+}
+
+function isRangeInPost(range) {
+    return range.startContainer.parentNode.classList.contains("post-content-body");
 }
 
 /**

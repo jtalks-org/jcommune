@@ -176,10 +176,22 @@ public class PostControllerTest {
 
     @Test
     public void testPartialQuotedAjax() throws NotFoundException {
-        String selection = "selected content";
+        String selection = "Content";
         String expected = "[quote=\"user\"]" + selection + "[/quote]";
         when(postService.get(anyLong())).thenReturn(post);
         when(bbCodeService.quote(selection, user)).thenReturn(expected);
+
+        JsonResponse response = controller.getQuote(post.getId(), selection);
+
+        assertEquals(response.getResult(), expected);
+    }
+
+    @Test
+    public void partialQuoteAnotherPostShouldQuoteSelectedPost() throws NotFoundException {
+        String selection = "another post";
+        String expected = "[quote=\"user\"]" + POST_CONTENT + "[/quote]";
+        when(postService.get(anyLong())).thenReturn(post);
+        when(bbCodeService.quote(POST_CONTENT, user)).thenReturn(expected);
 
         JsonResponse response = controller.getQuote(post.getId(), selection);
 
