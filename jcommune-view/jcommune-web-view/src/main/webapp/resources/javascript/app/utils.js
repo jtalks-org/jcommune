@@ -14,7 +14,7 @@
  */
 var Utils = {};
 
-function quote(postId, index) {
+function quote(postId, postNumber) {
 	var callback = function (text) {
         $('#post').focus();
         console.log(text);
@@ -30,7 +30,7 @@ function quote(postId, index) {
         url: baseUrl + '/posts/' + postId + '/quote',
         type: 'POST',
         data: {
-            selection: getSelectedPostText(index)
+            selection: getSelectedPostText(postNumber)
         },
         success: function (data) {
             callback(data.result);
@@ -41,30 +41,35 @@ function quote(postId, index) {
     });
 }
 
-function getSelectedPostText(index) {
+function getSelectedPostText(postNumber) {
     var txt = '';
-    if (window.getSelection && isRangeInPost(window.getSelection().getRangeAt(0)) && isSelectedPostQuoted(index)) {
+    if (window.getSelection && isRangeInPost(window.getSelection().getRangeAt(0)) && isSelectedPostQuoted(postNumber)) {
         txt = window.getSelection().toString();
     }
-    else if (document.selection && isRangeInPost(document.selection.createRange()) && isSelectedPostQuoted(index)) {
+    else if (document.selection && isRangeInPost(document.selection.createRange()) && isSelectedPostQuoted(postNumber)) {
         txt = document.selection.createRange().text;
     }
     return txt;
 }
 
 /**
- * Check is selected range in post
+ * Checks if selected document fragment is a part of the post content.
+ * @param {Range} range Range object which represent current selection.
+ * @return {boolean} <b>true</b> if if selected document fragment is a part of the post content
+ *                   <b>false</b> otherwise.
  */
 function isRangeInPost(range) {
     return range.startContainer.parentNode.classList.contains("post-content-body");
 }
 
 /**
- * Checks if "quote" button pressed on selected post
- * @param index index of post on which "quote" button was pressed
+ * Checks if "quote" button pressed on the post which was selected.
+ * @param {Number} postNumber number of the post on the page which "quote" button was pressed.
+ * @return {boolean} <b>true</> if selected text is a part of the post which will be quoted
+ *                   <b>false</b> otherwise.
  */
-function isSelectedPostQuoted(index) {
-    return $(window.getSelection().getRangeAt(0).startContainer).closest('.post').length == index;
+function isSelectedPostQuoted(postNumber) {
+    return $(window.getSelection().getRangeAt(0).startContainer).closest('.post').length == postNumber;
 }
 
 /**
