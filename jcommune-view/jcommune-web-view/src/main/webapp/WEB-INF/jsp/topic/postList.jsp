@@ -253,7 +253,7 @@
           <c:if test='${(!topic.closed || hasCloseTopicPermission) && topic.codeReview == null}'>
             <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
                                   permission='BranchPermission.CREATE_POSTS'>
-              <a class="btn btn-mini" href='javascript:quote(${post.id});'
+              <a class="btn btn-mini" onclick="quote(${post.id}, ${i.index})"
                  title="<spring:message code='label.tips.quote_post'/>">
                 <i class="icon-quote"></i><spring:message code="label.quotation"/>
               </a>

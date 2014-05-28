@@ -187,18 +187,6 @@ public class PostControllerTest {
     }
 
     @Test
-    public void partialQuoteAnotherPostShouldQuoteSelectedPost() throws NotFoundException {
-        String selection = "another post";
-        String expected = "[quote=\"user\"]" + POST_CONTENT + "[/quote]";
-        when(postService.get(anyLong())).thenReturn(post);
-        when(bbCodeService.quote(POST_CONTENT, user)).thenReturn(expected);
-
-        JsonResponse response = controller.getQuote(post.getId(), selection);
-
-        assertEquals(response.getResult(), expected);
-    }
-
-    @Test
     public void testSubmitAnswerValidationPass() throws NotFoundException {
         BeanPropertyBindingResult resultWithoutErrors = mock(BeanPropertyBindingResult.class);
         when(resultWithoutErrors.hasErrors()).thenReturn(false);

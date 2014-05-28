@@ -209,12 +209,7 @@ public class PostController {
                                  @RequestParam("selection") String selection) throws NotFoundException {
         Post source = postService.get(postId);
         String content = StringUtils.defaultString(selection, source.getPostContent());
-        if (source.getPostContent().contains(content)) {
-            return new JsonResponse(JsonResponseStatus.SUCCESS, bbCodeService.quote(content, source.getUserCreated()));
-        } else {
-            return new JsonResponse(JsonResponseStatus.SUCCESS, bbCodeService.quote(source.getPostContent(),
-                    source.getUserCreated()));
-        }
+        return new JsonResponse(JsonResponseStatus.SUCCESS, bbCodeService.quote(content, source.getUserCreated()));
     }
 
     /**

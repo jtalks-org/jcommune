@@ -14,7 +14,7 @@
  */
 var Utils = {};
 
-function quote(postId) {
+function quote(postId, index) {
 	var callback = function (text) {
         $('#post').focus();
         console.log(text);
@@ -30,7 +30,7 @@ function quote(postId) {
         url: baseUrl + '/posts/' + postId + '/quote',
         type: 'POST',
         data: {
-            selection: getSelectedPostText()
+            selection: getSelectedPostText(index)
         },
         success: function (data) {
             callback(data.result);
@@ -41,19 +41,30 @@ function quote(postId) {
     });
 }
 
-function getSelectedPostText() {
+function getSelectedPostText(index) {
     var txt = '';
-    if (window.getSelection && isRangeInPost(window.getSelection().getRangeAt(0))) {
+    if (window.getSelection && isRangeInPost(window.getSelection().getRangeAt(0)) && isSelectedPostQuoted(index)) {
         txt = window.getSelection().toString();
     }
-    else if (document.selection && isRangeInPost(document.selection.createRange())) {
+    else if (document.selection && isRangeInPost(document.selection.createRange()) && isSelectedPostQuoted(index)) {
         txt = document.selection.createRange().text;
     }
     return txt;
 }
 
+/**
+ * Check is selected range in post
+ */
 function isRangeInPost(range) {
     return range.startContainer.parentNode.classList.contains("post-content-body");
+}
+
+/**
+ * Checks if "quote" button pressed on selected post
+ * @param index index of post on which "quote" button was pressed
+ */
+function isSelectedPostQuoted(index) {
+    return $(window.getSelection().getRangeAt(0).startContainer).closest('.post').length == index;
 }
 
 /**
