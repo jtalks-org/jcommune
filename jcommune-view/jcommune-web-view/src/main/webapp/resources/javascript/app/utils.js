@@ -43,6 +43,7 @@ function quote(postId, postNumber) {
 
 function getSelectedPostText(postNumber) {
     var txt = '';
+    console.log(postNumber);
     if (window.getSelection && isRangeInPost(window.getSelection().getRangeAt(0)) && isSelectedPostQuoted(postNumber)) {
         txt = window.getSelection().toString();
     }
@@ -69,7 +70,8 @@ function isRangeInPost(range) {
  *                   <b>false</b> otherwise.
  */
 function isSelectedPostQuoted(postNumber) {
-    return $(window.getSelection().getRangeAt(0).startContainer).closest('.post').length == postNumber;
+    console.log("btn" + $(window.getSelection().getRangeAt(0).startContainer).closest('.post').length);
+    return $(window.getSelection().getRangeAt(0).startContainer).closest('.post').prevAll().length == postNumber;
 }
 
 /**
