@@ -43,10 +43,10 @@ function quote(postId, postNumber) {
 
 function getSelectedPostText(postNumber) {
     var txt = '';
-    if (window.getSelection && isRangeInPost(window.getSelection().getRangeAt(0)) && isSelectedPostQuoted(postNumber)) {
+    if (window.getSelection.length > 0 && isRangeInPost(window.getSelection().getRangeAt(0)) && isSelectedPostQuoted(postNumber)) {
         txt = window.getSelection().toString();
     }
-    else if (document.selection && isRangeInPost(document.selection.createRange()) && isSelectedPostQuoted(postNumber)) {
+    else if (document.selection.length > 0 && isRangeInPost(document.selection.createRange()) && isSelectedPostQuoted(postNumber)) {
         txt = document.selection.createRange().text;
     }
     return txt;
@@ -69,6 +69,7 @@ function isRangeInPost(range) {
  *                   <b>false</b> otherwise.
  */
 function isSelectedPostQuoted(postNumber) {
+    console.log($(window.getSelection().getRangeAt(0).startContainer).closest('.post').prevAll().size());
     return $(window.getSelection().getRangeAt(0).startContainer).closest('.post').prevAll().length == postNumber;
 }
 
