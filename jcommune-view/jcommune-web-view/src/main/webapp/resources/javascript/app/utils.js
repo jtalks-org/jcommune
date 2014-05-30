@@ -64,7 +64,7 @@ function getSelectedPostText(postNumber) {
  *                   <b>false</b> otherwise.
  */
 function isRangeInPost(range) {
-    return range.startContainer.parentNode.classList.contains("post-content-body");
+    return $(range.startContainer).closest(".post-content-body").length > 0;
 }
 
 /**
