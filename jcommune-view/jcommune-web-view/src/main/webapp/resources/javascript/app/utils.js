@@ -69,7 +69,6 @@ function isRangeInPost(range) {
  *                   <b>false</b> otherwise.
  */
 function isSelectedPostQuoted(postNumber) {
-    console.log($(window.getSelection().getRangeAt(0).startContainer).closest('.post').prevAll().size());
     return $(window.getSelection().getRangeAt(0).startContainer).closest('.post').prevAll().length == postNumber;
 }
 
