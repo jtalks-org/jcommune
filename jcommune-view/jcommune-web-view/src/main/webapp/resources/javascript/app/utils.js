@@ -43,11 +43,16 @@ function quote(postId, postNumber) {
 
 function getSelectedPostText(postNumber) {
     var txt = '';
-    if (window.getSelection.length > 0 && isRangeInPost(window.getSelection().getRangeAt(0)) && isSelectedPostQuoted(postNumber)) {
-        txt = window.getSelection().toString();
+    if (window.getSelection) {
+        if (window.getSelection().toString().length > 0 && isRangeInPost(window.getSelection().getRangeAt(0))
+            && isSelectedPostQuoted(postNumber)) {
+            txt = window.getSelection().toString();
+        }
     }
-    else if (document.selection.length > 0 && isRangeInPost(document.selection.createRange()) && isSelectedPostQuoted(postNumber)) {
-        txt = document.selection.createRange().text;
+    else if (document.selection) {
+        if (isRangeInPost(document.selection.createRange()) && isSelectedPostQuoted(postNumber)) {
+            txt = document.selection.createRange().text;
+        }
     }
     return txt;
 }
