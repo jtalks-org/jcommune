@@ -59,9 +59,6 @@
       <c:when test="${!(empty section.branches)}">
         <thead>
         <tr>
-            <%--<sec:authorize access="isAuthenticated()">--%>
-            <%--<th class="status-col"></th>--%>
-            <%--</sec:authorize>--%>
           <th><spring:message code="label.section.header.branches"/></th>
           <c:if test="${sessionScope.adminMode != true}">
             <th class="topics-posts forum-posts-view-header shrink-to-fit">
@@ -78,23 +75,6 @@
         <c:forEach var="branch" items="${section.branches}" varStatus="i">
           <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' permission='BranchPermission.VIEW_TOPICS'>
             <tr>
-                <%--TODO: fix in milstone 2--%>
-                <%--<sec:authorize access="isAuthenticated()">--%>
-                <%--<td class="status-col">--%>
-                <%--<c:choose>--%>
-                <%--<c:when test="${branch.unreadPosts}">--%>
-                <%--<img class="status-img"--%>
-                <%--src="${pageContext.request.contextPath}/resources/images/new-posts.png"--%>
-                <%--title="<spring:message code="label.topic.new_posts"/>"/>--%>
-                <%--</c:when>--%>
-                <%--<c:otherwise>--%>
-                <%--<img class="status-img"--%>
-                <%--src="${pageContext.request.contextPath}/resources/images/no-new-posts.png"--%>
-                <%--title="<spring:message code="label.topic.no_new_posts"/>"/>--%>
-                <%--</c:otherwise>--%>
-                <%--</c:choose>--%>
-                <%--</td>--%>
-                <%--</sec:authorize>--%>
               <td class="title-col">
                 <div class="pull-left">
                   <h2 class="h-nostyle">

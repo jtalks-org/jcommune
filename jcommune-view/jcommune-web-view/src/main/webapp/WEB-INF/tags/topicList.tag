@@ -49,13 +49,13 @@
               </a>
             </h2>
             <sub class="created-by"><spring:message code="label.topic.created_by"/>
-              <a class="space-left-small" href='${pageContext.request.contextPath}/users/${topic.topicStarter.id}"'>
+              <a class="space-left-small" href="${pageContext.request.contextPath}/users/${topic.topicStarter.id}">
                 <c:out value="${topic.topicStarter.username}"/>
               </a>
             </sub>
           </td>
           <td class="author-col shrink-to-fit">
-            <a href='${pageContext.request.contextPath}/users/${topic.topicStarter.id}'>
+            <a href="${pageContext.request.contextPath}/users/${topic.topicStarter.id}">
               <c:out value="${topic.topicStarter.username}"/>
             </a>
           </td>
