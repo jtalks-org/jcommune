@@ -188,8 +188,10 @@ in the future.
     <script src="${pageContext.request.contextPath}/resources/javascript/app/events.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/app/banner.js"></script>
 
+    <%--Should be added to every page because we can use Administrator mode on each page to
+        change forum name, description and icon --%>
+    <script src="${pageContext.request.contextPath}/resources/javascript/app/forumAdministration.js"></script>
     <c:if test="${fn:contains(uriString, 'admin') or fn:contains(uriString, 'permissions')}">
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/forumAdministration.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/app/editPermissions.js"></script>
     </c:if>
 
